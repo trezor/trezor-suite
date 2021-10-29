@@ -124,9 +124,6 @@ const Available = ({ hideWindow, latest }: Props) => {
     }, [latest, releaseNotes]);
 
     const downloadUpdate = useCallback(() => window.desktopApi!.downloadUpdate(), []);
-    const skipUpdate = useCallback(() => {
-        window.desktopApi!.skipUpdate(latest!.version);
-    }, [latest]);
 
     return (
         <Modal
@@ -164,8 +161,8 @@ const Available = ({ hideWindow, latest }: Props) => {
 
             <Row>
                 <LeftCol>
-                    <Button onClick={skipUpdate} variant="secondary" fullWidth>
-                        <Translation id="TR_UPDATE_MODAL_SKIP_THIS_VERSION" />
+                    <Button onClick={hideWindow} variant="secondary" fullWidth>
+                        <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
                     </Button>
                 </LeftCol>
                 <RightCol>

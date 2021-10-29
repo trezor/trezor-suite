@@ -20,7 +20,6 @@ const validChannels = [
     'update/error',
     'update/downloading',
     'update/downloaded',
-    'update/skip',
     'update/new-version-first-run',
 
     // invity
@@ -70,7 +69,6 @@ contextBridge.exposeInMainWorld('desktopApi', {
     downloadUpdate: () => ipcRenderer.send('update/download'),
     installUpdate: () => ipcRenderer.send('update/install'),
     cancelUpdate: () => ipcRenderer.send('update/cancel'),
-    skipUpdate: (version: string) => ipcRenderer.send('update/skip', version),
 
     // Window controls
     windowClose: () => ipcRenderer.send('window/close'),

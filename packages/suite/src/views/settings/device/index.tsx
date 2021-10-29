@@ -62,7 +62,7 @@ const VersionButton = styled(Button)`
 
 const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
-    margin: 0 2px;
+    margin: 0 4px;
 `;
 
 const VersionLink = styled.a``;

@@ -16,7 +16,7 @@ import {
 } from '@suite-components/Settings';
 import { FIAT } from '@suite-config';
 import { useAnalytics, useDevice, useSelector, useActions } from '@suite-hooks';
-import { Button, Tooltip, Switch } from '@trezor/components';
+import { Button, Tooltip, Switch, Link } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -34,6 +34,11 @@ const buildCurrencyOption = (currency: string) => ({
     value: currency,
     label: currency.toUpperCase(),
 });
+
+const GithubWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
 
 const Version = styled.div`
     span {
@@ -58,10 +63,31 @@ const VersionButton = styled(Button)`
 
 const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
-    margin: 0 2px;
+    margin: 0 4px;
 `;
 
-const VersionLink = styled.a``;
+type VersionWithGithubTooltipProps = { appVersion: string; isDev?: boolean };
+
+const VersionWithGithubTooltip = ({ appVersion, isDev }: VersionWithGithubTooltipProps) => (
+    <VersionTooltip
+        content={
+            <GithubWrapper>
+                <Link variant="nostyle" href={getReleaseUrl(appVersion)}>
+                    <Button variant="tertiary" icon="GITHUB">
+                        <Translation id="TR_CHANGELOG_ON_GITHUB" />
+                    </Button>
+                </Link>
+            </GithubWrapper>
+        }
+    >
+        <Link href={getReleaseUrl(appVersion)}>
+            <VersionButton variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                {appVersion}
+                {isDev && '-dev'}
+            </VersionButton>
+        </Link>
+    </VersionTooltip>
+);
 
 const Settings = () => {
     const analytics = useAnalytics();
@@ -349,31 +375,13 @@ const Settings = () => {
                                     id="TR_YOUR_CURRENT_VERSION"
                                     values={{
                                         version: (
-                                            <VersionTooltip content={process.env.COMMITHASH || ''}>
-                                                <VersionLink
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    href={`https://github.com/trezor/trezor-suite/commit/${process.env.COMMITHASH}`}
-                                                >
-                                                    <VersionButton
-                                                        variant="tertiary"
-                                                        icon="EXTERNAL_LINK"
-                                                        alignIcon="right"
-                                                    >
-                                                        {process.env.VERSION}
-                                                        {isDev && '-dev'}
-                                                    </VersionButton>
-                                                </VersionLink>
-                                            </VersionTooltip>
+                                            <VersionWithGithubTooltip
+                                                appVersion={process.env.VERSION || ''}
+                                                isDev
+                                            />
                                         ),
                                     }}
                                 />
-                                {desktopUpdate.skip && (
-                                    <>
-                                        &nbsp;
-                                        <Translation id="TR_YOUR_NEW_VERSION_SKIPPED" />
-                                    </>
-                                )}
                                 {!['checking', 'not-available'].includes(desktopUpdate.state) &&
                                     desktopUpdate.latest && (
                                         <>
@@ -382,21 +390,11 @@ const Settings = () => {
                                                 id="TR_YOUR_NEW_VERSION"
                                                 values={{
                                                     version: (
-                                                        <VersionLink
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            href={getReleaseUrl(
-                                                                desktopUpdate.latest.version,
-                                                            )}
-                                                        >
-                                                            <VersionButton
-                                                                variant="tertiary"
-                                                                icon="EXTERNAL_LINK"
-                                                                alignIcon="right"
-                                                            >
-                                                                {desktopUpdate.latest.version}
-                                                            </VersionButton>
-                                                        </VersionLink>
+                                                        <VersionWithGithubTooltip
+                                                            appVersion={
+                                                                desktopUpdate.latest.version
+                                                            }
+                                                        />
                                                     ),
                                                 }}
                                             />

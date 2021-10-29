@@ -10,7 +10,6 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload?: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: Partial<UpdateProgress> }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
-    | { type: typeof DESKTOP_UPDATE.SKIP; payload: string }
     | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow };
 
 export const enable = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.ENABLE });
@@ -41,11 +40,6 @@ export const downloading = (progress: Partial<UpdateProgress>): DesktopUpdateAct
 export const ready = (info: UpdateInfo): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.READY,
     payload: info,
-});
-
-export const skip = (version: string): DesktopUpdateAction => ({
-    type: DESKTOP_UPDATE.SKIP,
-    payload: version,
 });
 
 export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) => {

@@ -18,7 +18,6 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         notAvailable,
         downloading,
         ready,
-        skip,
         error,
         newVersionFirstRun,
         setUpdateWindow,
@@ -29,7 +28,6 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         notAvailable: desktopUpdateActions.notAvailable,
         downloading: desktopUpdateActions.downloading,
         ready: desktopUpdateActions.ready,
-        skip: desktopUpdateActions.skip,
         error: desktopUpdateActions.error,
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
         newVersionFirstRun: desktopUpdateActions.newVersionFirstRun,
@@ -44,7 +42,6 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         window.desktopApi!.on('update/checking', checking);
         window.desktopApi!.on('update/available', available);
         window.desktopApi!.on('update/not-available', notAvailable);
-        window.desktopApi!.on('update/skip', skip);
         window.desktopApi!.on('update/downloaded', ready);
         window.desktopApi!.on('update/downloading', downloading);
         window.desktopApi!.on('update/error', error);
@@ -60,7 +57,6 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         downloading,
         notAvailable,
         ready,
-        skip,
         error,
         enable,
         newVersionFirstRun,
@@ -86,13 +82,12 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
             return false;
         }
 
-        // If the latest version is skipped, there's nothing to show
-        if (!desktopUpdate.latest || desktopUpdate.skip === desktopUpdate.latest.version) {
+        if (!desktopUpdate.latest) {
             return false;
         }
 
         return true;
-    }, [desktopUpdate.window, desktopUpdate.state, desktopUpdate.latest, desktopUpdate.skip]);
+    }, [desktopUpdate.window, desktopUpdate.state, desktopUpdate.latest]);
 
     useEffect(() => setIsUpdateVisible(isVisible), [setIsUpdateVisible, isVisible]);
 

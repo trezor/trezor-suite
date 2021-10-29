@@ -40,8 +40,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
         return;
     }
 
-    const updateSettings = store.getUpdateSettings();
-
     // Enable feature on FE once it's ready
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.webContents.send('update/enable');
@@ -92,16 +90,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
 
     logger.info('auto-updater', `Is looking for pre-releases? (${b2t(preReleaseFlag)})`);
 
-    if (updateSettings.skipVersion) {
-        logger.debug('auto-updater', `Set to skip version ${updateSettings.skipVersion}`);
-        mainWindow.webContents.send('update/skip', updateSettings.skipVersion);
-    }
-
-    const setSkipVersion = (version: string) => {
-        updateSettings.skipVersion = version;
-        store.setUpdateSettings(updateSettings);
-    };
-
     autoUpdater.on('checking-for-update', () => {
         logger.info('auto-updater', 'Checking for update');
         mainWindow.webContents.send('update/checking');
@@ -109,18 +97,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
 
     autoUpdater.on('update-available', updateInfo => {
         const { version, releaseDate, files } = updateInfo;
-
-        const shouldSkip = updateSettings.skipVersion === version;
-        if (shouldSkip) {
-            logger.warn('auto-updater', [
-                'Update is available but was skipped:',
-                `- Update version: ${version}`,
-                `- Skip version: ${updateSettings.skipVersion}`,
-            ]);
-
-            mainWindow.webContents.send('update/skip', version);
-            return;
-        }
 
         logger.warn('auto-updater', [
             'Update is available:',
@@ -217,7 +193,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
     ipcMain.on('update/check', (_, isManual?: boolean) => {
         if (isManual) {
             isManualCheck = true;
-            setSkipVersion('');
         }
 
         logger.info('auto-updater', `Update checking request (manual: ${b2t(isManualCheck)})`);
@@ -253,12 +228,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
         logger.info('auto-updater', 'Cancel update request');
         mainWindow.webContents.send('update/available', latestVersion);
         updateCancellationToken.cancel();
-    });
-
-    ipcMain.on('update/skip', (_, version) => {
-        logger.info('auto-updater', `Skip version (${version}) request`);
-        mainWindow.webContents.send('update/skip', version);
-        setSkipVersion(version);
     });
 
     app.on('before-quit', () => {

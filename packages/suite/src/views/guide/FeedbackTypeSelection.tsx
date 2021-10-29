@@ -80,10 +80,7 @@ const FeedbackTypeSelection = () => {
         device: state.suite.device,
     }));
 
-    const appUpToDate =
-        isDesktop() &&
-        ['checking', 'not-available'].includes(desktopUpdate.state) &&
-        !desktopUpdate.skip;
+    const appUpToDate = isDesktop() && ['checking', 'not-available'].includes(desktopUpdate.state);
 
     const firmwareUpToDate = device?.firmware === 'valid';
     const firmwareVersion = device?.features ? (
