@@ -39,6 +39,7 @@ describe('logUtils', () => {
                     ...dev.features,
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     device_id: REDACTED_REPLACEMENT,
+                    label: REDACTED_REPLACEMENT,
                 },
             });
         });
