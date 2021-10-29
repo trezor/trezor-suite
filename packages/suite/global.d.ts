@@ -11,7 +11,6 @@ export interface DesktopApi {
     downloadUpdate: () => void;
     installUpdate: () => void;
     cancelUpdate: () => void;
-    skipUpdate: (version: string) => void;
     // Window controls
     windowClose: () => void;
     windowMinimize: () => void;

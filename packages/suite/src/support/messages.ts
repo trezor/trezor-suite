@@ -3168,10 +3168,6 @@ export default defineMessages({
         defaultMessage: 'Version {version} is available.',
         id: 'TR_YOUR_NEW_VERSION',
     },
-    TR_YOUR_NEW_VERSION_SKIPPED: {
-        defaultMessage: 'Update to the latest version has been skipped.',
-        id: 'TR_YOUR_NEW_VERSION_SKIPPED',
-    },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
         defaultMessage: 'Your Trezor wallet is not backed up.',
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
@@ -5738,9 +5734,9 @@ export default defineMessages({
         id: 'TR_UPDATE_MODAL_AVAILABLE_HEADING',
         defaultMessage: 'Update available',
     },
-    TR_UPDATE_MODAL_SKIP_THIS_VERSION: {
-        id: 'TR_UPDATE_MODAL_SKIP_THIS_VERSION',
-        defaultMessage: 'Skip',
+    TR_UPDATE_MODAL_NOT_NOW: {
+        id: 'TR_UPDATE_MODAL_NOT_NOW',
+        defaultMessage: 'Not now',
     },
     TR_UPDATE_MODAL_START_DOWNLOAD: {
         id: 'TR_UPDATE_MODAL_START_DOWNLOAD',

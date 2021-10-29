@@ -75,7 +75,6 @@ declare type WinBounds = {
 };
 
 declare type UpdateSettings = {
-    skipVersion: string;
     // saving application version gives us ability to tell whether app got updated or not.
     /**
      * Duplicates and persists `app.getVersion()` most of the time except the first app start after an update.
