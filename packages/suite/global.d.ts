@@ -44,7 +44,7 @@ export interface DesktopApi {
 
 declare global {
     interface Window {
-        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: () => any | null;
+        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (props: any) => any | null;
         desktopApi?: DesktopApi; // Electron API
 
         // Needed for Cypress

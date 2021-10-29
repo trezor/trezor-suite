@@ -43,11 +43,10 @@ const middlewares = [
 ];
 
 const enhancers: any[] = [];
+const excludedActions = ['@log/add'];
 if (isDev) {
     const excludeLogger = (_getState: any, action: any): boolean => {
-        // '@@router/LOCATION_CHANGE'
-        const excluded = ['@log/add', undefined];
-        const pass = excluded.filter(act => action.type === act);
+        const pass = excludedActions.filter(act => action.type === act);
         return pass.length === 0;
     };
 
@@ -60,14 +59,12 @@ if (isDev) {
 }
 
 /* eslint-disable no-underscore-dangle */
-if (
-    typeof window !== 'undefined' &&
-    typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function'
-) {
-    enhancers.push(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__());
-}
+const composeEnhancers =
+    typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+        ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ actionsBlacklist: excludedActions })
+        : compose;
 /* eslint-enable no-underscore-dangle */
 
-const composedEnhancers = compose(applyMiddleware(...middlewares), ...enhancers);
+const enhancer = composeEnhancers(applyMiddleware(...middlewares), ...enhancers);
 
-export const store = createStore(rootReducer, composedEnhancers);
+export const store = createStore(rootReducer, enhancer);
