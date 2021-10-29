@@ -1,0 +1,38 @@
+version: '2'
+services:
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    environment:
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+  connect-explorer-dev:
+    container_name: connect-explorer-dev
+    extends:
+      service: suite-base
+      file: docker-compose.suite-base.yml
+    command: bash -c "yarn workspace @trezor/connect-explorer dev"
+    network_mode: service:trezor-user-env-unix
+
+  test-open:
+    # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
+    build:
+      context: .
+      dockerfile: ./test-runner/Dockerfile
+    container_name: test-runner
+    ipc: host
+    depends_on:
+      - trezor-user-env-unix
+    network_mode: service:trezor-user-env-unix
+    environment:
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+    working_dir: /e2e
+    command: bash -c "sleep 10 && node ./packages/integration-tests/projects/connect-popup/index.js"
+    # if you want to debug run_tests.js (which runs tests in CI) locally
+    # command: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js"
+    volumes:
+      - ../:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw

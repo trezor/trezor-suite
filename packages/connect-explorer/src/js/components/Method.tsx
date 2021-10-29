@@ -57,7 +57,12 @@ const getField = (field: Field<any> | FieldWithBundle<any>, props: Props) => {
 
         case 'checkbox':
             return (
-                <Checkbox key={field.name} field={field} onChange={props.actions.onFieldChange} />
+                <Checkbox
+                    data-test="@checkbox"
+                    key={field.name}
+                    field={field}
+                    onChange={props.actions.onFieldChange}
+                />
             );
         case 'json':
         case 'textarea':
@@ -132,7 +137,9 @@ const Method = () => {
         <MethodContent>
             {fields.map(field => getField(field, { method, docs, actions }))}
             <Row>
-                <Button onClick={onSubmit}>{submitButton}</Button>
+                <Button onClick={onSubmit} data-test="@submit-button">
+                    {submitButton}
+                </Button>
                 {response && response.success && <VerifyButton name={name} onClick={onVerify} />}
             </Row>
             <Response

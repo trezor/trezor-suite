@@ -97,11 +97,11 @@ connect-explorer deploy dev:
   before_script: []
   script:
     - mkdir -p ${DEPLOY_DIRECTORY}/connect-explorer
-    - rsync --delete -va packages/connect-explorer/build/ "${DEPLOY_DIRECTORY}/connect-explorer/"
+    - rsync --delete -va packages/connect-explorer/build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
 
-# npm packages deploy to npm registry
+npm packages deploy to npm registry
 .npm_deploy_rules: &npm_deploy_rules
   stage: deploy to dev
   when: manual

@@ -1,0 +1,26 @@
+version: '2'
+services:
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    environment:
+      - SDL_VIDEODRIVER=dummy
+      - XDG_RUNTIME_DIR=/var/tmp
+    network_mode: bridge  # this makes docker reuse existing networks
+
+  test-run:
+    build:
+      context: .
+      dockerfile: ./test-runner/Dockerfile
+    container_name: test-runner
+    ipc: host
+    depends_on:
+      - trezor-user-env-unix
+    network_mode: service:trezor-user-env-unix
+    environment:
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+      - URL=$URL
+    working_dir: /e2e
+    command: bash -c "node ./packages/integration-tests/projects/connect-popup/index.js"
+    volumes:
+      - ../:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw

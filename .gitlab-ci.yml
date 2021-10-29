@@ -22,12 +22,12 @@ stages:
 
 include:
   - ci/environment.yml
-  - ci/validation.yml
-  - ci/prebuild.yml
-  - ci/components.yml
+  # - ci/validation.yml
+  # - ci/prebuild.yml
+  # - ci/components.yml
   - ci/build.yml
   - ci/deploy.yml
   - ci/test.yml
-  - ci/releases.yml
+  # - ci/releases.yml
   # to be run only on scheduled pipelines
-  - ci/schedules.yml
+  # - ci/schedules.yml

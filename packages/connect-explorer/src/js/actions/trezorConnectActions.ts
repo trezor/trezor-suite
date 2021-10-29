@@ -21,6 +21,8 @@ export function onSelectDevice(path: string) {
 export const init =
     (options: Partial<Parameters<typeof TrezorConnect['init']>[0]> = {}) =>
     (dispatch: Dispatch) => {
+        window.TrezorConnect = TrezorConnect;
+
         TrezorConnect.on(DEVICE_EVENT, event => {
             dispatch({
                 type: event.type,
