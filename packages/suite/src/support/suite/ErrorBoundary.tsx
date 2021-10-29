@@ -66,11 +66,8 @@ const refresh = () => {
     }
 };
 
-// Cant use hook https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
-
 interface StateProps {
     error: Error | null | undefined;
-    // eventId: string | undefined;
 }
 
 const mapStateToProps = (state: AppState) => ({
@@ -86,13 +83,15 @@ type Props = ReturnType<typeof mapStateToProps> &
     };
 
 /**
- * Swallow render errors an display feedback form
+ * Swallow render errors
  * Read more: https://reactjs.org/docs/error-boundaries.html
+ *
  * This component cannot be written as a `React.FunctionalComponent`
  * because of the absence of hook equivalent for `componentDidCatch`
  * see: https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
+ *
+ *  It's not translatable, because ErrorBoundary is not nested in IntlProvider.
  */
-
 class ErrorBoundary extends React.Component<Props, StateProps> {
     constructor(props: Props) {
         super(props);
@@ -100,12 +99,8 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 
     componentDidCatch(error: Error | null, _errorInfo: React.ErrorInfo) {
-        this.props.reportToSentry(error, this.props.analytics.enabled);
+        this.props.reportToSentry(error);
         this.setState({ error });
-        // todo: not in development and in production only if user opts in.
-        // Sentry.withScope(scope => {
-        //     scope.setExtras(errorInfo);
-        // });
     }
 
     render() {
@@ -151,26 +146,3 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ErrorBoundary);
-
-// In case we would like to translate these. Not possible now, ErrorBoundary is not nested in
-// IntlProvider. Not sure if we need so much to have this translated here.
-
-// import { Translation } from '@suite-components/Translation';
-//
-
-// TR_ERROR_OCCURRED: {
-//     id: 'TR_ERROR_OCCURRED',
-//     defaultMessage: 'Error occurred',
-// },
-// TR_IT_APPEARS_SOMETHING_IS_BROKEN: {
-//     id: 'TR_IT_APPEARS_SOMETHING_IS_BROKEN',
-//     defaultMessage: 'It appears something is broken. You might let us know by sending report',
-// },
-// TR_SEND_REPORT: {
-//     id: 'TR_SEND_REPORT',
-//     defaultMessage: 'Send report',
-// },
-// TR_RELOAD_WINDOW: {
-//     id: 'TR_RELOAD_WINDOW',
-//     defaultMessage: 'Reload window',
-// },

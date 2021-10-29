@@ -80,7 +80,12 @@ describe('Analytics Actions', () => {
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState({
-            analytics: { enabled: true, instanceId: '1', sessionId: 'very-random' },
+            analytics: {
+                enabled: true,
+                confirmed: true,
+                instanceId: '1',
+                sessionId: 'very-random',
+            },
         });
         const store = initStore(state);
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
@@ -99,7 +104,12 @@ describe('Analytics Actions', () => {
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'web';
         const state = getInitialState({
-            analytics: { enabled: true, instanceId: '1', sessionId: 'very-random' },
+            analytics: {
+                enabled: true,
+                confirmed: true,
+                instanceId: '1',
+                sessionId: 'very-random',
+            },
         });
         const store = initStore(state);
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
@@ -132,40 +142,80 @@ describe('Analytics Actions', () => {
         process.env.SUITE_TYPE = env;
     });
 
-    it('analyticsActions.init() - optout false', () => {
+    it('analyticsActions.init() - unconfirmed', () => {
         const state = getInitialState({});
         const store = initStore(state);
         store.dispatch(
-            analyticsActions.init(
-                {
-                    enabled: undefined,
-                    sessionId: undefined,
-                    instanceId: undefined,
-                },
-                false,
-            ),
+            analyticsActions.init({
+                enabled: undefined,
+                confirmed: false,
+                sessionId: undefined,
+                instanceId: undefined,
+            }),
         );
+        store.dispatch(
+            analyticsActions.init({
+                enabled: false,
+                confirmed: false,
+                sessionId: undefined,
+                instanceId: undefined,
+            }),
+        );
+        store.dispatch(
+            analyticsActions.init({
+                enabled: true,
+                confirmed: false,
+                sessionId: undefined,
+                instanceId: undefined,
+            }),
+        );
+
+        const uncofirmedInitAction = {
+            type: ANALYTICS.INIT,
+            payload: { enabled: true, sessionId: 'very-random', instanceId: 'very-random' },
+        };
+
         expect(store.getActions()).toMatchObject([
-            {
-                type: ANALYTICS.INIT,
-                payload: { enabled: false, sessionId: 'very-random', instanceId: 'very-random' },
-            },
+            uncofirmedInitAction,
+            uncofirmedInitAction,
+            uncofirmedInitAction,
         ]);
     });
 
-    it('analyticsActions.init(true) - output true', () => {
+    it('analyticsActions.init() - enabled confirmed', () => {
         const state = getInitialState({});
         const store = initStore(state);
         store.dispatch(
-            analyticsActions.init(
-                { enabled: undefined, sessionId: undefined, instanceId: undefined },
-                true,
-            ),
+            analyticsActions.init({
+                enabled: true,
+                sessionId: undefined,
+                instanceId: undefined,
+                confirmed: true,
+            }),
         );
         expect(store.getActions()).toMatchObject([
             {
                 type: ANALYTICS.INIT,
                 payload: { enabled: true, sessionId: 'very-random', instanceId: 'very-random' },
+            },
+        ]);
+    });
+
+    it('analyticsActions.init() - disabled confirmed', () => {
+        const state = getInitialState({});
+        const store = initStore(state);
+        store.dispatch(
+            analyticsActions.init({
+                enabled: false,
+                sessionId: undefined,
+                instanceId: undefined,
+                confirmed: true,
+            }),
+        );
+        expect(store.getActions()).toMatchObject([
+            {
+                type: ANALYTICS.INIT,
+                payload: { enabled: false, sessionId: 'very-random', instanceId: 'very-random' },
             },
         ]);
     });

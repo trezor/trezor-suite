@@ -73,7 +73,7 @@ const suite =
                 // 4. init connect;
                 api.dispatch(trezorConnectActions.init());
                 // 5. init analytics
-                api.dispatch(analyticsActions.init(action.payload.analytics, true));
+                api.dispatch(analyticsActions.init(action.payload.analytics));
                 break;
             }
             case SUITE.CONNECT_INITIALIZED:
