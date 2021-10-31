@@ -6,7 +6,7 @@ import { Instance, Props as TProps } from 'tippy.js';
 import { transparentize } from 'polished';
 import { Link } from '../typography/Link';
 
-import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
+import * as variables from '../../config/variables';
 
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default';
 
@@ -32,20 +32,23 @@ const BoxDefault = styled(animated.div)<{ $maxWidth: string | number }>`
     padding: 8px;
     background: ${props => props.theme.BG_TOOLTIP};
     color: ${props => props.theme.TYPE_WHITE};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     border-radius: 10px;
-    font-size: ${FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.TINY};
     text-align: left;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     max-width: ${props => props.$maxWidth}px;
-    &:hover ${OpenGuideInner} {
-        border-radius: 26px;
-        background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
-        & > a span:first-child {
-            max-width: 100px;
-        }
-        & > a span:last-child {
-            background-color: transparent;
+
+    @media all and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        &:hover ${OpenGuideInner} {
+            border-radius: 26px;
+            background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
+            & > a span:first-child {
+                max-width: 100px;
+            }
+            & > a span:last-child {
+                background-color: transparent;
+            }
         }
     }
 `;
@@ -55,7 +58,7 @@ const BoxRich = styled(animated.div)<{ $maxWidth: string | number }>`
     background: ${props => props.theme.BG_WHITE_ALT};
     color: ${props => props.theme.TYPE_DARK_GREY};
     border-radius: 5px;
-    font-size: ${FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     text-align: left;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
     max-width: ${props => props.$maxWidth}px;
@@ -80,13 +83,13 @@ const ReadMoreLink = styled(Link)`
 const StyledTooltipTitle = styled.span`
     display: inline-flex;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${FONT_SIZE.SMALL};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-bottom: 8px;
 `;
 
 const StyledContent = styled.div`
-    font-size: ${FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.TINY};
     font-stretch: normal;
     font-style: normal;
     line-height: 1.5;
