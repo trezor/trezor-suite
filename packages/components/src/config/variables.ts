@@ -16,9 +16,11 @@ export const LAYOUT_SIZE = {
 export const Z_INDEX = {
     MODAL: 10000,
     NAVIGATION_BAR: 30,
-    GUIDE_PANEL: 15,
+    GUIDE_PANEL: 29,
+    GUIDE_PANEL_BESIDE_MODAL: 10001,
     BETA_BADGE: 13,
     GUIDE_BUTTON: 10,
+    DROPDOWN_MENU: 10002, // should lay above GUIDE_PANEL
 } as const;
 
 export const FONT_SIZE = {

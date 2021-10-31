@@ -8,6 +8,7 @@ import * as allModalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL } from '@suite-actions/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
+import { useSelector } from '@suite-hooks';
 
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
@@ -232,6 +233,10 @@ const getUserContextModal = (props: Props) => {
 const Modal = (props: Props) => {
     const { modal } = props;
 
+    const { guideOpen } = useSelector(state => ({
+        guideOpen: state.guide.open,
+    }));
+
     let modalComponent;
 
     switch (modal.context) {
@@ -252,7 +257,11 @@ const Modal = (props: Props) => {
 
     const useBackground = props.background ?? true;
     if (useBackground) {
-        return <FocusLock autoFocus={false}>{modalComponent}</FocusLock>;
+        return (
+            <FocusLock disabled={guideOpen} autoFocus={false}>
+                {modalComponent}
+            </FocusLock>
+        );
     }
 
     return React.cloneElement(modalComponent, {
