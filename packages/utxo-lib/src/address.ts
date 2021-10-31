@@ -110,6 +110,11 @@ export function fromOutputScript(output: Buffer, network = BITCOIN_NETWORK) {
         // empty
     }
     try {
+        return payments.p2tr({ output, network }).address as string;
+    } catch (e) {
+        // empty
+    }
+    try {
         return toFutureSegwitAddress(output, network);
     } catch (e) {
         // empty

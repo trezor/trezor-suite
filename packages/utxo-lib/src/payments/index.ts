@@ -5,6 +5,7 @@ import { p2ms } from './p2ms';
 import { p2pk } from './p2pk';
 import { p2pkh } from './p2pkh';
 import { p2sh } from './p2sh';
+import { p2tr } from './p2tr';
 import { p2wpkh } from './p2wpkh';
 import { p2wsh } from './p2wsh';
 import { sstxchange } from './sstxchange';
@@ -48,6 +49,7 @@ export {
     p2pk,
     p2pkh,
     p2sh,
+    p2tr,
     p2wpkh,
     p2wsh,
     sstxchange,
