@@ -9,6 +9,7 @@ import * as utils from './payments.utils';
         'p2pk',
         'p2pkh',
         'p2sh',
+        'p2tr',
         'p2wpkh',
         'p2wsh',
         'sstxchange',
