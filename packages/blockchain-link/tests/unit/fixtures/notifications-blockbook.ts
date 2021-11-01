@@ -356,6 +356,7 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'self',
+                targets: [{ addresses: ['D'], isAccountTarget: true, n: 0 }],
                 details: {
                     vin: [{ addresses: ['B'] }, { addresses: ['C'] }],
                     vout: [{ addresses: ['D'] }],
