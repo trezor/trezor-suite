@@ -22,7 +22,10 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
     const networkType = isTestnet(symbol) ? 'testnet' : 'prod';
     const updatedSymbol = getCoinFromTestnet(symbol);
-    return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
+    // TMP: disable address validation
+    const isValid = addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
+    if (!isValid && (address.startsWith('tb1p') || address.startsWith('bc1p'))) return true;
+    return isValid; // addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
 };
 
 export const isAddressDeprecated = (address: string, symbol: Account['symbol']) => {

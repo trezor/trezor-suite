@@ -21,14 +21,35 @@ export const initialState: State = {
     discreetMode: false,
     enabledNetworks: ['btc'],
     lastUsedFeeLevel: {},
-    blockbookUrls: [],
+    blockbookUrls: [
+        {
+            coin: 'btc',
+            url: 'https://btc1.trezor.io/',
+        },
+        {
+            coin: 'test',
+            url: 'https://tbtc1.trezor.io/',
+        },
+    ],
 };
 
 const settingsReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
-                return action.payload.wallet.settings;
+                return {
+                    ...action.payload.wallet.settings,
+                    blockbookUrls: [
+                        {
+                            coin: 'btc',
+                            url: 'https://btc1.trezor.io/',
+                        },
+                        {
+                            coin: 'test',
+                            url: 'https://tbtc1.trezor.io/',
+                        },
+                    ],
+                };
 
             case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
                 draft.localCurrency = action.localCurrency;

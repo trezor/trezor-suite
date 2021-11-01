@@ -187,7 +187,19 @@ describe('Storage actions', () => {
         // check if stored local currency is 'czk'
         expect(store.getState().wallet.settings.localCurrency).toEqual('czk');
         // compare stored settings object with one in the reducer
-        expect(store.getState().wallet.settings).toEqual(settings);
+        expect(store.getState().wallet.settings).toEqual({
+            ...settings,
+            blockbookUrls: [
+                {
+                    coin: 'btc',
+                    url: 'https://btc1.trezor.io/',
+                },
+                {
+                    coin: 'test',
+                    url: 'https://tbtc1.trezor.io/',
+                },
+            ],
+        });
     });
 
     it('should store suite settings in the db and update them automatically', async () => {
