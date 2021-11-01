@@ -462,7 +462,12 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                         ...stateFormDrafts,
                     },
                 },
-                analytics: { ...initialState.analytics, ...analytics },
+                analytics: {
+                    ...initialState.analytics,
+                    ...analytics,
+                    // Use stored value if it is already defined, otherwise check if enabled status has been stored previously to keep reporting for existing users.
+                    confirmed: analytics?.confirmed ?? typeof analytics?.enabled !== 'undefined',
+                },
                 metadata: {
                     ...initialState.metadata,
                     ...metadata,
