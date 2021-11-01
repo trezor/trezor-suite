@@ -284,7 +284,7 @@ const Select = ({
         // Loop over all options
         for (let i = 0; i < options.length; i++) {
             // Find where in the option the query is located (returns -1 if not found)
-            const indexOfFirstOccurrence = options[i].label
+            const indexOfFirstOccurrence = (options[i].label || '')
                 .toLowerCase()
                 .indexOf(query.toLowerCase());
 
