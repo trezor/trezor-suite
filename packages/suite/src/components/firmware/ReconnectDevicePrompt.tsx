@@ -192,14 +192,15 @@ const ReconnectStep: React.FC<{
 const RebootDeviceGraphics = ({
     device,
     method,
+    requestedMode,
 }: {
     device?: TrezorDevice;
     method: RebootMethod;
+    requestedMode: RebootRequestedMode;
 }) => {
     if (method === 'automatic') return device ? <StyledConfirmImage device={device} /> : null;
-    return (
-        <StyledDeviceAnimation type="BOOTLOADER" size={200} shape="ROUNDED" device={device} loop />
-    );
+    const type = requestedMode === 'bootloader' ? 'BOOTLOADER' : 'NORMAL';
+    return <StyledDeviceAnimation type={type} size={200} shape="ROUNDED" device={device} loop />;
 };
 
 interface Props {
@@ -228,7 +229,11 @@ const ReconnectDevicePrompt = ({ expectedDevice, requestedMode, onSuccess }: Pro
                 </ConfirmOnDeviceHeader>
             )}
             <Wrapper data-test={`@firmware/reconnect-device/${requestedMode}`}>
-                <RebootDeviceGraphics device={expectedDevice} method={rebootMethod} />
+                <RebootDeviceGraphics
+                    device={expectedDevice}
+                    method={rebootMethod}
+                    requestedMode={requestedMode}
+                />
                 <Content>
                     <Heading>
                         <HeadingText

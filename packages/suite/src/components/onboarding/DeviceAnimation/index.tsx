@@ -57,6 +57,7 @@ export type DeviceAnimationType =
     | 'CONNECT'
     | 'BOOTLOADER'
     | 'BOOTLOADER_TWO_BUTTONS'
+    | 'NORMAL' // prompt to connect in normal mode (without holding buttons)
     | 'SUCCESS'
     | 'HOLOGRAM';
 
@@ -110,6 +111,16 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
                 </StyledVideo>
             )}
             {animationType === 'BOOTLOADER_TWO_BUTTONS' && (
+                <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
+                    <source
+                        src={resolveStaticPath(
+                            `videos/onboarding/t1_${animationFileName}_${THEME}.mp4`,
+                        )}
+                        type="video/mp4"
+                    />
+                </StyledVideo>
+            )}
+            {animationType === 'NORMAL' && (
                 <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                     <source
                         src={resolveStaticPath(
