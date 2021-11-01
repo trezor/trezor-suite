@@ -37,10 +37,13 @@ interface Props {
     hasBalance: boolean;
     children?: React.ReactNode;
     onUpdate?: () => void;
-    // onAnimationStart?: () => void;
-    // animate?: boolean;
-    // onAnimationComplete?: () => void;
 }
+
+const getGroupLabel = (type: Props['type']) => {
+    if (type === 'taproot') return 'TR_TAPROOT_ACCOUNTS';
+    if (type === 'legacy') return 'TR_LEGACY_ACCOUNTS';
+    return 'TR_SEGWIT_ACCOUNTS';
+};
 
 export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
     const theme = useTheme();
@@ -49,9 +52,6 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
     const [expanded, setExpanded] = useState(props.hasBalance || props.keepOpened || !hasHeader);
     const isOpened = expanded || props.keepOpened || !hasHeader;
     const [animatedIcon, setAnimatedIcon] = useState(false); // TODO: move animation to framer
-    // React.useEffect(() => {
-    //     console.log('====>FIRST TIME, MOVE ME UP');
-    // }, [animatedIcon]);
 
     React.useEffect(() => {
         // follow props change (example: add new coin/account which has balance but group is closed)
@@ -65,26 +65,6 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
         setAnimatedIcon(true);
     };
 
-    // const onAnimationStart = () => {
-    //     console.warn('::onAnimationStart', props.type, isOpened);
-    //     props.onAnimationStart(props.type, isOpened);
-    // };
-
-    // const onAnimationComplete = () => {
-    //     console.warn('::onAnimationComplete', props.type, isOpened);
-    //     props.onAnimationComplete(props.type, isOpened);
-    //     if (wrapperRef.current && !expanded) {
-    //         wrapperRef.current.scrollIntoView({
-    //             behavior: 'smooth',
-    //             block: 'start',
-    //         });
-    //     }
-    // };
-
-    // if (props.type === 'segwit') {
-    //     console.warn('GROUP STATE!', expanded, props.opened);
-    // }
-
     // Group needs to be wrapped into container (div)
     return (
         <Wrapper ref={wrapperRef}>
@@ -94,13 +74,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                         onClick={!props.keepOpened ? onClick : undefined}
                         data-test={`@account-menu/${props.type}`}
                     >
-                        <Translation
-                            id={
-                                props.type === 'legacy'
-                                    ? 'TR_LEGACY_ACCOUNTS'
-                                    : 'TR_SEGWIT_ACCOUNTS'
-                            }
-                        />
+                        <Translation id={getGroupLabel(props.type)} />
                         {!props.keepOpened && (
                             <Icon
                                 canAnimate={animatedIcon}

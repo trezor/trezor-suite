@@ -43,6 +43,7 @@ export const FAILED_BACKUP_URL = 'https://wiki.trezor.io/Recovery_seed_backup_fa
 export const WIKI_XPUB_URL =
     'https://wiki.trezor.io/User_manual:Displaying_account_public_key_(XPUB)';
 export const WIKI_BECH32_URL = 'https://wiki.trezor.io/Bech32';
+export const WIKI_TAPROOT_URL = 'https://wiki.trezor.io/Taproot';
 export const WIKI_P2SH_URL = 'https://wiki.trezor.io/P2SH';
 export const WIKI_P2PKH_URL = 'https://wiki.trezor.io/P2PKH';
 export const WIKI_ADVANCED_RECOVERY = 'https://wiki.trezor.io/User_manual:Advanced_recovery';
