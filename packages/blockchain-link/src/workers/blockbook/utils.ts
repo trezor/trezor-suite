@@ -115,7 +115,12 @@ export const transformTransaction = (
     ) {
         // all inputs and outputs are mine
         type = 'self';
+        // filter non-change outputs
         targets = tx.vout.filter(o => internal.indexOf(o) < 0);
+        if (targets.length < 1) {
+            // tx was sent to change address(es)
+            targets = tx.vout;
+        }
         // recalculate amount, amount spent is just a fee
         amount = tx.fees;
         totalSpent = amount;

@@ -696,7 +696,7 @@ export default {
             parsed: {
                 type: 'self',
                 amount: '10', // only fee
-                targets: [],
+                targets: [{ addresses: ['change'] }],
             },
         },
 
