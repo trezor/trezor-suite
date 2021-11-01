@@ -8,7 +8,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -16,7 +15,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -52,7 +50,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -68,14 +66,12 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     amount: '100000',
                     type: 'noaddress',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -108,14 +104,12 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     amount: '100000',
                     type: 'noaddress',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -144,14 +138,12 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     type: 'send-max',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -187,7 +179,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '50000000000',
                     },
                 ],
             },
@@ -203,14 +195,12 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     type: 'send-max',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -246,7 +236,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -262,13 +252,11 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     type: 'weird-output-type',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -297,9 +285,7 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [],
-            segwit: false,
             utxos: [],
         },
         result: {
@@ -316,9 +302,7 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -347,14 +331,12 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
                     type: 'send-max',
                 },
             ],
-            segwit: false,
             utxos: [],
         },
         result: {
@@ -371,7 +353,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -384,7 +365,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -419,7 +399,6 @@ export default [
                         },
                         {
                             path: [44, 1, 1, 0],
-                            segwit: false,
                             value: '49371',
                         },
                     ],
@@ -429,7 +408,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -437,28 +416,27 @@ export default [
         },
     },
     {
-        description: 'builds a simple tx with two outputs and change (segwit)',
+        description: 'builds a simple tx with two outputs and change (p2sh/segwit)',
         request: {
-            basePath: [44, 1],
+            txType: 'p2sh',
+            basePath: [49, 0, 0],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: true,
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
                     type: 'complete',
                 },
                 {
-                    address: '1LetUsDestroyBitcoinTogether398Nrg',
+                    address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
                     amount: '20000',
                     type: 'complete',
                 },
             ],
-            segwit: true,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -474,27 +452,26 @@ export default [
             ],
         },
         result: {
-            bytes: 203,
-            fee: '2030',
+            bytes: 199,
+            fee: '1990',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '52030',
+            totalSpent: '51990',
             transaction: {
                 PERM_outputs: {
                     permutation: [1, 0, 2],
                     sorted: [
                         {
-                            address: '1LetUsDestroyBitcoinTogether398Nrg',
+                            address: '3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn',
                             value: '20000',
                         },
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             value: '30000',
                         },
                         {
-                            path: [44, 1, 1, 0],
-                            segwit: true,
-                            value: '49971',
+                            path: [49, 0, 0, 1, 0],
+                            value: '50011',
                         },
                     ],
                 },
@@ -503,8 +480,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         amount: '102001',
                         index: 0,
-                        path: [44, 1, 3, 4],
-                        segwit: true,
+                        path: [49, 0, 0, 3, 4],
                     },
                 ],
             },
@@ -520,7 +496,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -528,7 +503,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -575,7 +549,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 1,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -591,7 +565,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -602,7 +575,6 @@ export default [
                     type: 'send-max',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -631,7 +603,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -639,7 +610,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -686,13 +656,13 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 1,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                     {
                         REV_hash: 'b4dc0ffeee',
                         index: 2,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -700,18 +670,18 @@ export default [
         },
     },
     {
-        description: 'builds a simple tx with two same value outputs and change (segwit)',
+        description: 'builds a p2sh tx with two same value outputs (mixed p2sh + p2pkh) and change',
         request: {
-            basePath: [44, 1],
+            txType: 'p2sh',
+            basePath: [44, 0, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: true,
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '30000',
                     type: 'complete',
                 },
@@ -721,7 +691,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: true,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -737,27 +706,26 @@ export default [
             ],
         },
         result: {
-            bytes: 203,
-            fee: '2030',
+            bytes: 201,
+            fee: '2010',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '62030',
+            totalSpent: '62010',
             transaction: {
                 PERM_outputs: {
-                    permutation: [0, 1, 2],
+                    permutation: [1, 0, 2],
                     sorted: [
-                        {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '30000',
-                        },
                         {
                             address: '1LetUsDestroyBitcoinTogether398Nrg',
                             value: '30000',
                         },
                         {
-                            path: [44, 1, 1, 0],
-                            segwit: true,
-                            value: '39971',
+                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
+                            value: '30000',
+                        },
+                        {
+                            path: [44, 0, 1, 1, 0],
+                            value: '39991',
                         },
                     ],
                 },
@@ -766,8 +734,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         amount: '102001',
                         index: 0,
-                        path: [44, 1, 3, 4],
-                        segwit: true,
+                        path: [44, 0, 1, 3, 4],
                     },
                 ],
             },
@@ -775,23 +742,22 @@ export default [
         },
     },
     {
-        description: 'explicit dust threshold stops change',
+        description: 'explicit dust threshold stops change (ps2h/segwit)',
         request: {
-            basePath: [44, 1],
+            txType: 'p2sh',
+            basePath: [49, 0, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
             changeId: 0,
             dustThreshold: 54600,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '928960',
                     type: 'complete',
                 },
             ],
-            segwit: true,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -807,9 +773,9 @@ export default [
             ],
         },
         result: {
-            bytes: 137,
+            bytes: 135,
             fee: '43503',
-            feePerByte: '317.54014598540147',
+            feePerByte: '322.24444444444447',
             max: undefined,
             totalSpent: '972463',
             transaction: {
@@ -817,7 +783,7 @@ export default [
                     permutation: [0],
                     sorted: [
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             value: '928960',
                         },
                     ],
@@ -826,8 +792,8 @@ export default [
                     {
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
-                        path: [44, 1, 3, 4],
-                        segwit: true,
+                        path: [49, 0, 1, 3, 4],
+                        amount: '972463',
                     },
                 ],
             },
@@ -843,14 +809,12 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     dataHex: 'deadbeef',
                     type: 'opreturn',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -883,7 +847,6 @@ export default [
                         },
                         {
                             path: [44, 1, 1, 0],
-                            segwit: false,
                             value: '99901',
                         },
                     ],
@@ -893,7 +856,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -909,7 +872,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     dataHex: 'deadbeef',
@@ -920,7 +882,6 @@ export default [
                     type: 'opreturn',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -959,7 +920,6 @@ export default [
                         },
                         {
                             path: [44, 1, 1, 0],
-                            segwit: false,
                             value: '99761',
                         },
                     ],
@@ -969,7 +929,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -977,15 +937,15 @@ export default [
         },
     },
     {
-        description: 'builds a simple tx without change (recv bech32)',
+        description: 'builds a simple tx without change (recv bech32/p2wpkh)',
         request: {
-            basePath: [44, 1],
+            txType: 'p2wpkh',
+            basePath: [84, 0, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
             changeId: 0,
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
@@ -993,7 +953,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -1009,9 +968,9 @@ export default [
             ],
         },
         result: {
-            bytes: 192,
+            bytes: 110,
             fee: '2001',
-            feePerByte: '10.421875',
+            feePerByte: '18.19090909090909',
             max: undefined,
             totalSpent: '102001',
             transaction: {
@@ -1028,8 +987,8 @@ export default [
                     {
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
-                        path: [44, 1, 3, 4],
-                        segwit: false,
+                        path: [84, 0, 1, 3, 4],
+                        amount: '102001',
                     },
                 ],
             },
@@ -1045,7 +1004,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: '3NukJ6fYZJ5Kk8bPjycAnruZkE5Q7UW7i8',
@@ -1053,7 +1011,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -1089,7 +1046,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -1097,7 +1054,7 @@ export default [
         },
     },
     {
-        description: 'builds a simple tx without change (recv bech32 p2sh)',
+        description: 'builds a simple tx without change (recv bech32/p2tr)',
         request: {
             basePath: [44, 1],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
@@ -1105,7 +1062,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: 'bc1qc7slrfxkknqcq2jevvvkdgvrt8080852dfjewde450xdlk4ugp7szw5tk9',
@@ -1113,7 +1069,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -1150,7 +1105,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '103001',
                     },
                 ],
             },
@@ -1166,13 +1121,11 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     type: 'send-max-noaddress',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -1206,7 +1159,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: false,
             outputs: [
                 {
                     address: 'bitcoincash:qp6e6enhpy0fwwu7nkvlr8rgl06ru0c9lywalz8st5',
@@ -1214,7 +1166,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [3, 4],
@@ -1250,7 +1201,7 @@ export default [
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         path: [44, 1, 3, 4],
-                        segwit: false,
+                        amount: '102001',
                     },
                 ],
             },
@@ -1266,7 +1217,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: true,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -1274,7 +1224,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             skipUtxoSelection: true,
             utxos: [
                 {
@@ -1323,7 +1272,6 @@ export default [
                         {
                             value: '402002',
                             path: [44, 1, 0, 1, 1],
-                            segwit: false,
                         },
                     ],
                 },
@@ -1333,21 +1281,18 @@ export default [
                         index: 0,
                         amount: '105291',
                         path: [44, 1, 0, 1, 0],
-                        segwit: false,
                     },
                     {
                         REV_hash: 'c4dc0ffeee',
                         index: 0,
                         amount: '202001',
                         path: [44, 1, 0, 0, 1],
-                        segwit: false,
                     },
                     {
                         REV_hash: 'd4dc0ffeee',
                         index: 0,
                         amount: '200000',
                         path: [44, 1, 0, 0, 2],
-                        segwit: false,
                     },
                 ],
             },
@@ -1355,23 +1300,22 @@ export default [
         },
     },
     {
-        description: 'skipUtxoSelection: tx with multiple inputs and change (segwit)',
+        description: 'skipUtxoSelection: tx with multiple inputs and change (p2sh/segwit)',
         request: {
+            txType: 'p2sh',
             basePath: [49, 1, 0],
             changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
             changeId: 1,
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: true,
             outputs: [
                 {
-                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                     amount: '100000',
                     type: 'complete',
                 },
             ],
-            segwit: true,
             skipUtxoSelection: true,
             utxos: [
                 {
@@ -1404,23 +1348,22 @@ export default [
             ],
         },
         result: {
-            bytes: 353,
-            fee: '3530',
+            bytes: 351,
+            fee: '3510',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '103530',
+            totalSpent: '103510',
             transaction: {
                 PERM_outputs: {
                     permutation: [0, 1],
                     sorted: [
                         {
-                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            address: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
                             value: '100000',
                         },
                         {
-                            value: '402002',
+                            value: '402022',
                             path: [49, 1, 0, 1, 1],
-                            segwit: true,
                         },
                     ],
                 },
@@ -1430,21 +1373,18 @@ export default [
                         index: 0,
                         amount: '103531',
                         path: [49, 1, 0, 1, 0],
-                        segwit: true,
                     },
                     {
                         REV_hash: 'c4dc0ffeee',
                         index: 0,
                         amount: '202001',
                         path: [49, 1, 0, 0, 1],
-                        segwit: true,
                     },
                     {
                         REV_hash: 'd4dc0ffeee',
                         index: 0,
                         amount: '200000',
                         path: [49, 1, 0, 0, 2],
-                        segwit: true,
                     },
                 ],
             },
@@ -1460,7 +1400,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 200,
-            inputAmounts: true,
             outputs: [
                 {
                     address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -1468,7 +1407,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [1, 0],
@@ -1530,7 +1468,6 @@ export default [
                         {
                             value: '16792',
                             path: [44, 1, 0, 1, 1],
-                            segwit: false,
                         },
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
@@ -1544,14 +1481,12 @@ export default [
                         index: 0,
                         amount: '65291',
                         path: [44, 1, 0, 1, 0],
-                        segwit: false,
                     },
                     {
                         REV_hash: 'b4dc0ffeee',
                         index: 0,
                         amount: '55291',
                         path: [44, 1, 0, 1, 1],
-                        segwit: false,
                     },
                 ],
             },
@@ -1567,7 +1502,6 @@ export default [
             dustThreshold: 546,
             feeRate: '10',
             height: 100,
-            inputAmounts: true,
             skipPermutation: true,
             outputs: [
                 {
@@ -1576,7 +1510,6 @@ export default [
                     type: 'complete',
                 },
             ],
-            segwit: false,
             utxos: [
                 {
                     addressPath: [1, 0],
@@ -1621,7 +1554,6 @@ export default [
                         {
                             value: '46792',
                             path: [44, 1, 0, 1, 1],
-                            segwit: false,
                         },
                     ],
                 },
@@ -1631,14 +1563,12 @@ export default [
                         index: 0,
                         amount: '65291',
                         path: [44, 1, 0, 1, 0],
-                        segwit: false,
                     },
                     {
                         REV_hash: 'b4dc0ffeee',
                         index: 1,
                         amount: '55291',
                         path: [44, 1, 0, 1, 1],
-                        segwit: false,
                     },
                 ],
             },

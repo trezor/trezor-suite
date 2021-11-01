@@ -4,12 +4,12 @@ import { sortByScore, anyOf } from './utils';
 import { tryConfirmed } from './tryconfirmed';
 
 export type CoinSelectOptions = {
-    own?: number; // used in tryconfirmed
-    other?: number; // used in tryconfirmed
-    coinbase?: number; // used in tryconfirmed
-    inputLength: number; // used in BNB
-    changeOutputLength: number; // used in BNB
+    inputLength: number;
+    changeOutputLength: number;
     dustThreshold: number;
+    own?: number;
+    other?: number;
+    coinbase?: number;
     baseFee?: number;
     floorBaseFee?: boolean;
     dustOutputFee?: number;

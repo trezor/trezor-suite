@@ -6,12 +6,11 @@ import { coinselect } from './coinselect';
 import type { Result } from './coinselect';
 
 export function composeTx({
+    txType,
     utxos,
     outputs,
     height,
     feeRate,
-    segwit,
-    inputAmounts,
     basePath,
     network,
     changeId,
@@ -44,11 +43,11 @@ export function composeTx({
     let csResult: Result = { type: 'false' };
     try {
         csResult = coinselect(
+            txType || 'p2pkh',
             utxos,
             outputs,
             height,
             parseInt(feeRate, 10),
-            segwit,
             countMax.exists,
             countMax.id,
             dustThreshold,
@@ -78,8 +77,6 @@ export function composeTx({
         csResult.result.inputs,
         splitOutputs.complete,
         csResult.result.outputs,
-        segwit,
-        inputAmounts,
         basePath,
         changeId,
         changeAddress,

@@ -12,7 +12,6 @@ export type ComposedTxOutput =
     | {
           path: number[];
           value: string;
-          segwit: boolean;
       }
     | {
           address: string;
@@ -26,9 +25,8 @@ export type ComposedTxOutput =
 export type ComposedTxInput = {
     hash: Buffer;
     index: number;
-    path: number[]; // necessary for trezor.js
-    segwit: boolean;
-    amount?: string; // only with segwit
+    path: number[];
+    amount: string;
 };
 
 export type ComposedTransaction = {
@@ -36,25 +34,13 @@ export type ComposedTransaction = {
     outputs: Permutation<ComposedTxOutput>; // not in trezor.js, but needed for metadata saving
 };
 
-function convertInput(
-    utxo: ComposeInput,
-    segwit: boolean,
-    inputAmounts: boolean,
-    basePath: number[],
-): ComposedTxInput {
-    const res = {
+function convertInput(utxo: ComposeInput, basePath: number[]): ComposedTxInput {
+    return {
         hash: reverseBuffer(Buffer.from(utxo.transactionHash, 'hex')),
         index: utxo.index,
         path: basePath.concat([...utxo.addressPath]),
-        segwit,
+        amount: utxo.value,
     };
-    if (inputAmounts) {
-        return {
-            ...res,
-            amount: utxo.value,
-        };
-    }
-    return res;
 }
 
 function convertOpReturnOutput(opReturnData: string) {
@@ -77,12 +63,10 @@ function convertOutput(
     basePath: number[],
     changeId: number,
     isChange: boolean,
-    segwit: boolean,
 ) {
     const output: ComposedTxOutput = isChange
         ? {
               path: [...basePath, 1, changeId],
-              segwit,
               value,
           }
         : {
@@ -109,17 +93,13 @@ export function createTransaction(
     selectedInputs: CoinSelectInput[],
     allOutputs: ComposeFinalOutput[],
     selectedOutputs: CoinSelectOutputFinal[],
-    segwit: boolean,
-    inputAmounts: boolean,
     basePath: number[],
     changeId: number,
     changeAddress: string,
     network: Network,
     skipPermutation?: boolean,
 ): ComposedTransaction {
-    const convertedInputs = selectedInputs.map(input =>
-        convertInput(allInputs[input.i], segwit, inputAmounts, basePath),
-    );
+    const convertedInputs = selectedInputs.map(input => convertInput(allInputs[input.i], basePath));
     const convertedOutputs = selectedOutputs.map((output, i) => {
         // change is always last
         const isChange = i === allOutputs.length;
@@ -131,7 +111,7 @@ export function createTransaction(
         }
         const address = !original ? changeAddress : original.address;
         const amount = output.value;
-        return convertOutput(address, amount, network, basePath, changeId, isChange, segwit);
+        return convertOutput(address, amount, network, basePath, changeId, isChange);
     });
 
     if (skipPermutation) {
