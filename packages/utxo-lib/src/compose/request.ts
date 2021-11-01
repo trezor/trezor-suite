@@ -1,4 +1,5 @@
 import type { Network } from '../networks';
+import type { TxType } from './utils';
 
 // UTXO == unspent transaction output = all I can spend
 export type ComposeInput = {
@@ -49,12 +50,11 @@ export type ComposeNotFinalOutput =
 export type ComposeOutput = ComposeFinalOutput | ComposeNotFinalOutput;
 
 export type ComposeRequest = {
+    txType?: TxType;
     utxos: ComposeInput[]; // all inputs
     outputs: ComposeOutput[]; // all output "requests"
     height: number;
     feeRate: string; // in sat/byte, virtual size
-    segwit: boolean;
-    inputAmounts: boolean; // BIP 143 - not same as segwit (BCash)
     basePath: number[]; // for trezor inputs
     network: Network;
     changeId: number;

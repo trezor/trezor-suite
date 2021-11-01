@@ -3,22 +3,33 @@ import type { CoinSelectInput, CoinSelectOutput } from '../coinselect';
 import type { ComposeInput, ComposeOutput } from './request';
 import type { Network } from '../networks';
 
-const SEGWIT_INPUT_SCRIPT_LENGTH = 51; // actually 50.25, but let's make extra room
-const INPUT_SCRIPT_LENGTH = 109;
-const P2PKH_OUTPUT_SCRIPT_LENGTH = 25;
-const P2SH_OUTPUT_SCRIPT_LENGTH = 23;
-const P2WPKH_OUTPUT_SCRIPT_LENGTH = 22;
-const P2WSH_OUTPUT_SCRIPT_LENGTH = 34;
+// https://bitcoinops.org/en/tools/calc-size/
+
+export const INPUT_SCRIPT_LENGTH = {
+    p2pkh: 109,
+    p2sh: 51, // 50.25
+    p2tr: 17, // 57.5 - 41 (coinselect/utils/TX_INPUT_BASE),
+    p2wpkh: 28,
+} as const;
+
+export const OUTPUT_SCRIPT_LENGTH = {
+    p2pkh: 25,
+    p2sh: 23,
+    p2tr: 34,
+    p2wpkh: 22,
+    p2wsh: 34,
+} as const;
+
+export type TxType = keyof typeof INPUT_SCRIPT_LENGTH;
 
 export function convertInputs(
     inputs: ComposeInput[],
-    height: number,
-    segwit: boolean,
+    height = 0,
+    txType: TxType = 'p2pkh',
 ): CoinSelectInput[] {
-    const bytesPerInput = segwit ? SEGWIT_INPUT_SCRIPT_LENGTH : INPUT_SCRIPT_LENGTH;
     return inputs.map((input, i) => ({
         i,
-        script: { length: bytesPerInput },
+        script: { length: INPUT_SCRIPT_LENGTH[txType] },
         value: input.value,
         own: input.own,
         coinbase: input.coinbase,
@@ -27,46 +38,29 @@ export function convertInputs(
     }));
 }
 
-export function isBech32(address: string) {
-    try {
-        BitcoinJsAddress.fromBech32(address);
-        return true;
-    } catch (e) {
-        return false;
-    }
+export function getScriptFromAddress(address: string, network: Network) {
+    return {
+        length: BitcoinJsAddress.toOutputScript(address, network).length,
+    };
 }
 
-export function getScriptAddress(address: string, network: Network) {
-    const bech = isBech32(address);
-    let pubkeyhash;
-    if (!bech) {
-        const decoded = BitcoinJsAddress.fromBase58Check(address, network);
-        pubkeyhash = decoded.version === network.pubKeyHash;
-    } else {
-        const decoded = BitcoinJsAddress.fromBech32(address);
-        pubkeyhash = decoded.data.length === 20;
-    }
-
-    const becLength = pubkeyhash ? P2WPKH_OUTPUT_SCRIPT_LENGTH : P2WSH_OUTPUT_SCRIPT_LENGTH;
-    const norLength = pubkeyhash ? P2PKH_OUTPUT_SCRIPT_LENGTH : P2SH_OUTPUT_SCRIPT_LENGTH;
-    const length = bech ? becLength : norLength;
-    return { length };
-}
-
-export function convertOutputs(outputs: ComposeOutput[], network: Network): CoinSelectOutput[] {
-    // most scripts are P2PKH; default is P2PKH
-    const defaultScript = { length: P2PKH_OUTPUT_SCRIPT_LENGTH };
+export function convertOutputs(
+    outputs: ComposeOutput[],
+    network: Network,
+    txType: TxType = 'p2pkh',
+): CoinSelectOutput[] {
+    const script = { length: OUTPUT_SCRIPT_LENGTH[txType] };
     return outputs.map(output => {
         if (output.type === 'complete') {
             return {
                 value: output.amount,
-                script: getScriptAddress(output.address, network),
+                script: getScriptFromAddress(output.address, network),
             };
         }
         if (output.type === 'noaddress') {
             return {
                 value: output.amount,
-                script: defaultScript,
+                script,
             };
         }
         if (output.type === 'opreturn') {
@@ -77,12 +71,12 @@ export function convertOutputs(outputs: ComposeOutput[], network: Network): Coin
         }
         if (output.type === 'send-max') {
             return {
-                script: getScriptAddress(output.address, network),
+                script: getScriptFromAddress(output.address, network),
             };
         }
         if (output.type === 'send-max-noaddress') {
             return {
-                script: defaultScript,
+                script,
             };
         }
         throw new Error('WRONG-OUTPUT-TYPE');
