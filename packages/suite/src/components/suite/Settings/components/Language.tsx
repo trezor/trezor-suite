@@ -1,30 +1,42 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Translation } from '@suite-components';
 import { isTranslationMode } from '@suite-utils/l10n';
-import { useActions, useAnalytics, useSelector } from '@suite-hooks';
+import { useActions, useAnalytics, useSelector, useTranslation } from '@suite-hooks';
 import LANGUAGES, { Locale, LocaleInfo } from '@suite-config/languages';
 import { setAutodetect as setAutodetectAction } from '@suite-actions/suiteActions';
 import { fetchLocale as fetchLocaleAction } from '@settings-actions/languageActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 
-const SYSTEM_OPTION = {
-    value: 'auto',
-    label: <Translation id="TR_SETTINGS_SAME_AS_SYSTEM" />,
-} as const;
-
 const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
     !!locale[1].complete;
 
-const LANGUAGE_OPTIONS = [
-    {
-        options: [SYSTEM_OPTION],
-    },
-    {
-        options: Object.entries(LANGUAGES)
-            .filter(onlyComplete)
-            .map(([value, { name }]) => ({ value, label: name })),
-    },
-];
+const useLanguageOptions = () => {
+    const { translationString } = useTranslation();
+    const systemOption = useMemo(
+        () => ({
+            value: 'auto',
+            label: translationString('TR_SETTINGS_SAME_AS_SYSTEM'),
+        }),
+        [translationString],
+    );
+    const options = useMemo(
+        () => [
+            {
+                options: [systemOption],
+            },
+            {
+                options: Object.entries(LANGUAGES)
+                    .filter(onlyComplete)
+                    .map(([value, { name }]) => ({ value, label: name })),
+            },
+        ],
+        [systemOption],
+    );
+    return {
+        options,
+        systemOption,
+    };
+};
 
 const Language = () => {
     const analytics = useAnalytics();
@@ -37,15 +49,17 @@ const Language = () => {
         setAutodetect: setAutodetectAction,
     });
 
+    const { options, systemOption } = useLanguageOptions();
+
     const selectedValue =
         autodetectLanguage && !isTranslationMode()
-            ? SYSTEM_OPTION
+            ? systemOption
             : {
                   value: language,
                   label: LANGUAGES[language].name,
               };
 
-    const onChange = ({ value }: typeof LANGUAGE_OPTIONS[number]['options'][number]) => {
+    const onChange = ({ value }: { value: Locale | 'auto' }) => {
         if ((value === 'auto') !== autodetectLanguage) {
             setAutodetect({ language: !autodetectLanguage });
         }
@@ -69,7 +83,7 @@ const Language = () => {
                     useKeyPressScroll
                     noTopLabel
                     value={selectedValue}
-                    options={LANGUAGE_OPTIONS}
+                    options={options}
                     onChange={onChange}
                     isDisabled={isTranslationMode()}
                     data-test="@settings/language-select"
