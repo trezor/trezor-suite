@@ -7,7 +7,7 @@ export const notifications = `
         padding: 4px;
         max-width: 800px;
         box-sizing: border-box;
-        border-radius: 6px;
+        border-radius: 8px;
     }
 
     .Toastify__toast-container--top-left {
@@ -73,7 +73,7 @@ export const notifications = `
         box-sizing: border-box;
         margin-bottom: 1rem;
         padding: 16px;
-        border-radius: 6px;
+        border-radius: 8px;
         box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
         display: flex;
         justify-content: space-between;

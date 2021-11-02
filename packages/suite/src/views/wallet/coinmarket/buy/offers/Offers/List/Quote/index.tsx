@@ -16,7 +16,7 @@ interface Props {
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    border-radius: 6px;
+    border-radius: 8px;
     flex: 1;
     width: 100%;
     min-height: 150px;

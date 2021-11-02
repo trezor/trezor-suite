@@ -29,7 +29,7 @@ const Wrapper = styled.div<{ chainedTxMode?: boolean }>`
                   padding: 12px 16px;
                   cursor: pointer;
                   &:hover {
-                      border-radius: 6px;
+                      border-radius: 8px;
                       background: ${props => props.theme.BG_GREY};
                   }
               `

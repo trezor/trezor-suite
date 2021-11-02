@@ -37,7 +37,7 @@ const Wrapper = styled.div<{ size?: number; shape?: Shape }>`
     ${props =>
         props.shape === 'ROUNDED-SMALL' &&
         css`
-            border-radius: 6px;
+            border-radius: 8px;
         `};
 `;
 

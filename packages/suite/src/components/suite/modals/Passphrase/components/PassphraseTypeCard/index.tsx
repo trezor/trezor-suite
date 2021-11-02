@@ -15,7 +15,7 @@ const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
     display: flex;
     flex: 1;
     /* align-items: center; */
-    border-radius: 6px;
+    border-radius: 8px;
     flex-direction: column;
     text-align: left;
     width: 100%;
@@ -43,7 +43,7 @@ const IconWrapper = styled.div<Pick<Props, 'type'>>`
     height: 38px;
     background: ${props =>
         props.type === 'standard' ? props.theme.BG_LIGHT_GREEN : props.theme.BG_GREY};
-    border-radius: 6px;
+    border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;

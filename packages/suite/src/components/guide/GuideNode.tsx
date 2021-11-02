@@ -11,7 +11,7 @@ import { getNodeTitle } from '@suite-utils/guide';
 const NodeButton = styled.button`
     display: flex;
     align-items: center;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid ${props => props.theme.STROKE_GREY};
     width: 100%;
     background: none;

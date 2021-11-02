@@ -16,7 +16,7 @@ const StyledButton = styled(Button)`
     padding: 16px;
     justify-content: center;
     border: 1px dashed ${props => props.theme.STROKE_GREY};
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
 
     &:hover,

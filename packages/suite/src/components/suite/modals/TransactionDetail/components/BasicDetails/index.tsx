@@ -15,7 +15,7 @@ import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 const Wrapper = styled.div`
     background-color: ${props => props.theme.BG_GREY};
     padding: 18px;
-    border-radius: 6px;
+    border-radius: 8px;
 `;
 
 const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`

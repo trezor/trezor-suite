@@ -69,7 +69,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
     display: flex;
     flex-direction: column;
     position: relative;
-    border-radius: 6px;
+    border-radius: 16px;
     text-align: center;
     overflow-x: hidden; /* retains border-radius when using background in child component */
     padding: ${(props: ModalWindowProps) =>

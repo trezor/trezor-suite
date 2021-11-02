@@ -61,7 +61,7 @@ const StyledIcon = styled(Icon)`
     height: 40px;
     flex-grow: 0;
     padding: 8px;
-    border-radius: 6px;
+    border-radius: 8px;
     margin: 0 -8px;
     background: ${props => props.theme.BG_WHITE};
     transition: ${props =>
