@@ -455,6 +455,9 @@ export default {
                             totalSpent: '171265',
                             targets: [],
                             tokens: [],
+                            cardanoSpecific: {
+                                subtype: 'withdrawal',
+                            },
                             details: {
                                 vin: [
                                     {

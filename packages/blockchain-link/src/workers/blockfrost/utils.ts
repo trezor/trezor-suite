@@ -46,6 +46,29 @@ const hexToString = (input: string): string => {
     return str;
 };
 
+export const getSubtype = (tx: BlockfrostTransaction) => {
+    const withdrawal = tx.txData.withdrawal_count > 0;
+    if (withdrawal) {
+        return 'withdrawal';
+    }
+
+    const registrations = tx.txData.stake_cert_count;
+    const delegations = tx.txData.delegation_count;
+    if (registrations === 0 && delegations === 0) return null;
+
+    if (delegations > 0) {
+        // transaction could both register staking address and delegate stake at once. In that case we treat it as "delegation"
+        return 'stake_delegation';
+    }
+    if (registrations > 0) {
+        if (new BigNumber(tx.txData.deposit).gt(0)) {
+            return 'stake_registration';
+        }
+        return 'stake_deregistration';
+    }
+    return null;
+};
+
 export const parseAsset = (hex: string): ParseAssetResult => {
     const policyIdSize = 56;
     const policyId = hex.slice(0, policyIdSize);
@@ -222,6 +245,9 @@ export const transformTransaction = (
         totalSpent,
         targets: targets.map(t => transformTarget(t, incoming)),
         tokens,
+        cardanoSpecific: {
+            subtype: getSubtype(blockfrostTxData),
+        },
         details: {
             vin: inputs,
             vout: outputs,
