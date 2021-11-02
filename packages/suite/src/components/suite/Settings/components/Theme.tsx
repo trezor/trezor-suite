@@ -3,7 +3,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import type { SuiteThemeVariant } from '@suite-types';
+import type { SuiteThemeVariant, SuiteThemeVariantOptions } from '@suite-types';
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();
@@ -11,7 +11,7 @@ const useThemeOptions = () => {
         () => [
             {
                 options: [
-                    { value: 'auto', label: translationString('TR_SETTINGS_SAME_AS_SYSTEM') },
+                    { value: 'system', label: translationString('TR_SETTINGS_SAME_AS_SYSTEM') },
                 ],
             },
             {
@@ -23,9 +23,9 @@ const useThemeOptions = () => {
         ],
         [translationString],
     );
-    const getOption = (theme: 'auto' | 'light' | 'dark') => {
+    const getOption = (theme: SuiteThemeVariantOptions) => {
         switch (theme) {
-            case 'auto':
+            case 'system':
                 return options[0].options[0];
             case 'dark':
                 return options[1].options[1];
@@ -54,13 +54,13 @@ const Theme = () => {
 
     const getVariant = (variant: SuiteThemeVariant) => (variant !== 'light' ? 'dark' : 'light');
 
-    const selectedValue = getOption(autodetectTheme ? 'auto' : getVariant(theme.variant));
+    const selectedValue = getOption(autodetectTheme ? 'system' : getVariant(theme.variant));
 
-    const onChange = ({ value }: { value: SuiteThemeVariant | 'auto' }) => {
-        if ((value === 'auto') !== autodetectTheme) {
+    const onChange = ({ value }: { value: SuiteThemeVariantOptions }) => {
+        if ((value === 'system') !== autodetectTheme) {
             setAutodetect({ theme: !autodetectTheme });
         }
-        if (value === 'auto') {
+        if (value === 'system') {
             window.desktopApi?.themeSystem();
         } else {
             setTheme(getVariant(value));

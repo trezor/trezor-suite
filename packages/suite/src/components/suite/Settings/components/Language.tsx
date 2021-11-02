@@ -14,7 +14,7 @@ const useLanguageOptions = () => {
     const { translationString } = useTranslation();
     const systemOption = useMemo(
         () => ({
-            value: 'auto',
+            value: 'system',
             label: translationString('TR_SETTINGS_SAME_AS_SYSTEM'),
         }),
         [translationString],
@@ -59,11 +59,11 @@ const Language = () => {
                   label: LANGUAGES[language].name,
               };
 
-    const onChange = ({ value }: { value: Locale | 'auto' }) => {
-        if ((value === 'auto') !== autodetectLanguage) {
+    const onChange = ({ value }: { value: Locale | 'system' }) => {
+        if ((value === 'system') !== autodetectLanguage) {
             setAutodetect({ language: !autodetectLanguage });
         }
-        if (value !== 'auto') {
+        if (value !== 'system') {
             fetchLocale(value);
             analytics.report({
                 type: 'settings/general/change-language',
