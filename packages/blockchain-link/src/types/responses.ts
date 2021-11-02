@@ -51,6 +51,7 @@ export interface Utxo {
     path: string;
     confirmations: number;
     coinbase?: boolean;
+    cardanoUnit?: string;
 }
 
 export interface GetAccountUtxo {
