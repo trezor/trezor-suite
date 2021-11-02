@@ -8,7 +8,7 @@ describe('Language and theme detection', () => {
 
     it('Light English', () => {
         cy.prefixedVisit('/');
-        cy.contains('Welcome').should('have.css', 'color', 'rgb(64, 64, 64)');
+        cy.contains('Welcome').should('have.css', 'color', 'rgb(31, 31, 31)');
         cy.get('body').should('have.css', 'background-color', 'rgb(244, 244, 244)');
     });
 
