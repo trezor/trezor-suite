@@ -10,16 +10,16 @@ Message system was implemented to allow sending emergency messages to Trezor Sui
 
 There are four ways of displaying message to a user.
 
-- banner
-   - looks like a cookie bar above the page
-- modal
-   - *TODO: missing implementation*
-- context 
-   - messages on specific places in app - high level (e.g. settings page)
-   - *TODO: missing implementation*
-- super-context 
-   - messages on specific places in the app - low level (e.g. category in settings page)
-   - *TODO: missing implementation*
+-   banner
+    -   looks like a cookie bar above the page
+-   modal
+    -   _TODO: missing implementation_
+-   context
+    -   messages on specific places in app - high level (e.g. settings page)
+    -   _TODO: missing implementation_
+-   super-context
+    -   messages on specific places in the app - low level (e.g. category in settings page)
+    -   _TODO: missing implementation_
 
 ## Implementation
 
@@ -32,20 +32,22 @@ Current configuration file is located in `packages/suite-data/src/message-system
 The config is fetched at launch of the application and then every 6 hours. It remembers the previously fetched config to inform the user even if he is offline. For this reason, the latest available config during build time is bundled with the application.
 
 If fetching of a new config fails, the fetching process is repeated every 1 hour.
+
 ### Schema
 
 The configuration structure is specified in JSON file using JSON schema. The file can be found in `packages/suite-data/src/message-system/schema` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/schema). Its name is `config.schema.vX.json`.
 
 We use JSON schema for 2 reasons:
-- generating TypeScript types
-- validating configuration file
+
+-   generating TypeScript types
+-   validating configuration file
 
 ### Types
 
-Types are generated from JSON-schema during the `build:libs` process or can be generated manually by `yarn workspace @trezor/suite-data msg-system-types`. A `messageSystem.ts` file is created in `packages/suite/src/types/suite` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/types/suite). 
+Types are generated from JSON-schema during the `build:libs` process or can be generated manually by `yarn workspace @trezor/suite-data msg-system-types`. A `messageSystem.ts` file is created in `packages/suite/src/types/suite` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/types/suite).
 
-- This file should never be changed manually.
-- This file is committed into the repository. 
+-   This file should never be changed manually.
+-   This file is committed into the repository.
 
 ### Signing
 
@@ -55,16 +57,16 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
 
 #### Validation
 
-- Validation of configuration file is performed in CI job in `validation` phase. It is used to detect possible structure and semantic errors. 
-- It can be run locally by `yarn workspace @trezor/suite-data msg-system-validate-config` script in suite-data.
+-   Validation of configuration file is performed in CI job in `validation` phase. It is used to detect possible structure and semantic errors.
+-   It can be run locally by `yarn workspace @trezor/suite-data msg-system-validate-config` script in suite-data.
 
 #### Signing
 
-- Signing of the configuration file is performed in CI job in `prebuild` phase.
-- The result is saved into `suite-data/files/message-system` to be bundled with application and automatically uploaded to `https://data.trezor.io/config/$environment/config.vX.json`. For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
-- It can be run manually by `yarn workspace @trezor/suite-data msg-system-sign-config` script in suite-data. The resulting JWS is stored in `packages/suite-data/files/message-system/` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/files) in `config.vX.jws` file. 
-- Development public and private keys are baked into project structure. For production environment, these keys are replaced by CI job by production keys. This production CI job is activated on `codesign` branches.
-- Development private key can be found in `suite-data/src/message-system/scripts/sign-config.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/scripts/sign-config.ts), the public key can be found in `suite-build` in `codesign.ts` ([file](https://github.com/trezor/trezor-suite/blob/0042e719d7d9fa2dff2ed743b0866e64f4ae0216/packages/suite-build/utils/codesign.ts).
+-   Signing of the configuration file is performed in CI job in `prebuild` phase.
+-   The result is saved into `suite-data/files/message-system` to be bundled with application and automatically uploaded to `https://data.trezor.io/config/$environment/config.vX.json`. For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
+-   It can be run manually by `yarn workspace @trezor/suite-data msg-system-sign-config` script in suite-data. The resulting JWS is stored in `packages/suite-data/files/message-system/` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/files) in `config.vX.jws` file.
+-   Development public and private keys are baked into project structure. For production environment, these keys are replaced by CI job by production keys. This production CI job is activated on `codesign` branches.
+-   Development private key can be found in `suite-data/src/message-system/scripts/sign-config.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/scripts/sign-config.ts), the public key can be found in `suite-build` in `codesign.ts` ([file](https://github.com/trezor/trezor-suite/blob/0042e719d7d9fa2dff2ed743b0866e64f4ae0216/packages/suite-build/utils/codesign.ts).
 
 ### Versioning of implementation
 
@@ -77,26 +79,26 @@ Structure of config, types and optionality of specific keys can be found in the 
 ```javascript
 {
     // Version of message system implementation. Bump if new version is not backward compatible.
-    "version": 1, 
+    "version": 1,
     // Datetime in ISO8601 when was config created.
     "timestamp": "2021-03-03T03:48:16+00:00",
     // Version of config. New config is accepted only if sequence number is higher.
-    "sequence": 1, 
+    "sequence": 1,
     "actions": [
         {
             /*
             - User's stack has to match one of the condition objects to show this message.
             - The bitwise operation is OR.
             */
-            "conditions": [ 
-                /* 
-                - All keys are optional (duration, os, environment, browser, settings, transport, 
+            "conditions": [
+                /*
+                - All keys are optional (duration, os, environment, browser, settings, transport,
                   devices, architecture (To be implemented))
-                - If a value is specified then all its subkeys have to be specified 
+                - If a value is specified then all its subkeys have to be specified
                 - The bitwise operation is AND.
                 */
                 {
-                    /* 
+                    /*
                     - Datetime in ISO8601 from / to which date this message is valid.
                     - If duration category is used, then both times have to be set.
                     */
@@ -104,7 +106,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                         "from": "2021-03-01T12:10:00.000Z",
                         "to": "2022-01-31T12:10:00.000Z"
                     },
-                    /* 
+                    /*
                     For os, environment, browser and transport.
                     - Values can be array, string or null.
                     - Semver npm library is used for working with versions https://www.npmjs.com/package/semver.
@@ -149,7 +151,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                     - The bitwise operation is OR.
                     */
                     "settings": [
-                        { 
+                        {
                             "tor": true,
                             "btc": true
                         },
@@ -159,10 +161,10 @@ Structure of config, types and optionality of specific keys can be found in the 
                         }
                     ],
                     // Empty device array is targeting users without a connected device.
-                    "devices": [ 
+                    "devices": [
                         {
                             // Possible values: "1" or "T"
-                            "model": "1", 
+                            "model": "1",
                             "firmware": "1.9.4",
                             // Possible values: "*", "bitcoin-only", and "regular"
                             "variant": "bitcoin-only",
@@ -175,13 +177,13 @@ Structure of config, types and optionality of specific keys can be found in the 
                 // Used for remembering dismissed messages.
                 "id": "0f3ec64d-c3e4-4787-8106-162f3ac14c34",
                 /*
-                - Existing banners have defined priorities. 
+                - Existing banners have defined priorities.
                 - The range is 0 to 100.
                 */
                 "priority": 100,
                 // When user closes the message, it will never show again.
                 "dismissible": true,
-                /* 
+                /*
                 Variants:
                 - info (blue)
                 - warning (orange)
@@ -191,7 +193,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                 // Options: banner, modal, context, super-context
                 "category": "banner",
                 /*
-                - Message in language of Suite app is shown to a user. 
+                - Message in language of Suite app is shown to a user.
                 - Currently 'en', 'es' and 'cs' are supported.
                 - 'en-GB' is used for backward compatibility and should match value of 'en'.
                 */
@@ -211,7 +213,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                     // Route name or url address according to action.
                     "link": "firmware-index",
                     /*
-                    - Label of call to action button shown to a user. 
+                    - Label of call to action button shown to a user.
                     */
                     "label": {
                         "en-GB": "Update now",
@@ -243,18 +245,19 @@ Structure of config, types and optionality of specific keys can be found in the 
 
 #### How to update
 
-When updating message system config, sequence number must always be higher than the previous one. Once released config cannot be rolled back to the previous one with lower sequence number. A new one with higher sequence number has to be created. 
+When updating message system config, sequence number must always be higher than the previous one. Once released config cannot be rolled back to the previous one with lower sequence number. A new one with higher sequence number has to be created.
 
 Updated config is automatically uploaded by CI job to the correspondent S3 bucket based on the current branch.
 
 #### Priorities of messages
 
 Based on the priority of the message, the message is displayed to the user. 0 is the lowest priority, 100 is the highest priority.
-Current priorities of existing banners can be found [here](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/components/suite/Banners/index.tsx). 
+Current priorities of existing banners can be found [here](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/components/suite/Banners/index.tsx).
 
 #### Targeting Linux version
 
 Unfortunately, it is not possible to target specific distributions and versions of Linux. It is possible to only target all Linux users using `*` or exclude all Linux users using `!`.
+
 ### Application steps
 
 1. Config is fetched on load of application and is stored in Redux state. To be persisted between sessions, is is mirrored into IndexDB.

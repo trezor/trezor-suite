@@ -1,15 +1,18 @@
 # Coin Protocol Handler
-Trezor Suite, both on web and desktop, can handle opening of coin URLs in `coin:address` and  `coin:address?amount=` formats. Currently only `bitcoin:` scheme is supported, but for example `litecoin:` can be easily added.
+
+Trezor Suite, both on web and desktop, can handle opening of coin URLs in `coin:address` and `coin:address?amount=` formats. Currently only `bitcoin:` scheme is supported, but for example `litecoin:` can be easily added.
 
 ## Behavior
 
 ### Behavior on web
-When opening Suite on web, in Firefox it will prompt the user to associate the opening of `bitcoin:` URLs with Suite. On Chrome, you have to click on small icon in address bar and allow `bitcoin:` URLs. By accepting, all `bitcoin:` URLs in the browser will open Suite. 
+
+When opening Suite on web, in Firefox it will prompt the user to associate the opening of `bitcoin:` URLs with Suite. On Chrome, you have to click on small icon in address bar and allow `bitcoin:` URLs. By accepting, all `bitcoin:` URLs in the browser will open Suite.
 
 ![Chrome Prompt](./chrome-protocol-prompt.png)
 ![Firefox Prompt](./firefox-protocol-prompt.png)
 
 ### Behavior on desktop
+
 By installing the desktop application, the `bitcoin:` protocol handler will be automatically registered in the system. In Firefox, the user will have the choice to use Suite Desktop to open `bitcoin:` URLs or browser if the protocol handler is also registered there. In Chrome, if the desktop application protocol handler is registered but web is not, Chrome will offer the desktop app. If both desktop and web app is registered, Chrome will open the web app without asking.
 
 ### More apps with same handler (macOS)
@@ -17,9 +20,11 @@ By installing the desktop application, the `bitcoin:` protocol handler will be a
 If user has more desktop apps with same handler installed, the behavior is not defined. However, it looks like that the last installed application is launched.
 
 ## Structure
+
 The implementation adheres to the [BIP29](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki) specification (with the exception of the `label` and `message` parameters).
 
 ## Example
+
 [bitcoin:39FpPxnR1gji9LJpNDZsB1bBeZttgTtg4L?amount=0.001](bitcoin:39FpPxnR1gji9LJpNDZsB1bBeZttgTtg4L?amount=0.001)
 [bitcoin:39FpPxnR1gji9LJpNDZsB1bBeZttgTtg4L](bitcoin:39FpPxnR1gji9LJpNDZsB1bBeZttgTtg4L)
 

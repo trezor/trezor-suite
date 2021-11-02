@@ -14,7 +14,6 @@ lib
 .rpt2_cache
 build
 build-electron
-docs
 
 # debug files
 yarn-error.log

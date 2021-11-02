@@ -22,29 +22,36 @@
 -   Decompile: `npx asar extract packages/suite-desktop/build-electron/mac/TrezorSuite.app/Contents/Resources/app.asar ./decompiled`
 
 ### Remove IndexedDB from desktop
+
 To remove a database remove following folder:
 
 #### Windows
+
 `C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\IndexedDB`
 
 #### Linux
+
 `/home/<user>/.config/@trezor/suite-desktop/IndexedDB`
 
 #### macOS
+
 `/Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB`
 
 ### Clearing Electron cache
+
 To clear electron cache delete following folder:
 
 #### Windows
+
 `C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\Cache`
 
 #### Linux
+
 `/home/<user>/.config/@trezor/suite-desktop/Cache`
 
 #### macOS
-`/Users/<user>/Library/ApplicationSupport/@trezor/suite-desktop/Cache`
 
+`/Users/<user>/Library/ApplicationSupport/@trezor/suite-desktop/Cache`
 
 ## Tests
 
@@ -93,4 +100,5 @@ Server needs to be running on https in order to have access to `navigator.usb` f
 7. `./scripts/s3sync.sh stage beta` (from the `packages/suite-web` folder )
 
 ### Upload source maps to Sentry
+
 1. ` sentry-cli releases -o satoshilabs -p trezor-suite files <COMMIT> upload-sourcemaps ./build`
