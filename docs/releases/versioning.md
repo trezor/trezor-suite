@@ -15,14 +15,16 @@ That is, packages published to NPM consumed by third parties. At the moment of w
 The version of the Suite App itself is tracked in the `suiteVersion` field of the suite `package.json`. This version is a way to communicate the steps in evolution of the Suite app between our product, marketing, support teams and the users.
 
 We are using so-called [calendar versioning](https://calver.org/) in the format `YY.MM.PATCH` where
-- `YY` stands for the current year.
-- `MM` stands for the current month.
-- `PATCH` is increased on every release in the given month.
+
+-   `YY` stands for the current year.
+-   `MM` stands for the current month.
+-   `PATCH` is increased on every release in the given month.
 
 For example:
-- `20.10.1` first release in Oct 2020
-- `20.10.3` third release in Oct 2020
-- `19.12.1` first release in Dec 2019
+
+-   `20.10.1` first release in Oct 2020
+-   `20.10.3` third release in Oct 2020
+-   `19.12.1` first release in Dec 2019
 
 ### Beta versions
 
@@ -35,11 +37,12 @@ Only stable releases have patch version >1 and this increases with each stable r
 Beta also has +1 `MM` version when compared to stable indicating this is upcoming release which will be deployed on stable next month.
 
 For example:
-- `20.10.1` first release on Oct 15th to stable
-- `20.10.2` second release on Oct 22nd to stable
-- `20.11.0` release on Oct 29th 2020 to beta
-- `20.11.0` another release on Nov 5th to beta
-- `20.11.1` public release on Nov 14th to stable
+
+-   `20.10.1` first release on Oct 15th to stable
+-   `20.10.2` second release on Oct 22nd to stable
+-   `20.11.0` release on Oct 29th 2020 to beta
+-   `20.11.0` another release on Nov 5th to beta
+-   `20.11.1` public release on Nov 14th to stable
 
 ### Development versions
 

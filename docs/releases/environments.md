@@ -10,7 +10,7 @@ Before releasing publicly we deploy to so-called staging environment which shoul
 
 Stable version is hosted on suite.trezor.io.
 
-| route            | source                    | assetPrefix                           |
-| ---------------- | ------------------------- | ------------------------------------- |
-| /                | @trezor/suite-web-landing | -                                     |
-| /web             | @trezor/suite-web         | /web                                  |
+| route | source                    | assetPrefix |
+| ----- | ------------------------- | ----------- |
+| /     | @trezor/suite-web-landing | -           |
+| /web  | @trezor/suite-web         | /web        |

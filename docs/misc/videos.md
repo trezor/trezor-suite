@@ -32,12 +32,7 @@ Encoded video files can be then saved to `suite-data` and linked using `resolveS
 
 ```js
 <video loop autoPlay muted>
-    <source
-        src={resolveStaticPath(
-            `videos/onboarding/encoded_file.webm`,
-        )}
-        type="video/webm"
-    />
+    <source src={resolveStaticPath(`videos/onboarding/encoded_file.webm`)} type="video/webm" />
 </video>
 ```
 
