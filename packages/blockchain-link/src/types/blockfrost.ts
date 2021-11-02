@@ -20,14 +20,11 @@ type TxContentUtxo = {
     outputs: {
         /** Output address */
         address: string;
-        amount: {
-            /** The unit of the value */
-            unit: string;
-            /** The quantity of the unit */
-            quantity: string;
-            /** The hash of the transaction output datum */
-            data_hash?: string | null;
-        }[];
+        amount: AssetBalance[];
+        /** UTXO index in the transaction */
+        output_index: number;
+        /** The hash of the transaction output datum */
+        data_hash?: string | null;
     }[];
 };
 
