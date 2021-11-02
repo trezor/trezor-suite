@@ -155,7 +155,7 @@ const pushTransaction = async (
         common.response({
             id: data.id,
             type: RESPONSES.PUSH_TRANSACTION,
-            payload: resp.result,
+            payload: resp,
         });
     } catch (error) {
         common.errorHandler({ id: data.id, error });

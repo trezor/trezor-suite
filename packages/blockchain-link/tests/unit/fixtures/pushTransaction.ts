@@ -27,9 +27,7 @@ export default {
                 {
                     method: 'PUSH_TRANSACTION',
                     response: {
-                        data: {
-                            result: 'blockfrost_push_tx_result',
-                        },
+                        data: 'blockfrost_push_tx_result',
                     },
                 },
             ],
