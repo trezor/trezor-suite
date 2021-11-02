@@ -24,7 +24,7 @@ export const initialState: State = {
     blockbookUrls: [
         {
             coin: 'btc',
-            url: 'https://btc1.trezor.io/',
+            url: 'https://btc3.trezor.io/',
         },
         {
             coin: 'test',
@@ -42,7 +42,7 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                     blockbookUrls: [
                         {
                             coin: 'btc',
-                            url: 'https://btc1.trezor.io/',
+                            url: 'https://btc3.trezor.io/',
                         },
                         {
                             coin: 'test',

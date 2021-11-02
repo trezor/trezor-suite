@@ -192,7 +192,7 @@ describe('Storage actions', () => {
             blockbookUrls: [
                 {
                     coin: 'btc',
-                    url: 'https://btc1.trezor.io/',
+                    url: 'https://btc3.trezor.io/',
                 },
                 {
                     coin: 'test',
