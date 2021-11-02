@@ -64,7 +64,7 @@ const Wrapper = styled.button<WrapperProps>`
     border: none;
     white-space: nowrap;
     cursor: ${props => (props.isDisabled ? 'default' : 'pointer')};
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: ${props => getFontSize(props.variant)};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     outline: none;

@@ -50,7 +50,7 @@ const getIcon = (variant: Props['variant'], theme: SuiteThemeColors) => {
 
 const Wrapper = styled.div`
     display: flex;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 14px 18px 14px 18px;
     align-items: center;
     background: ${props => props.theme.STROKE_GREY};

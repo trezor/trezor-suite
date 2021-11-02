@@ -145,7 +145,7 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     border: 2px dashed ${props => props.theme.STROKE_GREY};
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     min-height: 300px;
     transition: background-color 0.3s;

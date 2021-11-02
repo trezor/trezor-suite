@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 
 const Content = styled.div<{ paddingSize: string }>`
     display: flex;
-    border-radius: 6px;
+    border-radius: 12px;
     padding: ${props => props.paddingSize};
     color: ${props => props.theme.TYPE_DARK_GREY};
     background: ${props => props.theme.BG_WHITE};

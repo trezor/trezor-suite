@@ -58,7 +58,7 @@ const CoinGridWrapper = styled.div`
     height: 118px;
     margin: 0px 9px 18px 0px;
     padding: 19px 16px 18px 12px;
-    border-radius: 6px;
+    border-radius: 8px;
     background-color: ${props => props.theme.BG_WHITE};
 `;
 

@@ -11,7 +11,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 const Wrapper = styled.div<{ state: Props['state'] }>`
     display: flex;
     flex: 1;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 16px 14px;
     border: solid 1px ${props => props.theme.STROKE_GREY};
 

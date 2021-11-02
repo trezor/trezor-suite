@@ -29,7 +29,7 @@ const Address = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    border-radius: 6px;
+    border-radius: 8px;
     word-break: break-all;
     font-variant-numeric: tabular-nums slashed-zero;
     text-align: left;

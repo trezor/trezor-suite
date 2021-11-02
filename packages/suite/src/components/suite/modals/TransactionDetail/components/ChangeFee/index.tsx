@@ -18,7 +18,7 @@ const Box = styled.div`
     flex-direction: column;
     padding: 18px 26px;
     border: 1px solid ${props => props.theme.STROKE_GREY};
-    border-radius: 6px;
+    border-radius: 8px;
 `;
 
 const Inner = styled.div`

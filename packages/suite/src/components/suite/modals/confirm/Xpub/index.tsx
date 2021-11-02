@@ -12,7 +12,7 @@ const Address = styled.div`
     width: 100%;
     background: ${props => props.theme.BG_LIGHT_GREY};
     border: 1px solid ${props => props.theme.STROKE_GREY};
-    border-radius: 6px;
+    border-radius: 8px;
     word-break: break-all;
     font-size: 20px;
     padding: 20px;
