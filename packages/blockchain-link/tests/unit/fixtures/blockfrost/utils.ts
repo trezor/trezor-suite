@@ -58,6 +58,22 @@ export default {
                     amount: '1000000',
                     vout: 1,
                     path: 'path',
+                    cardanoSpecific: {
+                        unit: 'lovelace',
+                    },
+                },
+                {
+                    address:
+                        'addr1qywvux9d5u4cqyzrhp587sty33gt5pl5hpxmnzrw5nk5j87fdzm3eywgf7uexyytfzfcrp4hhcck7ch9kd753k33jpyqa3mzep',
+                    txid: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026',
+                    confirmations: 100,
+                    blockHeight: 101,
+                    amount: '100',
+                    vout: 1,
+                    path: 'path',
+                    cardanoSpecific: {
+                        unit: 'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f42657272795361707068697265',
+                    },
                 },
                 {
                     address:
@@ -68,6 +84,22 @@ export default {
                     amount: '1000000',
                     vout: 2,
                     path: 'path2',
+                    cardanoSpecific: {
+                        unit: 'lovelace',
+                    },
+                },
+                {
+                    address:
+                        'addr1qywvux9d5u4cqyzrhp587sty33gt5pl5hpxmnzrw5nk5j87fdzm3eywgf7uexyytfzfcrp4hhcck7ch9kd753k33jpyqa3mzep',
+                    txid: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026',
+                    confirmations: 0,
+                    blockHeight: 0,
+                    amount: '100',
+                    vout: 2,
+                    path: 'path2',
+                    cardanoSpecific: {
+                        unit: 'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f42657272795361707068697265',
+                    },
                 },
             ],
         },

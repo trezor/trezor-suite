@@ -18,22 +18,22 @@ import { filterTargets, sumVinVout, transformTarget } from '../utils';
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];
-
-    utxos.forEach(utxo => {
-        const lovelaceBalance = utxo.utxoData.amount.find(b => b.unit === 'lovelace');
-        if (!lovelaceBalance) return;
-
-        result.push({
-            address: utxo.address,
-            txid: utxo.utxoData.tx_hash,
-            confirmations: utxo.blockInfo.confirmations,
-            blockHeight: utxo.blockInfo.height || 0,
-            amount: lovelaceBalance?.quantity || '0',
-            vout: utxo.utxoData.output_index,
-            path: utxo.path,
-        });
-    });
-
+    utxos.forEach(utxo =>
+        utxo.utxoData.amount.forEach(u => {
+            result.push({
+                address: utxo.address,
+                txid: utxo.utxoData.tx_hash,
+                confirmations: utxo.blockInfo.confirmations,
+                blockHeight: utxo.blockInfo.height || 0,
+                amount: u.quantity,
+                vout: utxo.utxoData.output_index,
+                path: utxo.path,
+                cardanoSpecific: {
+                    unit: u.unit,
+                },
+            });
+        })
+    );
     return result;
 };
 
