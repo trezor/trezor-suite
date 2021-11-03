@@ -3,7 +3,7 @@ import { split as bitcoinJsSplit } from '../coinselect/outputs/split';
 import { coinselect as bitcoinJsCoinselect } from '../coinselect';
 import { transactionBytes, finalize } from '../coinselect/utils';
 import * as utils from './utils';
-import type { ComposeInput, ComposeOutput } from './request';
+import type { ComposeRequest } from './request';
 import type { CoinSelectInput, CoinSelectOutputFinal, CoinSelectOptions } from '../coinselect';
 import type { Network } from '../networks';
 
@@ -27,9 +27,9 @@ export type Result =
       };
 
 export function coinselect(
-    txType: utils.TxType,
-    utxos: ComposeInput[],
-    rOutputs: ComposeOutput[],
+    txType: NonNullable<ComposeRequest['txType']>,
+    utxos: ComposeRequest['utxos'],
+    rOutputs: ComposeRequest['outputs'],
     height: number,
     feeRate: number,
     countMax: boolean,
@@ -44,7 +44,9 @@ export function coinselect(
 ): Result {
     const inputs0 = utils.convertInputs(utxos, height, txType);
     const outputs0 = utils.convertOutputs(rOutputs, network, txType);
+    const txBaseLength = utils.getTxBaseLength(utxos, rOutputs, txType);
     const options: CoinSelectOptions = {
+        txBaseLength,
         inputLength: utils.INPUT_SCRIPT_LENGTH[txType],
         changeOutputLength: utils.OUTPUT_SCRIPT_LENGTH[txType],
         dustThreshold,
@@ -55,7 +57,7 @@ export function coinselect(
     };
 
     const algorithm = countMax ? bitcoinJsSplit : bitcoinJsCoinselect;
-    // finalize using requested custom inputs or use coin select algorith
+    // finalize using requested custom inputs or use coin select algorithm
     const result =
         skipUtxoSelection != null && !countMax
             ? finalize(inputs0, outputs0, feeRate, options)
@@ -76,7 +78,7 @@ export function coinselect(
         .add(new BN(fee))
         .toString();
 
-    const bytes = transactionBytes(inputs, outputs);
+    const bytes = transactionBytes(inputs, outputs, txBaseLength);
     const feePerByte = fee / bytes;
 
     return {

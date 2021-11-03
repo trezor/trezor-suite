@@ -22,6 +22,30 @@ export const OUTPUT_SCRIPT_LENGTH = {
 
 export type TxType = keyof typeof INPUT_SCRIPT_LENGTH;
 
+function getVarIntSize(length: number) {
+    if (length < 253) return 1;
+    if (length < 65536) return 3;
+    return 5;
+}
+
+export function getTxBaseLength(
+    inputs: ComposeInput[],
+    outputs: ComposeOutput[],
+    txType: TxType = 'p2pkh',
+) {
+    const hasWitness = ['p2sh', 'p2wsh', 'p2tr'].includes(txType);
+    // 1 byte segwit transaction overhead (marker + flag)
+    const overhead = hasWitness ? 1 : 0;
+
+    return (
+        4 + // nVersion
+        getVarIntSize(inputs.length) + // number of inputs
+        getVarIntSize(outputs.length) + // number of outputs
+        4 + // nLockTime
+        overhead
+    );
+}
+
 export function convertInputs(
     inputs: ComposeInput[],
     height = 0,

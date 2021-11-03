@@ -30,11 +30,16 @@ describe('coinselect index', () => {
             const outputs = utils.expand(f.outputs as any, false, outputLength);
             const expected = utils.addScriptLengthToExpected(f.expected, inputLength, outputLength);
 
-            const actual = coinselect(inputs, outputs, f.feeRate as any, {
-                inputLength,
-                changeOutputLength: outputLength,
-                dustThreshold,
-            });
+            const actual = coinselect(
+                inputs,
+                outputs,
+                f.feeRate as any,
+                {
+                    inputLength,
+                    changeOutputLength: outputLength,
+                    dustThreshold,
+                } as any, // txBaseLength is not provided intentionally to fallback on default values
+            );
 
             expect(actual).toEqual(expected);
             if (actual.inputs) {

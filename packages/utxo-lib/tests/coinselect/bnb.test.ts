@@ -13,6 +13,7 @@ describe('coinselect: branchAndBound (bnb)', () => {
                 f.outputLength,
             );
             const options = {
+                txBaseLength: 11,
                 inputLength: f.inputLength,
                 changeOutputLength: f.outputLength,
                 dustThreshold: f.dustThreshold,
