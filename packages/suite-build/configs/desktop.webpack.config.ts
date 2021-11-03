@@ -56,12 +56,14 @@ const config: webpack.Configuration = {
                 {
                     command: 'chmod',
                     args: ['-R', '+x', path.join(baseDir, 'build', 'static', 'bin')],
+                    isSync: true,
                 },
                 ...(launchElectron
                     ? [
                           {
                               command: 'yarn',
                               args: ['run', 'dev:prepare'],
+                              isSync: true,
                           },
                           {
                               command: 'yarn',
