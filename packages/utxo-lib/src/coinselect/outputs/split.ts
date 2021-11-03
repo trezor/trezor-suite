@@ -37,12 +37,7 @@ export function split(
     }
 
     const splitValue = remaining.div(new BN(unspecified));
-    const dustThreshold = utils.dustThreshold(
-        feeRate,
-        options.inputLength,
-        options.changeOutputLength,
-        options.dustThreshold,
-    );
+    const dustThreshold = utils.dustThreshold(feeRate, options);
 
     // ensure every output is either user defined, or over the threshold
     if (unspecified && splitValue.lte(new BN(dustThreshold))) return { fee };

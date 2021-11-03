@@ -38,31 +38,25 @@ export function transactionBytes(inputs: VinVout[], outputs: VinVout[]) {
     );
 }
 
-export function dustThreshold(
-    feeRate: number,
-    inputLength: number,
-    outputLength: number,
-    explicitDustThreshold: number,
-) {
+export function dustThreshold(feeRate: number, options: CoinSelectOptions) {
     const size = transactionBytes(
         [
             {
                 script: {
-                    length: inputLength,
+                    length: options.inputLength,
                 },
             },
         ],
         [
             {
                 script: {
-                    length: outputLength,
+                    length: options.changeOutputLength,
                 },
             },
         ],
     );
     const price = size * feeRate;
-    const threshold = Math.max(explicitDustThreshold, price);
-    return threshold;
+    return Math.max(options.dustThreshold, price);
 }
 
 export function uintOrNaN(v: number) {
@@ -140,9 +134,8 @@ export function finalize(
     feeRate: number,
     options: CoinSelectOptions,
 ) {
-    const { inputLength, changeOutputLength, dustThreshold: explicitDustThreshold } = options;
     const bytesAccum = transactionBytes(inputs, outputs);
-    const blankOutputBytes = outputBytes({ script: { length: changeOutputLength } });
+    const blankOutputBytes = outputBytes({ script: { length: options.changeOutputLength } });
     const fee = getFee(feeRate, bytesAccum, options, outputs);
     const feeAfterExtraOutput = getFee(feeRate, bytesAccum + blankOutputBytes, options, outputs);
     const sumInputs = sumOrNaN(inputs);
@@ -155,7 +148,7 @@ export function finalize(
     }
 
     const remainderAfterExtraOutput = sumInputs.sub(sumOutputs.add(new BN(feeAfterExtraOutput)));
-    const dust = dustThreshold(feeRate, inputLength, changeOutputLength, explicitDustThreshold);
+    const dust = dustThreshold(feeRate, options);
 
     const finalOutputs: CoinSelectOutputFinal[] = outputs.map(o =>
         Object.assign({}, o, {
@@ -168,7 +161,7 @@ export function finalize(
         finalOutputs.push({
             value: remainderAfterExtraOutput.toString(),
             script: {
-                length: changeOutputLength,
+                length: options.changeOutputLength,
             },
         });
     }
