@@ -8,10 +8,12 @@ import type {
 } from './index';
 
 // baseline estimates, used to improve performance
-const TX_EMPTY_SIZE = 4 + 1 + 1 + 4 + 1;
-// 8 bytes start, 2 times 1 byte count in/out, 1 extra byte for segwit start
-const TX_INPUT_BASE = 32 + 4 + 1 + 4;
-const TX_OUTPUT_BASE = 8 + 1;
+// 4 nVersion + 1 inputs count, 1 outputs count, 4 nLocktime, 1 witness
+const TX_BASE_LENGTH = 11; // 4 + 1 + 1 + 4 + 1;
+// 32 prevhash, 4 idx, 4 sequence, 1 script size
+const TX_INPUT_BASE = 41; // 32 + 4 + 4 + 1
+// 8 amount, 1 script size
+const TX_OUTPUT_BASE = 9; // 8 + 1;
 export const ZERO = new BN(0);
 
 type VinVout = { script?: { length: number } };
@@ -30,9 +32,13 @@ export function outputBytes(output: VinVout) {
     return TX_OUTPUT_BASE + output.script.length;
 }
 
-export function transactionBytes(inputs: VinVout[], outputs: VinVout[]) {
+export function transactionBytes(
+    inputs: VinVout[],
+    outputs: VinVout[],
+    baseLength = TX_BASE_LENGTH,
+) {
     return (
-        TX_EMPTY_SIZE +
+        baseLength +
         inputs.reduce((a, x) => a + inputBytes(x), 0) +
         outputs.reduce((a, x) => a + outputBytes(x), 0)
     );
@@ -54,6 +60,7 @@ export function dustThreshold(feeRate: number, options: CoinSelectOptions) {
                 },
             },
         ],
+        options.txBaseLength,
     );
     const price = size * feeRate;
     return Math.max(options.dustThreshold, price);
@@ -134,7 +141,7 @@ export function finalize(
     feeRate: number,
     options: CoinSelectOptions,
 ) {
-    const bytesAccum = transactionBytes(inputs, outputs);
+    const bytesAccum = transactionBytes(inputs, outputs, options.txBaseLength);
     const blankOutputBytes = outputBytes({ script: { length: options.changeOutputLength } });
     const fee = getFee(feeRate, bytesAccum, options, outputs);
     const feeAfterExtraOutput = getFee(feeRate, bytesAccum + blankOutputBytes, options, outputs);

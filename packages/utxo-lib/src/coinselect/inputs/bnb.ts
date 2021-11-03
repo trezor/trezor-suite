@@ -131,7 +131,7 @@ export function bnb(factor: number): CoinSelectAlgorithm {
             }) * feeRate;
 
         const costOfChange = Math.floor((costPerInput + costPerChangeOutput) * factor);
-        const txBytes = utils.transactionBytes([], outputs);
+        const txBytes = utils.transactionBytes([], outputs, options.txBaseLength);
         const bytesAndFee = feeRate * txBytes;
 
         const outSum = utils.sumOrNaN(outputs);

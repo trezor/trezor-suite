@@ -4,6 +4,7 @@ import { sortByScore, anyOf } from './utils';
 import { tryConfirmed } from './tryconfirmed';
 
 export type CoinSelectOptions = {
+    txBaseLength: number;
     inputLength: number;
     changeOutputLength: number;
     dustThreshold: number;
