@@ -12,6 +12,7 @@ describe('Onboarding - packaging security', () => {
         cy.connectDevice({ mode: 'initialize', firmware: 'none' });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button');
+        cy.wait(1000); // wait for animation to finish before taking a screenshot
         cy.matchImageSnapshot('security-check');
     });
 });
