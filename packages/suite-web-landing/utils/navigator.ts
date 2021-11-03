@@ -6,7 +6,7 @@ export const getPlatform = (navigator: Navigator): Platform => {
     if (macPlatforms.includes(navigator.platform)) {
         // https://stackoverflow.com/questions/65146751/detecting-apple-silicon-mac-in-javascript
         const w = document.createElement('canvas').getContext('webgl');
-        if (w) {
+        if (w && window.chrome) {
             const d = w.getExtension('WEBGL_debug_renderer_info');
             const g = (d && w.getParameter(d.UNMASKED_RENDERER_WEBGL)) || '';
             if (g.match(/Apple/) && !g.match(/Apple GPU/)) {
