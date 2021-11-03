@@ -144,7 +144,7 @@ const getInstallerSignatureURI = (props: GetURIProps) => {
 
 const Index = ({ pathToApp }: { pathToApp: string }) => {
     const version: string = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
-    const [platform, setPlatform] = useState<Platform>('linux-x86_64');
+    const [platform, setPlatform] = useState<Platform | null>(null);
     const dropdownItems = dropdownItemsData.map(item => ({
         key: 'items',
         options: [
@@ -170,47 +170,62 @@ const Index = ({ pathToApp }: { pathToApp: string }) => {
     return (
         <div>
             <ButtonWrapper>
-                <StyledDropdown alignMenu="left" offset={0} items={dropdownItems}>
-                    <StyledDropdownButton icon={getIconForCurrentPlatform(platform)}>
-                        <Icon icon="ARROW_DOWN" color={colors.BG_WHITE} size={15} />
-                    </StyledDropdownButton>
-                </StyledDropdown>
-                <StyledDownloadButton>
-                    <Link
-                        variant="nostyle"
-                        href={getInstallerURI({ platform, version, pathToApp })}
-                    >
-                        <Translation id="TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP" />
-                    </Link>
-                </StyledDownloadButton>
+                {platform && (
+                    <>
+                        <StyledDropdown alignMenu="left" offset={0} items={dropdownItems}>
+                            <StyledDropdownButton icon={getIconForCurrentPlatform(platform)}>
+                                <Icon icon="ARROW_DOWN" color={colors.BG_WHITE} size={15} />
+                            </StyledDropdownButton>
+                        </StyledDropdown>
+                        <StyledDownloadButton>
+                            <Link
+                                variant="nostyle"
+                                href={getInstallerURI({ platform, version, pathToApp })}
+                            >
+                                <Translation id="TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP" />
+                            </Link>
+                        </StyledDownloadButton>
+                    </>
+                )}
             </ButtonWrapper>
             <VersionInfo>
-                <Row>
-                    <Item>
-                        <Translation id="TR_SUITE_WEB_LANDING_VERSION" values={{ version }} />
-                    </Item>
-                    <Item>
-                        <StyledLink
-                            variant="nostyle"
-                            href={getInstallerSignatureURI({ platform, version, pathToApp })}
-                        >
-                            <Translation id="TR_SUITE_WEB_LANDING_SIGNATURE" />
-                        </StyledLink>
-                    </Item>
-                    <Item>
-                        <StyledLink variant="nostyle" href={SL_SIGNING_KEY}>
-                            <Translation id="TR_SUITE_WEB_LANDING_SIGNING_KEY" />
-                        </StyledLink>
-                    </Item>
-                </Row>
-                {platform.includes('linux') && (
-                    <Row>
-                        <Item>
-                            <StyledLink variant="nostyle" href={WIKI_HOW_TO_RUN}>
-                                <Translation id="TR_SUITE_WEB_LANDING_HOW_TO_VERIFY" />
-                            </StyledLink>
-                        </Item>
-                    </Row>
+                {platform && (
+                    <>
+                        <Row>
+                            <Item>
+                                <Translation
+                                    id="TR_SUITE_WEB_LANDING_VERSION"
+                                    values={{ version }}
+                                />
+                            </Item>
+                            <Item>
+                                <StyledLink
+                                    variant="nostyle"
+                                    href={getInstallerSignatureURI({
+                                        platform,
+                                        version,
+                                        pathToApp,
+                                    })}
+                                >
+                                    <Translation id="TR_SUITE_WEB_LANDING_SIGNATURE" />
+                                </StyledLink>
+                            </Item>
+                            <Item>
+                                <StyledLink variant="nostyle" href={SL_SIGNING_KEY}>
+                                    <Translation id="TR_SUITE_WEB_LANDING_SIGNING_KEY" />
+                                </StyledLink>
+                            </Item>
+                        </Row>
+                        {platform.includes('linux') && (
+                            <Row>
+                                <Item>
+                                    <StyledLink variant="nostyle" href={WIKI_HOW_TO_RUN}>
+                                        <Translation id="TR_SUITE_WEB_LANDING_HOW_TO_VERIFY" />
+                                    </StyledLink>
+                                </Item>
+                            </Row>
+                        )}
+                    </>
                 )}
             </VersionInfo>
         </div>
