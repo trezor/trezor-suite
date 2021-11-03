@@ -21,6 +21,9 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     'wallet-sign-verify': lazy(
         () => import(/* webpackChunkName: "wallet" */ '@wallet-views/sign-verify'),
     ),
+    'wallet-sign-aopp': lazy(
+        () => import(/* webpackChunkName: "wallet" */ '@wallet-views/sign-aopp'),
+    ),
 
     // coinmarket
     'wallet-coinmarket-buy': lazy(

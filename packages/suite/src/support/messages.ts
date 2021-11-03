@@ -2170,6 +2170,16 @@ export default defineMessages({
         description: 'Used as a label for message input field in Sign and Verify form',
         id: 'TR_MESSAGE',
     },
+    TR_AOPP_URI: {
+        defaultMessage: 'AOPP URI',
+        description: 'Used as a label for AOPP input field in Sign AOPP form',
+        id: 'TR_AOPP_URI',
+    },
+    TR_UNEXPECTED_AOPP_URI: {
+        defaultMessage: 'unexpected URI',
+        description: 'Used as an error message when the URI cannot be parsed',
+        id: 'TR_UNEXPECTED_AOPP_URI',
+    },
     TR_MINED_TIME: {
         defaultMessage: 'Mined Time',
         id: 'TR_MINED_TIME',
@@ -2217,6 +2227,11 @@ export default defineMessages({
         description:
             'Title of the navigation tab that contains a form for signing and verifying messages',
         id: 'TR_NAV_SIGN_AND_VERIFY',
+    },
+    TR_NAV_SIGN_AOPP: {
+        defaultMessage: 'Sign AOPP request',
+        description: 'Title of the navigation tab that contains a form for signing an AOPP request',
+        id: 'TR_NAV_SIGN_AOPP',
     },
     TR_NAV_TRANSACTIONS: {
         defaultMessage: 'Overview',
@@ -2720,6 +2735,11 @@ export default defineMessages({
         defaultMessage: 'Sign',
         description: 'Sign button in Sign and Verify form',
         id: 'TR_SIGN',
+    },
+    TR_SIGN_AND_SUBMIT: {
+        defaultMessage: 'Sign and submit',
+        description: 'Sign and submit button in Aopp form',
+        id: 'TR_SIGN_AND_SUBMIT',
     },
     TR_SIGN_MESSAGE: {
         defaultMessage: 'Sign message',
@@ -4870,6 +4890,10 @@ export default defineMessages({
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',
         defaultMessage: 'Sign/Verify message',
+    },
+    TR_NAV_SIGN_AOPP_REQUEST: {
+        id: 'TR_NAV_SIGN_AOPP_REQUEST',
+        defaultMessage: 'Sign an AOPP request',
     },
     TR_BALANCE: {
         id: 'TR_BALANCE',

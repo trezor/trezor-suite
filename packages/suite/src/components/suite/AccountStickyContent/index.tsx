@@ -88,6 +88,9 @@ const AccountStickyContent = ({ account, routeName }: AccountStickyContentProps)
         if (routeName === 'wallet-sign-verify') {
             return <Translation id="TR_NAV_SIGN_VERIFY" />;
         }
+        if (routeName === 'wallet-sign-aopp') {
+            return <Translation id="TR_NAV_SIGN_AOPP" />;
+        }
     };
 
     return (

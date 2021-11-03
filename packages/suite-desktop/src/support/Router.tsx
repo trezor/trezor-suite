@@ -12,6 +12,7 @@ import WalletDetails from '@wallet-views/details';
 import WalletTokens from '@wallet-views/tokens';
 import WalletSend from '@wallet-views/send';
 import WalletSignVerify from '@wallet-views/sign-verify';
+import WalletSignAopp from '@wallet-views/sign-aopp';
 
 import WalletCoinmarketBuy from '@wallet-views/coinmarket/buy';
 import WalletCoinmarketBuyDetail from '@wallet-views/coinmarket/buy/detail';
@@ -40,6 +41,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'wallet-tokens': WalletTokens,
     'wallet-send': WalletSend,
     'wallet-sign-verify': WalletSignVerify,
+    'wallet-sign-aopp': WalletSignAopp,
 
     'wallet-coinmarket-buy': WalletCoinmarketBuy,
     'wallet-coinmarket-buy-detail': WalletCoinmarketBuyDetail,

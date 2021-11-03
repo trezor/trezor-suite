@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { hasSignVerify } from '@wallet-utils/accountUtils';
+import { hasFeature } from '@wallet-utils/accountUtils';
 
 interface Props {
     account?: Account;
@@ -95,7 +95,18 @@ const AccountNavigation = (props: Props) => {
             icon: 'SIGN',
             position: 'secondary',
             extra: true,
-            isHidden: () => !account || !hasSignVerify(account),
+            isHidden: () => !account || !hasFeature(account, 'sign-verify'),
+        },
+        {
+            id: 'wallet-sign-aopp',
+            callback: () => {
+                goto('wallet-sign-aopp', undefined, true);
+            },
+            title: <Translation id="TR_NAV_SIGN_AOPP" />,
+            icon: 'SIGN',
+            position: 'secondary',
+            extra: true,
+            isHidden: () => !account || !hasFeature(account, 'aopp'),
         },
     ];
 

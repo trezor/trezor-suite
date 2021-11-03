@@ -50,6 +50,7 @@ export default [
             { key: getRoute('wallet-receive'), screen: AccountReceive },
             { key: getRoute('wallet-send'), screen: AccountSend },
             { key: getRoute('wallet-sign-verify'), screen: AccountSignVerify },
+            { key: getRoute('wallet-sign-aopp'), screen: AccountSignVerify },
         ],
         navigators: defaultNavigatorsViews,
     },

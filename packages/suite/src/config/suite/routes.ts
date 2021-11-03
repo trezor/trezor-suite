@@ -129,6 +129,12 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-sign-aopp',
+        pattern: '/accounts/sign-aopp',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-coinmarket-buy',
         pattern: '/accounts/coinmarket/buy',
         app: 'wallet',

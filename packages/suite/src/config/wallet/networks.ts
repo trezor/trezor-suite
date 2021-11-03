@@ -13,7 +13,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'aopp'],
     },
     {
         name: 'Bitcoin (segwit)',
@@ -26,7 +26,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'aopp'],
     },
     {
         name: 'Bitcoin (legacy)',
@@ -39,7 +39,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'aopp'],
     },
     // Litecoin
     {
@@ -92,7 +92,7 @@ const networks = [
             tx: 'https://eth1.trezor.io/tx/',
             account: 'https://eth1.trezor.io/address/',
         },
-        features: ['sign-verify'],
+        features: ['sign-verify', 'aopp'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
         tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
     },
@@ -269,7 +269,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'aopp'],
     },
     {
         name: 'Bitcoin Testnet (segwit)',
@@ -284,7 +284,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'aopp'],
     },
     {
         name: 'Bitcoin Testnet (legacy)',
@@ -299,7 +299,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'aopp'],
     },
     {
         name: 'Ethereum Ropsten',
@@ -314,7 +314,7 @@ const networks = [
             tx: 'https://ropsten1.trezor.io/tx/',
             account: 'https://ropsten1.trezor.io/address/',
         },
-        features: ['sign-verify'],
+        features: ['sign-verify', 'aopp'],
     },
     {
         name: 'XRP Testnet',
