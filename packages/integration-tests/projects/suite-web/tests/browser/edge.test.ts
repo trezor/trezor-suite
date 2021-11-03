@@ -21,6 +21,7 @@ describe('Windows 10 with edge browser ', () => {
                 expect($img[0].naturalWidth).to.be.greaterThan(0);
                 expect($img[1].naturalWidth).to.be.greaterThan(0);
             });
+        cy.wait(500); // wait for text rendering to finish before taking a screenshot
         cy.matchImageSnapshot('browser is not supported at all');
     });
 });
