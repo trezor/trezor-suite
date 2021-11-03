@@ -118,7 +118,7 @@ const Index = ({ children, pathToApp }: Props) => (
                 alignIcon="right"
                 color={colors.TYPE_DARK_GREY}
             >
-                <Link variant="nostyle" href={pathToApp}>
+                <Link variant="nostyle" href={`${pathToApp}/`}>
                     <Translation id="TR_SUITE_WEB_LANDING_SUITE_ON_WEB" />
                 </Link>
             </Button>
