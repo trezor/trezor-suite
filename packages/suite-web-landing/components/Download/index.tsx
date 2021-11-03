@@ -145,10 +145,10 @@ const getInstallerSignatureURI = (props: GetURIProps) => {
 const Index = ({ pathToApp }: { pathToApp: string }) => {
     const version: string = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     const [platform, setPlatform] = useState<Platform | null>(null);
-    const dropdownItems = dropdownItemsData.map(item => ({
-        key: 'items',
-        options: [
-            {
+    const dropdownItems = [
+        {
+            key: 'items',
+            options: dropdownItemsData.map(item => ({
                 key: item.platform,
                 label: (
                     <DropdownItem>
@@ -158,9 +158,9 @@ const Index = ({ pathToApp }: { pathToApp: string }) => {
                 ),
                 noPadding: true,
                 callback: () => setPlatform(item.platform),
-            },
-        ],
-    }));
+            })),
+        },
+    ];
 
     useEffect(() => {
         const defaultPlatform = getPlatform(window.navigator);
