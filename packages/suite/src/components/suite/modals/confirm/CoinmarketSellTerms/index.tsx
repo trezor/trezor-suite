@@ -73,7 +73,7 @@ const CoinmarketSellTerms = ({ decision, onCancel, provider }: Props) => {
             noPadding
             heading={
                 <Header>
-                    <StyledIcon size={16} icon="LOCK" />
+                    <StyledIcon size={16} icon="LOCK_TITLE" />
                     <H3>
                         <Translation id="TR_SELL_FOR_YOUR_SAFETY" />
                     </H3>
