@@ -377,7 +377,7 @@ const Settings = () => {
                                         version: (
                                             <VersionWithGithubTooltip
                                                 appVersion={process.env.VERSION || ''}
-                                                isDev
+                                                isDev={isDev}
                                             />
                                         ),
                                     }}
