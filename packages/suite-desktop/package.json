@@ -15,7 +15,7 @@
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "build:ui": "rimraf ./build && yarn workspace @trezor/suite-build run build:desktop",
         "build:app": "rimraf ./dist && NODE_ENV=production node scripts/build.js && yarn build:app:electron",
-        "build:app:dev": "rimraf ./dist && node scripts/build.js && yarn build:app:electron --publish never",
+        "build:app:dev": "rimraf ./dist && node scripts/build.js",
         "build:app:electron": "electron-builder --c.extraMetadata.version=$(node -p \"require('../suite/package').suiteVersion\")",
         "build:app:linux": "yarn build:app  --publish never --linux --x64 --arm64",
         "build:app:mac": "yarn build:app  --publish never --mac --x64 --arm64",
