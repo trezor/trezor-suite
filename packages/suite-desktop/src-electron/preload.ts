@@ -4,13 +4,6 @@ import type { SuiteThemeVariant } from '@suite-types';
 
 // todo: would be great to have these channels strongly typed. for example this is nice reading: https://blog.logrocket.com/electron-ipc-response-request-architecture-with-typescript/
 const validChannels = [
-    // app
-    'app/restart',
-    'app/focus',
-
-    // bridge
-    'bridge/start',
-
     // oauth
     'oauth/response',
 
@@ -25,22 +18,10 @@ const validChannels = [
     'update/new-version-first-run',
 
     // invity
-    'buy-receiver',
     'spend/message',
-
-    // window
-    'window/is-maximized',
-    'window/is-active',
-
-    // theme
-    'theme/change',
-    'theme/system',
 
     // tor
     'tor/status',
-
-    // udev
-    'udev/install',
 
     // custom protocol
     'protocol/open',
