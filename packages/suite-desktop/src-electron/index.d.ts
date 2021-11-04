@@ -51,11 +51,21 @@ declare interface ILogger {
     level: LogLevel;
 }
 
+declare type BeforeRequestListener = (
+    details: Electron.OnBeforeRequestListenerDetails,
+) => Electron.Response | undefined;
+
+declare interface RequestInterceptor {
+    onBeforeRequest(listener: BeforeRequestListener): void;
+    offBeforeRequest(listener: BeforeRequestListener): void;
+}
+
 // Dependencies
 declare type Dependencies = {
     mainWindow: Electron.BrowserWindow;
     store: LocalStore;
     src: string;
+    interceptor: RequestInterceptor;
 };
 
 // Store

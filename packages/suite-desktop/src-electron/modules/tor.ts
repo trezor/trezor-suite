@@ -5,7 +5,7 @@ import { app, session, ipcMain } from 'electron';
 import TorProcess, { DEFAULT_ADDRESS } from '@desktop-electron/libs/processes/TorProcess';
 import { onionDomain } from '../config';
 
-const init = async ({ mainWindow, store }: Dependencies) => {
+const init = async ({ mainWindow, store, interceptor }: Dependencies) => {
     const { logger } = global;
     const tor = new TorProcess();
 
@@ -73,7 +73,7 @@ const init = async ({ mainWindow, store }: Dependencies) => {
         return store.getTorSettings().address;
     });
 
-    session.defaultSession.webRequest.onBeforeRequest({ urls: ['*://*/*'] }, (details, cb) => {
+    interceptor.onBeforeRequest(details => {
         const { hostname, protocol } = new URL(details.url);
 
         // Redirect outgoing trezor.io requests to .onion domain
@@ -83,16 +83,13 @@ const init = async ({ mainWindow, store }: Dependencies) => {
             protocol === 'https:'
         ) {
             logger.info('tor', `Rewriting ${details.url} to .onion URL`);
-            cb({
+            return {
                 redirectURL: details.url.replace(
                     /https:\/\/(([a-z0-9]+\.)*)trezor\.io(.*)/,
                     `http://$1${onionDomain}$3`,
                 ),
-            });
-            return;
+            };
         }
-
-        cb({ cancel: false });
     });
 
     app.on('before-quit', () => {

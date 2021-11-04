@@ -9,6 +9,7 @@ import { MIN_HEIGHT, MIN_WIDTH } from '@desktop-electron/libs/screen';
 import Logger, { LogLevel, defaultOptions as loggerDefaults } from '@desktop-electron/libs/logger';
 import { buildInfo, computerInfo } from '@desktop-electron/libs/info';
 import modules from '@desktop-electron/libs/modules';
+import { createInterceptor } from '@desktop-electron/libs/request-interceptor';
 
 let mainWindow: BrowserWindow;
 const src = isDev
@@ -81,11 +82,14 @@ const init = async () => {
     logger.debug('init', `Load URL (${src})`);
     mainWindow.loadURL(src);
 
+    const interceptor = createInterceptor();
+
     // Modules
     await modules({
         mainWindow,
         src,
         store,
+        interceptor,
     });
 };
 
