@@ -54,14 +54,6 @@ contextBridge.exposeInMainWorld('desktopApi', {
     installUpdate: () => ipcRenderer.send('update/install'),
     cancelUpdate: () => ipcRenderer.send('update/cancel'),
 
-    // Window controls
-    windowClose: () => ipcRenderer.send('window/close'),
-    windowFocus: () => ipcRenderer.send('window/focus'),
-    windowMinimize: () => ipcRenderer.send('window/minimize'),
-    windowMaximize: () => ipcRenderer.send('window/maximize'),
-    windowUnmaximize: () => ipcRenderer.send('window/unmaximize'),
-    windowExpand: () => ipcRenderer.send('window/expand'),
-
     // Theme
     themeChange: (theme: SuiteThemeVariant) => ipcRenderer.send('theme/change', theme),
     themeSystem: () => ipcRenderer.send('theme/system'),
