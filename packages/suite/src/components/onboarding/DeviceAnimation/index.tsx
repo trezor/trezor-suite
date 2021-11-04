@@ -92,13 +92,17 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
         useState<LottieOptions['animationData']>();
 
     useEffect(() => {
+        let mounted = true;
         const loadConnectAnimation = async () => {
             const connectAnimation = await import(`./lottie/t${deviceModel}_connect.json`);
-            setConnectAnimationData(connectAnimation);
+            if (mounted) setConnectAnimationData(connectAnimation);
         };
         if (animationType === 'CONNECT') {
             loadConnectAnimation();
         }
+        return () => {
+            mounted = false;
+        };
     }, [animationType, deviceModel]);
 
     const animationFileName = animationType.toLowerCase();
