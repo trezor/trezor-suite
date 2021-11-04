@@ -1,6 +1,5 @@
 // Interface for exposed Electron API (ipcRenderer)
 export interface DesktopApi {
-    send: (channel: string, data?: any) => void;
     on: (channel: string, func: (...args: any[]) => any) => void;
     once: (channel: string, func: (...args: any[]) => any) => void;
     removeAllListeners: (channel: string) => void;
