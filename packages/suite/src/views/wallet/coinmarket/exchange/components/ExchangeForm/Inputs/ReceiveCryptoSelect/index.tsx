@@ -50,61 +50,35 @@ const buildOptions = (
 ) => {
     if (!exchangeInfo || !exchangeCoinInfo) return null;
 
-    interface Options {
-        label: React.ReactElement;
+    interface OptionsGroup {
+        label: string;
         options: { label: string; value: string; name: string }[];
     }
 
-    const popular: Options = {
-        label: <Translation id="TR_EXCHANGE_POPULAR_COINS" />,
-        options: [],
-    };
-
-    const stable: Options = {
-        label: <Translation id="TR_EXCHANGE_STABLE_COINS" />,
-        options: [],
-    };
-
-    const all: Options = {
-        label: <Translation id="TR_EXCHANGE_OTHER_COINS" />,
-        options: [],
-    };
-
     const symbolToFilter = symbolToInvityApiSymbol(token || account.symbol);
 
-    const filteredExchangeCoins = exchangeCoinInfo.filter(
-        coin => coin.ticker.toLowerCase() !== symbolToFilter,
-    );
-
-    filteredExchangeCoins.forEach(info => {
-        if (!exchangeInfo.buySymbols.has(info.ticker.toLowerCase())) return false;
-
-        if (info.category === 'Popular currencies') {
-            popular.options.push({
-                label: info.ticker.toUpperCase(),
-                value: info.ticker.toUpperCase(),
-                name: info.name,
+    return exchangeCoinInfo
+        .filter(
+            coin =>
+                coin.ticker &&
+                coin.name &&
+                coin.category &&
+                coin.ticker.toLowerCase() !== symbolToFilter &&
+                exchangeInfo.buySymbols.has(coin.ticker.toLowerCase()),
+        )
+        .reduce((options, coin) => {
+            let category = options.find(option => option.label === coin.category);
+            if (!category) {
+                category = { label: coin.category, options: [] };
+                options.push(category);
+            }
+            category.options.push({
+                label: coin.ticker.toUpperCase(),
+                value: coin.ticker.toUpperCase(),
+                name: coin.name,
             });
-        }
-
-        if (info.category === 'Stablecoins') {
-            stable.options.push({
-                label: `${info.ticker.toUpperCase()}`,
-                value: info.ticker.toUpperCase(),
-                name: info.name,
-            });
-        }
-
-        if (info.category === 'All currencies') {
-            all.options.push({
-                label: `${info.ticker.toUpperCase()}`,
-                value: info.ticker.toUpperCase(),
-                name: info.name,
-            });
-        }
-    });
-
-    return [popular, stable, all];
+            return options;
+        }, [] as OptionsGroup[]);
 };
 
 const ReceiveCryptoSelect = () => {
