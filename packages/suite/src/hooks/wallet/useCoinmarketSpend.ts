@@ -215,7 +215,7 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
                         });
                         composeRequest();
                         setTrade(trade);
-                        window.desktopApi?.windowFocus();
+                        window.desktopApi?.appFocus();
                     }
                 }
             };
@@ -237,9 +237,9 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
     }, [account.symbol, isLoading, noProviders, provider, addNotification, composeRequest]);
 
     const openWindow = async (voucherSiteUrl?: string) => {
-        const endpointIframe = await window.desktopApi?.getHttpReceiverAddress(`/spend-iframe`);
+        const endpointIframe = await window.desktopApi?.getHttpReceiverAddress('/spend-iframe');
         const handleMessageEndpoint = await window.desktopApi?.getHttpReceiverAddress(
-            `/spend-handle-message`,
+            '/spend-handle-message',
         );
         if (voucherSiteUrl && handleMessageEndpoint) {
             const endpointWithParams = `${endpointIframe}?voucherSiteUrl=${encodeURIComponent(

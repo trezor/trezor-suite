@@ -65,6 +65,8 @@ contextBridge.exposeInMainWorld('desktopApi', {
 
     // App
     appRestart: () => ipcRenderer.send('app/restart'),
+    appFocus: () => ipcRenderer.send('app/focus'),
+
     // Auto-updater
     checkForUpdates: (isManual?: boolean) => ipcRenderer.send('update/check', isManual),
     downloadUpdate: () => ipcRenderer.send('update/download'),

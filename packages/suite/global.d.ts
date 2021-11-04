@@ -5,7 +5,7 @@ export interface DesktopApi {
     removeAllListeners: (channel: string) => void;
     // App
     appRestart: () => void;
-    // Auto Updater
+    appFocus: () => void;
     // Auto-updater
     checkForUpdates: (isManual?: boolean) => void;
     downloadUpdate: () => void;
