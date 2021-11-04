@@ -11,8 +11,8 @@ describe('Onboarding - packaging security', () => {
     it('Device without firmware is expected to come fresh out of package', () => {
         cy.connectDevice({ mode: 'initialize', firmware: 'none' });
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@onboarding/exit-app-button');
-        cy.wait(1000); // wait for animation to finish before taking a screenshot
+        cy.getTestElement('@onboarding/exit-app-button').should('be.visible');
+        cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
         cy.matchImageSnapshot('security-check');
     });
 });
