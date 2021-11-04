@@ -34,6 +34,22 @@
                 script.setAttribute('src','//cdn.crowdin.com/jipt/jipt.js');
                 document.head.prepend(script);
             }
+
+            // switch favicon if dark mode
+            var icon = document.querySelector('link[rel=icon]')
+            var appleIcon = document.querySelector('link[rel=apple-touch-icon]')
+            function switchIcons(event) {
+              var isDarkMode = event ? event.matches : window.matchMedia('(prefers-color-scheme: dark)').matches
+              if (isDarkMode) {
+                  icon.setAttribute('href', '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png')
+                  appleIcon.setAttribute('href', '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png')
+              } else {
+                icon.setAttribute('href', '<%= assetPrefix %>/static/images/icons/favicon/favicon.png')
+                appleIcon.setAttribute('href', '<%= assetPrefix %>/static/images/icons/favicon/favicon.png')
+              }
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', switchIcons)
+            switchIcons();
         </script>
         <script src="<%= assetPrefix %>/static/browser-detection/index.js"></script>
     </head>

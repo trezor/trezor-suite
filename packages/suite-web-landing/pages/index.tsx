@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
 import Layout from '@suite-web-landing-components/Layout';
 import Translation, { TranslationModeContext } from '@suite-web-landing-components/Translation';
@@ -21,6 +21,7 @@ import {
     StyledSoon,
     TranslationModeTrigger,
 } from '@suite-web-landing-components/LandingPage';
+import { switchFavicon } from '../utils/switchFavicon';
 
 const features = [
     {
@@ -52,6 +53,10 @@ const pathToApp = './web';
 
 const Index = () => {
     const [translationMode, setTranslationMode] = useState(false);
+
+    useEffect(() => {
+        switchFavicon();
+    }, []);
 
     return (
         <TranslationModeContext.Provider value={translationMode}>
