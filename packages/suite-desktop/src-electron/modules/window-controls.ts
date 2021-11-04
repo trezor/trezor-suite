@@ -83,7 +83,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
         notifyWindowActive(mainWindow, false);
     });
 
-    ipcMain.on('window/close', () => {
+    ipcMain.on('app/focus', () => {
         logger.debug('window-control', 'Close requested');
         // Keeping the devtools open might prevent the app from closing
         if (mainWindow.webContents.isDevToolsOpened()) {
