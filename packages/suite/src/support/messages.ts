@@ -222,18 +222,6 @@ export default defineMessages({
         defaultMessage: 'Loading',
         id: 'TR_EXCHANGE_LOADING',
     },
-    TR_EXCHANGE_OTHER_COINS: {
-        defaultMessage: 'All other coins',
-        id: 'TR_EXCHANGE_OTHER_COINS',
-    },
-    TR_EXCHANGE_POPULAR_COINS: {
-        defaultMessage: 'Popular coins',
-        id: 'TR_EXCHANGE_POPULAR_COINS',
-    },
-    TR_EXCHANGE_STABLE_COINS: {
-        defaultMessage: 'Stablecoins',
-        id: 'TR_EXCHANGE_STABLE_COINS',
-    },
     TR_EXCHANGE_NO_PROVIDERS: {
         defaultMessage: 'No providers',
         id: 'TR_EXCHANGE_NO_PROVIDERS',
