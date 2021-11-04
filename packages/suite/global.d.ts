@@ -11,13 +11,6 @@ export interface DesktopApi {
     downloadUpdate: () => void;
     installUpdate: () => void;
     cancelUpdate: () => void;
-    // Window controls
-    windowClose: () => void;
-    windowMinimize: () => void;
-    windowFocus: () => void;
-    windowMaximize: () => void;
-    windowUnmaximize: () => void;
-    windowExpand: () => void;
     // Theme
     themeChange: (theme: SuiteThemeVariant) => void;
     themeSystem: () => void;

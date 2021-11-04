@@ -1,19 +1,7 @@
 /**
- * Window events handler (for custom navbar)
+ * Window events handler
  */
-import { app, ipcMain, BrowserWindow } from 'electron';
-
-const notifyWindowMaximized = (window: BrowserWindow) => {
-    window.webContents.send(
-        'window/is-maximized',
-        process.platform === 'darwin' ? window.isFullScreen() : window.isMaximized(),
-    );
-};
-
-// notify client with window active state
-const notifyWindowActive = (window: BrowserWindow, state: boolean) => {
-    window.webContents.send('window/is-active', state);
-};
+import { app, ipcMain } from 'electron';
 
 const init = ({ mainWindow, store }: Dependencies) => {
     const { logger } = global;
@@ -51,84 +39,46 @@ const init = ({ mainWindow, store }: Dependencies) => {
     }
 
     mainWindow.on('page-title-updated', evt => {
-        // prevent updating window title
         evt.preventDefault();
     });
+
     mainWindow.on('maximize', () => {
         logger.debug('window-control', 'Maximize');
-        notifyWindowMaximized(mainWindow);
     });
+
     mainWindow.on('unmaximize', () => {
         logger.debug('window-control', 'Unmaximize');
-        notifyWindowMaximized(mainWindow);
     });
+
     mainWindow.on('enter-full-screen', () => {
-        logger.debug('window-control', 'Enter full screen');
-        notifyWindowMaximized(mainWindow);
+        // do not log on Linux as it is triggered constantly with each movement in fullscreen mode
+        if (process.platform !== 'linux') {
+            logger.debug('window-control', 'Enter full screen');
+        }
     });
+
     mainWindow.on('leave-full-screen', () => {
-        logger.debug('window-control', 'Leave full screen');
-        notifyWindowMaximized(mainWindow);
+        // do not log on Linux as it is triggered constantly with each movement in windowed mode
+        if (process.platform !== 'linux') {
+            logger.debug('window-control', 'Leave full screen');
+        }
     });
+
     mainWindow.on('moved', () => {
         logger.debug('window-control', 'Moved');
-        notifyWindowMaximized(mainWindow);
     });
+
     mainWindow.on('focus', () => {
         logger.debug('window-control', 'Focus');
-        notifyWindowActive(mainWindow, true);
     });
+
     mainWindow.on('blur', () => {
         logger.debug('window-control', 'Blur');
-        notifyWindowActive(mainWindow, false);
     });
 
     ipcMain.on('app/focus', () => {
-        logger.debug('window-control', 'Close requested');
-        // Keeping the devtools open might prevent the app from closing
-        if (mainWindow.webContents.isDevToolsOpened()) {
-            mainWindow.webContents.closeDevTools();
-        }
-        // store window bounds on close btn click
-        const winBound = mainWindow.getBounds() as WinBounds;
-        store.setWinBounds(winBound);
-        mainWindow.close();
-    });
-    ipcMain.on('window/minimize', () => {
-        logger.debug('window-control', 'Minimize requested');
-        mainWindow.minimize();
-    });
-    ipcMain.on('window/maximize', () => {
-        logger.debug('window-control', 'Maximize requested');
-        if (process.platform === 'darwin') {
-            mainWindow.setFullScreen(true);
-        } else {
-            mainWindow.maximize();
-        }
-    });
-    ipcMain.on('window/unmaximize', () => {
-        logger.debug('window-control', 'Unmaximize requested');
-        if (process.platform === 'darwin') {
-            mainWindow.setFullScreen(false);
-        } else {
-            mainWindow.unmaximize();
-        }
-    });
-    ipcMain.on('window/expand', () => {
-        logger.debug('window-control', 'Expand requested');
-        if (mainWindow.isMaximized()) {
-            return mainWindow.unmaximize();
-        }
-        mainWindow.maximize();
-    });
-    ipcMain.on('window/focus', () => {
         logger.debug('window-control', 'Focus requested');
         app.focus({ steal: true });
-    });
-
-    ipcMain.on('client/ready', () => {
-        logger.debug('window-control', 'Client ready');
-        notifyWindowMaximized(mainWindow);
     });
 
     app.on('before-quit', () => {
