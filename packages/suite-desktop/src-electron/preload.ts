@@ -70,7 +70,10 @@ contextBridge.exposeInMainWorld('desktopApi', {
             ipcRenderer.removeAllListeners(channel);
         }
     },
-    // Updater
+
+    // App
+    appRestart: () => ipcRenderer.send('app/restart'),
+    // Auto-updater
     checkForUpdates: (isManual?: boolean) => ipcRenderer.send('update/check', isManual),
     downloadUpdate: () => ipcRenderer.send('update/download'),
     installUpdate: () => ipcRenderer.send('update/install'),

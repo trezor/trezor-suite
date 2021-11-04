@@ -352,7 +352,7 @@ const Settings = () => {
                                     // Reset the desktop-specific store.
                                     window.desktopApi.clearStore();
                                     // relaunch desktop app
-                                    window.desktopApi.send('app/restart');
+                                    window.desktopApi.appRestart();
                                 } else {
                                     // redirect to / and reload the web
                                     await goto('suite-index');

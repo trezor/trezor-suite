@@ -59,8 +59,7 @@ const ErrorMessage = styled.span`
 
 const refresh = () => {
     if (window.desktopApi) {
-        // relaunch desktop app
-        window.desktopApi.send('app/restart');
+        window.desktopApi.appRestart();
     } else {
         window.location.reload();
     }

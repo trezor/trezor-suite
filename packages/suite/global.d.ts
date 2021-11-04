@@ -4,9 +4,10 @@ export interface DesktopApi {
     on: (channel: string, func: (...args: any[]) => any) => void;
     once: (channel: string, func: (...args: any[]) => any) => void;
     removeAllListeners: (channel: string) => void;
-    // App Ready
-    ready: () => void;
+    // App
+    appRestart: () => void;
     // Auto Updater
+    // Auto-updater
     checkForUpdates: (isManual?: boolean) => void;
     downloadUpdate: () => void;
     installUpdate: () => void;
