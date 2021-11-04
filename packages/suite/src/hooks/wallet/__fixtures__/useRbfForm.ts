@@ -144,7 +144,7 @@ export const composeAndSign = [
                 },
                 {
                     address_n: [2147483692, 2147483648, 2147483648, 1, 0],
-                    amount: '10083',
+                    amount: '10087',
                     orig_index: 1,
                     orig_hash: 'ABCD',
                 },
@@ -181,7 +181,7 @@ export const composeAndSign = [
                 {
                     // change-output is restored
                     address_n: [2147483692, 2147483648, 2147483648, 1, 0],
-                    amount: '10083',
+                    amount: '10087',
                     orig_index: 0,
                     orig_hash: 'ABCD',
                 },
@@ -340,7 +340,7 @@ export const composeAndSign = [
         composedLevels: {
             normal: {
                 type: 'final',
-                fee: '3791',
+                fee: '3781',
                 transaction: {
                     inputs: [{ prev_hash: 'dcba' }, { prev_hash: 'abcddcba' }],
                     outputs: [
@@ -351,7 +351,7 @@ export const composeAndSign = [
                         // change-output is added, note that this is first unused address (not first on the list)
                         {
                             address_n: [2147483692, 2147483648, 2147483648, 1, 1],
-                            amount: '6209',
+                            amount: '6219',
                         },
                     ],
                 },
@@ -366,7 +366,7 @@ export const composeAndSign = [
                     orig_hash: 'ABCD',
                 },
                 {
-                    amount: '6209',
+                    amount: '6219',
                 },
             ],
         },
@@ -560,13 +560,13 @@ export const composeAndSign = [
         composedLevels: {
             normal: {
                 type: 'final',
-                fee: '1951',
+                fee: '1941',
                 transaction: {
                     inputs: [{ prev_hash: 'dcba' }],
                     outputs: [
                         {
                             address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '29049',
+                            amount: '29059',
                         },
                     ],
                 },
@@ -577,7 +577,7 @@ export const composeAndSign = [
             outputs: [
                 {
                     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                    amount: '29049',
+                    amount: '29059',
                     orig_index: 0,
                     orig_hash: 'ABCD',
                 },
@@ -619,13 +619,13 @@ export const composeAndSign = [
         composedLevels: {
             normal: {
                 type: 'final',
-                fee: '781',
+                fee: '777',
                 transaction: {
                     inputs: [{ prev_hash: 'dcba' }],
                     outputs: [
                         {
                             address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '30219',
+                            amount: '30223',
                         },
                     ],
                 },
@@ -636,7 +636,7 @@ export const composeAndSign = [
             outputs: [
                 {
                     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                    amount: '30219',
+                    amount: '30223',
                     orig_index: 0,
                     orig_hash: 'ABCD',
                 },
@@ -664,12 +664,12 @@ export const composeAndSign = [
         composedLevels: {
             normal: {
                 type: 'final',
-                fee: '781',
+                fee: '777',
                 transaction: {
                     outputs: [
                         {
                             address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                            amount: '30219',
+                            amount: '30223',
                         },
                     ],
                 },
@@ -680,7 +680,7 @@ export const composeAndSign = [
             outputs: [
                 {
                     address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
-                    amount: '30219',
+                    amount: '30223',
                     orig_index: 0,
                     orig_hash: 'ABCD',
                 },
@@ -718,7 +718,7 @@ export const composeAndSign = [
         composedLevels: {
             normal: {
                 type: 'final',
-                fee: '969',
+                fee: '965',
                 transaction: {
                     // outputs indexes are totally mixed up
                     outputs: [
@@ -729,7 +729,7 @@ export const composeAndSign = [
                             amount: '1000', // external
                         },
                         {
-                            amount: '29031', // change
+                            amount: '29035', // change
                         },
                     ],
                 },
@@ -740,7 +740,7 @@ export const composeAndSign = [
             outputs: [
                 {
                     address_n: [2147483692, 2147483648, 2147483648, 1, 0],
-                    amount: '29031',
+                    amount: '29035',
                     orig_index: 0,
                     orig_hash: 'ABCD',
                 },
