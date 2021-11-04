@@ -187,6 +187,7 @@ const Box = ({
             style={springExpandableBox}
             nested={nested}
             onClick={expandable && !expanded ? onToggle : undefined}
+            data-test="@onboarding/box-animated"
             {...rest}
         >
             <BoxWrapperInner expandable={expandable}>
