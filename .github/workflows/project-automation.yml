@@ -1,5 +1,5 @@
 name: Add to GitHub Project
-on: [issues, pull_request]
+on: [issues]
 jobs:
   github-actions-automate-projects:
     runs-on: ubuntu-latest
