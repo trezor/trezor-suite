@@ -86,9 +86,8 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 const onDowngrade = () => {
     // @ts-ignore
     if (window.desktopApi) {
-        // relaunch desktop app
         // @ts-ignore
-        window.desktopApi.send('app/restart');
+        window.desktopApi.appRestart();
     } else {
         // @ts-ignore
         window.location.reload();
