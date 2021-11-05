@@ -41,6 +41,7 @@ import { ThemeProvider, ThemeContext } from './support/ThemeProvider';
 import * as types from './support/types';
 import { HoverAnimation } from './components/HoverAnimation';
 import { Fade } from './components/Fade';
+import { KEYBOARD_CODE } from './constants/keyboardEvents';
 
 export {
     colors,
@@ -112,4 +113,5 @@ export {
     ThemeContext,
     HoverAnimation,
     Fade,
+    KEYBOARD_CODE,
 };
