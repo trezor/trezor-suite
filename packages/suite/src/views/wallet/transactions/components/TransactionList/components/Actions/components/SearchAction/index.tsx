@@ -10,6 +10,8 @@ import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { isEnabled } from '@suite-utils/features';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { KEYBOARD_CODE } from '@suite-constants/keyboardEvents';
+
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
@@ -67,9 +69,9 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
         }
     }, [setExpanded, search]);
 
-    const onKeyDown = useCallback(e => {
+    const onKeyDown = useCallback(event => {
         // Handle esc (unfocus)
-        if (e.keyCode === 27 && inputRef.current) {
+        if (event.code === KEYBOARD_CODE.ESCAPE && inputRef.current) {
             inputRef.current.blur();
         }
     }, []);

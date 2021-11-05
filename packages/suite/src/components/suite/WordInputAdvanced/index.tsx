@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, ButtonPin } from '@trezor/components';
 import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
 import { URLS } from '@suite-constants';
+import { KEYBOARD_CODE } from '@suite-constants/keyboardEvents';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,45 +44,46 @@ const WordInputAdvanced = (props: Props) => {
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
             event.preventDefault();
-            if (event.keyCode === 8) {
+
+            if (event.code === KEYBOARD_CODE.BACK_SPACE) {
                 backspace();
             }
-            switch (event.keyCode) {
+            switch (event.code) {
                 // numeric and numpad
-                case 49:
-                case 97:
+                case KEYBOARD_CODE.DIGIT_ONE:
+                case KEYBOARD_CODE.NUMPAD_ONE:
                     onSubmit('1');
                     break;
-                case 50:
-                case 98:
+                case KEYBOARD_CODE.DIGIT_TWO:
+                case KEYBOARD_CODE.NUMPAD_TWO:
                     onSubmit('2');
                     break;
-                case 51:
-                case 99:
+                case KEYBOARD_CODE.DIGIT_THREE:
+                case KEYBOARD_CODE.NUMPAD_THREE:
                     onSubmit('3');
                     break;
-                case 52:
-                case 100:
+                case KEYBOARD_CODE.DIGIT_FOUR:
+                case KEYBOARD_CODE.NUMPAD_FOUR:
                     onSubmit('4');
                     break;
-                case 53:
-                case 101:
+                case KEYBOARD_CODE.DIGIT_FIVE:
+                case KEYBOARD_CODE.NUMPAD_FIVE:
                     onSubmit('5');
                     break;
-                case 54:
-                case 102:
+                case KEYBOARD_CODE.DIGIT_SIX:
+                case KEYBOARD_CODE.NUMPAD_SIX:
                     onSubmit('6');
                     break;
-                case 55:
-                case 103:
+                case KEYBOARD_CODE.DIGIT_SEVEN:
+                case KEYBOARD_CODE.NUMPAD_SEVEN:
                     onSubmit('7');
                     break;
-                case 56:
-                case 104:
+                case KEYBOARD_CODE.DIGIT_EIGHT:
+                case KEYBOARD_CODE.NUMPAD_EIGHT:
                     onSubmit('8');
                     break;
-                case 57:
-                case 105:
+                case KEYBOARD_CODE.DIGIT_NINE:
+                case KEYBOARD_CODE.NUMPAD_NINE:
                     onSubmit('9');
                     break;
                 default:

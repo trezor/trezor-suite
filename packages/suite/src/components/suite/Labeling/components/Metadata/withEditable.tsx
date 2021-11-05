@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, useTheme } from '@trezor/components';
+import { KEYBOARD_CODE } from '@suite-constants/keyboardEvents';
 
 import { moveCaretToEndOfContentEditable } from '@suite-utils/dom';
 
@@ -61,6 +62,7 @@ interface Props {
 export const withEditable =
     (WrappedComponent: React.FC) =>
     ({ onSubmit, onBlur, ...props }: Props) => {
+
         const theme = useTheme();
         const [touched, setTouched] = useState(false);
         // value is used to mirror divRef.current.textContent so that its changes force react to render
@@ -93,26 +95,22 @@ export const withEditable =
         useEffect(() => {
             const keyboardHandler = (event: KeyboardEvent) => {
                 event.stopPropagation();
-                switch (event.keyCode) {
-                    // backspace
-                    case 8:
+                switch (event.code) {
+                    case KEYBOARD_CODE.BACK_SPACE:
                         if (!touched && divRef?.current) {
                             divRef.current.textContent = '';
                         }
 
                         break;
-                    // enter,
-                    case 13:
+                    case KEYBOARD_CODE.ENTER:
+                    case KEYBOARD_CODE.NUMPAD_ENTER:
                         submit(divRef?.current?.textContent);
                         break;
-                    // escape
-                    case 27:
+                    case KEYBOARD_CODE.ESCAPE:
                         onBlur();
                         break;
-                    // right arrow:
-                    // tab
-                    case 39:
-                    case 9: {
+                    case KEYBOARD_CODE.ARROW_RIGHT:
+                    case KEYBOARD_CODE.TAB: {
                         event.preventDefault();
                         if (divRef?.current) {
                             moveCaretToEndOfContentEditable(divRef.current);

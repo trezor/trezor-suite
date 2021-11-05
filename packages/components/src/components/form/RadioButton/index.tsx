@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
+import { KEYBOARD_CODE } from '../../../../../suite/src/constants/suite/keyboardEvents';
 
 const Wrapper = styled.div`
     display: flex;
@@ -58,7 +59,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const handleKeyboard = (event: React.KeyboardEvent<HTMLElement>, onClick: Props['onClick']) => {
-    if (event.keyCode === 32) {
+    if (event.code === KEYBOARD_CODE.SPACE) {
         onClick(event);
     }
 };
