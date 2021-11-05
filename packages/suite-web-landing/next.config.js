@@ -28,6 +28,7 @@ module.exports = withTranspileModules(
                 config.plugins.push(
                     new webpack.DefinePlugin({
                         'process.env.VERSION': JSON.stringify(packageJson.suiteVersion),
+                        'process.env.ASSET_PREFIX': JSON.stringify(process.env.ASSET_PREFIX),
                     }),
                 );
 
