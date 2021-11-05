@@ -79,6 +79,10 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
+const StatusTitle = styled(H2)`
+    margin: 0px 0px 12px;
+`;
+
 const CloseButton = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@recovery/close-button" variant="tertiary" icon="CROSS">
         {props.children ? props.children : <Translation id="TR_CLOSE" />}
@@ -255,9 +259,9 @@ const Recovery = ({
 
                 {recovery.status === 'select-word-count' && (
                     <>
-                        <H2>
+                        <StatusTitle>
                             <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
-                        </H2>
+                        </StatusTitle>
                         <SelectWordCount onSelect={(count: WordCount) => onSetWordsCount(count)} />
                         <Buttons>
                             <CloseButton onClick={() => closeModalApp()}>
@@ -268,9 +272,9 @@ const Recovery = ({
                 )}
                 {recovery.status === 'select-recovery-type' && (
                     <>
-                        <H2>
+                        <StatusTitle>
                             <Translation id="TR_CHOSE_RECOVERY_TYPE" />
-                        </H2>
+                        </StatusTitle>
                         <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
                         <Buttons>
                             <CloseButton onClick={() => closeModalApp()}>
