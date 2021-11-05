@@ -35,7 +35,6 @@ const Pin = ({ device, cancelable, noBackground, noPadding, ...rest }: Props) =>
             noBackground={noBackground}
             heading={<Translation id="TR_ENTER_PIN" />}
             description={<Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />}
-            noPadding={noPadding}
             // to squeeze pin matrix to Recovery modal flow we need to disable padding on heading element
             noHeadingPadding={noPadding}
             {...rest}
