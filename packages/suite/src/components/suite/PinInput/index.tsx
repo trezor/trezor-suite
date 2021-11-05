@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { Button, ButtonPin } from '@trezor/components';
+import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
 import InputPin from './components/InputPin';
 import { Translation } from '@suite-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
@@ -72,51 +72,51 @@ const PinInput = ({ isSubmitting, onPinSubmit }: Props) => {
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
             event.preventDefault();
-            switch (event.keyCode) {
-                case 13:
-                    // enter,
+
+            switch (event.code) {
+                case KEYBOARD_CODE.ENTER:
+                case KEYBOARD_CODE.NUMPAD_ENTER:
                     submit();
                     break;
-                // backspace
-                case 8:
+                case KEYBOARD_CODE.BACK_SPACE:
                     onPinBackspace();
                     break;
 
                 // numeric and numpad
-                case 49:
-                case 97:
+                case KEYBOARD_CODE.DIGIT_ONE:
+                case KEYBOARD_CODE.NUMPAD_ONE:
                     onPinAdd('1');
                     break;
-                case 50:
-                case 98:
+                case KEYBOARD_CODE.DIGIT_TWO:
+                case KEYBOARD_CODE.NUMPAD_TWO:
                     onPinAdd('2');
                     break;
-                case 51:
-                case 99:
+                case KEYBOARD_CODE.DIGIT_THREE:
+                case KEYBOARD_CODE.NUMPAD_THREE:
                     onPinAdd('3');
                     break;
-                case 52:
-                case 100:
+                case KEYBOARD_CODE.DIGIT_FOUR:
+                case KEYBOARD_CODE.NUMPAD_FOUR:
                     onPinAdd('4');
                     break;
-                case 53:
-                case 101:
+                case KEYBOARD_CODE.DIGIT_FIVE:
+                case KEYBOARD_CODE.NUMPAD_FIVE:
                     onPinAdd('5');
                     break;
-                case 54:
-                case 102:
+                case KEYBOARD_CODE.DIGIT_SIX:
+                case KEYBOARD_CODE.NUMPAD_SIX:
                     onPinAdd('6');
                     break;
-                case 55:
-                case 103:
+                case KEYBOARD_CODE.DIGIT_SEVEN:
+                case KEYBOARD_CODE.NUMPAD_SEVEN:
                     onPinAdd('7');
                     break;
-                case 56:
-                case 104:
+                case KEYBOARD_CODE.DIGIT_EIGHT:
+                case KEYBOARD_CODE.NUMPAD_EIGHT:
                     onPinAdd('8');
                     break;
-                case 57:
-                case 105:
+                case KEYBOARD_CODE.DIGIT_NINE:
+                case KEYBOARD_CODE.NUMPAD_NINE:
                     onPinAdd('9');
                     break;
                 default:

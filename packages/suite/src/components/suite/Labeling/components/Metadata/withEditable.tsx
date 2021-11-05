@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, useTheme } from '@trezor/components';
+import { Icon, useTheme, KEYBOARD_CODE } from '@trezor/components';
 
 import { moveCaretToEndOfContentEditable } from '@suite-utils/dom';
 
@@ -93,26 +93,22 @@ export const withEditable =
         useEffect(() => {
             const keyboardHandler = (event: KeyboardEvent) => {
                 event.stopPropagation();
-                switch (event.keyCode) {
-                    // backspace
-                    case 8:
+                switch (event.code) {
+                    case KEYBOARD_CODE.BACK_SPACE:
                         if (!touched && divRef?.current) {
                             divRef.current.textContent = '';
                         }
 
                         break;
-                    // enter,
-                    case 13:
+                    case KEYBOARD_CODE.ENTER:
+                    case KEYBOARD_CODE.NUMPAD_ENTER:
                         submit(divRef?.current?.textContent);
                         break;
-                    // escape
-                    case 27:
+                    case KEYBOARD_CODE.ESCAPE:
                         onBlur();
                         break;
-                    // right arrow:
-                    // tab
-                    case 39:
-                    case 9: {
+                    case KEYBOARD_CODE.ARROW_RIGHT:
+                    case KEYBOARD_CODE.TAB: {
                         event.preventDefault();
                         if (divRef?.current) {
                             moveCaretToEndOfContentEditable(divRef.current);

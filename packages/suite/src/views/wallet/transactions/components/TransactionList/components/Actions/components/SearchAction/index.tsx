@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { Input, Icon, useTheme, Tooltip } from '@trezor/components';
+import { Input, Icon, useTheme, Tooltip, KEYBOARD_CODE } from '@trezor/components';
 import { useActions } from '@suite-hooks';
 import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
@@ -67,9 +67,9 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
         }
     }, [setExpanded, search]);
 
-    const onKeyDown = useCallback(e => {
+    const onKeyDown = useCallback(event => {
         // Handle esc (unfocus)
-        if (e.keyCode === 27 && inputRef.current) {
+        if (event.code === KEYBOARD_CODE.ESCAPE && inputRef.current) {
             inputRef.current.blur();
         }
     }, []);
