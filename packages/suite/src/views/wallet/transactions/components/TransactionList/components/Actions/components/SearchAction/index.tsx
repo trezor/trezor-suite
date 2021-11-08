@@ -12,7 +12,6 @@ import { isEnabled } from '@suite-utils/features';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { KEYBOARD_CODE } from '@trezor/components/src/constants/keyboardEvents';
 
-
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
     width: 36px;

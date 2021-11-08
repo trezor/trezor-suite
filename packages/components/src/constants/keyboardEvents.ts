@@ -3,7 +3,7 @@ export enum KEYBOARD_CODE {
     ESCAPE = 'Escape',
     SPACE = 'Space',
     BACK_SPACE = 'Backspace',
-    ARROW_RIGHT= 'ArrowRight',
+    ARROW_RIGHT = 'ArrowRight',
     TAB = 'Tab',
 
     DIGIT_ONE = 'Digit1',

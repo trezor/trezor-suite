@@ -62,7 +62,6 @@ interface Props {
 export const withEditable =
     (WrappedComponent: React.FC) =>
     ({ onSubmit, onBlur, ...props }: Props) => {
-
         const theme = useTheme();
         const [touched, setTouched] = useState(false);
         // value is used to mirror divRef.current.textContent so that its changes force react to render
