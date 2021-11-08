@@ -15,7 +15,7 @@
         "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts"
     },
     "dependencies": {
-        "axios": "0.21.1",
+        "axios": "0.21.2",
         "cheerio": "1.0.0-rc.3",
         "cors": "2.8.5",
         "express": "4.17.1",
