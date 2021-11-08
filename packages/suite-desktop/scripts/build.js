@@ -4,6 +4,7 @@ const child_process = require('child_process');
 const glob = require('glob');
 const { build } = require('esbuild');
 const pkg = require('../package.json');
+const { suiteVersion } = require('../../suite/package.json');
 
 const { NODE_ENV, USE_MOCKS } = process.env;
 
@@ -62,6 +63,7 @@ build({
         'process.env.APP_PUBKEY': JSON.stringify(appKey),
         'process.env.PROTOCOLS': JSON.stringify(pkg.build.protocols.schemes),
         'process.env.PKGNAME': JSON.stringify(pkg.name),
+        'process.env.VERSION': JSON.stringify(suiteVersion),
     },
     inject: [path.join(__dirname, 'build-inject.js')],
     plugins: useMocks ? [mockPlugin] : [],
