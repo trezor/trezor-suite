@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, ButtonPin } from '@trezor/components';
 import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
 import { URLS } from '@suite-constants';
-import { KEYBOARD_CODE } from '@suite-constants/keyboardEvents';
+import { KEYBOARD_CODE } from '@trezor/components/src/constants/keyboardEvents';
 
 const Wrapper = styled.div`
     display: flex;

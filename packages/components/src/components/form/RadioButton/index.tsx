@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
-import { KEYBOARD_CODE } from '../../../../../suite/src/constants/suite/keyboardEvents';
+import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 
 const Wrapper = styled.div`
     display: flex;

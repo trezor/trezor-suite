@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, useTheme } from '@trezor/components';
-import { KEYBOARD_CODE } from '@suite-constants/keyboardEvents';
+import { KEYBOARD_CODE } from '@trezor/components/src/constants/keyboardEvents';
 
 import { moveCaretToEndOfContentEditable } from '@suite-utils/dom';
 

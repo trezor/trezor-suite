@@ -4,7 +4,7 @@ import { Button, ButtonPin } from '@trezor/components';
 import InputPin from './components/InputPin';
 import { Translation } from '@suite-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import { KEYBOARD_CODE } from '@suite-constants/keyboardEvents';
+import { KEYBOARD_CODE } from '@trezor/components/src/constants/keyboardEvents';
 
 const Wrapper = styled.div`
     display: flex;

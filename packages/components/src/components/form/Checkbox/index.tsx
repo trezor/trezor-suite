@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { KEYBOARD_CODE } from '../../../../../suite/src/constants/suite/keyboardEvents';
+import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { FONT_SIZE } from '../../../config/variables';
 import { useTheme } from '../../../utils';
 
