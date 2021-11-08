@@ -9,6 +9,7 @@ export const buildInfo = () => {
     global.logger.info('build', [
         'Info:',
         `- Version: ${app.getVersion()}`,
+        `- Electron: ${process.versions.electron}`,
         `- Commit: ${process.env.COMMITHASH}`,
         `- Dev: ${b2t(isDev)}`,
         `- Args: ${process.argv.slice(1).join(' ')}`,
