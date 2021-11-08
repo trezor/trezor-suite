@@ -86,7 +86,7 @@ const AccountEmpty = (props: Props) => {
                 />
             )}
             <StyledCard>
-                <StyledImage image="EMPTY_WALLET_NEUE" />
+                <StyledImage image="CLOUDY" />
                 <Title>
                     <Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />
                 </Title>

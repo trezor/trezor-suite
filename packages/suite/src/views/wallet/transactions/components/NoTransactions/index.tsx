@@ -15,7 +15,7 @@ const NoTransactions = ({ account }: Props) => {
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_TRANSACTIONS_NOT_AVAILABLE" />}
-            image="EMPTY_WALLET_NEUE"
+            image="CLOUDY"
             actionComponent={
                 <Button variant="primary" icon="EXTERNAL_LINK" alignIcon="right">
                     <TrezorLink variant="nostyle" href={explorerUrl}>
