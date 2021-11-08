@@ -5,11 +5,7 @@ import { resolveStaticPath } from '@suite-utils/build';
 const PNG_PATH = 'images/png';
 
 const PNG_IMAGES = {
-    EMPTY_WALLET_NEUE: 'wallet-empty-neue.png',
-    EMPTY_WALLET_NEUE_2x: 'wallet-empty-neue@2x.png',
-    // 3D: "3D.png",
-    // 3D_2x: '3D@2x.png',
-    // 3D_3x: '3D@3x.png',
+    CLOUDY: 'Cloudy.png',
     BACKUP: 'Backup.png',
     BACKUP_2x: 'Backup@2x.png',
     BACKUP_3x: 'Backup@3x.png',
@@ -75,7 +71,6 @@ const SVG_IMAGES = {
     HOLOGRAM_WARNING: 'hologram-warning.svg', // todo: not used
     MODEL_1: 'model-1.svg',
     MODEL_2: 'model-2.svg',
-    NEW_DEVICE: 'new-device.svg',
     NEW_USER: 'new-user.svg',
     RECOVER_FROM_SEED: 'recover-from-seed.svg',
     SEED_CARD_SHAMIR: 'seed-card-shamir.svg',
