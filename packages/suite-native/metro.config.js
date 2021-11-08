@@ -47,6 +47,7 @@ module.exports = (async () => {
                     '../../packages/blockchain-link',
                 ),
                 '@trezor/rollout': path.resolve(__dirname, '../../packages/rollout'),
+                '@trezor/utxo-lib': path.resolve(__dirname, '../../packages/utxo-lib'),
             },
             // https://github.com/facebook/metro/issues/265
             blacklistRE: blacklist([
