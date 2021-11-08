@@ -20,7 +20,7 @@ const AccountNotLoaded = () => {
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
             description={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION" />}
-            image="EMPTY_WALLET_NEUE"
+            image="CLOUDY"
             actions={[
                 {
                     key: '1',
