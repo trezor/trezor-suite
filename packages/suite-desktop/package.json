@@ -37,7 +37,7 @@
         "productName": "Trezor Suite",
         "copyright": "Copyright © ${author}",
         "asar": true,
-        "electronVersion": "14.0.0",
+        "electronVersion": "15.3.0",
         "directories": {
             "output": "build-electron"
         },
@@ -156,11 +156,11 @@
     "dependencies": {
         "chalk": "^4.1.2",
         "electron-localshortcut": "^3.2.1",
-        "electron-store": "^8.0.0",
+        "electron-store": "^8.0.1",
         "electron-updater": "^4.3.9",
         "node-fetch": "^2.6.1",
-        "openpgp": "^5.0.0-6",
-        "systeminformation": "^5.8.7",
+        "openpgp": "^5.0.0",
+        "systeminformation": "^5.9.9",
         "react": "17.0.1",
         "react-dom": "17.0.1",
         "styled-components": "5.1.1"
@@ -170,9 +170,9 @@
         "@types/node-fetch": "^2.5.12",
         "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
-        "electron": "^14.0.0",
-        "electron-builder": "^22.11.7",
-        "electron-notarize": "^1.1.0",
-        "esbuild": "^0.12.25"
+        "electron": "^15.3.0",
+        "electron-builder": "^22.13.1",
+        "electron-notarize": "^1.1.1",
+        "esbuild": "^0.13.12"
     }
 }
