@@ -11,7 +11,6 @@ import { buildInfo, computerInfo } from '@desktop-electron/libs/info';
 import modules from '@desktop-electron/libs/modules';
 
 let mainWindow: BrowserWindow;
-const APP_NAME = 'Trezor Suite';
 const src = isDev
     ? 'http://localhost:8000/'
     : url.format({
@@ -19,6 +18,9 @@ const src = isDev
           protocol: PROTOCOL,
           slashes: true,
       });
+
+// @ts-ignore using internal electron API to set suite version in dev mode correctly
+if (isDev) app.setVersion(process.env.VERSION);
 
 // Logger
 const log = {
@@ -49,7 +51,7 @@ app.on('will-finish-launching', () => {
     });
 });
 
-logger.info('main', `Application starting in ${isDev ? 'development' : 'production'} mode`);
+logger.info('main', `Application starting`);
 
 const init = async () => {
     buildInfo();
@@ -59,7 +61,7 @@ const init = async () => {
     logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
 
     mainWindow = new BrowserWindow({
-        title: APP_NAME,
+        title: app.getName(),
         width: winBounds.width,
         height: winBounds.height,
         minWidth: MIN_WIDTH,
@@ -101,7 +103,6 @@ if (!singleInstance) {
         }
     });
 
-    app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
     app.on('ready', init);
 }
 
