@@ -11,7 +11,7 @@ import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
 
 const baseDir = getPathForProject('desktop');
 const config: webpack.Configuration = {
-    target: 'browserslist:Chrome >= 93', // electron 14
+    target: 'browserslist:Chrome >= 94', // Electron 15
     entry: [path.join(baseDir, 'src', 'index.tsx')],
     output: {
         path: path.join(baseDir, 'build'),

@@ -60,7 +60,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
         // save current app version so that after app is relaunched we can show info about transition to the new version
         store.setUpdateSettings({
             ...updateSettings,
-            savedCurrentVersion: app.getVersion(),
+            savedCurrentVersion: currentVersion,
         });
     });
 
