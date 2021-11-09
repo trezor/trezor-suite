@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import type { BlockchainAccountBalanceHistory } from 'trezor-connect';
 import { startOfMonth, getUnixTime, fromUnixTime, differenceInMonths } from 'date-fns';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { CoinFiatRates, Account } from '@wallet-types';
@@ -12,7 +13,7 @@ import {
 } from '@wallet-types/graph';
 import { formatNetworkAmount } from './accountUtils';
 import { resetTime } from '@suite-utils/date';
-import { BlockchainAccountBalanceHistory } from 'trezor-connect';
+import { getFiatRatesForTimestamps, getTickerConfig } from '@suite/services/coingecko';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 
@@ -423,6 +424,27 @@ export const calcFakeGraphDataForTimestamps = (
     const sortedData = balanceData.sort((a, b) => Number(a.time) - Number(b.time));
 
     return sortedData;
+};
+
+export const ensureHistoryRates = async (
+    symbol: string,
+    data: BlockchainAccountBalanceHistory[],
+): Promise<BlockchainAccountBalanceHistory[]> => {
+    if (!getTickerConfig({ symbol })) return data;
+
+    const missingRates = data
+        .filter(({ rates }) => !Object.keys(rates || {}).length)
+        .map(({ time }) => time);
+
+    const rateDictionary = await getFiatRatesForTimestamps({ symbol }, missingRates)
+        .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))
+        .then(res => Object.fromEntries(res));
+
+    return data.map(({ rates, time, ...rest }) => ({
+        ...rest,
+        time,
+        rates: rateDictionary[time] || rates,
+    }));
 };
 
 export const enhanceBlockchainAccountHistory = (
