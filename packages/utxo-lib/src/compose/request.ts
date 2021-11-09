@@ -1,5 +1,5 @@
 import type { Network } from '../networks';
-import type { TxType } from './utils';
+import type { TxType } from '../coinselect/utils';
 
 // UTXO == unspent transaction output = all I can spend
 export type ComposeInput = {

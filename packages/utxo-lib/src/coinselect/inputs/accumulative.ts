@@ -17,7 +17,7 @@ export function accumulative(
 ): CoinSelectResult {
     if (typeof utils.uintOrNaN(feeRate) !== 'number') return { fee: 0 };
 
-    let bytesAccum = utils.transactionBytes([], outputs, options.txBaseLength);
+    let bytesAccum = utils.transactionBytes([], outputs);
     let inAccum = utils.ZERO;
     const inputs: CoinSelectInput[] = [];
     const outAccum = utils.sumOrNaN(outputs);

@@ -19,7 +19,7 @@ export function split(
     const coinbase = options.coinbase || 100;
     const utxos = utils.filterCoinbase(utxosOrig, coinbase);
 
-    const bytesAccum = utils.transactionBytes(utxos, outputs, options.txBaseLength);
+    const bytesAccum = utils.transactionBytes(utxos, outputs);
     const fee = utils.getFee(feeRate, bytesAccum, options, outputs);
     if (outputs.length === 0) return { fee };
 
@@ -32,7 +32,7 @@ export function split(
 
     const unspecified = outputs.reduce((a, x) => a + (!utils.bignumberOrNaN(x.value) ? 1 : 0), 0);
 
-    if (remaining.isZero() && unspecified === 0) {
+    if (remaining.isZero() || unspecified === 0) {
         return utils.finalize(utxos, outputs, feeRate, options);
     }
 

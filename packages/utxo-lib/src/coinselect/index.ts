@@ -1,12 +1,10 @@
 import { accumulative } from './inputs/accumulative';
 import { bnb } from './inputs/bnb';
-import { sortByScore, anyOf } from './utils';
+import { sortByScore, anyOf, TxType } from './utils';
 import { tryConfirmed } from './tryconfirmed';
 
 export type CoinSelectOptions = {
-    txBaseLength: number;
-    inputLength: number;
-    changeOutputLength: number;
+    txType: TxType;
     dustThreshold: number;
     own?: number;
     other?: number;
@@ -18,6 +16,7 @@ export type CoinSelectOptions = {
 };
 
 export type CoinSelectInput = {
+    type: TxType;
     i: number;
     script: { length: number };
     value: string;
@@ -25,11 +24,13 @@ export type CoinSelectInput = {
     coinbase?: boolean;
     required?: boolean;
     own?: boolean;
+    weight?: number;
 };
 
 export type CoinSelectOutput = {
     script: { length: number };
     value?: string;
+    weight?: number;
 };
 
 export type CoinSelectOutputFinal = {
