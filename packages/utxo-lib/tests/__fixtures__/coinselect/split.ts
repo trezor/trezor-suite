@@ -13,19 +13,17 @@ export default [
             ],
             outputs: [
                 {
-                    value: '5130',
+                    value: '5133',
                 },
                 {
-                    value: '5130',
+                    value: '5133',
                 },
                 {
-                    value: '5130',
+                    value: '5133',
                 },
             ],
-            fee: 2610,
+            fee: 2601,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -58,16 +56,14 @@ export default [
             ],
             outputs: [
                 {
-                    value: '20905',
+                    value: '20910',
                 },
                 {
-                    value: '20905',
+                    value: '20910',
                 },
             ],
-            fee: 8190,
+            fee: 8180,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -92,13 +88,11 @@ export default [
             ],
             outputs: [
                 {
-                    value: '25110',
+                    value: '25120',
                 },
             ],
-            fee: 4890,
+            fee: 4880,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -137,16 +131,14 @@ export default [
                 },
                 {
                     address: 'fizzbuzz',
-                    value: '6215',
+                    value: '6220',
                 },
                 {
-                    value: '6215',
+                    value: '6220',
                 },
             ],
-            fee: 5570,
+            fee: 5560,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -155,10 +147,8 @@ export default [
         inputs: ['10000', '10000'],
         outputs: [],
         expected: {
-            fee: 3070,
+            fee: 3060,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -167,10 +157,8 @@ export default [
         inputs: [],
         outputs: [{}, {}],
         expected: {
-            fee: 790,
+            fee: 780,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -179,10 +167,8 @@ export default [
         inputs: ['2000'],
         outputs: [{}],
         expected: {
-            fee: 1930,
+            fee: 1920,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -195,7 +181,7 @@ export default [
                 {
                     i: 0,
                     script: {
-                        length: 107,
+                        length: 108,
                     },
                     value: '9007199254742000',
                 },
@@ -205,19 +191,17 @@ export default [
                     script: {
                         length: 25,
                     },
-                    value: '4503599627369865',
+                    value: '4503599627369870',
                 },
                 {
                     script: {
                         length: 25,
                     },
-                    value: '4503599627369865',
+                    value: '4503599627369870',
                 },
             ],
-            fee: 2270,
+            fee: 2260,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -242,13 +226,11 @@ export default [
                     value: '4000',
                 },
                 {
-                    value: '13503',
+                    value: '13514',
                 },
             ],
-            fee: 2497,
+            fee: 2486,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -262,10 +244,8 @@ export default [
             {},
         ],
         expected: {
-            fee: 2270,
+            fee: 2260,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -281,10 +261,8 @@ export default [
             },
         ],
         expected: {
-            fee: 2497,
+            fee: 2486,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -293,10 +271,8 @@ export default [
         inputs: ['20000.5'],
         outputs: [{}, {}],
         expected: {
-            fee: 2270,
+            fee: 2260,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -307,8 +283,6 @@ export default [
         expected: {
             fee: 0,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -319,8 +293,6 @@ export default [
         expected: {
             fee: 0,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -329,10 +301,8 @@ export default [
         inputs: ['5000'],
         outputs: [{}],
         expected: {
-            fee: 193000,
+            fee: 192000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -347,10 +317,8 @@ export default [
         ],
         outputs: [{}],
         expected: {
-            fee: 450,
+            fee: 440,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 546,
     },
     {
@@ -375,8 +343,6 @@ export default [
             ],
             fee: 100000000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 99999999,
     },
     {
@@ -407,8 +373,6 @@ export default [
             ],
             fee: 100000000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 99999999,
     },
     {
@@ -444,8 +408,6 @@ export default [
             ],
             fee: 200000000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 99999999,
     },
     {
@@ -481,8 +443,6 @@ export default [
             ],
             fee: 200000000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 99999999,
     },
     {
@@ -515,8 +475,6 @@ export default [
             ],
             fee: 200000000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 99999999,
     },
     {
@@ -535,8 +493,6 @@ export default [
         expected: {
             fee: 200000000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 99999999,
     },
     {
@@ -555,8 +511,6 @@ export default [
         expected: {
             fee: 100000000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 99999999,
     },
     {
@@ -575,8 +529,6 @@ export default [
         expected: {
             fee: 200000000,
         },
-        inputLength: 107,
-        outputLength: 25,
         dustThreshold: 99999999,
     },
 ];

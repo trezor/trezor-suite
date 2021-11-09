@@ -5,27 +5,20 @@ import * as utils from './test.utils';
 describe('coinselect split', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            const inputs = utils.expand(f.inputs, true, f.inputLength);
-            const outputs = utils.expand(f.outputs as any, false, f.outputLength);
-            const expected = utils.addScriptLengthToExpected(
-                f.expected,
-                f.inputLength,
-                f.outputLength,
-            );
+            const inputs = utils.expand(f.inputs, true);
+            const outputs = utils.expand(f.outputs as any, false);
+            const expected = utils.addScriptLengthToExpected(f.expected);
             const options = {
-                txBaseLength: 11,
-                inputLength: f.inputLength,
-                changeOutputLength: f.outputLength,
+                txType: 'p2pkh',
                 dustThreshold: f.dustThreshold,
                 baseFee: f.baseFee,
                 floorBaseFee: f.floorBaseFee,
                 dustOutputFee: f.dustOutputFee,
-            };
-            const actual = split(inputs, outputs, f.feeRate as any, options);
-
+            } as const;
+            const actual = split(inputs, outputs, f.feeRate as number, options);
             expect(actual).toEqual(expected);
             if (actual.inputs) {
-                const feedback = split(actual.inputs, actual.outputs, f.feeRate as any, options);
+                const feedback = split(actual.inputs, actual.outputs, f.feeRate as number, options);
                 expect(feedback).toEqual(expected);
             }
         });

@@ -5,19 +5,13 @@ import * as utils from './test.utils';
 describe('coinselect: branchAndBound (bnb)', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            const inputs = utils.expand(f.inputs, true, f.inputLength);
-            const outputs = utils.expand(f.outputs, false, f.outputLength);
-            const expected = utils.addScriptLengthToExpected(
-                f.expected,
-                f.inputLength,
-                f.outputLength,
-            );
+            const inputs = utils.expand(f.inputs, true);
+            const outputs = utils.expand(f.outputs, false);
+            const expected = utils.addScriptLengthToExpected(f.expected);
             const options = {
-                txBaseLength: 11,
-                inputLength: f.inputLength,
-                changeOutputLength: f.outputLength,
+                txType: 'p2pkh',
                 dustThreshold: f.dustThreshold,
-            };
+            } as const;
 
             const actual = bnb(f.factor)(inputs, outputs, f.feeRate, options);
             expect(actual).toEqual(expected);

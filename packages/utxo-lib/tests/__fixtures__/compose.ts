@@ -30,9 +30,9 @@ export default [
             ],
         },
         result: {
-            bytes: 194,
+            bytes: 192,
             fee: '2001',
-            feePerByte: '10.314432989690722',
+            feePerByte: '10.421875',
             max: undefined,
             totalSpent: '102001',
             transaction: {
@@ -87,9 +87,9 @@ export default [
             ],
         },
         result: {
-            bytes: 194,
+            bytes: 192,
             fee: '2001',
-            feePerByte: '10.314432989690722',
+            feePerByte: '10.421875',
             max: undefined,
             totalSpent: '102001',
             type: 'nonfinal',
@@ -159,10 +159,10 @@ export default [
             ],
         },
         result: {
-            bytes: 194,
-            fee: '1940',
+            bytes: 192,
+            fee: '1920',
             feePerByte: '10',
-            max: '49999998060',
+            max: '49999998080',
             totalSpent: '50000000000',
             transaction: {
                 PERM_outputs: {
@@ -170,7 +170,7 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '49999998060',
+                            value: '49999998080',
                         },
                     ],
                 },
@@ -216,10 +216,10 @@ export default [
             ],
         },
         result: {
-            bytes: 194,
-            fee: '1940',
+            bytes: 192,
+            fee: '1920',
             feePerByte: '10',
-            max: '100061',
+            max: '100081',
             totalSpent: '102001',
             transaction: {
                 PERM_outputs: {
@@ -227,7 +227,7 @@ export default [
                     sorted: [
                         {
                             address: '1BitcoinEaterAddressDontSendf59kuE',
-                            value: '100061',
+                            value: '100081',
                         },
                     ],
                 },
@@ -380,11 +380,11 @@ export default [
             ],
         },
         result: {
-            bytes: 262,
-            fee: '2620',
+            bytes: 260,
+            fee: '2600',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '52620',
+            totalSpent: '52600',
             transaction: {
                 PERM_outputs: {
                     permutation: [1, 0, 2],
@@ -399,7 +399,7 @@ export default [
                         },
                         {
                             path: [44, 1, 1, 0],
-                            value: '49381',
+                            value: '49401',
                         },
                     ],
                 },
@@ -452,11 +452,11 @@ export default [
             ],
         },
         result: {
-            bytes: 199,
-            fee: '1990',
+            bytes: 198,
+            fee: '1980',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '51990',
+            totalSpent: '51980',
             transaction: {
                 PERM_outputs: {
                     permutation: [1, 0, 2],
@@ -471,7 +471,7 @@ export default [
                         },
                         {
                             path: [49, 0, 0, 1, 0],
-                            value: '50011',
+                            value: '50021',
                         },
                     ],
                 },
@@ -529,9 +529,9 @@ export default [
             ],
         },
         result: {
-            bytes: 194,
+            bytes: 192,
             fee: '2001',
-            feePerByte: '10.314432989690722',
+            feePerByte: '10.421875',
             max: undefined,
             totalSpent: '102001',
             transaction: {
@@ -636,9 +636,9 @@ export default [
             ],
         },
         result: {
-            bytes: 344,
+            bytes: 340,
             fee: '4002',
-            feePerByte: '11.633720930232558',
+            feePerByte: '11.770588235294118',
             max: undefined,
             totalSpent: '204002',
             transaction: {
@@ -706,11 +706,11 @@ export default [
             ],
         },
         result: {
-            bytes: 201,
-            fee: '2010',
+            bytes: 200,
+            fee: '2000',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '62010',
+            totalSpent: '62000',
             transaction: {
                 PERM_outputs: {
                     permutation: [1, 0, 2],
@@ -725,7 +725,7 @@ export default [
                         },
                         {
                             path: [44, 0, 1, 1, 0],
-                            value: '39991',
+                            value: '40001',
                         },
                     ],
                 },
@@ -773,9 +773,9 @@ export default [
             ],
         },
         result: {
-            bytes: 135,
+            bytes: 134,
             fee: '43503',
-            feePerByte: '322.24444444444447',
+            feePerByte: '324.64925373134326',
             max: undefined,
             totalSpent: '972463',
             transaction: {
@@ -830,11 +830,11 @@ export default [
             ],
         },
         result: {
-            bytes: 209,
-            fee: '2090',
+            bytes: 207,
+            fee: '2070',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '2090',
+            totalSpent: '2070',
             transaction: {
                 PERM_outputs: {
                     permutation: [0, 1],
@@ -847,7 +847,7 @@ export default [
                         },
                         {
                             path: [44, 1, 1, 0],
-                            value: '99911',
+                            value: '99931',
                         },
                     ],
                 },
@@ -897,11 +897,11 @@ export default [
             ],
         },
         result: {
-            bytes: 223,
-            fee: '2230',
+            bytes: 221,
+            fee: '2210',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '2230',
+            totalSpent: '2210',
             transaction: {
                 PERM_outputs: {
                     permutation: [1, 0, 2],
@@ -920,7 +920,7 @@ export default [
                         },
                         {
                             path: [44, 1, 1, 0],
-                            value: '99771',
+                            value: '99791',
                         },
                     ],
                 },
@@ -1026,9 +1026,9 @@ export default [
             ],
         },
         result: {
-            bytes: 192,
+            bytes: 190,
             fee: '2001',
-            feePerByte: '10.421875',
+            feePerByte: '10.531578947368422',
             max: undefined,
             totalSpent: '102001',
             transaction: {
@@ -1084,9 +1084,9 @@ export default [
             ],
         },
         result: {
-            bytes: 203,
+            bytes: 201,
             fee: '3001',
-            feePerByte: '14.783251231527094',
+            feePerByte: '14.930348258706468',
             max: undefined,
             totalSpent: '103001',
             transaction: {
@@ -1141,10 +1141,10 @@ export default [
             ],
         },
         result: {
-            bytes: 194,
-            fee: '1940',
+            bytes: 192,
+            fee: '1920',
             feePerByte: '10',
-            max: '100061',
+            max: '100081',
             totalSpent: '102001',
             type: 'nonfinal',
         },
@@ -1181,9 +1181,9 @@ export default [
             ],
         },
         result: {
-            bytes: 194,
+            bytes: 192,
             fee: '2001',
-            feePerByte: '10.314432989690722',
+            feePerByte: '10.421875',
             max: undefined,
             totalSpent: '102001',
             transaction: {
@@ -1256,11 +1256,11 @@ export default [
             ],
         },
         result: {
-            bytes: 528,
-            fee: '5280',
+            bytes: 522,
+            fee: '5220',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '105280',
+            totalSpent: '105220',
             transaction: {
                 PERM_outputs: {
                     permutation: [0, 1],
@@ -1270,7 +1270,7 @@ export default [
                             value: '100000',
                         },
                         {
-                            value: '402012',
+                            value: '402072',
                             path: [44, 1, 0, 1, 1],
                         },
                     ],
@@ -1348,11 +1348,11 @@ export default [
             ],
         },
         result: {
-            bytes: 351,
-            fee: '3510',
+            bytes: 348,
+            fee: '3480',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '103510',
+            totalSpent: '103480',
             transaction: {
                 PERM_outputs: {
                     permutation: [0, 1],
@@ -1362,7 +1362,7 @@ export default [
                             value: '100000',
                         },
                         {
-                            value: '402022',
+                            value: '402052',
                             path: [49, 1, 0, 1, 1],
                         },
                     ],
@@ -1456,17 +1456,17 @@ export default [
             ],
         },
         result: {
-            bytes: 378,
-            fee: '3780',
+            bytes: 374,
+            fee: '3740',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '103780',
+            totalSpent: '103740',
             transaction: {
                 PERM_outputs: {
                     permutation: [1, 0],
                     sorted: [
                         {
-                            value: '16802',
+                            value: '16842',
                             path: [44, 1, 0, 1, 1],
                         },
                         {
@@ -1538,11 +1538,11 @@ export default [
             ],
         },
         result: {
-            bytes: 378,
-            fee: '3780',
+            bytes: 374,
+            fee: '3740',
             feePerByte: '10',
             max: undefined,
-            totalSpent: '73780',
+            totalSpent: '73740',
             transaction: {
                 PERM_outputs: {
                     permutation: [0, 1],
@@ -1552,7 +1552,7 @@ export default [
                             value: '70000',
                         },
                         {
-                            value: '46802',
+                            value: '46842',
                             path: [44, 1, 0, 1, 1],
                         },
                     ],

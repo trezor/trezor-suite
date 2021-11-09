@@ -6,16 +6,14 @@ import * as utils from './test.utils';
 describe('coinselect errors', () => {
     fixturesErrors.forEach(f => {
         it(f.description, () => {
-            const { inputLength, outputLength, dustThreshold } = f;
-            const inputs = utils.expand(f.inputs, true, inputLength as any);
-            const outputs = utils.expand(f.outputs, false, outputLength as any);
+            const inputs = utils.expand(f.inputs, true);
+            const outputs = utils.expand(f.outputs, false);
 
             expect(() =>
                 coinselect(inputs, outputs, f.feeRate, {
-                    inputLength,
-                    changeOutputLength: outputLength,
-                    dustThreshold,
-                } as any),
+                    txType: 'p2pkh',
+                    dustThreshold: f.dustThreshold,
+                }),
             ).toThrowError(f.expected);
         });
     });
@@ -24,30 +22,20 @@ describe('coinselect errors', () => {
 describe('coinselect index', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            const { inputLength, outputLength, dustThreshold } = f;
+            const inputs = utils.expand(f.inputs as any, true);
+            const outputs = utils.expand(f.outputs as any, false);
+            const expected = utils.addScriptLengthToExpected(f.expected);
 
-            const inputs = utils.expand(f.inputs as any, true, inputLength);
-            const outputs = utils.expand(f.outputs as any, false, outputLength);
-            const expected = utils.addScriptLengthToExpected(f.expected, inputLength, outputLength);
-
-            const actual = coinselect(
-                inputs,
-                outputs,
-                f.feeRate as any,
-                {
-                    inputLength,
-                    changeOutputLength: outputLength,
-                    dustThreshold,
-                } as any, // txBaseLength is not provided intentionally to fallback on default values
-            );
+            const actual = coinselect(inputs, outputs, f.feeRate as number, {
+                txType: 'p2pkh',
+                dustThreshold: f.dustThreshold,
+            });
 
             expect(actual).toEqual(expected);
             if (actual.inputs) {
-                // @ts-ignore
-                const feedback = coinselect(actual.inputs, actual.outputs, f.feeRate as any, {
-                    inputLength,
-                    changeOutputLength: outputLength,
-                    dustThreshold,
+                const feedback = coinselect(actual.inputs, actual.outputs, f.feeRate as number, {
+                    txType: 'p2pkh',
+                    dustThreshold: f.dustThreshold,
                 });
                 expect(feedback).toEqual(expected);
             }

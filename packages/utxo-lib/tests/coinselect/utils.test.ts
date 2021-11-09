@@ -53,7 +53,6 @@ describe('coinselect utils', () => {
                     baseFee: 1000,
                     dustOutputFee: 1000,
                     dustThreshold: 9,
-                    inputLength: 0,
                 },
                 [
                     { value: '8', script: { length: 0 } },

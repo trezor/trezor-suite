@@ -5,23 +5,16 @@ import * as utils from './test.utils';
 describe('coinselect: accumulative', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            const inputs = utils.expand(f.inputs, true, f.inputLength);
-            // @ts-expect-error f.outputs may have invalid types
-            const outputs = utils.expand(f.outputs, false, f.outputLength);
-            const expected = utils.addScriptLengthToExpected(
-                f.expected,
-                f.inputLength,
-                f.outputLength,
-            );
+            const inputs = utils.expand(f.inputs, true);
+            const outputs = utils.expand(f.outputs as any, false);
+            const expected = utils.addScriptLengthToExpected(f.expected);
             const options = {
-                txBaseLength: 11,
-                inputLength: f.inputLength,
-                changeOutputLength: f.outputLength,
+                txType: 'p2pkh',
                 dustThreshold: f.dustThreshold,
                 baseFee: f.baseFee,
                 floorBaseFee: f.floorBaseFee,
                 dustOutputFee: f.dustOutputFee,
-            };
+            } as const;
 
             const actual = accumulative(inputs, outputs, f.feeRate as any, options);
 
