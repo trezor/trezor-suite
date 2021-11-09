@@ -7,60 +7,110 @@ import type {
     CoinSelectOutputFinal,
 } from './index';
 
-// baseline estimates, used to improve performance
-// 4 nVersion + 1 inputs count, 1 outputs count, 4 nLocktime, 1 witness
-const TX_BASE_LENGTH = 11; // 4 + 1 + 1 + 4 + 1;
-// 32 prevhash, 4 idx, 4 sequence, 1 script size
-const TX_INPUT_BASE = 41; // 32 + 4 + 4 + 1
-// 8 amount, 1 script size
-const TX_OUTPUT_BASE = 9; // 8 + 1;
 export const ZERO = new BN(0);
 
-type VinVout = { script?: { length: number } };
+// TODO: p2ms, external, p2wsh. currently not used in suite/connect.
+export const INPUT_SCRIPT_LENGTH = {
+    p2pkh: 108, //  1 + 72 (DER signature) + 1 + 33 (PUBKEY) + 1 script varInt size
+    p2sh: 107, //   1 + 72 (DER signature) + 1 + 33 (PUBKEY)
+    p2tr: 65, //    1 + 64 (SCHNORR signature)
+    p2wpkh: 107, // 1 + 72 (DER signature) + 1 + 33 (PUBKEY)
+} as const;
 
-export function inputBytes(input: VinVout) {
-    if (!input.script?.length) {
-        throw new Error('Null script length');
+export const OUTPUT_SCRIPT_LENGTH = {
+    p2pkh: 25,
+    p2sh: 23,
+    p2tr: 34,
+    p2wpkh: 22,
+    p2wsh: 34,
+} as const;
+
+export type TxType = keyof typeof INPUT_SCRIPT_LENGTH;
+
+const SEGWIT_INPUT_SCRIPT_TYPES: TxType[] = ['p2sh', 'p2tr', 'p2wpkh'];
+
+// transaction header + footer: 4 byte version, 4 byte lock time
+const TX_BASE = 32; // 4 * (4 + 4)
+
+// transaction input size (without script): 32 prevhash, 4 idx, 4 sequence
+const INPUT_SIZE = 160; // 4 * (32 + 4 + 4)
+
+type Vin = { type: CoinSelectInput['type']; script: { length: number }; weight?: number };
+type VinVout = { script: { length: number }; weight?: number };
+
+export function getVarIntSize(length: number) {
+    if (length < 253) return 1;
+    if (length < 65536) return 3;
+    return 5;
+}
+
+export function inputWeight(input: Vin) {
+    if (input.weight) return input.weight; // weight may be pre-calculated. see ../compose/utils convertInput
+    let weight = INPUT_SIZE;
+    if (!SEGWIT_INPUT_SCRIPT_TYPES.includes(input.type)) {
+        weight += 4 * input.script.length;
+    } else {
+        if (input.type === 'p2sh') {
+            // script sig. size
+            weight += 4 * (2 + 22);
+        } else {
+            weight += 4; // empty script_sig (1 byte)
+        }
+        weight += 1 + input.script.length; // discounted witness
     }
-    return TX_INPUT_BASE + input.script.length;
+    return weight;
+}
+
+export function inputBytes(input: Vin) {
+    return Math.ceil(inputWeight(input) / 4);
+}
+
+export function outputWeight(output: VinVout) {
+    if (output.weight) return output.weight; // weight may be pre-calculated. see ../compose/utils convertOutput
+    return 4 * (8 + 1 + output.script.length);
 }
 
 export function outputBytes(output: VinVout) {
-    if (!output.script?.length) {
-        throw new Error('Null script length');
-    }
-    return TX_OUTPUT_BASE + output.script.length;
+    return Math.ceil(outputWeight(output) / 4);
 }
 
-export function transactionBytes(
-    inputs: VinVout[],
-    outputs: VinVout[],
-    baseLength = TX_BASE_LENGTH,
-) {
-    return (
-        baseLength +
-        inputs.reduce((a, x) => a + inputBytes(x), 0) +
-        outputs.reduce((a, x) => a + outputBytes(x), 0)
+export function transactionWeight(inputs: Vin[], outputs: VinVout[]) {
+    const segwitInputs = inputs.reduce(
+        (x, i) => x + (SEGWIT_INPUT_SCRIPT_TYPES.includes(i.type) ? 1 : 0),
+        0,
     );
+
+    return (
+        TX_BASE +
+        4 * getVarIntSize(inputs.length) +
+        inputs.reduce((x, i) => x + inputWeight(i), 0) +
+        4 * getVarIntSize(outputs.length) +
+        outputs.reduce((x, o) => x + outputWeight(o), 0) +
+        (segwitInputs ? 2 + (inputs.length - segwitInputs) : 0)
+    );
+}
+
+export function transactionBytes(inputs: Vin[], outputs: VinVout[]) {
+    return Math.ceil(transactionWeight(inputs, outputs) / 4);
 }
 
 export function dustThreshold(feeRate: number, options: CoinSelectOptions) {
     const size = transactionBytes(
         [
             {
+                type: options.txType,
                 script: {
-                    length: options.inputLength,
+                    length: INPUT_SCRIPT_LENGTH[options.txType],
                 },
             },
         ],
         [
             {
                 script: {
-                    length: options.changeOutputLength,
+                    length: OUTPUT_SCRIPT_LENGTH[options.txType],
                 },
             },
         ],
-        options.txBaseLength,
     );
     const price = size * feeRate;
     return Math.max(options.dustThreshold, price);
@@ -141,8 +191,10 @@ export function finalize(
     feeRate: number,
     options: CoinSelectOptions,
 ) {
-    const bytesAccum = transactionBytes(inputs, outputs, options.txBaseLength);
-    const blankOutputBytes = outputBytes({ script: { length: options.changeOutputLength } });
+    const bytesAccum = transactionBytes(inputs, outputs);
+    const blankOutputBytes = outputBytes({
+        script: { length: OUTPUT_SCRIPT_LENGTH[options.txType] },
+    });
     const fee = getFee(feeRate, bytesAccum, options, outputs);
     const feeAfterExtraOutput = getFee(feeRate, bytesAccum + blankOutputBytes, options, outputs);
     const sumInputs = sumOrNaN(inputs);
@@ -168,7 +220,7 @@ export function finalize(
         finalOutputs.push({
             value: remainderAfterExtraOutput.toString(),
             script: {
-                length: options.changeOutputLength,
+                length: OUTPUT_SCRIPT_LENGTH[options.txType],
             },
         });
     }

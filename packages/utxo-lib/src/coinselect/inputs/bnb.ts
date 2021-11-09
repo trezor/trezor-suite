@@ -114,24 +114,23 @@ export function bnb(factor: number): CoinSelectAlgorithm {
         if (options.baseFee) return { fee: 0 }; // TEMP: disable bnb algorithm for DOGE
         if (utxos.find(u => u.required)) return { fee: 0 }; // TODO: enable bnb algorithm if required utxos are defined
 
-        const { inputLength, changeOutputLength } = options;
-
         const costPerChangeOutput =
             utils.outputBytes({
                 script: {
-                    length: changeOutputLength,
+                    length: utils.OUTPUT_SCRIPT_LENGTH[options.txType],
                 },
             }) * feeRate;
 
         const costPerInput =
             utils.inputBytes({
+                type: options.txType,
                 script: {
-                    length: inputLength,
+                    length: utils.INPUT_SCRIPT_LENGTH[options.txType],
                 },
             }) * feeRate;
 
         const costOfChange = Math.floor((costPerInput + costPerChangeOutput) * factor);
-        const txBytes = utils.transactionBytes([], outputs, options.txBaseLength);
+        const txBytes = utils.transactionBytes([], outputs);
         const bytesAndFee = feeRate * txBytes;
 
         const outSum = utils.sumOrNaN(outputs);

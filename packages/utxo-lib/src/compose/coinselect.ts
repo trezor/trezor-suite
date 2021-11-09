@@ -44,11 +44,8 @@ export function coinselect(
 ): Result {
     const inputs0 = utils.convertInputs(utxos, height, txType);
     const outputs0 = utils.convertOutputs(rOutputs, network, txType);
-    const txBaseLength = utils.getTxBaseLength(utxos, rOutputs, txType);
     const options: CoinSelectOptions = {
-        txBaseLength,
-        inputLength: utils.INPUT_SCRIPT_LENGTH[txType],
-        changeOutputLength: utils.OUTPUT_SCRIPT_LENGTH[txType],
+        txType,
         dustThreshold,
         baseFee,
         floorBaseFee,
@@ -78,7 +75,7 @@ export function coinselect(
         .add(new BN(fee))
         .toString();
 
-    const bytes = transactionBytes(inputs, outputs, txBaseLength);
+    const bytes = transactionBytes(inputs, outputs);
     const feePerByte = fee / bytes;
 
     return {

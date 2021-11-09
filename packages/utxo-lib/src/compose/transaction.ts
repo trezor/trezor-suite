@@ -12,13 +12,19 @@ export type ComposedTxOutput =
     | {
           path: number[];
           value: string;
+          address?: typeof undefined;
+          opReturnData?: typeof undefined;
       }
     | {
           address: string;
           value: string;
+          path?: typeof undefined;
+          opReturnData?: typeof undefined;
       }
     | {
           opReturnData: Buffer;
+          path?: typeof undefined;
+          address?: typeof undefined;
           value?: typeof undefined;
       };
 
