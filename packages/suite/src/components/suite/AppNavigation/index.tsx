@@ -189,7 +189,7 @@ const StyledDropdown = styled(Dropdown)`
     background: ${props => props.theme.BG_SECONDARY};
     width: 38px;
     height: 38px;
-    border-radius: 4px;
+    border-radius: 8px;
     & > :first-child {
         width: 100%;
         height: 100%;

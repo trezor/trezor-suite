@@ -177,6 +177,7 @@ const Heading = styled(H1)<HeadingProps>`
     word-break: break-word;
     padding: ${props => (props.noHeadingPadding ? '0px' : '28px 32px 22px 32px')};
     margin-bottom: ${props => (props.showProgressBar ? 0 : '20px')};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     border-bottom: ${props =>
         props.showHeaderBorder ? `1px solid ${props.theme.STROKE_GREY}` : 'none'};
