@@ -30,6 +30,7 @@
     },
     "scripts": {
         "dev": "webpack serve --config ./webpack/dev.js",
+        "dev:electrum": "ts-node ./src/workers/electrum/devrun.ts",
         "dev:module": "USE_MODULES=true webpack serve --config ./webpack/dev.js",
         "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json && tsc --p ./tsconfig.workers.json",
         "build:workers": "rimraf build && yarn build:workers-web && yarn build:workers-module",

@@ -1,0 +1,29 @@
+diff --git a/node_modules/trezor-connect/lib/backend/BlockchainLink.js b/node_modules/trezor-connect/lib/backend/BlockchainLink.js
+index 765cf6b..63e79d6 100644
+--- a/node_modules/trezor-connect/lib/backend/BlockchainLink.js
++++ b/node_modules/trezor-connect/lib/backend/BlockchainLink.js
+@@ -38,6 +38,9 @@ var getWorker = function getWorker(type) {
+     case 'blockfrost':
+       return _workers.BlockfrostWorker;
+ 
++    case 'electrum':
++      return _workers.ElectrumWorker;
++
+     default:
+       return null;
+   }
+diff --git a/node_modules/trezor-connect/lib/env/node/workers.js b/node_modules/trezor-connect/lib/env/node/workers.js
+index 4ca7840..f2c38cb 100644
+--- a/node_modules/trezor-connect/lib/env/node/workers.js
++++ b/node_modules/trezor-connect/lib/env/node/workers.js
+@@ -16,6 +16,10 @@ exports.RippleWorker = _ripple["default"];
+ var _blockfrost = _interopRequireDefault(require("@trezor/blockchain-link/lib/workers/blockfrost"));
+ 
+ exports.BlockfrostWorker = _blockfrost["default"];
++
++var _electrum = _interopRequireDefault(require("@trezor/blockchain-link/lib/workers/electrum"));
++
++exports.ElectrumWorker = _electrum["default"];
+ var WebUsbPlugin = undefined;
+ exports.WebUsbPlugin = WebUsbPlugin;
+ var ReactNativeUsbPlugin = undefined;
