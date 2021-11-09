@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useHotkeys, useIsHotkeyPressed } from 'react-hotkeys-hook';
 import { ANIMATION } from '@suite-config';
-import { useKeyPress, setCaretPosition } from '@suite-utils/dom';
+import { setCaretPosition } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
 import { Button, useTheme, variables, Input, Tooltip, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
@@ -170,30 +171,37 @@ const PassphraseTypeCard = (props: Props) => {
     const [enabled, setEnabled] = useState(!props.authConfirmation);
     const [showPassword, setShowPassword] = useState(false);
     const [hiddenWalletTouched, setHiddenWalletTouched] = useState(false);
-    const enterPressed = useKeyPress('Enter');
-    const backspacePressed = useKeyPress('Backspace');
-    const deletePressed = useKeyPress('Delete');
+    const isHotkeyPressed = useIsHotkeyPressed();
 
     const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
 
     const isTooLong = countBytesInString(value) > MAX_LENGTH.PASSPHRASE;
 
-    const submit = (value: string, passphraseOnDevice?: boolean) => {
-        if (!enabled) return;
-        props.onSubmit(value, passphraseOnDevice);
-    };
+    const { onSubmit } = props;
+    const submit = useCallback(
+        (value: string, passphraseOnDevice?: boolean) => {
+            if (!enabled) return;
+            onSubmit(value, passphraseOnDevice);
+        },
+        [enabled, onSubmit],
+    );
 
-    if (enterPressed) {
-        // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
-        // In case of two-col modal (selecting between standard and hidden wallet)
-        // only the hidden wallet part handle the enter press.
-        if (props.singleColModal || props.type === 'hidden') {
-            if (!isTooLong) {
+    const canSubmit = (props.singleColModal || props.type === 'hidden') && !isTooLong;
+
+    // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
+    // In case of two-col modal (selecting between standard and hidden wallet)
+    // only the hidden wallet part handle the enter press.
+    useHotkeys(
+        'enter',
+        () => {
+            if (canSubmit) {
                 submit(value);
             }
-        }
-    }
+        },
+        { enableOnTags: ['INPUT'] },
+        [canSubmit, submit, value],
+    );
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const tmpValue = event.target.value;
@@ -223,7 +231,7 @@ const PassphraseTypeCard = (props: Props) => {
         }
         if (len < newValue.length) {
             // Check if last keypress was backspace or delete
-            if (backspacePressed || deletePressed) {
+            if (isHotkeyPressed('backspace') || isHotkeyPressed('delete')) {
                 newValue.splice(pos, diff);
             } else {
                 // Highlighted and replaced portion of the passphrase
