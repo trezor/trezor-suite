@@ -146,15 +146,16 @@ export const filterTokenTransfers = (
                     amount = sumVinVout(incomingForOutput, '0');
                 }
 
-                if (amount === '0') return null;
+                // fingerprint is always defined on tokens
+                if (amount === '0' || !asset.fingerprint) return null;
 
                 const { assetName } = parseAsset(token);
                 transfers.push({
                     type,
-                    name: asset.fingerprint!,
-                    symbol: assetName || asset.fingerprint!, // fingerprint is always defined on tokens
-                    address: asset.fingerprint!,
-                    decimals: 0,
+                    name: asset.fingerprint,
+                    symbol: assetName || asset.fingerprint,
+                    address: asset.fingerprint,
+                    decimals: asset.decimals,
                     amount: amount.toString(),
                     from:
                         type === 'sent' || type === 'self'
@@ -239,9 +240,9 @@ export const transformTransaction = (
     return {
         type,
         txid: blockfrostTxData.txHash,
-        blockTime: blockfrostTxData.blockInfo.time,
-        blockHeight: blockfrostTxData.blockInfo.height || undefined,
-        blockHash: blockfrostTxData.blockInfo.hash,
+        blockTime: blockfrostTxData.txData.block_time,
+        blockHeight: blockfrostTxData.txData.block_height || undefined,
+        blockHash: blockfrostTxData.txData.block,
         amount,
         fee,
         totalSpent,

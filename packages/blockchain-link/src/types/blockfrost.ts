@@ -49,6 +49,8 @@ type TxContent = {
     block: string;
     /** Block number */
     block_height: number;
+    /** Block time */
+    block_time: number;
     /** Slot number */
     slot: number;
     /** Transaction index within the block */
@@ -147,7 +149,6 @@ export interface BlockfrostTransaction {
     txHash: string;
     txUtxos: TxContentUtxo;
     txData: TxContent;
-    blockInfo: BlockContent;
 }
 
 export interface BlockfrostAccountInfo {
