@@ -3,6 +3,7 @@ import { Permutation } from '../src/compose/permutation';
 import { reverseBuffer } from '../src/bufferutils';
 import * as NETWORKS from '../src/networks';
 
+import { verifyTxBytes } from './compose.utils';
 import fixtures from './__fixtures__/compose';
 import fixturesCrossCheck from './__fixtures__/compose.crosscheck';
 
@@ -13,10 +14,10 @@ const getNetwork = (name?: string) =>
 
 describe('composeTx', () => {
     fixtures.forEach(f => {
-        const { description } = f;
-        const request = { ...f.request, network: getNetwork(f.request.network) };
+        const network = getNetwork(f.request.network);
+        const request = { ...f.request, network };
         const result: any = { ...f.result };
-        it(description, () => {
+        it(f.description, () => {
             if (result.transaction) {
                 result.transaction.inputs.forEach((oinput: any) => {
                     const input = oinput;
@@ -34,13 +35,19 @@ describe('composeTx', () => {
                 result.transaction.outputs = new Permutation(sorted, o.permutation);
                 delete result.transaction.PERM_outputs;
             }
-            expect(composeTx(request as any)).toEqual(result);
+
+            const tx = composeTx(request as any);
+            expect(tx).toEqual(result);
+
+            if (tx.type === 'final') {
+                verifyTxBytes(tx, f.request.txType as any, network);
+            }
         });
     });
 });
 
 describe('composeTx addresses cross-check', () => {
-    const txTypes = ['p2pkh', 'p2sh', 'p2tr', 'p2wpkh'];
+    const txTypes = ['p2pkh', 'p2sh', 'p2tr', 'p2wpkh'] as const;
     const addrTypes = {
         p2pkh: '1BitcoinEaterAddressDontSendf59kuE',
         p2sh: '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr',
@@ -48,25 +55,44 @@ describe('composeTx addresses cross-check', () => {
         p2wpkh: 'bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d',
         p2wsh: 'bc1q6rgl33d3s9dugudw7n68yrryajkr3ha9q8q24j20zs62se4q9tsqdy0t2q',
     };
+    const addrKeys = Object.keys(addrTypes) as Array<keyof typeof addrTypes>;
     fixturesCrossCheck.forEach(f => {
         txTypes.forEach(txType => {
-            Object.keys(addrTypes).forEach(addressType => {
-                const key = `${txType}-${addressType}`;
+            // skip test for each addressType if there is nothing to replace (example: 7 inputs test)
+            const offset = f.request.outputs.find(o => o.address === 'replace-me')
+                ? addrKeys.length
+                : 1;
+
+            addrKeys.slice(0, offset).forEach(addressType => {
+                const key = `${txType}-${addressType}` as keyof typeof f.result;
                 it(`${key} ${f.description}`, () => {
-                    expect(
-                        composeTx({
-                            ...f.request,
-                            network: NETWORKS.bitcoin,
-                            txType,
-                            outputs: f.request.outputs.map(o => ({
-                                ...o,
-                                address:
-                                    // @ts-ignore addressType is string
-                                    o.address === 'replace-me' ? addrTypes[addressType] : o.address,
-                            })),
-                        } as any),
-                        // @ts-ignore key is string
-                    ).toMatchObject(f.result[key]);
+                    const tx = composeTx({
+                        ...f.request,
+                        network: NETWORKS.bitcoin,
+                        txType,
+                        changeType: 'PAYTOADDRESS',
+                        outputs: f.request.outputs.map(o => {
+                            if (o.type === 'complete') {
+                                return {
+                                    ...o,
+                                    address:
+                                        o.address === 'replace-me'
+                                            ? addrTypes[addressType]
+                                            : addrTypes[o.address as keyof typeof addrTypes] ||
+                                              o.address,
+                                };
+                            }
+                            return o;
+                        }),
+                    } as any);
+
+                    if (tx.type !== 'final') throw new Error('Not final transaction!');
+
+                    expect(tx).toMatchObject(f.result[key]);
+
+                    expect(tx.transaction.inputs.length).toEqual(f.request.utxos.length);
+
+                    verifyTxBytes(tx, txType);
                 });
             });
         });
