@@ -1,3 +1,10 @@
+// todo: import from trezor-connect
+enum CardanoDerivationType {
+    LEDGER = 0,
+    ICARUS = 1,
+    ICARUS_TREZOR = 2,
+}
+
 const name = 'cardanoGetPublicKey';
 const docs = 'methods/cardanoGetPublicKey.md';
 const batch = [
@@ -13,6 +20,12 @@ const batch = [
         type: 'checkbox',
         defaultValue: true,
         value: true,
+    },
+    {
+        name: 'derivation_type',
+        label: 'Derivation type',
+        type: 'input',
+        value: CardanoDerivationType.ICARUS_TREZOR,
     },
 ];
 

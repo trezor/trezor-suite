@@ -1,34 +1,44 @@
+import { CardanoTxSigningMode } from 'trezor-connect';
+
+// todo: import from trezor-connect
+enum CardanoDerivationType {
+    LEDGER = 0,
+    ICARUS = 1,
+    ICARUS_TREZOR = 2,
+}
+
 const name = 'cardanoSignTransaction';
 const docs = 'methods/cardanoSignTransaction.md';
 
-const tx = {
-    inputs: `[
-    {
-        path: "m/44'/1815'/0'/0/0",
-        prev_hash: "2effff328b76a8113e32a218f7af99e77768289c9201e8d26a9cda0edaf59bfd",
-        prev_index: 0,
-        type: 0
-    }
-]`,
-    outputs: `[
-    {
-        address: "2w1sdSJu3GVeNrv8NVHmWNBqK6ssW84An4pExajjdFgXx6k4gksoo6CP1qTwbE34qjKEHZtUKGxY1GMkApUnNEMwGPTgLc7Yghs",
-        amount: "1000000"
-    },
-    {
+// todo: taken from connect tests. make it sharable
+const SAMPLE_INPUTS = {
+    byron_input: {
         path: "m/44'/1815'/0'/0/1",
-        amount: "7120787"
-    }
-]`,
-    transactions: `[
-    "839f8200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a6008200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a601ff9f8282d818583e83581c3a043fc1baa52fe4df2be89c689c953a52e7c13e51551ef5a3ed1e3da101581a5818360a746c532b81f364ce25168befa6cb2e29d5eccc4883bc001a90ce7a581a007e86118282d818584283581cc52ea4de5aacc58e0fab8b1a55e8bc194c6fd22eebd93fab56cf2789a101581e581c8c44aea4dee0952907690336fa16773c53257ec002dbd219d3970747001a409c205e01ffa0",
-    "839f8200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a6008200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a601ff9f8282d818583e83581c3a043fc1baa52fe4df2be89c689c953a52e7c13e51551ef5a3ed1e3da101581a5818360a746c532b81f364ce25168befa6cb2e29d5eccc4883bc001a90ce7a581a007e86118282d818584283581cc52ea4de5aacc58e0fab8b1a55e8bc194c6fd22eebd93fab56cf2789a101581e581c8c44aea4dee0952907690336fa16773c53257ec002dbd219d3970747001a409c205e01ffa0",
-    "839f8200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a6008200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a601ff9f8282d818583e83581c3a043fc1baa52fe4df2be89c689c953a52e7c13e51551ef5a3ed1e3da101581a5818360a746c532b81f364ce25168befa6cb2e29d5eccc4883bc001a90ce7a581a007e86118282d818584283581cc52ea4de5aacc58e0fab8b1a55e8bc194c6fd22eebd93fab56cf2789a101581e581c8c44aea4dee0952907690336fa16773c53257ec002dbd219d3970747001a409c205e01ffa0",
-    "839f8200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a6008200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a601ff9f8282d818583e83581c3a043fc1baa52fe4df2be89c689c953a52e7c13e51551ef5a3ed1e3da101581a5818360a746c532b81f364ce25168befa6cb2e29d5eccc4883bc001a90ce7a581a007e86118282d818584283581cc52ea4de5aacc58e0fab8b1a55e8bc194c6fd22eebd93fab56cf2789a101581e581c8c44aea4dee0952907690336fa16773c53257ec002dbd219d3970747001a409c205e01ffa0",
-    "839f8200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a6008200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a601ff9f8282d818583e83581c3a043fc1baa52fe4df2be89c689c953a52e7c13e51551ef5a3ed1e3da101581a5818360a746c532b81f364ce25168befa6cb2e29d5eccc4883bc001a90ce7a581a007e86118282d818584283581cc52ea4de5aacc58e0fab8b1a55e8bc194c6fd22eebd93fab56cf2789a101581e581c8c44aea4dee0952907690336fa16773c53257ec002dbd219d3970747001a409c205e01ffa0",
-    "839f8200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a6008200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a601ff9f8282d818583e83581c3a043fc1baa52fe4df2be89c689c953a52e7c13e51551ef5a3ed1e3da101581a5818360a746c532b81f364ce25168befa6cb2e29d5eccc4883bc001a90ce7a581a007e86118282d818584283581cc52ea4de5aacc58e0fab8b1a55e8bc194c6fd22eebd93fab56cf2789a101581e581c8c44aea4dee0952907690336fa16773c53257ec002dbd219d3970747001a409c205e01ffa0",
-    "839f8200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a6008200d81858248258208f088493a600c7d897ef89caeb060e8e8137a1e5aa52e32f6262ec5a087341a601ff9f8282d818583e83581c3a043fc1baa52fe4df2be89c689c953a52e7c13e51551ef5a3ed1e3da101581a5818360a746c532b81f364ce25168befa6cb2e29d5eccc4883bc001a90ce7a581a007e86118282d818584283581cc52ea4de5aacc58e0fab8b1a55e8bc194c6fd22eebd93fab56cf2789a101581e581c8c44aea4dee0952907690336fa16773c53257ec002dbd219d3970747001a409c205e01ffa0",
-]`,
+        prev_hash: '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+        prev_index: 0,
+    },
+    shelley_input: {
+        path: "m/1852'/1815'/0'/0/0",
+        prev_hash: '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+        prev_index: 0,
+    },
+    external_input: {
+        path: undefined,
+        prev_hash: '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+        prev_index: 0,
+    },
+};
+
+const SAMPLE_OUTPUTS = {
+    simple_byron_output: {
+        address: 'Ae2tdPwUPEZCanmBz5g2GEwFqKTKpNJcGYPKfDxoNeKZ8bRHr8366kseiK2',
+        amount: '3003112',
+    },
+};
+
+const tx = {
+    inputs: [SAMPLE_INPUTS.byron_input],
+    outputs: [SAMPLE_OUTPUTS.simple_byron_output],
 };
 
 export default [
@@ -39,25 +49,42 @@ export default [
         submitButton: 'Sign transaction',
         fields: [
             {
-                name: 'protocol_magic',
+                name: 'protocolMagic',
                 label: 'Protocol magic',
                 type: 'number',
                 value: 764824073,
             },
             {
+                name: 'networkId',
+                label: 'Network id',
+                type: 'number',
+                value: 1,
+            },
+            {
                 name: 'inputs',
                 type: 'json',
-                value: tx.inputs,
+                value: JSON.stringify(tx.inputs),
             },
             {
                 name: 'outputs',
                 type: 'json',
-                value: tx.outputs,
+                value: JSON.stringify(tx.outputs),
             },
             {
-                name: 'transactions',
-                type: 'json',
-                value: tx.transactions,
+                name: 'signingMode',
+                type: 'number',
+                value: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            {
+                name: 'fee',
+                type: 'input',
+                value: '42',
+            },
+            {
+                name: 'derivation_type',
+                label: 'Derivation type',
+                type: 'input',
+                value: CardanoDerivationType.ICARUS_TREZOR,
             },
         ],
     },

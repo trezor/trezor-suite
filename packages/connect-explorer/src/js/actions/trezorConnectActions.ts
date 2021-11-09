@@ -35,8 +35,8 @@ export const init =
         });
 
         const connectOptions = {
-            // connectSrc: 'https://localhost:8088/',
-            connectSrc: 'https://connect.trezor.io/8/',
+            connectSrc: 'https://localhost:8088/',
+            // connectSrc: 'https://connect.trezor.io/8/',
             webusb: true,
             transportReconnect: true,
             popup: true,
