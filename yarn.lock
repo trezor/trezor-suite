@@ -25181,12 +25181,13 @@ tree-kill@^1.2.1, tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-trezor-address-validator@^0.3.22:
-  version "0.3.22"
-  resolved "https://registry.yarnpkg.com/trezor-address-validator/-/trezor-address-validator-0.3.22.tgz#1769d1338c2d5c2a5b67ea04b1758563c2bf1c7a"
-  integrity sha512-98G8Y3q7WbkjmSYOT0RN088OJhRbPb4lncPQ+6v1jh+O48G5q5xUxE38Jvq6J1DJLsI3Qx1FHuO6vUXrOfs4Ow==
+trezor-address-validator@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/trezor-address-validator/-/trezor-address-validator-0.4.0.tgz#691e2e48b6e7b331596f0a884b357b0fe10e53d4"
+  integrity sha512-yr7lamnEjHvxVEk+EcSFCdKxrWBeYL+LfKmqYLcj89qEJLsvF7Ncwqug5I1INtTgJx0GpZNUJupcroOJM/0mSQ==
   dependencies:
     base-x "^3.0.7"
+    bech32 "^2.0.0"
     browserify-bignum "^1.3.0-2"
     cbor-js "^0.1.0"
     crc "^3.8.0"

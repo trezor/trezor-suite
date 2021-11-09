@@ -13,23 +13,32 @@ describe('validation', () => {
         // BTC valid
         expect(isAddressValid('12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y', 'btc')).toEqual(true);
         expect(isAddressValid('3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn', 'btc')).toEqual(true);
-        expect(isAddressValid('bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj', 'btc')).toEqual(true);
-        expect(
-            isAddressValid(
-                'bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx',
-                'btc',
-            ),
-        ).toEqual(true);
-        expect(isAddressValid('BC1SW50QA3JX3S', 'btc')).toEqual(true);
         expect(isAddressValid('BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4', 'btc')).toEqual(true);
+        expect(isAddressValid('bc1qafk4yhqvj4wep57m62dgrmutldusqde8adh20d', 'btc')).toEqual(true); // p2pkh
+        expect(
+            isAddressValid('bc1q6rgl33d3s9dugudw7n68yrryajkr3ha9q8q24j20zs62se4q9tsqdy0t2q', 'btc'),
+        ).toEqual(true); // p2wsh
+        expect(
+            isAddressValid('bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr', 'btc'),
+        ).toEqual(true); // p2tr
 
         // BTC invalid
         expect(isAddressValid('mzBc4XEFSdzCDcTxAgf6EZXgsZWpztRhef', 'btc')).toEqual(false);
         expect(isAddressValid('2MxKEf2su6FGAUfCEAHreGFQvEYrfYNHvL7', 'btc')).toEqual(false);
         expect(isAddressValid('bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5', 'btc')).toEqual(false);
+        expect(isAddressValid('bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj', 'btc')).toEqual(false); // p2w-unknown
         expect(
             isAddressValid('tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7', 'btc'),
         ).toEqual(false); // testnet address
+        expect(isAddressValid('BC1SW50QA3JX3S', 'btc')).toEqual(false); // p2w-unknown
+        expect(isAddressValid('bc1zw508d6qejxtdg4y5r3zarvaryvaxxpcs', 'btc')).toEqual(false); // version 2
+        expect(isAddressValid('BC1SW50QGDZ25J', 'btc')).toEqual(false); // version 16
+        expect(
+            isAddressValid(
+                'bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx',
+                'btc',
+            ),
+        ).toEqual(false); // p2w-unknown
 
         // TEST valid
         expect(isAddressValid('mzBc4XEFSdzCDcTxAgf6EZXgsZWpztRhef', 'test')).toEqual(true);
@@ -40,6 +49,18 @@ describe('validation', () => {
                 'test',
             ),
         ).toEqual(true);
+        expect(
+            isAddressValid(
+                'tb1qusxlgq9quu27ucxs7a2fg8nv0pycdzvxsjk9npyupupxw3y892ssaskm8v',
+                'test',
+            ),
+        ).toEqual(true); // p2wsh
+        expect(
+            isAddressValid(
+                'tb1pn2d0yjeedavnkd8z8lhm566p0f2utm3lgvxrsdehnl94y34txmts5s7t4c',
+                'test',
+            ),
+        ).toEqual(true); // taproot
         expect(isAddressValid('GSa5espVLNseXEfKt46zEdS6jrPkmFghBU', 'test')).toEqual(true); // regtest
 
         // TEST invalid
