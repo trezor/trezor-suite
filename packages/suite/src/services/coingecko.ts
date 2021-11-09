@@ -65,17 +65,11 @@ const fetchCoinGecko = async (url: string) => {
     }
 };
 
-const getTickerConfig = (ticker: TickerId) => {
+export const getTickerConfig = (ticker: TickerId) =>
     // for token find its main network
-    const config = FIAT_CONFIG.tickers.find(t =>
+    FIAT_CONFIG.tickers.find(t =>
         ticker.tokenAddress ? t.symbol === ticker.mainNetworkSymbol : t.symbol === ticker.symbol,
     );
-
-    if (!config) {
-        console.error('buildCoinUrl: cannot find ticker config for ', ticker);
-    }
-    return config;
-};
 
 /**
  * Build coinUrl using defined coin ids
@@ -85,7 +79,10 @@ const getTickerConfig = (ticker: TickerId) => {
  */
 const buildCoinUrl = (ticker: TickerId) => {
     const config = getTickerConfig(ticker);
-    if (!config) return null;
+    if (!config) {
+        console.error('buildCoinUrl: cannot find ticker config for ', ticker);
+        return null;
+    }
 
     return `${COINGECKO_API_BASE_URL}/coins/${config.coingeckoId}`;
 };

@@ -13,6 +13,7 @@ import {
 import { Account } from '@wallet-types';
 import { GraphRange, GraphScale, GraphData } from '@wallet-types/graph';
 import {
+    ensureHistoryRates,
     accountGraphDataFilterFn,
     deviceGraphDataFilterFn,
     enhanceBlockchainAccountHistory,
@@ -87,8 +88,10 @@ export const fetchAccountGraphData =
         });
 
         if (response?.success) {
+            const responseWithRates = await ensureHistoryRates(account.symbol, response.payload);
+
             const enhancedResponse = enhanceBlockchainAccountHistory(
-                response.payload,
+                responseWithRates,
                 account.symbol,
             );
 
