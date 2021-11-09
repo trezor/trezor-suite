@@ -61,7 +61,7 @@
         "redux-thunk": "^2.3.0",
         "semver": "^7.3.5",
         "styled-components": "5.1.1",
-        "trezor-address-validator": "^0.3.22",
+        "trezor-address-validator": "^0.4.0",
         "trezor-connect": "8.2.2-beta.4",
         "ua-parser-js": "^0.7.28",
         "uuid": "^8.3.2",
