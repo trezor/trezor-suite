@@ -100,7 +100,7 @@ export const THEME = {
 
         GRADIENT_SKELETON_START: '#272729',
         // these gradients are used on transaction graph only
-        GRADIENT_GREEN_START: '#559c3d',
+        GRADIENT_GREEN_START: '#00854D',
         GRADIENT_GREEN_END: '#5fa548',
         GRADIENT_RED_START: '#d15b5b', // same as in light theme
         GRADIENT_RED_END: '#e75f5f', // same as in light theme
@@ -158,7 +158,7 @@ export const THEME = {
 
         GRADIENT_SKELETON_START: '#272729',
         // these gradients are used on transaction graph only
-        GRADIENT_GREEN_START: '#559c3d',
+        GRADIENT_GREEN_START: '#00854D',
         GRADIENT_GREEN_END: '#5fa548',
         GRADIENT_RED_START: '#d15b5b', // same as in light theme
         GRADIENT_RED_END: '#e75f5f', // same as in light theme
