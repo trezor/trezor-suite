@@ -4,7 +4,13 @@ import { TOR_URLS } from '@suite-constants/tor';
  * returns tor url if tor url is request and tor url is available for given domain
  */
 export const getTorUrlIfAvailable = (url: string) => {
-    const { host, pathname } = new URL(url);
+    let parsed: URL;
+    try {
+        parsed = new URL(url);
+    } catch (e) {
+        return;
+    }
+    const { host, pathname } = parsed;
 
     // blog.trezor.io => [a = io], [b= trezor], [sub=blog]
     const [a, b, ...sub] = host.split('.').reverse();
@@ -22,7 +28,8 @@ export const getTorUrlIfAvailable = (url: string) => {
 export const toTorUrl = (url: string) => {
     const torUrl = getTorUrlIfAvailable(url);
     if (!torUrl) {
-        throw new Error(`tor url is not available for ${url}`);
+        console.warn(`tor url is not available for ${url}`);
+        return url;
     }
     return torUrl;
 };
