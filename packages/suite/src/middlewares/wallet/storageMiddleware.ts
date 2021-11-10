@@ -106,7 +106,7 @@ const storageMiddleware =
             }
 
             case SUITE.UPDATE_SELECTED_DEVICE:
-                if (isDeviceRemembered(action.payload)) {
+                if (isDeviceRemembered(action.payload) && action.payload.mode === 'normal') {
                     storageActions.saveDevice(action.payload);
                 }
                 break;
