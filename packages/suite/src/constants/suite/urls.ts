@@ -1,6 +1,3 @@
-export const CHANGELOG_MARKDOWN_URL =
-    'https://raw.githubusercontent.com/trezor/trezor-suite/releases/CHANGELOG.md';
-
 export const TREZOR_URL = 'https://trezor.io';
 export const TREZOR_COINS_URL = 'https://trezor.io/coins/';
 export const SUPPORT_URL = 'https://trezor.io/support/';
@@ -17,8 +14,6 @@ export const USER_MANUAL_URL = 'https://wiki.trezor.io/User_manual';
 export const TOS_URL = 'https://data.trezor.io/legal/wallet-terms.pdf';
 export const TOS_INVITY_URL = 'https://data.trezor.io/legal/invity-terms-of-use.pdf';
 export const SEED_MANUAL_URL = 'https://wiki.trezor.io/Recovery_seed';
-export const PHISHING_URL =
-    'https://blog.trezor.io/phishing-attacks-used-to-steal-your-coins-recommended-reading-a39c0679c55d';
 export const SOCIAL_TWITTER_URL = 'https://twitter.com/trezor';
 export const SOCIAL_FACEBOOK_URL = 'https://www.facebook.com/trezor.io';
 export const TREZOR_RESELLERS_URL = 'https://trezor.io/resellers/';
@@ -29,8 +24,6 @@ export const RECOVERY_MODEL_ONE_URL = 'https://wiki.trezor.io/User_manual:Recove
 export const PASSWORD_MANAGER_URL = 'https://trezor.io/passwords/';
 export const TROUBLESHOOTER_URL = 'https://trezor.io/support/#technical-technical-issues';
 export const SATOSHILABS_URL = 'https://satoshilabs.com';
-export const TRANSLATIONS_MANUAL_URL =
-    'https://wiki.trezor.io/Developers_guide:CrowdIn.com_-_A_tool_for_translation';
 export const XRP_MANUAL_URL = 'https://wiki.trezor.io/Ripple_(XRP)';
 export const BCH_ADDRESS_INFO_URL = 'https://wiki.trezor.io/CashAddr#cashaddr';
 export const LTC_ADDRESS_INFO_URL =
@@ -50,7 +43,6 @@ export const WIKI_UDEV_RULES = 'https://wiki.trezor.io/Udev_rules';
 export const WIKI_TOR = 'https://wiki.trezor.io/Glossary:Tor';
 export const WIKI_HOW_TO_RUN = 'https://wiki.trezor.io/Apps:Trezor_Suite#How_to_run';
 export const WIKI_FW_DOWNGRADE = 'https://wiki.trezor.io/Firmware_downgrade';
-export const FEEDBACK_FORM = 'https://satoshilabs.typeform.com/to/Dqb71wm1';
 export const FIRMWARE_COMMIT_URL = 'https://github.com/trezor/trezor-firmware/commit/';
 export const FIRMWARE_BINARIES_URL =
     'https://github.com/trezor/webwallet-data/tree/master/firmware';
