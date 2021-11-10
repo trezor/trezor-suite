@@ -52,18 +52,15 @@ describe('tor', () => {
                 out: `http://${TOR_URLS['trezor.io']}/`,
             },
             {
-                desc: 'throws',
+                desc: 'returns original url',
                 in: 'https://google.com',
+                out: 'https://google.com',
             },
         ];
 
         fixtures.forEach(f => {
             it(f.desc, () => {
-                if (!f.out) {
-                    expect(() => toTorUrl(f.in)).toThrow();
-                } else {
-                    expect(toTorUrl(f.in)).toEqual(f.out);
-                }
+                expect(toTorUrl(f.in)).toEqual(f.out);
             });
         });
     });
