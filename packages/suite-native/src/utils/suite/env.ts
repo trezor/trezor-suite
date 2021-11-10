@@ -1,5 +1,4 @@
 import { Appearance, Platform, Dimensions } from 'react-native';
-import { SuiteThemeVariant } from '@suite-types';
 
 /**
  * override for suite/utils/env - getUserAgent

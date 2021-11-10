@@ -3,7 +3,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import type { SuiteThemeVariant, SuiteThemeVariantOptions } from '@suite-types';
+import type { SuiteThemeVariantOptions } from '@suite-types';
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();

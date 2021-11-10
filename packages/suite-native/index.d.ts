@@ -1,3 +1,5 @@
+/// <reference path="../suite/global.d.ts" />
+
 declare module '*.svg';
 
 // declare module '*.svg' {
