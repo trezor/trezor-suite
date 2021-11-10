@@ -249,6 +249,7 @@ const initialRun = [
                 initialWebRun: false,
                 discreetModeCompleted: false,
                 bech32BannerClosed: false,
+                taprootBannerClosed: false,
                 dashboardGraphHidden: false,
                 securityStepsHidden: false,
                 dashboardAssetsGridMode: false,

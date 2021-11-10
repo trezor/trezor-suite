@@ -2534,6 +2534,19 @@ export default defineMessages({
             'Efficient technology = <strong>pay up to 25% lower transactions fees</strong>',
         id: 'TR_BECH32_BANNER_POINT_2',
     },
+    TR_TAPROOT_BANNER_TITLE: {
+        defaultMessage: 'New to Trezor Suite: BTC Taproot accounts!',
+        id: 'TR_TAPROOT_BANNER_TITLE',
+    },
+    TR_TAPROOT_BANNER_POINT_1: {
+        defaultMessage:
+            'Lowercase letters only = <strong>lower chance of any reviewing errors</strong>',
+        id: 'TR_TAPROOT_BANNER_POINT_1',
+    },
+    TR_TAPROOT_BANNER_POINT_2: {
+        defaultMessage: 'Improved privacy for all Bitcoin transactions',
+        id: 'TR_TAPROOT_BANNER_POINT_2',
+    },
     TR_GOT_IT: {
         defaultMessage: 'Got it!',
         id: 'TR_GOT_IT',

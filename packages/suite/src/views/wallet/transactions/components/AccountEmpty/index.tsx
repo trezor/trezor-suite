@@ -7,6 +7,7 @@ import { Account } from '@wallet-types';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import Bech32Banner from './components/Bech32Banner';
+import TaprootBanner from './components/TaprootBanner';
 import { getBip43Shortcut } from '@wallet-utils/accountUtils';
 
 const Wrapper = styled.div`
@@ -67,7 +68,7 @@ interface Props {
 }
 
 const AccountEmpty = (props: Props) => {
-    const bech32BannerClosed = useSelector(state => state.suite.flags.bech32BannerClosed);
+    const { bech32BannerClosed, taprootBannerClosed } = useSelector(state => state.suite.flags);
     const { goto, setFlag } = useActions({
         goto: routerActions.goto,
         setFlag: suiteActions.setFlag,
@@ -82,6 +83,13 @@ const AccountEmpty = (props: Props) => {
                 <Bech32Banner
                     onClose={() => {
                         setFlag('bech32BannerClosed', true);
+                    }}
+                />
+            )}
+            {bip43 === 'taproot' && !taprootBannerClosed && (
+                <TaprootBanner
+                    onClose={() => {
+                        setFlag('taprootBannerClosed', true);
                     }}
                 />
             )}
