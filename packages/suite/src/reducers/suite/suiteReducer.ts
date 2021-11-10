@@ -25,6 +25,7 @@ interface Flags {
     // pinCompleted: boolean;
     // passphraseCompleted: boolean;
     bech32BannerClosed: boolean; // banner in account view informing about advantages of using Bech32
+    taprootBannerClosed: boolean; // banner in account view informing about advantages of using Taproot
     discreetModeCompleted: boolean; // dashboard UI, user tried discreet mode
     securityStepsHidden: boolean; // dashboard UI
     dashboardGraphHidden: boolean; // dashboard UI
@@ -73,6 +74,7 @@ const initialState: SuiteState = {
         // passphraseCompleted: false;
         discreetModeCompleted: false,
         bech32BannerClosed: false,
+        taprootBannerClosed: false,
         securityStepsHidden: false,
         dashboardGraphHidden: false,
         dashboardAssetsGridMode: false,
