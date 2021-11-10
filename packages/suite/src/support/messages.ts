@@ -4975,6 +4975,10 @@ export default defineMessages({
         defaultMessage: 'Address is not valid',
         id: 'RECIPIENT_IS_NOT_VALID',
     },
+    RECIPIENT_IS_NOT_SUPPORTED: {
+        defaultMessage: 'Unsupported address format.',
+        id: 'RECIPIENT_IS_NOT_SUPPORTED',
+    },
     RECIPIENT_FORMAT_DEPRECATED: {
         defaultMessage: 'Unsupported address format. {TR_LEARN_MORE}',
         id: 'RECIPIENT_FORMAT_DEPRECATED',
