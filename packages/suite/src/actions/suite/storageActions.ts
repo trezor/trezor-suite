@@ -281,6 +281,7 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
                 // TODO: maybe spread all flags and set flags that we don't want to save to undefined?
                 discreetModeCompleted: suite.flags.discreetModeCompleted,
                 bech32BannerClosed: suite.flags.bech32BannerClosed,
+                taprootBannerClosed: suite.flags.taprootBannerClosed,
                 securityStepsHidden: suite.flags.securityStepsHidden,
                 dashboardGraphHidden: suite.flags.dashboardGraphHidden,
                 dashboardAssetsGridMode: suite.flags.dashboardAssetsGridMode,
