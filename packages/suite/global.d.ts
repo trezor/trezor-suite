@@ -1,5 +1,7 @@
+type SuiteThemeVariant = 'light' | 'dark' | 'custom';
+
 // Interface for exposed Electron API (ipcRenderer)
-export interface DesktopApi {
+interface DesktopApi {
     on: (channel: string, func: (...args: any[]) => any) => void;
     once: (channel: string, func: (...args: any[]) => any) => void;
     removeAllListeners: (channel: string) => void;
@@ -37,15 +39,13 @@ export interface DesktopApi {
     installUdevRules: () => Promise<{ success: true } | { success: false; error: string }>;
 }
 
-declare global {
-    interface Window {
-        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (props: any) => any | null;
-        desktopApi?: DesktopApi; // Electron API
-        chrome?: any; // Only in Chromium browsers
+interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: (props: any) => any | null;
+    desktopApi?: DesktopApi; // Electron API
+    chrome?: any; // Only in Chromium browsers
 
-        // Needed for Cypress
-        Cypress?: any;
-        TrezorConnect?: any;
-        store?: any;
-    }
+    // Needed for Cypress
+    Cypress?: any;
+    TrezorConnect?: any;
+    store?: any;
 }

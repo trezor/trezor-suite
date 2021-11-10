@@ -12,7 +12,6 @@ import type {
     TrezorDevice,
     ButtonRequest,
     AppState,
-    SuiteThemeVariant,
     SuiteThemeColors,
 } from '@suite-types';
 import type { DebugModeOptions, AutodetectSettings } from '@suite-reducers/suiteReducer';
