@@ -165,11 +165,11 @@ jest.mock('trezor-connect', () => {
 });
 
 const SUITE_DEVICE = getSuiteDevice({ state: 'device-state', connected: true });
-export const getInitialState = () => ({
+export const getInitialState = (device = SUITE_DEVICE) => ({
     suite: {
-        device: SUITE_DEVICE,
+        device,
     },
-    devices: [SUITE_DEVICE],
+    devices: [device],
     metadata: { enabled: false }, // don't use labeling in unit:tests
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
@@ -206,12 +206,7 @@ describe('Discovery Actions', () => {
         it(f.description, async () => {
             // set fixtures in trezor-connect
             require('trezor-connect').setTestFixtures(f);
-            const state = getInitialState();
-            const store = initStore();
-            if (f.device) {
-                state.suite.device = f.device;
-                state.devices = [f.device];
-            }
+            const store = initStore(getInitialState(f.device));
             if (f.enabledNetworks) {
                 store.dispatch({
                     type: WALLET_SETTINGS.CHANGE_NETWORKS,

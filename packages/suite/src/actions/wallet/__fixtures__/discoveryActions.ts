@@ -89,7 +89,7 @@ export const fixtures = [
         },
     },
     {
-        description: 'First iteration multiple accounts error',
+        description: 'First iteration multiple accounts error (taproot disabled)',
         connect: {
             error: {
                 error: JSON.stringify([
@@ -108,6 +108,11 @@ export const fixtures = [
             },
             success: true,
         },
+        device: global.JestMocks.getSuiteDevice({
+            state: 'device-state',
+            connected: true,
+            unavailableCapabilities: { taproot: 'update-required' },
+        }),
         result: {
             failed: [
                 {
@@ -286,7 +291,7 @@ export const unavailableCapabilities = [
         device: global.JestMocks.getSuiteDevice({
             state: 'device-state',
             connected: true,
-            unavailableCapabilities: { xrp: 'no-capability' },
+            unavailableCapabilities: { xrp: 'no-capability', taproot: 'no-support' },
         }),
         networks: ['btc', 'xrp'],
         discoveryNetworks: ['btc', 'btc', 'btc'],
