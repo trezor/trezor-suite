@@ -5,11 +5,12 @@ import { Input, useTheme, variables, Icon, Button } from '@trezor/components';
 import { AddressLabeling, Translation, ReadMoreLink } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
-import { useActions } from '@suite-hooks';
+import { useActions, useDevice } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import {
     isAddressValid,
     isAddressDeprecated,
+    isTaprootAddress,
     isBech32AddressUppercase,
 } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -49,6 +50,7 @@ interface Props {
 
 const Address = ({ output, outputId, outputsCount }: Props) => {
     const theme = useTheme();
+    const { device } = useDevice();
     const {
         account,
         removeOutput,
@@ -156,6 +158,15 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                         }
                         return 'RECIPIENT_IS_NOT_VALID';
                     }
+                    // bech32m/Taproot addresses are valid but may not be supported by older FW
+                    if (
+                        networkType === 'bitcoin' &&
+                        isTaprootAddress(value, symbol) &&
+                        device?.unavailableCapabilities?.taproot
+                    ) {
+                        return 'RECIPIENT_IS_NOT_SUPPORTED';
+                    }
+
                     // bech32 addresses are valid as uppercase but are not accepted by Trezor
                     if (networkType === 'bitcoin' && isBech32AddressUppercase(value)) {
                         return (

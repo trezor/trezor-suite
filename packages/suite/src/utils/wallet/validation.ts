@@ -37,6 +37,15 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
     }
 };
 
+export const isTaprootAddress = (address: string, symbol: Account['symbol']) => {
+    const networkType = isTestnet(symbol) ? 'testnet' : 'prod';
+    const updatedSymbol = getCoinFromTestnet(symbol);
+    return (
+        addressValidator.getAddressType(address, updatedSymbol.toUpperCase(), networkType) ===
+        'p2tr'
+    );
+};
+
 export const isBech32AddressUppercase = (address: string) =>
     /^(bc1|tb1|ltc1|tltc1)/.test(address.toLowerCase()) && /[A-Z]/.test(address);
 
