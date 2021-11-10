@@ -11,6 +11,7 @@ export const useLocales = () => {
     }));
 
     useEffect(() => {
+        let active = true;
         const loadLocale = async () => {
             const lang = language === 'en' ? 'en-US' : language;
 
@@ -24,10 +25,15 @@ export const useLocales = () => {
                     `date-fns language: ${language} is not available. Using en-US fallback.`,
                 );
             }
-            setLocale(dateLocale);
+            if (active) {
+                setLocale(dateLocale);
+            }
         };
 
         loadLocale();
+        return () => {
+            active = false;
+        };
     }, [language]);
 
     return locale;
