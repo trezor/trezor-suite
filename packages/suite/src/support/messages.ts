@@ -3903,6 +3903,10 @@ export default defineMessages({
         id: 'RECEIVE_TABLE_NOT_USED',
         defaultMessage: 'Unused',
     },
+    RECEIVE_TABLE_USED: {
+        id: 'RECEIVE_TABLE_USED',
+        defaultMessage: 'Used',
+    },
     TR_SHOW_MORE: {
         defaultMessage: 'Show more',
         description: 'Show more used address',

@@ -24,11 +24,20 @@ export type CoinmarketCommonAction =
       };
 
 export const verifyAddress =
-    (account: Account, inExchange = false) =>
+    (
+        account: Account,
+        address: string | undefined,
+        path: string | undefined,
+        coinmarketAction:
+            | typeof COINMARKET_EXCHANGE.VERIFY_ADDRESS
+            | typeof COINMARKET_BUY.VERIFY_ADDRESS,
+    ) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         if (!device || !account) return;
-        const { path, address } = getUnusedAddressFromAccount(account);
+        const accountAddress = getUnusedAddressFromAccount(account);
+        address ??= accountAddress.address;
+        path ??= accountAddress.path;
         if (!path || !address) return;
 
         const { networkType, symbol } = account;
@@ -96,9 +105,7 @@ export const verifyAddress =
 
         if (response.success) {
             dispatch({
-                type: inExchange
-                    ? COINMARKET_EXCHANGE.VERIFY_ADDRESS
-                    : COINMARKET_BUY.VERIFY_ADDRESS,
+                type: coinmarketAction,
                 addressVerified: address,
             });
         } else {

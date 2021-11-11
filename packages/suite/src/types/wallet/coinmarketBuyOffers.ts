@@ -27,7 +27,7 @@ export type ContextValues = {
     quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
     device: AppState['suite']['device'];
     selectedQuote?: BuyTrade;
-    verifyAddress: (account: Account) => Promise<void>;
+    verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
     addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
     providersInfo?: BuyInfo['providerInfos'];
     selectQuote: (quote: BuyTrade) => void;

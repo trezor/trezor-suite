@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from '@suite-hooks';
-import { Account, Discovery } from '@wallet-types';
+import type { AccountAddress } from 'trezor-connect';
 import * as accountUtils from '@wallet-utils/accountUtils';
+import type { Account, Discovery } from '@wallet-types';
 
 export const useAccounts = (discovery?: Discovery) => {
     const [accounts, setAccounts] = useState<Account[]>([]);
@@ -36,3 +37,34 @@ export const useFastAccounts = () => {
     );
     return deviceAccounts;
 };
+
+export const useAccountAddressDictionary = (account: Account | undefined) =>
+    useMemo(() => {
+        switch (account?.networkType) {
+            case 'bitcoin': {
+                return (account?.addresses?.unused ?? [])
+                    .concat(account?.addresses?.used ?? [])
+                    .reduce((previous, current) => {
+                        previous[current.address] = current;
+                        return previous;
+                    }, {} as { [address: string]: AccountAddress });
+            }
+            case 'ripple':
+            case 'ethereum': {
+                return {
+                    [account.descriptor]: {
+                        address: account.descriptor,
+                        path: account.path,
+                    },
+                };
+            }
+            default:
+                return {};
+        }
+    }, [
+        account?.addresses?.unused,
+        account?.addresses?.used,
+        account?.descriptor,
+        account?.networkType,
+        account?.path,
+    ]);
