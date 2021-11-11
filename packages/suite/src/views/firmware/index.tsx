@@ -13,6 +13,7 @@ import { Translation, Modal } from '@suite-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { useActions, useFirmware, useSelector } from '@suite-hooks';
 import { ConfirmOnDevice, Icon, useTheme } from '@trezor/components';
+import * as suiteActions from '@suite-actions/suiteActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -40,11 +41,15 @@ const Firmware = () => {
     const { device } = useSelector(state => ({
         device: state.suite.device,
     }));
-    const { closeModalApp } = useActions({
+    const { closeModalApp, acquireDevice } = useActions({
         closeModalApp: routerActions.closeModalApp,
+        acquireDevice: suiteActions.acquireDevice,
     });
 
     const onClose = () => {
+        if (device?.status !== 'available') {
+            acquireDevice(device);
+        }
         closeModalApp();
         resetReducer();
     };

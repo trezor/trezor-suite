@@ -15,6 +15,7 @@ import {
     ReconnectDevicePrompt,
     SelectCustomFirmware,
 } from '@firmware-components';
+import * as suiteActions from '@suite-actions/suiteActions';
 
 const ModalContent = styled.div`
     text-align: left;
@@ -25,9 +26,9 @@ const FirmwareCustom = () => {
     const { device: liveDevice } = useDevice();
     const cachedDevice = useCachedDevice(liveDevice);
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-
-    const { closeModalApp } = useActions({
+    const { closeModalApp, acquireDevice } = useActions({
         closeModalApp: routerActions.closeModalApp,
+        acquireDevice: suiteActions.acquireDevice,
     });
 
     const onFirmwareSelected = (fw: ArrayBuffer) => {
@@ -51,6 +52,9 @@ const FirmwareCustom = () => {
     };
 
     const onClose = () => {
+        if (liveDevice?.status !== 'available') {
+            acquireDevice(liveDevice);
+        }
         closeModalApp();
         resetReducer();
     };
