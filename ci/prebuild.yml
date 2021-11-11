@@ -17,11 +17,6 @@ msg-system config sign stable:
     - darwin
   variables:
     IS_CODESIGN_BUILD: "true"
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    paths:
-      - node_modules/
-      - .yarn-nix/
   script:
     - nix-shell --run "git lfs pull"
     - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
