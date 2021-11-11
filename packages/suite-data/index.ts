@@ -3,26 +3,9 @@ import * as rm from 'rimraf';
 import { resolve, join } from 'path';
 
 const config = {
-    'suite-desktop': [
-        'bin',
-        'fonts',
-        'guide',
-        'images',
-        'message-system',
-        'translations',
-        'videos',
-    ],
-    'suite-native': ['fonts', 'guide', 'images', 'message-system', 'videos'],
-    'suite-web': [
-        'browser-detection',
-        'fonts',
-        'guide',
-        'images',
-        'message-system',
-        'oauth',
-        'translations',
-        'videos',
-    ],
+    'suite-desktop': ['bin', 'fonts', 'images', 'message-system', 'videos'],
+    'suite-native': ['fonts', 'images', 'message-system', 'videos'],
+    'suite-web': ['browser-detection', 'fonts', 'images', 'message-system', 'oauth', 'videos'],
     'suite-web-landing': ['fonts', 'images/icons/favicon', 'images/suite-web-landing'],
 };
 
