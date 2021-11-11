@@ -131,8 +131,10 @@ const remove = (draft: State, account: Account, txs: WalletAccountTransaction[])
     const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     const transactions = draft.transactions[accountHash] || [];
     txs.forEach(tx => {
-        const index = transactions.findIndex(t => t.txid === tx.txid);
-        transactions.splice(index, 1);
+        if (tx) {
+            const index = transactions.findIndex(t => t && t.txid === tx.txid);
+            transactions.splice(index, 1);
+        }
     });
 };
 
