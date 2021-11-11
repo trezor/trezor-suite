@@ -180,6 +180,9 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const normalAccounts = filteredAccounts.filter(
         a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
     );
+    const taprootAccounts = filteredAccounts.filter(
+        a => a.accountType === 'taproot' && (!a.empty || a.visible),
+    );
     const segwitAccounts = filteredAccounts.filter(
         a => a.accountType === 'segwit' && (!a.empty || a.visible),
     );
@@ -228,6 +231,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
         listedAccountsLength > 0 || !searchString ? (
             <>
                 {buildGroup('normal', normalAccounts)}
+                {buildGroup('taproot', taprootAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
             </>

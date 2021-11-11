@@ -164,7 +164,7 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                         isTaprootAddress(value, symbol) &&
                         device?.unavailableCapabilities?.taproot
                     ) {
-                        return 'RECIPIENT_IS_NOT_SUPPORTED';
+                        return 'RECIPIENT_REQUIRES_UPDATE';
                     }
 
                     // bech32 addresses are valid as uppercase but are not accepted by Trezor
