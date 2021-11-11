@@ -9,6 +9,9 @@ import { assetPrefix, isDev, launchElectron } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
 
+const electronArgsIndex = process.argv.indexOf('./webpack.config.ts') + 1;
+const electronArgs = process.argv.slice(electronArgsIndex);
+
 const baseDir = getPathForProject('desktop');
 const config: webpack.Configuration = {
     target: 'browserslist:Chrome >= 94', // Electron 15
@@ -59,7 +62,7 @@ const config: webpack.Configuration = {
                           },
                           {
                               command: 'yarn',
-                              args: ['run', 'dev:run'],
+                              args: ['run', 'dev:run', ...electronArgs],
                           },
                       ]
                     : []),
