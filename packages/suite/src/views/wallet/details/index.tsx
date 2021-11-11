@@ -11,6 +11,7 @@ import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/S
 import {
     WIKI_XPUB_URL,
     WIKI_BECH32_URL,
+    WIKI_TAPROOT_URL,
     WIKI_P2SH_URL,
     WIKI_P2PKH_URL,
 } from '@suite-constants/urls';
@@ -75,6 +76,10 @@ const Details = () => {
     if (accountTypeShortcut === 'TR_ACCOUNT_TYPE_BECH32') {
         accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_BECH32';
         accountTypeUrl = WIKI_BECH32_URL;
+    }
+    if (accountTypeShortcut === 'TR_ACCOUNT_TYPE_P2TR') {
+        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_TAPROOT';
+        accountTypeUrl = WIKI_TAPROOT_URL;
     }
     if (accountTypeShortcut === 'TR_ACCOUNT_TYPE_P2SH') {
         accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_P2SH';
