@@ -14,11 +14,6 @@
 
 .build_common: &build_common
   stage: build
-  cache:
-    key: "$CI_COMMIT_REF_SLUG"
-    paths:
-      - node_modules/
-      - .yarn/
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/components storybook-build
