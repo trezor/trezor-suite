@@ -90,8 +90,8 @@ export const transformTokenInfo = (
         return {
             type: 'BLOCKFROST',
             name: t.fingerprint!, // this is safe as fingerprint is defined for all tokens except lovelace and lovelace is never included in account.tokens
-            address: t.fingerprint!,
-            symbol: assetName,
+            address: t.unit,
+            symbol: assetName || t.fingerprint!,
             balance: t.quantity,
             decimals: t.decimals,
         };
@@ -154,7 +154,7 @@ export const filterTokenTransfers = (
                     type,
                     name: asset.fingerprint,
                     symbol: assetName || asset.fingerprint,
-                    address: asset.fingerprint,
+                    address: asset.unit,
                     decimals: asset.decimals,
                     amount: amount.toString(),
                     from:
