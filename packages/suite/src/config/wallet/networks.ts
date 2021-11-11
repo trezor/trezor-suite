@@ -16,6 +16,19 @@ const networks = [
         features: ['rbf', 'sign-verify'],
     },
     {
+        name: 'Bitcoin (taproot)',
+        networkType: 'bitcoin',
+        accountType: 'taproot',
+        symbol: 'btc',
+        bip44: "m/86'/0'/i'",
+        decimals: 8,
+        explorer: {
+            tx: 'https://btc1.trezor.io/tx/',
+            account: 'https://btc1.trezor.io/xpub/',
+        },
+        features: ['rbf'],
+    },
+    {
         name: 'Bitcoin (segwit)',
         networkType: 'bitcoin',
         accountType: 'segwit',
@@ -272,6 +285,21 @@ const networks = [
         features: ['rbf', 'sign-verify'],
     },
     {
+        name: 'Bitcoin Testnet (taproot)',
+        networkType: 'bitcoin',
+        accountType: 'taproot',
+        symbol: 'test',
+        bip44: "m/86'/1'/i'",
+        decimals: 8,
+        testnet: true,
+        label: 'TR_TESTNET_COINS_LABEL',
+        explorer: {
+            tx: 'https://tbtc1.trezor.io/tx/',
+            account: 'https://tbtc1.trezor.io/xpub/',
+        },
+        features: ['rbf'],
+    },
+    {
         name: 'Bitcoin Testnet (segwit)',
         networkType: 'bitcoin',
         accountType: 'segwit',
@@ -332,7 +360,7 @@ const networks = [
 ] as const;
 
 type Network = {
-    accountType?: 'normal' | 'legacy' | 'segwit';
+    accountType?: 'normal' | 'legacy' | 'segwit' | 'taproot';
     testnet?: boolean;
     isHidden?: boolean;
     chainId?: number;
