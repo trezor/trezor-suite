@@ -2129,6 +2129,10 @@ export default defineMessages({
         defaultMessage: 'Suite Guide',
         id: 'TR_LEARN_AND_DISCOVER',
     },
+    TR_TAPROOT_ACCOUNTS: {
+        defaultMessage: 'Taproot accounts',
+        id: 'TR_TAPROOT_ACCOUNTS',
+    },
     TR_SEGWIT_ACCOUNTS: {
         defaultMessage: 'Segwit accounts',
         id: 'TR_SEGWIT_ACCOUNTS',
@@ -3277,6 +3281,11 @@ export default defineMessages({
         defaultMessage:
             'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old services.',
     },
+    TR_ACCOUNT_DETAILS_TYPE_TAPROOT: {
+        id: 'TR_ACCOUNT_DETAILS_TYPE_TAPROOT',
+        defaultMessage:
+            'Taproot uses the most modern addresses for enhanced privacy and better network efficiency. Be aware that it may not be compatible with old services.',
+    },
     TR_ACCOUNT_DETAILS_TYPE_P2SH: {
         id: 'TR_ACCOUNT_DETAILS_TYPE_P2SH',
         defaultMessage:
@@ -3300,6 +3309,15 @@ export default defineMessages({
         id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
         defaultMessage: 'Show public key',
     },
+    TR_ACCOUNT_TYPE_TAPROOT: {
+        id: 'TR_ACCOUNT_TYPE_TAPROOT',
+        defaultMessage: 'Native SegWit v1',
+    },
+    TR_ACCOUNT_TYPE_TAPROOT_NOT_SUPPORTED: {
+        id: 'TR_ACCOUNT_TYPE_TAPROOT_NOT_SUPPORTED',
+        defaultMessage:
+            'Firmware installed does not support taproot. Please upgrade device firmware to enable this feature',
+    },
     TR_ACCOUNT_TYPE_NATIVE_SEGWIT: {
         id: 'TR_ACCOUNT_TYPE_NATIVE_SEGWIT',
         defaultMessage: 'Native SegWit',
@@ -3315,6 +3333,10 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_BECH32: {
         id: 'TR_ACCOUNT_TYPE_BECH32',
         defaultMessage: 'Bech32',
+    },
+    TR_ACCOUNT_TYPE_P2TR: {
+        id: 'TR_ACCOUNT_TYPE_P2TR',
+        defaultMessage: 'Taproot',
     },
     TR_ACCOUNT_TYPE_P2SH: {
         id: 'TR_ACCOUNT_TYPE_P2SH',
@@ -5000,6 +5022,10 @@ export default defineMessages({
     RECIPIENT_IS_NOT_SUPPORTED: {
         defaultMessage: 'Unsupported address format.',
         id: 'RECIPIENT_IS_NOT_SUPPORTED',
+    },
+    RECIPIENT_REQUIRES_UPDATE: {
+        defaultMessage: 'Please upgrade device firmware to enable this feature.',
+        id: 'RECIPIENT_REQUIRES_UPDATE',
     },
     RECIPIENT_FORMAT_DEPRECATED: {
         defaultMessage: 'Unsupported address format. {TR_LEARN_MORE}',
