@@ -4,7 +4,10 @@ import coinmarketReducer, { ComposedTransactionInfo } from '@wallet-reducers/coi
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import * as coinmarketCommonActions from '../coinmarketCommonActions';
 import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';
-import { VERIFY_ADDRESS_FIXTURES } from '../__fixtures__/coinmarketCommonActions/verifyAddress';
+import {
+    VERIFY_BUY_ADDRESS_FIXTURES,
+    VERIFY_EXCHANGE_ADDRESS_FIXTURES,
+} from '../__fixtures__/coinmarketCommonActions/verifyAddress';
 import transactionReducer from '@wallet-reducers/transactionReducer';
 
 export const getInitialState = (initial = {}) => ({
@@ -102,18 +105,40 @@ describe('Coinmarket Common Actions', () => {
         jest.clearAllMocks();
     });
 
-    VERIFY_ADDRESS_FIXTURES.forEach(f => {
+    VERIFY_BUY_ADDRESS_FIXTURES.forEach(f => {
         it(f.description, async () => {
             const store = initStore(getInitialState(f.initialState));
 
             await store.dispatch(
-                coinmarketCommonActions.verifyAddress(f.params.account, f.params.inExchange),
+                coinmarketCommonActions.verifyAddress(
+                    f.params.account,
+                    f.params.address,
+                    f.params.path,
+                    f.params.coinmarketAction,
+                ),
             );
-            expect(
-                f.params.inExchange
-                    ? store.getState().wallet.coinmarket.exchange.addressVerified
-                    : store.getState().wallet.coinmarket.buy.addressVerified,
-            ).toEqual(f.result.value);
+            expect(store.getState().wallet.coinmarket.buy.addressVerified).toEqual(f.result.value);
+            if (f.result && f.result.actions) {
+                expect(store.getActions()).toMatchObject(f.result.actions);
+            }
+        });
+    });
+
+    VERIFY_EXCHANGE_ADDRESS_FIXTURES.forEach(f => {
+        it(f.description, async () => {
+            const store = initStore(getInitialState(f.initialState));
+
+            await store.dispatch(
+                coinmarketCommonActions.verifyAddress(
+                    f.params.account,
+                    f.params.address,
+                    f.params.path,
+                    f.params.coinmarketAction,
+                ),
+            );
+            expect(store.getState().wallet.coinmarket.exchange.addressVerified).toEqual(
+                f.result.value,
+            );
             if (f.result && f.result.actions) {
                 expect(store.getActions()).toMatchObject(f.result.actions);
             }

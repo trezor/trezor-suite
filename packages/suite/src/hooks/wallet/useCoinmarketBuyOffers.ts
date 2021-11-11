@@ -51,7 +51,7 @@ export const useOffers = (props: Props) => {
         addNotification: notificationActions.addToast,
         saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
         submitRequestForm: coinmarketCommonActions.submitRequestForm,
-        verifyAddress: coinmarketCommonActions.verifyAddress,
+        verifyAddress: coinmarketBuyActions.verifyAddress,
         goto: routerActions.goto,
     });
 

@@ -10,6 +10,7 @@ import {
 import invityAPI from '@suite-services/invityAPI';
 import { COINMARKET_EXCHANGE, COINMARKET_COMMON } from './constants';
 import * as modalActions from '@suite-actions/modalActions';
+import { verifyAddress as verifyExchangeAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse;
@@ -165,3 +166,6 @@ export const saveQuotes = (
 export const clearQuotes = (): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.CLEAR_QUOTES,
 });
+
+export const verifyAddress = (account: Account, address?: string, path?: string) =>
+    verifyExchangeAddress(account, address, path, COINMARKET_EXCHANGE.VERIFY_ADDRESS);

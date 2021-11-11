@@ -1,15 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import ReceiveOptions from './ReceiveOptions';
+import { useForm } from 'react-hook-form';
+import addressValidator from 'trezor-address-validator';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { Input, variables, DeviceImage, Button } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { Account } from '@wallet-types';
-import { useForm } from 'react-hook-form';
 import { TypedValidationRules } from '@wallet-types/form';
-import addressValidator from 'trezor-address-validator';
 import { isHexValid, isInteger } from '@wallet-utils/validation';
+import AddressOptions from '@wallet-views/coinmarket/common/AddressOptions';
+import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
+import ReceiveOptions, { AccountSelectOption } from './ReceiveOptions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,16 +66,12 @@ const Confirmed = styled.div`
     background: ${props => props.theme.BG_GREY};
     align-items: center;
     justify-content: center;
+    margin-top: 27px;
 `;
 
 const Row = styled.div`
     margin: 12px 0;
 `;
-
-type AccountSelectOption = {
-    type: 'SUITE' | 'ADD_SUITE' | 'NON_SUITE';
-    account?: Account;
-};
 
 type FormState = {
     address?: string;
@@ -105,7 +102,7 @@ const VerifyAddressComponent = () => {
         receiveSymbol,
     } = useCoinmarketExchangeOffersContext();
     const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
-    const { register, watch, errors, formState, setValue } = useForm<FormState>({
+    const { register, watch, errors, formState, setValue, control } = useForm<FormState>({
         mode: 'onChange',
     });
 
@@ -114,7 +111,9 @@ const VerifyAddressComponent = () => {
         [register],
     );
 
+    const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
     const { address, extraField } = watch();
+    const accountAddress = address && addressDictionary[address];
 
     const extraFieldDescription = selectedQuote?.extraFieldDescription
         ? {
@@ -153,31 +152,54 @@ const VerifyAddressComponent = () => {
                     />
                 </Row>
                 <Row>
-                    <Input
-                        label={
-                            <Label>
-                                <StyledQuestionTooltip
-                                    label="TR_EXCHANGE_RECEIVING_ADDRESS"
-                                    tooltip={addressTooltipTranslationId}
+                    {selectedAccountOption?.type === 'SUITE' &&
+                        selectedAccountOption?.account?.networkType === 'bitcoin' && (
+                            <>
+                                <CustomLabel>
+                                    <StyledQuestionTooltip
+                                        label="TR_EXCHANGE_RECEIVING_ADDRESS"
+                                        tooltip={addressTooltipTranslationId}
+                                    />
+                                </CustomLabel>
+                                <AddressOptions
+                                    account={selectedAccountOption?.account}
+                                    address={address}
+                                    control={control}
+                                    receiveSymbol={receiveSymbol}
+                                    setValue={setValue}
                                 />
-                            </Label>
-                        }
-                        variant="small"
-                        name="address"
-                        innerRef={typedRegister({
-                            required: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
-                            validate: value => {
-                                if (selectedAccountOption?.type === 'NON_SUITE' && receiveSymbol) {
-                                    if (!addressValidator.validate(value, receiveSymbol)) {
-                                        return 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID';
+                            </>
+                        )}
+                    {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
+                        <Input
+                            label={
+                                <Label>
+                                    <StyledQuestionTooltip
+                                        label="TR_EXCHANGE_RECEIVING_ADDRESS"
+                                        tooltip={addressTooltipTranslationId}
+                                    />
+                                </Label>
+                            }
+                            variant="small"
+                            name="address"
+                            innerRef={typedRegister({
+                                required: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
+                                validate: value => {
+                                    if (
+                                        selectedAccountOption?.type === 'NON_SUITE' &&
+                                        receiveSymbol
+                                    ) {
+                                        if (!addressValidator.validate(value, receiveSymbol)) {
+                                            return 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID';
+                                        }
                                     }
-                                }
-                            },
-                        })}
-                        readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
-                        state={errors.address ? 'error' : undefined}
-                        bottomText={<InputError error={errors.address} />}
-                    />
+                                },
+                            })}
+                            readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
+                            state={errors.address ? 'error' : undefined}
+                            bottomText={<InputError error={errors.address} />}
+                        />
+                    )}
 
                     {addressVerified && addressVerified === address && (
                         <Confirmed>
@@ -254,8 +276,12 @@ const VerifyAddressComponent = () => {
                                 isLoading={callInProgress}
                                 isDisabled={callInProgress}
                                 onClick={() => {
-                                    if (selectedAccountOption.account) {
-                                        verifyAddress(selectedAccountOption.account, true);
+                                    if (selectedAccountOption.account && accountAddress) {
+                                        verifyAddress(
+                                            selectedAccountOption.account,
+                                            accountAddress.address,
+                                            accountAddress.path,
+                                        );
                                     }
                                 }}
                             >

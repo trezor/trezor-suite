@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import {
     FiatValue,
@@ -10,6 +11,8 @@ import {
 } from '@suite-components';
 import { Input, Button, variables, CoinLogo, DeviceImage } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
+import AddressOptions from '@wallet-views/coinmarket/common/AddressOptions';
+import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
 
 const Wrapper = styled.div`
     display: flex;
@@ -104,7 +107,12 @@ const Confirmed = styled.div`
     background: ${props => props.theme.BG_GREY};
     align-items: center;
     justify-content: center;
+    margin-top: 27px;
 `;
+
+interface FormState {
+    address: string;
+}
 
 const VerifyAddressComponent = () => {
     const {
@@ -117,7 +125,16 @@ const VerifyAddressComponent = () => {
         addressVerified,
     } = useCoinmarketBuyOffersContext();
     const { symbol, formattedBalance } = account;
-    const { path, address } = getUnusedAddressFromAccount(account);
+    const { path, address: unusedAddress } = getUnusedAddressFromAccount(account);
+
+    const { watch, setValue, control } = useForm<FormState>({
+        mode: 'onChange',
+        defaultValues: { address: unusedAddress },
+    });
+
+    const addressDictionary = useAccountAddressDictionary(account);
+    const { address } = watch();
+    const accountAddress = addressDictionary[address];
 
     if (!path || !address || !selectedQuote) {
         return null;
@@ -149,16 +166,32 @@ const VerifyAddressComponent = () => {
                         </Amount>
                     </AccountWrapper>
                 </FakeInput>
-                <Input
-                    label={
-                        <Label>
+                {account?.networkType === 'bitcoin' ? (
+                    <>
+                        <CustomLabel>
                             <Translation id="TR_BUY_RECEIVING_ADDRESS" />
                             <StyledQuestionTooltip tooltip="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
-                        </Label>
-                    }
-                    value={address}
-                    readOnly
-                />
+                        </CustomLabel>
+                        <AddressOptions
+                            account={account}
+                            control={control}
+                            receiveSymbol={account.symbol}
+                            setValue={setValue}
+                            address={address}
+                        />
+                    </>
+                ) : (
+                    <Input
+                        label={
+                            <Label>
+                                <Translation id="TR_BUY_RECEIVING_ADDRESS" />
+                                <StyledQuestionTooltip tooltip="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
+                            </Label>
+                        }
+                        value={address}
+                        readOnly
+                    />
+                )}
                 {addressVerified && addressVerified === address && (
                     <Confirmed>
                         {device && (
@@ -176,7 +209,11 @@ const VerifyAddressComponent = () => {
                     <Button
                         isLoading={callInProgress}
                         isDisabled={callInProgress}
-                        onClick={() => verifyAddress(account)}
+                        onClick={() => {
+                            if (accountAddress && address) {
+                                verifyAddress(account, address, accountAddress.path);
+                            }
+                        }}
                     >
                         <Translation id="TR_BUY_CONFIRM_ON_TREZOR" />
                     </Button>

@@ -3,7 +3,6 @@ import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector, useDevice } from '@suite-hooks';
 import { useTimer } from '@suite-hooks/useTimeInterval';
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import { Account } from '@wallet-types';
 import { Props, ContextValues, ExchangeStep } from '@wallet-types/coinmarketExchangeOffers';
@@ -72,7 +71,7 @@ export const useOffers = (props: Props) => {
             coinmarketExchangeActions.openCoinmarketExchangeConfirmModal,
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
         addNotification: notificationActions.addToast,
-        verifyAddress: coinmarketCommonActions.verifyAddress,
+        verifyAddress: coinmarketExchangeActions.verifyAddress,
     });
 
     const { invityAPIUrl, exchangeCoinInfo, accounts } = useSelector(state => ({

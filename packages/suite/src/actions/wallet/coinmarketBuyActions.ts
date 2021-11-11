@@ -5,6 +5,7 @@ import { COINMARKET_BUY, COINMARKET_COMMON } from './constants';
 import { Dispatch } from '@suite-types';
 import regional from '@wallet-constants/coinmarket/regional';
 import * as modalActions from '@suite-actions/modalActions';
+import { verifyAddress as verifyBuyAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 
 export interface BuyInfo {
     buyInfo?: BuyListResponse;
@@ -151,3 +152,6 @@ export const saveQuotes = (
 export const clearQuotes = (): CoinmarketBuyAction => ({
     type: COINMARKET_BUY.CLEAR_QUOTES,
 });
+
+export const verifyAddress = (account: Account, address?: string, path?: string) =>
+    verifyBuyAddress(account, address, path, COINMARKET_BUY.VERIFY_ADDRESS);
