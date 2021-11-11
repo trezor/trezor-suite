@@ -35,6 +35,18 @@ const buildCurrencyOption = (currency: string) => ({
     label: currency.toUpperCase(),
 });
 
+const getUpdateStateMessage = (state: 'available' | 'downloading' | 'ready') => {
+    switch (state) {
+        case 'available':
+            return 'TR_YOUR_NEW_VERSION';
+        case 'downloading':
+            return 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING';
+        case 'ready':
+            return 'TR_YOUR_NEW_VERSION_IS_READY';
+        // no default
+    }
+};
+
 const GithubWrapper = styled.div`
     display: flex;
     justify-content: space-between;
@@ -382,12 +394,14 @@ const Settings = () => {
                                         ),
                                     }}
                                 />
-                                {!['checking', 'not-available'].includes(desktopUpdate.state) &&
+                                {(desktopUpdate.state === 'available' ||
+                                    desktopUpdate.state === 'downloading' ||
+                                    desktopUpdate.state === 'ready') &&
                                     desktopUpdate.latest && (
                                         <>
                                             &nbsp;
                                             <Translation
-                                                id="TR_YOUR_NEW_VERSION"
+                                                id={getUpdateStateMessage(desktopUpdate.state)}
                                                 values={{
                                                     version: (
                                                         <VersionWithGithubTooltip
