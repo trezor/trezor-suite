@@ -25,6 +25,7 @@ export const isUnlocked = (features: Features): boolean =>
 const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): TrezorDevice => ({
     ...device,
     ...upcoming,
+    id: upcoming.id ?? device.id,
     state: device.state,
     instance: device.instance,
     features: {
@@ -141,8 +142,10 @@ const changeDevice = (
     const affectedDevices = draft.filter(
         d =>
             d.features &&
-            d.connected &&
-            (d.id === device.id || (d.path.length > 0 && d.path === device.path)),
+            ((d.connected &&
+                (d.id === device.id || (d.path.length > 0 && d.path === device.path))) ||
+                // update "disconnected" remembered devices if in bootloader mode
+                (d.mode === 'bootloader' && d.remember && d.id === device.id)),
     ) as AcquiredDevice[];
 
     const otherDevices = draft.filter(d => affectedDevices.indexOf(d as AcquiredDevice) === -1);
