@@ -30,6 +30,7 @@ describe('Sign and verify', () => {
         cy.getTestElement('@sign-verify/sign-address/input').should('contain', ADDRESS);
         cy.getTestElement('@sign-verify/submit').click();
         cy.getConfirmActionOnDeviceModal().task('pressYes');
+        cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getTestElement('@sign-verify/signature').should('have.value', SIGNATURE);
     });
 
