@@ -3182,6 +3182,14 @@ export default defineMessages({
         defaultMessage: 'Version {version} is available.',
         id: 'TR_YOUR_NEW_VERSION',
     },
+    TR_YOUR_NEW_VERSION_IS_DOWNLOADING: {
+        defaultMessage: 'Version {version} is downloading.',
+        id: 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING',
+    },
+    TR_YOUR_NEW_VERSION_IS_READY: {
+        defaultMessage: 'Version {version} has been downloaded and is ready for installation.',
+        id: 'TR_YOUR_NEW_VERSION_IS_READY',
+    },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
         defaultMessage: 'Your Trezor wallet is not backed up.',
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
