@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Select, variables } from '@trezor/components';
+import { P, Select, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import { Network } from '@wallet-types';
 import { getAccountTypeIntl, getBip43Intl } from '@wallet-utils/accountUtils';
 import { AccountTypeDescription } from './AccountTypeDescription';
+import type { UnavailableCapabilities } from 'trezor-connect';
+import type { Network } from '@wallet-types';
 
 const LabelWrapper = styled.div`
     display: flex;
@@ -19,6 +20,11 @@ const TypeInfo = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-left: 1ch;
+`;
+
+const UnavailableInfo = styled(P)`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    margin: 20px 0;
 `;
 
 const buildAccountTypeOption = (network: Network) =>
@@ -42,9 +48,15 @@ interface Props {
     network: Network;
     accountTypes: Network[];
     onSelectAccountType: (network: Network) => void;
+    unavailableCapabilities?: UnavailableCapabilities;
 }
 
-export const AccountTypeSelect = ({ network, accountTypes, onSelectAccountType }: Props) => {
+export const AccountTypeSelect = ({
+    network,
+    accountTypes,
+    onSelectAccountType,
+    unavailableCapabilities,
+}: Props) => {
     const options = accountTypes.map(buildAccountTypeOption);
     return (
         <>
@@ -57,7 +69,16 @@ export const AccountTypeSelect = ({ network, accountTypes, onSelectAccountType }
                 formatOptionLabel={formatLabel}
                 onChange={(option: Option) => onSelectAccountType(option.value)}
             />
-            <AccountTypeDescription network={network} accountTypes={accountTypes} />
+            {unavailableCapabilities && unavailableCapabilities[network.accountType!] ? (
+                <UnavailableInfo size="small" textAlign="left">
+                    <Translation
+                        id="FW_CAPABILITY_NO_CAPABILITY_DESC"
+                        values={{ networkName: 'taproot' }}
+                    />
+                </UnavailableInfo>
+            ) : (
+                <AccountTypeDescription network={network} accountTypes={accountTypes} />
+            )}
         </>
     );
 };

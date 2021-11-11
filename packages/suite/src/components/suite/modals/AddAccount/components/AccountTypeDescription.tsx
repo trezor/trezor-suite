@@ -3,7 +3,12 @@ import styled from 'styled-components';
 import { P } from '@trezor/components';
 import { Network } from '@wallet-types';
 import { Translation, ExternalLink } from '@suite-components';
-import { WIKI_BECH32_URL, WIKI_P2SH_URL, WIKI_P2PKH_URL } from '@suite-constants/urls';
+import {
+    WIKI_BECH32_URL,
+    WIKI_TAPROOT_URL,
+    WIKI_P2SH_URL,
+    WIKI_P2PKH_URL,
+} from '@suite-constants/urls';
 import { getBip43Shortcut } from '@wallet-utils/accountUtils';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
@@ -24,6 +29,11 @@ const selectDescription = (network: Network): Description => {
             return {
                 description: 'TR_ACCOUNT_DETAILS_TYPE_BECH32',
                 url: WIKI_BECH32_URL,
+            };
+        case 'taproot':
+            return {
+                description: 'TR_ACCOUNT_DETAILS_TYPE_TAPROOT',
+                url: WIKI_TAPROOT_URL,
             };
         case 'p2sh':
             return {

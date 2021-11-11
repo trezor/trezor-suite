@@ -83,6 +83,8 @@ export const getBip43Shortcut = (path: string) => {
     // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
     const bip43 = path.split('/')[1];
     switch (bip43) {
+        case `86'`:
+            return 'taproot';
         case `84'`:
             return 'bech32';
         case `49'`:
@@ -96,6 +98,7 @@ export const getBip43Shortcut = (path: string) => {
 
 export const getAccountTypeIntl = (path: string) => {
     const bip43 = getBip43Shortcut(path);
+    if (bip43 === 'taproot') return 'TR_ACCOUNT_TYPE_TAPROOT';
     if (bip43 === 'bech32') return 'TR_ACCOUNT_TYPE_NATIVE_SEGWIT';
     if (bip43 === 'p2sh') return 'TR_ACCOUNT_TYPE_SEGWIT';
     return 'TR_ACCOUNT_TYPE_LEGACY';
@@ -103,6 +106,7 @@ export const getAccountTypeIntl = (path: string) => {
 
 export const getBip43Intl = (path: string) => {
     const bip43 = getBip43Shortcut(path);
+    if (bip43 === 'taproot') return 'TR_ACCOUNT_TYPE_P2TR';
     if (bip43 === 'bech32') return 'TR_ACCOUNT_TYPE_BECH32';
     if (bip43 === 'p2sh') return 'TR_ACCOUNT_TYPE_P2SH';
     return 'TR_ACCOUNT_TYPE_P2PKH';
