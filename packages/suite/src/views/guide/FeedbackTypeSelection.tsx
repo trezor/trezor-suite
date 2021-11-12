@@ -10,6 +10,7 @@ import { isDev, resolveStaticPath } from '@suite-utils/build';
 import { getFwVersion } from '@suite-utils/device';
 import { ViewWrapper, Header, Content } from '@guide-components';
 import { isDesktop } from '@suite-utils/env';
+import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 
 const FeedbackTypeButton = styled.button`
     border: 0;
@@ -80,7 +81,9 @@ const FeedbackTypeSelection = () => {
         device: state.suite.device,
     }));
 
-    const appUpToDate = isDesktop() && ['checking', 'not-available'].includes(desktopUpdate.state);
+    const appUpToDate =
+        isDesktop() &&
+        [UpdateState.Checking, UpdateState.NotAvailable].includes(desktopUpdate.state);
 
     const firmwareUpToDate = device?.firmware === 'valid';
     const firmwareVersion = device?.features ? (

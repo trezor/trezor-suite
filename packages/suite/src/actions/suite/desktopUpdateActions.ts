@@ -2,6 +2,7 @@ import { DESKTOP_UPDATE } from '@suite-actions/constants';
 import { addToast } from '@suite-actions/notificationActions';
 import { Dispatch, GetState } from '@suite-types';
 import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
+import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 
 export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.ENABLE }
@@ -49,7 +50,7 @@ export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) =>
     const { state } = getState().desktopUpdate;
 
     // Ignore displaying errors while checking
-    if (state !== 'checking') {
+    if (state !== UpdateState.Checking) {
         dispatch(addToast({ type: 'auto-updater-error', state }));
     }
 

@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
+
 import { useActions, useSelector } from '@suite-hooks';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
-
+import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import Available from './DesktopUpdater/Available';
 import Downloading from './DesktopUpdater/Downloading';
 import Ready from './DesktopUpdater/Ready';
@@ -78,7 +79,7 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         }
 
         // Non visible states
-        if (['checking', 'not-available'].includes(desktopUpdate.state)) {
+        if ([UpdateState.Checking, UpdateState.NotAvailable].includes(desktopUpdate.state)) {
             return false;
         }
 
@@ -100,11 +101,11 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
     //
 
     switch (desktopUpdate.state) {
-        case 'available':
+        case UpdateState.Available:
             return <Available hideWindow={hideWindow} latest={desktopUpdate.latest} />;
-        case 'downloading':
+        case UpdateState.Downloading:
             return <Downloading hideWindow={hideWindow} progress={desktopUpdate.progress} />;
-        case 'ready':
+        case UpdateState.Ready:
             return <Ready hideWindow={hideWindow} />;
         default:
             return null;
