@@ -1,7 +1,7 @@
 import React from 'react';
 import { Translation } from '@suite-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { Wrapper, FeesWrapper, NoProviders } from '@wallet-views/coinmarket';
+import { Wrapper, FeesWrapper, NoProviders, FullWidthForm } from '@wallet-views/coinmarket';
 import { CoinmarketSkeleton } from '@wallet-views/coinmarket/skeleton';
 import Inputs from './Inputs';
 import Fees from './Fees';
@@ -19,13 +19,13 @@ const CoinmarketExchangeForm = () => {
                 </NoProviders>
             )}
             {!isLoading && !noProviders && (
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <FullWidthForm onSubmit={handleSubmit(onSubmit)}>
                     <Inputs />
                     <FeesWrapper>
                         <Fees />
                     </FeesWrapper>
                     <Footer />
-                </form>
+                </FullWidthForm>
             )}
         </Wrapper>
     );
