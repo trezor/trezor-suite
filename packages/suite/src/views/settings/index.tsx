@@ -29,21 +29,22 @@ import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 import { getReleaseUrl } from '@suite/services/github';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import { isDev } from '@suite-utils/build';
+import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
     label: currency.toUpperCase(),
 });
 
-const getUpdateStateMessage = (state: 'available' | 'downloading' | 'ready') => {
+const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {
-        case 'available':
-            return 'TR_YOUR_NEW_VERSION';
-        case 'downloading':
+        case UpdateState.Downloading:
             return 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING';
-        case 'ready':
+        case UpdateState.Ready:
             return 'TR_YOUR_NEW_VERSION_IS_READY';
-        // no default
+        case UpdateState.Available:
+        default:
+            return 'TR_YOUR_NEW_VERSION';
     }
 };
 
@@ -394,9 +395,11 @@ const Settings = () => {
                                         ),
                                     }}
                                 />
-                                {(desktopUpdate.state === 'available' ||
-                                    desktopUpdate.state === 'downloading' ||
-                                    desktopUpdate.state === 'ready') &&
+                                {[
+                                    UpdateState.Available,
+                                    UpdateState.Downloading,
+                                    UpdateState.Ready,
+                                ].includes(desktopUpdate.state) &&
                                     desktopUpdate.latest && (
                                         <>
                                             &nbsp;
@@ -419,27 +422,27 @@ const Settings = () => {
                     />
                     {desktopUpdate.enabled && (
                         <ActionColumn>
-                            {desktopUpdate.state === 'checking' && (
+                            {desktopUpdate.state === UpdateState.Checking && (
                                 <ActionButton isDisabled variant="secondary">
                                     <Translation id="SETTINGS_UPDATE_CHECKING" />
                                 </ActionButton>
                             )}
-                            {desktopUpdate.state === 'not-available' && (
+                            {desktopUpdate.state === UpdateState.NotAvailable && (
                                 <ActionButton onClick={checkForUpdates} variant="secondary">
                                     <Translation id="SETTINGS_UPDATE_CHECK" />
                                 </ActionButton>
                             )}
-                            {desktopUpdate.state === 'available' && (
+                            {desktopUpdate.state === UpdateState.Available && (
                                 <ActionButton onClick={maximizeUpdater} variant="secondary">
                                     <Translation id="SETTINGS_UPDATE_AVAILABLE" />
                                 </ActionButton>
                             )}
-                            {desktopUpdate.state === 'downloading' && (
+                            {desktopUpdate.state === UpdateState.Downloading && (
                                 <ActionButton onClick={maximizeUpdater} variant="secondary">
                                     <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
                                 </ActionButton>
                             )}
-                            {desktopUpdate.state === 'ready' && (
+                            {desktopUpdate.state === UpdateState.Ready && (
                                 <ActionButton onClick={installRestart} variant="secondary">
                                     <Translation id="SETTINGS_UPDATE_READY" />
                                 </ActionButton>

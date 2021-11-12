@@ -4,6 +4,7 @@ import { NOTIFICATION, SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 import { Network } from '@wallet-types';
 import { PROTOCOL_SCHEME } from '@suite/support/suite/Protocol';
+import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 
 interface Options {
     seen?: boolean;
@@ -72,7 +73,7 @@ export type ToastPayload = (
       }
     | {
           type: 'auto-updater-error';
-          state: string;
+          state: UpdateState;
       }
     | {
           type: 'auto-updater-no-new';

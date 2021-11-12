@@ -10,6 +10,17 @@ import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
  * - not-available: Currently on the latest version
  * - downloading: Currently downloading the latest version
  * - ready: Latest version is downloaded and going to be installed on the next restart
+ */
+export enum UpdateState {
+    Checking = 'checking',
+    Available = 'available',
+    NotAvailable = 'not-available',
+    Downloading = 'downloading',
+    Ready = 'ready',
+}
+
+/**
+ * state: UpdateState ↑
  * progress: Information about download progress (size, speed, ...)
  * latest: Information about latest version (if you're on the latest version, this will contain the current version)
  * window: State of the update window
@@ -19,7 +30,7 @@ import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
  */
 export interface State {
     enabled: boolean;
-    state: 'checking' | 'available' | 'not-available' | 'downloading' | 'ready';
+    state: UpdateState;
     progress?: Partial<UpdateProgress>;
     latest?: UpdateInfo;
     window: UpdateWindow;
@@ -27,7 +38,7 @@ export interface State {
 
 const initialState: State = {
     enabled: false,
-    state: 'not-available',
+    state: UpdateState.NotAvailable,
     window: 'maximized',
 };
 
@@ -38,22 +49,22 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                 draft.enabled = true;
                 break;
             case DESKTOP_UPDATE.CHECKING:
-                draft.state = 'checking';
+                draft.state = UpdateState.Checking;
                 break;
             case DESKTOP_UPDATE.AVAILABLE:
-                draft.state = 'available';
+                draft.state = UpdateState.Available;
                 draft.latest = action.payload;
                 break;
             case DESKTOP_UPDATE.NOT_AVAILABLE:
-                draft.state = 'not-available';
+                draft.state = UpdateState.NotAvailable;
                 draft.latest = action.payload;
                 break;
             case DESKTOP_UPDATE.DOWNLOADING:
-                draft.state = 'downloading';
+                draft.state = UpdateState.Downloading;
                 draft.progress = action.payload;
                 break;
             case DESKTOP_UPDATE.READY:
-                draft.state = 'ready';
+                draft.state = UpdateState.Ready;
                 draft.latest = action.payload;
                 break;
             case DESKTOP_UPDATE.WINDOW:
