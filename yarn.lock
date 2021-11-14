@@ -25195,16 +25195,16 @@ trezor-address-validator@^0.4.0:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.2.2-beta.4:
-  version "8.2.2-beta.4"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.2-beta.4.tgz#d3a19697e2ba3f88a981318e1fabfe9850e2b740"
-  integrity sha512-EwEkl1iz376WbSSnHtlN+GysYhwgyZvzW6Bl6OWhzFSeUEmyteLIFXmC0TsZQb/9bKM/WXtwn+mdDeIfUae34A==
+trezor-connect@8.2.3-beta.2:
+  version "8.2.3-beta.2"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.3-beta.2.tgz#c979269339609a6079fa723941dbfbdc4f72db6b"
+  integrity sha512-Q+5+wdnRiByK7sP8PKxWB+uWJUxM/tKENI6oBrlhSWkCfBid8MHoc0juNbj6XM53qVemrOTRfhG3rRNkOR6Oaw==
   dependencies:
     "@babel/runtime" "^7.15.4"
     "@trezor/blockchain-link" "^1.0.17"
     "@trezor/connect-common" "^0.0.2"
     "@trezor/rollout" "^1.2.0"
-    "@trezor/utxo-lib" "1.0.0-beta.9"
+    "@trezor/utxo-lib" "1.0.0-beta.10"
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
     cbor-web "^7.0.6"
