@@ -5,7 +5,7 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
 // fixture contains number of request that given provider needs go through this test scenario
 const fixtures = [
-    { provider: 'dropbox', numberOfRequests: [25, 26] },
+    { provider: 'dropbox', numberOfRequests: [27, 28] },
     { provider: 'google', numberOfRequests: [10, 12] },
 ] as const;
 
