@@ -5689,7 +5689,7 @@ export default defineMessages({
     FIRMWARE_CONNECT_IN_NORMAL_MODEL_2: {
         id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_2',
         defaultMessage:
-            'Please make sure you are not holding any buttons while connecting your device.',
+            'Please make sure you are not swiping the touchscreen while connecting your device.',
     },
     FIRMWARE_UPDATE_TO_VERSION: {
         id: 'FIRMWARE_UPDATE_TO_VERSION',

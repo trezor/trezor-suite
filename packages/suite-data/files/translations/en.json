@@ -8,7 +8,7 @@
   "CUSTOM_FEE_NOT_IN_RANGE": "Enter a fee between {minFee} and {maxFee}",
   "DOWNLOAD_TRANSACTION": "Download as .txt",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Do not hold any buttons while connecting the cable.",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Please make sure you are not holding any buttons while connecting your device.",
+  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Please make sure you are not swiping the touchscreen while connecting your device.",
   "FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC": "In the next step, your Trezor will ask you to confirm this firmware update.",
   "FIRMWARE_UPDATE_AVAILABLE_DESC": "We’re constantly working to improve your Trezor experience! Here’s a summary of what has changed:",
   "FIRMWARE_UPDATE_SUCCESS_DESC": "Your Trezor has the latest firmware installed.",
