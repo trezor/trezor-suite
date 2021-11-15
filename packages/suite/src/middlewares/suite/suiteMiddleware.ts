@@ -9,7 +9,7 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import * as storageActions from '@suite-actions/storageActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
-import { fetchLocale } from '@settings-actions/languageActions';
+import * as languageActions from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { getApp } from '@suite-utils/router';
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -66,7 +66,9 @@ const suite =
                 // 2. fetch message system config
                 // 3. redirecting user into welcome screen (if needed)
                 await Promise.all([
-                    api.dispatch(fetchLocale(action.payload.suite.settings.language)),
+                    api.dispatch(
+                        languageActions.fetchLocale(action.payload.suite.settings.language),
+                    ),
                     api.dispatch(messageSystemActions.init()),
                     api.dispatch(routerActions.initialRedirection()),
                 ]);

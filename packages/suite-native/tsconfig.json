@@ -277,7 +277,8 @@
         "./index.d.ts",
         // TODO: remove paths below if used somewhere, otherwise eslint complaints
         "./src/utils/suite/oauth.ts", 
-        "./src/hooks/suite/useLocales.ts"
+        "./src/hooks/suite/useLocales.ts",
+        "./src/actions/settings/languageActions.ts",
     ],
     "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"]
 }

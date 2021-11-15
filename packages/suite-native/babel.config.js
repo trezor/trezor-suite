@@ -15,8 +15,8 @@ module.exports = api => {
                         '@suite-actions/routerActions':
                             './packages/suite-native/src/actions/suite/routerActions',
                         // unlike on web, messages and locales are bundled with application and might be simply required
-                        '@suite-actions/languageActions':
-                            './packages/suite-native/src/actions/suite/languageActions',
+                        '@settings-actions/languageActions':
+                            './packages/suite-native/src/actions/settings/languageActions',
                         '@suite-hooks/useLocales':
                             './packages/suite-native/src/hooks/suite/useLocales',
 

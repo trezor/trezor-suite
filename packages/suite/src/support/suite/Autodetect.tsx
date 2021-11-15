@@ -3,7 +3,7 @@ import { getOsTheme, watchOsTheme } from '@suite-utils/env';
 import { getOsLocale, watchOsLocale } from '@suite-utils/l10n';
 import { useActions, useSelector } from '@suite-hooks';
 import { setTheme as setThemeAction } from '@suite-actions/suiteActions';
-import { fetchLocale as fetchLocaleAction } from '@settings-actions/languageActions';
+import * as languageActions from '@settings-actions/languageActions';
 
 const Autodetect = () => {
     const { autodetectTheme, autodetectLanguage, currentTheme, currentLanguage, storageLoaded } =
@@ -16,7 +16,7 @@ const Autodetect = () => {
         }));
     const { setTheme, fetchLocale } = useActions({
         setTheme: setThemeAction,
-        fetchLocale: fetchLocaleAction,
+        fetchLocale: languageActions.fetchLocale,
     });
 
     useEffect(() => {
