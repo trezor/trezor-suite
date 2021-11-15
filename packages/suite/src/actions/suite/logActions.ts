@@ -88,10 +88,10 @@ export const reportToSentry = (error: any) => (dispatch: Dispatch, getState: Get
     Sentry.withScope(scope => {
         scope.setUser({ id: analytics.instanceId });
         scope.setContext('suiteState', {
-            device: suite.device ? redactDevice(suite.device) : undefined,
+            device: redactDevice(suite.device) ?? null,
             discovery: wallet.discovery,
             enabledCoins: wallet.settings.enabledNetworks,
-            suiteLog: dispatch(getLog(true)),
+            suiteLog: JSON.stringify(dispatch(getLog(true)), null, 2),
         });
         Sentry.captureException(error);
     });
