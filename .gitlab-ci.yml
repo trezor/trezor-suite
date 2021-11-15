@@ -6,7 +6,7 @@ variables:
   STAGING_WALLET_SERVER_URL: "https://staging-wallet.trezor.io/wallet"
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
   DESKTOP_APP_NAME: "Trezor-Suite"
-  GIT_CLEAN_FLAGS: "-ffdx -e node_modules -e packages/*/lib -e .yarn"
+  GIT_CLEAN_FLAGS: "-ffdx -e .yarn"
 
 stages:
   - setup environment
