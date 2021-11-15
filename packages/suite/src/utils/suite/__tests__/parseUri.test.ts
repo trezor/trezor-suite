@@ -66,16 +66,6 @@ describe('parseUri', () => {
     });
 
     describe('getProtocolInfo', () => {
-        let spy: any;
-
-        beforeEach(() => {
-            spy = jest.spyOn(global.console, 'error').mockImplementation();
-        });
-
-        afterEach(() => {
-            spy.mockRestore();
-        });
-
         it('should parse Bitcoin URI when address and amount are both available', () => {
             const protocolInfo = getProtocolInfo(
                 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1',
@@ -147,21 +137,12 @@ describe('parseUri', () => {
             );
 
             expect(protocolInfo).toEqual(null);
-            expect(console.error).toHaveBeenCalledTimes(1);
-            expect(spy.mock.calls[0]).toEqual([
-                `Unsupported scheme 'litecoin', missing address '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf' or there is a problem with params '{"amount":"0.1"}'!`,
-            ]);
         });
 
         it('should log an error when address is missing', () => {
             const protocolInfo = getProtocolInfo('bitcoin:?amount=0.1');
 
             expect(protocolInfo).toEqual(null);
-            expect(console.error).toHaveBeenCalledTimes(1);
-
-            expect(spy.mock.calls[0]).toEqual([
-                `Unsupported scheme 'bitcoin', missing address '' or there is a problem with params '{"amount":"0.1"}'!`,
-            ]);
         });
     });
 });

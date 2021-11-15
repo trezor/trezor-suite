@@ -71,11 +71,5 @@ export const getProtocolInfo = (uri: string): BitcoinProtocol | null => {
         };
     }
 
-    console.error(
-        `Unsupported scheme '${scheme}', missing address '${pathname}' or there is a problem with params '${JSON.stringify(
-            params,
-        )}'!`,
-    );
-
     return null;
 };
