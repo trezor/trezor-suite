@@ -1,0 +1,45 @@
+diff --git a/node_modules/trezor-connect/data/coins.json b/node_modules/trezor-connect/data/coins.json
+index 87cee11..8102d4d 100644
+--- a/node_modules/trezor-connect/data/coins.json
++++ b/node_modules/trezor-connect/data/coins.json
+@@ -868,9 +868,9 @@
+             "decimals": 8,
+             "decred": false,
+             "default_fee_b": {
+-                "Normal": 100000
++                "Normal": 1000
+             },
+-            "dust_limit": 99999999,
++            "dust_limit": 999999,
+             "extra_data": false,
+             "force_bip143": false,
+             "fork_id": null,
+@@ -878,7 +878,7 @@
+             "max_address_length": 34,
+             "maxfee_kb": 1200000000000,
+             "min_address_length": 27,
+-            "minfee_kb": 100000000,
++            "minfee_kb": 100000,
+             "name": "Dogecoin",
+             "segwit": false,
+             "shortcut": "DOGE",
+diff --git a/node_modules/trezor-connect/lib/core/methods/tx/TransactionComposer.js b/node_modules/trezor-connect/lib/core/methods/tx/TransactionComposer.js
+index 3c4e8d5..e0f3a39 100644
+--- a/node_modules/trezor-connect/lib/core/methods/tx/TransactionComposer.js
++++ b/node_modules/trezor-connect/lib/core/methods/tx/TransactionComposer.js
+@@ -203,11 +203,12 @@ var TransactionComposer = /*#__PURE__*/function () {
+     }; // DOGE changed fee policy and requires:
+ 
+     if (coinInfo.shortcut === 'DOGE') {
+-      enhancement.floorBaseFee = enhancement.baseFee === 0; // fee rounded down not to overprice tx (see @trezor/utxo-lib/compose) use only if baseFee is not specified
++      // enhancement.floorBaseFee = enhancement.baseFee === 0; // fee rounded down not to overprice tx (see @trezor/utxo-lib/compose) use only if baseFee is not specified
+ 
+-      enhancement.baseFee = enhancement.baseFee || 100000000; // default 1 DOGE base fee
++      // enhancement.baseFee = enhancement.baseFee || 100000000; // default 1 DOGE base fee
+ 
+-      enhancement.dustOutputFee = 100000000; // 1 DOGE for every output lower than dust (dust = 1 DOGE)
++      // enhancement.dustOutputFee = 100000000; // 1 DOGE for every output lower than dust (dust = 1 DOGE)
++      enhancement.dustOutputFee = 1000000; // 0.01 DOGE for every output lower than dust (dust = 0.01 DOGE)
+     }
+ 
+     return (0, _utxoLib.composeTx)(_objectSpread({
