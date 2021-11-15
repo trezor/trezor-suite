@@ -31,7 +31,7 @@ const Index = () => {
         if (!isDev) {
             initSentry(SENTRY_CONFIG);
         }
-        window.desktopApi!.clientReady();
+        window.desktopApi?.clientReady();
     }, []);
 
     return (

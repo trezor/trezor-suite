@@ -37,7 +37,7 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
 
     useEffect(() => {
         if (!desktopUpdate.enabled) {
-            window.desktopApi!.on('update/enable', enable);
+            window.desktopApi?.on('update/enable', enable);
             return;
         }
         window.desktopApi!.on('update/checking', checking);
