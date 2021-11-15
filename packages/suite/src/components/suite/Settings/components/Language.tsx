@@ -4,7 +4,7 @@ import { isTranslationMode } from '@suite-utils/l10n';
 import { useActions, useAnalytics, useSelector, useTranslation } from '@suite-hooks';
 import LANGUAGES, { Locale, LocaleInfo } from '@suite-config/languages';
 import { setAutodetect as setAutodetectAction } from '@suite-actions/suiteActions';
-import { fetchLocale as fetchLocaleAction } from '@settings-actions/languageActions';
+import * as languageActions from '@settings-actions/languageActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 
 const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
@@ -45,7 +45,7 @@ const Language = () => {
         autodetectLanguage: state.suite.settings.autodetect.language,
     }));
     const { fetchLocale, setAutodetect } = useActions({
-        fetchLocale: fetchLocaleAction,
+        fetchLocale: languageActions.fetchLocale,
         setAutodetect: setAutodetectAction,
     });
 
