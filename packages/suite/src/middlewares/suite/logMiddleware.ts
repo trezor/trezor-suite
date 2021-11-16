@@ -46,24 +46,10 @@ const log =
                 api.dispatch(logActions.addCustom(action, { error: action.payload.error }));
                 break;
             case SUITE.AUTH_DEVICE:
-                api.dispatch(
-                    logActions.addCustom(action, {
-                        device_id: action.payload.id,
-                        state: action.payload.state,
-                    }),
-                );
+                api.dispatch(logActions.addCustom(action, { ...action.payload }));
                 break;
-
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
-                api.dispatch(
-                    logActions.addCustom(action, {
-                        ...action.payload,
-                        firmwareRelease: undefined,
-                        release: undefined,
-                    }),
-                );
-                break;
             case SUITE.APP_CHANGED:
             case DISCOVERY.COMPLETE:
                 api.dispatch(logActions.addAction(action));
@@ -87,34 +73,18 @@ const log =
 
                 break;
             case TRANSACTION.ADD:
-                api.dispatch(
-                    logActions.addCustom(action, {
-                        account: getAccountIdentifier(action.account),
-                        transactions: action.transactions,
-                    }),
-                );
+                api.dispatch(logActions.addCustom(action, getAccountIdentifier(action.account)));
                 break;
             case SUITE.UPDATE_SELECTED_DEVICE:
                 api.dispatch(
                     logActions.addCustom(action, {
-                        id: action.payload.id,
-                        state: action.payload.state,
                         path: action.payload.path,
                     }),
                 );
                 break;
             case ACCOUNT.CREATE:
             case ACCOUNT.UPDATE:
-                api.dispatch(
-                    logActions.addAction({
-                        ...action,
-                        payload: {
-                            ...action.payload,
-                            addresses: undefined,
-                            history: { ...action.payload.history, transactions: undefined },
-                        },
-                    }),
-                );
+                api.dispatch(logActions.addAction(action));
                 break;
             default:
                 // for rest actions, log only type

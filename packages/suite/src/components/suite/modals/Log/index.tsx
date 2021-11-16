@@ -9,6 +9,7 @@ import * as logActions from '@suite-actions/logActions';
 import { AppState, Dispatch } from '@suite-types';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
 import { copyToClipboard } from '@suite-utils/dom';
+import { prettifyLog } from '@suite-utils/logUtils';
 
 const LogWrapper = styled.pre`
     padding: 20px;
@@ -49,8 +50,6 @@ type Props = ReturnType<typeof mapStateToProps> &
 
 const Log = (props: Props) => {
     const htmlElement = createRef<HTMLPreElement>();
-
-    const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
     const log = prettifyLog(props.getLog(props.log.excludeBalanceRelated));
 
