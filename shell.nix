@@ -1,8 +1,8 @@
-# the last successful build of nixos-21.05 (stable) as of 2021-08-02
+# the last successful build of nixpkgs-unstable as of 2021-11-16
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/16bf3980bfa0d8929639be93fa8491ebad9d61ec.tar.gz";
-    sha256 = "0azsnd2pjg53siv97n5l62j0c8b5whi5bd5a2wqz1sphkirf3cgq";
+    url = "https://github.com/NixOS/nixpkgs/archive/5cb226a06c49f7a2d02863d0b5786a310599df6b.tar.gz";
+    sha256 = "0dzz207swwm5m0dyibhxg5psccrcqfh1lzkmzzfns27wc4ria6z3";
   })
 { };
 
@@ -10,6 +10,7 @@ let
   SuitePython = python3.withPackages(ps: [
     ps.yamllint
   ]);
+  electron = electron_15;  # use the same version as defined in packages/suite-desktop/package.json
 in
   stdenv.mkDerivation {
     name = "trezor-suite-dev";
@@ -27,11 +28,10 @@ in
       jre
       p7zip
       electron
-    ] ++ lib.optionals stdenv.isLinux [
       pkg-config
-      python2                                                     # older node-gyp still requires python2.x
+      pixman cairo giflib libjpeg libpng librsvg pango            # build dependencies for node-canvas
+    ] ++ lib.optionals stdenv.isLinux [
       appimagekit nsis openjpeg osslsigncode p7zip squashfsTools  # binaries used by node_module: electron-builder
-      cairo giflib libjpeg libpng librsvg pango           # build dependencies for node-canvas
       # winePackages.minimal
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa
