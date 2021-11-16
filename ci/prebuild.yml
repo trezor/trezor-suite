@@ -2,6 +2,7 @@
 msg-system config sign dev:
   stage: prebuild
   script:
+    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/suite-data msg-system-sign-config
   artifacts:
     expire_in: 7 days
