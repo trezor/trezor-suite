@@ -60,7 +60,7 @@ const batch = [
     {
         name: 'derivation_type',
         label: 'Derivation type',
-        type: 'input',
+        type: 'number',
         value: CardanoDerivationType.ICARUS_TREZOR,
     },
 ];
