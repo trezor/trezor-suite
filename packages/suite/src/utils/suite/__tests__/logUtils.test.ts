@@ -1,9 +1,4 @@
-import {
-    redactAccount,
-    redactDevice,
-    redactTransaction,
-    REDACTED_REPLACEMENT,
-} from '@suite-utils/logUtils';
+import { redactAccount, redactDevice, REDACTED_REPLACEMENT } from '@suite-utils/logUtils';
 
 describe('logUtils', () => {
     const acc = global.JestMocks.getWalletAccount({
@@ -13,7 +8,6 @@ describe('logUtils', () => {
         symbol: 'btc',
     });
     const dev = global.JestMocks.getSuiteDevice();
-    const tx = global.JestMocks.getWalletTransaction({});
 
     describe('redactAccount', () => {
         it('should redact sensitive fields on account', () => {
@@ -24,10 +18,11 @@ describe('logUtils', () => {
                 balance: REDACTED_REPLACEMENT,
                 availableBalance: REDACTED_REPLACEMENT,
                 formattedBalance: REDACTED_REPLACEMENT,
-                history: {
-                    ...acc.history,
-                    transactions: REDACTED_REPLACEMENT,
-                },
+                history: REDACTED_REPLACEMENT,
+                deviceState: REDACTED_REPLACEMENT,
+                utxo: REDACTED_REPLACEMENT,
+                metadata: REDACTED_REPLACEMENT,
+                key: REDACTED_REPLACEMENT,
             });
         });
         it('should redact sensitive fields on device', () => {
@@ -35,25 +30,14 @@ describe('logUtils', () => {
                 ...dev,
                 id: REDACTED_REPLACEMENT,
                 label: REDACTED_REPLACEMENT,
+                firmwareRelease: REDACTED_REPLACEMENT,
+                state: REDACTED_REPLACEMENT,
                 features: {
                     ...dev.features,
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     device_id: REDACTED_REPLACEMENT,
                     label: REDACTED_REPLACEMENT,
                 },
-            });
-        });
-        it('should redact sensitive fields on transaction', () => {
-            expect(redactTransaction(tx)).toEqual({
-                ...tx,
-                amount: REDACTED_REPLACEMENT,
-                txid: REDACTED_REPLACEMENT,
-                targets: tx.targets.map(t => ({
-                    ...t,
-                    amount: REDACTED_REPLACEMENT,
-                    addresses: t.addresses?.map(_a => REDACTED_REPLACEMENT),
-                })),
-                details: undefined,
             });
         });
     });

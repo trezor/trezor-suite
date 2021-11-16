@@ -2,7 +2,7 @@ import { LogEntry } from '@suite-reducers/logReducer';
 import { Action, Dispatch, GetState } from '@suite-types';
 import * as Sentry from '@sentry/browser';
 import { LOG } from './constants';
-import { redactDevice, redactCustom, redactAction } from '@suite-utils/logUtils';
+import { redactDevice, redactCustom, redactAction, redactDiscovery } from '@suite-utils/logUtils';
 
 export type LogAction =
     | { type: typeof LOG.ADD; payload: LogEntry }
@@ -85,13 +85,14 @@ export const getLog =
 
 export const reportToSentry = (error: any) => (dispatch: Dispatch, getState: GetState) => {
     const { analytics, wallet, suite } = getState();
+
     Sentry.withScope(scope => {
         scope.setUser({ id: analytics.instanceId });
         scope.setContext('suiteState', {
             device: redactDevice(suite.device) ?? null,
-            discovery: wallet.discovery,
+            discovery: wallet.discovery.map(redactDiscovery),
             enabledCoins: wallet.settings.enabledNetworks,
-            suiteLog: JSON.stringify(dispatch(getLog(true)), null, 2),
+            suiteLog: dispatch(getLog(true))?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry
         });
         Sentry.captureException(error);
     });
