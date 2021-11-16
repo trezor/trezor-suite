@@ -10,44 +10,42 @@ enum CardanoDerivationType {
     ICARUS_TREZOR = 2,
 }
 
-// addressParameters: {
-//     addressType: CardanoAddressType.BYRON,
-//     path: "m/44'/1815'/0'/0/0",
-// },
-// protocolMagic: PROTOCOL_MAGICS.mainnet,
-// networkId: NETWORK_IDS.mainnet,
-
-const addressParameters = [
-    {
-        name: 'path',
-        label: 'Bip44 path',
-        type: 'input',
-        value: `m/44'/1815'/0'/0/0`,
-    },
-    // {
-    //     name: 'addressType',
-    //     label: 'Address type',
-    //     type: 'input',
-    //     value: `m/44'/1815'/0'/0/0`,
-    // },
-];
+// const addressParameters = [
+//     {
+//         name: 'path',
+//         label: 'path',
+//         type: 'input',
+//         value: "m/1852'/1815'/0'/0/0",
+//     },
+//     {
+//         name: 'stakingPath',
+//         label: 'staking path',
+//         type: 'input',
+//         value: "m/1852'/1815'/0'/2/0",
+//     },
+//     {
+//         name: 'addressType',
+//         label: 'address type',
+//         value: ''
+//     }
+// ];
 
 const batch = [
     {
         name: 'addressParameters',
         type: 'json',
-        value: `{'path': "m/44'/1815'/0'/0/0", 'addressType': ${CardanoAddressType.BYRON} }`,
+        value: `{'path': "m/1852'/1815'/0'/0/0", 'stakingPath': "m/1852'/1815'/0'/2/0", 'addressType': ${CardanoAddressType.BASE} }`,
     },
     {
         name: 'networkId',
         label: 'Network id',
-        type: 'input',
+        type: 'number',
         value: 1,
     },
     {
         name: 'protocolMagic',
         label: 'Network id',
-        type: 'input',
+        type: 'number',
         value: 764824073,
     },
     {

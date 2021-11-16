@@ -337,6 +337,15 @@ export default [
                 name: 'Sign transaction',
                 url: '/method/cardanoSignTransaction',
             },
+            {
+                name: 'Account info',
+                children: [
+                    {
+                        name: 'using discovery',
+                        url: '/method/getAccountInfo-discovery-cardano',
+                    },
+                ],
+            },
         ],
     },
     {

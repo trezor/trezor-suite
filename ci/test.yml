@@ -1,4 +1,4 @@
-e2e tests
+# e2e tests
 .e2e web:
   stage: integration testing
   needs:

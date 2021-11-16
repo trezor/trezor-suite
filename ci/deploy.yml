@@ -101,7 +101,7 @@ connect-explorer deploy dev:
   tags:
     - deploy
 
-npm packages deploy to npm registry
+# npm packages deploy to npm registry
 .npm_deploy_rules: &npm_deploy_rules
   stage: deploy to dev
   when: manual
