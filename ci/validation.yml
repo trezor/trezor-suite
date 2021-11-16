@@ -29,4 +29,5 @@ yaml lint:
 msg-system config validation:
   stage: validation
   script:
+    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/suite-data msg-system-validate-config
