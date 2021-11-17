@@ -37,6 +37,7 @@ describe('blockfrost/utils', () => {
     describe('transformInputOutput', () => {
         fixtures.transformInputOutput.forEach(f => {
             it(f.description, () => {
+                // @ts-ignore incorrect params
                 expect(transformInputOutput(f.data, f.asset)).toEqual(f.result);
             });
         });

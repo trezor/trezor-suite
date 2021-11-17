@@ -74,6 +74,14 @@ export interface Transaction {
     tokens: TokenTransfer[];
     rbf?: boolean;
     ethereumSpecific?: BlockbookTransaction['ethereumSpecific'];
+    cardanoSpecific?: {
+        subtype:
+            | 'withdrawal'
+            | 'stake_delegation'
+            | 'stake_registration'
+            | 'stake_deregistration'
+            | null;
+    };
     details: TransactionDetail;
 }
 
@@ -126,6 +134,8 @@ export interface AccountInfo {
         // XRP
         sequence?: number;
         reserve?: string;
+        // blockfrost
+        rewards?: string;
     };
     page?: {
         // blockbook and blockfrost

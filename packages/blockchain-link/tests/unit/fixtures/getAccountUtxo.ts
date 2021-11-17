@@ -106,6 +106,21 @@ export default {
                     blockHeight: 5553000,
                     amount: '1518517',
                     vout: 0,
+                    cardanoSpecific: {
+                        unit: 'lovelace',
+                    },
+                },
+                {
+                    address:
+                        'addr1q8u5ktsj5zsmhvwv0ep9zuhfu39x3wyt9wxjnsn3cagsyy59ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usrmcafl',
+                    txid: '96a4ed36f2f117ba0096b7f3c8f28b6dbca0846cbb15662f90fa7b0b08fc7529',
+                    confirmations: 280424,
+                    blockHeight: 5553000,
+                    amount: '1',
+                    vout: 0,
+                    cardanoSpecific: {
+                        unit: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',
+                    },
                 },
                 {
                     address:
@@ -115,6 +130,9 @@ export default {
                     blockHeight: 5405008,
                     amount: '35347470',
                     vout: 1,
+                    cardanoSpecific: {
+                        unit: 'lovelace',
+                    },
                 },
             ],
         },

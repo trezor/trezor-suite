@@ -58,6 +58,22 @@ export default {
                     amount: '1000000',
                     vout: 1,
                     path: 'path',
+                    cardanoSpecific: {
+                        unit: 'lovelace',
+                    },
+                },
+                {
+                    address:
+                        'addr1qywvux9d5u4cqyzrhp587sty33gt5pl5hpxmnzrw5nk5j87fdzm3eywgf7uexyytfzfcrp4hhcck7ch9kd753k33jpyqa3mzep',
+                    txid: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026',
+                    confirmations: 100,
+                    blockHeight: 101,
+                    amount: '100',
+                    vout: 1,
+                    path: 'path',
+                    cardanoSpecific: {
+                        unit: 'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f42657272795361707068697265',
+                    },
                 },
                 {
                     address:
@@ -68,6 +84,22 @@ export default {
                     amount: '1000000',
                     vout: 2,
                     path: 'path2',
+                    cardanoSpecific: {
+                        unit: 'lovelace',
+                    },
+                },
+                {
+                    address:
+                        'addr1qywvux9d5u4cqyzrhp587sty33gt5pl5hpxmnzrw5nk5j87fdzm3eywgf7uexyytfzfcrp4hhcck7ch9kd753k33jpyqa3mzep',
+                    txid: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026',
+                    confirmations: 0,
+                    blockHeight: 0,
+                    amount: '100',
+                    vout: 2,
+                    path: 'path2',
+                    cardanoSpecific: {
+                        unit: 'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f42657272795361707068697265',
+                    },
                 },
             ],
         },
@@ -108,7 +140,8 @@ export default {
                 {
                     type: 'BLOCKFROST',
                     name: 'asset1hwnpal5vap799t6kkjmjf6myhse4zl2vu4ahzz',
-                    address: 'asset1hwnpal5vap799t6kkjmjf6myhse4zl2vu4ahzz',
+                    address:
+                        'b863bc7369f46136ac1048adb2fa7dae3af944c3bbb2be2f216a8d4f42657272795361707068697265',
                     symbol: 'BerrySapphire',
                     balance: '10',
                     decimals: 1,
@@ -116,7 +149,7 @@ export default {
                 {
                     type: 'BLOCKFROST',
                     name: 'asset1zvclg2cvj4e5jfz5vswf3sx0lasy79xn8cdap9',
-                    address: 'asset1zvclg2cvj4e5jfz5vswf3sx0lasy79xn8cdap9',
+                    address: '02477d7c23b4c2834b0be8ca8578dde47af0cc82a964688f6fc95a7a47524943',
                     symbol: 'GRIC',
                     balance: '1',
                     decimals: 0,
@@ -248,6 +281,7 @@ export default {
                                 hash: 'd958d03328c778a3162ffa4bd346a132177eb24c3ffdefe8bff0ec45de79e397',
                                 block: 'eb1b2e79036d9fe2fccf0348df6109ab55ce2dba66c28aab84ec56cea0b5ba8d',
                                 block_height: 6133187,
+                                block_time: 1629388426,
                                 slot: 37822135,
                                 index: 11,
                                 output_amount: [
@@ -305,27 +339,6 @@ export default {
                                         data_hash: null,
                                     },
                                 ],
-                            },
-                            blockInfo: {
-                                time: 1629388426,
-                                height: 6133187,
-                                hash: 'eb1b2e79036d9fe2fccf0348df6109ab55ce2dba66c28aab84ec56cea0b5ba8d',
-                                slot: 37822135,
-                                epoch: 285,
-                                epoch_slot: 65335,
-                                slot_leader:
-                                    'pool1spus7k8cy5qcs82xhw60dwwk2d4vrfs0m5vr2zst04gtq700gjn',
-                                size: 15564,
-                                tx_count: 19,
-                                output: '326988057275',
-                                fees: '4097419',
-                                block_vrf:
-                                    'vrf_vk1v0encvmzxvrq6t7z8kcv97zfl6zs7cw9m3s668rw34vwkk9yqh4qsq0szv',
-                                previous_block:
-                                    'e18147e4eff0b67d5040ff3caee1822d16c44fdf64c97fc889b5d5d691504dad',
-                                next_block:
-                                    '71ba0798ed03a2a646d1b7cac5d1293c33f35104364e219d087ed7e1d1ac81b0',
-                                confirmations: 253956,
                             },
                             txHash: 'd958d03328c778a3162ffa4bd346a132177eb24c3ffdefe8bff0ec45de79e397',
                         },
@@ -423,6 +436,9 @@ export default {
                             totalSpent: '171265',
                             targets: [],
                             tokens: [],
+                            cardanoSpecific: {
+                                subtype: 'withdrawal',
+                            },
                             details: {
                                 vin: [
                                     {
@@ -468,7 +484,8 @@ export default {
                     {
                         type: 'BLOCKFROST',
                         name: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
-                        address: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
+                        address:
+                            '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',
                         symbol: 'veternikNezjedeny',
                         balance: '1',
                         decimals: 0,
@@ -622,6 +639,7 @@ export default {
                     hash: '96a4ed36f2f117ba0096b7f3c8f28b6dbca0846cbb15662f90fa7b0b08fc7529',
                     block: '0eed37582508f89e98bc148a3be79856a6e03a98a8e9d206634797d49655da05',
                     block_height: 5553000,
+                    block_time: 1617638687,
                     slot: 26072396,
                     index: 32,
                     output_amount: [
@@ -669,6 +687,7 @@ export default {
                                 {
                                     unit: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',
                                     quantity: '1',
+                                    fingerprint: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
                                 },
                             ],
                             tx_hash:
@@ -709,6 +728,8 @@ export default {
                                 {
                                     unit: '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',
                                     quantity: '1',
+                                    decimals: 0,
+                                    fingerprint: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
                                 },
                             ],
                             output_index: 0,
@@ -731,24 +752,6 @@ export default {
                             data_hash: null,
                         },
                     ],
-                },
-                blockInfo: {
-                    time: 1617638687,
-                    height: 5553000,
-                    hash: '0eed37582508f89e98bc148a3be79856a6e03a98a8e9d206634797d49655da05',
-                    slot: 26072396,
-                    epoch: 257,
-                    epoch_slot: 411596,
-                    slot_leader: 'pool16kus5xvdysgmtjp0hhlwt72tsm0yn2zcn0a8wg9emc6c75lxvmc',
-                    size: 25948,
-                    tx_count: 37,
-                    output: '10098502831419',
-                    fees: '7777002',
-                    block_vrf: 'vrf_vk1rrf0qyyv45pu7talhcdfzk4hc0273k54504vdralnu9tyul4xspqk7d35p',
-                    previous_block:
-                        '6778382568d10c6cd65782f0dcdf708c922363d7de199b84479288a09a5a4dd3',
-                    next_block: 'cad86f7b8bb041c8028186504248358c08dfde96a5a1047106d819b68ef54785',
-                    confirmations: 834086,
                 },
                 txHash: '96a4ed36f2f117ba0096b7f3c8f28b6dbca0846cbb15662f90fa7b0b08fc7529',
             },
@@ -775,9 +778,10 @@ export default {
                 tokens: [
                     {
                         type: 'recv',
-                        name: 'veternikNezjedeny',
+                        name: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
                         symbol: 'veternikNezjedeny',
-                        address: 'asset1eevmdlaz5424s3663ypw8w4vyxdlxkm3lefz06',
+                        address:
+                            '2f712364ec46f0cf707d412106ce71ef3370f76e27fb56b6bb14708776657465726e696b4e657a6a6564656e79',
                         decimals: 0,
                         amount: '1',
                         from: 'addr1q9xs9lap3u85z7qvy4q5692x89apjw7pafmxp4n4x8jqzd9re5df3pzwwmyq946axfcejy5n4x0y99wqpgtp2gd0k09q75jn6n',
@@ -870,6 +874,7 @@ export default {
                     hash: '2d9de1f11cf6fd077132ad76ac5037dbaf5ad948e004b1716c5da5439cfe30f9',
                     block: 'cc6f013f903e771ce846c2e7be44b99fdfa2e3f063265283d6110d30cf09f780',
                     block_height: 5388860,
+                    block_time: 1629388426,
                     slot: 22699433,
                     index: 7,
                     output_amount: [
@@ -928,30 +933,12 @@ export default {
                         },
                     ],
                 },
-                blockInfo: {
-                    time: 1614265724,
-                    height: 5388860,
-                    hash: 'cc6f013f903e771ce846c2e7be44b99fdfa2e3f063265283d6110d30cf09f780',
-                    slot: 22699433,
-                    epoch: 250,
-                    epoch_slot: 62633,
-                    slot_leader: 'pool106jtt06k5wjpqc5r5fkz06pgwhwaljzs624mnfua8fkhq0fl9am',
-                    size: 13066,
-                    tx_count: 24,
-                    output: '5352499144527',
-                    fees: '4829037',
-                    block_vrf: 'vrf_vk1zcjxl3gs09fmwwvy4tz5vgqsxtu7crrj6r4cntakp08htpkhw4qswskdm7',
-                    previous_block:
-                        'a3ab7d5d243586e81710df8ff248718a9e22d756659809eca63f20d164dcf424',
-                    next_block: '9d426764791ded4396e8a40f244c7f06628503623b32a59b6550e2751256ad6c',
-                    confirmations: 998099,
-                },
                 txHash: '2d9de1f11cf6fd077132ad76ac5037dbaf5ad948e004b1716c5da5439cfe30f9',
             },
             result: {
                 type: 'self',
                 txid: '2d9de1f11cf6fd077132ad76ac5037dbaf5ad948e004b1716c5da5439cfe30f9',
-                blockTime: 1614265724,
+                blockTime: 1629388426,
                 blockHeight: 5388860,
                 blockHash: 'cc6f013f903e771ce846c2e7be44b99fdfa2e3f063265283d6110d30cf09f780',
                 amount: '174257',
@@ -1053,6 +1040,7 @@ export default {
                     hash: 'd9a8ae2194e2e25e8079a04a4694e2679464a4f51512863a0008a35a85762ff0',
                     block: 'f1085bc718c5514e8f08354af8822b528c6eee5855d0f87ba5f4ede0f73a6067',
                     block_height: 5405008,
+                    block_time: 1614600060,
                     slot: 23033769,
                     index: 0,
                     output_amount: [
@@ -1122,24 +1110,6 @@ export default {
                             data_hash: null,
                         },
                     ],
-                },
-                blockInfo: {
-                    time: 1614600060,
-                    height: 5405008,
-                    hash: 'f1085bc718c5514e8f08354af8822b528c6eee5855d0f87ba5f4ede0f73a6067',
-                    slot: 23033769,
-                    epoch: 250,
-                    epoch_slot: 396969,
-                    slot_leader: 'pool15zrkyr0f80hxlt4scv72tej8l8zwrcphmrega9wutqchjekceal',
-                    size: 5489,
-                    tx_count: 10,
-                    output: '877185047625',
-                    fees: '1871739',
-                    block_vrf: 'vrf_vk1973re7lsj6va8q8ly4tpedu9hr9mc28wehfwvhqszd3u48kndatszu3d8w',
-                    previous_block:
-                        '45c1b9457d0bb56d4cfcba1ca43c4686a9036d36a53a76da424c535f881b570d',
-                    next_block: '4154b60f8fff61f096615f94268194d0bd34d9e8d5832290b557937f3ecfb7b6',
-                    confirmations: 981951,
                 },
                 txHash: 'd9a8ae2194e2e25e8079a04a4694e2679464a4f51512863a0008a35a85762ff0',
             },

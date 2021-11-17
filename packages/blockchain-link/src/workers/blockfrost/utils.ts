@@ -18,22 +18,22 @@ import { filterTargets, sumVinVout, transformTarget } from '../utils';
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];
-
-    utxos.forEach(utxo => {
-        const lovelaceBalance = utxo.utxoData.amount.find(b => b.unit === 'lovelace');
-        if (!lovelaceBalance) return;
-
-        result.push({
-            address: utxo.address,
-            txid: utxo.utxoData.tx_hash,
-            confirmations: utxo.blockInfo.confirmations,
-            blockHeight: utxo.blockInfo.height || 0,
-            amount: lovelaceBalance?.quantity || '0',
-            vout: utxo.utxoData.output_index,
-            path: utxo.path,
-        });
-    });
-
+    utxos.forEach(utxo =>
+        utxo.utxoData.amount.forEach(u => {
+            result.push({
+                address: utxo.address,
+                txid: utxo.utxoData.tx_hash,
+                confirmations: utxo.blockInfo.confirmations,
+                blockHeight: utxo.blockInfo.height || 0,
+                amount: u.quantity,
+                vout: utxo.utxoData.output_index,
+                path: utxo.path,
+                cardanoSpecific: {
+                    unit: u.unit,
+                },
+            });
+        })
+    );
     return result;
 };
 
@@ -44,6 +44,29 @@ const hexToString = (input: string): string => {
     }
 
     return str;
+};
+
+export const getSubtype = (tx: BlockfrostTransaction) => {
+    const withdrawal = tx.txData.withdrawal_count > 0;
+    if (withdrawal) {
+        return 'withdrawal';
+    }
+
+    const registrations = tx.txData.stake_cert_count;
+    const delegations = tx.txData.delegation_count;
+    if (registrations === 0 && delegations === 0) return null;
+
+    if (delegations > 0) {
+        // transaction could both register staking address and delegate stake at once. In that case we treat it as "delegation"
+        return 'stake_delegation';
+    }
+    if (registrations > 0) {
+        if (new BigNumber(tx.txData.deposit).gt(0)) {
+            return 'stake_registration';
+        }
+        return 'stake_deregistration';
+    }
+    return null;
 };
 
 export const parseAsset = (hex: string): ParseAssetResult => {
@@ -67,8 +90,8 @@ export const transformTokenInfo = (
         return {
             type: 'BLOCKFROST',
             name: t.fingerprint!, // this is safe as fingerprint is defined for all tokens except lovelace and lovelace is never included in account.tokens
-            address: t.fingerprint!,
-            symbol: assetName,
+            address: t.unit,
+            symbol: assetName || t.fingerprint!,
             balance: t.quantity,
             decimals: t.decimals,
         };
@@ -93,55 +116,58 @@ export const filterTokenTransfers = (
     tx: BlockfrostTransaction,
     type: Transaction['type']
 ): TokenTransfer[] => {
-    const myAddresses = accountAddress.change.concat(accountAddress.used, accountAddress.unused);
-    const tokens = Array.from(
-        new Set(tx.txData.output_amount.filter(asset => asset.unit !== 'lovelace'))
-    );
+    const transfers: TokenTransfer[] = [];
+    const myNonChangeAddresses = accountAddress.used.concat(accountAddress.unused);
+    const myAddresses = accountAddress.change.concat(myNonChangeAddresses);
+    tx.txUtxos.outputs.forEach(output => {
+        output.amount
+            .filter(a => a.unit !== 'lovelace')
+            .forEach(asset => {
+                const token = asset.unit;
+                const inputs = transformInputOutput(tx.txUtxos.inputs, token);
+                const outputs = transformInputOutput(tx.txUtxos.outputs, token);
+                const outgoing = filterTargets(myAddresses, inputs); // inputs going from account address
+                const incoming = filterTargets(myAddresses, outputs); // outputs to account address
+                const isChange = accountAddress.change.find(a => a.address === output.address);
 
-    const transfers = tokens.reduce<TokenTransfer[]>((transfers, asset) => {
-        const inputs = transformInputOutput(tx.txUtxos.inputs, asset.unit);
-        const outputs = transformInputOutput(tx.txUtxos.outputs, asset.unit);
-        const outgoing = filterTargets(myAddresses, inputs);
-        const incoming = filterTargets(myAddresses, outputs);
-        if (incoming.length === 0 && outgoing.length === 0) return transfers;
+                if (incoming.length === 0 && outgoing.length === 0) return null;
 
-        let amount = '0';
-        // const internal = accountAddress ? filterTargets(accountAddress.change, outputs) : [];
-        if (type === 'sent') {
-            const myInputsSum = sumVinVout(outgoing, '0');
-            // reduce sum by my outputs values
-            amount = sumVinVout(incoming, myInputsSum, 'reduce');
-        } else if (type === 'recv') {
-            if (incoming.length > 0) {
-                amount = sumVinVout(incoming, '0');
-            }
-        }
+                const incomingForOutput = filterTargets(
+                    myNonChangeAddresses,
+                    transformInputOutput([output], token)
+                );
 
-        if (amount === '0' || !asset.fingerprint) return transfers;
+                let amount = '0';
+                if (type === 'sent') {
+                    amount = isChange ? '0' : asset.quantity;
+                } else if (type === 'recv') {
+                    amount = sumVinVout(incomingForOutput, '0');
+                } else if (type === 'self' && !isChange) {
+                    amount = sumVinVout(incomingForOutput, '0');
+                }
 
-        const { assetName } = parseAsset(asset.unit);
-        transfers.push({
-            type,
-            name: assetName,
-            symbol: assetName,
-            address: asset.fingerprint,
-            decimals: 0,
-            amount: amount.toString(),
-            from:
-                type === 'sent' || type === 'self'
-                    ? tx.address
-                    : tx.txUtxos.inputs.find(i => i.amount.find(a => a.unit === asset.unit))
-                          ?.address,
-            to:
-                type === 'recv'
-                    ? tx.address
-                    : tx.txUtxos.outputs.find(i => i.amount.find(a => a.unit === asset.unit))
-                          ?.address,
-        });
-        return transfers;
-    }, []);
+                // fingerprint is always defined on tokens
+                if (amount === '0' || !asset.fingerprint) return null;
 
-    return transfers;
+                const { assetName } = parseAsset(token);
+                transfers.push({
+                    type,
+                    name: asset.fingerprint,
+                    symbol: assetName || asset.fingerprint,
+                    address: asset.unit,
+                    decimals: asset.decimals,
+                    amount: amount.toString(),
+                    from:
+                        type === 'sent' || type === 'self'
+                            ? tx.address
+                            : tx.txUtxos.inputs.find(i => i.amount.find(a => a.unit === token))
+                                  ?.address,
+                    to: type === 'recv' ? tx.address : output.address,
+                });
+            });
+    });
+
+    return transfers.filter(t => !!t) as TokenTransfer[];
 };
 
 export const transformTransaction = (
@@ -214,14 +240,17 @@ export const transformTransaction = (
     return {
         type,
         txid: blockfrostTxData.txHash,
-        blockTime: blockfrostTxData.blockInfo.time,
-        blockHeight: blockfrostTxData.blockInfo.height || undefined,
-        blockHash: blockfrostTxData.blockInfo.hash,
+        blockTime: blockfrostTxData.txData.block_time,
+        blockHeight: blockfrostTxData.txData.block_height || undefined,
+        blockHash: blockfrostTxData.txData.block,
         amount,
         fee,
         totalSpent,
         targets: targets.map(t => transformTarget(t, incoming)),
         tokens,
+        cardanoSpecific: {
+            subtype: getSubtype(blockfrostTxData),
+        },
         details: {
             vin: inputs,
             vout: outputs,
