@@ -118,6 +118,7 @@ export const useCoinmarketRedirect = () => {
         const composed = {
             feeLimit,
             feePerByte: feePerByte || '',
+            fee: '', // fee is not passed by redirect, will be recalculated
         };
         saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed });
         goto('wallet-coinmarket-sell-offers', { symbol, accountIndex: index, accountType });

@@ -6,6 +6,8 @@ import CoinmarketExchangeOfferInfo from '@wallet-components/CoinmarketExchangeOf
 import VerifyAddress from './components/VerifyAddress';
 import SendTransaction from './components/SendTransaction';
 import { Translation } from '@suite-components';
+import SendApprovalTransaction from './components/SendApprovalTransaction';
+import SendSwapTransaction from './components/SendSwapTransaction';
 
 const Wrapper = styled.div`
     display: flex;
@@ -64,6 +66,14 @@ const Middle = styled.div`
     color: ${props => props.theme.STROKE_GREY};
 `;
 
+const MiddleNarrow = styled.div`
+    display: flex;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.theme.STROKE_GREY};
+`;
+
 const SelectedOffer = () => {
     const { account, selectedQuote, exchangeInfo, exchangeStep, receiveAccount } =
         useCoinmarketExchangeOffersContext();
@@ -78,9 +88,25 @@ const SelectedOffer = () => {
                             <Translation id="TR_EXCHANGE_VERIFY_ADDRESS_STEP" />
                         </Step>
                     </Left>
-                    <Middle>
-                        <Icon icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
-                    </Middle>
+                    {selectedQuote.isDex ? (
+                        <>
+                            <MiddleNarrow>
+                                <Icon icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
+                            </MiddleNarrow>
+                            <Left>
+                                <Step active={exchangeStep === 'SEND_APPROVAL_TRANSACTION'}>
+                                    <Translation id="TR_EXCHANGE_CREATE_APPROVAL_STEP" />
+                                </Step>
+                            </Left>
+                            <MiddleNarrow>
+                                <Icon icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
+                            </MiddleNarrow>
+                        </>
+                    ) : (
+                        <Middle>
+                            <Icon icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
+                        </Middle>
+                    )}
                     <Right>
                         <Step active={exchangeStep === 'SEND_TRANSACTION'}>
                             <Translation id="TR_EXCHANGE_CONFIRM_SEND_STEP" />
@@ -88,7 +114,11 @@ const SelectedOffer = () => {
                     </Right>
                 </Header>
                 {exchangeStep === 'RECEIVING_ADDRESS' && <VerifyAddress />}
-                {exchangeStep === 'SEND_TRANSACTION' && <SendTransaction />}
+                {exchangeStep === 'SEND_TRANSACTION' && !selectedQuote.isDex && <SendTransaction />}
+                {exchangeStep === 'SEND_APPROVAL_TRANSACTION' && <SendApprovalTransaction />}
+                {exchangeStep === 'SEND_TRANSACTION' && selectedQuote.isDex && (
+                    <SendSwapTransaction />
+                )}
             </StyledCard>
             <CoinmarketExchangeOfferInfo
                 selectedQuote={selectedQuote}

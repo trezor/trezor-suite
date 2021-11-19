@@ -5987,10 +5987,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/invity-api@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.3.tgz#2632a0fe35454384f655004fe09363378524b788"
-  integrity sha512-gBBqQBa7FUTgRovMbPu+OFr672gyZYU+0/ahhIscoCCREtN4K4qkk8rqt29ok5yztfWPp0NPdK8vxjz/jFx8/Q==
+"@types/invity-api@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.5.tgz#87e46a0f40c6011c85b00fc80e0d00172f2571a5"
+  integrity sha1-h+RqD0DGARyFsA/IDg0AFy8lcaU=
 
 "@types/is-function@^1.0.0":
   version "1.0.0"

@@ -1,12 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
-import { QuestionTooltip, Translation } from '@suite-components';
+import { FormattedNumber, QuestionTooltip, Translation } from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { CoinmarketProviderInfo } from '@wallet-components';
+import { useSelector, useTranslation } from '@suite-hooks';
+import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
+import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
     display: flex;
@@ -112,6 +115,15 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
+const DexFooter = styled.div`
+    display: flex;
+    margin: 0 30px;
+    padding: 20px 0;
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+`;
+
+const DexText = styled.div``;
+
 interface Props {
     className?: string;
     quote: ExchangeTrade;
@@ -147,20 +159,58 @@ function getQuoteError(quote: ExchangeTrade) {
 
 const Quote = ({ className, quote }: Props) => {
     const theme = useTheme();
-    const { selectQuote, exchangeInfo, callInProgress } = useCoinmarketExchangeOffersContext();
+    const { translationString } = useTranslation();
+
+    const { account, selectQuote, exchangeInfo, callInProgress } =
+        useCoinmarketExchangeOffersContext();
+    const { feePerByte, fiat, localCurrency } = useSelector(state => ({
+        feePerByte: state.wallet.coinmarket.composedTransactionInfo.composed?.feePerByte,
+        fiat: state.wallet.fiat,
+        localCurrency: state.wallet.settings.localCurrency,
+    }));
+
     const hasTag = false;
     const { exchange, receive, receiveStringAmount } = quote;
-    const errorQuote = isQuoteError(quote);
+    let errorQuote = isQuoteError(quote);
 
     const provider =
         exchangeInfo?.providerInfos && exchange ? exchangeInfo?.providerInfos[exchange] : undefined;
+
+    let noFundsForFeesError;
+    let approvalFee: number | undefined;
+    let approvalFeeFiat: string | null = null;
+    let swapFee: number | undefined;
+    let swapFeeFiat: string | null = null;
+    if (quote.isDex && quote.approvalGasEstimate && quote.swapGasEstimate && feePerByte) {
+        const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
+        approvalFee = quote.approvalGasEstimate * Number(feePerByte) * 1e-9;
+        approvalFeeFiat = toFiatCurrency(
+            approvalFee.toString(),
+            localCurrency,
+            fiatRates?.current?.rates,
+        );
+        swapFee = quote.swapGasEstimate * Number(feePerByte) * 1e-9;
+        swapFeeFiat = toFiatCurrency(swapFee.toString(), localCurrency, fiatRates?.current?.rates);
+
+        if (quote.send === account.symbol.toUpperCase() && !errorQuote) {
+            // if base currency, it is necessary to check that there is some value left for the fees
+            const maxAmount = new BigNumber(account.formattedBalance).minus(approvalFee);
+            if (maxAmount.minus(new BigNumber(quote.sendStringAmount || '0')).isNegative()) {
+                errorQuote = true;
+                noFundsForFeesError = translationString('TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES', {
+                    max: maxAmount.toString(),
+                    symbol: account.symbol.toUpperCase(),
+                });
+            }
+        }
+    }
 
     return (
         <Wrapper className={className}>
             <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
             <Main>
-                {errorQuote && <Left>N/A</Left>}
-                {!errorQuote && (
+                {errorQuote && !noFundsForFeesError && <Left>N/A</Left>}
+                {(!errorQuote || noFundsForFeesError) && (
                     <Left>{`${formatCryptoAmount(Number(receiveStringAmount))} ${receive}`}</Left>
                 )}
                 <Right>
@@ -193,12 +243,39 @@ const Quote = ({ className, quote }: Props) => {
                     <Value>{provider?.kycPolicy}</Value>
                 </Column>
             </Details>
+            {approvalFee && swapFee && localCurrency && (
+                <DexFooter>
+                    <DexText>
+                        <Translation
+                            id="TR_EXCHANGE_DEX_OFFER_FEE_INFO"
+                            values={{
+                                symbol: account.symbol.toUpperCase(),
+                                approvalFee: formatCryptoAmount(approvalFee),
+                                approvalFeeFiat: approvalFeeFiat ? (
+                                    <FormattedNumber
+                                        value={approvalFeeFiat}
+                                        currency={localCurrency}
+                                    />
+                                ) : (
+                                    ''
+                                ),
+                                swapFee: formatCryptoAmount(swapFee),
+                                swapFeeFiat: swapFeeFiat ? (
+                                    <FormattedNumber value={swapFeeFiat} currency={localCurrency} />
+                                ) : (
+                                    ''
+                                ),
+                            }}
+                        />
+                    </DexText>
+                </DexFooter>
+            )}
             {errorQuote && (
                 <ErrorFooter>
                     <IconWrapper>
                         <StyledIcon icon="CROSS" size={12} color={theme.TYPE_RED} />
                     </IconWrapper>
-                    <ErrorText>{getQuoteError(quote)}</ErrorText>
+                    <ErrorText>{noFundsForFeesError || getQuoteError(quote)}</ErrorText>
                 </ErrorFooter>
             )}
         </Wrapper>

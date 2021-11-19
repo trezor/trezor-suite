@@ -62,33 +62,42 @@ const splitQuotes = (
     quotes.filter(q => q.error),
 ];
 
-export const splitToFixedFloatQuotes = (
+export const splitToQuoteCategories = (
     quotes: ExchangeTrade[],
     exchangeInfo: ExchangeInfo | undefined,
-): [ExchangeTrade[], ExchangeTrade[]] => {
+): [ExchangeTrade[], ExchangeTrade[], ExchangeTrade[]] => {
     const [fixedOK, fixedMinMax, fixedError] = splitQuotes(
-        quotes.filter(q => exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate) || [],
+        quotes.filter(
+            q => exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate && !q.isDex,
+        ) || [],
     );
     const [floatOK, floatMinMax, floatError] = splitQuotes(
-        quotes.filter(q => !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate) || [],
+        quotes.filter(
+            q => !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate && !q.isDex,
+        ) || [],
     );
+    const [dexOK, dexMinMax, dexError] = splitQuotes(quotes.filter(q => q.isDex) || []);
 
+    const okLength = fixedOK.length + floatOK.length + dexOK.length;
     // if there are some OK quotes, do not show errors
     const fixedQuotes =
         // eslint-disable-next-line no-nested-ternary
         fixedOK.length > 0
             ? fixedOK.concat(fixedMinMax)
-            : floatOK.length > 0
+            : okLength > 0
             ? []
             : fixedMinMax.concat(fixedError);
     const floatQuotes =
         // eslint-disable-next-line no-nested-ternary
         floatOK.length > 0
             ? floatOK.concat(floatMinMax)
-            : fixedOK.length > 0
+            : okLength > 0
             ? []
             : floatMinMax.concat(floatError);
-    return [fixedQuotes, floatQuotes];
+    const dexQuotes =
+        // eslint-disable-next-line no-nested-ternary
+        dexOK.length > 0 ? dexOK.concat(dexMinMax) : okLength > 0 ? [] : dexMinMax.concat(dexError);
+    return [fixedQuotes, floatQuotes, dexQuotes];
 };
 
 export const getSendCryptoOptions = (account: Account, exchangeInfo?: ExchangeInfo) => {

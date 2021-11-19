@@ -28,7 +28,7 @@ import { Trade } from '@wallet-types/coinmarketCommonTypes';
 export interface ComposedTransactionInfo {
     composed?: Pick<
         PrecomposedTransactionFinal,
-        'feePerByte' | 'estimatedFeeLimit' | 'feeLimit' | 'token'
+        'feePerByte' | 'estimatedFeeLimit' | 'feeLimit' | 'token' | 'fee'
     >;
     selectedFee?: FeeLevel['label'];
 }
@@ -55,6 +55,7 @@ interface Exchange {
     quotesRequest?: ExchangeTradeQuoteRequest;
     fixedQuotes: ExchangeTrade[] | undefined;
     floatQuotes: ExchangeTrade[] | undefined;
+    dexQuotes: ExchangeTrade[] | undefined;
     transactionId?: string;
     addressVerified?: string;
 }
@@ -102,6 +103,7 @@ export const initialState = {
         quotesRequest: undefined,
         fixedQuotes: [],
         floatQuotes: [],
+        dexQuotes: [],
         addressVerified: undefined,
     },
     sell: {
@@ -179,6 +181,7 @@ const coinmarketReducer = (
             case COINMARKET_EXCHANGE.SAVE_QUOTES:
                 draft.exchange.fixedQuotes = action.fixedQuotes;
                 draft.exchange.floatQuotes = action.floatQuotes;
+                draft.exchange.dexQuotes = action.dexQuotes;
                 break;
             case COINMARKET_EXCHANGE.CLEAR_QUOTES:
                 draft.exchange.fixedQuotes = undefined;

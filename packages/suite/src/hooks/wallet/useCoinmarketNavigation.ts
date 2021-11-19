@@ -28,6 +28,7 @@ export const useCoinmarketNavigation = (account: Account) => {
 
         navigateToExchangeForm: useNavigateToRouteName('wallet-coinmarket-exchange'),
         navigateToExchangeOffers: useNavigateToRouteName('wallet-coinmarket-exchange-offers'),
+        navigateToExchangeDetail: useNavigateToRouteName('wallet-coinmarket-exchange-detail'),
 
         navigateToSellForm: useNavigateToRouteName('wallet-coinmarket-sell'),
         navigateToSellOffers: useNavigateToRouteName('wallet-coinmarket-sell-offers'),

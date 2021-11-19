@@ -3,7 +3,7 @@ import {
     getAmountLimits,
     getStatusMessage,
     isQuoteError,
-    splitToFixedFloatQuotes,
+    splitToQuoteCategories,
 } from '../exchangeUtils';
 
 const { EXCHANGE_INFO, MIN_MAX_QUOTES_OK, MIN_MAX_QUOTES_LOW, MIN_MAX_QUOTES_CANNOT_TRADE } =
@@ -27,7 +27,7 @@ describe('coinmarket/exchange utils', () => {
     });
 
     it('splitQuotes', () => {
-        expect(splitToFixedFloatQuotes(MIN_MAX_QUOTES_OK, EXCHANGE_INFO)).toStrictEqual([
+        expect(splitToQuoteCategories(MIN_MAX_QUOTES_OK, EXCHANGE_INFO)).toStrictEqual([
             [
                 {
                     send: 'LTC',
@@ -148,8 +148,9 @@ describe('coinmarket/exchange utils', () => {
                     exchange: 'coinswitch',
                 },
             ],
+            [],
         ]);
-        expect(splitToFixedFloatQuotes(MIN_MAX_QUOTES_CANNOT_TRADE, EXCHANGE_INFO)).toStrictEqual([
+        expect(splitToQuoteCategories(MIN_MAX_QUOTES_CANNOT_TRADE, EXCHANGE_INFO)).toStrictEqual([
             [
                 { error: 'Cannot trade pair LTC-DATA.', exchange: 'changeherofr' },
                 { error: 'Cannot trade pair LTC-DATA.', exchange: 'changellyfr' },
@@ -164,6 +165,7 @@ describe('coinmarket/exchange utils', () => {
                 { error: 'Cannot trade pair LTC-DATA.', exchange: 'coinswitch' },
                 { error: 'Cannot trade pair LTC-DATA.', exchange: 'foxexchange' },
             ],
+            [],
         ]);
     });
     it('getStatusMessage', () => {

@@ -9,6 +9,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changenow-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['ETH', 'XMR', 'BTC'],
             sellTickers: ['ETH', 'XMR', 'BTC'],
             addressFormats: {
@@ -27,6 +28,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changenowfr-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['ETH', 'BTC'],
             sellTickers: ['ETH', 'BTC'],
             addressFormats: {
@@ -45,6 +47,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changelly-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['BTC', 'ETH'],
             sellTickers: ['BTC', 'ETH'],
             addressFormats: {
@@ -64,6 +67,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changellyfr-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['BTC', 'ETH'],
             sellTickers: ['BTC', 'ETH'],
             addressFormats: {
@@ -83,6 +87,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changehero-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
@@ -101,6 +106,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changeherofr-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
@@ -119,6 +125,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'foxexchange-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
@@ -138,6 +145,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'foxexchange-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC', 'ETH'],
             addressFormats: {
@@ -157,6 +165,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'morphtoken-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['BTC', 'ETH', 'XMR'],
             sellTickers: ['BTC', 'ETH', 'XMR'],
             addressFormats: {
@@ -174,6 +183,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'coinswitch-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['ETH'],
             sellTickers: ['ETH'],
             addressFormats: {
@@ -193,6 +203,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'coinswitchfr-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
@@ -214,6 +225,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changenow-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['ETH', 'XMR', 'BTC'],
             sellTickers: ['ETH', 'XMR', 'BTC'],
             addressFormats: {
@@ -232,6 +244,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changenowfr-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['ETH', 'XMR', 'BTC'],
             sellTickers: ['ETH', 'XMR', 'BTC'],
             addressFormats: {
@@ -250,6 +263,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changelly-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['BTC', 'ETH'],
             sellTickers: ['BTC', 'ETH'],
             addressFormats: {
@@ -269,6 +283,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changellyfr-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['BTC', 'ETH'],
             sellTickers: ['BTC', 'ETH'],
             addressFormats: {
@@ -288,6 +303,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changehero-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
@@ -306,6 +322,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'changeherofr-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
@@ -324,6 +341,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'foxexchange-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
@@ -343,6 +361,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'foxexchange-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
@@ -362,6 +381,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'morphtoken-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['BTC', 'ETH', 'XMR'],
             sellTickers: ['BTC', 'ETH', 'XMR'],
             addressFormats: {
@@ -379,6 +399,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'coinswitch-icon.jpg',
             isActive: true,
             isFixedRate: false,
+            isDex: false,
             buyTickers: ['ETH'],
             sellTickers: ['ETH'],
             addressFormats: {
@@ -398,6 +419,7 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             logo: 'coinswitchfr-icon.jpg',
             isActive: true,
             isFixedRate: true,
+            isDex: false,
             buyTickers: ['BTC'],
             sellTickers: ['BTC'],
             addressFormats: {
