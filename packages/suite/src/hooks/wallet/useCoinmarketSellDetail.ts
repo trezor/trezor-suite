@@ -11,9 +11,11 @@ export const useCoinmarketSellDetail = (props: Props) => {
         trade => trade.tradeType === 'sell' && trade.key === transactionId,
     ) as TradeSell;
     const { account } = selectedAccount;
-    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
-    if (invityAPIUrl) {
-        invityAPI.setInvityAPIServer(invityAPIUrl);
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    if (invityServerEnvironment) {
+        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }
     const sellInfo = useSelector(state => state.wallet.coinmarket.sell.sellInfo);
     useWatchSellTrade(account, sellTrade);

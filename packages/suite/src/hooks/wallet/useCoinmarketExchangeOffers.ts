@@ -74,16 +74,16 @@ export const useOffers = (props: Props) => {
         verifyAddress: coinmarketExchangeActions.verifyAddress,
     });
 
-    const { invityAPIUrl, exchangeCoinInfo, accounts } = useSelector(state => ({
-        invityAPIUrl: state.suite.settings.debug.invityAPIUrl,
+    const { invityServerEnvironment, exchangeCoinInfo, accounts } = useSelector(state => ({
+        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
         exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
         accounts: state.wallet.accounts,
     }));
 
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
-    if (invityAPIUrl) {
-        invityAPI.setInvityAPIServer(invityAPIUrl);
+    if (invityServerEnvironment) {
+        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }
 
     const getQuotes = useCallback(async () => {

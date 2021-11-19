@@ -58,7 +58,9 @@ const CoinmarketProviderInfo = ({ exchange, providers }: Props) => {
                             <Bg>
                                 <Icon
                                     width="16px"
-                                    src={`${invityApi.server}/images/exchange/${provider.logo}`}
+                                    src={`${invityApi.getApiServerUrl()}/images/exchange/${
+                                        provider.logo
+                                    }`}
                                 />
                             </Bg>
                         </IconWrapper>

@@ -132,9 +132,7 @@ const ReceiveCryptoSelect = () => {
                         formatOptionLabel={(option: any) => (
                             <Option>
                                 <CoinLogo
-                                    src={`${
-                                        invityAPI.server
-                                    }/images/coins/suite/${option.value.toUpperCase()}.svg`}
+                                    src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${option.value.toUpperCase()}.svg`}
                                 />
                                 <OptionLabel>{option.label}</OptionLabel>
                                 <OptionName>{option.name}</OptionName>

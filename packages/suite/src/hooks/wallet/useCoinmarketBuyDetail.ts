@@ -13,12 +13,12 @@ export const useCoinmarketBuyDetail = (props: Props) => {
             (trade.key === transactionId || trade.data?.originalPaymentId === transactionId),
     ) as TradeBuy;
     const { account } = selectedAccount;
-    const { invityAPIUrl, buyInfo } = useSelector(state => ({
-        invityAPIUrl: state.suite.settings.debug.invityAPIUrl,
+    const { invityServerEnvironment, buyInfo } = useSelector(state => ({
+        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
         buyInfo: state.wallet.coinmarket.buy.buyInfo,
     }));
-    if (invityAPIUrl) {
-        invityAPI.setInvityAPIServer(invityAPIUrl);
+    if (invityServerEnvironment) {
+        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }
 
     useWatchBuyTrade(account, buyTrade);

@@ -55,9 +55,11 @@ export const useOffers = (props: Props) => {
         goto: routerActions.goto,
     });
 
-    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
-    if (invityAPIUrl) {
-        invityAPI.setInvityAPIServer(invityAPIUrl);
+    const invityServerEnvironment = useSelector(
+        state => state.suite.settings.debug.invityServerEnvironment,
+    );
+    if (invityServerEnvironment) {
+        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }
 
     const getQuotes = useCallback(async () => {

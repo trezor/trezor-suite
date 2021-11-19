@@ -131,7 +131,9 @@ const Offers = () => {
                                         <Text>{quotesRequest.send}</Text>
                                         <StyledIcon icon="ARROW_RIGHT_LONG" />
                                         <InvityCoinLogo
-                                            src={`${invityAPI.server}/images/coins/suite/${quotesRequest.receive}.svg`}
+                                            src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${
+                                                quotesRequest.receive
+                                            }.svg`}
                                         />
                                         <Text>{quotesRequest.receive}</Text>
                                     </Left>

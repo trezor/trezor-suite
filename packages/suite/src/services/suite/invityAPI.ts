@@ -29,6 +29,7 @@ import {
     WatchSellTradeResponse,
 } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
+import type { InvityServerEnvironment, InvityServers } from '@wallet-types/invity';
 
 type BodyType =
     | BuyTrade
@@ -47,7 +48,22 @@ class InvityAPI {
     stagingAPIServer = 'https://staging-exchange1.invity.io';
     localhostAPIServer = 'http://localhost:3330';
 
-    server = this.productionAPIServer;
+    servers = {
+        production: {
+            api: 'https://exchange.trezor.io',
+            authentication: 'https://auth.invity.io',
+        },
+        staging: {
+            api: 'https://staging-exchange.invity.io',
+            authentication: 'https://staging-auth.invity.io',
+        },
+        localhost: {
+            api: 'http://localhost:3330',
+            authentication: 'http://localhost:4433',
+        },
+    } as InvityServers;
+
+    private serverEnvironment = 'production' as InvityServerEnvironment;
 
     // info service
     private DETECT_COUNTRY_INFO = '/api/info/country';
@@ -88,6 +104,14 @@ class InvityAPI {
         return InvityAPI.apiKey;
     }
 
+    getApiServerUrl() {
+        return this.servers[this.serverEnvironment].api;
+    }
+
+    getAuthServerUrl() {
+        return this.servers[this.serverEnvironment].authentication;
+    }
+
     getCurrentAccountDescriptor() {
         return InvityAPI.accountDescriptor;
     }
@@ -101,8 +125,10 @@ class InvityAPI {
         }
     }
 
-    setInvityAPIServer(server: string) {
-        this.server = server;
+    setInvityServersEnvironment(serverEnvironment: InvityServerEnvironment) {
+        if (serverEnvironment) {
+            this.serverEnvironment = serverEnvironment;
+        }
     }
 
     private options(body: BodyType = {}, method = 'POST'): any {
@@ -128,8 +154,8 @@ class InvityAPI {
         };
     }
 
-    private request(url: string, body: BodyType = {}, method = 'POST'): Promise<any> {
-        const finalUrl = `${this.server}${url}`;
+    private requestApiServer(url: string, body: BodyType = {}, method = 'POST'): Promise<any> {
+        const finalUrl = `${this.getApiServerUrl()}${url}`;
         const opts = this.options(body, method);
         return fetch(finalUrl, opts).then(response => {
             if (response.ok) {
@@ -150,7 +176,7 @@ class InvityAPI {
                 country && country !== this.unknownCountry
                     ? this.GET_COUNTRY_INFO.replace('{{country}}', country)
                     : this.DETECT_COUNTRY_INFO;
-            const response: CountryInfo = await this.request(url, {}, 'GET');
+            const response: CountryInfo = await this.requestApiServer(url, {}, 'GET');
             return response;
         } catch (error) {
             console.log('[fetchCountryInfo]', error);
@@ -160,7 +186,7 @@ class InvityAPI {
 
     getExchangeList = async (): Promise<ExchangeListResponse | []> => {
         try {
-            const response = await this.request(this.EXCHANGE_LIST, {}, 'GET');
+            const response = await this.requestApiServer(this.EXCHANGE_LIST, {}, 'GET');
             if (!response || response.length === 0) {
                 return [];
             }
@@ -173,7 +199,7 @@ class InvityAPI {
 
     getExchangeCoins = async (): Promise<ExchangeCoinInfo[]> => {
         try {
-            const response = await this.request(this.EXCHANGE_COINS, {}, 'GET');
+            const response = await this.requestApiServer(this.EXCHANGE_COINS, {}, 'GET');
             if (!response || response.length === 0) {
                 return [];
             }
@@ -188,7 +214,7 @@ class InvityAPI {
         params: ExchangeTradeQuoteRequest,
     ): Promise<ExchangeTrade[] | undefined> => {
         try {
-            const response: ExchangeTradeQuoteResponse = await this.request(
+            const response: ExchangeTradeQuoteResponse = await this.requestApiServer(
                 this.EXCHANGE_QUOTES,
                 params,
                 'POST',
@@ -201,7 +227,7 @@ class InvityAPI {
 
     doExchangeTrade = async (tradeRequest: ConfirmExchangeTradeRequest): Promise<ExchangeTrade> => {
         try {
-            const response: ExchangeTrade = await this.request(
+            const response: ExchangeTrade = await this.requestApiServer(
                 this.EXCHANGE_DO_TRADE,
                 tradeRequest,
                 'POST',
@@ -218,7 +244,7 @@ class InvityAPI {
         counter: number,
     ): Promise<WatchExchangeTradeResponse> => {
         try {
-            const response: WatchExchangeTradeResponse = await this.request(
+            const response: WatchExchangeTradeResponse = await this.requestApiServer(
                 this.EXCHANGE_WATCH_TRADE.replace('{{counter}}', counter.toString()),
                 trade,
                 'POST',
@@ -232,7 +258,7 @@ class InvityAPI {
 
     getBuyList = async (): Promise<BuyListResponse | undefined> => {
         try {
-            const response = await this.request(this.BUY_LIST, {}, 'GET');
+            const response = await this.requestApiServer(this.BUY_LIST, {}, 'GET');
             return response;
         } catch (error) {
             console.log('[getBuyList]', error);
@@ -241,7 +267,7 @@ class InvityAPI {
 
     getBuyQuotes = async (params: BuyTradeQuoteRequest): Promise<BuyTrade[] | undefined> => {
         try {
-            const response: BuyTradeQuoteResponse = await this.request(
+            const response: BuyTradeQuoteResponse = await this.requestApiServer(
                 this.BUY_QUOTES,
                 params,
                 'POST',
@@ -254,7 +280,7 @@ class InvityAPI {
 
     doBuyTrade = async (tradeRequest: BuyTradeRequest): Promise<BuyTradeResponse> => {
         try {
-            const response: BuyTradeResponse = await this.request(
+            const response: BuyTradeResponse = await this.requestApiServer(
                 this.BUY_DO_TRADE,
                 tradeRequest,
                 'POST',
@@ -268,7 +294,7 @@ class InvityAPI {
 
     getBuyTradeForm = async (tradeRequest: BuyTradeRequest): Promise<BuyTradeFormResponse> => {
         try {
-            const response: BuyTradeFormResponse = await this.request(
+            const response: BuyTradeFormResponse = await this.requestApiServer(
                 this.BUY_GET_TRADE_FORM,
                 tradeRequest,
                 'POST',
@@ -282,7 +308,7 @@ class InvityAPI {
 
     watchBuyTrade = async (trade: BuyTrade, counter: number): Promise<WatchBuyTradeResponse> => {
         try {
-            const response: WatchBuyTradeResponse = await this.request(
+            const response: WatchBuyTradeResponse = await this.requestApiServer(
                 this.BUY_WATCH_TRADE.replace('{{counter}}', counter.toString()),
                 trade,
                 'POST',
@@ -296,7 +322,7 @@ class InvityAPI {
 
     getSellList = async (): Promise<SellListResponse | undefined> => {
         try {
-            const response = await this.request(this.SELL_LIST, {}, 'GET');
+            const response = await this.requestApiServer(this.SELL_LIST, {}, 'GET');
             return response;
         } catch (error) {
             console.log('[getSellList]', error);
@@ -307,7 +333,7 @@ class InvityAPI {
         params: SellVoucherTradeQuoteRequest,
     ): Promise<SellVoucherTradeQuoteResponse | undefined> => {
         try {
-            const response: SellVoucherTradeQuoteResponse = await this.request(
+            const response: SellVoucherTradeQuoteResponse = await this.requestApiServer(
                 this.VOUCHER_QUOTES,
                 params,
                 'POST',
@@ -322,7 +348,7 @@ class InvityAPI {
         tradeRequest: SellVoucherTradeRequest,
     ): Promise<SellVoucherTrade> => {
         try {
-            const response: SellVoucherTrade = await this.request(
+            const response: SellVoucherTrade = await this.requestApiServer(
                 this.VOUCHER_REQUEST_TRADE,
                 tradeRequest,
                 'POST',
@@ -336,7 +362,7 @@ class InvityAPI {
 
     confirmVoucherTrade = async (trade: SellVoucherTrade): Promise<SellVoucherTrade> => {
         try {
-            const response: SellVoucherTrade = await this.request(
+            const response: SellVoucherTrade = await this.requestApiServer(
                 this.VOUCHER_CONFIRM_TRADE,
                 trade,
                 'POST',
@@ -352,7 +378,7 @@ class InvityAPI {
         params: SellFiatTradeQuoteRequest,
     ): Promise<SellFiatTrade[] | undefined> => {
         try {
-            const response: SellFiatTradeQuoteResponse = await this.request(
+            const response: SellFiatTradeQuoteResponse = await this.requestApiServer(
                 this.SELL_FIAT_QUOTES,
                 params,
                 'POST',
@@ -365,7 +391,7 @@ class InvityAPI {
 
     doSellTrade = async (tradeRequest: SellFiatTradeRequest): Promise<SellFiatTradeResponse> => {
         try {
-            const response: SellFiatTradeResponse = await this.request(
+            const response: SellFiatTradeResponse = await this.requestApiServer(
                 this.SELL_FIAT_DO_TRADE,
                 tradeRequest,
                 'POST',
@@ -379,7 +405,7 @@ class InvityAPI {
 
     doSellConfirm = async (trade: SellFiatTrade): Promise<SellFiatTrade> => {
         try {
-            const response: SellFiatTrade = await this.request(
+            const response: SellFiatTrade = await this.requestApiServer(
                 this.SELL_FIAT_CONFIRM,
                 trade,
                 'POST',
@@ -396,7 +422,7 @@ class InvityAPI {
         counter: number,
     ): Promise<WatchSellTradeResponse> => {
         try {
-            const response: WatchSellTradeResponse = await this.request(
+            const response: WatchSellTradeResponse = await this.requestApiServer(
                 this.SELL_FIAT_WATCH_TRADE.replace('{{counter}}', counter.toString()),
                 trade,
                 'POST',
@@ -407,6 +433,10 @@ class InvityAPI {
             return { error: error.toString() };
         }
     };
+
+    getAuthenticationIframeSrc(flowType: 'login' | 'registration') {
+        return `${this.getAuthServerUrl()}/self-service/${flowType}/browser`;
+    }
 }
 
 const invityAPI = new InvityAPI();

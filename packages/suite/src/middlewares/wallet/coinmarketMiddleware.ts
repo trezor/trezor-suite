@@ -31,9 +31,9 @@ const coinmarketMiddleware =
             ) {
                 api.dispatch(coinmarketCommonActions.setLoading(true));
 
-                const { invityAPIUrl } = api.getState().suite.settings.debug;
-                if (invityAPIUrl) {
-                    invityAPI.setInvityAPIServer(invityAPIUrl);
+                const { invityServerEnvironment } = api.getState().suite.settings.debug;
+                if (invityServerEnvironment) {
+                    invityAPI.setInvityServersEnvironment(invityServerEnvironment);
                 }
 
                 invityAPI.createInvityAPIKey(account.descriptor);
