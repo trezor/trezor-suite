@@ -56,6 +56,9 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     'wallet-coinmarket-spend': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/spend'),
     ),
+    'wallet-coinmarket-savings': lazy(
+        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings'),
+    ),
     'wallet-coinmarket-redirect': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/redirect'),
     ),

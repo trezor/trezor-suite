@@ -4441,6 +4441,10 @@ export default defineMessages({
         id: 'TR_NAV_SELL',
         defaultMessage: 'Sell',
     },
+    TR_NAV_SAVINGS: {
+        id: 'TR_NAV_SAVINGS',
+        defaultMessage: 'Save into BTC',
+    },
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',
         defaultMessage: 'Sign/Verify message',
