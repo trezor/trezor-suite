@@ -12,6 +12,7 @@ urls_health:
   only:
     - schedules
   script:
+    - yarn install --cache-folder .yarn --prefer-offline
     # tests whether urls in constants return 200 status (shall detect dead links)
     - yarn workspace @trezor/suite test-health
 
@@ -21,6 +22,7 @@ misc:
   only:
     - schedules
   script:
+    - yarn install --cache-folder .yarn --prefer-offline
     # tests whether we have not included same svgs multiple times (it is hard to see from code)
     - yarn workspace @trezor/suite-data test-same-svgs
     # some random script pretending it checks something (actually it should use part of lighthouse.js for vulnerabilities checking)
