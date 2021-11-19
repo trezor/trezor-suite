@@ -21,6 +21,7 @@ import ConfirmFingerPrint from './confirm/Fingerprint';
 import CoinmarketBuyTerms from './confirm/CoinmarketBuyTerms';
 import CoinmarketSellTerms from './confirm/CoinmarketSellTerms';
 import CoinmarketExchangeTerms from './confirm/CoinmarketExchangeTerms';
+import CoinmarketExchangeDexTerms from './confirm/CoinmarketExchangeDexTerms';
 import CoinmarketLeaveSpend from './confirm/CoinmarketLeaveSpend';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
@@ -200,6 +201,14 @@ const getUserContextModal = (props: Props) => {
         case 'coinmarket-exchange-terms':
             return (
                 <CoinmarketExchangeTerms
+                    provider={payload.provider}
+                    onCancel={modalActions.onCancel}
+                    decision={payload.decision}
+                />
+            );
+        case 'coinmarket-exchange-dex-terms':
+            return (
+                <CoinmarketExchangeDexTerms
                     provider={payload.provider}
                     onCancel={modalActions.onCancel}
                     decision={payload.decision}

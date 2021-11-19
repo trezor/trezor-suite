@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import Quote from './Quote';
 import { ExchangeTrade } from 'invity-api';
-import { QuestionTooltip, Translation } from '@suite-components';
+import { FiatValue, FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
+import { useSelector } from '@suite-hooks';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -61,11 +63,17 @@ const RatesRow = styled.div`
 
 interface Props {
     quotes?: ExchangeTrade[];
-    isFixed?: boolean;
+    type: 'float' | 'fixed' | 'dex';
 }
 
-const List = ({ quotes, isFixed }: Props) => {
-    const { quotesRequest } = useCoinmarketExchangeOffersContext();
+const List = ({ quotes, type }: Props) => {
+    const {
+        quotesRequest,
+        account: { symbol },
+    } = useCoinmarketExchangeOffersContext();
+    const { fee } = useSelector(state => ({
+        fee: state.wallet.coinmarket.composedTransactionInfo.composed?.fee,
+    }));
     if (!quotesRequest || !quotes) return null;
 
     return (
@@ -75,22 +83,55 @@ const List = ({ quotes, isFixed }: Props) => {
             </Divider>
             <SummaryRow>
                 <Left>
-                    {isFixed ? (
+                    {type === 'fixed' && (
                         <RatesRow>
                             <Translation id="TR_EXCHANGE_FIXED_OFFERS" />
                             <StyledQuestionTooltip tooltip="TR_EXCHANGE_FIXED_OFFERS_INFO" />
                         </RatesRow>
-                    ) : (
+                    )}{' '}
+                    {type === 'float' && (
                         <RatesRow>
                             <Translation id="TR_EXCHANGE_FLOAT_OFFERS" />
                             <StyledQuestionTooltip tooltip="TR_EXCHANGE_FLOAT_OFFERS_INFO" />
                         </RatesRow>
                     )}
+                    {type === 'dex' && (
+                        <RatesRow>
+                            <Translation id="TR_EXCHANGE_DEX_OFFERS" />
+                            <StyledQuestionTooltip tooltip="TR_EXCHANGE_DEX_OFFERS_INFO" />
+                        </RatesRow>
+                    )}
                 </Left>
-                <Right>
-                    <Translation id="TR_EXCHANGE_FEES_INCLUDED" />
-                    <StyledQuestionTooltip tooltip="TR_EXCHANGE_FEES_INCLUDED_INFO" />
-                </Right>
+                {type !== 'dex' && (
+                    <Right>
+                        <Translation
+                            id="TR_EXCHANGE_FEES_INFO"
+                            values={{
+                                feeAmount: (
+                                    <FormattedCryptoAmount
+                                        disableHiddenPlaceholder
+                                        value={formatNetworkAmount(fee || '0', symbol)}
+                                        symbol={symbol}
+                                    />
+                                ),
+                                feeAmountFiat: (
+                                    <FiatValue
+                                        disableHiddenPlaceholder
+                                        amount={formatNetworkAmount(fee || '0', symbol)}
+                                        symbol={symbol}
+                                    />
+                                ),
+                            }}
+                        />
+                        <StyledQuestionTooltip tooltip="TR_EXCHANGE_FEES_INCLUDED_INFO" />
+                    </Right>
+                )}
+                {type === 'dex' && (
+                    <Right>
+                        <Translation id="TR_EXCHANGE_DEX_FEES_INFO" />
+                        <StyledQuestionTooltip tooltip="TR_EXCHANGE_DEX_FEES_INFO_TOOLTIP" />
+                    </Right>
+                )}
             </SummaryRow>
             <Quotes>
                 {quotes.map(quote => (

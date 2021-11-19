@@ -31,6 +31,7 @@ export type CoinmarketExchangeAction =
           type: typeof COINMARKET_EXCHANGE.SAVE_QUOTES;
           fixedQuotes: ExchangeTrade[];
           floatQuotes: ExchangeTrade[];
+          dexQuotes: ExchangeTrade[];
       }
     | { type: typeof COINMARKET_EXCHANGE.CLEAR_QUOTES }
     | {
@@ -113,8 +114,14 @@ export const saveExchangeCoinInfo = (
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in useCoinmarketExchangeOffers
-export const openCoinmarketExchangeConfirmModal = (provider?: string) => (dispatch: Dispatch) =>
-    dispatch(modalActions.openDeferredModal({ type: 'coinmarket-exchange-terms', provider }));
+export const openCoinmarketExchangeConfirmModal =
+    (provider?: string, isDex?: boolean) => (dispatch: Dispatch) =>
+        dispatch(
+            modalActions.openDeferredModal({
+                type: isDex ? 'coinmarket-exchange-dex-terms' : 'coinmarket-exchange-terms',
+                provider,
+            }),
+        );
 
 export const saveTrade = (
     exchangeTrade: ExchangeTrade,
@@ -147,10 +154,12 @@ export const saveTransactionId = (transactionId: string): CoinmarketExchangeActi
 export const saveQuotes = (
     fixedQuotes: ExchangeTrade[],
     floatQuotes: ExchangeTrade[],
+    dexQuotes: ExchangeTrade[],
 ): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.SAVE_QUOTES,
     fixedQuotes,
     floatQuotes,
+    dexQuotes,
 });
 
 export const clearQuotes = (): CoinmarketExchangeAction => ({

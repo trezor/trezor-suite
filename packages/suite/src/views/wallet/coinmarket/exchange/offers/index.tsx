@@ -34,6 +34,7 @@ const OffersIndex = () => {
         device: state.suite.device,
         fixedQuotes: state.wallet.coinmarket.exchange.fixedQuotes,
         floatQuotes: state.wallet.coinmarket.exchange.floatQuotes,
+        dexQuotes: state.wallet.coinmarket.exchange.dexQuotes,
         quotesRequest: state.wallet.coinmarket.exchange.quotesRequest,
         addressVerified: state.wallet.coinmarket.exchange.addressVerified,
         exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,

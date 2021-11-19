@@ -261,6 +261,39 @@ export default defineMessages({
         defaultMessage:
             "Floating rates mean that the final amount you'll get may change slightly due to fluctuations in the market between when you select the rate and when your transaction is complete. These rates are usually higher, meaning you could end up with more crypto in the end.",
     },
+    TR_EXCHANGE_DEX_OFFERS: {
+        id: 'TR_EXCHANGE_DEX_OFFERS',
+        defaultMessage: 'Decentralized exchange offers',
+    },
+    TR_EXCHANGE_DEX_OFFERS_INFO: {
+        id: 'TR_EXCHANGE_DEX_OFFERS_INFO',
+        defaultMessage:
+            'Decentralized exchange (DEX) swaps are performed via smart contracts running on the blockchain. They may be faster and offer better rates, especially for large amounts.',
+    },
+    TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES: {
+        id: 'TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES',
+        defaultMessage:
+            'No funds remaining for the transaction fees. Please lower the exchange amount to max {symbol} {max}',
+    },
+    TR_EXCHANGE_DEX_OFFER_FEE_INFO: {
+        defaultMessage:
+            'The fees to perform this swap are estimated at {symbol} {approvalFee} ({approvalFeeFiat}) for approval (if required) and {symbol} {swapFee} ({swapFeeFiat}) for the swap.',
+        id: 'TR_EXCHANGE_DEX_FEE_INFO',
+    },
+    TR_EXCHANGE_FEES_INFO: {
+        id: 'TR_EXCHANGE_FEES_INFO',
+        defaultMessage:
+            'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
+    },
+    TR_EXCHANGE_DEX_FEES_INFO: {
+        id: 'TR_EXCHANGE_FEES_INFO',
+        defaultMessage: 'See info about fees in each DEX offer.',
+    },
+    TR_EXCHANGE_DEX_FEES_INFO_TOOLTIP: {
+        id: 'TR_EXCHANGE_DEX_FEES_INFO_TOOLTIP',
+        defaultMessage:
+            'To perform a DEX swap, it may be necessary to perform two blockchain transactions: an approval transaction and a swap transaction. Each transaction has a different fee.',
+    },
     TR_EXCHANGE_FEES_INCLUDED: {
         id: 'TR_EXCHANGE_FEES_INCLUDED',
         defaultMessage: 'All fees included',
@@ -330,6 +363,11 @@ export default defineMessages({
         defaultMessage:
             'You understand that cryptocurrency transactions are irreversible and you won’t be able to receive a refund for your purchase.',
         id: 'TR_EXCHANGE_TERMS_5',
+    },
+    TR_EXCHANGE_DEX_TERMS_1: {
+        defaultMessage:
+            "You're here to exchange cryptocurrency using DEX (Decentralized Exchange) by using {provider}'s contract.",
+        id: 'TR_EXCHANGE_DEX_TERMS_1',
     },
     TR_EXCHANGE_STATUS_ERROR: {
         defaultMessage: 'Rejected',
@@ -441,6 +479,10 @@ export default defineMessages({
         defaultMessage: 'Confirm & Send',
         id: 'TR_EXCHANGE_CONFIRM_SEND_STEP',
     },
+    TR_EXCHANGE_CREATE_APPROVAL_STEP: {
+        defaultMessage: 'Create approval',
+        id: 'TR_EXCHANGE_CREATE_APPROVAL_STEP',
+    },
     TR_EXCHANGE_SEND_FROM: {
         defaultMessage: 'Sending account',
         id: 'TR_EXCHANGE_SEND_FROM',
@@ -448,6 +490,130 @@ export default defineMessages({
     TR_EXCHANGE_SEND_TO: {
         defaultMessage: '{providerName}’s address',
         id: 'TR_EXCHANGE_SEND_TO',
+    },
+    TR_EXCHANGE_APPROVAL_SEND_TO: {
+        defaultMessage: '{send} contract',
+        id: 'TR_EXCHANGE_SEND_TO',
+    },
+    TR_EXCHANGE_APPROVAL_VALUE: {
+        defaultMessage: 'Approval value',
+        id: 'TR_EXCHANGE_APPROVAL_VALUE',
+    },
+    TR_EXCHANGE_APPROVAL_VALUE_MINIMAL: {
+        defaultMessage: 'Necessary value of {value} {send}',
+        id: 'TR_EXCHANGE_APPROVAL_VALUE_MINIMAL',
+    },
+    TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO: {
+        defaultMessage:
+            'Approve only the exact amount required for this swap. You will need to pay an additional fee if you want to make a similar swap again.',
+        id: 'TR_EXCHANGE_APPROVAL_VALUE_MINIMAL_INFO',
+    },
+    TR_EXCHANGE_APPROVAL_VALUE_INFINITE: {
+        defaultMessage: 'Infinite value',
+        id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE',
+    },
+    TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO: {
+        defaultMessage:
+            'Create a single approval transaction to simplify multiple exchanges of {send} with {provider}. This saves on fees but carries a risk to your funds in the unlikely case of a flaw in {provider}’s contract.',
+        id: 'TR_EXCHANGE_APPROVAL_VALUE_INFINITE_INFO',
+    },
+    TR_EXCHANGE_APPROVAL_VALUE_ZERO: {
+        defaultMessage: 'Revoke previous approval',
+        id: 'TR_EXCHANGE_APPROVAL_VALUE_ZERO',
+    },
+    TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO: {
+        defaultMessage:
+            'Perform a transaction that will remove previous approval of contract with {provider}.',
+        id: 'TR_EXCHANGE_APPROVAL_VALUE_ZERO_INFO',
+    },
+    TR_EXCHANGE_APPROVAL_DATA: {
+        defaultMessage: 'Approval transaction data',
+        id: 'TR_EXCHANGE_APPROVAL_DATA',
+    },
+    TR_EXCHANGE_APPROVAL_TXID: {
+        defaultMessage: 'Approval transaction ID',
+        id: 'TR_EXCHANGE_APPROVAL_TXID',
+    },
+    TR_EXCHANGE_APPROVAL_CONFIRMING: {
+        defaultMessage: 'Waiting for the blockchain to confirm the approval transaction.',
+        id: 'TR_EXCHANGE_APPROVAL_CONFIRMING',
+    },
+    TR_EXCHANGE_APPROVAL_FAILED: {
+        defaultMessage: 'The approval transaction failed.',
+        id: 'TR_EXCHANGE_APPROVAL_FAILED',
+    },
+    TR_EXCHANGE_APPROVAL_SUCCESS: {
+        defaultMessage: 'The approval transaction is confirmed.',
+        id: 'TR_EXCHANGE_APPROVAL_SUCCESS',
+    },
+    TR_EXCHANGE_APPROVAL_NOT_REQUIRED: {
+        defaultMessage: 'No approval transaction needed for {send}.',
+        id: 'TR_EXCHANGE_APPROVAL_NOT_REQUIRED',
+    },
+    TR_EXCHANGE_APPROVAL_PREAPPROVED: {
+        defaultMessage: 'Contract already approved',
+        id: 'TR_EXCHANGE_APPROVAL_PREAPPROVED',
+    },
+    TR_EXCHANGE_APPROVAL_PROCEED: {
+        defaultMessage: 'Proceed to swap, no approval transaction needed.',
+        id: 'TR_EXCHANGE_APPROVAL_PROCEED',
+    },
+    TR_EXCHANGE_APPROVAL_TO_SWAP_BUTTON: {
+        defaultMessage: 'Proceed to swap',
+        id: 'TR_EXCHANGE_APPROVAL_TO_SWAP_BUTTON',
+    },
+    TR_EXCHANGE_SWAP_SEND_TO: {
+        defaultMessage: "{provider}'s contract",
+        id: 'TR_EXCHANGE_SWAP_SEND_TO',
+    },
+    TR_EXCHANGE_SWAP_DATA: {
+        defaultMessage: 'Swap transaction data',
+        id: 'TR_EXCHANGE_SWAP_DATA',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE: {
+        defaultMessage: 'Slippage',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE: {
+        defaultMessage: 'Slippage tolerance',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_SUMMARY: {
+        defaultMessage: 'Slippage summary',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_SUMMARY',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED: {
+        defaultMessage: 'Swap offer amount',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT: {
+        defaultMessage: 'Maximum slippage amount',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM: {
+        defaultMessage: 'Minimum received amount',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_INFO: {
+        defaultMessage:
+            "Exchange rates shift constantly, so the amount you accept in this offer and the amount ultimately confirmed on the blockchain may differ; this is slippage. Slippage tolerance sets the percentage of your transaction you may lose due to slippage; in other words, you set the minimum amount you are willing to accept in the end. If slippage tolerance is too high, you may receive a lot less than offered. If slippage tolerance is too low, your transaction may fail (revert) and you'll still pay the transaction fee.",
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_INFO',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM: {
+        defaultMessage: 'Custom',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_CUSTOM',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_NOT_SET: {
+        defaultMessage: 'Enter your desired slippage.',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_SET',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_NOT_NUMBER: {
+        defaultMessage: 'Please enter a number.',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_NUMBER',
+    },
+    TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE: {
+        defaultMessage: 'Slippage must be in range 0.01% - 50%',
+        id: 'TR_EXCHANGE_SWAP_SLIPPAGE_NOT_IN_RANGE',
     },
     TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND: {
         defaultMessage: 'Confirm on Trezor & send',
@@ -542,6 +708,10 @@ export default defineMessages({
     TR_EXCHANGE_FLOAT: {
         defaultMessage: 'Floating-rate offer',
         id: 'TR_EXCHANGE_FLOAT',
+    },
+    TR_EXCHANGE_DEX: {
+        defaultMessage: 'Decentralized exchange offer',
+        id: 'TR_EXCHANGE_DEX',
     },
     TR_SELL_STATUS_ERROR: {
         defaultMessage: 'Rejected',

@@ -9,6 +9,7 @@ export interface ComponentProps {
     device: AppState['suite']['device'];
     fixedQuotes: AppState['wallet']['coinmarket']['exchange']['fixedQuotes'];
     floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];
+    dexQuotes: AppState['wallet']['coinmarket']['exchange']['dexQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
     addressVerified: AppState['wallet']['coinmarket']['exchange']['addressVerified'];
     exchangeInfo?: ExchangeInfo;
@@ -18,16 +19,18 @@ export interface Props extends ComponentProps {
     selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
 }
 
-export type ExchangeStep = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION';
+export type ExchangeStep = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SEND_APPROVAL_TRANSACTION';
 
 export type ContextValues = {
     callInProgress: boolean;
     account: Account;
     fixedQuotes: AppState['wallet']['coinmarket']['exchange']['fixedQuotes'];
     floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];
+    dexQuotes: AppState['wallet']['coinmarket']['exchange']['dexQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
     device: AppState['suite']['device'];
     selectedQuote?: ExchangeTrade;
+    setSelectedQuote: (quote?: ExchangeTrade) => void;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
     addressVerified: AppState['wallet']['coinmarket']['exchange']['addressVerified'];
     exchangeInfo?: ExchangeInfo;
@@ -43,7 +46,7 @@ export type ContextValues = {
         account: Account,
         date: string,
     ) => CoinmarketExchangeAction;
-    confirmTrade: (address: string, extraField?: string) => void;
+    confirmTrade: (address: string, extraField?: string) => Promise<boolean>;
     sendTransaction: () => void;
     timer: Timer;
     getQuotes: () => Promise<void>;

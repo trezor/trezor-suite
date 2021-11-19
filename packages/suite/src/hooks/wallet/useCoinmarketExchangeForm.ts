@@ -18,7 +18,7 @@ import {
     FIAT_CURRENCY,
 } from '@wallet-types/coinmarketExchangeForm';
 import { getComposeAddressPlaceholder } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { getAmountLimits, splitToFixedFloatQuotes } from '@wallet-utils/coinmarket/exchangeUtils';
+import { getAmountLimits, splitToQuoteCategories } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
@@ -274,6 +274,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
                 receive,
                 send,
                 sendStringAmount,
+                dex: 'enable',
             };
             saveQuoteRequest(request);
             const allQuotes = await invityAPI.getExchangeQuotes(request);
@@ -282,11 +283,11 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
                 if (limits) {
                     setAmountLimits(limits);
                 } else {
-                    const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(
+                    const [fixedQuotes, floatQuotes, dexQuotes] = splitToQuoteCategories(
                         allQuotes,
                         exchangeInfo,
                     );
-                    saveQuotes(fixedQuotes, floatQuotes);
+                    saveQuotes(fixedQuotes, floatQuotes, dexQuotes);
                     navigateToExchangeOffers();
                 }
             } else {

@@ -71,8 +71,16 @@ const TextAmount = styled(Text)`
 `;
 
 const Offers = () => {
-    const { fixedQuotes, floatQuotes, quotesRequest, selectedQuote, timer, account, getQuotes } =
-        useCoinmarketExchangeOffersContext();
+    const {
+        fixedQuotes,
+        floatQuotes,
+        dexQuotes,
+        quotesRequest,
+        selectedQuote,
+        timer,
+        account,
+        getQuotes,
+    } = useCoinmarketExchangeOffersContext();
     const { setLayout } = useContext(LayoutContext);
     const { navigateToExchangeForm } = useCoinmarketNavigation(account);
 
@@ -81,8 +89,10 @@ const Offers = () => {
     }, [setLayout]);
 
     if (!quotesRequest) return null;
-    const hasLoadingFailed = !(fixedQuotes && floatQuotes);
-    const noOffers = hasLoadingFailed || (fixedQuotes.length === 0 && floatQuotes.length === 0);
+    const hasLoadingFailed = !(fixedQuotes && floatQuotes && dexQuotes);
+    const noOffers =
+        hasLoadingFailed ||
+        (fixedQuotes.length === 0 && floatQuotes.length === 0 && dexQuotes.length === 0);
     return (
         <Wrapper>
             {!selectedQuote && (
@@ -123,8 +133,9 @@ const Offers = () => {
                                     )}
                                 </SummaryRow>
                             </Header>
-                            {fixedQuotes.length > 0 && <List quotes={fixedQuotes} isFixed />}
-                            {floatQuotes.length > 0 && <List quotes={floatQuotes} />}
+                            {dexQuotes.length > 0 && <List quotes={dexQuotes} type="dex" />}
+                            {fixedQuotes.length > 0 && <List quotes={fixedQuotes} type="fixed" />}
+                            {floatQuotes.length > 0 && <List quotes={floatQuotes} type="float" />}
                         </>
                     )}
                 </>

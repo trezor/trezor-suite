@@ -55,6 +55,7 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
     saveQuotes: (
         fixedQuotes: ExchangeTrade[],
         floatQuotes: ExchangeTrade[],
+        dexQuotes: ExchangeTrade[],
     ) => CoinmarketExchangeAction;
     saveTrade: (
         exchangeTrade: ExchangeTrade,
