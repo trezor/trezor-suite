@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import TrezorConnect, { ApplySettings, ChangePin, ResetDevice } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import { addToast } from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
@@ -10,7 +10,8 @@ import { DEVICE } from '@suite-constants';
 import { SUITE } from '@suite-actions/constants';
 
 export const applySettings =
-    (params: ApplySettings) => async (dispatch: Dispatch, getState: GetState) => {
+    (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
+    async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         if (!device) return;
         const result = await TrezorConnect.applySettings({
@@ -29,7 +30,7 @@ export const applySettings =
     };
 
 export const changePin =
-    (params: ChangePin = {}) =>
+    (params: Parameters<typeof TrezorConnect.changePin>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
 
@@ -88,7 +89,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
 };
 
 export const resetDevice =
-    (params: ResetDevice = {}) =>
+    (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         if (!device) return;
