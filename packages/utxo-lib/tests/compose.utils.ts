@@ -89,7 +89,7 @@ export class TxWeightCalculator {
 
         if (input.multisig) {
             if (input.script_type === 'SPENDTAPROOT') {
-                throw new Error('Multisig not supported for taproot');
+                throw new Error('Multisig not supported for Taproot yet');
             }
             const n = input.multisig.nodes
                 ? input.multisig.nodes.length

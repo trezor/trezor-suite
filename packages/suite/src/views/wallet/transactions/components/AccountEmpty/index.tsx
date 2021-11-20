@@ -8,7 +8,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import Bech32Banner from './components/Bech32Banner';
 import TaprootBanner from './components/TaprootBanner';
-import { getBip43Shortcut } from '@wallet-utils/accountUtils';
+import { getBip43Type } from '@wallet-utils/accountUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -73,20 +73,20 @@ const AccountEmpty = (props: Props) => {
         goto: routerActions.goto,
         setFlag: suiteActions.setFlag,
     });
-    const bip43 = getBip43Shortcut(props.account.path);
+    const bip43 = getBip43Type(props.account.path);
     const networkSymbol = props.account.symbol.toUpperCase();
     const analytics = useAnalytics();
 
     return (
         <Wrapper>
-            {bip43 === 'bech32' && !bech32BannerClosed && (
+            {bip43 === 'bip84' && !bech32BannerClosed && (
                 <Bech32Banner
                     onClose={() => {
                         setFlag('bech32BannerClosed', true);
                     }}
                 />
             )}
-            {bip43 === 'taproot' && !taprootBannerClosed && (
+            {bip43 === 'bip86' && !taprootBannerClosed && (
                 <TaprootBanner
                     onClose={() => {
                         setFlag('taprootBannerClosed', true);

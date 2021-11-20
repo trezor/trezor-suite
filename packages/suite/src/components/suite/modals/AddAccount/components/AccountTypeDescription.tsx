@@ -4,12 +4,12 @@ import { P } from '@trezor/components';
 import { Network } from '@wallet-types';
 import { Translation, ExternalLink } from '@suite-components';
 import {
-    WIKI_BECH32_URL,
-    WIKI_TAPROOT_URL,
-    WIKI_P2SH_URL,
-    WIKI_P2PKH_URL,
+    WIKI_ACCOUNT_BIP84_URL,
+    WIKI_ACCOUNT_BIP86_URL,
+    WIKI_ACCOUNT_BIP49_URL,
+    WIKI_ACCOUNT_BIP44_URL,
 } from '@suite-constants/urls';
-import { getBip43Shortcut } from '@wallet-utils/accountUtils';
+import { getBip43Type } from '@wallet-utils/accountUtils';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
 const Info = styled(P)`
@@ -23,27 +23,27 @@ interface Description {
 }
 
 const selectDescription = (network: Network): Description => {
-    const bip43 = getBip43Shortcut(network.bip44);
+    const bip43 = getBip43Type(network.bip43Path);
     switch (bip43) {
-        case 'bech32':
+        case 'bip84':
             return {
-                description: 'TR_ACCOUNT_DETAILS_TYPE_BECH32',
-                url: WIKI_BECH32_URL,
+                description: 'TR_ACCOUNT_TYPE_BIP84_DESC',
+                url: WIKI_ACCOUNT_BIP84_URL,
             };
-        case 'taproot':
+        case 'bip86':
             return {
-                description: 'TR_ACCOUNT_DETAILS_TYPE_TAPROOT',
-                url: WIKI_TAPROOT_URL,
+                description: 'TR_ACCOUNT_TYPE_BIP86_DESC',
+                url: WIKI_ACCOUNT_BIP86_URL,
             };
-        case 'p2sh':
+        case 'bip49':
             return {
-                description: 'TR_ACCOUNT_DETAILS_TYPE_P2SH',
-                url: WIKI_P2SH_URL,
+                description: 'TR_ACCOUNT_TYPE_BIP49_DESC',
+                url: WIKI_ACCOUNT_BIP49_URL,
             };
         default:
             return {
-                description: 'TR_ACCOUNT_DETAILS_TYPE_P2PKH',
-                url: WIKI_P2PKH_URL,
+                description: 'TR_ACCOUNT_TYPE_BIP44_DESC',
+                url: WIKI_ACCOUNT_BIP44_URL,
             };
     }
 };

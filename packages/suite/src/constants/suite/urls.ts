@@ -35,10 +35,10 @@ export const CHANGELOG_URL =
 export const FAILED_BACKUP_URL = 'https://wiki.trezor.io/Recovery_seed_backup_fail';
 export const WIKI_XPUB_URL =
     'https://wiki.trezor.io/User_manual:Displaying_account_public_key_(XPUB)';
-export const WIKI_BECH32_URL = 'https://wiki.trezor.io/Bech32';
-export const WIKI_TAPROOT_URL = 'https://wiki.trezor.io/Taproot';
-export const WIKI_P2SH_URL = 'https://wiki.trezor.io/P2SH';
-export const WIKI_P2PKH_URL = 'https://wiki.trezor.io/P2PKH';
+export const WIKI_ACCOUNT_BIP84_URL = 'https://wiki.trezor.io/Bech32';
+export const WIKI_ACCOUNT_BIP86_URL = 'https://wiki.trezor.io/Taproot';
+export const WIKI_ACCOUNT_BIP49_URL = 'https://wiki.trezor.io/P2SH';
+export const WIKI_ACCOUNT_BIP44_URL = 'https://wiki.trezor.io/P2PKH';
 export const WIKI_ADVANCED_RECOVERY = 'https://wiki.trezor.io/User_manual:Advanced_recovery';
 export const WIKI_UDEV_RULES = 'https://wiki.trezor.io/Udev_rules';
 export const WIKI_TOR = 'https://wiki.trezor.io/Glossary:Tor';

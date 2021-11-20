@@ -2303,9 +2303,9 @@ export default defineMessages({
         defaultMessage: 'Taproot accounts',
         id: 'TR_TAPROOT_ACCOUNTS',
     },
-    TR_SEGWIT_ACCOUNTS: {
-        defaultMessage: 'Segwit accounts',
-        id: 'TR_SEGWIT_ACCOUNTS',
+    TR_LEGACY_SEGWIT_ACCOUNTS: {
+        defaultMessage: 'Legacy SegWit accounts',
+        id: 'TR_LEGACY_SEGWIT_ACCOUNTS',
     },
     TR_LEGACY_ACCOUNTS: {
         defaultMessage: 'Legacy accounts',
@@ -3459,23 +3459,23 @@ export default defineMessages({
         id: 'TR_ACCOUNT_DETAILS_TYPE_HEADER',
         defaultMessage: 'Account type',
     },
-    TR_ACCOUNT_DETAILS_TYPE_BECH32: {
-        id: 'TR_ACCOUNT_DETAILS_TYPE_BECH32',
+    TR_ACCOUNT_TYPE_BIP84_DESC: {
+        id: 'TR_ACCOUNT_TYPE_BIP84_DESC',
         defaultMessage:
             'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old services.',
     },
-    TR_ACCOUNT_DETAILS_TYPE_TAPROOT: {
-        id: 'TR_ACCOUNT_DETAILS_TYPE_TAPROOT',
+    TR_ACCOUNT_TYPE_BIP86_DESC: {
+        id: 'TR_ACCOUNT_TYPE_BIP86_DESC',
         defaultMessage:
             'Taproot uses the most modern addresses for enhanced privacy and better network efficiency. Be aware that it may not be compatible with old services.',
     },
-    TR_ACCOUNT_DETAILS_TYPE_P2SH: {
-        id: 'TR_ACCOUNT_DETAILS_TYPE_P2SH',
+    TR_ACCOUNT_TYPE_BIP49_DESC: {
+        id: 'TR_ACCOUNT_TYPE_BIP49_DESC',
         defaultMessage:
             'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows sender to commit funds to a hash of an arbitrary valid script.',
     },
-    TR_ACCOUNT_DETAILS_TYPE_P2PKH: {
-        id: 'TR_ACCOUNT_DETAILS_TYPE_P2PKH',
+    TR_ACCOUNT_TYPE_BIP44_DESC: {
+        id: 'TR_ACCOUNT_TYPE_BIP44_DESC',
         defaultMessage:
             'Legacy Pay-to-Public-Key-Hash (P2PKH) is the basic type of transaction used in Bitcoin and other similar crypto currencies.',
     },
@@ -3492,42 +3492,42 @@ export default defineMessages({
         id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
         defaultMessage: 'Show public key',
     },
-    TR_ACCOUNT_TYPE_TAPROOT: {
-        id: 'TR_ACCOUNT_TYPE_TAPROOT',
-        defaultMessage: 'Native SegWit v1',
-    },
-    TR_ACCOUNT_TYPE_TAPROOT_NOT_SUPPORTED: {
-        id: 'TR_ACCOUNT_TYPE_TAPROOT_NOT_SUPPORTED',
+    TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED: {
+        id: 'TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED',
         defaultMessage:
-            'Firmware installed does not support taproot. Please upgrade device firmware to enable this feature',
+            'Firmware installed does not support Taproot. Please upgrade device firmware to enable this feature',
     },
-    TR_ACCOUNT_TYPE_NATIVE_SEGWIT: {
-        id: 'TR_ACCOUNT_TYPE_NATIVE_SEGWIT',
-        defaultMessage: 'Native SegWit',
-    },
-    TR_ACCOUNT_TYPE_SEGWIT: {
-        id: 'TR_ACCOUNT_TYPE_SEGWIT',
-        defaultMessage: 'SegWit',
-    },
-    TR_ACCOUNT_TYPE_LEGACY: {
-        id: 'TR_ACCOUNT_TYPE_LEGACY',
-        defaultMessage: 'Legacy',
-    },
-    TR_ACCOUNT_TYPE_BECH32: {
-        id: 'TR_ACCOUNT_TYPE_BECH32',
-        defaultMessage: 'Bech32',
-    },
-    TR_ACCOUNT_TYPE_P2TR: {
-        id: 'TR_ACCOUNT_TYPE_P2TR',
+    TR_ACCOUNT_TYPE_BIP86_NAME: {
+        id: 'TR_ACCOUNT_TYPE_BIP86_NAME',
         defaultMessage: 'Taproot',
     },
-    TR_ACCOUNT_TYPE_P2SH: {
-        id: 'TR_ACCOUNT_TYPE_P2SH',
-        defaultMessage: 'P2SH',
+    TR_ACCOUNT_TYPE_BIP84_NAME: {
+        id: 'TR_ACCOUNT_TYPE_BIP84_NAME',
+        defaultMessage: 'SegWit',
     },
-    TR_ACCOUNT_TYPE_P2PKH: {
-        id: 'TR_ACCOUNT_TYPE_P2PKH',
-        defaultMessage: 'P2PKH',
+    TR_ACCOUNT_TYPE_BIP49_NAME: {
+        id: 'TR_ACCOUNT_TYPE_BIP49_NAME',
+        defaultMessage: 'Legacy SegWit',
+    },
+    TR_ACCOUNT_TYPE_BIP44_NAME: {
+        id: 'TR_ACCOUNT_TYPE_BIP44_NAME',
+        defaultMessage: 'Legacy',
+    },
+    TR_ACCOUNT_TYPE_BIP84_TECH: {
+        id: 'TR_ACCOUNT_TYPE_BIP84_TECH',
+        defaultMessage: 'BIP84, P2WPKH, Bech32',
+    },
+    TR_ACCOUNT_TYPE_BIP86_TECH: {
+        id: 'TR_ACCOUNT_TYPE_BIP86_TECH',
+        defaultMessage: 'BIP86, P2TR, Bech32m',
+    },
+    TR_ACCOUNT_TYPE_BIP49_TECH: {
+        id: 'TR_ACCOUNT_TYPE_BIP49_TECH',
+        defaultMessage: 'BIP49, P2SH-P2WPKH, Base58',
+    },
+    TR_ACCOUNT_TYPE_BIP44_TECH: {
+        id: 'TR_ACCOUNT_TYPE_BIP44_TECH',
+        defaultMessage: 'BIP44, P2PKH, Base58',
     },
     TOAST_COIN_SCHEME_PROTOCOL: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL',

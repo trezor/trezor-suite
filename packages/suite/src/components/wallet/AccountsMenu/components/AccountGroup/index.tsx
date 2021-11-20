@@ -42,7 +42,7 @@ interface Props {
 const getGroupLabel = (type: Props['type']) => {
     if (type === 'taproot') return 'TR_TAPROOT_ACCOUNTS';
     if (type === 'legacy') return 'TR_LEGACY_ACCOUNTS';
-    return 'TR_SEGWIT_ACCOUNTS';
+    return 'TR_LEGACY_SEGWIT_ACCOUNTS';
 };
 
 export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
