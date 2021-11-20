@@ -103,7 +103,7 @@ export const getComposeAddressPlaceholder = async (
                 network;
             if (legacy && device) {
                 // try to get the already discovered legacy account
-                const legacyPath = `${legacy.bip44.replace('i', '0')}`;
+                const legacyPath = `${legacy.bip43Path.replace('i', '0')}`;
                 const legacyAccount = accounts?.find(a => a.path === legacyPath);
                 if (legacyAccount?.addresses?.unused[0]) {
                     return legacyAccount?.addresses?.unused[0].address;
@@ -112,7 +112,7 @@ export const getComposeAddressPlaceholder = async (
                 const result = await TrezorConnect.getAddress({
                     device,
                     coin: legacy.symbol,
-                    path: `${legacy.bip44.replace('i', '0')}/0/0`,
+                    path: `${legacy.bip43Path.replace('i', '0')}/0/0`,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                     showOnTrezor: false,
                 });

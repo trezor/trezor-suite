@@ -403,36 +403,41 @@ export const sortByCoin = [
     },
 ];
 
-export const getBip43Shortcut = [
+export const getBip43Type = [
     {
-        description: 'bech32',
+        description: 'bitcoin taproot',
+        path: "m/86'/0'/0'",
+        result: 'bip86',
+    },
+    {
+        description: 'bitcoin segwit',
         path: "m/84'/0'/0'",
-        result: 'bech32',
+        result: 'bip84',
     },
     {
-        description: 'p2sh',
+        description: 'bitcoin legacy segwit',
         path: "m/49'/0'/0'",
-        result: 'p2sh',
+        result: 'bip49',
     },
     {
-        description: 'p2pkh',
+        description: 'bitcoin legacy',
         path: "m/44'/0'/0'",
-        result: 'p2pkh',
+        result: 'bip44',
     },
     {
-        description: 'litecoin p2wpkh',
+        description: 'litecoin segwit',
         path: "m/84'/2'/0'",
-        result: 'bech32',
+        result: 'bip84',
     },
     {
-        description: 'litecoin p2wpkh-nested-in-p2sh',
+        description: 'litecoin legacy segwit',
         path: "m/49'/2'/0'",
-        result: 'p2sh',
+        result: 'bip49',
     },
     {
-        description: 'litecoin p2pkh',
+        description: 'litecoin legacy',
         path: "m/44'/2'/0'",
-        result: 'p2pkh',
+        result: 'bip44',
     },
     {
         description: 'unknown',

@@ -50,8 +50,8 @@ const Account = ({ account }: Props) => {
     //                 index: accounts[0].index + 1,
     //                 type:
     //                     accounts[0].accountType === 'segwit'
-    //                         ? messages.TR_ACCOUNT_TYPE_SEGWIT
-    //                         : messages.TR_ACCOUNT_TYPE_LEGACY,
+    //                         ? messages.TR_ACCOUNT_TYPE_BIP49_NAME
+    //                         : messages.TR_ACCOUNT_TYPE_BIP44_NAME,
     //             }}
     //         />
     //     );

@@ -4,17 +4,15 @@ import { P } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { useDevice, useActions, useSelector } from '@suite-hooks';
 import { Translation, Card } from '@suite-components';
-import { ExtendedMessageDescriptor } from '@suite-types';
 import * as modalActions from '@suite-actions/modalActions';
-import { getAccountTypeIntl, getBip43Intl } from '@wallet-utils/accountUtils';
-import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import {
-    WIKI_XPUB_URL,
-    WIKI_BECH32_URL,
-    WIKI_TAPROOT_URL,
-    WIKI_P2SH_URL,
-    WIKI_P2PKH_URL,
-} from '@suite-constants/urls';
+    getAccountTypeName,
+    getAccountTypeTech,
+    getAccountTypeUrl,
+    getAccountTypeDesc,
+} from '@wallet-utils/accountUtils';
+import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
+import { WIKI_XPUB_URL } from '@suite-constants/urls';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import { NETWORKS } from '@wallet-config';
 
@@ -68,23 +66,10 @@ const Details = () => {
             : undefined;
     // display type name only if there is more than 1 network type
     const accountTypeName =
-        accountTypes && accountTypes.length > 1 ? getAccountTypeIntl(account.path) : undefined;
-    const accountTypeShortcut = getBip43Intl(account.path);
-
-    let accountTypeDesc: ExtendedMessageDescriptor['id'] = 'TR_ACCOUNT_DETAILS_TYPE_P2PKH';
-    let accountTypeUrl = WIKI_P2PKH_URL;
-    if (accountTypeShortcut === 'TR_ACCOUNT_TYPE_BECH32') {
-        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_BECH32';
-        accountTypeUrl = WIKI_BECH32_URL;
-    }
-    if (accountTypeShortcut === 'TR_ACCOUNT_TYPE_P2TR') {
-        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_TAPROOT';
-        accountTypeUrl = WIKI_TAPROOT_URL;
-    }
-    if (accountTypeShortcut === 'TR_ACCOUNT_TYPE_P2SH') {
-        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_P2SH';
-        accountTypeUrl = WIKI_P2SH_URL;
-    }
+        accountTypes && accountTypes.length > 1 ? getAccountTypeName(account.path) : undefined;
+    const accountTypeTech = getAccountTypeTech(account.path);
+    const accountTypeUrl = getAccountTypeUrl(account.path);
+    const accountTypeDesc = getAccountTypeDesc(account.path);
 
     return (
         <WalletLayout
@@ -108,7 +93,7 @@ const Details = () => {
                             </P>
                         )}
                         <P size="tiny">
-                            <Translation id={accountTypeShortcut} />
+                            <Translation id={accountTypeTech} />
                         </P>
                     </AccountTypeLabel>
                 </StyledRow>

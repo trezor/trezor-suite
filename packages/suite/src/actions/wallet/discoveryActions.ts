@@ -219,7 +219,7 @@ const getBundle =
             if (!hasEmptyAccount && !failed) {
                 const index = prevAccounts[0] ? prevAccounts[0].index + 1 : 0;
                 bundle.push({
-                    path: configNetwork.bip44.replace('i', index.toString()),
+                    path: configNetwork.bip43Path.replace('i', index.toString()),
                     coin: configNetwork.symbol,
                     details: 'txs',
                     index,

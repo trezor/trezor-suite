@@ -30,11 +30,11 @@ describe('account utils', () => {
         });
     });
 
-    describe('getBip43Shortcut', () => {
-        fixtures.getBip43Shortcut.forEach(f => {
+    describe('getBip43Type', () => {
+        fixtures.getBip43Type.forEach(f => {
             it(f.description, () => {
                 // @ts-ignore intentional invalid params
-                const bip43 = accountUtils.getBip43Shortcut(f.path);
+                const bip43 = accountUtils.getBip43Type(f.path);
                 expect(bip43).toBe(f.result);
             });
         });
