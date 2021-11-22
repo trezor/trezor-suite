@@ -34,6 +34,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus, ...rest 
                         values={{ deviceLabel: device.label }}
                     />
                 }
+                data-test="@modal/confirm-empty-hidden-wallet"
                 {...rest}
             >
                 <DeviceConfirmImage device={device} />
@@ -57,6 +58,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus, ...rest 
                     animated
                 />
             }
+            data-test="@modal/passphrase-source"
             {...rest}
         >
             <DeviceConfirmImage device={device} />
