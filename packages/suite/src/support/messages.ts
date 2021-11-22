@@ -4960,6 +4960,22 @@ export default defineMessages({
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP',
         defaultMessage: 'Check the field above first',
     },
+    TR_EARLY_ACCESS_JOINED_TITLE: {
+        id: 'TR_EARLY_ACCESS_JOINED_TITLE',
+        defaultMessage: 'You are in bby!',
+    },
+    TR_EARLY_ACCESS_JOINED_DESCRIPTION: {
+        id: 'TR_EARLY_ACCESS_JOINED_DESCRIPTION',
+        defaultMessage: 'You could either check for beta update now or on next lauch.',
+    },
+    TR_EARLY_ACCESS_SKIP_CHECK: {
+        id: 'TR_EARLY_ACCESS_SKIP_CHECK',
+        defaultMessage: 'Check on next launch',
+    },
+    TR_EARLY_ACCESS_CHECK_UPDATE: {
+        id: 'TR_EARLY_ACCESS_CHECK_UPDATE',
+        defaultMessage: 'Check for updates now',
+    },
     TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE: {
         id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE',
         defaultMessage: 'Really disable early access program?',
