@@ -6,7 +6,8 @@
         "test:components-storybook": "npx cypress run --project ./projects/components-storybook",
         "test:components-storybook:local": "CYPRESS_baseUrl='http://192.168.88.252:9001' npx cypress open --project ./projects/components-storybook",
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "test:transport": "jest --verbose -c ./projects/transport/jest.config.js"
+        "test:transport": "jest --verbose -c ./projects/transport/jest.config.js",
+        "test:desktop": "xvfb-maybe -- playwright test --config=./projects/suite-desktop/playwright.config.ts"
     },
     "dependencies": {
         "cypress": "9.2.1",
@@ -22,6 +23,9 @@
         "chrome-remote-interface": "^0.31.0",
         "shelljs": "^0.8.5",
         "wait-on": "^5.3.0",
-        "ws": "^7.5.5"
+        "ws": "^7.5.5",
+        "@playwright/test": "^1.17.2",
+        "playwright": "^1.17.2",
+        "xvfb-maybe": "^0.2.1"
     }
 }
