@@ -144,7 +144,7 @@ const WelcomeLayout: React.FC = ({ children }) => {
                             >
                                 <Expander>
                                     <TrezorLogo type="suite" width="128px" />
-                                    <WelcomeTitle>
+                                    <WelcomeTitle data-test="@welcome/title">
                                         <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
                                     </WelcomeTitle>
                                 </Expander>

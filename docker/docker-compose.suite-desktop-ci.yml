@@ -1,0 +1,16 @@
+version: "3"
+services:
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    environment:
+      - SDL_VIDEODRIVER=dummy
+      - XDG_RUNTIME_DIR=/var/tmp
+  test-run:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
+    container_name: desktop-test-runner
+    ipc: host
+    network_mode: service:trezor-user-env-unix
+    working_dir: /trezor-suite
+    command: bash -c "docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:desktop"
+    volumes:
+      - ../:/trezor-suite
