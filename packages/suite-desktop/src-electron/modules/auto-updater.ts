@@ -42,6 +42,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
 
     // Enable feature on FE once it's ready
     mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.webContents.send('update/allow-prerelease', autoUpdater.allowPrerelease);
         mainWindow.webContents.send('update/enable');
 
         // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
@@ -76,7 +77,10 @@ const init = ({ mainWindow, store }: Dependencies) => {
     // of electron-updater only until update-downloaded event is emitted.
     autoUpdater.autoInstallOnAppQuit = false;
 
-    autoUpdater.allowPrerelease = preReleaseFlag;
+    const updateSettings = store.getUpdateSettings();
+    autoUpdater.allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
+    mainWindow.webContents.send('update/allow-prerelease', autoUpdater.allowPrerelease);
+
     autoUpdater.logger = null;
 
     const quitAndInstall = () => {
@@ -88,7 +92,10 @@ const init = ({ mainWindow, store }: Dependencies) => {
         autoUpdater.quitAndInstall();
     };
 
-    logger.info('auto-updater', `Is looking for pre-releases? (${b2t(preReleaseFlag)})`);
+    logger.info(
+        'auto-updater',
+        `Is looking for pre-releases? (${b2t(autoUpdater.allowPrerelease)})`,
+    );
 
     autoUpdater.on('checking-for-update', () => {
         logger.info('auto-updater', 'Checking for update');
@@ -228,6 +235,17 @@ const init = ({ mainWindow, store }: Dependencies) => {
         logger.info('auto-updater', 'Cancel update request');
         mainWindow.webContents.send('update/available', latestVersion);
         updateCancellationToken.cancel();
+    });
+
+    ipcMain.on('update/allow-prerelease', (_, value = true) => {
+        logger.info('auto-updater', `${value ? 'allow' : 'disable'} prerelease!`);
+        mainWindow.webContents.send('update/allow-prerelease', value);
+        const updateSettings = store.getUpdateSettings();
+        store.setUpdateSettings({ ...updateSettings, allowPrerelease: value });
+
+        autoUpdater.allowPrerelease = value;
+
+        autoUpdater.checkForUpdates();
     });
 
     app.on('before-quit', () => {

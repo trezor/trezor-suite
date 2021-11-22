@@ -105,6 +105,8 @@ const SVG_IMAGES = {
     '404': '404.svg',
     HOW_TO_ENTER_BOOTLOADER_MODEL_1: 'how-to-enter-bootloader-model-1.svg',
     HOW_TO_ENTER_BOOTLOADER_MODEL_2: 'how-to-enter-bootloader-model-2.svg',
+    EARLY_ACCESS: 'early-access.svg',
+    EARLY_ACCESS_DISABLE: 'early-access-disable.svg',
 } as const;
 
 type pngImageKey = keyof typeof PNG_IMAGES;

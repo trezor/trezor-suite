@@ -11,7 +11,9 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload?: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: Partial<UpdateProgress> }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
-    | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow };
+    | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow }
+    | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_SETUP }
+    | { type: typeof DESKTOP_UPDATE.ALLOW_PRERELEASE; payload: boolean };
 
 export const enable = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.ENABLE });
 
@@ -67,3 +69,12 @@ export const setUpdateWindow = (win: UpdateWindow): DesktopUpdateAction => ({
 export const newVersionFirstRun = (version: string) => (dispatch: Dispatch) => {
     dispatch(addToast({ type: 'auto-updater-new-version-first-run', version }));
 };
+
+export const openEarlyAccessSetup = (): DesktopUpdateAction => ({
+    type: DESKTOP_UPDATE.OPEN_EARLY_ACCESS_SETUP,
+});
+
+export const allowPrerelease = (allowPrerelease: boolean): DesktopUpdateAction => ({
+    type: DESKTOP_UPDATE.ALLOW_PRERELEASE,
+    payload: allowPrerelease,
+});

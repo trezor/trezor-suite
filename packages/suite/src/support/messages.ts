@@ -4907,6 +4907,68 @@ export default defineMessages({
         defaultMessage:
             'Your device is already updated to latest firmware. You may reinstall the firmware if needed.',
     },
+    TR_EXPERIMENTAL_FEATURES: {
+        id: 'TR_EXPERIMENTAL_FEATURES',
+        defaultMessage: 'Experimental features',
+        description: 'Section title for Early Access program so far',
+    },
+    TR_EARLY_ACCESS: {
+        id: 'TR_EARLY_ACCESS',
+        defaultMessage: 'Early access program',
+    },
+    TR_EARLY_ACCESS_MENU: {
+        id: 'TR_EARLY_ACCESS_MENU',
+        defaultMessage: 'Early access',
+    },
+    TR_EARLY_ACCESS_MENU_STATUS: {
+        id: 'TR_EARLY_ACCESS_MENU_STATUS',
+        defaultMessage: 'Suite in Early access mode',
+    },
+    TR_EARLY_ACCESS_DESCRIPTION: {
+        id: 'TR_EARLY_ACCESS_DESCRIPTION',
+        defaultMessage: 'Enable to get cool features earlier.',
+    },
+    TR_EARLY_ACCESS_DESCRIPTION_ENABLED: {
+        id: 'TR_EARLY_ACCESS_DESCRIPTION_ENABLED',
+        defaultMessage: 'Disable if you no longer want priority access to new features.',
+    },
+    TR_EARLY_ACCESS_ENABLE: {
+        id: 'TR_EARLY_ACCESS_ENABLE',
+        defaultMessage: 'Enable',
+    },
+    TR_EARLY_ACCESS_DISABLE: {
+        id: 'TR_EARLY_ACCESS_DISABLE',
+        defaultMessage: 'Disable',
+    },
+    TR_EARLY_ACCESS_ENABLE_CONFIRM: {
+        id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM',
+        defaultMessage: 'Enable early access',
+    },
+    TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE: {
+        id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE',
+        defaultMessage: 'Get cooler features sooner',
+    },
+    TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION: {
+        id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION',
+        defaultMessage: 'You can turn it off anytime.',
+    },
+    TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK: {
+        id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK',
+        defaultMessage: 'I understand this shit is experimental FIXME',
+    },
+    TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP: {
+        id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP',
+        defaultMessage: 'Check the field above first',
+    },
+    TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE: {
+        id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE',
+        defaultMessage: 'Really disable early access program?',
+    },
+    TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION: {
+        id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION',
+        defaultMessage:
+            'We will stop looking for beta releases. To downgrade to latest stable release immediately, please reinstall the app.',
+    },
     TR_EXPORT_TO_FILE: {
         id: 'TR_EXPORT_TO_FILE',
         defaultMessage: 'Export to file',

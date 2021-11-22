@@ -10,6 +10,7 @@ interface DesktopApi {
     appFocus: () => void;
     // Auto-updater
     checkForUpdates: (isManual?: boolean) => void;
+    allowPrerelease: (value?: boolean) => void;
     downloadUpdate: () => void;
     installUpdate: () => void;
     cancelUpdate: () => void;

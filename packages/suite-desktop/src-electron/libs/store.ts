@@ -21,7 +21,7 @@ export const setWinBounds = (winBounds: WinBounds): void => {
 };
 
 export const getUpdateSettings = (): UpdateSettings =>
-    store.get('updateSettings', {}) as UpdateSettings;
+    store.get('updateSettings', { allowPrerelease: false }) as UpdateSettings;
 
 export const setUpdateSettings = (updateSettings: UpdateSettings): void => {
     store.set('updateSettings', updateSettings);
