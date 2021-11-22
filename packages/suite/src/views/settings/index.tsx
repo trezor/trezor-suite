@@ -471,7 +471,10 @@ const Settings = () => {
                             }
                         />
                         <ActionColumn>
-                            <ActionButton onClick={openEarlyAccessSetup} variant="secondary">
+                            <ActionButton
+                                onClick={() => openEarlyAccessSetup(desktopUpdate.allowPrerelease)}
+                                variant="secondary"
+                            >
                                 <Translation
                                     id={
                                         desktopUpdate.allowPrerelease

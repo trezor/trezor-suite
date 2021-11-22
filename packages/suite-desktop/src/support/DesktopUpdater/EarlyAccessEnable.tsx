@@ -1,17 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import { Button, H2, P, Tooltip, variables } from '@trezor/components';
+import { Button, P, Tooltip, variables } from '@trezor/components';
 import { CheckItem, Translation, Modal, Image } from '@suite-components';
-import { LeftCol, RightCol, Divider } from './styles';
-
-const BoxImageWrapper = styled.div`
-    margin-left: auto;
-    margin-right: auto;
-    top: 50px;
-    left: 0;
-    right: 0;
-`;
+import { Divider } from './styles';
 
 const DescriptionWrapper = styled.div`
     display: flex;
@@ -31,11 +23,6 @@ const ButtonWrapper = styled.div`
     padding-top: 24px;
 `;
 
-const Title = styled(H2)`
-    padding-top: 24px;
-    padding-bottom: 12px;
-`;
-
 const Description = styled(P)`
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
@@ -43,42 +30,16 @@ const Description = styled(P)`
 
 interface Props {
     hideWindow: () => void;
-    enabled: boolean;
 }
 
-const EarlyAccess = ({ hideWindow, enabled }: Props) => {
+const EarlyAccessEnable = ({ hideWindow }: Props) => {
     const allowPrerelease = useCallback(
         (value?: boolean) => window.desktopApi?.allowPrerelease(value),
         [],
     );
     const [understood, setUnderstood] = useState(false);
 
-    return enabled ? (
-        <Modal>
-            <BoxImageWrapper>
-                <Image width={60} height={60} image="EARLY_ACCESS_DISABLE" />
-            </BoxImageWrapper>
-            <Title>
-                <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE" />
-            </Title>
-            <Description>
-                <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION" />
-            </Description>
-
-            <ButtonWrapper>
-                <LeftCol>
-                    <Button onClick={hideWindow} variant="secondary" fullWidth>
-                        <Translation id="TR_CANCEL" />
-                    </Button>
-                </LeftCol>
-                <RightCol>
-                    <Button onClick={() => allowPrerelease(false)} fullWidth>
-                        <Translation id="TR_EARLY_ACCESS_DISABLE" />
-                    </Button>
-                </RightCol>
-            </ButtonWrapper>
-        </Modal>
-    ) : (
+    return (
         <Modal heading={<Translation id="TR_EARLY_ACCESS" />} cancelable onCancel={hideWindow}>
             <DescriptionWrapper>
                 <Image width={60} height={60} image="EARLY_ACCESS" />
@@ -111,7 +72,7 @@ const EarlyAccess = ({ hideWindow, enabled }: Props) => {
                         !understood && <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP" />
                     }
                 >
-                    <Button onClick={() => allowPrerelease(!enabled)} isDisabled={!understood}>
+                    <Button onClick={() => allowPrerelease(true)} isDisabled={!understood}>
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM" />
                     </Button>
                 </Tooltip>
@@ -120,4 +81,4 @@ const EarlyAccess = ({ hideWindow, enabled }: Props) => {
     );
 };
 
-export default EarlyAccess;
+export default EarlyAccessEnable;
