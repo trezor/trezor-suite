@@ -1,49 +1,24 @@
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
 
-import { Button, H2, P, variables } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation, Modal, Image } from '@suite-components';
-import { LeftCol, RightCol } from './styles';
-
-const BoxImageWrapper = styled.div`
-    margin-left: auto;
-    margin-right: auto;
-    top: 50px;
-    left: 0;
-    right: 0;
-`;
-
-const ButtonWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    padding-top: 24px;
-`;
-
-const Title = styled(H2)`
-    padding-top: 24px;
-    padding-bottom: 12px;
-`;
-
-const Description = styled(P)`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-`;
+import { ImageWrapper, ButtonWrapper, Description, LeftCol, RightCol, Title } from './styles';
 
 interface Props {
     hideWindow: () => void;
 }
 
 const EarlyAccessDisable = ({ hideWindow }: Props) => {
-    const allowPrerelease = useCallback(
-        (value?: boolean) => window.desktopApi?.allowPrerelease(value),
-        [],
-    );
+    const allowPrerelease = useCallback(() => {
+        window.desktopApi?.allowPrerelease(false);
+        hideWindow();
+    }, [hideWindow]);
 
     return (
         <Modal>
-            <BoxImageWrapper>
+            <ImageWrapper>
                 <Image width={60} height={60} image="EARLY_ACCESS_DISABLE" />
-            </BoxImageWrapper>
+            </ImageWrapper>
             <Title>
                 <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE" />
             </Title>
@@ -58,7 +33,7 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
                     </Button>
                 </LeftCol>
                 <RightCol>
-                    <Button onClick={() => allowPrerelease(false)} fullWidth>
+                    <Button onClick={allowPrerelease} fullWidth>
                         <Translation id="TR_EARLY_ACCESS_DISABLE" />
                     </Button>
                 </RightCol>

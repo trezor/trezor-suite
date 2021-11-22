@@ -1,9 +1,17 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import { Button, P, Tooltip, variables } from '@trezor/components';
+import { Button, P, Tooltip } from '@trezor/components';
 import { CheckItem, Translation, Modal, Image } from '@suite-components';
-import { Divider } from './styles';
+import {
+    ImageWrapper,
+    ButtonWrapper,
+    Description,
+    Divider,
+    LeftCol,
+    RightCol,
+    Title,
+} from './styles';
 
 const DescriptionWrapper = styled.div`
     display: flex;
@@ -17,29 +25,46 @@ const DescriptionTextWrapper = styled.div`
     margin-left: 20px;
 `;
 
-const ButtonWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    padding-top: 24px;
-`;
-
-const Description = styled(P)`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-`;
-
 interface Props {
     hideWindow: () => void;
 }
 
 const EarlyAccessEnable = ({ hideWindow }: Props) => {
-    const allowPrerelease = useCallback(
-        (value?: boolean) => window.desktopApi?.allowPrerelease(value),
-        [],
-    );
     const [understood, setUnderstood] = useState(false);
+    const [enabled, setEnabled] = useState(false);
 
-    return (
+    const allowPrerelease = useCallback(() => {
+        window.desktopApi?.allowPrerelease(true);
+        setEnabled(true);
+    }, []);
+    const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(true), []);
+
+    return enabled ? (
+        <Modal>
+            <ImageWrapper>
+                <Image width={160} height={160} image="UNI_SUCCESS" />
+            </ImageWrapper>
+            <Title>
+                <Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />
+            </Title>
+            <Description>
+                <Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />
+            </Description>
+
+            <ButtonWrapper>
+                <LeftCol>
+                    <Button onClick={hideWindow} variant="secondary" fullWidth>
+                        <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
+                    </Button>
+                </LeftCol>
+                <RightCol>
+                    <Button onClick={checkForUpdates} fullWidth>
+                        <Translation id="TR_EARLY_ACCESS_CHECK_UPDATE" />
+                    </Button>
+                </RightCol>
+            </ButtonWrapper>
+        </Modal>
+    ) : (
         <Modal heading={<Translation id="TR_EARLY_ACCESS" />} cancelable onCancel={hideWindow}>
             <DescriptionWrapper>
                 <Image width={60} height={60} image="EARLY_ACCESS" />
@@ -72,7 +97,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
                         !understood && <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP" />
                     }
                 >
-                    <Button onClick={() => allowPrerelease(true)} isDisabled={!understood}>
+                    <Button onClick={allowPrerelease} isDisabled={!understood}>
                         <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM" />
                     </Button>
                 </Tooltip>

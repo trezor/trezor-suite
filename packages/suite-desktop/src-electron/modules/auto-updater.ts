@@ -244,8 +244,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
         store.setUpdateSettings({ ...updateSettings, allowPrerelease: value });
 
         autoUpdater.allowPrerelease = value;
-
-        autoUpdater.checkForUpdates();
     });
 
     app.on('before-quit', () => {

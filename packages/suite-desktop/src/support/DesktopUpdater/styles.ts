@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { H2, P, variables } from '@trezor/components';
 
 export const Row = styled.div`
     display: flex;
@@ -23,4 +24,28 @@ export const Divider = styled.div`
     height: 1px;
     margin: 30px 0px;
     background: ${props => props.theme.STROKE_GREY};
+`;
+
+export const ImageWrapper = styled.div`
+    margin-left: auto;
+    margin-right: auto;
+    top: 50px;
+    left: 0;
+    right: 0;
+`;
+
+export const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    padding-top: 24px;
+`;
+
+export const Title = styled(H2)`
+    padding-top: 24px;
+    padding-bottom: 12px;
+`;
+
+export const Description = styled(P)`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
