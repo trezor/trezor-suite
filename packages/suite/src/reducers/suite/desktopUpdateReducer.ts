@@ -17,7 +17,8 @@ export enum UpdateState {
     NotAvailable = 'not-available',
     Downloading = 'downloading',
     Ready = 'ready',
-    EarlyAccessSetup = 'early-access-setup',
+    EarlyAccessEnable = 'early-access-enable',
+    EarlyAccessDisable = 'early-access-disable',
 }
 
 /**
@@ -73,8 +74,12 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
             case DESKTOP_UPDATE.WINDOW:
                 draft.window = action.payload;
                 break;
-            case DESKTOP_UPDATE.OPEN_EARLY_ACCESS_SETUP:
-                draft.state = UpdateState.EarlyAccessSetup;
+            case DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE:
+                draft.state = UpdateState.EarlyAccessEnable;
+                draft.window = 'maximized';
+                break;
+            case DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE:
+                draft.state = UpdateState.EarlyAccessDisable;
                 draft.window = 'maximized';
                 break;
             case DESKTOP_UPDATE.ALLOW_PRERELEASE:

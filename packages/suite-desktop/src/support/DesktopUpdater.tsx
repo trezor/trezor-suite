@@ -6,7 +6,8 @@ import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import Available from './DesktopUpdater/Available';
 import Downloading from './DesktopUpdater/Downloading';
 import Ready from './DesktopUpdater/Ready';
-import EarlyAccess from './DesktopUpdater/EarlyAccess';
+import EarlyAccessEnable from './DesktopUpdater/EarlyAccessEnable';
+import EarlyAccessDisable from './DesktopUpdater/EarlyAccessDisable';
 
 interface Props {
     setIsUpdateVisible: (isVisible: boolean) => void;
@@ -107,8 +108,10 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
     //
 
     switch (desktopUpdate.state) {
-        case UpdateState.EarlyAccessSetup:
-            return <EarlyAccess hideWindow={hideWindow} enabled={desktopUpdate.allowPrerelease} />;
+        case UpdateState.EarlyAccessEnable:
+            return <EarlyAccessEnable hideWindow={hideWindow} />;
+        case UpdateState.EarlyAccessDisable:
+            return <EarlyAccessDisable hideWindow={hideWindow} />;
         case UpdateState.Available:
             return <Available hideWindow={hideWindow} latest={desktopUpdate.latest} />;
         case UpdateState.Downloading:
