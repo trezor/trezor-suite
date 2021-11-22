@@ -37,7 +37,7 @@ export const TokenTransfer = ({
 
     ...baseLayoutProps
 }: TokenTransferProps) => {
-    const operation = getTxOperation(transaction);
+    const operation = getTxOperation(transfer);
     return (
         <BaseTargetLayout
             {...baseLayoutProps}
