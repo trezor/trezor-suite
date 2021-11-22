@@ -13,6 +13,7 @@ import googleMock from './google';
 import dropboxMock from './dropbox';
 import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
 import config from '../cypress.json';
+import releasesT2 from '../../../../connect-common/files/firmware/2/releases.json';
 
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
@@ -167,6 +168,7 @@ module.exports = on => {
         startEmu: async arg => {
             await controller.send({
                 type: 'emulator-start',
+                version: releasesT2[0].version.join('.'),
                 ...arg,
             });
             return null;

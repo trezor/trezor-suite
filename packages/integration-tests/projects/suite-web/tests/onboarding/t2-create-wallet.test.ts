@@ -11,7 +11,7 @@ describe('Onboarding - create wallet', () => {
     });
 
     it('Success (Shamir capability)', () => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@firmware/continue-button').click();

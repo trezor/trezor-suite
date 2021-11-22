@@ -18,7 +18,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
     fixtures.forEach(f => {
         it(f.provider, () => {
             // prepare test
-            cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+            cy.task('startEmu', { wipe: true });
             cy.task('setupEmu', {
                 mnemonic: 'all all all all all all all all all all all all',
             });

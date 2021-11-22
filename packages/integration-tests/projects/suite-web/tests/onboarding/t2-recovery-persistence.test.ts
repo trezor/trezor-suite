@@ -51,7 +51,7 @@ const shareTwoOfThree = [
 describe('Onboarding - T2 in recovery mode', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.resetDb();
         cy.viewport(1024, 768);
         cy.prefixedVisit('/');
@@ -76,7 +76,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.reload();
 
         // now suite has reloaded. database is wiped.
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: false });
+        cy.task('startEmu', { wipe: false });
         // analytics opt-out again
         cy.getTestElement('@onboarding/continue-button').click();
         // recovery device persisted reload
@@ -112,7 +112,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.task('stopEmu');
         cy.wait(1000);
         cy.getTestElement('@connect-device-prompt', { timeout: 30000 });
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: false });
+        cy.task('startEmu', { wipe: false });
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(1000);
         cy.task('pressYes');

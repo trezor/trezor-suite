@@ -9,7 +9,7 @@ describe('Dropbox api errors', () => {
     });
 
     it('Malformed token', () => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             mnemonic: 'all all all all all all all all all all all all',
         });

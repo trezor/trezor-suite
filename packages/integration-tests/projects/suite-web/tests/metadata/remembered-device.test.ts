@@ -24,7 +24,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
         it(f.provider, () => {
             // prepare test
             cy.task('stopBridge');
-            cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+            cy.task('startEmu', { wipe: true });
             cy.task('setupEmu', {
                 mnemonic: 'all all all all all all all all all all all all',
             });

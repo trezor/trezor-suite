@@ -3,7 +3,7 @@
 
 describe('Dashboard', () => {
     beforeEach(() => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: true,
             mnemonic: 'all all all all all all all all all all all all',
