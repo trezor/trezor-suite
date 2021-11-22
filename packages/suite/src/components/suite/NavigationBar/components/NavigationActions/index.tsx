@@ -11,6 +11,7 @@ import { isDesktop } from '@suite-utils/env';
 import NotificationsDropdown from './components/NotificationsDropdown';
 import SettingsDropdown from './components/SettingsDropdown';
 import TorDropdown from './components/TorDropdown';
+import EarlyAccessDropdown from './components/EarlyAccessDropdown';
 
 const Wrapper = styled.div`
     display: flex;
@@ -46,12 +47,13 @@ type Route = 'settings-index' | 'notifications-index';
 
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
-    const { activeApp, notifications, discreetMode, tor } = useSelector(state => ({
+    const { activeApp, notifications, discreetMode, tor, allowPrerelease } = useSelector(state => ({
         activeApp: state.router.app,
         notifications: state.notifications,
         discreetMode: state.wallet.settings.discreetMode,
         tor: state.suite.tor,
         theme: state.suite.settings.theme,
+        allowPrerelease: state.desktopUpdate.allowPrerelease,
     }));
     const { goto, setDiscreetMode } = useActions({
         goto: routerActions.goto,
@@ -127,6 +129,20 @@ const NavigationActions = (props: Props) => {
                     )}
                 </>
             )}
+
+            {allowPrerelease &&
+                (props.isMobileLayout ? (
+                    <ActionItem
+                        onClick={() => {
+                            action('settings-index');
+                        }}
+                        label={<Translation id="TR_EARLY_ACCESS_MENU" />}
+                        icon="EXPERIMENTAL_FEATURES"
+                        isMobileLayout={props.isMobileLayout}
+                    />
+                ) : (
+                    <EarlyAccessDropdown isActive marginLeft />
+                ))}
 
             {!props.isMobileLayout && <Separator />}
 

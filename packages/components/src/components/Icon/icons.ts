@@ -20,6 +20,7 @@ export const ICONS = {
     CANCEL: require('../../images/icons/cancel.svg'),
     DASHBOARD: require('../../images/icons/dashboard.svg'),
     DEVICE: require('../../images/icons/device.svg'),
+    EXPERIMENTAL_FEATURES: require('../../images/icons/experimental-features.svg'),
     EXCHANGE: require('../../images/icons/exchange.svg'),
     INFO: require('../../images/icons/info.svg'),
     INFO_ACTIVE: require('../../images/icons/info_active.svg'),
