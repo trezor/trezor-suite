@@ -259,7 +259,9 @@ export const analyzeTransactions = (
     });
 };
 
-export const getTxOperation = (tx: WalletAccountTransaction) => {
+// getTxOperation is used with types WalletAccountTransaction and ArrayElement<WalletAccountTransaction['tokens']
+// the only interesting field is 'type', which has compatible string literal union in both types
+export const getTxOperation = (tx: { type: WalletAccountTransaction['type'] }) => {
     if (tx.type === 'sent' || tx.type === 'self' || tx.type === 'failed') {
         return 'neg';
     }
