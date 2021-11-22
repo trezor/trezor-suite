@@ -184,6 +184,7 @@ const Backup = (props: Props) => {
     return (
         <Modal
             useFixedHeight
+            fixedHeight={['90vh', '90vh', '650px', '650px']}
             cancelable={props.cancelable}
             onCancel={props.onCancel}
             data-test="@backup"

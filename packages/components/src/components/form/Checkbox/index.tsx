@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { darken } from 'polished';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { FONT_SIZE } from '../../../config/variables';
 import { useTheme } from '../../../utils';
@@ -15,47 +16,38 @@ const Wrapper = styled.div`
     &:focus {
         outline: none;
     }
-
-    &:hover {
-        > div:first-child {
-            border: 1px solid ${props => props.theme.TYPE_DARK_GREY};
-        }
-    }
 `;
 
 const IconWrapper = styled.div<IconWrapperProps>`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 19px;
-    min-width: 19px;
-    max-width: 19px;
-    height: 19px;
-    border-radius: 3px;
-    box-shadow: ${props =>
-        !props.isChecked ? `inset 0 3px 6px 0 ${props.theme.BG_GREY}` : `none`};
-    background: ${props => (props.isChecked ? props.theme.BG_GREEN : props.theme.BG_WHITE)};
-    border: 1px solid
-        ${props => (props.isChecked ? props.theme.TYPE_GREEN : props.theme.TYPE_LIGHT_GREY)};
+    width: 24px;
+    min-width: 24px;
+    max-width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: ${({ theme, isChecked }) => (isChecked ? theme.BG_GREEN : theme.BG_WHITE)};
+    border: 2px solid
+        ${({ theme, isChecked }) => (isChecked ? theme.TYPE_GREEN : theme.STROKE_GREY)};
 
     &:hover,
     &:focus {
-        ${props =>
-            !props.isChecked &&
+        ${({ theme, isChecked }) =>
+            !isChecked &&
             css`
-                border: 1px solid ${props.theme.TYPE_DARK_GREY};
+                border: 2px solid ${darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
             `}
     }
 `;
 
 const Label = styled.div<IconWrapperProps>`
     display: flex;
-    padding-left: 10px;
-    padding-top: 2px;
+    padding-left: 12px;
     justify-content: center;
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${FONT_SIZE.SMALL};
-    line-height: 18px;
+    line-height: 24px;
 `;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
@@ -83,7 +75,7 @@ const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => {
             {...rest}
         >
             <IconWrapper isChecked={isChecked}>
-                {isChecked && <Icon size={16} color={theme.TYPE_WHITE} icon="CHECK" />}
+                {isChecked && <Icon size={24} color={theme.TYPE_WHITE} icon="CHECK" />}
             </IconWrapper>
             <Label isChecked={isChecked}>{children}</Label>
         </Wrapper>
