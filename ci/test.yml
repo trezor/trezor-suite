@@ -126,6 +126,39 @@ e2e web all snapshots:
     CYPRESS_SNAPSHOT: 1
     CYPRESS_updateSnapshots: 1
 
+# Nightly tests against latest trezor-firmware master
+.e2e web nightly:
+  extends: .e2e web
+  only:
+    - schedules
+  variables:
+    FIRMWARE: 2-master
+
+e2e web suite nightly:
+  extends: .e2e web nightly
+  variables:
+    TEST_GROUP: '@group:suite'
+
+e2e web onboarding nightly:
+  extends: .e2e web nightly
+  variables:
+    TEST_GROUP: '@group:onboarding'
+
+e2e web device-management nightly:
+  extends: .e2e web nightly
+  variables:
+    TEST_GROUP: '@group:device-management'
+
+e2e web settings nightly:
+  extends: .e2e web nightly
+  variables:
+    TEST_GROUP: '@group:settings'
+
+e2e web metadata nightly:
+  extends: .e2e web nightly
+  variables:
+    TEST_GROUP: '@group:metadata'
+
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io
 

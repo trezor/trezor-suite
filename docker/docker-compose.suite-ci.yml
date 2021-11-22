@@ -23,6 +23,7 @@ services:
       - CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE
       - CI_COMMIT_SHA=$CI_COMMIT_SHA
       - CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION
+      - FIRMWARE=$FIRMWARE
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
     command: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js --project /trezor-suite/packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"
