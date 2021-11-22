@@ -14,6 +14,7 @@ const validChannels = [
     'update/downloading',
     'update/downloaded',
     'update/new-version-first-run',
+    'update/allow-prerelease',
 
     // invity
     'spend/message',
@@ -51,6 +52,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
     downloadUpdate: () => ipcRenderer.send('update/download'),
     installUpdate: () => ipcRenderer.send('update/install'),
     cancelUpdate: () => ipcRenderer.send('update/cancel'),
+    allowPrerelease: (value?: boolean) => ipcRenderer.send('update/allow-prerelease', value),
 
     // Theme
     themeChange: (theme: SuiteThemeVariant) => ipcRenderer.send('theme/change', theme),

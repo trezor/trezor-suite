@@ -6,6 +6,7 @@ import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import Available from './DesktopUpdater/Available';
 import Downloading from './DesktopUpdater/Downloading';
 import Ready from './DesktopUpdater/Ready';
+import EarlyAccess from './DesktopUpdater/EarlyAccess';
 
 interface Props {
     setIsUpdateVisible: (isVisible: boolean) => void;
@@ -22,6 +23,7 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         error,
         newVersionFirstRun,
         setUpdateWindow,
+        allowPrerelease,
     } = useActions({
         enable: desktopUpdateActions.enable,
         checking: desktopUpdateActions.checking,
@@ -32,10 +34,13 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         error: desktopUpdateActions.error,
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
         newVersionFirstRun: desktopUpdateActions.newVersionFirstRun,
+        allowPrerelease: desktopUpdateActions.allowPrerelease,
     });
     const desktopUpdate = useSelector(state => state.desktopUpdate);
 
     useEffect(() => {
+        window.desktopApi!.on('update/allow-prerelease', allowPrerelease);
+
         if (!desktopUpdate.enabled) {
             window.desktopApi?.on('update/enable', enable);
             return;
@@ -62,6 +67,7 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         enable,
         newVersionFirstRun,
         desktopUpdate.enabled,
+        allowPrerelease,
     ]);
 
     const hideWindow = useCallback(() => setUpdateWindow('hidden'), [setUpdateWindow]);
@@ -101,6 +107,8 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
     //
 
     switch (desktopUpdate.state) {
+        case UpdateState.EarlyAccessSetup:
+            return <EarlyAccess hideWindow={hideWindow} enabled={desktopUpdate.allowPrerelease} />;
         case UpdateState.Available:
             return <Available hideWindow={hideWindow} latest={desktopUpdate.latest} />;
         case UpdateState.Downloading:

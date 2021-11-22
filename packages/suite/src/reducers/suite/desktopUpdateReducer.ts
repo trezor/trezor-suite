@@ -17,6 +17,7 @@ export enum UpdateState {
     NotAvailable = 'not-available',
     Downloading = 'downloading',
     Ready = 'ready',
+    EarlyAccessSetup = 'early-access-setup',
 }
 
 /**
@@ -34,12 +35,14 @@ export interface State {
     progress?: Partial<UpdateProgress>;
     latest?: UpdateInfo;
     window: UpdateWindow;
+    allowPrerelease: boolean;
 }
 
 const initialState: State = {
     enabled: false,
     state: UpdateState.NotAvailable,
     window: 'maximized',
+    allowPrerelease: false,
 };
 
 const desktopUpdateReducer = (state: State = initialState, action: Action): State =>
@@ -69,6 +72,13 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                 break;
             case DESKTOP_UPDATE.WINDOW:
                 draft.window = action.payload;
+                break;
+            case DESKTOP_UPDATE.OPEN_EARLY_ACCESS_SETUP:
+                draft.state = UpdateState.EarlyAccessSetup;
+                draft.window = 'maximized';
+                break;
+            case DESKTOP_UPDATE.ALLOW_PRERELEASE:
+                draft.allowPrerelease = action.payload;
                 break;
             // no default
         }

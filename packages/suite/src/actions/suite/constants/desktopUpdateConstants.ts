@@ -6,3 +6,5 @@ export const DOWNLOADING = '@desktop-update/downloading';
 export const READY = '@desktop-update/ready';
 export const ERROR = '@desktop-update/error';
 export const WINDOW = '@desktop-update/window';
+export const OPEN_EARLY_ACCESS_SETUP = '@desktop-update/open-early-access-setup';
+export const ALLOW_PRERELEASE = '@desktop-update/allow-prerelease';
