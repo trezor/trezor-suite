@@ -9,7 +9,7 @@ describe('Onboarding - recover wallet T2', () => {
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
 
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@firmware/continue-button').click();

@@ -7,7 +7,7 @@ const DISCOVERY_LIMIT = 1000 * 60 * 2;
 // todo: discovery does not run to end, is it only in tests?
 describe.skip('Discovery', () => {
     beforeEach(() => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();

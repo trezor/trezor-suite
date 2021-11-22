@@ -4,7 +4,7 @@
 describe('Suite initial run', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
     });

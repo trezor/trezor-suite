@@ -6,7 +6,7 @@ const downloadsFolder = Cypress.config('downloadsFolder');
 describe('Export transactions', () => {
     beforeEach(() => {
         cy.task('rmDir', { dir: downloadsFolder, recursive: true, force: true });
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             mnemonic: 'all all all all all all all all all all all all',
         });

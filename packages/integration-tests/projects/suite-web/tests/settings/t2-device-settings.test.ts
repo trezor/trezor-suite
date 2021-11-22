@@ -53,7 +53,7 @@ describe('T2 - Device settings', () => {
     });
 
     it('backup in settings', () => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: true });
 
         cy.viewport(1024, 768).resetDb();
@@ -80,7 +80,7 @@ describe('T2 - Device settings', () => {
     });
 
     it('wipe device', () => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
 
         cy.viewport(1024, 768).resetDb();
