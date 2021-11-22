@@ -280,5 +280,9 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
+        log(message) {
+            console.log(message);
+            return null;
+        },
     });
 };
