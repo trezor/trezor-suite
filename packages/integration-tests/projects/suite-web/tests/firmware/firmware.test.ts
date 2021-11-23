@@ -38,20 +38,18 @@ describe('Firmware', () => {
         });
     });
 
-    ['1-master', '2-master'].forEach(fw => {
-        it(`For latest firmware ${fw}, update button in device settings should display "Up to date" but still be clickable`, () => {
-            cy.task('startEmu', { wipe: true, version: fw });
-            cy.task('setupEmu');
-            cy.task('startBridge');
-            cy.prefixedVisit('/');
-            cy.passThroughInitialRun();
-            cy.getTestElement('@suite/menu/settings').click();
-            cy.getTestElement('@suite/menu/settings-index').click();
-            cy.getTestElement('@settings/menu/device').click();
-            cy.getTestElement('@settings/device/update-button')
-                .should('contain.text', 'Up to date')
-                .click();
-            cy.getTestElement('@modal/close-button').click();
-        });
+    it(`For the latest firmware, update button in device settings should display "Up to date" but still be clickable`, () => {
+        cy.task('startEmu', { wipe: true });
+        cy.task('setupEmu');
+        cy.task('startBridge');
+        cy.prefixedVisit('/');
+        cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/menu/device').click();
+        cy.getTestElement('@settings/device/update-button')
+            .should('contain.text', 'Up to date')
+            .click();
+        cy.getTestElement('@modal/close-button').click();
     });
 });
