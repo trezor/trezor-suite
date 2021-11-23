@@ -35,7 +35,6 @@ import BackgroundGallery from './BackgroundGallery';
 import TransactionDetail from './TransactionDetail';
 import Log from './Log';
 import WipeDevice from './WipeDevice';
-import DisconnectDevice from './DisconnectDevice';
 import MetadataProvider from './metadata/MetadataProvider';
 import AdvancedCoinSettings from './AdvancedCoinSettings';
 import AddToken from './AddToken';
@@ -221,8 +220,6 @@ const getUserContextModal = ({ modal, onCancel }: SharedProps) => {
             return <ImportTransaction {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':
             return <PinMismatch />;
-        case 'disconnect-device':
-            return <DisconnectDevice />;
         case 'log':
             return <Log onCancel={onCancel} />;
         case 'metadata-provider':

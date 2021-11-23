@@ -77,6 +77,9 @@ export type SuiteAction =
     | {
           type: typeof SUITE.SET_AUTODETECT;
           payload: Partial<AutodetectSettings>;
+      }
+    | {
+          type: typeof SUITE.REQUEST_DEVICE_RECONNECT;
       };
 
 export const removeButtonRequests = (device: TrezorDevice | undefined) => ({
@@ -586,3 +589,7 @@ export const switchDuplicatedDevice =
         // remove stateless instance
         dispatch(forgetDevice(device));
     };
+
+export const requestDeviceReconnect = () => ({
+    type: SUITE.REQUEST_DEVICE_RECONNECT,
+});

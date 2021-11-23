@@ -16,6 +16,10 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
 
     if (!device) return 'device-disconnected';
 
+    if (device.reconnectRequested) {
+        return 'device-disconnect-required';
+    }
+
     // device features cannot be read, device is probably used in another window
     if (device.type === 'unacquired') return 'device-unacquired';
 

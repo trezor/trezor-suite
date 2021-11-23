@@ -88,8 +88,9 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         //
         // disconnecting the device wiped from bootloader mode is also necessary
         if (isWebUSB(transport) || bootloaderMode) {
-            dispatch(modalActions.openModal({ type: 'disconnect-device' }));
-        } else if (state.router.app === 'settings') {
+            dispatch(suiteActions.requestDeviceReconnect());
+        }
+        if (state.router.app === 'settings') {
             // redirect to index to close the settings and show initial device setup
             dispatch(routerActions.goto('suite-index'));
         }

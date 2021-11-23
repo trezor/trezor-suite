@@ -34,3 +34,4 @@ export const LOCK_TYPE = {
     DEVICE: 2, // restricted device call (TrezorConnect)
     UI: 3, // restricted most of the UI actions (buttons, keyboard etc.)
 } as const;
+export const REQUEST_DEVICE_RECONNECT = '@suite/request-device-reconnect';
