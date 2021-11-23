@@ -5,7 +5,7 @@
 
 describe('Recovery - dry run', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             mnemonic: 'all all all all all all all all all all all all',
         });
@@ -36,7 +36,7 @@ describe('Recovery - dry run', () => {
         cy.task('stopEmu');
         cy.getTestElement('@recovery/close-button', { timeout: 30000 }).click();
         cy.getTestElement('@connect-device-prompt');
-        cy.task('startEmu', { wipe: false, version: Cypress.env('emuVersionT2') });
+        cy.task('startEmu', { wipe: false });
         cy.getTestElement('@suite/modal/confirm-action-on-device', { timeout: 20000 });
         cy.task('pressYes');
         cy.log('At this moment, communication with device should be re-established');

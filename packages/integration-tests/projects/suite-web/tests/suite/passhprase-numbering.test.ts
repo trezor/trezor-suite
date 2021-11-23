@@ -3,7 +3,7 @@
 
 describe('Passphrase', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: true });
         cy.task('startBridge');
         // eslint-disable-next-line @typescript-eslint/naming-convention

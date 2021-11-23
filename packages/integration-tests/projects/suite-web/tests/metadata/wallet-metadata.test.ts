@@ -19,7 +19,7 @@ describe('Metadata - wallet labeling', () => {
     providers.forEach(provider => {
         it(provider, () => {
             // prepare test
-            cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
+            cy.task('startEmu', { wipe: true });
             cy.task('setupEmu', {
                 mnemonic,
             });
