@@ -38,3 +38,30 @@ export const read = async (directory: string, name: string) => {
         return { success: false, error };
     }
 };
+
+export const clear = async () => {
+    const dir = app.getPath('userData');
+    try {
+        await fs.promises.rm(dir, { recursive: true, force: true });
+        return { success: true };
+    } catch (error) {
+        global.logger.error('user-data', `Remove dir failed: ${error.message}`);
+        return { success: false, error };
+    }
+};
+
+export const getInfo = () => {
+    const dir = app.getPath('userData');
+    try {
+        return {
+            success: true,
+            payload: {
+                dir,
+                // possibly more info can be returned (size, last modified,...)
+            },
+        };
+    } catch (error) {
+        global.logger.error('user-data', `getInfo failed: ${error.message}`);
+        return { success: false, error };
+    }
+};

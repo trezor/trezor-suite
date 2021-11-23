@@ -1,5 +1,16 @@
 type SuiteThemeVariant = 'light' | 'dark' | 'custom';
 
+type Result<Payload = undefined> = Promise<
+    | {
+          success: true;
+          payload?: Payload;
+      }
+    | {
+          success: false;
+          error: string;
+      }
+>;
+
 // Interface for exposed Electron API (ipcRenderer)
 interface DesktopApi {
     on: (channel: string, func: (...args: any[]) => any) => void;
@@ -36,8 +47,10 @@ interface DesktopApi {
     setTorAddress: (address: string) => void;
     // Store
     clearStore: () => void;
+    clearUserData: () => Result;
+    getUserDataInfo: () => Result<{ dir: string }>;
     // Udev rules
-    installUdevRules: () => Promise<{ success: true } | { success: false; error: string }>;
+    installUdevRules: () => Result;
 }
 
 interface Window {
