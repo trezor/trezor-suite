@@ -11,7 +11,7 @@ describe('Suite switch wallet modal', () => {
     });
 
     it('passphrase_protection: false', () => {
-        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: false });
 
         cy.prefixedVisit('/');

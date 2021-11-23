@@ -10,7 +10,7 @@ const SIGNATURE =
 
 describe('Sign and verify', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { mnemonic: SEED });
         cy.task('startBridge');
 

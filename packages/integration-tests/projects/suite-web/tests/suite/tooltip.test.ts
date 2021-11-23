@@ -3,7 +3,7 @@
 
 describe('Test tooltip links', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: true });
         cy.task('startBridge');
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -26,7 +26,7 @@ describe('Test tooltip links', () => {
 
 describe('Test tooltip conditional rendering', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { mnemonic: 'all all all all all all all all all all all all' });
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();

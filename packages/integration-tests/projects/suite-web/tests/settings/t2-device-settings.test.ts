@@ -3,7 +3,7 @@
 
 describe('T2 - Device settings', () => {
     it('change all possible device settings', () => {
-        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
 
