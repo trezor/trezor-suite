@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Switch, THEME, SuiteThemeColors } from '@trezor/components';
 import { SettingsLayout } from '@settings-components';
@@ -17,6 +17,12 @@ import { openGithubIssue } from '@suite/services/github';
 import invityAPI from '@suite-services/invityAPI';
 import { isTranslationMode, setTranslationMode } from '@suite-utils/l10n';
 import { isWeb } from '@suite-utils/env';
+import type { Await } from '@suite/types/utils';
+
+type UserData = Extract<
+    Await<ReturnType<NonNullable<typeof window['desktopApi']>['getUserDataInfo']>>,
+    { success: true }
+>;
 
 const StyledActionSelect = styled(ActionSelect)`
     min-width: 250px;
@@ -49,6 +55,22 @@ const DebugSettings = () => {
         invityApiServerOptions.find(s => s.value === debug.invityAPIUrl) ||
         invityApiServerOptions[0];
     const { device } = useDevice();
+
+    const [userData, setUserData] = useState<UserData['payload'] | null>(null);
+
+    useEffect(() => {
+        if (isWeb()) {
+            return;
+        }
+        const getUserDataInfo = async () => {
+            const result = await window.desktopApi!.getUserDataInfo();
+            if (result.success) {
+                setUserData(result.payload);
+            }
+        };
+        getUserDataInfo();
+    }, []);
+
     return (
         <SettingsLayout>
             {isWeb() && (
@@ -101,6 +123,27 @@ const DebugSettings = () => {
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
+                {!isWeb() && (
+                    <SectionItem>
+                        <TextColumn
+                            title="Wipe app data"
+                            description={`Clicking this button restarts your application and wipes all your data including locally saved labels. ${
+                                userData?.dir ? `Your local folder is: ${userData.dir}` : ''
+                            }`}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="danger"
+                                onClick={async () => {
+                                    await window.desktopApi!.clearUserData();
+                                    window.desktopApi!.appRestart();
+                                }}
+                            >
+                                Wipe data
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
             </Section>
             <Section title="Invity">
                 <SectionItem>
