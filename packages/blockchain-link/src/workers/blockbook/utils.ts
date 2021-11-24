@@ -137,19 +137,14 @@ export const transformTransaction = (
     } else {
         type = 'sent';
         // regular targets
-        if (tokens.length === 0 && voutLength) {
+        if (voutLength && (!tokens.length || totalOutput !== '0' || totalInput !== '0')) {
             // filter account change addresses from output
             targets = tx.vout.filter(o => internal.indexOf(o) < 0);
         }
         // ethereum specific transaction
         if (tx.ethereumSpecific) {
-            if (tokens.length > 0 || tx.ethereumSpecific.status === 0) {
-                amount = tx.fees;
-                totalSpent = amount;
-            } else {
-                amount = tx.value;
-                totalSpent = new BigNumber(amount).plus(tx.fees ?? '0').toString();
-            }
+            amount = tx.value;
+            totalSpent = new BigNumber(amount).plus(tx.fees ?? '0').toString();
         } else if (voutLength) {
             // bitcoin-like transaction
             // sum all my inputs
