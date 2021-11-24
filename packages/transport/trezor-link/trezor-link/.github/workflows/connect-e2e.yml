@@ -1,0 +1,151 @@
+name: e2e-connect
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  connect-e2e-management:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh applySettings,applyFlags,getFeatures
+
+  connect-e2e-btc-sign:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh signTransaction
+
+  connect-e2e-btc-others:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage
+
+  connect-e2e-stellar:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh stellarGetAddress,stellarSignTransaction
+    
+  connect-e2e-cardano:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh cardanoGetAddress,cardanoGetPublicKey,cardanoSignTransaction
+
+  connect-e2e-eos:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh eosGetPublicKey,eosSignTransaction
+
+  connect-e2e-eth:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage
+
+  connect-e2e-nem:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh nemGetAddress,nemSignTransaction
+
+  connect-e2e-ripple:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh rippleGetAddress,rippleSignTransaction
+
+  connect-e2e-tezos:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh tezosGetAddress,tezosGetPublicKey
+
+  connect-e2e-binance:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@master
+      with:
+        repository: trezor/connect
+        path: connect
+        submodules: 'recursive'
+    - run: yarn
+    - run: yarn build:lib
+    - run: ./e2e/run-in-connect.sh binanceSignTransaction

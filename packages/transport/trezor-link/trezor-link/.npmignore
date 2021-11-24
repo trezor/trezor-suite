@@ -2,11 +2,13 @@
 src
 babel.config.js
 .eslintrc
+.eslintrc.js
 .eslintignore
-.flowconfig
 .gitignore
 .gitmodules
 .github
+.prettierrc
+tsconfig*
 
 # Dependency directory
 node_modules
@@ -28,3 +30,13 @@ yarn.lock
 logs
 *.log
 .yarnclean
+yarn-error.log
+
+# Tests
+e2e
+coverage
+tests
+jest.config*
+
+# Other
+scripts
