@@ -72,12 +72,6 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
     ]);
 
     const hideWindow = useCallback(() => setUpdateWindow('hidden'), [setUpdateWindow]);
-    /* Not used for now
-    const toggleMaxMinWindow = useCallback(
-        () => setUpdateWindow(desktopUpdate.window === 'maximized' ? 'minimized' : 'maximized'),
-        [desktopUpdate.window, setUpdateWindow],
-    );
-    */
 
     const isVisible = useMemo(() => {
         // Not displayed as a modal
@@ -90,7 +84,13 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
             return false;
         }
 
-        if (!desktopUpdate.latest) {
+        const isEarlyAccessState = [
+            UpdateState.EarlyAccessDisable,
+            UpdateState.EarlyAccessEnable,
+        ].includes(desktopUpdate.state);
+
+        // Enable to setup Early Access even after updater error (when desktopUpdate.latest is undefined).
+        if (!isEarlyAccessState && !desktopUpdate.latest) {
             return false;
         }
 
@@ -102,10 +102,6 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
     if (!isVisible) {
         return null;
     }
-
-    //
-    // TODO: Design alternative modal for minimized view
-    //
 
     switch (desktopUpdate.state) {
         case UpdateState.EarlyAccessEnable:

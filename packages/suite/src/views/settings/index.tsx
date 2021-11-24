@@ -157,6 +157,10 @@ const Settings = () => {
 
     // Auto Updater
     const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(true), []);
+    const setupEarlyAccess = useCallback(() => {
+        openEarlyAccessSetup(desktopUpdate.allowPrerelease);
+        window.desktopApi?.cancelUpdate(); // stop downloading the update if it is in progress to prevent confusing state switching
+    }, [openEarlyAccessSetup, desktopUpdate.allowPrerelease]);
     const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
     const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);
 
@@ -429,7 +433,11 @@ const Settings = () => {
                                     <Translation id="SETTINGS_UPDATE_CHECKING" />
                                 </ActionButton>
                             )}
-                            {desktopUpdate.state === UpdateState.NotAvailable && (
+                            {[
+                                UpdateState.NotAvailable,
+                                UpdateState.EarlyAccessDisable,
+                                UpdateState.EarlyAccessEnable,
+                            ].includes(desktopUpdate.state) && (
                                 <ActionButton onClick={checkForUpdates} variant="secondary">
                                     <Translation id="SETTINGS_UPDATE_CHECK" />
                                 </ActionButton>
@@ -471,10 +479,7 @@ const Settings = () => {
                             }
                         />
                         <ActionColumn>
-                            <ActionButton
-                                onClick={() => openEarlyAccessSetup(desktopUpdate.allowPrerelease)}
-                                variant="secondary"
-                            >
+                            <ActionButton onClick={setupEarlyAccess} variant="secondary">
                                 <Translation
                                     id={
                                         desktopUpdate.allowPrerelease

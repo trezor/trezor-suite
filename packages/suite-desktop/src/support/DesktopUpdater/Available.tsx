@@ -5,9 +5,11 @@ import ReactMarkdown from 'react-markdown';
 import { Button, H2, variables, Link } from '@trezor/components';
 import { Translation, Modal, FormattedDate } from '@suite-components';
 import { Row, LeftCol, RightCol, Divider } from './styles';
+import { useActions } from '@suite-hooks';
 
 import { getReleaseNotes, getReleaseUrl } from '@suite/services/github';
-import { UpdateInfo } from '@suite-types/desktop';
+import type { UpdateInfo } from '@suite-types/desktop';
+import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
 const GreenH2 = styled(H2)`
     text-align: left;
@@ -90,6 +92,8 @@ const Available = ({ hideWindow, latest }: Props) => {
         loading: false,
         version: undefined,
         notes: undefined,
+    const { download } = useActions({
+        download: desktopUpdateActions.download,
     });
 
     useEffect(() => {
@@ -123,7 +127,10 @@ const Available = ({ hideWindow, latest }: Props) => {
         }
     }, [latest, releaseNotes]);
 
-    const downloadUpdate = useCallback(() => window.desktopApi!.downloadUpdate(), []);
+    const downloadUpdate = useCallback(() => {
+        download();
+        window.desktopApi!.downloadUpdate();
+    }, [download]);
 
     return (
         <Modal

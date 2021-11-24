@@ -9,6 +9,7 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.CHECKING }
     | { type: typeof DESKTOP_UPDATE.AVAILABLE; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload?: UpdateInfo }
+    | { type: typeof DESKTOP_UPDATE.DOWNLOAD }
     | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: Partial<UpdateProgress> }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow }
@@ -35,6 +36,10 @@ export const notAvailable = (info: UpdateInfo) => (dispatch: Dispatch) => {
         payload: info,
     });
 };
+
+export const download = (): DesktopUpdateAction => ({
+    type: DESKTOP_UPDATE.DOWNLOAD,
+});
 
 export const downloading = (progress: Partial<UpdateProgress>): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.DOWNLOADING,
