@@ -465,7 +465,15 @@ const Settings = () => {
                 <Section title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}>
                     <SectionItem data-test="@settings/experimenta-features">
                         <TextColumn
-                            title={<Translation id="TR_EARLY_ACCESS" />}
+                            title={
+                                <Translation
+                                    id={
+                                        desktopUpdate.allowPrerelease
+                                            ? 'TR_EARLY_ACCESS_ENABLED'
+                                            : 'TR_EARLY_ACCESS'
+                                    }
+                                />
+                            }
                             description={
                                 <Version>
                                     <Translation

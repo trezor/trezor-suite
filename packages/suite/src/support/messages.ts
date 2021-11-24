@@ -4914,39 +4914,50 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
-        defaultMessage: 'Early access program',
+        defaultMessage: 'Early Access Program',
+    },
+    TR_EARLY_ACCESS_ENABLED: {
+        id: 'TR_EARLY_ACCESS_ENABLED',
+        defaultMessage: 'Early Access Program enabled',
+        description: 'Title in settings if Early Access is active.',
     },
     TR_EARLY_ACCESS_MENU: {
         id: 'TR_EARLY_ACCESS_MENU',
-        defaultMessage: 'Early access',
+        defaultMessage: 'Early Access Program',
+        description: 'Shown on small screen only next to the icon in menu.',
     },
     TR_EARLY_ACCESS_MENU_STATUS: {
         id: 'TR_EARLY_ACCESS_MENU_STATUS',
-        defaultMessage: 'Suite in Early access mode',
+        defaultMessage: 'Early Access Program enabled',
     },
     TR_EARLY_ACCESS_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_DESCRIPTION',
-        defaultMessage: 'Enable to get cool features earlier.',
+        defaultMessage:
+            'Join to test the latest product features before we release them to all Trezor users.',
     },
     TR_EARLY_ACCESS_DESCRIPTION_ENABLED: {
         id: 'TR_EARLY_ACCESS_DESCRIPTION_ENABLED',
-        defaultMessage: 'Disable if you no longer want priority access to new features.',
+        defaultMessage: 'Leave if you no longer want priority access to new features.',
     },
     TR_EARLY_ACCESS_ENABLE: {
         id: 'TR_EARLY_ACCESS_ENABLE',
-        defaultMessage: 'Enable',
+        defaultMessage: 'Join',
+    },
+    TR_EARLY_ACCESS_STAY_IN: {
+        id: 'TR_EARLY_ACCESS_STAY_IN',
+        defaultMessage: 'Stay in',
     },
     TR_EARLY_ACCESS_DISABLE: {
         id: 'TR_EARLY_ACCESS_DISABLE',
-        defaultMessage: 'Disable',
+        defaultMessage: 'Leave',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM',
-        defaultMessage: 'Enable early access',
+        defaultMessage: 'Join the Program',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE',
-        defaultMessage: 'Get cooler features sooner',
+        defaultMessage: 'Try out the latest product features before release to the general public.',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION',
@@ -4954,7 +4965,8 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK',
-        defaultMessage: 'I understand this shit is experimental FIXME',
+        defaultMessage:
+            'I understand this allows me to test pre-release software, which may contain errors that affect the normal operation of Suite.',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP',
@@ -4962,11 +4974,11 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_JOINED_TITLE: {
         id: 'TR_EARLY_ACCESS_JOINED_TITLE',
-        defaultMessage: 'You are in bby!',
+        defaultMessage: 'Early Access Program enabled!',
     },
     TR_EARLY_ACCESS_JOINED_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_JOINED_DESCRIPTION',
-        defaultMessage: 'You could either check for beta update now or on next lauch.',
+        defaultMessage: 'You can either check for beta updates now or on the next launch.',
     },
     TR_EARLY_ACCESS_SKIP_CHECK: {
         id: 'TR_EARLY_ACCESS_SKIP_CHECK',
@@ -4978,16 +4990,19 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_LEFT_TITLE: {
         id: 'TR_EARLY_ACCESS_LEFT_TITLE',
-        defaultMessage: 'Beta releases are no longer offered.',
+        defaultMessage:
+            "You've left the Early Access Program. \nBeta releases are no longer offered.",
     },
     TR_EARLY_ACCESS_LEFT_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_LEFT_DESCRIPTION',
         defaultMessage:
-            'To downgrade to the latest stable release immediately, please download it and reinstall the app.',
+            'To downgrade to the latest stable release of Suite, please click "Download stable" and reinstall the app.',
     },
     TR_EARLY_ACCESS_SKIP_REINSTALL: {
         id: 'TR_EARLY_ACCESS_SKIP_REINSTALL',
-        defaultMessage: 'Cancel',
+        defaultMessage: 'Close',
+        description:
+            "User already left EAP, just don't want to download latest stable release now.",
     },
     TR_EARLY_ACCESS_REINSTALL: {
         id: 'TR_EARLY_ACCESS_REINSTALL',
@@ -4995,11 +5010,11 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE: {
         id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE',
-        defaultMessage: 'Really disable early access program?',
+        defaultMessage: 'Are you sure you want to leave the Early Access Program?',
     },
     TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION',
-        defaultMessage: 'Stop looking for beta releases.',
+        defaultMessage: 'Click "Leave" to stop looking for beta releases',
     },
     TR_EXPORT_TO_FILE: {
         id: 'TR_EXPORT_TO_FILE',

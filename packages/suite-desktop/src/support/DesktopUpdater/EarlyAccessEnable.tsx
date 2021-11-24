@@ -23,6 +23,9 @@ const DescriptionTextWrapper = styled.div`
     align-items: flex-start;
     justify-content: space-around;
     margin-left: 20px;
+// Checkbox has 80% max-width by default but it's nicer full width here.
+const Checkbox = styled(CheckItem)`
+    max-width: 100%;
 `;
 
 interface Props {
@@ -78,7 +81,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
                 </DescriptionTextWrapper>
             </DescriptionWrapper>
             <Divider />
-            <CheckItem
+            <Checkbox
                 data-test="@settings/early-access-confirm-check"
                 title={
                     <P weight="bold">
