@@ -1,13 +1,18 @@
 {
   "name": "trezor-link",
-  "version": "1.7.3",
-  "description": "Trezor Link for browser",
-  "main": "lib/index.js",
+  "version": "2.0.0-beta.6",
+  "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
+  "main": "./lib/index.js",
+  "files": [
+    "lib/"
+  ],
   "scripts": {
-    "type-check": "flow check src",
     "lint": "eslint src",
-    "build:lib": "./scripts/build-lib.sh",
-    "publish:lib": "./scripts/publish-lib.sh"
+    "type-check": "tsc --project tsconfig.json",
+    "build:lib": "rm -rf lib && tsc --p ./tsconfig.lib.json",
+    "publish:lib": "./scripts/publish-lib.sh",
+    "test:unit": "jest",
+    "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration"
   },
   "repository": "https://github.com/trezor/trezor-link.git",
   "author": "Karel Bílek <kb@karelbilek.com>",
@@ -17,32 +22,34 @@
   },
   "homepage": "https://github.com/trezor/trezor-link",
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-proposal-decorators": "^7.12.1",
-    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
-    "@babel/plugin-transform-runtime": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-flow": "^7.12.1",
-    "babel-eslint": "^10.1.0",
-    "babel-plugin-add-module-exports": "^1.0.4",
-    "babel-plugin-inline-version": "^1.0.2",
-    "bump-version": "^0.5.0",
-    "eslint": "^7.16.0",
-    "eslint-plugin-flowtype": "^5.2.0",
-    "eslint-plugin-promise": "^4.2.1",
+    "@babel/plugin-transform-runtime": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@types/bytebuffer": "^5.0.42",
+    "@types/jest": "^27.0.1",
+    "@types/w3c-web-usb": "^1.0.5",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "babel-jest": "^27.2.4",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-standard": "^5.0.0",
-    "flow-bin": "0.78.0"
+    "jest": "^27.2.4",
+    "node-fetch": "^3.1.0",
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.2"
   },
   "dependencies": {
-    "bigi": "^1.4.1",
-    "ecurve": "^1.0.3",
+    "bytebuffer": "^5.0.1",
     "json-stable-stringify": "^1.0.1",
-    "node-fetch": "^2.6.1",
-    "object.values": "^1.1.2",
-    "protobufjs-old-fixed-webpack": "3.8.5",
-    "semver-compare": "^1.0.0",
-    "whatwg-fetch": "^3.5.0"
+    "long": "^4.0.0",
+    "protobufjs": "^6.11.2"
   }
 }
