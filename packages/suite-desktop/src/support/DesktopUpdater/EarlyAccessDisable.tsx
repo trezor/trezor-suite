@@ -36,7 +36,7 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
             <ButtonWrapper>
                 <LeftCol>
                     <Button onClick={hideWindow} variant="secondary" fullWidth>
-                        <Translation id="TR_CANCEL" />
+                        <Translation id="TR_EARLY_ACCESS_STAY_IN" />
                     </Button>
                 </LeftCol>
                 <RightCol>
