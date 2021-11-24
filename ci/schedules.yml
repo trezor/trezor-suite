@@ -23,10 +23,5 @@ misc:
     - schedules
   script:
     - yarn install --cache-folder .yarn --prefer-offline
-    # tests whether we have not included same svgs multiple times (it is hard to see from code)
     - yarn workspace @trezor/suite-data test-same-svgs
-    # some random script pretending it checks something (actually it should use part of lighthouse.js for vulnerabilities checking)
-    # but it should probably be used in more elaborate way. Or we may use lighthouse directly
-    - yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
-    # todo: make it work with messages.ts
-    # - yarn workspace @trezor/suite translations:unused
+    - yarn workspace @trezor/suite translations:list-duplicates

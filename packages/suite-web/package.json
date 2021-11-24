@@ -27,7 +27,6 @@
         "@types/react-dom": "^17.0.0",
         "@types/react-helmet": "^6.1.0",
         "@types/react-redux": "^7.1.7",
-        "is-website-vulnerable": "^1.14.6",
         "@types/react-router": "^5.1.11",
         "@types/react-router-dom": "^5.1.7"
     }
