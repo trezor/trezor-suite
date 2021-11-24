@@ -13,10 +13,6 @@ const Wrapper = styled.div`
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 54px 20px;
     }
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 54px 20px;
-    }
 `;
 
 const Content = styled.div`
