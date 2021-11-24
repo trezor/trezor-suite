@@ -65,7 +65,7 @@ const TransactionHeading = ({
     onClick,
 }: Props) => {
     const theme = useTheme();
-    const isTokenTransaction = transaction.tokens.length > 0;
+    const isTokenTransaction = transaction.tokens.length;
     const target = transaction.targets[0];
     const transfer = transaction.tokens[0];
     const symbol = !isTokenTransaction
@@ -107,27 +107,29 @@ const TransactionHeading = ({
     let heading = null;
     // const symbol = transaction.symbol.toUpperCase();
 
+    // We have types: sent, recv, self, failed. We miss approve, swap, ...
+    const headingTxType = isTokenTransaction ? transfer.type : transaction.type;
     if (isTxUnknown(transaction)) {
         heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
-    } else if (transaction.type === 'sent') {
+    } else if (headingTxType === 'sent') {
         heading = isPending ? (
             <Translation id="TR_SENDING_TRANSACTION" values={{ symbol }} />
         ) : (
             <Translation id="TR_SENT_TRANSACTION" values={{ symbol }} />
         );
-    } else if (transaction.type === 'recv') {
+    } else if (headingTxType === 'recv') {
         heading = isPending ? (
             <Translation id="TR_RECEIVING_TRANSACTION" values={{ symbol }} />
         ) : (
             <Translation id="TR_RECEIVED_TRANSACTION" values={{ symbol }} />
         );
-    } else if (transaction.type === 'self') {
+    } else if (headingTxType === 'self') {
         heading = isPending ? (
             <Translation id="TR_SENDING_TO_MYSELF_TRANSACTION" values={{ symbol }} />
         ) : (
             <Translation id="TR_SENT_TO_MYSELF_TRANSACTION" values={{ symbol }} />
         );
-    } else if (transaction.type === 'failed') {
+    } else if (headingTxType === 'failed') {
         heading = <Translation id="TR_FAILED_TRANSACTION" />;
     } else {
         heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
