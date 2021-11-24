@@ -12,12 +12,17 @@ import NotificationsDropdown from './components/NotificationsDropdown';
 import SettingsDropdown from './components/SettingsDropdown';
 import TorDropdown from './components/TorDropdown';
 import EarlyAccessDropdown from './components/EarlyAccessDropdown';
+import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     width: 288px; /* same as DeviceSelector because we need menu in the exact center  */
     justify-content: flex-end;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        margin-left: 24px;
+    }
 `;
 
 const MobileWrapper = styled.div`

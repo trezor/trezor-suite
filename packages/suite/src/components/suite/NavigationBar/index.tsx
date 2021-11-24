@@ -8,13 +8,13 @@ import { useLayoutSize } from '@suite-hooks';
 
 const StyledDeviceSelector = styled(DeviceSelector)``;
 
-const StyledNavigationBar = styled.div<{ isMobileLayout: boolean }>`
+const Wrapper = styled.div`
     display: flex;
     width: 100%;
     min-height: 80px;
     flex: 0;
     z-index: ${variables.Z_INDEX.NAVIGATION_BAR};
-    padding: ${props => (!props.isMobileLayout ? '6px 32px 6px 8px' : '6px 8px')};
+    padding: 6px 8px;
     align-items: center;
     background: ${props => props.theme.BG_WHITE};
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
@@ -23,6 +23,10 @@ const StyledNavigationBar = styled.div<{ isMobileLayout: boolean }>`
         /* apply same device selector's hover styles on hover anywhere in navigation panel */
         border-radius: 4px;
         box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    }
+
+    @media screen and (min-width: ${variables.SCREEN_SIZE.LG}) {
+        padding: 6px 32px 6px 8px;
     }
 `;
 
@@ -60,7 +64,7 @@ const NavigationBar = () => {
     if (isMobileLayout) {
         return (
             <>
-                <StyledNavigationBar isMobileLayout={isMobileLayout}>
+                <Wrapper>
                     <StyledDeviceSelector />
                     <HamburgerWrapper>
                         <Icon
@@ -70,7 +74,7 @@ const NavigationBar = () => {
                             color={theme.TYPE_DARK_GREY}
                         />
                     </HamburgerWrapper>
-                </StyledNavigationBar>
+                </Wrapper>
                 {opened && (
                     <MobileNavigationWrapper>
                         <ExpandedMobileNavigation>
@@ -90,11 +94,11 @@ const NavigationBar = () => {
     }
 
     return (
-        <StyledNavigationBar isMobileLayout={isMobileLayout}>
+        <Wrapper>
             <StyledDeviceSelector />
             <MainNavigation />
             <NavigationActions />
-        </StyledNavigationBar>
+        </Wrapper>
     );
 };
 
