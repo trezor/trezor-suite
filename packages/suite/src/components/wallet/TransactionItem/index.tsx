@@ -129,8 +129,7 @@ const TransactionItem = React.memo((props: Props) => {
         !isUnknown &&
         ((!isTokenTransaction && targets.length === 1) ||
             (isTokenTransaction && tokens.length === 1));
-    const showFeeRow =
-        !isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0';
+    const showFeeRow = !isUnknown && type !== 'recv' && transaction.fee !== '0';
     const [txItemIsHovered, setTxItemIsHovered] = useState(false);
     const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
 
