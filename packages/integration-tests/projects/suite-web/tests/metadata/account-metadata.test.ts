@@ -5,8 +5,10 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
 // fixture contains number of request that given provider needs go through this test scenario
 const fixtures = [
-    { provider: 'dropbox', numberOfRequests: [27, 28] },
-    { provider: 'google', numberOfRequests: [10, 12] },
+    // todo: [27, 28] when taproot firmware (2.4.3) is in suite
+    { provider: 'dropbox', numberOfRequests: [25, 26] },
+    // todo: [10, 12] when taproot firmware (2.4.3) is in suite
+    { provider: 'google', numberOfRequests: [9, 12] },
 ] as const;
 
 describe(`Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
@@ -97,10 +99,14 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             //                      in future there should be mocked discovery
             //                      if it shoots somebody in leg, just remove this assertion...
             // - why asserting it:  just to make sure that metadata don't send unnecessary amount of request
-            cy.wait(2000);
-            cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
-                expect(requests).to.have.length(f.numberOfRequests[0]);
-            });
+            cy.waitUntil(() =>
+                cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
+                    cy.log(
+                        `requests.length ${requests.length} of expected ${f.numberOfRequests[0]}`,
+                    );
+                    expect(requests.length).equal(f.numberOfRequests[0]);
+                }),
+            );
 
             // test switching between accounts. make sure that "success" button does not remain
             // visible when switching between accounts
@@ -116,15 +122,15 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             // go to another route that triggers discovery and check whether there are any requests to metadata providers
             cy.getTestElement('@suite/menu/suite-index').click();
             cy.getTestElement('@dashboard/graph');
-            // using wait is almost always anti-pattern but I guess we can live with it
-            // problem is that cypress built in retry ability can't be used here when
-            // retrieving number of requests from node.js
-            cy.wait(2000);
-            cy.getTestElement('@dashboard/graph');
 
-            cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
-                expect(requests).to.have.length(f.numberOfRequests[1]);
-            });
+            cy.waitUntil(() =>
+                cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
+                    cy.log(
+                        `requests.length ${requests.length} of expected ${f.numberOfRequests[1]}`,
+                    );
+                    expect(requests.length).equal(f.numberOfRequests[1]);
+                }),
+            );
         });
     });
 });

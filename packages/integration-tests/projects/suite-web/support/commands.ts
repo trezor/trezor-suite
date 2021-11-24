@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import TrezorConnect, { Device, Features } from 'trezor-connect';
+import 'cypress-wait-until';
 import { Store, Action } from '@suite-types';
 
 import {

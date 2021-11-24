@@ -3,7 +3,7 @@
     "compilerOptions": {
         "noEmit": false,
         "isolatedModules": false,
-        "types": ["trezor-connect", "cypress"],
+        "types": ["trezor-connect", "cypress", "cypress-wait-until"],
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
