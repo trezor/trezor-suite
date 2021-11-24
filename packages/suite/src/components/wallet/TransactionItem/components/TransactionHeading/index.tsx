@@ -93,14 +93,8 @@ const TransactionHeading = ({
     }
 
     if (transaction.type === 'failed') {
-        amount = (
-            <CryptoAmount>
-                <StyledHiddenPlaceholder>
-                    <Sign value="neg" />
-                    {transaction.fee} {symbol}
-                </StyledHiddenPlaceholder>
-            </CryptoAmount>
-        );
+        // only fee was spent, which is shown in fee row
+        amount = null;
     }
 
     // TODO: intl once the structure and all combinations are decided
