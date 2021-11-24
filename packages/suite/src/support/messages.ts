@@ -4976,14 +4976,30 @@ export default defineMessages({
         id: 'TR_EARLY_ACCESS_CHECK_UPDATE',
         defaultMessage: 'Check for updates now',
     },
+    TR_EARLY_ACCESS_LEFT_TITLE: {
+        id: 'TR_EARLY_ACCESS_LEFT_TITLE',
+        defaultMessage: 'Beta releases are no longer offered.',
+    },
+    TR_EARLY_ACCESS_LEFT_DESCRIPTION: {
+        id: 'TR_EARLY_ACCESS_LEFT_DESCRIPTION',
+        defaultMessage:
+            'To downgrade to the latest stable release immediately, please download it and reinstall the app.',
+    },
+    TR_EARLY_ACCESS_SKIP_REINSTALL: {
+        id: 'TR_EARLY_ACCESS_SKIP_REINSTALL',
+        defaultMessage: 'Cancel',
+    },
+    TR_EARLY_ACCESS_REINSTALL: {
+        id: 'TR_EARLY_ACCESS_REINSTALL',
+        defaultMessage: 'Download stable',
+    },
     TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE: {
         id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE',
         defaultMessage: 'Really disable early access program?',
     },
     TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION',
-        defaultMessage:
-            'We will stop looking for beta releases. To downgrade to latest stable release immediately, please reinstall the app.',
+        defaultMessage: 'Stop looking for beta releases.',
     },
     TR_EXPORT_TO_FILE: {
         id: 'TR_EXPORT_TO_FILE',
