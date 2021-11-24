@@ -1311,7 +1311,6 @@
   "TR_UPDATE_MODAL_INSTALL_LATER": "Mise à jour au prochain lancement",
   "TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER": "Voulez-vous installer la mise à jour maintenant?",
   "TR_UPDATE_MODAL_RESTART_NEEDED": "Cela nécessite un redémarrage de Suite.",
-  "TR_UPDATE_MODAL_SKIP_THIS_VERSION": "Ignorer",
   "TR_UPDATE_MODAL_START_DOWNLOAD": "Lancer la mise à jour",
   "TR_UPDATE_MODAL_UPDATE_DOWNLOADED": "Mise à jour téléchargée",
   "TR_UPLOAD_IMAGE": "Télécharger une image",

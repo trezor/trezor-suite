@@ -33,6 +33,7 @@
   "TR_CONTINUE": "Fortsätt",
   "TR_COPY_TO_CLIPBOARD": "Kopiera till urklipp",
   "TR_CURRENCY": "Valuta",
+  "TR_DATE_DAY_LONG": "1 dag",
   "TR_DEVICE_FIRMWARE_VERSION": "Din version: {firmware}.",
   "TR_DEVICE_IS_USED_IN_OTHER_WINDOW_BUTTON": "Fortsätt",
   "TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL": "Redigera etikett",

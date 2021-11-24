@@ -48,6 +48,11 @@
   "EVENT_DEVICE_CONNECT_UNACQUIRED": "Enhed {label} forbundet",
   "EVENT_WALLET_CREATED": "{walletLabel} oprettet",
   "FEE": "Gebyr",
+  "FEE_LEVEL_CUSTOM": "Brugerdefineret",
+  "FEE_LEVEL_ECONOMY": "Økonomi",
+  "FEE_LEVEL_HIGH": "Høj",
+  "FEE_LEVEL_LOW": "Lav",
+  "FEE_LEVEL_NORMAL": "Normal",
   "FEE_NEEDS_UPDATE": "Gebyrniveauet er forældet",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Sørg for, at du ikke holder nogen knapper nede, mens du tilslutter din enhed.",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Sørg for, at du ikke holder nogen knapper nede, mens du tilslutter din enhed.",
@@ -161,5 +166,12 @@
   "TOAST_AUTH_FAILED": "Godkendelsesfejl i %s",
   "TOAST_AUTO_UPDATER_ERROR": "Auto updater fejl ({state})",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "Ny version ({version}) installeret.",
-  "TOAST_AUTO_UPDATER_NO_NEW": "Ingen nye opdateringer tilgængelige"
+  "TOAST_AUTO_UPDATER_NO_NEW": "Ingen nye opdateringer tilgængelige",
+  "TR_DATE_DAY_LONG": "1 dag",
+  "TR_DATE_DAY_SHORT": "1D",
+  "TR_DATE_MONTH_LONG": "1 måned",
+  "TR_DATE_MONTH_SHORT": "1M",
+  "TR_DATE_WEEK_LONG": "1 uge",
+  "TR_DATE_WEEK_SHORT": "1W",
+  "TR_DATE_YEAR_LONG": "1 år"
 }
