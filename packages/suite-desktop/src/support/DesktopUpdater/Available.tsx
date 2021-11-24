@@ -80,6 +80,29 @@ type ReleaseState = {
     loading: boolean;
     version?: string;
     notes?: string;
+    prerelease: boolean;
+};
+
+interface VersionNameProps {
+    latestVersion?: string;
+    prerelease: boolean;
+}
+
+const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string => {
+    if (!latestVersion) {
+        // fallback for undefined version
+        return '';
+    }
+    if (!prerelease) {
+        // regular case
+        return latestVersion;
+    }
+    if (!latestVersion.includes('-')) {
+        // add beta label for pre-releases, but prevent versions like '21.10.1-alpha-beta'
+        return `${latestVersion}-beta`;
+    }
+    // fallback for pre-release versions already including some pre-release components
+    return latestVersion;
 };
 
 interface Props {
@@ -92,6 +115,9 @@ const Available = ({ hideWindow, latest }: Props) => {
         loading: false,
         version: undefined,
         notes: undefined,
+        prerelease: false,
+    });
+
     const { download } = useActions({
         download: desktopUpdateActions.download,
     });
@@ -104,6 +130,7 @@ const Available = ({ hideWindow, latest }: Props) => {
             });
 
             let notes;
+            let prerelease = false;
             const version = latest?.version;
 
             try {
@@ -113,11 +140,13 @@ const Available = ({ hideWindow, latest }: Props) => {
 
                 const release = await getReleaseNotes(version);
                 notes = release?.body;
+                prerelease = !!release?.prerelease;
             } finally {
                 setReleaseNotes({
                     loading: false,
                     version,
                     notes,
+                    prerelease,
                 });
             }
         };
@@ -141,7 +170,12 @@ const Available = ({ hideWindow, latest }: Props) => {
             <GreenH2>
                 <Translation
                     id="TR_VERSION_HAS_BEEN_RELEASED"
-                    values={{ version: latest?.version }}
+                    values={{
+                        version: getVersionName({
+                            latestVersion: latest?.version,
+                            prerelease: !!releaseNotes?.prerelease,
+                        }),
+                    }}
                 />
             </GreenH2>
 
