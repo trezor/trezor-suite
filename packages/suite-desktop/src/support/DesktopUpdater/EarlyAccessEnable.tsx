@@ -42,7 +42,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
     return enabled ? (
         <Modal>
             <ImageWrapper>
-                <Image width={160} height={160} image="UNI_SUCCESS" />
+                <Image image="UNI_SUCCESS" />
             </ImageWrapper>
             <Title>
                 <Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />
