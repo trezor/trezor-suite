@@ -125,10 +125,7 @@ const TransactionItem = React.memo((props: Props) => {
         ? tokens.length - DEFAULT_LIMIT - limit
         : targets.length - DEFAULT_LIMIT - limit;
     const useFiatValues = !isTestnet(transaction.symbol);
-    const hasSingleTargetOrTransfer =
-        !isUnknown &&
-        ((!isTokenTransaction && targets.length === 1) ||
-            (isTokenTransaction && tokens.length === 1));
+    const hasSingleTargetOrTransfer = !isUnknown && targets.length + tokens.length === 1;
     const showFeeRow = !isUnknown && type !== 'recv' && transaction.fee !== '0';
     const [txItemIsHovered, setTxItemIsHovered] = useState(false);
     const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
@@ -187,7 +184,7 @@ const TransactionItem = React.memo((props: Props) => {
                         <TransactionTimestamp transaction={transaction} />
                     </TimestampWrapper>
                     <TargetsWrapper>
-                        {!isUnknown && type !== 'failed' && !isTokenTransaction && (
+                        {!isUnknown && type !== 'failed' && previewTargets.length ? (
                             <>
                                 {previewTargets.map((t, i) => (
                                     // render first n targets, n = DEFAULT_LIMIT
@@ -227,9 +224,9 @@ const TransactionItem = React.memo((props: Props) => {
                                             ))}
                                 </AnimatePresence>
                             </>
-                        )}
+                        ) : null}
 
-                        {!isUnknown && isTokenTransaction && (
+                        {!isUnknown && tokens.length ? (
                             <>
                                 {tokens.slice(0, DEFAULT_LIMIT).map((t, i) => (
                                     <TokenTransfer
@@ -256,7 +253,7 @@ const TransactionItem = React.memo((props: Props) => {
                                             ))}
                                 </AnimatePresence>
                             </>
-                        )}
+                        ) : null}
 
                         {showFeeRow && (
                             <StyledFeeRow
