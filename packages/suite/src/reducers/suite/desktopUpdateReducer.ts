@@ -63,8 +63,10 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                 draft.state = UpdateState.NotAvailable;
                 draft.latest = action.payload;
                 break;
-            case DESKTOP_UPDATE.DOWNLOADING:
+            case DESKTOP_UPDATE.DOWNLOAD:
                 draft.state = UpdateState.Downloading;
+                break;
+            case DESKTOP_UPDATE.DOWNLOADING:
                 draft.progress = action.payload;
                 break;
             case DESKTOP_UPDATE.READY:

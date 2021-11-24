@@ -232,9 +232,13 @@ const init = ({ mainWindow, store }: Dependencies) => {
     });
 
     ipcMain.on('update/cancel', () => {
-        logger.info('auto-updater', 'Cancel update request');
-        mainWindow.webContents.send('update/available', latestVersion);
-        updateCancellationToken.cancel();
+        logger.info(
+            'auto-updater',
+            `Cancel update request (in progress: ${b2t(!!updateCancellationToken)})`,
+        );
+        if (updateCancellationToken) {
+            updateCancellationToken.cancel();
+        }
     });
 
     ipcMain.on('update/allow-prerelease', (_, value = true) => {
