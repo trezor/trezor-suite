@@ -72,7 +72,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC: {
         defaultMessage:
-            'It’s so empty here. Can’t even describe the emptiness I’m feelin’ here… You can either add new account (that will enable selected coin) or enable any coin in Settings.',
+            'All coins are currently disabled in Settings. Please add a new account or enable some coins in Settings. ',
         id: 'TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC',
     },
     TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR: {
@@ -3618,7 +3618,7 @@ export default defineMessages({
     },
     TR_WIPE_DEVICE_HEADING: {
         id: 'TR_WIPE_DEVICE_HEADING',
-        defaultMessage: 'Before you wipe your device..',
+        defaultMessage: 'Before you wipe your device...',
     },
     TR_WIPE_DEVICE_TEXT: {
         id: 'TR_WIPE_DEVICE_TEXT',
@@ -4849,7 +4849,7 @@ export default defineMessages({
     BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION: {
         id: 'BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION',
         defaultMessage:
-            'Connected device as backup already finished. You should have a recovery seed written down and hidden in a safe place.',
+            'Connected device has already been backed up. You should have a recovery seed written down and hidden in a safe place.',
     },
     BACKUP_BACKUP_ALREADY_FAILED_HEADING: {
         id: 'BACKUP_BACKUP_ALREADY_FAILED_HEADING',
@@ -5475,7 +5475,7 @@ export default defineMessages({
     },
     TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD',
-        defaultMessage: 'Download on Trezor.io',
+        defaultMessage: 'Download on github.com',
     },
     TR_CUSTOM_FIRMWARE_BUTTON_INSTALL: {
         id: 'TR_CUSTOM_FIRMWARE_BUTTON_INSTALL',
@@ -5728,7 +5728,7 @@ export default defineMessages({
     FIRMWARE_CONNECT_IN_NORMAL_MODEL_2: {
         id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_2',
         defaultMessage:
-            'Please make sure you are not holding any buttons while connecting your device.',
+            'Please make sure you are not swiping the touchscreen while connecting your device.',
     },
     FIRMWARE_UPDATE_TO_VERSION: {
         id: 'FIRMWARE_UPDATE_TO_VERSION',
