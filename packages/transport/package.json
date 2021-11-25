@@ -1,6 +1,6 @@
 {
-  "name": "trezor-link",
-  "version": "2.0.0-beta.6",
+  "name": "@trezor/transport",
+  "version": "1.0.0",
   "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
   "main": "./lib/index.js",
   "files": [
