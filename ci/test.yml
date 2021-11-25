@@ -182,3 +182,13 @@ rollout test integration manual:
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/rollout test:integration
+
+
+transport test integration:
+  stage: integration testing
+  script:
+    - yarn
+    - yarn build:lib
+    - git submodule add --force https://github.com/trezor/trezor-common.git trezor-common
+    - yarn pbjs -t json -p ./trezor-common/protob -o e2e/messages.json --keep-case messages-binance.proto messages-bitcoin.proto messages-bootloader.proto messages-cardano.proto messages-common.proto messages-crypto.proto messages-debug.proto messages-eos.proto messages-ethereum.proto messages-management.proto messages-monero.proto messages-nem.proto messages-ripple.proto messages-stellar.proto messages-tezos.proto messages-webauthn.proto messages.proto
+    - ./e2e/run.sh -s "yarn example:bridge"
