@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { useActions, useSelector } from '@suite-hooks';
-import { RadioButton, Button, H2, P, Warning } from '@trezor/components';
+import { RadioButton, Button, H3, P, Warning } from '@trezor/components';
 import { Translation, Modal, ModalProps } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import styled from 'styled-components';
 
 const Buttons = styled.div`
     display: flex;
+    justify-content: center;
     width: 100%;
+    margin-bottom: 40px;
+`;
+
+const StyledButton = styled(Button)`
+    min-width: 230px;
 `;
 
 const OptionsWrapper = styled.div`
     width: 100%;
     text-align: left;
-    margin: 20px 0 50px;
+    margin: 20px 0 40px;
     & > * + * {
-        margin-top: 50px;
+        margin-top: 40px;
     }
 `;
 
@@ -26,7 +32,7 @@ const RadioButtonInner = styled.div`
 `;
 
 const WarningWrapper = styled.div`
-    margin-bottom: 18px;
+    margin: 18px 0;
 `;
 
 /**
@@ -42,7 +48,7 @@ const SafetyChecks = (props: ModalProps) => {
 
     const ApplyButton = (
         <Buttons>
-            <Button
+            <StyledButton
                 onClick={() => {
                     applySettings({ safety_checks: level });
                 }}
@@ -51,7 +57,7 @@ const SafetyChecks = (props: ModalProps) => {
                 data-test="@safety-checks-apply"
             >
                 <Translation id="TR_CONFIRM" />
-            </Button>
+            </StyledButton>
         </Buttons>
     );
 
@@ -69,9 +75,9 @@ const SafetyChecks = (props: ModalProps) => {
                     data-test="@radio-button-strict"
                 >
                     <RadioButtonInner>
-                        <H2>
+                        <H3>
                             <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL" />
-                        </H2>
+                        </H3>
                         <P size="small">
                             <Translation id="TR_SAFETY_CHECKS_STRICT_LEVEL_DESC" />
                         </P>
@@ -84,9 +90,9 @@ const SafetyChecks = (props: ModalProps) => {
                     data-test="@radio-button-prompt"
                 >
                     <RadioButtonInner>
-                        <H2>
+                        <H3>
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL" />
-                        </H2>
+                        </H3>
                         <WarningWrapper>
                             <Warning>
                                 <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
