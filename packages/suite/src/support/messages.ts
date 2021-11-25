@@ -386,7 +386,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_DETAIL_ERROR_SUPPORT: {
         defaultMessage: "Open partner's support site",
-        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
+        id: 'TR_EXCHANGE_DETAIL_ERROR_SUPPORT',
     },
     TR_EXCHANGE_DETAIL_ERROR_BUTTON: {
         defaultMessage: 'Back to Account',
@@ -750,7 +750,7 @@ export default defineMessages({
     },
     TR_SELL_DETAIL_ERROR_SUPPORT: {
         defaultMessage: "Open partner's support site",
-        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
+        id: 'TR_SELL_DETAIL_ERROR_SUPPORT',
     },
     TR_SELL_DETAIL_ERROR_BUTTON: {
         defaultMessage: 'Back to Account',
