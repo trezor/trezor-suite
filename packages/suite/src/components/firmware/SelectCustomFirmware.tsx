@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, colors, variables } from '@trezor/components';
+import { Button, colors, variables, H3 } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
 import { DropZone } from '@suite-components/DropZone';
 import { FIRMWARE_BINARIES_URL } from '@suite-constants/urls';
@@ -14,7 +14,7 @@ const StepContainer = styled.div`
     }
 `;
 
-const StepTitle = styled.h2`
+const StepTitle = styled(H3)`
     line-height: 40px;
     text-align: left;
     color: ${props => props.theme.TYPE_DARK_GREY};
