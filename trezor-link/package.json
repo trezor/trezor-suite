@@ -1,0 +1,55 @@
+{
+  "name": "trezor-link",
+  "version": "2.0.0-beta.6",
+  "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
+  "main": "./lib/index.js",
+  "files": [
+    "lib/"
+  ],
+  "scripts": {
+    "lint": "eslint src",
+    "type-check": "tsc --project tsconfig.json",
+    "build:lib": "rm -rf lib && tsc --p ./tsconfig.lib.json",
+    "publish:lib": "./scripts/publish-lib.sh",
+    "test:unit": "jest",
+    "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration"
+  },
+  "repository": "https://github.com/trezor/trezor-link.git",
+  "author": "Karel Bílek <kb@karelbilek.com>",
+  "license": "LGPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/trezor/trezor-link/issues"
+  },
+  "homepage": "https://github.com/trezor/trezor-link",
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@types/bytebuffer": "^5.0.42",
+    "@types/jest": "^27.0.1",
+    "@types/w3c-web-usb": "^1.0.5",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "babel-jest": "^27.2.4",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-standard": "^5.0.0",
+    "jest": "^27.2.4",
+    "node-fetch": "^3.1.0",
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "bytebuffer": "^5.0.1",
+    "json-stable-stringify": "^1.0.1",
+    "long": "^4.0.0",
+    "protobufjs": "^6.11.2"
+  }
+}
