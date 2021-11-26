@@ -28,6 +28,11 @@ const BoxWrapper = styled(
         padding-bottom: ${props => (props.variant === 'large' && props.expanded ? '40px' : '20px')};
     }
 
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
     ${props =>
         !props.nested &&
         css`

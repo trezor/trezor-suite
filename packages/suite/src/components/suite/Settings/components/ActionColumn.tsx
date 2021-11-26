@@ -10,17 +10,24 @@ export const ActionColumn = styled.div`
     justify-content: flex-end;
     flex: 1;
     flex-wrap: wrap;
+
+    @media (max-width: ${SCREEN_SIZE.SM}) {
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
 `;
 
-// found no better way how to style Input..
 const InputWrapper = styled.div`
     margin: 4px 0 4px 4px;
+    width: 170px;
+
     &:not(:first-child) {
         margin-left: 8px;
     }
-    width: 100%;
-    @media all and (min-width: ${SCREEN_SIZE.SM}) {
-        width: 170px;
+
+    @media (max-width: ${SCREEN_SIZE.SM}) {
+        margin: 0px 0 10px;
+        width: 100%;
     }
 `;
 
@@ -47,9 +54,14 @@ export const ActionButton = styled(Button)`
     margin: 4px 0 4px 4px;
     &:not(:first-child) {
         margin-left: 8px;
+
+        @media (max-width: ${SCREEN_SIZE.SM}) {
+            margin-left: 0;
+        }
     }
 
-    @media screen and (max-width: ${SCREEN_SIZE.SM}) {
+    @media (max-width: ${SCREEN_SIZE.SM}) {
         width: 100%;
+        margin: 0;
     }
 `;

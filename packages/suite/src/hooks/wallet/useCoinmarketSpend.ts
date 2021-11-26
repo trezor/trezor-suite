@@ -11,7 +11,7 @@ import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketC
 import * as notificationActions from '@suite-actions/notificationActions';
 import { FormState } from '@wallet-types/sendForm';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
-import { isDesktop } from '@suite/utils/suite/env';
+import { isDesktop } from '@suite-utils/env';
 import { useCompose } from './form/useCompose';
 import { useForm } from 'react-hook-form';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';

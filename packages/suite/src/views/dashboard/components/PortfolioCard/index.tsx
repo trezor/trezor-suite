@@ -22,7 +22,6 @@ const StyledCard = styled(Card)`
 `;
 
 const Body = styled.div`
-    display: flex;
     align-items: center;
     padding: 0px 20px;
     min-height: 329px;

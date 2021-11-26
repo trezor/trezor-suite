@@ -34,10 +34,12 @@ import { formatDurationStrict } from '@suite-utils/date';
 
 const RotationButton = styled(ActionButton)`
     min-width: 81px;
-    flex-basis: 45%;
+    flex-basis: auto;
 
-    @media screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-basis: auto;
+    &:not(:first-of-type) {
+        @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+            margin-top: 10px;
+        }
     }
 `;
 
@@ -66,6 +68,14 @@ const VersionTooltip = styled(Tooltip)`
 `;
 
 const VersionLink = styled.a``;
+
+const StyledActionButton = styled(ActionButton)`
+    &:not(:first-of-type) {
+        @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+            margin-top: 10px;
+        }
+    }
+`;
 
 const buildAutoLockOption = (seconds: number, locale?: Locale) => ({
     label: formatDurationStrict(seconds, locale),
@@ -445,7 +455,7 @@ const Settings = () => {
                         />
                         {/* only available for model T at the moment. It works quite well there */}
                         {features.major_version === 2 && (
-                            <ActionButton
+                            <StyledActionButton
                                 onClick={() => {
                                     if (fileInputElement.current) {
                                         fileInputElement.current.click();
@@ -459,10 +469,10 @@ const Settings = () => {
                                 variant="secondary"
                             >
                                 <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
-                            </ActionButton>
+                            </StyledActionButton>
                         )}
 
-                        <ActionButton
+                        <StyledActionButton
                             onClick={() => {
                                 openModal({
                                     type: 'device-background-gallery',
@@ -478,7 +488,7 @@ const Settings = () => {
                             variant="secondary"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
-                        </ActionButton>
+                        </StyledActionButton>
                     </ActionColumn>
                 </SectionItem>
                 {customHomescreen && homescreen.isValid(customHomescreen) && (

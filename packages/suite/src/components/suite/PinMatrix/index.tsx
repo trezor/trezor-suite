@@ -15,6 +15,10 @@ const Wrapper = styled.div`
     @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex-direction: column;
     }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 100%;
+    }
 `;
 
 const Col = styled.div`

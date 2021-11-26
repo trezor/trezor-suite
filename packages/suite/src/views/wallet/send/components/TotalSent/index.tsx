@@ -12,6 +12,10 @@ const StyledCard = styled(Card)`
     align-items: center;
     min-height: 86px;
     padding: 0 42px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0 20px;
+    }
 `;
 
 const Left = styled.div`

@@ -1,7 +1,7 @@
 import React from 'react';
 import TrezorLink from '@suite-components/TrezorLink';
 import { Translation } from '@suite-components/Translation';
-import { isWeb, isLinux } from '@suite-utils/env';
+import { isWeb, isLinux, isAndroid } from '@suite-utils/env';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
@@ -99,7 +99,7 @@ export const TROUBLESHOOTING_TIP_BRIDGE_USE = {
     key: 'bridge-use',
     heading: <Translation id="TR_TROUBLESHOOTING_TIP_BRIDGE_USE_TITLE" />,
     description: <BridgeUse />,
-    hide: !isWeb(),
+    hide: !isWeb() || isAndroid(),
 };
 
 export const TROUBLESHOOTING_TIP_CABLE = {
@@ -112,6 +112,7 @@ export const TROUBLESHOOTING_TIP_USB = {
     key: 'usbPort',
     heading: <Translation id="TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE" />,
     description: <Translation id="TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION" />,
+    hide: isAndroid(),
 };
 
 export const TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER = {

@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 import { Stack } from '@suite-components/Skeleton';
-import { Card } from '@trezor/components';
+import { Card, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useSelector, useActions } from '@suite-hooks';
@@ -30,6 +30,10 @@ const StyledCard = styled(Card)<{ isPending: boolean }>`
             border-left: 6px solid ${props => props.theme.TYPE_ORANGE};
             padding-left: 18px;
         `}
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0px 16px;
+    }
 `;
 
 const StyledSection = styled(Section)`

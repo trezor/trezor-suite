@@ -22,8 +22,6 @@ const Metadata = ({
     description = description || intl.formatMessage(messages.TR_SUITE_META_DESCRIPTION);
     return (
         <Helmet>
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-
             <title>{title}</title>
             <meta name="title" key="title" content={title} />
             <meta name="description" key="description" content={description} />

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
-import { Icon, useTheme, CoinLogo } from '@trezor/components';
+import { Icon, useTheme, CoinLogo, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount } from '@suite-components';
 import { getTitleForNetwork, formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { Account, Network } from '@wallet-types';
@@ -20,6 +20,10 @@ const Wrapper = styled.div`
     width: 225px;
     justify-content: flex-start;
     align-items: center;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 100%;
+    }
 `;
 
 const SummaryHead = styled.div`

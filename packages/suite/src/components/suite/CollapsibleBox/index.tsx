@@ -45,6 +45,10 @@ const Header = styled.div<Pick<Props, 'variant' | 'headerJustifyContent'>>`
         props.variant === 'large' &&
         css`
             padding: 24px 30px;
+
+            @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+                padding: 24px 18px;
+            }
         `}
 `;
 

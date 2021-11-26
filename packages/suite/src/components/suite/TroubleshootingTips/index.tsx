@@ -5,14 +5,10 @@ import CollapsibleBox from '@suite-components/CollapsibleBox'; // build fails du
 import { variables, Button } from '@trezor/components';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import TrezorConnect from 'trezor-connect';
+import { isAndroid } from '@suite-utils/env';
 
 const WhiteCollapsibleBox = styled(CollapsibleBox)`
     background: ${props => props.theme.BG_WHITE};
-    min-width: 480px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        min-width: 380px;
-    }
 `;
 
 const ItemLabel = styled.span`
@@ -37,7 +33,11 @@ const Bullet = styled.span`
 const Items = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 20px 30px;
+    padding: 20px 20px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 20px 18px;
+    }
 `;
 
 const Item = styled.div`
@@ -60,6 +60,10 @@ const ContactSupport = styled.div`
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     padding: 18px 30px;
     align-items: center;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 18px 20px;
+    }
 `;
 
 const FooterText = styled.span`
@@ -109,7 +113,7 @@ const TroubleshootingTips = ({ label, items, cta, offerWebUsb, opened }: Props) 
             </Items>
         )}
 
-        {offerWebUsb && (
+        {offerWebUsb && !isAndroid() && (
             <Button
                 variant="secondary"
                 data-test="@onboarding/try-bridge-button"

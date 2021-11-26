@@ -85,7 +85,7 @@ const TransactionDetail = (props: Props) => {
         <Modal
             cancelable
             onCancel={props.onCancel}
-            fixedWidth={['100vw', '90vw', '755px', '755px']}
+            fixedWidth={['95vw', '90vw', '755px', '755px']}
             contentPaddingSide={['8px', '21px', '21px', '21px']}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >

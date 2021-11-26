@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
+import { variables } from '@trezor/components';
 
 import BitcoinOptions from './components/BitcoinOptions';
 import EthereumOptions from './components/EthereumOptions';
@@ -14,6 +15,10 @@ const Wrapper = styled.div`
 const Content = styled.div`
     display: flex;
     padding: 32px 42px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 32px 20px;
+    }
 `;
 
 const Line = styled.div`

@@ -48,7 +48,12 @@ const InfoBoxText = styled.div`
     flex-direction: column;
     text-align: left;
     margin-left: 12px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 300px;
+    }
 `;
+
 const InfoBoxTitle = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${props => props.theme.TYPE_DARK_GREY};

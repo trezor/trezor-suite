@@ -31,6 +31,10 @@ const SelectBarWrapper = styled.div<{ desktop?: boolean }>`
         css`
             margin: 0px;
         `}
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 8px 0px 20px;
+    }
 `;
 
 const CoinAmount = styled.div`

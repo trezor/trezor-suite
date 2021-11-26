@@ -19,6 +19,10 @@ const NavLink = styled.div<{ active?: boolean }>`
 
     & + & {
         margin-left: 42px;
+
+        @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+            margin-left: 30px;
+        }
     }
 `;
 

@@ -46,6 +46,10 @@ const TxTypeIconWrapper = styled.div`
     margin-top: 8px;
     flex: 0;
     cursor: pointer;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
+    }
 `;
 
 const TimestampWrapper = styled.div`

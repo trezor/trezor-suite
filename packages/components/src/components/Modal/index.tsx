@@ -23,11 +23,11 @@ const MODAL_PADDING_BOTTOM_TINY: [string, string, string, string] = [
 ];
 
 // padding for Heading, Description, Content and BottomBar
-const SIDE_PADDING: [string, string, string, string] = ['8px', '40px', '40px', '40px'];
-const SIDE_PADDING_TINY: [string, string, string, string] = ['8px', '32px', '32px', '32px'];
+const SIDE_PADDING: [string, string, string, string] = ['16px', '40px', '40px', '40px'];
+const SIDE_PADDING_TINY: [string, string, string, string] = ['16px', '32px', '32px', '32px'];
 
-const FIXED_WIDTH: [string, string, string, string] = ['100vw', '90vw', '720px', '720px'];
-const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '600px', '600px'];
+const FIXED_WIDTH: [string, string, string, string] = ['95vw', '90vw', '720px', '720px'];
+const FIXED_WIDTH_SMALL: [string, string, string, string] = ['95vw', '90vw', '600px', '600px'];
 const FIXED_WIDTH_TINY: [string, string, string, string] = ['360px', '360px', '360px', '360px'];
 const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px', '620px'];
 
@@ -112,7 +112,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
     ${props =>
         !props.useFixedWidth &&
         css`
-            max-width: 100vw;
+            max-width: 95vw;
         `}
 
     ${props =>

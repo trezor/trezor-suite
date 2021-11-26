@@ -4,7 +4,7 @@ import { P, Switch, Icon, variables, Button, useTheme } from '@trezor/components
 import { Translation } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
 import { Network } from '@wallet-types';
-import { Section, ActionColumn, Row } from '@suite-components/Settings';
+import { Section, Row } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import { getUnavailabilityMessage } from '@suite-utils/device';
 import * as modalActions from '@suite-actions/modalActions';
@@ -17,6 +17,11 @@ const Wrapper = styled.div`
 const Header = styled.div`
     display: flex;
     justify-content: space-between;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+        margin-bottom: -10px;
+    }
 `;
 
 const StyledP = styled(P)`
@@ -44,6 +49,10 @@ const Title = styled.div`
 
 const Buttons = styled.div`
     display: flex;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-top: 10px;
+    }
 `;
 
 const AdvancedSettings = styled.div`
@@ -65,7 +74,6 @@ const AdvancedSettings = styled.div`
 const UnavailableLabel = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => props.theme.TYPE_DARK_GREY};
-    white-space: nowrap;
 `;
 
 const SettingsIconWrapper = styled.div`
@@ -88,6 +96,14 @@ const AdvancedSettingsText = styled.div`
     @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
     }
+`;
+
+export const CoinToggle = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    flex-wrap: wrap;
 `;
 
 interface Props {
@@ -160,7 +176,7 @@ const CoinsGroup = ({
                 {NETWORKS.filter(filterFn).map(network => (
                     <CoinRow key={network.symbol}>
                         <Coin symbol={network.symbol} name={network.name} />
-                        <ActionColumn>
+                        <CoinToggle>
                             {!unavailableCapabilities[network.symbol] ? (
                                 <>
                                     <AdvancedSettings
@@ -201,7 +217,7 @@ const CoinsGroup = ({
                                     />
                                 </UnavailableLabel>
                             )}
-                        </ActionColumn>
+                        </CoinToggle>
                     </CoinRow>
                 ))}
             </Section>

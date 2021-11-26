@@ -19,7 +19,7 @@
         "storybook-build": "build-storybook -s ./public -c .storybook -o .build-storybook"
     },
     "dependencies": {
-        "@tippyjs/react": "^4.2.4",
+        "@tippyjs/react": "^4.2.6",
         "date-fns": "^2.16.1",
         "lottie-react": "^2.1.0",
         "polished": "^4.1.2",

@@ -10,7 +10,9 @@ const Wrapper = styled.div`
     margin-top: 25px;
 `;
 
-const IOWrapper = styled.div``;
+const IOWrapper = styled.div`
+    overflow: auto;
+`;
 
 const IconWrapper = styled.div`
     display: flex;
@@ -38,11 +40,6 @@ const IORow = styled.div`
 
 const CryptoAmountWrapper = styled.div`
     flex: 0 0 auto;
-`;
-
-const Address = styled(props => <HiddenPlaceholder {...props} />)`
-    text-overflow: ellipsis;
-    overflow: hidden;
 `;
 
 const Circle = styled.div`
@@ -82,7 +79,7 @@ const IODetails = ({ tx }: Props) => {
                                         <Circle>&bull;</Circle>
                                     </CryptoAmountWrapper>
                                 )}
-                                <Address>{input.addresses}</Address>
+                                <HiddenPlaceholder>{input.addresses}</HiddenPlaceholder>
                             </IORow>
                         ))}
                     </IOBox>
@@ -104,7 +101,7 @@ const IODetails = ({ tx }: Props) => {
                                     />
                                     <Circle>&bull;</Circle>
                                 </CryptoAmountWrapper>
-                                <Address>{output.addresses}</Address>
+                                <HiddenPlaceholder>{output.addresses}</HiddenPlaceholder>
                             </IORow>
                         ))}
                     </IOBox>

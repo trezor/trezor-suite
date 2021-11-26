@@ -91,7 +91,7 @@ const FirmwareCustom = () => {
                     />
                 )
             }
-            fixedWidth={['100vw', '90vw', '620px', '620px']}
+            fixedWidth={['95vw', '90vw', '620px', '620px']}
             data-test="@firmware-custom"
         >
             <ModalContent>

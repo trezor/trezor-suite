@@ -1,43 +1,19 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
-import { LayoutContext, Notifications, Translation } from '@suite-components';
-import { MAX_WIDTH } from '@suite-constants/layout';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    max-width: ${MAX_WIDTH};
-`;
-const Content = styled.div`
-    background-color: ${props => props.theme.BG_WHITE};
+import { Card, Notifications, Translation } from '@suite-components';
+import { Section } from '@dashboard-components';
+
+const StyledSection = styled(Section)`
+    width: 100%;
 `;
 
-const Headline = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${variables.FONT_SIZE.BIG};
-    margin-top: 4px;
-    margin-bottom: 24px;
-    padding-left: 12px;
-`;
-
-const NotificationsView = () => {
-    const { setLayout } = useContext(LayoutContext);
-    useEffect(() => {
-        if (setLayout) setLayout('Notifications', undefined);
-    }, [setLayout]);
-
-    return (
-        <Wrapper>
-            <Headline>
-                <Translation id="NOTIFICATIONS_TITLE" />
-            </Headline>
-            <Content>
-                <Notifications />
-            </Content>
-        </Wrapper>
-    );
-};
+const NotificationsView = () => (
+    <StyledSection heading={<Translation id="NOTIFICATIONS_TITLE" />}>
+        <Card noPadding>
+            <Notifications />
+        </Card>
+    </StyledSection>
+);
 
 export default NotificationsView;
