@@ -2,15 +2,27 @@
  * Request Filter feature (blocks non-allowed requests and displays a warning)
  */
 import { dialog } from 'electron';
-
 import * as config from '../config';
+
+const domainFilter = () => {
+    const allowedDomains = [...config.allowedDomains];
+
+    const isAllowed = (hostname: string) =>
+        allowedDomains.find(d => hostname.endsWith(d)) !== undefined;
+
+    const addAllowed = (hostname: string) => allowedDomains.push(hostname);
+
+    return { isAllowed, addAllowed };
+};
 
 const init = ({ mainWindow, interceptor }: Dependencies) => {
     const { logger } = global;
 
+    const { isAllowed, addAllowed } = domainFilter();
+
     const resourceTypeFilter = ['xhr']; // What resource types we want to filter
     const caughtDomainExceptions: string[] = []; // Domains that have already shown an exception
-    interceptor.onBeforeRequest(details => {
+    interceptor.onBeforeRequest(async details => {
         if (!resourceTypeFilter.includes(details.resourceType)) {
             logger.debug(
                 'request-filter',
@@ -21,7 +33,7 @@ const init = ({ mainWindow, interceptor }: Dependencies) => {
 
         const { hostname } = new URL(details.url);
 
-        if (config.allowedDomains.find(d => hostname.endsWith(d)) !== undefined) {
+        if (isAllowed(hostname)) {
             logger.info(
                 'request-filter',
                 `${details.url} was allowed because ${hostname} is in the exception list`,
@@ -30,12 +42,17 @@ const init = ({ mainWindow, interceptor }: Dependencies) => {
         }
 
         if (caughtDomainExceptions.find(d => d === hostname) === undefined) {
-            caughtDomainExceptions.push(hostname);
-            dialog.showMessageBox(mainWindow, {
+            const { response } = await dialog.showMessageBox(mainWindow, {
                 type: 'warning',
-                message: `Suite blocked a request to ${hostname}.\n\nIf you believe this is an error, please contact our support.`,
-                buttons: ['OK'],
+                message: `Suite is trying to communicate with unknown host: ${hostname}.\n\nWould you like to allow the communication?`,
+                buttons: ['Allow', 'Deny'],
             });
+            if (response === 0) {
+                addAllowed(hostname);
+                logger.info('request-filter', `${details.url} was manually allowed by the user`);
+                return;
+            }
+            caughtDomainExceptions.push(hostname);
         }
 
         logger.warn(

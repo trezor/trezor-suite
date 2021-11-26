@@ -53,7 +53,7 @@ declare interface ILogger {
 
 declare type BeforeRequestListener = (
     details: Electron.OnBeforeRequestListenerDetails,
-) => Electron.Response | undefined;
+) => Promise<Electron.Response | undefined>;
 
 declare interface RequestInterceptor {
     onBeforeRequest(listener: BeforeRequestListener): void;
