@@ -47,6 +47,7 @@ export type FormState = {
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
+    ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
     rippleDestinationTag?: string;
     rbfParams?: RbfTransactionParams;
 };

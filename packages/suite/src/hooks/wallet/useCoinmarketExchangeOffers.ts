@@ -242,6 +242,9 @@ export const useOffers = (props: Props) => {
             selectedQuote.dexTx &&
             (selectedQuote.status === 'APPROVAL_REQ' || selectedQuote.status === 'CONFIRM')
         ) {
+            // after discussion with 1inch, adjust the gas limit by the factor of 1.25
+            // swap can use different swap paths when mining tx than when estimating tx
+            // the geth gas estimate may be too low
             const result = await recomposeAndSign(
                 selectedAccount,
                 selectedQuote.dexTx.to,
@@ -249,6 +252,7 @@ export const useOffers = (props: Props) => {
                 selectedQuote.partnerPaymentExtraId,
                 selectedQuote.dexTx.data,
                 true,
+                selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
             );
 
             // in case of not success, recomposeAndSign shows notification
