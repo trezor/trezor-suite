@@ -136,6 +136,11 @@ export const composeTransaction =
 
         if (estimatedFee.success) {
             customFeeLimit = estimatedFee.payload.levels[0].feeLimit;
+            if (formValues.ethereumAdjustGasLimit && customFeeLimit) {
+                customFeeLimit = new BigNumber(customFeeLimit)
+                    .multipliedBy(new BigNumber(formValues.ethereumAdjustGasLimit))
+                    .toFixed(0);
+            }
         } else {
             // TODO: catch error from blockbook/geth (invalid contract, not enough balance...)
         }

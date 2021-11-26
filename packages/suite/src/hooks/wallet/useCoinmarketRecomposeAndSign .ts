@@ -29,6 +29,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             destinationTag?: string,
             ethereumDataHex?: string,
             recalcCustomLimit?: boolean,
+            ethereumAdjustGasLimit?: string,
         ) => {
             const { account, network } = selectedAccount;
 
@@ -58,6 +59,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                 options: ['broadcast'],
                 rippleDestinationTag: destinationTag,
                 ethereumDataHex,
+                ethereumAdjustGasLimit,
             };
 
             // prepare form state for composeAction
@@ -79,9 +81,22 @@ export const useCoinmarketRecomposeAndSign = () => {
                     normalLevels.normal.type !== 'final' ||
                     !normalLevels.normal.feeLimit
                 ) {
+                    let errorMessage: string | undefined;
+                    if (
+                        normalLevels?.normal?.type === 'error' &&
+                        normalLevels?.normal?.errorMessage
+                    ) {
+                        errorMessage = translationString(
+                            normalLevels.normal.errorMessage.id,
+                            normalLevels.normal.errorMessage.values as { [key: string]: any },
+                        );
+                    }
+                    if (!errorMessage) {
+                        errorMessage = 'Missing fee level';
+                    }
                     addNotification({
                         type: 'sign-tx-error',
-                        error: 'Missing level',
+                        error: errorMessage,
                     });
                     return;
                 }
@@ -93,7 +108,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             if (!selectedFee || !composedLevels) {
                 addNotification({
                     type: 'sign-tx-error',
-                    error: 'Missing level',
+                    error: 'Missing fee level',
                 });
                 return;
             }
