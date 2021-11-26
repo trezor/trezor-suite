@@ -166,12 +166,13 @@ module.exports = on => {
          * shall be emulator wiped before start? defaults to true
          */
         startEmu: async arg => {
-            await controller.send({
+            const params = {
                 type: 'emulator-start',
                 version: process.env.FIRMWARE || releasesT2[0].version.join('.'),
                 ...arg,
-            });
-            return null;
+            };
+            await controller.send(params);
+            return params;
         },
         stopEmu: async () => {
             await controller.send({ type: 'emulator-stop' });

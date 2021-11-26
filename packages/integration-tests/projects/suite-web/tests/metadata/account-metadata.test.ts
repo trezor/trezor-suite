@@ -5,11 +5,23 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
 // fixture contains number of request that given provider needs go through this test scenario
 const fixtures = [
-    // todo: [27, 28] when taproot firmware (2.4.3) is in suite
-    { provider: 'dropbox', numberOfRequests: [25, 26] },
-    // todo: [10, 12] when taproot firmware (2.4.3) is in suite
-    { provider: 'google', numberOfRequests: [9, 12] },
+    {
+        provider: 'dropbox',
+        numberOfRequests: {
+            '2-master': [27, 28],
+            legacy: [25, 26],
+        },
+    },
+    {
+        provider: 'google',
+        numberOfRequests: {
+            '2-master': [9, 12],
+            legacy: [9, 12],
+        },
+    },
 ] as const;
+
+let startEmuParams;
 
 describe(`Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
 Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow`, () => {
@@ -20,7 +32,10 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
     fixtures.forEach(f => {
         it(f.provider, () => {
             // prepare test
-            cy.task('startEmu', { wipe: true });
+            cy.task('startEmu', { wipe: true }).then(res => {
+                cy.log(JSON.stringify(res));
+                startEmuParams = res;
+            });
             cy.task('setupEmu', {
                 mnemonic: 'all all all all all all all all all all all all',
             });
@@ -101,10 +116,12 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             // - why asserting it:  just to make sure that metadata don't send unnecessary amount of request
             cy.waitUntil(() =>
                 cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
+                    const expectedNumberOfRequests =
+                        f.numberOfRequests[startEmuParams.version] ?? f.numberOfRequests.legacy;
                     cy.log(
-                        `requests.length ${requests.length} of expected ${f.numberOfRequests[0]}`,
+                        `requests.length ${requests.length} of expected ${expectedNumberOfRequests[0]}`,
                     );
-                    expect(requests.length).equal(f.numberOfRequests[0]);
+                    expect(requests.length).equal(expectedNumberOfRequests[0]);
                 }),
             );
 
@@ -125,10 +142,12 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
 
             cy.waitUntil(() =>
                 cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
+                    const expectedNumberOfRequests =
+                        f.numberOfRequests[startEmuParams.version] ?? f.numberOfRequests.legacy;
                     cy.log(
-                        `requests.length ${requests.length} of expected ${f.numberOfRequests[1]}`,
+                        `requests.length ${requests.length} of expected ${expectedNumberOfRequests[1]}`,
                     );
-                    expect(requests.length).equal(f.numberOfRequests[1]);
+                    expect(requests.length).equal(expectedNumberOfRequests[1]);
                 }),
             );
         });
