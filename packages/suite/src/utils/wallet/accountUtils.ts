@@ -7,6 +7,12 @@ import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 import { toFiatCurrency } from './fiatConverterUtils';
+import {
+    WIKI_ACCOUNT_BIP84_URL,
+    WIKI_ACCOUNT_BIP86_URL,
+    WIKI_ACCOUNT_BIP49_URL,
+    WIKI_ACCOUNT_BIP44_URL,
+} from '@suite-constants/urls';
 
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
@@ -122,10 +128,10 @@ export const getAccountTypeDesc = (path: string) => {
 
 export const getAccountTypeUrl = (path: string) => {
     const bip43 = getBip43Type(path);
-    if (bip43 === 'bip86') return 'WIKI_ACCOUNT_BIP88_URL';
-    if (bip43 === 'bip84') return 'WIKI_ACCOUNT_BIP84_URL';
-    if (bip43 === 'bip49') return 'WIKI_ACCOUNT_BIP49_URL';
-    return 'WIKI_ACCOUNT_BIP44_URL';
+    if (bip43 === 'bip86') return WIKI_ACCOUNT_BIP86_URL;
+    if (bip43 === 'bip84') return WIKI_ACCOUNT_BIP84_URL;
+    if (bip43 === 'bip49') return WIKI_ACCOUNT_BIP49_URL;
+    return WIKI_ACCOUNT_BIP44_URL;
 };
 
 export const stripNetworkAmount = (amount: string, decimals: number) =>
