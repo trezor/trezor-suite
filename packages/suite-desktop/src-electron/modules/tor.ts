@@ -83,13 +83,14 @@ const init = async ({ mainWindow, store, interceptor }: Dependencies) => {
             protocol === 'https:'
         ) {
             logger.info('tor', `Rewriting ${details.url} to .onion URL`);
-            return {
+            return Promise.resolve({
                 redirectURL: details.url.replace(
                     /https:\/\/(([a-z0-9]+\.)*)trezor\.io(.*)/,
                     `http://$1${onionDomain}$3`,
                 ),
-            };
+            });
         }
+        return Promise.resolve(undefined);
     });
 
     app.on('before-quit', () => {
