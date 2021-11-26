@@ -3073,6 +3073,14 @@ export default defineMessages({
             'To prevent phishing attacks, you should verify the address on your Trezor. {claim}',
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',
     },
+    TR_TOO_LONG: {
+        id: 'TR_TOO_LONG',
+        defaultMessage: 'Message is too long',
+    },
+    TR_ASCII_ONLY: {
+        id: 'TR_ASCII_ONLY',
+        defaultMessage: 'Only ASCII characters are allowed',
+    },
     TR_TOS_INFORMATION: {
         defaultMessage: 'By clicking Continue you agree to our {TR_TOS_LINK}',
         id: 'TR_TOS_INFORMATION',
