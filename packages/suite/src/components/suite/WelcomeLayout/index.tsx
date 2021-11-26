@@ -64,6 +64,10 @@ const Content = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
     align-items: center;
     overflow-y: auto;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 12px;
+    }
 `;
 
 const StyledTrezorLink = styled(TrezorLink)`

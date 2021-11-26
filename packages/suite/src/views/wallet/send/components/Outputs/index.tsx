@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSendFormContext } from '@wallet-hooks';
+import { variables } from '@trezor/components';
 import Address from './components/Address';
 import Amount from './components/Amount';
 import OpReturn from './components/OpReturn';
@@ -17,6 +18,10 @@ const OutputWrapper = styled.div<{ index: number }>`
 
     &:last-child {
         margin-bottom: 0;
+    }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 32px 20px;
     }
 
     ${props =>

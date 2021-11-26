@@ -57,9 +57,9 @@ const Grid = styled.div`
 `;
 
 const GridWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
 `;
 
 const StyledAddAccountButton = styled(Button)`

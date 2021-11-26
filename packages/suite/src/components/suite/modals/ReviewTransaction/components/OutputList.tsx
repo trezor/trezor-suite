@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { formatNetworkAmount, isTestnet } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -25,6 +25,10 @@ const Right = styled.div`
     margin: 20px 10px 10px 35px;
     max-width: 460px;
     position: relative;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 20px 10px 10px 10px;
+    }
 `;
 
 const RightTop = styled.div`
@@ -54,6 +58,10 @@ const RightBottom = styled.div`
         height: 20px;
         background: linear-gradient(transparent, ${props => props.theme.BG_WHITE});
         z-index: 1;
+    }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-left: 0px;
     }
 `;
 

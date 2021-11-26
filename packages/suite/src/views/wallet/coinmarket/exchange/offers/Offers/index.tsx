@@ -21,16 +21,28 @@ const Wrapper = styled.div`
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 16px;
     }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0;
+    }
 `;
 
 const Header = styled.div`
     margin: 18px 0 24px 0;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 12px 0 24px;
+    }
 `;
 
 const SummaryRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 const Text = styled(H2)`
@@ -55,6 +67,10 @@ const Right = styled.div`
     justify-self: flex-end;
     align-items: center;
     font-size: ${variables.FONT_SIZE.SMALL};
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-top: 6px;
+    }
 `;
 
 const StyledCoinLogo = styled(CoinLogo)`

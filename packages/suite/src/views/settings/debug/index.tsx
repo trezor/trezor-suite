@@ -1,8 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Switch, Select, THEME, SuiteThemeColors } from '@trezor/components';
+import { Switch, THEME, SuiteThemeColors } from '@trezor/components';
 import { SettingsLayout } from '@settings-components';
-import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
+import {
+    ActionButton,
+    ActionColumn,
+    ActionSelect,
+    Row,
+    Section,
+    SectionItem,
+    TextColumn,
+} from '@suite-components/Settings';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 import { openGithubIssue } from '@suite/services/github';
@@ -10,8 +18,8 @@ import invityAPI from '@suite-services/invityAPI';
 import { isTranslationMode, setTranslationMode } from '@suite-utils/l10n';
 import { isWeb } from '@suite-utils/env';
 
-const StyledActionColumn = styled(ActionColumn)`
-    max-width: 300px;
+const StyledActionSelect = styled(ActionSelect)`
+    min-width: 250px;
 `;
 
 const DebugSettings = () => {
@@ -45,7 +53,7 @@ const DebugSettings = () => {
         <SettingsLayout>
             {isWeb() && (
                 <Section title="Localization">
-                    <Row>
+                    <SectionItem>
                         <TextColumn
                             title="Translation mode"
                             description="Translation mode enables distinctive visual styling for currently used intl messages. Helpful tooltip with an ID of the message will show up when you mouse over the message."
@@ -58,11 +66,11 @@ const DebugSettings = () => {
                                 }}
                             />
                         </ActionColumn>
-                    </Row>
+                    </SectionItem>
                 </Section>
             )}
             <Section title="Debug">
-                <Row>
+                <SectionItem>
                     <TextColumn
                         title="Trezor Bridge dev mode (desktop)"
                         description="Starts Trezor Bridge on port 21324"
@@ -77,31 +85,32 @@ const DebugSettings = () => {
                             }}
                         />
                     </ActionColumn>
-                </Row>
-                <Row>
+                </SectionItem>
+                <SectionItem>
                     <TextColumn
                         title="Open issue on Github"
                         description="Open issue on Github with pre-filled details. Do not use with sensitive data!"
                     />
                     <ActionColumn>
-                        <Button
+                        <ActionButton
                             onClick={() => {
                                 openGithubIssue(device);
                             }}
                         >
                             Open issue
-                        </Button>
+                        </ActionButton>
                     </ActionColumn>
-                </Row>
+                </SectionItem>
             </Section>
             <Section title="Invity">
-                <Row>
+                <SectionItem>
                     <TextColumn
                         title="API server"
                         description="Set the server url for buy and exchange features"
                     />
-                    <StyledActionColumn>
-                        <Select
+                    <ActionColumn>
+                        <StyledActionSelect
+                            noTopLabel
                             onChange={(item: { value: string; label: string }) => {
                                 setDebugMode({
                                     invityAPIUrl: item.value,
@@ -111,23 +120,23 @@ const DebugSettings = () => {
                             value={selectedInvityApiServer}
                             options={invityApiServerOptions}
                         />
-                    </StyledActionColumn>
-                </Row>
+                    </ActionColumn>
+                </SectionItem>
             </Section>
 
             <Section title="Dark mode palette">
-                <Row>
+                <SectionItem>
                     <TextColumn title="Reset palette" />
                     <ActionColumn>
-                        <Button
+                        <ActionButton
                             onClick={() => {
                                 setTheme('dark', undefined);
                             }}
                         >
                             Reset
-                        </Button>
+                        </ActionButton>
                     </ActionColumn>
-                </Row>
+                </SectionItem>
                 {Object.entries(THEME.dark).map(kv => {
                     const colorName = kv[0] as keyof SuiteThemeColors;
                     const defaultColorHex = kv[1];

@@ -102,11 +102,15 @@ const ExpandedMobileWrapper = styled.div`
     padding-bottom: 16px;
 `;
 
-const Scroll = styled.div`
+const Scroll = styled.div<{ isInline?: boolean }>`
     height: auto;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0px 8px;
+    ${props =>
+        !props.isInline &&
+        css`
+            padding: 0px 8px;
+        `}
 `;
 
 const NoResults = styled.div`
@@ -147,12 +151,12 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
         // TODO: default empty state while retrieving data from the device
         return (
             <Wrapper isInline={isMenuInline}>
-                <Scroll>
+                <Scroll isInline={isMenuInline}>
                     <MenuHeader isInline={isMenuInline}>
                         <Heading noMargin isInline={isMenuInline}>
                             <Translation id="TR_MY_ACCOUNTS" />
                         </Heading>
-                        <AccountSearchBox isMobile={isMenuInline} />
+                        {!isMenuInline && <AccountSearchBox isMobile={isMenuInline} />}
                     </MenuHeader>
                     {!isMenuInline && <SkeletonAccountItem />}
                 </Scroll>

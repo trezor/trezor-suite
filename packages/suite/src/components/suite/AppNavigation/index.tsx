@@ -120,24 +120,6 @@ const SecondaryMenu = styled.div<{ visible: boolean }>`
     }
 `;
 
-const SecondaryMenuCondensed = styled.div`
-    position: absolute;
-    top: 1px;
-    right: 24px;
-    z-index: 3;
-    background: ${props => props.theme.BG_WHITE};
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        ${props => props.theme.BG_WHITE} 10%,
-        ${props => props.theme.BG_WHITE} 100%
-    );
-    height: 68px;
-    width: 62px;
-    margin: 0 -33px 0;
-    padding: 20px 25px 0 13px;
-`;
-
 const StyledNavLink = styled.div<{ active?: boolean }>`
     cursor: pointer;
     font-size: ${FONT_SIZE.NORMAL};
@@ -323,28 +305,26 @@ const AppNavigation = ({ items, primaryContent, maxWidth }: Props) => {
                         </Primary>
                         <Secondary ref={secondary}>
                             {condensedSecondaryMenuVisible && (
-                                <SecondaryMenuCondensed>
-                                    <Dropdown
-                                        alignMenu="right"
-                                        offset={8}
-                                        items={[
-                                            {
-                                                key: 'all',
-                                                options: itemsSecondary.map(item => {
-                                                    const { id, title } = item;
-                                                    return {
-                                                        key: id,
-                                                        callback: () => {
-                                                            item.callback();
-                                                            return true;
-                                                        },
-                                                        label: title,
-                                                    };
-                                                }),
-                                            },
-                                        ]}
-                                    />
-                                </SecondaryMenuCondensed>
+                                <StyledDropdown
+                                    alignMenu="right"
+                                    offset={8}
+                                    items={[
+                                        {
+                                            key: 'all',
+                                            options: itemsSecondary.map(item => {
+                                                const { id, title } = item;
+                                                return {
+                                                    key: id,
+                                                    callback: () => {
+                                                        item.callback();
+                                                        return true;
+                                                    },
+                                                    label: title,
+                                                };
+                                            }),
+                                        },
+                                    ]}
+                                />
                             )}
                             <SecondaryMenu visible={!condensedSecondaryMenuVisible}>
                                 {itemsSecondaryWithoutExtra.map(item => {

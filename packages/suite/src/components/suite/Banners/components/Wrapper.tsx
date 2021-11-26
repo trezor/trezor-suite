@@ -37,10 +37,18 @@ const Wrapper = styled.div<{ variant: Props['variant'] }>`
     margin: 6px 6px 4px;
     line-height: 1.5;
     align-items: center;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 const IconWrapper = styled.div`
     margin: auto 8px auto 4px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
+    }
 `;
 
 const Body = styled.div`
@@ -51,6 +59,10 @@ const Body = styled.div`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         justify-content: left;
+    }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        text-align: center;
     }
 `;
 
@@ -65,12 +77,21 @@ const ActionsWrapper = styled.div`
         position: relative;
         right: auto;
     }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
 `;
 
 const ActionButton = styled(Button)<{ color: Props['variant'] }>`
     height: 24px;
     margin-right: 4px;
     margin-left: 10px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-top: 5px;
+    }
 `;
 
 const CancelWrapper = styled.div`

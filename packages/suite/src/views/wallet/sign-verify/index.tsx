@@ -39,6 +39,10 @@ const SwitchWrapper = styled.label`
 
 const Form = styled.form`
     padding: 42px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 42px 20px;
+    }
 `;
 
 const SignVerify = () => {

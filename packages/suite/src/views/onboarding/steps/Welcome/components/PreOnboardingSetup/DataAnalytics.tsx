@@ -29,6 +29,8 @@ const Label = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
+    align-items: center;
+    display: flex;
 `;
 
 const Heading = styled(H1)`

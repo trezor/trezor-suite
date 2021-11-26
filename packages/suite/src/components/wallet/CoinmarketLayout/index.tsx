@@ -1,5 +1,5 @@
 import { WalletLayout, CoinmarketFooter, WalletLayoutHeader } from '@wallet-components';
-import { Card, Button } from '@trezor/components';
+import { Card, Button, variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
@@ -9,6 +9,10 @@ import { Translation } from '@suite-components';
 
 const Content = styled.div`
     padding: 29px 41px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 29px 20px;
+    }
 `;
 
 const BottomContent = styled.div``;

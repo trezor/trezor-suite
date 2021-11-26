@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { Card, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
-import { Textarea, Button, Icon, Tooltip } from '@trezor/components';
+import { Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
 import { useActions, useAnalytics } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -22,6 +22,10 @@ const StyledCard = styled(Card)`
     justify-items: space-between;
     align-items: center;
     padding: 32px 42px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 32px 20px;
+    }
 `;
 
 const ButtonWrapper = styled.div`

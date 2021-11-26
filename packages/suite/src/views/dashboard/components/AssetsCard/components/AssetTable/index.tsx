@@ -68,6 +68,7 @@ const CoinNameWrapper = styled(Col)`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: 1 / 4;
+        margin-left: 20px;
         border-bottom: none;
     }
 `;
@@ -79,8 +80,7 @@ const FailedCol = styled(Col)`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: 1 / 3;
-        margin-left: 25px;
-        border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+        margin-left: 20px;
     }
 `;
 
@@ -90,8 +90,7 @@ const CryptoBalanceWrapper = styled(Col)`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: 1 / 3;
-        margin-left: 25px;
-        border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+        margin-left: 20px;
     }
 `;
 

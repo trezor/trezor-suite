@@ -21,7 +21,6 @@ const Col = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding-right: 20px;
 `;
 
 const CoinNameWrapper = styled.div`
@@ -35,7 +34,6 @@ const CoinNameWrapper = styled.div`
 const UpperRowWrapper = styled.div`
     display: flex;
     justify-content: space-between;
-    width: 302px;
     padding: 0px 15px 15px 15px;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
@@ -54,10 +52,9 @@ const LogoWrapper = styled.div`
 `;
 
 const CoinGridWrapper = styled.div`
-    width: 330px;
-    height: 118px;
-    margin: 0px 9px 18px 0px;
-    padding: 19px 16px 18px 12px;
+    min-width: 330px;
+    min-height: 118px;
+    padding: 18px 16px;
     border-radius: 8px;
     background-color: ${props => props.theme.BG_WHITE};
 `;
@@ -75,7 +72,7 @@ const FailedCol = styled(Col)`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: 1 / 3;
-        margin-left: 25px;
+        margin-left: 20px;
         border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     }
 `;

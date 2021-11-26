@@ -64,6 +64,10 @@ const WalletsWrapper = styled.div<{ enabled: boolean }>`
     padding-bottom: ${props => (props.enabled ? '0px' : '24px')};
     margin-left: 37px;
     margin-top: 24px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-left: 0px;
+    }
 `;
 
 const WalletsTooltips = styled.div`

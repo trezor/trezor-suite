@@ -8,6 +8,7 @@ const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
     padding: 12px 16px;
     grid-template-columns: ${props => (props.isTestnet ? 'auto auto 44px' : 'auto auto auto 44px')};
+    overflow: auto;
 `;
 
 interface ColProps {

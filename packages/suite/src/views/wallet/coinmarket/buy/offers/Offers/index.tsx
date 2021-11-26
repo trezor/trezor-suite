@@ -15,6 +15,10 @@ const Wrapper = styled.div`
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 16px;
     }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0;
+    }
 `;
 
 const Divider = styled.div`

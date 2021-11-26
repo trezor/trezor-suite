@@ -5,6 +5,11 @@ import { variables } from '../../../config';
 const Wrapper = styled.div`
     display: flex;
     height: 32px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        height: auto;
+        width: 100%;
+    }
 `;
 
 const Label = styled.div`
@@ -23,6 +28,11 @@ const Options = styled.div`
     padding: 0 2px;
     border-radius: 4px;
     background: ${props => props.theme.BG_GREY};
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+        width: 100%;
+    }
 `;
 
 const Option = styled.div<{ isSelected: boolean }>`
@@ -47,6 +57,13 @@ const Option = styled.div<{ isSelected: boolean }>`
             color: ${props => props.theme.TYPE_DARK_GREY};
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
         `}
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        height: 40px;
+        justify-content: center;
+        width: 100%;
+        flex: auto;
+    }
 `;
 
 interface Option<V> {

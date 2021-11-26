@@ -17,7 +17,7 @@ const ExpandWrapper = styled(motion.div)`
     width: 100%;
     background: ${props => props.theme.BG_GREY};
     border-radius: 8px;
-    overflow: hidden;
+    overflow: auto;
     padding: 12px;
     text-align: left;
 `;

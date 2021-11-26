@@ -44,8 +44,9 @@ const Main = styled.div`
     padding-bottom: 20px;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
+        margin: 0 20px;
     }
 `;
 
@@ -58,7 +59,7 @@ const Right = styled.div`
     display: flex;
     justify-content: flex-end;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         justify-content: center;
         padding-top: 10px;
     }
@@ -70,8 +71,9 @@ const Details = styled.div`
     flex-wrap: wrap;
     padding: 10px 30px;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
+        padding: 10px 20px;
     }
 `;
 
@@ -94,7 +96,7 @@ const Heading = styled.div`
 const StyledButton = styled(Button)`
     width: 180px;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         width: 100%;
     }
 `;
@@ -114,6 +116,10 @@ const Footer = styled.div`
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 0 20px;
+    }
 `;
 
 const ErrorFooter = styled.div`
@@ -122,6 +128,10 @@ const ErrorFooter = styled.div`
     padding: 10px 0;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     color: ${props => props.theme.TYPE_RED};
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 0 20px;
+    }
 `;
 
 const StyledIcon = styled(Icon)`

@@ -11,18 +11,25 @@ const Wrapper = styled.div`
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex-direction: column;
     }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 54px 20px;
+    }
 `;
 
 const Content = styled.div`
     display: flex;
     flex-direction: column;
+    align-self: flex-start;
 `;
 
 const Title = styled(H3)`
-    display: flex;
     color: ${props => props.theme.TYPE_DARK_GREY};
     margin-bottom: 30px;
-    text-align: center;
+
+    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
+        text-align: center;
+    }
 `;
 
 const StyledImage = styled(props => <Image {...props} />)`
@@ -33,6 +40,7 @@ const StyledImage = styled(props => <Image {...props} />)`
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         margin-bottom: 20px;
+        margin-right: 0px;
     }
 `;
 

@@ -25,6 +25,12 @@ const Header = styled.div`
     margin: 36px 0 24px 0;
     display: flex;
     justify-content: space-between;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 12px 0 24px;
+        flex-direction: column;
+        align-items: center;
+    }
 `;
 
 const Left = styled.div``;
@@ -32,6 +38,10 @@ const Right = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-top: 6px;
+    }
 `;
 
 const SummaryRow = styled.div`

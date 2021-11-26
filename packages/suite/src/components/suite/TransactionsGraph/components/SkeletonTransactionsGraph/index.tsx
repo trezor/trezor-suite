@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { variables } from '@trezor/components';
 import { useLoadingSkeleton } from '@suite-hooks';
 import { SkeletonRectangle, Stack, Spread } from '@suite-components/Skeleton';
 
@@ -9,6 +10,11 @@ const SkeletonWrapper = styled.div`
     width: 100%;
     align-self: flex-end;
     margin: 20px;
+    overflow-x: hidden;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 20px 0;
+    }
 `;
 
 const SkeletonBar = (props: React.ComponentProps<typeof SkeletonRectangle>) => (

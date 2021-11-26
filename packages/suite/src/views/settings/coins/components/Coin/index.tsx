@@ -20,6 +20,7 @@ const Symbol = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-top: 2px;
+    margin-right: 4px;
 `;
 
 interface Props {

@@ -13,6 +13,12 @@ const Wrapper = styled.div`
     align-items: center;
     padding: 0 77px 0 0;
     margin: -40px 0 -40px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 0;
+        margin: 0;
+        flex-direction: column;
+    }
 `;
 
 const Option = styled.div`
@@ -67,6 +73,12 @@ const DeviceImageWrapper = styled.div`
     width: 400px;
     height: 400px;
     margin: 0 20px 0 -60px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 0;
+        width: 200px;
+        height: 320px;
+    }
 `;
 
 const Heading = styled.div`
@@ -86,7 +98,7 @@ const SetupActions = styled.div`
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: column;
+        display: none;
     }
 `;
 
@@ -104,10 +116,6 @@ const EnterSuiteButton = styled(Button)`
     justify-content: space-between;
     padding-left: 26px;
     padding-right: 26px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        min-width: 180px;
-    }
 `;
 
 const DeviceLabelInput = styled(Input)`

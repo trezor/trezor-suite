@@ -3459,6 +3459,10 @@ export default defineMessages({
         id: 'TR_SHOW_LOG',
         defaultMessage: 'Show log',
     },
+    TR_DEBUG_SETTINGS: {
+        id: 'TR_DEBUG_SETTINGS',
+        defaultMessage: 'Debug settings',
+    },
     TR_ACCOUNT_DETAILS_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_HEADER',
         defaultMessage: 'Account details',

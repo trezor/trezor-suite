@@ -153,7 +153,7 @@ const Firmware = () => {
             onCancel={onClose}
             useFixedHeight
             fixedHeight={['90vh', '90vh', '500px', '500px']}
-            fixedWidth={['100vw', '90vw', '620px', '620px']}
+            fixedWidth={['95vw', '90vw', '620px', '620px']}
             data-test="@firmware"
             centerContent
             noPadding

@@ -40,6 +40,11 @@ const Main = styled.div`
     justify-content: space-between;
     padding-bottom: 20px;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+        margin: 0 20px;
+    }
 `;
 
 const Left = styled(H2)`
@@ -50,6 +55,11 @@ const Left = styled(H2)`
 const Right = styled.div`
     display: flex;
     justify-content: flex-end;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        justify-content: center;
+        padding-top: 10px;
+    }
 `;
 
 const Details = styled.div`
@@ -57,6 +67,11 @@ const Details = styled.div`
     min-height: 20px;
     flex-wrap: wrap;
     padding: 10px 30px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+        padding: 10px 20px;
+    }
 `;
 
 interface ColumnProps {
@@ -83,6 +98,10 @@ const Heading = styled.div`
 
 const StyledButton = styled(Button)`
     width: 180px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 100%;
+    }
 `;
 
 const Value = styled.div`
@@ -98,6 +117,10 @@ const ErrorFooter = styled.div`
     padding: 20px 0;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     color: ${props => props.theme.TYPE_RED};
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 0 20px;
+    }
 `;
 
 const StyledIcon = styled(Icon)`

@@ -26,7 +26,20 @@ const LogWrapper = styled.pre`
 const ButtonWrapper = styled.div`
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
+`;
+
+const StyledButton = styled(Button)`
+    margin: 0 5px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+        margin: 5px 0;
+    }
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -82,16 +95,20 @@ const Log = (props: Props) => {
             data-test="@log"
             bottomBar={
                 <ButtonWrapper>
-                    <Button variant="secondary" onClick={() => copy()} data-test="@log/copy-button">
+                    <StyledButton
+                        variant="secondary"
+                        onClick={() => copy()}
+                        data-test="@log/copy-button"
+                    >
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
-                    </Button>
-                    <Button
+                    </StyledButton>
+                    <StyledButton
                         variant="secondary"
                         onClick={() => download()}
                         data-test="@log/export-button"
                     >
                         <Translation id="TR_EXPORT_TO_FILE" />
-                    </Button>
+                    </StyledButton>
                 </ButtonWrapper>
             }
         >

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice } from '@trezor/components';
+import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { useDevice, useActions, useSelector } from '@suite-hooks';
 import { UserContextPayload } from '@suite-actions/modalActions';
@@ -12,6 +12,10 @@ import Summary from './components/Summary';
 const ModalInner = styled.div`
     display: flex;
     padding: 10px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 // This modal is opened either in Device (button request) or User (push tx) context

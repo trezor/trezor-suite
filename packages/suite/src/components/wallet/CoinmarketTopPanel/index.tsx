@@ -25,7 +25,7 @@ const Content = styled.div`
     align-items: center;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 24px 16px 0px 16px;
+        padding: 12px 16px;
     }
 `;
 

@@ -14,6 +14,10 @@ const StyledCard = styled(Card)`
     flex-wrap: wrap;
     padding: 32px 42px;
 
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: 32px 20px;
+    }
+
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         button {
             width: 100%;

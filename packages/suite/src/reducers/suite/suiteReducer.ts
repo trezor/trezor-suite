@@ -1,11 +1,13 @@
 import produce from 'immer';
 import { TRANSPORT, TransportInfo } from 'trezor-connect';
+import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock, SuiteThemeColors } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
-import { isWeb } from '@suite-utils/env';
+import { isWeb, getWindowWidth } from '@suite-utils/env';
 import { ensureLocale } from '@suite-utils/l10n';
+import { getNumberFromPxString } from '@suite-utils/string';
 
 export interface DebugModeOptions {
     invityAPIUrl?: string;
@@ -77,7 +79,7 @@ const initialState: SuiteState = {
         taprootBannerClosed: false,
         securityStepsHidden: false,
         dashboardGraphHidden: false,
-        dashboardAssetsGridMode: false,
+        dashboardAssetsGridMode: getWindowWidth() < getNumberFromPxString(variables.SCREEN_SIZE.SM),
     },
     settings: {
         theme: {
