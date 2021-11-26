@@ -3,12 +3,6 @@ import styled from 'styled-components';
 import { P } from '@trezor/components';
 import { Network } from '@wallet-types';
 import { Translation, ExternalLink } from '@suite-components';
-import {
-    WIKI_ACCOUNT_BIP84_URL,
-    WIKI_ACCOUNT_BIP86_URL,
-    WIKI_ACCOUNT_BIP49_URL,
-    WIKI_ACCOUNT_BIP44_URL,
-} from '@suite-constants/urls';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@wallet-utils/accountUtils';
 
 const Info = styled(P)`
