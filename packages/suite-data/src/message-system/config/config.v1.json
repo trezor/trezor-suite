@@ -1,29 +1,30 @@
 {
     "version": 1,
-    "timestamp": "2021-10-11T00:00:00+00:00",
-    "sequence": 6,
+    "timestamp": "2022-02-17T00:00:00+00:00",
+    "sequence": 7,
     "actions": [
         {
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "21.9.1",
+                        "desktop": "<22.0.0",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "40d88610-170f-11ec-9621-0242ac130002",
+                "id": "53644716-b26b-4f62-808d-7ee0dfb23069",
                 "priority": 91,
-                "dismissible": false,
-                "variant": "critical",
+                "dismissible": true,
+                "variant": "warning",
                 "category": "banner",
                 "content": {
-                    "en-GB": "There has been an error updating Trezor Suite. Please install the latest version manually from the Trezor Suite homepage.",
-                    "en": "There has been an error updating Trezor Suite. Please install the latest version manually from the Trezor Suite homepage.",
-                    "es": "Ha habido un error al actualizar Trezor Suite. Instale la última versión manualmente desde la página de inicio de Trezor Suite.",
-                    "cs": "Při aktualizaci Trezor Suite došlo k chybě. Nainstalujte prosím nejnovější verzi ručně z domovské stránky Trezor Suite."
+                    "en-GB": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
+                    "en": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
+                    "es": "Actualice Trezor Suite para obtener una mayor seguridad, las últimas funciones y para que todo funcione lo mejor posible.",
+                    "cs": "Aktualizujte Trezor Suite, abyste získali lepší zabezpečení a nejnovější funkce.",
+                    "ru": "Обновите Trezor Suite, чтобы улучшить безопасность, использовать все новейшие функции и обеспечить максимально эффективную работу."
                 },
                 "cta": {
                     "action": "external-link",
@@ -32,7 +33,8 @@
                         "en-GB": "Go to suite.trezor.io",
                         "en": "Go to suite.trezor.io",
                         "es": "Ir a suite.trezor.io",
-                        "cs": "Přejít na suite.trezor.io"
+                        "cs": "Přejít na suite.trezor.io",
+                        "ru": "Перейти на suite.trezor.io"
                     }
                 }
             }
