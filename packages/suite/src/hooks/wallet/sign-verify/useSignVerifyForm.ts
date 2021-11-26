@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { useForm, useController } from 'react-hook-form';
 import { useTranslation } from '@suite-hooks';
 import { isHex } from '@wallet-utils/ethUtils';
+import { isASCII } from '@suite-utils/validators';
 import { isAddressValid } from '@wallet-utils/validation';
 import type { Account } from '@wallet-types';
 
-export const MAX_LENGTH_MESSAGE = 255;
+export const MAX_LENGTH_MESSAGE = 1024;
 export const MAX_LENGTH_SIGNATURE = 255;
 
 export type SignVerifyFields = {
@@ -71,9 +72,20 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
     });
 
     const messageRef = register({
-        maxLength: MAX_LENGTH_MESSAGE,
-        validate: (message: string) =>
-            formValues.hex && !isHex(message) ? translationString('DATA_NOT_VALID_HEX') : undefined,
+        maxLength: {
+            value: MAX_LENGTH_MESSAGE,
+            message: translationString('TR_TOO_LONG'),
+        },
+        validate: {
+            hex: (message: string) =>
+                formValues.hex && !isHex(message)
+                    ? translationString('DATA_NOT_VALID_HEX')
+                    : undefined,
+            ascii: (message: string) =>
+                !formValues.hex && !isASCII(message)
+                    ? translationString('TR_ASCII_ONLY')
+                    : undefined,
+        },
     });
 
     const signatureRef = register({

@@ -112,7 +112,6 @@ const SignVerify = () => {
                                     <Switch {...hexField} isSmall />
                                 </SwitchWrapper>
                             }
-                            maxLength={MAX_LENGTH_MESSAGE}
                             innerRef={messageRef}
                             state={errorState(formErrors.message)}
                             bottomText={formErrors.message}
