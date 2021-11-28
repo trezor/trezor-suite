@@ -65,6 +65,11 @@ e2e web metadata:
   variables:
     TEST_GROUP: '@group:metadata'
 
+e2e web wallet:
+  extends: .e2e web
+  variables:
+    TEST_GROUP: '@group:wallet'
+
 # bounty group gathers flaky tests.
 e2e web bounty:
   extends: .e2e web
@@ -78,53 +83,51 @@ e2e web bounty:
 ## You may update snapshots either locally (see readme https://docs.trezor.io/trezor-suite/tests/e2e-web.html)
 ## But as this is quite time consuming you may prefer to do it in CI
 
-# TODO: should there be one job updating all? not sure
-e2e web suite snapshots:
-  when: manual
+.e2e web snapshots:
   extends: .e2e web
   variables:
     CYPRESS_SNAPSHOT: 1
     CYPRESS_updateSnapshots: 1
+
+e2e web suite snapshots:
+  when: manual
+  extends: .e2e web snapshots
+  variables:
     TEST_GROUP: '@group:suite'
 
 e2e web onboarding snapshots:
   when: manual
-  extends: .e2e web
+  extends: .e2e web snapshots
   variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
     TEST_GROUP: '@group:onboarding'
 
 e2e web device-management snapshots:
   when: manual
-  extends: .e2e web
+  extends: .e2e web snapshots
   variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
     TEST_GROUP: '@group:device-management'
 
 e2e web settings snapshots:
   when: manual
-  extends: .e2e web
+  extends: .e2e web snapshots
   variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
     TEST_GROUP: '@group:settings'
 
 e2e web metadata snapshots:
   when: manual
-  extends: .e2e web
+  extends: .e2e web snapshots
   variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
     TEST_GROUP: '@group:metadata'
+
+e2e web wallet snapshots:
+  when: manual
+  extends: .e2e web snapshots
+  variables:
+    TEST_GROUP: '@group:wallet'
 
 e2e web all snapshots:
   when: manual
-  extends: .e2e web
-  variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
+  extends: .e2e web snapshots
 
 # Nightly tests against latest trezor-firmware master
 .e2e web nightly:
@@ -158,6 +161,11 @@ e2e web metadata nightly:
   extends: .e2e web nightly
   variables:
     TEST_GROUP: '@group:metadata'
+
+e2e web wallet nightly:
+  extends: .e2e web nightly
+  variables:
+    TEST_GROUP: '@group:wallet'
 
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io

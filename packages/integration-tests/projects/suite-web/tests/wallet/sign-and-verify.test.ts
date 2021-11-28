@@ -1,4 +1,4 @@
-// @group:suite
+// @group:wallet
 // @retry=2
 
 const SEED = 'all all all all all all all all all all all all';
