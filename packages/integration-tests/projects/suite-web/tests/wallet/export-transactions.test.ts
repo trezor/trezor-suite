@@ -1,4 +1,4 @@
-// @group:suite
+// @group:wallet
 // @retry=2
 
 const downloadsFolder = Cypress.config('downloadsFolder');

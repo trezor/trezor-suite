@@ -1,4 +1,4 @@
-// @group:suite
+// @group:wallet
 // @retry=2
 
 // discovery should end within this time frame
