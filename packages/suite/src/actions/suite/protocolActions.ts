@@ -1,5 +1,6 @@
-import { PROTOCOL_SCHEME } from '@suite-support/Protocol';
 import { PROTOCOL } from './constants';
+import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
+import type { SendFormState } from '@suite-reducers/protocolReducer';
 
 export type ProtocolAction =
     | {
@@ -8,13 +9,13 @@ export type ProtocolAction =
       }
     | {
           type: typeof PROTOCOL.SAVE_COIN_PROTOCOL;
-          payload: { scheme: PROTOCOL_SCHEME; address: string; amount?: number };
+          payload: SendFormState;
       }
     | { type: typeof PROTOCOL.RESET };
 
-export const fillSendForm = (shouldFillSendForm: boolean): ProtocolAction => ({
+export const fillSendForm = (shouldFill: boolean): ProtocolAction => ({
     type: PROTOCOL.FILL_SEND_FORM,
-    payload: shouldFillSendForm,
+    payload: shouldFill,
 });
 
 export const saveCoinProtocol = (

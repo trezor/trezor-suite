@@ -19,7 +19,7 @@ import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';
 import { useSendFormImport } from './useSendFormImport';
 import { useFees } from './form/useFees';
-import { PROTOCOL_TO_SYMBOL } from '@suite/support/suite/Protocol';
+import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
@@ -235,9 +235,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // fill form using data from URI protocol handler e.g. 'bitcoin:address?amount=0.01'
     useEffect(() => {
         if (
-            protocol.sendForm.shouldFillSendForm &&
+            protocol.sendForm.shouldFill &&
             protocol.sendForm.scheme &&
-            props.selectedAccount.network.symbol === PROTOCOL_TO_SYMBOL[protocol.sendForm.scheme]
+            props.selectedAccount.network.symbol === PROTOCOL_TO_NETWORK[protocol.sendForm.scheme]
         ) {
             // for now we always fill only first output
             const outputIndex = 0;

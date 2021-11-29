@@ -6,16 +6,7 @@ import { getProtocolInfo } from '@suite-utils/parseUri';
 import { useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as protocolActions from '@suite-actions/protocolActions';
-
-import type { CoinType } from '@trezor/components';
-
-export enum PROTOCOL_SCHEME {
-    BITCOIN = 'bitcoin',
-}
-
-export const PROTOCOL_TO_SYMBOL: { [key: string]: CoinType } = {
-    [PROTOCOL_SCHEME.BITCOIN]: 'btc',
-};
+import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 
 const Protocol = () => {
     const { addToast, saveCoinProtocol } = useActions({
@@ -26,17 +17,21 @@ const Protocol = () => {
     const handleProtocolRequest = useCallback(
         uri => {
             const protocolInfo = getProtocolInfo(uri);
-
-            if (protocolInfo?.scheme === PROTOCOL_SCHEME.BITCOIN) {
-                saveCoinProtocol(protocolInfo.scheme, protocolInfo.address, protocolInfo.amount);
-
-                addToast({
-                    type: 'coin-scheme-protocol',
-                    address: protocolInfo.address,
-                    scheme: protocolInfo.scheme,
-                    amount: protocolInfo.amount,
-                    autoClose: false,
-                });
+            switch (protocolInfo?.scheme) {
+                case PROTOCOL_SCHEME.BITCOIN: {
+                    const { scheme, amount, address } = protocolInfo;
+                    saveCoinProtocol(scheme, address, amount);
+                    addToast({
+                        type: 'coin-scheme-protocol',
+                        address,
+                        scheme,
+                        amount,
+                        autoClose: false,
+                    });
+                    break;
+                }
+                default:
+                    break;
             }
         },
         [addToast, saveCoinProtocol],

@@ -1,8 +1,5 @@
 import { PROTOCOL } from '@suite-actions/constants';
-
-const initialState = {
-    sendForm: {},
-};
+import { initialState } from '@suite-reducers/protocolReducer';
 
 const protocol = {
     address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
@@ -14,9 +11,10 @@ export default [
     {
         description: 'Should fill send form',
         initialState: {
+            ...initialState,
             sendForm: {
                 ...protocol,
-                shouldFillSendForm: false,
+                shouldFill: false,
             },
         },
         actions: [
@@ -26,15 +24,17 @@ export default [
             },
         ],
         result: {
+            ...initialState,
             sendForm: {
                 ...protocol,
-                shouldFillSendForm: true,
+                shouldFill: true,
             },
         },
     },
     {
         description: 'Send form filled',
         initialState: {
+            ...initialState,
             sendForm: {
                 ...protocol,
             },
@@ -46,9 +46,10 @@ export default [
             },
         ],
         result: {
+            ...initialState,
             sendForm: {
                 ...protocol,
-                shouldFillSendForm: false,
+                shouldFill: false,
             },
         },
     },
@@ -62,18 +63,20 @@ export default [
             },
         ],
         result: {
+            ...initialState,
             sendForm: {
                 ...protocol,
-                shouldFillSendForm: false,
+                shouldFill: false,
             },
         },
     },
     {
         description: 'Protocol state reset',
         initialState: {
+            ...initialState,
             sendForm: {
                 ...protocol,
-                shouldFillSendForm: false,
+                shouldFill: false,
             },
         },
         actions: [

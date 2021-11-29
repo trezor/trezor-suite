@@ -9,7 +9,7 @@ import { useSelector } from '@suite-hooks';
 import { Translation } from '@suite-components';
 import { CoinLogo, variables } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
-import { PROTOCOL_TO_SYMBOL } from '@suite-support/Protocol';
+import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
 
 import type { NotificationEntry } from '@suite-reducers/notificationReducer';
 import type { Dispatch } from '@suite-types';
@@ -63,7 +63,7 @@ const withCoinProtocolScheme = (View: React.ComponentType<ViewProps>, props: Str
 
         const isCorrectCoinSendForm =
             useRouteMatch(`${process.env.ASSET_PREFIX || ''}/accounts/send`) &&
-            selectedAccount?.network?.symbol === PROTOCOL_TO_SYMBOL[notification.scheme];
+            selectedAccount?.network?.symbol === PROTOCOL_TO_NETWORK[notification.scheme];
 
         return (
             <View
@@ -78,7 +78,7 @@ const withCoinProtocolScheme = (View: React.ComponentType<ViewProps>, props: Str
                           }
                         : undefined
                 }
-                icon={<CoinLogo symbol={PROTOCOL_TO_SYMBOL[notification.scheme]} size={20} />}
+                icon={<CoinLogo symbol={PROTOCOL_TO_NETWORK[notification.scheme] as any} size={20} />}
                 onCancel={() => dispatch(protocolActions.resetProtocol())}
             />
         );

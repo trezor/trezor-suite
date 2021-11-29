@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import protocolReducer, { State as ProtocolState } from '@suite-reducers/protocolReducer';
 import * as protocolActions from '../protocolActions';
 import * as protocolConstants from '../constants/protocolConstants';
-import { PROTOCOL_SCHEME } from '@suite/support/suite/Protocol';
+import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 
 export const getInitialState = (state?: ProtocolState) => ({
     protocol: {
@@ -37,7 +37,7 @@ describe('Protocol actions', () => {
                     scheme: PROTOCOL_SCHEME.BITCOIN,
                     address: '12345abcde',
                     amount: 1.02,
-                    shouldFillSendForm: false,
+                    shouldFill: false,
                 },
             },
         });
@@ -60,7 +60,7 @@ describe('Protocol actions', () => {
                     scheme: PROTOCOL_SCHEME.BITCOIN,
                     address: '12345abcde',
                     amount: undefined,
-                    shouldFillSendForm: false,
+                    shouldFill: false,
                 },
             },
         });
@@ -119,7 +119,7 @@ describe('Protocol actions', () => {
                     scheme: PROTOCOL_SCHEME.BITCOIN,
                     address: '12345abcde',
                     amount: 1.02,
-                    shouldFillSendForm: false,
+                    shouldFill: false,
                 },
             },
         });
