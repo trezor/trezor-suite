@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { TrezorLink, Translation, Modal, BundleLoader } from '@suite-components';
 import * as URLS from '@suite-constants/urls';
-import { parseUri } from '@suite-utils/parseUri';
+import { parseQuery } from '@suite-utils/parseUri';
 import { Icon, colors, P } from '@trezor/components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 
@@ -92,14 +92,19 @@ const QrScanner = ({ onCancel, decision }: Props) => {
         }
     };
 
-    const handleScan = (data: string | null) => {
-        if (data) {
+    const handleScan = (uri: string | null) => {
+        if (uri) {
             try {
-                const parsedUri = parseUri(data);
-                if (parsedUri) {
-                    decision.resolve(parsedUri);
+                const query = parseQuery(uri);
+                if (query) {
+                    decision.resolve({
+                        uri,
+                        ...query,
+                    });
                     setReaderLoaded(true);
                     onCancel();
+                } else {
+                    handleError({ name: 'unknown' });
                 }
             } catch (error) {
                 handleError(error);

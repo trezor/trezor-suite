@@ -1,72 +1,49 @@
 import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 
-/* eslint-disable prefer-destructuring */
-export interface ParsedURI {
-    address: string;
-    amount?: string;
-}
-
-const stripPrefix = (str: string): string => {
-    if (!str.match(':')) {
-        return str;
-    }
-    const parts = str.split(':');
-    parts.shift();
-    return parts.join('');
-};
-
 // Parse URL query string (like 'foo=bar&baz=1337) into an object
-export const parseQuery = (str: string) =>
-    str
-        .split('&')
-        .map(val => val.split('='))
-        .reduce((vals: { [key: string]: any }, pair: string[]) => {
-            if (pair.length > 1) {
-                vals[pair[0]] = pair[1];
-            }
-            return vals;
-        }, {});
-
-// Parse a string read from a bitcoin QR code into an object
-export const parseUri = (uri: string): ParsedURI => {
-    const str = stripPrefix(uri);
-    const query: string[] = str.split('?');
-    const values: Record<string, any> = query.length > 1 ? parseQuery(query[1]) : {};
-    const address = query[0] || '';
-
-    return {
-        ...values,
-        address,
-    };
+export const parseQuery = (uri: string) => {
+    const params: Record<string, string | undefined> = {};
+    try {
+        const index = uri.indexOf('?');
+        new URLSearchParams(uri.substring(index)).forEach((v, k) => {
+            params[k] = v;
+        });
+    } catch (e) {
+        // empty
+    }
+    return params;
 };
 
-interface BaseProtocol {
-    scheme: string;
+export const parseUri = (uri: string) => {
+    try {
+        return new URL(uri);
+    } catch (e) {
+        // empty
+    }
+};
+
+export type CoinProtocolInfo = {
+    scheme: PROTOCOL_SCHEME.BITCOIN;
     address: string;
-}
-
-interface BitcoinProtocol extends BaseProtocol {
-    scheme: PROTOCOL_SCHEME;
     amount?: number;
-}
+};
 
-export const getProtocolInfo = (uri: string): BitcoinProtocol | null => {
-    const { protocol, pathname, search } = new URL(uri.replace('://', ':'));
-    const scheme = protocol.slice(0, -1);
+export const getProtocolInfo = (uri: string): CoinProtocolInfo | null => {
+    const url = parseUri(uri);
+    if (!url) return null;
 
-    const params: { [key: string]: string } = {};
+    const { protocol, pathname, host, search } = url;
+    const scheme = protocol.slice(0, -1); // slice ":" from protocol
 
-    new URLSearchParams(search).forEach((v, k) => {
-        params[k] = v;
-    });
+    const params = parseQuery(search);
 
-    const floatAmount = Number.parseFloat(params.amount);
-    const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
-
-    if (scheme === PROTOCOL_SCHEME.BITCOIN && pathname) {
+    if (scheme === PROTOCOL_SCHEME.BITCOIN) {
+        if (!pathname && !host) return null; // address may be in pathname (regular bitcoin:addr) or host (bitcoin://addr)
+        const floatAmount = Number.parseFloat(params.amount ?? '');
+        const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
         return {
             scheme,
-            address: pathname,
+            address: pathname?.replace('//', '') || host,
             amount,
         };
     }
