@@ -125,6 +125,21 @@ Add event to the analytics overview in the [company Notion](https://www.notion.s
 
 ## Changelog
 
+### 1.15
+
+Added:
+
+-   suite-ready
+    -   earlyAccessProgram: boolean
+-   menu/goto/early-access
+-   settings/general/early-access
+    -   allowPrerelease: boolean
+-   settings/general/early-access/check-for-updates
+    -   checkNow: boolean
+-   settings/general/early-access/download-stable
+-   settings/general/goto/early-access
+    -   allowPrerelease: boolean
+
 ### 1.14
 
 Added:

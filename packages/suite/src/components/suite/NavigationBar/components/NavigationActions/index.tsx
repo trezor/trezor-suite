@@ -139,6 +139,7 @@ const NavigationActions = (props: Props) => {
                 (props.isMobileLayout ? (
                     <ActionItem
                         onClick={() => {
+                            analytics.report({ type: 'menu/goto/early-access' });
                             action('settings-index');
                         }}
                         label={<Translation id="TR_EARLY_ACCESS_MENU" />}

@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import { Button } from '@trezor/components';
 import { Translation, Modal, Image, TrezorLink } from '@suite-components';
+import { useAnalytics } from '@suite-hooks';
 import styled from 'styled-components';
 import { ImageWrapper, ButtonWrapper, Description, LeftCol, RightCol, Title } from './styles';
 import { SUITE_URL } from '@suite-constants/urls';
@@ -14,12 +15,20 @@ interface Props {
 }
 
 const EarlyAccessDisable = ({ hideWindow }: Props) => {
+    const analytics = useAnalytics();
+
     const [enabled, setEnabled] = useState(true);
 
     const allowPrerelease = useCallback(() => {
+        analytics.report({
+            type: 'settings/general/early-access',
+            payload: {
+                allowPrerelease: false,
+            },
+        });
         window.desktopApi?.allowPrerelease(false);
         setEnabled(false);
-    }, []);
+    }, [analytics]);
 
     return enabled ? (
         <Modal>
@@ -65,7 +74,15 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
                     </Button>
                 </LeftCol>
                 <RightCol>
-                    <Link variant="nostyle" href={SUITE_URL}>
+                    <Link
+                        variant="nostyle"
+                        href={SUITE_URL}
+                        onClick={() => {
+                            analytics.report({
+                                type: 'settings/general/early-access/download-stable',
+                            });
+                        }}
+                    >
                         <Button icon="EXTERNAL_LINK" alignIcon="right" fullWidth>
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
                         </Button>

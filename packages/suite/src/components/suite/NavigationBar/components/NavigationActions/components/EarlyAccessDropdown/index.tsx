@@ -3,7 +3,7 @@ import { Dropdown, DropdownRef, Icon, useTheme, variables } from '@trezor/compon
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import ActionItem from '../ActionItem';
-import { useActions } from '@suite-hooks';
+import { useActions, useAnalytics } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
 const Wrapper = styled.div<Pick<Props, 'marginLeft'>>`
@@ -50,6 +50,8 @@ interface Props {
 }
 
 const EarlyAccessDropdown = (props: Props) => {
+    const analytics = useAnalytics();
+
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
     const theme = useTheme();
@@ -80,6 +82,7 @@ const EarlyAccessDropdown = (props: Props) => {
                                     <Status
                                         onClick={() => {
                                             goto('settings-index');
+                                            analytics.report({ type: 'menu/goto/early-access' });
                                         }}
                                     >
                                         <Details>

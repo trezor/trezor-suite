@@ -158,9 +158,15 @@ const Settings = () => {
     // Auto Updater
     const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(true), []);
     const setupEarlyAccess = useCallback(() => {
+        analytics.report({
+            type: 'settings/general/goto/early-access',
+            payload: {
+                allowPrerelease: desktopUpdate.allowPrerelease,
+            },
+        });
         openEarlyAccessSetup(desktopUpdate.allowPrerelease);
         window.desktopApi?.cancelUpdate(); // stop downloading the update if it is in progress to prevent confusing state switching
-    }, [openEarlyAccessSetup, desktopUpdate.allowPrerelease]);
+    }, [analytics, openEarlyAccessSetup, desktopUpdate.allowPrerelease]);
     const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
     const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);
 
