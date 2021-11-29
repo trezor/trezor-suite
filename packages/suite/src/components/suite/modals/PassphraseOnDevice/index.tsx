@@ -61,6 +61,7 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus, ...res
                 />
             }
             description={<Translation id="TR_PASSPHRASE_CASE_SENSITIVE" />}
+            data-test="@modal/enter-passphrase-on-device"
             {...rest}
         >
             <DeviceConfirmImage device={device} />
