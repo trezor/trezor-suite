@@ -70,7 +70,7 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
             <Description>
                 {typeof description === 'string' ? <Translation id={description} /> : description}
             </Description>
-            <StyledImage image="UNI_ERROR" />
+            <StyledImage image="HOLOGRAM_WARNING" />
             <Actions>
                 {actions.map(a => (
                     <Button

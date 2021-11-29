@@ -35,7 +35,7 @@ export const WarningImg = () => (
 );
 
 export const ErrorImg = () => (
-    <StyledImg alt="" src={resolveStaticPath(`images/svg/uni-error.svg`)} />
+    <StyledImg alt="" src={resolveStaticPath(`images/svg/hologram-warning.svg`)} />
 );
 
 export const DisconnectImg = () => (

@@ -61,7 +61,7 @@ const WipeDevice = ({ onCancel }: Props) => {
             }
             centerContent
         >
-            <Image image="UNI_ERROR" />
+            <Image image="HOLOGRAM_WARNING" />
             <CheckItems>
                 <Col>
                     <CheckItem

@@ -140,7 +140,7 @@ const BackupStep = () => {
                     }
                 >
                     <OptionsWrapper fullWidth={false}>
-                        <StyledImage image="UNI_ERROR" />
+                        <StyledImage image="HOLOGRAM_WARNING" />
                     </OptionsWrapper>
                 </OnboardingStepBox>
             )}

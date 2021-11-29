@@ -90,7 +90,6 @@ const SVG_IMAGES = {
     EMPTY_WALLET: 'wallet-empty.svg',
     ANALYTICS: 'analytics.svg',
     WELCOME: 'welcome.svg',
-    UNI_ERROR: 'uni-error.svg',
     UNI_SUCCESS: 'uni-success.svg',
     UNI_WARNING: 'uni-warning.svg',
     UNI_EMPTY_PAGE: 'uni-empty-page.svg',

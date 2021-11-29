@@ -78,7 +78,7 @@ const ConfirmUnverifiedAddress = ({ address, addressPath, onCancel }: Props) => 
             }
         >
             <ImageWrapper>
-                <Image image="UNI_ERROR" />
+                <Image image="HOLOGRAM_WARNING" />
             </ImageWrapper>
             <Actions>
                 <Button variant="secondary" onClick={() => unverifiedAddress()}>

@@ -45,7 +45,7 @@ const DeviceDisconnected = ({ label }: Props) => (
             </P>
         </ContentCol>
         <ImageCol>
-            <Image image="UNI_ERROR" height={70} />
+            <Image image="HOLOGRAM_WARNING" height={70} />
         </ImageCol>
     </Wrapper>
 );

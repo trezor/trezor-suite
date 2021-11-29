@@ -17,7 +17,7 @@ const Error = ({ error }: Props) => (
         <P size="small">
             <Translation id="TR_RECOVERY_ERROR" values={{ error }} />
         </P>
-        <StyledImage image="UNI_ERROR" width="160" />
+        <StyledImage image="HOLOGRAM_WARNING" width="160" />
     </>
 );
 
