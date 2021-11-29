@@ -36,6 +36,7 @@ const Options = styled.div`
 `;
 
 const Option = styled.div<{ isSelected: boolean }>`
+    white-space: nowrap;
     padding: 0 14px;
     margin: 2px 0;
     padding-top: 1px;

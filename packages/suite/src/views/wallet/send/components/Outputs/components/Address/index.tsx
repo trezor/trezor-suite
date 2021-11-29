@@ -7,6 +7,7 @@ import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions, useDevice } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
+import { getProtocolInfo } from '@suite-utils/parseUri';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -15,8 +16,10 @@ import {
 } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
+import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 import ConvertAddress from './components/Convert';
-import { Output } from '@wallet-types/sendForm';
+import type { Account } from '@wallet-types';
+import type { Output } from '@wallet-types/sendForm';
 
 const Label = styled.div`
     display: flex;
@@ -47,6 +50,14 @@ interface Props {
     outputsCount: number;
     output: Partial<Output>;
 }
+
+const parseQrData = (uri: string, symbol: Account['symbol']) => {
+    const protocol = getProtocolInfo(uri);
+    if (protocol?.scheme === PROTOCOL_SCHEME.BITCOIN)
+        return { address: protocol.address, amount: protocol.amount };
+    if (isAddressValid(uri, symbol)) return { address: uri };
+    return {};
+};
 
 const Address = ({ output, outputId, outputsCount }: Props) => {
     const theme = useTheme();
@@ -91,11 +102,13 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                     variant="tertiary"
                     icon="QR"
                     onClick={async () => {
-                        const result = await openQrModal();
-                        if (result) {
-                            setValue(inputName, result.address, { shouldValidate: true });
-                            if (result.amount) {
-                                setValue(`outputs[${outputId}].amount`, result.amount, {
+                        const uri = await openQrModal();
+                        if (!uri) return;
+                        const { address, amount } = parseQrData(uri, symbol);
+                        if (address) {
+                            setValue(inputName, address, { shouldValidate: true });
+                            if (amount) {
+                                setValue(`outputs[${outputId}].amount`, amount, {
                                     shouldValidate: true,
                                 });
                                 // if amount is set compose by amount

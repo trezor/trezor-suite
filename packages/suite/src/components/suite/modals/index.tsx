@@ -168,7 +168,13 @@ const getUserContextModal = ({ modal, onCancel }: SharedProps) => {
         case 'wipe-device':
             return <WipeDevice onCancel={onCancel} />;
         case 'qr-reader':
-            return <QrScanner decision={payload.decision} onCancel={onCancel} />;
+            return (
+                <QrScanner
+                    decision={payload.decision}
+                    allowPaste={payload.allowPaste}
+                    onCancel={onCancel}
+                />
+            );
         case 'transaction-detail':
             return <TransactionDetail {...payload} onCancel={onCancel} />;
         case 'passphrase-duplicate':
