@@ -6,8 +6,10 @@ import Download from '@suite-web-landing-components/Download';
 import Feature from '@suite-web-landing-components/Feature';
 import { resolveStaticPath } from '@suite-utils/build';
 import Metadata from '@suite-components/Metadata';
+import CollapsibleBox from '@suite-components/CollapsibleBox';
 import { URLS } from '@suite-constants';
 import enLocale from '@trezor/suite-data/files/translations/en.json';
+import styled from 'styled-components';
 import {
     Wrapper,
     StyledHeroCta,
@@ -20,8 +22,19 @@ import {
     StyledP,
     StyledSoon,
     TranslationModeTrigger,
+    FromMytrezorBanner,
+    BannerWrap,
+    InnerWrap,
+    BannerTitle,
+    BannerDesc,
+    CollapsibleBoxContent,
+    CollapsibleBoxContentHeadline,
+    CollapsibleBoxContentP,
+    IconWrap,
 } from '@suite-web-landing-components/LandingPage';
 import { switchFavicon } from '../utils/switchFavicon';
+import { refFromMytrezor } from '../utils/refFromMytrezor';
+import { Icon, colors } from '@trezor/components';
 
 const features = [
     {
@@ -49,14 +62,31 @@ const features = [
     },
 ];
 
+const StyledCollapsibleBox = styled(CollapsibleBox)`
+    width: 100%;
+`;
+
+const StyledCollapsibleBoxLink = styled.span`
+    color: ${colors.BG_GREEN};
+    cursor: pointer;
+    & :hover {
+        text-decoration: underline;
+    }
+`;
+
 const pathToApp = './web';
 
 const Index = () => {
     const [translationMode, setTranslationMode] = useState(false);
+    const [fromMytrezor, setFromMytrezor] = useState(false);
+    const ref = React.createRef<HTMLDivElement>();
 
     useEffect(() => {
         switchFavicon();
+        setFromMytrezor(refFromMytrezor());
     }, []);
+
+    const isFromMytrezor = fromMytrezor === true;
 
     return (
         <TranslationModeContext.Provider value={translationMode}>
@@ -67,16 +97,26 @@ const Index = () => {
                     )}`}
                 />
                 <Layout pathToApp={pathToApp}>
-                    <Wrapper>
+                    <Wrapper ref={ref}>
                         <StyledHeroCta>
                             <StyledHeadline>
-                                <Translation
-                                    id="TR_SUITE_WEB_LANDING_HEADLINE"
-                                    values={{
-                                        em: chunks => <em>{chunks}</em>,
-                                        lineBreak: <br />,
-                                    }}
-                                />
+                                {isFromMytrezor ? (
+                                    <Translation
+                                        id="TR_SUITE_WEB_LANDING_HEADLINE_FROM_MYTREZOR"
+                                        values={{
+                                            em: chunks => <em>{chunks}</em>,
+                                            lineBreak: <br />,
+                                        }}
+                                    />
+                                ) : (
+                                    <Translation
+                                        id="TR_SUITE_WEB_LANDING_HEADLINE"
+                                        values={{
+                                            em: chunks => <em>{chunks}</em>,
+                                            lineBreak: <br />,
+                                        }}
+                                    />
+                                )}
                             </StyledHeadline>
                             <StyledSubheadline>
                                 <Translation id="TR_SUITE_WEB_LANDING_SUB_HEADLINE" />
@@ -85,6 +125,103 @@ const Index = () => {
                                 <Download pathToApp={pathToApp} />
                             </DownloadWrapper>
                         </StyledHeroCta>
+
+                        {isFromMytrezor && (
+                            <FromMytrezorBanner>
+                                <StyledCollapsibleBox
+                                    variant="large"
+                                    withButton
+                                    disableShadow
+                                    heading={
+                                        <>
+                                            <BannerWrap>
+                                                <IconWrap>
+                                                    <Icon
+                                                        size={38}
+                                                        icon="TREZOR_LOGO"
+                                                        color="#fff"
+                                                    />
+                                                </IconWrap>
+                                                <InnerWrap>
+                                                    <BannerTitle>
+                                                        <Translation id="TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR" />
+                                                    </BannerTitle>
+                                                    <BannerDesc>
+                                                        <Translation id="TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR" />
+                                                    </BannerDesc>
+                                                </InnerWrap>
+                                            </BannerWrap>
+                                        </>
+                                    }
+                                >
+                                    <CollapsibleBoxContent>
+                                        <CollapsibleBoxContentHeadline>
+                                            <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0" />
+                                        </CollapsibleBoxContentHeadline>
+                                        <CollapsibleBoxContentP>
+                                            <Translation
+                                                id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_0"
+                                                values={{
+                                                    strong: chunks => <strong>{chunks}</strong>,
+                                                }}
+                                            />
+                                        </CollapsibleBoxContentP>
+                                        <CollapsibleBoxContentP>
+                                            <Translation
+                                                id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1"
+                                                values={{
+                                                    strong: chunks => <strong>{chunks}</strong>,
+                                                }}
+                                            />
+                                        </CollapsibleBoxContentP>
+                                        <CollapsibleBoxContentP>
+                                            <Translation
+                                                id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2"
+                                                values={{
+                                                    strong: chunks => <strong>{chunks}</strong>,
+                                                }}
+                                            />
+                                        </CollapsibleBoxContentP>
+
+                                        <CollapsibleBoxContentHeadline>
+                                            <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1" />
+                                        </CollapsibleBoxContentHeadline>
+                                        <CollapsibleBoxContentP>
+                                            <Translation
+                                                id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3"
+                                                values={{
+                                                    strong: chunks => <strong>{chunks}</strong>,
+                                                }}
+                                            />
+                                        </CollapsibleBoxContentP>
+
+                                        <CollapsibleBoxContentHeadline>
+                                            <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2" />
+                                        </CollapsibleBoxContentHeadline>
+                                        <CollapsibleBoxContentP>
+                                            We recommend to{' '}
+                                            <StyledCollapsibleBoxLink
+                                                onClick={() =>
+                                                    ref?.current?.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.scrollTo(
+                                                        {
+                                                            top: 0,
+                                                            behavior: 'smooth',
+                                                        },
+                                                    )
+                                                }
+                                            >
+                                                download Trezor Suite for desktop
+                                            </StyledCollapsibleBoxLink>
+                                            , to isolate your activity and protect from phishing.
+                                            You can also use the web app and enjoy the same core
+                                            functionality, but you will not be able to use more
+                                            advanced features like Tor.
+                                        </CollapsibleBoxContentP>
+                                    </CollapsibleBoxContent>
+                                </StyledCollapsibleBox>
+                            </FromMytrezorBanner>
+                        )}
+
                         <FeaturesWrapper>
                             {features.map((item, key) => (
                                 <Feature
@@ -126,6 +263,7 @@ const Index = () => {
                         </StyledCta>
                     </Wrapper>
                 </Layout>
+
                 <TranslationModeTrigger onClick={() => setTranslationMode(prev => !prev)} />
             </IntlProvider>
         </TranslationModeContext.Provider>

@@ -6233,6 +6233,24 @@ export default defineMessages({
         id: 'TR_SUITE_WEB_LANDING_HEADLINE',
         defaultMessage: 'Managing crypto just got{lineBreak}<em>safer and easier</em>',
     },
+    TR_SUITE_WEB_LANDING_HEADLINE_FROM_MYTREZOR: {
+        id: 'TR_SUITE_WEB_LANDING_HEADLINE_FROM_MYTREZOR',
+        defaultMessage:
+            'Trezor Suite makes managing{lineBreak}<em>your crypto safer and easier</em>',
+    },
+    TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR: {
+        id: 'TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR',
+        defaultMessage: 'Coming from Trezor Wallet?',
+    },
+    TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR: {
+        id: 'TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR',
+        defaultMessage:
+            'Trezor Suite offers new features, enhanced security and a more intuitive user interface.',
+    },
+    TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR: {
+        id: 'TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR',
+        defaultMessage: 'Read why',
+    },
     TR_SUITE_WEB_LANDING_SUB_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_SUB_HEADLINE',
         defaultMessage: 'Take control of your Trezor with our desktop & browser app.',
@@ -6372,6 +6390,38 @@ export default defineMessages({
     TR_SUITE_WEB_LANDING_START_BOTTOM_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_START_BOTTOM_HEADLINE',
         defaultMessage: 'Dozens of features to discover.{lineBreak}Try Suite now.',
+    },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0',
+        defaultMessage: 'Trezor Suite is replacing Trezor Wallet',
+    },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_0: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_0',
+        defaultMessage:
+            '<strong>Move to Trezor Suite today to enjoy new features, more privacy, and regular updates.</strong>',
+    },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1',
+        defaultMessage:
+            "Have you tried Trezor Suite yet? It's a brand new desktop and browser app that lets you do more with your hardware wallet. The old Trezor Wallet web interface <strong>will not be supported from January 31st 2022</strong>, so now's the time to get familiar with Trezor Suite.",
+    },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2',
+        defaultMessage:
+            "This won't affect your coins or keys, you'll just need to use Trezor Suite instead of Trezor Wallet to manage your assets. It's best experienced as a <strong>desktop app</strong>, which includes privacy options and isolation from phishing, but a <strong>web version</strong> is also available for those who need it.",
+    },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1',
+        defaultMessage: "What's changed?",
+    },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3',
+        defaultMessage:
+            "Trezor Suite introduces improvements to security, usability and privacy. It is easier to navigate and use, and has been built to be more powerful than its predecessor, so you can use the Tor privacy network at the flick of a switch, enjoy quicker transactions with RBF, and look forward to the likes of CoinJoin, which helps anonymize Bitcoin transactions. Trezor Suite also has all the features you're used to from the old Trezor Wallet so you can hit the ground running!",
+    },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2',
+        defaultMessage: 'How to get started',
     },
     TR_COLOR_SCHEME: {
         id: 'TR_COLOR_SCHEME',
