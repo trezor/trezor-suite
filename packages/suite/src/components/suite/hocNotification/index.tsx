@@ -24,6 +24,23 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return withCoinProtocol(View, notification);
         case 'aopp-protocol':
             return withAoppProtocol(View, notification);
+        case 'aopp-success':
+            return simple(View, {
+                notification,
+                variant: 'success',
+                message: 'TOAST_AOPP_SUCCESS',
+            });
+        case 'aopp-error':
+            return simple(View, {
+                notification,
+                variant: 'error',
+                message: {
+                    id: 'TOAST_AOPP_ERROR',
+                    values: {
+                        error: notification.error,
+                    },
+                },
+            });
         case 'acquire-error':
             return simple(View, {
                 notification,
