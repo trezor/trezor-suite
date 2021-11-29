@@ -1233,7 +1233,7 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
     TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN: {
-        defaultMessage: 'Autoreloading in',
+        defaultMessage: 'Offers refresh in',
         id: 'TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN',
     },
     TR_COINMARKET_NO_OFFERS_HEADER: {
@@ -1242,12 +1242,12 @@ export default defineMessages({
     },
     TR_COINMARKET_NO_OFFERS_MESSAGE: {
         defaultMessage:
-            "Sorry, we don't have any offers at the moment. Try to reload the page or change your query.",
+            "Sorry, our providers don't accommodate this pairing at this moment. Try a different coin combination to see offers.",
         id: 'TR_COINMARKET_NO_OFFERS_MESSAGE',
     },
     TR_COINMARKET_NO_OFFERS_LOADING_FAILED_MESSAGE: {
         defaultMessage:
-            "Sorry, we don't have any offers at the moment due to server connectivity issue.",
+            "Sorry, our providers can't make any offers due to connectivity issues. Please refresh this page.",
         id: 'TR_COINMARKET_NO_OFFERS_LOADING_FAILED_MESSAGE',
     },
     TR_COINMARKET_NO_OFFERS_BACK_BUTTON: {
@@ -1255,7 +1255,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_NO_OFFERS_BACK_BUTTON',
     },
     TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON: {
-        defaultMessage: 'Reload page',
+        defaultMessage: 'Refresh offers',
         id: 'TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON',
     },
     TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC: {
