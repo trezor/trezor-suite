@@ -247,6 +247,9 @@ export const getSelectedAccount = (
 
 export const getNetwork = (symbol: string) => NETWORKS.find(c => c.symbol === symbol) || null;
 
+export const isNetworkSymbol = (symbol: string): symbol is Network['symbol'] =>
+    !!getNetwork(symbol);
+
 /**
  * Returns a string used as an index to separate txs for given account inside a transactions reducer
  *
