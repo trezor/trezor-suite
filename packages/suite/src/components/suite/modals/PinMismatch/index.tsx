@@ -31,7 +31,7 @@ const PinMismatch = (props: ModalProps) => {
             description={<Translation id="TR_PIN_MISMATCH_TEXT" />}
             data-test="@pin-mismatch"
         >
-            <StyledImage image="HOLOGRAM_WARNING" />
+            <StyledImage image="UNIVERSAL_ERROR" />
             <Button onClick={onTryAgain} data-test="@pin-mismatch/try-again-button">
                 <Translation id="TR_TRY_AGAIN" />
             </Button>

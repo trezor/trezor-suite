@@ -51,7 +51,7 @@ const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
     });
     return (
         <Wrapper>
-            <Image src={resolveStaticPath('/images/svg/hologram-warning.svg')} />
+            <Image src={resolveStaticPath('/images/svg/universal-error.svg')} />
             <Title>
                 <Translation id="TR_SELL_DETAIL_ERROR_TITLE" />
             </Title>

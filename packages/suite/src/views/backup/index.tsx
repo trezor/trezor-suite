@@ -160,7 +160,7 @@ const Backup = (props: Props) => {
                                 <Translation id="TR_LEARN_MORE" />
                             </ExternalLink>
                         </StyledP>
-                        <StyledImage image="HOLOGRAM_WARNING" />
+                        <StyledImage image="UNIVERSAL_ERROR" />
                     </>
                 )}
 
@@ -255,7 +255,7 @@ const Backup = (props: Props) => {
             {backup.status === 'finished' && backup.error && (
                 <>
                     <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
-                    <StyledImage image="HOLOGRAM_WARNING" />
+                    <StyledImage image="UNIVERSAL_ERROR" />
                     <Buttons>
                         <Col>
                             <CloseButton onClick={onClose} />

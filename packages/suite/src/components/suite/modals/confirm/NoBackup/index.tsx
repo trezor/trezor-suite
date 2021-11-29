@@ -26,7 +26,7 @@ const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup, ...rest }: Pro
         {...rest}
     >
         <ImageWrapper>
-            <Image image="HOLOGRAM_WARNING" />
+            <Image image="UNIVERSAL_ERROR" />
         </ImageWrapper>
         <Actions>
             <Button

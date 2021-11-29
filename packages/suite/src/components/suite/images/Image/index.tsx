@@ -68,7 +68,7 @@ const SVG_IMAGES = {
     CONFRIM_ON_DEVICE_2: 'confirm-on-device-2.svg', // todo: not used
     CREATE_NEW: 'create-new.svg',
     EXISTING_USER: 'existing-user.svg',
-    HOLOGRAM_WARNING: 'hologram-warning.svg', // todo: not used
+    UNIVERSAL_ERROR: 'universal-error.svg',
     MODEL_1: 'model-1.svg',
     MODEL_2: 'model-2.svg',
     NEW_USER: 'new-user.svg',
