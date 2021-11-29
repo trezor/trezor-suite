@@ -3,8 +3,8 @@ import { DEVICE } from 'trezor-connect';
 import { NOTIFICATION, SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 import { Network } from '@wallet-types';
-import { PROTOCOL_SCHEME } from '@suite/support/suite/Protocol';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
+import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 
 interface Options {
     seen?: boolean;

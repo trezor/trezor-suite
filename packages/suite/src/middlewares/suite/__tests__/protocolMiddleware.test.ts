@@ -72,7 +72,7 @@ describe('Protocol middleware', () => {
                 address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
                 amount: 0.001,
                 scheme: 'bitcoin',
-                shouldFillSendForm: false,
+                shouldFill: false,
             },
         });
 
@@ -83,7 +83,7 @@ describe('Protocol middleware', () => {
                     address: 'bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe',
                     amount: 0.001,
                     scheme: 'bitcoin',
-                    shouldFillSendForm: false,
+                    shouldFill: false,
                 },
                 type: '@protocol/save-coin-protocol',
             },

@@ -1,4 +1,4 @@
-import { PROTOCOL_SCHEME } from '@suite-support/Protocol';
+import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 
 /* eslint-disable prefer-destructuring */
 export interface ParsedURI {
