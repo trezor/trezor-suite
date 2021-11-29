@@ -9,9 +9,10 @@ import * as protocolActions from '@suite-actions/protocolActions';
 import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 
 const Protocol = () => {
-    const { addToast, saveCoinProtocol } = useActions({
+    const { addToast, saveCoinProtocol, saveAoppProtocol } = useActions({
         addToast: notificationActions.addToast,
         saveCoinProtocol: protocolActions.saveCoinProtocol,
+        saveAoppProtocol: protocolActions.saveAoppProtocol,
     });
 
     const handleProtocolRequest = useCallback(
@@ -30,11 +31,27 @@ const Protocol = () => {
                     });
                     break;
                 }
+                case PROTOCOL_SCHEME.AOPP: {
+                    const { asset, msg, callback, format } = protocolInfo;
+                    saveAoppProtocol({
+                        asset,
+                        message: msg,
+                        callback,
+                        format,
+                    });
+                    addToast({
+                        type: 'aopp-protocol',
+                        message: msg,
+                        asset,
+                        autoClose: false,
+                    });
+                    break;
+                }
                 default:
                     break;
             }
         },
-        [addToast, saveCoinProtocol],
+        [addToast, saveCoinProtocol, saveAoppProtocol],
     );
 
     const { search } = useLocation();

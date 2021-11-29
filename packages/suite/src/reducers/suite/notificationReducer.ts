@@ -91,6 +91,11 @@ export type ToastPayload = (
           address: string;
           amount?: number;
       }
+    | {
+          type: 'aopp-protocol';
+          message: string;
+          asset: Network['symbol'];
+      }
 ) &
     Options;
 

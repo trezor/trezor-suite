@@ -7066,4 +7066,12 @@ export default defineMessages({
         id: 'TR_DO_YOU_REALLY_WANT_TO_SKIP',
         defaultMessage: 'Do you really want to skip this step?',
     },
+    TOAST_AOPP_FILL_HEADER: {
+        id: 'TOAST_AOPP_FILL_HEADER',
+        defaultMessage: 'Go to Sign & Verify form',
+    },
+    TOAST_AOPP_FILL_ACTION: {
+        id: 'TOAST_AOPP_FILL_ACTION',
+        defaultMessage: 'Fill form',
+    },
 });
