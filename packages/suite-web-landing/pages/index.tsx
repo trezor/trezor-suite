@@ -21,7 +21,9 @@ import {
     StyledSoon,
     TranslationModeTrigger,
 } from '@suite-web-landing-components/LandingPage';
+import StyledFromMytrezorBanner from '@suite-web-landing-components/FromMytrezorBanner';
 import { switchFavicon } from '../utils/switchFavicon';
+import { useRouter } from 'next/router';
 
 const features = [
     {
@@ -54,6 +56,10 @@ const pathToApp = './web';
 const Index = () => {
     const [translationMode, setTranslationMode] = useState(false);
 
+    const router = useRouter();
+    const { fromMytrezor } = router.query;
+    const isFromMytrezor = fromMytrezor === 'true';
+
     useEffect(() => {
         switchFavicon();
     }, []);
@@ -71,7 +77,11 @@ const Index = () => {
                         <StyledHeroCta>
                             <StyledHeadline>
                                 <Translation
-                                    id="TR_SUITE_WEB_LANDING_HEADLINE"
+                                    id={
+                                        isFromMytrezor
+                                            ? 'TR_SUITE_WEB_LANDING_HEADLINE_FROM_MYTREZOR'
+                                            : 'TR_SUITE_WEB_LANDING_HEADLINE'
+                                    }
                                     values={{
                                         em: chunks => <em>{chunks}</em>,
                                         lineBreak: <br />,
@@ -85,6 +95,9 @@ const Index = () => {
                                 <Download pathToApp={pathToApp} />
                             </DownloadWrapper>
                         </StyledHeroCta>
+
+                        {isFromMytrezor && <StyledFromMytrezorBanner />}
+
                         <FeaturesWrapper>
                             {features.map((item, key) => (
                                 <Feature
@@ -126,6 +139,7 @@ const Index = () => {
                         </StyledCta>
                     </Wrapper>
                 </Layout>
+
                 <TranslationModeTrigger onClick={() => setTranslationMode(prev => !prev)} />
             </IntlProvider>
         </TranslationModeContext.Provider>

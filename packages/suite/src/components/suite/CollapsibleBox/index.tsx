@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import useMeasure from 'react-use/lib/useMeasure';
-
 import { Icon, variables } from '@trezor/components';
 
 const Wrapper = styled.div<Pick<Props, 'variant'>>`
@@ -123,6 +122,13 @@ interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {
     noContentPadding?: boolean;
     headerJustifyContent?: 'space-between' | 'center';
     opened?: boolean;
+    headingButton?: ({
+        collapsed,
+        animatedIcon,
+    }: {
+        collapsed: boolean;
+        animatedIcon: boolean;
+    }) => React.ReactNode;
 }
 
 const CollapsibleBox = ({
@@ -133,6 +139,7 @@ const CollapsibleBox = ({
     variant = 'small',
     headerJustifyContent = 'space-between',
     opened = false,
+    headingButton,
     ...rest
 }: Props) => {
     const [collapsed, setCollapsed] = useState(!opened);
@@ -162,15 +169,19 @@ const CollapsibleBox = ({
                 }}
             >
                 <Heading variant={variant}>{heading ?? iconLabel}</Heading>
-                <IconWrapper headerJustifyContent={headerJustifyContent}>
-                    {heading && iconLabel && <IconLabel>{iconLabel}</IconLabel>}
-                    <Icon
-                        icon="ARROW_DOWN"
-                        size={variant === 'tiny' ? 12 : 20}
-                        canAnimate={animatedIcon}
-                        isActive={!collapsed}
-                    />
-                </IconWrapper>
+                {headingButton ? (
+                    headingButton({ collapsed, animatedIcon })
+                ) : (
+                    <IconWrapper headerJustifyContent={headerJustifyContent}>
+                        {heading && iconLabel && <IconLabel>{iconLabel}</IconLabel>}
+                        <Icon
+                            icon="ARROW_DOWN"
+                            size={variant === 'tiny' ? 12 : 20}
+                            canAnimate={animatedIcon}
+                            isActive={!collapsed}
+                        />
+                    </IconWrapper>
+                )}
             </Header>
             <animated.div style={{ ...slideInStyles, overflow: 'hidden' }}>
                 {/* This div is here because of the ref, ref on styled-component (Content) will result with unnecessary re-render */}

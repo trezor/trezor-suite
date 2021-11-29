@@ -4,7 +4,7 @@ import Translation from '../Translation';
 import { TrezorLogo, Button, colors, variables, Link } from '@trezor/components';
 
 const Layout = styled.div`
-    max-width: ${variables.SCREEN_SIZE.XL};
+    max-width: 1280px;
     width: 100%;
     margin: 0 auto;
     padding: 0 20px;
