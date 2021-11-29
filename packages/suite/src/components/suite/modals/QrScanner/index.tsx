@@ -3,22 +3,33 @@ import styled from 'styled-components';
 
 import { TrezorLink, Translation, Modal, BundleLoader } from '@suite-components';
 import * as URLS from '@suite-constants/urls';
-import { parseQuery } from '@suite-utils/parseUri';
-import { Icon, colors, P } from '@trezor/components';
+import { Icon, colors, P, Button, Textarea, SelectBar } from '@trezor/components';
 import { UserContextPayload } from '@suite-actions/modalActions';
+import { useTranslation } from '@suite-hooks';
 
 const QrReader = lazy(() => import(/* webpackChunkName: "react-qr-reader" */ 'react-qr-reader'));
 
-const Description = styled.div`
+const DescriptionWrapper = styled.div`
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: space-between;
+    margin: 0 16px;
 `;
 
-const CameraPlaceholderWrapper = styled.div<{ show: boolean }>`
+const Description = styled.div`
+    text-align: left;
+    margin-left: 16px;
+    & * + * {
+        margin-left: 8px;
+    }
+`;
+
+const ContentWrapper = styled.div<{ show: boolean }>`
     display: ${props => (props.show ? 'flex' : 'none')};
-    margin: 12px 0px 20px 0px;
-    width: 100%;
+    flex-direction: column;
+    margin: 16px;
+    overflow: hidden;
+    height: 380px;
 `;
 
 const CameraPlaceholder = styled.div`
@@ -29,8 +40,8 @@ const CameraPlaceholder = styled.div`
     text-align: center;
     flex: 1;
     padding: 40px;
-    height: 320px;
-    border-radius: 3px;
+    height: 100%;
+    border-radius: 16px;
     background: ${props => props.theme.BG_GREY};
 `;
 
@@ -56,12 +67,35 @@ const IconWrapper = styled.div`
 
 const Actions = styled.div`
     display: flex;
+    margin: 12px 0;
     justify-content: center;
+    & > * {
+        min-width: 200px;
+    }
 `;
 
-type Props = {
+const StyledQrReader = styled(QrReader)`
+    width: 100%;
+    height: 100%;
+    position: relative;
+    & > section {
+        position: initial !important;
+        padding-top: initial !important;
+        & > video {
+            border-radius: 16px;
+        }
+    }
+`;
+
+const StyledTextarea = styled(Textarea)`
+    height: 100%;
+    & > textarea {
+        flex: 1;
+    }
+`;
+
+type Props = Omit<Extract<UserContextPayload, { type: 'qr-reader' }>, 'type'> & {
     onCancel: () => void;
-    decision: Extract<UserContextPayload, { type: 'qr-reader' }>['decision'];
 };
 
 interface State {
@@ -69,9 +103,13 @@ interface State {
     error: JSX.Element | null;
 }
 
-const QrScanner = ({ onCancel, decision }: Props) => {
+const QrScanner = ({ onCancel, decision, allowPaste }: Props) => {
     const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
     const [error, setError] = useState<State['error']>(null);
+    const [isPasteMode, setPasteMode] = useState(false);
+    const [text, setText] = useState('');
+
+    const { translationString } = useTranslation();
 
     const onLoad = () => {
         setReaderLoaded(true);
@@ -95,17 +133,9 @@ const QrScanner = ({ onCancel, decision }: Props) => {
     const handleScan = (uri: string | null) => {
         if (uri) {
             try {
-                const query = parseQuery(uri);
-                if (query) {
-                    decision.resolve({
-                        uri,
-                        ...query,
-                    });
-                    setReaderLoaded(true);
-                    onCancel();
-                } else {
-                    handleError({ name: 'unknown' });
-                }
+                decision.resolve(uri);
+                setReaderLoaded(true);
+                onCancel();
             } catch (error) {
                 handleError(error);
             }
@@ -114,30 +144,62 @@ const QrScanner = ({ onCancel, decision }: Props) => {
 
     return (
         <Modal
+            noPadding
             cancelable
             onCancel={onCancel}
-            heading={<Translation id="TR_SCAN_QR_CODE" />}
+            heading={<Translation id={isPasteMode ? 'TR_PASTE_URI' : 'TR_SCAN_QR_CODE'} />}
             description={
-                <Description>
-                    <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
-                    <TrezorLink icon="EXTERNAL_LINK" size="small" href={URLS.WIKI_QR_CODE}>
-                        <Translation id="TR_LEARN_MORE" />
-                    </TrezorLink>
-                </Description>
+                <DescriptionWrapper>
+                    {allowPaste && (
+                        <SelectBar
+                            options={[
+                                { label: <Translation id="TR_PASTE_URI" />, value: 'paste' },
+                                { label: <Translation id="TR_QR_CODE" />, value: 'scan' },
+                            ]}
+                            selectedOption={isPasteMode ? 'paste' : 'scan'}
+                            onChange={value => setPasteMode(value === 'paste')}
+                        />
+                    )}
+                    {!isPasteMode && (
+                        <Description>
+                            <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
+                            <TrezorLink icon="EXTERNAL_LINK" size="small" href={URLS.WIKI_QR_CODE}>
+                                <Translation id="TR_LEARN_MORE" />
+                            </TrezorLink>
+                        </Description>
+                    )}
+                </DescriptionWrapper>
             }
         >
-            {!readerLoaded && !error && (
-                <CameraPlaceholderWrapper show>
+            {isPasteMode && (
+                <ContentWrapper show>
+                    <StyledTextarea
+                        noTopLabel
+                        placeholder={`${translationString('TR_PASTE_URI')}…`}
+                        onChange={e => {
+                            setText(e.target.value);
+                        }}
+                    />
+                    <Actions>
+                        <Button isDisabled={!text} onClick={() => handleScan(text)}>
+                            <Translation id="TR_CONFIRM" />
+                        </Button>
+                    </Actions>
+                </ContentWrapper>
+            )}
+
+            {!isPasteMode && !readerLoaded && !error && (
+                <ContentWrapper show>
                     <CameraPlaceholder>
                         <IconWrapper>
                             <Icon icon="QR" size={100} />
                         </IconWrapper>
                         <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
                     </CameraPlaceholder>
-                </CameraPlaceholderWrapper>
+                </ContentWrapper>
             )}
-            {error && (
-                <CameraPlaceholderWrapper show>
+            {!isPasteMode && error && (
+                <ContentWrapper show>
                     <CameraPlaceholder>
                         <Error>
                             <ErrorTitle>
@@ -146,34 +208,22 @@ const QrScanner = ({ onCancel, decision }: Props) => {
                             <ErrorMessage>{error}</ErrorMessage>
                         </Error>
                     </CameraPlaceholder>
-                </CameraPlaceholderWrapper>
+                </ContentWrapper>
             )}
 
-            {!error && (
-                <CameraPlaceholderWrapper show={readerLoaded}>
+            {!isPasteMode && !error && (
+                <ContentWrapper show={readerLoaded}>
                     <Suspense fallback={<BundleLoader />}>
-                        <QrReader
+                        <StyledQrReader
                             delay={500}
                             onError={handleError}
                             onScan={handleScan}
                             onLoad={onLoad}
-                            style={{ width: '100%', borderRadius: '3px' }}
                             showViewFinder={false}
                         />
                     </Suspense>
-                </CameraPlaceholderWrapper>
+                </ContentWrapper>
             )}
-
-            <Actions>
-                {/* <Button
-                        variant="secondary"
-                        onClick={() => {
-                            // TODO: enable legacyMode and call openImageDialog? https://github.com/JodusNodus/react-qr-reader#readme
-                        }}
-                    >
-                        <Translation id="TR_UPLOAD_IMAGE" />
-                    </Button> */}
-            </Actions>
         </Modal>
     );
 };
