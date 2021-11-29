@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Button, P, Tooltip } from '@trezor/components';
 import { CheckItem, Translation, Modal, Image } from '@suite-components';
+import { useAnalytics } from '@suite-hooks';
 import {
     ImageWrapper,
     ButtonWrapper,
@@ -23,6 +24,9 @@ const DescriptionTextWrapper = styled.div`
     align-items: flex-start;
     justify-content: space-around;
     margin-left: 20px;
+    text-align: left;
+`;
+
 // Checkbox has 80% max-width by default but it's nicer full width here.
 const Checkbox = styled(CheckItem)`
     max-width: 100%;
@@ -33,14 +37,30 @@ interface Props {
 }
 
 const EarlyAccessEnable = ({ hideWindow }: Props) => {
+    const analytics = useAnalytics();
+
     const [understood, setUnderstood] = useState(false);
     const [enabled, setEnabled] = useState(false);
 
     const allowPrerelease = useCallback(() => {
+        analytics.report({
+            type: 'settings/general/early-access',
+            payload: {
+                allowPrerelease: true,
+            },
+        });
         window.desktopApi?.allowPrerelease(true);
         setEnabled(true);
-    }, []);
-    const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(true), []);
+    }, [analytics]);
+    const checkForUpdates = useCallback(() => {
+        analytics.report({
+            type: 'settings/general/early-access/check-for-updates',
+            payload: {
+                checkNow: true,
+            },
+        });
+        window.desktopApi?.checkForUpdates(true);
+    }, [analytics]);
 
     return enabled ? (
         <Modal>
@@ -56,7 +76,19 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
 
             <ButtonWrapper>
                 <LeftCol>
-                    <Button onClick={hideWindow} variant="secondary" fullWidth>
+                    <Button
+                        onClick={() => {
+                            analytics.report({
+                                type: 'settings/general/early-access/check-for-updates',
+                                payload: {
+                                    checkNow: false,
+                                },
+                            });
+                            hideWindow();
+                        }}
+                        variant="secondary"
+                        fullWidth
+                    >
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
                     </Button>
                 </LeftCol>

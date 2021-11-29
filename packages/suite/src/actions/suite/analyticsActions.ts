@@ -30,7 +30,7 @@ export type AnalyticsAction =
 
 // Don't forget to update docs with changelog!
 // <breaking-change>.<analytics-extended>
-export const version = '1.14';
+export const version = '1.15';
 
 export type AnalyticsEvent =
     | {
@@ -60,6 +60,8 @@ export type AnalyticsEvent =
               theme: string;
               // added in 1.6
               suiteVersion: string;
+              // added in 1.15
+              earlyAccessProgram: boolean;
               // added in 1.8
               browserName: string;
               browserVersion: string;
@@ -222,6 +224,9 @@ export type AnalyticsEvent =
           };
       }
     | {
+          type: 'menu/goto/early-access';
+      }
+    | {
           type: 'menu/guide';
       }
     | {
@@ -333,6 +338,27 @@ export type AnalyticsEvent =
           type: 'settings/general/change-fiat';
           payload: {
               fiat: string;
+          };
+      }
+    | {
+          type: 'settings/general/early-access';
+          payload: {
+              allowPrerelease: boolean;
+          };
+      }
+    | {
+          type: 'settings/general/early-access/check-for-updates';
+          payload: {
+              checkNow: boolean;
+          };
+      }
+    | {
+          type: 'settings/general/early-access/download-stable';
+      }
+    | {
+          type: 'settings/general/goto/early-access';
+          payload: {
+              allowPrerelease: boolean;
           };
       }
     | {

@@ -43,6 +43,7 @@ const reportSuiteReadyAction = (state: AppState) =>
                 .length,
             theme: state.suite.settings.theme.variant,
             suiteVersion: process.env.VERSION || '',
+            earlyAccessProgram: state.desktopUpdate.allowPrerelease,
             browserName: getBrowserName(),
             browserVersion: getBrowserVersion(),
             osName: getOsName(),
