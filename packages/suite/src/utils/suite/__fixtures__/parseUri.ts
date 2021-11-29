@@ -131,6 +131,42 @@ export const getProtocolInfo = [
         },
     },
     {
+        description: 'valid AOPP uri',
+        uri: 'aopp:?v=0&msg=MESSAGE&asset=btc&format=any&callback=https%3A%2F%2Ftesting.21analytics.ch%2Fproofs%2Fc220a28e-0e99-4be6-8578-a886f628ee20',
+        result: {
+            scheme: 'aopp',
+            v: '0',
+            msg: 'MESSAGE',
+            asset: 'btc',
+            format: 'any',
+            callback: 'https://testing.21analytics.ch/proofs/c220a28e-0e99-4be6-8578-a886f628ee20',
+        },
+    },
+    {
+        description: 'valid AOPP uri with invalid callback',
+        uri: 'aopp:?v=0&msg=MESSAGE&asset=btc&format=any&callback=a',
+        result: {
+            scheme: 'aopp',
+            v: '0',
+            msg: 'MESSAGE',
+            asset: 'btc',
+            format: 'any',
+            callback: undefined,
+        },
+    },
+    {
+        description: 'valid AOPP uri, callback with slashes',
+        uri: 'aopp:?v=0&msg=MESSAGE&asset=btc&format=any&callback=https://foo.bar',
+        result: {
+            scheme: 'aopp',
+            v: '0',
+            msg: 'MESSAGE',
+            asset: 'btc',
+            format: 'any',
+            callback: 'https://foo.bar',
+        },
+    },
+    {
         description: 'invalid uri',
         uri: 'gibberish',
         result: null,

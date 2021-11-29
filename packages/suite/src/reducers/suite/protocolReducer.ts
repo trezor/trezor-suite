@@ -2,11 +2,19 @@ import produce from 'immer';
 import { PROTOCOL } from '@suite-actions/constants';
 import type { Action } from '@suite-types';
 import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
+import type { Network } from '@wallet-types';
 
 export interface SendFormState {
     scheme: PROTOCOL_SCHEME;
     address: string;
     amount?: number;
+}
+
+export interface AoppState {
+    message: string;
+    asset: Network['symbol'];
+    callback?: string;
+    format?: string;
 }
 
 type Autofill<T> = Partial<T> & {
@@ -15,10 +23,12 @@ type Autofill<T> = Partial<T> & {
 
 export interface State {
     sendForm: Autofill<SendFormState>;
+    aopp: Autofill<AoppState>;
 }
 
 export const initialState: State = {
     sendForm: {},
+    aopp: {},
 };
 
 const protocolReducer = (state: State = initialState, action: Action): State =>
@@ -32,6 +42,16 @@ const protocolReducer = (state: State = initialState, action: Action): State =>
                 draft.sendForm.scheme = action.payload.scheme;
                 draft.sendForm.amount = action.payload.amount;
                 draft.sendForm.shouldFill = false;
+                break;
+            case PROTOCOL.FILL_AOPP:
+                draft.aopp.shouldFill = action.payload;
+                break;
+            case PROTOCOL.SAVE_AOPP_PROTOCOL:
+                draft.aopp.message = action.payload.message;
+                draft.aopp.callback = action.payload.callback;
+                draft.aopp.asset = action.payload.asset;
+                draft.aopp.format = action.payload.format;
+                draft.aopp.shouldFill = false;
                 break;
             case PROTOCOL.RESET:
                 return initialState;
