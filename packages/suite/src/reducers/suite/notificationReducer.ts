@@ -30,7 +30,8 @@ export type ToastPayload = (
               | 'backup-success'
               | 'backup-failed'
               | 'sign-message-success'
-              | 'verify-message-success';
+              | 'verify-message-success'
+              | 'aopp-success';
       }
     | {
           type: 'tx-sent';
@@ -65,6 +66,7 @@ export type ToastPayload = (
               | 'verify-address-error'
               | 'sign-message-error'
               | 'verify-message-error'
+              | 'aopp-error'
               | 'sign-tx-error'
               | 'metadata-auth-error'
               | 'metadata-not-found-error'

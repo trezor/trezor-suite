@@ -4,7 +4,7 @@ import { Input, Button, Textarea, Card, Switch, variables } from '@trezor/compon
 import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import { CharacterCount, Translation } from '@suite-components';
 import { useActions, useDevice, useSelector, useTranslation } from '@suite-hooks';
-import { sign as signAction, verify as verifyAction } from '@wallet-actions/signVerifyActions';
+import * as signVerifyActions from '@wallet-actions/signVerifyActions';
 import Navigation, { NavPages } from './components/Navigation';
 import SignAddressInput from './components/SignAddressInput';
 import { useCopySignedMessage } from '@wallet-hooks/sign-verify/useCopySignedMessage';
@@ -20,6 +20,9 @@ const Row = styled.div`
     justify-content: center;
     & + & {
         padding-top: 12px;
+    }
+    & > * + * {
+        margin-left: 10px;
     }
 `;
 
@@ -53,7 +56,7 @@ const SignVerify = () => {
         revealedAddresses: state.wallet.receive,
     }));
 
-    const { isLocked } = useDevice();
+    const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
 
     const {
@@ -63,6 +66,7 @@ const SignVerify = () => {
         formValues,
         formErrors,
         formSetSignature,
+        formSetAopp,
         messageRef,
         signatureRef,
         hexField,
@@ -70,15 +74,17 @@ const SignVerify = () => {
         pathField,
     } = useSignVerifyForm(page, selectedAccount.account);
 
-    const { sign, verify } = useActions({
-        sign: signAction,
-        verify: verifyAction,
+    const { sign, verify, importAopp, sendAopp } = useActions({
+        sign: signVerifyActions.sign,
+        verify: signVerifyActions.verify,
+        importAopp: signVerifyActions.importAopp,
+        sendAopp: signVerifyActions.sendAopp,
     });
 
     const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex } = data;
+        const { address, path, message, signature, hex, aopp } = data;
         if (page === 'sign') {
-            const result = await sign(path, message, hex);
+            const result = await sign(path, message, hex, aopp);
             if (result?.signSignature) formSetSignature(result.signSignature);
         } else {
             await verify(address, message, signature, hex);
@@ -92,6 +98,21 @@ const SignVerify = () => {
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY">
+                {!device?.unavailableCapabilities?.aopp && (
+                    /* TODO: This button available only for networks with aopp feature */
+                    <Button
+                        type="button"
+                        data-test="@sign-verify/import-aopp"
+                        variant="tertiary"
+                        onClick={() =>
+                            importAopp(selectedAccount.account?.symbol).then(
+                                aopp => aopp && formSetAopp(aopp),
+                            )
+                        }
+                    >
+                        <Translation id="TR_AOPP_IMPORT" />
+                    </Button>
+                )}
                 {page === 'sign' && canCopy && (
                     <Button type="button" variant="tertiary" onClick={copy}>
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
@@ -186,6 +207,23 @@ const SignVerify = () => {
                         >
                             <Translation id={page === 'sign' ? 'TR_SIGN' : 'TR_VERIFY'} />
                         </StyledButton>
+                        {formValues.callback && (
+                            <StyledButton
+                                type="button"
+                                variant="secondary"
+                                data-test="@sign-verify/send-aopp"
+                                isDisabled={!formValues.signature}
+                                onClick={() =>
+                                    sendAopp(
+                                        formValues.address,
+                                        formValues.signature,
+                                        formValues.callback,
+                                    )
+                                }
+                            >
+                                <Translation id="TR_AOPP_SEND" />
+                            </StyledButton>
+                        )}
                     </Row>
                 </Form>
             </Card>
