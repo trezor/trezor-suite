@@ -1,148 +1,37 @@
-import { parseUri, getProtocolInfo } from '@suite-utils/parseUri';
+import { parseUri, parseQuery, getProtocolInfo } from '@suite-utils/parseUri';
+import * as fixtures from '../__fixtures__/parseUri';
 
 describe('parseUri', () => {
-    describe('parsedUri', () => {
-        it('should return object with address and all query params', () => {
-            const parsedUri = parseUri('http://trezor.io?foo=bar&baz=1337');
-            expect(parsedUri).toEqual({
-                address: '//trezor.io',
-                foo: 'bar',
-                baz: '1337',
-            });
+    fixtures.parseUri.forEach(f => {
+        it(f.description, () => {
+            const url = parseUri(f.uri as string);
+            if (!url) {
+                expect(f.result).toEqual(undefined);
+                return;
+            }
+            // url is a class. get action needs to be called to get samples
+            expect({
+                host: url.host,
+                protocol: url.protocol,
+                pathname: url.pathname,
+                search: url.search,
+            }).toEqual(f.result);
         });
     });
+});
 
-    describe('parsedUriNoPrefix', () => {
-        it('should return object with address and all query params', () => {
-            const parsedUriNoPrefix = parseUri('trezor.io?foo=bar&baz=1337');
-            expect(parsedUriNoPrefix).toEqual({
-                address: 'trezor.io',
-                foo: 'bar',
-                baz: '1337',
-            });
+describe('parseQuery', () => {
+    fixtures.parseQuery.forEach(f => {
+        it(f.description, () => {
+            expect(parseQuery(f.uri as string)).toEqual(f.result);
         });
     });
+});
 
-    describe('parsedMalformedUri', () => {
-        it('should return object with address and all query params that are not malformed', () => {
-            const parsedMalformedUri = parseUri('trezor.io?foo&baz=1337');
-            expect(parsedMalformedUri).toEqual({
-                address: 'trezor.io',
-                baz: '1337',
-            });
-        });
-    });
-
-    describe('parsedEmptyUri', () => {
-        it('should return object with empty address', () => {
-            const parsedEmptyUri = parseUri('');
-            expect(parsedEmptyUri).toEqual({
-                address: '',
-            });
-        });
-    });
-
-    describe('parseUri multi', () => {
-        it('should work with any type of URIs', () => {
-            expect(parseUri('http://www.trezor.io')).toEqual({
-                address: '//www.trezor.io',
-            });
-            expect(parseUri('www.trezor.io')).toEqual({
-                address: 'www.trezor.io',
-            });
-            expect(parseUri('www.trezor.io/route')).toEqual({
-                address: 'www.trezor.io/route',
-            });
-            expect(parseUri('www.trezor.io/route?query=1&odd')).toEqual({
-                address: 'www.trezor.io/route',
-                query: '1',
-            });
-            expect(parseUri('www.trezor.io?query=1&amount=1')).toEqual({
-                address: 'www.trezor.io',
-                query: '1',
-                amount: '1',
-            });
-        });
-    });
-
-    describe('getProtocolInfo', () => {
-        it('should parse Bitcoin URI when address and amount are both available', () => {
-            const protocolInfo = getProtocolInfo(
-                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1',
-            );
-            expect(protocolInfo).toEqual({
-                scheme: 'bitcoin',
-                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
-                amount: 0.1,
-            });
-        });
-
-        it('should parse Bitcoin URI when it consists not only of address and amount but also valid but unsupported label and message', () => {
-            const protocolInfo = getProtocolInfo(
-                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=1&label=Bender&message=Bite%20my%20shiny%20metal%20Bitcoin',
-            );
-            expect(protocolInfo).toEqual({
-                scheme: 'bitcoin',
-                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
-                amount: 1,
-            });
-        });
-
-        it('should parse Bitcoin URI when it consists not only of address and amount but also not yet existing variable', () => {
-            const protocolInfo = getProtocolInfo(
-                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=1&layer=lightning',
-            );
-            expect(protocolInfo).toEqual({
-                scheme: 'bitcoin',
-                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
-                amount: 1,
-            });
-        });
-
-        it('should parse Bitcoin URI when it consists only of address', () => {
-            const protocolInfo = getProtocolInfo('bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf');
-            expect(protocolInfo).toEqual({
-                scheme: 'bitcoin',
-                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
-                amount: undefined,
-            });
-        });
-
-        it('should parse Bitcoin URI when it consists of address and zero amount', () => {
-            const protocolInfo = getProtocolInfo(
-                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.0',
-            );
-            expect(protocolInfo).toEqual({
-                scheme: 'bitcoin',
-                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
-                amount: undefined,
-            });
-        });
-
-        it('should parse Bitcoin URI and ignore amount when it consists of address, and amount is not a number', () => {
-            const protocolInfo = getProtocolInfo(
-                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=thousand',
-            );
-
-            expect(protocolInfo).toEqual({
-                scheme: 'bitcoin',
-                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
-                amount: undefined,
-            });
-        });
-
-        it('should log an error with non-existing scheme', () => {
-            const protocolInfo = getProtocolInfo(
-                'litecoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1',
-            );
-
-            expect(protocolInfo).toEqual(null);
-        });
-
-        it('should log an error when address is missing', () => {
-            const protocolInfo = getProtocolInfo('bitcoin:?amount=0.1');
-
-            expect(protocolInfo).toEqual(null);
+describe('getProtocolInfo', () => {
+    fixtures.getProtocolInfo.forEach(f => {
+        it(f.description, () => {
+            expect(getProtocolInfo(f.uri as string)).toEqual(f.result);
         });
     });
 });
