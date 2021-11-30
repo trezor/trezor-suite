@@ -36,8 +36,8 @@ export const verifyAddress =
         const { device } = getState().suite;
         if (!device || !account) return;
         const accountAddress = getUnusedAddressFromAccount(account);
-        address ??= accountAddress.address;
-        path ??= accountAddress.path;
+        address = address ?? accountAddress.address;
+        path = path ?? accountAddress.path;
         if (!path || !address) return;
 
         const { networkType, symbol } = account;
