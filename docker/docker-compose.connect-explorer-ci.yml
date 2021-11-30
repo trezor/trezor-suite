@@ -1,0 +1,24 @@
+version: '2'
+services:
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    environment:
+      - SDL_VIDEODRIVER=dummy
+      - XDG_RUNTIME_DIR=/var/tmp
+    network_mode: bridge  # this makes docker reuse existing networks
+
+  test-run:
+    image: mcr.microsoft.com/playwright:focal
+    container_name: explorer-test-runner
+    ipc: host
+    depends_on:
+      - trezor-user-env-unix
+    network_mode: service:trezor-user-env-unix
+    environment:
+      - URL=$URL
+      - HEADLESS=true
+      - CI_JOB_URL=$CI_JOB_URL
+    working_dir: /e2e
+    command: bash -c "npx playwright install && docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:connect-explorer"
+    volumes:
+      - ../:/e2e

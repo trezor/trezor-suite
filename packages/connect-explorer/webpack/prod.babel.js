@@ -1,95 +1,61 @@
-import { SRC, BUILD } from './constants';
+const { SRC, BUILD, PORT } = require('./constants');
 
-import webpack from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     mode: 'production',
     entry: {
-        'index': [ `${SRC}js/index.js` ]
+        index: [`${SRC}js/index.tsx`],
     },
     output: {
-        filename: 'js/[name].[hash].js',
+        filename: '[name].[hash].js',
         path: BUILD,
-        publicPath: './',
     },
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.(j|t)sx?$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
-            },
-            {
-                test: /\.less$/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: { publicPath: '../' }
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: true,
+                        presets: ['@babel/preset-react', '@babel/preset-typescript'],
+                        plugins: [
+                            [
+                                'babel-plugin-styled-components',
+                                {
+                                    displayName: true,
+                                    preprocess: true,
+                                },
+                            ],
+                        ],
                     },
-                    'css-loader',
-                    'less-loader',
-                ]
-            },
-            {
-                test: /\.(png|gif|jpg)$/,
-                exclude: /(node_modules)/,
-                loader: 'file-loader',
-                query: {
-                    outputPath: './images',
-                    name: '[name].[hash].[ext]'
-                }
-            },
-            {
-                test: /\.(ttf|eot|svg|woff|woff2)$/,
-                loader: 'file-loader',
-                query: {
-                    outputPath: './fonts',
-                    name: '[name].[hash].[ext]',
                 },
             },
             {
-                type: 'javascript/auto',
-                test: /\.json/,
-                exclude: /(node_modules)/,
-                loader: 'file-loader',
-                query: {
-                    outputPath: './data',
-                    name: '[name].[hash].[ext]',
-                },
+                test: /\.(gif|jpe?g|png|svg)$/,
+                type: 'asset/resource',
             },
-        ]
+        ],
     },
     resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
         modules: [SRC, 'node_modules'],
     },
     performance: {
-        hints: false
+        hints: false,
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: 'css/[name].[hash].css',
-            chunkFilename: '[id].css',
-        }),
-        
         new HtmlWebpackPlugin({
             chunks: ['index'],
             template: `${SRC}index.html`,
             filename: 'index.html',
-            inject: true
+            inject: true,
         }),
-
-        new CopyWebpackPlugin([
-            //{from: `${SRC}/app/robots.txt`},
-            { from: `${SRC}images/favicon.ico`, to: `${BUILD}favicon.ico` },
-            { from: `${SRC}images/favicon.png`, to: `${BUILD}favicon.png` },
-            //{ from: `${SRC}data`, to: `${BUILD}data`, cache: false },
-        ]),
+        new webpack.DefinePlugin({
+            'process.env.TREZOR_CONNECT_SRC': JSON.stringify(process.env.TREZOR_CONNECT_SRC),
+        }),
     ],
-
-    // optimization: {
-    //     minimize: false
-    // }
-}
+};

@@ -7,7 +7,8 @@
         "test:components-storybook:local": "CYPRESS_baseUrl='http://192.168.88.252:9001' npx cypress open --project ./projects/components-storybook",
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "test:transport": "jest --verbose -c ./projects/transport/jest.config.js",
-        "test:desktop": "xvfb-maybe -- playwright test --config=./projects/suite-desktop/playwright.config.ts"
+        "test:desktop": "xvfb-maybe -- playwright test --config=./projects/suite-desktop/playwright.config.ts",
+        "test:connect-explorer": "xvfb-maybe -- playwright test --config=./projects/connect-explorer/playwright.config.ts"
     },
     "dependencies": {
         "cypress": "9.3.1",
