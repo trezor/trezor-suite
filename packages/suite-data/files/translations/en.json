@@ -21,7 +21,7 @@
   "FEE_LEVEL_LOW": "Low",
   "FEE_LEVEL_NORMAL": "Normal",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_1": "Do not hold any buttons while connecting the cable.",
-  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Please make sure you are not swiping the touchscreen while connecting your device.",
+  "FIRMWARE_CONNECT_IN_NORMAL_MODEL_2": "Please make sure you are not holding any buttons while connecting your device.",
   "FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC": "In the next step, your Trezor will ask you to confirm this firmware update.",
   "FIRMWARE_UPDATE_AVAILABLE_DESC": "We’re constantly working to improve your Trezor experience! Here’s a summary of what has changed:",
   "FIRMWARE_UPDATE_SUCCESS_DESC": "Your Trezor has the latest firmware installed.",
@@ -45,6 +45,7 @@
   "RECEIVE_TABLE_NOT_USED": "Unused",
   "RECIPIENT_ADD": "Add Recipient",
   "RECIPIENT_ADDRESS": "Address",
+  "RECIPIENT_REQUIRES_UPDATE": "Taproot is not supported by your firmware version. Please upgrade your device firmware.",
   "SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION": "Coin settings also define how Trezor Suite handles the discovery process of your coins each time you connect a device that is not remembered.",
   "SHAMIR_SEED": "Shamir share backup",
   "SHAMIR_SEED_DESCRIPTION": "Recover the wallet by combining lists of words together. These can be secured in different places for added security.",
@@ -266,7 +267,6 @@
   "TR_EXCHANGE_GO_TO_PAYMENT": "Continue transaction",
   "TR_EXCHANGE_KYC_INFO": "\"Know your customer\" (KYC) refers to providing identifying information to the exchange provider, usually a phone number and a copy of an identification document. This varies from provider to provider and may depend on the amount you're exchanging, so check this information carefully before proceeding.",
   "TR_EXCHANGE_OFFERS_REFRESH": "Offers refresh in",
-  "TR_EXCHANGE_OTHER_COINS": "All other coins",
   "TR_EXCHANGE_PROVIDER": "Provider",
   "TR_EXCHANGE_RATE": "Price",
   "TR_EXCHANGE_RECEIVING_ACCOUNT": "Receiving account",
@@ -276,7 +276,6 @@
   "TR_EXCHANGE_SEND_FROM": "Sending account",
   "TR_EXCHANGE_SEND_TO": "{providerName}’s address",
   "TR_EXCHANGE_SHOW_OFFERS": "Compare offers",
-  "TR_EXCHANGE_STABLE_COINS": "Stablecoins",
   "TR_EXCHANGE_STATUS_CONFIRMING": "Pending",
   "TR_EXCHANGE_STATUS_CONVERTING": "Converting",
   "TR_EXCHANGE_STATUS_ERROR": "Rejected",
@@ -554,6 +553,5 @@
   "TR_YOU_CAN_SELECT_EITHER": "Are you using this Trezor for the first time or you have already used it before?",
   "TR_YOU_EITHER_HAVE_T1": "Your seed may contain 12, 18, or 24 words.",
   "TR_YOU_EITHER_HAVE_T2": "Your seed may contain 12, 18, 20, 24, or 33 words.",
-  "TR_YOU_MAY_CHOSE_EITHER_STANDARD": "New wallets are created based on the type of recovery seed you use to back up your wallet.",
-  "TX_CONFIRMATIONS_EXPLAIN": "Number of confirmations by the network through the mining process"
+  "TR_YOU_MAY_CHOSE_EITHER_STANDARD": "New wallets are created based on the type of recovery seed you use to back up your wallet."
 }
