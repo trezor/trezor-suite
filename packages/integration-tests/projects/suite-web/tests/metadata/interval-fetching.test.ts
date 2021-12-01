@@ -48,8 +48,8 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
             });
             cy.prefixedVisit('/', {
                 onBeforeLoad: win => {
-                    cy.stub(win, 'open', stubOpen(win));
-                    cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
+                    cy.stub(win, 'open').callsFake(stubOpen(win));
+                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
                 },
             });
             cy.tick(1000);

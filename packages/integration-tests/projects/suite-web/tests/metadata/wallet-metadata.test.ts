@@ -28,8 +28,8 @@ describe('Metadata - wallet labeling', () => {
 
             cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
-                    cy.stub(win, 'open', stubOpen(win));
-                    cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
+                    cy.stub(win, 'open').callsFake(stubOpen(win));
+                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
                 },
             });
 

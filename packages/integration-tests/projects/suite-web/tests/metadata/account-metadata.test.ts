@@ -43,8 +43,8 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
 
             cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
-                    cy.stub(win, 'open', stubOpen(win));
-                    cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
+                    cy.stub(win, 'open').callsFake(stubOpen(win));
+                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
                 },
             });
 
