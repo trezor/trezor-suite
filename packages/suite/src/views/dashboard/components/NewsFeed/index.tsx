@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { useTheme, css } from 'styled-components';
 import Truncate from 'react-truncate';
-import { Translation } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { Button, variables } from '@trezor/components';
 import { useExternalLink } from '@suite-hooks';
@@ -32,7 +32,7 @@ const Content = styled.div`
     flex-direction: column;
 `;
 
-const Post = styled.a`
+const Post = styled(TrezorLink)`
     display: flex;
     padding: 6px;
     flex-direction: column;
@@ -78,8 +78,6 @@ const ReadMore = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const MediumLink = styled.a``;
-
 type PostComponentProps = ArrayElement<ReturnType<typeof useFetchNews>['posts']> & {
     theme: ReturnType<typeof useTheme>;
     'data-test': string;
@@ -90,7 +88,7 @@ const PostComponent = (props: PostComponentProps) => {
     const thumbnail = useExternalLink(props.thumbnail);
 
     return (
-        <Post target="_blank" rel="noopener noreferrer" href={url} data-test={props['data-test']}>
+        <Post href={url} data-test={props['data-test']}>
             <Image src={thumbnail} />
             <Content>
                 <Title>
@@ -133,11 +131,11 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
         <Section
             heading={<Translation id="TR_WHATS_NEW" />}
             actions={
-                <MediumLink target="_blank" rel="noopener noreferrer" href={mediumUrl}>
+                <TrezorLink href={mediumUrl}>
                     <Button isWhite variant="tertiary" icon="MEDIUM">
                         <Translation id="TR_OPEN_IN_MEDIUM" />
                     </Button>
-                </MediumLink>
+                </TrezorLink>
             }
         >
             <Posts>

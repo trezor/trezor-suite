@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import type { Locale } from 'date-fns';
 
 import { SettingsLayout } from '@settings-components';
-import { Translation } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import {
     ActionButton,
     ActionColumn,
@@ -66,8 +66,6 @@ const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
     margin: 0 4px;
 `;
-
-const VersionLink = styled.a``;
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {
@@ -254,11 +252,7 @@ const Settings = () => {
                                     values={{
                                         version: (
                                             <VersionTooltip content={revision} disabled={!revision}>
-                                                <VersionLink
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    href={FIRMWARE_COMMIT_URL + revision}
-                                                >
+                                                <TrezorLink href={FIRMWARE_COMMIT_URL + revision}>
                                                     <VersionButton
                                                         variant="tertiary"
                                                         icon={
@@ -270,7 +264,7 @@ const Settings = () => {
                                                         {getFwVersion(device)}
                                                         {isBitcoinOnly(device) && ' (bitcoin-only)'}
                                                     </VersionButton>
-                                                </VersionLink>
+                                                </TrezorLink>
                                             </VersionTooltip>
                                         ),
                                     }}

@@ -4,10 +4,6 @@ import { Dropdown } from './index';
 import { storiesOf } from '@storybook/react';
 import { select, number, boolean } from '@storybook/addon-knobs';
 
-const MasterLink = styled.a`
-    color: ${props => props.theme.TYPE_GREEN};
-`;
-
 storiesOf('Dropdown', module).add('Dropdown', () => {
     const alignMenu: any = select(
         'alignMenu',

@@ -6,6 +6,7 @@ import { useActions, useSelector, useAnalytics } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
+import TrezorLink from '@suite-components/TrezorLink';
 import { findAncestorNodes, getNodeTitle } from '@suite-utils/guide';
 
 import type { Category } from '@suite-types/guide';
@@ -15,7 +16,7 @@ const BreadcrumbWrapper = styled.span`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const PreviousCategoryLink = styled.a`
+const PreviousCategoryLink = styled(TrezorLink)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     transition: ${props =>
         `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
@@ -30,7 +31,7 @@ const BreadcrumbDelimiter = styled.span`
     margin: 0 5px;
 `;
 
-const CategoryLink = styled.a`
+const CategoryLink = styled(TrezorLink)`
     color: ${props => props.theme.TYPE_GREEN};
     transition: ${props =>
         `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};

@@ -61,8 +61,6 @@ const StyledMarkdown = styled.div`
     }
 `;
 
-const StyledInnerLink = styled.a``;
-
 interface Props {
     markdown: any;
 }
@@ -86,9 +84,9 @@ const GuideMarkdown = ({ markdown }: Props) => {
                                 {children}
                             </TrezorLink>
                         ) : (
-                            <StyledInnerLink role="link" onClick={() => openNodeById(href)}>
+                            <TrezorLink variant="default" onClick={() => openNodeById(href)}>
                                 {children}
-                            </StyledInnerLink>
+                            </TrezorLink>
                         ),
                 }}
             >
