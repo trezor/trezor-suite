@@ -169,7 +169,6 @@ class Controller extends EventEmitter {
         const ws = new WebSocket(url);
         ws.once('error', error => {
             this.dispose();
-            console.log(error);
             dfd.reject(new Error('websocket_runtime_error: ', error.message));
         });
         ws.on('open', () => {

@@ -13,6 +13,8 @@ const fetch = require('node-fetch');
 const path = require('path');
 const fs = require('fs');
 
+const { Controller } = require('./plugins/websocket-client');
+
 const TEST_DIR = './packages/integration-tests/projects/suite-web';
 
 const getGrepCommand = (word = '', args = '-rlIw', path = TEST_DIR) =>
@@ -50,7 +52,32 @@ function getTestFiles() {
         .filter(f => f.includes('.test.'));
 }
 
+const wait = (timeout) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve()
+        }, timeout)
+    })
+}
+
 async function runTests() {
+
+
+    // wait for trezor-user-env
+    let retries = 0;
+    let connected = false;
+    const controller = new Controller({ url: 'ws://localhost:9001/' });
+    while (!connected && retries < 60) {
+        try {
+            await controller.connect();
+            connected = true;
+        } catch (err) {
+            console.log('waiting for trezor-user-env...');
+        }
+        await wait(1000);
+        retries++;
+    }
+
     const {
         BROWSER = 'chrome',
         CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
