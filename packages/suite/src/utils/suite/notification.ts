@@ -1,7 +1,7 @@
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import { ToastNotificationVariant, AppState } from '@suite-types';
 import { colors } from '@trezor/components';
-import { ViewProps } from '@suite-components/hocNotification/definitions';
+import type { NotificationViewProps } from '@suite-components/NotificationRenderer';
 
 export const findTransactionEvents = (descriptor: string, notifications: NotificationEntry[]) =>
     notifications.filter(
@@ -24,7 +24,7 @@ export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     }
 };
 
-export const getVariantColor = (variant: ViewProps['variant']) => {
+export const getVariantColor = (variant: NotificationViewProps['variant']) => {
     switch (variant) {
         case 'info':
             return colors.TYPE_BLUE;

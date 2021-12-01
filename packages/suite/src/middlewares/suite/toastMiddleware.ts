@@ -2,8 +2,7 @@ import { MiddlewareAPI } from 'redux';
 import { toast } from 'react-toastify';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { close } from '@suite-actions/notificationActions';
-import ToastNotification from '@suite-components/ToastNotification';
-import hocNotification from '@suite-components/hocNotification';
+import { renderToast } from '@suite-components/ToastNotification';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 /*
@@ -32,7 +31,7 @@ const toastMiddleware =
             if (payload.error && payload.error.indexOf('assetType:') >= 0) {
                 payload.error = '';
             }
-            toast(hocNotification(payload, ToastNotification), {
+            toast(renderToast(payload), {
                 toastId: payload.id,
                 onClose: () => api.dispatch(close(payload.id)),
                 // if 'autoclose' is not set, close notifications after 5s
