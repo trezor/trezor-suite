@@ -5,9 +5,12 @@ import { Translation } from '@suite-components';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useActions } from '@suite-hooks';
 import { getNotificationIcon, getVariantColor } from '@suite-utils//notification';
-import { ViewProps } from '@suite-components/hocNotification/definitions';
+import type { NotificationEntry } from '@suite-reducers/notificationReducer';
+import NotificationRenderer, {
+    NotificationViewProps,
+} from '@suite-components/NotificationRenderer';
 
-const Wrapper = styled.div<Pick<ViewProps, 'variant'>>`
+const Wrapper = styled.div<Pick<NotificationViewProps, 'variant'>>`
     display: flex;
     align-items: center;
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -28,7 +31,7 @@ const Message = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-const StyledButton = styled(Button)<{ $action: ViewProps['action'] }>`
+const StyledButton = styled(Button)<{ $action: NotificationViewProps['action'] }>`
     ${props =>
         (!props.$action?.position || props.$action.position === 'right') &&
         css`
@@ -50,19 +53,20 @@ const StyledCancelIcon = styled(Icon)`
 const ToastNotification = ({
     icon,
     message,
+    messageValues,
     action,
     variant,
     cancelable = true,
     onCancel,
-    ...props
-}: ViewProps) => {
+    notification: { type, id },
+}: NotificationViewProps) => {
     const defaultIcon = icon ?? getNotificationIcon(variant);
 
     const { closeNotification } = useActions({
         closeNotification: notificationActions.close,
     });
 
-    const dataTestBase = `@toast/${props.notification.type}`;
+    const dataTestBase = `@toast/${type}`;
 
     const actionButton = action && (
         <StyledButton
@@ -84,11 +88,7 @@ const ToastNotification = ({
             )}
             <BodyWrapper>
                 <Message>
-                    {typeof message === 'string' ? (
-                        <Translation id={message} />
-                    ) : (
-                        <Translation {...message} />
-                    )}
+                    <Translation id={message} values={messageValues} />
                 </Message>
                 {action?.position === 'bottom' && actionButton}
             </BodyWrapper>
@@ -98,7 +98,7 @@ const ToastNotification = ({
                     size={16}
                     icon="CROSS"
                     onClick={() => {
-                        closeNotification(props.notification.id);
+                        closeNotification(id);
                         if (onCancel) {
                             onCancel();
                         }
@@ -109,5 +109,9 @@ const ToastNotification = ({
         </Wrapper>
     );
 };
+
+export const renderToast = (payload: NotificationEntry) => (
+    <NotificationRenderer notification={payload} render={ToastNotification} />
+);
 
 export default ToastNotification;
