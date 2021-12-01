@@ -21,9 +21,11 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
         font-size: ${variables.FONT_SIZE.NORMAL};
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        font-family: "TT Hoves", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
         height: 100%;
         overflow-y: hidden;
+
+        /* BlinkMacSystemFont, which is macOS Chrome/Electron suggested fallback font, breaks emojis (e.g. in Guide) so we omit it */
+        font-family: "TT Hoves", -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 
     a {
@@ -35,7 +37,7 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
         margin: 0;
         padding: 0;
         outline: none;
-        font-family: "TT Hoves", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        font-family: "TT Hoves", -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     }
 
     *,
