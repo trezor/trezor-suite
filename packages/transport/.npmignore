@@ -1,0 +1,42 @@
+# Sources
+src
+babel.config.js
+.eslintrc
+.eslintrc.js
+.eslintignore
+.gitignore
+.gitmodules
+.github
+.prettierrc
+tsconfig*
+
+# Dependency directory
+node_modules
+yarn.lock
+
+# OSX
+.DS_Store
+
+# Editors
+.editorconfig
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+*.swp
+.nix_bash_history
+
+# Logs
+logs
+*.log
+.yarnclean
+yarn-error.log
+
+# Tests
+e2e
+coverage
+tests
+jest.config*
+
+# Other
+scripts
