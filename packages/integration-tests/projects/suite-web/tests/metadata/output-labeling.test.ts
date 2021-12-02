@@ -3,7 +3,8 @@
 
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
-const providers = ['google', 'dropbox'] as const;
+// we could run this test for multiple providers but it does not give so much value at the moment
+const providers = ['google'] as const;
 
 describe('Metadata - Output labeling', () => {
     beforeEach(() => {
