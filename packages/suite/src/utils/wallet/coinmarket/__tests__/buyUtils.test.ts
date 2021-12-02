@@ -108,6 +108,10 @@ describe('coinmarket/buy utils', () => {
                 label: 'USDT',
             },
             {
+                label: 'USDC',
+                value: 'USDC',
+            },
+            {
                 value: 'DAI',
                 label: 'DAI',
             },
