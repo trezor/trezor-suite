@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useDevice } from '@suite-hooks';
 import { RadioButton, Button, H3, P, Warning } from '@trezor/components';
 import { Translation, Modal, ModalProps } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
@@ -42,7 +42,7 @@ const WarningWrapper = styled.div`
  * set only via command line and trezor-lib.
  */
 const SafetyChecks = (props: ModalProps) => {
-    const device = useSelector(state => state.suite.device);
+    const { device, isLocked } = useDevice();
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
     const [level, setLevel] = useState(device?.features?.safety_checks || undefined);
 
@@ -53,7 +53,7 @@ const SafetyChecks = (props: ModalProps) => {
                     applySettings({ safety_checks: level });
                 }}
                 // Only allow confirming when the value will be changed.
-                isDisabled={level === device?.features?.safety_checks}
+                isDisabled={isLocked() || level === device?.features?.safety_checks}
                 data-test="@safety-checks-apply"
             >
                 <Translation id="TR_CONFIRM" />
