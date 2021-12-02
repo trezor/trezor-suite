@@ -24,7 +24,7 @@ const ContentCol = styled(Col)`
     padding: 16px 24px;
 `;
 const ImageCol = styled(Col)`
-    padding: 4px 16px;
+    padding: 16px;
 `;
 
 interface Props {
@@ -45,7 +45,7 @@ const DeviceDisconnected = ({ label }: Props) => (
             </P>
         </ContentCol>
         <ImageCol>
-            <Image image="UNI_ERROR" height={70} />
+            <Image image="UNI_ERROR" />
         </ImageCol>
     </Wrapper>
 );
