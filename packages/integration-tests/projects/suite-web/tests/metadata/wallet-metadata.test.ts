@@ -1,9 +1,11 @@
 // @group:metadata
 // @retry=2
 
+import firmware from '@suite/middlewares/firmware';
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
-const providers = ['google', 'dropbox'] as const;
+const firmwares = ['2.2.0', '2-master'] as const;
+const provider = 'dropbox';
 
 const mnemonic = 'all all all all all all all all all all all all';
 // state corresponding to all seed
@@ -16,8 +18,8 @@ describe('Metadata - wallet labeling', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    providers.forEach(provider => {
-        it(provider, () => {
+    firmwares.forEach(firmware => {
+        it(firmware, () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu', {
