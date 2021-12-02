@@ -37,6 +37,7 @@ const StyledP = styled(P)`
 
 const StyledImage = styled(Image)`
     margin: auto;
+    margin-bottom: 24px;
 `;
 
 const CloseButton = (props: ButtonProps) => (
@@ -146,21 +147,21 @@ const Backup = (props: Props) => {
             >
                 {!device.features.unfinished_backup && (
                     <>
+                        <StyledImage image="UNI_SUCCESS" />
                         <StyledP data-test="@backup/already-finished-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION" />
                         </StyledP>
-                        <StyledImage image="UNI_SUCCESS" />
                     </>
                 )}
                 {device.features.unfinished_backup && (
                     <>
+                        <StyledImage image="UNI_ERROR" />
                         <StyledP data-test="@backup/already-failed-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
                             <ExternalLink href={FAILED_BACKUP_URL}>
                                 <Translation id="TR_LEARN_MORE" />
                             </ExternalLink>
                         </StyledP>
-                        <StyledImage image="UNI_ERROR" />
                     </>
                 )}
 
@@ -254,8 +255,8 @@ const Backup = (props: Props) => {
             )}
             {backup.status === 'finished' && backup.error && (
                 <>
-                    <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
                     <StyledImage image="UNI_ERROR" />
+                    <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
                     <Buttons>
                         <Col>
                             <CloseButton onClick={onClose} />
