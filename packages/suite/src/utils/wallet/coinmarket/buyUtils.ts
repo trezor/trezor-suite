@@ -121,7 +121,7 @@ export const getCryptoOptions = (
     symbol: Account['symbol'],
     networkType: Account['networkType'],
 ) => {
-    const supportedTokens = ['usdt', 'dai', 'gusd'];
+    const supportedTokens = ['usdt', 'usdc', 'dai', 'gusd'];
     const uppercaseSymbol = symbol.toUpperCase();
     const options: { value: string; label: string }[] = [
         { value: uppercaseSymbol, label: uppercaseSymbol },
