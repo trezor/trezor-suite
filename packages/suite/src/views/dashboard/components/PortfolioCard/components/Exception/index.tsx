@@ -33,15 +33,14 @@ const Description = styled.div`
 `;
 
 const StyledImage = styled(props => <Image {...props} />)`
-    width: 80px;
-    height: 80px;
-    margin: 20px 0px;
+    margin: 24px 0px;
 `;
 
 const Actions = styled.div`
     display: flex;
     justify-content: space-around;
     width: 100%;
+    margin-top: 24px;
 `;
 
 interface CTA {
@@ -64,13 +63,13 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
     const actions = Array.isArray(cta) ? cta : [cta];
     return (
         <Wrapper data-test={`@exception/${dataTestBase}`}>
+            <StyledImage image="UNI_ERROR" />
             <Title>
                 <Translation id={title} />
             </Title>
             <Description>
                 {typeof description === 'string' ? <Translation id={description} /> : description}
             </Description>
-            <StyledImage image="UNI_ERROR" />
             <Actions>
                 {actions.map(a => (
                     <Button

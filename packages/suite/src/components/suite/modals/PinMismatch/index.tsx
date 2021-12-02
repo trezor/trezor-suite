@@ -6,8 +6,7 @@ import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions'
 import { useActions } from '@suite-hooks';
 
 const StyledImage = styled(Image)`
-    margin: 12px 0px;
-    max-height: 160px;
+    margin: 48px auto;
 `;
 
 const PinMismatch = (props: ModalProps) => {

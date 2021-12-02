@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { Button, ButtonProps, H2, P, variables } from '@trezor/components';
 
-import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
+import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
 import { Loading, Translation, CheckItem, ExternalLink, Image, Modal } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
@@ -80,8 +80,9 @@ const StyledP = styled(P)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const StyledImage = styled(Image)`
-    flex: 1;
+const StatusImage = styled(Image)`
+    margin-top: auto;
+    padding-bottom: 24px;
 `;
 
 const StatusTitle = styled(H2)`
@@ -152,7 +153,7 @@ const Recovery = ({
                 onCancel={closeModalApp}
                 data-test="@recovery/no-device"
             >
-                <StyledImage image="CONNECT_DEVICE" />
+                <Image image="CONNECT_DEVICE" />
                 <Buttons>
                     <CloseButton onClick={() => closeModalApp()} />
                 </Buttons>
@@ -307,13 +308,14 @@ const Recovery = ({
                 )}
                 {recovery.status === 'finished' && !recovery.error && (
                     <>
+                        <StatusImage image="UNI_SUCCESS" />
                         <H2 data-test="@recovery/success-title">
                             <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
                         </H2>
                         <StyledP>
                             <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
                         </StyledP>
-                        <StyledImage image="UNI_SUCCESS" width="160" />
+
                         <Buttons>
                             <CloseButton onClick={() => closeModalApp()} />
                         </Buttons>
@@ -322,10 +324,17 @@ const Recovery = ({
 
                 {recovery.status === 'finished' && recovery.error && (
                     <>
+                        <StatusImage image="UNI_ERROR" />
                         <H2>
                             <Translation id="TR_SEED_CHECK_FAIL_TITLE" />
                         </H2>
-                        <Error error={recovery.error} />
+                        <StyledP>
+                            <Translation
+                                id="TR_RECOVERY_ERROR"
+                                values={{ error: recovery.error }}
+                            />
+                        </StyledP>
+
                         <Buttons>
                             <CloseButton onClick={() => closeModalApp()} />
                         </Buttons>
