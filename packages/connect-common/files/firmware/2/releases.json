@@ -1,6 +1,19 @@
 [
     {
         "required": false,
+        "version": [2, 4, 3],
+        "min_bridge_version": [2, 0, 7],
+        "min_firmware_version": [2, 0, 8],
+        "min_bootloader_version": [2, 0, 0],
+        "url": "data/firmware/2/trezor-2.4.3.bin",
+        "url_bitcoinonly": "data/firmware/2/trezor-2.4.3-bitcoinonly.bin",
+        "fingerprint": "a07f69d8d2065006a79c6b5636bd046496dbcb3820b41f1d604d8a4605ca4056",
+        "fingerprint_bitcoinonly": "1744efccabd479526392b281b7e0fc7aa2b4ecb454007dff7ca8c1f8171fad90",
+        "notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-december-2021-d1e74c3ea283",
+        "changelog": "* Support Taproot.\n* Show address confirmation in SignMessage.\n* Support for advanced Cardano transactions and different derivations for compatibility.\n* Ethereum support for EIP712 (signing typed data)."
+    },
+    {
+        "required": false,
         "version": [2, 4, 2],
         "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 0, 8],

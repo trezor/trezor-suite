@@ -1,6 +1,20 @@
 [
     {
         "required": false,
+        "version": [1, 10, 4],
+        "bootloader_version": [1, 10, 0],
+        "min_bridge_version": [2, 0, 25],
+        "min_firmware_version": [1, 6, 2],
+        "min_bootloader_version": [1, 5, 0],
+        "url": "data/firmware/1/trezor-1.10.4.bin",
+        "url_bitcoinonly": "data/firmware/1/trezor-1.10.4-bitcoinonly.bin",
+        "fingerprint": "74dfdfb9addb9d90fedb2c88794b7236af521d21ef0096f9080c25b597c8af86",
+        "fingerprint_bitcoinonly": "30d858b022e218f27854f071d568e5a696c937f1316d83b93aadcd178f3b0a38",
+        "notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-december-2021-d1e74c3ea283",
+        "changelog": "* Support Taproot.\n* Show address confirmation in SignMessage.\n* Support for Ethereum EIP-1559 transactions."
+    },
+    {
+        "required": false,
         "version": [1, 10, 3],
         "bootloader_version": [1, 10, 0],
         "min_bridge_version": [2, 0, 25],
