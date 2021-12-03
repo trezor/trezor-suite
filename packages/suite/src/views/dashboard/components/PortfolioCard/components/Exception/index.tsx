@@ -2,16 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, Button, IconProps, H3 } from '@trezor/components';
 import { Image, Translation } from '@suite-components';
-import { useDevice } from '@suite-hooks';
-import { useDispatch } from 'react-redux';
+import { useDevice, useActions } from '@suite-hooks';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { Dispatch } from '@suite-types';
-import { Discovery, DiscoveryStatus } from '@wallet-types';
+import type { Discovery, DiscoveryStatus } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -112,15 +110,22 @@ const discoveryFailedMessage = (discovery?: Discovery) => {
 };
 
 const Exception = ({ exception, discovery }: Props) => {
-    const dispatch = useDispatch<Dispatch>();
     const { device } = useDevice();
+    const actions = useActions({
+        authorizeDevice: suiteActions.authorizeDevice,
+        authConfirm: suiteActions.authConfirm,
+        goto: routerActions.goto,
+        openModal: modalActions.openModal,
+        restartDiscovery: discoveryActions.restart,
+        applySettings: deviceSettingsActions.applySettings,
+    });
     switch (exception.type) {
         case 'auth-failed':
             return (
                 <Container
                     title="TR_ACCOUNT_EXCEPTION_AUTH_ERROR"
                     description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
-                    cta={{ action: () => dispatch(suiteActions.authorizeDevice()) }}
+                    cta={{ action: actions.authorizeDevice }}
                     dataTestBase={exception.type}
                 />
             );
@@ -129,9 +134,7 @@ const Exception = ({ exception, discovery }: Props) => {
                 <Container
                     title="TR_AUTH_CONFIRM_FAILED_TITLE"
                     description="TR_AUTH_CONFIRM_FAILED_DESC"
-                    cta={{
-                        action: () => dispatch(suiteActions.authConfirm()),
-                    }}
+                    cta={{ action: actions.authConfirm }}
                     dataTestBase={exception.type}
                 />
             );
@@ -142,19 +145,17 @@ const Exception = ({ exception, discovery }: Props) => {
                     description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
                     cta={[
                         {
-                            action: () => dispatch(routerActions.goto('settings-coins')),
+                            action: () => actions.goto('settings-coins'),
                             variant: 'secondary',
                             icon: 'SETTINGS',
                             label: 'TR_COIN_SETTINGS',
                         },
                         {
                             action: () =>
-                                dispatch(
-                                    modalActions.openModal({
-                                        type: 'add-account',
-                                        device: device!,
-                                    }),
-                                ),
+                                actions.openModal({
+                                    type: 'add-account',
+                                    device: device!,
+                                }),
                             label: 'TR_ADD_ACCOUNT',
                         },
                     ]}
@@ -171,7 +172,7 @@ const Exception = ({ exception, discovery }: Props) => {
                             values={{ details: discoveryFailedMessage(discovery) }}
                         />
                     }
-                    cta={{ action: () => dispatch(discoveryActions.restart()) }}
+                    cta={{ action: actions.restartDiscovery }}
                     dataTestBase={exception.type}
                 />
             );
@@ -188,13 +189,10 @@ const Exception = ({ exception, discovery }: Props) => {
                     cta={{
                         action: async () => {
                             // enable passphrase
-                            const result = await dispatch(
-                                // eslint-disable-next-line @typescript-eslint/naming-convention
-                                deviceSettingsActions.applySettings({ use_passphrase: true }),
-                            );
+                            const result = await actions.applySettings({ use_passphrase: true });
                             if (!result || !result.success) return;
                             // restart discovery
-                            dispatch(discoveryActions.restart());
+                            actions.restartDiscovery();
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
                     }}

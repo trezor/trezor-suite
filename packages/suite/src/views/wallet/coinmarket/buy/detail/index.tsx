@@ -1,21 +1,13 @@
 import React from 'react';
-import { AppState } from '@suite-types';
+import styled from 'styled-components';
+import { WalletLayout } from '@wallet-components';
+import { useSelector } from '@suite-hooks';
 import {
     useCoinmarketBuyDetail,
     CoinmarketBuyDetailContext,
 } from '@wallet-hooks/useCoinmarketBuyDetail';
-import { WalletLayout } from '@wallet-components';
-import styled from 'styled-components';
-import { ComponentProps, Props } from '@wallet-types/coinmarketBuyDetail';
-import { connect } from 'react-redux';
-
 import Detail from './Detail';
-
-const mapStateToProps = (state: AppState): ComponentProps => ({
-    selectedAccount: state.wallet.selectedAccount,
-    trades: state.wallet.coinmarket.trades,
-    transactionId: state.wallet.coinmarket.buy.transactionId,
-});
+import type { Props } from '@wallet-types/coinmarketBuyDetail';
 
 const Wrapper = styled.div`
     display: flex;
@@ -36,13 +28,17 @@ const DetailIndexLoaded = (props: Props) => {
     );
 };
 
-const DetailIndex = (props: ComponentProps) => {
-    const { selectedAccount } = props;
+const DetailIndex = () => {
+    const props = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        trades: state.wallet.coinmarket.trades,
+        transactionId: state.wallet.coinmarket.buy.transactionId,
+    }));
 
-    if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="TR_NAV_BUY" account={selectedAccount} />;
+    if (props.selectedAccount.status !== 'loaded') {
+        return <WalletLayout title="TR_NAV_BUY" account={props.selectedAccount} />;
     }
-    return <DetailIndexLoaded {...props} selectedAccount={selectedAccount} />;
+    return <DetailIndexLoaded {...props} selectedAccount={props.selectedAccount} />;
 };
 
-export default connect(mapStateToProps)(DetailIndex);
+export default DetailIndex;

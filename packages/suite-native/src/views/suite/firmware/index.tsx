@@ -1,23 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { View, Text, Button } from 'react-native';
 import { useTheme } from '@trezor/components';
-
+import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import styles from '@native/support/suite/styles';
 
-import { Dispatch } from '@suite-types';
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    back: bindActionCreators(routerActions.back, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps>;
-
-const Backup = (props: Props) => {
+const Backup = () => {
     const theme = useTheme();
+    const actions = useActions({
+        goto: routerActions.goto,
+        back: routerActions.back,
+    });
     return (
         <View style={styles(theme).container}>
             <Text style={styles(theme).h1}>Firmware update</Text>
@@ -28,11 +21,11 @@ const Backup = (props: Props) => {
                 </Text>
             </View>
             <View style={{ margin: 20 }}>
-                <Button onPress={props.back} title="Back to previous screen" />
+                <Button onPress={actions.back} title="Back to previous screen" />
             </View>
             <Button
                 onPress={() =>
-                    props.goto('wallet-receive', {
+                    actions.goto('wallet-receive', {
                         symbol: 'btc',
                         accountIndex: 2,
                         accountType: 'normal',
@@ -44,4 +37,4 @@ const Backup = (props: Props) => {
     );
 };
 
-export default connect(null, mapDispatchToProps)(Backup);
+export default Backup;

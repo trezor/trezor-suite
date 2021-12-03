@@ -1,11 +1,9 @@
 import React, { useState, createContext } from 'react';
 import styled, { css } from 'styled-components';
-import { connect } from 'react-redux';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import { variables } from '@trezor/components';
 import SuiteBanners from '@suite-components/Banners';
-import { AppState } from '@suite-types';
 import { Metadata } from '@suite-components';
 import { GuidePanel, GuideButton } from '@guide-components';
 import MenuSecondary from '@suite-components/MenuSecondary';
@@ -116,14 +114,6 @@ const StyledGuidePanel = styled(GuidePanel)<{ open?: boolean; isModalOpen?: bool
         `}
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    router: state.router,
-});
-
-type Props = ReturnType<typeof mapStateToProps> & {
-    children?: React.ReactNode;
-};
-
 interface MobileBodyProps {
     url: string;
     menu?: React.ReactNode;
@@ -209,13 +199,13 @@ const BodyMobile = ({ url, menu, appMenu, children }: MobileBodyProps) => (
     </Body>
 );
 
-type SuiteLayoutProps = Omit<Props, 'menu' | 'appMenu'>;
-const SuiteLayout = (props: SuiteLayoutProps) => {
+const SuiteLayout: React.FC = ({ children }) => {
     const analytics = useAnalytics();
 
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
     const { isMobileLayout, layoutSize } = useLayoutSize();
-    const { guideOpen, isModalOpen } = useSelector(state => ({
+    const { router, guideOpen, isModalOpen } = useSelector(state => ({
+        router: state.router,
         guideOpen: state.guide.open,
         // 2 types of modals exist. 1. redux 'modal' based, 2. redux 'router' based
         isModalOpen:
@@ -275,17 +265,17 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
                     <BodyNormal
                         menu={menu}
                         appMenu={appMenu}
-                        url={props.router.url}
+                        url={router.url}
                         guideOpen={guideOpen}
                         isMenuInline={isMenuInline}
                         isModalOpen={isModalOpen}
                     >
-                        {props.children}
+                        {children}
                     </BodyNormal>
                 )}
                 {isMobileLayout && (
-                    <BodyMobile menu={menu} appMenu={appMenu} url={props.router.url}>
-                        {props.children}
+                    <BodyMobile menu={menu} appMenu={appMenu} url={router.url}>
+                        {children}
                     </BodyMobile>
                 )}
             </LayoutContext.Provider>
@@ -303,4 +293,4 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
     );
 };
 
-export default connect(mapStateToProps)(SuiteLayout);
+export default SuiteLayout;

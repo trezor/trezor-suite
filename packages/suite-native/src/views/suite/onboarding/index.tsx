@@ -1,32 +1,23 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { View, Text, Button } from 'react-native';
 import { useTheme } from '@trezor/components';
-
+import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import styles from '@native/support/suite/styles';
 import InitialRun from './components/InitialRun';
-import { AppState, Dispatch } from '@suite-types';
 
-const mapStateToProps = (state: AppState) => ({
-    initialRun: state.suite.flags.initialRun,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-    back: bindActionCreators(routerActions.back, dispatch),
-    initialRunCompleted: bindActionCreators(suiteActions.initialRunCompleted, dispatch),
-});
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const Onboarding = (props: Props) => {
+const Onboarding = () => {
     const theme = useTheme();
+    const initialRun = useSelector(state => state.suite.flags.initialRun);
+    const actions = useActions({
+        goto: routerActions.goto,
+        back: routerActions.back,
+        initialRunCompleted: suiteActions.initialRunCompleted,
+    });
 
     // TODO: "initialRun" view should not depend on props.initialRun
-    if (props.initialRun) {
+    if (initialRun) {
         return <InitialRun />;
     }
 
@@ -42,16 +33,16 @@ const Onboarding = (props: Props) => {
             <View style={{ margin: 20 }}>
                 <Button
                     onPress={() => {
-                        props.initialRunCompleted();
-                        props.back();
+                        actions.initialRunCompleted();
+                        actions.back();
                     }}
                     title="Go to suite"
                 />
             </View>
             <Button
                 onPress={() => {
-                    props.goto('wallet-index');
-                    props.initialRunCompleted();
+                    actions.goto('wallet-index');
+                    actions.initialRunCompleted();
                 }}
                 title="Go to wallet first page"
             />
@@ -59,4 +50,4 @@ const Onboarding = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Onboarding);
+export default Onboarding;

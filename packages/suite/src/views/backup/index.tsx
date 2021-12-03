@@ -1,15 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
 import { P, Button, ButtonProps } from '@trezor/components';
+import { useSelector, useActions } from '@suite-hooks';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
 import { Loading, Image, Translation, ExternalLink, Modal } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { FAILED_BACKUP_URL } from '@suite-constants/urls';
+import type { InjectedModalApplicationProps } from '@suite-types';
 
 const Row = styled.div`
     display: flex;
@@ -46,21 +45,6 @@ const CloseButton = (props: ButtonProps) => (
     </StyledButton>
 );
 
-const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
-    backup: state.backup,
-    locks: state.suite.locks,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            backupDevice: backupActions.backupDevice,
-            changePin: deviceSettingsActions.changePin,
-        },
-        dispatch,
-    );
-
 type BACKUP_STATUS = 'initial' | 'in-progress' | 'finished';
 
 const getModalHeading = (backupStatus: BACKUP_STATUS, backupError: any) => {
@@ -87,12 +71,18 @@ const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
     return <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_HEADING" />;
 };
 
-type Props = ReturnType<typeof mapDispatchToProps> &
-    ReturnType<typeof mapStateToProps> &
-    InjectedModalApplicationProps;
+const Backup = (props: InjectedModalApplicationProps) => {
+    const { device, backup, locks } = useSelector(state => ({
+        device: state.suite.device,
+        backup: state.backup,
+        locks: state.suite.locks,
+    }));
+    const actions = useActions({
+        backupDevice: backupActions.backupDevice,
+        changePin: deviceSettingsActions.changePin,
+    });
 
-const Backup = (props: Props) => {
-    const { backup, closeModalApp, modal, backupDevice, locks, device, changePin } = props;
+    const { closeModalApp, modal } = props;
     const onClose = () => closeModalApp();
 
     const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
@@ -202,7 +192,7 @@ const Backup = (props: Props) => {
                         <Col>
                             <StyledButton
                                 data-test="@backup/start-button"
-                                onClick={() => backupDevice()}
+                                onClick={() => actions.backupDevice()}
                                 isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
                                 <Translation id="TR_CREATE_BACKUP" />
@@ -232,7 +222,7 @@ const Backup = (props: Props) => {
                                         isDisabled={!canContinue(backup.userConfirmed)}
                                         onClick={() => {
                                             onClose();
-                                            changePin({});
+                                            actions.changePin({});
                                         }}
                                     >
                                         <Translation id="TR_CONTINUE_TO_PIN" />
@@ -269,4 +259,4 @@ const Backup = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Backup);
+export default Backup;

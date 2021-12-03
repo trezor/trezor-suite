@@ -1,12 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { connect } from 'react-redux';
-import { useDiscovery, useAccountSearch } from '@suite-hooks';
+import { useDiscovery, useAccountSearch, useSelector } from '@suite-hooks';
 import { H2, variables, useTheme, Icon } from '@trezor/components';
 import { Translation, AddAccountButton, LayoutContext } from '@suite-components';
 
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
-import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 
 import AccountSearchBox from './components/AccountSearchBox';
@@ -123,17 +121,14 @@ const NoResults = styled.div`
     margin: 36px 0px;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
-    accounts: state.wallet.accounts,
-    selectedAccount: state.wallet.selectedAccount,
-});
-
-type Props = ReturnType<typeof mapStateToProps>;
-
-const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
+const AccountsMenu = () => {
     const theme = useTheme();
     const { discovery, getDiscoveryStatus } = useDiscovery();
+    const { device, accounts, selectedAccount } = useSelector(state => ({
+        device: state.suite.device,
+        accounts: state.wallet.accounts,
+        selectedAccount: state.wallet.selectedAccount,
+    }));
     const { params } = selectedAccount;
     const { isMenuInline } = React.useContext(LayoutContext);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -315,4 +310,4 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     );
 };
 
-export default connect(mapStateToProps)(AccountsMenu);
+export default AccountsMenu;

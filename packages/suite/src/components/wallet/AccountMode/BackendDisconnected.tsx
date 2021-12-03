@@ -1,27 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { NotificationCard, Translation } from '@suite-components';
+import { useSelector, useActions } from '@suite-hooks';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 
-import { AppState, Dispatch } from '@suite-types';
-
-const mapStateToProps = (state: AppState) => ({
-    blockchain: state.wallet.blockchain,
-    selectedAccount: state.wallet.selectedAccount,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            reconnect: blockchainActions.reconnect,
-        },
-        dispatch,
-    );
-
-export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const Disconnected = ({ selectedAccount, reconnect, blockchain }: Props) => {
+const Disconnected = () => {
+    const { reconnect } = useActions({
+        reconnect: blockchainActions.reconnect,
+    });
+    const { blockchain, selectedAccount } = useSelector(state => ({
+        blockchain: state.wallet.blockchain,
+        selectedAccount: state.wallet.selectedAccount,
+    }));
     const [progress, setProgress] = useState(false);
     const [time, setTime] = useState<number | null>(null);
     const symbol = selectedAccount.status === 'loaded' ? selectedAccount.network.symbol : undefined;
@@ -71,4 +60,4 @@ const Disconnected = ({ selectedAccount, reconnect, blockchain }: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Disconnected);
+export default Disconnected;

@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation, Image, TrezorLink, Modal, Metadata } from '@suite-components';
 import { Button, P, Link, Select, useTheme, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
-import { AppState, Dispatch } from '@suite-types';
 import { isDesktop, isWeb } from '@suite-utils/env';
-import { useSelector } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 
 const Content = styled.div`
     display: flex;
@@ -90,20 +87,6 @@ const Col = styled.div<{ justify?: string }>`
     justify-content: ${props => props.justify};
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    transport: state.suite.transport,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            goto: routerActions.goto,
-        },
-        dispatch,
-    );
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
 interface Installer {
     label: string;
     value: string;
@@ -111,14 +94,20 @@ interface Installer {
     preferred?: boolean;
 }
 
-const InstallBridge = (props: Props) => {
-    const tor = useSelector(state => state.suite.tor);
-    const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
+const InstallBridge = () => {
+    const actions = useActions({
+        goto: routerActions.goto,
+    });
+    const { tor, transport } = useSelector(state => ({
+        transport: state.suite.transport,
+        tor: state.suite.tor,
+    }));
     const theme = useTheme();
+    const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
 
     const installers: Installer[] =
-        props.transport && props.transport.bridge
-            ? props.transport.bridge.packages.map(p => ({
+        transport && transport.bridge
+            ? transport.bridge.packages.map(p => ({
                   label: p.name,
                   value: p.url,
                   signature: p.signature,
@@ -128,16 +117,16 @@ const InstallBridge = (props: Props) => {
 
     const preferredTarget = installers.find(i => i.preferred === true);
     const data = {
-        currentVersion: props.transport?.type === 'bridge' ? props.transport!.version : null,
-        latestVersion: props.transport?.bridge ? props.transport.bridge.version.join('.') : null,
+        currentVersion: transport?.type === 'bridge' ? transport!.version : null,
+        latestVersion: transport?.bridge ? transport.bridge.version.join('.') : null,
         installers,
         target: preferredTarget || installers[0],
         uri: URLS.TREZOR_DATA_URL,
     };
 
     const target = selectedTarget || data.target;
-    const isLoading = !props.transport;
-    const transportAvailable = props.transport && props.transport.type;
+    const isLoading = !transport;
+    const transportAvailable = transport && transport.type;
 
     return (
         <Modal
@@ -204,7 +193,7 @@ const InstallBridge = (props: Props) => {
                             icon="ARROW_LEFT"
                             variant="tertiary"
                             color={theme.TYPE_LIGHT_GREY}
-                            onClick={() => props.goto('wallet-index')}
+                            onClick={() => actions.goto('wallet-index')}
                             data-test="@bridge/goto/wallet-index"
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
@@ -246,4 +235,4 @@ const InstallBridge = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InstallBridge);
+export default InstallBridge;

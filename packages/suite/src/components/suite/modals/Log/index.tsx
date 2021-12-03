@@ -1,12 +1,10 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import { Switch, Button, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
+import { useSelector, useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as logActions from '@suite-actions/logActions';
-import { AppState, Dispatch } from '@suite-types';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
 import { copyToClipboard } from '@suite-utils/dom';
 import { prettifyLog } from '@suite-utils/logUtils';
@@ -42,34 +40,26 @@ const StyledButton = styled(Button)`
     }
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    log: state.log,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            addNotification: notificationActions.addToast,
-            getLog: logActions.getLog,
-            toggleExcludeBalanceRelated: logActions.toggleExcludeBalanceRelated,
-        },
-        dispatch,
-    );
-
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> & {
-        onCancel: () => void;
-    };
+type Props = {
+    onCancel: () => void;
+};
 
 const Log = (props: Props) => {
     const htmlElement = createRef<HTMLPreElement>();
 
-    const log = prettifyLog(props.getLog(props.log.excludeBalanceRelated));
+    const { excludeBalanceRelated } = useSelector(state => state.log);
+    const actions = useActions({
+        addNotification: notificationActions.addToast,
+        getLog: logActions.getLog,
+        toggleExcludeBalanceRelated: logActions.toggleExcludeBalanceRelated,
+    });
+
+    const log = prettifyLog(actions.getLog(excludeBalanceRelated));
 
     const copy = () => {
         const result = copyToClipboard(log, htmlElement.current);
         if (typeof result !== 'string') {
-            props.addNotification({ type: 'copy-to-clipboard' });
+            actions.addNotification({ type: 'copy-to-clipboard' });
         }
     };
 
@@ -122,8 +112,8 @@ const Log = (props: Props) => {
                 />
                 <ActionColumn>
                     <Switch
-                        checked={!props.log.excludeBalanceRelated}
-                        onChange={props.toggleExcludeBalanceRelated}
+                        checked={!excludeBalanceRelated}
+                        onChange={actions.toggleExcludeBalanceRelated}
                     />
                 </ActionColumn>
             </SectionItem>
@@ -131,4 +121,4 @@ const Log = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Log);
+export default Log;

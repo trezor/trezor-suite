@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { FiatValue, Translation, HiddenPlaceholder, AccountLabeling } from '@suite-components';
-import { variables, CoinLogo, Select, Icon, useTheme } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { Account } from '@wallet-types';
-import * as modalActions from '@suite-actions/modalActions';
-import { useDispatch } from 'react-redux';
-import { Dispatch } from '@suite-types';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
-import { UseFormMethods } from 'react-hook-form';
+import { variables, CoinLogo, Select, Icon, useTheme } from '@trezor/components';
+import { FiatValue, Translation, HiddenPlaceholder, AccountLabeling } from '@suite-components';
+import { useActions } from '@suite-hooks';
+import * as modalActions from '@suite-actions/modalActions';
+import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
+import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import type { UseFormMethods } from 'react-hook-form';
+import type { Account } from '@wallet-types';
 
 const LogoWrapper = styled.div`
     display: flex;
@@ -70,10 +69,12 @@ type Props = Pick<UseFormMethods<FormState>, 'setValue'> & {
 
 const ReceiveOptions = (props: Props) => {
     const theme = useTheme();
+    const { openModal } = useActions({
+        openModal: modalActions.openModal,
+    });
     const { device, suiteReceiveAccounts, receiveSymbol, setReceiveAccount } =
         useCoinmarketExchangeOffersContext();
     const [menuIsOpen, setMenuIsOpen] = useState<boolean | undefined>(undefined);
-    const dispatch = useDispatch<Dispatch>();
 
     const { selectedAccountOption, setSelectedAccountOption, setValue } = props;
 
@@ -102,14 +103,12 @@ const ReceiveOptions = (props: Props) => {
         if (account.type === 'ADD_SUITE') {
             if (device) {
                 setMenuIsOpen(true);
-                dispatch(
-                    modalActions.openModal({
-                        type: 'add-account',
-                        device: device!,
-                        symbol: receiveSymbol as Account['symbol'],
-                        noRedirect: true,
-                    }),
-                );
+                openModal({
+                    type: 'add-account',
+                    device: device!,
+                    symbol: receiveSymbol as Account['symbol'],
+                    noRedirect: true,
+                });
             }
         } else {
             selectAccountOption(account);

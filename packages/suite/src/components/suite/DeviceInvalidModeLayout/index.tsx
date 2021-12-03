@@ -1,11 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
 import { Button } from '@trezor/components';
 import { Image as Img, Translation, Modal } from '@suite-components';
+import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import { AppState, Dispatch } from '@suite-types';
 
 const Image = styled(Img)`
     flex: 1;
@@ -35,18 +33,6 @@ const Buttons = styled.div`
  * like views listed in suite/views
  */
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            goto: routerActions.goto,
-        },
-        dispatch,
-    );
-
-const mapStateToProps = (state: AppState) => ({
-    devices: state.devices,
-});
-
 type Props = {
     title: React.ReactNode;
     text?: React.ReactNode;
@@ -54,19 +40,15 @@ type Props = {
     allowSwitchDevice?: boolean;
     resolveButton?: React.ReactNode;
     ['data-test']?: string;
-} & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+};
 
 const DeviceInvalidModeLayout = (props: Props) => {
-    const {
-        title,
-        text,
-        image = 'UNI_WARNING',
-        allowSwitchDevice,
-        devices,
-        resolveButton,
-        goto,
-    } = props;
+    const { title, text, image = 'UNI_WARNING', allowSwitchDevice, resolveButton } = props;
+
+    const devices = useSelector(state => state.devices);
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
 
     return (
         <Modal size="small" heading={title} description={text} data-test={props['data-test']}>
@@ -83,4 +65,4 @@ const DeviceInvalidModeLayout = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeviceInvalidModeLayout);
+export default DeviceInvalidModeLayout;

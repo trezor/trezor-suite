@@ -6,33 +6,28 @@
  */
 
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { SUITE } from '@suite-actions/constants';
 import { useTheme } from '@trezor/components';
-import { AppState, Dispatch } from '@suite-types';
+import { useSelector, useActions } from '@suite-hooks';
 import styles from '@native/support/suite/styles';
 
-const mapStateToProps = (state: AppState) => ({
-    loading: state.suite.loading,
-    loaded: state.suite.loaded,
-    error: state.suite.error,
-});
-
-type Props = ReturnType<typeof mapStateToProps> & {
-    dispatch: Dispatch;
-    children: React.ReactNode;
-};
-
-const Preloader = (props: Props) => {
-    const { loading, loaded, error, dispatch } = props;
+const Preloader: React.FC = ({ children }) => {
+    const { loading, loaded, error } = useSelector(state => ({
+        loading: state.suite.loading,
+        loaded: state.suite.loaded,
+        error: state.suite.error,
+    }));
+    const { init } = useActions({
+        init: () => ({ type: SUITE.INIT }),
+    });
     const theme = useTheme();
     useEffect(() => {
         if (!loading && !loaded && !error) {
-            dispatch({ type: SUITE.INIT });
+            init();
         }
-    }, [dispatch, loaded, loading, error]);
+    }, [init, loaded, loading, error]);
 
     if (error) {
         return (
@@ -46,9 +41,9 @@ const Preloader = (props: Props) => {
     return (
         <SafeAreaView style={styles(theme).safeArea}>
             {!loaded && <Text>Loading</Text>}
-            {loaded && props.children}
+            {loaded && children}
         </SafeAreaView>
     );
 };
 
-export default connect(mapStateToProps)(Preloader);
+export default Preloader;

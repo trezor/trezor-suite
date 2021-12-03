@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
 import { Button, ButtonProps, H2, P, variables } from '@trezor/components';
-
 import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
 import { Loading, Translation, CheckItem, ExternalLink, Image, Modal } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
-import { WordCount } from '@recovery-types';
-import { useDevice } from '@suite-hooks';
+import { useDevice, useSelector, useActions } from '@suite-hooks';
 import { URLS } from '@suite-constants';
+import type { InjectedModalApplicationProps } from '@suite-types';
+import type { WordCount } from '@recovery-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -95,48 +91,28 @@ const CloseButton = (props: ButtonProps) => (
     </StyledButton>
 );
 
-const mapStateToProps = (state: AppState) => ({
-    recovery: state.recovery,
-    locks: state.suite.locks,
-    device: state.suite.device,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            checkSeed: recoveryActions.checkSeed,
-            setStatus: recoveryActions.setStatus,
-            setWordsCount: recoveryActions.setWordsCount,
-            setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
-        },
-        dispatch,
-    );
-
-export type Props = InjectedModalApplicationProps &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
-
-const Recovery = ({
-    recovery,
-    checkSeed,
-    setWordsCount,
-    setAdvancedRecovery,
-    modal,
-    closeModalApp,
-    device,
-    setStatus,
-}: Props) => {
+const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
+    const { recovery } = useSelector(state => ({
+        recovery: state.recovery,
+    }));
+    const actions = useActions({
+        checkSeed: recoveryActions.checkSeed,
+        setStatus: recoveryActions.setStatus,
+        setWordsCount: recoveryActions.setWordsCount,
+        setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
+    });
+    const { device, isLocked } = useDevice();
     const model = device?.features?.major_version;
     const [understood, setUnderstood] = useState(false);
-    const { isLocked } = useDevice();
+
     const onSetWordsCount = (count: WordCount) => {
-        setWordsCount(count);
-        setStatus('select-recovery-type');
+        actions.setWordsCount(count);
+        actions.setStatus('select-recovery-type');
     };
 
     const onSetRecoveryType = (type: boolean) => {
-        setAdvancedRecovery(type);
-        checkSeed();
+        actions.setAdvancedRecovery(type);
+        actions.checkSeed();
     };
 
     const statesInProgressBar =
@@ -249,7 +225,9 @@ const Recovery = ({
                         <Buttons>
                             <StyledButton
                                 onClick={() =>
-                                    model === 1 ? setStatus('select-word-count') : checkSeed()
+                                    model === 1
+                                        ? actions.setStatus('select-word-count')
+                                        : actions.checkSeed()
                                 }
                                 isDisabled={!understood || isLocked()}
                                 data-test="@recovery/start-button"
@@ -345,4 +323,4 @@ const Recovery = ({
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Recovery);
+export default Recovery;

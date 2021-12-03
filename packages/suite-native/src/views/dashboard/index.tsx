@@ -1,21 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { View, Button } from 'react-native';
 import { P as Text, useTheme } from '@trezor/components';
+import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import styles from '@native/support/suite/styles';
 import Layout from '@native-components/suite/Layout';
-import { Dispatch } from '@suite-types';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps>;
-
-const Dashboard = (props: Props) => {
+const Dashboard = () => {
     const theme = useTheme();
+    const actions = useActions({
+        goto: routerActions.goto,
+    });
 
     return (
         <Layout title="Dashboard">
@@ -28,14 +23,14 @@ const Dashboard = (props: Props) => {
             </View>
             <View style={{ margin: 20 }}>
                 <Button
-                    onPress={() => props.goto('settings-coins')}
+                    onPress={() => actions.goto('settings-coins')}
                     title="Go to wallet settings and add some coins"
                 />
             </View>
             <View style={{ margin: 20 }}>
                 <Button
                     onPress={() =>
-                        props.goto('wallet-receive', {
+                        actions.goto('wallet-receive', {
                             accountType: 'normal',
                             accountIndex: 1,
                             symbol: 'btc',
@@ -45,10 +40,10 @@ const Dashboard = (props: Props) => {
                 />
             </View>
             <View style={{ margin: 20 }}>
-                <Button onPress={() => props.goto('onboarding-index')} title="Go to onboarding" />
+                <Button onPress={() => actions.goto('onboarding-index')} title="Go to onboarding" />
             </View>
         </Layout>
     );
 };
 
-export default connect(null, mapDispatchToProps)(Dashboard);
+export default Dashboard;

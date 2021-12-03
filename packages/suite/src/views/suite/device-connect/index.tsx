@@ -1,14 +1,12 @@
 // TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceConnect
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Link, P, H2 } from '@trezor/components';
+import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation, WebusbButton, ConnectDeviceImage, Modal } from '@suite-components';
 import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons';
-import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
 import { isAndroid, isLinux } from '@suite-utils/env';
 
@@ -34,22 +32,12 @@ const BridgeWrapper = styled.div`
 
 const StyledLink = styled(Link)``;
 
-const mapStateToProps = (state: AppState) => ({
-    transport: state.suite.transport,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            goto: routerActions.goto,
-        },
-        dispatch,
-    );
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const Index = (props: Props) => {
-    const showWebUsb = isWebUSB(props.transport);
+const Index = () => {
+    const transport = useSelector(state => state.suite.transport);
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
+    const showWebUsb = isWebUSB(transport);
     const showUdev = isLinux();
 
     return (
@@ -74,9 +62,7 @@ const Index = (props: Props) => {
                             values={{
                                 link: (
                                     <StyledLink
-                                        onClick={() =>
-                                            props.goto('suite-udev', { cancelable: true })
-                                        }
+                                        onClick={() => goto('suite-udev', { cancelable: true })}
                                         data-test="@modal/connect-device/goto/suite-udev"
                                     >
                                         Udev rules
@@ -95,9 +81,7 @@ const Index = (props: Props) => {
                             values={{
                                 link: (
                                     <StyledLink
-                                        onClick={() =>
-                                            props.goto('suite-bridge', { cancelable: true })
-                                        }
+                                        onClick={() => goto('suite-bridge', { cancelable: true })}
                                         data-test="@modal/connect-device/goto/suite-bridge"
                                     >
                                         Trezor Bridge
@@ -112,4 +96,4 @@ const Index = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default Index;
