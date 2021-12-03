@@ -1,10 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
 import { CheckItem, Translation } from '@suite-components';
-import { AppState, Dispatch } from '@suite-types';
+import { useSelector, useActions } from '@suite-hooks';
 import * as backupActions from '@suite/actions/backup/backupActions';
 
 const CheckboxWrapper = styled.div`
@@ -15,22 +12,11 @@ const CheckboxWrapper = styled.div`
     margin-bottom: 2px;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    backup: state.backup,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            toggleCheckboxByKey: backupActions.toggleCheckboxByKey,
-            backupDevice: backupActions.backupDevice,
-        },
-        dispatch,
-    );
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const AfterBackupCheckboxes = ({ toggleCheckboxByKey, backup }: Props) => {
+const AfterBackupCheckboxes = () => {
+    const backup = useSelector(state => state.backup);
+    const { toggleCheckboxByKey } = useActions({
+        toggleCheckboxByKey: backupActions.toggleCheckboxByKey,
+    });
     const isChecked = (key: backupActions.ConfirmKey) => backup.userConfirmed.includes(key);
 
     return (
@@ -60,4 +46,4 @@ const AfterBackupCheckboxes = ({ toggleCheckboxByKey, backup }: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AfterBackupCheckboxes);
+export default AfterBackupCheckboxes;

@@ -1,19 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Text, ScrollView, View } from 'react-native';
 import { useTheme } from '@trezor/components';
+import { useSelector } from '@suite-hooks';
 import Head from '@native/support/suite/Head';
-import { AppState, SuiteThemeColors } from '@suite-types';
+import type { SuiteThemeColors } from '@suite-types';
 
 const styles = (theme: SuiteThemeColors) => ({
     wrapper: { backgroundColor: theme.BG_WHITE },
 });
 
-const mapStateToProps = (state: AppState) => ({
-    suite: state.suite,
-});
-
-type Props = ReturnType<typeof mapStateToProps> & {
+type Props = {
     title: string;
     disableTabs?: boolean;
     children: React.ReactNode;
@@ -22,9 +18,9 @@ type Props = ReturnType<typeof mapStateToProps> & {
 const Layout = (props: Props) => {
     const {
         title,
-        suite,
         // router,
     } = props;
+    const suite = useSelector(state => state.suite);
     const theme = useTheme();
 
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
@@ -91,4 +87,4 @@ const Layout = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps)(Layout);
+export default Layout;

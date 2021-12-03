@@ -1,14 +1,9 @@
 import React from 'react';
-import { AppState } from '@suite-types';
+import { useSelector } from '@suite-hooks';
 import { useCoinmarketBuyForm, BuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import { CoinmarketLayout, WalletLayout } from '@wallet-components';
-import { ComponentProps, Props } from '@wallet-types/coinmarketBuyForm';
-import { connect } from 'react-redux';
 import BuyForm from './components/BuyForm';
-
-const mapStateToProps = (state: AppState): ComponentProps => ({
-    selectedAccount: state.wallet.selectedAccount,
-});
+import type { Props } from '@wallet-types/coinmarketBuyForm';
 
 const CoinmarketBuyLoaded = (props: Props) => {
     const { selectedAccount } = props;
@@ -29,12 +24,12 @@ const CoinmarketBuyLoaded = (props: Props) => {
     );
 };
 
-const CoinmarketBuy = (props: ComponentProps) => {
-    const { selectedAccount } = props;
+const CoinmarketBuy = () => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_BUY" account={selectedAccount} />;
     }
-    return <CoinmarketBuyLoaded {...props} selectedAccount={selectedAccount} />;
+    return <CoinmarketBuyLoaded selectedAccount={selectedAccount} />;
 };
 
-export default connect(mapStateToProps)(CoinmarketBuy);
+export default CoinmarketBuy;

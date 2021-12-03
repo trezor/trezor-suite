@@ -1,15 +1,14 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
 import { Dropdown } from '@trezor/components';
 import { Card, QuestionTooltip, Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
-import * as accountUtils from '@wallet-utils/accountUtils';
 import { useDiscovery, useSelector, useActions } from '@suite-hooks';
 import { useFastAccounts, useFiatValue } from '@wallet-hooks';
-import { goto } from '@suite-actions/routerActions';
 import { SkeletonTransactionsGraph } from '@suite-components/TransactionsGraph';
+import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
+import * as accountUtils from '@wallet-utils/accountUtils';
 
 import Header from './components/Header';
 import Exception from './components/Exception';
@@ -30,12 +29,14 @@ const Body = styled.div`
 `;
 
 const PortfolioCard = React.memo(() => {
-    const dispatch = useDispatch();
     const { fiat, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
-    const { setFlag } = useActions({ setFlag: suiteActions.setFlag });
+    const { setFlag, goto } = useActions({
+        setFlag: suiteActions.setFlag,
+        goto: routerActions.goto,
+    });
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const portfolioValue = accountUtils
@@ -124,7 +125,7 @@ const PortfolioCard = React.memo(() => {
                     isWalletEmpty={isWalletEmpty}
                     isWalletLoading={isWalletLoading}
                     isWalletError={isWalletError}
-                    receiveClickHandler={() => dispatch(goto('wallet-receive'))}
+                    receiveClickHandler={() => goto('wallet-receive')}
                 />
 
                 {body && <Body>{body}</Body>}

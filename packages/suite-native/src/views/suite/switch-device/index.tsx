@@ -1,21 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { View, Text, Button } from 'react-native';
 import { useTheme } from '@trezor/components';
-
+import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import styles from '@native/support/suite/styles';
-import { Dispatch } from '@suite-types';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps>;
-
-const SwitchDevice = (props: Props) => {
+const SwitchDevice = () => {
     const theme = useTheme();
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
 
     return (
         <View style={styles(theme).container}>
@@ -27,10 +21,10 @@ const SwitchDevice = (props: Props) => {
                 </Text>
             </View>
             <View style={{ margin: 20 }}>
-                <Button onPress={() => props.goto('suite-index')} title="Back to dashboard" />
+                <Button onPress={() => goto('suite-index')} title="Back to dashboard" />
             </View>
         </View>
     );
 };
 
-export default connect(null, mapDispatchToProps)(SwitchDevice);
+export default SwitchDevice;

@@ -1,11 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
-import * as backupActions from '@suite/actions/backup/backupActions';
 import { CheckItem, Translation } from '@suite-components';
-import { Dispatch, AppState } from '@suite-types';
+import { useSelector, useActions } from '@suite-hooks';
+import * as backupActions from '@suite/actions/backup/backupActions';
 import { variables } from '@trezor/components';
 
 const CheckboxWrapper = styled.div`
@@ -22,22 +19,11 @@ const CheckboxWrapper = styled.div`
     }
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    backup: state.backup,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            toggleCheckboxByKey: backupActions.toggleCheckboxByKey,
-            backupDevice: backupActions.backupDevice,
-        },
-        dispatch,
-    );
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const PreBackupCheckboxes = ({ toggleCheckboxByKey, backup }: Props) => {
+const PreBackupCheckboxes = () => {
+    const backup = useSelector(state => state.backup);
+    const { toggleCheckboxByKey } = useActions({
+        toggleCheckboxByKey: backupActions.toggleCheckboxByKey,
+    });
     const isChecked = (key: backupActions.ConfirmKey) => backup.userConfirmed.includes(key);
 
     return (
@@ -67,4 +53,4 @@ const PreBackupCheckboxes = ({ toggleCheckboxByKey, backup }: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PreBackupCheckboxes);
+export default PreBackupCheckboxes;

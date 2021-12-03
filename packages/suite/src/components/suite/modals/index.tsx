@@ -1,14 +1,11 @@
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 import { UI } from 'trezor-connect';
 
 import * as allModalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL } from '@suite-actions/constants';
-import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
-import { useSelector } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 
 import Pin from './Pin';
 import PinInvalid from './PinInvalid';
@@ -44,32 +41,38 @@ import AdvancedCoinSettings from './AdvancedCoinSettings';
 import AddToken from './AddToken';
 import SafetyChecks from './SafetyChecks';
 
-const mapStateToProps = (state: AppState) => ({
-    modal: state.modal,
-    device: state.suite.device,
-    devices: state.devices,
-    router: state.router,
-});
+import type { AcquiredDevice } from '@suite-types';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(allModalActions, dispatch),
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> & {
-        background?: boolean;
+const useSharedProps = () => {
+    const props = useSelector(state => ({
+        modal: state.modal,
+        device: state.suite.device,
+        devices: state.devices,
+        router: state.router,
+        guideOpen: state.guide.open,
+    }));
+    const actions = useActions({
+        onCancel: allModalActions.onCancel,
+        onPinCancel: allModalActions.onPinCancel,
+        onReceiveConfirmation: allModalActions.onReceiveConfirmation,
+        goto: routerActions.goto,
+    });
+    return {
+        ...props,
+        ...actions,
     };
+};
+
+type SharedProps = ReturnType<typeof useSharedProps>;
 
 // Modals requested byt Device from `trezor-connect`
-const getDeviceContextModal = (props: Props) => {
-    const { modal, device } = props;
+const getDeviceContextModal = ({ modal, device, onPinCancel }: SharedProps) => {
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
 
     switch (modal.windowType) {
         // T1 firmware
         case UI.REQUEST_PIN:
-            return <Pin device={device} onCancel={props.modalActions.onPinCancel} />;
+            return <Pin device={device} onCancel={onPinCancel} />;
         // T1 firmware
         case UI.INVALID_PIN:
             return <PinInvalid device={device} />;
@@ -118,16 +121,14 @@ const getDeviceContextModal = (props: Props) => {
 };
 
 // Modals requested from `trezor-connect`
-const getDeviceConfirmationModal = (props: Props) => {
-    const { modal, modalActions, goto } = props;
-
+const getDeviceConfirmationModal = ({ modal, onReceiveConfirmation, goto }: SharedProps) => {
     if (modal.context !== MODAL.CONTEXT_DEVICE_CONFIRMATION) return null;
 
     switch (modal.windowType) {
         case 'no-backup':
             return (
                 <ConfirmNoBackup
-                    onReceiveConfirmation={modalActions.onReceiveConfirmation}
+                    onReceiveConfirmation={onReceiveConfirmation}
                     onCreateBackup={() => goto('settings-device')}
                 />
             );
@@ -137,8 +138,7 @@ const getDeviceConfirmationModal = (props: Props) => {
 };
 
 // Modals opened as result of user action
-const getUserContextModal = (props: Props) => {
-    const { modalActions, modal } = props;
+const getUserContextModal = ({ modal, onCancel }: SharedProps) => {
     if (modal.context !== MODAL.CONTEXT_USER) return null;
 
     const { payload } = modal;
@@ -150,44 +150,38 @@ const getUserContextModal = (props: Props) => {
                     device={payload.device as AcquiredDevice}
                     symbol={payload.symbol}
                     noRedirect={payload.noRedirect}
-                    onCancel={modalActions.onCancel}
+                    onCancel={onCancel}
                 />
             );
         case 'unverified-address':
-            return <ConfirmUnverifiedAddress {...payload} onCancel={modalActions.onCancel} />;
+            return <ConfirmUnverifiedAddress {...payload} onCancel={onCancel} />;
         case 'address':
             return (
-                <ConfirmAddress
-                    {...payload}
-                    onCancel={payload.cancelable ? modalActions.onCancel : undefined}
-                />
+                <ConfirmAddress {...payload} onCancel={payload.cancelable ? onCancel : undefined} />
             );
         case 'xpub':
-            return <ConfirmXpub {...payload} onCancel={modalActions.onCancel} />;
+            return <ConfirmXpub {...payload} onCancel={onCancel} />;
         case 'device-background-gallery':
             return (
-                <BackgroundGallery
-                    device={payload.device as AcquiredDevice}
-                    onCancel={modalActions.onCancel}
-                />
+                <BackgroundGallery device={payload.device as AcquiredDevice} onCancel={onCancel} />
             );
         case 'wipe-device':
-            return <WipeDevice onCancel={modalActions.onCancel} />;
+            return <WipeDevice onCancel={onCancel} />;
         case 'qr-reader':
-            return <QrScanner decision={payload.decision} onCancel={modalActions.onCancel} />;
+            return <QrScanner decision={payload.decision} onCancel={onCancel} />;
         case 'transaction-detail':
-            return <TransactionDetail {...payload} onCancel={modalActions.onCancel} />;
+            return <TransactionDetail {...payload} onCancel={onCancel} />;
         case 'passphrase-duplicate':
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return <ReviewTransaction {...payload} />;
         case 'coinmarket-leave-spend':
-            return <CoinmarketLeaveSpend {...payload} onCancel={modalActions.onCancel} />;
+            return <CoinmarketLeaveSpend {...payload} onCancel={onCancel} />;
         case 'coinmarket-buy-terms':
             return (
                 <CoinmarketBuyTerms
                     provider={payload.provider}
-                    onCancel={modalActions.onCancel}
+                    onCancel={onCancel}
                     decision={payload.decision}
                 />
             );
@@ -195,7 +189,7 @@ const getUserContextModal = (props: Props) => {
             return (
                 <CoinmarketSellTerms
                     provider={payload.provider}
-                    onCancel={modalActions.onCancel}
+                    onCancel={onCancel}
                     decision={payload.decision}
                 />
             );
@@ -203,7 +197,7 @@ const getUserContextModal = (props: Props) => {
             return (
                 <CoinmarketExchangeTerms
                     provider={payload.provider}
-                    onCancel={modalActions.onCancel}
+                    onCancel={onCancel}
                     decision={payload.decision}
                 />
             );
@@ -211,44 +205,42 @@ const getUserContextModal = (props: Props) => {
             return (
                 <CoinmarketExchangeDexTerms
                     provider={payload.provider}
-                    onCancel={modalActions.onCancel}
+                    onCancel={onCancel}
                     decision={payload.decision}
                 />
             );
         case 'import-transaction':
-            return <ImportTransaction {...payload} onCancel={modalActions.onCancel} />;
+            return <ImportTransaction {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':
             return <PinMismatch />;
         case 'disconnect-device':
             return <DisconnectDevice />;
         case 'log':
-            return <Log onCancel={modalActions.onCancel} />;
+            return <Log onCancel={onCancel} />;
         case 'metadata-provider':
-            return (
-                <MetadataProvider onCancel={modalActions.onCancel} decision={payload.decision} />
-            );
+            return <MetadataProvider onCancel={onCancel} decision={payload.decision} />;
         case 'advanced-coin-settings':
-            return <AdvancedCoinSettings {...payload} onCancel={modalActions.onCancel} />;
+            return <AdvancedCoinSettings {...payload} onCancel={onCancel} />;
         case 'add-token':
-            return <AddToken {...payload} onCancel={modalActions.onCancel} />;
+            return <AddToken {...payload} onCancel={onCancel} />;
         case 'safety-checks':
-            return <SafetyChecks onCancel={modalActions.onCancel} />;
+            return <SafetyChecks onCancel={onCancel} />;
         default:
             return null;
     }
 };
 
-// Action modal container component
-const Modal = (props: Props) => {
-    const { modal } = props;
+type Props = {
+    background?: boolean;
+};
 
-    const { guideOpen } = useSelector(state => ({
-        guideOpen: state.guide.open,
-    }));
+// Action modal container component
+const Modal = ({ background }: Props) => {
+    const props = useSharedProps();
 
     let modalComponent;
 
-    switch (modal.context) {
+    switch (props.modal.context) {
         case MODAL.CONTEXT_DEVICE:
             modalComponent = getDeviceContextModal(props);
             break;
@@ -264,10 +256,10 @@ const Modal = (props: Props) => {
 
     if (!modalComponent) return null;
 
-    const useBackground = props.background ?? true;
+    const useBackground = background ?? true;
     if (useBackground) {
         return (
-            <FocusLock disabled={guideOpen} autoFocus={false}>
+            <FocusLock disabled={props.guideOpen} autoFocus={false}>
                 {modalComponent}
             </FocusLock>
         );
@@ -281,4 +273,4 @@ const Modal = (props: Props) => {
     });
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Modal);
+export default Modal;

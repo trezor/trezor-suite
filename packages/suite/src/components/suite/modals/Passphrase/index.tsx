@@ -1,15 +1,14 @@
 import TrezorConnect from 'trezor-connect';
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
+import { useSelector, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation, Modal } from '@suite-components';
-import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import PassphraseTypeCard from './components/PassphraseTypeCard';
+import type { TrezorDevice } from '@suite-types';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;
@@ -34,31 +33,21 @@ const Divider = styled.div`
     background: ${props => props.theme.STROKE_GREY};
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    devices: state.devices,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
-            onPassphraseSubmit: modalActions.onPassphraseSubmit,
-        },
-        dispatch,
-    );
-
 type Props = {
     device: TrezorDevice;
-} & ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+};
 
-const Passphrase = (props: Props) => {
-    const { device } = props;
+const Passphrase = ({ device }: Props) => {
     const [submitted, setSubmitted] = useState(false);
-    const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
+    const devices = useSelector(state => state.devices);
+    const actions = useActions({
+        getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
+        onPassphraseSubmit: modalActions.onPassphraseSubmit,
+    });
+    const authConfirmation = actions.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
     const stateConfirmation = !!device.state;
     const hasEmptyPassphraseWallet = deviceUtils
-        .getDeviceInstances(device, props.devices)
+        .getDeviceInstances(device, devices)
         .find(d => d.useEmptyPassphrase);
     const noPassphraseOffer = !hasEmptyPassphraseWallet && !stateConfirmation;
     const onDeviceOffer = !!(
@@ -69,7 +58,7 @@ const Passphrase = (props: Props) => {
 
     const onSubmit = (value: string, passphraseOnDevice?: boolean) => {
         setSubmitted(true);
-        props.onPassphraseSubmit(value, !!passphraseOnDevice);
+        actions.onPassphraseSubmit(value, !!passphraseOnDevice);
     };
 
     const onRecreate = () => {
@@ -166,4 +155,4 @@ const Passphrase = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Passphrase);
+export default Passphrase;

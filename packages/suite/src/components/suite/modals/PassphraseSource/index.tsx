@@ -1,27 +1,24 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { ConfirmOnDevice } from '@trezor/components';
-import { Modal, ModalProps } from '@suite-components';
+import { Modal } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
+import { useActions } from '@suite-hooks';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { Dispatch, TrezorDevice } from '@suite-types';
+import type { TrezorDevice } from '@suite-types';
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    getDiscoveryAuthConfirmationStatus: () =>
-        dispatch(discoveryActions.getDiscoveryAuthConfirmationStatus()),
-});
-interface OwnProps extends ModalProps {
+interface Props {
     device: TrezorDevice;
 }
-
-type Props = OwnProps & ReturnType<typeof mapDispatchToProps>;
 
 /**
  * Modal used with model T with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
  * @param {Props}
  */
-const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus, ...rest }: Props) => {
+const PassphraseSource = ({ device, ...rest }: Props) => {
+    const { getDiscoveryAuthConfirmationStatus } = useActions({
+        getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
+    });
     const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
 
     if (authConfirmation) {
@@ -66,4 +63,4 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus, ...rest 
     );
 };
 
-export default connect(null, mapDispatchToProps)(PassphraseSource);
+export default PassphraseSource;
