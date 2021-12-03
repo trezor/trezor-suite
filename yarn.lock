@@ -25321,14 +25321,14 @@ trezor-address-validator@^0.4.0:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.2.3-beta.5:
-  version "8.2.3-beta.5"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.3-beta.5.tgz#3dbdc6758365b73671fc4cb4ba47b304b1f16d01"
-  integrity sha512-z9I/kEU9G2mJdrppvAQdJ2nnDGuAtYC7Ru/7WgZnwRb7yoU/SxKijPUXNf3j9pj+9UDMEA4Kp+TgUVfdE+Ilgw==
+trezor-connect@8.2.3-beta.6:
+  version "8.2.3-beta.6"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.3-beta.6.tgz#422dd731b00ddc1646fa0b0acffea82818f041c5"
+  integrity sha512-WO76gFtoOlL+H4OlEo00g1mHq4lWQtSxiVTyclgjhWMptOgVubSbcPShz+3USUqt0NY7tdwI2eGc05+ha8NalQ==
   dependencies:
     "@babel/runtime" "^7.15.4"
     "@trezor/blockchain-link" "^1.0.17"
-    "@trezor/connect-common" "^0.0.2"
+    "@trezor/connect-common" "^0.0.3"
     "@trezor/rollout" "^1.2.0"
     "@trezor/utxo-lib" "1.0.0-beta.10"
     bignumber.js "^9.0.1"
