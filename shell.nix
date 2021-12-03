@@ -43,8 +43,10 @@ in
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
       export USE_SYSTEM_7ZA=true
+    '' + lib.optionalString stdenv.isDarwin ''
+      export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
+    '' + lib.optionalString stdenv.isLinux ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
-  '' + lib.optionalString stdenv.isLinux ''
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source
-      '';
+    '';
   }
