@@ -1,0 +1,13 @@
+/* TODO */
+body {
+    background-color: beige;
+}
+.hidden {
+    display: none;
+}
+.valid-input {
+    border: 2px solid #41cc23;
+}
+.invalid-input {
+    border: 2px solid red;
+}

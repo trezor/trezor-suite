@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <title>Registration</title>
+        <!-- StylePlaceholder -->
+        <!-- ScriptPlaceholder -->
+    </head>
+    <body>
+            <!-- <div id="spinner-div" class="d-flex align-items-center justify-content-center">
+                <div id="spinner" class="spinner-border text-primary" role="status">
+                    <span id="loading_spinner" class="sr-only">Loading...</span>
+                </div>
+            </div> -->
+            <!-- TODO: add onerror? -->
+            <form id="form" action="" method="">
+                <div id="auth_email" class="form-group">
+                    <label id="auth_email_label" class="form-label">Email address</label>
+                    <input
+                        type="email"
+                        autocomplete="email"
+                        placeholder="email@example.com"
+                        autofocus=""
+                        required=""
+                        class="form-control">
+                    <small id="error-email" class="text-danger form-text"></small>
+                </div>
+
+                <div id="auth_password" class="form-group">
+                    <label id="auth_password_label" class="form-label">Password</label>
+                    <input
+                        type="password"
+                        placeholder="Your password"
+                        autocomplete="current-password"
+                        required=""
+                        class="form-control"
+                    >
+                    <small id="error-password" class="text-danger form-text"></small>
+                </div>
+                <div class="form-group">
+                    <input
+                        id="csrf_token"
+                        name="csrf_token"
+                        type="hidden"
+                        class="form-control"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <small id="info" class="text-primary form-text"></small>
+                    <div id='popup' class="popup">
+                        <span class="popup-close" onclick="onErrorClick()">×</span>
+                        <div id="popup-text" class="popup-text"></div>
+                    </div>
+                </div>
+                <button id='submit' name="method" type="submit" class="btn btn-primary">Sign up</button>
+            </form>
+    </body>
+</html>

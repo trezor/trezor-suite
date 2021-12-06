@@ -37,6 +37,10 @@ const config: webpack.Configuration = {
                         from: path.join(__dirname, '../../', 'connect-iframe/build/data/firmware'),
                         to: path.join(baseDir, 'build/static/bin/firmware'),
                     },
+                    {
+                        from: path.join(__dirname, '..', '..', 'invity-authentication', 'build'),
+                        to: path.join(baseDir, 'build', 'static', 'invity-authentication'),
+                    },
                 ]),
             options: {
                 concurrency: 100,

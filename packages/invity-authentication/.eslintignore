@@ -1,0 +1,10 @@
+# general
+node_modules
+_old
+lib
+
+# debug files
+yarn-error.log
+
+src/js
+build.ts

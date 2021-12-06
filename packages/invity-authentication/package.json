@@ -1,0 +1,16 @@
+{
+    "name": "@trezor/invity-authentication",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Invity authentication package.",
+    "scripts": {
+        "lint": "eslint '**/*.ts'",
+        "build:lib": "rimraf build && tsc --project tsconfig.json && ts-node build.ts",
+        "type-check": "tsc --project tsconfig.json"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "ts-node": "^10.3.0",
+        "typescript": "4.4.4"
+    }
+}

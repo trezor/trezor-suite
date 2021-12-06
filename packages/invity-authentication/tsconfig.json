@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.json",
+    "compileOnSave": false,
+    "compilerOptions": {
+        "module": "commonjs",
+        "strict": false,
+        "strictFunctionTypes": true,
+        "declaration": false,
+        "resolveJsonModule": true,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "types": ["node"],
+        "esModuleInterop": true,
+        "noEmit": false,
+        "outDir": "./src/js",
+        "sourceMap": false,
+    },
+    "files": ["./src/flow.ts"],
+    "exclude": ["node_modules", "./src/js/**", "./build.ts"]
+}

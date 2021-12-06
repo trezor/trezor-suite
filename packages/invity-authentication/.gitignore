@@ -1,0 +1,23 @@
+build
+_old
+coverage
+
+# Dependency directory
+node_modules
+
+# OSX
+.DS_Store
+
+# Editors
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+logs
+*.log
+.yarnclean
+
+# Compiled files
+src/js/flow.js

@@ -28,6 +28,10 @@ const config: webpack.Configuration = {
                         from: path.join(__dirname, '..', '..', 'connect-iframe', 'build'),
                         to: path.join(baseDir, 'build', 'static', 'connect'),
                     },
+                    {
+                        from: path.join(__dirname, '..', '..', 'invity-authentication', 'build'),
+                        to: path.join(baseDir, 'build', 'static', 'invity-authentication'),
+                    },
                 ]),
             options: {
                 concurrency: 100,
