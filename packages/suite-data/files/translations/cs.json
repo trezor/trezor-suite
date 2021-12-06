@@ -680,7 +680,7 @@
   "TR_EXCHANGE_DEX_FEES_INFO_TOOLTIP": "Pro provedení swapu na decentralizované směnárně může být nutné provést dvě blockchainové transakce: schvalovací transakci a swapovou transakci. Každá transakce je zpoplatněna jiným poplatkem.",
   "TR_EXCHANGE_DEX_FEE_INFO": "Poplatky za provedení této výměny se odhadují na {symbol} {approvalFee} ({approvalFeeFiat}) za schválení (je-li vyžadováno) a {symbol} {swapFee} ({swapFeeFiat}) za provedení swapu.",
   "TR_EXCHANGE_DEX_OFFERS": "Nabídky decentralizované burzy",
-  "TR_EXCHANGE_DEX_OFFERS_INFO": "Směny na decentralizované směnárně (DEX) se provádějí prostřednictvím smart contrantů běžících na blockchainu. Mohou být rychlejší a nabízet lepší kurzy, zejména pro velké částky.",
+  "TR_EXCHANGE_DEX_OFFERS_INFO": "Směny na decentralizované směnárně (DEX) se provádějí prostřednictvím smart contractů běžících na blockchainu. Mohou být rychlejší a nabízet lepší kurzy, zejména pro velké částky.",
   "TR_EXCHANGE_DEX_OFFER_NO_FUNDS_FEES": "Na transakční poplatky nezbývají žádné prostředky. Snižte prosím částku směny na maximálně {max} {symbol}.",
   "TR_EXCHANGE_DEX_TERMS_1": "Jste zde, abyste směnili kryptoměnu pomocí decentralizované směnárny pomocí smlouvy {provider}.",
   "TR_EXCHANGE_EXTRA_FIELD": "{extraFieldName}",
