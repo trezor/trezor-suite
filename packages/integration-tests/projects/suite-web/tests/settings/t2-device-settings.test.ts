@@ -16,18 +16,6 @@ describe('T2 - Device settings', () => {
         cy.getTestElement('@settings/device/update-button').click();
         cy.getTestElement('@modal/close-button').click();
 
-        cy.log('change label');
-        cy.getTestElement('@settings/device/label-input')
-            .should('have.value', 'My Trevor')
-            .clear()
-            .type('My Tenzor');
-
-        cy.getTestElement('@settings/device/label-submit').click();
-        cy.getConfirmActionOnDeviceModal();
-
-        cy.task('pressYes');
-        cy.getConfirmActionOnDeviceModal().should('not.exist');
-
         cy.log('turn on passphrase protection');
         cy.getTestElement('@settings/device/passphrase-switch')
             .click({ force: true })
