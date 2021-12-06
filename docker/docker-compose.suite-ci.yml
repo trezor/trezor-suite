@@ -29,3 +29,6 @@ services:
     command: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js --project /trezor-suite/packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"
     volumes:
       - ../:/trezor-suite
+  bitcoin-regtest:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env-regtest  # this is a special image that runs regtest and blockbook
+    network_mode: service:trezor-user-env-unix
