@@ -11,4 +11,4 @@ const Translation = (props: TranslationProps) => (
     />
 );
 
-export default Translation;
+export { Translation };

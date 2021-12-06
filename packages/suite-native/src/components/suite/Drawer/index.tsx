@@ -6,7 +6,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useActions } from '@suite-hooks';
 import DeviceSelector from '@native-components/suite/DeviceSelector';
 import { DrawerContentComponentProps } from 'react-navigation-drawer';
-import Translation from '@native-components/suite/Translation';
+import { Translation } from '@native-components/suite/Translation';
 import { SuiteThemeColors } from '@suite-types';
 
 const styles = (theme: SuiteThemeColors) =>
