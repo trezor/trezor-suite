@@ -622,7 +622,7 @@
   "TR_EJECT_WALLET": "Tárca kiadása",
   "TR_EJECT_WALLET_EXPLANATION": "Azonnal eltávolít minden tárcaadatot a Suite-ből.",
   "TR_ENABLE_DISCREET_MODE": "Diszkrét mód engedélyezése",
-  "TR_ENABLE_MORE_COINS": "Több coin engedélyezése",
+  "TR_ENABLE_MORE_COINS": "További coinok engedélyezése",
   "TR_ENABLE_NETWORK_BUTTON": "Találd meg a(z) {networkName} fiókjaimat",
   "TR_ENABLE_PASSPHRASE": "Jelmondat engedélyezése",
   "TR_ENABLE_PASSPHRASE_DESCRIPTION": "Lehetővé teszi rejtett tárcák létrehozását",
