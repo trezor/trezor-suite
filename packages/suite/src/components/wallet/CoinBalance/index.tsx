@@ -20,7 +20,9 @@ interface Props {
 const CoinBalance = ({ value, symbol }: Props) => (
     <Wrapper>
         <HiddenPlaceholder>
-            <Value>{formatCoinBalance(value)}</Value>
+            <Value data-test={`@wallet/coin-balance/value-${symbol}`}>
+                {formatCoinBalance(value)}
+            </Value>
             <Symbol>{symbol ? symbol.toUpperCase() : symbol}</Symbol>
         </HiddenPlaceholder>
     </Wrapper>
