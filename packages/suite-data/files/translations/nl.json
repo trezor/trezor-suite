@@ -314,7 +314,7 @@
   "TR_BCH_ADDRESS_INFO": "Bitcoin Cash heeft het formaat van adressen gewijzigd naar cashaddr. Vind meer informatie over het converteren van uw adres op onze blog. {TR_LEARN_MORE}",
   "TR_BECH32_BANNER_POINT_1": "Alleen kleine letters = <strong>minder kans op typefouten</strong>",
   "TR_BECH32_BANNER_POINT_2": "Efficiënte technologie = betaal <strong>tot 25% kleinere transactiekosten</strong>",
-  "TR_BECH32_BANNER_TITLE": "Nieuwe standaard accounts in Trezor pak!",
+  "TR_BECH32_BANNER_TITLE": "Nieuw in de Trezor Suite: Bech32 accounts!",
   "TR_BEFORE_ANY_FURTHER_ACTIONS": "Controleer voordat u verdere acties uitvoert, of u uw herstelreeks heeft. Ofwel veilig opgeslagen of zelfs met u vanaf nu. In elk geval van onwaarschijnlijke noodsituaties.",
   "TR_BEGIN": "Laten we beginnen!",
   "TR_BEGIN_ONBOARDING": "Setup starten",
