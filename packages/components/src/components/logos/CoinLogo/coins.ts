@@ -4,6 +4,7 @@ export const COINS = {
     bch: require('../../../images/coins/bch.svg'),
     btc: require('../../../images/coins/btc.svg'),
     test: require('../../../images/coins/btctestnet.svg'),
+    regtest: require('../../../images/coins/btctestnet.svg'),
     btg: require('../../../images/coins/btg.svg'),
     dash: require('../../../images/coins/dash.svg'),
     dgb: require('../../../images/coins/dgb.svg'),

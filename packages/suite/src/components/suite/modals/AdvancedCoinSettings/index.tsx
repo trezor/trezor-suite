@@ -44,7 +44,9 @@ const AdvancedCoinSettings = ({ coin, onCancel }: Props) => {
 
     const network = NETWORKS.find(n => n.symbol === coin);
     const [coinInfo, setCoinInfo] = useState<CoinInfo>();
-    const isBlockbook = coinInfo?.blockchainLink?.type === 'blockbook';
+    // TODO: this condition is not correctly applied to Regtest (coinInfo?.blockchainLink === null)
+    // const isBlockbook = coinInfo?.blockchainLink?.type === 'blockbook';
+    const isBlockbook = network?.networkType !== 'ripple';
 
     useEffect(() => {
         TrezorConnect.getCoinInfo({ coin }).then(result => {

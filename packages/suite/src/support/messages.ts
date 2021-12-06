@@ -2427,6 +2427,10 @@ export default defineMessages({
         defaultMessage: 'Bitcoin Testnet',
         id: 'TR_NETWORK_BITCOIN_TESTNET',
     },
+    TR_NETWORK_BITCOIN_REGTEST: {
+        defaultMessage: 'Bitcoin Regtest',
+        id: 'TR_NETWORK_BITCOIN_REGTEST',
+    },
     TR_NETWORK_CARDANO: {
         defaultMessage: 'Cardano',
         id: 'TR_NETWORK_CARDANO',

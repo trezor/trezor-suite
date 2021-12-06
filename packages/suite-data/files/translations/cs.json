@@ -986,6 +986,7 @@
   "TR_NETWORK_BITCOIN_CASH": "Bitcoin Cash",
   "TR_NETWORK_BITCOIN_GOLD": "Bitcoin Gold",
   "TR_NETWORK_BITCOIN_TESTNET": "Bitcoin Testnet",
+  "TR_NETWORK_BITCOIN_REGTEST": "Bitcoin Regtest",
   "TR_NETWORK_CARDANO": "Cardano",
   "TR_NETWORK_DASH": "Dash",
   "TR_NETWORK_DIGIBYTE": "Digibyte",
