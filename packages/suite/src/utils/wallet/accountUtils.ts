@@ -43,6 +43,8 @@ export const getTitleForNetwork = (symbol: Account['symbol']) => {
             return 'TR_NETWORK_BITCOIN';
         case 'test':
             return 'TR_NETWORK_BITCOIN_TESTNET';
+        case 'regtest':
+            return 'TR_NETWORK_BITCOIN_REGTEST';
         case 'bch':
             return 'TR_NETWORK_BITCOIN_CASH';
         case 'btg':
