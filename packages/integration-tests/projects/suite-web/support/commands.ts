@@ -78,6 +78,7 @@ declare global {
             dashboardShouldLoad: () => Chainable<Subject>;
             discoveryShouldFinish: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
+            text: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
             passThroughBackupShamir: (shares: number, threshold: number) => Chainable<Subject>;
@@ -133,3 +134,5 @@ Cypress.Commands.add('dispatch', dispatch);
 // skip tests conditionally
 Cypress.Commands.add('skipOn', skipOn);
 Cypress.Commands.add('onlyOn', onlyOn);
+
+Cypress.Commands.add('text', { prevSubject: true }, subject => subject.text());

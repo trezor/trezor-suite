@@ -128,6 +128,20 @@ module.exports = on => {
                     throw new Error('not a valid case');
             }
         },
+        sendToAddressAndMineBlock: async options => {
+            await controller.send({
+                type: 'regtest-send-to-address',
+                ...options,
+            });
+            return null;
+        },
+        mineBlocks: async options => {
+            await controller.send({
+                type: 'regtest-mine-blocks',
+                ...options,
+            });
+            return null;
+        },
         startBridge: async version => {
             await controller.send({ type: 'bridge-start', version });
             return null;

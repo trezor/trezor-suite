@@ -194,7 +194,9 @@ const CoinsGroup = ({
                                                 color={theme.TYPE_DARK_GREY}
                                             />
                                         </SettingsIconWrapper>
-                                        <AdvancedSettingsText>
+                                        <AdvancedSettingsText
+                                            data-test={`@settings/wallet/network/${network.symbol}/advance`}
+                                        >
                                             <Translation id="TR_ADVANCED_SETTINGS" />
                                         </AdvancedSettingsText>
                                     </AdvancedSettings>

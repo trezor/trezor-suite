@@ -122,7 +122,7 @@ const CustomBlockbookUrls = ({
                 type="text"
                 noTopLabel
                 name={inputName}
-                data-test={inputName}
+                data-test={`@settings/advance/${inputName}`}
                 placeholder={translationString('SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER', {
                     url: `https://${coin}1.trezor.io/`,
                 })}
@@ -147,6 +147,7 @@ const CustomBlockbookUrls = ({
                 <AddButton
                     variant="tertiary"
                     icon="PLUS"
+                    data-test="@settings/advance/button/add"
                     onClick={addUrl}
                     isDisabled={Boolean(error) || inputValue === ''}
                 >
