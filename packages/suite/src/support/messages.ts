@@ -2691,7 +2691,7 @@ export default defineMessages({
         id: 'TR_BUY_NETWORK',
     },
     TR_BECH32_BANNER_TITLE: {
-        defaultMessage: 'New to Trezor Suite: BTC Bech32 accounts!',
+        defaultMessage: 'New to Trezor Suite: Bech32 accounts!',
         id: 'TR_BECH32_BANNER_TITLE',
     },
     TR_BECH32_BANNER_POINT_1: {

@@ -118,7 +118,7 @@
   "TR_BASIC_RECOVERY_OPTION": "Enter your recovery seed word by word on your computer.\n\n",
   "TR_BECH32_BANNER_POINT_1": "Lowercase letters only = <strong>lower chance of any reviewing errors</strong>",
   "TR_BECH32_BANNER_POINT_2": "Efficient technology = <strong>pay up to 25% lower transactions fees</strong>",
-  "TR_BECH32_BANNER_TITLE": "New to Trezor Suite: BTC Bech32 accounts!",
+  "TR_BECH32_BANNER_TITLE": "New to Trezor Suite: Bech32 accounts!",
   "TR_BEFORE_ANY_FURTHER_ACTIONS": "Before you perform the update, please make sure you have your recovery seed.",
   "TR_BEGIN_ONBOARDING": "Begin setup",
   "TR_BRIDGE_SUBHEADING": "Trezor Bridge facilitates the connection between your Trezor and your internet browser.",

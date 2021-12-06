@@ -37,7 +37,7 @@ describe('New accounts', () => {
         cy.getTestElement('@dashboard/loading').should('not.exist');
     };
 
-    const expectedAccountMessage = 'New to Trezor Suite: BTC Bech32 accounts!';
+    const expectedAccountMessage = 'New to Trezor Suite: Bech32 accounts!';
     it(`Goes to accounts and verifies that the "${expectedAccountMessage}" is displayed:`, () => {
         const passphraseToType = 'we need regtest{enter}';
 
