@@ -313,7 +313,7 @@
   "TR_BCH_ADDRESS_INFO": "Bitcoin Cash hat das Format der Adressen in cashaddr. Weitere Informationen zur Umwandlung Ihrer Adresse finden Sie in unserem Blog. {TR_LEARN_MORE}",
   "TR_BECH32_BANNER_POINT_1": "Nur Kleinbuchstaben = <strong>geringere Wahrscheinlichkeit von Tippfehlern</strong>",
   "TR_BECH32_BANNER_POINT_2": "Effiziente Technologie = Bezahle <strong>bis zu 25% kleinere Transaktionsgebühren</strong>",
-  "TR_BECH32_BANNER_TITLE": "Neue Standard-Konten nativ in Trezor Suite!",
+  "TR_BECH32_BANNER_TITLE": "Neu in der Trezor Suite: Bech32-Konten!",
   "TR_BEFORE_ANY_FURTHER_ACTIONS": "Bitte stellen Sie vor jeder weiteren Aktionen sicher, dass Sie Ihren Recovery Seed haben.",
   "TR_BEGIN": "Lass uns loslegen!",
   "TR_BEGIN_ONBOARDING": "Einführung anzeigen",
