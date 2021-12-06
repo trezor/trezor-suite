@@ -114,7 +114,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             //                      in future there should be mocked discovery
             //                      if it shoots somebody in leg, just remove this assertion...
             // - why asserting it:  just to make sure that metadata don't send unnecessary amount of request
-            
+
             // todo: this assertion is flaky. turning it off for now
             // cy.waitUntil(() =>
             //     cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
