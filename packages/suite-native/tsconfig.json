@@ -241,6 +241,12 @@
             "@backup-hooks/*": ["./src/hooks/backup/*", "../../packages/suite/src/hooks/backup/*"],
             "@backup-hooks": ["./src/hooks/backup/index", "../../packages/suite/src/hooks/backup/index"],
 
+            // guide
+            "@guide-components": ["./src/components/guide/index", "../../packages/suite/src/components/guide/index"],
+            "@guide-views": ["./src/views/guide/index", "../../packages/suite/src/views/guide/index"],
+            "@guide-hooks/*": ["./src/hooks/guide/*", "../../packages/suite/src/hooks/guide/*"],
+            "@guide-hooks": ["./src/hooks/guide/index", "../../packages/suite/src/hooks/guide/index"],
+
             // recovery
             "@recovery-components/*": ["./src/components/recovery/*", "../../packages/suite/src/components/recovery/*"],
             "@recovery-components": ["./src/components/recovery/index", "../../packages/suite/src/components/recovery/index"],

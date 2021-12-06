@@ -1,4 +1,5 @@
 import { Appearance, Platform, Dimensions } from 'react-native';
+import type { EnvironmentType } from '@suite-types';
 
 /**
  * override for suite/utils/env - getUserAgent
@@ -48,7 +49,7 @@ export const isDesktop = () => false;
 export const isWeb = () => false;
 export const isMobile = () => false;
 
-export const getEnvironment = () => '';
+export const getEnvironment = (): EnvironmentType => '';
 
 export const submitRequestForm = (
     _formMethod: 'GET' | 'POST' | 'IFRAME',
