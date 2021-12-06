@@ -66,6 +66,11 @@ e2e web metadata:
 
 e2e web wallet:
   extends: .e2e web
+  script:
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix bitcoin-regtest
+    - docker-compose run test-run
   variables:
     TEST_GROUP: '@group:wallet'
 
