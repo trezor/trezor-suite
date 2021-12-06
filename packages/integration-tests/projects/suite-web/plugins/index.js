@@ -283,8 +283,9 @@ module.exports = on => {
                 console.warn('trying to rmDir ', dir);
                 throw new Error(`'it is not allowed to rm outside ${restrictedPath}`);
             }
-
-            fs.rmdirSync(dir, { force, recursive });
+            if (fs.existsSync(dir)) {
+                fs.rmdirSync(dir, { force, recursive });
+            }
             return null;
         },
         trezorUserEnvConnect: async () => {
