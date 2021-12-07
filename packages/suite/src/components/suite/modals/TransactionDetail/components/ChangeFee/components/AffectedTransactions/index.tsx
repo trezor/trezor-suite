@@ -4,7 +4,6 @@ import { Icon, Button, useTheme, variables } from '@trezor/components';
 import { FormattedCryptoAmount, Sign, Translation, FormattedDate } from '@suite-components';
 import { useRbfContext } from '@wallet-hooks/useRbfForm';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
-import { getDateWithTimeZone } from '@suite-utils/date';
 import { truncateMiddle } from '@suite-utils/string';
 import GreyCard from '../GreyCard';
 import WarnHeader from '../WarnHeader';
@@ -96,10 +95,7 @@ const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {
                         {tx.blockTime && (
                             <>
                                 <Timestamp>
-                                    <FormattedDate
-                                        value={getDateWithTimeZone(tx.blockTime * 1000)}
-                                        time
-                                    />
+                                    <FormattedDate value={new Date(tx.blockTime * 1000)} time />
                                 </Timestamp>
                                 <Bullet>&bull;</Bullet>
                             </>

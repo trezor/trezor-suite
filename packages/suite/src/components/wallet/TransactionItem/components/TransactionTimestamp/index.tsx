@@ -3,7 +3,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from '@suite-components';
 import { variables } from '@trezor/components';
-import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 
 const TimestampLink = styled.div`
@@ -28,7 +27,7 @@ const TransactionTimestamp = ({ transaction }: Props) => {
     return (
         <TimestampLink>
             {blockHeight !== 0 && blockTime && blockTime > 0 && (
-                <FormattedDate value={getDateWithTimeZone(blockTime * 1000)} time />
+                <FormattedDate value={new Date(blockTime * 1000)} time />
             )}
         </TimestampLink>
     );
