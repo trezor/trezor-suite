@@ -18,7 +18,7 @@ export type FeedbackCategory =
     | 'trade'
     | 'other';
 
-export type Rating = 1 | 2 | 3 | 4 | 5; // 1 = worst, 5 = best. Portrayed as Emojis in the UI to minimize the comprehension barrier
+export type Rating = '1' | '2' | '3' | '4' | '5'; // 1 = worst, 5 = best. Portrayed as Emojis in the UI to minimize the comprehension barrier
 
 export type FeedbackType = 'BUG' | 'SUGGESTION';
 

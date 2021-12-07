@@ -1,5 +1,3 @@
-import qs from 'qs';
-
 import { GUIDE } from './constants';
 import { Dispatch } from '@suite-types';
 import { addToast } from '@suite-actions/notificationActions';
@@ -67,9 +65,9 @@ export const sendFeedback =
     ({ type, payload }: Feedback) =>
     async (dispatch: Dispatch) => {
         const url = getUrl(type);
-        const params = qs.stringify(payload);
+        const params = new URLSearchParams({ ...payload });
         try {
-            await fetch(`${url}?${params}`, {
+            await fetch(`${url}?${params.toString()}`, {
                 method: 'GET',
             });
             dispatch(addToast({ type: 'user-feedback-send-success' }));

@@ -88,23 +88,23 @@ interface Props {
 const MESSAGE_CHARACTER_LIMIT = 1000;
 const ratingOptions: RatingItem[] = [
     {
-        id: 1,
+        id: '1',
         value: <>&#128545;</>,
     },
     {
-        id: 2,
+        id: '2',
         value: <>&#128533;</>,
     },
     {
-        id: 3,
+        id: '3',
         value: <>&#128529;</>,
     },
     {
-        id: 4,
+        id: '4',
         value: <>&#128522;</>,
     },
     {
-        id: 5,
+        id: '5',
         value: <>&#128525;</>,
     },
 ];

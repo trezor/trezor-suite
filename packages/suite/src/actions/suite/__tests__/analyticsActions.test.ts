@@ -79,6 +79,7 @@ describe('Analytics Actions', () => {
 
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
+        process.env.COMMITHASH = 'abc123';
         const state = getInitialState({
             analytics: {
                 enabled: true,
@@ -91,7 +92,7 @@ describe('Analytics Actions', () => {
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            `https://data.trezor.io/suite/log/desktop/develop.log?c_v=${analyticsActions.version}&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random&c_timestamp=${timestamp}`,
+            `https://data.trezor.io/suite/log/desktop/develop.log?c_v=${analyticsActions.version}&c_type=switch-device%2Feject&c_commit=abc123&c_instance_id=1&c_session_id=very-random&c_timestamp=${timestamp}`,
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
@@ -103,6 +104,7 @@ describe('Analytics Actions', () => {
 
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'web';
+        process.env.COMMITHASH = 'abc123';
         const state = getInitialState({
             analytics: {
                 enabled: true,
@@ -115,7 +117,7 @@ describe('Analytics Actions', () => {
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            `https://data.trezor.io/suite/log/web/develop.log?c_v=${analyticsActions.version}&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random&c_timestamp=${timestamp}`,
+            `https://data.trezor.io/suite/log/web/develop.log?c_v=${analyticsActions.version}&c_type=switch-device%2Feject&c_commit=abc123&c_instance_id=1&c_session_id=very-random&c_timestamp=${timestamp}`,
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
