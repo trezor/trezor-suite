@@ -10,7 +10,7 @@ export default [
                 version: '2',
             },
         },
-        encoded: `c_v=${version}&c_type=transport-type&c_instance_id=1&c_session_id=2&c_timestamp=${new Date(
+        encoded: `c_v=${version}&c_type=transport-type&c_commit=&c_instance_id=1&c_session_id=2&c_timestamp=${new Date(
             '2021-04-01T12:10:00.000Z',
         ).getTime()}&type=bridge&version=2`,
     },
@@ -22,7 +22,7 @@ export default [
                 analytics: false,
             },
         },
-        encoded: `c_v=${version}&c_type=initial-run-completed&c_instance_id=1&c_session_id=2&c_timestamp=${new Date(
+        encoded: `c_v=${version}&c_type=initial-run-completed&c_commit=&c_instance_id=1&c_session_id=2&c_timestamp=${new Date(
             '2021-04-01T12:10:00.000Z',
         ).getTime()}&analytics=false`,
     },
