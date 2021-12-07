@@ -7,7 +7,6 @@ import {
     TrezorLink,
     FormattedDateWithBullet,
 } from '@suite-components';
-import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction, Network } from '@wallet-types';
 import { getFeeRate, isTxFinal, getTxIcon } from '@wallet-utils/transactionUtils';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
@@ -255,7 +254,7 @@ const BasicDetails = ({ tx, confirmations, network, explorerUrl }: Props) => {
                     {tx.blockTime ? (
                         <Timestamp>
                             <FormattedDateWithBullet
-                                value={getDateWithTimeZone(tx.blockTime * 1000)}
+                                value={new Date(tx.blockTime * 1000)}
                                 timeLightColor
                             />
                         </Timestamp>

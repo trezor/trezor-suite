@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from '@suite-components';
 import AmountRow from '../AmountRow';
-import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 import { getNetwork } from '@wallet-utils/accountUtils';
 
@@ -88,10 +87,7 @@ const AmountDetails = ({ tx, isTestnet }: Props) => {
                         // keep the first two columns empty for the first row
                         thirdColumn={
                             tx.blockTime && (
-                                <FormattedDate
-                                    value={getDateWithTimeZone(tx.blockTime * 1000)}
-                                    date
-                                />
+                                <FormattedDate value={new Date(tx.blockTime * 1000)} date />
                             )
                         }
                         fourthColumn={

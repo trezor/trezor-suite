@@ -13,26 +13,12 @@ import {
     differenceInMinutes,
     Locale,
 } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 
 export const formatDuration = (seconds: number) =>
     formatDistance(0, seconds * 1000, { includeSeconds: true });
 
 export const formatDurationStrict = (seconds: number, locale?: Locale) =>
     formatDistanceStrict(0, seconds * 1000, { locale });
-
-export const getLocalTimeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-export const getDateWithTimeZone = (date: number, timeZone?: string) => {
-    try {
-        const unixDate = fromUnixTime(date / 1000);
-        const tz = timeZone || getLocalTimeZone();
-        return utcToZonedTime(unixDate, tz);
-    } catch (err) {
-        console.error(err);
-        return undefined;
-    }
-};
 
 export const calcTicks = (startDate: Date, endDate: Date) => {
     let timestamps = [];
