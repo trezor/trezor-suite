@@ -689,7 +689,7 @@
   "TR_EXCHANGE_EXTRA_FIELD_REQUIRED": "{extraFieldName} megadása kötelező",
   "TR_EXCHANGE_FEES_INCLUDED": "Minden költséget tartalmaz",
   "TR_EXCHANGE_FEES_INCLUDED_INFO": "Amit látsz, az közel annyi, mint amennyit kapni fogsz – a látható összeg a legjobb becslés, hogy végül mekkora összeget fogsz kapni, beleszámítva minden tranzakciós díjat is. A lebegő-árfolyamos ajánlatoknál csekély változás is történhet az ajánlat elfogadásától a tranzakció végrehajtásáig.",
-  "TR_EXCHANGE_FEES_INFO": "Tudj meg többet a tranzakciós díjakról az egyes DEX ajánlatokban.",
+  "TR_EXCHANGE_DEX_FEES_INFO": "Tudj meg többet a tranzakciós díjakról az egyes DEX ajánlatokban.",
   "TR_EXCHANGE_FIXED": "Fix árfolyamú ajánlat",
   "TR_EXCHANGE_FIXED_OFFERS": "Fix árfolyamú ajánlatok",
   "TR_EXCHANGE_FIXED_OFFERS_INFO": "Amit látsz, az pontosan annyi, mint amennyit kapni fogsz a váltás végén – a látható összeg nem fog változni az árfolyam kiválasztása és a tranzakció befejezése közt. Garantáltan megkapod a mutatott összeget, de ezek az árfolyamok általában kevésbé nagyvonalúak, azaz a pénzed nem fog olyan sok kripto-t venni számodra.",

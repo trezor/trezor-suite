@@ -689,7 +689,7 @@
   "TR_EXCHANGE_EXTRA_FIELD_REQUIRED": "{extraFieldName} es obligatorio",
   "TR_EXCHANGE_FEES_INCLUDED": "Todas las comisiones incluidas",
   "TR_EXCHANGE_FEES_INCLUDED_INFO": "Lo que ves se aproxima a lo que obtendrás. La cantidad mostrada es la mejor estimación del importe final que recibirás, con todas las comisiones de intercambio incluidas. En el caso de las ofertas con comisión variable, puede haber ligeros cambios entre la aceptación de la oferta y la finalización de la transacción.",
-  "TR_EXCHANGE_FEES_INFO": "Consulte la información sobre las tasas en cada oferta de DEX.",
+  "TR_EXCHANGE_DEX_FEES_INFO": "Consulte la información sobre las tasas en cada oferta de DEX.",
   "TR_EXCHANGE_FIXED": "Oferta de comisión fija",
   "TR_EXCHANGE_FIXED_OFFERS": "Ofertas de comisión fija",
   "TR_EXCHANGE_FIXED_OFFERS_INFO": "Las comisiones fijas te muestran exactamente la cantidad que recibirás al final del intercambio, por tanto, la cantidad no cambiará entre el momento en que selecciones la comisión y el momento en que se complete la transacción. Se te garantiza la cantidad mostrada, pero estas comisiones suelen ser menos generosas, lo que significa que con el mismo dinero no comprarás tanta criptomoneda.",

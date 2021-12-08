@@ -689,7 +689,7 @@
   "TR_EXCHANGE_EXTRA_FIELD_REQUIRED": "{extraFieldName} je povinné",
   "TR_EXCHANGE_FEES_INCLUDED": "Včetně všech poplatků",
   "TR_EXCHANGE_FEES_INCLUDED_INFO": "To, co vidíte, je přibližně kolik dostanete - uvedená částka je nejlepším odhadem konečné částky, kterou obdržíte, včetně všech poplatků za směnu. U nabídek s pohyblivým kurzem může mezi přijetím nabídky a dokončením transakce dojít k drobným změnám.",
-  "TR_EXCHANGE_FEES_INFO": "Informace o poplatcích najdete v nabídce decentralizované směnárny.",
+  "TR_EXCHANGE_DEX_FEES_INFO": "Informace o poplatcích najdete v nabídce decentralizované směnárny.",
   "TR_EXCHANGE_FIXED": "Nabídka s pevnou sazbou",
   "TR_EXCHANGE_FIXED_OFFERS": "Nabídka s pevnou sazbou",
   "TR_EXCHANGE_FIXED_OFFERS_INFO": "Informace o nabídkách s pevnou sazbou TODO",

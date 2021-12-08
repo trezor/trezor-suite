@@ -286,7 +286,7 @@ export default defineMessages({
             'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
     },
     TR_EXCHANGE_DEX_FEES_INFO: {
-        id: 'TR_EXCHANGE_FEES_INFO',
+        id: 'TR_EXCHANGE_DEX_FEES_INFO',
         defaultMessage: 'See info about fees in each DEX offer.',
     },
     TR_EXCHANGE_DEX_FEES_INFO_TOOLTIP: {
