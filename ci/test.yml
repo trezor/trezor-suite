@@ -18,6 +18,7 @@
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/utils build:lib
     - docker-compose pull
     - docker-compose up -d ${CONTAINERS}
     - docker-compose run test-run
@@ -128,6 +129,7 @@ rollout:
     COMPOSE_FILE: ./docker/docker-compose.transport-test.yml
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/utils build:lib
     - yarn workspace @trezor/transport build:lib
     - ./docker/docker-transport-test.sh
   after_script:
@@ -148,6 +150,7 @@ transport nightly:
   stage: integration testing
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/utils build:lib
     - yarn workspace @trezor/blockchain-link build:lib
     - yarn workspace @trezor/blockchain-link build:workers
     - yarn workspace @trezor/blockchain-link test:integration
