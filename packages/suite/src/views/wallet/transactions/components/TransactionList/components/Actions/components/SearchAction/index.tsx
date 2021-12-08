@@ -9,7 +9,6 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { isEnabled } from '@suite-utils/features';
-import { useHotkeys } from 'react-hotkeys-hook';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
@@ -67,20 +66,16 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
         }
     }, [setExpanded, search]);
 
-    const onKeyDown = useCallback(event => {
-        // Handle esc (unfocus)
-        if (event.code === KEYBOARD_CODE.ESCAPE && inputRef.current) {
-            inputRef.current.blur();
-        }
-    }, []);
-
-    // Keyboard shortcut (CTRL + F focuses on search box)
-    useHotkeys('ctrl+f, command+f', e => {
-        e.preventDefault();
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    });
+    const onKeyDown = useCallback(
+        (event: React.KeyboardEvent) => {
+            // Handle esc (unfocus)
+            if (event.code === KEYBOARD_CODE.ESCAPE && inputRef.current) {
+                setSearch('');
+                inputRef.current.blur();
+            }
+        },
+        [setSearch],
+    );
 
     const onSearch = useCallback(
         async ({ target }) => {
@@ -111,11 +106,30 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
         ],
     );
 
+    const onSearchKeys = useCallback(
+        (event: KeyboardEvent) => {
+            if (
+                inputRef.current &&
+                (event.ctrlKey || event.metaKey) &&
+                event.key === KEYBOARD_CODE.LETTER_F
+            ) {
+                event.preventDefault();
+                inputRef.current.focus();
+            }
+        },
+        [inputRef],
+    );
+
     useEffect(() => {
         setHasFetchedAll(false);
         setExpanded(false);
         setSearch('');
-    }, [account.symbol, account.index, account.accountType, setSearch]);
+
+        document.addEventListener('keydown', onSearchKeys);
+        return () => {
+            document.removeEventListener('keydown', onSearchKeys);
+        };
+    }, [account.symbol, account.index, account.accountType, setSearch, onSearchKeys]);
 
     if (!isEnabled('SEARCH_TRANSACTIONS')) {
         return null;

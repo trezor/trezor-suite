@@ -26,4 +26,8 @@ export enum KEYBOARD_CODE {
     NUMPAD_SEVEN = 'Numpad7',
     NUMPAD_EIGHT = 'Numpad8',
     NUMPAD_NINE = 'Numpad9',
+
+    LETTER_F = 'f',
+
+    FUNCTION_KEY_ONE = 'F1',
 }
