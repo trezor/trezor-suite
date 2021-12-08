@@ -17,7 +17,8 @@ const providers = [
 describe(`Metadata - In settings, there is enable metadata switch. On enable, it initiates metadata right away (if device already has state).
 On disable, it throws away all metadata related records from memory.`, () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        // use portrait mode monitor to prevent scrolling in settings
+        cy.viewport(1080, 1440).resetDb();
     });
 
     providers.forEach(f => {

@@ -6,7 +6,8 @@ describe('General settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        // use portrait mode monitor to prevent scrolling in settings
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
@@ -21,7 +22,7 @@ describe('General settings', () => {
         cy.getTestElement('@suite/menu/settings-index').click();
 
         // change fiat
-        cy.getTestElement('@settings/fiat-select/input').click({ force: true });
+        cy.getTestElement('@settings/fiat-select/input').click();
         cy.getTestElement('@settings/fiat-select/option/eur').click();
 
         // go to dashboard and check currency
@@ -52,7 +53,7 @@ describe('General settings', () => {
         cy.contains('You are currently running version');
 
         // and reset app button - wipes db, reloads app, shows onboarding again
-        cy.getTestElement('@settings/reset-app-button').click({ force: true });
+        cy.getTestElement('@settings/reset-app-button').click();
         cy.getTestElement('@onboarding/welcome');
     });
 });

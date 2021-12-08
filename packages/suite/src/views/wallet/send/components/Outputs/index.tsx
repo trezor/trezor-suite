@@ -29,7 +29,7 @@ const OutputWrapper = styled.div<{ index: number }>`
         css`
             margin: 0 42px;
             padding-top: 32px;
-            border-top: 1px solid ${props => props.theme.BG_GREY};
+            border-top: 1px solid ${props => props.theme.STROKE_GREY};
         `}
 `;
 

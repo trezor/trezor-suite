@@ -12,6 +12,7 @@ interface Props {
     filterPosition?: 'primary' | 'secondary';
     dataTestSuffix?: string;
     primaryContent?: React.ReactNode;
+    inView?: boolean;
 }
 
 const AccountNavigation = (props: Props) => {
@@ -111,7 +112,9 @@ const AccountNavigation = (props: Props) => {
         items = items.filter(item => item.position === props.filterPosition);
     }
 
-    return <AppNavigation items={items} primaryContent={props.primaryContent} />;
+    return (
+        <AppNavigation items={items} primaryContent={props.primaryContent} inView={props.inView} />
+    );
 };
 
 export default AccountNavigation;
