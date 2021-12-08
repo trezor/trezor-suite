@@ -1,8 +1,6 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { useHotkeys } from 'react-hotkeys-hook';
-
-import { variables } from '@trezor/components';
+import { KEYBOARD_CODE, variables } from '@trezor/components';
 import SuiteBanners from '@suite-components/Banners';
 import { Metadata } from '@suite-components';
 import { GuidePanel, GuideButton } from '@guide-components';
@@ -216,23 +214,29 @@ const SuiteLayout: React.FC = ({ children }) => {
         closeGuide: guideActions.close,
     });
 
-    useHotkeys(
-        'f1,esc',
-        e => {
-            e.preventDefault();
-            if (e.key === 'Escape' && isModalOpen) {
-                return;
+    const onGuideKeys = useCallback(
+        (event: KeyboardEvent) => {
+            if (event.key === KEYBOARD_CODE.ESCAPE) {
+                if (isModalOpen) return;
+                if (guideOpen) {
+                    closeGuide();
+                }
             }
 
-            if (guideOpen) {
-                closeGuide();
-            }
-            if (!guideOpen && e.key.toLowerCase() === 'f1') {
-                openGuide();
+            if (event.key === KEYBOARD_CODE.FUNCTION_KEY_ONE) {
+                if (!guideOpen) openGuide();
+                else closeGuide();
             }
         },
-        [guideOpen, closeGuide, openGuide, isModalOpen],
+        [guideOpen, isModalOpen, closeGuide, openGuide],
     );
+
+    useEffect(() => {
+        document.addEventListener('keydown', onGuideKeys);
+        return () => {
+            document.removeEventListener('keydown', onGuideKeys);
+        };
+    }, [onGuideKeys]);
 
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);

@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useHotkeys, useIsHotkeyPressed } from 'react-hotkeys-hook';
 import { ANIMATION } from '@suite-config';
-import { setCaretPosition } from '@suite-utils/dom';
+import { setCaretPosition, useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
 import { Button, useTheme, variables, Input, Tooltip, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
@@ -171,7 +170,9 @@ const PassphraseTypeCard = (props: Props) => {
     const [enabled, setEnabled] = useState(!props.authConfirmation);
     const [showPassword, setShowPassword] = useState(false);
     const [hiddenWalletTouched, setHiddenWalletTouched] = useState(false);
-    const isHotkeyPressed = useIsHotkeyPressed();
+    const enterPressed = useKeyPress('Enter');
+    const backspacePressed = useKeyPress('Backspace');
+    const deletePressed = useKeyPress('Delete');
 
     const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
@@ -192,16 +193,9 @@ const PassphraseTypeCard = (props: Props) => {
     // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
     // In case of two-col modal (selecting between standard and hidden wallet)
     // only the hidden wallet part handle the enter press.
-    useHotkeys(
-        'enter',
-        () => {
-            if (canSubmit) {
-                submit(value);
-            }
-        },
-        { enableOnTags: ['INPUT'] },
-        [canSubmit, submit, value],
-    );
+    if (enterPressed && canSubmit) {
+        submit(value);
+    }
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const tmpValue = event.target.value;
@@ -231,7 +225,7 @@ const PassphraseTypeCard = (props: Props) => {
         }
         if (len < newValue.length) {
             // Check if last keypress was backspace or delete
-            if (isHotkeyPressed('backspace') || isHotkeyPressed('delete')) {
+            if (backspacePressed || deletePressed) {
                 newValue.splice(pos, diff);
             } else {
                 // Highlighted and replaced portion of the passphrase
