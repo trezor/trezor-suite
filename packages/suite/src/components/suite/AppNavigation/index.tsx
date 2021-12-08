@@ -10,7 +10,6 @@ import {
     HoverAnimation,
 } from '@trezor/components';
 import { AccountFormCloseButton } from '@suite-components';
-import { useInViewProp } from '../AppNavigationPanel';
 import { useSelector } from '@suite-hooks';
 import { Route } from '@suite-types';
 import AccountStickyContent from '../AccountStickyContent';
@@ -20,7 +19,7 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 
 const SECONDARY_MENU_BUTTON_MARGIN = '12px';
 
-const Wrapper = styled.div<{ value: boolean; subRoute: boolean | undefined }>`
+const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
     width: 100%;
     z-index: 3;
     display: flex;
@@ -34,38 +33,23 @@ const Wrapper = styled.div<{ value: boolean; subRoute: boolean | undefined }>`
     height: 0;
 
     ${props =>
+        !props.subRoute &&
+        css`
+            margin-bottom: 70px;
+        `}
+
+    ${props =>
         props.subRoute &&
-        props.value &&
+        props.inView &&
         css`
             transform: translate(0, -71px);
         `}
-
     ${props =>
         props.subRoute &&
-        !props.value &&
+        !props.inView &&
         css`
             transition: all 0.3s ease 0s;
             transform: translate(0, 0);
-            z-index: 5;
-        `}
-
-    ${props =>
-        !props.subRoute &&
-        props.value &&
-        css`
-            transform: translate(0px, -71px);
-            margin-top: 71px;
-            height: 0px;
-        `}
-
-    ${props =>
-        !props.subRoute &&
-        !props.value &&
-        css`
-            transition: all 0.3s ease 0s;
-            transform: translate(0, 0);
-            margin-bottom: 70px;
-            z-index: 5;
         `}
 `;
 
@@ -90,14 +74,19 @@ const MenuHolder = styled.div<{
     }
 `;
 
-const KeepWidth = styled.div<{ maxWidth?: string; border: boolean }>`
+const KeepWidth = styled.div<{ maxWidth?: string; inView?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;
     background: ${props => props.theme.BG_LIGHT_GREY};
     width: 100%;
     max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
-    ${props => !props.border && `border-top: 1px solid ${props.theme.STROKE_GREY};`}
+
+    ${props =>
+        props.inView &&
+        css`
+            border-top: 1px solid ${props => props.theme.STROKE_GREY};
+        `}
 `;
 
 const Primary = styled.div`
@@ -204,6 +193,7 @@ interface Props {
     items: AppNavigationItem[];
     primaryContent?: React.ReactNode;
     maxWidth?: 'small' | 'default';
+    inView?: boolean;
 }
 interface MenuWidths {
     primary: number;
@@ -224,7 +214,7 @@ const isSubsection = (routeName: Route['name']): boolean =>
 const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =>
     primary + secondary >= wrapper;
 
-const AppNavigation = ({ items, primaryContent, maxWidth }: Props) => {
+const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props) => {
     const theme = useTheme();
     const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] =
         useState<boolean>(false);
@@ -253,11 +243,10 @@ const AppNavigation = ({ items, primaryContent, maxWidth }: Props) => {
     const itemsSecondaryWithExtra = itemsSecondary.filter(item => item.extra);
     const itemsSecondaryWithoutExtra = itemsSecondary.filter(item => !item.extra);
 
-    const sticky = useInViewProp();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount.account);
 
     return (
-        <Wrapper ref={wrapper} value={sticky} subRoute={routeName && isSubsection(routeName)}>
+        <Wrapper ref={wrapper} inView={inView} subRoute={routeName && isSubsection(routeName)}>
             {routeName && isSubsection(routeName) ? (
                 <InnerWrap>
                     <MenuHolder maxWidth={maxWidth}>
@@ -267,7 +256,7 @@ const AppNavigation = ({ items, primaryContent, maxWidth }: Props) => {
                 </InnerWrap>
             ) : (
                 <InnerWrap>
-                    <KeepWidth border={!sticky}>
+                    <KeepWidth inView={inView}>
                         <Primary ref={primary}>
                             {primaryContent ||
                                 itemsPrimary.map(item => {

@@ -3,7 +3,8 @@
 
 describe('Firmware', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        // use portrait mode monitor to prevent scrolling in settings
+        cy.viewport(1080, 1440).resetDb();
     });
 
     ['1.9.4', '2.3.0'].forEach(fw => {
@@ -13,7 +14,9 @@ describe('Firmware', () => {
             cy.task('startBridge');
             cy.prefixedVisit('/');
             cy.passThroughInitialRun();
-            cy.matchImageSnapshot('outdated notification banner');
+            cy.matchImageSnapshot('outdated notification banner', {
+                clip: { x: 0, y: 0, height: 100, width: 1080 },
+            });
             cy.getTestElement('@notification/update-firmware/button').click();
 
             // // initial screen
