@@ -44,7 +44,7 @@
         "react-hook-form": "6.15.7",
         "react-intersection-observer": "^8.31.0",
         "react-intl": "^5.10.19",
-        "react-markdown": "^5.0.3",
+        "react-markdown": "^7.1.1",
         "react-native-web": "^0.14.9",
         "react-qr-reader": "^2.2.1",
         "react-qr-svg": "^2.3.0",

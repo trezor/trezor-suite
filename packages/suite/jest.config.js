@@ -5,7 +5,7 @@ module.exports = {
     roots: ['./src'],
     setupFiles: [
         '<rootDir>/src/support/tests/setupJest.ts',
-        '<rootDir>/src/support/tests/npmMocks.ts',
+        '<rootDir>/src/support/tests/npmMocks.tsx',
     ],
     moduleNameMapper: {
         '^@suite/(.+)': '<rootDir>/src/$1',

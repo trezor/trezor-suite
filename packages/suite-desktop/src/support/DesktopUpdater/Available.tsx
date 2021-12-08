@@ -181,7 +181,7 @@ const Available = ({ hideWindow, latest }: Props) => {
 
             <ChangelogWrapper>
                 {releaseNotes.notes ? (
-                    <ReactMarkdown source={releaseNotes.notes} />
+                    <ReactMarkdown>{releaseNotes.notes}</ReactMarkdown>
                 ) : (
                     <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                 )}

@@ -77,9 +77,14 @@ const GuideMarkdown = ({ markdown }: Props) => {
     return (
         <StyledMarkdown ref={ref}>
             <ReactMarkdown
-                renderers={{
-                    link: ({ children, href }) =>
-                        href.startsWith('http') ? (
+                components={{
+                    a: ({ children, href }) => {
+                        if (!href) {
+                            console.error(`Missing href in Suite Guide link!`);
+                            return null;
+                        }
+
+                        return href.startsWith('http') ? (
                             <TrezorLink variant="default" href={href}>
                                 {children}
                             </TrezorLink>
@@ -87,7 +92,8 @@ const GuideMarkdown = ({ markdown }: Props) => {
                             <TrezorLink variant="default" onClick={() => openNodeById(href)}>
                                 {children}
                             </TrezorLink>
-                        ),
+                        );
+                    },
                 }}
             >
                 {markdown}
