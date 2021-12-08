@@ -12,6 +12,7 @@ import modules from '@desktop-electron/libs/modules';
 import { createInterceptor } from '@desktop-electron/libs/request-interceptor';
 
 let mainWindow: BrowserWindow;
+const APP_NAME = 'Trezor Suite';
 const src = isDev
     ? 'http://localhost:8000/'
     : url.format({
@@ -62,7 +63,7 @@ const init = async () => {
     logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
 
     mainWindow = new BrowserWindow({
-        title: app.getName(),
+        title: APP_NAME,
         width: winBounds.width,
         height: winBounds.height,
         minWidth: MIN_WIDTH,
@@ -107,6 +108,7 @@ if (!singleInstance) {
         }
     });
 
+    app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
     app.on('ready', init);
 }
 

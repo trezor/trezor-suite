@@ -1,6 +1,5 @@
 {
     "name": "@trezor/suite-desktop",
-    "productName": "Trezor Suite",
     "description": "Trezor Suite desktop application",
     "version": "1.0.0",
     "private": true,
