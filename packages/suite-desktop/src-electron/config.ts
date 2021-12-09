@@ -19,6 +19,7 @@ export const allowedDomains = [
     'o117836.ingest.sentry.io',
     'oauth2.googleapis.com',
     'googleapis.com',
+    'api.coingecko.com',
     onionDomain,
 ];
 
