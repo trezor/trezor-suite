@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Dropdown, variables } from '@trezor/components';
+import { Dropdown, variables, Icon } from '@trezor/components';
 import { Translation, ExternalLink, AppNavigationPanel, AppNavigation } from '@suite-components';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useDevice } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -29,6 +29,53 @@ const SettingsMenu = () => {
     // show debug menu item after 5 clicks on "Settings" heading
     const [clickCounter, setClickCounter] = useState(0);
 
+    const { device } = useDevice();
+
+    const items: any = [
+        {
+            id: 'settings-index',
+            title: <Translation id="TR_GENERAL" />,
+            position: 'primary',
+            'data-test': '@settings/menu/general',
+            icon:
+                (screenWidth || 0) > getNumberFromPxString(variables.SCREEN_SIZE.SM)
+                    ? 'SETTINGS'
+                    : undefined,
+            callback: () => {
+                goto('settings-index', undefined, true);
+            },
+        },
+        {
+            id: 'settings-device',
+            title: <Translation id="TR_DEVICE" />,
+            position: 'primary',
+            'data-test': '@settings/menu/device',
+            icon:
+                (screenWidth || 0) > getNumberFromPxString(variables.SCREEN_SIZE.SM)
+                    ? 'TREZOR'
+                    : undefined,
+            callback: () => {
+                goto('settings-device', undefined, true);
+            },
+        },
+        {
+            id: 'settings-coins',
+            title: <Translation id="TR_COINS" />,
+            position: 'primary',
+            'data-test': '@settings/menu/wallet',
+            icon:
+                (screenWidth || 0) > getNumberFromPxString(variables.SCREEN_SIZE.SM)
+                    ? 'COINS'
+                    : undefined,
+            callback: () => {
+                goto('settings-coins', undefined, true);
+            },
+        },
+    ];
+    if (!device) {
+        items.splice(1, 1); // remove device tab
+    }
+
     return (
         <AppNavigationPanel
             maxWidth="small"
@@ -46,52 +93,7 @@ const SettingsMenu = () => {
                     <Translation id="TR_SETTINGS" />
                 </span>
             }
-            navigation={
-                <AppNavigation
-                    maxWidth="default"
-                    items={[
-                        {
-                            id: 'settings-index',
-                            title: <Translation id="TR_GENERAL" />,
-                            position: 'primary',
-                            'data-test': '@settings/menu/general',
-                            icon:
-                                (screenWidth || 0) > getNumberFromPxString(variables.SCREEN_SIZE.SM)
-                                    ? 'SETTINGS'
-                                    : undefined,
-                            callback: () => {
-                                goto('settings-index', undefined, true);
-                            },
-                        },
-                        {
-                            id: 'settings-device',
-                            title: <Translation id="TR_DEVICE" />,
-                            position: 'primary',
-                            'data-test': '@settings/menu/device',
-                            icon:
-                                (screenWidth || 0) > getNumberFromPxString(variables.SCREEN_SIZE.SM)
-                                    ? 'TREZOR'
-                                    : undefined,
-                            callback: () => {
-                                goto('settings-device', undefined, true);
-                            },
-                        },
-                        {
-                            id: 'settings-coins',
-                            title: <Translation id="TR_COINS" />,
-                            position: 'primary',
-                            'data-test': '@settings/menu/wallet',
-                            icon:
-                                (screenWidth || 0) > getNumberFromPxString(variables.SCREEN_SIZE.SM)
-                                    ? 'COINS'
-                                    : undefined,
-                            callback: () => {
-                                goto('settings-coins', undefined, true);
-                            },
-                        },
-                    ]}
-                />
-            }
+            navigation={<AppNavigation maxWidth="default" items={items} />}
             dropdown={
                 <Dropdown
                     alignMenu="right"
@@ -132,6 +134,11 @@ const SettingsMenu = () => {
                         },
                     ]}
                 />
+            }
+            closeSettings={
+                <Icon icon="CROSS" onClick={() => goto('suite-index', undefined, true)}>
+                    red
+                </Icon>
             }
         />
     );

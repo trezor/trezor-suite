@@ -64,6 +64,7 @@ interface Props {
     maxWidth: 'small' | 'default';
     children?: React.ReactNode;
     navigation?: React.ReactNode;
+    closeSettings?: React.ReactNode;
 }
 
 const AppNavigationPanelInner = React.forwardRef<HTMLDivElement, Props>((props, ref) => (
@@ -76,6 +77,7 @@ const AppNavigationPanelInner = React.forwardRef<HTMLDivElement, Props>((props, 
                         <Aside>
                             {props.ticker}
                             {props.dropdown}
+                            {props.closeSettings}
                         </Aside>
                     </TitleRow>
                     {props.children && <Row>{props.children}</Row>}

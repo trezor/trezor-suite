@@ -12,7 +12,7 @@ import MenuSecondary from '@suite-components/MenuSecondary';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import NavigationBar from '../NavigationBar';
-import { useLayoutSize, useSelector, useActions, useAnalytics } from '@suite-hooks';
+import { useLayoutSize, useSelector, useActions, useAnalytics, useDevice } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { MODAL } from '@suite-actions/constants';
 
@@ -212,6 +212,7 @@ const BodyMobile = ({ url, menu, appMenu, children }: MobileBodyProps) => (
 type SuiteLayoutProps = Omit<Props, 'menu' | 'appMenu'>;
 const SuiteLayout = (props: SuiteLayoutProps) => {
     const analytics = useAnalytics();
+    const { device } = useDevice();
 
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
     const { isMobileLayout, layoutSize } = useLayoutSize();
@@ -269,7 +270,7 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
             <Metadata title={title} />
             <SuiteBanners />
             <DiscoveryProgress />
-            <NavigationBar />
+            {device && <NavigationBar />}
             <LayoutContext.Provider value={{ title, menu, isMenuInline, setLayout }}>
                 {!isMobileLayout && (
                     <BodyNormal

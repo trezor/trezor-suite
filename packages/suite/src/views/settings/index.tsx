@@ -106,7 +106,7 @@ const Settings = () => {
     const analytics = useAnalytics();
 
     const { isLocked, device } = useDevice();
-    const isDeviceLocked = isLocked();
+    const isDeviceLocked = device && isLocked();
 
     const { localCurrency, metadata, desktopUpdate, tor, torOnionLinks } = useSelector(state => ({
         localCurrency: state.wallet.settings.localCurrency,

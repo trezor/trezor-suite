@@ -1,13 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, SettingsDropdown } from '@suite-components';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';
 import { isWeb } from '@suite-utils/env';
 import { TREZOR_URL, SUITE_URL } from '@suite-constants/urls';
 import { resolveStaticPath } from '@suite-utils/build';
+import { findRouteByName } from '@suite-utils/router';
+import { useSelector } from '@suite-hooks';
+import { GuidePanel } from '@guide-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -88,6 +91,15 @@ interface Props {
 // used in Preloader and Onboarding
 const WelcomeLayout = ({ children }: Props) => {
     const { banner } = useMessageSystem();
+    const { activeApp, guideOpen } = useSelector(state => ({
+        activeApp: state.router.app,
+        guideOpen: state.guide.open,
+    }));
+    type Route = 'settings-index' | 'notifications-index'; // ?
+    const getIfRouteIsActive = (route: Route) => {
+        const routeObj = findRouteByName(route);
+        return routeObj ? routeObj.app === activeApp : false;
+    };
     return (
         <Wrapper>
             {banner && (
@@ -117,7 +129,8 @@ const WelcomeLayout = ({ children }: Props) => {
                     </TrezorLink>
                 </Bottom>
             </Welcome>
-
+            <SettingsDropdown settingsFromWelcome isActive={getIfRouteIsActive('settings-index')} />
+            {guideOpen && <GuidePanel data-test="@guide/panel" open={guideOpen} />}
             <Content>{children}</Content>
         </Wrapper>
     );

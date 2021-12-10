@@ -52,6 +52,10 @@ const getExcludedPrerequisites = (router: PrerequisitesInput['router']): Prerequ
         // todo: no prerequisites are excluded. there is more detailed handling in specific steps in onboarding
         return [];
     }
+    if (router.app === 'settings' && router.route.name !== 'settings-device') {
+        // Welcome Layout settings
+        return ['transport-bridge', 'device-disconnected']; // TODO: exclude more
+    }
     return [];
 };
 

@@ -21,6 +21,7 @@ interface Props {
     maxWidth: 'small' | 'default';
     children?: React.ReactNode;
     navigation?: React.ReactNode;
+    closeSettings?: React.ReactNode;
 }
 
 export const useInViewProp = () => React.useContext(AppNavigationPanelCtx);
@@ -37,6 +38,7 @@ const AppNavigationPanel = (props: Props) => {
             title={props.title}
             ticker={props.ticker}
             dropdown={props.dropdown}
+            closeSettings={props.closeSettings}
             maxWidth={props.maxWidth}
             navigation={
                 <AppNavigationPanelProvider inView={inView}>
