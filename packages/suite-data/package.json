@@ -20,7 +20,7 @@
         "guide-pull-content": "ts-node ./src/guide/index.ts"
     },
     "dependencies": {
-        "ua-parser-js": "^0.7.28"
+        "ua-parser-js": "^1.0.2"
     },
     "devDependencies": {
         "@types/fs-extra": "^9.0.6",
