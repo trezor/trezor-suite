@@ -202,6 +202,19 @@ const routes = [
         pattern: '/accounts/coinmarket/savings',
         app: 'wallet',
         params: walletParams,
+        exact: true,
+    },
+    {
+        name: 'wallet-coinmarket-savings-login',
+        pattern: '/accounts/coinmarket/savings/login',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-coinmarket-savings-registration',
+        pattern: '/accounts/coinmarket/savings/registration',
+        app: 'wallet',
+        params: walletParams,
     },
     {
         name: 'wallet-coinmarket-redirect',

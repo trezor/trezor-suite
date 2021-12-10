@@ -13,7 +13,7 @@ const Navigation = () => {
 
     const { routeName, account } = useSelector(state => ({
         routeName: state.router.route?.name,
-        account: state.wallet.selectedAccount.account,
+        account: state.wallet.selectedAccount?.account,
     }));
     const { goto } = useActions({
         goto: routerActions.goto,
@@ -33,7 +33,7 @@ const Navigation = () => {
                     <WalletLayoutNavLink
                         key="wallet-coinmarket-savings"
                         title="TR_NAV_SAVINGS"
-                        active={routeName === 'wallet-coinmarket-savings'}
+                        active={!!routeName?.startsWith('wallet-coinmarket-savings')}
                         onClick={() => goto('wallet-coinmarket-savings', { preserveParams: true })}
                     />
                 )}

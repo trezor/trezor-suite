@@ -34,5 +34,11 @@ export const useCoinmarketNavigation = (account: Account) => {
 
         navigateToSellForm: useNavigateToRouteName('wallet-coinmarket-sell'),
         navigateToSellOffers: useNavigateToRouteName('wallet-coinmarket-sell-offers'),
+
+        navigateToSavings: useNavigateToRouteName('wallet-coinmarket-savings'),
+        navigateToSavingsLogin: useNavigateToRouteName('wallet-coinmarket-savings-login'),
+        navigateToSavingsRegistration: useNavigateToRouteName(
+            'wallet-coinmarket-savings-registration',
+        ),
     };
 };

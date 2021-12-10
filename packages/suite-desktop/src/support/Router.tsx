@@ -25,6 +25,8 @@ import WalletCoinmarketExchangeDetail from '@wallet-views/coinmarket/exchange/de
 import WalletCoinmarketExchangeOffers from '@wallet-views/coinmarket/exchange/offers';
 import WalletCoinmarketSpend from '@wallet-views/coinmarket/spend';
 import WalletCoinmarketSavings from '@wallet-views/coinmarket/savings';
+import WalletCoinmarketSavingsLogin from '@wallet-views/coinmarket/savings/login';
+import WalletCoinmarketSavingsRegistration from '@wallet-views/coinmarket/savings/registration';
 import WalletCoinmarketRedirect from '@wallet-views/coinmarket/redirect';
 
 import SettingsGeneral from '@settings-views/general/SettingsGeneral';
@@ -55,6 +57,8 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'wallet-coinmarket-exchange-offers': WalletCoinmarketExchangeOffers,
     'wallet-coinmarket-spend': WalletCoinmarketSpend,
     'wallet-coinmarket-savings': WalletCoinmarketSavings,
+    'wallet-coinmarket-savings-login': WalletCoinmarketSavingsLogin,
+    'wallet-coinmarket-savings-registration': WalletCoinmarketSavingsRegistration,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
 
     'settings-index': SettingsGeneral,

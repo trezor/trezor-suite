@@ -29,7 +29,12 @@ import {
     WatchSellTradeResponse,
 } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
-import type { InvityServerEnvironment, InvityServers } from '@wallet-types/invity';
+import type {
+    AccountInfoResponse,
+    InvityServerEnvironment,
+    InvityServers,
+} from '@wallet-types/invity';
+import { resolveStaticPath } from '@suite-utils/build';
 
 type BodyType =
     | BuyTrade
@@ -48,50 +53,71 @@ class InvityAPI {
     stagingAPIServer = 'https://staging-exchange1.invity.io';
     localhostAPIServer = 'http://localhost:3330';
 
+    authenticationServersForSuiteDesktop = {
+        production: 'https://suite-desktop-auth.invity.io', // TODO: update the desktop URL accordingly, current value is just suggestion
+        staging: 'https://suite-desktop-staging-auth.invity.io', // TODO: update the desktop URL accordingly, current value is just suggestion
+        localhost: 'http://localhost:4633',
+    } as const;
+
     servers = {
         production: {
             api: 'https://exchange.trezor.io',
-            authentication: 'https://auth.invity.io',
+            authentication: isDesktop()
+                ? this.authenticationServersForSuiteDesktop.production
+                : 'https://auth.trezor.io',
         },
-        staging: {
-            api: 'https://staging-exchange.invity.io',
-            authentication: 'https://staging-auth.invity.io',
+        staging1: {
+            api: 'https://staging-exchange1.sldev.cz',
+            authentication: isDesktop()
+                ? this.authenticationServersForSuiteDesktop.staging
+                : 'https://staging-auth.sldev.cz/suite',
+        },
+        staging2: {
+            api: 'https://staging-exchange2.sldev.cz',
+            authentication: isDesktop()
+                ? this.authenticationServersForSuiteDesktop.staging
+                : 'https://staging-auth.sldev.cz/suite',
         },
         localhost: {
             api: 'http://localhost:3330',
-            authentication: 'http://localhost:4433',
+            authentication: isDesktop()
+                ? this.authenticationServersForSuiteDesktop.localhost
+                : 'http://localhost:4533',
         },
     } as InvityServers;
 
+    private protectedAPI = false;
     private serverEnvironment = 'production' as InvityServerEnvironment;
 
     // info service
-    private DETECT_COUNTRY_INFO = '/api/info/country';
-    private GET_COUNTRY_INFO = '/api/info/country/{{country}}';
+    private DETECT_COUNTRY_INFO = '/info/country';
+    private GET_COUNTRY_INFO = '/info/country/{{country}}';
 
     // exchange service
-    private EXCHANGE_LIST = '/api/exchange/list';
-    private EXCHANGE_COINS = '/api/exchange/coins';
-    private EXCHANGE_QUOTES = '/api/exchange/quotes';
-    private EXCHANGE_DO_TRADE = '/api/exchange/trade';
-    private EXCHANGE_WATCH_TRADE = '/api/exchange/watch/{{counter}}';
+    private EXCHANGE_LIST = '/exchange/list';
+    private EXCHANGE_COINS = '/exchange/coins';
+    private EXCHANGE_QUOTES = '/exchange/quotes';
+    private EXCHANGE_DO_TRADE = '/exchange/trade';
+    private EXCHANGE_WATCH_TRADE = '/exchange/watch/{{counter}}';
 
     // buy service
-    private BUY_LIST = '/api/buy/list';
-    private BUY_QUOTES = '/api/buy/quotes';
-    private BUY_DO_TRADE = '/api/buy/trade';
-    private BUY_GET_TRADE_FORM = '/api/buy/tradeform';
-    private BUY_WATCH_TRADE = '/api/buy/watch/{{counter}}';
+    private BUY_LIST = '/buy/list';
+    private BUY_QUOTES = '/buy/quotes';
+    private BUY_DO_TRADE = '/buy/trade';
+    private BUY_GET_TRADE_FORM = '/buy/tradeform';
+    private BUY_WATCH_TRADE = '/buy/watch/{{counter}}';
 
     // sell service
-    private SELL_LIST = '/api/sell/list';
-    private VOUCHER_QUOTES = '/api/sell/voucher/quotes';
-    private VOUCHER_REQUEST_TRADE = '/api/sell/voucher/trade';
-    private VOUCHER_CONFIRM_TRADE = '/api/sell/voucher/confirm';
-    private SELL_FIAT_QUOTES = '/api/sell/fiat/quotes';
-    private SELL_FIAT_DO_TRADE = '/api/sell/fiat/trade';
-    private SELL_FIAT_CONFIRM = '/api/sell/fiat/confirm';
-    private SELL_FIAT_WATCH_TRADE = '/api/sell/fiat/watch/{{counter}}';
+    private SELL_LIST = '/sell/list';
+    private VOUCHER_QUOTES = '/sell/voucher/quotes';
+    private VOUCHER_REQUEST_TRADE = '/sell/voucher/trade';
+    private VOUCHER_CONFIRM_TRADE = '/sell/voucher/confirm';
+    private SELL_FIAT_QUOTES = '/sell/fiat/quotes';
+    private SELL_FIAT_DO_TRADE = '/sell/fiat/trade';
+    private SELL_FIAT_CONFIRM = '/sell/fiat/confirm';
+    private SELL_FIAT_WATCH_TRADE = '/sell/fiat/watch/{{counter}}';
+
+    private ACCOUNT_INFO = '/account/info';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -102,6 +128,23 @@ class InvityAPI {
         }
 
         return InvityAPI.apiKey;
+    }
+
+    getAllApiServerUrls() {
+        return [
+            this.servers.production.api,
+            this.servers.staging1.api,
+            this.servers.staging2.api,
+            this.servers.localhost.api,
+        ];
+    }
+
+    getAllDesktopAuthenticationServerUrls() {
+        return [
+            this.authenticationServersForSuiteDesktop.production,
+            this.authenticationServersForSuiteDesktop.staging,
+            this.authenticationServersForSuiteDesktop.localhost,
+        ];
     }
 
     getApiServerUrl() {
@@ -131,10 +174,21 @@ class InvityAPI {
         }
     }
 
-    private options(body: BodyType = {}, method = 'POST'): any {
+    setProtectedAPI(protectedAPI: boolean) {
+        this.protectedAPI = protectedAPI;
+    }
+
+    private options(body: BodyType = {}, method = 'POST', options: RequestInit = {}): any {
         const apiHeader = isDesktop() ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
+        if (this.protectedAPI) {
+            options = {
+                ...options,
+                credentials: 'include',
+            } as RequestInit;
+        }
         if (method === 'POST') {
             return {
+                ...options,
                 method,
                 mode: 'cors',
                 headers: {
@@ -146,6 +200,7 @@ class InvityAPI {
             };
         }
         return {
+            ...options,
             method,
             mode: 'cors',
             headers: {
@@ -154,9 +209,20 @@ class InvityAPI {
         };
     }
 
-    private requestApiServer(url: string, body: BodyType = {}, method = 'POST'): Promise<any> {
-        const finalUrl = `${this.getApiServerUrl()}${url}`;
-        const opts = this.options(body, method);
+    private requestApiServer(
+        url: string,
+        body: BodyType = {},
+        method = 'POST',
+        options: RequestInit = {},
+    ): Promise<any> {
+        let prefix: string;
+        if (!this.protectedAPI || this.getApiServerUrl() === this.servers.localhost.api) {
+            prefix = '/api';
+        } else {
+            prefix = '/auth/api';
+        }
+        const finalUrl = `${this.getApiServerUrl()}${prefix}${url}`;
+        const opts = this.options(body, method, options);
         return fetch(finalUrl, opts).then(response => {
             if (response.ok) {
                 return response.json();
@@ -434,9 +500,50 @@ class InvityAPI {
         }
     };
 
-    getAuthenticationIframeSrc(flowType: 'login' | 'registration') {
-        return `${this.getAuthServerUrl()}/self-service/${flowType}/browser`;
+    getCheckWhoAmIUrl() {
+        return `${this.getAuthServerUrl()}/sessions/whoami`;
     }
+
+    private getInvityAuthenticationPageSrc(flow: 'login' | 'registration') {
+        // TODO: where to put the http://localhost:21335?
+        const url = new URL(
+            isDesktop()
+                ? `http://localhost:21335/invity-${flow}`
+                : `${window.location.origin}${resolveStaticPath(
+                      `invity-authentication/${flow}.html`,
+                  )}`,
+        );
+        const returnToUrl = isDesktop()
+            ? `http://localhost:21335/invity-${flow}-success`
+            : `${window.location.origin}${resolveStaticPath(
+                  `invity-authentication/${flow}-success.html`,
+              )}`;
+        url.searchParams.append('return_to', returnToUrl);
+        url.hash = this.getAuthServerUrl();
+        return url.toString();
+    }
+
+    getLoginPageSrc() {
+        return this.getInvityAuthenticationPageSrc('login');
+    }
+
+    getRegistrationPageSrc() {
+        return this.getInvityAuthenticationPageSrc('registration');
+    }
+
+    accountInfo = async (): Promise<AccountInfoResponse> => {
+        try {
+            const response: AccountInfoResponse = await this.requestApiServer(
+                this.ACCOUNT_INFO,
+                {},
+                'GET',
+            );
+            return response;
+        } catch (error) {
+            console.log('[accountInfo]', error);
+            return { error: error.toString() };
+        }
+    };
 }
 
 const invityAPI = new InvityAPI();

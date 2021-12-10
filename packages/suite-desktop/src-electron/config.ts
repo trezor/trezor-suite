@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { TOR_URLS } from '@suite-constants/tor';
 
 export const onionDomain = TOR_URLS['trezor.io'];
@@ -25,6 +27,23 @@ export const allowedDomains = [
     'blockfrost.dev',
 ];
 
+// TODO: Maybe put these to the Electron store as read-only values?
+const assetHashesFilePath = path.join(
+    __dirname,
+    '..',
+    '..',
+    'build',
+    'static',
+    'invity-authentication',
+    'asset-hashes.json',
+);
+const assetHashesFileContent = fs.readFileSync(assetHashesFilePath);
+const assetHashes = JSON.parse(assetHashesFileContent.toString()) as {
+    scripts: string[];
+    styles: string[];
+}; // TODO: Do we want to generate and import AssetHashes type?
+
+// TODO: may be create function getContentSecurtyPolicyHeaderValue(store)? And from the store get the asset-hashes.json file path?
 export const cspRules = [
     // Default to only own resources
     "default-src 'self'",
@@ -32,4 +51,6 @@ export const cspRules = [
     'connect-src *',
     // Allow images from trezor.io
     "img-src 'self' *.trezor.io",
+    `script-src-elem ${assetHashes.scripts.map(hash => `'${hash}'`).join(' ')}`,
+    `style-src ${assetHashes.styles.map(hash => `'${hash}'`).join(' ')}`,
 ];

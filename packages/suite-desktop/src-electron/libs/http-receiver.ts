@@ -3,6 +3,8 @@ import * as net from 'net';
 import * as url from 'url';
 import { EventEmitter } from 'events';
 import { HTTP_ORIGINS_DEFAULT } from './constants';
+import path from 'path';
+import fs from 'fs';
 
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
@@ -80,6 +82,26 @@ export class HttpReceiver extends EventEmitter {
                 handler: this.spendHandleMessage,
                 // Default referers
             },
+            {
+                pathname: '/invity-login',
+                handler: this.invityLoginHandler,
+                origins: ['', 'http://localhost:21335'],
+            },
+            {
+                pathname: '/invity-login-success',
+                handler: this.invityLoginSuccessHandler,
+                origins: ['http://localhost:21335'],
+            },
+            {
+                pathname: '/invity-registration',
+                handler: this.invityRegistrationHandler,
+                origins: ['', 'http://localhost:21335'],
+            },
+            {
+                pathname: '/invity-registration-success',
+                handler: this.invityRegistrationSuccessHandler,
+                origins: [''],
+            },
             /**
              * Register more routes here. Each route must have pathname and handler function.
              */
@@ -145,8 +167,8 @@ export class HttpReceiver extends EventEmitter {
             return;
         }
 
-        // only method GET is supported
-        if (request.method !== 'GET') {
+        // only method GET and POST is supported
+        if (request.method && !['GET', 'POST'].includes(request.method)) {
             this.logger.warn('http-receiver', `Incorrect method used (${request.method})`);
             return;
         }
@@ -316,6 +338,44 @@ export class HttpReceiver extends EventEmitter {
                 </body>
             </html>`;
         response.end(template);
+    };
+
+    private getInvityHtmlFilePath = (
+        htmlFileName:
+            | 'login.html'
+            | 'login-success.html'
+            | 'registration.html'
+            | 'registration-success.html',
+    ) => path.join(__dirname, '..', '..', 'build', 'static', 'invity-authentication', htmlFileName);
+
+    private setInvityHtmlFileToResponse = (
+        response: http.ServerResponse,
+        htmlFileName: Parameters<typeof this.getInvityHtmlFilePath>[0],
+    ) => {
+        fs.readFile(this.getInvityHtmlFilePath(htmlFileName), (error, data) => {
+            if (error) {
+                this.logger.error('http-receiver', error.message);
+                response.end();
+                return;
+            }
+            response.end(data);
+        });
+    };
+
+    private invityLoginHandler = (_: Request, response: http.ServerResponse) => {
+        this.setInvityHtmlFileToResponse(response, 'login.html');
+    };
+
+    private invityLoginSuccessHandler = (_: Request, response: http.ServerResponse) => {
+        this.setInvityHtmlFileToResponse(response, 'login-success.html');
+    };
+
+    private invityRegistrationHandler = (_: Request, response: http.ServerResponse) => {
+        this.setInvityHtmlFileToResponse(response, 'registration.html');
+    };
+
+    private invityRegistrationSuccessHandler = (_: Request, response: http.ServerResponse) => {
+        this.setInvityHtmlFileToResponse(response, 'registration-success.html');
     };
 
     private spendHandleMessage = (request: Request, response: http.ServerResponse) => {

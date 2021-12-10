@@ -7,9 +7,19 @@ import { b2t } from '../libs/utils';
 
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 
-const init = async () => {
+const init = async ({ interceptor }: Dependencies) => {
     const { logger } = global;
     const bridge = new BridgeProcess();
+
+    interceptor.onBeforeSendHeaders(details => {
+        // TODO: inject the 'http://127.0.0.1:21325/' from outside?
+        if (details.url.startsWith('http://127.0.0.1:21325/')) {
+            // @ts-ignore electron declares requestHeaders as an empty interface
+            details.requestHeaders.Origin = 'https://electron.trezor.io';
+            logger.debug('bridge', `Setting header for ${details.url}`);
+        }
+        return { cancel: false, requestHeaders: details.requestHeaders };
+    });
 
     try {
         logger.info('bridge', `Starting (Dev: ${b2t(bridgeDev)})`);

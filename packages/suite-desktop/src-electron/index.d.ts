@@ -55,9 +55,37 @@ declare type BeforeRequestListener = (
     details: Electron.OnBeforeRequestListenerDetails,
 ) => Electron.Response | undefined;
 
+declare type BeforeSendHeadersListener = (
+    details: Electron.OnBeforeSendHeadersListenerDetails,
+) => (Electron.Response & { requestHeaders: Record<string, string> }) | undefined;
+
+declare type BeforeSendHeadersListenerAsync = (
+    details: Electron.OnBeforeSendHeadersListenerDetails,
+) => Promise<(Electron.Response & { requestHeaders: Record<string, string> }) | undefined>;
+
+declare type HeadersReceivedListener = (
+    details: Electron.OnHeadersReceivedListenerDetails,
+) => (Electron.Response & { responseHeaders: Record<string, string[]> }) | undefined;
+
+declare type HeadersReceivedListenerAsync = (
+    details: Electron.OnHeadersReceivedListenerDetails,
+) => Promise<(Electron.Response & { responseHeaders: Record<string, string[]> }) | undefined>;
+
 declare interface RequestInterceptor {
     onBeforeRequest(listener: BeforeRequestListener): void;
     offBeforeRequest(listener: BeforeRequestListener): void;
+
+    onBeforeSendHeaders(listener: BeforeSendHeadersListener): void;
+    offBeforeSendHeaders(listener: BeforeSendHeadersListener): void;
+
+    onBeforeSendHeadersAsync(listener: BeforeSendHeadersListenerAsync): void;
+    offBeforeSendHeadersAsync(listener: BeforeSendHeadersListenerAsync): void;
+
+    onHeadersReceived(listener: HeadersReceivedListener): void;
+    offHeadersReceived(listener: HeadersReceivedListener): void;
+
+    onHeadersReceivedAsync(listener: HeadersReceivedListenerAsync): void;
+    offHeadersReceivedAsync(listener: HeadersReceivedListenerAsync): void;
 }
 
 // Store

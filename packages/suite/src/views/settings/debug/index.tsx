@@ -26,7 +26,7 @@ type UserData = Extract<
 >;
 
 const StyledActionSelect = styled(ActionSelect)`
-    min-width: 250px;
+    min-width: 260px;
 `;
 
 const DebugSettings = () => {
