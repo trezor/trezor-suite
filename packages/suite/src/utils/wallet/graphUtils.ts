@@ -13,7 +13,7 @@ import {
 } from '@wallet-types/graph';
 import { formatNetworkAmount } from './accountUtils';
 import { resetTime } from '@suite-utils/date';
-import { getFiatRatesForTimestamps, getTickerConfig } from '@suite/services/coingecko';
+import { getFiatRatesForTimestamps, getTickerConfig } from '@suite/services/fiat';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 
