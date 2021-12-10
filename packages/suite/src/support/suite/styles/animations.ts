@@ -1,5 +1,7 @@
 import { keyframes } from 'styled-components';
 
+// TODO: check that these styles are used
+
 const STEP_ANIMATION_DURATION = 500;
 
 const animationStyles = `
