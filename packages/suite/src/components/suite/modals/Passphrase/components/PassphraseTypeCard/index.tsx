@@ -331,6 +331,7 @@ const PassphraseTypeCard = (props: Props) => {
                                 state={isTooLong ? 'error' : undefined}
                                 noTopLabel
                                 noError
+                                autoFocus
                                 innerAddon={
                                     <Icon
                                         size={18}
