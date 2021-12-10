@@ -1,6 +1,5 @@
 import animations from './animations';
 import tooltips from './tooltips';
-import { notifications } from './notifications';
 import { variables, SuiteThemeColors } from '@trezor/components';
 import { createGlobalStyle } from 'styled-components';
 
@@ -51,7 +50,6 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
     }
 
     ${animations}
-    ${notifications}
     ${tooltips}
 `;
 
