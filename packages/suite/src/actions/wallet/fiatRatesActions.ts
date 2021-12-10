@@ -5,7 +5,7 @@ import {
     getFiatRatesForTimestamps,
     fetchLastWeekRates,
     fetchCurrentTokenFiatRates,
-} from '@suite/services/coingecko';
+} from '@suite/services/fiat';
 import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import { getBlockbookSafeTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
