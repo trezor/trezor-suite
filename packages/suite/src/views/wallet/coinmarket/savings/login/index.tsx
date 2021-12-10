@@ -7,6 +7,7 @@ import CoinmarketAuthentication, {
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import type { AppState } from '@suite-types';
 import invityAPI from '@suite-services/invityAPI';
+import { Button } from '@trezor/components';
 
 interface CoinmarketSavingsLoginLoadedProps {
     selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
@@ -14,7 +15,9 @@ interface CoinmarketSavingsLoginLoadedProps {
 
 const CoinmarketSavingsLoginLoaded = ({ selectedAccount }: CoinmarketSavingsLoginLoadedProps) => {
     const { whoAmI, fetching } = useContext(CoinmarketAuthenticationContext);
-    const { navigateToSavings } = useCoinmarketNavigation(selectedAccount.account);
+    const { navigateToSavings, navigateToSavingsRegistration } = useCoinmarketNavigation(
+        selectedAccount.account,
+    );
 
     useEffect(() => {
         if (!fetching && whoAmI?.verified) {
@@ -23,16 +26,13 @@ const CoinmarketSavingsLoginLoaded = ({ selectedAccount }: CoinmarketSavingsLogi
     }, [fetching, navigateToSavings, whoAmI?.verified]);
     return (
         <CoinmarketLayout>
+            <Button onClick={() => navigateToSavingsRegistration()}>
+                Navigate to Registration
+            </Button>
             <iframe
                 title="login"
                 frameBorder="0"
                 src={invityAPI.getLoginPageSrc()}
-                sandbox="allow-scripts allow-forms allow-same-origin"
-            />
-            <iframe
-                title="registration"
-                frameBorder="0"
-                src={invityAPI.getRegistrationPageSrc()}
                 sandbox="allow-scripts allow-forms allow-same-origin"
             />
         </CoinmarketLayout>
