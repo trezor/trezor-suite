@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useSpring, config } from 'react-spring';
 import { H1, Switch, variables } from '@trezor/components';
 import { useAnalytics, useOnboarding, useSelector } from '@suite-hooks';
 import { CollapsibleBox } from '@suite-components';
@@ -113,14 +112,8 @@ const DataAnalytics = () => {
         }
     };
 
-    const fadeStyles = useSpring({
-        config: { ...config.default },
-        from: { opacity: 0 },
-        to: { opacity: 1 },
-    });
-
     return (
-        <Box style={fadeStyles} variant="small">
+        <Box variant="small">
             <Wrapper>
                 <Heading>
                     <Translation id="TR_ONBOARDING_DATA_COLLECTION_HEADING" />

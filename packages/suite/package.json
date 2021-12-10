@@ -48,7 +48,7 @@
         "react-native-web": "^0.14.9",
         "react-qr-reader": "^2.2.1",
         "react-redux": "^7.2.2",
-        "react-spring": "^8.0.27",
+        "react-spring": "^9.3.2",
         "react-toastify": "^8.1.0",
         "react-use": "15.3.8",
         "react-window": "^1.8.6",
