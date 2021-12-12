@@ -99,35 +99,47 @@ msg-system deploy dev:
 beta blockchain-link deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish --tag beta"
+    - nix-shell --run "yarn && yarn workspace @trezor/blockchain-link build:lib && cd ./packages/blockchain-link && npm publish --tag beta"
 
 beta components deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && cd ./packages/components && npm publish --tag beta"
+    - nix-shell --run "yarn && yarn workspace @trezor/components build:lib && cd ./packages/components && npm publish --tag beta"
 
 beta rollout deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && cd ./packages/rollout && npm publish --tag beta"
+    - nix-shell --run "yarn && yarn workspace @trezor/rollout build:lib && cd ./packages/rollout && npm publish --tag beta"
+
+beta transport deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn workspace @trezor/transport build:lib && cd ./packages/transport && npm publish --tag beta"
 
 blockchain-link deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish"
+    - nix-shell --run "yarn && yarn workspace @trezor/blockchain-link build:lib && cd ./packages/blockchain-link && npm publish"
 
 components deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && cd ./packages/components && npm publish"
+    - nix-shell --run "yarn && yarn workspace @trezor/components build:lib && cd ./packages/components && npm publish"
 
 rollout deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && cd ./packages/rollout && npm publish"
+    - nix-shell --run "yarn && yarn workspace @trezor/rollout build:lib && cd ./packages/rollout && npm publish"
+
+transport deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn workspace @trezor/transport build:lib && cd ./packages/transport && npm publish"
