@@ -11,8 +11,6 @@ export function parseConfigure(data: protobuf.INamespace) {
 }
 
 export const createMessageFromName = (messages: protobuf.Root, name: string) => {
-    // const accessor = `hw.trezor.messages.${name}`;
-
     const Message = messages.lookupType(name);
     const MessageType = messages.lookupEnum(`MessageType`);
     let messageType = MessageType.values[`MessageType_${name}`];
@@ -32,7 +30,6 @@ export const createMessageFromType = (messages: protobuf.Root, typeId: number) =
 
     const messageName = MessageType.valuesById[typeId].replace('MessageType_', '');
 
-    // const accessor = `hw.trezor.messages.${messageName}`;
     const Message = messages.lookupType(messageName);
 
     return {
