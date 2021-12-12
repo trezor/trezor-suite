@@ -130,6 +130,16 @@ const basicFixtures = [
         encoded: '18cba19cd68bb7a303',
     },
     {
+        name: 'Uint64',
+        params: { field: '166054873161269248' }, // over Number.MAX_SAFE_INTEGER is sent as string
+        encoded: '1880808080f0c0fca602',
+    },
+    {
+        name: 'Sint64',
+        params: { field: '-166054873161269248' }, // over Number.MAX_SAFE_INTEGER is sent as string
+        encoded: '30ffffffffdf81f9cd04',
+    },
+    {
         name: 'Bool',
         params: { field: true },
         encoded: '2001',

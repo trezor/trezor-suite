@@ -17,7 +17,12 @@ const transform = (field: Field, value: any) => {
     // it is likely that we can remove this right away because trezor-connect tests don't ever trigger this condition
     // we should probably make sure that trezor-connect treats following protobuf types as strings: int64, uint64, sint64, fixed64, sfixed64
     if (field.long) {
-        return value.toNumber();
+        if (Number.isSafeInteger(value.toNumber())) {
+            // old trezor-link behavior https://github.com/trezor/trezor-link/blob/9c200cc5608976cff0542484525e98c753ba1888/src/lowlevel/protobuf/message_decoder.js#L80
+            return value.toNumber();
+        }
+        // otherwise return as string
+        return value.toString();
     }
 
     return value;

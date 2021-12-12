@@ -123,5 +123,4 @@ describe('encoding json -> protobuf -> json', () => {
                 })
             });
         });
-
 })
