@@ -26,6 +26,7 @@ const CoinmarketSavingsLoginLoaded = ({ selectedAccount }: CoinmarketSavingsLogi
     }, [fetching, navigateToSavings, whoAmI?.verified]);
     return (
         <CoinmarketLayout>
+            {whoAmI && !whoAmI.verified && <p>Verify your email to continue: {whoAmI?.email}</p>}
             <Button onClick={() => navigateToSavingsRegistration()}>
                 Navigate to Registration
             </Button>

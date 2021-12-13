@@ -84,6 +84,7 @@ const CoinmarketAuthentication: React.FC<CoinmarketAuthenticationProps> = ({
             if (parsedData && parsedData.name === 'invity-authentication') {
                 switch (parsedData.state) {
                     case 'login-successful':
+                    case 'registration-successful':
                         checkWhoAmI();
                     // eslint-disable-next-line no-fallthrough
                     default:
@@ -138,6 +139,8 @@ const CoinmarketAuthentication: React.FC<CoinmarketAuthenticationProps> = ({
                     } else {
                         whoAmI.verified = false;
                     }
+                    // TODO: get rid off setProtectedAPI -> invityAPI.accountInfo should call itself the right endpoint with right parameters in within fetch(...)
+                    // TODO: setProtectedAPI - this is an antipattern, because it mutates state of the InvityAPI instance while it can be used from somewhere else (calling /api/exchange/...).
                     invityAPI.setProtectedAPI(whoAmI.verified || false);
                     if (whoAmI.verified) {
                         whoAmI.email = whoAmI.identity?.traits.email;
