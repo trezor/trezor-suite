@@ -2934,6 +2934,10 @@ export default defineMessages({
         description: 'Sign button in Sign and Verify form',
         id: 'TR_SIGN',
     },
+    TR_SIGNED: {
+        defaultMessage: 'Signed',
+        id: 'TR_SIGNED',
+    },
     TR_SIGN_MESSAGE: {
         defaultMessage: 'Sign message',
         description: 'Header for the Sign and Verify form',
@@ -3277,6 +3281,10 @@ export default defineMessages({
         defaultMessage: 'Verify',
         description: 'Verify button in Sign and Verify form',
         id: 'TR_VERIFY',
+    },
+    TR_VERIFIED: {
+        defaultMessage: 'Verified',
+        id: 'TR_VERIFIED',
     },
     TR_VERIFY_MESSAGE: {
         defaultMessage: 'Verify message',

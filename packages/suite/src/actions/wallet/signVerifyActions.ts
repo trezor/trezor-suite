@@ -128,10 +128,11 @@ const onSignSuccess =
                 type: 'sign-message-success',
             }),
         );
-        return dispatch({
+        dispatch({
             type: SIGN_VERIFY.SIGN_SUCCESS,
             signSignature: signature,
         });
+        return signature;
     };
 
 const onVerifySuccess = (dispatch: Dispatch) => () => {
@@ -140,9 +141,10 @@ const onVerifySuccess = (dispatch: Dispatch) => () => {
             type: 'verify-message-success',
         }),
     );
-    return dispatch({
+    dispatch({
         type: SIGN_VERIFY.VERIFY_SUCCESS,
     });
+    return true;
 };
 
 const throwWhenFailed = <T>(response: Unsuccessful | Success<T>) =>
@@ -155,13 +157,15 @@ const onError =
         dispatch: Dispatch,
         type: 'sign-message-error' | 'verify-message-error' | 'verify-address-error',
     ) =>
-    (error: Error) =>
+    (error: Error) => {
         dispatch(
             addToast({
                 type,
                 error: error.message,
             }),
         );
+        return false as const;
+    };
 
 export const showAddress =
     (address: string, path: string) => (dispatch: Dispatch, getState: GetState) =>
@@ -234,4 +238,5 @@ export const sendAopp =
 
         if (success) dispatch(addToast({ type: 'aopp-success' }));
         else dispatch(addToast({ type: 'aopp-error', error }));
+        return success;
     };
