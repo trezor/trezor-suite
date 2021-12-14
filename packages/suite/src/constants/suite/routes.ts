@@ -9,6 +9,10 @@ type RouteKeys =
     | 'isForegroundApp'
     | 'isFullscreenApp';
 export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
+export type SettingsBackRoute = {
+    name: Route['name'];
+    params?: Route['params'];
+};
 
 type RouteParamsTypes = {
     symbol: Network['symbol'];

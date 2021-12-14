@@ -21,9 +21,10 @@ const SettingsMenu = () => {
         setDebugMode: suiteActions.setDebugMode,
     });
 
-    const { screenWidth, showDebugMenu } = useSelector(state => ({
+    const { screenWidth, showDebugMenu, settingsBackRoute } = useSelector(state => ({
         screenWidth: state.resize.screenWidth,
         showDebugMenu: state.suite.settings.debug.showDebugMenu,
+        settingsBackRoute: state.router.settingsBackRoute,
     }));
 
     // show debug menu item after 5 clicks on "Settings" heading
@@ -136,7 +137,10 @@ const SettingsMenu = () => {
                 />
             }
             closeSettings={
-                <Icon icon="CROSS" onClick={() => goto('suite-index', undefined, true)}>
+                <Icon
+                    icon="CROSS"
+                    onClick={() => goto(settingsBackRoute.name, settingsBackRoute.params)}
+                >
                     red
                 </Icon>
             }

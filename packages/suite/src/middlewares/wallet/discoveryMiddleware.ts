@@ -52,7 +52,8 @@ const discoveryMiddleware =
         let interruptionIntent = action.type === SUITE.SELECT_DEVICE;
         if (action.type === ROUTER.LOCATION_CHANGE) {
             interruptionIntent =
-                getApp(action.url) !== 'wallet' && getApp(action.url) !== 'dashboard';
+                getApp(action.payload.url) !== 'wallet' &&
+                getApp(action.payload.url) !== 'dashboard';
         }
 
         // discovery interruption ends after DISCOVERY.STOP action
