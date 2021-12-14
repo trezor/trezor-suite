@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Input, Button, Textarea, Card, Switch, variables } from '@trezor/components';
+import {
+    Input,
+    Button,
+    Textarea,
+    Card,
+    Switch,
+    variables,
+    Icon,
+    useTheme,
+} from '@trezor/components';
 import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import { CharacterCount, Translation } from '@suite-components';
 import { useActions, useDevice, useSelector, useTranslation } from '@suite-hooks';
@@ -18,16 +27,17 @@ import {
 const Row = styled.div`
     display: flex;
     justify-content: center;
+    align-items: center;
     & + & {
         padding-top: 12px;
     }
     & > * + * {
-        margin-left: 10px;
+        margin-left: 40px;
     }
 `;
 
 const StyledButton = styled(Button)`
-    width: 230px;
+    width: 200px;
 `;
 
 const SwitchWrapper = styled.label`
@@ -58,6 +68,7 @@ const SignVerify = () => {
 
     const { isLocked, device } = useDevice();
     const { translationString } = useTranslation();
+    const theme = useTheme();
 
     const {
         formDirty,
@@ -81,13 +92,24 @@ const SignVerify = () => {
         sendAopp: signVerifyActions.sendAopp,
     });
 
+    const [stage, setStage] = useState<'init' | 'done' | 'sent'>('init');
+
+    useEffect(() => {
+        if (page === 'sign' && formValues.signature) return;
+        setStage('init');
+    }, [page, formValues.message, formValues.address, formValues.signature]);
+
     const onSubmit = async (data: SignVerifyFields) => {
         const { address, path, message, signature, hex, aopp } = data;
         if (page === 'sign') {
             const result = await sign(path, message, hex, aopp);
-            if (result?.signSignature) formSetSignature(result.signSignature);
+            if (result) {
+                formSetSignature(result);
+                setStage('done');
+            }
         } else {
-            await verify(address, message, signature, hex);
+            const result = await verify(address, message, signature, hex);
+            if (result) setStage('done');
         }
     };
 
@@ -204,25 +226,43 @@ const SignVerify = () => {
                             type="submit"
                             isDisabled={isLocked()}
                             data-test="@sign-verify/submit"
+                            variant={stage === 'init' ? 'primary' : 'secondary'}
+                            icon={stage !== 'init' ? 'CHECK' : undefined}
+                            size={24}
                         >
-                            <Translation id={page === 'sign' ? 'TR_SIGN' : 'TR_VERIFY'} />
+                            <Translation
+                                id={(() => {
+                                    if (page === 'sign')
+                                        return stage === 'init' ? 'TR_SIGN' : 'TR_SIGNED';
+                                    return stage === 'init' ? 'TR_VERIFY' : 'TR_VERIFIED';
+                                })()}
+                            />
                         </StyledButton>
                         {formValues.callback && (
-                            <StyledButton
-                                type="button"
-                                variant="secondary"
-                                data-test="@sign-verify/send-aopp"
-                                isDisabled={!formValues.signature}
-                                onClick={() =>
-                                    sendAopp(
-                                        formValues.address,
-                                        formValues.signature,
-                                        formValues.callback,
-                                    )
-                                }
-                            >
-                                <Translation id="TR_AOPP_SEND" />
-                            </StyledButton>
+                            <>
+                                <Icon size={24} color={theme.TYPE_LIGHT_GREY} icon="ARROW_RIGHT" />
+                                <StyledButton
+                                    type="button"
+                                    data-test="@sign-verify/send-aopp"
+                                    isDisabled={stage === 'init'}
+                                    onClick={() =>
+                                        sendAopp(
+                                            formValues.address,
+                                            formValues.signature,
+                                            formValues.callback,
+                                        ).then(res => {
+                                            if (res) setStage('sent');
+                                        })
+                                    }
+                                    variant={stage === 'done' ? 'primary' : 'secondary'}
+                                    icon={stage === 'sent' ? 'CHECK' : undefined}
+                                    size={24}
+                                >
+                                    <Translation
+                                        id={stage === 'sent' ? 'TR_SENT' : 'TR_AOPP_SEND'}
+                                    />
+                                </StyledButton>
+                            </>
                         )}
                     </Row>
                 </Form>
