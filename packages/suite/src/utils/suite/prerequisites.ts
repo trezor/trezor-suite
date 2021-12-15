@@ -46,11 +46,21 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
     if (device.firmware === 'required') return 'firmware-required';
 };
 
-// todo: maybe remove this. but let's see if other foreground apps will make any use of it first
 const getExcludedPrerequisites = (router: PrerequisitesInput['router']): PrerequisiteType[] => {
-    if (router.app === 'onboarding') {
-        // todo: no prerequisites are excluded. there is more detailed handling in specific steps in onboarding
-        return [];
+    if (router.app === 'settings') {
+        return [
+            'transport-bridge',
+            'device-disconnected',
+            'device-unacquired',
+            'device-unreadable',
+            'device-unknown',
+            'device-seedless',
+            'device-recovery-mode',
+            'device-initialize',
+            'device-bootloader',
+            'firmware-missing',
+            'firmware-required',
+        ];
     }
     return [];
 };
