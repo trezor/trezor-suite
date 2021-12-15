@@ -19,6 +19,7 @@
     "devDependencies": {
         "@trezor/blockchain-link": "*",
         "@trezor/rollout": "*",
+        "@trezor/transport": "*",
         "copy-webpack-plugin": "^9.0.1",
         "html-webpack-plugin": "^5.3.2",
         "terser-webpack-plugin": "5.2.4",
