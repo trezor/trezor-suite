@@ -10,8 +10,6 @@ describe('There is a hidden route (not accessible in UI)', () => {
     it('/version', () => {
         cy.prefixedVisit('/version');
         cy.getTestElement('@version/number').should('contain', suiteVersion);
-        cy.getTestElement('@version').matchImageSnapshot({
-            blackout: ['[data-test="@version/commit-hash-link"]'],
-        });
+        cy.getTestElement('@version').screenshot();
     });
 });
