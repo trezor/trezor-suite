@@ -177,7 +177,7 @@ const analytics =
                         type: 'router/location-change',
                         payload: {
                             prevRouterUrl,
-                            nextRouterUrl: action.url,
+                            nextRouterUrl: action.payload.url,
                         },
                     }),
                 );

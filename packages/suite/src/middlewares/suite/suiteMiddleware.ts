@@ -11,7 +11,6 @@ import * as storageActions from '@suite-actions/storageActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import * as languageActions from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
-import { getApp } from '@suite-utils/router';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { sortByTimestamp } from '@suite-utils/device';
 
@@ -20,8 +19,8 @@ const suite =
     (next: Dispatch) =>
     async (action: Action): Promise<Action> => {
         const prevApp = api.getState().router.app;
-        if (action.type === ROUTER.LOCATION_CHANGE && getApp(action.url) !== prevApp) {
-            api.dispatch({ type: SUITE.APP_CHANGED, payload: getApp(action.url) });
+        if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
+            api.dispatch({ type: SUITE.APP_CHANGED, payload: action.payload.app });
         }
 
         // this action needs to be processed before propagation to deviceReducer

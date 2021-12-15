@@ -8,6 +8,7 @@ import metadata from './metadataMiddleware';
 import actionBlocker from './actionBlockerMiddleware';
 import messageSystem from './messageSystemMiddleware';
 import protocol from './protocolMiddleware';
+import router from './routerMiddleware';
 
 export default [
     log,
@@ -20,4 +21,5 @@ export default [
     actionBlocker,
     messageSystem,
     protocol,
+    router,
 ];

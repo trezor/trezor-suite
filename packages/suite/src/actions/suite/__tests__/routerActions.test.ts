@@ -87,7 +87,7 @@ describe('Suite Actions', () => {
             require('@suite/support/history').default.location.hash = `#${f.hash}`;
             store.dispatch(routerActions.goto(f.url as any, undefined, f.preserveHash));
             if (f.result) {
-                expect(store.getActions()[0].url).toEqual(f.result);
+                expect(store.getActions()[0].payload.url).toEqual(f.result);
                 expect(store.getActions().length).toEqual(1);
             } else {
                 expect(store.getActions().length).toEqual(0);

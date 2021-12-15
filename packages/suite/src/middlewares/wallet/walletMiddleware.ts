@@ -92,7 +92,7 @@ const walletMiddleware =
         if (prevRouter.app === 'wallet' && action.type === ROUTER.LOCATION_CHANGE) {
             // leaving wallet app or switching between accounts
             resetReducers =
-                (prevRouter.app !== nextRouter.app && !nextRouter.route?.isForegroundApp) ||
+                (nextRouter.app !== 'wallet' && !nextRouter.route?.isForegroundApp) ||
                 (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
         }
         if (resetReducers) {
