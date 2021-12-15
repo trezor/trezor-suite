@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, SettingsDropdown } from '@suite-components';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';
@@ -80,6 +80,10 @@ const BannerWrapper = styled.div`
     width: 100%;
 `;
 
+const SettingsWrapper = styled.div`
+    align-self: flex-end;
+`;
+
 interface Props {
     children: React.ReactNode;
 }
@@ -118,7 +122,12 @@ const WelcomeLayout = ({ children }: Props) => {
                 </Bottom>
             </Welcome>
 
-            <Content>{children}</Content>
+            <Content>
+                <SettingsWrapper>
+                    <SettingsDropdown />
+                </SettingsWrapper>
+                {children}
+            </Content>
         </Wrapper>
     );
 };
