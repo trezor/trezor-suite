@@ -11,6 +11,9 @@ export const init = [
             loaded: true,
             url: '/',
             route: findRouteByName('suite-index'),
+            settingsBackRoute: {
+                name: 'suite-index',
+            },
         },
     },
     {

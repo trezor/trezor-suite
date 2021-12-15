@@ -73,6 +73,9 @@ describe('onboardingMiddleware', () => {
                     app: 'unknown',
                     params: undefined,
                     route: undefined,
+                    settingsBackRoute: {
+                        name: 'suite-index',
+                    },
                 }),
             );
             await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'onboarding' });
@@ -100,6 +103,9 @@ describe('onboardingMiddleware', () => {
                         isFullscreenApp: true,
                         params: undefined,
                         exact: undefined,
+                    },
+                    settingsBackRoute: {
+                        name: 'suite-index',
                     },
                 }),
             );
