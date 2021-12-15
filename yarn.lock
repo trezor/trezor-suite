@@ -5637,6 +5637,18 @@
   dependencies:
     tippy.js "^6.3.1"
 
+"@trezor/blockchain-link@1.1.0-beta.1":
+  version "1.1.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@trezor/blockchain-link/-/blockchain-link-1.1.0-beta.1.tgz#646ccf6f5381ce99109f3b1255ebfc94dfc814aa"
+  integrity sha512-hwNHYKUuE9EkCh0qAal+F/q5d9L9hXg+MjQLqDhZmd+TujsmGgjFrYSge3nXYPUFx/kr/sVnsStu2R2F3a7Zgg==
+  dependencies:
+    bignumber.js "^9.0.1"
+    es6-promise "^4.2.8"
+    events "^3.2.0"
+    ripple-lib "1.10.0"
+    tiny-worker "^2.3.0"
+    ws "^7.4.0"
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.8.tgz#c1e4e80d6f964fbecb3359c43bd48b40f7cadad9"
@@ -24855,36 +24867,25 @@ trezor-address-validator@^0.4.0:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.2.3-beta.6:
-  version "8.2.3-beta.6"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.3-beta.6.tgz#422dd731b00ddc1646fa0b0acffea82818f041c5"
-  integrity sha512-WO76gFtoOlL+H4OlEo00g1mHq4lWQtSxiVTyclgjhWMptOgVubSbcPShz+3USUqt0NY7tdwI2eGc05+ha8NalQ==
+trezor-connect@8.2.5-beta.1:
+  version "8.2.5-beta.1"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.5-beta.1.tgz#b4b3ae26e445987a69d60f501e1590251d6b27c2"
+  integrity sha512-gQCnpdYgPbpNb4rO2NWFW514dKgRPuJh2bIHZR1OvEAzYcifGC+czv5L7tzlnn2l0TcSDkxWdyO+jnN+VZyYZg==
   dependencies:
     "@babel/runtime" "^7.15.4"
-    "@trezor/blockchain-link" "^1.0.17"
+    "@trezor/blockchain-link" "1.1.0-beta.1"
     "@trezor/connect-common" "^0.0.3"
-    "@trezor/rollout" "^1.2.0"
+    "@trezor/rollout" "^1.2.1"
+    "@trezor/transport" "1.0.1"
     "@trezor/utxo-lib" "1.0.0-beta.10"
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
     cbor-web "^7.0.6"
+    cross-fetch "^3.1.4"
     events "^3.3.0"
     keccak "^3.0.2"
-    node-fetch "^2.6.1"
     parse-uri "^1.0.3"
     tiny-worker "^2.3.0"
-    trezor-link "2.0.0-beta.6"
-    whatwg-fetch "^3.6.2"
-
-trezor-link@2.0.0-beta.6:
-  version "2.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/trezor-link/-/trezor-link-2.0.0-beta.6.tgz#e727890a539ee1b6ff109a0227c38328d42d95c7"
-  integrity sha512-DwmbKV434Vx7RmuPxcZzABTLFK5n5mZ+5+UjQ8tA0lLx41NstRJ+/OKO0b8qMJOv1ZnoQ87dfu5LtI7o9EXKuw==
-  dependencies:
-    bytebuffer "^5.0.1"
-    json-stable-stringify "^1.0.1"
-    long "^4.0.0"
-    protobufjs "^6.11.2"
 
 trim-newlines@^1.0.0:
   version "1.0.0"
@@ -26340,11 +26341,6 @@ whatwg-fetch@>=0.10.0, whatwg-fetch@^3.0.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.5.0.tgz#605a2cd0a7146e5db141e29d1c62ab84c0c4c868"
   integrity sha512-jXkLtsR42xhXg7akoDKvKWE40eJeI+2KZqcp2h3NsOrRnDvtWX36KcKl30dy+hxECivdk2BVUHVNrPtoMBUx6A==
-
-whatwg-fetch@^3.6.2:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
-  integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
 
 whatwg-mimetype@^2.3.0:
   version "2.3.0"
