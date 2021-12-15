@@ -25,6 +25,7 @@
     - docker-compose run test-run
   after_script:
     - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
+    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log
     - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt
     - docker-compose down
     - docker network prune -f
@@ -37,6 +38,7 @@
       - ./packages/integration-tests/projects/suite-web/videos
       - download-snapshots.sh
       - trezor-user-env-debugging.log
+      - tenv-emulator-bridge-debugging.log
       - trezor-user-env-version.txt
 
 e2e web suite:
