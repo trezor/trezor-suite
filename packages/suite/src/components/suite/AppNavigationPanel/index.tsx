@@ -59,8 +59,7 @@ const Delimeter = styled.div``;
 
 interface Props {
     title: React.ReactNode;
-    ticker?: React.ReactNode;
-    dropdown?: React.ReactNode;
+    titleContent?: React.ReactNode;
     maxWidth: 'small' | 'default';
     children?: React.ReactNode;
     navigation?: React.ReactNode;
@@ -94,10 +93,7 @@ const AppNavigationPanel = (props: Props) => {
                     <BasicInfo>
                         <TitleRow>
                             <Title noMargin>{props.title}</Title>
-                            <Aside>
-                                {props.ticker}
-                                {props.dropdown}
-                            </Aside>
+                            <Aside>{props.titleContent}</Aside>
                         </TitleRow>
                         {props.children && <Row>{props.children}</Row>}
                     </BasicInfo>

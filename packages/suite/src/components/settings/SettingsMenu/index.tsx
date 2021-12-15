@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown, variables } from '@trezor/components';
-import { Translation, TrezorLink, AppNavigationPanel, AppNavigation } from '@suite-components';
+import {
+    CloseButton,
+    Translation,
+    TrezorLink,
+    AppNavigationPanel,
+    AppNavigation,
+} from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -93,50 +99,55 @@ const SettingsMenu = () => {
                     ]}
                 />
             }
-            dropdown={
-                <Dropdown
-                    alignMenu="right"
-                    data-test="@settings/menu/dropdown"
-                    items={[
-                        {
-                            key: 'group1',
-                            options: [
-                                {
-                                    key: 'support',
-                                    label: (
-                                        <StyledLink
-                                            icon="EXTERNAL_LINK"
-                                            size="small"
-                                            href={SUPPORT_URL}
-                                        >
-                                            <Translation id="TR_SUPPORT" />
-                                        </StyledLink>
-                                    ),
-                                    'data-test': '@settings/menu/support',
-                                    callback: () => {},
-                                    noPadding: true,
-                                },
-                                {
-                                    key: 'log',
-                                    label: <Translation id="TR_SHOW_LOG" />,
-                                    'data-test': '@settings/menu/log',
-                                    callback: () => {
-                                        openModal({ type: 'log' });
+            titleContent={
+                <>
+                    <Dropdown
+                        alignMenu="right"
+                        data-test="@settings/menu/dropdown"
+                        items={[
+                            {
+                                key: 'group1',
+                                options: [
+                                    {
+                                        key: 'support',
+                                        label: (
+                                            <StyledLink
+                                                icon="EXTERNAL_LINK"
+                                                size="small"
+                                                href={SUPPORT_URL}
+                                            >
+                                                <Translation id="TR_SUPPORT" />
+                                            </StyledLink>
+                                        ),
+                                        'data-test': '@settings/menu/support',
+                                        callback: () => {},
+                                        noPadding: true,
                                     },
-                                },
-                                {
-                                    key: 'debug',
-                                    label: <Translation id="TR_DEBUG_SETTINGS" />,
-                                    'data-test': '@settings/menu/debug',
-                                    isHidden: !showDebugMenu,
-                                    callback: () => {
-                                        goto('settings-debug');
+                                    {
+                                        key: 'log',
+                                        label: <Translation id="TR_SHOW_LOG" />,
+                                        'data-test': '@settings/menu/log',
+                                        callback: () => {
+                                            openModal({ type: 'log' });
+                                        },
                                     },
-                                },
-                            ],
-                        },
-                    ]}
-                />
+                                    {
+                                        key: 'debug',
+                                        label: <Translation id="TR_DEBUG_SETTINGS" />,
+                                        'data-test': '@settings/menu/debug',
+                                        isHidden: !showDebugMenu,
+                                        callback: () => {
+                                            goto('settings-debug');
+                                        },
+                                    },
+                                ],
+                            },
+                        ]}
+                    />
+                    <CloseButton
+                        onClick={() => goto(settingsBackRoute.name, settingsBackRoute.params)}
+                    />
+                </>
             }
         />
     );

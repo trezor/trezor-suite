@@ -68,7 +68,9 @@ const AccountTopPanel = () => {
                 />
             }
             navigation={<AccountNavigation account={account} />}
-            ticker={!isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined}
+            titleContent={
+                !isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined
+            }
         >
             <BalanceWrapper>
                 <CoinLogo size={24} symbol={symbol} />
