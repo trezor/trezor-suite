@@ -132,9 +132,8 @@ const CoinsGroup = ({
     });
     const { device, isLocked } = useDevice();
     const theme = useTheme();
-    if (!device) return null;
 
-    const isDeviceLocked = isLocked();
+    const isDeviceLocked = !!device && isLocked();
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     return (
         <Wrapper data-test={`@settings/wallet/coins-group/${props.type}`}>
@@ -214,7 +213,7 @@ const CoinsGroup = ({
                                     <Translation
                                         id={getUnavailabilityMessage(
                                             unavailableCapabilities[network.symbol],
-                                            device.features?.major_version,
+                                            device?.features?.major_version,
                                         )}
                                     />
                                 </UnavailableLabel>
