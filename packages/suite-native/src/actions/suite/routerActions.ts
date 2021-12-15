@@ -6,7 +6,7 @@ import {
     NavigationAction,
 } from 'react-navigation';
 import { DrawerActions } from 'react-navigation-drawer';
-import { Route } from '@suite-constants/routes';
+import { Route, RouterAppWithParams } from '@suite-constants/routes';
 import {
     getRoute,
     findRoute,
@@ -27,24 +27,14 @@ import { GetState, Dispatch } from '@suite-types';
 
 interface LocationChange {
     type: typeof ROUTER.LOCATION_CHANGE;
-    url: string;
+    payload: {
+        url: string;
+        pathname: string;
+        hash?: string;
+    } & RouterAppWithParams;
 }
 
 export type RouterAction = LocationChange;
-
-/**
- * Dispatch initial url
- * Called from `@suite-middlewares/suiteMiddleware`
- */
-export const init = () => (dispatch: Dispatch, getState: GetState) => {
-    // check if location was not already changed by initialRedirection
-    if (getState().router.app === 'unknown') {
-        dispatch({
-            type: ROUTER.LOCATION_CHANGE,
-            url: getRoute('suite-index'),
-        });
-    }
-};
 
 /**
  * Check if router is not locked
@@ -63,12 +53,31 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
     const unlocked = dispatch(isRouterUnlocked());
     if (!unlocked) return;
     const { router } = getState();
-    if (router.pathname === url) return null;
+    if (router.pathname === url && router.app !== 'unknown') return null;
+
+    const [pathname, hash] = url.split('#');
 
     return dispatch({
         type: ROUTER.LOCATION_CHANGE,
+        payload: {
+            url,
+            pathname,
+            hash,
+            ...getAppWithParams(url),
+        },
         url,
     });
+};
+
+/**
+ * Dispatch initial url
+ * Called from `@suite-middlewares/suiteMiddleware`
+ */
+export const init = () => (dispatch: Dispatch, getState: GetState) => {
+    // check if location was not already changed by initialRedirection
+    if (getState().router.app === 'unknown') {
+        dispatch(onLocationChange(getRoute('suite-index')));
+    }
 };
 
 /**

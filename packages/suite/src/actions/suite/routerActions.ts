@@ -3,7 +3,9 @@
  */
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE, ROUTER } from '@suite-actions/constants';
+import { RouterAppWithParams, SettingsBackRoute } from '@suite-constants/routes';
 import {
+    getAppWithParams,
     getPrefixedURL,
     getRoute,
     findRoute,
@@ -15,25 +17,15 @@ import history from '@suite/support/history';
 
 interface LocationChange {
     type: typeof ROUTER.LOCATION_CHANGE;
-    url: string;
+    payload: {
+        url: string;
+        pathname: string;
+        hash?: string;
+        settingsBackRoute?: SettingsBackRoute;
+    } & RouterAppWithParams;
 }
 
 export type RouterAction = LocationChange;
-
-/**
- * Dispatch initial url
- * Called from `@suite-middlewares/suiteMiddleware`
- */
-export const init = () => (dispatch: Dispatch, getState: GetState) => {
-    // check if location was not already changed by initialRedirection
-    if (getState().router.app === 'unknown') {
-        const url = history.location.pathname + history.location.hash;
-        dispatch({
-            type: ROUTER.LOCATION_CHANGE,
-            url,
-        });
-    }
-};
 
 /**
  * Handle Router.beforePopState action (back)
@@ -55,13 +47,35 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
     const { router } = getState();
-    if (router.pathname === url) return null;
+    if (router.pathname === url && router.app !== 'unknown') return null;
     // TODO: check if the view is not locked by the device request
+
+    const [pathname, hash] = url.split('#');
+
+    const appWithParams = getAppWithParams(url);
 
     return dispatch({
         type: ROUTER.LOCATION_CHANGE,
-        url,
+        payload: {
+            url,
+            pathname,
+            hash,
+            ...appWithParams,
+        },
     });
+};
+
+/**
+ * Dispatch initial url
+ * Called from `@suite-middlewares/suiteMiddleware`
+ */
+export const init = () => (dispatch: Dispatch, getState: GetState) => {
+    // check if location was not already changed by initialRedirection
+    if (getState().router.app === 'unknown') {
+        const url = history.location.pathname + history.location.hash;
+
+        dispatch(onLocationChange(url));
+    }
 };
 
 // links inside of application
@@ -80,15 +94,14 @@ export const goto =
         if (urlBase === router.url) return;
 
         const newUrl = `${urlBase}${preserveParams ? history.location.hash : ''}`;
+        dispatch(onLocationChange(newUrl));
 
         const route = findRouteByName(routeName);
-        if (route && route.isForegroundApp) {
-            dispatch(onLocationChange(newUrl));
+        if (route?.isForegroundApp) {
             dispatch(suiteActions.lockRouter(true));
             return;
         }
 
-        dispatch(onLocationChange(newUrl));
         history.push(newUrl);
     };
 

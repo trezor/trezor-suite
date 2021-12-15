@@ -1,6 +1,7 @@
 import { ArrayElement, ConstWithOptionalFields } from '@suite/types/utils';
 import { Network } from '@wallet-types';
 import routes from '@suite-config/routes';
+import { RouteParams } from '@suite-utils/router';
 
 type RouteKeys =
     | keyof ArrayElement<typeof routes>
@@ -9,6 +10,10 @@ type RouteKeys =
     | 'isForegroundApp'
     | 'isFullscreenApp';
 export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
+export type SettingsBackRoute = {
+    name: Route['name'];
+    params?: RouteParams;
+};
 
 type RouteParamsTypes = {
     symbol: Network['symbol'];

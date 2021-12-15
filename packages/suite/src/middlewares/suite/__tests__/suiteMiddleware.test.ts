@@ -70,15 +70,32 @@ describe('suite middleware', () => {
                     app: 'unknown',
                     params: undefined,
                     route: undefined,
+                    settingsBackRoute: {
+                        name: 'suite-index',
+                    },
                 }),
             );
+            const payload = {
+                url: '/',
+                pathname: '/',
+                app: 'dashboard',
+                route: {
+                    name: 'suite-index',
+                    pattern: '/',
+                    app: 'dashboard',
+                    exact: true,
+                },
+            };
             store.dispatch({
                 type: ROUTER.LOCATION_CHANGE,
-                url: '/',
+                payload,
             });
             expect(store.getActions()).toEqual([
                 { type: SUITE.APP_CHANGED, payload: 'dashboard' },
-                { type: ROUTER.LOCATION_CHANGE, url: '/' },
+                {
+                    type: ROUTER.LOCATION_CHANGE,
+                    payload,
+                },
             ]);
         });
 
@@ -100,15 +117,30 @@ describe('suite middleware', () => {
                         params: undefined,
                         exact: undefined,
                     },
+                    settingsBackRoute: {
+                        name: 'suite-index',
+                    },
                 }),
             );
+            const payload = {
+                url: '/onboarding',
+                pathname: '/onboarding',
+                app: 'onboarding',
+                route: {
+                    name: 'onboarding-index',
+                    pattern: '/onboarding',
+                    app: 'onboarding',
+                    isForegroundApp: true,
+                    isFullscreenApp: true,
+                    params: undefined,
+                    exact: undefined,
+                },
+            };
             store.dispatch({
                 type: ROUTER.LOCATION_CHANGE,
-                url: '/onboarding',
+                payload,
             });
-            expect(store.getActions()).toEqual([
-                { type: ROUTER.LOCATION_CHANGE, url: '/onboarding' },
-            ]);
+            expect(store.getActions()).toEqual([{ type: ROUTER.LOCATION_CHANGE, payload }]);
         });
     });
 
@@ -139,7 +171,7 @@ describe('suite middleware', () => {
                 .getActions()
                 .filter(a => a.type === ROUTER.LOCATION_CHANGE);
             expect(locationChangedAction.length).toBe(1);
-            expect(locationChangedAction[0].url).toBe(
+            expect(locationChangedAction[0].payload.url).toBe(
                 routes.find(r => r.name === 'onboarding-index')?.pattern,
             );
         });
@@ -170,7 +202,7 @@ describe('suite middleware', () => {
                 .getActions()
                 .filter(a => a.type === ROUTER.LOCATION_CHANGE);
             expect(locationChangedAction.length).toBe(1);
-            expect(locationChangedAction[0].url).toBe(
+            expect(locationChangedAction[0].payload.url).toBe(
                 routes.find(r => r.name === 'suite-version')?.pattern,
             );
         });
