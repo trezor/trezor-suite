@@ -150,6 +150,7 @@ const inIframe = () => {
 const getUrls = (flowType: string) => {
     const urlSearchParameters = new URLSearchParams(window.location.search);
     const returnToUrl = urlSearchParameters.get('return_to');
+    const afterVerificationReturnToUrl = urlSearchParameters.get('after_verification_return_to');
 
     const authServerUrl = window.location.hash.replace('#', '');
     let flowUrl = `${authServerUrl}/self-service/${flowType}/flows`;
@@ -157,6 +158,13 @@ const getUrls = (flowType: string) => {
     const browserUrl = new URL(`${authServerUrl}/self-service/${flowType}/browser`);
     if (returnToUrl) {
         browserUrl.searchParams.append('return_to', returnToUrl);
+    }
+    if (afterVerificationReturnToUrl) {
+        // Make sure user is redirected back to correct URL after registration and verification link in email was clicked.
+        browserUrl.searchParams.append(
+            'after_verification_return_to',
+            afterVerificationReturnToUrl,
+        );
     }
     if (flowType === 'recovery') {
         redirectUrl = redirectUrl.replace('recovery', 'reset');
