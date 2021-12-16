@@ -9,6 +9,7 @@ import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import type { AppState } from '@suite-types';
 import { Button } from '@trezor/components';
 import RegistrationSuccess from './components/Success';
+import { getRoute } from '@suite-utils/router';
 
 interface CoinmarketSavingsLoginRgistrationProps {
     selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
@@ -19,6 +20,11 @@ const CoinmarketSavingsRegistrationLoaded = ({
 }: CoinmarketSavingsLoginRgistrationProps) => {
     const { whoAmI } = useContext(CoinmarketAuthenticationContext);
     const { navigateToSavingsLogin } = useCoinmarketNavigation(selectedAccount.account);
+    const afterVerificationReturnToPath = getRoute('wallet-coinmarket-savings-account-verified', {
+        symbol: selectedAccount.account.symbol,
+        accountIndex: selectedAccount.account.index,
+        accountType: selectedAccount.account.accountType,
+    });
     return (
         <CoinmarketLayout>
             <Button onClick={() => navigateToSavingsLogin()}>Navigate to Login</Button>
@@ -26,7 +32,7 @@ const CoinmarketSavingsRegistrationLoaded = ({
                 <iframe
                     title="registration"
                     frameBorder="0"
-                    src={invityAPI.getRegistrationPageSrc()}
+                    src={invityAPI.getRegistrationPageSrc(afterVerificationReturnToPath)}
                     sandbox="allow-scripts allow-forms allow-same-origin"
                 />
             )}

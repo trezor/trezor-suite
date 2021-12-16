@@ -35,6 +35,7 @@ import type {
     InvityServers,
 } from '@wallet-types/invity';
 import { resolveStaticPath } from '@suite-utils/build';
+import { getPrefixedURL } from '@suite-utils/router';
 
 type BodyType =
     | BuyTrade
@@ -504,7 +505,10 @@ class InvityAPI {
         return `${this.getAuthServerUrl()}/sessions/whoami`;
     }
 
-    private getInvityAuthenticationPageSrc(flow: 'login' | 'registration') {
+    private getInvityAuthenticationPageSrc(
+        flow: 'login' | 'registration',
+        afterVerificationReturnToPath?: string,
+    ) {
         // TODO: where to put the http://localhost:21335?
         const url = new URL(
             isDesktop()
@@ -519,6 +523,13 @@ class InvityAPI {
                   `invity-authentication/${flow}-success.html`,
               )}`;
         url.searchParams.append('return_to', returnToUrl);
+        if (flow === 'registration' && afterVerificationReturnToPath) {
+            // Handover URL where user should be redirected after registration and verification link in email was clicked.
+            url.searchParams.append(
+                'after_verification_return_to',
+                `${window.location.origin}${getPrefixedURL(afterVerificationReturnToPath)}`,
+            );
+        }
         url.hash = this.getAuthServerUrl();
         return url.toString();
     }
@@ -527,8 +538,8 @@ class InvityAPI {
         return this.getInvityAuthenticationPageSrc('login');
     }
 
-    getRegistrationPageSrc() {
-        return this.getInvityAuthenticationPageSrc('registration');
+    getRegistrationPageSrc(afterVerificationReturnToPath: string) {
+        return this.getInvityAuthenticationPageSrc('registration', afterVerificationReturnToPath);
     }
 
     accountInfo = async (): Promise<AccountInfoResponse> => {

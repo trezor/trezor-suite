@@ -27,6 +27,7 @@ import WalletCoinmarketSpend from '@wallet-views/coinmarket/spend';
 import WalletCoinmarketSavings from '@wallet-views/coinmarket/savings';
 import WalletCoinmarketSavingsLogin from '@wallet-views/coinmarket/savings/login';
 import WalletCoinmarketSavingsRegistration from '@wallet-views/coinmarket/savings/registration';
+import WalletCoinmarketSavingsAccountVerified from '@wallet-views/coinmarket/savings/account-verified';
 import WalletCoinmarketRedirect from '@wallet-views/coinmarket/redirect';
 
 import SettingsGeneral from '@settings-views/general/SettingsGeneral';
@@ -59,6 +60,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'wallet-coinmarket-savings': WalletCoinmarketSavings,
     'wallet-coinmarket-savings-login': WalletCoinmarketSavingsLogin,
     'wallet-coinmarket-savings-registration': WalletCoinmarketSavingsRegistration,
+    'wallet-coinmarket-savings-account-verified': WalletCoinmarketSavingsAccountVerified,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
 
     'settings-index': SettingsGeneral,
