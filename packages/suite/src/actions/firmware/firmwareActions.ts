@@ -1,14 +1,13 @@
-import type { PromiseType } from 'react-use/lib/util';
-
 import TrezorConnect, { Device } from 'trezor-connect';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import { report, AnalyticsEvent } from '@suite-actions/analyticsActions';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { resolveStaticPath } from '@suite-utils/build';
+import { addToast } from '@suite-actions/notificationActions';
 
 import type { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
-import { addToast } from '@suite-actions/notificationActions';
+import type { Await } from '@suite/types/utils';
 
 export type FirmwareAction =
     | {
@@ -72,7 +71,7 @@ const firmwareInstall =
         // device in bootloader mode have bootloader version in attributes used for fw version in non-bootloader mode
         const fromBlVersion = getFwVersion(device);
 
-        let updateResponse: PromiseType<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
+        let updateResponse: Await<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
         let analyticsPayload: Partial<
             Extract<AnalyticsEvent, { type: 'device-update-firmware' }>['payload']
         >;

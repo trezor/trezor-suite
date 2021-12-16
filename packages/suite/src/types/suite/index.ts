@@ -76,6 +76,7 @@ export type Action =
 export interface Dispatch extends ThunkDispatch<AppState, any, Action> {
     <Action>(action: Action): Action extends (...args: any) => infer R ? R : Action;
 }
+
 export type GetState = () => AppState;
 
 // Extend original ButtonRequestMessage from trezor-connect
