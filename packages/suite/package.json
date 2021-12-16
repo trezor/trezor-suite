@@ -51,7 +51,7 @@
         "react-redux": "^7.2.2",
         "react-spring": "^9.3.2",
         "react-toastify": "^8.1.0",
-        "react-use": "15.3.8",
+        "react-use": "^17.3.1",
         "react-window": "^1.8.6",
         "recharts": "^2.1.6",
         "redux": "^4.0.5",
