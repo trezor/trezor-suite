@@ -252,7 +252,10 @@ const Settings = () => {
                                     values={{
                                         version: (
                                             <VersionTooltip content={revision} disabled={!revision}>
-                                                <TrezorLink href={FIRMWARE_COMMIT_URL + revision}>
+                                                <TrezorLink
+                                                    href={FIRMWARE_COMMIT_URL + revision}
+                                                    variant="nostyle"
+                                                >
                                                     <VersionButton
                                                         variant="tertiary"
                                                         icon={

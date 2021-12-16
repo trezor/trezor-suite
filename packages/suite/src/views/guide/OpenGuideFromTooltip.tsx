@@ -47,6 +47,7 @@ const OpenGuideFromTooltip = ({ id, dataTest }: OpenGuideFromTooltipProps) => {
                 e.stopPropagation();
                 if (!isMobileLayout) openNodeById(id);
             }}
+            variant="nostyle"
         >
             <StyledText>
                 <Translation id="TR_LEARN" />

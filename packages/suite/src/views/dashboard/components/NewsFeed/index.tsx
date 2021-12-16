@@ -88,7 +88,7 @@ const PostComponent = (props: PostComponentProps) => {
     const thumbnail = useExternalLink(props.thumbnail);
 
     return (
-        <Post href={url} data-test={props['data-test']}>
+        <Post href={url} data-test={props['data-test']} variant="nostyle">
             <Image src={thumbnail} />
             <Content>
                 <Title>
@@ -131,7 +131,7 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
         <Section
             heading={<Translation id="TR_WHATS_NEW" />}
             actions={
-                <TrezorLink href={mediumUrl}>
+                <TrezorLink href={mediumUrl} variant="nostyle">
                     <Button isWhite variant="tertiary" icon="MEDIUM">
                         <Translation id="TR_OPEN_IN_MEDIUM" />
                     </Button>
