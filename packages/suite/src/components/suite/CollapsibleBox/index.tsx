@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import useMeasure from 'react-use/lib/useMeasure';
-import { Icon, variables, Button } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 
-const Wrapper = styled.div<{ variant: Props['variant']; disableShadow?: boolean }>`
+const Wrapper = styled.div<Pick<Props, 'variant'>>`
     display: flex;
     flex-direction: column;
     background: ${props => props.theme.BG_GREY};
@@ -20,12 +20,6 @@ const Wrapper = styled.div<{ variant: Props['variant']; disableShadow?: boolean 
         css`
             border-radius: 16px;
             box-shadow: 0 2px 5px 0 ${props.theme.BOX_SHADOW_BLACK_20};
-        `}
-
-    ${props =>
-        props.disableShadow &&
-        css`
-            box-shadow: none;
         `}
 `;
 
@@ -120,19 +114,6 @@ const Content = styled(animated.div)<{ variant: Props['variant']; $noContentPadd
         `}
 `;
 
-const BoxCTA = styled(Button)`
-    width: 163px;
-    height: 60px;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    border-radius: 12px;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-`;
-
 interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {
     heading: React.ReactNode;
     variant: 'tiny' | 'small' | 'large';
@@ -141,8 +122,8 @@ interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {
     noContentPadding?: boolean;
     headerJustifyContent?: 'space-between' | 'center';
     opened?: boolean;
-    withButton?: boolean;
-    disableShadow?: boolean;
+    withButton?: React.ReactNode;
+    clickHandler?: () => void;
 }
 
 const CollapsibleBox = ({
@@ -153,8 +134,8 @@ const CollapsibleBox = ({
     variant = 'small',
     headerJustifyContent = 'space-between',
     opened = false,
-    withButton = false,
-    disableShadow = false,
+    withButton,
+    clickHandler,
     ...rest
 }: Props) => {
     const [collapsed, setCollapsed] = useState(!opened);
@@ -174,30 +155,19 @@ const CollapsibleBox = ({
     });
 
     return (
-        <Wrapper variant={variant} disableShadow={disableShadow} {...rest}>
+        <Wrapper variant={variant} {...rest}>
             <Header
                 variant={variant}
                 headerJustifyContent={headerJustifyContent}
                 onClick={() => {
                     setCollapsed(!collapsed);
                     setAnimatedIcon(true);
+
+                    if (clickHandler) clickHandler();
                 }}
             >
                 <Heading variant={variant}>{heading ?? iconLabel}</Heading>
-                {withButton ? (
-                    <BoxCTA
-                        variant="tertiary"
-                        onClick={() => (document.activeElement as HTMLElement).blur()}
-                    >
-                        {collapsed ? 'Read why' : 'Wrap up'}
-                        <Icon
-                            icon="ARROW_DOWN"
-                            size={variant === 'tiny' ? 12 : 20}
-                            canAnimate={animatedIcon}
-                            isActive={!collapsed}
-                        />
-                    </BoxCTA>
-                ) : (
+                {withButton || (
                     <IconWrapper headerJustifyContent={headerJustifyContent}>
                         {heading && iconLabel && <IconLabel>{iconLabel}</IconLabel>}
                         <Icon

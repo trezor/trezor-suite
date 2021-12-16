@@ -6423,6 +6423,11 @@ export default defineMessages({
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2',
         defaultMessage: 'How to get started',
     },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4',
+        defaultMessage:
+            'We recommend to <StyledCollapsibleBoxLink>download Trezor Suite for desktop</StyledCollapsibleBoxLink>, to isolate your activity and protect from phishing. You can also use the web app and enjoy the same core functionality, but you will not be able to use more advanced features like Tor.',
+    },
     TR_COLOR_SCHEME: {
         id: 'TR_COLOR_SCHEME',
         defaultMessage: 'Color scheme',
