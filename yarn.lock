@@ -11827,10 +11827,10 @@ downshift@^6.0.15:
     react-is "^17.0.2"
     tslib "^2.3.0"
 
-dropbox@10.12.0:
-  version "10.12.0"
-  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-10.12.0.tgz#c16a62622cf7577c891511071ce725cb1690b632"
-  integrity sha512-WW8G6DBAxfQhnDCbz0qZIEG2PDgPI/8PZB08qW03oahyLuxsacTDWLQsaZevwfSV1U+tzeEhjau54WS/Pn5nGQ==
+dropbox@^10.23.0:
+  version "10.23.0"
+  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-10.23.0.tgz#2a4215021b801d39ee0987d08155cd2d30f513d9"
+  integrity sha512-nG+3BlJijQj9+/aNyUDAJgnBegBQ4r3mD8ijP1iwHJ6ICX9mPdZaf7MN0p+efu47ex9XJLr1U1VsKXznsMmgiQ==
   dependencies:
     node-fetch "^2.6.1"
 
