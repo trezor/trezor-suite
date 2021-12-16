@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util/dist/account';
+import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
 import { Input, useTheme, variables, Icon, Button } from '@trezor/components';
 import { AddressLabeling, Translation, ReadMoreLink } from '@suite-components';
 import { InputError } from '@wallet-components';

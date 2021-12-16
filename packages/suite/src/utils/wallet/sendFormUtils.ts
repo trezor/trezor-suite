@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { FieldError, UseFormMethods } from 'react-hook-form';
 import { EthereumTransaction, TokenInfo, ComposeOutput, TxOutputType } from 'trezor-connect';
-import Common from 'ethereumjs-common';
-import { Transaction, TxData } from 'ethereumjs-tx';
+import Common, { Chain, Hardfork } from '@ethereumjs/common';
+import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 import { DEFAULT_PAYMENT, DEFAULT_VALUES, ERC20_TRANSFER } from '@wallet-constants/sendForm';
@@ -138,20 +138,19 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
 };
 
 export const serializeEthereumTx = (tx: TxData & EthereumTransaction) => {
-    // ethereumjs-tx doesn't support ETC (chain 61) by default
+    // @ethereumjs/tx doesn't support ETC (chain 61) by default
     // and it needs to be declared as custom chain
     // see: https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/custom-chain-tx.ts
     const options =
         tx.chainId === 61
             ? {
-                  common: Common.forCustomChain(
-                      'mainnet',
+                  common: Common.custom(
                       {
                           name: 'ethereum-classic',
                           networkId: 1,
                           chainId: 61,
                       },
-                      'petersburg',
+                      { baseChain: Chain.Mainnet, hardfork: Hardfork.Petersburg },
                   ),
               }
             : {
