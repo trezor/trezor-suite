@@ -10,6 +10,7 @@ import { countBytesInString } from '@suite-utils/string';
 import { OpenGuideFromTooltip } from '@guide-views';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 import { useTranslation } from '@suite-hooks';
+import { isAndroid } from '@suite-utils/env';
 
 const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
     display: flex;
@@ -325,7 +326,7 @@ const PassphraseTypeCard = (props: Props) => {
                                 state={isTooLong ? 'error' : undefined}
                                 noTopLabel
                                 noError
-                                autoFocus
+                                autoFocus={!isAndroid()}
                                 innerAddon={
                                     <Icon
                                         size={18}
