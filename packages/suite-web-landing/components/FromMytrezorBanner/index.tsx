@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Icon, colors, variables, Button, H1, H2 } from '@trezor/components';
 import styled from 'styled-components';
 import CollapsibleBox from '@suite-components/CollapsibleBox';
@@ -115,119 +115,109 @@ const BoxCTA = styled(Button)`
     justify-content: space-evenly;
 `;
 
-const StyledFromMytrezorBanner = () => {
-    const opened = false;
-    const [collapsed, setCollapsed] = useState(!opened);
-    const [animatedIcon, setAnimatedIcon] = useState(false);
-    return (
-        <FromMytrezorBanner>
-            <StyledCollapsibleBox
-                variant="large"
-                opened={opened}
-                onClick={() => {
-                    setCollapsed(!collapsed);
-                    setAnimatedIcon(true);
-                }}
-                withButton={
-                    <BoxCTA
-                        variant="tertiary"
-                        onClick={() => (document.activeElement as HTMLElement).blur()}
-                    >
-                        {collapsed ? 'Read why' : 'Wrap up'}
-                        <Icon
-                            icon="ARROW_DOWN"
-                            size={12}
-                            canAnimate={animatedIcon}
-                            isActive={!collapsed}
-                        />
-                    </BoxCTA>
-                }
-                heading={
-                    <>
-                        <BannerWrap>
-                            <IconWrap>
-                                <Icon size={38} icon="TREZOR_LOGO" color="#fff" />
-                            </IconWrap>
-                            <InnerWrap>
-                                <BannerTitle>
-                                    <Translation id="TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR" />
-                                </BannerTitle>
-                                <BannerDesc>
-                                    <Translation id="TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR" />
-                                </BannerDesc>
-                            </InnerWrap>
-                        </BannerWrap>
-                    </>
-                }
-            >
-                <CollapsibleBoxContent>
-                    <CollapsibleBoxContentHeadline>
-                        <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0" />
-                    </CollapsibleBoxContentHeadline>
-                    <CollapsibleBoxContentP>
-                        <Translation
-                            id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_0"
-                            values={{
-                                strong: chunks => <strong>{chunks}</strong>,
-                            }}
-                        />
-                    </CollapsibleBoxContentP>
-                    <CollapsibleBoxContentP>
-                        <Translation
-                            id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1"
-                            values={{
-                                strong: chunks => <strong>{chunks}</strong>,
-                            }}
-                        />
-                    </CollapsibleBoxContentP>
-                    <CollapsibleBoxContentP>
-                        <Translation
-                            id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2"
-                            values={{
-                                strong: chunks => <strong>{chunks}</strong>,
-                            }}
-                        />
-                    </CollapsibleBoxContentP>
+const StyledFromMytrezorBanner = () => (
+    <FromMytrezorBanner>
+        <StyledCollapsibleBox
+            variant="large"
+            headingButton={({ collapsed, animatedIcon }) => (
+                <BoxCTA
+                    variant="tertiary"
+                    onClick={() => (document.activeElement as HTMLElement).blur()}
+                >
+                    {collapsed ? 'Read why' : 'Wrap up'}
+                    <Icon
+                        icon="ARROW_DOWN"
+                        size={12}
+                        canAnimate={animatedIcon}
+                        isActive={!collapsed}
+                    />
+                </BoxCTA>
+            )}
+            heading={
+                <>
+                    <BannerWrap>
+                        <IconWrap>
+                            <Icon size={38} icon="TREZOR_LOGO" color="#fff" />
+                        </IconWrap>
+                        <InnerWrap>
+                            <BannerTitle>
+                                <Translation id="TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR" />
+                            </BannerTitle>
+                            <BannerDesc>
+                                <Translation id="TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR" />
+                            </BannerDesc>
+                        </InnerWrap>
+                    </BannerWrap>
+                </>
+            }
+        >
+            <CollapsibleBoxContent>
+                <CollapsibleBoxContentHeadline>
+                    <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0" />
+                </CollapsibleBoxContentHeadline>
+                <CollapsibleBoxContentP>
+                    <Translation
+                        id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_0"
+                        values={{
+                            strong: chunks => <strong>{chunks}</strong>,
+                        }}
+                    />
+                </CollapsibleBoxContentP>
+                <CollapsibleBoxContentP>
+                    <Translation
+                        id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1"
+                        values={{
+                            strong: chunks => <strong>{chunks}</strong>,
+                        }}
+                    />
+                </CollapsibleBoxContentP>
+                <CollapsibleBoxContentP>
+                    <Translation
+                        id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2"
+                        values={{
+                            strong: chunks => <strong>{chunks}</strong>,
+                        }}
+                    />
+                </CollapsibleBoxContentP>
 
-                    <CollapsibleBoxContentHeadline>
-                        <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1" />
-                    </CollapsibleBoxContentHeadline>
-                    <CollapsibleBoxContentP>
-                        <Translation
-                            id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3"
-                            values={{
-                                strong: chunks => <strong>{chunks}</strong>,
-                            }}
-                        />
-                    </CollapsibleBoxContentP>
+                <CollapsibleBoxContentHeadline>
+                    <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1" />
+                </CollapsibleBoxContentHeadline>
+                <CollapsibleBoxContentP>
+                    <Translation
+                        id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3"
+                        values={{
+                            strong: chunks => <strong>{chunks}</strong>,
+                        }}
+                    />
+                </CollapsibleBoxContentP>
 
-                    <CollapsibleBoxContentHeadline>
-                        <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2" />
-                    </CollapsibleBoxContentHeadline>
-                    <CollapsibleBoxContentP>
-                        <Translation
-                            id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4"
-                            values={{
-                                StyledCollapsibleBoxLink: chunks => (
-                                    <StyledCollapsibleBoxLink
-                                        onClick={() =>
-                                            window.scrollTo({
-                                                top: 0,
-                                                left: 0,
-                                                behavior: 'smooth',
-                                            })
-                                        }
-                                    >
-                                        {chunks}
-                                    </StyledCollapsibleBoxLink>
-                                ),
-                            }}
-                        />
-                    </CollapsibleBoxContentP>
-                </CollapsibleBoxContent>
-            </StyledCollapsibleBox>
-        </FromMytrezorBanner>
-    );
-};
+                <CollapsibleBoxContentHeadline>
+                    <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2" />
+                </CollapsibleBoxContentHeadline>
+                <CollapsibleBoxContentP>
+                    <Translation
+                        id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4"
+                        values={{
+                            StyledCollapsibleBoxLink: chunks => (
+                                <StyledCollapsibleBoxLink
+                                    onClick={() =>
+                                        window.scrollTo({
+                                            top: 0,
+                                            left: 0,
+                                            behavior: 'smooth',
+                                        })
+                                    }
+                                >
+                                    {chunks}
+                                </StyledCollapsibleBoxLink>
+                            ),
+                        }}
+                    />
+                </CollapsibleBoxContentP>
+            </CollapsibleBoxContent>
+        </StyledCollapsibleBox>
+    </FromMytrezorBanner>
+);
 
 export default StyledFromMytrezorBanner;

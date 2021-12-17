@@ -122,8 +122,13 @@ interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {
     noContentPadding?: boolean;
     headerJustifyContent?: 'space-between' | 'center';
     opened?: boolean;
-    withButton?: React.ReactNode;
-    clickHandler?: () => void;
+    headingButton?: ({
+        collapsed,
+        animatedIcon,
+    }: {
+        collapsed: boolean;
+        animatedIcon: boolean;
+    }) => React.ReactNode;
 }
 
 const CollapsibleBox = ({
@@ -134,8 +139,7 @@ const CollapsibleBox = ({
     variant = 'small',
     headerJustifyContent = 'space-between',
     opened = false,
-    withButton,
-    clickHandler,
+    headingButton,
     ...rest
 }: Props) => {
     const [collapsed, setCollapsed] = useState(!opened);
@@ -162,12 +166,12 @@ const CollapsibleBox = ({
                 onClick={() => {
                     setCollapsed(!collapsed);
                     setAnimatedIcon(true);
-
-                    if (clickHandler) clickHandler();
                 }}
             >
                 <Heading variant={variant}>{heading ?? iconLabel}</Heading>
-                {withButton || (
+                {headingButton ? (
+                    headingButton({ collapsed, animatedIcon })
+                ) : (
                     <IconWrapper headerJustifyContent={headerJustifyContent}>
                         {heading && iconLabel && <IconLabel>{iconLabel}</IconLabel>}
                         <Icon
