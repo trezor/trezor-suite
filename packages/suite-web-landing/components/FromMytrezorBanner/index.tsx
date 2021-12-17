@@ -25,8 +25,10 @@ const BannerWrap = styled.div`
 `;
 const InnerWrap = styled.div`
     padding: 0 30px;
+    margin-left: 10px;
     @media all and (min-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 0 15px;
+        margin: 0;
     }
 `;
 const BannerTitle = styled(H2)`

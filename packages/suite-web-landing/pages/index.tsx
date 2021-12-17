@@ -76,23 +76,17 @@ const Index = () => {
                     <Wrapper>
                         <StyledHeroCta>
                             <StyledHeadline>
-                                {isFromMytrezor ? (
-                                    <Translation
-                                        id="TR_SUITE_WEB_LANDING_HEADLINE_FROM_MYTREZOR"
-                                        values={{
-                                            em: chunks => <em>{chunks}</em>,
-                                            lineBreak: <br />,
-                                        }}
-                                    />
-                                ) : (
-                                    <Translation
-                                        id="TR_SUITE_WEB_LANDING_HEADLINE"
-                                        values={{
-                                            em: chunks => <em>{chunks}</em>,
-                                            lineBreak: <br />,
-                                        }}
-                                    />
-                                )}
+                                <Translation
+                                    id={
+                                        isFromMytrezor
+                                            ? 'TR_SUITE_WEB_LANDING_HEADLINE_FROM_MYTREZOR'
+                                            : 'TR_SUITE_WEB_LANDING_HEADLINE'
+                                    }
+                                    values={{
+                                        em: chunks => <em>{chunks}</em>,
+                                        lineBreak: <br />,
+                                    }}
+                                />
                             </StyledHeadline>
                             <StyledSubheadline>
                                 <Translation id="TR_SUITE_WEB_LANDING_SUB_HEADLINE" />
