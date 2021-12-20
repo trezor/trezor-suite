@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { P } from '@trezor/components';
 import { Network } from '@wallet-types';
-import { Translation, ExternalLink } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@wallet-utils/accountUtils';
 
 const Info = styled(P)`
@@ -23,9 +23,9 @@ export const AccountTypeDescription = ({ network, accountTypes }: Props) => {
     return (
         <Info size="small" textAlign="left">
             <Translation id={accountTypeDesc} />{' '}
-            <ExternalLink href={accountTypeUrl} size="small">
+            <TrezorLink icon="EXTERNAL_LINK" href={accountTypeUrl} size="small">
                 <Translation id="TR_LEARN_MORE" />
-            </ExternalLink>
+            </TrezorLink>
         </Info>
     );
 };

@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useState } from 'react';
 import styled from 'styled-components';
 
-import { ExternalLink, Translation, Modal, BundleLoader } from '@suite-components';
+import { TrezorLink, Translation, Modal, BundleLoader } from '@suite-components';
 import * as URLS from '@suite-constants/urls';
 import { parseUri } from '@suite-utils/parseUri';
 import { Icon, colors, P } from '@trezor/components';
@@ -115,9 +115,9 @@ const QrScanner = ({ onCancel, decision }: Props) => {
             description={
                 <Description>
                     <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
-                    <ExternalLink size="small" href={URLS.WIKI_QR_CODE}>
+                    <TrezorLink icon="EXTERNAL_LINK" size="small" href={URLS.WIKI_QR_CODE}>
                         <Translation id="TR_LEARN_MORE" />
-                    </ExternalLink>
+                    </TrezorLink>
                 </Description>
             }
         >

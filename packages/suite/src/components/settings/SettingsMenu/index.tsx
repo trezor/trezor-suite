@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown, variables } from '@trezor/components';
-import { Translation, ExternalLink, AppNavigationPanel, AppNavigation } from '@suite-components';
+import { Translation, TrezorLink, AppNavigationPanel, AppNavigation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -9,7 +9,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import { getNumberFromPxString } from '@suite-utils/string';
 
-const StyledLink = styled(ExternalLink)`
+const StyledLink = styled(TrezorLink)`
     padding: 10px 16px;
     width: 100%;
 `;
@@ -103,7 +103,11 @@ const SettingsMenu = () => {
                                 {
                                     key: 'support',
                                     label: (
-                                        <StyledLink size="small" href={SUPPORT_URL}>
+                                        <StyledLink
+                                            icon="EXTERNAL_LINK"
+                                            size="small"
+                                            href={SUPPORT_URL}
+                                        >
                                             <Translation id="TR_SUPPORT" />
                                         </StyledLink>
                                     ),

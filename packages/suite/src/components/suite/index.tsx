@@ -3,7 +3,6 @@ import DeviceIcon from './images/DeviceIcon';
 import ConnectDeviceImage from './images/ConnectDeviceImage';
 import Image, { Props as ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
-import ExternalLink from './ExternalLink';
 import PrerequisitesGuide from './PrerequisitesGuide';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout, { LayoutContext } from './SuiteLayout';
@@ -59,7 +58,6 @@ export {
     DeviceIcon,
     CheckItem,
     DeviceInvalidModeLayout,
-    ExternalLink,
     PrerequisitesGuide,
     FormattedNumber,
     WelcomeLayout,
