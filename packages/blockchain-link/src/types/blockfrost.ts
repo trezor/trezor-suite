@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { AccountInfoParams, EstimateFeeParams } from './params';
+import { AccountInfoParams, EstimateFeeParams, AccountBalanceHistoryParams } from './params';
 
 type TxContentUtxo = {
     /** Transaction hash */
@@ -216,6 +216,19 @@ export interface AssetBalance {
     fingerprint?: string; // defined for all assets except lovelace
 }
 
+export interface FiatRates {
+    [symbol: string]: number | undefined;
+}
+
+export interface AccountBalanceHistory {
+    time: number;
+    txs: number;
+    received: string;
+    sent: string;
+    sentToSelf?: string; // should always be there for blockbook >= 0.3.3
+    rates: FiatRates;
+}
+
 export interface Output {
     address: string;
     amount: AssetBalance[];
@@ -269,5 +282,9 @@ declare function FSend(
     params: { addresses: string[] }
 ): Promise<Subscribe>;
 declare function FSend(method: 'UNSUBSCRIBE_ADDRESS'): Promise<Subscribe>;
+declare function FSend(
+    method: 'GET_BALANCE_HISTORY',
+    params: AccountBalanceHistoryParams
+): Promise<AccountBalanceHistory[]>;
 declare function FSend(method: 'ESTIMATE_FEE', params: EstimateFeeParams): Promise<Fee>;
 export type Send = typeof FSend;

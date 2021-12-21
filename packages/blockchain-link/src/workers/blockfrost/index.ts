@@ -107,6 +107,23 @@ const getBlockHash = async (data: { id: number } & MessageTypes.GetBlockHash): P
     }
 };
 
+const getAccountBalanceHistory = async (
+    data: { id: number } & MessageTypes.GetAccountBalanceHistory
+): Promise<void> => {
+    const { payload } = data;
+    try {
+        const socket = await connect();
+        const history = await socket.getAccountBalanceHistory(payload);
+        common.response({
+            id: data.id,
+            type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
+            payload: history,
+        });
+    } catch (error) {
+        common.errorHandler({ id: data.id, error });
+    }
+};
+
 const getTransaction = async (
     data: { id: number } & MessageTypes.GetTransaction
 ): Promise<void> => {
@@ -393,6 +410,9 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.GET_BLOCK_HASH:
             getBlockHash(data);
+            break;
+        case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
+            getAccountBalanceHistory(data);
             break;
         case MESSAGES.GET_TRANSACTION:
             getTransaction(data);
