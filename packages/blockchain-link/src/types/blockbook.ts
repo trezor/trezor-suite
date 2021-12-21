@@ -1,4 +1,4 @@
-import {
+import type {
     AccountBalanceHistoryParams,
     GetCurrentFiatRatesParams,
     GetFiatRatesForTimestampsParams,
@@ -6,6 +6,7 @@ import {
     EstimateFeeParams,
     AccountInfoParams,
 } from './params';
+import type { AccountBalanceHistory } from './common';
 
 export interface Subscribe {
     subscribed: boolean;
@@ -158,15 +159,6 @@ export interface TimestampedFiatRates {
 
 export interface FiatRatesForTimestamp {
     tickers: TimestampedFiatRates[];
-}
-
-export interface AccountBalanceHistory {
-    time: number;
-    txs: number;
-    received: string;
-    sent: string;
-    sentToSelf?: string; // should always be there for blockbook >= 0.3.3
-    rates: FiatRates;
 }
 
 export interface AvailableCurrencies {

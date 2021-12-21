@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import { AccountInfoParams, EstimateFeeParams, AccountBalanceHistoryParams } from './params';
+import type { AccountInfoParams, EstimateFeeParams, AccountBalanceHistoryParams } from './params';
+import type { AccountBalanceHistory } from './common';
 
 type TxContentUtxo = {
     /** Transaction hash */
@@ -214,19 +215,6 @@ export interface AssetBalance {
     quantity: string;
     decimals: number;
     fingerprint?: string; // defined for all assets except lovelace
-}
-
-export interface FiatRates {
-    [symbol: string]: number | undefined;
-}
-
-export interface AccountBalanceHistory {
-    time: number;
-    txs: number;
-    received: string;
-    sent: string;
-    sentToSelf?: string; // should always be there for blockbook >= 0.3.3
-    rates: FiatRates;
 }
 
 export interface Output {
