@@ -1,7 +1,8 @@
 import * as WebSocket from 'ws';
 import { EventEmitter } from 'events';
+import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
+
 import { CustomError } from '../../constants/errors';
-import { create as createDeferred, Deferred } from '../../utils/deferred';
 import type { Send, BlockContent, BlockfrostTransaction } from '../../types/blockfrost';
 import type {
     AccountInfoParams,

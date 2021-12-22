@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
+import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 import { CustomError } from './constants/errors';
 import { MESSAGES, RESPONSES } from './constants';
-import { create as createDeferred, Deferred } from './utils/deferred';
 import type { BlockchainSettings } from './types';
 import type * as ResponseTypes from './types/responses';
 import type * as MessageTypes from './types/messages';

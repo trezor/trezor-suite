@@ -1,12 +1,12 @@
 // @ts-nocheck
 
-import { create as createDefered, resolveTimeoutPromise } from '../utils/defered';
+import { createDeferred, Deferred } from '@trezor/utils';
+import { resolveTimeoutPromise } from '../utils/defered';
 import { parseConfigure } from './protobuf/messages';
 import { buildAndSend } from './send';
 import { receiveAndParse } from './receive';
 
 import type { LowlevelTransportSharedPlugin, TrezorDeviceInfoDebug } from './sharedPlugin';
-import type { Deferred } from '../utils/defered';
 import type { MessageFromTrezor, TrezorDeviceInfoWithSession, AcquireInput } from '../types';
 
 import { postModuleMessage } from './sharedConnectionWorker';
@@ -253,9 +253,9 @@ export default class LowlevelTransportWithSharedConnections {
 
         const session: string = messBack2.number;
         if (debugLink) {
-            this.deferedDebugOnRelease[session] = createDefered();
+            this.deferedDebugOnRelease[session] = createDeferred();
         } else {
-            this.deferedNormalOnRelease[session] = createDefered();
+            this.deferedNormalOnRelease[session] = createDeferred();
         }
         return session;
     }
@@ -430,7 +430,7 @@ export default class LowlevelTransportWithSharedConnections {
 
         this.latestId++;
         const id = this.latestId;
-        this.defereds[id] = createDefered();
+        this.defereds[id] = createDeferred();
 
         // when shared worker is not loaded as a shared loader, use it as a module instead
         if (this.sharedWorker != null) {

@@ -6,9 +6,7 @@
 // about intent to acquire/release and then send another message when that is done.
 // Other windows then can acquire/release
 
-// @ts-ignore
-import { create as createDefered } from '../utils/defered';
-import type { Deferred } from '../utils/defered';
+import { createDeferred, Deferred } from '@trezor/utils';
 
 import type { TrezorDeviceInfoDebug } from './sharedPlugin';
 import type { MessageFromSharedWorker, MessageToSharedWorker } from './withSharedConnections';
@@ -34,7 +32,7 @@ let waitPromise: Promise<void> = Promise.resolve();
 type PortObject = { postMessage: (message: Object) => void };
 
 function startLock(): void {
-    const newLock = createDefered();
+    const newLock = createDeferred();
     lock = newLock;
     setTimeout(() => newLock.reject(new Error(`Timed out`)), 10 * 1000);
 }

@@ -1,24 +1,8 @@
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
+const { createDeferred } = require('@trezor/utils');
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
-
-const createDeferred = id => {
-    let localResolve = t => () => {};
-    let localReject = e => () => {};
-
-    const promise = new Promise((resolve, reject) => {
-        localResolve = resolve;
-        localReject = reject;
-    });
-
-    return {
-        id,
-        resolve: localResolve,
-        reject: localReject,
-        promise,
-    };
-};
 
 // Making the timeout high because the controller in trezor-user-env
 // must synchronously run actions on emulator and they may take a long time

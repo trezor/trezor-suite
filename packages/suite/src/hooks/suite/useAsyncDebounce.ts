@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { createDeferred } from '@suite-utils/deferred';
+import { createDeferred } from '@trezor/utils';
 
 type TimeoutType = ReturnType<typeof setTimeout>; // resolves to Timeout type in react-native, number otherwise
 

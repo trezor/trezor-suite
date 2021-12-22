@@ -5,7 +5,7 @@ import { P, Button, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
-import { Deferred } from '@suite-utils/deferred';
+import type { Deferred } from '@trezor/utils';
 import { MetadataProviderType } from '@suite-types/metadata';
 import { isEnabled } from '@suite-utils/features';
 
