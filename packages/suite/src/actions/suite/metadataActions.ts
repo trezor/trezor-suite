@@ -1,6 +1,6 @@
 import TrezorConnect from 'trezor-connect';
+import { createDeferred } from '@trezor/utils';
 import { METADATA } from '@suite-actions/constants';
-import { createDeferred } from '@suite-utils/deferred';
 import { Dispatch, GetState } from '@suite-types';
 import {
     MetadataProviderType,

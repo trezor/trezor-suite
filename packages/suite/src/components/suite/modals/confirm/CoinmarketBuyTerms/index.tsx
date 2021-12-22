@@ -2,7 +2,7 @@ import { Button, Icon, variables, Checkbox, H3 } from '@trezor/components';
 import React, { useState } from 'react';
 import { Translation, Modal } from '@suite-components';
 import styled, { css } from 'styled-components';
-import { Deferred } from '@suite-utils/deferred';
+import type { Deferred } from '@trezor/utils';
 
 const Text = styled.div<{ isLast?: boolean; isFirst?: boolean }>`
     padding: 20px 0;
