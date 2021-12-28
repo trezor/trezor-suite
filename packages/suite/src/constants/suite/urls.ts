@@ -34,7 +34,7 @@ export const CHANGELOG_URL =
     'https://github.com/trezor/trezor-firmware/blob/master/core/CHANGELOG.md';
 export const FAILED_BACKUP_URL = 'https://wiki.trezor.io/Recovery_seed_backup_fail';
 export const WIKI_XPUB_URL =
-    'https://wiki.trezor.io/User_manual:Displaying_account_public_key_(XPUB)';
+    'https://wiki.trezor.io/Suite_manual:Displaying_account_public_key_(XPUB)';
 export const WIKI_ACCOUNT_BIP84_URL = 'https://wiki.trezor.io/Bech32';
 export const WIKI_ACCOUNT_BIP86_URL = 'https://wiki.trezor.io/Taproot';
 export const WIKI_ACCOUNT_BIP49_URL = 'https://wiki.trezor.io/P2SH';
