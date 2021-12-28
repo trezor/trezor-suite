@@ -76,13 +76,6 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
             dispatch(suiteActions.forgetDevice(d));
         });
         dispatch(addToast({ type: 'device-wiped' }));
-        // special case with webusb. device after wipe changes device_id. with webusb transport, device_id is used as path
-        // and thus as descriptor for webusb. So, after device is wiped, in the transport layer, device is still paired
-        // through old descriptor but suite already works with a new one. it kinda works but only until we try a new call,
-        // typically resetDevice when in onboarding - we get device disconnected error;
-        if (isWebUSB(transport)) {
-            dispatch(modalActions.openModal({ type: 'disconnect-device' }));
-        }
     } else {
         dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
