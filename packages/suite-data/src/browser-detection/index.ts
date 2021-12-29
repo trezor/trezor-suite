@@ -110,7 +110,7 @@ window.addEventListener('load', () => {
         {
             name: 'Edge',
             version: 96,
-            mobile: true,
+            mobile: false,
         },
         {
             name: 'Firefox',
