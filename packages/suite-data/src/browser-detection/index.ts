@@ -108,6 +108,11 @@ window.addEventListener('load', () => {
             mobile: true,
         },
         {
+            name: 'Edge',
+            version: 96,
+            mobile: true,
+        },
+        {
             name: 'Firefox',
             version: 62,
             mobile: false, // no webusb support
