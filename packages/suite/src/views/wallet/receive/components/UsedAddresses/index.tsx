@@ -122,7 +122,7 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
     // The only place where full address is shown is confirm-addr modal
     const [isHovered, setIsHovered] = React.useState(false);
     const amount = formatNetworkAmount(addr.received || '0', symbol, true);
-    const fresh = addr.transfers < 1;
+    const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
 
     return (

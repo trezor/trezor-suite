@@ -66,7 +66,7 @@ const ReviewTransaction = ({ decision }: Props) => {
                 type: 'reduce-output',
                 label: precomposedTx.transaction.outputs[decreaseOutputId].address!,
                 value: precomposedTx.feeDifference,
-                value2: precomposedTx.transaction.outputs[decreaseOutputId].amount!,
+                value2: precomposedTx.transaction.outputs[decreaseOutputId].amount.toString(),
             });
         }
     } else {
@@ -75,7 +75,7 @@ const ReviewTransaction = ({ decision }: Props) => {
                 outputs.push({
                     type: 'regular',
                     label: o.address,
-                    value: o.amount,
+                    value: o.amount.toString(),
                     token: precomposedTx.token,
                 });
             } else if (o.script_type === 'PAYTOOPRETURN') {
