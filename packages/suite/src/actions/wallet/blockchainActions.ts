@@ -140,41 +140,26 @@ export const reconnect = (coin: Network['symbol']) => (_dispatch: Dispatch) =>
 
 // called from WalletMiddleware after ADD/REMOVE_BLOCKBOOK_URL action
 // or from blockchainActions.init
-export const setCustomBackend = (symbol?: string) => (_: Dispatch, getState: GetState) => {
-    const { blockbookUrls } = getState().wallet.settings;
+export const setCustomBackend = (coin?: Network['symbol']) => (_: Dispatch, getState: GetState) => {
+    const { backends } = getState().wallet.settings;
+
     // collect unique coins
-    const coins = symbol
-        ? [symbol]
-        : blockbookUrls.reduce((arr, b) => {
-              if (arr.indexOf(b.coin) < 0) return arr.concat([b.coin]);
-              return arr;
-          }, [] as string[]);
+    const coins = coin ? [coin] : (Object.keys(backends) as Network['symbol'][]);
+
     // no custom backends
     if (!coins.length) return;
 
-    const promises = coins.map(coin =>
-        TrezorConnect.blockchainSetCustomBackend({
+    const promises = coins.map(coin => {
+        const { type, urls } = backends[coin] ?? { type: 'blockbook', urls: [] };
+        return TrezorConnect.blockchainSetCustomBackend({
             coin,
             blockchainLink: {
-                type: 'blockbook',
-                url: blockbookUrls.filter(b => b.coin === coin).map(b => b.url),
+                type,
+                url: urls,
             },
-        }),
-    );
-    return Promise.all(promises);
-};
+        });
+    });
 
-export const clearCustomBackend = (symbol: string | string[]) => () => {
-    const coins = typeof symbol === 'string' ? [symbol] : [...new Set(symbol)];
-    const promises = coins.map(coin =>
-        TrezorConnect.blockchainSetCustomBackend({
-            coin,
-            blockchainLink: {
-                type: 'blockbook',
-                url: [],
-            },
-        }),
-    );
     return Promise.all(promises);
 };
 
