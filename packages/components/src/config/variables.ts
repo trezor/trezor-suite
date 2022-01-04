@@ -129,6 +129,7 @@ export const ICONS: IconType[] = [
     'T1',
     'T2',
     'BACK',
+    'BACKEND',
     'SHOW',
     'HIDE',
     'DOWNLOAD',
