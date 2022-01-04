@@ -13,11 +13,13 @@ import SettingsDropdown from './components/SettingsDropdown';
 import TorDropdown from './components/TorDropdown';
 import EarlyAccessDropdown from './components/EarlyAccessDropdown';
 import { variables } from '@trezor/components';
+import BackendsDropdown from './components/BackendsDropdown';
+import type { Route } from '@suite-types';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
-    width: 288px; /* same as DeviceSelector because we need menu in the exact center  */
+    min-width: 288px; /* same as DeviceSelector because we need menu in the exact center  */
     justify-content: flex-end;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
@@ -48,8 +50,6 @@ interface Props {
     isMobileLayout?: boolean;
 }
 
-type Route = 'settings-index' | 'notifications-index';
-
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
     const { activeApp, notifications, discreetMode, tor, allowPrerelease } = useSelector(state => ({
@@ -69,7 +69,7 @@ const NavigationActions = (props: Props) => {
     const WrapperComponent = props.isMobileLayout ? MobileWrapper : Wrapper;
 
     // used only in mobile layout
-    const gotoWithReport = (routeName: Route) => {
+    const gotoWithReport = (routeName: Route['name']) => {
         if (routeName === 'notifications-index') {
             analytics.report({ type: 'menu/goto/notifications-index' });
         } else if (routeName === 'settings-index') {
@@ -78,12 +78,12 @@ const NavigationActions = (props: Props) => {
         goto(routeName);
     };
 
-    const action = (route: Route) => {
+    const action = (route: Route['name']) => {
         gotoWithReport(route);
         if (props.closeMainNavigation) props.closeMainNavigation();
     };
 
-    const getIfRouteIsActive = (route: Route) => {
+    const getIfRouteIsActive = (route: Route['name']) => {
         const routeObj = findRouteByName(route);
         return routeObj ? routeObj.app === activeApp : false;
     };
@@ -92,21 +92,34 @@ const NavigationActions = (props: Props) => {
 
     return (
         <WrapperComponent>
-            <ActionItem
-                onClick={() => {
-                    analytics.report({
-                        type: 'menu/toggle-discreet',
-                        payload: {
-                            value: !discreetMode,
-                        },
-                    });
-                    setDiscreetMode(!discreetMode);
-                }}
-                isActive={discreetMode}
-                label={<Translation id="TR_DISCREET" />}
-                icon={discreetMode ? 'HIDE' : 'SHOW'}
-                isMobileLayout={props.isMobileLayout}
-            />
+            <ActionItemWrapper>
+                <ActionItem
+                    onClick={() => {
+                        analytics.report({
+                            type: 'menu/toggle-discreet',
+                            payload: {
+                                value: !discreetMode,
+                            },
+                        });
+                        setDiscreetMode(!discreetMode);
+                    }}
+                    isActive={discreetMode}
+                    label={<Translation id="TR_DISCREET" />}
+                    icon={discreetMode ? 'HIDE' : 'SHOW'}
+                    isMobileLayout={props.isMobileLayout}
+                />
+            </ActionItemWrapper>
+
+            {props.isMobileLayout ? (
+                <ActionItem
+                    onClick={() => action('settings-coins')}
+                    label={<Translation id="TR_BACKENDS" />}
+                    icon="BACKEND"
+                    isMobileLayout={props.isMobileLayout}
+                />
+            ) : (
+                <BackendsDropdown marginLeft />
+            )}
 
             {isDesktop() && (
                 <>

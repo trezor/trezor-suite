@@ -54,6 +54,7 @@ import CoinsList from './CoinsGroup/CoinsList';
 import CharacterCount from './CharacterCount';
 import SettingsDropdown from './NavigationBar/components/NavigationActions/components/SettingsDropdown';
 import CloseButton from './CloseButton';
+import StatusLight from './StatusLight';
 
 export {
     Backdrop,
@@ -116,5 +117,6 @@ export {
     CharacterCount,
     SettingsDropdown,
     CloseButton,
+    StatusLight,
 };
 export type { ImageProps, ModalProps };
