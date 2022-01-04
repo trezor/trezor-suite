@@ -106,8 +106,7 @@ export const getDeviceNeedsAttentionMessage = (deviceStatus: ReturnType<typeof g
     }
 };
 
-export const isDeviceRemembered = (device?: TrezorDevice): boolean =>
-    device ? !!device.remember : false;
+export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
 
 export const isDeviceAccessible = (device?: TrezorDevice) => {
     if (!device || !device.features) return false;

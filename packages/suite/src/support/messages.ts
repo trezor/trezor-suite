@@ -2900,6 +2900,35 @@ export default defineMessages({
         defaultMessage: 'System',
         id: 'TR_SETTINGS_SAME_AS_SYSTEM',
     },
+    TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED: {
+        defaultMessage: 'Connect device to access device settings',
+        id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
+    },
+    TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
+        defaultMessage: 'Other settings unavailable in bootloader mode',
+        id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
+    },
+    TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED: {
+        defaultMessage: 'Connect device to change device settings',
+        id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
+    },
+    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED: {
+        defaultMessage: 'TODO',
+        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED',
+    },
+    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1: {
+        defaultMessage:
+            'Reconnect the device and do not hold any buttons while connecting the cable to access them.',
+        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1',
+    },
+    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2: {
+        defaultMessage: 'Reconnect the device without touching the screen to access them.',
+        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2',
+    },
+    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_REMEMBERED: {
+        defaultMessage: 'TODO',
+        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_REMEMBERED',
+    },
     TR_SHOW_ADDRESS_ANYWAY: {
         defaultMessage: 'Show address anyway',
         id: 'TR_SHOW_ADDRESS_ANYWAY',
