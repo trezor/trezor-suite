@@ -12,11 +12,19 @@ import SetPinStep from '@onboarding-views/steps/Pin';
 import BasicSettingsStep from '@onboarding-views/steps/BasicSettings';
 import FinalStep from '@onboarding-views/steps/Final';
 import UnexpectedState from '@onboarding-views/unexpected-states';
-import { useOnboarding } from '@suite-hooks';
+import { useOnboarding, useSelector } from '@suite-hooks';
+import { MODAL } from '@suite-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
 import type { InjectedModalApplicationProps } from '@suite-types';
 
-const Onboarding = ({ prerequisite }: InjectedModalApplicationProps) => {
+const useIsModalCoinSettings = () => {
+    const { modal } = useSelector(state => ({
+        modal: state.modal,
+    }));
+    return modal.context === MODAL.CONTEXT_USER && modal.payload.type === 'advanced-coin-settings';
+};
+
+const Onboarding = ({ prerequisite, modal }: InjectedModalApplicationProps) => {
     const { activeStepId } = useOnboarding();
 
     const [StepComponent, LayoutComponent, prerequisitesGuidePadded] = useMemo(() => {
@@ -58,6 +66,7 @@ const Onboarding = ({ prerequisite }: InjectedModalApplicationProps) => {
 
     return (
         <LayoutComponent>
+            {useIsModalCoinSettings() ? modal : null}
             <UnexpectedState
                 prerequisite={prerequisite}
                 prerequisitesGuidePadded={prerequisitesGuidePadded}

@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import TrezorConnect, { CoinInfo } from 'trezor-connect';
-import { Loader } from '@trezor/components';
-import { Modal } from '@suite-components';
-import { Translation } from '@suite-components/Translation';
+import { CoinLogo, variables } from '@trezor/components';
+import { Modal, Translation } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
 import { Network } from '@suite/types/wallet';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { useActions, useSelector } from '@suite-hooks';
-
-// Sub components
-import CustomBlockbookUrls from './components/CustomBlockbookUrls';
-import ConnectionInfo from './components/ConnectionInfo';
-// import CustomExplorerUrl from './components/CustomExplorerUrl';
-// import AccountUnits from './components/AccountUnits';
+import { CustomBackends } from './components/CustomBackends';
 
 const Section = styled.div`
     display: flex;
     flex-direction: column;
     margin-top: 24px;
-    /* margin-bottom: 32px; */
 `;
 
-const LoaderWrapper = styled.div`
+const Heading = styled.div`
     display: flex;
-    justify-content: center;
+    align-items: center;
+    line-height: initial;
+    & > * + * {
+        margin-left: 16px;
+    }
+`;
+
+const Header = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const Subheader = styled.span`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 interface Props {
@@ -33,67 +38,33 @@ interface Props {
 }
 
 const AdvancedCoinSettings = ({ coin, onCancel }: Props) => {
-    const { addBlockbookUrl, removeBlockbookUrl } = useActions({
-        addBlockbookUrl: walletSettingsActions.addBlockbookUrl,
-        removeBlockbookUrl: walletSettingsActions.removeBlockbookUrl,
-    });
-    const { blockbookUrls, blockchain } = useSelector(state => ({
-        blockbookUrls: state.wallet.settings.blockbookUrls,
-        blockchain: state.wallet.blockchain,
-    }));
-
     const network = NETWORKS.find(n => n.symbol === coin);
-    const [coinInfo, setCoinInfo] = useState<CoinInfo>();
-    // TODO: this condition is not correctly applied to Regtest (coinInfo?.blockchainLink === null)
-    // const isBlockbook = coinInfo?.blockchainLink?.type === 'blockbook';
-    const isBlockbook = network?.networkType !== 'ripple';
 
-    useEffect(() => {
-        TrezorConnect.getCoinInfo({ coin }).then(result => {
-            if (result.success) {
-                setCoinInfo(result.payload);
-            }
-        });
-    }, [coin]);
-
-    // Network should exist if the coin is correct
-    if (network === undefined) {
-        return null;
-    }
-
-    return (
+    return network ? (
         <Modal
             cancelable
             onCancel={onCancel}
             heading={
-                <Translation
-                    id="SETTINGS_ADV_COIN_MODAL_TITLE"
-                    values={{ name: network.name, coin: coin.toUpperCase() }}
-                />
+                <Heading>
+                    <CoinLogo symbol={network.symbol} />
+                    <Header>
+                        <span>{network.name}</span>
+                        {network.label && (
+                            <Subheader>
+                                <Translation id={network.label} />
+                            </Subheader>
+                        )}
+                    </Header>
+                </Heading>
             }
         >
-            {!coinInfo && (
-                <LoaderWrapper>
-                    <Loader size={32} />
-                </LoaderWrapper>
-            )}
-
             {/* <AccountUnits /> */}
-            {coinInfo && isBlockbook && (
-                <Section>
-                    <CustomBlockbookUrls
-                        coin={coin}
-                        coinInfo={coinInfo}
-                        blockbookUrls={blockbookUrls}
-                        addBlockbookUrl={addBlockbookUrl}
-                        removeBlockbookUrl={removeBlockbookUrl}
-                    />
-                </Section>
-            )}
+            <Section>
+                <CustomBackends network={network} onCancel={onCancel} />
+            </Section>
             {/* <CustomExplorerUrl /> */}
-            <ConnectionInfo blockchain={blockchain[coin]} />
         </Modal>
-    );
+    ) : null;
 };
 
 export default AdvancedCoinSettings;

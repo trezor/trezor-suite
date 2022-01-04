@@ -1,81 +1,42 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { P } from '@trezor/components';
+import { useSelector } from '@suite-hooks';
 import { Translation } from '@suite-components/Translation';
-import { Blockchain } from '@suite/reducers/wallet/blockchainReducer';
+import type { Network } from '@wallet-types';
 
-const Wrapper = styled.div`
+const Wrapper = styled(P)`
     display: flex;
     flex-direction: column;
     text-align: left;
-    margin-top: 12px;
-`;
-
-const Heading = styled.span`
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: 500;
-    line-height: 1.5;
-`;
-
-const Info = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: 500;
-    line-height: 1.57;
-    /* margin-bottom: 14px; */
 `;
 
 interface Props {
-    blockchain: Blockchain;
+    coin: Network['symbol'];
 }
 
-const ConnectionInfo = ({ blockchain }: Props) => (
-    <Wrapper>
-        <Heading>
-            <Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />
-        </Heading>
-        {blockchain.connected ? (
-            <>
-                <Info>
-                    <Translation
-                        id="SETTINGS_ADV_COIN_CONN_INFO_URL"
-                        values={{
-                            url: blockchain.url,
-                        }}
-                    />
-                </Info>
-                <Info>
-                    <Translation
-                        id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH"
-                        values={{
-                            hash: blockchain.blockHash,
-                        }}
-                    />
-                </Info>
-                <Info>
+const ConnectionInfo = ({ coin }: Props) => {
+    const { blockchain } = useSelector(state => ({
+        blockchain: state.wallet.blockchain,
+    }));
+    const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[coin];
+    return (
+        <Wrapper size="small">
+            {connected ? (
+                <>
+                    <Translation id="SETTINGS_ADV_COIN_CONN_INFO_URL" values={{ url }} />
+                    <Translation id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH" values={{ hash }} />
                     <Translation
                         id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT"
-                        values={{
-                            height: blockchain.blockHeight,
-                        }}
+                        values={{ height }}
                     />
-                </Info>
-                <Info>
-                    <Translation
-                        id="SETTINGS_ADV_COIN_CONN_INFO_VERSION"
-                        values={{
-                            version: blockchain.version,
-                        }}
-                    />
-                </Info>
-            </>
-        ) : (
-            <Info>
+                    <Translation id="SETTINGS_ADV_COIN_CONN_INFO_VERSION" values={{ version }} />
+                </>
+            ) : (
                 <Translation id="SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED" />
-            </Info>
-        )}
-    </Wrapper>
-);
+            )}
+        </Wrapper>
+    );
+};
 
 export default ConnectionInfo;

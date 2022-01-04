@@ -109,7 +109,7 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                         }}
                         visible
                     />
-                ) : null
+                ) : undefined
             }
             label={
                 <Label>
