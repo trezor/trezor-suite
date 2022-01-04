@@ -1,0 +1,44 @@
+import React from 'react';
+import styled from 'styled-components';
+
+type Status = 'ok' | 'warning' | 'error';
+
+const Circle = styled.div<{ status: Status }>`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: ${({ status, theme }) =>
+        status === 'ok' ? theme.BG_LIGHT_GREEN : theme.BG_LIGHT_RED};
+    & > div {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: ${({ status, theme }) => {
+            switch (status) {
+                case 'ok':
+                    return theme.TYPE_GREEN;
+                case 'warning':
+                    return theme.TYPE_ORANGE;
+                case 'error':
+                default:
+                    return theme.TYPE_RED;
+            }
+        }};
+    }
+`;
+
+type Props = {
+    status: Status;
+    className?: string;
+};
+
+const StatusLight = ({ status, className }: Props) => (
+    <Circle status={status} className={className}>
+        <div />
+    </Circle>
+);
+
+export default StatusLight;

@@ -5828,6 +5828,10 @@ export default defineMessages({
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
         defaultMessage: 'e.g. {url}',
     },
+    TR_DEFAULT: {
+        id: 'TR_DEFAULT',
+        defaultMessage: 'Default',
+    },
     TR_DEFAULT_VALUE: {
         id: 'TR_DEFAULT_VALUE',
         defaultMessage: 'Default: {value}',
@@ -5841,6 +5845,10 @@ export default defineMessages({
         id: 'TR_CUSTOM_BACKEND',
         defaultMessage: 'Custom backend',
     },
+    TR_BACKENDS: {
+        id: 'TR_BACKENDS',
+        defaultMessage: 'Backends',
+    },
     TR_CUSTOM_BACKEND_INVALID_URL: {
         id: 'TR_CUSTOM_BACKEND_INVALID_URL',
         defaultMessage: 'Invalid URL',
@@ -5848,6 +5856,14 @@ export default defineMessages({
     TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED: {
         id: 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED',
         defaultMessage: 'The backend is already added',
+    },
+    TR_OTHER_COINS_USE_DEFAULT_BACKEND: {
+        id: 'TR_OTHER_COINS_USE_DEFAULT_BACKEND',
+        defaultMessage: 'Other coins use their default backends',
+    },
+    TR_ALL_COINS_USE_DEFAULT_BACKEND: {
+        id: 'TR_ALL_COINS_USE_DEFAULT_BACKEND',
+        defaultMessage: 'All coins use their default backends',
     },
     TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD',
