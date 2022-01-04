@@ -267,7 +267,7 @@ const MetadataLabeling = (props: Props) => {
         dropdownItems = [...dropdownItems, ...props.dropdownOptions];
     }
 
-    const onSubmit = async (value: string | undefined | null) => {
+    const onSubmit = async (value: string | undefined) => {
         isSubscribedToSubmitResult.current = props.payload.defaultValue;
         setPending(true);
         const result = await addMetadata({
@@ -327,7 +327,7 @@ const MetadataLabeling = (props: Props) => {
                 <>
                     <ButtonLikeLabelWithDropdown
                         editActive={editActive}
-                        onSubmit={onSubmit}
+                        onSubmit={props.onSubmit || onSubmit}
                         onBlur={() => setEditing(undefined)}
                         data-test={dataTestBase}
                         {...props}
@@ -341,7 +341,7 @@ const MetadataLabeling = (props: Props) => {
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
-                            isVisible={pending}
+                            isVisible={pending || props.visible}
                             onClick={e => {
                                 e.stopPropagation();
                                 // by clicking on add label button, metadata.editing field is set
@@ -358,7 +358,7 @@ const MetadataLabeling = (props: Props) => {
                 <>
                     <TextLikeLabel
                         editActive={editActive}
-                        onSubmit={onSubmit}
+                        onSubmit={props.onSubmit || onSubmit}
                         onBlur={() => setEditing(undefined)}
                         data-test={dataTestBase}
                         {...props}
@@ -374,7 +374,7 @@ const MetadataLabeling = (props: Props) => {
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
-                            isVisible={pending}
+                            isVisible={pending || props.visible}
                             onClick={e => {
                                 e.stopPropagation();
                                 activateEdit();

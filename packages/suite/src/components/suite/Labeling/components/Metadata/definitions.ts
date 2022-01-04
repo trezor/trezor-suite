@@ -12,11 +12,15 @@ export interface Props {
     payload: MetadataAddPayload;
     dropdownOptions?: DropdownMenuItem[];
     isDisabled?: boolean;
+    // override default onSubmit logic
+    onSubmit?: (value: string | undefined) => void;
+    // override default behavior of metadata labeling element visible only on hover
+    visible?: boolean;
 }
 
 export interface ExtendedProps extends Props {
     editActive: boolean;
-    onSubmit: (value: string | undefined | null) => void;
+    onSubmit: (value: string | undefined) => void;
     onBlur: () => void;
     'data-test': string;
 }

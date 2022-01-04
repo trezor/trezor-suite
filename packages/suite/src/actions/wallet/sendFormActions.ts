@@ -5,8 +5,8 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 import { SEND } from '@wallet-actions/constants';
-
 import { formatAmount, formatNetworkAmount, getPendingAccount } from '@wallet-utils/accountUtils';
 
 import { Dispatch, GetState } from '@suite-types';
@@ -15,6 +15,7 @@ import { FormState, UseSendFormState, PrecomposedTransactionFinal } from '@walle
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
+import { MetadataAddPayload } from '@suite/types/suite/metadata';
 
 export type SendFormAction =
     | {
@@ -132,7 +133,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
     // const sentTx = { success: true, payload: { txid: 'ABC ' } };
 
     // close modal regardless result
-    dispatch(cancelSignTx());
+    dispatch(modalActions.onCancel());
 
     const { token } = precomposedTx;
     const spentWithoutFee = !token
@@ -175,11 +176,46 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         if (account.networkType !== 'bitcoin') {
             dispatch(accountActions.fetchAndUpdateAccount(account));
         }
+
+        // handle metadata (labeling) from send form
+        const { metadata } = getState();
+        if (metadata.enabled) {
+            const { precomposedForm } = getState().wallet.send;
+            const { outputsPermutation } = precomposedTx?.transaction;
+
+            precomposedForm?.outputs
+                // create array of metadata objects
+                .map((formOutput, index) => {
+                    const { label } = formOutput;
+                    // final ordering of outputs differs from order in send form
+                    // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
+                    // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
+                    const outputIndex = outputsPermutation.findIndex(p => p === index);
+                    const metadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> = {
+                        type: 'outputLabel',
+                        accountKey: account.key,
+                        txid, // txid becomes available, use it
+                        outputIndex,
+                        value: label,
+                        defaultValue: '',
+                    };
+                    return metadata;
+                })
+                // filter out empty values AFTER creating metadata objects (see outputs mapping above)
+                .filter(output => output.value)
+                // propagate metadata to reducers and persistent storage
+                .forEach((output, index, arr) => {
+                    const isLast = index === arr.length - 1;
+                    dispatch(metadataActions.addAccountMetadata(output, isLast));
+                });
+        }
     } else {
         dispatch(
             notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
         );
     }
+
+    dispatch(cancelSignTx());
 
     // resolve sign process
     return sentTx;

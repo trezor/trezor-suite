@@ -47,6 +47,7 @@ const getStateFromProps = (props: UseSendFormProps) => {
         isLoading: false,
         isDirty: false,
         online: props.online,
+        metadataEnabled: props.metadataEnabled,
     };
 };
 
@@ -310,6 +311,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         composeTransaction: composeRequest,
         loadTransaction,
         signTransaction: sign,
+        setDraftSaveRequest,
         ...sendFormUtils,
         ...sendFormOutputs,
     };

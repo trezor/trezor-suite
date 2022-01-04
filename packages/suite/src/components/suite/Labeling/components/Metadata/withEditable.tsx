@@ -49,7 +49,7 @@ const Editable = styled.div<{ value?: string; isButton?: boolean; touched: boole
 interface Props {
     originalValue?: string;
     defaultVisibleValue: React.ReactNode;
-    onSubmit: (value: string | undefined | null) => void;
+    onSubmit: (value: string | undefined) => void;
     onBlur: () => void;
     isButton?: boolean;
 }
