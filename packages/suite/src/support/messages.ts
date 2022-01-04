@@ -5828,10 +5828,6 @@ export default defineMessages({
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
         defaultMessage: 'e.g. {url}',
     },
-    TR_DEFAULT: {
-        id: 'TR_DEFAULT',
-        defaultMessage: 'Default',
-    },
     TR_DEFAULT_VALUE: {
         id: 'TR_DEFAULT_VALUE',
         defaultMessage: 'Default: {value}',
@@ -5844,6 +5840,14 @@ export default defineMessages({
     TR_CUSTOM_BACKEND: {
         id: 'TR_CUSTOM_BACKEND',
         defaultMessage: 'Custom backend',
+    },
+    TR_BACKEND_DEFAULT_SERVERS: {
+        id: 'TR_BACKEND_DEFAULT_SERVERS',
+        defaultMessage: 'Trezor servers (default)',
+    },
+    TR_BACKEND_CUSTOM_SERVERS: {
+        id: 'TR_BACKEND_CUSTOM_SERVERS',
+        defaultMessage: 'Custom {type} server',
     },
     TR_BACKENDS: {
         id: 'TR_BACKENDS',

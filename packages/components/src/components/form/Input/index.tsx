@@ -179,7 +179,7 @@ interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'width
     label?: React.ReactElement | string;
     labelAddon?: React.ReactElement;
     labelRight?: React.ReactElement;
-    innerAddon?: React.ReactNode;
+    innerAddon?: React.ReactElement;
     topLabelRight?: React.ReactNode;
     bottomText?: React.ReactNode;
     monospace?: boolean;
@@ -277,12 +277,14 @@ const Input = ({
                 <InputWrapper>
                     {innerAddon && addonAlign === 'left' && (
                         <InputAddon align="left" ref={inputAddonRef}>
-                            {innerAddon}
+                            {React.cloneElement(innerAddon, { inputHovered: isHovered })}
                         </InputAddon>
                     )}
                     {((innerAddon && addonAlign === 'right') || clearButton) && (
                         <InputAddon align="right" ref={inputAddonRef}>
-                            {addonAlign === 'right' && innerAddon}
+                            {addonAlign === 'right' &&
+                                innerAddon &&
+                                React.cloneElement(innerAddon, { inputHovered: isHovered })}
                             {clearButton && value && value.length > 0 && (
                                 <Icon
                                     icon="CANCEL"

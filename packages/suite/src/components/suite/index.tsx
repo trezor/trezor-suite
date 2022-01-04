@@ -53,6 +53,7 @@ import CoinsList from './CoinsGroup/CoinsList';
 import CharacterCount from './CharacterCount';
 import SettingsDropdown from './NavigationBar/components/NavigationActions/components/SettingsDropdown';
 import CloseButton from './CloseButton';
+import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
 
 export {
@@ -115,6 +116,7 @@ export {
     CharacterCount,
     SettingsDropdown,
     CloseButton,
+    TooltipSymbol,
     StatusLight,
 };
 export type { ImageProps, ModalProps };
