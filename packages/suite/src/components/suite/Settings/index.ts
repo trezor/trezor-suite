@@ -6,6 +6,7 @@ import Row from './components/Row';
 import Analytics from './components/Analytics';
 import Theme from './components/Theme';
 import Language from './components/Language';
+import DeviceBanner from './components/DeviceBanner';
 
 export {
     Section,
@@ -19,4 +20,5 @@ export {
     Analytics,
     Theme,
     Language,
+    DeviceBanner,
 };
