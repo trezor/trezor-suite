@@ -2,9 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, P, variables } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/lib/config/animations';
-
 import { CoinsList, Translation } from '@suite-components';
-import { Network } from '@wallet-types';
+import type { Network } from '@wallet-types';
 
 const Header = styled.div<{ disabled: boolean }>`
     display: flex;
@@ -60,7 +59,7 @@ export const SelectNetwork = ({
                 {networkCanChange && <IconAnimated icon="PENCIL" size={12} useCursorPointer />}
             </Header>
             <CoinsList
-                onToggleFn={handleNetworkSelection}
+                onToggle={handleNetworkSelection}
                 networks={networks}
                 selectedNetworks={selectedNetworks}
             />
