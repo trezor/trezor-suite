@@ -58,6 +58,19 @@ export type TransactionDetail = {
     totalOutput: string;
 };
 
+export interface FiatRates {
+    [symbol: string]: number | undefined;
+}
+
+export interface AccountBalanceHistory {
+    time: number;
+    txs: number;
+    received: string;
+    sent: string;
+    sentToSelf?: string; // should always be there for blockbook >= 0.3.3
+    rates: FiatRates;
+}
+
 export interface Transaction {
     type: 'sent' | 'recv' | 'self' | 'unknown';
     txid: string;

@@ -1,7 +1,7 @@
-import { FiatRates, AccountBalanceHistory } from './blockbook';
+import { FiatRates } from './blockbook';
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
-import { AccountInfo, Transaction, TypedRawTransaction } from './common';
+import { AccountInfo, Transaction, TypedRawTransaction, AccountBalanceHistory } from './common';
 
 // messages sent from worker to blockchain.js
 

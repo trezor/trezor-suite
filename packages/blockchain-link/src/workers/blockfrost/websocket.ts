@@ -3,7 +3,11 @@ import { EventEmitter } from 'events';
 import { CustomError } from '../../constants/errors';
 import { create as createDeferred, Deferred } from '../../utils/deferred';
 import { Send, BlockContent } from '../../types/blockfrost';
-import { AccountInfoParams, EstimateFeeParams } from '../../types/params';
+import {
+    AccountInfoParams,
+    EstimateFeeParams,
+    AccountBalanceHistoryParams,
+} from '../../types/params';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
@@ -220,6 +224,10 @@ export default class Socket extends EventEmitter {
 
     getAccountUtxo(descriptor: string) {
         return this.send('GET_ACCOUNT_UTXO', { descriptor });
+    }
+
+    getAccountBalanceHistory(payload: AccountBalanceHistoryParams) {
+        return this.send('GET_BALANCE_HISTORY', payload);
     }
 
     getTransaction(txId: string) {

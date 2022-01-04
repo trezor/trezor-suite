@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import { AccountInfoParams, EstimateFeeParams } from './params';
+import type { AccountInfoParams, EstimateFeeParams, AccountBalanceHistoryParams } from './params';
+import type { AccountBalanceHistory } from './common';
 
 type TxContentUtxo = {
     /** Transaction hash */
@@ -269,5 +270,9 @@ declare function FSend(
     params: { addresses: string[] }
 ): Promise<Subscribe>;
 declare function FSend(method: 'UNSUBSCRIBE_ADDRESS'): Promise<Subscribe>;
+declare function FSend(
+    method: 'GET_BALANCE_HISTORY',
+    params: AccountBalanceHistoryParams
+): Promise<AccountBalanceHistory[]>;
 declare function FSend(method: 'ESTIMATE_FEE', params: EstimateFeeParams): Promise<Fee>;
 export type Send = typeof FSend;
