@@ -1,10 +1,10 @@
 import React from 'react';
-import { Tooltip } from '@trezor/components';
 import styled from 'styled-components';
-import { Network } from '@wallet-types';
+import { Tooltip } from '@trezor/components';
 import { Coin, Translation } from '@suite-components';
+import { useDevice, useSelector } from '@suite-hooks';
 import { getUnavailabilityMessage } from '@suite-utils/device';
-import { useDevice } from '@suite-hooks';
+import type { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -12,52 +12,52 @@ const Wrapper = styled.div`
     flex-flow: wrap;
 `;
 
-interface Props {
-    onToggleFn: (symbol: Network['symbol'], visible: boolean) => void;
+interface CoinsListProps {
     networks: Network[];
-    selectedNetworks: Network['symbol'][];
+    selectedNetworks?: Network['symbol'][];
+    onSettings?: (symbol: Network['symbol']) => void;
+    onToggle: (symbol: Network['symbol'], toggled: boolean) => void;
 }
 
-const CoinsList = ({ onToggleFn, networks, selectedNetworks }: Props) => {
-    const { device, isLocked } = useDevice();
-    if (!device) return null;
+const CoinsList = ({ networks, selectedNetworks, onSettings, onToggle }: CoinsListProps) => {
+    const { backends } = useSelector(state => ({
+        backends: state.wallet.settings.backends,
+    }));
 
-    const isDeviceLocked = isLocked();
+    const { device, isLocked } = useDevice();
+    const locked = !!device && isLocked();
 
     return (
         <Wrapper>
-            {networks.map(({ symbol, accountType, label, tooltip, name }) => {
-                const isSelected = selectedNetworks.includes(symbol);
-                const unavailableCapability = device.unavailableCapabilities?.[symbol];
-                const isDisabled = !!unavailableCapability || isDeviceLocked;
-                const unavailabilityTooltip = unavailableCapability && (
-                    <Translation
-                        id={getUnavailabilityMessage(
-                            unavailableCapability,
-                            device.features?.major_version,
-                        )}
-                    />
-                );
-                const commonTooltip = tooltip && <Translation id={tooltip} />;
+            {networks.map(({ symbol, label, tooltip, name }) => {
+                const toggled = !!selectedNetworks?.includes(symbol);
+                const unavailable = device?.unavailableCapabilities?.[symbol];
+
+                const lockedTooltip = locked && 'TR_DISABLED_SWITCH_TOOLTIP';
+                const unavailabilityTooltip =
+                    unavailable &&
+                    getUnavailabilityMessage(unavailable, device.features?.major_version);
+                const anyTooltip = lockedTooltip || unavailabilityTooltip || tooltip;
+
+                const backend = backends[symbol];
+                const note = backend && !backend.tor ? 'TR_CUSTOM_BACKEND' : label;
+                const disabled = !!unavailable || locked;
 
                 return (
                     <Tooltip
-                        key={`${symbol}_${accountType}`}
+                        key={symbol}
                         placement="top"
-                        content={unavailabilityTooltip || commonTooltip}
+                        content={anyTooltip && <Translation id={anyTooltip} />}
                     >
                         <Coin
                             symbol={symbol}
                             name={name}
-                            label={label}
-                            selected={isSelected}
-                            disabled={isDisabled}
-                            onClick={
-                                isDisabled
-                                    ? undefined
-                                    : () => {
-                                          onToggleFn(symbol, !isSelected);
-                                      }
+                            label={note}
+                            toggled={toggled}
+                            disabled={disabled}
+                            onToggle={disabled ? undefined : () => onToggle(symbol, !toggled)}
+                            onSettings={
+                                disabled || !onSettings ? undefined : () => onSettings(symbol)
                             }
                         />
                     </Tooltip>

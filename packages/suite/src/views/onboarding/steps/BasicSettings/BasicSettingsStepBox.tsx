@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { useActions } from '@suite-hooks';
+import styled from 'styled-components';
 import { OnboardingStepBox, OnboardingStepBoxProps } from '@onboarding-components';
 import { CoinsGroup } from '@suite-components';
-import styled from 'styled-components';
-import { Network } from '@wallet-types';
+import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
 
 const Separator = styled.hr`
     height: 1px;
@@ -14,43 +12,30 @@ const Separator = styled.hr`
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
-interface Props extends OnboardingStepBoxProps {
-    testnetNetworks: Network[];
-    mainnetNetworks: Network[];
-    enabledTestnetNetworks: Network['symbol'][];
-    enabledMainnetNetworks: Network['symbol'][];
-}
+const StyledCoinsGroup = styled(CoinsGroup)`
+    margin-top: 30px;
+`;
 
-const BasicSettingsStepBox = ({
-    testnetNetworks,
-    mainnetNetworks,
-    enabledTestnetNetworks,
-    enabledMainnetNetworks,
-    ...props
-}: Props) => {
-    const { changeCoinVisibility } = useActions({
-        changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
-        changeNetworks: walletSettingsActions.changeNetworks,
-    });
+const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
+    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
 
     // BTC should be enabled by default
     useEffect(() => {
-        changeCoinVisibility('btc', true);
-    }, [changeCoinVisibility]);
+        setEnabled('btc', true);
+    }, [setEnabled]);
 
     return (
         <OnboardingStepBox image="COINS" {...props}>
             <Separator />
-            <CoinsGroup
-                onToggleFn={changeCoinVisibility}
-                networks={mainnetNetworks}
-                enabledNetworks={enabledMainnetNetworks}
-                testnet={false}
+            <StyledCoinsGroup
+                networks={mainnets}
+                onToggle={setEnabled}
+                selectedNetworks={enabledNetworks}
             />
-            <CoinsGroup
-                onToggleFn={changeCoinVisibility}
-                networks={testnetNetworks}
-                enabledNetworks={enabledTestnetNetworks}
+            <StyledCoinsGroup
+                networks={testnets}
+                onToggle={setEnabled}
+                selectedNetworks={enabledNetworks}
                 testnet
             />
         </OnboardingStepBox>

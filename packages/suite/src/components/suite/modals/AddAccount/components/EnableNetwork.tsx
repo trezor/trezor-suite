@@ -47,7 +47,7 @@ const StyledIcon = styled(Icon)`
     padding-right: 4px;
 `;
 
-type Props = {
+type EnableNetworkProps = {
     networks: Network[];
     testnetNetworks: Network[];
     selectedNetworks: Network['symbol'][];
@@ -59,7 +59,7 @@ export const EnableNetwork = ({
     testnetNetworks,
     selectedNetworks,
     handleNetworkSelection,
-}: Props) => {
+}: EnableNetworkProps) => {
     const theme = useTheme();
     const [isTestnetVisible, setTestnetVisible] = useState(false);
     const hasTestnetNetworks = !!testnetNetworks?.length;
@@ -67,7 +67,7 @@ export const EnableNetwork = ({
     return (
         <MoreCoins>
             <CoinsList
-                onToggleFn={handleNetworkSelection}
+                onToggle={handleNetworkSelection}
                 networks={networks}
                 selectedNetworks={selectedNetworks}
             />
@@ -101,7 +101,7 @@ export const EnableNetwork = ({
                                     <Translation id="TR_TESTNET_COINS_DESCRIPTION" />
                                 </TestnetCoinsDescription>
                                 <CoinsList
-                                    onToggleFn={handleNetworkSelection}
+                                    onToggle={handleNetworkSelection}
                                     networks={testnetNetworks}
                                     selectedNetworks={selectedNetworks}
                                 />

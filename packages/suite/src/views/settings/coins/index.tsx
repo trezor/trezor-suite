@@ -1,88 +1,41 @@
 import React from 'react';
+import styled from 'styled-components';
 import { SettingsLayout } from '@settings-components';
-import { Translation } from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import { NETWORKS } from '@wallet-config';
-import { Network } from '@wallet-types';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import CoinsGroup from './components/CoinsGroup';
+import { CoinsGroup, Translation } from '@suite-components';
+import { Section } from '@suite-components/Settings';
+import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
+
+const StyledSettingsLayout = styled(SettingsLayout)`
+    & > * + * {
+        margin-top: 16px;
+    }
+`;
+
+const StyledCoinsGroup = styled(CoinsGroup)`
+    margin-top: 18px;
+`;
 
 const Settings = () => {
-    const { changeCoinVisibility, changeNetworks } = useActions({
-        changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
-        changeNetworks: walletSettingsActions.changeNetworks,
-    });
-    const { device, enabledNetworks, debug } = useSelector(state => ({
-        device: state.suite.device,
-        debug: state.suite.settings.debug,
-        enabledNetworks: state.wallet.settings.enabledNetworks,
-    }));
-
-    const unavailableCapabilities = device?.unavailableCapabilities ?? {};
-
-    const mainnetNetworksFilterFn = (n: Network) => !n.accountType && !n.testnet;
-
-    const testnetNetworksFilterFn = (n: Network) => {
-        if (n.symbol === 'regtest' && !debug.showDebugMenu) {
-            return false;
-        }
-        return !n.accountType && 'testnet' in n && n.testnet === true;
-    };
-
-    const unavailableNetworksFilterFn = (symbol: Network['symbol']) =>
-        !unavailableCapabilities[symbol];
-
-    const enabledMainnetNetworks: Network['symbol'][] = [];
-    const enabledTestnetNetworks: Network['symbol'][] = [];
-
-    enabledNetworks.forEach(symbol => {
-        const network = NETWORKS.find(n => n.symbol === symbol);
-        if (!network) return;
-        if (network.testnet) {
-            enabledTestnetNetworks.push(network.symbol);
-        } else {
-            enabledMainnetNetworks.push(network.symbol);
-        }
-    });
+    const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
 
     return (
-        <SettingsLayout>
-            <CoinsGroup
-                label={<Translation id="TR_COINS" />}
-                description={<Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />}
-                enabledNetworks={enabledMainnetNetworks}
-                filterFn={mainnetNetworksFilterFn}
-                onToggleOneFn={changeCoinVisibility}
-                onActivateAll={() =>
-                    changeNetworks([
-                        ...enabledTestnetNetworks.filter(unavailableNetworksFilterFn),
-                        ...NETWORKS.filter(mainnetNetworksFilterFn)
-                            .map(n => n.symbol)
-                            .filter(unavailableNetworksFilterFn),
-                    ])
-                }
-                onDeactivateAll={() => changeNetworks(enabledTestnetNetworks)}
-                type="mainnet"
-            />
-
-            <CoinsGroup
-                label={<Translation id="TR_TESTNET_COINS" />}
-                description={<Translation id="TR_TESTNET_COINS_EXPLAINED" />}
-                enabledNetworks={enabledTestnetNetworks}
-                filterFn={testnetNetworksFilterFn}
-                onToggleOneFn={changeCoinVisibility}
-                onActivateAll={() =>
-                    changeNetworks([
-                        ...enabledMainnetNetworks.filter(unavailableNetworksFilterFn),
-                        ...NETWORKS.filter(testnetNetworksFilterFn)
-                            .map(n => n.symbol)
-                            .filter(unavailableNetworksFilterFn),
-                    ])
-                }
-                onDeactivateAll={() => changeNetworks(enabledMainnetNetworks)}
-                type="testnet"
-            />
-        </SettingsLayout>
+        <StyledSettingsLayout>
+            <Section title={<Translation id="TR_COINS" />}>
+                <StyledCoinsGroup
+                    networks={mainnets}
+                    onToggle={setEnabled}
+                    selectedNetworks={enabledNetworks}
+                />
+            </Section>
+            <Section title={<Translation id="TR_TESTNET_COINS" />}>
+                <StyledCoinsGroup
+                    networks={testnets}
+                    onToggle={setEnabled}
+                    selectedNetworks={enabledNetworks}
+                    testnet
+                />
+            </Section>
+        </StyledSettingsLayout>
     );
 };
 

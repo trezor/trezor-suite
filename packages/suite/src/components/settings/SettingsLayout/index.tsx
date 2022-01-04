@@ -15,6 +15,7 @@ type Props = {
     title?: string;
     children?: React.ReactNode;
     ['data-test']?: string;
+    className?: string;
 };
 
 const SettingsLayout = (props: Props) => {
@@ -24,7 +25,11 @@ const SettingsLayout = (props: Props) => {
         if (setLayout) setLayout(props.title || 'Settings', null, <SettingsMenu />);
     }, [props.title, setLayout]);
 
-    return <Wrapper data-test={props['data-test']}>{props.children}</Wrapper>;
+    return (
+        <Wrapper className={props.className} data-test={props['data-test']}>
+            {props.children}
+        </Wrapper>
+    );
 };
 
 export default SettingsLayout;

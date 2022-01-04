@@ -5794,6 +5794,10 @@ export default defineMessages({
             'Please select a cloud provider to save your labels to. Your data is encrypted by Trezor.',
         id: 'METADATA_MODAL_DESCRIPTION',
     },
+    TR_DISABLED_SWITCH_TOOLTIP: {
+        id: 'TR_DISABLED_SWITCH_TOOLTIP',
+        defaultMessage: 'Connect & Unlock device to edit',
+    },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
         defaultMessage:
@@ -5828,6 +5832,10 @@ export default defineMessages({
     TR_ADD_NEW_BLOCKBOOK_BACKEND: {
         id: 'TR_ADD_NEW_BLOCKBOOK_BACKEND',
         defaultMessage: 'Add new',
+    },
+    TR_CUSTOM_BACKEND: {
+        id: 'TR_CUSTOM_BACKEND',
+        defaultMessage: 'Custom backend',
     },
     TR_CUSTOM_BACKEND_INVALID_URL: {
         id: 'TR_CUSTOM_BACKEND_INVALID_URL',
