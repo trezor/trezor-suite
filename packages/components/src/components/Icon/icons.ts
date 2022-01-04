@@ -57,6 +57,7 @@ export const ICONS = {
     SHOW: require('../../images/icons/show.svg'),
     HIDE: require('../../images/icons/hide.svg'),
     BACK: require('../../images/icons/back.svg'),
+    BACKEND: require('../../images/icons/backend.svg'),
     NOTIFICATION: require('../../images/icons/notification.svg'),
     DOWNLOAD: require('../../images/icons/download.svg'),
     EDIT: require('../../images/icons/edit.svg'),
