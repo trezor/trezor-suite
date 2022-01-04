@@ -471,8 +471,13 @@ export const addDeviceMetadata =
         }
     };
 
+/**
+ * @param payload - metadata payload
+ * @param save - should metadata be saved into persistent storage? this is useful when you are updating multiple records
+ *               in a single account you may want to set "save" param to true only for the last call
+ */
 export const addAccountMetadata =
-    (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>) =>
+    (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>, save = true) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
         if (!account) return false;
@@ -519,6 +524,9 @@ export const addAccountMetadata =
                 metadata,
             },
         });
+
+        // we might intentionally skip saving metadata content to persistent storage.
+        if (!save) return true;
 
         const provider = await dispatch(getProvider());
         if (!provider) {

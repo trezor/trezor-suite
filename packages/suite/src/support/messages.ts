@@ -5556,6 +5556,10 @@ export default defineMessages({
         defaultMessage: 'Transaction not set',
         id: 'RAW_TX_NOT_SET',
     },
+    RECIPIENT_LABEL: {
+        defaultMessage: 'Recipient label',
+        id: 'RECIPIENT_LABEL',
+    },
     ESTIMATED_TIME: {
         defaultMessage: 'Estimated time',
         id: 'ESTIMATED_TIME',

@@ -129,6 +129,7 @@ export interface SendFormProps {
     fees: AppState['wallet']['fees'];
     online: boolean;
     sendRaw?: boolean;
+    metadataEnabled: boolean;
 }
 // Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
 export interface UseSendFormProps extends SendFormProps {
@@ -148,6 +149,7 @@ export type UseSendFormState = {
     isDirty: boolean;
     composedLevels?: PrecomposedLevels;
     online: boolean;
+    metadataEnabled: boolean;
 };
 
 // strongly typed UseFormMethods.getValues with fallback value
@@ -183,4 +185,6 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         removeOutput: (index: number) => void; // useFieldArray remove
         addOpReturn: () => void;
         removeOpReturn: (index: number) => void;
+        // useSendFormCompose
+        setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
     };

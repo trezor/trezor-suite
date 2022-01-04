@@ -57,6 +57,7 @@ const Send: React.FC = ({ children }) => {
         fees: state.wallet.fees,
         online: state.suite.online,
         sendRaw: state.wallet.send.sendRaw,
+        metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
     }));
 
     const { selectedAccount } = props;

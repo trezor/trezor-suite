@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
 import { Input, useTheme, variables, Icon, Button } from '@trezor/components';
-import { AddressLabeling, Translation, ReadMoreLink } from '@suite-components';
+import { AddressLabeling, Translation, ReadMoreLink, MetadataLabeling } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions, useDevice } from '@suite-hooks';
@@ -59,23 +59,47 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
         getDefaultValue,
         errors,
         setValue,
+        metadataEnabled,
+        watch,
+        setDraftSaveRequest,
     } = useSendFormContext();
     const { openQrModal } = useActions({ openQrModal: scanQrRequest });
-
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs[${outputId}].address`;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const addressError = outputError ? outputError.address : undefined;
     const addressValue = getDefaultValue(inputName, output.address || '');
     const recipientId = outputId + 1;
+    const label = watch(`outputs[${outputId}].label`, '');
+    const options = getDefaultValue('options', []);
+    const broadcastEnabled = options.includes('broadcast');
 
     return (
         <Input
             state={getInputState(addressError, addressValue)}
             monospace
-            // innerAddon={
-            //     <AddLabel onClick={() => setValue(`outputs[${outputId}].labelInput`, 'enabled')} />
-            // }
+            innerAddon={
+                metadataEnabled && broadcastEnabled ? (
+                    <MetadataLabeling
+                        defaultVisibleValue=""
+                        payload={{
+                            type: 'outputLabel',
+                            accountKey: account.key,
+                            // txid is not known at this moment. metadata is only saved
+                            // along with other sendForm data and processed in sendFormActions
+                            txid: 'will-be-replaced',
+                            outputIndex: outputId,
+                            defaultValue: `${outputId}`,
+                            value: label,
+                        }}
+                        onSubmit={(value: string | undefined) => {
+                            setValue(`outputs[${outputId}].label`, value || '');
+                            setDraftSaveRequest(true);
+                        }}
+                        visible
+                    />
+                ) : null
+            }
             label={
                 <Label>
                     <Left>
