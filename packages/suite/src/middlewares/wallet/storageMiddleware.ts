@@ -123,6 +123,8 @@ const storageMiddleware =
             case WALLET_SETTINGS.SET_BLOCKBOOK_URLS:
             case WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL:
             case WALLET_SETTINGS.CLEAR_TOR_BLOCKBOOK_URLS:
+            case WALLET_SETTINGS.SET_BACKEND:
+            case WALLET_SETTINGS.REMOVE_BACKEND:
                 api.dispatch(storageActions.saveWalletSettings());
                 break;
 

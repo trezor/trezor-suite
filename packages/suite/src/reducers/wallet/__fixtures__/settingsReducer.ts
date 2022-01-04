@@ -5,22 +5,14 @@ export default {
     discreetMode: false,
     enabledNetworks: ['btc', 'ltc'],
     lastUsedFeeLevel: {},
-    blockbookUrls: [
-        {
-            coin: 'btc',
-            url: 'https://btc1.com',
+    backends: {
+        btc: {
+            type: 'blockbook',
+            urls: ['https://btc1.com', 'https://btc2.com'],
         },
-        {
-            coin: 'btc',
-            url: 'https://btc2.com',
+        ltc: {
+            type: 'blockbook',
+            urls: ['https://ltc1.com', 'https://ltc2.com'],
         },
-        {
-            coin: 'ltc',
-            url: 'https://ltc1.com',
-        },
-        {
-            coin: 'ltc',
-            url: 'https://ltc2.com',
-        },
-    ],
+    },
 } as State;

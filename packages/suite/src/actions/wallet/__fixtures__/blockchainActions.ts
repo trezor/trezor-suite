@@ -514,37 +514,33 @@ export const onNotification = [
 export const customBacked = [
     {
         description: 'no backends',
-        initialState: [],
+        initialState: {},
         blockchainSetCustomBackend: 0,
     },
     {
         description: 'with one backend',
-        initialState: [{ coin: 'btc' }, { coin: 'btc' }],
+        initialState: {
+            btc: { type: 'blockbook' as const, urls: [] },
+        },
         blockchainSetCustomBackend: 1,
     },
     {
         description: 'with multiple backends',
-        initialState: [
-            { coin: 'btc' },
-            { coin: 'btc' },
-            { coin: 'ltc' },
-            { coin: 'ltc' },
-            { coin: 'ltc' },
-            { coin: 'eth' },
-        ],
+        initialState: {
+            btc: { type: 'blockbook' as const, urls: [] },
+            ltc: { type: 'blockbook' as const, urls: [] },
+            eth: { type: 'blockbook' as const, urls: [] },
+        },
         blockchainSetCustomBackend: 3,
     },
     {
         description: 'enable one, with multiple backends',
-        initialState: [
-            { coin: 'btc' },
-            { coin: 'btc' },
-            { coin: 'ltc' },
-            { coin: 'ltc' },
-            { coin: 'ltc' },
-            { coin: 'eth' },
-        ],
-        symbol: 'btc',
+        initialState: {
+            btc: { type: 'blockbook' as const, urls: [] },
+            ltc: { type: 'blockbook' as const, urls: [] },
+            eth: { type: 'blockbook' as const, urls: [] },
+        },
+        symbol: 'btc' as const,
         blockchainSetCustomBackend: 1,
     },
 ];

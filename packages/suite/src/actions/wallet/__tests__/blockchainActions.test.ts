@@ -9,6 +9,7 @@ import feesReducer from '@wallet-reducers/feesReducer';
 import notificationsReducer from '@suite-reducers/notificationReducer';
 import * as blockchainActions from '../blockchainActions';
 import * as fixtures from '../__fixtures__/blockchainActions';
+import type { State as SettingsState } from '@wallet-reducers/settingsReducer';
 
 jest.mock('trezor-connect', () => global.JestMocks.getTrezorConnect({}));
 const TrezorConnect = require('trezor-connect').default;
@@ -22,11 +23,11 @@ interface Args {
     blockchain?: Partial<BlockchainState>;
     fees?: Partial<FeesState>;
     transactions?: TransactionsState['transactions'];
-    blockbookUrls?: { coin: string }[];
+    backends?: SettingsState['backends'];
 }
 
 export const getInitialState = (
-    { accounts, transactions, blockchain, fees, blockbookUrls }: Args = {},
+    { accounts, transactions, blockchain, fees, backends }: Args = {},
     action: any = { type: 'initial' },
 ) => ({
     wallet: {
@@ -48,7 +49,7 @@ export const getInitialState = (
             ...fees,
         },
         settings: {
-            blockbookUrls: blockbookUrls || [],
+            backends: backends || {},
         },
     },
     notifications: notificationsReducer([], action),
@@ -177,7 +178,7 @@ describe('Blockchain Actions', () => {
         it(`customBacked: ${f.description}`, async () => {
             const store = initStore(
                 getInitialState({
-                    blockbookUrls: f.initialState,
+                    backends: f.initialState,
                 }),
             );
             await store.dispatch(blockchainActions.setCustomBackend(f.symbol));
