@@ -549,7 +549,7 @@ export const getUtxoFromSignedTransaction = (
                 vout,
                 path: addr.path,
                 address: addr.address,
-                amount: output.amount,
+                amount: output.amount.toString(),
                 blockHeight: 0,
                 confirmations: 0,
                 txid,
