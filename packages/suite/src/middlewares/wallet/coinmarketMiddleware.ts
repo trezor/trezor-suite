@@ -7,6 +7,7 @@ import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketC
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
+import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 
 const coinmarketMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -18,6 +19,7 @@ const coinmarketMiddleware =
             const { buyInfo } = api.getState().wallet.coinmarket.buy;
             const { exchangeCoinInfo, exchangeInfo } = api.getState().wallet.coinmarket.exchange;
             const { sellInfo } = api.getState().wallet.coinmarket.sell;
+            const { savingsInfo } = api.getState().wallet.coinmarket.savings;
 
             const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
             const isDifferentAccount = currentAccountDescriptor !== account?.descriptor;
@@ -69,6 +71,14 @@ const coinmarketMiddleware =
                     loadPromises.push(
                         coinmarketSellActions.loadSellInfo().then(sellInfo => {
                             api.dispatch(coinmarketSellActions.saveSellInfo(sellInfo));
+                        }),
+                    );
+                }
+
+                if (isDifferentAccount || !savingsInfo) {
+                    loadPromises.push(
+                        coinmarketSavingsActions.loadSavingsInfo().then(savingsInfo => {
+                            api.dispatch(coinmarketSavingsActions.saveSavingsInfo(savingsInfo));
                         }),
                     );
                 }

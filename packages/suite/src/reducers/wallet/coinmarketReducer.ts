@@ -18,12 +18,15 @@ import {
     COINMARKET_EXCHANGE,
     COINMARKET_COMMON,
     COINMARKET_SELL,
+    COINMARKET_SAVINGS,
 } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 import { SellInfo } from '@wallet-actions/coinmarketSellActions';
+import { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
 import { FeeLevel } from 'trezor-connect';
 import { Trade } from '@wallet-types/coinmarketCommonTypes';
+import { SavingsTrade } from '@suite-services/invityAPI';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<
@@ -70,10 +73,16 @@ interface Sell {
     isFromRedirect: boolean;
 }
 
+interface Savings {
+    savingsInfo?: SavingsInfo;
+    savingsTrade?: SavingsTrade;
+}
+
 export interface State {
     buy: Buy;
     exchange: Exchange;
     sell: Sell;
+    savings: Savings;
     composedTransactionInfo: ComposedTransactionInfo;
     trades: Trade[];
     isLoading: boolean;
@@ -114,6 +123,10 @@ export const initialState = {
         alternativeQuotes: [],
         transactionId: undefined,
         isFromRedirect: false,
+    },
+    savings: {
+        savingsInfo: undefined,
+        savingsTrade: undefined,
     },
     composedTransactionInfo: {},
     trades: [],
@@ -220,6 +233,13 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SELL.SAVE_TRANSACTION_ID:
                 draft.sell.transactionId = action.transactionId;
+                break;
+            case COINMARKET_SAVINGS.SAVE_SAVINGS_INFO:
+                draft.savings.savingsInfo = action.savingsInfo;
+                break;
+            case COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE:
+                draft.savings.savingsTrade = action.response.trade;
+                // TODO: later set also "savings payments"
                 break;
             case COINMARKET_COMMON.SET_LOADING:
                 draft.isLoading = action.isLoading;

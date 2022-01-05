@@ -27,6 +27,7 @@ import {
     SellFiatTradeRequest,
     SellFiatTradeResponse,
     WatchSellTradeResponse,
+    BankAccount,
 } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
 import type {
@@ -37,6 +38,186 @@ import type {
 import { resolveStaticPath } from '@suite-utils/build';
 import { getPrefixedURL } from '@suite-utils/router';
 
+/** BEGIN: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
+export type SavingsPaymentMethods = 'bankTransfer';
+
+export interface SavingsProviderInfo {
+    /** Name of provider as our identifier e.g.: btcdirect. */
+    name: string;
+
+    /** Official name of provider e.g.: BTC Direct. */
+    companyName: string;
+
+    /** Name of logo file. */
+    logo: string;
+
+    /** Indicates wheter the provider is marked as active or not. The setting comes from configuration. */
+    isActive: boolean;
+
+    /** Coins which user can save into. */
+    tradedCoins: string[];
+
+    /** Fiat currencies (3-letter ISO codes) with which can the savings be set up. */
+    tradedFiatCurrencies?: string[];
+
+    /** Supported countries (2-letter ISO codes) of where provider offers the savings. */
+    supportedCountries: string[];
+
+    /** Provider's support URL. */
+    supportUrl?: string;
+
+    /** Defines methods of how a user can pay to save crypto. */
+    paymentMethods?: SavingsPaymentMethods[];
+
+    isClientFromUnsupportedCountry: boolean;
+}
+
+export interface SavingsListResponse {
+    // TODO: Need country here?
+    country: string;
+    providers: SavingsProviderInfo[];
+}
+
+export type SavingsSetupStatus =
+    /** Initial state - show form with name, phonenumber, birthday, inputs. */
+    | 'Registration'
+    /** Show form with input where user fills in verification from received SMS. */
+    | 'PhoneNumberVerification'
+    /** Show select options what kind of documents the will be KYC'ed. */
+    | 'KYCStart'
+    /** "KYC is in progress" shows UI. */
+    | 'KYCInProgress'
+    /** KYC docs are invalid or anything could be wrong. Expecting reason from our partner to handover to the user. */
+    | 'KYCFailed'
+    /** More like questionare - can't fail. */
+    | 'AML'
+    /** User setups savings plan parameters (frequency, amount, etc.). */
+    | 'SetSavingsParameters';
+
+export type SavingsStatus = SavingsSetupStatus | 'Cancelled' | 'Active' | 'Error';
+
+export type PaymentFrequency = 'Weekly' | 'BiWeekly' | 'Monthly' | 'Quarterly';
+
+export type SavingsTradePaymentStatus =
+    | 'Cancelled'
+    | 'Pending'
+    | 'InProgress'
+    | 'Blocked'
+    | 'Completed'
+    | 'Refunded';
+
+export interface SavingsTradePayment {
+    /** Our id. */
+    paymentId: string;
+
+    /** Partner's id. */
+    partnerPaymentId: string;
+
+    status: SavingsTradePaymentStatus;
+    fiatAmount: number;
+    cryptoAmount: number;
+}
+
+export interface SavingsTradeUserRegistration {
+    /** Or first name as we are used to in most of the European countries. */
+    givenName: string;
+
+    /** Or last name as we are used to in most of the European countries. */
+    familyName: string;
+
+    /** Birth day in ISO format. For example: 2021-07-14T14:00:00.000Z - using date.toISOString() on client. */
+    dateOfBirth: string;
+
+    phoneNumber: string;
+}
+
+export type SavingsTradeUserKYCStartDocumentType =
+    | 'Passport'
+    | 'IdentityCard'
+    | 'DrivingLicence'
+    | 'Selfie'
+    | 'ProofOfResidency'
+    | 'ResidencePermit'
+    | 'IbanVerification'
+    | 'WalletVerification';
+
+export type SavingsTradeUserKYCStartDocumentImageSide =
+    | 'Front'
+    | 'Back'
+    | 'Selfie'
+    | 'SecondSelfie'
+    | 'ProofOfResidency';
+
+export interface SavingsTradeUserKYCStartDocumentImage {
+    documentSide: SavingsTradeUserKYCStartDocumentImageSide;
+    data: string;
+}
+
+export interface SavingsTradeUserKYCStart {
+    documentNumber: string;
+    documentCountry: string;
+    documentType: SavingsTradeUserKYCStartDocumentType;
+    documentImages: SavingsTradeUserKYCStartDocumentImage[];
+}
+
+export interface SavingsTrade {
+    status?: SavingsStatus;
+    errors?: string[];
+
+    /** Customer's bank account from which payments should be paid to receive crypto. */
+    bankAccount?: BankAccount;
+
+    /** Amount of money to be paid recurrently. */
+    fiatStringAmount?: string;
+
+    /** Fiat currency of recurrent payment. */
+    fiatCurrency?: string;
+
+    /** Crypto currency of recurrent payment. */
+    cryptoCurrency?: string;
+
+    /** How often payment should be paid by customer. */
+    paymentFrequency?: PaymentFrequency;
+
+    /** Name of savings provider. */
+    exchange?: string;
+
+    /** Crypto address where provider sends crypto. */
+    receivingCryptoAddress?: string;
+
+    /** Indicates whether the user is registred in partner's system. */
+    isUserRegistredInPartnerSystem?: boolean;
+
+    userRegistration?: SavingsTradeUserRegistration;
+
+    userKYCStart?: SavingsTradeUserKYCStart;
+
+    // TODO: AML
+    // TODO: maybe encapsulate setup?
+}
+
+export interface SavingsTradeRequest {
+    trade: SavingsTrade;
+}
+
+export interface SavingsTradeResponse {
+    trade: SavingsTrade;
+
+    /** Payments in savings plan. */
+    payments?: SavingsTradePayment[];
+}
+
+export interface SavingsIdentityDocument {
+    documentType: 'Passport' | 'IdentityCard' | 'DrivingLicence' | 'Selfie';
+    documentSide: 'Front' | 'Back' | 'Selfie';
+    /** Base64 encoded string */
+    data: string;
+}
+export interface VerifySmsCodeRequest {
+    code: string;
+}
+/** END: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
+
 type BodyType =
     | BuyTrade
     | ExchangeTradeQuoteRequest
@@ -46,7 +227,9 @@ type BodyType =
     | BuyTradeRequest
     | SellVoucherTradeQuoteRequest
     | SellVoucherTradeRequest
-    | SellFiatTradeRequest;
+    | SellFiatTradeRequest
+    | SavingsTradeRequest
+    | VerifySmsCodeRequest;
 
 class InvityAPI {
     unknownCountry = 'unknown';
@@ -118,7 +301,12 @@ class InvityAPI {
     private SELL_FIAT_CONFIRM = '/sell/fiat/confirm';
     private SELL_FIAT_WATCH_TRADE = '/sell/fiat/watch/{{counter}}';
 
+    private SAVINGS_LIST = '/savings/list';
+    private SAVINGS_TRADE = '/savings/trade';
+
     private ACCOUNT_INFO = '/account/info';
+    private PHONE_SEND_VERIFICATION_SMS = '/account/phone/send-verification-sms';
+    private PHONE_VERIFY_SMS_CODE = '/account/phone/verify-sms-code';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -501,7 +689,84 @@ class InvityAPI {
         }
     };
 
+    getSavingsList = async (): Promise<SavingsListResponse | undefined> => {
+        this.setProtectedAPI(true);
+        try {
+            const response: SavingsListResponse = await this.requestApiServer(
+                this.SAVINGS_LIST,
+                {},
+                'GET',
+            );
+            return response;
+        } catch (error) {
+            console.log('[getSavingsList]', error);
+        } finally {
+            this.setProtectedAPI(false);
+        }
+    };
+
+    getSavingsTrade = async (exchangeName: string): Promise<SavingsTradeResponse | undefined> => {
+        this.setProtectedAPI(true);
+        try {
+            const response: SavingsTradeResponse = await this.requestApiServer(
+                `${this.SAVINGS_TRADE}/${exchangeName}`,
+                {},
+                'GET',
+            );
+            return response;
+        } catch (error) {
+            console.log('[getSavingsTrade]', error);
+        } finally {
+            this.setProtectedAPI(false);
+        }
+    };
+
+    doSavingsTrade = async (
+        trade: SavingsTradeRequest,
+    ): Promise<SavingsTradeResponse | undefined> => {
+        this.setProtectedAPI(true);
+        try {
+            const response: SavingsTradeResponse = await this.requestApiServer(
+                this.SAVINGS_TRADE,
+                trade,
+                'POST',
+            );
+            return response;
+        } catch (error) {
+            console.log('[doSavingsTrade]', error);
+        } finally {
+            this.setProtectedAPI(false);
+        }
+    };
+
+    sendVerificationSms = async () => {
+        this.setProtectedAPI(true);
+        try {
+            await this.requestApiServer(this.PHONE_SEND_VERIFICATION_SMS, {}, 'POST');
+        } catch (error) {
+            console.log('[sendVerificationSms]', error);
+        } finally {
+            this.setProtectedAPI(false);
+        }
+    };
+
+    verifySmsCode = async (code: string) => {
+        this.setProtectedAPI(true);
+        try {
+            await this.requestApiServer(
+                this.PHONE_VERIFY_SMS_CODE,
+                { code } as VerifySmsCodeRequest,
+                'POST',
+            );
+        } catch (error) {
+            console.log('[verifySmsCode]', error);
+        } finally {
+            this.setProtectedAPI(false);
+        }
+    };
+
     getCheckWhoAmIUrl() {
+        // TODO: this API client should do the request
         return `${this.getAuthServerUrl()}/sessions/whoami`;
     }
 

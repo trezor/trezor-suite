@@ -894,6 +894,18 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED: {
+        defaultMessage: 'Given name is required.',
+        id: 'TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED',
+    },
+    TR_SAVINGS_USERINFO_FAMILY_NAME_IS_REQUIRED: {
+        defaultMessage: 'Family name is required.',
+        id: 'TR_SAVINGS_USERINFO_FAMILY_NAME_IS_REQUIRED',
+    },
+    TR_SAVINGS_USERINFO_PHONE_NUMBER_IS_REQUIRED: {
+        defaultMessage: 'Phone number is required.',
+        id: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_IS_REQUIRED',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',
