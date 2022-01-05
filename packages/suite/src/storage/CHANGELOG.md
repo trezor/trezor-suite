@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 25
+-   added walletSettings.backends
+-   removed walletSettings.blockbookUrls
+
 ## 24
 -   added form drafts
 

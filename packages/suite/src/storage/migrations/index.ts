@@ -2,6 +2,8 @@ import { enhanceTransactionDetails } from '@suite/utils/wallet/transactionUtils'
 import { OnUpgradeFunc } from '@trezor/suite-storage';
 import BigNumber from 'bignumber.js';
 import { SuiteDBSchema } from '../definitions';
+import type { State } from '@wallet-reducers/settingsReducer';
+import type { BlockbookUrl } from '@wallet-types/blockbook';
 
 export const migrate = async (
     db: Parameters<OnUpgradeFunc<SuiteDBSchema>>['0'],
@@ -223,5 +225,30 @@ export const migrate = async (
 
     if (oldVersion < 24) {
         db.createObjectStore('formDrafts');
+    }
+
+    if (oldVersion < 25) {
+        let cursor = await transaction.objectStore('walletSettings').openCursor();
+        while (cursor) {
+            const settings: State & { blockbookUrls?: BlockbookUrl[] } = cursor.value;
+            if (!settings.backends && settings.blockbookUrls) {
+                settings.backends = settings.blockbookUrls.reduce<{ [key: string]: any }>(
+                    (backends, { coin, url, tor }) => ({
+                        ...backends,
+                        [coin]: {
+                            type: 'blockbook',
+                            urls: [...(backends[coin]?.urls || []), url],
+                            tor: backends[coin]?.tor || tor,
+                        },
+                    }),
+                    {},
+                );
+                delete settings.blockbookUrls;
+                cursor.update(settings);
+            }
+
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
+        }
     }
 };
