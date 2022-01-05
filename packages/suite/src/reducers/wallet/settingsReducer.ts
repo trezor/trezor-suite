@@ -4,7 +4,6 @@ import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { Action } from '@suite-types';
 import { Network } from '@wallet-types';
-import { BlockbookUrl } from '@wallet-types/blockbook';
 
 export type BackendType = 'blockbook' | 'electrum' | 'ripple';
 
@@ -26,7 +25,6 @@ export interface State {
     lastUsedFeeLevel: {
         [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']
     };
-    blockbookUrls: BlockbookUrl[];
     backends: Partial<Backends>;
 }
 
@@ -35,7 +33,6 @@ export const initialState: State = {
     discreetMode: false,
     enabledNetworks: ['btc'],
     lastUsedFeeLevel: {},
-    blockbookUrls: [],
     backends: {},
 };
 
@@ -63,26 +60,6 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                 } else {
                     delete draft.lastUsedFeeLevel[action.symbol];
                 }
-                break;
-
-            case WALLET_SETTINGS.SET_BLOCKBOOK_URLS:
-                draft.blockbookUrls = action.payload;
-                break;
-
-            case WALLET_SETTINGS.ADD_BLOCKBOOK_URL:
-                draft.blockbookUrls.push(action.payload);
-                break;
-
-            case WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL: {
-                const { coin, url } = action.payload;
-                draft.blockbookUrls = draft.blockbookUrls.filter(
-                    b => !(b.coin === coin && b.url === url),
-                );
-                break;
-            }
-
-            case WALLET_SETTINGS.CLEAR_TOR_BLOCKBOOK_URLS:
-                draft.blockbookUrls = draft.blockbookUrls.filter(u => !u.tor);
                 break;
 
             case WALLET_SETTINGS.SET_BACKEND: {
