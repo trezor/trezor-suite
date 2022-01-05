@@ -54,6 +54,13 @@ module.exports = {
                     filename: './workers/ripple-worker.[contenthash].js',
                 },
             },
+            {
+                test: /\workers\/blockfrost\/index/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/blockfrost-worker.[contenthash].js',
+                },
+            },
         ],
     },
     resolve: {
