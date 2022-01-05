@@ -3,7 +3,6 @@ import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@wallet-types';
-import { BlockbookUrl } from '@wallet-types/blockbook';
 import { NETWORKS } from '@wallet-config';
 import { toTorUrl } from '@suite-utils/tor';
 import type { BackendSettings } from '@wallet-reducers/settingsReducer';
@@ -17,10 +16,6 @@ export type WalletSettingsAction =
           symbol: Network['symbol'];
           feeLevel?: FeeLevel;
       }
-    | { type: typeof WALLET_SETTINGS.SET_BLOCKBOOK_URLS; payload: BlockbookUrl[] }
-    | { type: typeof WALLET_SETTINGS.ADD_BLOCKBOOK_URL; payload: BlockbookUrl }
-    | { type: typeof WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL; payload: BlockbookUrl }
-    | { type: typeof WALLET_SETTINGS.CLEAR_TOR_BLOCKBOOK_URLS }
     | {
           type: typeof WALLET_SETTINGS.SET_BACKEND;
           payload: BackendSettings;
@@ -85,52 +80,6 @@ export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     if (selectedAccount.status !== 'loaded') return;
     return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
 };
-
-export const addBlockbookUrl = (payload: BlockbookUrl): WalletSettingsAction => ({
-    type: WALLET_SETTINGS.ADD_BLOCKBOOK_URL,
-    payload,
-});
-
-export const removeBlockbookUrl = (payload: BlockbookUrl): WalletSettingsAction => ({
-    type: WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL,
-    payload,
-});
-
-export const setTorBlockbookUrls = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { blockbookUrls } = getState().wallet.settings;
-    const noTouchyCoins = blockbookUrls.filter(u => !u.tor).map(u => u.coin);
-    const coins = NETWORKS.filter(n => !n.accountType && !noTouchyCoins.includes(n.symbol)).map(
-        n => n.symbol,
-    );
-
-    const torBlockbook: BlockbookUrl[] = [];
-    const promises = coins.map(coin => TrezorConnect.getCoinInfo({ coin }));
-    const results = await Promise.all(promises);
-    results.forEach(resp => {
-        if (resp.success && resp.payload.blockchainLink?.type === 'blockbook') {
-            const coin = resp.payload.shortcut.toLowerCase();
-            const urls = resp.payload.blockchainLink.url;
-            if (urls.find(u => u.endsWith('trezor.io') !== undefined)) {
-                urls.forEach(u => {
-                    torBlockbook.push({
-                        coin,
-                        url: toTorUrl(u),
-                        tor: true,
-                    });
-                });
-            }
-        }
-    });
-
-    dispatch({
-        type: WALLET_SETTINGS.SET_BLOCKBOOK_URLS,
-        payload: [...blockbookUrls.filter(u => !u.tor), ...torBlockbook],
-    });
-};
-
-export const clearTorBlockbookUrl = () => ({
-    type: WALLET_SETTINGS.CLEAR_TOR_BLOCKBOOK_URLS,
-});
 
 export const setBackend = (payload: BackendSettings): WalletSettingsAction => ({
     type: WALLET_SETTINGS.SET_BACKEND,

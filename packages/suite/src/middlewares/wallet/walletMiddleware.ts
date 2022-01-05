@@ -55,10 +55,6 @@ const walletMiddleware =
             api.dispatch(blockchainActions.setCustomBackend(action.payload.coin));
         }
 
-        if (action.type === WALLET_SETTINGS.SET_BLOCKBOOK_URLS) {
-            api.dispatch(blockchainActions.setCustomBackend());
-        }
-
         const prevRouter = prevState.router;
         const nextRouter = api.getState().router;
         let resetReducers = action.type === SUITE.SELECT_DEVICE;
