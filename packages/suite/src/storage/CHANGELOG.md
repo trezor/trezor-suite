@@ -4,6 +4,7 @@
 
 -   added walletSettings.backends
 -   removed walletSettings.blockbookUrls
+-   added VTC bech32 accounts
 
 ## 24
 

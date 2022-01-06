@@ -253,4 +253,31 @@ export const migrate = async (
             cursor = await cursor.continue();
         }
     }
+
+    if (oldVersion < 25) {
+        let cursor = await transaction.objectStore('accounts').openCursor();
+        while (cursor) {
+            const account = cursor.value;
+            if (account.symbol === 'vtc' && account.accountType === 'normal') {
+                // change account type from normal to segwit
+                account.accountType = 'segwit';
+                cursor.update(account);
+            }
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
+        }
+
+        let discovery = await transaction.objectStore('discovery').openCursor();
+        while (discovery) {
+            const d = discovery.value;
+            // reset discovery
+            if (d.networks.includes('vtc')) {
+                d.index = 0;
+                d.loaded = 0;
+                discovery.update(d);
+            }
+            // eslint-disable-next-line no-await-in-loop
+            discovery = await discovery.continue();
+        }
+    }
 };
