@@ -55,6 +55,8 @@ export const getInitialState = ({ send, fees, selectedAccount }: Args = {}) => (
     resize: resizeReducer(undefined, { type: 'foo' } as any),
     guide: {},
     metadata: { enabled: false },
+    router: {},
+    modal: {},
 });
 
 type State = ReturnType<typeof getInitialState>;

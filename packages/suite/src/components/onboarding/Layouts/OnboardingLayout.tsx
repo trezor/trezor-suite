@@ -14,7 +14,6 @@ const Wrapper = styled.div`
     height: 100%;
     justify-content: center;
     background: ${props => props.theme.BG_LIGHT_GREY};
-    overflow: auto;
 `;
 
 const StyledProgressBar = styled(ProgressBar)`
@@ -37,6 +36,7 @@ const MaxWidth = styled.div`
     flex: 1;
     padding: 20px;
     align-items: center;
+    overflow: auto;
 `;
 
 const Header = styled.div`
