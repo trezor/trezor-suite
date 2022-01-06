@@ -84,6 +84,7 @@ const SettingsMenu = () => {
             titleContent={
                 <CloseButton
                     onClick={() => goto(settingsBackRoute.name, settingsBackRoute.params)}
+                    data-test="@settings/menu/close"
                 />
             }
         />
