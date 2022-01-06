@@ -41,16 +41,17 @@ import AdvancedCoinSettings from './AdvancedCoinSettings';
 import AddToken from './AddToken';
 import SafetyChecks from './SafetyChecks';
 import SendAoppMessage from './SendAoppMessage';
+import { useGuide } from '@guide-hooks';
 
 import type { AcquiredDevice } from '@suite-types';
 
 const useSharedProps = () => {
+    const { guideOpen } = useGuide();
     const props = useSelector(state => ({
         modal: state.modal,
         device: state.suite.device,
         devices: state.devices,
         router: state.router,
-        guideOpen: state.guide.open,
     }));
     const actions = useActions({
         onCancel: allModalActions.onCancel,
@@ -61,6 +62,7 @@ const useSharedProps = () => {
     return {
         ...props,
         ...actions,
+        guideOpen,
     };
 };
 

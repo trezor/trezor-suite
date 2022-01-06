@@ -1,18 +1,18 @@
 import { useActions, useSelector, useAnalytics } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { getNodeById } from '@suite-utils/guide';
+import { useGuide } from '@guide-hooks';
 
 export const useGuideOpenNode = () => {
     const analytics = useAnalytics();
+    const { guideOpen, openGuide } = useGuide();
 
-    const { openGuide, openNode } = useActions({
-        openGuide: guideActions.open,
+    const { openNode } = useActions({
         openNode: guideActions.openNode,
     });
 
-    const { indexNode, open } = useSelector(state => ({
+    const { indexNode } = useSelector(state => ({
         indexNode: state.guide.indexNode,
-        open: state.guide.open,
     }));
 
     const openNodeById = (id: string) => {
@@ -28,7 +28,7 @@ export const useGuideOpenNode = () => {
 
         openNode(node);
 
-        if (!open) {
+        if (!guideOpen) {
             openGuide();
         }
 

@@ -24,6 +24,11 @@ const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
     border-radius: 16px;
     max-width: 560px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+        width: 95vw;
+    }
 `;
 
 const Overlay = styled.div`
@@ -32,7 +37,6 @@ const Overlay = styled.div`
     width: 100%;
     height: 100%;
     top: 0px;
-    left: 0;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
     display: flex;
@@ -47,6 +51,10 @@ const Content = styled.div`
     flex-direction: column;
     padding: 10px 14px;
     margin-left: 24px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-left: 0px;
+    }
 `;
 
 const Bottom = styled.div`
@@ -103,6 +111,10 @@ const StyledDeviceAnimation = styled(DeviceAnimation)`
     flex: 0 0 200px;
     width: 200px;
     height: 200px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        align-self: center;
+    }
 `;
 
 const StyledConfirmImage = styled(DeviceConfirmImage)`

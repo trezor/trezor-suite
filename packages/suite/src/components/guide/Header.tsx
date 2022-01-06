@@ -17,6 +17,7 @@ const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
     box-shadow: none;
     border-bottom: 1px solid transparent;
     transition: all 0.5s ease;
+    white-space: nowrap;
 
     ${props =>
         props.isScrolled &&

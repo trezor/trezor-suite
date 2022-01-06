@@ -41,6 +41,7 @@ const FeedbackButtonLabel = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     width: 100%;
+    white-space: nowrap;
 `;
 
 const FeedbackButtonRightIcon = styled(Icon)`

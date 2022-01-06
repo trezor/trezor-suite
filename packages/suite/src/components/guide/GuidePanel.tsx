@@ -1,6 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from 'react';
+import styled, { css } from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
 
+import { variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import {
     FeedbackTypeSelection,
@@ -9,20 +11,29 @@ import {
     GuideCategory,
     Feedback,
 } from '@guide-views';
+import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.div`
-    background: ${props => props.theme.BG_WHITE};
-    display: flex;
-    flex-direction: column;
+const GuideWrapper = styled.div<{ isModalOpen?: boolean }>`
+    z-index: ${variables.Z_INDEX.GUIDE_PANEL};
+    height: 100%;
+
+    ${props =>
+        props.isModalOpen &&
+        css`
+            z-index: ${variables.Z_INDEX.GUIDE_PANEL_BESIDE_MODAL};
+            top: 0;
+            right: 0;
+            position: absolute;
+        `}
 `;
 
-const ViewWrapper = styled.div`
+const MotionGuide = styled(motion.div)`
     height: 100%;
+    border-left: 1px solid ${props => props.theme.STROKE_GREY};
     display: flex;
 `;
 
 type GuidePanelProps = {
-    open?: boolean;
     className?: string;
 };
 
@@ -31,17 +42,47 @@ const GuidePanel = (props: GuidePanelProps) => {
         activeView: state.guide.view,
     }));
 
+    const { guideOpen, isModalOpen } = useGuide();
+
+    // if guide is open, do not animate guide opening if transitioning between onboarding, welcome and suite layout
+    const [guideAlreadyOpen, setGuideAlreadyOpen] = useState(guideOpen);
+    useEffect(() => {
+        setGuideAlreadyOpen(false);
+    }, []);
+
     return (
-        <Wrapper {...props}>
-            <ViewWrapper>
-                {activeView === 'GUIDE_DEFAULT' && <GuideDefault />}
-                {activeView === 'GUIDE_PAGE' && <GuidePage />}
-                {activeView === 'GUIDE_CATEGORY' && <GuideCategory />}
-                {activeView === 'FEEDBACK_TYPE_SELECTION' && <FeedbackTypeSelection />}
-                {activeView === 'FEEDBACK_BUG' && <Feedback type="BUG" />}
-                {activeView === 'FEEDBACK_SUGGESTION' && <Feedback type="SUGGESTION" />}
-            </ViewWrapper>
-        </Wrapper>
+        <GuideWrapper isModalOpen={isModalOpen}>
+            <AnimatePresence>
+                {guideOpen && (
+                    <MotionGuide
+                        data-test="@guide/panel"
+                        initial={
+                            guideAlreadyOpen
+                                ? {
+                                      width: variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH,
+                                  }
+                                : { width: 0 }
+                        }
+                        animate={{
+                            width: variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH,
+                            transition: { duration: 0.3, bounce: 0 },
+                        }}
+                        exit={{
+                            width: 0,
+                            transition: { duration: 0.3, bounce: 0 },
+                        }}
+                        {...props}
+                    >
+                        {activeView === 'GUIDE_DEFAULT' && <GuideDefault />}
+                        {activeView === 'GUIDE_PAGE' && <GuidePage />}
+                        {activeView === 'GUIDE_CATEGORY' && <GuideCategory />}
+                        {activeView === 'FEEDBACK_TYPE_SELECTION' && <FeedbackTypeSelection />}
+                        {activeView === 'FEEDBACK_BUG' && <Feedback type="BUG" />}
+                        {activeView === 'FEEDBACK_SUGGESTION' && <Feedback type="SUGGESTION" />}
+                    </MotionGuide>
+                )}
+            </AnimatePresence>
+        </GuideWrapper>
     );
 };
 
