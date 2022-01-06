@@ -355,7 +355,7 @@ describe('Preloader component', () => {
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId(/TR_DEVICE_IN_BOOTLOADER/)).not.toBeNull();
-        expect(findByTestId('TR_RECONNECT_IN_NORMAL')).not.toBeNull();
+        expect(findByTestId('TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT')).not.toBeNull();
 
         unmount();
     });

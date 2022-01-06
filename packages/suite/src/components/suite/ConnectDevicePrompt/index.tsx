@@ -7,6 +7,7 @@ import { DeviceAnimation } from '@onboarding-components';
 import { Translation } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
+import type { PrerequisiteType } from '@suite-types';
 
 const Wrapper = styled(animated.div)`
     display: flex;
@@ -48,19 +49,40 @@ const Text = styled.div`
 `;
 
 interface Props {
-    children?: React.ReactNode;
     connected: boolean;
     showWarning: boolean;
     allowSwitchDevice?: boolean;
+    prerequisite?: PrerequisiteType;
 }
 
-const getDefaultMessage = (connected: boolean, showWarning: boolean) => {
-    if (connected) {
-        return !showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';
+const getMessageId = ({
+    connected,
+    showWarning,
+    prerequisite,
+}: {
+    connected: boolean;
+    showWarning: boolean;
+    prerequisite?: PrerequisiteType;
+}) => {
+    switch (prerequisite) {
+        case 'transport-bridge':
+            return 'TR_TREZOR_BRIDGE_IS_NOT_RUNNING';
+        case 'device-bootloader':
+            return 'TR_DEVICE_CONNECTED_BOOTLOADER';
+        default: {
+            if (connected) {
+                return !showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';
+            }
+            return 'TR_CONNECT_YOUR_DEVICE';
+        }
     }
-    return 'TR_CONNECT_YOUR_DEVICE';
 };
-const ConnectDevicePrompt = ({ children, connected, showWarning, allowSwitchDevice }: Props) => {
+const ConnectDevicePrompt = ({
+    prerequisite,
+    connected,
+    showWarning,
+    allowSwitchDevice,
+}: Props) => {
     const theme = useTheme();
     const { device } = useDevice();
     const { goto } = useActions({
@@ -97,7 +119,7 @@ const ConnectDevicePrompt = ({ children, connected, showWarning, allowSwitchDevi
                 </Checkmark>
             </ImageWrapper>
             <Text>
-                {children || <Translation id={getDefaultMessage(connected, showWarning)} />}
+                <Translation id={getMessageId({ connected, showWarning, prerequisite })} />
                 {allowSwitchDevice && (
                     <Button
                         variant="tertiary"
