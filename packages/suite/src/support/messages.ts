@@ -1741,6 +1741,10 @@ export default defineMessages({
         defaultMessage: 'Device not connected',
         id: 'TR_DEVICE_NOT_CONNECTED',
     },
+    TR_DEVICE_FW_UNKNOWN: {
+        defaultMessage: 'Unknown',
+        id: 'TR_DEVICE_FW_UNKNOWN',
+    },
     TR_DEVICE_LABEL_IS_NOT_CONNECTED: {
         defaultMessage: 'Device {deviceLabel} is not connected',
         id: 'TR_DEVICE_LABEL_IS_NOT_CONNECTED',
@@ -3418,6 +3422,11 @@ export default defineMessages({
         defaultMessage: 'Your current firmware version is {version}',
         id: 'TR_YOUR_CURRENT_FIRMWARE',
     },
+    TR_YOUR_CURRENT_FIRMWARE_UNKNOWN: {
+        defaultMessage:
+            "It's not possible to detect current firmware version in bootloader mode on your device.",
+        id: 'TR_YOUR_CURRENT_FIRMWARE_UNKNOWN',
+    },
     TR_YOUR_CURRENT_VERSION: {
         defaultMessage: 'You are currently running version {version}',
         id: 'TR_YOUR_CURRENT_VERSION',
@@ -3770,6 +3779,10 @@ export default defineMessages({
     TR_UP_TO_DATE: {
         defaultMessage: 'Up to date',
         id: 'TR_UP_TO_DATE',
+    },
+    TR_INSTALL_LATEST_FW: {
+        defaultMessage: 'Install latest',
+        id: 'TR_INSTALL_LATEST_FW',
     },
     TR_LIVE: {
         id: 'TR_LIVE',

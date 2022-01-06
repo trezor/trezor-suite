@@ -10,6 +10,7 @@ import { useDevice, useFirmware, useActions } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { TrezorDevice } from '@suite/types/suite';
+import { getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
 
 interface Props {
     cachedDevice?: TrezorDevice;
@@ -74,6 +75,14 @@ const FirmwareInitial = ({
         return <ConnectDevicePromptManager device={device} />;
     }
 
+    const currentFwVersion = getFwVersion(device);
+    const availableFwVersion = getFwUpdateVersion(device);
+    const hasLatestAvailableFw = !!(
+        availableFwVersion &&
+        currentFwVersion &&
+        availableFwVersion === currentFwVersion
+    );
+
     if (['none', 'unknown'].includes(device.firmware)) {
         // No firmware installed
         // Device without firmware is already in bootloader mode even if it doesn't report it
@@ -110,7 +119,7 @@ const FirmwareInitial = ({
                          */
                         required: device.firmware === 'required',
                         standaloneFwUpdate,
-                        reinstall: device.firmware === 'valid',
+                        reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
                     })}
                 />
             ),

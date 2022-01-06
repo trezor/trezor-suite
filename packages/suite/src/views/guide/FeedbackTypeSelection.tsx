@@ -87,7 +87,7 @@ const FeedbackTypeSelection = () => {
 
     const firmwareUpToDate = device?.firmware === 'valid';
     const firmwareVersion = device?.features ? (
-        getFwVersion(device)
+        getFwVersion(device) || <Translation id="TR_DEVICE_FW_UNKNOWN" />
     ) : (
         <Translation id="TR_DEVICE_NOT_CONNECTED" />
     );

@@ -5,8 +5,9 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-comp
 import { FIRMWARE_COMMIT_URL } from '@suite-constants/urls';
 import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly, getFwUpdateVersion } from '@suite-utils/device';
 import { Button, Tooltip } from '@trezor/components';
+import { AcquiredDevice } from '@suite-types';
 
 const Version = styled.div`
     span {
@@ -28,6 +29,30 @@ interface Props {
     isDeviceLocked: boolean;
 }
 
+const getButtonLabelId = ({
+    availableFwVersion,
+    currentFwVersion,
+    device,
+}: {
+    availableFwVersion: string | null;
+    currentFwVersion: string | null;
+    device: AcquiredDevice;
+}) => {
+    if (currentFwVersion && availableFwVersion && currentFwVersion === availableFwVersion) {
+        return 'TR_UP_TO_DATE';
+    }
+    switch (device.firmware) {
+        case 'valid':
+            return 'TR_UP_TO_DATE';
+        case 'required':
+        case 'outdated':
+            return 'TR_UPDATE_AVAILABLE';
+        default:
+            // FW unknown or none
+            return 'TR_INSTALL_LATEST_FW';
+    }
+};
+
 const FirmwareVersion = ({ isDeviceLocked }: Props) => {
     const { device } = useDevice();
     const { goto } = useActions({
@@ -39,37 +64,44 @@ const FirmwareVersion = ({ isDeviceLocked }: Props) => {
         return null;
     }
 
-    const revision = device?.features?.revision;
+    const currentFwVersion = getFwVersion(device);
+    const availableFwVersion = getFwUpdateVersion(device);
+    const { revision } = device.features;
+
     return (
         <SectionItem>
             <TextColumn
                 title={<Translation id="TR_FIRMWARE_VERSION" />}
                 description={
-                    <Version>
-                        <Translation
-                            id="TR_YOUR_CURRENT_FIRMWARE"
-                            values={{
-                                version: (
-                                    <VersionTooltip content={revision} disabled={!revision}>
-                                        <TrezorLink
-                                            href={FIRMWARE_COMMIT_URL + revision}
-                                            variant="nostyle"
-                                        >
-                                            <VersionButton
-                                                variant="tertiary"
-                                                icon={revision ? 'EXTERNAL_LINK' : undefined}
-                                                alignIcon="right"
-                                                disabled={!revision}
+                    currentFwVersion ? (
+                        <Version>
+                            <Translation
+                                id="TR_YOUR_CURRENT_FIRMWARE"
+                                values={{
+                                    version: (
+                                        <VersionTooltip content={revision} disabled={!revision}>
+                                            <TrezorLink
+                                                href={FIRMWARE_COMMIT_URL + revision}
+                                                variant="nostyle"
                                             >
-                                                {getFwVersion(device)}
-                                                {isBitcoinOnly(device) && ' (bitcoin-only)'}
-                                            </VersionButton>
-                                        </TrezorLink>
-                                    </VersionTooltip>
-                                ),
-                            }}
-                        />
-                    </Version>
+                                                <VersionButton
+                                                    variant="tertiary"
+                                                    icon={revision ? 'EXTERNAL_LINK' : undefined}
+                                                    alignIcon="right"
+                                                    disabled={!revision}
+                                                >
+                                                    {currentFwVersion}
+                                                    {isBitcoinOnly(device) && ' (bitcoin-only)'}
+                                                </VersionButton>
+                                            </TrezorLink>
+                                        </VersionTooltip>
+                                    ),
+                                }}
+                            />
+                        </Version>
+                    ) : (
+                        <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
+                    )
                 }
             />
             <ActionColumn>
@@ -84,10 +116,9 @@ const FirmwareVersion = ({ isDeviceLocked }: Props) => {
                     data-test="@settings/device/update-button"
                     isDisabled={isDeviceLocked}
                 >
-                    {device && ['required', 'outdated'].includes(device.firmware) && (
-                        <Translation id="TR_UPDATE_AVAILABLE" />
-                    )}
-                    {device && device.firmware === 'valid' && <Translation id="TR_UP_TO_DATE" />}
+                    <Translation
+                        id={getButtonLabelId({ device, currentFwVersion, availableFwVersion })}
+                    />
                 </ActionButton>
             </ActionColumn>
         </SectionItem>
