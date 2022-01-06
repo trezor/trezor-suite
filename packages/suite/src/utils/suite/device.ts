@@ -135,8 +135,18 @@ export const getDeviceModel = (device: TrezorDevice) => {
     return features && features.major_version > 1 ? 'T' : '1';
 };
 
-export const getFwVersion = (device: KnownDevice) => {
+export const getFwVersion = (device?: KnownDevice) => {
+    if (!device?.features) {
+        return '';
+    }
     const { features } = device;
+
+    if (features.bootloader_mode) {
+        return features.fw_major
+            ? `${features.fw_major}.${features.fw_minor}.${features.fw_patch}`
+            : '';
+    }
+
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
 };
 
