@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
-import { ConnectDevicePrompt, Translation } from '@suite-components';
+import { ConnectDevicePrompt } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 import { getStatus, deviceNeedsAttention } from '@suite-utils/device';
 import { useSelector } from '@suite-hooks';
@@ -58,11 +58,8 @@ const PrerequisitesGuide = ({ prerequisite, padded, allowSwitchDevice }: Props) 
                 connected={!!device}
                 showWarning={!!(device && deviceNeedsAttention(getStatus(device)))}
                 allowSwitchDevice={allowSwitchDevice && devices > 1}
-            >
-                {prerequisite === 'transport-bridge' && (
-                    <Translation id="TR_TREZOR_BRIDGE_IS_NOT_RUNNING" />
-                )}
-            </ConnectDevicePrompt>
+                prerequisite={prerequisite}
+            />
             {(() => {
                 switch (prerequisite) {
                     case 'transport-bridge':

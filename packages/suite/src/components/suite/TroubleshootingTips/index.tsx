@@ -54,6 +54,13 @@ const ItemContent = styled.div`
     width: 100%;
 `;
 
+const ItemAction = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    padding-left: 24px;
+`;
+
 const ContactSupport = styled.div`
     display: flex;
     justify-content: space-between;
@@ -78,6 +85,7 @@ interface Item {
     description?: React.ReactNode;
     hide?: boolean;
     noBullet?: boolean;
+    action?: React.ReactNode;
 }
 
 interface Props {
@@ -108,6 +116,7 @@ const TroubleshootingTips = ({ label, items, cta, offerWebUsb, opened }: Props) 
                                 <ItemLabel>{item.heading}</ItemLabel>
                                 <ItemDescription>{item.description}</ItemDescription>
                             </ItemContent>
+                            {item.action && <ItemAction>{item.action}</ItemAction>}
                         </Item>
                     ))}
             </Items>
