@@ -1,16 +1,15 @@
-import React, { useState, createContext, useEffect, useCallback } from 'react';
-import styled, { css } from 'styled-components';
-import { KEYBOARD_CODE, variables } from '@trezor/components';
+import React, { useState, createContext } from 'react';
+import styled from 'styled-components';
+
+import { variables } from '@trezor/components';
 import SuiteBanners from '@suite-components/Banners';
+import MenuSecondary from '@suite-components/MenuSecondary';
 import { Metadata } from '@suite-components';
 import { GuidePanel, GuideButton } from '@guide-components';
-import MenuSecondary from '@suite-components/MenuSecondary';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import NavigationBar from '../NavigationBar';
-import { useLayoutSize, useSelector, useActions, useAnalytics, useDevice } from '@suite-hooks';
-import * as guideActions from '@suite-actions/guideActions';
-import { MODAL } from '@suite-actions/constants';
+import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -20,8 +19,7 @@ const PageWrapper = styled.div`
     overflow-x: hidden;
 `;
 
-const Body = styled.div<{ isGuideAboveModal?: boolean }>`
-    position: ${props => (props.isGuideAboveModal ? `unset` : `relative`)};
+const Body = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -30,23 +28,18 @@ const Body = styled.div<{ isGuideAboveModal?: boolean }>`
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
-const Columns = styled.div<{ guideOpen?: boolean }>`
+const Columns = styled.div`
     display: flex;
     flex-direction: row;
     flex: 1 0 100%;
     overflow: auto;
     padding: 0;
     transition: all 0.3s ease;
-
-    ${props =>
-        props.guideOpen &&
-        css`
-            padding: 0 ${variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH} 0 0;
-        `}
 `;
 
 const AppWrapper = styled.div`
     display: flex;
+    flex: 1;
     color: ${props => props.theme.TYPE_DARK_GREY};
     background: ${props => props.theme.BG_GREY};
     flex-direction: column;
@@ -84,34 +77,6 @@ const DefaultPaddings = styled.div`
     }
 `;
 
-const StyledGuidePanel = styled(GuidePanel)<{ open?: boolean; isModalOpen?: boolean }>`
-    height: 100%;
-    width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH};
-    flex: 0 0 ${variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH};
-    z-index: ${props =>
-        props.isModalOpen
-            ? variables.Z_INDEX.GUIDE_PANEL_BESIDE_MODAL
-            : variables.Z_INDEX.GUIDE_PANEL};
-    border-left: 1px solid ${props => props.theme.STROKE_GREY};
-    position: absolute;
-    right: 0;
-    transform: translateX(100%);
-    transition: all 0.3s ease;
-
-    ${props =>
-        props.open &&
-        css`
-            transform: translateX(0);
-        `}
-
-    ${props =>
-        props.isModalOpen &&
-        css`
-            top: 0;
-            bottom: 0;
-        `}
-`;
-
 interface MobileBodyProps {
     url: string;
     menu?: React.ReactNode;
@@ -124,7 +89,6 @@ interface MobileBodyProps {
 
 interface NormalBodyProps extends MobileBodyProps {
     isMenuInline: boolean;
-    isModalOpen?: boolean;
 }
 
 interface LayoutContextI {
@@ -155,17 +119,9 @@ const ScrollAppWrapper = ({ url, children }: ScrollAppWrapperProps) => {
     return <AppWrapper ref={ref}>{children}</AppWrapper>;
 };
 
-const BodyNormal = ({
-    url,
-    menu,
-    appMenu,
-    children,
-    guideOpen,
-    isMenuInline,
-    isModalOpen,
-}: NormalBodyProps) => (
-    <Body isGuideAboveModal={isModalOpen && guideOpen}>
-        <Columns guideOpen={guideOpen}>
+const BodyNormal = ({ url, menu, appMenu, children, isMenuInline }: NormalBodyProps) => (
+    <Body>
+        <Columns>
             {!isMenuInline && menu && <MenuSecondary>{menu}</MenuSecondary>}
             <ScrollAppWrapper url={url}>
                 {isMenuInline && menu}
@@ -174,13 +130,7 @@ const BodyNormal = ({
                     <MaxWidthWrapper>{children}</MaxWidthWrapper>
                 </DefaultPaddings>
             </ScrollAppWrapper>
-            {guideOpen && (
-                <StyledGuidePanel
-                    isModalOpen={isModalOpen}
-                    data-test="@guide/panel"
-                    open={guideOpen}
-                />
-            )}
+            <GuidePanel />
         </Columns>
     </Body>
 );
@@ -198,44 +148,11 @@ const BodyMobile = ({ url, menu, appMenu, children }: MobileBodyProps) => (
 );
 
 const SuiteLayout: React.FC = ({ children }) => {
-    const analytics = useAnalytics();
-
     const { isMobileLayout, layoutSize } = useLayoutSize();
-    const { router, guideOpen, isModalOpen } = useSelector(state => ({
+    const { router, guideOpen } = useSelector(state => ({
         router: state.router,
         guideOpen: state.guide.open,
-        // 2 types of modals exist. 1. redux 'modal' based, 2. redux 'router' based
-        isModalOpen:
-            state.modal.context !== MODAL.CONTEXT_NONE || state.router.route?.isForegroundApp,
     }));
-    const { openGuide, closeGuide } = useActions({
-        openGuide: guideActions.open,
-        closeGuide: guideActions.close,
-    });
-
-    const onGuideKeys = useCallback(
-        (event: KeyboardEvent) => {
-            if (event.key === KEYBOARD_CODE.ESCAPE) {
-                if (isModalOpen) return;
-                if (guideOpen) {
-                    closeGuide();
-                }
-            }
-
-            if (event.key === KEYBOARD_CODE.FUNCTION_KEY_ONE) {
-                if (!guideOpen) openGuide();
-                else closeGuide();
-            }
-        },
-        [guideOpen, isModalOpen, closeGuide, openGuide],
-    );
-
-    useEffect(() => {
-        document.addEventListener('keydown', onGuideKeys);
-        return () => {
-            document.removeEventListener('keydown', onGuideKeys);
-        };
-    }, [onGuideKeys]);
 
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
@@ -274,9 +191,7 @@ const SuiteLayout: React.FC = ({ children }) => {
                         menu={menu}
                         appMenu={appMenu}
                         url={router.url}
-                        guideOpen={guideOpen}
                         isMenuInline={isMenuInline}
-                        isModalOpen={isModalOpen}
                     >
                         {children}
                     </BodyNormal>
@@ -287,16 +202,7 @@ const SuiteLayout: React.FC = ({ children }) => {
                     </BodyMobile>
                 )}
             </LayoutContext.Provider>
-            {!isMobileLayout && (
-                <GuideButton
-                    onClick={() => {
-                        openGuide();
-                        analytics.report({
-                            type: 'menu/guide',
-                        });
-                    }}
-                />
-            )}
+            <GuideButton />
         </PageWrapper>
     );
 };

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
+
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
 import { Translation, SettingsDropdown } from '@suite-components';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
@@ -8,6 +10,8 @@ import TrezorLink from '@suite-components/TrezorLink';
 import { isWeb } from '@suite-utils/env';
 import { TREZOR_URL, SUITE_URL } from '@suite-constants/urls';
 import { resolveStaticPath } from '@suite-utils/build';
+import { useSelector } from '@suite-hooks';
+import { GuideButton, GuidePanel } from '@guide-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,19 +27,20 @@ const Expander = styled.div`
     flex: 1;
 `;
 
-const Welcome = styled.div`
-    display: flex;
+const WelcomeWrapper = styled.div`
+    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
+        display: none;
+    }
+`;
+
+const MotionWelcome = styled(motion.div)`
     flex-direction: column;
-    flex: 2;
-    min-width: 380px;
-    max-width: 660px;
     justify-content: center;
     align-items: center;
     background: ${props => props.theme.BG_LIGHT_GREY};
-
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        display: none;
-    }
+    display: flex;
+    height: 100%;
+    overflow: hidden;
 `;
 
 const WelcomeTitle = styled(H1)`
@@ -84,14 +89,33 @@ const SettingsWrapper = styled.div`
     align-self: flex-end;
 `;
 
-interface Props {
-    children: React.ReactNode;
-}
+// welcome bar should take two-fifths of screen (minus padding) unless screen is too narrow/wide
+const getWelcomeBarWidth = (width: number | null) => {
+    if (width! * 0.4 < 380) return '380px';
+    if (width! * 0.4 > 660) return '660px';
+
+    return 'calc(40vw - 16px)';
+};
 
 // WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
 // used in Preloader and Onboarding
-const WelcomeLayout = ({ children }: Props) => {
+const WelcomeLayout: React.FC = ({ children }) => {
     const { banner } = useMessageSystem();
+    const { guideOpen, screenWidth } = useSelector(state => ({
+        guideOpen: state.guide.open,
+        screenWidth: state.resize.screenWidth,
+    }));
+
+    // do not animate welcome bar on initial load
+    const [firstRenderDone, setFirstRenderDone] = useState(false);
+    useEffect(() => {
+        setFirstRenderDone(true);
+    }, []);
+    const [welcomeBarWidth, setWelcomeBarWidth] = useState(getWelcomeBarWidth(screenWidth));
+    useEffect(() => {
+        setWelcomeBarWidth(getWelcomeBarWidth(screenWidth));
+    }, [screenWidth]);
+
     return (
         <Wrapper>
             {banner && (
@@ -99,35 +123,71 @@ const WelcomeLayout = ({ children }: Props) => {
                     <MessageSystemBanner message={banner} />
                 </BannerWrapper>
             )}
-            <Welcome>
-                <Expander>
-                    <TrezorLogo type="suite" width="128px" />
-                    <WelcomeTitle>
-                        <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
-                    </WelcomeTitle>
-                </Expander>
-                <Bottom>
-                    {isWeb() && (
-                        <StyledTrezorLink size="small" variant="nostyle" href={SUITE_URL}>
-                            <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                                <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
-                            </Button>
-                        </StyledTrezorLink>
+            <WelcomeWrapper>
+                <AnimatePresence>
+                    {!guideOpen && (
+                        <MotionWelcome
+                            initial={
+                                !firstRenderDone
+                                    ? {
+                                          width: welcomeBarWidth,
+                                      }
+                                    : { width: 0 }
+                            }
+                            animate={{
+                                width: welcomeBarWidth,
+                                transition: { duration: 0.3, bounce: 0 },
+                            }}
+                            exit={{
+                                width: 0,
+                                transition: { duration: 0.3, bounce: 0 },
+                            }}
+                        >
+                            <Expander>
+                                <TrezorLogo type="suite" width="128px" />
+                                <WelcomeTitle>
+                                    <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
+                                </WelcomeTitle>
+                            </Expander>
+                            <Bottom>
+                                {isWeb() && (
+                                    <StyledTrezorLink
+                                        size="small"
+                                        variant="nostyle"
+                                        href={SUITE_URL}
+                                    >
+                                        <Button
+                                            variant="tertiary"
+                                            icon="EXTERNAL_LINK"
+                                            alignIcon="right"
+                                        >
+                                            <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
+                                        </Button>
+                                    </StyledTrezorLink>
+                                )}
+                                <TrezorLink size="small" variant="nostyle" href={TREZOR_URL}>
+                                    <Button
+                                        variant="tertiary"
+                                        icon="EXTERNAL_LINK"
+                                        alignIcon="right"
+                                    >
+                                        trezor.io
+                                    </Button>
+                                </TrezorLink>
+                            </Bottom>
+                        </MotionWelcome>
                     )}
-                    <TrezorLink size="small" variant="nostyle" href={TREZOR_URL}>
-                        <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                            trezor.io
-                        </Button>
-                    </TrezorLink>
-                </Bottom>
-            </Welcome>
-
+                </AnimatePresence>
+            </WelcomeWrapper>
             <Content>
                 <SettingsWrapper>
                     <SettingsDropdown />
                 </SettingsWrapper>
                 {children}
             </Content>
+
+            <GuideButton />
+            <GuidePanel />
         </Wrapper>
     );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+
 import { SUITE } from '@suite-actions/constants';
 import { SuiteLayout } from '@suite-components';
 import InitialLoading from './components/InitialLoading';
@@ -15,8 +16,9 @@ import Backup from '@backup-views';
 import Onboarding from '@onboarding-views';
 import { getPrerequisites } from '@suite-utils/prerequisites';
 import ErrorPage from '@suite-views/error';
-
 import { Bridge, Udev, SwitchDevice, Version } from '@suite-views';
+import { useGuideKeyboard } from '@guide-hooks';
+
 import type { AppState } from '@suite-types';
 
 const getForegroundApplication = (route: AppState['router']['route']) => {
@@ -99,6 +101,8 @@ const Preloader = ({ children, hideModals = false }: Props) => {
     // pass common params to "foreground application"
     // every app is dealing with "prerequisites" and other params (like action modals) on they own.
     const ForegroundApplication = getForegroundApplication(router.route);
+
+    useGuideKeyboard();
 
     if (!hideModals && ForegroundApplication) {
         const cancelable = router.params

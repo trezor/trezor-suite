@@ -34,7 +34,7 @@ const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px',
 const ModalOverlay = styled.div<{ guidePanelSize: string }>`
     position: fixed;
     z-index: 10000;
-    width: ${props => `calc(100% - ${props.guidePanelSize})`};
+    width: 100%;
     height: 100%;
     top: 0px;
     left: 0;
@@ -45,6 +45,10 @@ const ModalOverlay = styled.div<{ guidePanelSize: string }>`
     align-items: center;
     overflow: auto;
     justify-content: center;
+
+    > * {
+        margin-right: ${props => props.guidePanelSize};
+    }
 `;
 
 const Header = styled.div`

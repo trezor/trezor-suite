@@ -1,7 +1,10 @@
 import React, { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/build';
+import { useLayoutSize, useActions, useAnalytics } from '@suite-hooks';
+import * as guideActions from '@suite-actions/guideActions';
 
 const Wrapper = styled.button`
     display: flex;
@@ -25,10 +28,34 @@ const Wrapper = styled.button`
     }
 `;
 
-const GuideButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => (
-    <Wrapper {...props} data-test="@guide/button-open">
-        <img src={resolveStaticPath('/images/suite/lightbulb.svg')} width="18" height="18" alt="" />
-    </Wrapper>
-);
+const GuideButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+    const { isMobileLayout } = useLayoutSize();
+    const { openGuide } = useActions({
+        openGuide: guideActions.open,
+    });
+    const analytics = useAnalytics();
+
+    if (isMobileLayout) return null;
+
+    return (
+        <Wrapper
+            {...props}
+            data-test="@guide/button-open"
+            onClick={() => {
+                openGuide();
+                analytics.report({
+                    type: 'menu/guide',
+                });
+            }}
+        >
+            <img
+                src={resolveStaticPath('/images/suite/lightbulb.svg')}
+                width="18"
+                height="18"
+                alt=""
+            />
+        </Wrapper>
+    );
+};
 
 export default GuideButton;
