@@ -440,6 +440,21 @@ export const getBip43Type = [
         result: 'bip44',
     },
     {
+        description: 'vertcoin segwit',
+        path: "m/84'/28'/0'",
+        result: 'bip84',
+    },
+    {
+        description: 'vertcoin legacy segwit',
+        path: "m/49'/28'/0'",
+        result: 'bip49',
+    },
+    {
+        description: 'vertcoin legacy',
+        path: "m/44'/28'/0'",
+        result: 'bip44',
+    },
+    {
         description: 'unknown',
         path: 'm/',
         result: 'unknown',

@@ -241,6 +241,20 @@ const networks = [
         name: 'Vertcoin',
         networkType: 'bitcoin',
         symbol: 'vtc',
+        bip43Path: "m/84'/28'/i'",
+        hasSignVerify: true,
+        decimals: 8,
+        explorer: {
+            tx: 'https://vtc1.trezor.io/tx/',
+            account: 'https://vtc1.trezor.io/xpub/',
+        },
+        features: ['sign-verify'],
+    },
+    {
+        name: 'Vertcoin (segwit)',
+        networkType: 'bitcoin',
+        accountType: 'segwit',
+        symbol: 'vtc',
         bip43Path: "m/49'/28'/i'",
         decimals: 8,
         explorer: {
