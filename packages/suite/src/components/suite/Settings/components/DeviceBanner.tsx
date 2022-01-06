@@ -36,7 +36,7 @@ interface Props {
 const DeviceBanner = ({ title, description }: Props) => {
     const { device } = useDevice();
     return (
-        <Wrapper>
+        <Wrapper data-test="@settings/device/disconnected-device-banner">
             <DeviceBadge type="CONNECT" shape="CIRCLE" size={64} device={device} />
             <Column>
                 <P weight="bold">{title}</P>
