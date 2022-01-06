@@ -39,37 +39,43 @@ const CheckRecoverySeed = ({ isDeviceLocked }: Props) => {
         return null;
     }
 
-    const revision = device?.features?.revision;
+    const currentFwVersion = getFwVersion(device);
+    const { revision } = device.features;
+
     return (
         <SectionItem>
             <TextColumn
                 title={<Translation id="TR_FIRMWARE_VERSION" />}
                 description={
-                    <Version>
-                        <Translation
-                            id="TR_YOUR_CURRENT_FIRMWARE"
-                            values={{
-                                version: (
-                                    <VersionTooltip content={revision} disabled={!revision}>
-                                        <TrezorLink
-                                            href={FIRMWARE_COMMIT_URL + revision}
-                                            variant="nostyle"
-                                        >
-                                            <VersionButton
-                                                variant="tertiary"
-                                                icon={revision ? 'EXTERNAL_LINK' : undefined}
-                                                alignIcon="right"
-                                                disabled={!revision}
+                    currentFwVersion ? (
+                        <Version>
+                            <Translation
+                                id="TR_YOUR_CURRENT_FIRMWARE"
+                                values={{
+                                    version: (
+                                        <VersionTooltip content={revision} disabled={!revision}>
+                                            <TrezorLink
+                                                href={FIRMWARE_COMMIT_URL + revision}
+                                                variant="nostyle"
                                             >
-                                                {getFwVersion(device)}
-                                                {isBitcoinOnly(device) && ' (bitcoin-only)'}
-                                            </VersionButton>
-                                        </TrezorLink>
-                                    </VersionTooltip>
-                                ),
-                            }}
-                        />
-                    </Version>
+                                                <VersionButton
+                                                    variant="tertiary"
+                                                    icon={revision ? 'EXTERNAL_LINK' : undefined}
+                                                    alignIcon="right"
+                                                    disabled={!revision}
+                                                >
+                                                    {currentFwVersion}
+                                                    {isBitcoinOnly(device) && ' (bitcoin-only)'}
+                                                </VersionButton>
+                                            </TrezorLink>
+                                        </VersionTooltip>
+                                    ),
+                                }}
+                            />
+                        </Version>
+                    ) : (
+                        <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
+                    )
                 }
             />
             <ActionColumn>
@@ -84,10 +90,11 @@ const CheckRecoverySeed = ({ isDeviceLocked }: Props) => {
                     data-test="@settings/device/update-button"
                     isDisabled={isDeviceLocked}
                 >
-                    {device && ['required', 'outdated'].includes(device.firmware) && (
+                    {['required', 'outdated'].includes(device.firmware) && (
                         <Translation id="TR_UPDATE_AVAILABLE" />
                     )}
-                    {device && device.firmware === 'valid' && <Translation id="TR_UP_TO_DATE" />}
+                    {device.firmware === 'valid' && <Translation id="TR_UP_TO_DATE" />}
+                    {device.firmware === 'unknown' && <Translation id="TR_INSTALL_LATEST_FW" />}
                 </ActionButton>
             </ActionColumn>
         </SectionItem>

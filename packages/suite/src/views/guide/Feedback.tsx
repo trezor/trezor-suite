@@ -191,7 +191,7 @@ const Feedback = ({ type }: Props) => {
             suite_revision: process.env.COMMITHASH || '',
             window_dimensions: `${getWindowWidth()}x${getWindowHeight()}`,
             device_type: device?.features?.model || '',
-            firmware_version: device?.features ? getFwVersion(device) : '',
+            firmware_version: getFwVersion(device),
             firmware_revision: device?.features?.revision || '',
             firmware_type: firmwareType,
         };
