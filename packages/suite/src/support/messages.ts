@@ -6853,6 +6853,22 @@ export default defineMessages({
         id: 'TR_DEVICE_CONNECTED_WRONG_STATE',
         defaultMessage: 'Device detected in incorrect state',
     },
+    TR_DEVICE_CONNECTED_BOOTLOADER: {
+        id: 'TR_DEVICE_CONNECTED_BOOTLOADER',
+        defaultMessage: 'Device connected in bootloader',
+    },
+    TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT: {
+        id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT',
+        defaultMessage: 'In bootloader by mistake? Reconnect your device.',
+    },
+    TR_WIPE_OR_UPDATE: {
+        id: 'TR_WIPE_OR_UPDATE',
+        defaultMessage: 'Reset device or update firmware',
+    },
+    TR_WIPE_OR_UPDATE_DESCRIPTION: {
+        id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
+        defaultMessage: 'Go to device settigns',
+    },
     TR_ONBOARDING_DEVICE_CHECK: {
         id: 'TR_ONBOARDING_DEVICE_CHECK',
         defaultMessage: 'Security check',

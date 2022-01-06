@@ -62,6 +62,9 @@ const PrerequisitesGuide = ({ prerequisite, padded, allowSwitchDevice }: Props) 
                 {prerequisite === 'transport-bridge' && (
                     <Translation id="TR_TREZOR_BRIDGE_IS_NOT_RUNNING" />
                 )}
+                {prerequisite === 'device-bootloader' && (
+                    <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER" />
+                )}
             </ConnectDevicePrompt>
             {(() => {
                 switch (prerequisite) {
