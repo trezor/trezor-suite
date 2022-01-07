@@ -6,7 +6,7 @@ import { save, read } from '@desktop-electron/libs/user-data';
 
 const DATA_DIR = '/metadata';
 
-export const init = () => {
+const init = () => {
     const { logger } = global;
 
     ipcMain.handle('metadata/write', async (_, message) => {

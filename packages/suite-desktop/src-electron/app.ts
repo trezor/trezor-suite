@@ -8,8 +8,8 @@ import * as store from '@desktop-electron/libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from '@desktop-electron/libs/screen';
 import Logger, { LogLevel, defaultOptions as loggerDefaults } from '@desktop-electron/libs/logger';
 import { buildInfo, computerInfo } from '@desktop-electron/libs/info';
-import modules from '@desktop-electron/libs/modules';
 import { createInterceptor } from '@desktop-electron/libs/request-interceptor';
+import modules from '@desktop-electron/libs/modules';
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';

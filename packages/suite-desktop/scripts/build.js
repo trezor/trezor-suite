@@ -15,10 +15,6 @@ const useMocks = USE_MOCKS === 'true' || (isDev && USE_MOCKS !== 'false');
 // Get git revision
 const gitRevision = child_process.execSync('git rev-parse HEAD').toString().trim();
 
-// Get all modules (used as entry points)
-const modulePath = path.join(electronSource, 'modules');
-const modules = glob.sync(`${modulePath}/**/*.ts`).map(m => `modules${m.replace(modulePath, '')}`);
-
 // Prepare mock plugin with files from the mocks folder
 const mockPath = path.join(electronSource, 'mocks');
 const mocks = glob
@@ -45,18 +41,19 @@ console.log(`[Electron Build] Mode: ${isDev ? 'development' : 'production'}`);
 console.log(`[Electron Build] Using mocks: ${useMocks}`);
 
 build({
-    entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(electronSource, f)),
+    entryPoints: ['app.ts', 'preload.ts'].map(f => path.join(electronSource, f)),
     platform: 'node',
     bundle: true,
     target: 'node16.5.0', // Electron 15
     external: Object.keys({
         ...pkg.dependencies,
-        ...pkg.devDependencies,
+        ...pkg.devDependencies
     }),
     tsconfig: path.join(electronSource, 'tsconfig.json'),
     sourcemap: isDev,
     minify: !isDev,
     outdir: path.join(__dirname, '..', 'dist'),
+
     define: {
         'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
         'process.env.COMMITHASH': JSON.stringify(gitRevision),

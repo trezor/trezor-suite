@@ -7,10 +7,10 @@ import { buyRedirectHandler } from '@desktop-electron/libs/buy';
 import { sellRedirectHandler } from '@desktop-electron/libs/sell';
 import { HttpReceiver } from '@desktop-electron/libs/http-receiver';
 
-// External request handler
-const httpReceiver = new HttpReceiver();
-
 const init = ({ mainWindow, src }: Dependencies) => {
+    // External request handler
+    const httpReceiver = new HttpReceiver();
+
     const { logger } = global;
 
     // wait for httpReceiver to start accepting connections then register event handlers
