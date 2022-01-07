@@ -11,7 +11,6 @@ import { getNumberFromPxString } from '@suite-utils/string';
 
 export interface DebugModeOptions {
     invityAPIUrl?: string;
-    showDebugMenu: boolean;
     bridgeDevMode: boolean;
 }
 
@@ -89,7 +88,6 @@ const initialState: SuiteState = {
         torOnionLinks: isWeb(),
         debug: {
             invityAPIUrl: undefined,
-            showDebugMenu: false,
             bridgeDevMode: false,
         },
         autodetect: {

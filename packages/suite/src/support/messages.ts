@@ -3050,9 +3050,22 @@ export default defineMessages({
         defaultMessage: 'Suite version',
         id: 'TR_SUITE_VERSION',
     },
+    TR_TECHNICAL_ISSUES: {
+        defaultMessage: 'Technical issues',
+        id: 'TR_TECHNICAL_ISSUES',
+    },
     TR_SUPPORT: {
         defaultMessage: 'Support',
         id: 'TR_SUPPORT',
+    },
+    TR_SUPPORT_CONTACT: {
+        defaultMessage: 'Contact us',
+        id: 'TR_SUPPORT_CONTACT',
+    },
+    TR_SUPPORT_CONTACT_DESCRIPTION: {
+        defaultMessage:
+            'Contact us in case of trouble. There is a log containing all necessary technical info {showLog}',
+        id: 'TR_SUPPORT_CONTACT_DESCRIPTION',
     },
     TR_SWITCH_DEVICE: {
         defaultMessage: 'Switch Device',
@@ -3503,7 +3516,7 @@ export default defineMessages({
     },
     TR_DEBUG_SETTINGS: {
         id: 'TR_DEBUG_SETTINGS',
-        defaultMessage: 'Debug settings',
+        defaultMessage: 'Debug',
     },
     TR_ACCOUNT_DETAILS_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_HEADER',

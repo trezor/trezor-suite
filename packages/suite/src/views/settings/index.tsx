@@ -25,11 +25,13 @@ import * as storageActions from '@suite-actions/storageActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
+import * as modalActions from '@suite-actions/modalActions';
 
 import { getReleaseUrl } from '@suite/services/github';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import { isDev } from '@suite-utils/build';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
+import { SUPPORT_URL } from '@suite-constants/urls';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
@@ -72,6 +74,10 @@ const VersionButton = styled(Button)`
             background: ${props => props.theme.BUTTON_RED_HOVER};
         }
     `};
+`;
+
+const DescriptionInlineButton = styled(Button)`
+    display: inline-flex;
 `;
 
 const VersionTooltip = styled(Tooltip)`
@@ -126,6 +132,7 @@ const Settings = () => {
         setOnionLinks,
         setUpdateWindow,
         openEarlyAccessSetup,
+        openModal,
     } = useActions({
         setLocalCurrency: walletSettingsActions.setLocalCurrency,
         removeDatabase: storageActions.removeDatabase,
@@ -136,6 +143,7 @@ const Settings = () => {
         setOnionLinks: suiteActions.setOnionLinks,
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
         openEarlyAccessSetup: desktopUpdateActions.openEarlyAccessSetup,
+        openModal: modalActions.openModal,
     });
 
     // Tor
@@ -506,6 +514,36 @@ const Settings = () => {
                     </SectionItem>
                 </Section>
             )}
+
+            <Section title={<Translation id="TR_TECHNICAL_ISSUES" />}>
+                <SectionItem data-test="@settings/contact-support">
+                    <TextColumn
+                        title={<Translation id="TR_SUPPORT" />}
+                        description={
+                            <Translation
+                                id="TR_SUPPORT_CONTACT_DESCRIPTION"
+                                values={{
+                                    showLog: (
+                                        <DescriptionInlineButton
+                                            onClick={() => openModal({ type: 'log' })}
+                                            variant="tertiary"
+                                        >
+                                            <Translation id="TR_SHOW_LOG" />
+                                        </DescriptionInlineButton>
+                                    ),
+                                }}
+                            />
+                        }
+                    />
+                    <ActionColumn>
+                        <Link variant="nostyle" href={SUPPORT_URL}>
+                            <ActionButton data-test="@settings/contact-support-button">
+                                <Translation id="TR_SUPPORT_CONTACT" />
+                            </ActionButton>
+                        </Link>
+                    </ActionColumn>
+                </SectionItem>
+            </Section>
         </SettingsLayout>
     );
 };
