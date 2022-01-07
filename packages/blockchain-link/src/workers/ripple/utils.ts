@@ -1,9 +1,7 @@
-// import BigNumber from 'bignumber.js';
-// import { GetServerInfoResponse } from 'ripple-lib';
-import { RippleError } from 'ripple-lib/dist/npm/common/errors';
-import { Transaction } from '../../types/common';
-import { CustomError } from '../../constants/errors';
 import BigNumber from 'bignumber.js';
+import { RippleError } from 'ripple-lib/dist/npm/common/errors';
+import { CustomError } from '../../constants/errors';
+import type { Transaction } from '../../types/common';
 
 // export const transformServerInfo = (payload: GetServerInfoResponse) => {
 export const transformServerInfo = (payload: any) => ({

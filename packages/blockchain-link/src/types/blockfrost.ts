@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import type { AccountInfoParams, EstimateFeeParams, AccountBalanceHistoryParams } from './params';
 import type { AccountBalanceHistory } from './common';
 

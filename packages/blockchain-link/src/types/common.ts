@@ -1,6 +1,6 @@
-import { Transaction as BlockbookTransaction, VinVout } from './blockbook';
-import { BlockfrostTransaction } from './blockfrost';
-import { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
+import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
+import type { BlockfrostTransaction } from './blockfrost';
+import type { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
 
 /* Common types used in both params and responses */
 
@@ -12,6 +12,17 @@ export interface BlockchainSettings {
     timeout?: number;
     pingTimeout?: number;
     keepAlive?: boolean;
+}
+
+export interface ServerInfo {
+    url: string;
+    name: string;
+    shortcut: string;
+    testnet: boolean;
+    version: string;
+    decimals: number;
+    blockHeight: number;
+    blockHash: string;
 }
 
 /* Transaction */
@@ -116,6 +127,20 @@ export interface AccountAddresses {
     unused: Address[];
 }
 
+export interface Utxo {
+    txid: string;
+    vout: number;
+    amount: string;
+    blockHeight: number;
+    address: string;
+    path: string;
+    confirmations: number;
+    coinbase?: boolean;
+    cardanoSpecific?: {
+        unit: string;
+    };
+}
+
 export interface TokenInfo {
     type: string; // token type: ERC20...
     address: string; // token address
@@ -167,3 +192,5 @@ export interface SubscriptionAccountInfo {
     descriptor: string;
     addresses?: AccountAddresses; // bitcoin addresses
 }
+
+export type ChanellMessage<T> = T & { id: number };

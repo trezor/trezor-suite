@@ -2,10 +2,10 @@ import { EventEmitter } from 'events';
 import { CustomError } from './constants/errors';
 import { MESSAGES, RESPONSES } from './constants';
 import { create as createDeferred, Deferred } from './utils/deferred';
-import { BlockchainSettings } from './types';
-import * as ResponseTypes from './types/responses';
-import * as MessageTypes from './types/messages';
-import { Events } from './types/events';
+import type { BlockchainSettings } from './types';
+import type * as ResponseTypes from './types/responses';
+import type * as MessageTypes from './types/messages';
+import type { Events } from './types/events';
 
 const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
     if (typeof factory === 'function') return factory();
@@ -15,9 +15,9 @@ const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
 };
 
 // initialize worker communication, raise error if worker not found
-const initWorker = ({ worker: factory, ...settings }: BlockchainSettings) => {
+const initWorker = (settings: BlockchainSettings) => {
     const dfd: Deferred<Worker> = createDeferred(-1);
-    const worker = workerWrapper(factory);
+    const worker = workerWrapper(settings.worker);
 
     if (typeof worker !== 'object' || typeof worker.postMessage !== 'function') {
         throw new CustomError('worker_invalid');
@@ -34,7 +34,7 @@ const initWorker = ({ worker: factory, ...settings }: BlockchainSettings) => {
         clearTimeout(timeout);
         worker.postMessage({
             type: MESSAGES.HANDSHAKE,
-            settings,
+            settings: Object.assign(settings, { worker: undefined }), // worker is not serialized
         });
         dfd.resolve(worker);
     };
@@ -310,7 +310,22 @@ class BlockchainLink extends EventEmitter {
 
 export default BlockchainLink;
 
-export { Message } from './types/messages';
-export { Response } from './types/responses';
-export * from './types/common';
-export * from './types/events';
+// reexport types
+export type { Message } from './types/messages';
+export type { Response, BlockEvent, NotificationEvent, FiatRatesEvent } from './types/responses';
+export type {
+    Address,
+    AccountAddresses,
+    AccountInfo,
+    BlockchainSettings,
+    FiatRates,
+    ServerInfo,
+    SubscriptionAccountInfo,
+    Target,
+    TokenInfo,
+    TokenTransfer,
+    Transaction,
+    TransactionDetail,
+    TypedRawTransaction,
+    Utxo,
+} from './types/common';

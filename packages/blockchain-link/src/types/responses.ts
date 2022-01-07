@@ -1,7 +1,15 @@
-import { FiatRates } from './blockbook';
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
-import { AccountInfo, Transaction, TypedRawTransaction, AccountBalanceHistory } from './common';
+import type {
+    ServerInfo,
+    AccountInfo,
+    Utxo,
+    FiatRates,
+    Transaction,
+    TypedRawTransaction,
+    AccountBalanceHistory,
+    ChanellMessage,
+} from './common';
 
 // messages sent from worker to blockchain.js
 
@@ -20,16 +28,7 @@ export interface Error {
 
 export interface GetInfo {
     type: typeof RESPONSES.GET_INFO;
-    payload: {
-        url: string;
-        name: string;
-        shortcut: string;
-        testnet: boolean;
-        version: string;
-        decimals: number;
-        blockHeight: number;
-        blockHash: string;
-    };
+    payload: ServerInfo;
 }
 
 export interface GetBlockHash {
@@ -40,20 +39,6 @@ export interface GetBlockHash {
 export interface GetAccountInfo {
     type: typeof RESPONSES.GET_ACCOUNT_INFO;
     payload: AccountInfo;
-}
-
-export interface Utxo {
-    txid: string;
-    vout: number;
-    amount: string;
-    blockHeight: number;
-    address: string;
-    path: string;
-    confirmations: number;
-    coinbase?: boolean;
-    cardanoSpecific?: {
-        unit: string;
-    };
 }
 
 export interface GetAccountUtxo {
@@ -152,26 +137,26 @@ export interface PushTransaction {
 interface WithoutPayload {
     id: number;
     type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED;
-    payload?: any; // just for flow
+    payload?: typeof undefined;
 }
 
 // extended
 export type Response =
-    | WithoutPayload
-    | { id: number; type: typeof RESPONSES.DISCONNECTED; payload: boolean }
-    | ({ id: number } & Error)
-    | ({ id: number } & Connect)
-    | ({ id: number } & GetInfo)
-    | ({ id: number } & GetBlockHash)
-    | ({ id: number } & GetAccountInfo)
-    | ({ id: number } & GetAccountUtxo)
-    | ({ id: number } & GetTransaction)
-    | ({ id: number } & GetAccountBalanceHistory)
-    | ({ id: number } & GetCurrentFiatRates)
-    | ({ id: number } & GetFiatRatesForTimestamps)
-    | ({ id: number } & GetFiatRatesTickersList)
-    | ({ id: number } & EstimateFee)
-    | ({ id: number } & Subscribe)
-    | ({ id: number } & Unsubscribe)
-    | ({ id: number } & Notification)
-    | ({ id: number } & PushTransaction);
+    | ChanellMessage<WithoutPayload>
+    | ChanellMessage<{ type: typeof RESPONSES.DISCONNECTED; payload: boolean }>
+    | ChanellMessage<Error>
+    | ChanellMessage<Connect>
+    | ChanellMessage<GetInfo>
+    | ChanellMessage<GetBlockHash>
+    | ChanellMessage<GetAccountInfo>
+    | ChanellMessage<GetAccountUtxo>
+    | ChanellMessage<GetTransaction>
+    | ChanellMessage<GetAccountBalanceHistory>
+    | ChanellMessage<GetCurrentFiatRates>
+    | ChanellMessage<GetFiatRatesForTimestamps>
+    | ChanellMessage<GetFiatRatesTickersList>
+    | ChanellMessage<EstimateFee>
+    | ChanellMessage<Subscribe>
+    | ChanellMessage<Unsubscribe>
+    | ChanellMessage<Notification>
+    | ChanellMessage<PushTransaction>;

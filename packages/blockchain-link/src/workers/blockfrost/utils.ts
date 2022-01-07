@@ -1,20 +1,20 @@
 import BigNumber from 'bignumber.js';
-import {
+import { filterTargets, sumVinVout, transformTarget } from '../utils';
+import type {
     BlockfrostUtxos,
     BlockfrostTransaction,
     BlockfrostAccountInfo,
     ParseAssetResult,
 } from '../../types/blockfrost';
-import { Utxo } from '../../types/responses';
-import { VinVout } from '../../types/blockbook';
-import {
+import type { VinVout } from '../../types/blockbook';
+import type {
+    Utxo,
     Transaction,
     AccountInfo,
     AccountAddresses,
     TokenInfo,
     TokenTransfer,
 } from '../../types/common';
-import { filterTargets, sumVinVout, transformTarget } from '../utils';
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
-
-import {
+import { Addresses, filterTargets, sumVinVout, transformTarget } from '../utils';
+import type {
+    Utxo,
     Transaction,
     TokenTransfer,
     TokenInfo,
@@ -8,17 +9,13 @@ import {
     AccountAddresses,
     AccountInfo,
 } from '../../types';
-
-import {
+import type {
     ServerInfo,
     AccountInfo as BlockbookAccountInfo,
     AccountUtxo as BlockbookAccountUtxo,
     Transaction as BlockbookTransaction,
     VinVout,
 } from '../../types/blockbook';
-
-import { Utxo } from '../../types/responses';
-import { Addresses, filterTargets, sumVinVout, transformTarget } from '../utils';
 
 export const transformServerInfo = (payload: ServerInfo) => ({
     name: payload.name,

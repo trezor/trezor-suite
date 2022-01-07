@@ -1,10 +1,6 @@
-// @ts-ignore no default export
 import BlockbookWorker from '../workers/blockbook/index';
-// @ts-ignore no default export
 import RippleWorker from '../workers/ripple/index';
-// @ts-ignore no default export
 import BlockfrostWorker from '../workers/blockfrost/index';
-
 import CONFIG from './config';
 import BlockchainLink from '../index';
 import { getInputValue, fillValues, onClear } from './utils';
@@ -335,7 +331,7 @@ const init = (instances: any[]) => {
 init(CONFIG);
 
 CONFIG.forEach(i => {
-    let worker = BlockbookWorker;
+    let worker: any = BlockbookWorker;
 
     if (i.blockchain.worker.includes('ripple')) {
         worker = RippleWorker;
