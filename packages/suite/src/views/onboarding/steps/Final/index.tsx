@@ -1,20 +1,23 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
+
 import { Button, Icon, variables, Input, Dropdown, DropdownRef } from '@trezor/components';
 import { Translation, HomescreenGallery } from '@suite-components';
 import { DeviceAnimation, OnboardingStepBox } from '@onboarding-components';
 import { useActions, useDevice, useOnboarding, useSelector } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from '@suite-constants/device';
+import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ guideOpen?: boolean }>`
     display: flex;
     width: 100%;
     align-items: center;
     padding: 0 77px 0 0;
     margin: -40px 0 -40px;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (max-width: ${props =>
+            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         padding: 0;
         margin: 0;
         flex-direction: column;
@@ -34,7 +37,7 @@ const Option = styled.div`
 const Divider = styled.div`
     margin-left: 18px;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    @media (max-width: variables.SCREEN_SIZE.MD) {
         margin-left: 0px;
         margin-top: 12px;
     }
@@ -64,15 +67,21 @@ const GalleryWrapper = styled.div`
     padding: 8px 0px;
     height: 200px;
     overflow-y: auto;
+    border: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
-const DeviceImageWrapper = styled.div`
+const DeviceImageWrapper = styled.div<{ guideOpen?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
     width: 400px;
     height: 400px;
     margin: 0 20px 0 -60px;
+
+    @media (max-width: ${props =>
+            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+        margin: 0 0 20px 0;
+    }
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         margin: 0;
@@ -81,21 +90,31 @@ const DeviceImageWrapper = styled.div`
     }
 `;
 
-const Heading = styled.div`
+const Heading = styled.div<{ guideOpen?: boolean }>`
     font-size: 48px;
     font-weight: ${variables.FONT_WEIGHT.BOLD};
     margin-bottom: 32px;
+
+    @media (max-width: ${props =>
+            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+        text-align: center;
+    }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         font-size: 32px;
     }
 `;
 
-const SetupActions = styled.div`
+const SetupActions = styled.div<{ guideOpen?: boolean }>`
     display: flex;
     margin-bottom: 32px;
     padding-bottom: 32px;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+
+    @media (max-width: ${props =>
+            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+        justify-content: center;
+    }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         display: none;
@@ -108,7 +127,7 @@ const RenameDevice = styled(SetupActions)`
     }
 `;
 
-const EnterSuiteButton = styled(Button)`
+const EnterSuiteButton = styled(Button)<{ guideOpen?: boolean }>`
     height: 64px;
     min-width: 280px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -116,6 +135,11 @@ const EnterSuiteButton = styled(Button)`
     justify-content: space-between;
     padding-left: 26px;
     padding-right: 26px;
+
+    @media (max-width: ${props =>
+            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+        width: 100%;
+    }
 `;
 
 const DeviceLabelInput = styled(Input)`
@@ -128,6 +152,8 @@ const FinalStep = () => {
     const { applySettings } = useActions({
         applySettings: deviceSettingsActions.applySettings,
     });
+
+    const { guideOpen } = useGuide();
 
     const { goto } = useOnboarding();
     const { isLocked, device } = useDevice();
@@ -151,16 +177,16 @@ const FinalStep = () => {
             data-test="@onboarding/final"
             confirmOnDevice={isWaitingForConfirm ? device.features?.major_version : undefined}
         >
-            <Wrapper>
-                <DeviceImageWrapper>
+            <Wrapper guideOpen={guideOpen}>
+                <DeviceImageWrapper guideOpen={guideOpen}>
                     <DeviceAnimation type="SUCCESS" size={400} device={device} />
                 </DeviceImageWrapper>
                 <Content>
-                    <Heading>
+                    <Heading guideOpen={guideOpen}>
                         <Translation id="TR_FINAL_HEADING" />
                     </Heading>
                     {!state && (
-                        <SetupActions>
+                        <SetupActions guideOpen={guideOpen}>
                             <Option onClick={() => setState('rename')}>
                                 <OptionIconWrapper>
                                     <Icon size={16} icon="SIGN" />
@@ -244,6 +270,7 @@ const FinalStep = () => {
                         onClick={() => goto('suite-index')}
                         icon="ARROW_RIGHT_LONG"
                         alignIcon="right"
+                        guideOpen={guideOpen}
                     >
                         <Translation id="TR_GO_TO_SUITE" />
                     </EnterSuiteButton>

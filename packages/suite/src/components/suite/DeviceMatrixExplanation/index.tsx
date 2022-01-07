@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { DeviceImage, Icon, IconProps, variables } from '@trezor/components';
+import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ guideOpen?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,7 +14,8 @@ const Wrapper = styled.div`
     max-width: 360px;
     border-radius: 5px;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    @media only screen and (max-width: ${props =>
+            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         display: none;
     }
 `;
@@ -65,21 +67,29 @@ interface Props {
     items: Item[];
 }
 
-const DeviceMatrixExplanation = ({ items }: Props) => (
-    <Wrapper>
-        {items.map(item => (
-            <Item key={item.key}>
-                <ItemIconWrapper>
-                    {item.icon ? (
-                        <Icon icon={item.icon} color={item.iconColor} size={item.iconSize ?? 26} />
-                    ) : (
-                        <DeviceImage trezorModel={item.deviceImage} height={40} />
-                    )}
-                </ItemIconWrapper>
-                <ItemText>{item.title}</ItemText>
-            </Item>
-        ))}
-    </Wrapper>
-);
+const DeviceMatrixExplanation = ({ items }: Props) => {
+    const { guideOpen } = useGuide();
+
+    return (
+        <Wrapper guideOpen={guideOpen}>
+            {items.map(item => (
+                <Item key={item.key}>
+                    <ItemIconWrapper>
+                        {item.icon ? (
+                            <Icon
+                                icon={item.icon}
+                                color={item.iconColor}
+                                size={item.iconSize ?? 26}
+                            />
+                        ) : (
+                            <DeviceImage trezorModel={item.deviceImage} height={40} />
+                        )}
+                    </ItemIconWrapper>
+                    <ItemText>{item.title}</ItemText>
+                </Item>
+            ))}
+        </Wrapper>
+    );
+};
 
 export default DeviceMatrixExplanation;

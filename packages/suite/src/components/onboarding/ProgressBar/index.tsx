@@ -66,7 +66,7 @@ const Label = styled.div`
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
     }
 `;
@@ -76,8 +76,12 @@ const Divider = styled.div`
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     margin: 20px;
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        display: none;
+    @media (max-width: ${variables.SCREEN_SIZE.XL}) {
+        margin: 15px;
+    }
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 10px;
     }
 `;
 
