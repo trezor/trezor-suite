@@ -1,19 +1,19 @@
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 import { EventEmitter } from 'events';
 import { CustomError } from '../../constants/errors';
 import { create as createDeferred, Deferred } from '../../utils/deferred';
-import {
+import type {
     BlockNotification,
     AddressNotification,
     Send,
     FiatRatesNotification,
 } from '../../types/blockbook';
-import {
+import type {
     GetFiatRatesForTimestamps,
     GetFiatRatesTickersList,
     GetCurrentFiatRates,
 } from '../../types/messages';
-import {
+import type {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
@@ -37,7 +37,16 @@ interface Options {
 const DEFAULT_TIMEOUT = 20 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
-export default class Socket extends EventEmitter {
+export declare interface BlockbookAPI {
+    on(event: 'block', listener: (event: BlockNotification) => void): this;
+    on(event: 'notification', listener: (event: AddressNotification) => void): this;
+    on(event: 'fiatRates', listener: (event: FiatRatesNotification) => void): this;
+    on(event: 'error', listener: (error: string) => void): this;
+    on(event: 'disconnected', listener: () => void): this;
+    on(event: string, listener: any): this;
+}
+
+export class BlockbookAPI extends EventEmitter {
     options: Options;
     ws: WebSocket | undefined;
     messageID = 0;
