@@ -1,5 +1,6 @@
-import { SubscriptionAccountInfo, BlockchainSettings } from './common';
-import {
+import * as MESSAGES from '../constants/messages';
+import type { SubscriptionAccountInfo, BlockchainSettings, ChanellMessage } from './common';
+import type {
     AccountBalanceHistoryParams,
     GetCurrentFiatRatesParams,
     GetFiatRatesForTimestampsParams,
@@ -7,7 +8,6 @@ import {
     EstimateFeeParams,
     AccountInfoParams,
 } from './params';
-import * as MESSAGES from '../constants/messages';
 
 // messages sent from blockchain.js to worker
 
@@ -112,19 +112,20 @@ export interface PushTransaction {
 }
 
 export type Message =
-    | { id: number; type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }
-    | ({ id: number } & Connect)
-    | ({ id: number } & Disconnect)
-    | ({ id: number } & GetInfo)
-    | ({ id: number } & GetBlockHash)
-    | ({ id: number } & GetAccountInfo)
-    | ({ id: number } & GetAccountUtxo)
-    | ({ id: number } & GetTransaction)
-    | ({ id: number } & GetCurrentFiatRates)
-    | ({ id: number } & GetFiatRatesForTimestamps)
-    | ({ id: number } & GetAccountBalanceHistory)
-    | ({ id: number } & GetFiatRatesTickersList)
-    | ({ id: number } & EstimateFee)
-    | ({ id: number } & Subscribe)
-    | ({ id: number } & Unsubscribe)
-    | ({ id: number } & PushTransaction);
+    | ChanellMessage<{ type: typeof MESSAGES.TERMINATE; payload?: typeof undefined }>
+    | ChanellMessage<{ type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }>
+    | ChanellMessage<Connect>
+    | ChanellMessage<Disconnect>
+    | ChanellMessage<GetInfo>
+    | ChanellMessage<GetBlockHash>
+    | ChanellMessage<GetAccountInfo>
+    | ChanellMessage<GetAccountUtxo>
+    | ChanellMessage<GetTransaction>
+    | ChanellMessage<GetCurrentFiatRates>
+    | ChanellMessage<GetFiatRatesForTimestamps>
+    | ChanellMessage<GetAccountBalanceHistory>
+    | ChanellMessage<GetFiatRatesTickersList>
+    | ChanellMessage<EstimateFee>
+    | ChanellMessage<Subscribe>
+    | ChanellMessage<Unsubscribe>
+    | ChanellMessage<PushTransaction>;

@@ -4,7 +4,6 @@ import { EventEmitter } from 'events';
  * Provides `EventEmitter` interface for native browser `WebSocket`,
  * same, as `ws` package provides.
  */
-/* eslint-disable no-underscore-dangle */
 class WSWrapper extends EventEmitter {
     private _ws: WebSocket;
     static CONNECTING = 0;
@@ -41,7 +40,7 @@ class WSWrapper extends EventEmitter {
         }
     }
 
-    send(message) {
+    send(message: any) {
         this._ws.send(message);
     }
 

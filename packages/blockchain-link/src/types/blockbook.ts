@@ -6,7 +6,7 @@ import type {
     EstimateFeeParams,
     AccountInfoParams,
 } from './params';
-import type { AccountBalanceHistory } from './common';
+import type { AccountBalanceHistory, FiatRates } from './common';
 
 export interface Subscribe {
     subscribed: boolean;
@@ -134,10 +134,6 @@ export type Fee = {
     feeLimit?: string;
 }[];
 
-export interface FiatRates {
-    [symbol: string]: number | undefined;
-}
-
 export interface BlockNotification {
     height: number;
     hash: string;
@@ -163,7 +159,6 @@ export interface FiatRatesForTimestamp {
 
 export interface AvailableCurrencies {
     ts: number;
-    // eslint-disable-next-line camelcase
     available_currencies: string[];
 }
 

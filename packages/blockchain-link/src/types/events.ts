@@ -1,4 +1,4 @@
-import { BlockEvent, NotificationEvent, FiatRatesEvent } from './responses';
+import type { BlockEvent, NotificationEvent, FiatRatesEvent } from './responses';
 
 export interface Events {
     connected: undefined;

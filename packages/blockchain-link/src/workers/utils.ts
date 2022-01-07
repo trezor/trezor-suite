@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { Address } from '../types';
-import { VinVout } from '../types/blockbook';
+import type { Address } from '../types';
+import type { VinVout } from '../types/blockbook';
 
 export type Addresses = (Address | string)[] | string;
 

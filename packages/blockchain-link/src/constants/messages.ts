@@ -15,3 +15,4 @@ export const ESTIMATE_FEE = 'm_estimate_fee';
 export const SUBSCRIBE = 'm_subscribe';
 export const UNSUBSCRIBE = 'm_unsubscribe';
 export const PUSH_TRANSACTION = 'm_push_tx';
+export const TERMINATE = 'terminate';
