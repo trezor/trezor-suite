@@ -1,156 +1,43 @@
 import { RippleAPI } from 'ripple-lib';
+import { RippleError } from 'ripple-lib/dist/npm/common/errors';
 import BigNumber from 'bignumber.js';
 import { CustomError } from '../../constants/errors';
 import { MESSAGES, RESPONSES } from '../../constants';
-
-import * as MessageTypes from '../../types/messages';
-import { Message, Response, SubscriptionAccountInfo, AccountInfo } from '../../types';
+import { BaseWorker, CONTEXT, ContextType } from '../base';
 import * as utils from './utils';
-import WorkerCommon from '../common';
+import type { Message, Response, SubscriptionAccountInfo, AccountInfo } from '../../types';
+import type * as MessageTypes from '../../types/messages';
 
-declare function postMessage(data: Response): void;
-
-const common = new WorkerCommon(postMessage);
-
-let rippleApi: RippleAPI | undefined;
-let pingTimeout: ReturnType<typeof setTimeout>;
+type Context = ContextType<RippleAPI>;
+type Request<T> = T & Context;
 
 const DEFAULT_TIMEOUT = 20 * 1000;
 const DEFAULT_PING_TIMEOUT = 3 * 60 * 1000;
-
-let endpoints: string[] = [];
 const RESERVE = {
     BASE: '10000000',
     OWNER: '2000000',
 };
 
-const setPingTimeout = () => {
-    if (pingTimeout) {
-        clearTimeout(pingTimeout);
-    }
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    pingTimeout = setTimeout(onPing, common.getSettings().pingTimeout || DEFAULT_PING_TIMEOUT);
-};
+const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
+    const api = await request.connect();
+    const info = await api.getServerInfo();
 
-const onPing = async () => {
-    if (rippleApi && rippleApi.isConnected()) {
-        if (common.hasSubscriptions() || common.getSettings().keepAlive) {
-            try {
-                await rippleApi.getServerInfo();
-            } catch (error) {
-                common.debug(`Error in timeout ping request: ${error}`);
-            }
-            // reset timeout
-            setPingTimeout();
-        } else {
-            rippleApi.disconnect();
-        }
-    }
-};
+    // store current ledger values
+    RESERVE.BASE = api.xrpToDrops(info.validatedLedger.reserveBaseXRP);
+    RESERVE.OWNER = api.xrpToDrops(info.validatedLedger.reserveIncrementXRP);
 
-const cleanup = () => {
-    if (pingTimeout) {
-        clearTimeout(pingTimeout);
-    }
-    if (rippleApi) {
-        rippleApi.removeAllListeners();
-        rippleApi = undefined;
-    }
-    endpoints = [];
-    common.removeAddresses(common.getAddresses());
-    common.clearSubscriptions();
-};
-
-const connect = async (): Promise<RippleAPI> => {
-    if (rippleApi) {
-        // socket is already connected
-        if (rippleApi.isConnected()) return rippleApi;
-    }
-    // validate endpoints
-    const { server, timeout } = common.getSettings();
-    if (!server || !Array.isArray(server) || server.length < 1) {
-        throw new CustomError('connect', 'Endpoint not set');
-    }
-
-    if (endpoints.length < 1) {
-        endpoints = common.shuffleEndpoints(server.slice(0));
-    }
-
-    common.debug('Connecting to', endpoints[0]);
-    let api: RippleAPI;
-
-    try {
-        api = new RippleAPI({
-            server: endpoints[0],
-            timeout: timeout || DEFAULT_TIMEOUT,
-        });
-        // disable websocket auto reconnecting
-        // workaround for RippleApi which doesn't have possibility to disable reconnection
-        // issue: https://github.com/ripple/ripple-lib/issues/1068
-        // override Api (connection) private methods and return never ending promises to prevent this behavior
-        api.connection.reconnect = () => new Promise(() => {});
-        await api.connect();
-    } catch (error) {
-        common.debug('Websocket connection failed');
-        rippleApi = undefined;
-        // connection error. remove endpoint
-        endpoints.splice(0, 1);
-        // and try another one or throw error
-        if (endpoints.length < 1) {
-            throw new CustomError('connect', 'All backends are down');
-        }
-        return connect();
-    }
-
-    // Ripple api does set ledger listener automatically
-    api.on('ledger', ledger => {
-        // store current ledger values
-        RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
-        RESERVE.OWNER = api.xrpToDrops(ledger.reserveIncrementXRP);
-    });
-
-    api.on('disconnected', () => {
-        common.response({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
-        cleanup();
-    });
-
-    common.response({ id: -1, type: RESPONSES.CONNECTED });
-
-    rippleApi = api;
-    return rippleApi;
-};
-
-const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<void> => {
-    try {
-        const api = await connect();
-        const info = await api.getServerInfo();
-
-        // store current ledger values
-        RESERVE.BASE = api.xrpToDrops(info.validatedLedger.reserveBaseXRP);
-        RESERVE.OWNER = api.xrpToDrops(info.validatedLedger.reserveIncrementXRP);
-
-        common.response({
-            id: data.id,
-            type: RESPONSES.GET_INFO,
-            payload: {
-                url: api.connection.getUrl(),
-                ...utils.transformServerInfo(info),
-            },
-        });
-    } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-    } finally {
-        // reset timeout
-        setPingTimeout();
-    }
+    return {
+        type: RESPONSES.GET_INFO,
+        payload: {
+            url: api.connection.getUrl(),
+            ...utils.transformServerInfo(info),
+        },
+    } as const;
 };
 
 // Custom request
 // Ripple js api doesn't support "ledger_index": "current", which will fetch data from mempool
-const getMempoolAccountInfo = async (
-    account: string
-): Promise<{ xrpBalance: string; sequence: number; txs: number }> => {
-    const api = await connect();
+const getMempoolAccountInfo = async (api: RippleAPI, account: string) => {
     const info = await api.request('account_info', {
         account,
         ledger_index: 'current',
@@ -170,20 +57,13 @@ interface RawTxData {
         ledger: number;
         seq: number;
     };
-    // eslint-disable-next-line camelcase
     ledger_index_max: number;
     limit: number;
     transactions: any[];
 }
-const getRawTransactionsData = async (options: any): Promise<RawTxData> => {
-    const api = await connect();
-    return api.request('account_tx', options);
-};
 
-const getAccountInfo = async (
-    data: MessageTypes.GetAccountInfo & { id: number }
-): Promise<void> => {
-    const { payload } = data;
+const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
+    const { payload } = request;
 
     // initial state (basic)
     const account: AccountInfo = {
@@ -206,8 +86,7 @@ const getAccountInfo = async (
     };
 
     try {
-        const api = await connect();
-
+        const api = await request.connect();
         const info = await api.getAccountInfo(payload.descriptor);
         const ownersReserve =
             info.ownerCount > 0
@@ -226,21 +105,19 @@ const getAccountInfo = async (
     } catch (error) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
-        if (error.data && error.data.error === 'actNotFound') {
-            common.response({
-                id: data.id,
+        if (error instanceof RippleError && error.data && error.data.error === 'actNotFound') {
+            return {
                 type: RESPONSES.GET_ACCOUNT_INFO,
                 payload: account,
-            });
-        } else {
-            common.errorHandler({ id: data.id, error: utils.transformError(error) });
+            } as const;
         }
-        return;
+        throw error;
     }
 
     // get mempool information
     try {
-        const mempoolInfo = await getMempoolAccountInfo(payload.descriptor);
+        const api = await request.connect();
+        const mempoolInfo = await getMempoolAccountInfo(api, payload.descriptor);
         const { misc } = account;
         const reserve: string =
             misc && typeof misc.reserve === 'string' ? misc.reserve : RESERVE.BASE;
@@ -253,126 +130,85 @@ const getAccountInfo = async (
         // TODO: investigate
     }
 
-    // get the reserve
     if (payload.details !== 'txs') {
-        common.response({
-            id: data.id,
+        return {
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: account,
-        });
-        return;
+        } as const;
     }
 
-    try {
-        const requestOptions = {
-            account: payload.descriptor,
-            ledger_index_min: payload.from ? payload.from : undefined,
-            ledger_index_max: payload.to ? payload.to : undefined,
-            limit: payload.pageSize || 25,
-            marker: payload.marker,
-        };
+    const requestOptions = {
+        account: payload.descriptor,
+        ledger_index_min: payload.from ? payload.from : undefined,
+        ledger_index_max: payload.to ? payload.to : undefined,
+        limit: payload.pageSize || 25,
+        marker: payload.marker,
+    };
 
-        const transactionsData = await getRawTransactionsData(requestOptions);
-        account.history.transactions = transactionsData.transactions.map(raw =>
-            utils.transformTransaction(payload.descriptor, raw.tx)
-        );
+    const api = await request.connect();
+    const transactionsData: RawTxData = await api.request('account_tx', requestOptions);
+    account.history.transactions = transactionsData.transactions.map(raw =>
+        utils.transformTransaction(payload.descriptor, raw.tx)
+    );
 
-        common.response({
-            id: data.id,
-            type: RESPONSES.GET_ACCOUNT_INFO,
-            payload: {
-                ...account,
-                marker: transactionsData.marker,
-            },
-        });
-    } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-    }
+    return {
+        type: RESPONSES.GET_ACCOUNT_INFO,
+        payload: {
+            ...account,
+            marker: transactionsData.marker,
+        },
+    } as const;
 };
 
-const getTransaction = async (
-    data: { id: number } & MessageTypes.GetTransaction
-): Promise<void> => {
-    const { payload } = data;
-    try {
-        const api = await connect();
-        const tx = await api.getTransaction(payload);
-        common.response({
-            id: data.id,
-            type: RESPONSES.GET_TRANSACTION,
-            payload: {
-                type: 'ripple',
-                tx,
-            },
-        });
-    } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-    } finally {
-        // reset timeout
-        setPingTimeout();
-    }
+const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTransaction>) => {
+    const api = await connect();
+    const tx = await api.getTransaction(payload);
+    return {
+        type: RESPONSES.GET_TRANSACTION,
+        payload: {
+            type: 'ripple',
+            tx,
+        },
+    } as const;
 };
 
-const estimateFee = async (data: { id: number } & MessageTypes.EstimateFee): Promise<void> => {
-    try {
-        const api = await connect();
-        const fee = await api.getFee();
-        // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
-        // investigate more...
-        let drops = api.xrpToDrops(fee);
-        if (new BigNumber(drops).gt('2000')) {
-            drops = '12';
-        }
-        const payload =
-            data.payload && Array.isArray(data.payload.blocks)
-                ? data.payload.blocks.map(() => ({ feePerUnit: drops }))
-                : [{ feePerUnit: drops }];
-        common.response({
-            id: data.id,
-            type: RESPONSES.ESTIMATE_FEE,
-            payload,
-        });
-    } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-    } finally {
-        // reset timeout
-        setPingTimeout();
+const pushTransaction = async ({ connect, payload }: Request<MessageTypes.PushTransaction>) => {
+    const api = await connect();
+    // tx_blob hex must be in upper case
+    const info = await api.submit(payload.toUpperCase());
+
+    if (info.resultCode === 'tesSUCCESS') {
+        return {
+            type: RESPONSES.PUSH_TRANSACTION,
+            // payload: info.resultMessage,
+            // @ts-expect-error this param is not typed in RippleApi
+            payload: info.tx_json.hash,
+        } as const;
     }
+    throw new Error(info.resultMessage);
 };
 
-const pushTransaction = async (
-    data: { id: number } & MessageTypes.PushTransaction
-): Promise<void> => {
-    try {
-        const api = await connect();
-        // tx_blob hex must be in upper case
-        const info = await api.submit(data.payload.toUpperCase());
-
-        if (info.resultCode === 'tesSUCCESS') {
-            common.response({
-                id: data.id,
-                type: RESPONSES.PUSH_TRANSACTION,
-                // payload: info.resultMessage,
-                // @ts-ignore: TODO: this param is not typed in RippleApi
-                payload: info.tx_json.hash,
-            });
-        } else {
-            common.errorHandler({ id: data.id, error: { message: info.resultMessage } });
-            return;
-        }
-    } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-    } finally {
-        // reset timeout
-        setPingTimeout();
+const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
+    const api = await request.connect();
+    const fee = await api.getFee();
+    // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
+    // investigate more...
+    let drops = api.xrpToDrops(fee);
+    if (new BigNumber(drops).gt('2000')) {
+        drops = '12';
     }
+    const payload =
+        request.payload && Array.isArray(request.payload.blocks)
+            ? request.payload.blocks.map(() => ({ feePerUnit: drops }))
+            : [{ feePerUnit: drops }];
+    return {
+        type: RESPONSES.ESTIMATE_FEE,
+        payload,
+    } as const;
 };
 
-const onNewBlock = (event: any) => {
-    // reset timeout
-    setPingTimeout();
-
-    common.response({
+const onNewBlock = ({ post }: Context, event: any) => {
+    post({
         id: -1,
         type: RESPONSES.NOTIFICATION,
         payload: {
@@ -385,16 +221,14 @@ const onNewBlock = (event: any) => {
     });
 };
 
-const onTransaction = (event: any) => {
-    // reset timeout
-    setPingTimeout();
+const onTransaction = ({ state, post }: Context, event: any) => {
     if (event.type !== 'transaction') return;
     // ignore transactions other than Payment
     const tx = event.transaction;
     if (event.transaction.TransactionType !== 'Payment') return;
 
     const notify = (descriptor: string) => {
-        common.response({
+        post({
             id: -1,
             type: RESPONSES.NOTIFICATION,
             payload: {
@@ -407,41 +241,43 @@ const onTransaction = (event: any) => {
         });
     };
 
-    const subscribed = common.getAddresses();
+    const subscribed = state.getAddresses();
     const sent = subscribed.find(a => a === tx.Account);
     if (sent) notify(sent);
     const recv = subscribed.find(a => a === tx.Destination);
     if (recv) notify(recv);
 };
 
-const subscribeAccounts = async (accounts: SubscriptionAccountInfo[]) => {
+const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo[]) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
-    const api = await connect();
-    const prevAddresses = common.getAddresses();
-    common.addAccounts(accounts);
-    const uniqueAddresses = common.getAddresses().filter(a => prevAddresses.indexOf(a) < 0);
+    const api = await ctx.connect();
+    const { state } = ctx;
+    const prevAddresses = state.getAddresses();
+    state.addAccounts(accounts);
+    const uniqueAddresses = state.getAddresses().filter(a => prevAddresses.indexOf(a) < 0);
     if (uniqueAddresses.length > 0) {
-        if (!common.getSubscription('notification')) {
-            api.connection.on('transaction', onTransaction);
-            common.addSubscription('notification');
+        if (!state.getSubscription('notification')) {
+            api.connection.on('transaction', ev => onTransaction(ctx, ev));
+            state.addSubscription('notification');
         }
         await api.request('subscribe', {
             accounts_proposed: uniqueAddresses,
         });
     }
-    return { subscribed: common.getAddresses().length > 0 };
+    return { subscribed: state.getAddresses().length > 0 };
 };
 
-const subscribeAddresses = async (addresses: string[]) => {
+const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
     // subscribe to new blocks, confirmed and mempool transactions for given addresses
-    const api = await connect();
-    const uniqueAddresses = common.addAddresses(addresses);
+    const api = await ctx.connect();
+    const { state } = ctx;
+    const uniqueAddresses = state.addAddresses(addresses);
 
     if (uniqueAddresses.length > 0) {
-        if (!common.getSubscription('transaction')) {
-            api.connection.on('transaction', onTransaction);
+        if (!state.getSubscription('transaction')) {
+            api.connection.on('transaction', ev => onTransaction(ctx, ev));
             // api.connection.on('ledgerClosed', onLedgerClosed);
-            common.addSubscription('transaction');
+            state.addSubscription('transaction');
         }
         const request = {
             // accounts: uniqueAddresses,
@@ -452,177 +288,242 @@ const subscribeAddresses = async (addresses: string[]) => {
 
         await api.request('subscribe', request);
     }
-    return { subscribed: common.getAddresses().length > 0 };
+    return { subscribed: state.getAddresses().length > 0 };
 };
 
-const subscribeBlock = async () => {
-    if (!common.getSubscription('ledger')) {
-        const api = await connect();
-        api.on('ledger', onNewBlock);
-        common.addSubscription('ledger');
+const subscribeBlock = async (ctx: Context) => {
+    if (!ctx.state.getSubscription('ledger')) {
+        const api = await ctx.connect();
+        api.on('ledger', ev => onNewBlock(ctx, ev));
+        ctx.state.addSubscription('ledger');
     }
     return { subscribed: true };
 };
 
-const subscribe = async (data: { id: number } & MessageTypes.Subscribe): Promise<void> => {
-    const { payload } = data;
-    try {
-        let response;
-        if (payload.type === 'accounts') {
-            response = await subscribeAccounts(payload.accounts);
-        } else if (payload.type === 'addresses') {
-            response = await subscribeAddresses(payload.addresses);
-        } else if (payload.type === 'block') {
-            response = await subscribeBlock();
-        } else {
-            throw new CustomError('invalid_param', '+type');
-        }
-        common.response({
-            id: data.id,
-            type: RESPONSES.SUBSCRIBE,
-            payload: response,
-        });
-    } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-    } finally {
-        // reset timeout
-        setPingTimeout();
+const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
+    const { payload } = request;
+
+    let response: { subscribed: boolean };
+    if (payload.type === 'accounts') {
+        response = await subscribeAccounts(request, payload.accounts);
+    } else if (payload.type === 'addresses') {
+        response = await subscribeAddresses(request, payload.addresses);
+    } else if (payload.type === 'block') {
+        response = await subscribeBlock(request);
+    } else {
+        throw new CustomError('invalid_param', '+type');
     }
+    return {
+        type: RESPONSES.SUBSCRIBE,
+        payload: response,
+    } as const;
 };
 
-const unsubscribeAddresses = async (addresses?: string[]) => {
+const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: string[]) => {
     // remove accounts
     const api = await connect();
     if (!addresses) {
-        const all = common.getAddresses();
-        common.removeAccounts(common.getAccounts());
-        common.removeAddresses(all);
+        const all = state.getAddresses();
+        state.removeAccounts(state.getAccounts());
+        state.removeAddresses(all);
         await api.request('unsubscribe', {
             accounts_proposed: all,
         });
     } else {
-        common.removeAddresses(addresses);
+        state.removeAddresses(addresses);
         await api.request('unsubscribe', {
             accounts_proposed: addresses,
         });
     }
-    if (common.getAccounts().length < 1) {
+    if (state.getAccounts().length < 1) {
         // there are no subscribed addresses left
         // remove listeners
-        api.connection.removeListener('transaction', onTransaction);
+        api.connection.removeAllListeners('transaction');
         // api.connection.off('ledgerClosed', onLedgerClosed);
-        common.removeSubscription('transaction');
+        state.removeSubscription('transaction');
     }
 };
 
-const unsubscribeAccounts = async (accounts?: SubscriptionAccountInfo[]) => {
-    const prevAddresses = common.getAddresses();
-    common.removeAccounts(accounts || common.getAccounts());
-    const addresses = common.getAddresses();
+const unsubscribeAccounts = async (ctx: Context, accounts?: SubscriptionAccountInfo[]) => {
+    const { state } = ctx;
+    const prevAddresses = state.getAddresses();
+    state.removeAccounts(accounts || state.getAccounts());
+    const addresses = state.getAddresses();
     const uniqueAddresses = prevAddresses.filter(a => addresses.indexOf(a) < 0);
-    await unsubscribeAddresses(uniqueAddresses);
+    await unsubscribeAddresses(ctx, uniqueAddresses);
 };
 
-const unsubscribeBlock = async () => {
-    if (!common.getSubscription('ledger')) return;
+const unsubscribeBlock = async ({ state, connect }: Context) => {
+    if (!state.getSubscription('ledger')) return;
     const api = await connect();
-    api.removeListener('ledger', onNewBlock);
-    common.removeSubscription('ledger');
+    api.removeAllListeners('ledger');
+    state.removeSubscription('ledger');
 };
 
-const unsubscribe = async (data: { id: number } & MessageTypes.Unsubscribe): Promise<void> => {
-    const { payload } = data;
-    try {
-        if (payload.type === 'accounts') {
-            await unsubscribeAccounts(payload.accounts);
-        } else if (payload.type === 'addresses') {
-            await unsubscribeAddresses(payload.addresses);
-        } else if (payload.type === 'block') {
-            await unsubscribeBlock();
-        }
-    } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-        return;
-    } finally {
-        // reset timeout
-        setPingTimeout();
+const unsubscribe = async (request: Request<MessageTypes.Unsubscribe>) => {
+    const { payload } = request;
+
+    if (payload.type === 'accounts') {
+        await unsubscribeAccounts(request, payload.accounts);
+    } else if (payload.type === 'addresses') {
+        await unsubscribeAddresses(request, payload.addresses);
+    } else if (payload.type === 'block') {
+        await unsubscribeBlock(request);
     }
 
-    common.response({
-        id: data.id,
+    return {
         type: RESPONSES.UNSUBSCRIBE,
-        payload: { subscribed: common.getAddresses().length > 0 },
-    });
+        payload: { subscribed: request.state.getAddresses().length > 0 },
+    } as const;
 };
 
-const disconnect = async (data: { id: number }) => {
-    if (!rippleApi) {
-        common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
-        return;
-    }
-    try {
-        await rippleApi.disconnect();
-        common.response({ id: data.id, type: RESPONSES.DISCONNECTED, payload: true });
-    } catch (error) {
-        common.errorHandler({ id: data.id, error: utils.transformError(error) });
-    }
-};
-
-// WebWorker message handling
-onmessage = (event: { data: Message }) => {
-    if (!event.data) return;
-    const { data } = event;
-
-    common.debug('onmessage', data);
-    switch (data.type) {
-        case MESSAGES.HANDSHAKE:
-            common.setSettings(data.settings);
-            break;
-        case MESSAGES.CONNECT:
-            connect()
-                .then(() => {
-                    common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
-                })
-                .catch(error =>
-                    common.errorHandler({ id: data.id, error: utils.transformError(error) })
-                );
-            break;
+const onRequest = (request: Request<Message>) => {
+    switch (request.type) {
         case MESSAGES.GET_INFO:
-            getInfo(data);
-            break;
+            return getInfo(request);
         case MESSAGES.GET_ACCOUNT_INFO:
-            getAccountInfo(data);
-            break;
+            return getAccountInfo(request);
         case MESSAGES.GET_TRANSACTION:
-            getTransaction(data);
-            break;
+            return getTransaction(request);
         case MESSAGES.ESTIMATE_FEE:
-            estimateFee(data);
-            break;
+            return estimateFee(request);
         case MESSAGES.PUSH_TRANSACTION:
-            pushTransaction(data);
-            break;
+            return pushTransaction(request);
         case MESSAGES.SUBSCRIBE:
-            subscribe(data);
-            break;
+            return subscribe(request);
         case MESSAGES.UNSUBSCRIBE:
-            unsubscribe(data);
-            break;
-        case MESSAGES.DISCONNECT:
-            disconnect(data);
-            break;
-        // @ts-ignore this message is used in tests
-        case 'terminate':
-            cleanup();
-            break;
+            return unsubscribe(request);
         default:
-            common.errorHandler({
-                id: data.id,
-                error: new CustomError('worker_unknown_request', `+${data.type}`),
-            });
-            break;
+            throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
 };
 
-// Handshake to host
-common.handshake();
+class RippleWorker extends BaseWorker<RippleAPI> {
+    pingTimeout?: ReturnType<typeof setTimeout>;
+
+    cleanup() {
+        if (this.pingTimeout) {
+            clearTimeout(this.pingTimeout);
+        }
+        if (this.api) {
+            this.api.removeAllListeners();
+        }
+        super.cleanup();
+    }
+
+    async connect(): Promise<RippleAPI> {
+        if (this.api && this.api.isConnected()) return this.api;
+
+        this.validateEndpoints();
+
+        this.debug('Connecting to', this.endpoints[0]);
+
+        let api: RippleAPI;
+
+        try {
+            api = new RippleAPI({
+                server: this.endpoints[0],
+                connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT,
+            });
+            // disable websocket auto reconnecting
+            // workaround for RippleApi which doesn't have possibility to disable reconnection
+            // issue: https://github.com/ripple/ripple-lib/issues/1068
+            // override Api (connection) private methods and return never ending promises to prevent this behavior
+            api.connection.reconnect = () => new Promise(() => {});
+            await api.connect();
+            this.api = api;
+        } catch (error) {
+            this.debug('Websocket connection failed', error);
+            this.api = undefined;
+            // connection error. remove endpoint
+            this.endpoints.splice(0, 1);
+            // and try another one or throw error
+            if (this.endpoints.length < 1) {
+                throw new CustomError('connect', 'All backends are down');
+            }
+            return this.connect();
+        }
+
+        // Ripple api does set ledger listener automatically
+        api.on('ledger', ledger => {
+            // store current ledger values
+            RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
+            RESERVE.OWNER = api.xrpToDrops(ledger.reserveIncrementXRP);
+        });
+
+        api.on('disconnected', () => {
+            this.post({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
+            this.cleanup();
+        });
+
+        this.post({ id: -1, type: RESPONSES.CONNECTED });
+        return api;
+    }
+
+    disconnect() {
+        if (this.api) {
+            this.api.disconnect();
+        }
+    }
+
+    async messageHandler(event: { data: Message }) {
+        try {
+            // skip processed messages
+            if (await super.messageHandler(event)) return true;
+
+            const request: Request<Message> = {
+                ...event.data,
+                connect: () => this.connect(),
+                post: (data: Response) => this.post(data),
+                state: this.state,
+            };
+
+            const response = await onRequest(request);
+            this.post({ id: event.data.id, ...response });
+        } catch (error) {
+            this.errorResponse(event.data.id, utils.transformError(error));
+        } finally {
+            if (event.data.type !== MESSAGES.DISCONNECT) {
+                // reset timeout
+                this.setPingTimeout();
+            }
+        }
+    }
+
+    setPingTimeout() {
+        if (this.pingTimeout) {
+            clearTimeout(this.pingTimeout);
+        }
+        this.pingTimeout = setTimeout(
+            () => this.onPing(),
+            this.settings.pingTimeout || DEFAULT_PING_TIMEOUT
+        );
+    }
+
+    async onPing() {
+        if (!this.api || !this.api.isConnected()) return;
+
+        if (this.state.hasSubscriptions() || this.settings.keepAlive) {
+            try {
+                await this.api.getServerInfo();
+            } catch (error) {
+                this.debug(`Error in timeout ping request: ${error}`);
+            }
+            // reset timeout
+            this.setPingTimeout();
+        } else {
+            this.api.disconnect();
+        }
+    }
+}
+
+// export worker factory used in src/index
+export default function Ripple() {
+    return new RippleWorker();
+}
+
+if (CONTEXT === 'worker') {
+    // Initialize module if script is running in worker context
+    const module = new RippleWorker();
+    onmessage = module.messageHandler.bind(module);
+}

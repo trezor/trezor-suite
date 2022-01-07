@@ -1,9 +1,9 @@
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 import { EventEmitter } from 'events';
 import { CustomError } from '../../constants/errors';
 import { create as createDeferred, Deferred } from '../../utils/deferred';
-import { Send, BlockContent } from '../../types/blockfrost';
-import {
+import type { Send, BlockContent, BlockfrostTransaction } from '../../types/blockfrost';
+import type {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
@@ -27,7 +27,15 @@ interface Options {
 const DEFAULT_TIMEOUT = 20 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
-export default class Socket extends EventEmitter {
+export declare interface BlockfrostAPI {
+    on(event: 'block', listener: (event: BlockContent) => void): this;
+    on(event: 'notification', listener: (event: BlockfrostTransaction) => void): this;
+    on(event: 'error', listener: (error: string) => void): this;
+    on(event: 'disconnected', listener: () => void): this;
+    on(event: string, listener: any): this;
+}
+
+export class BlockfrostAPI extends EventEmitter {
     options: Options;
     ws: WebSocket | undefined;
     messageID = 0;
