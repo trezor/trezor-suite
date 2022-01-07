@@ -236,7 +236,7 @@ const Feedback = ({ type }: Props) => {
     return (
         <ViewWrapper>
             <Header
-                back={() => setView('FEEDBACK_TYPE_SELECTION')}
+                back={() => setView('SUPPORT_FEEDBACK_SELECTION')}
                 label={
                     type === 'BUG' ? (
                         <Translation id="TR_GUIDE_VIEW_HEADLINE_REPORT_BUG" />

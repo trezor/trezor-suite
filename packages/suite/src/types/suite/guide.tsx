@@ -5,7 +5,7 @@ import type { EnvironmentType } from '@suite-types';
 
 export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_PAGE';
 
-export type FeedbackView = 'FEEDBACK_TYPE_SELECTION' | 'FEEDBACK_BUG' | 'FEEDBACK_SUGGESTION';
+export type FeedbackView = 'SUPPORT_FEEDBACK_SELECTION' | 'FEEDBACK_BUG' | 'FEEDBACK_SUGGESTION';
 
 export type ActiveView = GuideView | FeedbackView;
 

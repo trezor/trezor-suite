@@ -1,5 +1,5 @@
 import Feedback from './Feedback';
-import FeedbackTypeSelection from './FeedbackTypeSelection';
+import SupportFeedbackSelection from './SupportFeedbackSelection';
 import GuideDefault from './GuideDefault';
 import GuidePage from './GuidePage';
 import GuideCategory from './GuideCategory';
@@ -8,7 +8,7 @@ import GuideMarkdown from './GuideMarkdown';
 
 export {
     Feedback,
-    FeedbackTypeSelection,
+    SupportFeedbackSelection,
     GuideDefault,
     GuidePage,
     GuideCategory,

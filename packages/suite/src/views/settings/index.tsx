@@ -25,6 +25,7 @@ import * as storageActions from '@suite-actions/storageActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
+import * as modalActions from '@suite-actions/modalActions';
 
 import { getReleaseUrl } from '@suite/services/github';
 import { isDesktop, isWeb } from '@suite-utils/env';
@@ -126,6 +127,7 @@ const Settings = () => {
         setOnionLinks,
         setUpdateWindow,
         openEarlyAccessSetup,
+        openModal,
     } = useActions({
         setLocalCurrency: walletSettingsActions.setLocalCurrency,
         removeDatabase: storageActions.removeDatabase,
@@ -136,6 +138,7 @@ const Settings = () => {
         setOnionLinks: suiteActions.setOnionLinks,
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
         openEarlyAccessSetup: desktopUpdateActions.openEarlyAccessSetup,
+        openModal: modalActions.openModal,
     });
 
     // Tor
@@ -363,6 +366,22 @@ const Settings = () => {
             <Section title={<Translation id="TR_APPLICATION" />}>
                 <Theme />
                 <Analytics />
+
+                <SectionItem data-test="@settings/log">
+                    <TextColumn
+                        title={<Translation id="TR_LOG" />}
+                        description={<Translation id="TR_LOG_DESCRIPTION" />}
+                    />
+                    <ActionColumn>
+                        <ActionButton
+                            onClick={() => openModal({ type: 'log' })}
+                            variant="secondary"
+                            data-test="@settings/show-log-button"
+                        >
+                            <Translation id="TR_SHOW_LOG" />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
 
                 <SectionItem data-test="@settings/storage">
                     <TextColumn

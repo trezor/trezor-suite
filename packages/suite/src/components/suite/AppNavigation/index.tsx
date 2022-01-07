@@ -126,11 +126,11 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
     &:first-child {
         margin-left: 5px;
     }
-    &:last-child {
-        margin-right: ${SECONDARY_MENU_BUTTON_MARGIN};
-        margin-left: 10px;
-    }
     position: relative;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-right: 32px;
+    }
 `;
 
 const InnerWrap = styled.div`
@@ -186,7 +186,7 @@ export type AppNavigationItem = {
     extra?: boolean;
     icon?: IconProps['icon'];
     'data-test'?: string;
-    isHidden?: () => boolean;
+    isHidden?: boolean;
 };
 
 interface Props {
@@ -238,8 +238,10 @@ const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props) => {
         }
     }, [wrapper, primary, secondary, screenWidth]);
 
-    const itemsPrimary = items.filter(item => item.position === 'primary');
-    const itemsSecondary = items.filter(item => item.position === 'secondary');
+    const visibleItems = items.filter(item => !item.isHidden);
+
+    const itemsPrimary = visibleItems.filter(item => item.position === 'primary');
+    const itemsSecondary = visibleItems.filter(item => item.position === 'secondary');
     const itemsSecondaryWithExtra = itemsSecondary.filter(item => item.extra);
     const itemsSecondaryWithoutExtra = itemsSecondary.filter(item => !item.extra);
 

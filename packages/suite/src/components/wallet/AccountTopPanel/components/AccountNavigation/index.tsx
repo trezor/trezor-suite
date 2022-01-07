@@ -30,7 +30,7 @@ const AccountNavigation = (props: Props) => {
             },
             title: <Translation id="TR_NAV_TRANSACTIONS" />,
             position: 'primary',
-            isHidden: () => false,
+            isHidden: false,
         },
         {
             id: 'wallet-details',
@@ -39,7 +39,7 @@ const AccountNavigation = (props: Props) => {
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             position: 'primary',
-            isHidden: () => account?.networkType !== 'bitcoin',
+            isHidden: account?.networkType !== 'bitcoin',
         },
         {
             id: 'wallet-tokens',
@@ -48,7 +48,7 @@ const AccountNavigation = (props: Props) => {
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             position: 'primary',
-            isHidden: () => account?.networkType !== 'ethereum',
+            isHidden: account?.networkType !== 'ethereum',
         },
         {
             id: 'wallet-send',
@@ -57,7 +57,7 @@ const AccountNavigation = (props: Props) => {
             },
             title: <Translation id="TR_NAV_SEND" />,
             position: 'secondary',
-            isHidden: () => false,
+            isHidden: false,
         },
         {
             id: 'wallet-receive',
@@ -66,7 +66,7 @@ const AccountNavigation = (props: Props) => {
             },
             title: <Translation id="TR_NAV_RECEIVE" />,
             position: 'secondary',
-            isHidden: () => false,
+            isHidden: false,
         },
         {
             id: 'wallet-coinmarket-buy',
@@ -75,7 +75,7 @@ const AccountNavigation = (props: Props) => {
             },
             title: <Translation id="TR_NAV_TRADE" />,
             position: 'secondary',
-            isHidden: () => false,
+            isHidden: false,
         },
         {
             id: 'wallet-add-token',
@@ -85,7 +85,7 @@ const AccountNavigation = (props: Props) => {
             title: <Translation id="TR_TOKENS_ADD" />,
             position: 'secondary',
             extra: true,
-            isHidden: () => account?.networkType !== 'ethereum',
+            isHidden: account?.networkType !== 'ethereum',
         },
         {
             id: 'wallet-sign-verify',
@@ -96,12 +96,12 @@ const AccountNavigation = (props: Props) => {
             icon: 'SIGN',
             position: 'secondary',
             extra: true,
-            isHidden: () => !account || !hasSignVerify(account),
+            isHidden: !account || !hasSignVerify(account),
         },
     ];
 
     // collect all items suitable for current networkType
-    let items = ITEMS.filter(item => item.isHidden && !item.isHidden()).map(item => ({
+    let items = ITEMS.filter(item => !item.isHidden).map(item => ({
         ...item,
         'data-test': `@wallet/menu/${item.id}${
             props.dataTestSuffix ? `-${props.dataTestSuffix}` : ''

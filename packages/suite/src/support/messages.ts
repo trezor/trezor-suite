@@ -2163,10 +2163,6 @@ export default defineMessages({
         defaultMessage: "Don't skip",
         id: 'TR_DONT_SKIP',
     },
-    TR_HELP_TREZOR_SUITE: {
-        defaultMessage: 'Help us improve Trezor Suite',
-        id: 'TR_HELP_TREZOR_SUITE',
-    },
     TR_HELP_TREZOR_SUITE_TEXT_1: {
         defaultMessage:
             'Help Suite become a better product by sharing your {TR_HELP_TREZOR_SUITE_TEXT_1_FAT}.',
@@ -2339,6 +2335,15 @@ export default defineMessages({
         defaultMessage: 'Application log',
         description: 'application event and error',
         id: 'TR_LOG',
+    },
+    TR_SHOW_LOG: {
+        id: 'TR_SHOW_LOG',
+        defaultMessage: 'Show log',
+    },
+    TR_LOG_DESCRIPTION: {
+        id: 'TR_SHOW_LOG_DESCRIPTION',
+        defaultMessage:
+            'In case of communication with our support team, there is a log containing all necessary technical info.',
     },
     TR_LOOKING_FOR_QUICK_EASY: {
         defaultMessage: 'Looking for a quick & easy way to buy BTC? We got you covered.',
@@ -3513,13 +3518,9 @@ export default defineMessages({
         id: 'TR_PIN_MISMATCH_TEXT',
         defaultMessage: 'PIN mismatch!',
     },
-    TR_SHOW_LOG: {
-        id: 'TR_SHOW_LOG',
-        defaultMessage: 'Show log',
-    },
     TR_DEBUG_SETTINGS: {
         id: 'TR_DEBUG_SETTINGS',
-        defaultMessage: 'Debug settings',
+        defaultMessage: 'Debug',
     },
     TR_ACCOUNT_DETAILS_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_HEADER',
@@ -6786,9 +6787,21 @@ export default defineMessages({
         id: 'TR_GUIDE_SUGGESTION_LABEL',
         defaultMessage: 'How are we doing?',
     },
-    TR_GUIDE_FEEDACK_OR_SUGGESTION: {
-        id: 'TR_GUIDE_FEEDACK_OR_SUGGESTION',
-        defaultMessage: 'Report Bug & Feedback',
+    TR_GUIDE_SUPPORT: {
+        id: 'TR_GUIDE_SUPPORT',
+        defaultMessage: 'Contact support',
+    },
+    TR_GUIDE_FORUM: {
+        id: 'TR_GUIDE_FORUM',
+        defaultMessage: 'Trezor Forum',
+    },
+    TR_GUIDE_FORUM_LABEL: {
+        id: 'TR_GUIDE_FORUM_LABEL',
+        defaultMessage: 'Connect with Trezor community',
+    },
+    TR_GUIDE_SUPPORT_AND_FEEDBACK: {
+        id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
+        defaultMessage: 'Support & Feedback',
     },
     TR_GUIDE_CATEGORIES: {
         id: 'TR_GUIDE_CATEGORIES',
@@ -6802,9 +6815,17 @@ export default defineMessages({
         id: 'TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER',
         defaultMessage: 'Suite Guide',
     },
+    TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION: {
+        id: 'TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION',
+        defaultMessage: 'Support & Feedback',
+    },
     TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE: {
         id: 'TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE',
         defaultMessage: 'Help us improve',
+    },
+    TR_GUIDE_VIEW_HEADLINE_NEED_HELP: {
+        id: 'TR_GUIDE_VIEW_HEADLINE_NEED_HELP',
+        defaultMessage: 'Need help?',
     },
     TR_GUIDE_VIEW_HEADLINE_REPORT_BUG: {
         id: 'TR_GUIDE_VIEW_HEADLINE_REPORT_BUG',
