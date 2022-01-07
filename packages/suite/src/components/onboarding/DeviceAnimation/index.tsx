@@ -117,9 +117,9 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
                 <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                     <source
                         src={resolveStaticPath(
-                            `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.mp4`,
+                            `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.webm`,
                         )}
-                        type="video/mp4"
+                        type="video/webm"
                     />
                 </StyledVideo>
             )}
@@ -127,9 +127,9 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
                 <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                     <source
                         src={resolveStaticPath(
-                            `videos/onboarding/t1_${animationFileName}_${THEME}.mp4`,
+                            `videos/onboarding/t1_${animationFileName}_${THEME}.webm`,
                         )}
-                        type="video/mp4"
+                        type="video/webm"
                     />
                 </StyledVideo>
             )}
@@ -137,9 +137,9 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
                 <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                     <source
                         src={resolveStaticPath(
-                            `videos/onboarding/t1_${animationFileName}_${THEME}.mp4`,
+                            `videos/onboarding/t1_${animationFileName}_${THEME}.webm`,
                         )}
-                        type="video/mp4"
+                        type="video/webm"
                     />
                 </StyledVideo>
             )}
