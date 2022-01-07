@@ -74,7 +74,7 @@ const GuideDefault = (props: any) => {
             </Content>
             <FeedbackLinkWrapper
                 onClick={() => {
-                    setView('FEEDBACK_TYPE_SELECTION');
+                    setView('SUPPORT_FEEDBACK_SELECTION');
                     analytics.report({
                         type: 'guide/feedback/navigation',
                         payload: { type: 'overview' },
@@ -84,7 +84,7 @@ const GuideDefault = (props: any) => {
                 <FeedbackButton data-test="@guide/button-feedback">
                     <Icon icon="FEEDBACK" size={16} color={theme.TYPE_LIGHT_GREY} />
                     <FeedbackButtonLabel>
-                        <Translation id="TR_GUIDE_FEEDACK_OR_SUGGESTION" />
+                        <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
                     </FeedbackButtonLabel>
                     <FeedbackButtonRightIcon
                         icon="ARROW_RIGHT"

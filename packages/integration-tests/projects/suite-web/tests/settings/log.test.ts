@@ -14,12 +14,12 @@ describe('Log', () => {
         cy.getTestElement('@suite/menu/settings-index').click();
     });
 
-    it('there is a dropdown menu in settings that opens modal with application logs', () => {
-        cy.getTestElement('@settings/menu/dropdown').click({
+    it('there is a button in application setting that opens modal with application logs', () => {
+        cy.getTestElement('@settings/menu/general').click({
             scrollBehavior: false,
         });
-        cy.getTestElement('@settings/menu/log').click({
-            scrollBehavior: false,
+        cy.getTestElement('@settings/show-log-button').click({
+            scrollBehavior: 'bottom',
         });
         cy.getTestElement('@log/copy-button');
         cy.getTestElement('@log').matchImageSnapshot({ blackout: ['[data-test="@log/content"]'] });

@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import {
-    FeedbackTypeSelection,
+    SupportFeedbackSelection,
     GuideDefault,
     GuidePage,
     GuideCategory,
@@ -76,7 +76,9 @@ const GuidePanel = (props: GuidePanelProps) => {
                         {activeView === 'GUIDE_DEFAULT' && <GuideDefault />}
                         {activeView === 'GUIDE_PAGE' && <GuidePage />}
                         {activeView === 'GUIDE_CATEGORY' && <GuideCategory />}
-                        {activeView === 'FEEDBACK_TYPE_SELECTION' && <FeedbackTypeSelection />}
+                        {activeView === 'SUPPORT_FEEDBACK_SELECTION' && (
+                            <SupportFeedbackSelection />
+                        )}
                         {activeView === 'FEEDBACK_BUG' && <Feedback type="BUG" />}
                         {activeView === 'FEEDBACK_SUGGESTION' && <Feedback type="SUGGESTION" />}
                     </MotionGuide>
