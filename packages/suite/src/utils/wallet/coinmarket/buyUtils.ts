@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
+import { AppState } from '@suite-types';
 import { AmountLimits } from '@wallet-types/coinmarketBuyForm';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
-import { symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { getLocationOrigin, isDesktop } from '@suite-utils/env';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
@@ -120,19 +121,25 @@ export const getStatusMessage = (status: BuyTradeStatus) => {
 export const getCryptoOptions = (
     symbol: Account['symbol'],
     networkType: Account['networkType'],
+    supportedCoins: Set<string>,
+    coinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'],
 ) => {
-    const supportedTokens = ['usdt', 'usdc', 'dai', 'gusd'];
     const uppercaseSymbol = symbol.toUpperCase();
     const options: { value: string; label: string }[] = [
         { value: uppercaseSymbol, label: uppercaseSymbol },
     ];
 
     if (networkType === 'ethereum') {
-        supportedTokens.forEach(token => {
-            options.push({
-                label: token.toUpperCase(),
-                value: symbolToInvityApiSymbol(token).toUpperCase(),
-            });
+        // cycle through all coins, locate ERC20 tokens and if it is in supportedCoins, add it as option
+        coinInfo?.forEach(coin => {
+            if (coin.category === 'Ethereum ERC20 tokens') {
+                const ticker = coin.ticker.toLowerCase();
+                if (supportedCoins.has(ticker))
+                    options.push({
+                        label: invityApiSymbolToSymbol(ticker).toUpperCase(),
+                        value: coin.ticker,
+                    });
+            }
         });
     }
 

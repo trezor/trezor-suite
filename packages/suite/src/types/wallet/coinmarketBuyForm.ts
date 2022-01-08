@@ -4,9 +4,11 @@ import { BuyInfo, saveQuotes, saveTrade } from '@wallet-actions/coinmarketBuyAct
 import { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
 import { TypedValidationRules } from './form';
 import { DefaultCountryOption, Option } from './coinmarketCommonTypes';
+import { ExchangeCoinInfo } from 'invity-api';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
+    exchangeCoinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'];
 }
 
 export interface Props extends ComponentProps {
@@ -36,6 +38,7 @@ export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     defaultCountry: DefaultCountryOption;
     defaultCurrency: Option;
     buyInfo?: BuyInfo;
+    exchangeCoinInfo?: ExchangeCoinInfo[];
     saveQuotes: typeof saveQuotes;
     saveTrade: typeof saveTrade;
     amountLimits?: AmountLimits;

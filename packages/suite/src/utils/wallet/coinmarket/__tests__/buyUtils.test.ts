@@ -92,13 +92,27 @@ describe('coinmarket/buy utils', () => {
     });
 
     it('getCryptoOptions', () => {
-        expect(getCryptoOptions('btc', 'bitcoin')).toStrictEqual([
+        expect(getCryptoOptions('btc', 'bitcoin', new Set(), undefined)).toStrictEqual([
             {
                 value: 'BTC',
                 label: 'BTC',
             },
         ]);
-        expect(getCryptoOptions('eth', 'ethereum')).toStrictEqual([
+        expect(
+            getCryptoOptions(
+                'eth',
+                'ethereum',
+                new Set(['eth', 'usdt20', 'usdc', 'dai', 'gusd', 'other']),
+                [
+                    { ticker: 'ETH', category: 'Popular', name: 'Ethereum' },
+                    { ticker: 'USDT20', category: 'Ethereum ERC20 tokens', name: 'Tether' },
+                    { ticker: 'USDC', category: 'Ethereum ERC20 tokens', name: 'Usdc' },
+                    { ticker: 'DAI', category: 'Ethereum ERC20 tokens', name: 'Dai' },
+                    { ticker: 'GUSD', category: 'Ethereum ERC20 tokens', name: 'GUsd' },
+                    { ticker: 'OTHER', category: 'Other coins', name: 'Other' },
+                ],
+            ),
+        ).toStrictEqual([
             {
                 value: 'ETH',
                 label: 'ETH',

@@ -2,6 +2,7 @@ import { Select, CoinLogo } from '@trezor/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
+import invityAPI from '@suite-services/invityAPI';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { getSendCryptoOptions, formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
 import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
@@ -14,6 +15,12 @@ const Option = styled.div`
 
 const Label = styled.div`
     padding-left: 10px;
+`;
+
+const TokenLogo = styled.img`
+    display: flex;
+    align-items: center;
+    height: 18px;
 `;
 
 const SendCryptoSelect = () => {
@@ -56,7 +63,13 @@ const SendCryptoSelect = () => {
                     }}
                     formatOptionLabel={(option: any) => (
                         <Option>
-                            <CoinLogo size={18} symbol={account.symbol} />
+                            {account.symbol.toUpperCase() === option.value ? (
+                                <CoinLogo size={18} symbol={account.symbol} />
+                            ) : (
+                                <TokenLogo
+                                    src={`${invityAPI.server}/images/coins/suite/${option.value}.svg`}
+                                />
+                            )}
                             <Label>{formatLabel(option.label)}</Label>
                         </Option>
                     )}
