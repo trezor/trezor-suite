@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import invityAPI from '@suite-services/invityAPI';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
 import { FIAT } from '@suite-config';
 import { Translation } from '@suite-components';
 import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
-import { Select, Input } from '@trezor/components';
+import { Select, Input, CoinLogo } from '@trezor/components';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import { isDecimalsValid } from '@wallet-utils/validation';
@@ -12,6 +14,21 @@ import { InputError } from '@wallet-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
+
+const Option = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const Label = styled.div`
+    padding-left: 10px;
+`;
+
+const TokenLogo = styled.img`
+    display: flex;
+    align-items: center;
+    height: 18px;
+`;
 
 const Inputs = () => {
     const {
@@ -30,6 +47,7 @@ const Inputs = () => {
         defaultCurrency,
         cryptoInputValue,
         getValues,
+        exchangeCoinInfo,
     } = useCoinmarketBuyFormContext();
     const { symbol } = account;
     const uppercaseSymbol = symbol.toUpperCase();
@@ -239,12 +257,29 @@ const Inputs = () => {
                                     value={value}
                                     isSearchable
                                     isClearable={false}
-                                    options={getCryptoOptions(account.symbol, account.networkType)}
+                                    options={getCryptoOptions(
+                                        account.symbol,
+                                        account.networkType,
+                                        buyInfo?.supportedCryptoCurrencies || new Set(),
+                                        exchangeCoinInfo,
+                                    )}
+                                    formatOptionLabel={(option: any) => (
+                                        <Option>
+                                            {account.symbol.toUpperCase() === option.value ? (
+                                                <CoinLogo size={18} symbol={account.symbol} />
+                                            ) : (
+                                                <TokenLogo
+                                                    src={`${invityAPI.server}/images/coins/suite/${option.value}.svg`}
+                                                />
+                                            )}
+                                            <Label>{option.label}</Label>
+                                        </Option>
+                                    )}
                                     isClean
                                     hideTextCursor
                                     isDropdownVisible={account.networkType === 'ethereum'}
                                     isDisabled={account.networkType !== 'ethereum'}
-                                    minWidth="58px"
+                                    minWidth="100px"
                                 />
                             )}
                         />

@@ -42,7 +42,7 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
         loadInvityData();
     }, [loadInvityData]);
 
-    const { selectedAccount } = props;
+    const { selectedAccount, exchangeCoinInfo } = props;
     const { account, network } = selectedAccount;
     const { navigateToBuyOffers } = useCoinmarketNavigation(account);
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
@@ -136,6 +136,7 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
         defaultCurrency,
         register: typedRegister,
         buyInfo,
+        exchangeCoinInfo,
         saveQuotes,
         saveTrade,
         amountLimits,

@@ -25,11 +25,15 @@ const CoinmarketBuyLoaded = (props: Props) => {
 };
 
 const CoinmarketBuy = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const props = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
+    }));
+    const { selectedAccount } = props;
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_BUY" account={selectedAccount} />;
     }
-    return <CoinmarketBuyLoaded selectedAccount={selectedAccount} />;
+    return <CoinmarketBuyLoaded {...props} selectedAccount={selectedAccount} />;
 };
 
 export default CoinmarketBuy;
