@@ -1,3 +1,4 @@
+import { Account } from '@suite/types/wallet';
 import {
     buildOption,
     formatCryptoAmount,
@@ -5,7 +6,9 @@ import {
     getUnusedAddressFromAccount,
     getCountryLabelParts,
     mapTestnetSymbol,
+    getSendCryptoOptions,
 } from '../coinmarketUtils';
+import { accountBtc, accountEth } from '../__fixtures__/coinmarketUtils';
 
 describe('coinmarket utils', () => {
     it('buildOption', () => {
@@ -24,38 +27,12 @@ describe('coinmarket utils', () => {
     });
 
     it('getUnusedAddressFromAccount', () => {
-        const accountMockBtc = {
-            index: 1,
-            accountType: 'segwit',
-            networkType: 'bitcoin',
-            symbol: 'btc',
-            addresses: {
-                unused: [
-                    {
-                        address: '177BUDVZqTTzK1Fogqcrfbb5ketHEUDGSJ',
-                        transfers: 0,
-                        path: "m/44'/0'/3'/0/0",
-                    },
-                ],
-            },
-        };
-        // @ts-ignore
-        expect(getUnusedAddressFromAccount(accountMockBtc)).toStrictEqual({
+        expect(getUnusedAddressFromAccount(accountBtc as Account)).toStrictEqual({
             address: '177BUDVZqTTzK1Fogqcrfbb5ketHEUDGSJ',
             path: "m/44'/0'/3'/0/0",
         });
 
-        const accountMockEth = {
-            index: 1,
-            accountType: 'normal',
-            networkType: 'ethereum',
-            symbol: 'eth',
-            descriptor: '0x2e0DC981d301cdd443C3987cf19Eb9671CB99ddC',
-            path: "m/44'/60'/0'/0/1",
-        };
-
-        // @ts-ignore
-        expect(getUnusedAddressFromAccount(accountMockEth)).toStrictEqual({
+        expect(getUnusedAddressFromAccount(accountEth as Account)).toStrictEqual({
             address: '0x2e0DC981d301cdd443C3987cf19Eb9671CB99ddC',
             path: "m/44'/60'/0'/0/1",
         });
@@ -78,5 +55,30 @@ describe('coinmarket utils', () => {
         expect(mapTestnetSymbol('test')).toStrictEqual('btc');
         expect(mapTestnetSymbol('trop')).toStrictEqual('eth');
         expect(mapTestnetSymbol('txrp')).toStrictEqual('xrp');
+    });
+
+    it('getSendCryptoOptions', () => {
+        expect(getSendCryptoOptions(accountBtc as Account, new Set())).toStrictEqual([
+            {
+                value: 'BTC',
+                label: 'BTC',
+            },
+        ]);
+        expect(
+            getSendCryptoOptions(accountEth as Account, new Set(['eth', 'usdt20', 'usdc', 'dai'])),
+        ).toStrictEqual([
+            {
+                value: 'ETH',
+                label: 'ETH',
+            },
+            {
+                value: 'USDT20',
+                label: 'USDT20',
+            },
+            {
+                label: 'USDC',
+                value: 'USDC',
+            },
+        ]);
     });
 });

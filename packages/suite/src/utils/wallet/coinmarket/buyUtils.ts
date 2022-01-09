@@ -134,11 +134,12 @@ export const getCryptoOptions = (
         coinInfo?.forEach(coin => {
             if (coin.category === 'Ethereum ERC20 tokens') {
                 const ticker = coin.ticker.toLowerCase();
-                if (supportedCoins.has(ticker))
+                if (supportedCoins.has(ticker)) {
                     options.push({
                         label: invityApiSymbolToSymbol(ticker).toUpperCase(),
                         value: coin.ticker,
                     });
+                }
             }
         });
     }

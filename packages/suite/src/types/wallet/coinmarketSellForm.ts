@@ -9,6 +9,7 @@ import { FeeInfo, FormState, PrecomposedLevels } from '@wallet-types/sendForm';
 import { Option, DefaultCountryOption } from './coinmarketCommonTypes';
 
 export const OUTPUT_AMOUNT = 'outputs[0].amount';
+export const CRYPTO_TOKEN = 'outputs[0].token';
 export const FIAT_INPUT = 'fiatInput';
 export const FIAT_CURRENCY_SELECT = 'fiatCurrencySelect';
 export const CRYPTO_INPUT = 'cryptoInput';
