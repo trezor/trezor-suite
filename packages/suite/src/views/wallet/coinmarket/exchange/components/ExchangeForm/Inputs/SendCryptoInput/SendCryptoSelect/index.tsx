@@ -4,9 +4,11 @@ import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import invityAPI from '@suite-services/invityAPI';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { getSendCryptoOptions, formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
 import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
-import { invityApiSymbolToSymbol } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getSendCryptoOptions,
+    invityApiSymbolToSymbol,
+} from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 
 const Option = styled.div`
     display: flex;
@@ -27,17 +29,14 @@ const SendCryptoSelect = () => {
     const { control, setAmountLimits, account, setValue, exchangeInfo, composeRequest } =
         useCoinmarketExchangeFormContext();
 
-    const { symbol, tokens } = account;
-    const uppercaseSymbol = symbol.toUpperCase();
+    const { tokens } = account;
+    const sendCryptoOptions = getSendCryptoOptions(account, exchangeInfo?.sellSymbols || new Set());
 
     return (
         <Controller
             control={control}
             name="sendCryptoSelect"
-            defaultValue={{
-                value: uppercaseSymbol,
-                label: formatLabel(uppercaseSymbol),
-            }}
+            defaultValue={sendCryptoOptions[0]}
             render={({ onChange, value }) => (
                 <Select
                     onChange={(selected: any) => {
@@ -63,19 +62,19 @@ const SendCryptoSelect = () => {
                     }}
                     formatOptionLabel={(option: any) => (
                         <Option>
-                            {account.symbol.toUpperCase() === option.value ? (
+                            {account.symbol === option.value.toLowerCase() ? (
                                 <CoinLogo size={18} symbol={account.symbol} />
                             ) : (
                                 <TokenLogo
                                     src={`${invityAPI.server}/images/coins/suite/${option.value}.svg`}
                                 />
                             )}
-                            <Label>{formatLabel(option.label)}</Label>
+                            <Label>{option.label}</Label>
                         </Option>
                     )}
                     value={value}
                     isClearable={false}
-                    options={getSendCryptoOptions(account, exchangeInfo)}
+                    options={sendCryptoOptions}
                     isDropdownVisible={account.networkType === 'ethereum'}
                     isDisabled={account.networkType !== 'ethereum'}
                     minWidth="100px"

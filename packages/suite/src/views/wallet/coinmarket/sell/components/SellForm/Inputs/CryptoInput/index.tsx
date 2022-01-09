@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import invityAPI from '@suite-services/invityAPI';
 import { Translation } from '@suite-components';
 import { Select, Input, CoinLogo } from '@trezor/components';
 import Bignumber from 'bignumber.js';
@@ -11,9 +12,14 @@ import { MAX_LENGTH } from '@suite-constants/inputs';
 import {
     CRYPTO_CURRENCY_SELECT,
     CRYPTO_INPUT,
+    CRYPTO_TOKEN,
     FIAT_INPUT,
 } from '@suite/types/wallet/coinmarketSellForm';
 import { getInputState } from '@suite/utils/wallet/sendFormUtils';
+import {
+    getSendCryptoOptions,
+    invityApiSymbolToSymbol,
+} from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 
 interface Props {
     activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;
@@ -29,6 +35,12 @@ const Label = styled.div`
     padding-left: 10px;
 `;
 
+const TokenLogo = styled.img`
+    display: flex;
+    align-items: center;
+    height: 18px;
+`;
+
 const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
     const {
         register,
@@ -40,6 +52,10 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
         amountLimits,
         onCryptoAmountChange,
         getValues,
+        sellInfo,
+        setValue,
+        setAmountLimits,
+        composeRequest,
     } = useCoinmarketSellFormContext();
 
     const uppercaseSymbol = account.symbol.toUpperCase();
@@ -48,6 +64,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
         label: uppercaseSymbol,
     };
 
+    const { tokens } = account;
     const cryptoInputValue = getValues(CRYPTO_INPUT);
 
     return (
@@ -130,19 +147,46 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                     render={({ onChange, value }) => (
                         <Select
                             onChange={(selected: any) => {
+                                setValue('setMaxOutputId', undefined);
                                 onChange(selected);
+                                setAmountLimits(undefined);
+                                setValue(CRYPTO_INPUT, '');
+                                setValue(FIAT_INPUT, '');
+                                const token = selected.value;
+                                if (token === 'ETH' || token === 'TROP' || token === 'ETC') {
+                                    setValue(CRYPTO_TOKEN, undefined);
+                                    // set own account for non ERC20 transaction
+                                    setValue('outputs[0].address', account.descriptor);
+                                } else {
+                                    // set the address of the token to the output
+                                    const symbol = invityApiSymbolToSymbol(token).toLowerCase();
+                                    const tokenData = tokens?.find(t => t.symbol === symbol);
+                                    setValue(CRYPTO_TOKEN, tokenData?.address);
+                                    // set token address for ERC20 transaction to estimate the fees more precisely
+                                    setValue('outputs[0].address', tokenData?.address);
+                                }
+                                composeRequest();
                             }}
                             value={value}
                             isClearable={false}
-                            options={[cryptoOption]}
+                            options={getSendCryptoOptions(
+                                account,
+                                sellInfo?.supportedCryptoCurrencies || new Set(),
+                            )}
                             isClean
                             hideTextCursor
-                            isDropdownVisible={false}
-                            isDisabled
-                            minWidth="85px"
+                            isDropdownVisible={account.networkType === 'ethereum'}
+                            isDisabled={account.networkType !== 'ethereum'}
+                            minWidth="100px"
                             formatOptionLabel={(option: any) => (
                                 <Option>
-                                    <CoinLogo size={18} symbol={account.symbol} />
+                                    {account.symbol === option.value.toLowerCase() ? (
+                                        <CoinLogo size={18} symbol={account.symbol} />
+                                    ) : (
+                                        <TokenLogo
+                                            src={`${invityAPI.server}/images/coins/suite/${option.value}.svg`}
+                                        />
+                                    )}
                                     <Label>{option.label}</Label>
                                 </Option>
                             )}

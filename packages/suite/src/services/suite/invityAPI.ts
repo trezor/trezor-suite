@@ -44,7 +44,7 @@ type BodyType =
 class InvityAPI {
     unknownCountry = 'unknown';
     productionAPIServer = 'https://exchange.trezor.io';
-    stagingAPIServer = 'https://staging-exchange.invity.io';
+    stagingAPIServer = 'https://staging-exchange1.invity.io';
     localhostAPIServer = 'http://localhost:3330';
 
     server = this.productionAPIServer;

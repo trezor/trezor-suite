@@ -28,6 +28,29 @@ export const symbolToInvityApiSymbol = (symbol?: string) => {
     return result ? result.invitySymbol : symbol;
 };
 
+export const getSendCryptoOptions = (account: Account, supportedCoins: Set<string>) => {
+    const uppercaseSymbol = account.symbol.toUpperCase();
+    const options: { value: string; label: string }[] = [
+        { value: uppercaseSymbol, label: uppercaseSymbol },
+    ];
+
+    if (account.networkType === 'ethereum' && account.tokens) {
+        account.tokens.forEach(token => {
+            if (token.symbol) {
+                const invityToken = symbolToInvityApiSymbol(token.symbol);
+                if (supportedCoins.has(invityToken)) {
+                    options.push({
+                        label: invityToken.toUpperCase(),
+                        value: invityToken.toUpperCase(),
+                    });
+                }
+            }
+        });
+    }
+
+    return options;
+};
+
 export function formatCryptoAmount(amount: number, decimals = 8): string {
     let digits = 4;
     if (amount < 1) {

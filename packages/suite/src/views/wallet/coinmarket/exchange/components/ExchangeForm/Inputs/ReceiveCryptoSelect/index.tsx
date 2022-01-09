@@ -36,10 +36,12 @@ const Option = styled.div`
 const OptionName = styled.div`
     display: flex;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    max-width: 150px;
 `;
 
 const OptionLabel = styled.div`
-    min-width: 70px;
+    min-width: 60px;
 `;
 
 const buildOptions = (

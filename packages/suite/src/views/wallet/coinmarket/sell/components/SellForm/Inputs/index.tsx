@@ -26,12 +26,17 @@ const Inputs = () => {
         onCryptoAmountChange,
         activeInput,
         setActiveInput,
+        getValues,
     } = useCoinmarketSellFormContext();
 
     // if FIAT_INPUT has a valid value, set it as the activeInput
     if (watch(FIAT_INPUT) && !errors[FIAT_INPUT] && activeInput === CRYPTO_INPUT) {
         setActiveInput(FIAT_INPUT);
     }
+
+    const { outputs } = getValues();
+    const tokenAddress = outputs?.[0]?.token;
+    const tokenData = account.tokens?.find(t => t.address === tokenAddress);
 
     useEffect(() => {
         trigger([activeInput]);
@@ -42,10 +47,15 @@ const Inputs = () => {
 
     const setRatioAmount = useCallback(
         (divisor: number) => {
-            const amount = new BigNumber(account.formattedBalance)
-                .dividedBy(divisor)
-                .decimalPlaces(network.decimals)
-                .toString();
+            const amount = tokenData
+                ? new BigNumber(tokenData.balance || '0')
+                      .dividedBy(divisor)
+                      .decimalPlaces(tokenData.decimals)
+                      .toString()
+                : new BigNumber(account.formattedBalance)
+                      .dividedBy(divisor)
+                      .decimalPlaces(network.decimals)
+                      .toString();
             setValue(CRYPTO_INPUT, amount, { shouldDirty: true });
             clearErrors([CRYPTO_INPUT]);
             setActiveInput(CRYPTO_INPUT);
@@ -57,6 +67,7 @@ const Inputs = () => {
             network.decimals,
             onCryptoAmountChange,
             setActiveInput,
+            tokenData,
             setValue,
         ],
     );
@@ -70,7 +81,9 @@ const Inputs = () => {
         composeRequest(CRYPTO_INPUT);
     }, [clearErrors, composeRequest, setActiveInput, setValue]);
 
-    const isBalanceZero = new BigNumber(account.formattedBalance).isZero();
+    const isBalanceZero = tokenData
+        ? new BigNumber(tokenData.balance || '0').isZero()
+        : new BigNumber(account.formattedBalance).isZero();
 
     return (
         <Wrapper responsiveSize="LG">

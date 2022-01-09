@@ -1,8 +1,6 @@
 import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import { AmountLimits } from '@wallet-types/coinmarketExchangeForm';
 import { ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
-import { symbolToInvityApiSymbol } from './coinmarketUtils';
-import { Account } from '@wallet-types';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
 export const getAmountLimits = (quotes: ExchangeTrade[]): AmountLimits | undefined => {
@@ -100,29 +98,6 @@ export const splitToQuoteCategories = (
     return [fixedQuotes, floatQuotes, dexQuotes];
 };
 
-export const getSendCryptoOptions = (account: Account, exchangeInfo?: ExchangeInfo) => {
-    const uppercaseSymbol = account.symbol.toUpperCase();
-    const options: { value: string; label: string }[] = [
-        { value: uppercaseSymbol, label: uppercaseSymbol },
-    ];
-
-    if (account.networkType === 'ethereum' && account.tokens) {
-        account.tokens.forEach(token => {
-            if (token.symbol) {
-                const invityToken = symbolToInvityApiSymbol(token.symbol);
-                if (exchangeInfo?.sellSymbols.has(invityToken)) {
-                    options.push({
-                        label: token.symbol.toUpperCase(),
-                        value: invityToken.toUpperCase(),
-                    });
-                }
-            }
-        });
-    }
-
-    return options;
-};
-
 export const getStatusMessage = (status: ExchangeTradeStatus) => {
     switch (status) {
         case 'ERROR':
@@ -136,10 +111,4 @@ export const getStatusMessage = (status: ExchangeTradeStatus) => {
         default:
             return 'TR_EXCHANGE_STATUS_CONFIRMING';
     }
-};
-
-export const formatLabel = (tokenLabel: string) => {
-    const lowerCaseLabel = tokenLabel.toLowerCase();
-    const label = lowerCaseLabel === 'usdt' ? 'usdt20' : tokenLabel;
-    return label.toUpperCase();
 };
