@@ -61,6 +61,7 @@ export const getInitialState = (state: Partial<State> = {}) => ({
         device: DEVICE,
     },
     devices: state.devices ?? [DEVICE],
+    router: {},
 });
 
 const mockStore = configureStore<State, any>([thunk]);
