@@ -173,7 +173,10 @@ const CoinsGroup = ({
                 }
             >
                 {NETWORKS.filter(filterFn).map(network => (
-                    <CoinRow key={network.symbol}>
+                    <CoinRow
+                        key={network.symbol}
+                        data-test={`@settings/wallet/${network.symbol}/row`}
+                    >
                         <Coin symbol={network.symbol} name={network.name} />
                         <CoinToggle>
                             {!unavailableCapabilities[network.symbol] ? (
