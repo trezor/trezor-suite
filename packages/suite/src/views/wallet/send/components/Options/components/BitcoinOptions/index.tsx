@@ -88,6 +88,7 @@ const BitcoinOptions = () => {
                                     toggleOption('bitcoinLockTime');
                                     composeTransaction();
                                 }}
+                                data-test="add-locktime-button"
                             >
                                 <Translation id="LOCKTIME_ADD" />
                             </StyledButton>
@@ -126,6 +127,7 @@ const BitcoinOptions = () => {
                                 toggleOption('broadcast');
                                 composeTransaction();
                             }}
+                            data-test="broadcast-button"
                         >
                             <Translation id="BROADCAST" />
                             <OnOffSwitcher isOn={broadcastEnabled} />

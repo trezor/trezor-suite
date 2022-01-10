@@ -85,7 +85,6 @@ const Locktime = ({ close }: Props) => {
                 state={getInputState(error, inputValue)}
                 monospace
                 name={inputName}
-                data-test={inputName}
                 defaultValue={inputValue}
                 maxLength={MAX_LENGTH.BTC_LOCKTIME}
                 innerRef={register({
@@ -124,6 +123,7 @@ const Locktime = ({ close }: Props) => {
                 }
                 labelRight={<Icon size={20} icon="CROSS" onClick={close} />}
                 bottomText={<InputError error={error} />}
+                data-test="locktime-input"
             />
             {isFeatureEnabled('RBF') && network.features?.includes('rbf') && (
                 <RbfMessage>

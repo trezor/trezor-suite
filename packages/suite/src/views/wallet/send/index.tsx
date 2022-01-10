@@ -33,7 +33,7 @@ const SendLoaded: React.FC<UseSendFormProps> = ({ children, ...props }) => {
                 <Header />
                 {!props.sendRaw && (
                     <>
-                        <StyledCard>
+                        <StyledCard data-test="@wallet/send/outputs-and-options">
                             <Outputs disableAnim={!!children} />
                             <Options />
                         </StyledCard>
