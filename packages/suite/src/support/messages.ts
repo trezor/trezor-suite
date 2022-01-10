@@ -2913,6 +2913,14 @@ export default defineMessages({
         defaultMessage: 'Connect device to access device settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
     },
+    TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE: {
+        defaultMessage: 'Device detected in incorrect state',
+        id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE',
+    },
+    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE: {
+        defaultMessage: "You can't change device settings in this state",
+        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
+    },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
         defaultMessage: 'Other settings unavailable in bootloader mode',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
