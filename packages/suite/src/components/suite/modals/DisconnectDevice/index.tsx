@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Image, Translation, Modal } from '@suite-components';
 
 const StyledImage = styled(Image)`
-    flex: 1;
+    margin: auto;
+    margin-bottom: 24px;
 `;
 
 const DisconnectDevice = () => (
