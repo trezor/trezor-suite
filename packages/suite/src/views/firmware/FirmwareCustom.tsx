@@ -60,9 +60,7 @@ const FirmwareCustom = () => {
     };
 
     const shouldDisplayConnectPrompt = (device?: TrezorDevice) =>
-        !device?.connected ||
-        !device?.features ||
-        (device.firmware !== 'none' && device.mode === 'bootloader');
+        !device?.connected || !device?.features;
 
     const isCancelable = [
         'initial',
