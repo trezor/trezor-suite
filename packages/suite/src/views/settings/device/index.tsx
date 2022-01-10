@@ -3,7 +3,9 @@ import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import { Section, DeviceBanner } from '@suite-components/Settings';
 import { getDeviceModel, isDeviceRemembered } from '@suite-utils/device';
-import { useDevice } from '@suite-hooks';
+import { useDevice, useSelector } from '@suite-hooks';
+import type { TrezorDevice } from '@suite-types';
+import type { TransportInfo } from 'trezor-connect';
 
 import BackupRecoverySeed from './BackupRecoverySeed';
 import BackupFailed from './BackupFailed';
@@ -20,14 +22,42 @@ import AutoLock from './AutoLock';
 import WipeDevice from './WipeDevice';
 import CustomFirmware from './CustomFirmware';
 
+const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
+    const noTransportAvailable = transport && !transport.type;
+    const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);
+    const wrongDeviceMode =
+        (device?.mode && ['seedless', 'initialize'].includes(device.mode)) ||
+        device?.features?.recovery_mode;
+    const firmwareUpdateRequired = device?.firmware === 'required';
+
+    return noTransportAvailable || wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
+};
+
 const Settings = () => {
     const { device, isLocked } = useDevice();
+    const { transport } = useSelector(state => ({
+        transport: state.suite.transport,
+    }));
+    const deviceUnavailable = !device?.features;
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const deviceModel = device ? getDeviceModel(device) : undefined;
 
-    if (!device?.features) {
+    if (deviceSettingsUnavailable(device, transport)) {
+        return (
+            <SettingsLayout>
+                <DeviceBanner
+                    title={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE" />}
+                    description={
+                        <Translation id="TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE" />
+                    }
+                />
+            </SettingsLayout>
+        );
+    }
+
+    if (deviceUnavailable) {
         return (
             <SettingsLayout>
                 <DeviceBanner
