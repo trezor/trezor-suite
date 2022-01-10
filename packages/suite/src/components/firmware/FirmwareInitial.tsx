@@ -88,16 +88,23 @@ const FirmwareInitial = ({
         // Device without firmware is already in bootloader mode even if it doesn't report it
         content = {
             heading: <Translation id="TR_INSTALL_FIRMWARE" />,
-            description: <Translation id="TR_FIRMWARE_SUBHEADING" />,
+            description:
+                device.firmware === 'none' ? (
+                    <Translation id="TR_FIRMWARE_SUBHEADING" />
+                ) : undefined,
             body: cachedDevice?.firmwareRelease ? (
                 <FirmwareOffer device={cachedDevice} />
             ) : undefined,
             innerActions: <InstallButton onClick={onInstall} />,
         };
-    } else if (device.mode === 'bootloader') {
+    } else if (device.mode === 'bootloader' && !standaloneFwUpdate) {
         // We can check if device.mode is bootloader only after checking that firmware !== none (condition above)
-        // because device without firmware always reports that it is in bootloader mode
-        // content = { body: <ReconnectInNormalStep.Body /> };
+        // because device without firmware always reports that it is in bootloader mode.
+        //
+        // We want to prevent FW installation directly from bootloader only during onboarding,
+        // because we want to read current FW version from the device first and cache it.
+        // But for standalone FW update we need to allow bootloader mode directly, because
+        // the device could be stucked in bootloader (e.g. wrong intermediary FW installation).
         return <ConnectDevicePromptManager device={device} />;
     } else if (
         device.firmware === 'required' ||
