@@ -160,8 +160,8 @@
         "node-fetch": "^2.6.1",
         "openpgp": "^5.0.0",
         "systeminformation": "^5.9.9",
-        "react": "17.0.1",
-        "react-dom": "17.0.1",
+        "react": "17.0.2",
+        "react-dom": "17.0.2",
         "styled-components": "^5.3.3"
     },
     "devDependencies": {
