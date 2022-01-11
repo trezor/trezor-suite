@@ -19,26 +19,22 @@
         "javascript"
     ],
     "main": "./lib/index.js",
-    "files": [
-        "lib/",
-        "build/"
-    ],
+    "files": ["lib/"],
     "types": "lib/index.d.ts",
     "typings": "lib/index.d.ts",
     "browser": {
         "ws": "./lib/utils/ws.js"
     },
     "scripts": {
-        "dev": "webpack serve --config ./webpack/dev.babel.js",
-        "build:lib": "yarn build && yarn build:workers",
-        "build:workers": "rimraf build && yarn build:workers-web && yarn build:workers-node && yarn build:workers-module",
-        "build:workers-web": "webpack --config ./webpack/workers.web.babel.js",
-        "build:workers-node": "webpack --config ./webpack/workers.node.babel.js",
-        "build:workers-module": "webpack --config ./webpack/workers.module.babel.js",
-        "lint": "eslint '**/*{.ts,.tsx}'",
+        "dev": "webpack serve --config ./webpack/dev.js",
+        "dev:module": "USE_MODULES=true webpack serve --config ./webpack/dev.js",
+        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json && tsc --p ./tsconfig.workers.json",
+        "build:workers": "rimraf build && yarn build:workers-web && yarn build:workers-module",
+        "build:workers-web": "webpack --config ./webpack/workers.web.js",
+        "build:workers-module": "webpack --config ./webpack/workers.module.js",
+        "lint": "eslint '**/*.ts'",
         "test:unit": "jest --verbose -c jest.config.unit.js",
         "test:integration": "jest -c jest.config.integration.js",
-        "build": "rimraf lib && tsc --p ./tsconfig.lib.json && tsc --p ./tsconfig.workers.json",
         "type-check": "tsc --project tsconfig.json"
     },
     "devDependencies": {

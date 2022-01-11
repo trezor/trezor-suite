@@ -1,5 +1,5 @@
-import webpack from 'webpack';
-import { SRC, BUILD } from './constants';
+const webpack = require('webpack');
+const { SRC, BUILD } = require('./constants');
 
 module.exports = {
     target: 'webworker',
@@ -31,9 +31,7 @@ module.exports = {
     resolve: {
         modules: [SRC, 'node_modules'],
         extensions: ['.ts', '.js'],
-        alias: {
-            'ws-browser': `${SRC}/utils/ws.js`,
-        },
+        mainFields: ['main', 'module'], // prevent wrapping default exports by harmony export (bignumber.js in ripple issue)
         fallback: {
             https: false, // required by ripple-lib
             crypto: require.resolve('crypto-browserify'),
@@ -43,5 +41,8 @@ module.exports = {
     performance: {
         hints: false,
     },
-    plugins: [new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser')],
+    optimization: {
+        minimize: false,
+    },
+    plugins: [new webpack.NormalModuleReplacementPlugin(/^ws$/, `${SRC}/utils/ws`)],
 };

@@ -1,18 +1,19 @@
-import { SRC, BUILD } from './constants';
+const { SRC, BUILD } = require('./constants');
 
 module.exports = {
     target: 'node',
     mode: 'production',
-
     entry: {
-        'ripple-worker': `${SRC}workers/ripple/index.ts`,
         'blockbook-worker': `${SRC}workers/blockbook/index.ts`,
+        'ripple-worker': `${SRC}workers/ripple/index.ts`,
         'blockfrost-worker': `${SRC}workers/blockfrost/index.ts`,
     },
     output: {
         filename: '[name].js',
-        path: `${BUILD}node/`,
+        path: `${BUILD}module/`,
         publicPath: './',
+        libraryTarget: 'umd',
+        libraryExport: 'default',
     },
     module: {
         rules: [
@@ -22,7 +23,7 @@ module.exports = {
                 use: [
                     {
                         loader: 'ts-loader',
-                        options: { configFile: 'tsconfig.workers.json' },
+                        options: { configFile: 'tsconfig.lib.json' },
                     },
                 ],
             },
@@ -35,6 +36,9 @@ module.exports = {
     },
     performance: {
         hints: false,
+    },
+    optimization: {
+        minimize: false,
     },
     // ignore optional modules, dependencies of "ws" lib
     externals: ['utf-8-validate', 'bufferutil'],
