@@ -1,3 +1,11 @@
+# 2.0.0
+
+#### changes
+- Refactored architecture of workers. They may now be used as commonjs module in main context or in WebWorker context like before.
+- Updated library build targets to es2017 reducing polyfills from typescript transpilation.
+- Removed `build` directory from npm registry.
+- Updated dependencies.
+
 # 1.1.0
 
 #### changes
