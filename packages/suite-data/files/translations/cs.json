@@ -47,7 +47,7 @@
   "ESTIMATED_TIME": "Odhadovaný čas",
   "EVENT_DEVICE_CONNECT": "Zařízení {label} připojeno",
   "EVENT_DEVICE_CONNECT_UNACQUIRED": "{label} připojen",
-  "EVENT_WALLET_CREATED": "{walletLabel} vytvořena",
+  "EVENT_WALLET_CREATED": "Nová peněženka vytvořena",
   "FEE": "Poplatek",
   "FEE_LEVEL_CUSTOM": "Vlastní",
   "FEE_LEVEL_ECONOMY": "Ekonomický",
