@@ -2,8 +2,8 @@ export default {
     EXPAND: {
         variants: {
             initial: {
-                overflow: 'hidden',
-                height: 0,
+                overflow: 'unset',
+                height: 'auto',
             },
             visible: {
                 height: 'auto',
