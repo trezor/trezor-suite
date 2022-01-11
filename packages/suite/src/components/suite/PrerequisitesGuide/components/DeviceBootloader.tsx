@@ -33,9 +33,9 @@ const DeviceBootloader = ({ trezorModel }: Props) => {
                         heading: <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT" />,
                         description:
                             trezorModel === 1 ? (
-                                <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_1" />
+                                <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_1" />
                             ) : (
-                                <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_2" />
+                                <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_2" />
                             ),
                         noBullet: true,
                         action: <WhiteSpace />, // To make the layout bit nicer - prevent floating above button on the next row.

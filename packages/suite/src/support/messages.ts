@@ -1824,7 +1824,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SECURITY',
     },
     TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE: {
-        defaultMessage: 'Wipe memory',
+        defaultMessage: 'Factory reset',
         id: 'TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE',
     },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON: {
@@ -2910,7 +2910,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_SAME_AS_SYSTEM',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED: {
-        defaultMessage: 'Connect device to access device settings',
+        defaultMessage: 'Connect device to access Device Settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE: {
@@ -2929,22 +2929,15 @@ export default defineMessages({
         defaultMessage: 'Connect device to change device settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
-    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED: {
-        defaultMessage: 'TODO',
-        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_DISCONNECTED',
-    },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1: {
         defaultMessage:
-            'Reconnect the device and do not hold any buttons while connecting the cable to access them.',
+            'Reconnect the device and do not hold any buttons while connecting the cable to access all other Settings.',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2: {
-        defaultMessage: 'Reconnect the device without touching the screen to access them.',
+        defaultMessage:
+            'Reconnect the device without touching the screen to access all other Settings.',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2',
-    },
-    TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_REMEMBERED: {
-        defaultMessage: 'TODO',
-        id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_REMEMBERED',
     },
     TR_SHOW_ADDRESS_ANYWAY: {
         defaultMessage: 'Show address anyway',
@@ -3410,7 +3403,7 @@ export default defineMessages({
     },
     TR_WIPING_YOUR_DEVICE: {
         defaultMessage:
-            "This removes all of this Trezor's memory, including its seed. Only wipe your device if you have your recovery seed on hand or there are no funds stored on this device.",
+            'Factory Reset wipes the device memory, erasing all information including the Recovery Seed and PIN. Only perform a Factory Reset if you have your Recovery Seed to hand, or there are no funds stored on the device.',
         id: 'TR_WIPING_YOUR_DEVICE',
     },
     TR_WORDS: {
@@ -3876,7 +3869,7 @@ export default defineMessages({
     TR_WIPE_DEVICE_TEXT: {
         id: 'TR_WIPE_DEVICE_TEXT',
         defaultMessage:
-            'Reseting the device removes all its data. Reset your device only if you have recovery seed or there are no funds stored on the device.',
+            'Performing a Factory Reset wipes all data from the device. Before proceeding, please make sure you have your Recovery Seed backed up on the cards provided, otherwise you will lose access to your funds.',
     },
     TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
@@ -3889,12 +3882,13 @@ export default defineMessages({
     },
     TR_WIPE_DEVICE_CHECKBOX_2_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_2_TITLE',
-        defaultMessage: 'I understand this action does not affect my funds',
+        defaultMessage:
+            'I understand I must have a backup of my Recovery Seed in order to retain access to my funds',
     },
     TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
         defaultMessage:
-            'Your assets are safe only provided you have created a recovery seed. Make sure you have your seed or you know where you keep it.',
+            'Your assets are safe and accessible only if you have created a Recovery Seed and keep a private copy on a Recovery Seed Card. Please make sure you have your Recovery Seed handy or know where you keep it.',
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',
@@ -4766,7 +4760,7 @@ export default defineMessages({
     },
     TR_DEVICE_IN_BOOTLOADER: {
         id: 'TR_DEVICE_IN_BOOTLOADER',
-        defaultMessage: 'This Trezor is in bootloader mode. ',
+        defaultMessage: 'The device is in bootloader mode.',
     },
     TR_DEVICE_IN_BOOTLOADER_EXPLAINED: {
         id: 'TR_DEVICE_IN_BOOTLOADER_EXPLAINED',
@@ -5853,7 +5847,7 @@ export default defineMessages({
     },
     TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD',
-        defaultMessage: 'Select a compatible firmware',
+        defaultMessage: 'Select compatible firmware',
     },
     TR_CUSTOM_FIRMWARE_TITLE_INSTALL: {
         id: 'TR_CUSTOM_FIRMWARE_TITLE_INSTALL',
@@ -5861,7 +5855,7 @@ export default defineMessages({
     },
     TR_CUSTOM_FIRMWARE_TITLE_UPLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_TITLE_UPLOAD',
-        defaultMessage: 'Upload that firmware',
+        defaultMessage: 'Upload firmware',
     },
     TR_CUSTOM_FIRMWARE_VERSION: {
         id: 'TR_CUSTOM_FIRMWARE_VERSION',
@@ -6921,7 +6915,15 @@ export default defineMessages({
     },
     TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT: {
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT',
-        defaultMessage: 'In bootloader by mistake? Reconnect your device.',
+        defaultMessage: 'In bootloader by mistake?',
+    },
+    TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_1: {
+        id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_1',
+        defaultMessage: 'Reconnect the device without touching any buttons.',
+    },
+    TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_2: {
+        id: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_MODEL_2',
+        defaultMessage: 'Reconnect the device without touching the screen.',
     },
     TR_WIPE_OR_UPDATE: {
         id: 'TR_WIPE_OR_UPDATE',
@@ -6929,7 +6931,7 @@ export default defineMessages({
     },
     TR_WIPE_OR_UPDATE_DESCRIPTION: {
         id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
-        defaultMessage: 'Go to device settigns',
+        defaultMessage: 'Go to Device Settings',
     },
     TR_ONBOARDING_DEVICE_CHECK: {
         id: 'TR_ONBOARDING_DEVICE_CHECK',
@@ -6974,7 +6976,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_TROUBLESHOOTING_FAILED: {
         id: 'TR_ONBOARDING_TROUBLESHOOTING_FAILED',
-        defaultMessage: "Didn't work?",
+        defaultMessage: 'Still not working?',
         decription:
             "If troubleshooting steps for connecting a device in Onboarding didn't do the trick there is at the end link to contact a support",
     },
