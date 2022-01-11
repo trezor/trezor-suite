@@ -1,8 +1,11 @@
-# 1.0.18 (not released)
+# 1.1.0
 
 #### changes
 - lower default XRP reserve
 - set XRP reserve after `getInfo` call (get server info)
+- added support for `Cardano` using `Blockfrost` backend
+- fix blockbook transaction target when tx is sent to change address
+- fix blockbook (ETH) transaction target when swapping ETH <> ERC20
 
 # 1.0.17
 
