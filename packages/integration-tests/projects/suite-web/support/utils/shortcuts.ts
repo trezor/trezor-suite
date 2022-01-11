@@ -85,3 +85,10 @@ export const passThroughSetPin = () => {
     cy.task('pressYes');
     cy.getTestElement('@onboarding/pin/continue-button').click();
 };
+
+export const toggleDebugModeInSettings = () => {
+    const timesClickToSetDebugMode = 5;
+    for (let i = 0; i < timesClickToSetDebugMode; i++) {
+        cy.getTestElement('@settings/menu/title').click();
+    }
+};

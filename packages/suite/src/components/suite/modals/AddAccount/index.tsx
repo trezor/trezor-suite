@@ -46,11 +46,13 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
     });
     const {
         app,
+        debug,
         accounts,
         enabledNetworks: enabledNetworksSymbols,
     } = useSelector(state => ({
         app: state.router.app,
         accounts: state.wallet.accounts,
+        debug: state.suite.settings.debug,
         enabledNetworks: state.wallet.settings.enabledNetworks,
     }));
 
@@ -74,6 +76,10 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const [disabledMainnetNetworks, disabledTestnetNetworks] = partition(
         disabledNetworks,
         network => !network?.testnet,
+    );
+
+    const availableDisabledTestnetNetworks = disabledTestnetNetworks.filter(
+        (n: Network) => !(n.symbol === 'regtest' && !debug.showDebugMenu),
     );
 
     const handleNetworkSelection = (symbol?: Network['symbol']) => {
@@ -157,7 +163,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
             {!selectedNetworkEnabled && hasDisabledNetworks && (
                 <EnableNetwork
                     networks={disabledMainnetNetworks}
-                    testnetNetworks={disabledTestnetNetworks}
+                    testnetNetworks={availableDisabledTestnetNetworks}
                     selectedNetworks={selectedNetworks}
                     handleNetworkSelection={handleNetworkSelection}
                 />
