@@ -27,6 +27,13 @@ import CoinmarketExchangeOfferInfo from './CoinmarketExchangeOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketProviderInfo from './CoinmarketProviderInfo';
 import CoinmarketRefreshTime from './CoinmarketRefreshTime';
+import CoinmarketAuthentication from './CoinmarketAuthentication';
+import {
+    withCoinmarketAuthentication,
+    withCoinmarketLoaded,
+    withCoinmarketSavingsLoaded,
+    WithCoinmarketLoadedProps,
+} from './hocs';
 
 export {
     Title,
@@ -50,7 +57,12 @@ export {
     CoinmarketProvidedByInvity,
     CoinmarketPaymentType,
     CoinmarketRefreshTime,
+    CoinmarketAuthentication,
+    withCoinmarketAuthentication,
+    withCoinmarketLoaded,
+    withCoinmarketSavingsLoaded,
     OnOffSwitcher,
     InputError,
     AccountExceptionLayout,
 };
+export type { WithCoinmarketLoadedProps };

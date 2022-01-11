@@ -1,32 +1,27 @@
-import React, { useContext, useEffect } from 'react';
-import { useSelector } from '@suite-hooks';
-import { CoinmarketLayout, WalletLayout } from '@wallet-components';
-import CoinmarketAuthentication, {
-    CoinmarketAuthenticationContext,
-} from '@wallet-components/CoinmarketAuthentication';
+import React, { useEffect } from 'react';
+import { withCoinmarketSavingsLoaded, WithCoinmarketLoadedProps } from '@wallet-components';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
-import type { AppState } from '@suite-types';
 import invityAPI from '@suite-services/invityAPI';
 import { Button } from '@trezor/components';
+import { useSelector } from '@suite-hooks';
 
-interface CoinmarketSavingsLoginLoadedProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
-}
+type CoinmarketSavingsLoginProps = WithCoinmarketLoadedProps;
 
-const CoinmarketSavingsLoginLoaded = ({ selectedAccount }: CoinmarketSavingsLoginLoadedProps) => {
-    const { whoAmI, fetching } = useContext(CoinmarketAuthenticationContext);
+const CoinmarketSavingsLogin = ({ selectedAccount }: CoinmarketSavingsLoginProps) => {
+    const { invityAuthentication } = useSelector(state => ({
+        invityAuthentication: state.wallet.coinmarket.invityAuthentication,
+    }));
     const { navigateToSavings, navigateToSavingsRegistration } = useCoinmarketNavigation(
         selectedAccount.account,
     );
 
     useEffect(() => {
-        if (!fetching && whoAmI?.verified) {
+        if (invityAuthentication?.verified) {
             navigateToSavings();
         }
-    }, [fetching, navigateToSavings, whoAmI?.verified]);
+    }, [navigateToSavings, invityAuthentication?.verified]);
     return (
-        <CoinmarketLayout>
-            {whoAmI && !whoAmI.verified && <p>Verify your email to continue: {whoAmI?.email}</p>}
+        <>
             <Button onClick={() => navigateToSavingsRegistration()}>
                 Navigate to Registration
             </Button>
@@ -36,24 +31,10 @@ const CoinmarketSavingsLoginLoaded = ({ selectedAccount }: CoinmarketSavingsLogi
                 src={invityAPI.getLoginPageSrc()}
                 sandbox="allow-scripts allow-forms allow-same-origin"
             />
-        </CoinmarketLayout>
+        </>
     );
 };
 
-const CoinmarketSavingsLogin = () => {
-    const props = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-    }));
-
-    const { selectedAccount } = props;
-    if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="TR_NAV_SAVINGS" account={selectedAccount} />;
-    }
-    return (
-        <CoinmarketAuthentication checkWhoAmImmediately={false}>
-            <CoinmarketSavingsLoginLoaded selectedAccount={selectedAccount} />
-        </CoinmarketAuthentication>
-    );
-};
-
-export default CoinmarketSavingsLogin;
+export default withCoinmarketSavingsLoaded(CoinmarketSavingsLogin, {
+    checkInvityAuthenticationImmediately: false,
+});

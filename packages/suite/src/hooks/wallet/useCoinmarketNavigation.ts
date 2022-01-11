@@ -40,8 +40,13 @@ export const useCoinmarketNavigation = (account: Account) => {
         navigateToSavingsRegistration: useNavigateToRouteName(
             'wallet-coinmarket-savings-registration',
         ),
-        useNavigateToSavingsAccountVerified: useNavigateToRouteName(
+        navigateToSavingsAccountVerified: useNavigateToRouteName(
             'wallet-coinmarket-savings-account-verified',
         ),
+        navigateToSavingsUserInfo: useNavigateToRouteName('wallet-coinmarket-savings-user-info'),
+        navigateToSavingsPhoneNumberVerification: useNavigateToRouteName(
+            'wallet-coinmarket-savings-phone-number-verification',
+        ),
+        navigateToSavingsKYCStart: useNavigateToRouteName('wallet-coinmarket-savings-kyc-start'),
     };
 };

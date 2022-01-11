@@ -1,11 +1,14 @@
-import { InputError } from '@wallet-components';
+import { InputError, withCoinmarketSavingsLoaded } from '@wallet-components';
 import { useSavingsUserInfo } from '@suite/hooks/wallet/coinmarket/savings/useSavingsUserInfo';
 import { Button, Input } from '@trezor/components';
 import * as React from 'react';
 import { Translation } from '@suite-components';
+import type { WithCoinmarketLoadedProps } from '@wallet-components/hocs/withCoinmarketLoaded';
 
-const UserInfo = () => {
-    const { register, errors, onSubmit, handleSubmit } = useSavingsUserInfo();
+type UserInfoProps = WithCoinmarketLoadedProps;
+
+const UserInfo = ({ selectedAccount }: UserInfoProps) => {
+    const { register, errors, onSubmit, handleSubmit } = useSavingsUserInfo(selectedAccount);
     const givenNameInputName = 'givenName';
     const familyNameInputName = 'familyName';
     const phoneNumberInputName = 'phoneNumber';
@@ -56,4 +59,5 @@ const UserInfo = () => {
         </form>
     );
 };
-export default UserInfo;
+
+export default withCoinmarketSavingsLoaded(UserInfo);

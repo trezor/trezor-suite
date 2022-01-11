@@ -898,6 +898,10 @@ export default defineMessages({
         defaultMessage: 'Given name is required.',
         id: 'TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED',
     },
+    TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_REQUIRED: {
+        defaultMessage: 'Verification code is required.',
+        id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_REQUIRED',
+    },
     TR_SAVINGS_USERINFO_FAMILY_NAME_IS_REQUIRED: {
         defaultMessage: 'Family name is required.',
         id: 'TR_SAVINGS_USERINFO_FAMILY_NAME_IS_REQUIRED',

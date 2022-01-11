@@ -33,6 +33,10 @@ export interface AccountSettings {
     newsletter1Mails?: boolean;
     newsletter2Mails?: boolean;
     transactionMails?: boolean;
+    phoneNumber?: string;
+    phoneNumberVerified?: string;
+    givenName?: string;
+    familyName?: string;
 }
 
 export interface Session {
@@ -57,5 +61,10 @@ export interface AccountInfo {
 
 export interface AccountInfoResponse {
     data?: AccountInfo;
+    error?: string;
+}
+
+export interface AccountUpdateResponse {
+    statusCode: number;
     error?: string;
 }

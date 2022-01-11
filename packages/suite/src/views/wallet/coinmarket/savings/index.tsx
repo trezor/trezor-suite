@@ -1,58 +1,80 @@
-import React, { useContext } from 'react';
-import { useSelector } from '@suite-hooks';
-import { CoinmarketLayout, WalletLayout } from '@wallet-components';
-import CoinmarketAuthentication, {
-    CoinmarketAuthenticationContext,
-} from '@wallet-components/CoinmarketAuthentication';
-import type { AppState } from '@suite-types';
-import { useCoinmarketNavigation } from '@suite/hooks/wallet/useCoinmarketNavigation';
+import React, { useEffect } from 'react';
+import { withCoinmarketSavingsLoaded } from '@wallet-components';
 import { useSavings } from '@wallet-hooks/coinmarket/savings/useSavings';
 import UnsupportedCountry from './unsupported-country';
-import UserInfo from './user-info';
-
-interface CoinmarketSavingsLoadedProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
-}
+import type { CoinmarketSavingsLoadedProps } from '@wallet-types/coinmarket/savings';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 
 const CoinmarketSavingsLoaded = ({ selectedAccount }: CoinmarketSavingsLoadedProps) => {
-    const { whoAmI, fetching } = useContext(CoinmarketAuthenticationContext);
-    const { navigateToSavingsLogin } = useCoinmarketNavigation(selectedAccount.account);
-    const { isLoading, isClientFromUnsupportedCountry, savingsTrade } = useSavings();
-    // TODO: rename fetching and isLoading...
-    if (!fetching && whoAmI && !whoAmI.verified && !isLoading) {
-        navigateToSavingsLogin();
-    }
+    const {
+        navigateToSavingsLogin,
+        navigateToSavingsUserInfo,
+        navigateToSavingsPhoneNumberVerification,
+        navigateToSavingsKYCStart,
+    } = useCoinmarketNavigation(selectedAccount.account);
+    const {
+        invityAuthentication,
+        isLoading,
+        isClientFromUnsupportedCountry,
+        shouldLogin,
+        shouldRegisterUserInfo,
+        shouldVerifyPhoneNumber,
+        shouldKYCStart,
+    } = useSavings();
+
+    useEffect(() => {
+        if (shouldLogin) {
+            navigateToSavingsLogin();
+        }
+        if (shouldRegisterUserInfo) {
+            navigateToSavingsUserInfo();
+        }
+        if (shouldVerifyPhoneNumber) {
+            navigateToSavingsPhoneNumberVerification();
+        }
+        if (shouldKYCStart) {
+            navigateToSavingsKYCStart();
+        }
+    }, [
+        navigateToSavingsKYCStart,
+        navigateToSavingsLogin,
+        navigateToSavingsPhoneNumberVerification,
+        navigateToSavingsUserInfo,
+        shouldKYCStart,
+        shouldLogin,
+        shouldRegisterUserInfo,
+        shouldVerifyPhoneNumber,
+    ]);
+
     return (
-        <CoinmarketLayout>
-            {whoAmI?.verified && !isLoading && (
+        <>
+            {invityAuthentication?.verified && !isLoading && (
                 <>
                     Logged in user
                     <br />
-                    <p>{whoAmI?.email ? whoAmI.email : 'Unknown user'}</p>
-                    <p>User id: {whoAmI?.accountInfo ? whoAmI.accountInfo.id : 'Unknown user'}</p>
+                    <p>
+                        {invityAuthentication.email ? invityAuthentication.email : 'Unknown user'}
+                    </p>
+                    <p>
+                        User id:{' '}
+                        {invityAuthentication.accountInfo
+                            ? invityAuthentication.accountInfo.id
+                            : 'Unknown user'}
+                    </p>
+                    <p>phoneNumber: {invityAuthentication.accountInfo?.settings?.phoneNumber}</p>
+                    <p>
+                        phoneNumberVerified:{' '}
+                        {invityAuthentication.accountInfo?.settings?.phoneNumberVerified}
+                    </p>
+                    <p>givenName: {invityAuthentication.accountInfo?.settings?.givenName}</p>
+                    <p>familyName: {invityAuthentication.accountInfo?.settings?.familyName}</p>
                     <hr />
                 </>
             )}
+            {/* TODO: Redirect to UnsupportedCountry */}
             {isClientFromUnsupportedCountry && <UnsupportedCountry />}
-            {savingsTrade?.status === 'Registration' && <UserInfo />}
-        </CoinmarketLayout>
+        </>
     );
 };
 
-const CoinmarketSavings = () => {
-    const props = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-    }));
-
-    const { selectedAccount } = props;
-    if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="TR_NAV_SAVINGS" account={selectedAccount} />;
-    }
-    return (
-        <CoinmarketAuthentication>
-            <CoinmarketSavingsLoaded selectedAccount={selectedAccount} />
-        </CoinmarketAuthentication>
-    );
-};
-
-export default CoinmarketSavings;
+export default withCoinmarketSavingsLoaded(CoinmarketSavingsLoaded);

@@ -32,6 +32,8 @@ import {
 import { isDesktop } from '@suite-utils/env';
 import type {
     AccountInfoResponse,
+    AccountSettings,
+    AccountUpdateResponse,
     InvityServerEnvironment,
     InvityServers,
 } from '@wallet-types/invity';
@@ -216,6 +218,31 @@ export interface SavingsIdentityDocument {
 export interface VerifySmsCodeRequest {
     code: string;
 }
+
+export interface VerifySmsCodeSuccessResponse {
+    status: 'Verified';
+}
+
+export interface VerifySmsCodeErrorResponse {
+    status: 'Error';
+    error: string;
+}
+
+export type VerifySmsCodeResponse = VerifySmsCodeSuccessResponse | VerifySmsCodeErrorResponse;
+
+export interface SendVerificationSmsErrorResponse {
+    status: 'Error';
+    error: string;
+}
+
+export interface SendVerificationSmsSuccessResponse {
+    status: 'SmsQueued';
+}
+
+export type SendVerificationSmsResponse =
+    | SendVerificationSmsSuccessResponse
+    | SendVerificationSmsErrorResponse;
+
 /** END: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 
 type BodyType =
@@ -305,6 +332,7 @@ class InvityAPI {
     private SAVINGS_TRADE = '/savings/trade';
 
     private ACCOUNT_INFO = '/account/info';
+    private ACCOUNT_SETTINGS = '/account/settings';
     private PHONE_SEND_VERIFICATION_SMS = '/account/phone/send-verification-sms';
     private PHONE_VERIFY_SMS_CODE = '/account/phone/verify-sms-code';
 
@@ -739,10 +767,10 @@ class InvityAPI {
         }
     };
 
-    sendVerificationSms = async () => {
+    sendVerificationSms = async (): Promise<SendVerificationSmsResponse | undefined> => {
         this.setProtectedAPI(true);
         try {
-            await this.requestApiServer(this.PHONE_SEND_VERIFICATION_SMS, {}, 'POST');
+            return await this.requestApiServer(this.PHONE_SEND_VERIFICATION_SMS, {}, 'POST');
         } catch (error) {
             console.log('[sendVerificationSms]', error);
         } finally {
@@ -750,10 +778,23 @@ class InvityAPI {
         }
     };
 
-    verifySmsCode = async (code: string) => {
+    saveAccountSettings = async (
+        accountSettings: AccountSettings,
+    ): Promise<AccountUpdateResponse | undefined> => {
         this.setProtectedAPI(true);
         try {
-            await this.requestApiServer(
+            return await this.requestApiServer(this.ACCOUNT_SETTINGS, accountSettings, 'POST');
+        } catch (error) {
+            console.log('[saveAccountSettings]', error);
+        } finally {
+            this.setProtectedAPI(false);
+        }
+    };
+
+    verifySmsCode = async (code: string): Promise<VerifySmsCodeResponse | undefined> => {
+        this.setProtectedAPI(true);
+        try {
+            return await this.requestApiServer(
                 this.PHONE_VERIFY_SMS_CODE,
                 { code } as VerifySmsCodeRequest,
                 'POST',

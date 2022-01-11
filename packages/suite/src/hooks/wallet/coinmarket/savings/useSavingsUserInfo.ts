@@ -1,24 +1,34 @@
-import { createContext, useCallback } from 'react';
+import { createContext, useCallback, useEffect } from 'react';
 import {
     SavingsUserInfoFormState,
     SavingsUserInfoContextValues,
 } from '@wallet-types/coinmarket/savings/userInfo';
 import { useForm } from 'react-hook-form';
-import invityAPI, { SavingsTradeRequest } from '@suite/services/suite/invityAPI';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
+import invityAPI from '@suite-services/invityAPI';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { useActions, useSelector } from '@suite-hooks';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import type { SavingsSelectedAccount } from '@wallet-types/coinmarket/savings';
 
-export const SavingsContext = createContext<SavingsUserInfoContextValues | null>(null);
-SavingsContext.displayName = 'SavingsContext';
+export const SavingsUserInfoContext = createContext<SavingsUserInfoContextValues | null>(null);
+SavingsUserInfoContext.displayName = 'SavingsUserInfoContext';
 
-export const useSavingsUserInfo = (): SavingsUserInfoContextValues => {
-    const { saveSavingsTradeResponse } = useActions({
-        saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
-    });
-
-    const { savingsTrade } = useSelector(state => ({
-        savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
+export const useSavingsUserInfo = (
+    selectedAccount: SavingsSelectedAccount,
+): SavingsUserInfoContextValues => {
+    const { invityAuthentication } = useSelector(state => ({
+        invityAuthentication: state.wallet.coinmarket.invityAuthentication,
     }));
+    const { navigateToSavingsPhoneNumberVerification } = useCoinmarketNavigation(
+        selectedAccount.account,
+    );
+
+    const { loadInvityData } = useActions({
+        loadInvityData: coinmarketCommonActions.loadInvityData,
+    });
+    useEffect(() => {
+        loadInvityData();
+    }, [loadInvityData]);
 
     const methods = useForm<SavingsUserInfoFormState>({
         mode: 'onChange',
@@ -26,25 +36,26 @@ export const useSavingsUserInfo = (): SavingsUserInfoContextValues => {
     const { register } = methods;
 
     const onSubmit = async () => {
-        const { familyName, givenName, phoneNumber } = methods.getValues();
-        const request: SavingsTradeRequest = {
-            trade: {
-                ...savingsTrade,
-                userRegistration: {
-                    familyName,
-                    givenName,
-                    phoneNumber,
-                    dateOfBirth: '2000-01-01', // TODO: temporary - we are discussing if dateOfBirth is mandatory or optional with savings provider
-                },
-            },
-        };
-        const response = await invityAPI.doSavingsTrade(request);
-        if (response) {
-            await invityAPI.sendVerificationSms();
-            saveSavingsTradeResponse(response);
+        if (invityAuthentication?.accountInfo?.settings) {
+            const { familyName, givenName, phoneNumber } = methods.getValues();
+            const response = await invityAPI.saveAccountSettings({
+                ...invityAuthentication.accountInfo.settings,
+                familyName,
+                givenName,
+                phoneNumber,
+            });
+            if (!response?.error) {
+                const sendVerificationSmsResponse = await invityAPI.sendVerificationSms();
+                if (sendVerificationSmsResponse?.status === 'SmsQueued') {
+                    navigateToSavingsPhoneNumberVerification();
+                } else {
+                    // TODO: stay and show error
+                }
+            }
         }
     };
 
+    // TODO: extract
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
     return {

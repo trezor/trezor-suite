@@ -9,6 +9,29 @@ export const SavingsContext = createContext<SavingsContextValues | null>(null);
 SavingsContext.displayName = 'SavingsContext';
 
 export const useSavings = (): SavingsContextValues => {
+    // TODO: This shouldSomething doesn't seem to be right. Will decide and maybe later.
+    // TODO: Do we really need the WhoAmI here?
+    // const { invityAuthentication, fetching } = useContext(CoinmarketAuthenticationContext);
+    const { savingsInfo, savingsTrade, invityAuthentication } = useSelector(state => ({
+        invityAuthentication: state.wallet.coinmarket.invityAuthentication,
+        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
+        savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
+    }));
+    const shouldRegisterUserInfo =
+        !!invityAuthentication?.accountInfo?.settings &&
+        (!invityAuthentication.accountInfo.settings.givenName ||
+            !invityAuthentication.accountInfo.settings.familyName ||
+            !invityAuthentication.accountInfo.settings.phoneNumber);
+
+    const shouldVerifyPhoneNumber =
+        !!invityAuthentication?.accountInfo &&
+        !invityAuthentication.accountInfo.settings?.phoneNumberVerified;
+
+    const shouldKYCStart =
+        !shouldVerifyPhoneNumber &&
+        !!invityAuthentication?.accountInfo &&
+        !!invityAuthentication.accountInfo.settings?.phoneNumberVerified;
+
     const { loadInvityData, saveSavingsTradeResponse } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
         saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
@@ -17,17 +40,15 @@ export const useSavings = (): SavingsContextValues => {
         loadInvityData();
     }, [loadInvityData]);
 
-    const { savingsInfo, savingsTrade } = useSelector(state => ({
-        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
-        savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
-    }));
-
+    // TODO: rename fetching and isLoading...
     const isLoading = !savingsInfo;
+    const shouldLogin = !!invityAuthentication && !invityAuthentication.verified && !isLoading;
+
     // We have single savings provider for now.
     const providerInfo = savingsInfo?.savingsList?.providers[0];
 
     useEffect(() => {
-        if (providerInfo) {
+        if (providerInfo && !shouldRegisterUserInfo && !shouldVerifyPhoneNumber) {
             const loadSavingsTrade = async () => {
                 const savingsTrade = await invityAPI.getSavingsTrade(providerInfo.name);
                 if (savingsTrade) {
@@ -36,14 +57,19 @@ export const useSavings = (): SavingsContextValues => {
             };
             loadSavingsTrade();
         }
-    }, [providerInfo, saveSavingsTradeResponse]);
+    }, [providerInfo, saveSavingsTradeResponse, shouldRegisterUserInfo, shouldVerifyPhoneNumber]);
 
     return {
+        invityAuthentication,
         isLoading,
         savingsInfo,
         savingsTrade,
         // TODO: Will be indicated by Invity API later.
         isRegisteredAccount: false,
         isClientFromUnsupportedCountry: !!providerInfo?.isClientFromUnsupportedCountry,
+        shouldLogin,
+        shouldRegisterUserInfo,
+        shouldVerifyPhoneNumber,
+        shouldKYCStart,
     };
 };

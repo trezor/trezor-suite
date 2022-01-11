@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import invityAPI from '@suite-services/invityAPI';
-import { useSelector } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { useEffectOnce } from 'react-use';
-
+import { AccountSettings } from '@wallet-types/invity';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 // TODO: move interfaces/types to types folder
 
 export interface AccountInfo {
     id: string;
+    settings: AccountSettings;
 }
 
 export interface WhoAmI {
@@ -31,15 +33,15 @@ export interface WhoAmI {
 }
 
 export interface CoinmarketAuthenticationContextProps {
-    whoAmI?: WhoAmI;
+    invityAuthentication?: WhoAmI;
     fetching: boolean;
-    checkWhoAmI: () => void;
+    checkInvityAuthentication: () => void;
 }
 
 export const CoinmarketAuthenticationContext =
     React.createContext<CoinmarketAuthenticationContextProps>({
         fetching: true,
-        checkWhoAmI: () => {},
+        checkInvityAuthentication: () => {},
     });
 
 function inIframe() {
@@ -51,24 +53,27 @@ function inIframe() {
 }
 
 interface CoinmarketAuthenticationProps {
-    checkWhoAmImmediately?: boolean;
+    checkInvityAuthenticationImmediately?: boolean;
 }
 
 const CoinmarketAuthentication: React.FC<CoinmarketAuthenticationProps> = ({
     children,
-    checkWhoAmImmediately = true,
+    checkInvityAuthenticationImmediately = true,
 }) => {
-    const { invityEnvironment } = useSelector(state => ({
+    const { invityEnvironment, invityAuthentication } = useSelector(state => ({
         invityEnvironment: state.suite.settings.debug.invityServerEnvironment,
+        invityAuthentication: state.wallet.coinmarket.invityAuthentication,
     }));
     if (invityEnvironment) {
         invityAPI.setInvityServersEnvironment(invityEnvironment);
     }
-    const [whoAmI, setWhoAmI] = useState<WhoAmI>();
-    const [fetching, setFetching] = useState(checkWhoAmImmediately);
+    const { saveInvityAuthentication } = useActions({
+        saveInvityAuthentication: coinmarketCommonActions.saveInvityAuthentication,
+    });
+    const [fetching, setFetching] = useState(checkInvityAuthenticationImmediately);
     const [checkCounter, setCheckCounter] = useState(0);
 
-    const checkWhoAmI = () => {
+    const checkInvityAuthentication = () => {
         setCheckCounter(checkCounter + 1);
     };
 
@@ -85,7 +90,7 @@ const CoinmarketAuthentication: React.FC<CoinmarketAuthenticationProps> = ({
                 switch (parsedData.state) {
                     case 'login-successful':
                     case 'registration-successful':
-                        checkWhoAmI();
+                        checkInvityAuthentication();
                     // eslint-disable-next-line no-fallthrough
                     default:
                 }
@@ -128,42 +133,45 @@ const CoinmarketAuthentication: React.FC<CoinmarketAuthenticationProps> = ({
                     const whoAmIResponse = await fetch(invityAPI.getCheckWhoAmIUrl(), {
                         credentials: 'include',
                     });
-                    let whoAmI: WhoAmI = await whoAmIResponse.json();
-                    console.log('fetched data from who am i', whoAmI);
-                    if (whoAmI.error) {
-                        whoAmI.active = false;
+                    let invityAuthentication: WhoAmI = await whoAmIResponse.json();
+                    console.log('fetched data from who am i', invityAuthentication);
+                    if (invityAuthentication.error) {
+                        invityAuthentication.active = false;
                     }
-                    console.log('WHoAmIContext data', whoAmI);
-                    if (whoAmI.identity && whoAmI.active) {
-                        whoAmI.verified = whoAmI.identity.verifiable_addresses[0].verified;
+                    console.log('WHoAmIContext data', invityAuthentication);
+                    if (invityAuthentication.identity && invityAuthentication.active) {
+                        invityAuthentication.verified =
+                            invityAuthentication.identity.verifiable_addresses[0].verified;
                     } else {
-                        whoAmI.verified = false;
+                        invityAuthentication.verified = false;
                     }
                     // TODO: get rid off setProtectedAPI -> invityAPI.accountInfo should call itself the right endpoint with right parameters in within fetch(...)
                     // TODO: setProtectedAPI - this is an antipattern, because it mutates state of the InvityAPI instance while it can be used from somewhere else (calling /api/exchange/...).
-                    invityAPI.setProtectedAPI(whoAmI.verified || false);
-                    if (whoAmI.verified) {
-                        whoAmI.email = whoAmI.identity?.traits.email;
+                    invityAPI.setProtectedAPI(invityAuthentication.verified || false);
+                    if (invityAuthentication.verified) {
+                        invityAuthentication.email = invityAuthentication.identity?.traits.email;
                         const info = await loadAccountInfo();
                         invityAPI.setProtectedAPI(false);
-                        whoAmI = { ...whoAmI, ...info };
+                        invityAuthentication = { ...invityAuthentication, ...info };
                     }
-                    setWhoAmI(whoAmI);
+                    saveInvityAuthentication(invityAuthentication);
                 } catch (error) {
                     const reason = error instanceof Object ? error.toString() : '';
-                    setWhoAmI({ error: { code: 503, status: 'Error', reason } });
+                    saveInvityAuthentication({ error: { code: 503, status: 'Error', reason } });
                     invityAPI.setProtectedAPI(false);
                 }
             }
             setFetching(false);
         };
-        if (checkWhoAmImmediately || checkCounter > 0) {
+        if (checkInvityAuthenticationImmediately || checkCounter > 0) {
             fetchWhoami();
         }
-    }, [checkCounter, checkWhoAmImmediately]);
+    }, [checkCounter, checkInvityAuthenticationImmediately, saveInvityAuthentication]);
 
     return (
-        <CoinmarketAuthenticationContext.Provider value={{ whoAmI, fetching, checkWhoAmI }}>
+        <CoinmarketAuthenticationContext.Provider
+            value={{ invityAuthentication, fetching, checkInvityAuthentication }}
+        >
             {children}
         </CoinmarketAuthenticationContext.Provider>
     );
