@@ -25,7 +25,7 @@ const LANGUAGES = {
     pl: { name: 'Polski', en: 'Polish' },
     pt: { name: 'Português', en: 'Portuguese' },
     ro: { name: 'Română', en: 'Romanian' },
-    ru: { name: 'Русский', en: 'Russian' },
+    ru: { name: 'Русский (БЕТА)', en: 'Russian (BETA)', complete: true },
     sk: { name: 'Slovenčina', en: 'Slovak' },
     sr: { name: 'Српски', en: 'Serbian' },
     sv: { name: 'Svenska', en: 'Swedish' },
