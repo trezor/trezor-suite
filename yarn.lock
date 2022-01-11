@@ -5816,18 +5816,6 @@
   dependencies:
     tippy.js "^6.3.1"
 
-"@trezor/blockchain-link@1.1.0-beta.1":
-  version "1.1.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@trezor/blockchain-link/-/blockchain-link-1.1.0-beta.1.tgz#646ccf6f5381ce99109f3b1255ebfc94dfc814aa"
-  integrity sha512-hwNHYKUuE9EkCh0qAal+F/q5d9L9hXg+MjQLqDhZmd+TujsmGgjFrYSge3nXYPUFx/kr/sVnsStu2R2F3a7Zgg==
-  dependencies:
-    bignumber.js "^9.0.1"
-    es6-promise "^4.2.8"
-    events "^3.2.0"
-    ripple-lib "1.10.0"
-    tiny-worker "^2.3.0"
-    ws "^7.4.0"
-
 "@tsconfig/node10@^1.0.7":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.8.tgz#c1e4e80d6f964fbecb3359c43bd48b40f7cadad9"
@@ -17151,15 +17139,6 @@ keccak@^3.0.0:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
 
-keccak@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.2.tgz#4c2c6e8c54e04f2670ee49fa734eb9da152206e0"
-  integrity sha512-PyKKjkH53wDMLGrvmRGSNWgmSxZOUqbnXwKL9tmgbFYA1iAYqW21kfR7mZXV0MlESiefxQQE9X9fTa3X+2MPDQ==
-  dependencies:
-    node-addon-api "^2.0.0"
-    node-gyp-build "^4.2.0"
-    readable-stream "^3.6.0"
-
 keyboardevent-from-electron-accelerator@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/keyboardevent-from-electron-accelerator/-/keyboardevent-from-electron-accelerator-2.0.0.tgz#ace21b1aa4e47148815d160057f9edb66567c50c"
@@ -25193,13 +25172,13 @@ trezor-address-validator@^0.4.2:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.2.5-beta.2:
-  version "8.2.5-beta.2"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.5-beta.2.tgz#86782a9deb280e71da1f2ff0094bef0a714877b1"
-  integrity sha512-zJILdNmq8Igtr+FA56LNvXem3gVC5068MzjG4IzyX1YKxzSd+kkX0RAPNRc+sNh35tdV2WLzVNJtbZYJPVObMw==
+trezor-connect@8.2.5-beta.3:
+  version "8.2.5-beta.3"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.5-beta.3.tgz#12e41a45e1b27addec3533e53330c472328cb2e9"
+  integrity sha512-dxTxOJrwX73S/qCUkE+QOPAv+0Cp+E0XwH95E2QBr9XClBY6TjKzd33kszPaSVYXP1VELKuAjhXZfQM0uS7FpA==
   dependencies:
     "@babel/runtime" "^7.15.4"
-    "@trezor/blockchain-link" "1.1.0-beta.1"
+    "@trezor/blockchain-link" "1.1.0"
     "@trezor/connect-common" "^0.0.3"
     "@trezor/rollout" "^1.2.1"
     "@trezor/transport" "1.0.1"
@@ -25209,7 +25188,6 @@ trezor-connect@8.2.5-beta.2:
     cbor-web "^7.0.6"
     cross-fetch "^3.1.4"
     events "^3.3.0"
-    keccak "^3.0.2"
     parse-uri "^1.0.3"
     tiny-worker "^2.3.0"
 
