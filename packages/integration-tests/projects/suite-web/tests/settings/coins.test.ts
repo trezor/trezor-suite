@@ -35,29 +35,23 @@ describe('Coin Settings', () => {
         ];
 
         // only btc is selected by default;
-        cy.getTestElement('@settings/wallet/network/btc').should('be.checked');
+        cy.getTestElement('@settings/wallet/network/btc').should(
+            'have.attr',
+            'data-active',
+            'true',
+        );
 
         // other coins are not selected
         defaultUnchecked.forEach(network => {
-            cy.getTestElement(`@settings/wallet/network/${network}`).should('not.be.checked');
+            cy.getTestElement(`@settings/wallet/network/${network}`).should(
+                'have.attr',
+                'data-active',
+                'false',
+            );
         });
 
-        // test "Enable all coins" button
-        cy.getTestElement('@settings/wallet/network/test').click({ force: true });
-        cy.getTestElement('@settings/wallet/coins-group/mainnet/activate-all').click({
-            force: true,
-        });
-        cy.getTestElement('@settings/wallet/coins-group/testnet/activate-all').click({
-            force: true,
-        });
-
-        // test "Disable all" coins button
-        cy.getTestElement('@settings/wallet/coins-group/mainnet/deactivate-all').click({
-            force: true,
-        });
-        cy.getTestElement('@settings/wallet/coins-group/testnet/deactivate-all').click({
-            force: true,
-        });
+        // disable Bitcoin
+        cy.getTestElement('@settings/wallet/network/btc').click({ force: true });
 
         // check dashboard with all coins disabled
         cy.getTestElement('@suite/menu/suite-index').click();
@@ -72,7 +66,11 @@ describe('Coin Settings', () => {
 
         // just do some clicking on switches and check result
         ['btc', ...defaultUnchecked].forEach(network => {
-            cy.getTestElement(`@settings/wallet/network/${network}`).should('not.be.checked');
+            cy.getTestElement(`@settings/wallet/network/${network}`).should(
+                'have.attr',
+                'data-active',
+                'false',
+            );
         });
 
         ['btc', ...defaultUnchecked].forEach(network => {
@@ -80,7 +78,11 @@ describe('Coin Settings', () => {
         });
 
         ['btc', ...defaultUnchecked].forEach(network => {
-            cy.getTestElement(`@settings/wallet/network/${network}`).should('be.checked');
+            cy.getTestElement(`@settings/wallet/network/${network}`).should(
+                'have.attr',
+                'data-active',
+                'true',
+            );
         });
     });
 });
