@@ -1,9 +1,7 @@
 {
     "extends": "./tsconfig.lib.json",
     "compilerOptions": {
-        "module": "commonjs",
-        "outDir": "./lib",
-        "lib": ["webworker", "es2015"]
+        "lib": ["webworker", "es2017"]
     },
     "include": [
         "./src/workers/ripple/index.ts",
