@@ -15,6 +15,7 @@ import { getTestElement, getConfirmActionOnDeviceModal, hoverTestElement } from 
 import { resetDb, dispatch } from './utils/test-env';
 import {
     toggleDeviceMenu,
+    toggleDebugModeInSettings,
     goToOnboarding,
     passThroughInitialRun,
     passThroughBackup,
@@ -78,6 +79,7 @@ declare global {
             dashboardShouldLoad: () => Chainable<Subject>;
             discoveryShouldFinish: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
+            toggleDebugModeInSettings: () => Chainable<Subject>;
             text: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
@@ -123,6 +125,7 @@ Cypress.Commands.add('hoverTestElement', hoverTestElement);
 
 // various shortcuts
 Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
+Cypress.Commands.add('toggleDebugModeInSettings', toggleDebugModeInSettings);
 Cypress.Commands.add('goToOnboarding', goToOnboarding);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
 Cypress.Commands.add('passThroughBackup', passThroughBackup);

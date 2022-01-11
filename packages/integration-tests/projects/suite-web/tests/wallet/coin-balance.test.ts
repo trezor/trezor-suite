@@ -25,6 +25,16 @@ describe('Dashboard with regtest', () => {
 
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@suite/menu/settings-coins').click();
+
+        // before setting debug mode, regtest coin should not exist
+        cy.getTestElement('@settings/wallet/network/regtest', { timeout: 30000 }).should(
+            'not.exist',
+        );
+
+        // set it to debug mode so regtest is available
+        cy.toggleDebugModeInSettings();
+        cy.getTestElement('@settings/wallet/network/regtest', { timeout: 30000 }).should('exist');
+
         cy.getTestElement('@settings/wallet/network/btc').should('be.checked');
         cy.getTestElement('@settings/wallet/network/regtest').click({ force: true });
         cy.getTestElement('@settings/wallet/network/regtest/advance').click({ force: true });

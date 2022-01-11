@@ -12,8 +12,9 @@ const Settings = () => {
         changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
         changeNetworks: walletSettingsActions.changeNetworks,
     });
-    const { device, enabledNetworks } = useSelector(state => ({
+    const { device, enabledNetworks, debug } = useSelector(state => ({
         device: state.suite.device,
+        debug: state.suite.settings.debug,
         enabledNetworks: state.wallet.settings.enabledNetworks,
     }));
 
@@ -21,8 +22,12 @@ const Settings = () => {
 
     const mainnetNetworksFilterFn = (n: Network) => !n.accountType && !n.testnet;
 
-    const testnetNetworksFilterFn = (n: Network) =>
-        !n.accountType && 'testnet' in n && n.testnet === true;
+    const testnetNetworksFilterFn = (n: Network) => {
+        if (n.symbol === 'regtest' && !debug.showDebugMenu) {
+            return false;
+        }
+        return !n.accountType && 'testnet' in n && n.testnet === true;
+    };
 
     const unavailableNetworksFilterFn = (symbol: Network['symbol']) =>
         !unavailableCapabilities[symbol];

@@ -35,6 +35,7 @@ const SettingsMenu = () => {
             title={
                 <span
                     aria-hidden="true"
+                    data-test="@settings/menu/title"
                     onClick={() => {
                         setClickCounter(prev => prev + 1);
                         if (clickCounter === 4) {
