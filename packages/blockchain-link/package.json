@@ -38,26 +38,18 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "devDependencies": {
-        "@babel/register": "^7.13.14",
-        "@babel/runtime": "^7.13.10",
-        "babel-eslint": "^10.1.0",
-        "babel-loader": "^8.2.1",
-        "eslint-config-airbnb-base": "^14.2.1",
-        "eslint-loader": "^4.0.2",
-        "eslint-plugin-jest": "^24.4.0",
         "html-webpack-plugin": "^5.3.2",
+        "tiny-worker": "^2.3.0",
         "ts-loader": "^9.2.5",
         "webpack": "^5.55.1",
         "webpack-cli": "4.8.0",
-        "webpack-dev-server": "^4.2.1",
+        "webpack-dev-server": "^4.7.3",
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
         "bignumber.js": "^9.0.1",
-        "es6-promise": "^4.2.8",
-        "events": "^3.2.0",
+        "events": "^3.3.0",
         "ripple-lib": "1.10.0",
-        "tiny-worker": "^2.3.0",
         "ws": "^7.4.0"
     }
 }
