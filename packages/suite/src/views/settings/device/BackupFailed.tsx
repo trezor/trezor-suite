@@ -8,7 +8,7 @@ const BackupFailed = () => (
         <TextColumn
             title={<Translation id="TR_BACKUP_RECOVERY_SEED_FAILED_TITLE" />}
             description={<Translation id="TR_BACKUP_RECOVERY_SEED_FAILED_DESC" />}
-            learnMore={FAILED_BACKUP_URL}
+            buttonLink={FAILED_BACKUP_URL}
         />
         <ActionColumn>
             <ActionButton isDisabled>

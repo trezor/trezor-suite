@@ -22,7 +22,7 @@ const BackupRecoverySeed = ({ isDeviceLocked }: Props) => {
             <TextColumn
                 title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
                 description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
-                learnMore={SEED_MANUAL_URL}
+                buttonLink={SEED_MANUAL_URL}
             />
             <ActionColumn>
                 <ActionButton

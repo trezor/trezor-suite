@@ -6,7 +6,8 @@ import { Translation, TrezorLink } from '@suite-components';
 interface TextColumnProps {
     title?: React.ReactNode;
     description?: React.ReactNode;
-    learnMore?: string;
+    buttonLink?: string;
+    buttonTitle?: React.ReactNode;
 }
 
 const Wrapper = styled.div`
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
     max-width: 500px;
 `;
 
-const LearnMoreButton = styled(Button)`
+const ButtonLink = styled(Button)`
     max-width: fit-content;
 `;
 
@@ -39,15 +40,15 @@ const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const TextColumn = ({ title, description, learnMore }: TextColumnProps) => (
+const TextColumn = ({ title, description, buttonLink, buttonTitle }: TextColumnProps) => (
     <Wrapper>
         {title && <Title>{title}</Title>}
         {description && <Description>{description}</Description>}
-        {learnMore && (
-            <TrezorLink variant="nostyle" href={learnMore}>
-                <LearnMoreButton variant="tertiary">
-                    <Translation id="TR_LEARN_MORE" />
-                </LearnMoreButton>
+        {buttonLink && (
+            <TrezorLink variant="nostyle" href={buttonLink}>
+                <ButtonLink variant="tertiary">
+                    {buttonTitle || <Translation id="TR_LEARN_MORE" />}
+                </ButtonLink>
             </TrezorLink>
         )}
     </Wrapper>

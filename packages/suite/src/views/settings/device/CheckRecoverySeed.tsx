@@ -22,7 +22,7 @@ const CheckRecoverySeed = ({ isDeviceLocked }: Props) => {
             <TextColumn
                 title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
                 description={<Translation id="TR_CHECK_RECOVERY_SEED_DESCRIPTION" />}
-                learnMore={DRY_RUN_URL}
+                buttonLink={DRY_RUN_URL}
             />
             <ActionColumn>
                 <ActionButton

@@ -8,6 +8,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { getDeviceModel } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
+import { HOMESCREEN_EDITOR } from '@suite-constants/urls';
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {
@@ -77,18 +78,23 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
     return (
         <>
             <SectionItem>
-                <TextColumn
-                    title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
-                    description={
-                        // display text only for model T, it relates to what kind of image may be uploaded
-                        // but custom upload is enabled only for T now.
-                        isModelT ? (
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS" />
-                        ) : (
-                            ''
-                        )
-                    }
-                />
+                {isModelT ? (
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_2" />
+                        }
+                    />
+                ) : (
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_1" />
+                        }
+                        buttonLink={HOMESCREEN_EDITOR}
+                        buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
+                    />
+                )}
                 <ActionColumn>
                     <HiddenInput
                         ref={fileInputElement}
@@ -98,25 +104,21 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
                             onUploadHomescreen(e.target.files);
                         }}
                     />
-                    {/* only available for model T at the moment. It works quite well there */}
-                    {isModelT && (
-                        <StyledActionButton
-                            onClick={() => {
-                                if (fileInputElement.current) {
-                                    fileInputElement.current.click();
-                                    analytics.report({
-                                        type: 'settings/device/goto/background',
-                                        payload: { custom: true },
-                                    });
-                                }
-                            }}
-                            isDisabled={isDeviceLocked}
-                            variant="secondary"
-                        >
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
-                        </StyledActionButton>
-                    )}
-
+                    <StyledActionButton
+                        onClick={() => {
+                            if (fileInputElement.current) {
+                                fileInputElement.current.click();
+                                analytics.report({
+                                    type: 'settings/device/goto/background',
+                                    payload: { custom: true },
+                                });
+                            }
+                        }}
+                        isDisabled={isDeviceLocked}
+                        variant="secondary"
+                    >
+                        <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
+                    </StyledActionButton>
                     <StyledActionButton
                         onClick={() => {
                             openModal({
