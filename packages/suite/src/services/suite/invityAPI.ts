@@ -329,7 +329,7 @@ class InvityAPI {
     private SELL_FIAT_WATCH_TRADE = '/sell/fiat/watch/{{counter}}';
 
     private SAVINGS_LIST = '/savings/list';
-    private SAVINGS_TRADE = '/savings/trade';
+    private SAVINGS_TRADE = '/account/savings/trade';
 
     private ACCOUNT_INFO = '/account/info';
     private ACCOUNT_SETTINGS = '/account/settings';
