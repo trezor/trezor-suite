@@ -22,15 +22,19 @@ const CoinmarketSavingsLoaded = ({ selectedAccount }: CoinmarketSavingsLoadedPro
         shouldKYCStart,
     } = useSavings();
 
+    // TODO: There must be better way how to navigate than this:
     useEffect(() => {
         if (shouldLogin) {
             navigateToSavingsLogin();
+            return;
         }
         if (shouldRegisterUserInfo) {
             navigateToSavingsUserInfo();
+            return;
         }
         if (shouldVerifyPhoneNumber) {
             navigateToSavingsPhoneNumberVerification();
+            return;
         }
         if (shouldKYCStart) {
             navigateToSavingsKYCStart();
