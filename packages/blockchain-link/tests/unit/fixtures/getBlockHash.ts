@@ -31,6 +31,8 @@ export default {
         {
             description: 'getBlockHash - not implemented',
             params: 0,
+            serverFixtures: undefined,
+            response: undefined,
             error: 'Unknown message type: m_get_block_hash',
         },
     ],

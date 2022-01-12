@@ -1,11 +1,11 @@
-import createServer from '../websocket';
+import createServer, { EnhancedServer } from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 import fixtures from './fixtures/getAccountInfo';
 
 workers.forEach(instance => {
     describe(`getAccountInfo: ${instance.name}`, () => {
-        let server: any;
+        let server: EnhancedServer;
         let blockchain: BlockchainLink;
 
         const setup = async () => {
@@ -25,11 +25,11 @@ workers.forEach(instance => {
         beforeAll(setup);
         afterAll(teardown);
 
-        // @ts-ignore No index signature
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);
                 try {
+                    // @ts-expect-error incorrect params
                     const response = await blockchain.getAccountInfo(f.params);
                     expect(response).toEqual(f.response);
                 } catch (error) {

@@ -32,14 +32,14 @@ describe('Custom errors', () => {
     });
 
     it('Error without code and with custom message', () => {
-        // @ts-ignore invalid param
+        // @ts-expect-error invalid param
         const error = new CustomError(null, 'Custom message');
         expect(error.code).toBe(undefined);
         expect(error.message).toBe('Custom message');
     });
 
     it('Error without code and without message', () => {
-        // @ts-ignore invalid param
+        // @ts-expect-error invalid param
         const error = new CustomError();
         expect(error.code).toBe(undefined);
         expect(error.message).toBe('Message not set');

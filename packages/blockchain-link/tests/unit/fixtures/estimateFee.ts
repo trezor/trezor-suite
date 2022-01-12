@@ -49,14 +49,18 @@ export default {
         {
             description: 'Successfull',
             params: { blocks: [1] },
+            serverFixtures: undefined,
             response: [{ feePerUnit: '12' }],
+            error: undefined,
         },
     ],
     blockfrost: [
         {
             description: 'Successfull',
             params: {},
+            serverFixtures: undefined,
             response: [{ feePerUnit: '44' }],
+            error: undefined,
         },
     ],
 };

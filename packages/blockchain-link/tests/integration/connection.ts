@@ -1,5 +1,5 @@
-import BlockchainLink from '@trezor/blockchain-link';
-import createServer from '../websocket';
+import BlockchainLink from '../../lib';
+import createServer, { EnhancedServer } from '../websocket';
 import {
     rippleWorkerFactory,
     rippleModuleFactory,
@@ -8,6 +8,8 @@ import {
     blockfrostWorkerFactory,
     blockfrostModuleFactory,
 } from './worker';
+
+// Testing each build using same scenarios (connection + events)
 
 const backends = [
     {
@@ -40,17 +42,18 @@ const backends = [
         type: 'blockfrost',
         worker: blockfrostModuleFactory,
     },
-];
+] as const;
 
 backends.forEach((b, i) => {
     describe(`Connection ${b.name}`, () => {
-        let server;
-        let blockchain;
+        let server: EnhancedServer;
+        let blockchain: BlockchainLink;
 
         beforeEach(async () => {
             server = await createServer(b.type);
             blockchain = new BlockchainLink({
                 ...backends[i],
+                timeout: 1000,
                 server: [`ws://localhost:${server.options.port}`],
                 debug: false,
             });
@@ -79,6 +82,7 @@ backends.forEach((b, i) => {
         });
 
         it('Connect error (no server field)', async () => {
+            // @ts-expect-error invalid value
             blockchain.settings.server = null;
             try {
                 await blockchain.connect();
@@ -97,6 +101,7 @@ backends.forEach((b, i) => {
         });
 
         it('Connect error (server field invalid type)', async () => {
+            // @ts-expect-error invalid value
             blockchain.settings.server = 1;
             try {
                 await blockchain.connect();
@@ -110,8 +115,11 @@ backends.forEach((b, i) => {
                 'gibberish',
                 'ws://gibberish',
                 'http://gibberish',
+                // @ts-expect-error invalid value
                 1,
+                // @ts-expect-error invalid value
                 false,
+                // @ts-expect-error invalid value
                 { foo: 'bar' },
             ];
             try {
@@ -119,7 +127,7 @@ backends.forEach((b, i) => {
             } catch (error) {
                 expect(error.message).toEqual('All backends are down');
             }
-        });
+        }, 10000);
 
         describe('Event listeners', () => {
             it('Handle connect event', done => {

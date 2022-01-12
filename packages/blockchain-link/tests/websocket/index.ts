@@ -1,9 +1,8 @@
-import WebSocket, { Server } from 'ws';
-import assert from 'assert';
-import getFreePort from './freePort';
-import defaultBlockbookResponses from './fixtures/blockbook';
-import defaultRippleResponses from './fixtures/ripple';
-import defaultBlockfrostResponses from './fixtures/blockfrost';
+import * as WebSocket from 'ws';
+import * as net from 'net';
+import * as defaultBlockbookResponses from './fixtures/blockbook.json';
+import * as defaultRippleResponses from './fixtures/ripple.json';
+import * as defaultBlockfrostResponses from './fixtures/blockfrost.json';
 
 const DEFAULT_RESPONSES = {
     blockbook: defaultBlockbookResponses,
@@ -11,20 +10,88 @@ const DEFAULT_RESPONSES = {
     blockfrost: defaultBlockfrostResponses,
 };
 
-const create = async type => {
+// enables parallelization using a free port
+export const getFreePort = () =>
+    new Promise<number>((resolve, reject) => {
+        const server = net.createServer();
+        server.unref();
+        server.on('error', reject);
+        server.listen(0, () => {
+            const { port } = server.address() as net.AddressInfo;
+            server.close(() => {
+                resolve(port);
+            });
+        });
+    });
+
+const connectToServer = (server: WebSocket.Server) =>
+    new Promise<WebSocket>((resolve, reject) => {
+        const ws = new WebSocket(`ws://localhost:${server.options.port}`);
+        ws.once('error', reject);
+        ws.on('open', () => resolve(ws));
+    });
+
+const receiveMessage = (ws: WebSocket) =>
+    new Promise(resolve => {
+        ws.on('close', () => setTimeout(resolve, 100));
+        // ws.on('close', resolve);
+        ws.on('message', () => ws.close());
+    });
+
+export class EnhancedServer extends WebSocket.Server {
+    connections: WebSocket[] = [];
+    fixtures: any;
+    addresses: any;
+
+    setFixtures(f?: any) {
+        this.fixtures = f;
+    }
+
+    getAddresses() {
+        return this.addresses;
+    }
+
+    close() {
+        return new Promise(resolve => super.close.call(this, resolve));
+    }
+
+    async sendNotification(notification: any) {
+        const ws = await connectToServer(this);
+        const dfd = (action: any) =>
+            new Promise<void>(resolve => {
+                const doSend = () => {
+                    this.connections.forEach(c => {
+                        c.send(JSON.stringify(action));
+                    });
+                    resolve();
+                };
+                if (typeof action.delay === 'number') {
+                    setTimeout(doSend, action.delay);
+                } else {
+                    doSend();
+                }
+            });
+
+        if (Array.isArray(notification)) {
+            await Promise.all(notification.map(action => dfd(action)));
+        } else {
+            await dfd(notification);
+        }
+        await receiveMessage(ws);
+    }
+}
+
+const createServer = async (type: keyof typeof DEFAULT_RESPONSES) => {
     const port = await getFreePort();
-    const server = new Server({ port, noServer: true });
-    const { close } = server;
+    const server = new EnhancedServer({ port, noServer: true });
 
     const defaultResponses = DEFAULT_RESPONSES[type];
-    const connections = [];
-    let addresses;
 
-    const sendResponse = request => {
+    const sendResponse = (request: any) => {
         const { id } = request;
         const { fixtures } = server;
         const method = type === 'blockbook' ? request.method : request.command;
-        let data;
+        let data: any;
         let delay = 0;
 
         if (Array.isArray(fixtures)) {
@@ -41,6 +108,7 @@ const create = async type => {
         }
 
         if (!data) {
+            // @ts-expect-error method: string
             data = defaultResponses[method] || {
                 error: { message: `unknown response for ${method}` },
             };
@@ -48,18 +116,18 @@ const create = async type => {
 
         if (delay) {
             setTimeout(() => {
-                connections.forEach(c => {
+                server.connections.forEach(c => {
                     c.send(JSON.stringify({ ...data, id }));
                 });
             }, delay);
         } else {
-            connections.forEach(c => {
+            server.connections.forEach(c => {
                 c.send(JSON.stringify({ ...data, id }));
             });
         }
     };
 
-    const processRequest = json => {
+    const processRequest = (json: any) => {
         try {
             const request = JSON.parse(json);
             if (!request) {
@@ -83,15 +151,15 @@ const create = async type => {
                 server.emit(`ripple_${request.command}`, request);
             }
         } catch (error) {
-            assert(false, error.message);
+            // throw new Error(error.message);
         }
     };
 
     server.on('connection', ws => {
         ws.once('close', () => {
-            connections.splice(connections.indexOf(ws), 1);
+            server.connections.splice(server.connections.indexOf(ws), 1);
         });
-        connections.push(ws);
+        server.connections.push(ws);
         ws.on('message', processRequest);
     });
 
@@ -107,12 +175,12 @@ const create = async type => {
     server.on('blockbook_subscribeNewBlock', request => sendResponse(request));
     server.on('blockbook_unsubscribeNewBlock', request => sendResponse(request));
     server.on('blockbook_subscribeAddresses', request => {
-        addresses = request.params.addresses; // eslint-disable-line prefer-destructuring
+        server.addresses = request.params.addresses;
         sendResponse(request);
     });
 
     server.on('blockbook_unsubscribeAddresses', request => {
-        addresses = undefined;
+        server.addresses = undefined;
         sendResponse(request);
     });
 
@@ -125,12 +193,12 @@ const create = async type => {
     server.on('blockfrost_GET_TRANSACTION', request => sendResponse(request));
     server.on('blockfrost_PUSH_TRANSACTION', request => sendResponse(request));
     server.on('blockfrost_SUBSCRIBE_ADDRESS', request => {
-        addresses = request.params.addresses; // eslint-disable-line prefer-destructuring
+        server.addresses = request.params.addresses;
         sendResponse(request);
     });
 
     server.on('blockfrost_UNSUBSCRIBE_ADDRESS', request => {
-        addresses = undefined;
+        server.addresses = undefined;
         sendResponse(request);
     });
     server.on('blockfrost_SUBSCRIBE_BLOCK', request => sendResponse(request));
@@ -139,21 +207,23 @@ const create = async type => {
     // Ripple
     server.on('ripple_subscribe', request => {
         if (Array.isArray(request.accounts_proposed)) {
-            if (!Array.isArray(addresses)) {
-                addresses = [];
+            if (!Array.isArray(server.addresses)) {
+                server.addresses = [];
             }
-            addresses = addresses.concat(request.accounts_proposed);
+            server.addresses = server.addresses.concat(request.accounts_proposed);
         }
         sendResponse(request);
     });
     server.on('ripple_unsubscribe', request => {
-        if (!Array.isArray(addresses)) {
+        if (!Array.isArray(server.addresses)) {
             sendResponse(request);
             return;
         }
         if (Array.isArray(request.accounts_proposed)) {
-            addresses = addresses.filter(a => request.accounts_proposed.indexOf(a) < 0);
-            if (addresses.length === 0) addresses = undefined;
+            server.addresses = server.addresses.filter(
+                a => request.accounts_proposed.indexOf(a) < 0
+            );
+            if (server.addresses.length === 0) server.addresses = undefined;
         }
         sendResponse(request);
     });
@@ -164,62 +234,10 @@ const create = async type => {
     server.on('ripple_submit', request => sendResponse(request));
     server.on('ripple_tx', request => sendResponse(request));
 
-    // Public methods
-
-    server.setFixtures = f => {
-        server.fixtures = f;
-    };
-
-    server.getAddresses = () => addresses;
-
-    server.close = () => new Promise(resolve => close.call(server, resolve));
-    // close.call(server);
-
-    server.sendNotification = async notification => {
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        const ws = await connectToServer(server);
-        const dfd = action =>
-            new Promise(resolve => {
-                const doSend = () => {
-                    connections.forEach(c => {
-                        c.send(JSON.stringify(action));
-                    });
-                    resolve();
-                };
-                if (typeof action.delay === 'number') {
-                    setTimeout(doSend, action.delay);
-                } else {
-                    doSend();
-                }
-            });
-
-        if (Array.isArray(notification)) {
-            await Promise.all(notification.map(action => dfd(action)));
-        } else {
-            await dfd(notification);
-        }
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        await receiveMessage(ws);
-    };
-
-    return new Promise((resolve, reject) => {
+    return new Promise<EnhancedServer>((resolve, reject) => {
         server.on('listening', () => resolve(server));
         server.on('error', error => reject(error));
     });
 };
 
-export default create;
-
-const connectToServer = server =>
-    new Promise((resolve, reject) => {
-        const ws = new WebSocket(`ws://localhost:${server.options.port}`);
-        const dfd = ws.once('error', reject);
-        ws.on('open', () => resolve(ws));
-    });
-
-const receiveMessage = ws =>
-    new Promise(resolve => {
-        ws.on('close', () => setTimeout(resolve, 100));
-        // ws.on('close', resolve);
-        ws.on('message', () => ws.close());
-    });
+export default createServer;

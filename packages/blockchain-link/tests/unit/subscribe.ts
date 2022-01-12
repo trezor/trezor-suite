@@ -1,4 +1,4 @@
-import createServer from '../websocket';
+import createServer, { EnhancedServer } from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 import fixtures from './fixtures/subscribe';
@@ -9,7 +9,7 @@ import fixtures from './fixtures/subscribe';
 
 workers.forEach(instance => {
     describe(`Subscriptions ${instance.name}`, () => {
-        let server: any;
+        let server: EnhancedServer;
         let blockchain: BlockchainLink;
 
         const setup = async () => {
@@ -33,6 +33,7 @@ workers.forEach(instance => {
 
             fixtures.addresses.forEach(f => {
                 it(f.description, async () => {
+                    // @ts-expect-error incorrect params
                     const s = await blockchain[f.method](f.params);
                     const subscribedAddresses = server.getAddresses();
                     const subscribed =
@@ -53,6 +54,7 @@ workers.forEach(instance => {
                 it(f.description, async () => {
                     // server.setFixtures(f.server);
                     try {
+                        // @ts-expect-error incorrect params
                         await blockchain[f.method](f.params);
                     } catch (error) {
                         // expect(error.code).toEqual('blockchain_link/blockbook-websocket');

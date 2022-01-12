@@ -1,4 +1,4 @@
-import createServer from '../websocket';
+import createServer, { EnhancedServer } from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 
@@ -18,7 +18,7 @@ const fixtures = {
 
 workers.forEach(instance => {
     describe(`Notifications ${instance.name}`, () => {
-        let server: any;
+        let server: EnhancedServer;
         let blockchain: BlockchainLink;
 
         const setup = async () => {
@@ -44,6 +44,7 @@ workers.forEach(instance => {
                 it(f.description, async () => {
                     const callback = jest.fn();
                     blockchain.on('notification', callback);
+                    // @ts-expect-error incorrect params
                     const s = await blockchain[f.method](f.params);
 
                     expect(s).toEqual({
@@ -51,7 +52,7 @@ workers.forEach(instance => {
                     });
 
                     const data = (
-                        !Array.isArray(f.notifications) ? [f.notifications] : f.notifications
+                        Array.isArray(f.notifications) ? [...f.notifications] : [f.notifications]
                     ).map((n: any) => ({
                         ...n,
                         id: id.toString(),

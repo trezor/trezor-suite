@@ -1,11 +1,11 @@
-import createServer from '../websocket';
+import createServer, { EnhancedServer } from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 import fixtures from './fixtures/pushTransaction';
 
 workers.forEach(instance => {
     describe(`pushTransaction: ${instance.name}`, () => {
-        let server: any;
+        let server: EnhancedServer;
         let blockchain: BlockchainLink;
 
         const setup = async () => {
