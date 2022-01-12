@@ -18,12 +18,13 @@ And use it.
 
 ```javascript
 import BlockchainLink from '@trezor/blockchain-link';
+import Blockbook from '@trezor/blockchain-link/lib/workers/blockbook';
 
 const link = new BlockchainLink({
-    name: 'Name used in logs.';
-    worker: 'path/to/the/worker.js';
-    server: ['url1.of.the.be', 'url2.of.the.be'];
-    debug: true;
+    name: 'Name used in logs.',
+    worker: Blockbook,
+    server: ['url1.of.the.be', 'url2.of.the.be'],
+    debug: true,
 });
 
 try {
@@ -35,15 +36,9 @@ try {
 
 For complete API see the methods of `BlockchainLink` class in [index.ts](./src/index.ts).
 
-### Workers
-
-Minified workers built for various environments are available in subdirectories of `@trezor/blockchain-link/build/`.
-
--   `module`: Workers wrapped by primitive self-written [webpack plugin](https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/webpack/module-worker-loader.js) into javascript module which can be used as regular module on the main thread. Useful in environments where `Worker` API is not available like `react-native`. See this [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/webpack/workers.module.babel.js) for example integration.
--   `web`: Workers for browser based environments. See this [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/webpack/workers.web.babel.js).
--   `node`: Workers for node based environments. See this [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/webpack/workers.node.babel.js).
-
-All workers can be also built from source. For example using webpack `worker-loader`:
+## Workers
+Each `src/workers/*/index` file can be used in WebWorker thread.
+Built from source using webpack `worker-loader`:
 
 ```
 import BlockbookWorker from 'worker-loader?filename=workers/blockbook-worker.[hash].js!@trezor/blockchain-link/lib/workers/blockbook/index.js';
@@ -51,19 +46,32 @@ import BlockbookWorker from 'worker-loader?filename=workers/blockbook-worker.[ha
 
 ## Development
 
-This package provides a simple testing UI for playing around with various implementations and BEs. Run it with
+This package provides a simple testing UI for playing around with various implementations and BEs.
+Run UI with webworkers support
 
 ```shell
-yarn
-yarn dev
+yarn workspace @trezor/blockchain-link dev
+```
+or without webworkes support (workers are compiled into a bundle)
+```shell
+yarn workspace @trezor/blockchain-link dev:module
 ```
 
-### Build
+
+### Tests
 
 ```
-yarn lint
-yarn test
-yarn build
+yarn workspace @trezor/blockchain-link lint
+yarn workspace @trezor/blockchain-link type-check
+yarn workspace @trezor/blockchain-link test:unit
+```
+
+### Integration tests
+Testing `lib` and `build` outputs:
+```
+yarn workspace @trezor/blockchain-link build:lib
+yarn workspace @trezor/blockchain-link build:workers
+yarn workspace @trezor/blockchain-link test:integration
 ```
 
 ### Publishing
