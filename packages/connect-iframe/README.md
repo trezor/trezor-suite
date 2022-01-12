@@ -22,4 +22,4 @@ In the future, after moving `trezor-connect` to this monorepo it will be hosted 
 
 ### Notes
 
-`@trezor/blockchain-link": "*"` and `"@trezor/rollout": "*"` are listed as dependency to prevent `lerna` from calling `build:lib` before the are installed. This will probably change after moving `trezor-connect` to monorepo.
+`@trezor/blockchain-link": "*"` and `"@trezor/utxo-lib": "*"` and other monorepo packages used in connect are listed as dependency to prevent `lerna` from calling `build:lib` before the are installed. This will probably change after moving `trezor-connect` to monorepo.

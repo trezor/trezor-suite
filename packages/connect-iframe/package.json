@@ -18,8 +18,10 @@
     "dependencies": {},
     "devDependencies": {
         "@trezor/blockchain-link": "1.1.0",
-        "@trezor/rollout": "*",
-        "@trezor/transport": "*",
+        "@trezor/connect-common": "^0.0.4",
+        "@trezor/rollout": "^1.2.1",
+        "@trezor/transport": "1.0.1",
+        "@trezor/utxo-lib": "1.0.0-beta.10",
         "copy-webpack-plugin": "^9.0.1",
         "html-webpack-plugin": "^5.3.2",
         "terser-webpack-plugin": "5.2.4",
