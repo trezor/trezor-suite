@@ -232,7 +232,7 @@ const addresses = [
         },
         subscribed: undefined,
     },
-];
+] as const;
 
 const errors = [
     {
@@ -307,7 +307,7 @@ const errors = [
     //     },
     //     error: 'Error msg',
     // },
-];
+] as const;
 
 export default {
     addresses,

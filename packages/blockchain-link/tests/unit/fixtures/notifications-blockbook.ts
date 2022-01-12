@@ -80,7 +80,7 @@ const notifyBlocks = [
             blockHeight: 1,
         },
     },
-];
+] as const;
 
 const notifyAddresses = [
     {
@@ -407,7 +407,7 @@ const notifyAddresses = [
         },
         result: undefined,
     },
-];
+] as const;
 
 export default {
     notifyBlocks,

@@ -90,7 +90,7 @@ const notifyBlocks = [
         ],
         result: undefined,
     },
-];
+] as const;
 
 const notifyAddresses = [
     {
@@ -110,7 +110,6 @@ const notifyAddresses = [
             type: 'transaction',
             validated: true,
         },
-
         result: {
             descriptor: 'A',
             tx: {
@@ -160,6 +159,7 @@ const notifyAddresses = [
             type: 'transaction',
             validated: true,
         },
+        result: undefined,
     },
     {
         description: 'account tx notification (sent)',
@@ -178,7 +178,6 @@ const notifyAddresses = [
             type: 'transaction',
             validated: true,
         },
-
         result: {
             descriptor: 'C',
             tx: {
@@ -205,7 +204,6 @@ const notifyAddresses = [
             type: 'transaction',
             validated: true,
         },
-
         result: {
             descriptor: 'C',
             tx: {
@@ -215,7 +213,7 @@ const notifyAddresses = [
             },
         },
     },
-];
+] as const;
 
 export default {
     notifyBlocks,

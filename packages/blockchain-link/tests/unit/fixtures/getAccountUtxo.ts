@@ -90,6 +90,8 @@ export default {
         {
             description: 'getAccountUtxo - not implemented',
             params: 'A',
+            serverFixtures: undefined,
+            response: undefined,
             error: 'Unknown message type: m_get_account_utxo',
         },
     ],
@@ -97,6 +99,8 @@ export default {
         {
             description: 'Many utxos',
             params: 'addr1q8u5ktsj5zsmhvwv0ep9zuhfu39x3wyt9wxjnsn3cagsyy59ckxhkvuc5xj49rw6zrp443wlygmhv8gwcu38jk6ms6usrmcafl',
+            serverFixtures: undefined,
+            error: undefined,
             response: [
                 {
                     address:

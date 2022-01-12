@@ -12,7 +12,7 @@ describe('blockfrost/utils', () => {
     describe('transformUtxos', () => {
         fixtures.transformUtxos.forEach(f => {
             it(f.description, () => {
-                // @ts-ignore incorrect params
+                // @ts-expect-error incorrect params
                 expect(transformUtxos(f.utxos)).toEqual(f.result);
             });
         });
@@ -37,7 +37,7 @@ describe('blockfrost/utils', () => {
     describe('transformInputOutput', () => {
         fixtures.transformInputOutput.forEach(f => {
             it(f.description, () => {
-                // @ts-ignore incorrect params
+                // @ts-expect-error incorrect params
                 expect(transformInputOutput(f.data, f.asset)).toEqual(f.result);
             });
         });
@@ -46,7 +46,7 @@ describe('blockfrost/utils', () => {
     describe('transformTransaction', () => {
         fixtures.transformTransaction.forEach(f => {
             it(f.description, () => {
-                // @ts-ignore incorrect params
+                // @ts-expect-error incorrect params
                 expect(transformTransaction(f.descriptor, f.accountAddress, f.data)).toMatchObject(
                     f.result
                 );
@@ -57,7 +57,7 @@ describe('blockfrost/utils', () => {
     describe('transformAccountInfo', () => {
         fixtures.transformAccountInfo.forEach(f => {
             it(f.description, () => {
-                // @ts-ignore incorrect params
+                // @ts-expect-error incorrect params
                 expect(transformAccountInfo(f.data)).toEqual(f.result);
             });
         });

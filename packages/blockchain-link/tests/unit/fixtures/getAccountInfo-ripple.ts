@@ -1,4 +1,3 @@
-// @ts-ignore idk why t reports warning, resolveJsonModule is already set, TODO: investigate
 import * as xrpAccount from './accounts/ripple/rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj.json';
 
 export default [
@@ -21,6 +20,7 @@ export default [
                 sequence: 0,
             },
         },
+        error: undefined,
     },
     {
         description: 'Basic info',

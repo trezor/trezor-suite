@@ -1,4 +1,4 @@
-import createServer from '../websocket';
+import createServer, { EnhancedServer } from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 
@@ -21,7 +21,7 @@ const getMethod = (instanceName: string) => {
 
 workers.forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
-        let server: any;
+        let server: EnhancedServer;
         let blockchain: BlockchainLink;
 
         beforeEach(async () => {
@@ -158,7 +158,7 @@ workers.forEach(instance => {
         });
 
         it('Connect error (no server field)', async () => {
-            // @ts-ignore invalid server value
+            // @ts-expect-error invalid server value
             blockchain.settings.server = null;
             try {
                 await blockchain.connect();
@@ -177,7 +177,7 @@ workers.forEach(instance => {
         });
 
         it('Connect error (server field invalid type)', async () => {
-            // @ts-ignore invalid value
+            // @ts-expect-error invalid value
             blockchain.settings.server = 1;
             try {
                 await blockchain.connect();
@@ -210,11 +210,11 @@ workers.forEach(instance => {
                 'ws://gibberish',
                 'http://gibberish',
                 'https://gibberish/',
-                // @ts-ignore invalid value
+                // @ts-expect-error invalid value
                 1,
-                // @ts-ignore invalid value
+                // @ts-expect-error invalid value
                 false,
-                // @ts-ignore invalid value
+                // @ts-expect-error invalid value
                 { foo: 'bar' },
             ];
             try {
