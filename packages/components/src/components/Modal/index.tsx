@@ -48,6 +48,7 @@ const ModalOverlay = styled.div<{ guidePanelSize: string }>`
 
     > * {
         margin-right: ${props => props.guidePanelSize};
+        transition: all 0.3s;
     }
 `;
 
