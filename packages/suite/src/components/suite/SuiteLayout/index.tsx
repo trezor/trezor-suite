@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -29,7 +29,11 @@ const Body = styled.div`
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
-const Columns = styled.div<{ isModalOpen?: boolean; guideOpen?: boolean }>`
+const Columns = styled.div<{
+    isModalOpen?: boolean;
+    guideOpen?: boolean;
+    isModalOpenLastChange?: boolean;
+}>`
     display: flex;
     flex-direction: row;
     flex: 1 0 100%;
@@ -47,6 +51,14 @@ const Columns = styled.div<{ isModalOpen?: boolean; guideOpen?: boolean }>`
         props.isModalOpen &&
         css`
             transition: all 0.3s;
+        `}
+
+    ${props =>
+        props.isModalOpenLastChange &&
+        props.guideOpen &&
+        props.isModalOpen &&
+        css`
+            transition: none;
         `}
 `;
 
@@ -101,6 +113,7 @@ interface NormalBodyProps extends MobileBodyProps {
     isMenuInline: boolean;
     isModalOpen?: boolean;
     guideOpen?: boolean;
+    isModalOpenLastChange?: boolean;
 }
 
 interface LayoutContextI {
@@ -139,9 +152,14 @@ const BodyNormal = ({
     isMenuInline,
     isModalOpen,
     guideOpen,
+    isModalOpenLastChange,
 }: NormalBodyProps) => (
     <Body>
-        <Columns isModalOpen={isModalOpen} guideOpen={guideOpen}>
+        <Columns
+            isModalOpen={isModalOpen}
+            guideOpen={guideOpen}
+            isModalOpenLastChange={isModalOpenLastChange}
+        >
             {!isMenuInline && menu && <MenuSecondary>{menu}</MenuSecondary>}
             <ScrollAppWrapper url={url}>
                 {isMenuInline && menu}
@@ -173,6 +191,11 @@ const SuiteLayout: React.FC = ({ children }) => {
         router: state.router,
     }));
     const { guideOpen, isModalOpen } = useGuide();
+
+    // fixes problem of animated layout movement when guide was open and user opened a modal
+    const [isModalOpenLastChange, setIsModalOpenLastChange] = useState<boolean>(false);
+    useEffect(() => setIsModalOpenLastChange(true), [isModalOpen]);
+    useEffect(() => setIsModalOpenLastChange(false), [guideOpen]);
 
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
@@ -210,6 +233,7 @@ const SuiteLayout: React.FC = ({ children }) => {
                     <BodyNormal
                         guideOpen={guideOpen}
                         isModalOpen={isModalOpen}
+                        isModalOpenLastChange={isModalOpenLastChange}
                         menu={menu}
                         appMenu={appMenu}
                         url={router.url}
