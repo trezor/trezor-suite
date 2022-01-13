@@ -51,26 +51,32 @@ const IconWrapper = styled.div`
     }
 `;
 
+const BlankLeft = styled.div`
+    @media (min-width: ${variables.SCREEN_SIZE.XL}) {
+        flex: 1;
+    }
+`;
+
 const Body = styled.div`
     display: flex;
-    justify-content: center;
     width: 100%;
     position: relative;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        justify-content: left;
-    }
+    justify-content: left;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         text-align: center;
+    }
+
+    @media (min-width: ${variables.SCREEN_SIZE.XL}) {
+        flex: 6;
+        justify-content: center;
     }
 `;
 
 const ActionsWrapper = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
-    position: absolute;
+    justify-content: end;
     right: 14px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
@@ -81,6 +87,10 @@ const ActionsWrapper = styled.div`
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding-left: 18px;
         padding-right: 18px;
+    }
+
+    @media (min-width: ${variables.SCREEN_SIZE.XL}) {
+        flex: 1;
     }
 `;
 
@@ -118,6 +128,7 @@ const BannerWrapper = ({ body, variant, action, dismissal }: Props) => {
 
     return (
         <Wrapper variant={variant}>
+            <BlankLeft />
             <Body>
                 {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
                 {body}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+import { variables } from '@trezor/components';
 import { isDesktop } from '@suite-utils/env';
 import { isTranslationMode } from '@suite-utils/l10n';
 import { useSelector } from '@suite-hooks';
@@ -13,13 +14,20 @@ import FailedBackup from './FailedBackup';
 import MessageSystemBanner from './MessageSystemBanner';
 import SafetyChecksBanner from './SafetyChecks';
 import TranslationMode from './TranslationMode';
+import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.div<{ isOnTop?: boolean }>`
-    z-index: ${props => (props.isOnTop ? '10001' : '3')};
+const Wrapper = styled.div<{ isOnTop?: boolean; guideOpen?: boolean; isModalOpen?: boolean }>`
+    z-index: ${props =>
+        props.isOnTop ? variables.Z_INDEX.BANNER_ON_TOP : variables.Z_INDEX.BANNER};
+    transition: all 0.3s;
     background: ${props => props.theme.BG_WHITE};
+    margin-right: ${props =>
+        props.guideOpen && props.isModalOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0};
 `;
 
 const Banners = () => {
+    const { guideOpen, isModalOpen } = useGuide();
+
     const { transport, device, online } = useSelector(state => ({
         transport: state.suite.transport,
         device: state.suite.device,
@@ -85,12 +93,12 @@ const Banners = () => {
     return (
         <>
             {useMessageSystemBanner && (
-                <Wrapper isOnTop>
+                <Wrapper isOnTop guideOpen={guideOpen} isModalOpen={isModalOpen}>
                     {/* @ts-ignore - fix ts which thinks that "messageSystemBanner" can be null */}
                     <MessageSystemBanner message={messageSystemBanner} />
                 </Wrapper>
             )}
-            <Wrapper>
+            <Wrapper guideOpen={guideOpen} isModalOpen={isModalOpen}>
                 {isTranslationMode() && <TranslationMode />}
                 <OnlineStatus isOnline={online} />
                 {!useMessageSystemBanner && banner}
