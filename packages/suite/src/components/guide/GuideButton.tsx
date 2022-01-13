@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -6,12 +6,15 @@ import { resolveStaticPath } from '@suite-utils/build';
 import { useLayoutSize, useAnalytics } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.button`
+const Wrapper = styled.button<{ guideOpen?: boolean; isModalOpen?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
-    z-index: ${variables.Z_INDEX.GUIDE_BUTTON};
+    z-index: ${props =>
+        props.isModalOpen
+            ? variables.Z_INDEX.GUIDE_BUTTON_BESIDE_MODAL
+            : variables.Z_INDEX.GUIDE_BUTTON};
     bottom: 18px;
     right: 18px;
     width: 40px;
@@ -26,18 +29,22 @@ const Wrapper = styled.button`
     & > img {
         display: block;
     }
+
+    opacity: ${props => (props.guideOpen ? 0 : 1)};
+    transition: opacity 0.3s ease 0.3s;
 `;
 
-const GuideButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
+const GuideButton = () => {
     const { isMobileLayout } = useLayoutSize();
-    const { openGuide } = useGuide();
+    const { openGuide, guideOpen, isModalOpen } = useGuide();
     const analytics = useAnalytics();
 
     if (isMobileLayout) return null;
 
     return (
         <Wrapper
-            {...props}
+            isModalOpen={isModalOpen}
+            guideOpen={guideOpen}
             data-test="@guide/button-open"
             onClick={() => {
                 openGuide();
