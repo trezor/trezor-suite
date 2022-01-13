@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Icon, variables } from '@trezor/components';
+import type { FieldError } from 'react-hook-form';
 
 interface ResponsiveSize {
     responsiveSize: keyof typeof variables.SCREEN_SIZE;
@@ -70,3 +71,13 @@ export const FooterWrapper = styled.div`
         flex-direction: column;
     }
 `;
+
+export const getInputState = (error?: FieldError, value?: string) => {
+    if (error) {
+        return 'error';
+    }
+
+    if (value && value.length > 0 && !error) {
+        return 'success';
+    }
+};

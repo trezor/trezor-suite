@@ -23,7 +23,6 @@ export type CoinmarketSavingsAction =
 
 export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
     const savingsList = await invityAPI.getSavingsList();
-
     const providerInfos: { [name: string]: SavingsProviderInfo } = {};
     if (savingsList?.providers) {
         savingsList.providers.forEach(e => (providerInfos[e.name] = e));

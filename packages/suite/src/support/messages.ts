@@ -910,6 +910,74 @@ export default defineMessages({
         defaultMessage: 'Phone number is required.',
         id: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_IS_REQUIRED',
     },
+    TR_SAVINGS_KYC_START_DOCUMENT_TYPE_PASSPORT: {
+        defaultMessage: 'Passport',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_TYPE_PASSPORT',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_TYPE_IDENTITYCARD: {
+        defaultMessage: 'Identity card',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_TYPE_IDENTITYCARD',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_TYPE_DRIVINGLICENCE: {
+        defaultMessage: 'Driving licence',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_TYPE_DRIVINGLICENCE',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_TYPE_SELFIE: {
+        defaultMessage: 'Selfie',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_TYPE_SELFIE',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_REQUIRED: {
+        defaultMessage: 'Document number is required.',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_REQUIRED',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_FRONT_LABEL: {
+        defaultMessage: 'Front side',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_FRONT_LABEL',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_BACK_LABEL: {
+        defaultMessage: 'Back side',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_BACK_LABEL',
+    },
+    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_FRONT_LABEL: {
+        defaultMessage: 'Front side',
+        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_FRONT_LABEL',
+    },
+    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_BACK_LABEL: {
+        defaultMessage: 'Back side',
+        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_BACK_LABEL',
+    },
+    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD: {
+        defaultMessage: 'Reupload',
+        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD',
+    },
+    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION: {
+        defaultMessage: 'Drag & drop your file here, or {selectFromFiles}',
+        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION',
+    },
+    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION_SELECT_FROM_FILES: {
+        defaultMessage: 'select from files',
+        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION_SELECT_FROM_FILES',
+    },
+    TR_SAVINGS_KYC_START_HEADER: {
+        defaultMessage: 'Verify your personal identity.',
+        id: 'TR_SAVINGS_KYC_START_HEADER',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_COUNTRY_LABEL: {
+        defaultMessage: 'Document country',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_COUNTRY_LABEL',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_TYPE_LABEL: {
+        defaultMessage: 'Document type',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_TYPE_LABEL',
+    },
+    TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_LABEL: {
+        defaultMessage: 'Document number',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_LABEL',
+    },
+    TR_SAVINGS_KYC_START_CONFIRM: {
+        defaultMessage: 'Confirm',
+        id: 'TR_SAVINGS_KYC_START_CONFIRM',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',

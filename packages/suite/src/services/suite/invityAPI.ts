@@ -72,6 +72,9 @@ export interface SavingsProviderInfo {
     paymentMethods?: SavingsPaymentMethods[];
 
     isClientFromUnsupportedCountry: boolean;
+
+    /** List of document types required by provider's KYC process. User has to choose one. */
+    identityDocumentTypes: SavingsIdentityDocumentType[];
 }
 
 export interface SavingsListResponse {
@@ -209,8 +212,10 @@ export interface SavingsTradeResponse {
     payments?: SavingsTradePayment[];
 }
 
+export type SavingsIdentityDocumentType = 'Passport' | 'IdentityCard' | 'DrivingLicence' | 'Selfie';
+
 export interface SavingsIdentityDocument {
-    documentType: 'Passport' | 'IdentityCard' | 'DrivingLicence' | 'Selfie';
+    documentType: SavingsIdentityDocumentType;
     documentSide: 'Front' | 'Back' | 'Selfie';
     /** Base64 encoded string */
     data: string;
@@ -242,6 +247,18 @@ export interface SendVerificationSmsSuccessResponse {
 export type SendVerificationSmsResponse =
     | SendVerificationSmsSuccessResponse
     | SendVerificationSmsErrorResponse;
+
+export interface SavingsKYCInfoSuccessResponse {
+    status: 'Success';
+    documentTypes: SavingsIdentityDocumentType[];
+}
+
+export interface SavingsKYCInfoErrorResponse {
+    status: 'Error';
+    errors: string[];
+}
+
+export type SavingsKYCInfoResponse = SavingsKYCInfoSuccessResponse | SavingsKYCInfoErrorResponse;
 
 /** END: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 

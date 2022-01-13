@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { Account } from '@wallet-types';
 import { BuyTrade, SellFiatTrade, ExchangeTrade, SellVoucherTrade as SpendTrade } from 'invity-api';
 import { FlagProps } from '@trezor/components';
@@ -22,3 +23,4 @@ export type Trade = TradeBuy | TradeSell | TradeExchange | TradeSpend;
 export type Option = { value: string; label: string };
 export type CountryOption = { value: FlagProps['country']; label: string };
 export type DefaultCountryOption = { value: string; label?: string };
+export type TranslationOption = { value: string; label?: ReactElement };
