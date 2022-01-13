@@ -4527,7 +4527,7 @@ export default defineMessages({
     },
     TR_NAV_SAVINGS: {
         id: 'TR_NAV_SAVINGS',
-        defaultMessage: 'Save into BTC',
+        defaultMessage: 'Save into Bitcoin',
     },
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',
