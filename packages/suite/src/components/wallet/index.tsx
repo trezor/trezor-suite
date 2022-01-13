@@ -28,6 +28,7 @@ import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketProviderInfo from './CoinmarketProviderInfo';
 import CoinmarketRefreshTime from './CoinmarketRefreshTime';
 import CoinmarketAuthentication from './CoinmarketAuthentication';
+import InvityContextDropdown from './InvityContextDropdown';
 import {
     withCoinmarketAuthentication,
     withCoinmarketLoaded,
@@ -58,6 +59,7 @@ export {
     CoinmarketPaymentType,
     CoinmarketRefreshTime,
     CoinmarketAuthentication,
+    InvityContextDropdown,
     withCoinmarketAuthentication,
     withCoinmarketLoaded,
     withCoinmarketSavingsLoaded,

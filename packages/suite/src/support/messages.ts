@@ -894,6 +894,26 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_INVITY_SIGNIN_BUTTON: {
+        defaultMessage: 'Sign in to',
+        id: 'TR_INVITY_SIGNIN_BUTTON',
+    },
+    TR_INVITY_SIGNIN_BUTTON_AUTHENTICATED: {
+        defaultMessage: 'Signed in',
+        id: 'TR_INVITY_SIGNIN_BUTTON_AUTHENTICATED',
+    },
+    TR_INVITY_SIGNIN_DROPDOWN_MENU_LABEL: {
+        defaultMessage: 'Signed as:',
+        id: 'TR_INVITY_SIGNIN_DROPDOWN_MENU_LABEL',
+    },
+    TR_INVITY_SIGNIN_DROPDOWN_MENU_SIGNOUT: {
+        defaultMessage: 'Log out',
+        id: 'TR_INVITY_SIGNIN_DROPDOWN_MENU_SIGNOUT',
+    },
+    TR_INVITY_SIGNIN_DROPDOWN_MENU_NOTE: {
+        defaultMessage: 'TODO: Get the text from product.',
+        id: 'TR_INVITY_SIGNIN_DROPDOWN_MENU_NOTE',
+    },
     TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED: {
         defaultMessage: 'Given name is required.',
         id: 'TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED',
