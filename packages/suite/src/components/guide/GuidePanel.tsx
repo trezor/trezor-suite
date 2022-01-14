@@ -33,11 +33,7 @@ const MotionGuide = styled(motion.div)`
     display: flex;
 `;
 
-type GuidePanelProps = {
-    className?: string;
-};
-
-const GuidePanel = (props: GuidePanelProps) => {
+const GuidePanel = () => {
     const { activeView } = useSelector(state => ({
         activeView: state.guide.view,
     }));
@@ -71,7 +67,6 @@ const GuidePanel = (props: GuidePanelProps) => {
                             width: 0,
                             transition: { duration: 0.3, bounce: 0 },
                         }}
-                        {...props}
                     >
                         {activeView === 'GUIDE_DEFAULT' && <GuideDefault />}
                         {activeView === 'GUIDE_PAGE' && <GuidePage />}
