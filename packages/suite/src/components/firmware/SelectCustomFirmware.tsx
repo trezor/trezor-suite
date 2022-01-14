@@ -9,6 +9,7 @@ import { validateFirmware } from '@firmware-utils';
 
 const StepContainer = styled.div`
     display: flex;
+    align-self: start;
     &:not(:first-child) {
         margin-top: 60px;
     }
