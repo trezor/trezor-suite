@@ -13,8 +13,6 @@ const Wrapper = styled.div<{ guideOpen?: boolean }>`
     display: flex;
     width: 100%;
     align-items: center;
-    padding: 0 77px 0 0;
-    margin: -40px 0 -40px;
 
     @media (max-width: ${props =>
             props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
@@ -110,10 +108,12 @@ const SetupActions = styled.div<{ guideOpen?: boolean }>`
     margin-bottom: 32px;
     padding-bottom: 32px;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    width: fit-content;
 
     @media (max-width: ${props =>
             props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         justify-content: center;
+        width: auto;
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
@@ -121,9 +121,10 @@ const SetupActions = styled.div<{ guideOpen?: boolean }>`
     }
 `;
 
-const RenameDevice = styled(SetupActions)`
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: row;
+const RenameDevice = styled(SetupActions)<{ guideOpen?: boolean }>`
+    @media (max-width: ${props =>
+            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+        justify-content: center;
     }
 `;
 
@@ -236,9 +237,8 @@ const FinalStep = () => {
                         </SetupActions>
                     )}
                     {state === 'rename' && (
-                        <RenameDevice>
+                        <RenameDevice guideOpen={guideOpen}>
                             <DeviceLabelInput
-                                width={220}
                                 noTopLabel
                                 noError
                                 variant="medium"
