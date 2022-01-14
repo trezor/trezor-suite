@@ -950,25 +950,25 @@ export default defineMessages({
         defaultMessage: 'Document number is required.',
         id: 'TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_REQUIRED',
     },
-    TR_SAVINGS_KYC_START_DOCUMENT_FRONT_LABEL: {
+    TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL: {
         defaultMessage: 'Front side',
-        id: 'TR_SAVINGS_KYC_START_DOCUMENT_FRONT_LABEL',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL',
     },
-    TR_SAVINGS_KYC_START_DOCUMENT_BACK_LABEL: {
+    TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_BACK_LABEL: {
         defaultMessage: 'Back side',
-        id: 'TR_SAVINGS_KYC_START_DOCUMENT_BACK_LABEL',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_BACK_LABEL',
     },
-    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_FRONT_LABEL: {
-        defaultMessage: 'Front side',
-        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_FRONT_LABEL',
-    },
-    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_BACK_LABEL: {
-        defaultMessage: 'Back side',
-        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_BACK_LABEL',
+    TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_SELFIE_LABEL: {
+        defaultMessage: 'Selfie',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_SELFIE_LABEL',
     },
     TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD: {
         defaultMessage: 'Reupload',
         id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD',
+    },
+    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_VALID_IMAGE_REQUIREMENTS: {
+        defaultMessage: '(jpeg, png, max 5MB)',
+        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_VALID_IMAGE_REQUIREMENTS',
     },
     TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION: {
         defaultMessage: 'Drag & drop your file here, or {selectFromFiles}',
@@ -977,6 +977,10 @@ export default defineMessages({
     TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION_SELECT_FROM_FILES: {
         defaultMessage: 'select from files',
         id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION_SELECT_FROM_FILES',
+    },
+    TR_SAVINGS_KYC_START_IMAGE_DROPZONE_ERROR_REQUIRED: {
+        defaultMessage: 'Image is required.',
+        id: 'TR_SAVINGS_KYC_START_IMAGE_DROPZONE_ERROR_REQUIRED',
     },
     TR_SAVINGS_KYC_START_HEADER: {
         defaultMessage: 'Verify your personal identity.',

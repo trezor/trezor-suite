@@ -9,6 +9,7 @@ export interface SavingsKYCStartFormState {
     documentNumber: string;
     documentImageFront: string;
     documentImageBack: string;
+    documentImageSelfie?: string;
 }
 
 export type SavingsKYCStartContextValues = Omit<
@@ -20,8 +21,10 @@ export type SavingsKYCStartContextValues = Omit<
     isLoading: boolean;
     frontDropzoneState: DropzoneState;
     backDropzoneState: DropzoneState;
+    selfieDropzoneState: DropzoneState;
     defaultDocumentCountry?: Option;
     defaultDocumentType?: TranslationOption;
     documentCountryOptions?: Option[];
     documentTypeOptions?: TranslationOption[];
+    isSelfieRequired?: boolean;
 };

@@ -6,7 +6,7 @@ import {
     SavingsKYCStartContextValues,
 } from '@wallet-types/coinmarket/savings/KYCStart';
 
-import { SavingsTrade } from '@suite-services/invityAPI';
+import invityAPI, { SavingsTrade } from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { SavingsSelectedAccount } from '@wallet-types/coinmarket/savings';
@@ -33,6 +33,7 @@ export const useSavingsKYCStart = (
         defaultDocumentCountry,
         documentCountryOptions,
         documentTypeOptions,
+        isSelfieRequired,
     } = useSavingsKYCStartDefaultValues(savingsInfo);
     const methods = useForm<SavingsKYCStartFormState>({
         mode: 'onChange',
@@ -42,16 +43,30 @@ export const useSavingsKYCStart = (
 
     const provider = savingsInfo?.savingsList?.providers[0];
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         const {
             documentCountry,
             documentType,
             documentNumber,
             documentImageFront,
             documentImageBack,
+            documentImageSelfie,
         } = methods.getValues();
 
         if (provider) {
+            const documentImages = [
+                {
+                    documentSide: 'Front',
+                    data: documentImageFront,
+                },
+                {
+                    documentSide: 'Back',
+                    data: documentImageBack,
+                },
+            ];
+            if (isSelfieRequired && documentImageSelfie) {
+                documentImages.push({ documentSide: 'Selfie', data: documentImageSelfie });
+            }
             const trade = {
                 exchange: provider.name,
                 cryptoCurrency: selectedAccount.account.symbol,
@@ -61,20 +76,11 @@ export const useSavingsKYCStart = (
                     documentCountry: documentCountry.value,
                     documentType: documentType.value,
                     documentNumber,
-                    documentImages: [
-                        {
-                            documentSide: 'Front',
-                            data: documentImageFront,
-                        },
-                        {
-                            documentSide: 'Back',
-                            data: documentImageBack,
-                        },
-                    ],
+                    documentImages,
                 },
             } as SavingsTrade;
-            console.log(trade);
-            // TODO: create trade
+            const response = await invityAPI.doSavingsTrade({ trade });
+            console.log(response);
         }
     };
 
@@ -106,6 +112,7 @@ export const useSavingsKYCStart = (
 
     const frontDropzoneState = useDropzone(dropzoneOptions);
     const backDropzoneState = useDropzone(dropzoneOptions);
+    const selfieDropzoneState = useDropzone(dropzoneOptions);
     return {
         ...methods,
         register: typedRegister,
@@ -113,9 +120,11 @@ export const useSavingsKYCStart = (
         isLoading,
         frontDropzoneState,
         backDropzoneState,
+        selfieDropzoneState,
         defaultDocumentCountry,
         defaultDocumentType,
         documentTypeOptions,
         documentCountryOptions,
+        isSelfieRequired,
     };
 };

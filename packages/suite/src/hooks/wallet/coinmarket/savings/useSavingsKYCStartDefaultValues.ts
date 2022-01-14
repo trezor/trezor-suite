@@ -2,8 +2,9 @@ import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
 import { useMemo } from 'react';
 import regional from '@wallet-constants/coinmarket/regional';
 import { Translation } from '@suite-components';
-import { SavingsIdentityDocumentType } from '@suite/services/suite/invityAPI';
+import { SavingsProviderInfoIdentityDocument } from '@suite-services/invityAPI';
 
+type SavingsIdentityDocumentType = SavingsProviderInfoIdentityDocument['documentType'];
 type SavingsIdentityDocumentTypeUpperCase = Uppercase<SavingsIdentityDocumentType>;
 
 const translationSavingsKYCStartDocumentTypePrefix = 'TR_SAVINGS_KYC_START_DOCUMENT_TYPE_' as const;
@@ -35,7 +36,7 @@ export const useSavingsKYCStartDefaultValues = (savingsInfo?: SavingsInfo) => {
         [country],
     );
     const defaultDocumentType = useMemo(() => {
-        const identityDocumentType = provider?.identityDocumentTypes[0];
+        const identityDocumentType = provider?.identityDocuments[0].documentType;
         return getIdentityDocumentTypesOption(identityDocumentType || 'Passport');
     }, [provider]);
     const documentCountryOptions = useMemo(
@@ -47,7 +48,13 @@ export const useSavingsKYCStartDefaultValues = (savingsInfo?: SavingsInfo) => {
         [provider],
     );
     const documentTypeOptions = useMemo(
-        () => getIdentityDocumentTypesOptions(provider?.identityDocumentTypes),
+        () =>
+            getIdentityDocumentTypesOptions(
+                provider?.identityDocuments
+                    // Selfie is managed separately.
+                    .filter(item => item.documentType !== 'Selfie')
+                    .map(item => item.documentType),
+            ),
         [provider],
     );
     const defaultValues = useMemo(
@@ -60,11 +67,15 @@ export const useSavingsKYCStartDefaultValues = (savingsInfo?: SavingsInfo) => {
                 : undefined,
         [savingsInfo, defaultDocumentCountry, defaultDocumentType],
     );
+    const isSelfieRequired = provider?.identityDocuments.some(
+        item => item.documentType === 'Selfie' && item.isRequired,
+    );
     return {
         defaultValues,
         defaultDocumentCountry,
         defaultDocumentType,
         documentTypeOptions,
         documentCountryOptions,
+        isSelfieRequired,
     };
 };

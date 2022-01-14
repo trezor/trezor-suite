@@ -43,6 +43,11 @@ import { getPrefixedURL } from '@suite-utils/router';
 /** BEGIN: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 export type SavingsPaymentMethods = 'bankTransfer';
 
+export interface SavingsErrorResponse {
+    status: 'Error';
+    errors: string[];
+}
+
 export interface SavingsProviderInfo {
     /** Name of provider as our identifier e.g.: btcdirect. */
     name: string;
@@ -74,7 +79,13 @@ export interface SavingsProviderInfo {
     isClientFromUnsupportedCountry: boolean;
 
     /** List of document types required by provider's KYC process. User has to choose one. */
-    identityDocumentTypes: SavingsIdentityDocumentType[];
+    identityDocuments: SavingsProviderInfoIdentityDocument[];
+}
+
+export interface SavingsProviderInfoIdentityDocument {
+    documentType: SavingsTradeUserKYCStartDocumentType;
+    documentImageSides: SavingsTradeUserKYCStartDocumentImageSide[];
+    isRequired?: boolean;
 }
 
 export interface SavingsListResponse {
@@ -84,10 +95,6 @@ export interface SavingsListResponse {
 }
 
 export type SavingsSetupStatus =
-    /** Initial state - show form with name, phonenumber, birthday, inputs. */
-    | 'Registration'
-    /** Show form with input where user fills in verification from received SMS. */
-    | 'PhoneNumberVerification'
     /** Show select options what kind of documents the will be KYC'ed. */
     | 'KYCStart'
     /** "KYC is in progress" shows UI. */
@@ -140,11 +147,7 @@ export type SavingsTradeUserKYCStartDocumentType =
     | 'Passport'
     | 'IdentityCard'
     | 'DrivingLicence'
-    | 'Selfie'
-    | 'ProofOfResidency'
-    | 'ResidencePermit'
-    | 'IbanVerification'
-    | 'WalletVerification';
+    | 'Selfie';
 
 export type SavingsTradeUserKYCStartDocumentImageSide =
     | 'Front'
@@ -163,6 +166,16 @@ export interface SavingsTradeUserKYCStart {
     documentCountry: string;
     documentType: SavingsTradeUserKYCStartDocumentType;
     documentImages: SavingsTradeUserKYCStartDocumentImage[];
+}
+
+export interface SavingsTradeAMLQuestion {
+    key: string;
+    label: string;
+    answerOptions: SavingsTradeAMLAnswerOption[];
+}
+
+export interface SavingsTradeAMLAnswerOption {
+    label: string;
 }
 
 export interface SavingsTrade {
@@ -197,7 +210,10 @@ export interface SavingsTrade {
 
     userKYCStart?: SavingsTradeUserKYCStart;
 
-    // TODO: AML
+    amlQuestions?: SavingsTradeAMLQuestion[];
+
+    answers?: SavingsTradeAMLAnswer[];
+
     // TODO: maybe encapsulate setup?
 }
 
@@ -212,14 +228,32 @@ export interface SavingsTradeResponse {
     payments?: SavingsTradePayment[];
 }
 
-export type SavingsIdentityDocumentType = 'Passport' | 'IdentityCard' | 'DrivingLicence' | 'Selfie';
-
-export interface SavingsIdentityDocument {
-    documentType: SavingsIdentityDocumentType;
-    documentSide: 'Front' | 'Back' | 'Selfie';
-    /** Base64 encoded string */
-    data: string;
+export interface SavingsKYCInfoSuccessResponse {
+    status: 'Success';
+    documentTypes: SavingsTradeUserKYCStartDocumentType[];
 }
+
+export interface SavingsKYCInfoErrorResponse {
+    status: 'Error';
+    errors: string[];
+}
+
+export type SavingsKYCInfoResponse = SavingsKYCInfoSuccessResponse | SavingsKYCInfoErrorResponse;
+
+export interface SavingsTradeAMLAnswer {
+    key: string;
+    answer: string;
+}
+export interface SavingsTradeAMLAnswersRequest {
+    answers: SavingsTradeAMLAnswer[];
+}
+
+export interface SavingsAMLAnswersSuccessResponse {
+    status: 'Success';
+}
+
+export type SavingsAMLAnswersResponse = SavingsAMLAnswersSuccessResponse | SavingsErrorResponse;
+
 export interface VerifySmsCodeRequest {
     code: string;
 }
@@ -247,18 +281,6 @@ export interface SendVerificationSmsSuccessResponse {
 export type SendVerificationSmsResponse =
     | SendVerificationSmsSuccessResponse
     | SendVerificationSmsErrorResponse;
-
-export interface SavingsKYCInfoSuccessResponse {
-    status: 'Success';
-    documentTypes: SavingsIdentityDocumentType[];
-}
-
-export interface SavingsKYCInfoErrorResponse {
-    status: 'Error';
-    errors: string[];
-}
-
-export type SavingsKYCInfoResponse = SavingsKYCInfoSuccessResponse | SavingsKYCInfoErrorResponse;
 
 /** END: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 

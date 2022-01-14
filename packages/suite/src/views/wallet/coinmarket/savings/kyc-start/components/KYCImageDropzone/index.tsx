@@ -1,9 +1,13 @@
 import React from 'react';
 import type { DropzoneState } from 'react-dropzone';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { colors, variables, Icon } from '@trezor/components';
+
+interface DropzoneProps {
+    isError: boolean;
+}
 
 const DropzoneWrapper = styled.div`
     display: flex;
@@ -11,8 +15,8 @@ const DropzoneWrapper = styled.div`
     flex-basis: 100%;
 `;
 
-const Dropzone = styled.div`
-    border: 2px dashed ${props => props.theme.STROKE_GREY};
+const Dropzone = styled.div<DropzoneProps>`
+    border: 2px dashed ${props => (props.isError ? props.theme.TYPE_RED : props.theme.STROKE_GREY)};
     box-sizing: border-box;
     border-radius: 6px;
     padding: 16px;
@@ -25,6 +29,12 @@ const DropzoneElement = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
+    flex-flow: row;
+    align-items: center;
+`;
+
+const Grey = styled.div`
+    color: ${props => props.theme.TYPE_LIGHTER_GREY};
 `;
 
 const DropzoneLabel = styled(DropzoneElement)`
@@ -50,7 +60,7 @@ const RejectedFileWrapper = styled.div`
     flex-flow: column;
 `;
 
-const RejectedFileError = styled.div`
+const FileError = styled.div`
     color: ${colors.TYPE_RED};
 `;
 
@@ -67,13 +77,22 @@ interface KYCImageDropzoneProps {
     name: string;
     label: string | React.ReactElement;
     dropzoneState: DropzoneState;
+    error?: FieldError;
+    required?: boolean;
 }
 
-const KYCImageDropzone = ({ control, name, dropzoneState, label }: KYCImageDropzoneProps) => (
+const KYCImageDropzone = ({
+    control,
+    name,
+    dropzoneState,
+    label,
+    error,
+    required,
+}: KYCImageDropzoneProps) => (
     <Controller
         control={control}
         name={name}
-        rules={{ required: true }}
+        rules={{ required }}
         defaultValue=""
         render={({ onChange, name }) => {
             const noFileDropped =
@@ -83,12 +102,17 @@ const KYCImageDropzone = ({ control, name, dropzoneState, label }: KYCImageDropz
             const rejectedFile = dropzoneState.fileRejections[0];
             return (
                 <DropzoneWrapper>
-                    <Dropzone {...dropzoneState.getRootProps()}>
+                    <Dropzone {...dropzoneState.getRootProps()} isError={!!error || !!rejectedFile}>
                         <input {...dropzoneState.getInputProps({ onChange, name })} />
                         <DropzoneLabel>(TODO: Icon) {label}</DropzoneLabel>
                         <DropzoneElement>
+                            <Grey>
+                                <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_VALID_IMAGE_REQUIREMENTS" />
+                            </Grey>
+                        </DropzoneElement>
+                        <DropzoneElement>
                             {noFileDropped && (
-                                <CenteredRow>
+                                <Grey>
                                     <Translation
                                         id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION"
                                         values={{
@@ -101,37 +125,48 @@ const KYCImageDropzone = ({ control, name, dropzoneState, label }: KYCImageDropz
                                             ),
                                         }}
                                     />
-                                </CenteredRow>
+                                </Grey>
                             )}
                             {acceptedFile && (
-                                <CenteredRow>
+                                <>
                                     <Icon icon="CHECK" color={colors.TYPE_GREEN} />
                                     <AcceptedFile>{acceptedFile.name}</AcceptedFile>
                                     &nbsp;
                                     <SelectFromFilesWrapper onClick={dropzoneState.open}>
-                                        <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD" />
+                                        <Grey>
+                                            <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD" />
+                                        </Grey>
                                     </SelectFromFilesWrapper>
-                                </CenteredRow>
+                                </>
                             )}
                             {rejectedFile && (
                                 <RejectedFileWrapper>
                                     <CenteredRow>
                                         <Icon icon="CROSS" color={colors.TYPE_RED} />
-                                        <RejectedFile>{rejectedFile.file.name}</RejectedFile>&nbsp;
+                                        <RejectedFile>{rejectedFile.file.name}</RejectedFile>
+                                        &nbsp;
                                         <SelectFromFilesWrapper onClick={dropzoneState.open}>
                                             <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD" />
                                         </SelectFromFilesWrapper>
                                     </CenteredRow>
-
                                     {rejectedFile.errors.map(error => (
-                                        <RejectedFileError key={error.code}>
+                                        <FileError key={error.code}>
                                             {/* TODO: Translate error messages based on error.code */}
                                             {error.message}
-                                        </RejectedFileError>
+                                        </FileError>
                                     ))}
                                 </RejectedFileWrapper>
                             )}
                         </DropzoneElement>
+                        {error && (
+                            <DropzoneElement>
+                                <FileError>
+                                    {error.type === 'required' && (
+                                        <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_ERROR_REQUIRED" />
+                                    )}
+                                </FileError>
+                            </DropzoneElement>
+                        )}
                     </Dropzone>
                 </DropzoneWrapper>
             );

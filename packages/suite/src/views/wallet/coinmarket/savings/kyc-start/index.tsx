@@ -54,10 +54,12 @@ const KYCStart = ({ selectedAccount }: KYCStartProps) => {
         handleSubmit,
         frontDropzoneState,
         backDropzoneState,
+        selfieDropzoneState,
         documentCountryOptions,
         documentTypeOptions,
         defaultDocumentCountry,
         defaultDocumentType,
+        isSelfieRequired,
     } = useSavingsKYCStart(selectedAccount);
 
     const documentCountrySelectName = 'documentCountry';
@@ -65,6 +67,7 @@ const KYCStart = ({ selectedAccount }: KYCStartProps) => {
     const documentNumberInputName = 'documentNumber';
     const documentImageFrontInputName = 'documentImageFront';
     const documentImageBackInputName = 'documentImageBack';
+    const documentImageSelfieInputName = 'documentImageSelfie';
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -147,7 +150,9 @@ const KYCStart = ({ selectedAccount }: KYCStartProps) => {
                     control={control}
                     name={documentImageFrontInputName}
                     dropzoneState={frontDropzoneState}
-                    label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_FRONT_LABEL" />}
+                    label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL" />}
+                    error={errors.documentImageFront}
+                    required
                 />
             </Row>
             <Row>
@@ -155,9 +160,25 @@ const KYCStart = ({ selectedAccount }: KYCStartProps) => {
                     control={control}
                     name={documentImageBackInputName}
                     dropzoneState={backDropzoneState}
-                    label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_BACK_LABEL" />}
+                    label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_BACK_LABEL" />}
+                    error={errors.documentImageBack}
+                    required
                 />
             </Row>
+            {isSelfieRequired && (
+                <Row>
+                    <KYCImageDropzone
+                        control={control}
+                        name={documentImageSelfieInputName}
+                        dropzoneState={selfieDropzoneState}
+                        label={
+                            <Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_SELFIE_LABEL" />
+                        }
+                        error={errors.documentImageSelfie}
+                        required
+                    />
+                </Row>
+            )}
             <Button>
                 <Translation id="TR_SAVINGS_KYC_START_CONFIRM" />
             </Button>
