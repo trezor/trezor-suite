@@ -1,8 +1,6 @@
 # e2e tests
 .e2e web:
   stage: integration testing
-  needs:
-    - suite-web deploy dev
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
@@ -21,7 +19,7 @@
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix
+    - docker-compose up -d ${CONTAINERS}
     - docker-compose run test-run
   after_script:
     - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
@@ -40,138 +38,30 @@
       - trezor-user-env-debugging.log
       - tenv-emulator-bridge-debugging.log
       - trezor-user-env-version.txt
+  parallel:
+    matrix:
+      - TEST_GROUP: ['@group:suite', '@group:onboarding', '@group:device-management', '@group:settings', '@group:metadata']
+        CONTAINERS: 'trezor-user-env-unix'
+      - TEST_GROUP: '@group:wallet'
+        CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
 
-e2e web suite:
+suite web:
   extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:suite'
 
-e2e web onboarding:
+suite web snapshots:
   extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:onboarding'
-
-e2e web device-management:
-  extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:device-management'
-
-e2e web settings:
-  extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:settings'
-
-e2e web metadata:
-  extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:metadata'
-
-e2e web wallet:
-  extends: .e2e web
-  script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix bitcoin-regtest
-    - docker-compose run test-run
-  variables:
-    TEST_GROUP: '@group:wallet'
-
-# bounty group gathers flaky tests.
-e2e web bounty:
-  extends: .e2e web
-  allow_failure: true
-  variables:
-    TEST_GROUP: '@group:bounty'
-    ALLOW_RETRY: 0
-
-
-## Update snapshots
-## You may update snapshots either locally (see readme https://docs.trezor.io/trezor-suite/tests/e2e-web.html)
-## But as this is quite time consuming you may prefer to do it in CI
-
-.e2e web snapshots:
-  extends: .e2e web
+  when: manual
   variables:
     CYPRESS_SNAPSHOT: 1
     CYPRESS_updateSnapshots: 1
 
-e2e web suite snapshots:
-  when: manual
-  extends: .e2e web snapshots
-  variables:
-    TEST_GROUP: '@group:suite'
-
-e2e web onboarding snapshots:
-  when: manual
-  extends: .e2e web snapshots
-  variables:
-    TEST_GROUP: '@group:onboarding'
-
-e2e web device-management snapshots:
-  when: manual
-  extends: .e2e web snapshots
-  variables:
-    TEST_GROUP: '@group:device-management'
-
-e2e web settings snapshots:
-  when: manual
-  extends: .e2e web snapshots
-  variables:
-    TEST_GROUP: '@group:settings'
-
-e2e web metadata snapshots:
-  when: manual
-  extends: .e2e web snapshots
-  variables:
-    TEST_GROUP: '@group:metadata'
-
-e2e web wallet snapshots:
-  when: manual
-  extends: .e2e web snapshots
-  variables:
-    TEST_GROUP: '@group:wallet'
-
-e2e web all snapshots:
-  when: manual
-  extends: .e2e web snapshots
-
 # Nightly tests against latest trezor-firmware master
-.e2e web nightly:
+suite web nightly:
   extends: .e2e web
   only:
     - schedules
   variables:
     FIRMWARE: 2-master
-
-e2e web suite nightly:
-  extends: .e2e web nightly
-  variables:
-    TEST_GROUP: '@group:suite'
-
-e2e web onboarding nightly:
-  extends: .e2e web nightly
-  variables:
-    TEST_GROUP: '@group:onboarding'
-
-e2e web device-management nightly:
-  extends: .e2e web nightly
-  variables:
-    TEST_GROUP: '@group:device-management'
-
-e2e web settings nightly:
-  extends: .e2e web nightly
-  variables:
-    TEST_GROUP: '@group:settings'
-
-e2e web metadata nightly:
-  extends: .e2e web nightly
-  variables:
-    TEST_GROUP: '@group:metadata'
-
-e2e web wallet nightly:
-  extends: .e2e web nightly
-  variables:
-    TEST_GROUP: '@group:wallet'
 
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io
@@ -180,17 +70,15 @@ e2e web wallet nightly:
 
 ## This test should exist only until trezor-connect is in monorepo.
 ## It checks whether rollout works with currently released webwallet data
-rollout test integration:
+rollout nightly:
   only:
-    refs:
-      - develop
-      - schedules
+    - schedules
   stage: integration testing
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/rollout test:integration
 
-rollout test integration manual:
+rollout:
   when: manual
   stage: integration testing
   script:
