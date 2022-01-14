@@ -19,6 +19,9 @@ import * as suiteActions from '@suite-actions/suiteActions';
 
 const ModalContent = styled.div`
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const FirmwareCustom = () => {
