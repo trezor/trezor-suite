@@ -20,7 +20,7 @@
         "cypress-image-snapshot": "^4.0.1",
         "cypress-wait-until": "^1.7.2",
         "chrome-remote-interface": "^0.31.0",
-        "shelljs": "^0.8.4",
+        "shelljs": "^0.8.5",
         "wait-on": "^5.3.0",
         "ws": "^7.5.5"
     }
