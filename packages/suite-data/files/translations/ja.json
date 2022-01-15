@@ -1333,7 +1333,7 @@
   "TR_SEND_GAS_PRICE_TOOLTIP": "ガス価格は、ガスのすべてのユニットに対して支払うETHの金額を指し、通常は \"Gwei\" で測定されます。 取引手数料 = ガスリミット * ガス価格。 ガス価格を上げると、取引が早く承認されますが、より高価になります。お勧めのガス価格は {defaultGasPrice} GWEIです。",
   "TR_SEND_NETWORK": "{network} を送信",
   "TR_SEND_NETWORK_AND_TOKENS": "{network} とトークンを送信",
-  "TR_SENT": "送信しました",
+  "TR_SENT": "送信済",
   "TR_SENT_SUCCESSFULLY": "正常に送信しました",
   "TR_SENT_TO_MYSELF_TRANSACTION": "{symbol} を自分自身に送信済",
   "TR_SENT_TO_SELF": "自分自身に送信しました",
