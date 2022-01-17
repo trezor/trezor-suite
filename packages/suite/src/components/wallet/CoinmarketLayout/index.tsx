@@ -3,7 +3,6 @@ import {
     CoinmarketFooter,
     WalletLayoutHeader,
     InvityContextDropdown,
-    CoinmarketAuthentication,
 } from '@wallet-components';
 import { Card, Button, variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
@@ -30,28 +29,25 @@ interface Props {
 
 const CoinmarketLayout = ({ children, onClearFormButtonClick }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    // TODO: remove inner <CoinmarketAuthentication>
     return (
-        <CoinmarketAuthentication>
-            <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
-                <WalletLayoutHeader title="TR_NAV_TRADE">
-                    {onClearFormButtonClick && (
-                        <Button type="button" variant="tertiary" onClick={onClearFormButtonClick}>
-                            <Translation id="TR_CLEAR_ALL" />
-                        </Button>
-                    )}
-                    <InvityContextDropdown />
-                </WalletLayoutHeader>
-                <Card noPadding>
-                    <Navigation />
-                    <Content>{children}</Content>
-                </Card>
-                <BottomContent>
-                    <AccountTransactions />
-                    <CoinmarketFooter />
-                </BottomContent>
-            </WalletLayout>
-        </CoinmarketAuthentication>
+        <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
+            <WalletLayoutHeader title="TR_NAV_TRADE">
+                {onClearFormButtonClick && (
+                    <Button type="button" variant="tertiary" onClick={onClearFormButtonClick}>
+                        <Translation id="TR_CLEAR_ALL" />
+                    </Button>
+                )}
+                <InvityContextDropdown />
+            </WalletLayoutHeader>
+            <Card noPadding>
+                <Navigation />
+                <Content>{children}</Content>
+            </Card>
+            <BottomContent>
+                <AccountTransactions />
+                <CoinmarketFooter />
+            </BottomContent>
+        </WalletLayout>
     );
 };
 
