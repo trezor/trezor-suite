@@ -95,18 +95,23 @@ export interface SavingsListResponse {
 }
 
 export type SavingsSetupStatus =
-    /** Show select options what kind of documents the will be KYC'ed. */
-    | 'KYCStart'
-    /** "KYC is in progress" shows UI. */
-    | 'KYCInProgress'
-    /** KYC docs are invalid or anything could be wrong. Expecting reason from our partner to handover to the user. */
-    | 'KYCFailed'
+    /** Show select options what kind of documents there will be KYC'ed. */
+    | 'KYC'
     /** More like questionare - can't fail. */
     | 'AML'
     /** User setups savings plan parameters (frequency, amount, etc.). */
     | 'SetSavingsParameters';
 
-export type SavingsStatus = SavingsSetupStatus | 'Cancelled' | 'Active' | 'Error';
+export type SavingsStatus = SavingsSetupStatus | 'Cancelled' | 'Active';
+export type SavingsKYCStatus =
+    /** KYC process didn't start yet. */
+    | 'Open'
+    /** KYC process is in progress. Might take some time to resolve. */
+    | 'InProgress'
+    /** KYC process passed successfully. */
+    | 'Verified'
+    /** KYC docs are invalid or anything could be wrong. Expecting reason from our partner to handover to the user. */
+    | 'Failed';
 
 export type PaymentFrequency = 'Weekly' | 'BiWeekly' | 'Monthly' | 'Quarterly';
 
@@ -180,6 +185,8 @@ export interface SavingsTradeAMLAnswerOption {
 
 export interface SavingsTrade {
     status?: SavingsStatus;
+    kycStatus?: SavingsKYCStatus;
+
     errors?: string[];
 
     /** Customer's bank account from which payments should be paid to receive crypto. */
