@@ -13,7 +13,7 @@ const fetch = require('node-fetch');
 const path = require('path');
 const fs = require('fs');
 
-const { Controller } = require('./plugins/websocket-client');
+const { Controller } = require('../../websocket-client');
 
 const TEST_DIR = './packages/integration-tests/projects/suite-web';
 
