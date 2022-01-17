@@ -45,7 +45,6 @@ export type SuiteAction =
     | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: Locale;
-          messages: { [key: string]: string };
       }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }

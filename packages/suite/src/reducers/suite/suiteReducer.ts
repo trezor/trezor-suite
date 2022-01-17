@@ -55,7 +55,6 @@ export interface SuiteState {
     dbError?: 'blocking' | 'blocked' | undefined; // blocked if the instance cannot upgrade due to older version running, blocking in case instance is running older version thus blocking other instance
     transport?: Partial<TransportInfo>;
     device?: TrezorDevice;
-    messages: { [key: string]: any };
     locks: Lock[];
     flags: Flags;
     settings: SuiteSettings;
@@ -67,7 +66,6 @@ const initialState: SuiteState = {
     loading: false,
     storageLoaded: false,
     loaded: false,
-    messages: {},
     locks: [],
     flags: {
         initialRun: true,
@@ -149,7 +147,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_LANGUAGE:
                 draft.settings.language = action.locale;
-                draft.messages = action.messages;
                 break;
 
             case SUITE.SET_DEBUG_MODE:
