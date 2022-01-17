@@ -1,3 +1,5 @@
-# 9.0.0-beta
+# 0.0.4
 
-- Added firmware and bridge releases.
+### Added
+
+- 1.10.5 FW
