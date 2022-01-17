@@ -16,6 +16,13 @@ import { useGuide } from '@guide-hooks';
 
 const Wrapper = styled.div`
     display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+`;
+
+const Body = styled.div`
+    display: flex;
     width: 100%;
     height: 100%;
 `;
@@ -80,12 +87,6 @@ const StyledTrezorLink = styled(TrezorLink)`
     margin-right: 14px;
 `;
 
-const BannerWrapper = styled.div`
-    position: absolute;
-    z-index: 1;
-    width: 100%;
-`;
-
 const SettingsWrapper = styled.div`
     align-self: flex-end;
 `;
@@ -119,76 +120,74 @@ const WelcomeLayout: React.FC = ({ children }) => {
 
     return (
         <Wrapper>
-            {banner && (
-                <BannerWrapper>
-                    <MessageSystemBanner message={banner} />
-                </BannerWrapper>
-            )}
-            <WelcomeWrapper>
-                <AnimatePresence>
-                    {!guideOpen && (
-                        <MotionWelcome
-                            initial={
-                                !firstRenderDone
-                                    ? {
-                                          width: welcomeBarWidth,
-                                      }
-                                    : { width: 0 }
-                            }
-                            animate={{
-                                width: welcomeBarWidth,
-                                transition: { duration: 0.3, bounce: 0 },
-                            }}
-                            exit={{
-                                width: 0,
-                                transition: { duration: 0.3, bounce: 0 },
-                            }}
-                        >
-                            <Expander>
-                                <TrezorLogo type="suite" width="128px" />
-                                <WelcomeTitle>
-                                    <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
-                                </WelcomeTitle>
-                            </Expander>
-                            <Bottom>
-                                {isWeb() && (
-                                    <StyledTrezorLink
-                                        size="small"
-                                        variant="nostyle"
-                                        href={SUITE_URL}
-                                    >
+            {banner && <MessageSystemBanner message={banner} />}
+            <Body>
+                <WelcomeWrapper>
+                    <AnimatePresence>
+                        {!guideOpen && (
+                            <MotionWelcome
+                                initial={
+                                    !firstRenderDone
+                                        ? {
+                                              width: welcomeBarWidth,
+                                          }
+                                        : { width: 0 }
+                                }
+                                animate={{
+                                    width: welcomeBarWidth,
+                                    transition: { duration: 0.3, bounce: 0 },
+                                }}
+                                exit={{
+                                    width: 0,
+                                    transition: { duration: 0.3, bounce: 0 },
+                                }}
+                            >
+                                <Expander>
+                                    <TrezorLogo type="suite" width="128px" />
+                                    <WelcomeTitle>
+                                        <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
+                                    </WelcomeTitle>
+                                </Expander>
+                                <Bottom>
+                                    {isWeb() && (
+                                        <StyledTrezorLink
+                                            size="small"
+                                            variant="nostyle"
+                                            href={SUITE_URL}
+                                        >
+                                            <Button
+                                                variant="tertiary"
+                                                icon="EXTERNAL_LINK"
+                                                alignIcon="right"
+                                            >
+                                                <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
+                                            </Button>
+                                        </StyledTrezorLink>
+                                    )}
+                                    <TrezorLink size="small" variant="nostyle" href={TREZOR_URL}>
                                         <Button
                                             variant="tertiary"
                                             icon="EXTERNAL_LINK"
                                             alignIcon="right"
                                         >
-                                            <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
+                                            trezor.io
                                         </Button>
-                                    </StyledTrezorLink>
-                                )}
-                                <TrezorLink size="small" variant="nostyle" href={TREZOR_URL}>
-                                    <Button
-                                        variant="tertiary"
-                                        icon="EXTERNAL_LINK"
-                                        alignIcon="right"
-                                    >
-                                        trezor.io
-                                    </Button>
-                                </TrezorLink>
-                            </Bottom>
-                        </MotionWelcome>
-                    )}
-                </AnimatePresence>
-            </WelcomeWrapper>
-            <Content>
-                <SettingsWrapper>
-                    <SettingsDropdown />
-                </SettingsWrapper>
-                {children}
-            </Content>
+                                    </TrezorLink>
+                                </Bottom>
+                            </MotionWelcome>
+                        )}
+                    </AnimatePresence>
+                </WelcomeWrapper>
+                <Content>
+                    <SettingsWrapper>
+                        <SettingsDropdown />
+                    </SettingsWrapper>
+                    {children}
+                </Content>
 
-            <GuideButton />
-            <GuidePanel />
+                <GuideButton />
+                <GuidePanel />
+            </Body>
         </Wrapper>
     );
 };
