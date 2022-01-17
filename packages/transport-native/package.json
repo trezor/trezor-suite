@@ -1,0 +1,51 @@
+{
+    "name": "@trezor/transport-native",
+    "version": "0.0.1",
+    "description": "Trezor device transport layer for React Native",
+    "main": "lib/commonjs/index",
+    "module": "lib/module/index",
+    "types": "lib/typescript/index.d.ts",
+    "react-native": "src/index",
+    "source": "src/index",
+    "files": [
+        "src",
+        "lib",
+        "android",
+        "ios",
+        "cpp",
+        "trezor-transport-native.podspec",
+        "!lib/typescript/example",
+        "!android/build",
+        "!ios/build",
+        "!**/__tests__",
+        "!**/__fixtures__",
+        "!**/__mocks__"
+    ],
+    "scripts": {
+        "type-check": "tsc --noEmit",
+        "lint": "eslint \"**/*.{js,ts,tsx}\""
+    },
+    "keywords": [
+        "Trezor",
+        "transport"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "license": "SEE LICENSE IN LICENSE.md",
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "devDependencies": {
+        "@types/react": "^17.0.38",
+        "@types/react-native": "0.66.12",
+        "pod-install": "^0.1.31",
+        "react": "17.0.2",
+        "react-native": "0.66.4"
+    },
+    "peerDependencies": {
+        "react": "*",
+        "react-native": "*"
+    }
+}
