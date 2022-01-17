@@ -14,9 +14,9 @@ const Autodetect = () => {
             currentLanguage: state.suite.settings.language,
             storageLoaded: state.suite.storageLoaded,
         }));
-    const { setTheme, fetchLocale } = useActions({
+    const { setTheme, setLanguage } = useActions({
         setTheme: setThemeAction,
-        fetchLocale: languageActions.fetchLocale,
+        setLanguage: languageActions.setLanguage,
     });
 
     useEffect(() => {
@@ -33,11 +33,11 @@ const Autodetect = () => {
         if (!storageLoaded || !autodetectLanguage) return;
         const osLocale = getOsLocale(currentLanguage);
         if (osLocale !== currentLanguage) {
-            fetchLocale(osLocale);
+            setLanguage(osLocale);
         }
-        const unwatch = watchOsLocale(fetchLocale);
+        const unwatch = watchOsLocale(setLanguage);
         return () => unwatch();
-    }, [storageLoaded, autodetectLanguage, currentLanguage, fetchLocale]);
+    }, [storageLoaded, autodetectLanguage, currentLanguage, setLanguage]);
 
     return null;
 };
