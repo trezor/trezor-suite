@@ -66,7 +66,7 @@ const suite =
                 // 3. redirecting user into welcome screen (if needed)
                 await Promise.all([
                     api.dispatch(
-                        languageActions.fetchLocale(action.payload.suite.settings.language),
+                        languageActions.setLanguage(action.payload.suite.settings.language),
                     ),
                     api.dispatch(messageSystemActions.init()),
                     api.dispatch(routerActions.initialRedirection()),

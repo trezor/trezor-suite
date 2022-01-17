@@ -44,8 +44,8 @@ const Language = () => {
         language: state.suite.settings.language,
         autodetectLanguage: state.suite.settings.autodetect.language,
     }));
-    const { fetchLocale, setAutodetect } = useActions({
-        fetchLocale: languageActions.fetchLocale,
+    const { setLanguage, setAutodetect } = useActions({
+        setLanguage: languageActions.setLanguage,
         setAutodetect: setAutodetectAction,
     });
 
@@ -64,7 +64,7 @@ const Language = () => {
             setAutodetect({ language: !autodetectLanguage });
         }
         if (value !== 'system') {
-            fetchLocale(value);
+            setLanguage(value);
             analytics.report({
                 type: 'settings/general/change-language',
                 payload: {
