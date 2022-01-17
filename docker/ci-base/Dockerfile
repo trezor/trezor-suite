@@ -93,6 +93,23 @@ ENV XDG_RUNTIME_DIR "/var/tmp"
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
+
+# Install NVM to manage Node versions
+ENV NVM_DIR /usr/local/nvm
+RUN mkdir ${NVM_DIR}
+RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+# Install and use correct version of node - should match witch Nix and .nvmrc
+ENV NODE_VERSION 14.18.1
+RUN . $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm alias default $NODE_VERSION \
+    && nvm use default
+
+# add node and npm to path so the commands are available
+ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
 # Out of the blue, we started to run into CI failures. All of them had one thing in common.
 # Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/
 # that was not available at the moment. This happens probably because of the async manner in which
@@ -103,6 +120,7 @@ RUN yarn global add opencollective node-pre-gyp lerna
 
 # versions of local tools
 RUN node -v
+RUN . $NVM_DIR/nvm.sh && nvm --version
 RUN npm -v
 RUN yarn -v
 RUN google-chrome --version
