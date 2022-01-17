@@ -1,7 +1,7 @@
 # schema version '3' does not support 'extends' keyword anymore
 # https://stackoverflow.com/questions/52587643/how-to-extend-service-in-docker-compose-v3
 
-version: '2'
+version: "2"
 services:
   trezor-user-env-unix:
     image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
