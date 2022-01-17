@@ -39,6 +39,7 @@
   "TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL": "Redigera etikett",
   "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS": "PNG eller JPG, 144 x 144 pixlar",
   "TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON": "Redigera",
+  "TR_EARLY_ACCESS_SKIP_REINSTALL": "Stäng",
   "TR_EDIT": "Redigera",
   "TR_EXCHANGE_GO_TO_PAYMENT": "Gå till betalning",
   "TR_FEEDBACK_ANALYTICS_ITEM_BROWSER": "Webbläsare",
@@ -49,7 +50,11 @@
   "TR_FEEDBACK_CATEGORY_SETTINGS": "Inställningar",
   "TR_LANDING_CONTINUE": "Fortsätt i webbläsaren",
   "TR_NAV_SEND": "Skicka",
+  "TR_QR_CODE": "QR-kod",
   "TR_SELL_FEES": "Avgifter",
+  "TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR": "Trezor Suite erbjuder nya funktioner, förbättrad säkerhet och ett mer intuitivt användargränssnitt.",
+  "TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0": "Trezor Suite ersätter Trezor Wallet",
+  "TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1": "Vad är nytt i Trezor Suite?",
   "TR_TOS_INFORMATION": "Genom att klicka på Fortsätt godkänner du vår {TR_TOS_LINK}",
   "TR_TX_FEE": "Avgift"
 }
