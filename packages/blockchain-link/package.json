@@ -39,6 +39,7 @@
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --verbose -c jest.config.unit.js",
         "test:integration": "jest -c jest.config.integration.js",
+        "test:electrum": "jest -c jest.config.electrum.js",
         "type-check": "tsc --project tsconfig.json"
     },
     "devDependencies": {

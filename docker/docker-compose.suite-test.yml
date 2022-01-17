@@ -44,3 +44,8 @@ services:
   bitcoin-regtest:
     image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
     network_mode: service:trezor-user-env-unix
+  electrum-regtest:
+    image: ghcr.io/vdovhanych/electrs:latest
+    network_mode: service:trezor-user-env-unix
+    # ports:
+    #   - "50001:50001"

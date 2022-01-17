@@ -1,0 +1,15 @@
+version: '2'
+services:
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    environment:
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  electrum-regtest:
+    image: ghcr.io/vdovhanych/electrs:latest
+    # network_mode: service:trezor-user-env-unix
+    ports:
+      - "50001:50001"

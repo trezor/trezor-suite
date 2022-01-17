@@ -7,12 +7,14 @@ import type { Message, Response } from '../../types';
 
 const TOR_ADDRESS = '127.0.0.1:9050';
 
-const TCP_CONFIG = 'electrum.corp.sldev.cz:50001:t';
+// const TCP_CONFIG = 'electrum.corp.sldev.cz:50001:t';
+const TCP_CONFIG = '127.0.0.1:50001:t';
 const TLS_CONFIG = 'bitcoin.aranguren.org:50002:s';
 const TOR_CONFIG = ''; // My personal Umbrel
 
 const ADDR_LEGACY = '1BitcoinEaterAddressDontSendf59kuE'; // 393 transactions
-const ADDR_SEGWIT = '3AVjhFvVHKhPfFccdFnPTBaqRqWq4EWoU2'; // 2 transactions
+// const ADDR_SEGWIT = '3AVjhFvVHKhPfFccdFnPTBaqRqWq4EWoU2'; // 2 transactions
+const ADDR_SEGWIT = 'bcrt1qu0k7jjux76kpgjhnqn4kyfg6yuekhnd246pjlf'; // regtest
 const ADDR_SEGWIT_MID = '33QJtiYPkQzYf5BNbCztHWowhco77sg18g'; // 44 transactions
 const ADDR_BECH32 = 'bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej'; // almost 1M transactions
 const XPUB_ALL_SEED_1 =
@@ -77,12 +79,12 @@ const TX_HASH =
     });
     return;
     await sendAndWait({ id: ++id, type: 'm_get_info' });
-    
+
     console.time('tx');
     await sendAndWait({ id: ++id, type: 'm_get_account_utxo', payload: ADDR_SEGWIT_MID });
     console.timeEnd('tx');
     return;
-    
+
     await sendAndWait({
         id: ++id,
         type: 'm_subscribe',
@@ -90,10 +92,10 @@ const TX_HASH =
     });
     return;
     await sendAndWait({ id: ++id, type: 'm_get_block_hash', payload: 666666 });
-    
+
     await sendAndWait({ id: ++id, type: 'm_get_transaction', payload: TX });
     return;
-    
+
     await sendAndWait({
         id: ++id,
         // @ts-ignore
