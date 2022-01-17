@@ -71,7 +71,8 @@ export const useSavingsKYCStart = (
                 exchange: provider.name,
                 cryptoCurrency: selectedAccount.account.symbol,
                 fiatCurrency: 'EUR',
-                status: 'KYCStart',
+                status: 'KYC',
+                kycStatus: 'Open',
                 userKYCStart: {
                     documentCountry: documentCountry.value,
                     documentType: documentType.value,
