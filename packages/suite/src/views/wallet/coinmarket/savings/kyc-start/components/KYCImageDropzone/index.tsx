@@ -41,8 +41,12 @@ const DropzoneLabel = styled(DropzoneElement)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const SelectFromFilesWrapper = styled.u`
+const SelectFromFilesWrapper = styled.span`
     cursor: pointer;
+    & span {
+        color: ${props => props.theme.TYPE_LIGHTER_GREY};
+        text-decoration: underline solid ${props => props.theme.TYPE_LIGHTER_GREY};
+    }
 `;
 
 const AcceptedFile = styled.div`
@@ -133,9 +137,7 @@ const KYCImageDropzone = ({
                                     <AcceptedFile>{acceptedFile.name}</AcceptedFile>
                                     &nbsp;
                                     <SelectFromFilesWrapper onClick={dropzoneState.open}>
-                                        <Grey>
-                                            <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD" />
-                                        </Grey>
+                                        <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD" />
                                     </SelectFromFilesWrapper>
                                 </>
                             )}
