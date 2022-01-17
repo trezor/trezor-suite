@@ -188,18 +188,12 @@ const reducerActions = [
             {
                 type: SUITE.SET_LANGUAGE,
                 locale: 'cz',
-                messages: {
-                    key: 'value',
-                },
             },
         ],
         result: [
             {
                 settings: {
                     language: 'cz',
-                },
-                messages: {
-                    key: 'value',
                 },
             },
         ],
