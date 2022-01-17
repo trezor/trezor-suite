@@ -10,4 +10,4 @@ export const withCoinmarketSavingsLoaded = (
     WrappedComponent: React.ComponentType<WithCoinmarketLoadedProps>,
     options: WithCoinmarketSavingsLoadedOptions = { checkInvityAuthenticationImmediately: true },
 ) =>
-    withCoinmarketAuthentication(withCoinmarketLoaded(WrappedComponent, 'TR_NAV_SAVINGS'), options);
+    withCoinmarketLoaded(withCoinmarketAuthentication(WrappedComponent, options), 'TR_NAV_SAVINGS');

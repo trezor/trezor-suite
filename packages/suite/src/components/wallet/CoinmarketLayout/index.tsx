@@ -37,7 +37,9 @@ const CoinmarketLayout = ({ children, onClearFormButtonClick }: Props) => {
                         <Translation id="TR_CLEAR_ALL" />
                     </Button>
                 )}
-                <InvityContextDropdown />
+                {selectedAccount.status === 'loaded' && (
+                    <InvityContextDropdown selectedAccount={selectedAccount} />
+                )}
             </WalletLayoutHeader>
             <Card noPadding>
                 <Navigation />

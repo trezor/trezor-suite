@@ -4,6 +4,8 @@ import { useActions, useSelector } from '@suite-hooks';
 import { useEffectOnce } from 'react-use';
 import { AccountSettings } from '@wallet-types/invity';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import { WithCoinmarketLoadedProps } from '../hocs';
+import { useCoinmarketNavigation } from '@suite/hooks/wallet/useCoinmarketNavigation';
 // TODO: move interfaces/types to types folder
 
 export interface AccountInfo {
@@ -52,13 +54,14 @@ function inIframe() {
     }
 }
 
-interface CoinmarketAuthenticationProps {
+interface CoinmarketAuthenticationProps extends WithCoinmarketLoadedProps {
     checkInvityAuthenticationImmediately?: boolean;
 }
 
 const CoinmarketAuthentication: React.FC<CoinmarketAuthenticationProps> = ({
     children,
     checkInvityAuthenticationImmediately = true,
+    selectedAccount,
 }) => {
     const { invityEnvironment, invityAuthentication } = useSelector(state => ({
         invityEnvironment: state.suite.settings.debug.invityServerEnvironment,
@@ -70,6 +73,9 @@ const CoinmarketAuthentication: React.FC<CoinmarketAuthenticationProps> = ({
     const { saveInvityAuthentication } = useActions({
         saveInvityAuthentication: coinmarketCommonActions.saveInvityAuthentication,
     });
+    const { navigateToSavingsRegistrationSuccessful } = useCoinmarketNavigation(
+        selectedAccount.account,
+    );
     const [fetching, setFetching] = useState(checkInvityAuthenticationImmediately);
     const [checkCounter, setCheckCounter] = useState(0);
 
@@ -88,9 +94,12 @@ const CoinmarketAuthentication: React.FC<CoinmarketAuthenticationProps> = ({
             } catch {}
             if (parsedData && parsedData.name === 'invity-authentication') {
                 switch (parsedData.state) {
-                    case 'login-successful':
                     case 'registration-successful':
+                        navigateToSavingsRegistrationSuccessful();
+                        break;
+                    case 'login-successful':
                         checkInvityAuthentication();
+                        break;
                     // eslint-disable-next-line no-fallthrough
                     default:
                 }

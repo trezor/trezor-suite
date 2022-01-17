@@ -894,6 +894,17 @@ class InvityAPI {
         return this.getInvityAuthenticationPageSrc('registration', afterVerificationReturnToPath);
     }
 
+    // TODO:
+    // async logout() {
+    //     const response = await fetch(`${this.getAuthServerUrl()}/self-service/logout/browser`, {
+    //         credentials: 'include',
+    //     });
+    //     const json = await response.json();
+    //     if (json.logout_url) {
+    //         window.location.replace(json.logout_url);
+    //     }
+    // }
+
     accountInfo = async (): Promise<AccountInfoResponse> => {
         try {
             const response: AccountInfoResponse = await this.requestApiServer(

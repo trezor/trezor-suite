@@ -895,7 +895,7 @@ export default defineMessages({
         id: 'TR_BUY_STATUS_PENDING',
     },
     TR_INVITY_SIGNIN_BUTTON: {
-        defaultMessage: 'Sign in to',
+        defaultMessage: 'Sign in to Invity',
         id: 'TR_INVITY_SIGNIN_BUTTON',
     },
     TR_INVITY_SIGNIN_BUTTON_AUTHENTICATED: {
@@ -1001,6 +1001,15 @@ export default defineMessages({
     TR_SAVINGS_KYC_START_CONFIRM: {
         defaultMessage: 'Confirm',
         id: 'TR_SAVINGS_KYC_START_CONFIRM',
+    },
+    TR_SAVINGS_REGISTRATION_SUCCESSFUL_HEADER: {
+        defaultMessage: 'Confirm your email',
+        id: 'TR_SAVINGS_REGISTRATION_SUCCESSFUL_HEADER',
+    },
+    TR_SAVINGS_REGISTRATION_SUCCESSFUL_DESCRIPTION: {
+        defaultMessage:
+            'You should receive an email with link. Click on the link. That verifies your account.',
+        id: 'TR_SAVINGS_REGISTRATION_SUCCESSFUL_DESCRIPTION',
     },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:

@@ -4,7 +4,6 @@ import { withCoinmarketSavingsLoaded, WithCoinmarketLoadedProps } from '@wallet-
 import invityAPI from '@suite-services/invityAPI';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { Button } from '@trezor/components';
-import RegistrationSuccess from './components/Success';
 import { getRoute } from '@suite-utils/router';
 
 type CoinmarketSavingsLoginRgistrationProps = WithCoinmarketLoadedProps;
@@ -24,7 +23,7 @@ const CoinmarketSavingsRegistration = ({
     return (
         <>
             <Button onClick={() => navigateToSavingsLogin()}>Navigate to Login</Button>
-            {!invityAuthentication && (
+            {(!invityAuthentication || invityAuthentication.error?.code === 401) && (
                 <iframe
                     title="registration"
                     frameBorder="0"
@@ -32,7 +31,6 @@ const CoinmarketSavingsRegistration = ({
                     sandbox="allow-scripts allow-forms allow-same-origin"
                 />
             )}
-            {invityAuthentication && !invityAuthentication.verified && <RegistrationSuccess />}
         </>
     );
 };
