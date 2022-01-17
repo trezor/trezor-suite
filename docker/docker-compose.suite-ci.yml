@@ -5,7 +5,7 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
-    network_mode: bridge  # this makes docker reuse existing networks
+    network_mode: bridge # this makes docker reuse existing networks
   test-run:
     image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/cypress/included:9.2.1
     entrypoint: []
@@ -30,5 +30,5 @@ services:
     volumes:
       - ../:/trezor-suite
   bitcoin-regtest:
-    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env-regtest  # this is a special image that runs regtest and blockbook
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
     network_mode: service:trezor-user-env-unix

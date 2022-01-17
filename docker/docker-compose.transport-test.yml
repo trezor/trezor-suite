@@ -5,7 +5,7 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
-    network_mode: bridge  # this makes docker reuse existing networks
+    network_mode: bridge # this makes docker reuse existing networks
   test-run:
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     network_mode: service:trezor-user-env-unix
