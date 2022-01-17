@@ -6,18 +6,16 @@ const LINKING_ERROR =
     )}- You rebuilt the app after installing the package\n` +
     `- You are not using Expo managed workflow\n`;
 
-console.log(NativeModules);
-
-const TrezorTransport = NativeModules.TrezorTransport
-    ? NativeModules.TrezorTransport
-    : new Proxy(
-          {},
-          {
-              get() {
-                  throw new Error(LINKING_ERROR);
-              },
-          },
-      );
+const TrezorTransport =
+    NativeModules.TrezorTransport ??
+    new Proxy(
+        {},
+        {
+            get() {
+                throw new Error(LINKING_ERROR);
+            },
+        },
+    );
 
 type DevicePath = string;
 type Data = string;
