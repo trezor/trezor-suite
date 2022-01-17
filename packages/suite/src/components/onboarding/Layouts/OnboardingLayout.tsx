@@ -9,13 +9,22 @@ import { SUPPORT_URL } from '@suite-constants/urls';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import steps from '@onboarding-config/steps';
 import { GuideButton, GuidePanel } from '@guide-components';
+import { useMessageSystem } from '@suite-hooks/useMessageSystem';
+import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
     height: 100%;
-    justify-content: center;
+    flex-direction: column;
     background: ${props => props.theme.BG_LIGHT_GREY};
+`;
+
+const Body = styled.div`
+    justify-content: center;
+    display: flex;
+    width: 100%;
+    height: 100%;
 `;
 
 const MaxWidth = styled.div`
@@ -105,6 +114,8 @@ interface Props {
 }
 
 const OnboardingLayout = ({ children }: Props) => {
+    const { banner } = useMessageSystem();
+
     const { activeStepId } = useOnboarding();
     const activeStep = steps.find(step => step.id === activeStepId)!;
 
@@ -114,50 +125,53 @@ const OnboardingLayout = ({ children }: Props) => {
 
     return (
         <Wrapper>
-            <MaxWidth>
-                <Header>
-                    <LogoHeaderRow>
-                        <TrezorLogo type="suite" width="128px" />
+            {banner && <MessageSystemBanner message={banner} />}
+            <Body>
+                <MaxWidth>
+                    <Header>
+                        <LogoHeaderRow>
+                            <TrezorLogo type="suite" width="128px" />
 
-                        <TrezorLink size="small" variant="nostyle" href={SUPPORT_URL}>
-                            <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                                <Translation id="TR_HELP" />
-                            </Button>
-                        </TrezorLink>
-                    </LogoHeaderRow>
-                    <ProgressBarRow>
-                        <StyledProgressBar
-                            guideOpen={guideOpen}
-                            steps={[
-                                {
-                                    key: 'fw',
-                                    label: <Translation id="TR_ONBOARDING_STEP_FIRMWARE" />,
-                                },
-                                {
-                                    key: 'wallet',
-                                    label: <Translation id="TR_ONBOARDING_STEP_WALLET" />,
-                                },
-                                {
-                                    key: 'pin',
-                                    label: <Translation id="TR_ONBOARDING_STEP_PIN" />,
-                                },
-                                {
-                                    key: 'coins',
-                                    label: <Translation id="TR_ONBOARDING_STEP_COINS" />,
-                                },
-                                {
-                                    key: 'final',
-                                },
-                            ]}
-                            activeStep={activeStep.stepGroup}
-                        />
-                    </ProgressBarRow>
-                </Header>
+                            <TrezorLink size="small" variant="nostyle" href={SUPPORT_URL}>
+                                <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                                    <Translation id="TR_HELP" />
+                                </Button>
+                            </TrezorLink>
+                        </LogoHeaderRow>
+                        <ProgressBarRow>
+                            <StyledProgressBar
+                                guideOpen={guideOpen}
+                                steps={[
+                                    {
+                                        key: 'fw',
+                                        label: <Translation id="TR_ONBOARDING_STEP_FIRMWARE" />,
+                                    },
+                                    {
+                                        key: 'wallet',
+                                        label: <Translation id="TR_ONBOARDING_STEP_WALLET" />,
+                                    },
+                                    {
+                                        key: 'pin',
+                                        label: <Translation id="TR_ONBOARDING_STEP_PIN" />,
+                                    },
+                                    {
+                                        key: 'coins',
+                                        label: <Translation id="TR_ONBOARDING_STEP_COINS" />,
+                                    },
+                                    {
+                                        key: 'final',
+                                    },
+                                ]}
+                                activeStep={activeStep.stepGroup}
+                            />
+                        </ProgressBarRow>
+                    </Header>
 
-                <Content>{children}</Content>
-            </MaxWidth>
-            <GuideButton />
-            <GuidePanel />
+                    <Content>{children}</Content>
+                </MaxWidth>
+                <GuideButton />
+                <GuidePanel />
+            </Body>
         </Wrapper>
     );
 };
