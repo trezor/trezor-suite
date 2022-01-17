@@ -8,9 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2.0.0
       - name: Install dependencies
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: 14.17.1
+          node-version-file: ".nvmrc"
       - run: |
           npm install -g yarn
           yarn
