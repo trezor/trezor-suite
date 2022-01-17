@@ -1,4 +1,4 @@
-# e2e tests
+# @trezor/suite-web
 .e2e web:
   stage: integration testing
   variables:
@@ -66,7 +66,7 @@ suite web nightly:
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io
 
-# Rollout test
+# @trezor/rollout
 
 ## This test should exist only until trezor-connect is in monorepo.
 ## It checks whether rollout works with currently released webwallet data
@@ -84,3 +84,25 @@ rollout:
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/rollout test:integration
+
+# @trezor/transport
+.e2e transport:
+  stage: integration testing
+  variables:
+    COMPOSE_FILE: ./docker/docker-compose.transport-test.yml
+  script:
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/transport build:lib
+    - ./docker/docker-transport-test.sh
+  after_script:
+    - docker-compose down
+    - docker network prune -f
+
+transport:
+  extends: .e2e transport
+  when: manual
+
+transport nightly:
+  extends: .e2e transport
+  only:
+    - schedules

@@ -8,7 +8,7 @@ import CDP from 'chrome-remote-interface';
 import fs from 'fs';
 import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
-import { Controller } from './websocket-client';
+import { Controller } from '../../../websocket-client';
 import googleMock from './google';
 import dropboxMock from './dropbox';
 import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
