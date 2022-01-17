@@ -1,6 +1,20 @@
 [
     {
         "required": false,
+        "version": [1, 10, 5],
+        "bootloader_version": [1, 10, 0],
+        "min_bridge_version": [2, 0, 25],
+        "min_firmware_version": [1, 6, 2],
+        "min_bootloader_version": [1, 5, 0],
+        "url": "data/firmware/1/trezor-1.10.5.bin",
+        "url_bitcoinonly": "data/firmware/1/trezor-1.10.5-bitcoinonly.bin",
+        "fingerprint": "7619fcc73c43ca8a3e6aad3dc3eb6551fed05bb218340efe01a02bb96e9f346b",
+        "fingerprint_bitcoinonly": "1d319f643fe2ba5c247b178c7f73b989ab4e43d914a60468566ee7cc5bb9dde0",
+        "notes": "https://blog.trezor.io/trezor-suite-update-january-2022-4a77e4a07a5a",
+        "changelog": "* Support for blindly signing EIP-712 data."
+    },
+    {
+        "required": false,
         "version": [1, 10, 4],
         "bootloader_version": [1, 10, 0],
         "min_bridge_version": [2, 0, 25],
