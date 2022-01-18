@@ -1,4 +1,5 @@
 import * as EthereumjsUtil from 'ethereumjs-util';
+import { hasUppercaseLetter } from '@trezor/utils';
 import BigNumber from 'bignumber.js';
 
 export const decimalToHex = (dec: number): string => new BigNumber(dec).toString(16);
@@ -24,14 +25,13 @@ export const strip = (str: string): string => {
 };
 
 export const validateAddress = (address: string): string | null => {
-    const hasUpperCase = new RegExp('^(.*[A-Z].*)$');
     if (address.length < 1) {
         return 'Address is not set';
     }
     if (!EthereumjsUtil.isValidAddress(address)) {
         return 'Address is not valid';
     }
-    if (address.match(hasUpperCase) && !EthereumjsUtil.isValidChecksumAddress(address)) {
+    if (hasUppercaseLetter(address) && !EthereumjsUtil.isValidChecksumAddress(address)) {
         return 'Address is not a valid checksum';
     }
     return null;

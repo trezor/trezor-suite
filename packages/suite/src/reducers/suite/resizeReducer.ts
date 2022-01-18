@@ -1,15 +1,15 @@
 import produce from 'immer';
 import * as variables from '@trezor/components/lib/config/variables'; // can't import from index cause it would import all UI components
 import { RESIZE } from '@suite-actions/constants';
-import { getNumberFromPxString } from '@trezor/utils';
+import { getNumberFromPixelString } from '@trezor/utils';
 import { Action } from '@suite-types';
 
 const sizes = {
-    UNAVAILABLE: getNumberFromPxString(variables.SCREEN_SIZE.UNAVAILABLE),
-    SMALL: getNumberFromPxString(variables.SCREEN_SIZE.SM),
-    MEDIUM: getNumberFromPxString(variables.SCREEN_SIZE.MD),
-    LARGE: getNumberFromPxString(variables.SCREEN_SIZE.LG),
-    XLARGE: getNumberFromPxString(variables.SCREEN_SIZE.XL),
+    UNAVAILABLE: getNumberFromPixelString(variables.SCREEN_SIZE.UNAVAILABLE),
+    SMALL: getNumberFromPixelString(variables.SCREEN_SIZE.SM),
+    MEDIUM: getNumberFromPixelString(variables.SCREEN_SIZE.MD),
+    LARGE: getNumberFromPixelString(variables.SCREEN_SIZE.LG),
+    XLARGE: getNumberFromPixelString(variables.SCREEN_SIZE.XL),
 };
 
 const getSize = (screenWidth: number | null): State['size'] => {

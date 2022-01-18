@@ -7,4 +7,7 @@ export * from './getRandomNumberInRange';
 export * from './capitalizeFirstLetter';
 export * from './countBytesInString';
 export * from './truncateMiddle';
-export * from './getNumberFromPxString';
+export * from './getNumberFromPixelString';
+export * from './isUrl';
+export * from './hasUppercaseLetter';
+export * from './isAscii';
