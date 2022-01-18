@@ -26,6 +26,7 @@
         "@trezor/components": "1.0.0",
         "@trezor/suite-data": "1.0.0",
         "@trezor/suite-storage": "1.0.0",
+        "@trezor/utils": "*",
         "bignumber.js": "^9.0.2",
         "date-fns": "^2.27.0",
         "dropbox": "^10.23.0",

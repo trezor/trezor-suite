@@ -1,6 +1,6 @@
-import { partition } from '../array';
+import { arrayPartition } from '../src/arrayPartition';
 
-describe('Array utils', () => {
+describe('arrayPartition', () => {
     describe('partition of the array by condition', () => {
         it('partition array of objects', () => {
             const arrayOfObjects = [
@@ -10,7 +10,7 @@ describe('Array utils', () => {
                 { value: true, name: 'd' },
                 { value: false, name: 'e' },
             ];
-            const partitionedObjects = partition(arrayOfObjects, element => element.value);
+            const partitionedObjects = arrayPartition(arrayOfObjects, element => element.value);
             const [truthy, falsy] = partitionedObjects;
             expect(arrayOfObjects.length).toEqual(truthy.length + falsy.length);
             expect(partitionedObjects).toStrictEqual([
@@ -28,7 +28,7 @@ describe('Array utils', () => {
 
         it('partition array of numbers', () => {
             const arrayOfNumbers = [3, 1, 4, 5, 2, 1, 2];
-            const partitionedNumbers = partition(arrayOfNumbers, element => element < 3);
+            const partitionedNumbers = arrayPartition(arrayOfNumbers, element => element < 3);
             const [lessThanThree, fromThree] = partitionedNumbers;
             expect(arrayOfNumbers.length).toEqual(lessThanThree.length + fromThree.length);
             expect(partitionedNumbers).toStrictEqual([
@@ -39,7 +39,7 @@ describe('Array utils', () => {
 
         it('partition array of strings', () => {
             const arrayOfStrings = ['a', 'b', 'c', 'd', 'e', 'a'];
-            const partitionedStrings = partition(
+            const partitionedStrings = arrayPartition(
                 arrayOfStrings,
                 element => element === 'a' || element === 'b',
             );
