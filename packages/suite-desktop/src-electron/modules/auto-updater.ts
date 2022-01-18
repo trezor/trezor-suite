@@ -14,7 +14,7 @@ import {
 import { isDev } from '@suite-utils/build';
 import { b2t } from '@desktop-electron/libs/utils';
 import { verifySignature } from '@desktop-electron/libs/update-checker';
-import { toHumanReadable } from '@suite-utils/file';
+import { bytesToHumanReadable } from '@trezor/utils';
 import { isEnabled } from '@suite-utils/features';
 
 // Runtime flags
@@ -142,9 +142,9 @@ const init = ({ mainWindow, store }: Dependencies) => {
     autoUpdater.on('download-progress', progressObj => {
         logger.debug(
             'auto-updater',
-            `Downloading ${progressObj.percent}% (${toHumanReadable(
+            `Downloading ${progressObj.percent}% (${bytesToHumanReadable(
                 progressObj.transferred,
-            )}/${toHumanReadable(progressObj.total)})`,
+            )}/${bytesToHumanReadable(progressObj.total)})`,
         );
         mainWindow.webContents.send('update/downloading', { ...progressObj });
     });

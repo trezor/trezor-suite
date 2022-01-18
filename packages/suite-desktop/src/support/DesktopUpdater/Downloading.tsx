@@ -5,7 +5,7 @@ import { H2, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { Row } from './styles';
 
-import { toHumanReadable } from '@suite-utils/file';
+import { bytesToHumanReadable } from '@trezor/utils';
 import { UpdateProgress } from '@suite-types/desktop';
 
 const ModalHeadingWrapper = styled.div`
@@ -76,9 +76,9 @@ const Downloading = ({ hideWindow, progress }: Props) => {
                         </Text>
                         <DownloadProgress>
                             <ReceivedData>
-                                {toHumanReadable(progress?.transferred || 0)}
+                                {bytesToHumanReadable(progress?.transferred || 0)}
                             </ReceivedData>
-                            /<TotalData>{toHumanReadable(progress?.total || 0)}</TotalData>
+                            /<TotalData>{bytesToHumanReadable(progress?.total || 0)}</TotalData>
                         </DownloadProgress>
                     </>
                 )}

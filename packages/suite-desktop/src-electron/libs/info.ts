@@ -3,7 +3,7 @@ import si from 'systeminformation';
 
 import { isDev } from '@suite-utils/build';
 import { b2t } from '@desktop-electron/libs/utils';
-import { toHumanReadable } from '@suite-utils/file';
+import { bytesToHumanReadable } from '@trezor/utils';
 
 export const buildInfo = () => {
     global.logger.info('build', [
@@ -41,6 +41,6 @@ export const computerInfo = async () => {
         `- Cores: ${cpu.processors}x${cpu.physicalCores}(+${cpu.cores - cpu.physicalCores}) @ ${
             cpu.speed
         }GHz`,
-        `- RAM: ${toHumanReadable(mem.total)}`,
+        `- RAM: ${bytesToHumanReadable(mem.total)}`,
     ]);
 };
