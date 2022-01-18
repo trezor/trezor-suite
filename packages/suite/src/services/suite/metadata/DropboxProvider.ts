@@ -4,7 +4,7 @@ import type { users } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { METADATA } from '@suite-actions/constants';
-import { getRandomId } from '@suite-utils/random';
+import { getWeakRandomId } from '@trezor/utils';
 
 // this is incorrectly typed in dropbox
 
@@ -54,7 +54,7 @@ class DropboxProvider extends AbstractMetadataProvider {
 
         const url = await this.auth.getAuthenticationUrl(
             redirectUrl,
-            getRandomId(10),
+            getWeakRandomId(10),
             'code',
             'offline',
             undefined, // If this parameter is omitted, the authorization page will request all scopes selected on the Permissions tab

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { getRandomNumberInRange } from '@suite-utils/random';
+import { getRandomNumberInRange } from '@trezor/utils';
 
 const NoResults = styled(Card)`
     display: flex;
