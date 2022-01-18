@@ -1,6 +1,6 @@
-import { mergeObj } from '../mergeObj';
+import { mergeObject } from '../src/mergeObject';
 
-describe('mergeObj', () => {
+describe('mergeObject', () => {
     it('should deep merge two objects', () => {
         const target = {
             a: 1,
@@ -22,6 +22,6 @@ describe('mergeObj', () => {
                 a: 1,
             },
         };
-        expect(mergeObj(target, source)).toEqual(expected);
+        expect(mergeObject(target, source)).toEqual(expected);
     });
 });
