@@ -4,11 +4,11 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-comp
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 
-interface Props {
+interface SafetyChecksProps {
     isDeviceLocked: boolean;
 }
 
-const SafetyChecks = ({ isDeviceLocked }: Props) => {
+export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
@@ -34,4 +34,3 @@ const SafetyChecks = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default SafetyChecks;

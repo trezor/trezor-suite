@@ -1,15 +1,16 @@
 import React from 'react';
+
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { WIKI_FW_DOWNGRADE } from '@suite-constants/urls';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
-interface Props {
+interface CustomFirmwareProps {
     isDeviceLocked: boolean;
 }
 
-const CustomFirmware = ({ isDeviceLocked }: Props) => {
+export const CustomFirmware = ({ isDeviceLocked }: CustomFirmwareProps) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -36,4 +37,3 @@ const CustomFirmware = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default CustomFirmware;

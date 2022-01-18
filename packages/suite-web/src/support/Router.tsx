@@ -60,15 +60,17 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     ),
 
     // settings
-    'settings-index': lazy(() => import(/* webpackChunkName: "settings" */ '@settings-views')),
+    'settings-index': lazy(
+        () => import(/* webpackChunkName: "settings" */ '@settings-views/general/SettingsGeneral'),
+    ),
     'settings-coins': lazy(
-        () => import(/* webpackChunkName: "settings" */ '@settings-views/coins'),
+        () => import(/* webpackChunkName: "settings" */ '@settings-views/coins/SettingsCoins'),
     ),
     'settings-debug': lazy(
-        () => import(/* webpackChunkName: "settings" */ '@settings-views/debug'),
+        () => import(/* webpackChunkName: "settings" */ '@settings-views/debug/SettingsDebug'),
     ),
     'settings-device': lazy(
-        () => import(/* webpackChunkName: "settings" */ '@settings-views/device'),
+        () => import(/* webpackChunkName: "settings" */ '@settings-views/device/SettingsDevice'),
     ),
 };
 

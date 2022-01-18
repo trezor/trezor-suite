@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Translation } from '@suite-components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useAnalytics, useActions, useDevice, useLocales } from '@suite-hooks';
@@ -19,11 +20,11 @@ const buildAutoLockOption = (seconds: number, locale?: Locale) => ({
     value: seconds,
 });
 
-interface Props {
+interface AutoLockProps {
     isDeviceLocked: boolean;
 }
 
-const AutoLock = ({ isDeviceLocked }: Props) => {
+export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const { applySettings } = useActions({
         applySettings: deviceSettingsActions.applySettings,
     });
@@ -78,4 +79,3 @@ const AutoLock = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default AutoLock;

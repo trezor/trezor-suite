@@ -13,9 +13,10 @@ const StyledSettingsLayout = styled(SettingsLayout)`
 
 const StyledCoinsGroup = styled(CoinsGroup)`
     margin-top: 18px;
+    padding: 0 20px;
 `;
 
-const Settings = () => {
+const SettingsCoins = () => {
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
 
     return (
@@ -39,4 +40,4 @@ const Settings = () => {
     );
 };
 
-export default Settings;
+export default SettingsCoins;

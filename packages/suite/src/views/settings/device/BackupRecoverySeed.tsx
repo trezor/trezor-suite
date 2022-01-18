@@ -1,15 +1,15 @@
 import React from 'react';
+
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { SEED_MANUAL_URL } from '@suite-constants/urls';
 import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-
-interface Props {
+interface BackupRecoverySeedProps {
     isDeviceLocked: boolean;
 }
 
-const BackupRecoverySeed = ({ isDeviceLocked }: Props) => {
+export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) => {
     const { device } = useDevice();
     const { goto } = useActions({
         goto: routerActions.goto,
@@ -45,5 +45,3 @@ const BackupRecoverySeed = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-
-export default BackupRecoverySeed;

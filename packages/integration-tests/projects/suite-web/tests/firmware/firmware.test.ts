@@ -51,7 +51,7 @@ describe('Firmware', () => {
         cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/update-button')
             .should('contain.text', 'Up to date')
-            .click();
+            .click({ scrollBehavior: false });
         cy.getTestElement('@modal/close-button').click();
     });
 });
