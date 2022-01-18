@@ -15,11 +15,18 @@ const Wrapper = styled.div`
 interface CoinsListProps {
     networks: Network[];
     selectedNetworks?: Network['symbol'][];
+    settingsMode?: boolean;
     onSettings?: (symbol: Network['symbol']) => void;
     onToggle: (symbol: Network['symbol'], toggled: boolean) => void;
 }
 
-const CoinsList = ({ networks, selectedNetworks, onSettings, onToggle }: CoinsListProps) => {
+const CoinsList = ({
+    networks,
+    selectedNetworks,
+    settingsMode = false,
+    onSettings,
+    onToggle,
+}: CoinsListProps) => {
     const { backends } = useSelector(state => ({
         backends: state.wallet.settings.backends,
     }));
@@ -54,7 +61,8 @@ const CoinsList = ({ networks, selectedNetworks, onSettings, onToggle }: CoinsLi
                             name={name}
                             label={note}
                             toggled={toggled}
-                            disabled={disabled}
+                            disabled={disabled || (settingsMode && !toggled)}
+                            forceHover={settingsMode}
                             onToggle={disabled ? undefined : () => onToggle(symbol, !toggled)}
                             onSettings={
                                 disabled || !onSettings ? undefined : () => onSettings(symbol)

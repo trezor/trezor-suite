@@ -4007,6 +4007,10 @@ export default defineMessages({
         id: 'TR_COIN_SETTINGS',
         defaultMessage: 'Coin settings',
     },
+    TR_SELECT_COIN_FOR_SETTINGS: {
+        id: 'TR_SELECT_COIN_FOR_SETTINGS',
+        defaultMessage: 'Select active coin to change settings',
+    },
     FW_CAPABILITY_NO_CAPABILITY: {
         id: 'FW_CAPABILITY_NO_CAPABILITY',
         defaultMessage: 'Not supported',

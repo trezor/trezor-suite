@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import type { ExtendedMessageDescriptor } from '@suite-types';
 import type { Network } from '@wallet-types';
 
-const SettingsWrapper = styled.div`
+const SettingsWrapper = styled.div<{ onClick: ((e: React.MouseEvent) => void) | undefined }>`
     display: flex;
     align-self: stretch;
     align-items: center;
@@ -17,13 +17,16 @@ const SettingsWrapper = styled.div`
     transition: 0.3s ease;
     position: relative;
     opacity: 0;
-    &:hover {
-        background-color: ${props =>
-            transparentize(
-                props.theme.HOVER_TRANSPARENTIZE_FILTER,
-                props.theme.HOVER_PRIMER_COLOR,
-            )};
-    }
+    ${props =>
+        props.onClick &&
+        css`
+            &:hover {
+                background-color: ${transparentize(
+                    props.theme.HOVER_TRANSPARENTIZE_FILTER,
+                    props.theme.HOVER_PRIMER_COLOR,
+                )};
+            }
+        `}
 `;
 
 const ImageWrapper = styled.div`
@@ -36,7 +39,23 @@ const ImageWrapper = styled.div`
     opacity: 1;
 `;
 
-const CoinWrapper = styled.button<{ toggled: boolean; disabled: boolean; hasSettings: boolean }>`
+const ShiftToSettings = css`
+    ${SettingsWrapper} {
+        margin-right: 0;
+        opacity: 1;
+    }
+    ${ImageWrapper} {
+        margin-left: -18px;
+        opacity: 0;
+    }
+`;
+
+export const CoinWrapper = styled.button<{
+    toggled: boolean;
+    disabled: boolean;
+    forceHover: boolean;
+    hasSettings: boolean;
+}>`
     display: flex;
     justify-items: flex-start;
     align-items: center;
@@ -51,31 +70,26 @@ const CoinWrapper = styled.button<{ toggled: boolean; disabled: boolean; hasSett
     transition: 0.3s ease;
     overflow: hidden;
 
-    ${props =>
-        !props.disabled &&
-        props.hasSettings &&
-        css`
-            &:hover ${SettingsWrapper} {
-                margin-right: 0;
-                opacity: 1;
-            }
-
-            &:hover ${ImageWrapper} {
-                margin-left: -18px;
-                opacity: 0;
-            }
-        `}
-
     &:disabled {
         cursor: not-allowed;
         opacity: 0.5;
         background: ${props => props.theme.BG_GREY};
     }
+
     ${props =>
-        props.toggled &&
         !props.disabled &&
+        props.toggled &&
         css`
             border-color: ${props.theme.BG_GREEN};
+            ${props.forceHover && ShiftToSettings}
+            ${props.hasSettings &&
+            css`
+                @media (hover: hover) {
+                    &:hover {
+                        ${ShiftToSettings}
+                    }
+                }
+            `}
         `}
 `;
 
@@ -126,6 +140,7 @@ interface CoinProps {
     label?: ExtendedMessageDescriptor['id'];
     toggled: boolean;
     disabled?: boolean;
+    forceHover?: boolean;
     onToggle?: () => void;
     onSettings?: () => void;
 }
@@ -134,17 +149,26 @@ const Coin = ({
     symbol,
     name,
     label,
-    toggled = false,
+    toggled,
     disabled = false,
+    forceHover = false,
     onToggle,
     onSettings,
 }: CoinProps) => {
     const theme = useTheme();
 
+    const onSettingsClick =
+        onSettings &&
+        ((e: React.MouseEvent) => {
+            e.stopPropagation();
+            onSettings();
+        });
+
     return (
         <CoinWrapper
             toggled={toggled}
             disabled={disabled}
+            forceHover={forceHover}
             hasSettings={!!onSettings}
             onClick={onToggle}
             data-test={`@settings/wallet/network/${symbol}`}
@@ -167,11 +191,7 @@ const Coin = ({
                 <Name>{name}</Name>
             )}
             <SettingsWrapper
-                onClick={e => {
-                    e.stopPropagation();
-                    if (disabled) return;
-                    onSettings?.();
-                }}
+                onClick={onSettingsClick}
                 data-test={`@settings/wallet/network/${symbol}/advance`}
             >
                 <Icon icon="SETTINGS" />
