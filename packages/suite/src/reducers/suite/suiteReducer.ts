@@ -7,7 +7,7 @@ import { Action, TrezorDevice, Lock, SuiteThemeColors } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb, getWindowWidth } from '@suite-utils/env';
 import { ensureLocale } from '@suite-utils/l10n';
-import { getNumberFromPxString } from '@trezor/utils';
+import { getNumberFromPixelString } from '@trezor/utils';
 
 export interface DebugModeOptions {
     invityAPIUrl?: string;
@@ -79,7 +79,8 @@ const initialState: SuiteState = {
         taprootBannerClosed: false,
         securityStepsHidden: false,
         dashboardGraphHidden: false,
-        dashboardAssetsGridMode: getWindowWidth() < getNumberFromPxString(variables.SCREEN_SIZE.SM),
+        dashboardAssetsGridMode:
+            getWindowWidth() < getNumberFromPixelString(variables.SCREEN_SIZE.SM),
     },
     settings: {
         theme: {

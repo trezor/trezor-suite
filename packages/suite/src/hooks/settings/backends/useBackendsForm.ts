@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import { isUrl } from '@suite-utils/validators';
+import { isUrl } from '@trezor/utils';
 import { setBackend as setBackendAction } from '@settings-actions/walletSettingsActions';
 import type { Network } from '@wallet-types';
 import type { BackendType } from '@wallet-reducers/settingsReducer';

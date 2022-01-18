@@ -3,7 +3,7 @@ import { useForm, useController } from 'react-hook-form';
 import { useTranslation, useSelector, useActions } from '@suite-hooks';
 import * as protocolActions from '@suite-actions/protocolActions';
 import { isHex } from '@wallet-utils/ethUtils';
-import { isASCII } from '@suite-utils/validators';
+import { isAscii } from '@trezor/utils';
 import { isAddressValid } from '@wallet-utils/validation';
 import type { Account } from '@wallet-types';
 import type { AoppState } from '@suite-reducers/protocolReducer';
@@ -114,7 +114,7 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
                     ? translationString('DATA_NOT_VALID_HEX')
                     : undefined,
             ascii: (message: string) =>
-                !formValues.hex && !isASCII(message)
+                !formValues.hex && !isAscii(message)
                     ? translationString('TR_ASCII_ONLY')
                     : undefined,
         },
