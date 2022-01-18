@@ -3,7 +3,7 @@ import { TRANSPORT, TransportInfo } from 'trezor-connect';
 import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { Action, TrezorDevice, Lock, SuiteThemeColors } from '@suite-types';
+import { Action, TrezorDevice, Lock } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb, getWindowWidth } from '@suite-utils/env';
 import { ensureLocale } from '@suite-utils/l10n';
@@ -36,7 +36,6 @@ interface Flags {
 interface SuiteSettings {
     theme: {
         variant: SuiteThemeVariant;
-        colors?: SuiteThemeColors;
     };
     language: Locale;
     torOnionLinks: boolean;
@@ -158,7 +157,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
-                draft.settings.theme.colors = action.colors;
                 break;
 
             case SUITE.SET_AUTODETECT:

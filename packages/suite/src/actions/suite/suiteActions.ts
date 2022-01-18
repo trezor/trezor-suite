@@ -12,7 +12,6 @@ import type {
     TrezorDevice,
     ButtonRequest,
     AppState,
-    SuiteThemeColors,
 } from '@suite-types';
 import type { DebugModeOptions, AutodetectSettings } from '@suite-reducers/suiteReducer';
 
@@ -72,7 +71,6 @@ export type SuiteAction =
     | {
           type: typeof SUITE.SET_THEME;
           variant: SuiteThemeVariant;
-          colors: SuiteThemeColors;
       }
     | {
           type: typeof SUITE.SET_AUTODETECT;
@@ -98,10 +96,9 @@ export const setDbError = (payload: AppState['suite']['dbError']) => ({
     payload,
 });
 
-export const setTheme = (variant: SuiteThemeVariant, colors?: SuiteThemeColors) => ({
+export const setTheme = (variant: SuiteThemeVariant) => ({
     type: SUITE.SET_THEME,
     variant,
-    colors,
 });
 
 export const setAutodetect = (payload: Partial<AutodetectSettings>) => ({

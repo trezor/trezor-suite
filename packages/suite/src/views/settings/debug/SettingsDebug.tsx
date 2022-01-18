@@ -8,7 +8,6 @@ import { TranslationMode } from './TranslationMode';
 import { GithubIssue } from './GithubIssue';
 import { WipeData } from './WipeData';
 import { InvityApi } from './InvityApi';
-import { DarkModePalette } from './DarkModePalette';
 
 const SettingsDebug = () => (
     <SettingsLayout>
@@ -24,8 +23,6 @@ const SettingsDebug = () => (
         <Section title="Invity">
             <InvityApi />
         </Section>
-
-        <DarkModePalette />
     </SettingsLayout>
 );
 

@@ -1,4 +1,4 @@
-type SuiteThemeVariant = 'light' | 'dark' | 'custom';
+type SuiteThemeVariant = 'light' | 'dark';
 
 type Result<Payload = undefined> = Promise<
     | {
