@@ -48,9 +48,6 @@ const oldWindowLocation = window.location;
 
 describe('Analytics Actions', () => {
     beforeAll(() => {
-        // eslint-disable-next-line global-require
-        require('@suite-utils/random');
-
         // @ts-ignore The operand of a 'delete' operator must be optional.
         delete window.location;
 
