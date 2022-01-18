@@ -37,7 +37,7 @@ services:
     working_dir: /e2e
     command: bash -c "cypress open --project /e2e/packages/integration-tests/projects/suite-web"
     # if you want to debug run_tests.js (which runs tests in CI) locally
-    # command: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js"
+    # command: bash -c "node --experimental-modules ./packages/integration-tests/projects/suite-web/run_tests.js"
     volumes:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

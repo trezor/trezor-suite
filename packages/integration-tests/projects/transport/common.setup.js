@@ -1,14 +1,15 @@
-const Controller = require('../../websocket-client').Controller;
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { Controller } = require('../../websocket-client');
 
-const mnemonic_all = 'all all all all all all all all all all all all';
+const mnemonicAll = 'all all all all all all all all all all all all';
 
 const emulatorSetupOpts = {
-    mnemonic: mnemonic_all,
+    mnemonic: mnemonicAll,
     pin: '',
     passphrase_protection: false,
     label: 'TrezorT',
     needs_backup: false,
-}
+};
 
 const emulatorStartOpts = { version: '2-master', wipe: true };
 
@@ -17,7 +18,7 @@ const wait = ms =>
         setTimeout(resolve, ms);
     });
 
-const setup = async (controller) => {
+const setup = async controller => {
     await controller.connect();
     await controller.send({ type: 'emulator-start', ...emulatorStartOpts });
     await controller.send({ type: 'emulator-setup', ...emulatorSetupOpts });
