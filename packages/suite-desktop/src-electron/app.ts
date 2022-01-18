@@ -74,7 +74,6 @@ const init = async () => {
             allowRunningInsecureContent: isDev,
             nodeIntegration: false,
             contextIsolation: true,
-            enableRemoteModule: false,
             preload: path.join(__dirname, 'preload.js'),
         },
     });
