@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { openModal as openModalAction } from '@suite-actions/modalActions';
-import CoinsCount from './CoinsCount';
+import CoinsGroupHeader from './CoinsGroupHeader';
 import CoinsList from './CoinsList';
 import type { Network } from '@wallet-types';
 
@@ -30,7 +30,10 @@ const CoinsGroup = ({
         openModal: openModalAction,
     });
 
+    const [settingsMode, setSettingsMode] = useState(false);
+
     const onSettings = (symbol: Network['symbol']) => {
+        setSettingsMode(false);
         openModal({
             type: 'advanced-coin-settings',
             coin: symbol,
@@ -39,18 +42,21 @@ const CoinsGroup = ({
 
     return (
         <CoinsGroupWrapper className={className}>
-            <CoinsCount
+            <CoinsGroupHeader
                 total={networks.length}
                 active={networks.filter(n => selectedNetworks?.includes(n.symbol)).length}
                 label={
                     <Translation id={testnet ? 'TR_TESTNET_COINS' : 'TR_ONBOARDING_STEP_COINS'} />
                 }
+                settingsMode={settingsMode}
+                toggleSettingsMode={() => setSettingsMode(value => !value)}
             />
             <CoinsList
                 networks={networks}
                 selectedNetworks={selectedNetworks}
-                onToggle={onToggle}
-                onSettings={onSettings}
+                settingsMode={settingsMode}
+                onToggle={settingsMode ? onSettings : onToggle}
+                onSettings={settingsMode ? undefined : onSettings}
             />
         </CoinsGroupWrapper>
     );
