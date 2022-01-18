@@ -4,7 +4,7 @@
 
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { mergeObj } from '@suite-utils/mergeObj';
+import { mergeObject } from '@trezor/utils';
 import { init } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
@@ -52,7 +52,7 @@ export const getInitialState = (override: any) => {
         devices: [],
     };
     if (override) {
-        return mergeObj(defaults, override);
+        return mergeObject(defaults, override);
     }
     return defaults;
 };
