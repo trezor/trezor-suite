@@ -9,7 +9,7 @@ import { useSelector, useActions } from '@suite-hooks';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { partition } from '@suite-utils/array';
+import { arrayPartition } from '@trezor/utils';
 
 import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';
@@ -68,12 +68,12 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const selectedNetworkEnabled =
         !!selectedNetwork && enabledNetworksSymbols.includes(selectedNetwork.symbol);
 
-    const [enabledNetworks, disabledNetworks] = partition(internalNetworks, network =>
+    const [enabledNetworks, disabledNetworks] = arrayPartition(internalNetworks, network =>
         enabledNetworksSymbols.includes(network.symbol),
     );
     const hasDisabledNetworks = !!disabledNetworks?.length;
 
-    const [disabledMainnetNetworks, disabledTestnetNetworks] = partition(
+    const [disabledMainnetNetworks, disabledTestnetNetworks] = arrayPartition(
         disabledNetworks,
         network => !network?.testnet,
     );
