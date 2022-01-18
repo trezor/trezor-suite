@@ -1,7 +1,7 @@
 import produce from 'immer';
 import * as variables from '@trezor/components/lib/config/variables'; // can't import from index cause it would import all UI components
 import { RESIZE } from '@suite-actions/constants';
-import { getNumberFromPxString } from '@suite-utils/string';
+import { getNumberFromPxString } from '@trezor/utils';
 import { Action } from '@suite-types';
 
 const sizes = {

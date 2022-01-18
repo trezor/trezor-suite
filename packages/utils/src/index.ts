@@ -4,3 +4,7 @@ export * from './bytesToHumanReadable';
 export * from './mergeObject';
 export * from './getWeakRandomId';
 export * from './getRandomNumberInRange';
+export * from './capitalizeFirstLetter';
+export * from './countBytesInString';
+export * from './truncateMiddle';
+export * from './getNumberFromPxString';

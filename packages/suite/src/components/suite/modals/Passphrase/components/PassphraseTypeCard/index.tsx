@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import { Button, useTheme, variables, Input, Tooltip, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import { countBytesInString } from '@suite-utils/string';
+import { countBytesInString } from '@trezor/utils';
 import { OpenGuideFromTooltip } from '@guide-views';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 import { useTranslation } from '@suite-hooks';

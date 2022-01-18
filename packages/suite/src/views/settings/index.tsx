@@ -17,7 +17,7 @@ import {
 import { FIAT } from '@suite-config';
 import { useAnalytics, useDevice, useSelector, useActions } from '@suite-hooks';
 import { Button, Tooltip, Switch, Link } from '@trezor/components';
-import { capitalizeFirstLetter } from '@suite-utils/string';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
