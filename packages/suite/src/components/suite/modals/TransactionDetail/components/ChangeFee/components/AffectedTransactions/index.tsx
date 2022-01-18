@@ -4,7 +4,7 @@ import { Icon, Button, useTheme, variables } from '@trezor/components';
 import { FormattedCryptoAmount, Sign, Translation, FormattedDate } from '@suite-components';
 import { useRbfContext } from '@wallet-hooks/useRbfForm';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
-import { truncateMiddle } from '@suite-utils/string';
+import { truncateMiddle } from '@trezor/utils';
 import GreyCard from '../GreyCard';
 import WarnHeader from '../WarnHeader';
 

@@ -7,7 +7,7 @@ import { Action, TrezorDevice, Lock, SuiteThemeColors } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb, getWindowWidth } from '@suite-utils/env';
 import { ensureLocale } from '@suite-utils/l10n';
-import { getNumberFromPxString } from '@suite-utils/string';
+import { getNumberFromPxString } from '@trezor/utils';
 
 export interface DebugModeOptions {
     invityAPIUrl?: string;

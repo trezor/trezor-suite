@@ -5,7 +5,7 @@ import * as protocolActions from '@suite-actions/protocolActions';
 import { Translation } from '@suite-components';
 import { CoinLogo } from '@trezor/components';
 import { useActions, useSelector } from '@suite-hooks';
-import { capitalizeFirstLetter } from '@suite-utils/string';
+import { capitalizeFirstLetter } from '@trezor/utils';
 import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
 import ConditionalActionRenderer from './ConditionalActionRenderer';
 
