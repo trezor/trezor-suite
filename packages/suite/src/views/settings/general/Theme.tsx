@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
@@ -40,7 +41,7 @@ const useThemeOptions = () => {
     };
 };
 
-const Theme = () => {
+export const Theme = () => {
     const { theme, autodetectTheme } = useSelector(state => ({
         theme: state.suite.settings.theme,
         autodetectTheme: state.suite.settings.autodetect.theme,
@@ -88,5 +89,3 @@ const Theme = () => {
         </SectionItem>
     );
 };
-
-export default Theme;

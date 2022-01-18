@@ -1,15 +1,16 @@
 import React from 'react';
+
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { DRY_RUN_URL } from '@suite-constants/urls';
 import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
-interface Props {
+interface CheckRecoverySeedProps {
     isDeviceLocked: boolean;
 }
 
-const CheckRecoverySeed = ({ isDeviceLocked }: Props) => {
+export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) => {
     const { device } = useDevice();
     const { goto } = useActions({
         goto: routerActions.goto,
@@ -17,6 +18,7 @@ const CheckRecoverySeed = ({ isDeviceLocked }: Props) => {
     const analytics = useAnalytics();
 
     const needsBackup = !!device?.features?.needs_backup;
+
     return (
         <SectionItem>
             <TextColumn
@@ -42,4 +44,3 @@ const CheckRecoverySeed = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default CheckRecoverySeed;

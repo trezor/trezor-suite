@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
+
 import { Translation } from '@suite-components';
 import { isTranslationMode } from '@suite-utils/l10n';
 import { useActions, useAnalytics, useSelector, useTranslation } from '@suite-hooks';
 import LANGUAGES, { Locale, LocaleInfo } from '@suite-config/languages';
-import { setAutodetect as setAutodetectAction } from '@suite-actions/suiteActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import * as languageActions from '@settings-actions/languageActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 
@@ -38,7 +39,7 @@ const useLanguageOptions = () => {
     };
 };
 
-const Language = () => {
+export const Language = () => {
     const analytics = useAnalytics();
     const { language, autodetectLanguage } = useSelector(state => ({
         language: state.suite.settings.language,
@@ -46,7 +47,7 @@ const Language = () => {
     }));
     const { setLanguage, setAutodetect } = useActions({
         setLanguage: languageActions.setLanguage,
-        setAutodetect: setAutodetectAction,
+        setAutodetect: suiteActions.setAutodetect,
     });
 
     const { options, systemOption } = useLanguageOptions();
@@ -92,5 +93,3 @@ const Language = () => {
         </SectionItem>
     );
 };
-
-export default Language;

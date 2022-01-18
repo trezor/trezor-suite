@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { variables } from '@trezor/components';
@@ -24,11 +25,11 @@ const RotationButton = styled(ActionButton)`
     }
 `;
 
-interface Props {
+interface DisplayRotationProps {
     isDeviceLocked: boolean;
 }
 
-const DisplayRotation = ({ isDeviceLocked }: Props) => {
+export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const { applySettings } = useActions({
         applySettings: deviceSettingsActions.applySettings,
     });
@@ -63,4 +64,3 @@ const DisplayRotation = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default DisplayRotation;

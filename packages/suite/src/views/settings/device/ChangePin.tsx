@@ -1,18 +1,20 @@
 import React from 'react';
+
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useAnalytics, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
-interface Props {
+interface ChangePinProps {
     isDeviceLocked: boolean;
 }
 
-const ChangePin = ({ isDeviceLocked }: Props) => {
+export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
+    const analytics = useAnalytics();
+
     const { changePin } = useActions({
         changePin: deviceSettingsActions.changePin,
     });
-    const analytics = useAnalytics();
 
     return (
         <SectionItem>
@@ -37,4 +39,3 @@ const ChangePin = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default ChangePin;

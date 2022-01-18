@@ -7,9 +7,9 @@ import AccountSignVerify from '@wallet-views/sign-verify';
 
 import Passwords from '@passwords-views';
 
-import SettingsGeneral from '@settings-views';
-import SettingsDevice from '@settings-views/device';
-import SettingsCoins from '@settings-views/coins';
+import SettingsGeneral from '@settings-views/general/SettingsGeneral';
+import SettingsDevice from '@settings-views/device/SettingsDevice';
+import SettingsCoins from '@settings-views/coins/SettingsCoins';
 
 import Onboarding from '@suite-views/onboarding';
 import Firmware from '@suite-views/firmware';

@@ -1,5 +1,6 @@
 import React, { createRef, useState } from 'react';
 import styled from 'styled-components';
+
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { variables } from '@trezor/components';
@@ -38,11 +39,11 @@ const ValidationMessage = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-interface Props {
+interface HomescreenProps {
     isDeviceLocked: boolean;
 }
 
-const Homescreen = ({ isDeviceLocked }: Props) => {
+export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const { device } = useDevice();
     const { applySettings, openModal } = useActions({
         applySettings: deviceSettingsActions.applySettings,
@@ -215,4 +216,3 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
         </>
     );
 };
-export default Homescreen;

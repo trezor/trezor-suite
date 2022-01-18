@@ -4,11 +4,11 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-comp
 import { useAnalytics, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 
-interface Props {
+interface WipeDeviceProps {
     isDeviceLocked: boolean;
 }
 
-const WipeDevice = ({ isDeviceLocked }: Props) => {
+export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
@@ -40,4 +40,3 @@ const WipeDevice = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default WipeDevice;

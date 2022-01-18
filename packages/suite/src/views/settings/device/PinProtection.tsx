@@ -5,11 +5,11 @@ import { Switch } from '@trezor/components';
 import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
-interface Props {
+interface PinProtectionProps {
     isDeviceLocked: boolean;
 }
 
-const PinProtection = ({ isDeviceLocked }: Props) => {
+export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
     const { device } = useDevice();
     const { changePin } = useActions({
         changePin: deviceSettingsActions.changePin,
@@ -42,4 +42,3 @@ const PinProtection = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default PinProtection;

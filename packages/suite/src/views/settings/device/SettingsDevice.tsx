@@ -1,26 +1,29 @@
 import React from 'react';
+
+import type { TransportInfo } from 'trezor-connect';
+
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import { Section, DeviceBanner } from '@suite-components/Settings';
 import { getDeviceModel, isDeviceRemembered } from '@suite-utils/device';
 import { useDevice, useSelector } from '@suite-hooks';
-import type { TrezorDevice } from '@suite-types';
-import type { TransportInfo } from 'trezor-connect';
 
-import BackupRecoverySeed from './BackupRecoverySeed';
-import BackupFailed from './BackupFailed';
-import CheckRecoverySeed from './CheckRecoverySeed';
-import FirmwareVersion from './FirmwareVersion';
-import PinProtection from './PinProtection';
-import ChangePin from './ChangePin';
-import Passphrase from './Passphrase';
-import SafetyChecks from './SafetyChecks';
-import DeviceLabel from './DeviceLabel';
-import Homescreen from './Homescreen';
-import DisplayRotation from './DisplayRotation';
-import AutoLock from './AutoLock';
-import WipeDevice from './WipeDevice';
-import CustomFirmware from './CustomFirmware';
+import { BackupRecoverySeed } from './BackupRecoverySeed';
+import { BackupFailed } from './BackupFailed';
+import { CheckRecoverySeed } from './CheckRecoverySeed';
+import { FirmwareVersion } from './FirmwareVersion';
+import { PinProtection } from './PinProtection';
+import { ChangePin } from './ChangePin';
+import { Passphrase } from './Passphrase';
+import { SafetyChecks } from './SafetyChecks';
+import { DeviceLabel } from './DeviceLabel';
+import { Homescreen } from './Homescreen';
+import { DisplayRotation } from './DisplayRotation';
+import { AutoLock } from './AutoLock';
+import { WipeDevice } from './WipeDevice';
+import { CustomFirmware } from './CustomFirmware';
+
+import type { TrezorDevice } from '@suite-types';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -33,7 +36,7 @@ const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<Tr
     return noTransportAvailable || wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
 };
 
-const Settings = () => {
+const SettingsDevice = () => {
     const { device, isLocked } = useDevice();
     const { transport } = useSelector(state => ({
         transport: state.suite.transport,
@@ -137,4 +140,4 @@ const Settings = () => {
     );
 };
 
-export default Settings;
+export default SettingsDevice;

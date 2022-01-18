@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { FIRMWARE_COMMIT_URL } from '@suite-constants/urls';
@@ -25,10 +26,6 @@ const VersionTooltip = styled(Tooltip)`
     margin: 0 4px;
 `;
 
-interface Props {
-    isDeviceLocked: boolean;
-}
-
 const getButtonLabelId = ({
     availableFwVersion,
     currentFwVersion,
@@ -53,7 +50,11 @@ const getButtonLabelId = ({
     }
 };
 
-const FirmwareVersion = ({ isDeviceLocked }: Props) => {
+interface FirmwareVersionProps {
+    isDeviceLocked: boolean;
+}
+
+export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const { device } = useDevice();
     const { goto } = useActions({
         goto: routerActions.goto,
@@ -124,4 +125,3 @@ const FirmwareVersion = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default FirmwareVersion;

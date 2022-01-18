@@ -3,9 +3,6 @@ import SectionItem from './components/SectionItem';
 import TextColumn from './components/TextColumn';
 import { ActionColumn, ActionButton, ActionInput, ActionSelect } from './components/ActionColumn';
 import Row from './components/Row';
-import Analytics from './components/Analytics';
-import Theme from './components/Theme';
-import Language from './components/Language';
 import DeviceBanner from './components/DeviceBanner';
 
 export {
@@ -17,8 +14,5 @@ export {
     ActionButton,
     ActionInput,
     ActionSelect,
-    Analytics,
-    Theme,
-    Language,
     DeviceBanner,
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import { Translation } from '@suite-components';
 import {
     ActionButton,
@@ -11,11 +12,11 @@ import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from '@suite-constants/device';
 
-interface Props {
+interface DeviceLabelProps {
     isDeviceLocked: boolean;
 }
 
-const DeviceLabel = ({ isDeviceLocked }: Props) => {
+export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
     const { device } = useDevice();
     const { applySettings } = useActions({
         applySettings: deviceSettingsActions.applySettings,
@@ -70,4 +71,3 @@ const DeviceLabel = ({ isDeviceLocked }: Props) => {
         </SectionItem>
     );
 };
-export default DeviceLabel;

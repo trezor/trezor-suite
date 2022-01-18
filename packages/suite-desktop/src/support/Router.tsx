@@ -25,10 +25,10 @@ import WalletCoinmarketExchangeOffers from '@wallet-views/coinmarket/exchange/of
 import WalletCoinmarketSpend from '@wallet-views/coinmarket/spend';
 import WalletCoinmarketRedirect from '@wallet-views/coinmarket/redirect';
 
-import Settings from '@settings-views';
-import SettingsCoins from '@settings-views/coins';
-import SettingsDebug from '@settings-views/debug';
-import SettingsDevice from '@settings-views/device';
+import SettingsGeneral from '@settings-views/general/SettingsGeneral';
+import SettingsCoins from '@settings-views/coins/SettingsCoins';
+import SettingsDebug from '@settings-views/debug/SettingsDebug';
+import SettingsDevice from '@settings-views/device/SettingsDevice';
 
 const components: { [key: string]: React.ComponentType<any> } = {
     'suite-index': Index,
@@ -53,7 +53,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'wallet-coinmarket-spend': WalletCoinmarketSpend,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
 
-    'settings-index': Settings,
+    'settings-index': SettingsGeneral,
     'settings-coins': SettingsCoins,
     'settings-debug': SettingsDebug,
     'settings-device': SettingsDevice,
