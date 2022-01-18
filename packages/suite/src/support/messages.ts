@@ -278,7 +278,7 @@ export default defineMessages({
     TR_EXCHANGE_DEX_OFFER_FEE_INFO: {
         defaultMessage:
             'The fees to perform this swap are estimated at {symbol} {approvalFee} ({approvalFeeFiat}) for approval (if required) and {symbol} {swapFee} ({swapFeeFiat}) for the swap.',
-        id: 'TR_EXCHANGE_DEX_FEE_INFO',
+        id: 'TR_EXCHANGE_DEX_OFFER_FEE_INFO',
     },
     TR_EXCHANGE_FEES_INFO: {
         id: 'TR_EXCHANGE_FEES_INFO',
@@ -449,7 +449,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_DETAIL_KYC_BUTTON: {
         defaultMessage: 'Back to Account',
-        id: 'TR_EXCHANGE_DETAIL_ERROR_BUTTON',
+        id: 'TR_EXCHANGE_DETAIL_KYC_BUTTON',
     },
     TR_EXCHANGE_DETAIL_SENDING_TITLE: {
         defaultMessage: 'Pending',
@@ -493,7 +493,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_APPROVAL_SEND_TO: {
         defaultMessage: '{send} contract',
-        id: 'TR_EXCHANGE_SEND_TO',
+        id: 'TR_EXCHANGE_APPROVAL_SEND_TO',
     },
     TR_EXCHANGE_APPROVAL_VALUE: {
         defaultMessage: 'Approval value',
@@ -2341,7 +2341,7 @@ export default defineMessages({
         defaultMessage: 'Show log',
     },
     TR_LOG_DESCRIPTION: {
-        id: 'TR_SHOW_LOG_DESCRIPTION',
+        id: 'TR_LOG_DESCRIPTION',
         defaultMessage:
             'In case of communication with our support team, there is a log containing all necessary technical info.',
     },
@@ -5203,7 +5203,7 @@ export default defineMessages({
         defaultMessage: 'Hold one or both buttons while you reconnect the USB cable.',
     },
     BACKUP_BACKUP_ALREADY_FINISHED_HEADING: {
-        id: 'BACKUP_BACKUP_ALREADY_FINISHED',
+        id: 'BACKUP_BACKUP_ALREADY_FINISHED_HEADING',
         defaultMessage: 'Backup already finished',
     },
     BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION: {
@@ -5462,7 +5462,7 @@ export default defineMessages({
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: {
         defaultMessage: 'Not enough {symbol} to cover transaction fee',
-        id: 'AMOUNT_ENOUGH_CURRENCY_FEE',
+        id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     },
     OP_RETURN: {
         id: 'OP_RETURN',
@@ -5991,7 +5991,7 @@ export default defineMessages({
             'The backup process has failed. It is highly recommended to back up your wallet. Please follow the link to learn how to successfully create recovery seed to back up your wallet.',
     },
     TR_BACKUP_FAILED: {
-        id: 'BACKUP_FAILED',
+        id: 'TR_BACKUP_FAILED',
         defaultMessage: 'Backup failed',
     },
     TR_STANDARD_WALLET_DESCRIPTION: {
@@ -7054,7 +7054,7 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE: {
-        id: 'TR_TOUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE',
+        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE',
         defaultMessage: 'If you couldn’t see Trezor Bridge running, download and install it',
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION: {
@@ -7062,7 +7062,7 @@ export default defineMessages({
         defaultMessage: '<a>Download Trezor Bridge</a>',
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_USE_TITLE: {
-        id: 'TR_TOUBLESHOOTING_TIP_BRIDGE_USE_TITLE',
+        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_USE_TITLE',
         defaultMessage:
             'If the above tips didn’t work, you can try using Trezor Bridge instead of WebUSB',
     },
