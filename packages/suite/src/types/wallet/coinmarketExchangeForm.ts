@@ -1,36 +1,29 @@
-import { AppState } from '@suite-types';
-import { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
-import { Account, Network, CoinFiatRates } from '@wallet-types';
-import { FeeLevel } from 'trezor-connect';
-import { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
-import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
-import { TypedValidationRules } from './form';
-import {
+import type { AppState } from '@suite-types';
+import type { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
+import type { Account, Network, CoinFiatRates } from '@wallet-types';
+import type { FeeLevel } from 'trezor-connect';
+import type { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
+import type {
+    ExchangeInfo,
+    CoinmarketExchangeAction,
+} from '@wallet-actions/coinmarketExchangeActions';
+import type { TypedValidationRules } from './form';
+import type {
     FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@wallet-types/sendForm';
-import { Option } from './coinmarketCommonTypes';
+import type { Option } from './coinmarketCommonTypes';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 
+// TODO: clean up these constants
 export const CRYPTO_INPUT = 'outputs[0].amount';
 export const CRYPTO_TOKEN = 'outputs[0].token';
 export const FIAT_INPUT = 'outputs[0].fiat';
 export const FIAT_CURRENCY = 'outputs[0].currency';
 
-export interface ComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    fiat: AppState['wallet']['fiat'];
-    device: AppState['suite']['device'];
-    localCurrency: AppState['wallet']['settings']['localCurrency'];
-    fees: AppState['wallet']['fees'];
-    quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
-    exchangeCoinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'];
-}
-
-export interface Props extends ComponentProps {
-    selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
-}
+export type UseCoinmarketExchangeFormProps = WithSelectedAccountLoadedProps;
 
 export type ExchangeFormState = FormState & {
     // NOTE: react-select value type cannot be undefined, but at least null works

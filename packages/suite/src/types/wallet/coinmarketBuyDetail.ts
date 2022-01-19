@@ -1,16 +1,9 @@
-import { AppState } from '@suite-types';
-import { Account } from '@wallet-types';
-import { TradeBuy } from '@wallet-types/coinmarketCommonTypes';
+import type { AppState } from '@suite-types';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { Account } from '@wallet-types';
+import type { TradeBuy } from '@wallet-types/coinmarketCommonTypes';
 
-export interface ComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    transactionId: AppState['wallet']['coinmarket']['buy']['transactionId'];
-    trades: AppState['wallet']['coinmarket']['trades'];
-}
-
-export interface Props extends ComponentProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
-}
+export type UseCoinmarketBuyDetailProps = WithSelectedAccountLoadedProps;
 
 export type ContextValues = {
     account: Account;

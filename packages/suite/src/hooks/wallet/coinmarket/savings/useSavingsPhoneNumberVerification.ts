@@ -5,7 +5,7 @@ import {
 } from '@wallet-types/coinmarket/savings/phoneNumberVerification';
 import { useForm } from 'react-hook-form';
 import invityAPI from '@suite-services/invityAPI';
-import { useCoinmarketNavigation } from '../../useCoinmarketNavigation';
+import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import { SavingsSelectedAccount } from '@wallet-types/coinmarket/savings';
 
 export const SavingsPhoneNumberVerificationContext =
@@ -15,7 +15,7 @@ SavingsPhoneNumberVerificationContext.displayName = 'SavingsPhoneNumberVerificat
 export const useSavingsPhoneNumberVerification = (
     selectedAccount: SavingsSelectedAccount,
 ): SavingsPhoneNumberVerificationContextValues => {
-    const { navigateToSavingsKYCStart } = useCoinmarketNavigation(selectedAccount.account);
+    const { navigateToInvityKYCStart } = useInvityNavigation(selectedAccount.account);
     const methods = useForm<SavingsPhoneNumberVerificationFormState>({
         mode: 'onChange',
     });
@@ -26,7 +26,7 @@ export const useSavingsPhoneNumberVerification = (
         const response = await invityAPI.verifySmsCode(code);
         if (response) {
             if (response.status === 'Verified') {
-                navigateToSavingsKYCStart();
+                navigateToInvityKYCStart();
             } else {
                 // TODO: show validation error from API server or translation
             }

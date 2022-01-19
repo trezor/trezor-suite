@@ -2,12 +2,12 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import { useTimer } from '@suite-hooks/useTimeInterval';
-import { BankAccount, SellFiatTrade } from 'invity-api';
+import type { BankAccount, SellFiatTrade } from 'invity-api';
 import { processQuotes, createQuoteLink } from '@wallet-utils/coinmarket/sellUtils';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { Props, ContextValues, SellStep } from '@wallet-types/coinmarketSellOffers';
+import { UseOffersProps, ContextValues, SellStep } from '@wallet-types/coinmarketSellOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
@@ -15,17 +15,13 @@ import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/
 import { getUnusedAddressFromAccount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 import type { TradeSell } from '@suite/types/wallet/coinmarketCommonTypes';
 
-export const useOffers = (props: Props) => {
+export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();
-    const { selectedAccount, quotesRequest, alternativeQuotes, quotes, device } = props;
 
     const { account } = selectedAccount;
     const [callInProgress, setCallInProgress] = useState<boolean>(false);
     const [selectedQuote, setSelectedQuote] = useState<SellFiatTrade>();
-    const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(quotes);
-    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<
-        SellFiatTrade[] | undefined
-    >(alternativeQuotes);
+
     const [sellStep, setSellStep] = useState<SellStep>('BANK_ACCOUNT');
     const { navigateToSellForm } = useCoinmarketNavigation(account);
     const {
@@ -50,15 +46,32 @@ export const useOffers = (props: Props) => {
 
     loadInvityData();
 
-    const { isFromRedirect, sellInfo, savedTransactionId, trades, invityServerEnvironment } = useSelector(
-        state => ({
-            isFromRedirect: state.wallet.coinmarket.sell.isFromRedirect,
-            sellInfo: state.wallet.coinmarket.sell.sellInfo,
-            savedTransactionId: state.wallet.coinmarket.sell.transactionId,
-            trades: state.wallet.coinmarket.trades,
-            invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
-        }),
-    );
+    const {
+        invityServerEnvironment,
+        isFromRedirect,
+        sellInfo,
+        device,
+        quotes,
+        alternativeQuotes,
+        quotesRequest,
+        savedTransactionId,
+        trades,
+    } = useSelector(state => ({
+        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
+        isFromRedirect: state.wallet.coinmarket.sell.isFromRedirect,
+        sellInfo: state.wallet.coinmarket.sell.sellInfo,
+        device: state.suite.device,
+        quotes: state.wallet.coinmarket.sell.quotes,
+        alternativeQuotes: state.wallet.coinmarket.sell.alternativeQuotes,
+        quotesRequest: state.wallet.coinmarket.sell.quotesRequest,
+        savedTransactionId: state.wallet.coinmarket.sell.transactionId,
+        trades: state.wallet.coinmarket.trades,
+    }));
+    const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(quotes);
+    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<
+        SellFiatTrade[] | undefined
+    >(alternativeQuotes);
+
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }

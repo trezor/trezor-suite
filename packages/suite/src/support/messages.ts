@@ -4562,6 +4562,10 @@ export default defineMessages({
         id: 'TR_NAV_SAVINGS',
         defaultMessage: 'Save into Bitcoin',
     },
+    TR_NAV_INVITY: {
+        id: 'TR_NAV_INVITY',
+        defaultMessage: 'Invity',
+    },
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',
         defaultMessage: 'Sign/Verify message',

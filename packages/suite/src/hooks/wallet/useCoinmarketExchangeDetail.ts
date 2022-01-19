@@ -1,19 +1,25 @@
 import { createContext, useContext } from 'react';
-import { Props, ContextValues } from '@wallet-types/coinmarketExchangeDetail';
+import type {
+    UseCoinmarketExchangeDetailProps,
+    ContextValues,
+} from '@wallet-types/coinmarketExchangeDetail';
 import { useWatchExchangeTrade } from '@wallet-hooks/useCoinmarket';
 import { useSelector } from '@suite-hooks';
-import { TradeExchange } from '@wallet-types/coinmarketCommonTypes';
+import type { TradeExchange } from '@wallet-types/coinmarketCommonTypes';
 import invityAPI from '@suite-services/invityAPI';
 
-export const useCoinmarketExchangeDetail = (props: Props) => {
-    const { selectedAccount, trades, transactionId } = props;
+export const useCoinmarketExchangeDetail = ({
+    selectedAccount,
+}: UseCoinmarketExchangeDetailProps) => {
+    const { account } = selectedAccount;
+    const { invityServerEnvironment, trades, transactionId } = useSelector(state => ({
+        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
+        trades: state.wallet.coinmarket.trades,
+        transactionId: state.wallet.coinmarket.exchange.transactionId,
+    }));
     const exchangeTrade = trades.find(
         trade => trade.tradeType === 'exchange' && trade.key === transactionId,
     ) as TradeExchange;
-    const { account } = selectedAccount;
-    const invityServerEnvironment = useSelector(
-        state => state.suite.settings.debug.invityServerEnvironment,
-    );
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }

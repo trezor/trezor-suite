@@ -11,7 +11,7 @@ SavingsContext.displayName = 'SavingsContext';
 export const useSavings = (): SavingsContextValues => {
     // TODO: This shouldSomething doesn't seem to be right. Will decide and maybe later.
     // TODO: Do we really need the WhoAmI here?
-    // const { invityAuthentication, fetching } = useContext(CoinmarketAuthenticationContext);
+    // const { invityAuthentication, fetching } = useContext(InvityAuthenticationContext);
     const { savingsInfo, savingsTrade, invityAuthentication } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
         savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
@@ -42,7 +42,6 @@ export const useSavings = (): SavingsContextValues => {
 
     // TODO: rename fetching and isLoading...
     const isLoading = !savingsInfo;
-    const shouldLogin = !!invityAuthentication && !invityAuthentication.verified && !isLoading;
 
     // We have single savings provider for now.
     const providerInfo = savingsInfo?.savingsList?.providers[0];
@@ -67,7 +66,6 @@ export const useSavings = (): SavingsContextValues => {
         // TODO: Will be indicated by Invity API later.
         isRegisteredAccount: false,
         isClientFromUnsupportedCountry: !!providerInfo?.isClientFromUnsupportedCountry,
-        shouldLogin,
         shouldRegisterUserInfo,
         shouldVerifyPhoneNumber,
         shouldKYCStart,

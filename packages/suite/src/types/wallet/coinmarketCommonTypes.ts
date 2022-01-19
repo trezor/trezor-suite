@@ -1,7 +1,12 @@
 import type { ReactElement } from 'react';
-import { Account } from '@wallet-types';
-import { BuyTrade, SellFiatTrade, ExchangeTrade, SellVoucherTrade as SpendTrade } from 'invity-api';
-import { FlagProps } from '@trezor/components';
+import type { Account } from '@wallet-types';
+import type {
+    BuyTrade,
+    SellFiatTrade,
+    ExchangeTrade,
+    SellVoucherTrade as SpendTrade,
+} from 'invity-api';
+import type { FlagProps } from '@trezor/components';
 
 type CommonTrade = {
     date: string;

@@ -1,6 +1,6 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { SellFiatTradeQuoteRequest } from 'invity-api';
+import type { SellFiatTradeQuoteRequest } from 'invity-api';
 import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
 import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
@@ -8,9 +8,10 @@ import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+// TODO: constants in types? clean it
 import {
     SellFormState,
-    Props,
+    UseCoinmarketSellFormProps,
     AmountLimits,
     SellFormContextValues,
     CRYPTO_INPUT,
@@ -29,12 +30,14 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import type { AppState } from '@suite-types';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
 
 const useSellState = (
-    { selectedAccount, fees }: Props,
+    selectedAccount: UseCoinmarketSellFormProps['selectedAccount'],
+    fees: AppState['wallet']['fees'],
     currentState: boolean,
     defaultFormValues?: SellFormState,
 ) => {
@@ -54,7 +57,9 @@ const useSellState = (
     };
 };
 
-export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
+export const useCoinmarketSellForm = ({
+    selectedAccount,
+}: UseCoinmarketSellFormProps): SellFormContextValues => {
     const {
         saveQuoteRequest,
         saveQuotes,
@@ -75,8 +80,30 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
         loadInvityData();
     }, [loadInvityData]);
 
-    const { selectedAccount, quotesRequest, fees, fiat, localCurrency, exchangeCoinInfo, device } =
-        props;
+    const [state, setState] = useState<ReturnType<typeof useSellState>>(undefined);
+    const [activeInput, setActiveInput] = useState<typeof FIAT_INPUT | typeof CRYPTO_INPUT>(
+        FIAT_INPUT,
+    );
+    const {
+        accounts,
+        sellInfo,
+        quotesRequest,
+        exchangeCoinInfo,
+        fiat,
+        device,
+        localCurrency,
+        fees,
+    } = useSelector(state => ({
+        accounts: state.wallet.accounts,
+        sellInfo: state.wallet.coinmarket.sell.sellInfo,
+        quotesRequest: state.wallet.coinmarket.sell.quotesRequest,
+        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
+        fiat: state.wallet.fiat,
+        device: state.suite.device,
+        localCurrency: state.wallet.settings.localCurrency,
+        fees: state.wallet.fees,
+    }));
+
     const { account, network } = selectedAccount;
     const { navigateToSellOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
@@ -87,15 +114,6 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
     const symbolForFiat = mapTestnetSymbol(symbol);
     const fiatRates = fiat.coins.find(item => item.symbol === symbolForFiat);
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
-
-    const [state, setState] = useState<ReturnType<typeof useSellState>>(undefined);
-    const [activeInput, setActiveInput] = useState<typeof FIAT_INPUT | typeof CRYPTO_INPUT>(
-        FIAT_INPUT,
-    );
-    const { accounts, sellInfo } = useSelector(state => ({
-        accounts: state.wallet.accounts,
-        sellInfo: state.wallet.coinmarket.sell.sellInfo,
-    }));
 
     const { saveDraft, getDraft, removeDraft } = useFormDraft<SellFormState>('coinmarket-sell');
     const draft = getDraft(account.key);
@@ -108,7 +126,7 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
     );
 
     // throttle initial state calculation
-    const initState = useSellState(props, !!state, defaultValues);
+    const initState = useSellState(selectedAccount, fees, !!state, defaultValues);
 
     useEffect(() => {
         const setStateAsync = async (initState: ReturnType<typeof useSellState>) => {

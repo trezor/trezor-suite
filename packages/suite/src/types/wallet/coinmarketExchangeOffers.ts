@@ -1,23 +1,14 @@
-import { AppState } from '@suite-types';
-import { Account } from '@wallet-types';
-import { ExchangeTrade } from 'invity-api';
-import { Timer } from '@suite-hooks/useTimeInterval';
-import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import type { AppState } from '@suite-types';
+import type { Account } from '@wallet-types';
+import type { ExchangeTrade } from 'invity-api';
+import type { Timer } from '@suite-hooks/useTimeInterval';
+import type {
+    CoinmarketExchangeAction,
+    ExchangeInfo,
+} from '@wallet-actions/coinmarketExchangeActions';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 
-export interface ComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    device: AppState['suite']['device'];
-    fixedQuotes: AppState['wallet']['coinmarket']['exchange']['fixedQuotes'];
-    floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];
-    dexQuotes: AppState['wallet']['coinmarket']['exchange']['dexQuotes'];
-    quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
-    addressVerified: AppState['wallet']['coinmarket']['exchange']['addressVerified'];
-    exchangeInfo?: ExchangeInfo;
-}
-
-export interface Props extends ComponentProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
-}
+export type UseCoinmarketExchangeFormProps = WithSelectedAccountLoadedProps;
 
 export type ExchangeStep = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SEND_APPROVAL_TRANSACTION';
 

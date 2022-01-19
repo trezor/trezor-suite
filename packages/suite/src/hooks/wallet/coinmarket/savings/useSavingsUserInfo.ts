@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { useActions, useSelector } from '@suite-hooks';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import type { SavingsSelectedAccount } from '@wallet-types/coinmarket/savings';
 
 export const SavingsUserInfoContext = createContext<SavingsUserInfoContextValues | null>(null);
@@ -19,7 +19,7 @@ export const useSavingsUserInfo = (
     const { invityAuthentication } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
     }));
-    const { navigateToSavingsPhoneNumberVerification } = useCoinmarketNavigation(
+    const { navigateToInvityPhoneNumberVerification } = useInvityNavigation(
         selectedAccount.account,
     );
 
@@ -47,7 +47,7 @@ export const useSavingsUserInfo = (
             if (!response?.error) {
                 const sendVerificationSmsResponse = await invityAPI.sendVerificationSms();
                 if (sendVerificationSmsResponse?.status === 'SmsQueued') {
-                    navigateToSavingsPhoneNumberVerification();
+                    navigateToInvityPhoneNumberVerification();
                 } else {
                     // TODO: stay and show error
                 }

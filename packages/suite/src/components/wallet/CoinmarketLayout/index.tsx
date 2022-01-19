@@ -28,7 +28,12 @@ interface Props {
 }
 
 const CoinmarketLayout = ({ children, onClearFormButtonClick }: Props) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    // TODO: can we get selectedAccount from top in 100% cases?
+    const { selectedAccount } = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+    }));
+    const showInvityContextDropdown =
+        selectedAccount.status === 'loaded' && selectedAccount.account.symbol === 'btc';
     return (
         <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_TRADE">
@@ -37,7 +42,7 @@ const CoinmarketLayout = ({ children, onClearFormButtonClick }: Props) => {
                         <Translation id="TR_CLEAR_ALL" />
                     </Button>
                 )}
-                {selectedAccount.status === 'loaded' && (
+                {showInvityContextDropdown && (
                     <InvityContextDropdown selectedAccount={selectedAccount} />
                 )}
             </WalletLayoutHeader>

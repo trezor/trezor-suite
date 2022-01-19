@@ -5,12 +5,12 @@ import useDebounce from 'react-use/lib/useDebounce';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { BuyTradeQuoteRequest } from 'invity-api';
+import type { BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
 import { getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
-import {
+import type {
     FormState,
-    Props,
+    UseCoinmarketBuyFormProps,
     AmountLimits,
     BuyFormContextValues,
 } from '@wallet-types/coinmarketBuyForm';
@@ -21,7 +21,7 @@ import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
 
-export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
+export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormContextValues => {
     const {
         saveQuoteRequest,
         saveQuotes,
@@ -42,7 +42,7 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
         loadInvityData();
     }, [loadInvityData]);
 
-    const { selectedAccount, exchangeCoinInfo } = props;
+    const { selectedAccount } = props;
     const { account, network } = selectedAccount;
     const { navigateToBuyOffers } = useCoinmarketNavigation(account);
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
@@ -50,7 +50,10 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
-    const { buyInfo } = useSelector(state => ({ buyInfo: state.wallet.coinmarket.buy.buyInfo }));
+    const { buyInfo, exchangeCoinInfo } = useSelector(state => ({
+        buyInfo: state.wallet.coinmarket.buy.buyInfo,
+        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
+    }));
     const { defaultValues, defaultCountry, defaultCurrency } = useCoinmarketBuyFormDefaultValues(
         account.symbol,
         buyInfo,

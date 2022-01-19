@@ -1,13 +1,14 @@
 import React from 'react';
-import { useSelector } from '@suite-hooks';
 import { useCoinmarketBuyForm, BuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
-import { CoinmarketLayout, WalletLayout } from '@wallet-components';
+import {
+    CoinmarketLayout,
+    WithSelectedAccountLoadedProps,
+    withSelectedAccountLoaded,
+} from '@wallet-components';
 import BuyForm from './components/BuyForm';
-import type { Props } from '@wallet-types/coinmarketBuyForm';
 
-const CoinmarketBuyLoaded = (props: Props) => {
-    const { selectedAccount } = props;
-    const coinmarketBuyContextValues = useCoinmarketBuyForm({ ...props, selectedAccount });
+const CoinmarketBuy = ({ selectedAccount }: WithSelectedAccountLoadedProps) => {
+    const coinmarketBuyContextValues = useCoinmarketBuyForm({ selectedAccount });
     const {
         isDraft,
         formState: { isDirty },
@@ -24,16 +25,6 @@ const CoinmarketBuyLoaded = (props: Props) => {
     );
 };
 
-const CoinmarketBuy = () => {
-    const props = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-    }));
-    const { selectedAccount } = props;
-    if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="TR_NAV_BUY" account={selectedAccount} />;
-    }
-    return <CoinmarketBuyLoaded {...props} selectedAccount={selectedAccount} />;
-};
-
-export default CoinmarketBuy;
+export default withSelectedAccountLoaded(CoinmarketBuy, {
+    title: 'TR_NAV_BUY',
+});

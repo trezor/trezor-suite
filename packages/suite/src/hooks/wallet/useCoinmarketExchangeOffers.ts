@@ -5,7 +5,11 @@ import { useTimer } from '@suite-hooks/useTimeInterval';
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import { Account } from '@wallet-types';
-import { Props, ContextValues, ExchangeStep } from '@wallet-types/coinmarketExchangeOffers';
+import {
+    UseCoinmarketExchangeFormProps,
+    ContextValues,
+    ExchangeStep,
+} from '@wallet-types/coinmarketExchangeOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { splitToQuoteCategories } from '@wallet-utils/coinmarket/exchangeUtils';
 import networks from '@wallet-config/networks';
@@ -30,19 +34,8 @@ const getReceiveAccountSymbol = (
     return symbol;
 };
 
-export const useOffers = (props: Props) => {
+export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) => {
     const timer = useTimer();
-    const {
-        selectedAccount,
-        quotesRequest,
-        fixedQuotes,
-        floatQuotes,
-        dexQuotes,
-        exchangeInfo,
-        device,
-        addressVerified,
-    } = props;
-
     const { isLocked } = useDevice();
     const { account } = selectedAccount;
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
@@ -50,13 +43,7 @@ export const useOffers = (props: Props) => {
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const [suiteReceiveAccounts, setSuiteReceiveAccounts] =
         useState<ContextValues['suiteReceiveAccounts']>();
-    const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[] | undefined>(
-        fixedQuotes,
-    );
-    const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[] | undefined>(
-        floatQuotes,
-    );
-    const [innerDexQuotes, setInnerDexQuotes] = useState<ExchangeTrade[] | undefined>(dexQuotes);
+
     const [exchangeStep, setExchangeStep] = useState<ExchangeStep>('RECEIVING_ADDRESS');
     const { navigateToExchangeForm, navigateToExchangeDetail } = useCoinmarketNavigation(account);
     const {
@@ -74,12 +61,36 @@ export const useOffers = (props: Props) => {
         verifyAddress: coinmarketExchangeActions.verifyAddress,
     });
 
-    const { invityServerEnvironment, exchangeCoinInfo, accounts } = useSelector(state => ({
+    const {
+        invityServerEnvironment,
+        exchangeCoinInfo,
+        accounts,
+        device,
+        fixedQuotes,
+        floatQuotes,
+        dexQuotes,
+        quotesRequest,
+        addressVerified,
+        exchangeInfo,
+    } = useSelector(state => ({
         invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
         exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
         accounts: state.wallet.accounts,
+        device: state.suite.device,
+        fixedQuotes: state.wallet.coinmarket.exchange.fixedQuotes,
+        floatQuotes: state.wallet.coinmarket.exchange.floatQuotes,
+        dexQuotes: state.wallet.coinmarket.exchange.dexQuotes,
+        quotesRequest: state.wallet.coinmarket.exchange.quotesRequest,
+        addressVerified: state.wallet.coinmarket.exchange.addressVerified,
+        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
     }));
-
+    const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[] | undefined>(
+        fixedQuotes,
+    );
+    const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[] | undefined>(
+        floatQuotes,
+    );
+    const [innerDexQuotes, setInnerDexQuotes] = useState<ExchangeTrade[] | undefined>(dexQuotes);
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
     if (invityServerEnvironment) {

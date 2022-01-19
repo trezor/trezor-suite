@@ -1,8 +1,8 @@
 import React from 'react';
-import { withCoinmarketLoaded } from '@wallet-components';
 import { resolveStaticPath } from '@suite-utils/build';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
+import { withInvityLayout } from '@wallet-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -24,7 +24,7 @@ const Description = styled.div`
     align-self: center;
 `;
 
-const CoinmarketSavingsRegistrationSuccessful = () => (
+const RegistrationSuccessful = () => (
     <Wrapper>
         <SpecularImg
             src={resolveStaticPath('images/suite/3d/specular.png')}
@@ -41,4 +41,6 @@ const CoinmarketSavingsRegistrationSuccessful = () => (
     </Wrapper>
 );
 
-export default withCoinmarketLoaded(CoinmarketSavingsRegistrationSuccessful, 'TR_NAV_SAVINGS');
+export default withInvityLayout(RegistrationSuccessful, {
+    redirectUnauthorizedUserToLogin: false,
+});

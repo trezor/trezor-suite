@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Button, Input } from '@trezor/components';
 import { useSavingsPhoneNumberVerification } from '@wallet-hooks/coinmarket/savings/useSavingsPhoneNumberVerification';
-import { InputError, withCoinmarketSavingsLoaded } from '@wallet-components';
+import { InputError, withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
 import { Translation } from '@suite-components';
-import type { WithCoinmarketLoadedProps } from '@wallet-components/hocs/withCoinmarketLoaded';
 
-type PhoneNumberVerificationProps = WithCoinmarketLoadedProps;
-
-const PhoneNumberVerification = ({ selectedAccount }: PhoneNumberVerificationProps) => {
+const PhoneNumberVerification = ({ selectedAccount }: WithInvityLayoutProps) => {
     const { register, errors, onSubmit, handleSubmit } =
         useSavingsPhoneNumberVerification(selectedAccount);
     const codeInputName = 'code';
+    // TODO: translations
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Input
@@ -33,4 +31,4 @@ const PhoneNumberVerification = ({ selectedAccount }: PhoneNumberVerificationPro
     );
 };
 
-export default withCoinmarketSavingsLoaded(PhoneNumberVerification);
+export default withInvityLayout(PhoneNumberVerification);

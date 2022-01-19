@@ -59,48 +59,32 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     'wallet-coinmarket-savings': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings'),
     ),
-    'wallet-coinmarket-savings-sign-in': lazy(
-        () =>
-            import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/sign-in'),
+    'wallet-invity-login': lazy(
+        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/invity/login'),
     ),
-    'wallet-coinmarket-savings-login': lazy(
-        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/login'),
+    'wallet-invity-registration': lazy(
+        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/invity/registration'),
     ),
-    'wallet-coinmarket-savings-registration': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/registration'
-            ),
-    ),
-    'wallet-coinmarket-savings-registration-successful': lazy(
+    'wallet-invity-registration-successful': lazy(
         () =>
             import(
-                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/registration-successful'
+                /* webpackChunkName: "coinmarket" */ '@wallet-views/invity/registration-successful'
             ),
     ),
-    'wallet-coinmarket-savings-account-verified': lazy(
+    'wallet-invity-account-verified': lazy(
+        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/invity/account-verified'),
+    ),
+    'wallet-invity-user-info': lazy(
+        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/invity/user-info'),
+    ),
+    'wallet-invity-phone-number-verification': lazy(
         () =>
             import(
-                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/account-verified'
+                /* webpackChunkName: "coinmarket" */ '@wallet-views/invity/phone-number-verification'
             ),
     ),
-    'wallet-coinmarket-savings-user-info': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/user-info'
-            ),
-    ),
-    'wallet-coinmarket-savings-phone-number-verification': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/phone-number-verification'
-            ),
-    ),
-    'wallet-coinmarket-savings-kyc-start': lazy(
-        () =>
-            import(
-                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/kyc-start'
-            ),
+    'wallet-invity-kyc-start': lazy(
+        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/invity/kyc-start'),
     ),
     'wallet-coinmarket-redirect': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/redirect'),

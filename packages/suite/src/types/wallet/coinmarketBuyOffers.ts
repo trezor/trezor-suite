@@ -1,23 +1,11 @@
-import { AppState } from '@suite-types';
-import { Account } from '@wallet-types';
-import { BuyTrade } from 'invity-api';
-import { Timer } from '@suite-hooks/useTimeInterval';
-import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
+import type { AppState } from '@suite-types';
+import type { Account } from '@wallet-types';
+import type { BuyTrade } from 'invity-api';
+import type { Timer } from '@suite-hooks/useTimeInterval';
+import type { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 
-export interface ComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    device: AppState['suite']['device'];
-    alternativeQuotes: AppState['wallet']['coinmarket']['buy']['alternativeQuotes'];
-    isFromRedirect: AppState['wallet']['coinmarket']['buy']['isFromRedirect'];
-    quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
-    addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
-    quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
-    providersInfo?: BuyInfo['providerInfos'];
-}
-
-export interface Props extends ComponentProps {
-    selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
-}
+export type UseOffersProps = WithSelectedAccountLoadedProps;
 
 export type ContextValues = {
     account: Account;

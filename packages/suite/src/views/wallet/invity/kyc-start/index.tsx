@@ -1,14 +1,13 @@
 import React from 'react';
 import { Button, Flag, Input, Select, variables } from '@trezor/components';
 import { useSavingsKYCStart } from '@wallet-hooks/coinmarket/savings/useSavingsKYCStart';
-import { WithCoinmarketLoadedProps, withCoinmarketSavingsLoaded } from '@wallet-components/hocs';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { Controller } from 'react-hook-form';
 import type { CountryOption } from '@wallet-types/coinmarketCommonTypes';
 import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
 import KYCImageDropzone from './components/KYCImageDropzone';
-import { InputError } from '@wallet-components';
+import { InputError, WithInvityLayoutProps, withInvityLayout } from '@wallet-components';
 import { getInputState } from '@wallet-views/coinmarket';
 
 const Header = styled.div`
@@ -43,9 +42,7 @@ const Row = styled.div`
     }
 `;
 
-type KYCStartProps = WithCoinmarketLoadedProps;
-
-const KYCStart = ({ selectedAccount }: KYCStartProps) => {
+const KYCStart = ({ selectedAccount }: WithInvityLayoutProps) => {
     const {
         control,
         errors,
@@ -186,4 +183,4 @@ const KYCStart = ({ selectedAccount }: KYCStartProps) => {
     );
 };
 
-export default withCoinmarketSavingsLoaded(KYCStart);
+export default withInvityLayout(KYCStart);

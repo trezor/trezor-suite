@@ -27,13 +27,17 @@ import CoinmarketExchangeOfferInfo from './CoinmarketExchangeOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketProviderInfo from './CoinmarketProviderInfo';
 import CoinmarketRefreshTime from './CoinmarketRefreshTime';
-import CoinmarketAuthentication from './CoinmarketAuthentication';
+import InvityAuthentication from './InvityAuthentication';
+import InvityLayout from './InvityLayout';
 import InvityContextDropdown from './InvityContextDropdown';
 import {
-    withCoinmarketAuthentication,
-    withCoinmarketLoaded,
+    withInvityAuthentication,
+    WithInvityAuthenticationProps,
     withCoinmarketSavingsLoaded,
-    WithCoinmarketLoadedProps,
+    withInvityLayout,
+    WithInvityLayoutProps,
+    withSelectedAccountLoaded,
+    WithSelectedAccountLoadedProps,
 } from './hocs';
 
 export {
@@ -58,13 +62,19 @@ export {
     CoinmarketProvidedByInvity,
     CoinmarketPaymentType,
     CoinmarketRefreshTime,
-    CoinmarketAuthentication,
+    InvityAuthentication,
+    InvityLayout,
     InvityContextDropdown,
-    withCoinmarketAuthentication,
-    withCoinmarketLoaded,
+    withInvityAuthentication,
     withCoinmarketSavingsLoaded,
+    withInvityLayout,
+    withSelectedAccountLoaded,
     OnOffSwitcher,
     InputError,
     AccountExceptionLayout,
 };
-export type { WithCoinmarketLoadedProps };
+export type {
+    WithInvityLayoutProps,
+    WithInvityAuthenticationProps,
+    WithSelectedAccountLoadedProps,
+};

@@ -7,33 +7,19 @@ import { processQuotes, createQuoteLink, createTxLink } from '@wallet-utils/coin
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
+import { UseOffersProps, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { isDesktop } from '@suite-utils/env';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 
-export const useOffers = (props: Props) => {
+export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();
-    const {
-        selectedAccount,
-        quotesRequest,
-        alternativeQuotes,
-        quotes,
-        providersInfo,
-        device,
-        addressVerified,
-        isFromRedirect,
-    } = props;
 
     const { account } = selectedAccount;
     const { isLocked } = useDevice();
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked || false);
     const [selectedQuote, setSelectedQuote] = useState<BuyTrade>();
-    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(quotes);
-    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
-        alternativeQuotes,
-    );
     const { navigateToBuyForm } = useCoinmarketNavigation(account);
     const {
         saveTrade,
@@ -55,8 +41,28 @@ export const useOffers = (props: Props) => {
         goto: routerActions.goto,
     });
 
-    const invityServerEnvironment = useSelector(
-        state => state.suite.settings.debug.invityServerEnvironment,
+    const {
+        invityServerEnvironment,
+        device,
+        quotes,
+        alternativeQuotes,
+        quotesRequest,
+        isFromRedirect,
+        addressVerified,
+        providersInfo,
+    } = useSelector(state => ({
+        invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
+        device: state.suite.device,
+        quotes: state.wallet.coinmarket.buy.quotes,
+        alternativeQuotes: state.wallet.coinmarket.buy.alternativeQuotes,
+        quotesRequest: state.wallet.coinmarket.buy.quotesRequest,
+        isFromRedirect: state.wallet.coinmarket.buy.isFromRedirect,
+        addressVerified: state.wallet.coinmarket.buy.addressVerified,
+        providersInfo: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
+    }));
+    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(quotes);
+    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
+        alternativeQuotes,
     );
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);

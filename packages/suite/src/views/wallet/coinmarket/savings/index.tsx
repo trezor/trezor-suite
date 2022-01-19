@@ -3,20 +3,17 @@ import { withCoinmarketSavingsLoaded } from '@wallet-components';
 import { useSavings } from '@wallet-hooks/coinmarket/savings/useSavings';
 import UnsupportedCountry from './unsupported-country';
 import type { CoinmarketSavingsLoadedProps } from '@wallet-types/coinmarket/savings';
-import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 
 const CoinmarketSavingsLoaded = ({ selectedAccount }: CoinmarketSavingsLoadedProps) => {
     const {
-        navigateToSavingsLogin,
-        navigateToSavingsUserInfo,
-        navigateToSavingsPhoneNumberVerification,
-        navigateToSavingsKYCStart,
-    } = useCoinmarketNavigation(selectedAccount.account);
+        navigateToInvityLogin,
+        navigateToInvityUserInfo,
+        navigateToInvityPhoneNumberVerification,
+        navigateToInvityKYCStart,
+    } = useInvityNavigation(selectedAccount.account);
     const {
-        invityAuthentication,
-        isLoading,
         isClientFromUnsupportedCountry,
-        shouldLogin,
         shouldRegisterUserInfo,
         shouldVerifyPhoneNumber,
         shouldKYCStart,
@@ -24,61 +21,38 @@ const CoinmarketSavingsLoaded = ({ selectedAccount }: CoinmarketSavingsLoadedPro
 
     // TODO: There must be better way how to navigate than this:
     useEffect(() => {
-        if (shouldLogin) {
-            navigateToSavingsLogin();
-            return;
-        }
         if (shouldRegisterUserInfo) {
-            navigateToSavingsUserInfo();
+            navigateToInvityUserInfo();
             return;
         }
         if (shouldVerifyPhoneNumber) {
-            navigateToSavingsPhoneNumberVerification();
+            navigateToInvityPhoneNumberVerification();
             return;
         }
         if (shouldKYCStart) {
-            navigateToSavingsKYCStart();
+            navigateToInvityKYCStart();
         }
     }, [
-        navigateToSavingsKYCStart,
-        navigateToSavingsLogin,
-        navigateToSavingsPhoneNumberVerification,
-        navigateToSavingsUserInfo,
+        navigateToInvityKYCStart,
+        navigateToInvityLogin,
+        navigateToInvityPhoneNumberVerification,
+        navigateToInvityUserInfo,
         shouldKYCStart,
-        shouldLogin,
         shouldRegisterUserInfo,
         shouldVerifyPhoneNumber,
     ]);
 
+    // TODO: translations
     return (
         <>
-            {invityAuthentication?.verified && !isLoading && (
-                <>
-                    Logged in user
-                    <br />
-                    <p>
-                        {invityAuthentication.email ? invityAuthentication.email : 'Unknown user'}
-                    </p>
-                    <p>
-                        User id:{' '}
-                        {invityAuthentication.accountInfo
-                            ? invityAuthentication.accountInfo.id
-                            : 'Unknown user'}
-                    </p>
-                    <p>phoneNumber: {invityAuthentication.accountInfo?.settings?.phoneNumber}</p>
-                    <p>
-                        phoneNumberVerified:{' '}
-                        {invityAuthentication.accountInfo?.settings?.phoneNumberVerified}
-                    </p>
-                    <p>givenName: {invityAuthentication.accountInfo?.settings?.givenName}</p>
-                    <p>familyName: {invityAuthentication.accountInfo?.settings?.familyName}</p>
-                    <hr />
-                </>
-            )}
             {/* TODO: Redirect to UnsupportedCountry */}
             {isClientFromUnsupportedCountry && <UnsupportedCountry />}
         </>
     );
 };
 
-export default withCoinmarketSavingsLoaded(CoinmarketSavingsLoaded);
+export default withCoinmarketSavingsLoaded(CoinmarketSavingsLoaded, {
+    title: 'TR_NAV_SAVINGS',
+    checkInvityAuthenticationImmediately: true,
+    redirectUnauthorizedUserToLogin: false,
+});

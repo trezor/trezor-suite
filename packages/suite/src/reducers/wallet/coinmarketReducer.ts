@@ -1,8 +1,8 @@
 import produce from 'immer';
-import { WalletAction, Account } from '@wallet-types';
-import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import type { WalletAction, Account } from '@wallet-types';
+import type { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 
-import {
+import type {
     BuyTrade,
     BuyTradeQuoteRequest,
     ExchangeTradeQuoteRequest,
@@ -11,8 +11,8 @@ import {
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
-import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import type { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
+import type { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import {
     COINMARKET_BUY,
     COINMARKET_EXCHANGE,
@@ -21,13 +21,13 @@ import {
     COINMARKET_SAVINGS,
 } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
-import { Action as SuiteAction } from '@suite-types';
-import { SellInfo } from '@wallet-actions/coinmarketSellActions';
-import { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
-import { FeeLevel } from 'trezor-connect';
-import { Trade } from '@wallet-types/coinmarketCommonTypes';
-import { SavingsTrade } from '@suite-services/invityAPI';
-import { WhoAmI } from '@suite/components/wallet/CoinmarketAuthentication';
+import type { Action as SuiteAction } from '@suite-types';
+import type { SellInfo } from '@wallet-actions/coinmarketSellActions';
+import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
+import type { FeeLevel } from 'trezor-connect';
+import type { Trade } from '@wallet-types/coinmarketCommonTypes';
+import type { SavingsTrade } from '@suite-services/invityAPI';
+import type { WhoAmI } from '@wallet-components/InvityAuthentication';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<

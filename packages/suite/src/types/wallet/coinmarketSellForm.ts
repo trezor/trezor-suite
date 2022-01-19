@@ -1,18 +1,20 @@
-import { AppState } from '@suite-types';
-import { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
-import { Account, Network, CoinFiatRates } from '@wallet-types';
-import { FeeLevel } from 'trezor-connect';
-import { SellFiatTrade, SellFiatTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
-import { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellActions';
-import { TypedValidationRules } from './form';
-import {
+import type { AppState } from '@suite-types';
+import type { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
+import type { Account, Network, CoinFiatRates } from '@wallet-types';
+import type { FeeLevel } from 'trezor-connect';
+import type { SellFiatTrade, SellFiatTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
+import type { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellActions';
+import type { TypedValidationRules } from './form';
+import type {
     FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@wallet-types/sendForm';
-import { Option, DefaultCountryOption } from './coinmarketCommonTypes';
+import type { Option, DefaultCountryOption } from './coinmarketCommonTypes';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 
+// TODO: clean up these constants
 export const OUTPUT_AMOUNT = 'outputs[0].amount';
 export const CRYPTO_TOKEN = 'outputs[0].token';
 export const FIAT_INPUT = 'fiatInput';
@@ -20,19 +22,9 @@ export const FIAT_CURRENCY_SELECT = 'fiatCurrencySelect';
 export const CRYPTO_INPUT = 'cryptoInput';
 export const CRYPTO_CURRENCY_SELECT = 'cryptoCurrencySelect';
 
-export interface ComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    fiat: AppState['wallet']['fiat'];
-    device: AppState['suite']['device'];
-    localCurrency: AppState['wallet']['settings']['localCurrency'];
-    fees: AppState['wallet']['fees'];
-    quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
-    exchangeCoinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'];
-}
+export type UseCoinmarketSellFormProps = WithSelectedAccountLoadedProps;
 
-export interface Props extends ComponentProps {
-    selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
-}
+export type Props = WithSelectedAccountLoadedProps;
 
 export type SellFormState = FormState & {
     fiatInput?: string;
