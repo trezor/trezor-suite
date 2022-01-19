@@ -1,4 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { initTrezorConnectIpcChannel } from './modules/trezor-connect-preload';
+
+initTrezorConnectIpcChannel();
 
 // todo: would be great to have these channels strongly typed. for example this is nice reading: https://blog.logrocket.com/electron-ipc-response-request-architecture-with-typescript/
 const validChannels = [

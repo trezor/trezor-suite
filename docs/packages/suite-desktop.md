@@ -1,5 +1,36 @@
 # Suite Desktop
 
+## Main differences between suite-web and suite-desktop builds
+
+### trezor-connect API
+- suite-web
+  
+  `trezor-connect` is hosted at `[url]/build/static/connect` and injected as an iframe into DOM.
+
+  `iframe.postMessage/iframe.onmessage` interface is used as communication channel between suite and connect API.
+
+- suite-desktop
+
+  `trezor-connect` is installed as regular node_module in electron main process and works in nodejs environment.
+
+  `trezor-connect` files are __not__ hosted on the electron renderer side, there is no iframe or /build/static/connect dir.
+
+  `Electron.IpcRenderer.send/Electron.IpcRenderer.on` interface is used as communication channel between suite (electron renderer) and connect API (electron main). see @trezor/suite-desktop/src-electron/trezor-connect-preload.ts
+
+### Firmware binaries
+- suite-web
+
+  newest firmware binaries are hosted at `[url]/build/static/connect/data/firmware` and they are downloaded using regular `fetch` API.
+
+- suite-desktop
+
+  firmware binaries are bundled as application resources in `bin` directory, full path depends on OS but it could be found on the as level as `app.asar` file, and they are downloaded using `fs.readFile` API. see @trezor/rollout/src/utils/fetch
+
+### Trezor Bridge (trezord)
+
+### Tor
+
+
 ## Debugging (VS Code)
 
 Using VS Code configuration files (inside `.vscode`), Suite Desktop can be built and run with a debugger attached to it. Running the `Suite-Desktop: App` task (F5) will execute all required scripts (Webpack development server + Electron build) and launch the Electron app. VS Code will be set in debugging mode, allowing you, for example, to set breakpoints and inspect variables inside the `electron-src` folder (as well as other dependencies). For more on Debugging, please refer to [the VS Code documentation](https://code.visualstudio.com/docs/editor/debugging).
