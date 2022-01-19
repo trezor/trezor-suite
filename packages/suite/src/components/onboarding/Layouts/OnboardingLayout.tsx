@@ -27,10 +27,9 @@ const Body = styled.div`
     height: 100%;
 `;
 
-const MaxWidth = styled.div`
+const ContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    max-width: 1920px;
     flex: 1;
     padding: 20px;
     align-items: center;
@@ -44,6 +43,7 @@ const Header = styled.div`
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+    max-width: ${MAX_WIDTH};
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 0px 20px;
@@ -127,7 +127,7 @@ const OnboardingLayout = ({ children }: Props) => {
         <Wrapper>
             {banner && <MessageSystemBanner message={banner} />}
             <Body>
-                <MaxWidth>
+                <ContentWrapper>
                     <Header>
                         <LogoHeaderRow>
                             <TrezorLogo type="suite" width="128px" />
@@ -168,7 +168,7 @@ const OnboardingLayout = ({ children }: Props) => {
                     </Header>
 
                     <Content>{children}</Content>
-                </MaxWidth>
+                </ContentWrapper>
                 <GuideButton />
                 <GuidePanel />
             </Body>
