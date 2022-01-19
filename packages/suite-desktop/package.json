@@ -50,6 +50,10 @@
             {
                 "from": "build/static/images/icons/512x512.png",
                 "to": "images/icons/512x512.png"
+            },
+            {
+                "from": "build/static/bin/firmware",
+                "to": "bin/firmware"
             }
         ],
         "protocols": {
@@ -163,7 +167,8 @@
         "systeminformation": "^5.9.9",
         "react": "17.0.2",
         "react-dom": "17.0.2",
-        "styled-components": "^5.3.3"
+        "styled-components": "^5.3.3",
+        "trezor-connect": "8.2.7-beta.2"
     },
     "devDependencies": {
         "@types/electron-localshortcut": "^3.1.0",
