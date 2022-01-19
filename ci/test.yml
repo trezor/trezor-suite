@@ -107,11 +107,20 @@ transport nightly:
   only:
     - schedules
 
-blockchain-link:
-  when: manual
+# @trezor/blockchain-link
+.e2e blockchain-link:
   stage: integration testing
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/blockchain-link build:lib
     - yarn workspace @trezor/blockchain-link build:workers
     - yarn workspace @trezor/blockchain-link test:integration
+
+blockchain-link:
+  extends: .e2e blockchain-link
+  when: manual
+
+blockchain-link nightly:
+  extends: .e2e blockchain-link
+  only:
+    - schedules
