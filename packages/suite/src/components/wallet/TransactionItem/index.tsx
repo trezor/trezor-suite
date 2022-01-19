@@ -98,7 +98,7 @@ const TargetsWrapper = styled.div`
 `;
 
 const ExpandButton = styled(Button)`
-    justify-content: start;
+    justify-content: flex-start;
     align-self: flex-start;
 `;
 
