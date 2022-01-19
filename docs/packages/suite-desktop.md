@@ -55,3 +55,26 @@ Some libraries are difficult to test in development environments, such as the au
 #### Auto-Updater
 
 The auto-updater has been mocked to simulate similar behavior to the actual library. Unless the command line parameter `--mock-trigger-updater-after=DELAY` is passed, checking for updates will always return `not-available`. This command line parameter requires a value, representing a delay in seconds before making the update available. Using `0` as a value will make the update available immediately. For example, if you wish to make an update available after 1 minute, you will use the parameter as follows: `--mock-trigger-updater-after=60`. Note that his parameter is **ONLY** available with mocks enabled.
+
+## Debugging build
+
+#### Linux
+`./Trezor-Suite-20.10.1.AppImage --log-level=debug`
+
+#### MacOS
+`./Trezor\ Suite.app/Contents/MacOS/Trezor\ Suite --log-level=debug`
+
+#### NixOS
+`appimage-run ./Trezor-Suite.AppImage --log-level=debug`
+
+## Extract application
+
+#### MacOS
+`npx asar extract ./Trezor\ Suite.app/Contents/Resources/app.asar ./decompiled`
+
+#### NixOS
+Run application to get mount-id like:
+```
+Trezor-Suite.AppImage installed in ~/.cache/appimage-run/e4f67ae8624c4079527c669d8a3c4bbc1dd00b83b2e1d15807a5863b11bd4f38
+```
+`npx asar extract ~/.cache/appimage-run/[mount-id]/resources/app.asar ./decompiled`
