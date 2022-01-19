@@ -5471,7 +5471,7 @@ export default defineMessages({
     OP_RETURN_TOOLTIP: {
         id: 'OP_RETURN_TOOLTIP',
         defaultMessage:
-            'Script opcode used to mark a transaction output as invalid. Since any outputs with OP_RETURN are provably unspendable, OP_RETURN outputs can be used to burn bitcoins.',
+            'OP_RETURN can be used for digital asset proof-of-ownership, and has at times been used to convey additional information needed to send transactions.',
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
@@ -5814,7 +5814,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION: {
         id: 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION',
         defaultMessage:
-            'Coin settings also define how Trezor Suite handles the discovery process of your coins each time you connect a device that is not remembered.',
+            'Trezor Suite uses Blockbook for the wallet backend. You can also use your own custom blockbook.',
     },
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
@@ -5884,7 +5884,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Not connected to the backend yet. Try going to your account overview to establish the connection with the backend.',
+            'Not connected to the backend yet. Try going to Settings/Crypto/Advanced settings to establish the connection with the backend.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
