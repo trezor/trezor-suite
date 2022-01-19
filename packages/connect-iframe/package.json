@@ -17,7 +17,7 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "@trezor/blockchain-link": "1.1.0",
+        "@trezor/blockchain-link": "2.0.0",
         "@trezor/connect-common": "^0.0.4",
         "@trezor/rollout": "^1.2.1",
         "@trezor/transport": "1.0.1",
