@@ -27,7 +27,7 @@ export default defineMessages({
         id: 'TR_ACCESS_HIDDEN_WALLET',
     },
     TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET: {
-        defaultMessage: "Access Hidden wallet\n",
+        defaultMessage: "Access Hidden wallet",
         id: 'TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET',
     },
     TR_WALLET_SELECTION_HIDDEN_WALLET: {
@@ -1373,7 +1373,7 @@ export default defineMessages({
         id: 'TR_AUTH_CONFIRM_FAILED_TITLE',
     },
     TR_AUTH_CONFIRM_FAILED_DESC: {
-        defaultMessage: "Invalid passphrase confirmation.\n",
+        defaultMessage: "Invalid passphrase confirmation.",
         id: 'TR_AUTH_CONFIRM_FAILED_DESC',
     },
     TR_AUTHENTICATING_DEVICE: {
@@ -1436,11 +1436,11 @@ export default defineMessages({
         id: 'TR_BACKUP_SUBHEADING_1',
     },
     TR_BASIC_RECOVERY: {
-        defaultMessage: "Standard recovery\n",
+        defaultMessage: "Standard recovery",
         id: 'TR_BASIC_RECOVERY',
     },
     TR_BASIC_RECOVERY_OPTION: {
-        defaultMessage: "Enter your recovery seed word by word on your computer.\n\n",
+        defaultMessage: "Enter your recovery seed word by word on your computer.",
         description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
     },
@@ -1571,7 +1571,7 @@ export default defineMessages({
         id: 'TR_CONNECT_YOUR_DEVICE',
     },
     TR_RECONNECT_YOUR_DEVICE: {
-        defaultMessage: "Reconnect your Trezor\n",
+        defaultMessage: "Reconnect your Trezor",
         description: 'Prompt to user to reconnect his device.',
         id: 'TR_RECONNECT_YOUR_DEVICE',
     },
@@ -1580,7 +1580,7 @@ export default defineMessages({
         id: 'TR_THIS_TREZOR_IS_ALREADY_SET_UP',
     },
     TR_CONNECT_YOUR_DEVICE_AGAIN: {
-        defaultMessage: "Connect your Trezor device again\n",
+        defaultMessage: "Connect your Trezor device again",
         description: 'Prompt to connect device.',
         id: 'TR_CONNECT_YOUR_DEVICE_AGAIN',
     },
@@ -1703,7 +1703,7 @@ export default defineMessages({
     },
     TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
         defaultMessage:
-            "Your Trezor was disconnected during the backup process. We strongly recommend that you use the factory reset option in the Suite settings to wipe your device and start the wallet backup process again.\n",
+            "Your Trezor was disconnected during the backup process. We strongly recommend that you use the factory reset option in the Suite settings to wipe your device and start the wallet backup process again.",
         description: 'Error message. Instruction what to do.',
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
@@ -2033,7 +2033,7 @@ export default defineMessages({
         id: 'TR_FAILED_BACKUP',
     },
     TR_BACKUP_SUCCESSFUL: {
-        defaultMessage: "Backup successful\n",
+        defaultMessage: "Backup successful",
         id: 'TR_BACKUP_SUCCESSFUL',
     },
     TR_FIAT_RATES_NOT_AVAILABLE: {
@@ -2074,7 +2074,7 @@ export default defineMessages({
         id: 'TR_FIRMWARE_UPDATE',
     },
     TR_FIRMWARE_INSTALLED: {
-        defaultMessage: "Ready to go! The latest firmware has been installed.\n",
+        defaultMessage: "Ready to go! The latest firmware has been installed.",
         description: 'Message to display in case firmware is installed',
         id: 'TR_FIRMWARE_INSTALLED',
     },
@@ -2359,7 +2359,7 @@ export default defineMessages({
         id: 'TR_MARK_ALL_AS_READ',
     },
     TR_MAXIMUM_LENGTH_IS_9_DIGITS: {
-        defaultMessage: "Enter up to 9 digits on your Trezor's keypad.\n\n",
+        defaultMessage: "Enter up to 9 digits on your Trezor's keypad.",
         id: 'TR_MAXIMUM_LENGTH_IS_9_DIGITS',
     },
     TR_MESSAGE: {
@@ -2372,7 +2372,7 @@ export default defineMessages({
         id: 'TR_MINED_TIME',
     },
     TR_MODEL_ONE: {
-        defaultMessage: "Trezor Model One\n\n",
+        defaultMessage: "Trezor Model One",
         description: 'Name of Trezor model 1',
         id: 'TR_MODEL_ONE',
     },
@@ -2429,7 +2429,7 @@ export default defineMessages({
         id: 'TR_NETWORK_BITCOIN_CASH',
     },
     TR_NETWORK_BITCOIN_GOLD: {
-        defaultMessage: "Bitcoin Gold\n",
+        defaultMessage: "Bitcoin Gold",
         id: 'TR_NETWORK_BITCOIN_GOLD',
     },
     TR_NETWORK_BITCOIN_TESTNET: {
@@ -2614,7 +2614,7 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_HIDDEN_WALLET',
     },
     TR_PASSPHRASE_TOO_LONG: {
-        defaultMessage: "Passphrase length has exceed the allowed limit.\n",
+        defaultMessage: "Passphrase length has exceed the allowed limit.",
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
@@ -2627,7 +2627,7 @@ export default defineMessages({
         id: 'TR_PENDING_TX_HEADING',
     },
     TR_PIN_ERROR_TROUBLESHOOT: {
-        defaultMessage: "Not sure how PIN works? You can always refer to our {TR_DOCUMENTATION}\n",
+        defaultMessage: "Not sure how PIN works? You can always refer to our {TR_DOCUMENTATION}",
         description: 'Troubleshooting text after user enters second PIN incorrectly.',
         id: 'TR_PIN_ERROR_TROUBLESHOOT',
     },
@@ -2647,7 +2647,7 @@ export default defineMessages({
         id: 'TR_PIN_HEADING_REPEAT',
     },
     TR_PIN_HEADING_SUCCESS: {
-        defaultMessage: "PIN set\n\n",
+        defaultMessage: "PIN set",
         description: 'Heading in PIN page when PIN set',
         id: 'TR_PIN_HEADING_SUCCESS',
     },
@@ -2668,7 +2668,7 @@ export default defineMessages({
         id: 'TR_PLEASE_ALLOW_YOUR_CAMERA',
     },
     TR_PLEASE_CONNECT_YOUR_DEVICE: {
-        defaultMessage: "Please connect your device to continue with the verification process.\n",
+        defaultMessage: "Please connect your device to continue with the verification process.",
         id: 'TR_PLEASE_CONNECT_YOUR_DEVICE',
     },
     TR_PLEASE_ENABLE_PASSPHRASE: {
@@ -2748,7 +2748,7 @@ export default defineMessages({
         id: 'TR_RECONNECT_TROUBLESHOOT_BRIDGE',
     },
     TR_RECONNECT_TROUBLESHOOT_CABLE: {
-        defaultMessage: "Your cable isn't working; try a different one.\n\n",
+        defaultMessage: "Your cable isn't working; try a different one.",
         description: '',
         id: 'TR_RECONNECT_TROUBLESHOOT_CABLE',
     },
@@ -2791,7 +2791,7 @@ export default defineMessages({
     },
     TR_REMEMBER_ALLOWS_YOU_TO: {
         defaultMessage:
-            "Stores wallet for a watch-only mode: You will see your wallet even if device is disconnected.\n",
+            "Stores wallet for a watch-only mode: You will see your wallet even if device is disconnected.",
         id: 'TR_REMEMBER_ALLOWS_YOU_TO',
     },
     TR_REMEMBER_WALLET: {
@@ -2810,7 +2810,7 @@ export default defineMessages({
         id: 'TR_RETRY',
     },
     TR_RETRYING_DOT_DOT: {
-        defaultMessage: "Retrying..\n",
+        defaultMessage: "Retrying..",
         id: 'TR_RETRYING_DOT_DOT',
     },
     TR_QR_CODE: {
@@ -2827,7 +2827,7 @@ export default defineMessages({
         id: 'TR_PASTE_URI',
     },
     TR_SECURITY_HEADING: {
-        defaultMessage: "Your wallet is almost ready\n",
+        defaultMessage: "Your wallet is almost ready",
         description: 'Heading in security page',
         id: 'TR_SECURITY_HEADING',
     },
@@ -2877,7 +2877,7 @@ export default defineMessages({
         id: 'TR_SET_PIN',
     },
     TR_SET_UP_NEW_PIN: {
-        defaultMessage: "Choose your new PIN\n\n",
+        defaultMessage: "Choose your new PIN",
         id: 'TR_SET_UP_NEW_PIN',
     },
     TR_CONFIRM_NEW_PIN: {
@@ -3015,12 +3015,12 @@ export default defineMessages({
         id: 'TR_SKIP_ONBOARDING_TEXT',
     },
     TR_SKIP_SECURITY: {
-        defaultMessage: "Skip backup and PIN\n",
+        defaultMessage: "Skip backup and PIN",
         description: 'Button in security page (skip security setup)',
         id: 'TR_SKIP_SECURITY',
     },
     TR_SKIP_SECURITY_PIN: {
-        defaultMessage: "Skip PIN\n",
+        defaultMessage: "Skip PIN",
         description: 'Button in security page (skip PIN setup)',
         id: 'TR_SKIP_SECURITY_PIN',
     },
@@ -3425,7 +3425,7 @@ export default defineMessages({
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
     TR_YOUR_CURRENT_FIRMWARE: {
-        defaultMessage: "Your current firmware version is {version}\n",
+        defaultMessage: "Your current firmware version is {version}",
         id: 'TR_YOUR_CURRENT_FIRMWARE',
     },
     TR_YOUR_CURRENT_FIRMWARE_UNKNOWN: {
@@ -3450,7 +3450,7 @@ export default defineMessages({
         id: 'TR_YOUR_NEW_VERSION_IS_READY',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
-        defaultMessage: "Your Trezor wallet is not backed up.\n",
+        defaultMessage: "Your Trezor wallet is not backed up.",
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',
     },
     TR_YOUR_WALLET_IS_READY_WHAT: {
@@ -3962,7 +3962,7 @@ export default defineMessages({
     },
     TR_SEED_CHECK_FAIL_TITLE: {
         id: 'TR_SEED_CHECK_FAIL_TITLE',
-        defaultMessage: "Recovery seed check failed\n",
+        defaultMessage: "Recovery seed check failed",
     },
     TR_WORD_DOES_NOT_EXIST: {
         id: 'TR_WORD_DOES_NOT_EXIST',
@@ -3977,7 +3977,7 @@ export default defineMessages({
     },
     TR_DRY_RUN_CHECK_ITEM_TITLE: {
         id: 'TR_DRY_RUN_CHECK_ITEM_TITLE',
-        defaultMessage: "I understand this is simulated check and it won’t affect my seed\n",
+        defaultMessage: "I understand this is simulated check and it won’t affect my seed",
     },
     TR_DRY_RUN_CHECK_ITEM_DESCRIPTION: {
         id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
@@ -4103,7 +4103,7 @@ export default defineMessages({
     },
     TR_TO_ACCESS_OTHER_WALLETS: {
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
-        defaultMessage: "Connect your device to add other wallets\n",
+        defaultMessage: "Connect your device to add other wallets",
     },
     TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT',
@@ -4246,7 +4246,7 @@ export default defineMessages({
     },
     TR_CHECK_SEED_IN_SETTINGS: {
         id: 'TR_CHECK_SEED_IN_SETTINGS',
-        defaultMessage: "Check seed in Settings\n",
+        defaultMessage: "Check seed in Settings",
     },
     TR_PIN: {
         id: 'TR_PIN',
@@ -4258,7 +4258,7 @@ export default defineMessages({
     },
     TR_SET_STRONG_PIN_NUMBER_AGAINST: {
         id: 'TR_SET_STRONG_PIN_NUMBER_AGAINST',
-        defaultMessage: "Protects your Trezor against unauthorized access\n",
+        defaultMessage: "Protects your Trezor against unauthorized access",
     },
     TR_CHANGE_PIN_IN_SETTINGS: {
         id: 'TR_CHANGE_PIN_IN_SETTINGS',
@@ -4474,7 +4474,7 @@ export default defineMessages({
     },
     TR_BACKUP_YOUR_DEVICE: {
         id: 'TR_BACKUP_YOUR_DEVICE',
-        defaultMessage: "Backup your wallet\n",
+        defaultMessage: "Backup your wallet",
     },
     TR_SECURITY_FEATURES_COMPLETED_N: {
         id: 'TR_SECURITY_FEATURES_COMPLETED_N',
@@ -4596,7 +4596,7 @@ export default defineMessages({
     },
     TR_WAITING_FOR_CONFIRMATION: {
         id: 'TR_WAITING_FOR_CONFIRMATION',
-        defaultMessage: "Waiting for confirmation on device\n",
+        defaultMessage: "Waiting for confirmation on device",
         description: 'One of states during firmware update. Waiting for users confirmation',
     },
     TR_INSTALLING: {
@@ -4622,7 +4622,7 @@ export default defineMessages({
     },
     TR_SECURITY_CHECKPOINT_GOT_SEED: {
         id: 'TR_SECURITY_CHECKPOINT_GOT_SEED',
-        defaultMessage: "Security checkpoint: Do you have your seed?\n",
+        defaultMessage: "Security checkpoint: Do you have your seed?",
     },
     TR_BEFORE_ANY_FURTHER_ACTIONS: {
         id: 'TR_BEFORE_ANY_FURTHER_ACTIONS',
@@ -4811,7 +4811,7 @@ export default defineMessages({
     },
     TR_I_UNDERSTAND_SEED_IS_IMPORTANT: {
         id: 'TR_I_UNDERSTAND_SEED_IS_IMPORTANT',
-        defaultMessage: "You are responsible for keeping your backup safe\n\n",
+        defaultMessage: "You are responsible for keeping your backup safe",
     },
     TR_BACKUP_SEED_IS_ULTIMATE: {
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
@@ -4852,7 +4852,7 @@ export default defineMessages({
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1',
         defaultMessage:
-            "This isn't the same Trezor you've been using. Please reconnect the right one.\n",
+            "This isn't the same Trezor you've been using. Please reconnect the right one.",
     },
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2',
@@ -5101,7 +5101,7 @@ export default defineMessages({
     },
     TR_RESTORE_EXISTING_WALLET: {
         id: 'TR_RESTORE_EXISTING_WALLET',
-        defaultMessage: "Recover wallet\n",
+        defaultMessage: "Recover wallet",
     },
     TR_USING_EITHER_YOUR_SINGLE_BACKUP: {
         id: 'TR_USING_EITHER_YOUR_SINGLE_BACKUP',
@@ -5847,7 +5847,7 @@ export default defineMessages({
     },
     TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD',
-        defaultMessage: "Select compatible firmware\n",
+        defaultMessage: "Select compatible firmware",
     },
     TR_CUSTOM_FIRMWARE_TITLE_INSTALL: {
         id: 'TR_CUSTOM_FIRMWARE_TITLE_INSTALL',
@@ -5979,7 +5979,7 @@ export default defineMessages({
     },
     TR_ENABLE_MORE_COINS: {
         id: 'TR_ENABLE_MORE_COINS',
-        defaultMessage: "Enable more coins\n",
+        defaultMessage: "Enable more coins",
     },
     TR_BACKUP_RECOVERY_SEED_FAILED_TITLE: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_TITLE',
@@ -6096,7 +6096,7 @@ export default defineMessages({
     },
     FIRMWARE_UPDATE_TO_VERSION: {
         id: 'FIRMWARE_UPDATE_TO_VERSION',
-        defaultMessage: "Update to v{version}\n",
+        defaultMessage: "Update to v{version}",
     },
     TR_READ_ALL_ON_GITHUB: {
         id: 'TR_READ_ALL_ON_GITHUB',
@@ -6442,7 +6442,7 @@ export default defineMessages({
     },
     TR_SUITE_WEB_LANDING_START_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_START_HEADLINE',
-        defaultMessage: "Congratulations on getting{lineBreak}<em>new Trezor</em>\n",
+        defaultMessage: "Congratulations on getting{lineBreak}<em>new Trezor</em>",
     },
     TR_SUITE_WEB_LANDING_START_SUB_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_START_SUB_HEADLINE',
