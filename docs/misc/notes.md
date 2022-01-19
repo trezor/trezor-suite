@@ -10,49 +10,6 @@
 
 ## Things to do in future
 
-### Bridge in electron
-
--   package.json > "build": { "asar": false } required
--   How to get bridge version?
--   Test windows
-
-### Debugging Electron build
-
--   macOS: Run `/path/to/app/TrezorSuite.app/Contents/MacOS/TrezorSuite --debug`
--   Decompile: `npx asar extract packages/suite-desktop/build-electron/mac/TrezorSuite.app/Contents/Resources/app.asar ./decompiled`
-
-### Remove IndexedDB from desktop
-
-To remove a database remove following folder:
-
-#### Windows
-
-`C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\IndexedDB`
-
-#### Linux
-
-`/home/<user>/.config/@trezor/suite-desktop/IndexedDB`
-
-#### macOS
-
-`/Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB`
-
-### Clearing Electron cache
-
-To clear electron cache delete following folder:
-
-#### Windows
-
-`C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\Cache`
-
-#### Linux
-
-`/home/<user>/.config/@trezor/suite-desktop/Cache`
-
-#### macOS
-
-`/Users/<user>/Library/ApplicationSupport/@trezor/suite-desktop/Cache`
-
 ## Tests
 
 -   All suite tests use **UTC timezone** (set in [jest.config.js#L2](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/jest.config.js#L2))
