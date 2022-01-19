@@ -76,7 +76,7 @@ const Body = styled.div`
 const ActionsWrapper = styled.div`
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: flex-end;
     right: 14px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
