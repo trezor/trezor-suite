@@ -29,3 +29,4 @@
     -   [Notes](misc/notes.md)
     -   [Message System](misc/message_system.md)
     -   [Suite Guide](misc/guide.md)
+    -   [Node upgrade](misc/node_upgrade.md)
