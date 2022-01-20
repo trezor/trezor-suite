@@ -1,9 +1,29 @@
 import React, { useState } from 'react';
 
+import styled, { css } from 'styled-components';
+
 import { CloseButton, Translation, AppNavigationPanel, AppNavigation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
+import { FADE_IN } from '@trezor/components/src/config/animations';
+
+const CloseButtonWrapper = styled.div<{ isAppNavigationPanelInView?: boolean }>`
+    position: absolute;
+    right: 0;
+    top: ${({ isAppNavigationPanelInView }) => (isAppNavigationPanelInView ? 0 : '-5px')};
+    display: flex;
+    justify-content: flex-end;
+`;
+
+const CloseButtonSticky = styled(CloseButton)<{ isAppNavigationPanelInView?: boolean }>`
+    ${({ isAppNavigationPanelInView }) =>
+        !isAppNavigationPanelInView &&
+        css`
+            animation: ${FADE_IN} 0.3s;
+            position: fixed;
+        `}
+`;
 
 const SettingsMenu = () => {
     const { setDebugMode, goto } = useActions({
@@ -81,14 +101,17 @@ const SettingsMenu = () => {
                     ]}
                 />
             }
-            titleContent={
-                <CloseButton
-                    onClick={() =>
-                        goto(settingsBackRoute.name, { params: settingsBackRoute.params })
-                    }
-                    data-test="@settings/menu/close"
-                />
-            }
+            titleContent={isAppNavigationPanelInView => (
+                <CloseButtonWrapper isAppNavigationPanelInView={isAppNavigationPanelInView}>
+                    <CloseButtonSticky
+                        isAppNavigationPanelInView={isAppNavigationPanelInView}
+                        onClick={() =>
+                            goto(settingsBackRoute.name, { params: settingsBackRoute.params })
+                        }
+                        data-test="@settings/menu/close"
+                    />
+                </CloseButtonWrapper>
+            )}
         />
     );
 };
