@@ -34,12 +34,12 @@ const grepForValue = (word, path) => {
 };
 
 function getTestFiles() {
-    const { stage } = argv;
+    const { group } = argv;
     let command;
-    if (stage) {
+    if (group) {
         // for arrays
         // command = getGrepCommand(stage.split(',').join('\\|'))
-        command = getGrepCommand(stage);
+        command = getGrepCommand(group);
     } else {
         command = getGrepCommand();
     }
@@ -72,7 +72,7 @@ async function runTests() {
         CYPRESS_updateSnapshots,
     } = process.env;
 
-    const { stage } = argv;
+    const { group } = argv;
 
     if (!TRACK_SUITE_URL || CYPRESS_updateSnapshots) {
         console.log(
@@ -98,7 +98,7 @@ async function runTests() {
         commitSha: CI_COMMIT_SHA,
         runnerDescription: CI_RUNNER_DESCRIPTION,
         duration: 0,
-        stage,
+        stage: group,
         records: {},
         tests: [],
     };
@@ -246,7 +246,7 @@ async function runTests() {
               exit 0
             fi
             git add .
-            git commit -m "e2e${stage ? `(${stage}):` : ':'} update snapshots"
+            git commit -m "e2e${group ? `(${group}):` : ':'} update snapshots"
             git log -n 2
             echo "You may now push your changes."
         `;
