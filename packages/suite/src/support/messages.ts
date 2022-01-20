@@ -1439,7 +1439,7 @@ export default defineMessages({
         id: 'TR_BASIC_RECOVERY',
     },
     TR_BASIC_RECOVERY_OPTION: {
-        defaultMessage: 'Enter your recovery seed word by word on your computer.\n',
+        defaultMessage: 'Enter your recovery seed word by word on your computer.',
         description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
     },
@@ -2358,7 +2358,7 @@ export default defineMessages({
         id: 'TR_MARK_ALL_AS_READ',
     },
     TR_MAXIMUM_LENGTH_IS_9_DIGITS: {
-        defaultMessage: "Enter up to 9 digits on your Trezor's keypad.\n",
+        defaultMessage: "Enter up to 9 digits on your Trezor's keypad.",
         id: 'TR_MAXIMUM_LENGTH_IS_9_DIGITS',
     },
     TR_MESSAGE: {
@@ -2371,7 +2371,7 @@ export default defineMessages({
         id: 'TR_MINED_TIME',
     },
     TR_MODEL_ONE: {
-        defaultMessage: 'Trezor Model One\n',
+        defaultMessage: 'Trezor Model One',
         description: 'Name of Trezor model 1',
         id: 'TR_MODEL_ONE',
     },
@@ -2646,7 +2646,7 @@ export default defineMessages({
         id: 'TR_PIN_HEADING_REPEAT',
     },
     TR_PIN_HEADING_SUCCESS: {
-        defaultMessage: 'PIN set\n',
+        defaultMessage: 'PIN set',
         description: 'Heading in PIN page when PIN set',
         id: 'TR_PIN_HEADING_SUCCESS',
     },
@@ -2747,7 +2747,7 @@ export default defineMessages({
         id: 'TR_RECONNECT_TROUBLESHOOT_BRIDGE',
     },
     TR_RECONNECT_TROUBLESHOOT_CABLE: {
-        defaultMessage: "Your cable isn't working; try a different one.\n",
+        defaultMessage: "Your cable isn't working; try a different one.",
         description: '',
         id: 'TR_RECONNECT_TROUBLESHOOT_CABLE',
     },
@@ -2876,7 +2876,7 @@ export default defineMessages({
         id: 'TR_SET_PIN',
     },
     TR_SET_UP_NEW_PIN: {
-        defaultMessage: 'Choose your new PIN\n',
+        defaultMessage: 'Choose your new PIN',
         id: 'TR_SET_UP_NEW_PIN',
     },
     TR_CONFIRM_NEW_PIN: {
@@ -4810,7 +4810,7 @@ export default defineMessages({
     },
     TR_I_UNDERSTAND_SEED_IS_IMPORTANT: {
         id: 'TR_I_UNDERSTAND_SEED_IS_IMPORTANT',
-        defaultMessage: 'You are responsible for keeping your backup safe\n',
+        defaultMessage: 'You are responsible for keeping your backup safe',
     },
     TR_BACKUP_SEED_IS_ULTIMATE: {
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
@@ -5471,7 +5471,7 @@ export default defineMessages({
     OP_RETURN_TOOLTIP: {
         id: 'OP_RETURN_TOOLTIP',
         defaultMessage:
-            'Script opcode used to mark a transaction output as invalid. Since any outputs with OP_RETURN are provably non-spendable, OP_RETURN outputs can be used to burn bitcoins.',
+            'OP_RETURN can be used for digital asset proof-of-ownership, and has at times been used to convey additional information needed to send transactions.',
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
@@ -5814,7 +5814,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION: {
         id: 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION',
         defaultMessage:
-            'Coin settings also define how Trezor Suite handles the discovery process of your coins each time you connect a device that is not remembered.',
+            'Trezor Suite uses Blockbook for the wallet backend. You can also use your own custom blockbook.',
     },
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
@@ -5884,7 +5884,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Not connected to the backend yet. Try going to your account overview to establish a connection with the backend.',
+            'Not connected to the backend yet. Try going to Settings › Crypto › Advanced settings to establish the connection with the backend.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
