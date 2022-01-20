@@ -39,6 +39,9 @@ const pageAssetCollection: PageAssetCollection = {
     'registration-success': {
         js: [getScriptFilePath('registration-success.js')],
     },
+    'logout-success': {
+        js: [getScriptFilePath('logout-success.js')],
+    },
 };
 
 const ScriptPlaceholder = /<!-- ScriptPlaceholder -->/g;

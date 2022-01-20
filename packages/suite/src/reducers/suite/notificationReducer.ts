@@ -99,6 +99,9 @@ export type ToastPayload = (
           type: 'cardano-withdrawal-error';
           error: string;
       }
+    | {
+          type: 'invity-logout-successful';
+      }
 ) &
     Options;
 

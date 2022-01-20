@@ -93,6 +93,11 @@ export class HttpReceiver extends EventEmitter {
                 origins: ['http://localhost:21335'],
             },
             {
+                pathname: '/invity-logout-success',
+                handler: this.invityLogoutSuccessHandler,
+                origins: ['', 'http://localhost:21335'],
+            },
+            {
                 pathname: '/invity-registration',
                 handler: this.invityRegistrationHandler,
                 origins: ['', 'http://localhost:21335'],
@@ -344,6 +349,7 @@ export class HttpReceiver extends EventEmitter {
         htmlFileName:
             | 'login.html'
             | 'login-success.html'
+            | 'logout-success.html'
             | 'registration.html'
             | 'registration-success.html',
     ) => path.join(__dirname, '..', '..', 'build', 'static', 'invity-authentication', htmlFileName);
@@ -368,6 +374,10 @@ export class HttpReceiver extends EventEmitter {
 
     private invityLoginSuccessHandler = (_: Request, response: http.ServerResponse) => {
         this.setInvityHtmlFileToResponse(response, 'login-success.html');
+    };
+
+    private invityLogoutSuccessHandler = (_: Request, response: http.ServerResponse) => {
+        this.setInvityHtmlFileToResponse(response, 'logout-success.html');
     };
 
     private invityRegistrationHandler = (_: Request, response: http.ServerResponse) => {

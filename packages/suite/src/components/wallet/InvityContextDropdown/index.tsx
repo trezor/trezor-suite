@@ -6,6 +6,7 @@ import { useSelector } from '@suite-hooks';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import type { AppState } from '@suite-types';
 import { InvityContextDropdownButton } from './components/InvityContextDropdownButton';
+import invityAPI from '@suite-services/invityAPI';
 
 const Wrapper = styled.div`
     margin-left: 12px;
@@ -18,12 +19,18 @@ const Note = styled.div`
     opacity: 0.4;
     border-radius: 5px;
 `;
+
+const InvisibleIframe = styled.iframe`
+    display: none;
+`;
+
 interface InvityContextDropdownProps {
     selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
 }
 
 const InvityContextDropdown = ({ selectedAccount }: InvityContextDropdownProps) => {
     const [open, setOpen] = useState(false);
+    const [logoutUrl, setLogoutUrl] = useState<string>();
     const { invityAuthentication } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
     }));
@@ -65,8 +72,9 @@ const InvityContextDropdown = ({ selectedAccount }: InvityContextDropdownProps) 
                                     label: (
                                         <Translation id="TR_INVITY_SIGNIN_DROPDOWN_MENU_SIGNOUT" />
                                     ),
-                                    callback: () => {
-                                        // TODO: invityAPI.logout(); etc...
+                                    callback: async () => {
+                                        const logoutUrl = await invityAPI.logout();
+                                        setLogoutUrl(logoutUrl);
                                     },
                                     isRounded: true,
                                 },
@@ -97,6 +105,16 @@ const InvityContextDropdown = ({ selectedAccount }: InvityContextDropdownProps) 
                 <InvityContextDropdownButton
                     labelTranslationId="TR_INVITY_SIGNIN_BUTTON"
                     onClick={() => handleUnauthenticatedUserButtonClick()}
+                />
+            )}
+            {logoutUrl && (
+                <InvisibleIframe
+                    title="logout"
+                    frameBorder="0"
+                    width="0"
+                    height="0"
+                    src={logoutUrl}
+                    sandbox="allow-scripts allow-forms allow-same-origin"
                 />
             )}
         </Wrapper>

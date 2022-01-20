@@ -3,6 +3,7 @@ import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import { useEffectOnce } from 'react-use';
 import { AccountSettings } from '@wallet-types/invity';
+import * as notificationActions from '@suite-actions/notificationActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
@@ -76,8 +77,9 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
     if (invityEnvironment) {
         invityAPI.setInvityServersEnvironment(invityEnvironment);
     }
-    const { saveInvityAuthentication } = useActions({
+    const { saveInvityAuthentication, addToast } = useActions({
         saveInvityAuthentication: coinmarketCommonActions.saveInvityAuthentication,
+        addToast: notificationActions.addToast,
     });
     const { navigateToInvityRegistrationSuccessful, navigateToInvityLogin } =
         useInvityNavigation(account);
@@ -173,6 +175,12 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
                     case 'login-successful':
                         await fetchWhoami();
                         navigateToSavings();
+                        break;
+                    case 'logout-successful':
+                        await fetchWhoami();
+                        addToast({
+                            type: 'invity-logout-successful',
+                        });
                         break;
                     // eslint-disable-next-line no-fallthrough
                     default:

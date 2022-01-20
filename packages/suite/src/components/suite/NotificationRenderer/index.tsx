@@ -169,6 +169,9 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
                     }}
                 />
             );
+        case 'invity-logout-successful':
+            return success(render, notification, 'TR_INVITY_LOGGED_OUT_SUCCESSFUL_NOTIFICATION');
+
         // Events:
         case SUITE.AUTH_DEVICE:
             return info(render, notification, 'EVENT_WALLET_CREATED');

@@ -852,6 +852,18 @@ class InvityAPI {
         }
     };
 
+    logout = async (): Promise<string | undefined> => {
+        try {
+            const response = await fetch(`${this.getAuthServerUrl()}/self-service/logout/browser`, {
+                credentials: 'include',
+            });
+            const responseJsonBody = await response.json();
+            return responseJsonBody.logout_url;
+        } catch (error) {
+            console.log('[logout]', error);
+        }
+    };
+
     getCheckWhoAmIUrl() {
         // TODO: this API client should do the request
         return `${this.getAuthServerUrl()}/sessions/whoami`;

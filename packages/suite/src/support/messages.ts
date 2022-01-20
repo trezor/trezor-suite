@@ -914,6 +914,10 @@ export default defineMessages({
         defaultMessage: 'TODO: Get the text from product.',
         id: 'TR_INVITY_SIGNIN_DROPDOWN_MENU_NOTE',
     },
+    TR_INVITY_LOGGED_OUT_SUCCESSFUL_NOTIFICATION: {
+        defaultMessage: 'Logged out of Invity.',
+        id: 'TR_INVITY_LOGGED_OUT_SUCCESSFUL_NOTIFICATION',
+    },
     TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED: {
         defaultMessage: 'Given name is required.',
         id: 'TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED',
