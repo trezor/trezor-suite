@@ -68,7 +68,7 @@ const AccountTopPanel = () => {
                 />
             }
             navigation={<AccountNavigation account={account} />}
-            titleContent={
+            titleContent={() =>
                 !isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined
             }
         >

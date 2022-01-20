@@ -130,7 +130,7 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
     position: relative;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin-right: 32px;
+        margin-right: 15px;
     }
 `;
 
