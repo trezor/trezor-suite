@@ -68,6 +68,7 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
     selectedAccount,
     redirectUnauthorizedUserToLogin = false,
 }) => {
+    const { account } = selectedAccount;
     const { invityEnvironment, invityAuthentication } = useSelector(state => ({
         invityEnvironment: state.suite.settings.debug.invityServerEnvironment,
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
@@ -78,16 +79,17 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
     const { saveInvityAuthentication } = useActions({
         saveInvityAuthentication: coinmarketCommonActions.saveInvityAuthentication,
     });
-    const { navigateToInvityRegistrationSuccessful, navigateToInvityLogin } = useInvityNavigation(
-        selectedAccount.account,
-    );
-    const { navigateToSavings } = useCoinmarketNavigation(selectedAccount.account);
+    const { navigateToInvityRegistrationSuccessful, navigateToInvityLogin } =
+        useInvityNavigation(account);
+    const { navigateToSavings } = useCoinmarketNavigation(account);
     const [fetching, setFetching] = useState(checkInvityAuthenticationImmediately);
     const [checkCounter, setCheckCounter] = useState(0);
 
     const checkInvityAuthentication = () => {
         setCheckCounter(checkCounter + 1);
     };
+
+    invityAPI.createInvityAPIKey(account.descriptor);
 
     const loadAccountInfo = async () => {
         try {
