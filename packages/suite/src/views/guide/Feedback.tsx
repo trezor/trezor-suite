@@ -326,6 +326,7 @@ const Feedback = ({ type }: Props) => {
                         (type === 'SUGGESTION' && rating === undefined) ||
                         (type === 'BUG' && category === undefined)
                     }
+                    data-test="@guide/feedback/submit-button"
                 >
                     <Translation id="TR_GUIDE_FEEDBACK_SEND_REPORT" />
                 </Submit>

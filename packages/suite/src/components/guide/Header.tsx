@@ -111,7 +111,7 @@ const Header = ({ back, label, useBreadcrumb }: Props) => {
                             color={theme.TYPE_LIGHT_GREY}
                         />
                     </ActionButton>
-                    {label && <Label>{label}</Label>}
+                    {label && <Label data-test="@guide/label">{label}</Label>}
                 </>
             )}
             {!useBreadcrumb && !back && label && <MainLabel>{label}</MainLabel>}
