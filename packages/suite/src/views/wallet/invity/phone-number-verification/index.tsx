@@ -4,9 +4,8 @@ import { useSavingsPhoneNumberVerification } from '@wallet-hooks/coinmarket/savi
 import { InputError, withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
 import { Translation } from '@suite-components';
 
-const PhoneNumberVerification = ({ selectedAccount }: WithInvityLayoutProps) => {
-    const { register, errors, onSubmit, handleSubmit } =
-        useSavingsPhoneNumberVerification(selectedAccount);
+const PhoneNumberVerification = (props: WithInvityLayoutProps) => {
+    const { register, errors, onSubmit, handleSubmit } = useSavingsPhoneNumberVerification(props);
     const codeInputName = 'code';
     // TODO: translations
     return (

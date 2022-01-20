@@ -42,7 +42,7 @@ const Row = styled.div`
     }
 `;
 
-const KYCStart = ({ selectedAccount }: WithInvityLayoutProps) => {
+const KYCStart = (props: WithInvityLayoutProps) => {
     const {
         control,
         errors,
@@ -57,7 +57,7 @@ const KYCStart = ({ selectedAccount }: WithInvityLayoutProps) => {
         defaultDocumentCountry,
         defaultDocumentType,
         isSelfieRequired,
-    } = useSavingsKYCStart(selectedAccount);
+    } = useSavingsKYCStart(props);
 
     const documentCountrySelectName = 'documentCountry';
     const documentTypeSelectName = 'documentType';

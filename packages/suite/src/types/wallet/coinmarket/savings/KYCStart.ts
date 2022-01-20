@@ -2,6 +2,9 @@ import type { TypedValidationRules } from '@wallet-types/form';
 import type { DropzoneState } from 'react-dropzone';
 import type { UseFormMethods } from 'react-hook-form';
 import type { Option, TranslationOption } from '@wallet-types/coinmarketCommonTypes';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+
+export type UseSavingsKYCStartProps = WithSelectedAccountLoadedProps;
 
 export interface SavingsKYCStartFormState {
     documentCountry: Option;

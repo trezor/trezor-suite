@@ -1,20 +1,9 @@
-import type { AppState } from '@suite-types';
 import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
 import type { SavingsTrade } from '@suite-services/invityAPI';
 import type { WhoAmI } from '@wallet-components/InvityAuthentication';
+import type { WithSelectedAccountLoadedProps } from '@suite/components/wallet';
 
-export interface SavingsComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-}
-
-export type SavingsSelectedAccount = Extract<
-    SavingsComponentProps['selectedAccount'],
-    { status: 'loaded' }
->;
-
-export interface CoinmarketSavingsLoadedProps {
-    selectedAccount: SavingsSelectedAccount;
-}
+export type UseSavingsProps = WithSelectedAccountLoadedProps;
 
 export type SavingsContextValues = {
     invityAuthentication?: WhoAmI; // TODO: temporary for debug

@@ -2,19 +2,19 @@ import { createContext, useCallback } from 'react';
 import {
     SavingsPhoneNumberVerificationFormState,
     SavingsPhoneNumberVerificationContextValues,
+    UseSavingsPhoneNumberVerificationProps,
 } from '@wallet-types/coinmarket/savings/phoneNumberVerification';
 import { useForm } from 'react-hook-form';
 import invityAPI from '@suite-services/invityAPI';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
-import { SavingsSelectedAccount } from '@wallet-types/coinmarket/savings';
 
 export const SavingsPhoneNumberVerificationContext =
     createContext<SavingsPhoneNumberVerificationContextValues | null>(null);
 SavingsPhoneNumberVerificationContext.displayName = 'SavingsPhoneNumberVerificationContext';
 
-export const useSavingsPhoneNumberVerification = (
-    selectedAccount: SavingsSelectedAccount,
-): SavingsPhoneNumberVerificationContextValues => {
+export const useSavingsPhoneNumberVerification = ({
+    selectedAccount,
+}: UseSavingsPhoneNumberVerificationProps): SavingsPhoneNumberVerificationContextValues => {
     const { navigateToInvityKYCStart } = useInvityNavigation(selectedAccount.account);
     const methods = useForm<SavingsPhoneNumberVerificationFormState>({
         mode: 'onChange',

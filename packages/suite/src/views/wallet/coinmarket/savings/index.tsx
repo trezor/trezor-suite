@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { withCoinmarketSavingsLoaded } from '@wallet-components';
+import { withCoinmarketSavingsLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
 import { useSavings } from '@wallet-hooks/coinmarket/savings/useSavings';
 import UnsupportedCountry from './unsupported-country';
-import type { CoinmarketSavingsLoadedProps } from '@wallet-types/coinmarket/savings';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 
-const CoinmarketSavingsLoaded = ({ selectedAccount }: CoinmarketSavingsLoadedProps) => {
+const CoinmarketSavingsLoaded = ({ selectedAccount }: WithSelectedAccountLoadedProps) => {
     const {
         navigateToInvityLogin,
         navigateToInvityUserInfo,

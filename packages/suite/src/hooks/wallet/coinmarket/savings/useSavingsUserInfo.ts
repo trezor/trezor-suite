@@ -2,20 +2,20 @@ import { createContext, useCallback, useEffect } from 'react';
 import {
     SavingsUserInfoFormState,
     SavingsUserInfoContextValues,
+    UseSavingsUserInfoProps,
 } from '@wallet-types/coinmarket/savings/userInfo';
 import { useForm } from 'react-hook-form';
 import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
-import type { SavingsSelectedAccount } from '@wallet-types/coinmarket/savings';
 
 export const SavingsUserInfoContext = createContext<SavingsUserInfoContextValues | null>(null);
 SavingsUserInfoContext.displayName = 'SavingsUserInfoContext';
 
-export const useSavingsUserInfo = (
-    selectedAccount: SavingsSelectedAccount,
-): SavingsUserInfoContextValues => {
+export const useSavingsUserInfo = ({
+    selectedAccount,
+}: UseSavingsUserInfoProps): SavingsUserInfoContextValues => {
     const { invityAuthentication } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
     }));

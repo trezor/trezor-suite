@@ -1,20 +1,20 @@
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { DropEvent, DropzoneOptions, FileRejection, useDropzone } from 'react-dropzone';
-import {
+import type {
     SavingsKYCStartFormState,
     SavingsKYCStartContextValues,
+    UseSavingsKYCStartProps,
 } from '@wallet-types/coinmarket/savings/KYCStart';
 
 import invityAPI, { SavingsTrade } from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { SavingsSelectedAccount } from '@wallet-types/coinmarket/savings';
 import { useSavingsKYCStartDefaultValues } from './useSavingsKYCStartDefaultValues';
 
-export const useSavingsKYCStart = (
-    selectedAccount: SavingsSelectedAccount,
-): SavingsKYCStartContextValues => {
+export const useSavingsKYCStart = ({
+    selectedAccount,
+}: UseSavingsKYCStartProps): SavingsKYCStartContextValues => {
     const { loadInvityData } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
     });

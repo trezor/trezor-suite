@@ -4,8 +4,8 @@ import { Button, Input } from '@trezor/components';
 import * as React from 'react';
 import { Translation } from '@suite-components';
 
-const UserInfo = ({ selectedAccount }: WithInvityLayoutProps) => {
-    const { register, errors, onSubmit, handleSubmit } = useSavingsUserInfo(selectedAccount);
+const UserInfo = (props: WithInvityLayoutProps) => {
+    const { register, errors, onSubmit, handleSubmit } = useSavingsUserInfo(props);
     const givenNameInputName = 'givenName';
     const familyNameInputName = 'familyName';
     const phoneNumberInputName = 'phoneNumber';

@@ -1,5 +1,8 @@
-import { TypedValidationRules } from '@wallet-types/form';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { TypedValidationRules } from '@wallet-types/form';
 import type { UseFormMethods } from 'react-hook-form';
+
+export type UseSavingsUserInfoProps = WithSelectedAccountLoadedProps;
 
 export interface SavingsUserInfoFormState {
     givenName: string;
