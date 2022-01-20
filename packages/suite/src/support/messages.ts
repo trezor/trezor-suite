@@ -282,8 +282,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_FEES_INFO: {
         id: 'TR_EXCHANGE_FEES_INFO',
-        defaultMessage:
-            'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
+        defaultMessage: 'See info about fees in each DEX offer.',
     },
     TR_EXCHANGE_DEX_FEES_INFO: {
         id: 'TR_EXCHANGE_DEX_FEES_INFO',
@@ -551,7 +550,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_APPROVAL_NOT_REQUIRED',
     },
     TR_EXCHANGE_APPROVAL_PREAPPROVED: {
-        defaultMessage: 'Contract already approved',
+        defaultMessage: 'Contract already approved.',
         id: 'TR_EXCHANGE_APPROVAL_PREAPPROVED',
     },
     TR_EXCHANGE_APPROVAL_PROCEED: {
@@ -1233,7 +1232,7 @@ export default defineMessages({
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
     TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN: {
-        defaultMessage: 'Offers refresh in',
+        defaultMessage: 'Autoreloading in',
         id: 'TR_COINMARKET_NO_OFFERS_AUTORELOADING_IN',
     },
     TR_COINMARKET_NO_OFFERS_HEADER: {
@@ -1242,12 +1241,12 @@ export default defineMessages({
     },
     TR_COINMARKET_NO_OFFERS_MESSAGE: {
         defaultMessage:
-            "Sorry, our providers don't accommodate this pairing at this moment. Try a different coin combination to see offers.",
+            "Sorry, we don't have any offers at the moment. Try to reload the page or change your query.",
         id: 'TR_COINMARKET_NO_OFFERS_MESSAGE',
     },
     TR_COINMARKET_NO_OFFERS_LOADING_FAILED_MESSAGE: {
         defaultMessage:
-            "Sorry, our providers can't make any offers due to connectivity issues. Please refresh this page.",
+            "Sorry, we don't have any offers at the moment due to a server connectivity issue.",
         id: 'TR_COINMARKET_NO_OFFERS_LOADING_FAILED_MESSAGE',
     },
     TR_COINMARKET_NO_OFFERS_BACK_BUTTON: {
@@ -1255,7 +1254,7 @@ export default defineMessages({
         id: 'TR_COINMARKET_NO_OFFERS_BACK_BUTTON',
     },
     TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON: {
-        defaultMessage: 'Refresh offers',
+        defaultMessage: 'Reload page',
         id: 'TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON',
     },
     TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC: {
@@ -2704,7 +2703,7 @@ export default defineMessages({
         id: 'TR_BUY_NETWORK',
     },
     TR_BECH32_BANNER_TITLE: {
-        defaultMessage: 'New to Trezor Suite: BTC Bech32 accounts!',
+        defaultMessage: 'New to Trezor Suite: Bech32 accounts!',
         id: 'TR_BECH32_BANNER_TITLE',
     },
     TR_BECH32_BANNER_POINT_1: {
@@ -2718,7 +2717,7 @@ export default defineMessages({
         id: 'TR_BECH32_BANNER_POINT_2',
     },
     TR_TAPROOT_BANNER_TITLE: {
-        defaultMessage: 'New to Trezor Suite: BTC Taproot accounts!',
+        defaultMessage: 'New to Trezor Suite: Taproot accounts!',
         id: 'TR_TAPROOT_BANNER_TITLE',
     },
     TR_TAPROOT_BANNER_POINT_1: {
@@ -2926,12 +2925,12 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED: {
-        defaultMessage: 'Connect device to change device settings',
+        defaultMessage: 'Connect device to change Device Settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1: {
         defaultMessage:
-            'Reconnect the device and do not hold any buttons while connecting the cable to access all other Settings.',
+            'Reconnect the device without holding any buttons while connecting the cable to access all other Settings.',
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_1',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2: {
@@ -3430,7 +3429,7 @@ export default defineMessages({
     },
     TR_YOUR_CURRENT_FIRMWARE_UNKNOWN: {
         defaultMessage:
-            "It's not possible to detect current firmware version in bootloader mode on your device.",
+            "It's not possible to detect the current firmware version when using the device in bootloader mode",
         id: 'TR_YOUR_CURRENT_FIRMWARE_UNKNOWN',
     },
     TR_YOUR_CURRENT_VERSION: {
@@ -3534,17 +3533,17 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_BIP84_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP84_DESC',
         defaultMessage:
-            'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old services.',
+            'Bech32 uses a modern address format that allows for smaller transaction fees. Be aware that it may not be compatible with old services.',
     },
     TR_ACCOUNT_TYPE_BIP86_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP86_DESC',
         defaultMessage:
-            'Taproot uses the most modern addresses for enhanced privacy and better network efficiency. Be aware that it may not be compatible with old services.',
+            'Taproot is a new account type that can enhance privacy and network efficiency. Some services may not yet support Taproot format addresses.',
     },
     TR_ACCOUNT_TYPE_BIP49_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP49_DESC',
         defaultMessage:
-            'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows sender to commit funds to a hash of an arbitrary valid script.',
+            'Pay to script hash (P2SH) is an advanced type of transaction used in Bitcoin and other similar crypto currencies. Unlike P2PKH, it allows the sender to commit funds to a hash of an arbitrary valid script.',
     },
     TR_ACCOUNT_TYPE_BIP44_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP44_DESC',
@@ -3567,7 +3566,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED: {
         id: 'TR_ACCOUNT_TYPE_BIP86_NOT_SUPPORTED',
         defaultMessage:
-            'Firmware installed does not support Taproot. Please upgrade device firmware to enable this feature',
+            'Current firmware does not support Taproot. Please update your Trezor firmware to enable this feature.',
     },
     TR_ACCOUNT_TYPE_BIP86_NAME: {
         id: 'TR_ACCOUNT_TYPE_BIP86_NAME',
@@ -3640,7 +3639,7 @@ export default defineMessages({
     },
     TOAST_BACKUP_SUCCESS: {
         id: 'TOAST_BACKUP_SUCCESS',
-        defaultMessage: 'Backup success',
+        defaultMessage: 'Backup successful',
     },
     TOAST_SETTINGS_APPLIED: {
         id: 'TOAST_SETTINGS_APPLIED',
@@ -3680,11 +3679,11 @@ export default defineMessages({
     },
     TOAST_SIGN_TX_ERROR: {
         id: 'TOAST_SIGN_TX_ERROR',
-        defaultMessage: 'Sign transaction error: {error}',
+        defaultMessage: 'Transaction signing error: {error}',
     },
     TOAST_VERIFY_ADDRESS_ERROR: {
         id: 'TOAST_VERIFY_ADDRESS_ERROR',
-        defaultMessage: 'Verify address error: {error}',
+        defaultMessage: 'Address verification error: {error}',
     },
     TOAST_SIGN_MESSAGE_SUCCESS: {
         id: 'TOAST_SIGN_MESSAGE_SUCCESS',
@@ -3692,7 +3691,7 @@ export default defineMessages({
     },
     TOAST_SIGN_MESSAGE_ERROR: {
         id: 'TOAST_SIGN_MESSAGE_ERROR',
-        defaultMessage: 'Sign message error: {error}',
+        defaultMessage: 'Message signing error: {error}',
     },
     TOAST_VERIFY_MESSAGE_SUCCESS: {
         id: 'TOAST_VERIFY_MESSAGE_SUCCESS',
@@ -3700,7 +3699,7 @@ export default defineMessages({
     },
     TOAST_VERIFY_MESSAGE_ERROR: {
         id: 'TOAST_VERIFY_MESSAGE_ERROR',
-        defaultMessage: 'Verify message error: {error}',
+        defaultMessage: 'Message verification error: {error}',
     },
     TOAST_AUTO_UPDATER_ERROR: {
         id: 'TOAST_AUTO_UPDATER_ERROR',
@@ -3869,7 +3868,7 @@ export default defineMessages({
     TR_WIPE_DEVICE_TEXT: {
         id: 'TR_WIPE_DEVICE_TEXT',
         defaultMessage:
-            'Performing a Factory Reset wipes all data from the device. Before proceeding, please make sure you have your Recovery Seed backed up on the cards provided, otherwise you will lose access to your funds.',
+            'Resetting the device removes all its data. Reset your device only if you have your recovery seed or there are no funds stored on the device.',
     },
     TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
@@ -4019,7 +4018,7 @@ export default defineMessages({
     },
     FW_CAPABILITY_NO_CAPABILITY_DESC: {
         id: 'FW_CAPABILITY_NO_CAPABILITY_DESC',
-        defaultMessage: 'Firmware does not have capability to work with {networkName}',
+        defaultMessage: 'Firmware does not have the capability to work with {networkName}',
     },
     FW_CAPABILITY_NO_SUPPORT: {
         id: 'FW_CAPABILITY_NO_SUPPORT',
@@ -4154,7 +4153,7 @@ export default defineMessages({
     RECEIVE_DESC_BITCOIN: {
         id: 'RECEIVE_DESC_BITCOIN',
         defaultMessage:
-            'To receive any funds you need to get a fresh receive address. It is advised to always use a fresh one as this prevents anyone else to track your transactions. You can reuse an address but we recommend not doing it unless it is necessary.',
+            'To receive any funds you need to get a fresh receive address. It is advised to always use a fresh address, as this prevents anyone else from tracking your transactions. You can reuse an address, but we recommend not doing so unless absolutely necessary.',
     },
     RECEIVE_DESC_ETHEREUM: {
         id: 'RECEIVE_DESC_ETHEREUM',
@@ -4454,7 +4453,7 @@ export default defineMessages({
     },
     TR_TRY_TO_TEMPORARILY_HIDE: {
         id: 'TR_TRY_TO_TEMPORARILY_HIDE',
-        defaultMessage: 'Temporarily hide your balances.',
+        defaultMessage: 'Temporarily hide your balances',
     },
     TR_TRY_DISCREET_MODE: {
         id: 'TR_TRY_DISCREET_MODE',
@@ -4829,7 +4828,7 @@ export default defineMessages({
     },
     DESKTOP_OUTDATED_BUTTON_DOWNLOAD: {
         id: 'DESKTOP_OUTDATED_BUTTON_DOWNLOAD',
-        defaultMessage: 'Take me to download page',
+        defaultMessage: 'Take me to the download page',
     },
     DESKTOP_OUTDATED_BUTTON_CANCEL: {
         id: 'DESKTOP_OUTDATED_BUTTON_CANCEL',
@@ -4856,7 +4855,7 @@ export default defineMessages({
     },
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2',
-        defaultMessage: 'If you want to use this device instead, start again.',
+        defaultMessage: 'If you want to use this device instead, please start again.',
     },
     TR_USE_IT_ANYWAY: {
         id: 'TR_USE_IT_ANYWAY',
@@ -5056,7 +5055,7 @@ export default defineMessages({
     TR_EARLY_ACCESS_LEFT_TITLE: {
         id: 'TR_EARLY_ACCESS_LEFT_TITLE',
         defaultMessage:
-            "You've left the Early Access Program. \nBeta releases are no longer offered.",
+            "You've left the Early Access Program. Beta releases are no longer offered.",
     },
     TR_EARLY_ACCESS_LEFT_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_LEFT_DESCRIPTION',
@@ -5092,12 +5091,12 @@ export default defineMessages({
     LOG_INCLUDE_BALANCE_DESCRIPTION: {
         id: 'LOG_INCLUDE_BALANCE_DESCRIPTION',
         defaultMessage:
-            "In case your issue does not relates to your balance or transactions, you may turn this off. Your account descriptors (XPubs) won't be included in copied log.",
+            "In case your issue does not relate to your balance or transactions, you may turn this off. Your account descriptors (XPubs) won't be included in the copied log.",
     },
     LOG_DESCRIPTION: {
         id: 'LOG_DESCRIPTION',
         defaultMessage:
-            'In case of a communication with our support team, there is a log with a lot of technical info',
+            'In case of communication with our support team, there is a log containing all necessary technical info',
     },
     TR_RESTORE_EXISTING_WALLET: {
         id: 'TR_RESTORE_EXISTING_WALLET',
@@ -5222,7 +5221,7 @@ export default defineMessages({
     },
     DISCONNECT_DEVICE_DESCRIPTION: {
         id: 'DISCONNECT_DEVICE_DESCRIPTION',
-        defaultMessage: 'Your device was wiped and does not hold private keys anymore.',
+        defaultMessage: 'Your device was wiped and no longer holds any private keys.',
     },
     TR_MY_ACCOUNTS: {
         id: 'TR_MY_ACCOUNTS',
@@ -5397,7 +5396,8 @@ export default defineMessages({
         id: 'RECIPIENT_IS_NOT_SUPPORTED',
     },
     RECIPIENT_REQUIRES_UPDATE: {
-        defaultMessage: 'Please upgrade device firmware to enable this feature.',
+        defaultMessage:
+            'Taproot is not supported by your firmware version. Please upgrade your device firmware.',
         id: 'RECIPIENT_REQUIRES_UPDATE',
     },
     RECIPIENT_FORMAT_DEPRECATED: {
@@ -5471,7 +5471,7 @@ export default defineMessages({
     OP_RETURN_TOOLTIP: {
         id: 'OP_RETURN_TOOLTIP',
         defaultMessage:
-            'Script opcode used to mark a transaction output as invalid. Since any outputs with OP_RETURN are provably unspendable, OP_RETURN outputs can be used to burn bitcoins.',
+            'Script opcode used to mark a transaction output as invalid. Since any outputs with OP_RETURN are provably non-spendable, OP_RETURN outputs can be used to burn bitcoins.',
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
@@ -5485,7 +5485,7 @@ export default defineMessages({
     RBF_TOOLTIP: {
         id: 'RBF_TOOLTIP',
         defaultMessage:
-            'Node policy that allows an unconfirmed transaction in a mempool to be replaced with a different transaction that spends at least one of the same inputs and which pays a higher transaction fee.',
+            'Node policy that allows an unconfirmed transaction in a mempool to be replaced with a different transaction that spends at least all of the same inputs and which pays a higher transaction fee.',
     },
     RBF_ON: {
         id: 'RBF_ON',
@@ -5498,7 +5498,7 @@ export default defineMessages({
     RBF_DESCRIPTION: {
         id: 'RBF_DESCRIPTION',
         defaultMessage:
-            'RBF allows to bump fee later in case you want the transaction to be mined faster.',
+            'RBF lets you bump a fee later, in case you want the transaction to be mined faster.',
     },
     LOCKTIME: {
         id: 'LOCKTIME',
@@ -5514,7 +5514,7 @@ export default defineMessages({
     },
     LOCKTIME_DESCRIPTION: {
         id: 'LOCKTIME_DESCRIPTION',
-        defaultMessage: 'Allows you to postpone the transaction by set value (time or block)',
+        defaultMessage: 'Allows you to postpone the transaction by a set value (time or block)',
     },
     LOCKTIME_SCHEDULE_SEND: {
         id: 'LOCKTIME_SCHEDULE_SEND',
@@ -5566,7 +5566,7 @@ export default defineMessages({
     DESTINATION_TAG_TOOLTIP: {
         id: 'DESTINATION_TAG_TOOLTIP',
         defaultMessage:
-            'Destination tag is unique identification codes to identify the receiver of a transaction.',
+            'Destination tag is a unique identification code to identify the receiver of a transaction.',
     },
     DESTINATION_TAG_EXPLAINED: {
         defaultMessage:
@@ -5606,7 +5606,7 @@ export default defineMessages({
         id: 'DATA_NOT_SET',
     },
     DATA_NOT_VALID_HEX: {
-        defaultMessage: 'Not valid hex',
+        defaultMessage: 'Not a valid hex',
         id: 'DATA_NOT_VALID_HEX',
     },
     DATA_HEX_TOO_BIG: {
@@ -5884,7 +5884,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Not connected to the backend yet. Try going to your account overview to establish the connection with the backend.',
+            'Not connected to the backend yet. Try going to your account overview to establish a connection with the backend.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
@@ -6092,7 +6092,7 @@ export default defineMessages({
     FIRMWARE_CONNECT_IN_NORMAL_MODEL_2: {
         id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_2',
         defaultMessage:
-            'Please make sure you are not swiping the touchscreen while connecting your device.',
+            "Please make sure you're not touching the display while connecting the device.",
     },
     FIRMWARE_UPDATE_TO_VERSION: {
         id: 'FIRMWARE_UPDATE_TO_VERSION',
@@ -6221,7 +6221,7 @@ export default defineMessages({
     },
     SETTINGS_UPDATE_AVAILABLE: {
         id: 'SETTINGS_UPDATE_AVAILABLE',
-        defaultMessage: 'Get latest version',
+        defaultMessage: 'Get the latest version',
     },
     SETTINGS_UPDATE_DOWNLOADING: {
         id: 'SETTINGS_UPDATE_DOWNLOADING',
@@ -6491,7 +6491,7 @@ export default defineMessages({
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4',
         defaultMessage:
-            '<ul><li><StyledCollapsibleBoxLink>Download Trezor Suite for desktop</StyledCollapsibleBoxLink> -  plug in your Trezor and you’re ready to go!</li><li>Alternatively, you can use the web app and enjoy the same core functionality, but you will not have access to more advanced features like Tor.</li></ul>',
+            '<ul><li><StyledCollapsibleBoxLink>Download Trezor Suite for desktop</StyledCollapsibleBoxLink> - plug in your Trezor and you’re ready to go!</li><li>Alternatively, you can use the web app and enjoy the same core functionality, but you will not have access to more advanced features like Tor.</li></ul>',
     },
     TR_COLOR_SCHEME: {
         id: 'TR_COLOR_SCHEME',
