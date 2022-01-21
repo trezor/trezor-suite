@@ -2511,6 +2511,14 @@ export default defineMessages({
         defaultMessage: "You can't change device settings in this state",
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
+    TR_SETTINGS_COINS_BANNER_TITLE_REMEMBERED_DISCONNECTED: {
+        defaultMessage: 'Remembered device is not connected',
+        id: 'TR_SETTINGS_COINS_BANNER_TITLE_REMEMBERED_DISCONNECTED',
+    },
+    TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
+        defaultMessage: 'Connect device to change Crypto Settings',
+        id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
+    },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
         defaultMessage: 'Other settings unavailable in bootloader mode',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',

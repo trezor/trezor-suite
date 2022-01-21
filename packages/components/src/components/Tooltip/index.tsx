@@ -8,7 +8,7 @@ import { Link } from '../typography/Link';
 
 import * as variables from '../../config/variables';
 
-type Cursor = 'inherit' | 'pointer' | 'help' | 'default';
+type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 
 const Wrapper = styled.div``;
 
