@@ -194,9 +194,11 @@ const PassphraseTypeCard = (props: Props) => {
     // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
     // In case of two-col modal (selecting between standard and hidden wallet)
     // only the hidden wallet part handle the enter press.
-    if (enterPressed && canSubmit) {
-        submit(value);
-    }
+    useEffect(() => {
+        if (enterPressed && canSubmit) {
+            submit(value);
+        }
+    }, [enterPressed, canSubmit, submit, value]);
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const tmpValue = event.target.value;
