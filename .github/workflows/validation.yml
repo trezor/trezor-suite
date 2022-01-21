@@ -7,14 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.0.0
-      - name: Install dependencies
+      - name: Install node and yarn
         uses: actions/setup-node@v2
         with:
           node-version-file: ".nvmrc"
       - run: |
           npm install -g yarn
-          yarn
-          yarn build:libs
+      - name: deduplicate deps
+        run: npx yarn-deduplicate --list --fail
+      - name: install deps
+        run: yarn
+      - name: build libs
+        run: yarn build:libs
       - name: type check
         run: yarn type-check
       - name: lint
