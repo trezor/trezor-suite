@@ -1,6 +1,7 @@
 lint:
   stage: validation
   script:
+    - npx yarn-deduplicate --list --fail
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
     - yarn lint
