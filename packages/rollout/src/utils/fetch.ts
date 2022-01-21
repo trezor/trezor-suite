@@ -1,9 +1,10 @@
-import fetch from 'cross-fetch';
+import * as fs from 'fs/promises';
+import { fetchFirmware as httpFetch } from './fetch-browser';
 
-export const fetchFirmware = async (url: string) => {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(response.statusText);
-    }
-    return response.arrayBuffer();
+// This module should be used only in nodejs environment. see package.json "browser" field.
+export const fetchFirmware = (url: string) => {
+    // url with protocol can be fetched using cross-fetch
+    if (/^https?/.test(url)) return httpFetch(url);
+    // otherwise read file from local filesystem
+    return fs.readFile(url);
 };

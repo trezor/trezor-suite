@@ -18,8 +18,10 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Small javascript library to get latest safe firmware version for trezor update.",
     "main": "lib/index.js",
-    "module": "lib/index.es.js",
     "types": "lib/index.d.ts",
+    "browser": {
+        "./lib/utils/fetch": "./lib/utils/fetch-browser"
+    },
     "scripts": {
         "test:unit": "jest",
         "test:watch": "jest --watch",
