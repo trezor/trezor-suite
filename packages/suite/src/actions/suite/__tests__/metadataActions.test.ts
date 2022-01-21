@@ -55,7 +55,7 @@ export const getInitialState = (state?: InitialState) => {
 
     const device = state
         ? state.device
-        : { state: 'device-state', metadata: { status: 'disabled' } };
+        : { state: 'device-state', connected: true, metadata: { status: 'disabled' } };
     const accounts = state ? state.accounts || [] : [];
     const initAction: any = { type: STORAGE.LOADED, payload: { metadata } };
     return {

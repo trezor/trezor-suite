@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Switch } from '@trezor/components';
+import { Switch, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useSelector, useActions, useDevice } from '@suite-hooks';
@@ -9,8 +9,7 @@ import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
 export const Labeling = () => {
-    const { isLocked, device } = useDevice();
-    const isDeviceLocked = device && isLocked();
+    const { device, isLocked } = useDevice();
 
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Labeling);
 
@@ -23,6 +22,17 @@ export const Labeling = () => {
         metadata: state.metadata,
     }));
 
+    // This should ideally not depend on the device so it should never be disabled.
+    // But if user have REMEMBERED device DISCONNECTED, he would get to the wrong state where
+    // Labeling is turned on in Settings, but not accessible at all and user is not informed
+    // what to do to enable it. That is why it's disabled for now in that case.
+    //
+    // Following use cases need some bigger UX refactoring:
+    // - Labeling enabled without any device connected
+    // - Labeling enabled with the device connected inside Settings
+    // The initialization of Labeling then start when user select a Wallet.
+    const isDisabled = !!device && !metadata.enabled && isLocked();
+
     return (
         <SectionItem
             data-test="@settings/metadata"
@@ -34,20 +44,19 @@ export const Labeling = () => {
                 description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
             />
             <ActionColumn>
-                <Switch
-                    // hmm maybe it should never be disabled, as it is not device related option (although it triggers device flow?)
-                    // but on the other hand there still may be case when it remembered device is disconnected and its metadata.status
-                    // is cancelled or disabled. In such case, initMetadata does not make any sense as it needs device connected.
-                    // You could say: "ok, whatever, but this switch is changing only application setting, why messing with device?"
-                    // Yes, you are right, but if it was done this way, you would enable metadata, then go to wallet, discovery
-                    // and maybe device authorization would be triggered and only after that you would get metadata flow started, wouldn't
-                    // that be confusing? I believe it is better to do it right away, but need for disabling this switch in specific
-                    // edge case is a drawback.
-                    isDisabled={!metadata.enabled && !device?.connected && isDeviceLocked}
-                    data-test="@settings/metadata-switch"
-                    checked={metadata.enabled}
-                    onChange={() => (metadata.enabled ? disableMetadata() : initMetadata(true))}
-                />
+                <Tooltip
+                    maxWidth={280}
+                    offset={10}
+                    placement="top"
+                    content={isDisabled && <Translation id="TR_DISABLED_SWITCH_TOOLTIP" />}
+                >
+                    <Switch
+                        isDisabled={isDisabled}
+                        data-test="@settings/metadata-switch"
+                        checked={metadata.enabled}
+                        onChange={() => (metadata.enabled ? disableMetadata() : initMetadata(true))}
+                    />
+                </Tooltip>
             </ActionColumn>
         </SectionItem>
     );

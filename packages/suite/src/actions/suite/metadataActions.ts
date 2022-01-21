@@ -559,7 +559,7 @@ export const addAccountMetadata =
 export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!getState().metadata.enabled) return;
     const { device } = getState().suite;
-    if (!device || !device.state) return;
+    if (!device || !device.state || !device.connected) return;
 
     // mater key already exists
     if (device.metadata.status === 'enabled') return;
@@ -648,13 +648,14 @@ export const init =
     (force = false) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
-        if (!device?.state) {
-            return false;
-        }
 
         // 1. set metadata enabled globally
         if (!getState().metadata.enabled) {
             dispatch(enableMetadata());
+        }
+
+        if (!device?.state) {
+            return false;
         }
 
         // 2. set device metadata key (master key). Sometimes, if state is not present
