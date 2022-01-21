@@ -14,6 +14,13 @@ const setDeviceMetadataKey = [
             device: { state: undefined },
         },
     },
+    {
+        description: `Device not connected (remembered)`,
+        initialState: {
+            metadata: { enabled: true },
+            device: { state: 'device-state', connected: false, metadata: { status: 'disabled' } },
+        },
+    },
     // {
     //     description: `Device metadata cancelled`,
     //     initialState: {
@@ -35,7 +42,7 @@ const setDeviceMetadataKey = [
         },
         initialState: {
             metadata: { enabled: true },
-            device: { state: 'device-state', metadata: { status: 'disabled' } },
+            device: { state: 'device-state', connected: true, metadata: { status: 'disabled' } },
         },
         result: [
             {
@@ -62,7 +69,7 @@ const setDeviceMetadataKey = [
         description: `Master key successfully generated`,
         initialState: {
             metadata: { enabled: true },
-            device: { state: 'device-state', metadata: { status: 'disabled' } },
+            device: { state: 'device-state', connected: true, metadata: { status: 'disabled' } },
         },
         result: [
             {
@@ -86,7 +93,7 @@ const setDeviceMetadataKey = [
                 enabled: true,
                 provider: { type: 'dropbox', user: 'User Name', token: 'oauth-token' },
             },
-            device: { state: 'device-state', metadata: { status: 'disabled' } },
+            device: { state: 'device-state', connected: true, metadata: { status: 'disabled' } },
         },
         result: [
             {
@@ -455,7 +462,7 @@ const init = [
         initialState: {
             device: { state: undefined },
         },
-        result: [],
+        result: [{ type: '@metadata/enable' }],
     },
     {
         description: 'metadata already enabled',
@@ -468,7 +475,7 @@ const init = [
     {
         description: 'metadata not enabled',
         initialState: {
-            device: { state: 'device-state', metadata: { status: 'disabled' } },
+            device: { state: 'device-state', connected: true, metadata: { status: 'disabled' } },
             metadata: { enabled: false },
             suite: { online: true },
         },
