@@ -32,7 +32,8 @@
         "test:unit": "yarn lerna run test:unit",
         "lint:js": "eslint --cache --ignore-path .gitignore --ext .js,.ts,.tsx ./",
         "lint": "yarn lerna run lint:styles && yarn lint:js",
-        "lint-staged": "npx lint-staged"
+        "lint-staged": "npx lint-staged",
+        "deduplicate": "yarn-deduplicate && yarn"
     },
     "lint-staged": {
         "packages/**/*.{ts,tsx}": [
