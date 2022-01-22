@@ -5,8 +5,8 @@ import { Button, variables, ConfirmOnDevice, Box } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 import { Translation, QrCode, Modal } from '@suite-components';
-import DeviceDisconnected from './components/DeviceDisconnected';
 import { useActions } from '@suite-hooks';
+import DeviceDisconnected from './components/DeviceDisconnected';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,14 +15,8 @@ const Wrapper = styled.div`
 `;
 
 const StyledBox = styled(Box)`
-    flex-direction: row;
-    padding: 30px 24px;
-    align-self: center;
-`;
-
-const Right = styled.div`
-    display: flex;
     flex-direction: column;
+    padding: 30px 24px;
 `;
 
 const Address = styled.span`
@@ -32,13 +26,15 @@ const Address = styled.span`
     border-radius: 8px;
     word-break: break-all;
     font-variant-numeric: tabular-nums slashed-zero;
-    text-align: left;
 `;
 
 const CopyButtonWrapper = styled.div`
     display: flex;
+    justify-content: center;
     margin-top: 14px;
 `;
+
+const QRCODE_SIZE = 384;
 
 type Props = {
     device: TrezorDevice;
@@ -89,23 +85,19 @@ const ConfirmAddress = ({ device, address, symbol, cancelable, confirmed, onCanc
         >
             <Wrapper>
                 <StyledBox>
-                    <QrCode value={address} />
-                    <Right>
-                        <Address data-test="@modal/confirm-address/address-field">
-                            {address}
-                        </Address>
-                        {confirmed && (
-                            <CopyButtonWrapper ref={htmlElement}>
-                                <Button
-                                    data-test="@metadata/copy-address-button"
-                                    variant="tertiary"
-                                    onClick={copyAddress}
-                                >
-                                    <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                                </Button>
-                            </CopyButtonWrapper>
-                        )}
-                    </Right>
+                    <QrCode value={address} size={QRCODE_SIZE} width="100%" height="100%" />
+                    <Address data-test="@modal/confirm-address/address-field">{address}</Address>
+                    {confirmed && (
+                        <CopyButtonWrapper ref={htmlElement}>
+                            <Button
+                                data-test="@metadata/copy-address-button"
+                                variant="tertiary"
+                                onClick={copyAddress}
+                            >
+                                <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                            </Button>
+                        </CopyButtonWrapper>
+                    )}
                 </StyledBox>
                 {!device.connected && <DeviceDisconnected label={device.label} />}
             </Wrapper>

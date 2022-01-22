@@ -4,10 +4,7 @@ import styled from 'styled-components';
 import { colors } from '@trezor/components';
 
 const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 28px;
+    margin: 0 auto 28px;
     padding: 4px; /* some qr code scanners can't recognize qr codes on dark background, having white border around helps with this */
     background: ${colors.BG_WHITE};
 `;
@@ -15,16 +12,20 @@ const Wrapper = styled.div`
 interface Props {
     value: string;
     className?: string;
+    size?: number;
+    width?: string | number;
+    height?: string | number;
 }
 
-const QrCode = (props: Props) => (
-    <Wrapper className={props.className}>
+const QrCode = ({ className, value, size, width, height }: Props) => (
+    <Wrapper className={className}>
         <QRCode
             bgColor={colors.BG_WHITE}
             fgColor={colors.TYPE_DARK_GREY}
             level="Q"
-            style={{ width: '80px', height: '80px' }}
-            value={props.value}
+            size={size}
+            style={{ width, height }}
+            value={value}
         />
     </Wrapper>
 );
