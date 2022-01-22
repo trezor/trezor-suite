@@ -918,6 +918,34 @@ export default defineMessages({
         defaultMessage: 'Logged out of Invity.',
         id: 'TR_INVITY_LOGGED_OUT_SUCCESSFUL_NOTIFICATION',
     },
+    TR_INVITY_LOGIN_HEADER: {
+        defaultMessage: 'Log in to Invity',
+        id: 'TR_INVITY_LOGIN_HEADER',
+    },
+    TR_INVITY_LOGIN_FORGOT_PASSWORD: {
+        defaultMessage: 'Forgot your password?',
+        id: 'TR_INVITY_LOGIN_FORGOT_PASSWORD',
+    },
+    TR_INVITY_LOGIN_NO_ACCOUNT: {
+        defaultMessage: 'No account? {createAnAccount}',
+        id: 'TR_INVITY_LOGIN_NO_ACCOUNT',
+    },
+    TR_INVITY_LOGIN_NO_ACCOUNT_CREATE_AN_ACCOUNT: {
+        defaultMessage: 'Create an account',
+        id: 'TR_INVITY_LOGIN_NO_ACCOUNT_CREATE_AN_ACCOUNT',
+    },
+    TR_INVITY_REGISTRATION_HEADER: {
+        defaultMessage: 'Create an Invity account',
+        id: 'TR_INVITY_REGISTRATION_HEADER',
+    },
+    TR_INVITY_REGISTRATION_FOOTER_ALREADY_HAVE_AN_ACCOUNT: {
+        defaultMessage: 'Already have an account? {login}',
+        id: 'TR_INVITY_REGISTRATION_FOOTER_ALREADY_HAVE_AN_ACCOUNT',
+    },
+    TR_INVITY_REGISTRATION_FOOTER_ALREADY_HAVE_AN_ACCOUNT_LOGIN: {
+        defaultMessage: 'Log in.',
+        id: 'TR_INVITY_REGISTRATION_FOOTER_ALREADY_HAVE_AN_ACCOUNT_LOGIN',
+    },
     TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED: {
         defaultMessage: 'Given name is required.',
         id: 'TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED',

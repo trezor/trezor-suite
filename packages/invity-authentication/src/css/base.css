@@ -1,0 +1,67 @@
+html, body {
+    font-family: "TT Hoves",-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+input {
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    font-family: "TT Hoves",-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    font-weight: 500;
+    padding: 1px 16px 0 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: solid 2px #e8e8e8;
+    background-color: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    height: 48px;
+    color: #1F1F1F;
+}
+
+input.valid {
+    border: 2px solid #00854D;
+}
+input.invalid {
+    border: 2px solid #cd4949;
+}
+
+.input-wrapper {
+    display: flex;
+    position: relative;
+}
+.input-message {
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    outline: none;
+    box-sizing: border-box;
+    display: flex;
+    font-size: 12px;
+    color: #cd4949;
+    padding: 10px 10px 0 10px;
+    min-height: 27px;
+}
+button {
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    font-family: "TT Hoves",-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    box-sizing: border-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    border: none;
+    white-space: nowrap;
+    cursor: pointer;
+    border-radius: 8px;
+    outline: none;
+    padding: 9px 12px;
+    transition: background 150ms ease-out;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 16px;
+    background: #00854D;
+}

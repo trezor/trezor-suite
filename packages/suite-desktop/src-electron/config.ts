@@ -41,6 +41,7 @@ const assetHashesFileContent = fs.readFileSync(assetHashesFilePath);
 const assetHashes = JSON.parse(assetHashesFileContent.toString()) as {
     scripts: string[];
     styles: string[];
+    fonts: string[];
 }; // TODO: Do we want to generate and import AssetHashes type?
 
 // TODO: may be create function getContentSecurtyPolicyHeaderValue(store)? And from the store get the asset-hashes.json file path?
@@ -53,4 +54,5 @@ export const cspRules = [
     "img-src 'self' *.trezor.io",
     `script-src-elem ${assetHashes.scripts.map(hash => `'${hash}'`).join(' ')}`,
     `style-src ${assetHashes.styles.map(hash => `'${hash}'`).join(' ')}`,
+    `font-src 'self' data:`, // TODO: or hashes? with
 ];

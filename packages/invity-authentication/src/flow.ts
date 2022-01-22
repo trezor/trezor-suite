@@ -41,44 +41,10 @@ const translate = (translations, key, fallback) => {
     return translations[key];
 };
 
-const translateForm = flowType => {
+const translateForm = _ => {
     const spinner = document.getElementById('loading_spinner');
     if (spinner) {
         spinner.innerText = 'Loading...';
-    }
-
-    const email = document.getElementById('auth_email_label');
-    if (email) {
-        email.innerText = 'Email address';
-    }
-
-    const password = document.getElementById('auth_password_label');
-    if (password) {
-        password.innerText = 'Password';
-    }
-
-    const passwordDiv = document.getElementById('auth_password');
-    if (passwordDiv) {
-        const passwordInput = passwordDiv.getElementsByTagName('input')[0];
-        passwordInput.placeholder = 'your password';
-    }
-
-    const submit = document.getElementById('submit');
-    if (submit) {
-        switch (flowType) {
-            case 'login':
-                submit.innerText = 'Log in';
-                break;
-            case 'registration':
-                submit.innerText = 'Sign up';
-                break;
-            case 'recovery':
-                submit.innerText = 'Recover';
-                break;
-            default:
-                submit.innerText = 'Submit';
-                break;
-        }
     }
 
     const forgotPassword = document.getElementById('forgot_password_link');
@@ -107,28 +73,17 @@ const disableForm = () => {
     submitButton.disabled = true;
 };
 
-const showMessage = (type, msg, _disableForm = false) => {
+const showMessage = (type, message, _disableForm = false) => {
     if (_disableForm) {
         disableForm();
     }
     if (type === 'info') {
-        const elem = document.getElementById(type);
-        elem.innerText = msg;
+        const element = document.getElementById(type);
+        element.innerText = message;
         return;
     }
-    const popup = document.getElementById('popup');
-    const submit = document.getElementById('submit');
-    popup.style.setProperty('display', 'initial');
-    submit.style.setProperty('display', 'none');
-    document.getElementById('popup-text').innerText = msg;
-    sendMessageToParent({ action: { type: 'resize' } }, false);
-};
 
-const onErrorClick = () => {
-    const popup = document.getElementById('popup');
-    const submit = document.getElementById('submit');
-    popup.style.setProperty('display', 'none');
-    submit.style.setProperty('display', 'initial');
+    document.getElementById('error-general').innerText = message;
 };
 
 const getVerificationCookie = () => {
@@ -194,7 +149,7 @@ const getFlowId = (urls, flowType) => {
     const flowId = urlParams.get('flow');
 
     if (flowType === 'error') {
-        sendMessageToParent({ action: { type: 'resize' } });
+        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         return urlParams.get('error');
     }
 
@@ -203,7 +158,7 @@ const getFlowId = (urls, flowType) => {
         window.location.replace(urls.browserUrl);
         exit();
     }
-    sendMessageToParent({ action: { type: 'resize' } });
+    sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
     return flowId;
 };
 
@@ -350,8 +305,8 @@ const checkWhoami = async (flowType, urls) => {
 
 const parseFlowAttributes = (flowData, flowType) => {
     if (flowData.errors) {
-        const msg = 'An unexpected error has occured.';
-        sendMessageToParent({ action: { type: 'showMessage', variant: 'danger', text: msg } });
+        const message = 'An unexpected error has occured.';
+        sendMessageToParent({ action: { type: 'showMessage', variant: 'danger', text: message } });
         console.error(flowData.errors[0].message);
         exit();
     }
@@ -374,14 +329,16 @@ const parseFlowAttributes = (flowData, flowType) => {
             ['password_identifier', 'traits.email', 'email'].includes(node.attributes.name) &&
             flowType !== 'settings'
         ) {
-            const elem = document.getElementById('auth_email').getElementsByTagName('input')[0];
-            elem.setAttribute('name', node.attributes.name);
+            const element = document.getElementById('auth_email').getElementsByTagName('input')[0];
+            element.setAttribute('name', node.attributes.name);
             if (node.attributes.value) {
-                elem.value = node.attributes.value;
+                element.value = node.attributes.value;
             }
         } else if (node.attributes.name === 'password') {
-            const elem = document.getElementById('auth_password').getElementsByTagName('input')[0];
-            elem.setAttribute('name', node.attributes.name);
+            const element = document
+                .getElementById('auth_password')
+                .getElementsByTagName('input')[0];
+            element.setAttribute('name', node.attributes.name);
         } else if (node.attributes.name === 'method' && node.attributes.value) {
             const submitButton = document.getElementById('submit') as HTMLButtonElement;
             submitButton.value = node.attributes.value;
@@ -484,7 +441,7 @@ const parseFlowAttributes = (flowData, flowType) => {
                 break;
         }
         showMessage(message.type, message.text);
-        sendMessageToParent({ action: { type: 'resize' } });
+        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
     }
 };
 
@@ -499,6 +456,7 @@ const checkIsIframe = urls => {
 const checkPasswordLength = password => {
     if (password.length < 5) {
         showMessage('error', 'You password should be at least 5 characters long!');
+        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         return false;
     }
     return true;
@@ -561,17 +519,17 @@ const onEmailChange = event => {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     emailInput.classList.remove(...emailInput.classList);
     if (re.test(String(event.target.value).toLowerCase())) {
-        emailInput.classList.add('valid-input');
+        emailInput.classList.add('valid');
         emailErrorDiv.innerText = '';
-        sendMessageToParent({ action: { type: 'resize' } });
+        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         submit.disabled = false;
         if (passwordErrorDiv && passwordErrorDiv.textContent) {
             submit.disabled = true;
         }
     } else {
-        emailInput.classList.add('invalid-input');
+        emailInput.classList.add('invalid');
         emailErrorDiv.innerText = 'Please, enter a valid email address';
-        sendMessageToParent({ action: { type: 'resize' } });
+        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         submit.disabled = true;
     }
 };
@@ -583,17 +541,17 @@ const onPasswordChange = event => {
     const passwordErrorDiv = document.getElementById('error-password');
     passwordInput.classList.remove(...passwordInput.classList);
     if (event.target.value.length > 6) {
-        passwordInput.classList.add('valid-input');
+        passwordInput.classList.add('valid');
         passwordErrorDiv.innerText = '';
-        sendMessageToParent({ action: { type: 'resize' } });
+        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         submit.disabled = false;
         if (emailErrorDiv && emailErrorDiv.textContent) {
             submit.disabled = true;
         }
     } else {
-        passwordInput.classList.add('invalid-input');
+        passwordInput.classList.add('invalid');
         passwordErrorDiv.innerText = 'Your password is too short!';
-        sendMessageToParent({ action: { type: 'resize' } });
+        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         submit.disabled = true;
     }
 };
@@ -619,7 +577,7 @@ const addInputValidation = flowType => {
 };
 
 const runFlow = async flowType => {
-    sendMessageToParent({ action: { type: 'resize' } });
+    sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
     try {
         // eslint-disable-next-line no-debugger
         const urls = getUrls(flowType);
@@ -638,3 +596,12 @@ const runFlow = async flowType => {
         }
     }
 };
+
+window.addEventListener('resize', () =>
+    sendMessageToParent({ action: 'resize', data: document.body.scrollHeight }),
+);
+
+// TODO: Decided whether we need to notify parent window that this window has loaded.
+// window.addEventListener('DOMContentLoaded', _ => {
+//     sendMessageToParent({ action: 'loaded' });
+// });

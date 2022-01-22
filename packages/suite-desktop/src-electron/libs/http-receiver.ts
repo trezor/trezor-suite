@@ -105,7 +105,7 @@ export class HttpReceiver extends EventEmitter {
             {
                 pathname: '/invity-registration-success',
                 handler: this.invityRegistrationSuccessHandler,
-                origins: [''],
+                origins: ['', 'http://localhost:21335'],
             },
             /**
              * Register more routes here. Each route must have pathname and handler function.

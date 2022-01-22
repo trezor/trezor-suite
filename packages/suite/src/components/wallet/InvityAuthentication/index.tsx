@@ -41,6 +41,7 @@ export interface InvityAuthenticationContextProps {
     invityAuthentication?: WhoAmI;
     fetching: boolean;
     checkInvityAuthentication: () => void;
+    iframeMessage?: IframeMessage;
 }
 
 export const InvityAuthenticationContext = React.createContext<InvityAuthenticationContextProps>({
@@ -56,6 +57,17 @@ function inIframe() {
     }
 }
 
+interface IframeMessage {
+    name: 'invity-authentication';
+    action?:
+        | 'loaded'
+        | 'resize'
+        | 'registration-successful'
+        | 'login-successful'
+        | 'logout-successful';
+    data?: any;
+}
+
 export interface InvityAuthenticationProps {
     selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
     // TODO: Do we really need this?
@@ -69,6 +81,7 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
     selectedAccount,
     redirectUnauthorizedUserToLogin = false,
 }) => {
+    const [iframeMessage, setIframeMessage] = useState<IframeMessage>();
     const { account } = selectedAccount;
     const { invityEnvironment, invityAuthentication } = useSelector(state => ({
         invityEnvironment: state.suite.settings.debug.invityServerEnvironment,
@@ -161,31 +174,31 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
     useEffectOnce(() => {
         const messageHandler = async (event: MessageEvent) => {
             // Listen for iframe messages and redirect after user has logged in
-            let parsedData: any;
             try {
                 // There are different messages (e.g. from Hotjar), not all of them return JSON
-                parsedData = JSON.parse(event.data);
+                const message: IframeMessage = JSON.parse(event.data);
+                if (message && message.name === 'invity-authentication') {
+                    setIframeMessage(message);
+                    switch (message.action) {
+                        case 'registration-successful':
+                            navigateToInvityRegistrationSuccessful();
+                            break;
+                        case 'login-successful':
+                            await fetchWhoami();
+                            navigateToSavings();
+                            break;
+                        case 'logout-successful':
+                            await fetchWhoami();
+                            addToast({
+                                type: 'invity-logout-successful',
+                            });
+                            break;
+                        // eslint-disable-next-line no-fallthrough
+                        default:
+                    }
+                }
                 // eslint-disable-next-line no-empty
             } catch {}
-            if (parsedData && parsedData.name === 'invity-authentication') {
-                switch (parsedData.state) {
-                    case 'registration-successful':
-                        navigateToInvityRegistrationSuccessful();
-                        break;
-                    case 'login-successful':
-                        await fetchWhoami();
-                        navigateToSavings();
-                        break;
-                    case 'logout-successful':
-                        await fetchWhoami();
-                        addToast({
-                            type: 'invity-logout-successful',
-                        });
-                        break;
-                    // eslint-disable-next-line no-fallthrough
-                    default:
-                }
-            }
         };
 
         window.addEventListener('message', messageHandler);
@@ -200,7 +213,7 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
 
     return (
         <InvityAuthenticationContext.Provider
-            value={{ invityAuthentication, fetching, checkInvityAuthentication }}
+            value={{ invityAuthentication, fetching, checkInvityAuthentication, iframeMessage }}
         >
             {children}
         </InvityAuthenticationContext.Provider>

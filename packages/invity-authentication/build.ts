@@ -12,6 +12,7 @@ interface PageAssetCollection {
 interface AssetHashes {
     scripts: string[];
     styles: string[];
+    fonts: string[];
 }
 
 const SourcePath = path.join(__dirname, 'src');
@@ -20,6 +21,7 @@ const BuildPath = path.join(__dirname, 'build');
 const HtmlPath = path.join(SourcePath, 'html');
 const ScriptsPath = path.join(SourcePath, 'js');
 const StylesPath = path.join(SourcePath, 'css');
+// const FontsPath = path.join(SourcePath, 'fonts');
 
 const getScriptFilePath = (fileName: string) => path.join(ScriptsPath, fileName);
 const getStyleFilePath = (fileName: string) => path.join(StylesPath, fileName);
@@ -27,11 +29,11 @@ const getStyleFilePath = (fileName: string) => path.join(StylesPath, fileName);
 const pageAssetCollection: PageAssetCollection = {
     login: {
         js: [getScriptFilePath('flow.js'), getScriptFilePath('login.js')],
-        css: [getStyleFilePath('login.css')],
+        css: [getStyleFilePath('fonts.css'), getStyleFilePath('base.css')],
     },
     registration: {
         js: [getScriptFilePath('flow.js'), getScriptFilePath('registration.js')],
-        css: [getStyleFilePath('registration.css')],
+        css: [getStyleFilePath('fonts.css'), getStyleFilePath('base.css')],
     },
     'login-success': {
         js: [getScriptFilePath('login-success.js')],
@@ -55,6 +57,7 @@ const hashAlgorithm = 'sha256';
 const assetHashes: AssetHashes = {
     scripts: [],
     styles: [],
+    fonts: [],
 };
 
 function getScriptTag(scriptPath: string, assetHashes: AssetHashes) {
@@ -107,6 +110,25 @@ Object.entries(pageAssetCollection).forEach(([page, assets]) => {
         }
     });
 });
+
+// TODO: Decide how to include fonts (base64? static files?) be aware of Suite-Desktop strict policy.
+// Copy and get hash of fonts to build folder.
+// const fontFiles = fs.readdirSync(FontsPath);
+// fontFiles.forEach(fontFile => {
+//     const fontFilePath = path.join(FontsPath, fontFile);
+//     const scriptContent = fs.readFileSync(fontFilePath).toString();
+//     const hash = crypto.createHash(hashAlgorithm);
+//     const hashValue = `${hashAlgorithm}-${hash.update(scriptContent).digest('base64')}`;
+//     if (assetHashes.fonts.indexOf(hashValue) === -1) {
+//         assetHashes.fonts.push(hashValue);
+//     }
+
+//     fs.copyFile(path.join(FontsPath, fontFile), path.join(BuildPath, fontFile), error => {
+//         if (error) {
+//             console.log(error);
+//         }
+//     });
+// });
 
 // Create file with assets' hashes to include theme in CSP for Suite Desktop.
 fs.writeFileSync(AssetHashesBuildFilePath, JSON.stringify(assetHashes));
