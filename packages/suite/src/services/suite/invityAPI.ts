@@ -95,10 +95,12 @@ export interface SavingsListResponse {
 }
 
 export type SavingsSetupStatus =
-    /** Show select options what kind of documents there will be KYC'ed. */
+    /** Show select options what kind of documents the will be KYC'ed. */
     | 'KYC'
     /** More like questionare - can't fail. */
     | 'AML'
+    /** User needs to verify bank account on partner's website. */
+    | 'BankAccountVerification'
     /** User setups savings plan parameters (frequency, amount, etc.). */
     | 'SetSavingsParameters';
 
@@ -112,6 +114,12 @@ export type SavingsKYCStatus =
     | 'Verified'
     /** KYC docs are invalid or anything could be wrong. Expecting reason from our partner to handover to the user. */
     | 'Failed';
+
+export type SavingsAMLStatus =
+    /** AML process didn't start yet. */
+    | 'Open'
+    /** AML process passed successfully. */
+    | 'Verified';
 
 export type PaymentFrequency = 'Weekly' | 'BiWeekly' | 'Monthly' | 'Quarterly';
 
@@ -186,6 +194,7 @@ export interface SavingsTradeAMLAnswerOption {
 export interface SavingsTrade {
     status?: SavingsStatus;
     kycStatus?: SavingsKYCStatus;
+    amlStatus?: SavingsAMLStatus;
 
     errors?: string[];
 
