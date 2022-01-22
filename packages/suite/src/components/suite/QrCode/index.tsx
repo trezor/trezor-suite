@@ -5,7 +5,7 @@ import { colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     margin: 0 auto 28px;
-    padding: 4px; /* some qr code scanners can't recognize qr codes on dark background, having white border around helps with this */
+    padding: 12px; /* some qr code scanners can't recognize qr codes on dark background, having white border around helps with this */
     background: ${colors.BG_WHITE};
 `;
 
