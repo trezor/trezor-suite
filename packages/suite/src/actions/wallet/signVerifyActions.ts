@@ -220,7 +220,7 @@ export const sendAopp =
 
         const { success, error } = await fetch(callback, {
             method: 'POST',
-            headers: { 'content-type': 'application/json; utf-8' },
+            headers: { 'content-type': 'application/json; charset=utf-8' },
             body: JSON.stringify({
                 version: 0,
                 address,
