@@ -96,6 +96,7 @@ export const fixtures = {
                 exception: 'value out of range',
                 hex64: '0100000000002000',
                 hexVI: 'ff0100000000000020',
+                // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
                 dec: 9007199254740993,
             },
         ],
