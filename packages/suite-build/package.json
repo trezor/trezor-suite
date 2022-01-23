@@ -18,7 +18,7 @@
         "desktop": "PROJECT=desktop yarn run base",
         "dev:desktop": "yarn run desktop",
         "build:desktop": "NODE_ENV=production yarn run desktop",
-        "lint": "eslint '**/*{.ts,.tsx}'",
+        "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
