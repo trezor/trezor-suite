@@ -5,7 +5,7 @@
     "scripts": {
         "type-check": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "lint": "eslint . --ext .tsx,.ts",
+        "lint": "eslint '**/*.{ts,tsx,js}'",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "dev": "rimraf ./build && yarn workspace @trezor/suite-build run dev:web",
         "analyze": "ANALYZE=true yarn build",
