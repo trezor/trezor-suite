@@ -6,8 +6,10 @@ module.exports = api => {
             'module-resolver',
             {
                 alias: {
-                    '^@suite-web-landing-components/(.+)': '../../packages/suite-web-landing/components/\\1/\\2',
-                    '^@suite-web-landing-components': '../../packages/suite-web-landing/components/\\1/index',
+                    '^@suite-web-landing-components/(.+)':
+                        '../../packages/suite-web-landing/components/\\1/\\2',
+                    '^@suite-web-landing-components':
+                        '../../packages/suite-web-landing/components/\\1/index',
                     '^@(.+)-components/(.+)': '../../packages/suite/src/components/\\1/\\2',
                     '^@(.+)-config/(.+)': '../../packages/suite/src/config/\\1/\\2',
                     '^@(.+)-config': '../../packages/suite/src/config/\\1/index',

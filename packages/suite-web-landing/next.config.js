@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 const path = require('path');
 const webpack = require('webpack');
 const withTranspileModules = require('next-transpile-modules')(['@trezor/suite']);
