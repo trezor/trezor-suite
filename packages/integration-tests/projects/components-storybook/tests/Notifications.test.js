@@ -39,9 +39,7 @@ describe('Notifications', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Notifications&selectedStory=All&full=0');
-            cy.getTestElement(testName)
-                .should('be.visible')
-                .matchImageSnapshot();
+            cy.getTestElement(testName).should('be.visible').matchImageSnapshot();
         });
     });
 });

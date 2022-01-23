@@ -12,9 +12,7 @@ describe('Loaders', () => {
     ].forEach(testName => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Loaders&selectedStory=All&full=0');
-            cy.getTestElement(testName)
-                .should('be.visible')
-                .matchImageSnapshot();
+            cy.getTestElement(testName).should('be.visible').matchImageSnapshot();
         });
     });
 });

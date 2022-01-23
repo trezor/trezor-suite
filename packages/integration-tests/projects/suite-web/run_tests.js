@@ -1,6 +1,5 @@
 /* eslint-disable no-continue */
 /* eslint-disable camelcase */
-/* eslint-disable @typescript-eslint/no-var-requires */
 
 /*
     Heavily inspired by Mattermost,
@@ -52,28 +51,27 @@ function getTestFiles() {
         .filter(f => f.includes('.test.'));
 }
 
-const wait = (timeout) => {
-    return new Promise((resolve) => {
+const wait = timeout =>
+    new Promise(resolve => {
         setTimeout(() => {
-            resolve()
-        }, timeout)
-    })
-}
+            resolve();
+        }, timeout);
+    });
 
 async function runTests() {
-
-
     // wait for trezor-user-env
     let retries = 0;
     let connected = false;
     const controller = new Controller({ url: 'ws://localhost:9001/' });
     while (!connected && retries < 60) {
         try {
+            // eslint-disable-next-line no-await-in-loop
             await controller.connect();
             connected = true;
         } catch (err) {
             console.log('waiting for trezor-user-env...');
         }
+        // eslint-disable-next-line no-await-in-loop
         await wait(1000);
         retries++;
     }

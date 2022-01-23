@@ -21,34 +21,31 @@ describe('bridge', () => {
         await setup(controller);
 
         await wait(1000);
-    })
+    });
 
     afterEach(() => {
-        controller.disconnect()
-    })
+        controller.disconnect();
+    });
 
     test('enumerate - acquire - getFeatures', async () => {
-
-        BridgeV2.setFetch(fetch, true)
+        BridgeV2.setFetch(fetch, true);
 
         const bridge = new BridgeV2(null, null);
         await bridge.init(false);
         await bridge.configure(messages);
 
-        const devices = await bridge.enumerate()
+        const devices = await bridge.enumerate();
 
-        expect(devices).toEqual(
-            [
-                {
-                    path: '1',
-                    session: null,
-                    debugSession: null,
-                    product: 0,
-                    vendor: 0,
-                    debug: true
-                }
-            ]
-        )
+        expect(devices).toEqual([
+            {
+                path: '1',
+                session: null,
+                debugSession: null,
+                product: 0,
+                vendor: 0,
+                debug: true,
+            },
+        ]);
 
         const session = await bridge.acquire({ path: devices[0].path });
 
@@ -59,7 +56,7 @@ describe('bridge', () => {
             message: {
                 vendor: 'trezor.io',
                 label: 'TrezorT',
-            }
+            },
         });
-    })
-})
+    });
+});

@@ -7,19 +7,16 @@ addMatchImageSnapshotCommand({
 });
 
 Cypress.Commands.add('getTestElement', selector =>
-    cy
-        .get(`[data-test="${selector}"]`)
-        .should('exist')
-        .should('be.visible'),
+    cy.get(`[data-test="${selector}"]`).should('exist').should('be.visible'),
 );
 
-Cypress.Commands.add('loadContent', url => {
-    return cy.visit(url).then(() => {
-        return cy.document().then(doc => {
-            return doc.fonts.ready.then(() => {
+Cypress.Commands.add('loadContent', url =>
+    cy.visit(url).then(() =>
+        cy.document().then(doc =>
+            doc.fonts.ready.then(() => {
                 cy.wait(200);
                 return doc.fonts.load('14px "TT Hoves"');
-            });
-        });
-    });
-});
+            }),
+        ),
+    ),
+);

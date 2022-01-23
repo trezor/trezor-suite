@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 
@@ -74,7 +75,7 @@ class GoogleMock {
 
             const json = JSON.parse(jsonStr);
             if (id) {
-                const file = Object.values(this.files).find(f => f.id == id);
+                const file = Object.values(this.files).find(f => f.id === id);
                 if (!file) throw new Error('no such file exists');
                 file.data = data;
             } else {
@@ -115,7 +116,7 @@ class GoogleMock {
         });
 
         app.get('/drive/v3/files/:id', express.json(), (req, res) => {
-            const id = req.params.id;
+            const { id } = req.params;
             console.log('[mockGoogleDrive]: get', req.params.id);
             const file = Object.values(this.files).find(f => f.id === id);
             if (file) {

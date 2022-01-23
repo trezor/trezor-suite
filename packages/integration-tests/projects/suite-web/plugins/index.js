@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/no-var-requires */
 
 // it appears that plugins must be .js files, refer to this example by cypress dev
 // https://github.com/bahmutov/add-typescript-to-cypress/tree/master/e2e/cypress
