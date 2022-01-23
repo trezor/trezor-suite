@@ -1,9 +1,11 @@
 import messages from '../../suite/src/support/messages';
 
-type Message = {[key: string]: {
-    id: string;
-    defaultMessage: string;
-}}
+type Message = {
+    [key: string]: {
+        id: string;
+        defaultMessage: string;
+    };
+};
 
 const ids = {};
 const defaultMessages = {};
@@ -20,10 +22,11 @@ Object.keys(messages as unknown as Message[]).forEach((key: string) => {
     defaultMessages[messages[key].defaultMessage] += 1;
 });
 
-const getDuplicates = (obj) => {
+const getDuplicates = obj =>
     // @ts-ignore
-    return Object.entries(obj).filter(([key, value]) => value > 1).map(([key, value]) => ({value: key, occurrences: value})) 
-} 
+    Object.entries(obj)
+        .filter(([key, value]) => value > 1)
+        .map(([key, value]) => ({ value: key, occurrences: value }));
 
 const duplicatedIds = getDuplicates(ids);
 

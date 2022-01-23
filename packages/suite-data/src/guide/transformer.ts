@@ -3,9 +3,7 @@ import * as fs from 'fs-extra';
 import { Node } from './parser';
 
 /** Removes the front-matter from beginning of a string. */
-const clean = (md: string): string => {
-    return md.replace(/^---\n.*?\n---\n/s, '');
-};
+const clean = (md: string): string => md.replace(/^---\n.*?\n---\n/s, '');
 
 /**
  * Given index of GitBook content transforms the content
