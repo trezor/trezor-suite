@@ -25,13 +25,12 @@ logs
 *.log
 .yarnclean
 
-coverage
 
 .attic
 .env*
 !.env.dev
-dist
 
+# cache
 *.code-workspace
 __docker-snapshots__
 __pycache__/
@@ -43,3 +42,9 @@ docker/trezor-user-env/controller/emulator.img
 
 # Vagrant
 .vagrant
+
+# build outputs
+lib
+dist
+public
+coverage
