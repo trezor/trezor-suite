@@ -1,3 +1,4 @@
+/* eslint-disable */
 var stdin = process.openStdin();
 
 var data = "";
