@@ -38,6 +38,7 @@ export default class BridgeTransport {
 
     async _post(options: IncompleteRequestOptions) {
         if (this.stopped) {
+            // eslint-disable-next-line prefer-promise-reject-errors
             return Promise.reject(`Transport stopped.`);
         }
         return http({

@@ -11,6 +11,7 @@ import type { MessageFromTrezor, TrezorDeviceInfoWithSession, AcquireInput } fro
 
 import { postModuleMessage } from './sharedConnectionWorker';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const stringify = require('json-stable-stringify');
 
 function stableStringify(devices?: Array<TrezorDeviceInfoWithSession>): string {
@@ -31,7 +32,10 @@ function compare(a: TrezorDeviceInfoWithSession, b: TrezorDeviceInfoWithSession)
     if (!Number.isNaN(parseInt(a.path, 10))) {
         return parseInt(a.path, 10) - parseInt(b.path, 10);
     }
-    return a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
+    if (a.path < b.path) {
+        return -1;
+    }
+    return a.path > b.path ? 1 : 0;
 }
 
 const ITER_MAX = 60;
@@ -420,6 +424,7 @@ export default class LowlevelTransportWithSharedConnections {
     defereds: { [id: number]: Deferred<MessageFromSharedWorker> } = {};
     sendToWorker(message: MessageToSharedWorker): Promise<MessageFromSharedWorker> {
         if (this.stopped) {
+            // eslint-disable-next-line prefer-promise-reject-errors
             return Promise.reject(`Transport stopped.`);
         }
 

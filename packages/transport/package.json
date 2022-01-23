@@ -1,40 +1,40 @@
 {
-  "name": "@trezor/transport",
-  "version": "1.0.1",
-  "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/trezor/trezor-suite.git"
-  },
-  "bugs": {
-      "url": "https://github.com/trezor/trezor-suite/issues"
-  },
-  "keywords": [
-      "Trezor",
-      "transport"
-  ],
-  "main": "./lib/index.js",
-  "files": [
-    "lib/"
-  ],
-  "scripts": {
-    "lint": "eslint src",
-    "type-check": "tsc --project tsconfig.json",
-    "build:lib": "rm -rf lib && tsc --p ./tsconfig.lib.json",
-    "publish:lib": "./scripts/publish-lib.sh",
-    "test:unit": "jest",
-    "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration"
-  },
-  "devDependencies": {
-    "@types/bytebuffer": "^5.0.42",
-    "@types/jest": "^27.0.1",
-    "@types/w3c-web-usb": "^1.0.5"
-  },
-  "dependencies": {
-    "bytebuffer": "^5.0.1",
-    "json-stable-stringify": "^1.0.1",
-    "long": "^4.0.0",
-    "protobufjs": "^6.11.2"
-  }
+    "name": "@trezor/transport",
+    "version": "1.0.1",
+    "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "transport"
+    ],
+    "main": "./lib/index.js",
+    "files": [
+        "lib/"
+    ],
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --project tsconfig.json",
+        "build:lib": "rm -rf lib && tsc --p ./tsconfig.lib.json",
+        "publish:lib": "./scripts/publish-lib.sh",
+        "test:unit": "jest",
+        "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration"
+    },
+    "devDependencies": {
+        "@types/bytebuffer": "^5.0.42",
+        "@types/jest": "^27.0.1",
+        "@types/w3c-web-usb": "^1.0.5"
+    },
+    "dependencies": {
+        "bytebuffer": "^5.0.1",
+        "json-stable-stringify": "^1.0.1",
+        "long": "^4.0.0",
+        "protobufjs": "^6.11.2"
+    }
 }
