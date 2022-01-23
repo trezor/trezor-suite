@@ -24,7 +24,7 @@
         "test:unit": "jest",
         "test:watch": "jest --watch",
         "test:integration": "ts-node ./start-integration.ts",
-        "lint": "eslint . --ext .ts",
+        "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
