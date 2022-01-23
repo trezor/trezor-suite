@@ -19,7 +19,9 @@
         "javascript"
     ],
     "main": "./lib/index.js",
-    "files": ["lib/"],
+    "files": [
+        "lib/"
+    ],
     "types": "lib/index.d.ts",
     "typings": "lib/index.d.ts",
     "browser": {
@@ -32,7 +34,7 @@
         "build:workers": "rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",
-        "lint": "eslint '**/*.ts'",
+        "lint": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --verbose -c jest.config.unit.js",
         "test:integration": "jest -c jest.config.integration.js",
         "type-check": "tsc --project tsconfig.json"
