@@ -12,7 +12,7 @@ const buildWorker = entry => {
     internal.forEach(file => {
         const libFile = file.replace(src, lib);
         fs.copySync(file, libFile);
-        fs.copySync(file, libFile + '.flow');
+        fs.copySync(file, `${libFile}.flow`);
     });
 };
 
