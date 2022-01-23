@@ -4,13 +4,10 @@
  *
  * @format
  */
-/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const blacklist = require('metro-config/src/defaults/blacklist');
 const nodejs = require('node-libs-browser');
 const { getDefaultConfig } = require('metro-config');
-
-/* eslint-enable */
 
 module.exports = (async () => {
     const {
@@ -20,6 +17,7 @@ module.exports = (async () => {
         projectRoot: path.resolve(__dirname, '../../'),
         transformer: {
             babelTransformerPath: require.resolve('react-native-svg-transformer'),
+            // eslint-disable-next-line require-await
             getTransformOptions: async () => ({
                 transform: {
                     experimentalImportSupport: false,
