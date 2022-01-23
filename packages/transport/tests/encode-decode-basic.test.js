@@ -1,117 +1,117 @@
-const encode = require('../src/lowlevel/protobuf/encode').encode;
-const decode = require('../src/lowlevel/protobuf/decode').decode;
+const { encode } = require('../src/lowlevel/protobuf/encode');
+const { decode } = require('../src/lowlevel/protobuf/decode');
 
-const ProtoBuf = require("protobufjs/light");
+const ProtoBuf = require('protobufjs/light');
 
 const messages = {
-    "nested": {
-        "messages": {
-            "nested": {
-                "String": {
-                    "fields": {
-                        "field": {
-                            "rule": "required",
-                            "type": "string",
-                            "id": 1
-                        }
-                    }
+    nested: {
+        messages: {
+            nested: {
+                String: {
+                    fields: {
+                        field: {
+                            rule: 'required',
+                            type: 'string',
+                            id: 1,
+                        },
+                    },
                 },
-                "Uint32": {
-                    "fields": {
-                        "field": {
-                            "rule": "required",
-                            "type": "uint32",
-                            "id": 2
-                        }
-                    }
+                Uint32: {
+                    fields: {
+                        field: {
+                            rule: 'required',
+                            type: 'uint32',
+                            id: 2,
+                        },
+                    },
                 },
-                "Uint64": {
-                    "fields": {
-                        "field": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 3
-                        }
-                    }
+                Uint64: {
+                    fields: {
+                        field: {
+                            rule: 'required',
+                            type: 'uint64',
+                            id: 3,
+                        },
+                    },
                 },
-                "Bool": {
-                    "fields": {
-                        "field": {
-                            "rule": "required",
-                            "type": "bool",
-                            "id": 4
-                        }
-                    }
+                Bool: {
+                    fields: {
+                        field: {
+                            rule: 'required',
+                            type: 'bool',
+                            id: 4,
+                        },
+                    },
                 },
-                "Sint32": {
-                    "fields": {
-                        "field": {
-                            "rule": "required",
-                            "type": "sint32",
-                            "id": 5
-                        }
-                    }
+                Sint32: {
+                    fields: {
+                        field: {
+                            rule: 'required',
+                            type: 'sint32',
+                            id: 5,
+                        },
+                    },
                 },
-                "Sint64": {
-                    "fields": {
-                        "field": {
-                            "rule": "required",
-                            "type": "sint64",
-                            "id": 6
-                        }
-                    }
+                Sint64: {
+                    fields: {
+                        field: {
+                            rule: 'required',
+                            type: 'sint64',
+                            id: 6,
+                        },
+                    },
                 },
-                "Bytes": {
-                    "fields": {
-                        "field": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 7
-                        }
-                    }
+                Bytes: {
+                    fields: {
+                        field: {
+                            rule: 'required',
+                            type: 'bytes',
+                            id: 7,
+                        },
+                    },
                 },
 
                 //  complex and real life examples
-                "ComplexFieldOfOptionals": {
-                    "fields": {
-                        "bool": {
-                            "rule": "optional",
-                            "type": "bool",
-                            "id": 8
+                ComplexFieldOfOptionals: {
+                    fields: {
+                        bool: {
+                            rule: 'optional',
+                            type: 'bool',
+                            id: 8,
                         },
-                        "number": {
-                            "rule": "optional",
-                            "type": "uint32",
-                            "id": 9
-                        }
-                    }
+                        number: {
+                            rule: 'optional',
+                            type: 'uint32',
+                            id: 9,
+                        },
+                    },
                 },
 
-                "Repeated": {
-                    "fields": {
-                        "bool": {
-                            "rule": "repeated",
-                            "type": "bool",
-                            "id": 8
+                Repeated: {
+                    fields: {
+                        bool: {
+                            rule: 'repeated',
+                            type: 'bool',
+                            id: 8,
                         },
-                    }
+                    },
                 },
 
-                "Defaults": {
-                    "fields": {
-                        "string": {
-                            "type": "string",
-                            "id": 8,
-                            "options": {
-                                "defaults": "hello world"
-                            }
+                Defaults: {
+                    fields: {
+                        string: {
+                            type: 'string',
+                            id: 8,
+                            options: {
+                                defaults: 'hello world',
+                            },
                         },
-                    }
-                }
-            }
-        }
-    }
-}
+                    },
+                },
+            },
+        },
+    },
+};
 
 const basicFixtures = [
     {
@@ -161,10 +161,13 @@ const basicFixtures = [
     },
     {
         name: 'Bytes',
-        params: { field: '851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100' },
-        encoded: '3a40851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100',
-    }]
-
+        params: {
+            field: '851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100',
+        },
+        encoded:
+            '3a40851fc9542342321af63ecbba7d3ece545f2a42bad01ba32cff5535b18e54b6d3106e10b6a4525993d185a1443d9a125186960e028eabfdd8d76cf70a3a7e3100',
+    },
+];
 
 // note: difference in bool encoding. if type === bool && field = optional && not message of only one field, bool is encoded as ""
 const advancedFixtures = [
@@ -182,11 +185,11 @@ const advancedFixtures = [
     },
     {
         name: 'Defaults',
-        in: { string: "" },
+        in: { string: '' },
         encoded: '4200',
-        out: { string: "" },
+        out: { string: '' },
     },
-]
+];
 
 describe('basic concepts', () => {
     const Messages = ProtoBuf.Root.fromJSON(messages);
@@ -198,16 +201,16 @@ describe('basic concepts', () => {
 
                 test(f.name, async () => {
                     // serialize new way - this is to confirm new lib won't break old behavior
-                    const encoded = encode(Message, f.params)
+                    const encoded = encode(Message, f.params);
                     expect(encoded.toString('hex')).toEqual(f.encoded);
 
                     // deserialize new way - this is to confirm new lib won't break old behavior
                     const decoded = decode(Message, encoded);
                     expect(decoded).toEqual(f.params);
                 });
-            })
-        })
-    })
+            });
+        });
+    });
 
     describe('advanced', () => {
         advancedFixtures.forEach(f => {
@@ -216,7 +219,7 @@ describe('basic concepts', () => {
 
                 test(f.name, () => {
                     // serialize new way - this is to confirm new lib won't break old behavior
-                    const encoded = encode(Message, f.in)
+                    const encoded = encode(Message, f.in);
 
                     expect(encoded.toString('hex')).toEqual(f.encoded);
 
@@ -224,38 +227,37 @@ describe('basic concepts', () => {
                     const decoded = decode(Message, encoded);
 
                     expect(decoded).toEqual(f.out);
-                })
-            })
-
-        })
+                });
+            });
+        });
 
         test('Different protobuf between receiving ends', () => {
             const messages = {
-                "nested": {
-                    "messages": {
-                        "nested": {
-                            "ButtonRequest": {
-                                "fields": {
-                                    "code": {
-                                        "type": "string",
-                                        "id": 1
+                nested: {
+                    messages: {
+                        nested: {
+                            ButtonRequest: {
+                                fields: {
+                                    code: {
+                                        type: 'string',
+                                        id: 1,
                                     },
-                                    "pages": {
-                                        "type": "uint32",
-                                        "id": 2
-                                    }
+                                    pages: {
+                                        type: 'uint32',
+                                        id: 2,
+                                    },
                                 },
-                            }
-                        }
-                    }
-                }
-            }
+                            },
+                        },
+                    },
+                },
+            };
 
             const SenderMessages = ProtoBuf.Root.fromJSON(messages);
             const senderEncoded = encode(SenderMessages.lookup('messages.ButtonRequest'), {
                 type: 'foo',
                 pages: 123,
-            })
+            });
 
             const receiverMessages = messages;
             // now change field type from uint32 to string
@@ -264,7 +266,7 @@ describe('basic concepts', () => {
 
             expect(() => {
                 decode(ReceiverMessages.lookup('messages.ButtonRequest'), senderEncoded);
-            }).toThrow()
-        })
+            }).toThrow();
+        });
     });
-})
+});

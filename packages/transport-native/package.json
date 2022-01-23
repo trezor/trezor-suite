@@ -23,7 +23,7 @@
     ],
     "scripts": {
         "type-check": "tsc --noEmit",
-        "lint": "eslint \"**/*.{js,ts,tsx}\""
+        "lint": "eslint '**/*.{ts,tsx,js}'"
     },
     "keywords": [
         "Trezor",
