@@ -3,7 +3,7 @@ lint:
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
-    - lerna run lint
+    - yarn lint
 
 typescript:
   stage: validation
