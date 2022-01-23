@@ -36,6 +36,7 @@ dist
 __docker-snapshots__
 __pycache__/
 .cache/
+.eslintcache
 
 # model 1 emulation file
 docker/trezor-user-env/controller/emulator.img

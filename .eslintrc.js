@@ -1,11 +1,12 @@
 module.exports = {
+    root: true,
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        ecmaVersion: 2018,
+        // latest is best, because it's backwards compatible and we have linted everything
+        ecmaVersion: 'latest',
         sourceType: 'module',
         ecmaFeatures: {
             jsx: true,
-            modules: true,
         },
     },
     plugins: ['import', '@typescript-eslint', 'react-hooks', 'prettier'],
@@ -20,6 +21,24 @@ module.exports = {
             version: 'detect',
         },
     },
+    ignorePatterns: [
+        '**/lib/*',
+        '**/dist/*',
+        '**/coverage/*',
+        '**/build/*',
+        '**/build-electron/*',
+        '**/node_modules/*',
+        'packages/suite-data/files/*',
+    ],
+    overrides: [
+        {
+            files: ['**/*.js'],
+            rules: {
+                // JS files are usually configs or scripts where require is OK
+                '@typescript-eslint/no-var-requires': 'off',
+            },
+        },
+    ],
     rules: {
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
@@ -46,7 +65,17 @@ module.exports = {
         'import/prefer-default-export': 'off',
         // Does not work with Babel react-native to react-native-web
         'import/no-unresolved': 'off',
-        'import/extensions': ['error', 'never'],
+        'import/extensions': [
+            'error',
+            'never',
+            {
+                ignorePackages: true,
+                pattern: {
+                    // it's nice to explicitly know we are dealing with JSON
+                    json: 'always',
+                },
+            },
+        ],
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'error',
         'import/no-anonymous-default-export': [

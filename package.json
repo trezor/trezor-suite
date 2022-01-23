@@ -29,7 +29,9 @@
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
         "suite:build:web": "yarn workspace @trezor/suite-web build",
         "type-check": "yarn lerna run type-check",
-        "lint": "yarn lerna run lint",
+        "test:unit": "yarn lerna run test:unit",
+        "lint:js": "eslint --cache --ignore-path .gitignore --ext .js,.ts,.tsx ./",
+        "lint": "yarn lerna run lint:styles && yarn lint:js",
         "lint-staged": "npx lint-staged"
     },
     "lint-staged": {
