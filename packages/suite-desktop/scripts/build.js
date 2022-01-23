@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const child_process = require('child_process');
+const childProcess = require('child_process');
 const glob = require('glob');
 const { build } = require('esbuild');
 const pkg = require('../package.json');
@@ -13,7 +13,7 @@ const isDev = NODE_ENV !== 'production';
 const useMocks = USE_MOCKS === 'true' || (isDev && USE_MOCKS !== 'false');
 
 // Get git revision
-const gitRevision = child_process.execSync('git rev-parse HEAD').toString().trim();
+const gitRevision = childProcess.execSync('git rev-parse HEAD').toString().trim();
 
 // Get all modules (used as entry points)
 const modulePath = path.join(electronSource, 'modules');
