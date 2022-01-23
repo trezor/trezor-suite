@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
 

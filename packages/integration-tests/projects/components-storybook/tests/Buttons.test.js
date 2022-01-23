@@ -49,9 +49,7 @@ describe('Buttons', () => {
                         cy.get(el).should('be.visible');
                     });
             }
-            cy.getTestElement(testName)
-                .should('be.visible')
-                .matchImageSnapshot();
+            cy.getTestElement(testName).should('be.visible').matchImageSnapshot();
         });
     });
 });

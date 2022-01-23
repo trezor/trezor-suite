@@ -18,9 +18,7 @@ describe('Typography', () => {
         it(`${testName}`, () => {
             cy.loadContent('/iframe.html?selectedKind=Typography&selectedStory=All&full=0');
             cy.wait(666);
-            cy.getTestElement(testName)
-                .should('be.visible')
-                .matchImageSnapshot();
+            cy.getTestElement(testName).should('be.visible').matchImageSnapshot();
         });
     });
 });
