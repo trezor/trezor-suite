@@ -11,7 +11,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Bundle and build of trezor-connect iframe",
     "scripts": {
-        "lint": "eslint '**/*.ts'",
+        "lint": "eslint '**/*.{ts,tsx,js}'",
         "build:lib": "rimraf build && webpack --config ./webpack/prod.webpack.config.js",
         "type-check": "tsc --project tsconfig.json"
     },
