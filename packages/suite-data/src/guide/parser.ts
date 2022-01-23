@@ -33,14 +33,11 @@ export interface Page {
 export type Node = Category | Page;
 
 /** @returns true if given path is a directory. */
-const isDirectory = (path: string): boolean => {
-    return fs.lstatSync(path).isDirectory();
-};
+const isDirectory = (path: string): boolean => fs.lstatSync(path).isDirectory();
 
 /** @returns true if left and right are variants of the same content. */
-const match = (left: Node, right: Node): boolean => {
-    return left.type === right.type && left.id === right.id;
-};
+const match = (left: Node, right: Node): boolean =>
+    left.type === right.type && left.id === right.id;
 
 export class Parser {
     private source: string;
@@ -125,7 +122,7 @@ export class Parser {
                 title: {
                     [locale]: this.parseDirTitle(path),
                 },
-                children: children,
+                children,
             };
         }
 
@@ -167,9 +164,9 @@ export class Parser {
         return {
             ...(common as Category),
             children: left.children.map(leftChild => {
-                const rightChild = (right as Category).children.find(candidate => {
-                    return match(leftChild, candidate);
-                });
+                const rightChild = (right as Category).children.find(candidate =>
+                    match(leftChild, candidate),
+                );
 
                 if (rightChild === undefined) {
                     console.warn(`Missing ${right.locales} alternative for ${leftChild.id}`);
@@ -184,14 +181,13 @@ export class Parser {
     /** @returns list of all locales found in GitBook source. */
     private parseLocales(): string[] {
         // Use heuristics to distinguish locale directories from other files.
-        return fs.readdirSync(this.source).filter(it => {
-            // All locales should be 2 letters long.
-            return (
+        return fs.readdirSync(this.source).filter(
+            it =>
+                // All locales should be 2 letters long.
                 it.length === 2 &&
                 // All locales should be GitBook groups and hence directories.
-                isDirectory(join(this.source, it))
-            );
-        });
+                isDirectory(join(this.source, it)),
+        );
     }
 
     /**

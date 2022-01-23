@@ -7,9 +7,7 @@ import * as fse from 'fs-extra';
 import * as crypto from 'crypto';
 
 // to simplify assertion
-const getHash = (str: string) => {
-    return crypto.createHash('md5').update(str).digest('hex');
-};
+const getHash = (str: string) => crypto.createHash('md5').update(str).digest('hex');
 
 const imagePaths = fse.readdirSync('files/images/svg');
 
