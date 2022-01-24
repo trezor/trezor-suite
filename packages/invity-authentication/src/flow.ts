@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
     NOTE: Do not set style to elements explicitly (like element.setAttribute('style', '...')).
     Browser doesn't allow to change style attribute due to security reason.
