@@ -175,8 +175,6 @@ export interface SavingsTradeUserKYCStartDocumentImage {
 }
 
 export interface SavingsTradeUserKYCStart {
-    documentNumber: string;
-    documentCountry: string;
     documentType: SavingsTradeUserKYCStartDocumentType;
     documentImages: SavingsTradeUserKYCStartDocumentImage[];
 }
@@ -224,7 +222,7 @@ export interface SavingsTrade {
 
     userRegistration?: SavingsTradeUserRegistration;
 
-    userKYCStart?: SavingsTradeUserKYCStart;
+    userKYCStart?: SavingsTradeUserKYCStart[];
 
     amlQuestions?: SavingsTradeAMLQuestion[];
 

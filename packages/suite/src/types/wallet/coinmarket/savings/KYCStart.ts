@@ -1,15 +1,21 @@
 import type { TypedValidationRules } from '@wallet-types/form';
 import type { DropzoneState } from 'react-dropzone';
 import type { UseFormMethods } from 'react-hook-form';
-import type { Option, TranslationOption } from '@wallet-types/coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type {
+    SavingsListResponse,
+    SavingsTradeUserKYCStartDocumentType,
+} from '@suite-services/invityAPI';
 
 export type UseSavingsKYCStartProps = WithSelectedAccountLoadedProps;
 
+interface IdentityDocumentTypeOption {
+    label: SavingsTradeUserKYCStartDocumentType;
+    value: SavingsTradeUserKYCStartDocumentType;
+}
+
 export interface SavingsKYCStartFormState {
-    documentCountry: Option;
-    documentType: TranslationOption;
-    documentNumber: string;
+    documentType: IdentityDocumentTypeOption;
     documentImageFront: string;
     documentImageBack: string;
     documentImageSelfie?: string;
@@ -25,9 +31,7 @@ export type SavingsKYCStartContextValues = Omit<
     frontDropzoneState: DropzoneState;
     backDropzoneState: DropzoneState;
     selfieDropzoneState: DropzoneState;
-    defaultDocumentCountry?: Option;
-    defaultDocumentType?: TranslationOption;
-    documentCountryOptions?: Option[];
-    documentTypeOptions?: TranslationOption[];
+    defaultDocumentType?: IdentityDocumentTypeOption;
+    documentTypes?: SavingsListResponse['providers'][0]['identityDocuments'];
     isSelfieRequired?: boolean;
 };

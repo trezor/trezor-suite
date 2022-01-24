@@ -1,14 +1,16 @@
 import React from 'react';
-import { Button, Flag, Input, Select, variables } from '@trezor/components';
+import { Button, Select } from '@trezor/components';
 import { useSavingsKYCStart } from '@wallet-hooks/coinmarket/savings/useSavingsKYCStart';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { Controller } from 'react-hook-form';
-import type { CountryOption } from '@wallet-types/coinmarketCommonTypes';
-import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
 import KYCImageDropzone from './components/KYCImageDropzone';
-import { InputError, WithInvityLayoutProps, withInvityLayout } from '@wallet-components';
-import { getInputState } from '@wallet-views/coinmarket';
+import { WithInvityLayoutProps, withInvityLayout } from '@wallet-components';
+import {
+    SavingsProviderInfoIdentityDocument,
+    SavingsTradeUserKYCStartDocumentType,
+} from '@suite/services/suite/invityAPI';
+import type { SavingsKYCStartContextValues } from '@wallet-types/coinmarket/savings/KYCStart';
 
 const Header = styled.div`
     font-style: normal;
@@ -16,21 +18,6 @@ const Header = styled.div`
     font-size: 24px;
     line-height: 24px;
     margin-bottom: 21px;
-`;
-
-const OptionLabel = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const FlagWrapper = styled.div`
-    padding-right: 10px;
-`;
-
-const LabelText = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Row = styled.div`
@@ -42,29 +29,59 @@ const Row = styled.div`
     }
 `;
 
+type SavingsIdentityDocumentType = SavingsProviderInfoIdentityDocument['documentType'];
+type SavingsIdentityDocumentTypeUpperCase = Uppercase<SavingsIdentityDocumentType>;
+
+const translationSavingsKYCStartDocumentTypePrefix = 'TR_SAVINGS_KYC_START_DOCUMENT_TYPE_' as const;
+
+type SavingsIdentityDocumentTypeTranslationIdType =
+    `${typeof translationSavingsKYCStartDocumentTypePrefix}${SavingsIdentityDocumentTypeUpperCase}`;
+
+const getSavingsIdentityDocumentTypeTranslationId = (
+    identityDocumentType: SavingsIdentityDocumentType,
+): SavingsIdentityDocumentTypeTranslationIdType =>
+    identityDocumentType &&
+    (`${translationSavingsKYCStartDocumentTypePrefix}${identityDocumentType.toUpperCase()}` as SavingsIdentityDocumentTypeTranslationIdType);
+
+const getDocumentTypesOptions = (documentTypes: SavingsKYCStartContextValues['documentTypes']) =>
+    documentTypes
+        ?.filter(item => item.documentType !== 'Selfie')
+        .map(item => ({
+            label: item.documentType,
+            value: item.documentType,
+        }));
+
 const KYCStart = (props: WithInvityLayoutProps) => {
     const {
         control,
         errors,
-        register,
         onSubmit,
+        watch,
         handleSubmit,
         frontDropzoneState,
         backDropzoneState,
         selfieDropzoneState,
-        documentCountryOptions,
-        documentTypeOptions,
-        defaultDocumentCountry,
         defaultDocumentType,
         isSelfieRequired,
+        documentTypes,
     } = useSavingsKYCStart(props);
 
-    const documentCountrySelectName = 'documentCountry';
     const documentTypeSelectName = 'documentType';
-    const documentNumberInputName = 'documentNumber';
     const documentImageFrontInputName = 'documentImageFront';
     const documentImageBackInputName = 'documentImageBack';
     const documentImageSelfieInputName = 'documentImageSelfie';
+
+    const selectedDocumentType = watch(documentTypeSelectName, defaultDocumentType);
+    const showFrontDropzone = documentTypes?.some(
+        item =>
+            item.documentType === selectedDocumentType.value &&
+            item.documentImageSides.includes('Front'),
+    );
+    const showBackDropzone = documentTypes?.some(
+        item =>
+            item.documentType === selectedDocumentType.value &&
+            item.documentImageSides.includes('Back'),
+    );
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -74,94 +91,53 @@ const KYCStart = (props: WithInvityLayoutProps) => {
             <Row>
                 <Controller
                     control={control}
-                    name={documentCountrySelectName}
-                    defaultValue={defaultDocumentCountry}
-                    render={({ onChange, value }) => (
-                        <Select
-                            label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_COUNTRY_LABEL" />}
-                            options={documentCountryOptions}
-                            isSearchable
-                            value={value}
-                            formatOptionLabel={(option: CountryOption) => {
-                                const labelParts = getCountryLabelParts(option.label);
-                                if (!labelParts) return null;
-
-                                return (
-                                    <OptionLabel>
-                                        <FlagWrapper>
-                                            <Flag country={option.value} />
-                                        </FlagWrapper>
-                                        <LabelText>{labelParts.text}</LabelText>
-                                    </OptionLabel>
-                                );
-                            }}
-                            hideTextCursor
-                            onChange={onChange}
-                        />
-                    )}
-                />
-            </Row>
-            <Row>
-                <Controller
-                    control={control}
                     name={documentTypeSelectName}
-                    defaultValue={defaultDocumentType}
+                    defaultValue={selectedDocumentType}
                     render={({ onChange, value }) => (
                         <Select
                             value={value}
                             label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_TYPE_LABEL" />}
-                            options={documentTypeOptions}
+                            options={getDocumentTypesOptions(documentTypes)}
                             onChange={onChange}
-                            innerRef={register({
-                                validate: (value: string) => {
-                                    if (!value) {
-                                        return (
-                                            <Translation id="TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_REQUIRED" />
-                                        );
-                                    }
-                                },
-                            })}
+                            formatOptionLabel={({ value }: any) => (
+                                <Translation
+                                    id={getSavingsIdentityDocumentTypeTranslationId(
+                                        value as SavingsTradeUserKYCStartDocumentType,
+                                    )}
+                                />
+                            )}
                         />
                     )}
                 />
             </Row>
-            <Row>
-                <Input
-                    label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_LABEL" />}
-                    name={documentNumberInputName}
-                    state={getInputState(errors[documentNumberInputName])}
-                    innerRef={register({
-                        validate: (value: string) => {
-                            if (!value) {
-                                return (
-                                    <Translation id="TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_REQUIRED" />
-                                );
-                            }
-                        },
-                    })}
-                    bottomText={<InputError error={errors[documentNumberInputName]} />}
-                />
-            </Row>
-            <Row>
-                <KYCImageDropzone
-                    control={control}
-                    name={documentImageFrontInputName}
-                    dropzoneState={frontDropzoneState}
-                    label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL" />}
-                    error={errors.documentImageFront}
-                    required
-                />
-            </Row>
-            <Row>
-                <KYCImageDropzone
-                    control={control}
-                    name={documentImageBackInputName}
-                    dropzoneState={backDropzoneState}
-                    label={<Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_BACK_LABEL" />}
-                    error={errors.documentImageBack}
-                    required
-                />
-            </Row>
+            {showFrontDropzone && (
+                <Row>
+                    <KYCImageDropzone
+                        control={control}
+                        name={documentImageFrontInputName}
+                        dropzoneState={frontDropzoneState}
+                        label={
+                            <Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL" />
+                        }
+                        error={errors.documentImageFront}
+                        required
+                    />
+                </Row>
+            )}
+            {showBackDropzone && (
+                <Row>
+                    <KYCImageDropzone
+                        control={control}
+                        name={documentImageBackInputName}
+                        dropzoneState={backDropzoneState}
+                        label={
+                            <Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_BACK_LABEL" />
+                        }
+                        error={errors.documentImageBack}
+                        required
+                    />
+                </Row>
+            )}
             {isSelfieRequired && (
                 <Row>
                     <KYCImageDropzone

@@ -7,7 +7,7 @@ import type {
     UseSavingsKYCStartProps,
 } from '@wallet-types/coinmarket/savings/KYCStart';
 
-import invityAPI, { SavingsTrade } from '@suite-services/invityAPI';
+import invityAPI, { SavingsTrade, SavingsTradeUserKYCStart } from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { useSavingsKYCStartDefaultValues } from './useSavingsKYCStartDefaultValues';
@@ -27,14 +27,9 @@ export const useSavingsKYCStart = ({
         isLoading: state.wallet.coinmarket.isLoading,
     }));
 
-    const {
-        defaultValues,
-        defaultDocumentType,
-        defaultDocumentCountry,
-        documentCountryOptions,
-        documentTypeOptions,
-        isSelfieRequired,
-    } = useSavingsKYCStartDefaultValues(savingsInfo);
+    const { defaultValues, defaultDocumentType, documentTypes, isSelfieRequired } =
+        useSavingsKYCStartDefaultValues(savingsInfo);
+
     const methods = useForm<SavingsKYCStartFormState>({
         mode: 'onChange',
         defaultValues,
@@ -44,28 +39,32 @@ export const useSavingsKYCStart = ({
     const provider = savingsInfo?.savingsList?.providers[0];
 
     const onSubmit = async () => {
-        const {
-            documentCountry,
-            documentType,
-            documentNumber,
-            documentImageFront,
-            documentImageBack,
-            documentImageSelfie,
-        } = methods.getValues();
+        const { documentType, documentImageFront, documentImageBack, documentImageSelfie } =
+            methods.getValues();
 
-        if (provider) {
-            const documentImages = [
+        const selectedDocumentType = documentTypes?.find(
+            item => item.documentType === documentType.value,
+        );
+
+        if (provider && selectedDocumentType) {
+            const documentImages = [{ documentSide: 'Front', data: documentImageFront }];
+            if (
+                selectedDocumentType.documentImageSides.some(item => item === 'Back') &&
+                documentImageBack
+            ) {
+                documentImages.push({ documentSide: 'Back', data: documentImageBack });
+            }
+            const userKYCStart = [
                 {
-                    documentSide: 'Front',
-                    data: documentImageFront,
-                },
-                {
-                    documentSide: 'Back',
-                    data: documentImageBack,
-                },
+                    documentType: documentType.value,
+                    documentImages,
+                } as SavingsTradeUserKYCStart,
             ];
             if (isSelfieRequired && documentImageSelfie) {
-                documentImages.push({ documentSide: 'Selfie', data: documentImageSelfie });
+                userKYCStart.push({
+                    documentType: 'Selfie',
+                    documentImages: [{ documentSide: 'Selfie', data: documentImageSelfie }],
+                });
             }
             const trade = {
                 exchange: provider.name,
@@ -73,12 +72,7 @@ export const useSavingsKYCStart = ({
                 fiatCurrency: 'EUR',
                 status: 'KYC',
                 kycStatus: 'Open',
-                userKYCStart: {
-                    documentCountry: documentCountry.value,
-                    documentType: documentType.value,
-                    documentNumber,
-                    documentImages,
-                },
+                userKYCStart,
             } as SavingsTrade;
             const response = await invityAPI.doSavingsTrade({ trade });
             console.log(response);
@@ -95,7 +89,7 @@ export const useSavingsKYCStart = ({
             reader.onload = event => {
                 if (typeof event.target?.result === 'string') {
                     const base64 = event.target.result.replace(/data:.+\/.+;base64,/g, '');
-                    setValue(input.name, base64);
+                    setValue(input.name as keyof SavingsKYCStartFormState, base64);
                 }
             };
             reader.readAsDataURL(file);
@@ -122,10 +116,8 @@ export const useSavingsKYCStart = ({
         frontDropzoneState,
         backDropzoneState,
         selfieDropzoneState,
-        defaultDocumentCountry,
         defaultDocumentType,
-        documentTypeOptions,
-        documentCountryOptions,
         isSelfieRequired,
+        documentTypes,
     };
 };
