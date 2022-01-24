@@ -112,7 +112,7 @@ export const SellFiatTradeFinalStatuses: SellTradeStatus[] = [
 const shouldRefreshSellTrade = (trade?: TradeSell) =>
     trade && trade.data.status && !SellFiatTradeFinalStatuses.includes(trade.data.status);
 
-export const useWatchSellTrade = (account: Account, trade: TradeSell) => {
+export const useWatchSellTrade = (account: Account, trade?: TradeSell) => {
     const REFRESH_SECONDS = 30;
     const { saveTrade } = useActions({ saveTrade: coinmarketSellActions.saveTrade });
     const [refreshCount, setRefreshCount] = useState(0);
@@ -141,6 +141,10 @@ export const useWatchSellTrade = (account: Account, trade: TradeSell) => {
                         status: response.status,
                         error: response.error,
                     };
+                    if (response.destinationAddress) {
+                        tradeData.destinationAddress = response.destinationAddress;
+                        tradeData.destinationPaymentExtraId = response.destinationPaymentExtraId;
+                    }
                     saveTrade(tradeData, account, newDate);
                     if (response.status && SellFiatTradeFinalStatuses.includes(response.status)) {
                         removeDraft(account.key);

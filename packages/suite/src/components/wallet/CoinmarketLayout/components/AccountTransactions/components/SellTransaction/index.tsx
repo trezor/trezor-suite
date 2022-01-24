@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { SellProviderInfo } from 'invity-api';
 import { useWatchSellTrade } from '@wallet-hooks/useCoinmarket';
 import * as routerActions from '@suite-actions/routerActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import { useTheme, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
@@ -10,7 +11,7 @@ import { Account } from '@wallet-types';
 import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
 import { TradeSell } from '@wallet-types/coinmarketCommonTypes';
 import Status from '../Status';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
@@ -117,10 +118,25 @@ const Arrow = styled.div`
 
 const SellTransaction = ({ trade, providers, account }: Props) => {
     const theme = useTheme();
-    const { goto, saveTransactionDetailId } = useActions({
+    const {
+        goto,
+        saveTransactionDetailId,
+        setSellIsFromRedirect,
+        saveSellQuoteRequest,
+        saveComposedTransactionInfo,
+    } = useActions({
         goto: routerActions.goto,
         saveTransactionDetailId: coinmarketSellActions.saveTransactionId,
+        setSellIsFromRedirect: coinmarketSellActions.setIsFromRedirect,
+        saveSellQuoteRequest: coinmarketSellActions.saveQuoteRequest,
+        saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
     });
+    const { composed, selectedFee } = useSelector(state => ({
+        composed: state.wallet.coinmarket.composedTransactionInfo.composed,
+        selectedFee: state.wallet.coinmarket.composedTransactionInfo.selectedFee,
+        fees: state.wallet.fees,
+    }));
+
     useWatchSellTrade(account, trade);
 
     const { date, data } = trade;
@@ -133,8 +149,33 @@ const SellTransaction = ({ trade, providers, account }: Props) => {
         cryptoCurrency,
     } = data;
 
-    const viewDetail = async () => {
-        await saveTransactionDetailId(trade.key || '');
+    const viewDetail = () => {
+        saveTransactionDetailId(trade.key || '');
+        if (trade.data.status === 'SUBMITTED' || trade.data.status === 'SEND_CRYPTO') {
+            // continue to the sell flow
+            saveSellQuoteRequest({
+                amountInCrypto: trade.data.amountInCrypto || false,
+                fiatCurrency: trade.data.fiatCurrency || '',
+                cryptoCurrency: trade.data.cryptoCurrency || '',
+            });
+            setSellIsFromRedirect(true);
+            // use fee selected by user or normal
+            saveComposedTransactionInfo({
+                selectedFee: selectedFee || 'normal',
+                composed: composed || {
+                    feePerByte: '',
+                    fee: '',
+                },
+            });
+            goto('wallet-coinmarket-sell-offers', {
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            });
+            return;
+        }
         goto('wallet-coinmarket-sell-detail', {
             params: {
                 symbol: account.symbol,

@@ -221,9 +221,13 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
     // in the future will be taken from quote.tags, will need some algorithm to evaluate them and show only one
     const hasTag = false;
     const { paymentMethod, exchange, error, bankAccounts } = quote;
-    // show bank account verification info if no verified account and no error
+    if (!exchange || !sellInfo) return null;
+
+    // show bank account verification info if no verified account and no error and BANK_ACCOUNT flow
     const verificationInfo =
-        !(bankAccounts && bankAccounts.filter(ba => ba.verified).length > 0) && !quote.error;
+        !(bankAccounts && bankAccounts.filter(ba => ba.verified).length > 0) &&
+        !quote.error &&
+        sellInfo.providerInfos[exchange]?.flow === 'BANK_ACCOUNT';
 
     return (
         <Wrapper className={className}>
@@ -259,7 +263,7 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
                     <Value>
                         <CoinmarketProviderInfo
                             exchange={exchange}
-                            providers={sellInfo?.providerInfos}
+                            providers={sellInfo.providerInfos}
                         />
                     </Value>
                 </Column>

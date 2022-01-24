@@ -3,6 +3,7 @@ import { Account } from '@wallet-types';
 import { BankAccount, SellFiatTrade } from 'invity-api';
 import { Timer } from '@suite-hooks/useTimeInterval';
 import { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellActions';
+import { TradeSell } from './coinmarketCommonTypes';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -27,6 +28,7 @@ export type ContextValues = {
     quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
     device: AppState['suite']['device'];
     selectedQuote?: SellFiatTrade;
+    trade?: TradeSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
     sellInfo?: SellInfo;
     sellStep: SellStep;

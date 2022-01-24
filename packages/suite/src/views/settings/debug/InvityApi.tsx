@@ -58,6 +58,10 @@ export const InvityApi = () => {
                             invityAPIUrl: item.value,
                         });
                         invityAPI.setInvityAPIServer(item.value);
+                        // reload the Suite to reinitialize everything
+                        if (typeof window !== 'undefined') {
+                            window.location.reload();
+                        }
                     }}
                     value={selectedInvityApiServer}
                     options={invityApiServerOptions}

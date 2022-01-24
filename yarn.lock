@@ -5063,10 +5063,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/invity-api@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.5.tgz#87e46a0f40c6011c85b00fc80e0d00172f2571a5"
-  integrity sha512-sdTZfNJiFkH/3xizlV0K3gPnCEfhR4bBczpotsKFSr1q9QIFr8oWB4gIBZ4adKuhrcm/lmrPAQ7dEIzjZnXEiQ==
+"@types/invity-api@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.6.tgz#a29366d155202f401b4a5c2d96686c6a47e31ba4"
+  integrity sha512-FhIaVyjRMjsQ70G2Po8yu8u2iOsDH+4L6vmKJhWZMgDDR8/dv2kTwYC+woLTazH8ncznsMqXFbCWxXR+TZlcZw==
 
 "@types/is-function@^1.0.0":
   version "1.0.1"
