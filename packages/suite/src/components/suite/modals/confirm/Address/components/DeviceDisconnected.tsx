@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P } from '@trezor/components';
+
+import { P, variables } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
-    margin: 20px 0px;
     text-align: left;
     background: ${props => props.theme.BG_GREY};
     align-items: center;
@@ -23,16 +23,21 @@ const Col = styled.div`
 const ContentCol = styled(Col)`
     padding: 16px 24px;
 `;
+
 const ImageCol = styled(Col)`
     padding: 16px;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
+    }
 `;
 
-interface Props {
+interface DeviceDisconnectedProps {
     label: string;
 }
 
-const DeviceDisconnected = ({ label }: Props) => (
-    <Wrapper>
+const DeviceDisconnected = ({ label, ...rest }: DeviceDisconnectedProps) => (
+    <Wrapper {...rest}>
         <ContentCol>
             <P size="small">
                 <Translation

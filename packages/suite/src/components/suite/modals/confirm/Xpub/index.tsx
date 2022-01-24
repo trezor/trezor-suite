@@ -1,35 +1,38 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { Translation, Modal } from '@suite-components';
 import { Account } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useActions } from '@suite-hooks';
-import QrCode from '@suite-components/QrCode';
+import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from '@suite-components/QrCode';
+
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    padding: 30px 24px;
+`;
 
 const Address = styled.div`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-variant-numeric: tabular-nums slashed-zero;
+    margin-bottom: 20px;
     width: 100%;
     background: ${props => props.theme.BG_LIGHT_GREY};
     border: 1px solid ${props => props.theme.STROKE_GREY};
     border-radius: 8px;
     word-break: break-all;
-    font-size: 20px;
-    padding: 20px;
-    margin: 20px 0 40px 0;
+    padding: 10px;
+    max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);
 `;
 
-const Row = styled.div`
+const CopyButtonWrapper = styled.div`
     display: flex;
     justify-content: center;
-
-    button + button {
-        margin-top: 10px;
-    }
-`;
-
-const StyledQrCode = styled(QrCode)`
-    align-self: center;
 `;
 
 interface Props {
@@ -58,7 +61,6 @@ const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: Props) => 
 
     return (
         <Modal
-            size="small"
             cancelable
             onCancel={onCancel}
             heading={
@@ -74,14 +76,17 @@ const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: Props) => 
                     />
                 )
             }
+            useFixedWidth={false}
         >
-            <StyledQrCode value={xpub} />
-            <Address data-test="@xpub-modal/xpub-field">{xpub}</Address>
-            <Row ref={htmlElement}>
-                <Button variant="primary" onClick={copyAddress}>
-                    <Translation id="TR_XPUB_MODAL_CLIPBOARD" />
-                </Button>
-            </Row>
+            <Wrapper>
+                <QrCode value={xpub} />
+                <Address data-test="@xpub-modal/xpub-field">{xpub}</Address>
+                <CopyButtonWrapper ref={htmlElement}>
+                    <Button variant="tertiary" onClick={copyAddress}>
+                        <Translation id="TR_XPUB_MODAL_CLIPBOARD" />
+                    </Button>
+                </CopyButtonWrapper>
+            </Wrapper>
         </Modal>
     );
 };
