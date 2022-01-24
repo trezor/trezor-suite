@@ -45,6 +45,14 @@ const CoinmarketRedirect = () => {
         }
 
         if (redirectCommonParams.routeType === 'sell-offers') {
+            let feeIndex = 9;
+            let orderId: string | undefined;
+            if (params[4].startsWith('p-')) {
+                feeIndex = 10;
+                params[4] = params[4].substring(2);
+                // eslint-disable-next-line prefer-destructuring
+                orderId = params[9];
+            }
             redirectToSellOffers({
                 ...redirectCommonParams,
                 amountInCrypto: params[4] === 'qc',
@@ -52,9 +60,10 @@ const CoinmarketRedirect = () => {
                 amount: params[7],
                 cryptoCurrency: params[8],
                 country: params[5],
-                selectedFee: params[9] as FeeLevel['label'],
-                feePerByte: params[10],
-                feeLimit: params[11],
+                orderId,
+                selectedFee: params[feeIndex] as FeeLevel['label'],
+                feePerByte: params[feeIndex + 1],
+                feeLimit: params[feeIndex + 2],
             });
         }
 

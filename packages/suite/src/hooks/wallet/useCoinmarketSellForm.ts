@@ -281,6 +281,7 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
             country: formValues.countrySelect.value,
             cryptoStringAmount,
             fiatStringAmount,
+            flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         };
         saveQuoteRequest(request);
         const allQuotes = await invityAPI.getSellQuotes(request);

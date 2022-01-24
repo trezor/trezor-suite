@@ -2,15 +2,13 @@
  * Local web server for handling requests to app
  */
 import { app, ipcMain } from '../typed-electron';
-import { buyRedirectHandler } from '../libs/buy';
-import { sellRedirectHandler } from '../libs/sell';
 import { HttpReceiver } from '../libs/http-receiver';
 import { Module } from './index';
 
 // External request handler
 const httpReceiver = new HttpReceiver();
 
-const init: Module = ({ mainWindow, src }) => {
+const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     // wait for httpReceiver to start accepting connections then register event handlers
@@ -21,12 +19,18 @@ const init: Module = ({ mainWindow, src }) => {
             app.focus();
         });
 
-        httpReceiver.on('buy/redirect', url => {
-            buyRedirectHandler(url, mainWindow, src);
+        httpReceiver.on('buy/redirect', () => {
+            // It is enough to set focus to the Suite, the Suite should be on a page with info about the trade status,
+            // if the user has not moved somewhere else in the Suite. This is a reasonable assumption
+            // as the user was redirected from the Suite to the partner's site and is now coming back.
+            app.focus({ steal: true });
         });
 
-        httpReceiver.on('sell/redirect', url => {
-            sellRedirectHandler(url, mainWindow, src);
+        httpReceiver.on('sell/redirect', () => {
+            // It is enough to set focus to the Suite, the Suite should be on a page with info about the trade status,
+            // if the user has not moved somewhere else in the Suite. This is a reasonable assumption
+            // as the user was redirected from the Suite to the partner's site and is now coming back.
+            app.focus({ steal: true });
         });
 
         httpReceiver.on('spend/message', event => {

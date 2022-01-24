@@ -6,6 +6,8 @@ import {
     processQuotes,
     createQuoteLink,
 } from '../sellUtils';
+import { Account } from '@wallet-types';
+import { ComposedTransactionInfo } from '@suite/reducers/wallet/coinmarketReducer';
 
 const {
     QUOTE_REQUEST_FIAT,
@@ -58,25 +60,33 @@ describe('coinmarket/sell utils', () => {
             index: 1,
             accountType: 'normal',
             symbol: 'btc',
-        };
+        } as Account;
         const composedInfoMock = {
             selectedFee: 'custom',
             composed: {
                 feePerByte: '1',
                 feeLimit: '2',
             },
-        };
+        } as ComposedTransactionInfo;
         expect(
-            // @ts-ignore
             await createQuoteLink(QUOTE_REQUEST_FIAT, accountMock, composedInfoMock),
         ).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/qf/CZ/EUR/10/BTC/custom/1/2`,
         );
         expect(
-            // @ts-ignore
             await createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock, composedInfoMock),
         ).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/qc/CZ/EUR/0.001/BTC/custom/1/2`,
+        );
+        expect(
+            await createQuoteLink(
+                QUOTE_REQUEST_CRYPTO,
+                accountMock,
+                composedInfoMock,
+                '42134432141234',
+            ),
+        ).toStrictEqual(
+            `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/p-qc/CZ/EUR/0.001/BTC/42134432141234/custom/1/2`,
         );
     });
 
