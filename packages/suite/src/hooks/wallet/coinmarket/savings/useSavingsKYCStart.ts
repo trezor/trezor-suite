@@ -10,13 +10,17 @@ import type {
 import invityAPI, { SavingsTrade, SavingsTradeUserKYCStart } from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import { useSavingsKYCStartDefaultValues } from './useSavingsKYCStartDefaultValues';
+import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 
 export const useSavingsKYCStart = ({
     selectedAccount,
 }: UseSavingsKYCStartProps): SavingsKYCStartContextValues => {
-    const { loadInvityData } = useActions({
+    const { navigateToInvityAML } = useInvityNavigation(selectedAccount.account);
+    const { loadInvityData, saveSavingsTradeResponse } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
+        saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
     });
     useEffect(() => {
         loadInvityData();
@@ -75,7 +79,10 @@ export const useSavingsKYCStart = ({
                 userKYCStart,
             } as SavingsTrade;
             const response = await invityAPI.doSavingsTrade({ trade });
-            console.log(response);
+            if (response) {
+                saveSavingsTradeResponse(response);
+                navigateToInvityAML();
+            }
         }
     };
 

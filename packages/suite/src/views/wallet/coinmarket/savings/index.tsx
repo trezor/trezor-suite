@@ -10,12 +10,14 @@ const CoinmarketSavingsLoaded = ({ selectedAccount }: WithSelectedAccountLoadedP
         navigateToInvityUserInfo,
         navigateToInvityPhoneNumberVerification,
         navigateToInvityKYCStart,
+        navigateToInvityAML,
     } = useInvityNavigation(selectedAccount.account);
     const {
         isClientFromUnsupportedCountry,
         shouldRegisterUserInfo,
         shouldVerifyPhoneNumber,
         shouldKYCStart,
+        shouldAML,
     } = useSavings();
 
     // TODO: There must be better way how to navigate than this:
@@ -30,12 +32,18 @@ const CoinmarketSavingsLoaded = ({ selectedAccount }: WithSelectedAccountLoadedP
         }
         if (shouldKYCStart) {
             navigateToInvityKYCStart();
+            return;
+        }
+        if (shouldAML) {
+            navigateToInvityAML();
         }
     }, [
+        navigateToInvityAML,
         navigateToInvityKYCStart,
         navigateToInvityLogin,
         navigateToInvityPhoneNumberVerification,
         navigateToInvityUserInfo,
+        shouldAML,
         shouldKYCStart,
         shouldRegisterUserInfo,
         shouldVerifyPhoneNumber,

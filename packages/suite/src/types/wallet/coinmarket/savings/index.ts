@@ -15,4 +15,5 @@ export type SavingsContextValues = {
     shouldRegisterUserInfo: boolean;
     shouldVerifyPhoneNumber: boolean;
     shouldKYCStart: boolean;
+    shouldAML: boolean;
 };

@@ -182,11 +182,7 @@ export interface SavingsTradeUserKYCStart {
 export interface SavingsTradeAMLQuestion {
     key: string;
     label: string;
-    answerOptions: SavingsTradeAMLAnswerOption[];
-}
-
-export interface SavingsTradeAMLAnswerOption {
-    label: string;
+    answerOptions: string[];
 }
 
 export interface SavingsTrade {

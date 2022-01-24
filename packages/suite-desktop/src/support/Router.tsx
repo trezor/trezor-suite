@@ -32,6 +32,7 @@ import WalletInvityAccountVerified from '@wallet-views/invity/account-verified';
 import WalletInvityUserInfo from '@wallet-views/invity/user-info';
 import WalletInvityPhoneNumberVerification from '@wallet-views/invity/phone-number-verification';
 import WalletInvityKYCStart from '@wallet-views/invity/kyc-start';
+import WalletInvityAML from '@wallet-views/invity/aml';
 import WalletCoinmarketRedirect from '@wallet-views/coinmarket/redirect';
 
 import SettingsGeneral from '@settings-views/general/SettingsGeneral';
@@ -69,6 +70,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'wallet-invity-user-info': WalletInvityUserInfo,
     'wallet-invity-phone-number-verification': WalletInvityPhoneNumberVerification,
     'wallet-invity-kyc-start': WalletInvityKYCStart,
+    'wallet-invity-aml': WalletInvityAML,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
 
     'settings-index': SettingsGeneral,

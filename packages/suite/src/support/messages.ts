@@ -1034,6 +1034,22 @@ export default defineMessages({
         defaultMessage: 'Confirm',
         id: 'TR_SAVINGS_KYC_START_CONFIRM',
     },
+    TR_SAVINGS_AML_HEADER: {
+        defaultMessage: 'Couple of questions.',
+        id: 'TR_SAVINGS_AML_HEADER',
+    },
+    TR_SAVINGS_AML_DESCRIPTION: {
+        defaultMessage: 'The law requires this.',
+        id: 'TR_SAVINGS_AML_DESCRIPTION',
+    },
+    TR_SAVINGS_AML_ONE_OF_MANY: {
+        defaultMessage: '{index} of {totalCount}',
+        id: 'TR_SAVINGS_AML_ONE_OF_MANY',
+    },
+    TR_SAVINGS_AML_SUBMIT_BUTTON: {
+        defaultMessage: 'Confirm',
+        id: 'TR_SAVINGS_AML_SUBMIT_BUTTON',
+    },
     TR_SAVINGS_REGISTRATION_SUCCESSFUL_HEADER: {
         defaultMessage: 'Confirm your email',
         id: 'TR_SAVINGS_REGISTRATION_SUCCESSFUL_HEADER',

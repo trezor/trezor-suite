@@ -30,5 +30,6 @@ export const useInvityNavigation = (account: Account) => {
             'wallet-invity-phone-number-verification',
         ),
         navigateToInvityKYCStart: useNavigateToRouteName('wallet-invity-kyc-start'),
+        navigateToInvityAML: useNavigateToRouteName('wallet-invity-aml'),
     };
 };

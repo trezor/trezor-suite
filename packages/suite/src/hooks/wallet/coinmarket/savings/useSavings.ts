@@ -32,6 +32,9 @@ export const useSavings = (): SavingsContextValues => {
         !!invityAuthentication?.accountInfo &&
         !!invityAuthentication.accountInfo.settings?.phoneNumberVerified;
 
+    const shouldAML =
+        !shouldKYCStart && savingsTrade?.status === 'AML' && savingsTrade.amlStatus === 'Open';
+
     const { loadInvityData, saveSavingsTradeResponse } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
         saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
@@ -69,5 +72,6 @@ export const useSavings = (): SavingsContextValues => {
         shouldRegisterUserInfo,
         shouldVerifyPhoneNumber,
         shouldKYCStart,
+        shouldAML,
     };
 };
