@@ -101,9 +101,7 @@ export type VersionArray = VersionArrayT1 | VersionArrayT2;
  */
 export const parseReleases = (extReleases: any): Release[] => {
     try {
-        extReleases.forEach(e => {
-            Release.check(e);
-        });
+        extReleases.forEach(Release.check);
         return extReleases;
     } catch (err) {
         throw new Error(`Release object in unexpected shape: ${err}`);
