@@ -6,12 +6,12 @@
  */
 
 import { getInfo, getBinary } from '../src';
-import { Release, VersionArray } from '../src/utils/parse';
+import { Release } from '../src/utils/parse';
 import { isNewerOrEqual } from '../src/utils/version';
 
 const { getDeviceFeatures } = global.JestMocks;
 
-const RELEASES_T2 = JSON.parse(process.env.RELEASES_T2) as Release[];
+// const RELEASES_T2 = JSON.parse(process.env.RELEASES_T2) as Release[];
 const RELEASES_T1 = JSON.parse(process.env.RELEASES_T1) as Release[];
 const BASE_URL = process.env.BASE_FW_URL;
 

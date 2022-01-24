@@ -111,7 +111,7 @@ describe('getBinary() modifications of fw', () => {
             firmware_present: null,
             bootloader_mode: null,
         });
-        const bootladerFeatures = getDeviceFeatures({
+        getDeviceFeatures({
             major_version: 2,
             minor_version: 0,
             patch_version: 0,
