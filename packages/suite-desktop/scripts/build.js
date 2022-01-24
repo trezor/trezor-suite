@@ -45,15 +45,17 @@ build({
     platform: 'node',
     bundle: true,
     target: 'node16.5.0', // Electron 15
-    external: Object.keys({
-        ...pkg.dependencies,
-        ...pkg.devDependencies
-    }),
+    external: [
+        // app won't run without:
+        'electron',
+        // appear in both preload and app.js
+        'encoding',
+        'node-fetch',
+    ],
     tsconfig: path.join(electronSource, 'tsconfig.json'),
     sourcemap: isDev,
     minify: !isDev,
     outdir: path.join(__dirname, '..', 'dist'),
-
     define: {
         'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
         'process.env.COMMITHASH': JSON.stringify(gitRevision),

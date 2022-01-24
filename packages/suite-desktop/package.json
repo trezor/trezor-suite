@@ -46,7 +46,18 @@
             "!build/static/bin/**/*",
             "dist/**/*.js",
             "!dist/__**",
-            "package.json"
+            "package.json",
+            "!node_modules/lodash/**",
+            "!node_modules/react/**",
+            "!node_modules/react-dom/**",
+            "!node_modules/styled-components/**",
+            "!node_modules/@babel/**",
+            "!node_modules/babel-*/**",
+            "!node_modules/hoist-non-react-statics/**",
+            "!node_modules/react-is/**",
+            "!node_modules/openpgp/**",
+            "node_modules/openpgp/package.json",
+            "node_modules/openpgp/dist/node"
         ],
         "extraResources": [
             {
