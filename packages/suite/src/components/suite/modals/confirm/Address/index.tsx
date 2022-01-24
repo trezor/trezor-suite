@@ -1,42 +1,48 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
+
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, variables, ConfirmOnDevice, Box } from '@trezor/components';
+import { Button, variables, ConfirmOnDevice } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
-import { Translation, QrCode, Modal } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import DeviceDisconnected from './components/DeviceDisconnected';
+import { QrCode, QRCODE_PADDING, QRCODE_SIZE } from '@suite-components/QrCode';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-self: center;
-`;
-
-const StyledBox = styled(Box)`
-    flex-direction: column;
     padding: 30px 24px;
 `;
 
-const Address = styled.span`
+const Address = styled.span<{ confirmed?: boolean }>`
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-variant-numeric: tabular-nums slashed-zero;
+    margin-bottom: ${props => (props.confirmed ? '20px' : '0')};
+    width: 100%;
+    background: ${props => props.theme.BG_LIGHT_GREY};
+    border: 1px solid ${props => props.theme.STROKE_GREY};
     border-radius: 8px;
     word-break: break-all;
-    font-variant-numeric: tabular-nums slashed-zero;
+    padding: 10px;
+    max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);
 `;
 
 const CopyButtonWrapper = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 14px;
+    height: 23px; /* height of tertiary button */
 `;
 
-const QRCODE_SIZE = 384;
+const StyledDeviceDisconnected = styled(DeviceDisconnected)`
+    max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);
+`;
 
-type Props = {
+type ConfirmAddressProps = {
     device: TrezorDevice;
     address: string;
     symbol: string;
@@ -45,7 +51,14 @@ type Props = {
     onCancel?: () => void;
 };
 
-const ConfirmAddress = ({ device, address, symbol, cancelable, confirmed, onCancel }: Props) => {
+const ConfirmAddress = ({
+    device,
+    address,
+    symbol,
+    cancelable,
+    confirmed,
+    onCancel,
+}: ConfirmAddressProps) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
@@ -80,26 +93,25 @@ const ConfirmAddress = ({ device, address, symbol, cancelable, confirmed, onCanc
             }
             cancelable={cancelable}
             onCancel={onCancel}
-            // size="large"
             useFixedWidth={false}
         >
             <Wrapper>
-                <StyledBox>
-                    <QrCode value={address} size={QRCODE_SIZE} width="100%" height="100%" />
-                    <Address data-test="@modal/confirm-address/address-field">{address}</Address>
+                <QrCode value={address} />
+                <Address data-test="@modal/confirm-address/address-field" confirmed={confirmed}>
+                    {address}
+                </Address>
+                <CopyButtonWrapper ref={htmlElement}>
                     {confirmed && (
-                        <CopyButtonWrapper ref={htmlElement}>
-                            <Button
-                                data-test="@metadata/copy-address-button"
-                                variant="tertiary"
-                                onClick={copyAddress}
-                            >
-                                <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                            </Button>
-                        </CopyButtonWrapper>
+                        <Button
+                            data-test="@metadata/copy-address-button"
+                            variant="tertiary"
+                            onClick={copyAddress}
+                        >
+                            <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                        </Button>
                     )}
-                </StyledBox>
-                {!device.connected && <DeviceDisconnected label={device.label} />}
+                </CopyButtonWrapper>
+                {!device.connected && <StyledDeviceDisconnected label={device.label} />}
             </Wrapper>
         </Modal>
     );

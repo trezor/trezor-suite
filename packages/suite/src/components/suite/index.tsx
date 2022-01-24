@@ -20,7 +20,6 @@ import BundleLoader from './BundleLoader';
 import FiatValue from './FiatValue';
 import WebusbButton from './WebusbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
-import QrCode from './QrCode';
 import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
 
@@ -78,7 +77,6 @@ export {
     BundleLoader,
     WebusbButton,
     HiddenPlaceholder,
-    QrCode,
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
