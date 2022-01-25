@@ -1038,6 +1038,10 @@ export default defineMessages({
         defaultMessage: 'Confirm',
         id: 'TR_SAVINGS_KYC_START_CONFIRM',
     },
+    TR_SAVINGS_KYC_START_AGREE_WITH_TERMS: {
+        defaultMessage: 'I agree with terms.',
+        id: 'TR_SAVINGS_KYC_START_AGREE_WITH_TERMS',
+    },
     TR_SAVINGS_AML_HEADER: {
         defaultMessage: 'Couple of questions.',
         id: 'TR_SAVINGS_AML_HEADER',

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Select } from '@trezor/components';
+import React, { useState } from 'react';
+import { Button, Checkbox, Select } from '@trezor/components';
 import { useSavingsKYCStart } from '@wallet-hooks/coinmarket/savings/useSavingsKYCStart';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
@@ -83,6 +83,8 @@ const KYCStart = (props: WithInvityLayoutProps) => {
             item.documentImageSides.includes('Back'),
     );
 
+    const [isChecked, setIsChecked] = useState<boolean>(false);
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Header>
@@ -158,6 +160,11 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                     />
                 </Row>
             )}
+            <Row>
+                <Checkbox isChecked={isChecked} onClick={() => setIsChecked(!isChecked)}>
+                    <Translation id="TR_SAVINGS_KYC_START_AGREE_WITH_TERMS" />
+                </Checkbox>
+            </Row>
             <Button>
                 <Translation id="TR_SAVINGS_KYC_START_CONFIRM" />
             </Button>
