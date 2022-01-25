@@ -117,7 +117,13 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                         name={documentImageFrontInputName}
                         dropzoneState={frontDropzoneState}
                         label={
-                            <Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL" />
+                            <Translation
+                                id={
+                                    selectedDocumentType.value === 'Passport'
+                                        ? 'TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_ID_SIDE_LABEL'
+                                        : 'TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL'
+                                }
+                            />
                         }
                         error={errors.documentImageFront}
                         required

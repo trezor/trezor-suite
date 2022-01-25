@@ -982,6 +982,10 @@ export default defineMessages({
         defaultMessage: 'Document number is required.',
         id: 'TR_SAVINGS_KYC_START_DOCUMENT_NUMBER_REQUIRED',
     },
+    TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_ID_SIDE_LABEL: {
+        defaultMessage: 'ID side',
+        id: 'TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_ID_SIDE_LABEL',
+    },
     TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL: {
         defaultMessage: 'Front side',
         id: 'TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_FRONT_LABEL',
