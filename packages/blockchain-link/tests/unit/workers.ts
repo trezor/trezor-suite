@@ -2,13 +2,20 @@
 import * as TinyWorker from 'tiny-worker';
 import BlockchainLink from '../../src';
 
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace NodeJS {
-        interface Global {
-            Worker: any;
-        }
+class BaseMockWorker {
+    onmessage(_data: any) {}
+    postMessage(_data: any) {}
+    terminate() {
+        // @ts-ignore
+        global.Worker = undefined;
     }
+    onmessageerror() {}
+    addEventListener() {}
+    removeEventListener() {}
+    dispatchEvent() {
+        return true;
+    }
+    onerror(_data: any) {}
 }
 
 describe('Worker', () => {
@@ -29,23 +36,20 @@ describe('Worker', () => {
 
     it('Mocked window.Worker (post unknown dfd and handshake messages, then successfully connect)', async () => {
         if (typeof Worker === 'undefined') {
-            global.Worker = class MockWorker {
+            global.Worker = class MockWorker extends BaseMockWorker {
                 constructor() {
+                    super();
                     setTimeout(() => {
                         this.onmessage({ data: { type: 'm_handshake_invalid' } });
                         this.onmessage({ data: { type: 'm_handshake' } });
                     }, 100);
                 }
-                onmessage(_data: any) {}
                 postMessage(data: any) {
                     if (data.type === 'm_connect') {
                         this.onmessage({ data2: { id: 100, type: 'not-found' } });
                         this.onmessage({ data: { id: 100, type: 'not-found' } });
                         this.onmessage({ data: { id: 0, type: 'r_connect', payload: true } });
                     }
-                }
-                terminate() {
-                    global.Worker = undefined;
                 }
             };
         }
@@ -126,14 +130,10 @@ describe('Worker', () => {
 
     it('Mocked window.Worker (runtime error BEFORE handshake and error without message)', async () => {
         if (typeof Worker === 'undefined') {
-            global.Worker = class MockWorker {
+            global.Worker = class MockWorker extends BaseMockWorker {
                 constructor() {
+                    super();
                     setTimeout(() => this.onerror('string error'), 100);
-                }
-                onerror(_data: any) {}
-                postMessage() {}
-                terminate() {
-                    global.Worker = undefined;
                 }
             };
         }
@@ -141,7 +141,6 @@ describe('Worker', () => {
             blockchain.settings.worker = 'foo.bar';
             await blockchain.connect();
         } catch (error) {
-            global.Worker = undefined;
             expect(error.code).toBe('blockchain_link/worker_runtime');
         }
     });
@@ -175,17 +174,13 @@ describe('Worker', () => {
 
     it('Mocked window.Worker (runtime error AFTER handshake and error without message)', async () => {
         if (typeof Worker === 'undefined') {
-            global.Worker = class MockWorker {
+            global.Worker = class MockWorker extends BaseMockWorker {
                 constructor() {
+                    super();
                     setTimeout(() => this.onmessage({ data: { type: 'm_handshake' } }), 100);
                 }
-                onerror(_data: any) {}
-                onmessage(_data: any) {}
                 postMessage() {
                     setTimeout(() => this.onerror('string error'), 100);
-                }
-                terminate() {
-                    global.Worker = undefined;
                 }
             };
         }
