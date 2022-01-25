@@ -6,13 +6,28 @@ describe('tor', () => {
         const fixtures = [
             {
                 desc: 'simple domain',
-                in: 'https://trezor.io',
+                in: 'https://trezor.io/',
                 out: `http://${TOR_URLS['trezor.io']}/`,
             },
             {
                 desc: 'subdomain',
                 in: 'https://cdn.trezor.io/static/medium/images/max/1024/1*RPmW1VsUphMbk83oKWXpLw.png',
                 out: `http://cdn.${TOR_URLS['trezor.io']}/static/medium/images/max/1024/1*RPmW1VsUphMbk83oKWXpLw.png`,
+            },
+            {
+                desc: 'subsubdomain',
+                in: 'http://alpha.beta.trezor.io',
+                out: `http://alpha.beta.${TOR_URLS['trezor.io']}`,
+            },
+            {
+                desc: 'with query - blockbook',
+                in: 'https://btc1.trezor.io/api/v2/multi-tickers/?timestamp=12345678',
+                out: `http://btc1.${TOR_URLS['trezor.io']}/api/v2/multi-tickers/?timestamp=12345678`,
+            },
+            {
+                desc: 'with query - coingecko',
+                in: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/history?date=13-1-2021',
+                out: `http://cdn.${TOR_URLS['trezor.io']}/dynamic/coingecko/api/v3/coins/bitcoin/history?date=13-1-2021`,
             },
         ];
 
@@ -49,7 +64,7 @@ describe('tor', () => {
             {
                 desc: 'returns tor url',
                 in: 'https://trezor.io',
-                out: `http://${TOR_URLS['trezor.io']}/`,
+                out: `http://${TOR_URLS['trezor.io']}`,
             },
             {
                 desc: 'returns original url',
