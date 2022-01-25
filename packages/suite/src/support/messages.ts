@@ -6507,12 +6507,17 @@ export default defineMessages({
         defaultMessage:
             "This won't affect your coins or keys, you'll just need to use Trezor Suite instead of Trezor Wallet to manage your assets. It's best experienced as a <strong>desktop app</strong>, which includes privacy options and isolation from phishing, but a <strong>web version</strong> is also available for those who need it.",
     },
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3',
+        defaultMessage:
+            "This change won't affect your coins or keys. You will find all the same features (and more!), so you can just install the <strong>desktop app</strong> and continue from where you left off.",
+    },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1',
         defaultMessage: "What's new in Trezor Suite?",
     },
-    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3: {
-        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3',
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4',
         defaultMessage:
             '<ul><li>Improved security, usability and privacy.</li> <li>Use the Tor privacy network at the flick of a switch</li> <li>Enjoy quicker transactions with RBF</li> <li>Look forward to the likes of CoinJoin, which helps anonymize Bitcoin transactions.</li></ul> Trezor Suite also has all the features you’re used to from the old Trezor Wallet so you can hit the ground running!',
     },
@@ -6520,8 +6525,8 @@ export default defineMessages({
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2',
         defaultMessage: 'How to get started',
     },
-    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4: {
-        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4',
+    TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_5: {
+        id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_5',
         defaultMessage:
             '<ul><li><StyledCollapsibleBoxLink>Download Trezor Suite for desktop</StyledCollapsibleBoxLink> - plug in your Trezor and you’re ready to go!</li><li>Alternatively, you can use the web app and enjoy the same core functionality, but you will not have access to more advanced features like Tor.</li></ul>',
     },
