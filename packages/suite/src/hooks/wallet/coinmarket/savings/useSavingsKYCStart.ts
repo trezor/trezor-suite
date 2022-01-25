@@ -126,5 +126,6 @@ export const useSavingsKYCStart = ({
         defaultDocumentType,
         isSelfieRequired,
         documentTypes,
+        provider,
     };
 };

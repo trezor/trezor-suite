@@ -1039,7 +1039,7 @@ export default defineMessages({
         id: 'TR_SAVINGS_KYC_START_CONFIRM',
     },
     TR_SAVINGS_KYC_START_AGREE_WITH_TERMS: {
-        defaultMessage: 'I agree with terms.',
+        defaultMessage: 'I agree with {providerName} privacy policy {link}',
         id: 'TR_SAVINGS_KYC_START_AGREE_WITH_TERMS',
     },
     TR_SAVINGS_AML_HEADER: {
@@ -4573,6 +4573,14 @@ export default defineMessages({
     TR_OPEN_IN_MEDIUM: {
         id: 'TR_OPEN_IN_MEDIUM',
         defaultMessage: 'Open in Medium',
+    },
+    TR_OPEN_IN_NEW_TAB: {
+        id: 'TR_OPEN_IN_NEW_TAB',
+        defaultMessage: 'Open in new tab',
+    },
+    TR_OPEN_IN_BROWSER: {
+        id: 'TR_OPEN_IN_BROWSER',
+        defaultMessage: 'Open in browser',
     },
     TR_CONFIRM_ON_TREZOR: {
         id: 'TR_CONFIRM_ON_TREZOR',

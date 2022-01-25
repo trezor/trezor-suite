@@ -80,6 +80,9 @@ export interface SavingsProviderInfo {
 
     /** List of document types required by provider's KYC process. User has to choose one. */
     identityDocuments: SavingsProviderInfoIdentityDocument[];
+
+    /** URL where a privacy policy of the provider is located. */
+    privacyPolicyUrl: string;
 }
 
 export interface SavingsProviderInfoIdentityDocument {

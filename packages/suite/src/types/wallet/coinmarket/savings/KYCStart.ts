@@ -4,6 +4,7 @@ import type { UseFormMethods } from 'react-hook-form';
 import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 import type {
     SavingsListResponse,
+    SavingsProviderInfo,
     SavingsTradeUserKYCStartDocumentType,
 } from '@suite-services/invityAPI';
 
@@ -34,4 +35,5 @@ export type SavingsKYCStartContextValues = Omit<
     defaultDocumentType?: IdentityDocumentTypeOption;
     documentTypes?: SavingsListResponse['providers'][0]['identityDocuments'];
     isSelfieRequired?: boolean;
+    provider?: SavingsProviderInfo;
 };

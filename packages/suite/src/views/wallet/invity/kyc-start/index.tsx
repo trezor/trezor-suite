@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Checkbox, Select } from '@trezor/components';
+import { Button, Checkbox, Icon, Select, Tooltip } from '@trezor/components';
 import { useSavingsKYCStart } from '@wallet-hooks/coinmarket/savings/useSavingsKYCStart';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
+import { isDesktop } from '@suite-utils/env';
+import { Translation, TrezorLink } from '@suite-components';
 import { Controller } from 'react-hook-form';
 import KYCImageDropzone from './components/KYCImageDropzone';
 import { WithInvityLayoutProps, withInvityLayout } from '@wallet-components';
@@ -27,6 +28,16 @@ const Row = styled.div`
     &:last-child {
         padding: 0;
     }
+`;
+
+const LinkIcon = styled(Icon)`
+    margin-left: 6px;
+    color: ${props => props.theme.TYPE_DARK_GREY};
+`;
+
+const PrivacyPolicyCheckboxLabelTranslation = styled(Translation)`
+    display: flex;
+    align-items: center;
 `;
 
 type SavingsIdentityDocumentType = SavingsProviderInfoIdentityDocument['documentType'];
@@ -56,6 +67,7 @@ const KYCStart = (props: WithInvityLayoutProps) => {
         control,
         errors,
         onSubmit,
+        formState,
         watch,
         handleSubmit,
         frontDropzoneState,
@@ -64,6 +76,7 @@ const KYCStart = (props: WithInvityLayoutProps) => {
         defaultDocumentType,
         isSelfieRequired,
         documentTypes,
+        provider,
     } = useSavingsKYCStart(props);
 
     const documentTypeSelectName = 'documentType';
@@ -83,7 +96,8 @@ const KYCStart = (props: WithInvityLayoutProps) => {
             item.documentImageSides.includes('Back'),
     );
 
-    const [isChecked, setIsChecked] = useState<boolean>(false);
+    const [isChecked, setIsChecked] = useState<boolean>(!!provider?.privacyPolicyUrl);
+    const canSubmit = formState.isValid && isChecked;
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -160,12 +174,42 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                     />
                 </Row>
             )}
-            <Row>
-                <Checkbox isChecked={isChecked} onClick={() => setIsChecked(!isChecked)}>
-                    <Translation id="TR_SAVINGS_KYC_START_AGREE_WITH_TERMS" />
-                </Checkbox>
-            </Row>
-            <Button>
+            {provider?.privacyPolicyUrl && (
+                <Row>
+                    <Checkbox isChecked={isChecked} onClick={() => setIsChecked(!isChecked)}>
+                        <PrivacyPolicyCheckboxLabelTranslation
+                            isNested
+                            id="TR_SAVINGS_KYC_START_AGREE_WITH_TERMS"
+                            values={{
+                                providerName: provider.companyName,
+                                link: (
+                                    <TrezorLink
+                                        variant="nostyle"
+                                        href={provider.privacyPolicyUrl}
+                                        target="_blank"
+                                    >
+                                        <Tooltip
+                                            content={
+                                                <Translation
+                                                    id={
+                                                        isDesktop()
+                                                            ? 'TR_OPEN_IN_BROWSER'
+                                                            : 'TR_OPEN_IN_NEW_TAB'
+                                                    }
+                                                />
+                                            }
+                                        >
+                                            <LinkIcon size={14} icon="EXTERNAL_LINK" />
+                                        </Tooltip>
+                                    </TrezorLink>
+                                ),
+                            }}
+                        />
+                    </Checkbox>
+                </Row>
+            )}
+
+            <Button isDisabled={!canSubmit}>
                 <Translation id="TR_SAVINGS_KYC_START_CONFIRM" />
             </Button>
         </form>
