@@ -89,7 +89,13 @@ const Index = () => {
                                 />
                             </StyledHeadline>
                             <StyledSubheadline>
-                                <Translation id="TR_SUITE_WEB_LANDING_SUB_HEADLINE" />
+                                <Translation
+                                    id={
+                                        isFromMytrezor
+                                            ? 'TR_SUITE_WEB_LANDING_SUB_HEADLINE_FROM_MYTREZOR'
+                                            : 'TR_SUITE_WEB_LANDING_SUB_HEADLINE'
+                                    }
+                                />
                             </StyledSubheadline>
                             <DownloadWrapper>
                                 <Download pathToApp={pathToApp} />

@@ -6352,6 +6352,11 @@ export default defineMessages({
         id: 'TR_SUITE_WEB_LANDING_SUB_HEADLINE',
         defaultMessage: 'Take control of your Trezor with our desktop & browser app.',
     },
+    TR_SUITE_WEB_LANDING_SUB_HEADLINE_FROM_MYTREZOR: {
+        id: 'TR_SUITE_WEB_LANDING_SUB_HEADLINE_FROM_MYTREZOR',
+        defaultMessage:
+            'Trezor Suite is a new interface that makes using your Trezor more private and secure.',
+    },
     TR_SUITE_WEB_LANDING_SUB_SOON: {
         id: 'TR_SUITE_WEB_LANDING_SUB_SOON',
         defaultMessage: 'Soon',
@@ -6528,7 +6533,7 @@ export default defineMessages({
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_5: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_5',
         defaultMessage:
-            '<ul><li><StyledCollapsibleBoxLink>Download Trezor Suite for desktop</StyledCollapsibleBoxLink> - plug in your Trezor and you’re ready to go!</li><li>Alternatively, you can use the web app and enjoy the same core functionality, but you will not have access to more advanced features like Tor.</li></ul>',
+            'Download and run Trezor Suite for desktop, plug in your hardware wallet and get set up in seconds!{lineBreak}Alternatively, use the web app to access standard functions (much like in Trezor Wallet). Advanced features are only available using the desktop app.',
     },
     TR_COLOR_SCHEME: {
         id: 'TR_COLOR_SCHEME',
