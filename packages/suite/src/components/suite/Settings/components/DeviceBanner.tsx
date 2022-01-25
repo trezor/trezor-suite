@@ -5,7 +5,7 @@ import { P } from '@trezor/components';
 import { useDevice } from '@suite-hooks';
 
 const DeviceBadge = styled(DeviceAnimation)`
-    margin: 8px 16px;
+    margin: 8px 16px 8px 0;
     min-width: 64px;
 `;
 
@@ -15,6 +15,7 @@ const Wrapper = styled.div`
     background-color: ${({ theme }) => theme.STROKE_GREY};
     border-radius: 12px;
     margin-bottom: 24px;
+    padding: 8px 16px;
 `;
 
 const Description = styled(P)`
@@ -25,7 +26,6 @@ const Column = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 16px 4px;
 `;
 
 interface Props {
