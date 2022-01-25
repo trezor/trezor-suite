@@ -59,7 +59,7 @@ const GuideCategory = () => {
                         <SectionHeading>
                             <Translation id="TR_GUIDE_ARTICLES" />
                         </SectionHeading>
-                        <Nodes>
+                        <Nodes data-test="@guide/nodes">
                             {pages.map(page => (
                                 <GuideNode key={page.id} node={page} />
                             ))}

@@ -50,6 +50,7 @@ suite web:
 
 suite web snapshots:
   extends: .e2e web
+  needs: ['install'] # make it available sooner
   when: manual
   variables:
     CYPRESS_SNAPSHOT: 1

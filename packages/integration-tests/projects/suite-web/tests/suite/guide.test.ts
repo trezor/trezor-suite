@@ -3,52 +3,65 @@
 
 describe('Test Guide', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu');
-        cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
-        cy.passThroughInitialRun();
     });
 
     it('Testing guide open / close', () => {
         // Open guide
         cy.getTestElement('@guide/button-open').click();
         cy.getTestElement('@guide/panel').should('be.visible');
+        cy.getTestElement('@guide/nodes')
+            .first()
+            .children()
+            .first()
+            .then(el => {
+                const text = el.text();
+                el.click();
+                cy.log('text', text);
+                cy.getTestElement('@guide/label').should('have.text', text);
+            });
+        cy.getTestElement('@guide/nodes').first().children().first().click();
+        cy.getTestElement('@guide/header-breadcrumb/category-link').click();
         cy.getTestElement('@guide/button-open').should('not.be.visible');
-
-        // Close guide
         cy.getTestElement('@guide/button-close').click();
         cy.getTestElement('@guide/panel').should('not.exist');
         cy.getTestElement('@guide/button-open').should('be.visible');
-    });
 
-    /*
-     * Skipping this test as it is dependent on current structure of guide.
-     * As the structure and articles of the guide are constantly changing, this test would have to be constantly updated.
-     * For now, the tests are skipped to avoid wasting time.
-     * GitHub issue #4585 has been created. It's goal is to create generic test.
-     */
-    it.skip('navigates though guide structure and articles', () => {
-        cy.getTestElement('@guide/button-open').click();
-        cy.getTestElement('@guide/category/privacy').click();
-        cy.getTestElement('@guide/button-back').click();
-        cy.getTestElement('@guide/category/suite-basics').click();
-        cy.getTestElement('@guide/node/suite-basics/trade.md').click();
-        cy.getTestElement('@guide/headerBreadcrumb/categoryLink').click();
-        cy.getTestElement('@guide/node/suite-basics/trade.md').click();
-        cy.getTestElement('@guide/headerBreadcrumb/previousCategoryLink').click();
-        cy.getTestElement('@guide/button-close').click();
-        cy.getTestElement('@guide/button-open').click();
-        cy.getTestElement('@guide/category/privacy').should('be.visible');
-        cy.getTestElement('@guide/button-close').click();
-    });
-
-    it('fills feedback form', () => {
+        // Feedback form
         cy.getTestElement('@guide/button-open').click();
         cy.getTestElement('@guide/button-feedback').click();
         cy.getTestElement('@guide/feedback/suggestion').click();
         cy.getTestElement('@guide/feedback/suggestion/5').click();
         cy.getTestElement('@guide/feedback/suggestion-form').type('Hello!');
+        cy.getTestElement('@guide/feedback/submit-button').click();
+        cy.getTestElement('@toast/user-feedback-send-success').should('be.visible');
+
+        // Guide over modal
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/show-log-button').click();
+        cy.getTestElement('@guide/button-close').click();
+        cy.getTestElement('@guide/button-open').click();
+        cy.getTestElement('@guide/panel').should('be.visible');
+
+        // Search input
+        cy.getTestElement('@guide/search').type('trezor');
+        cy.getTestElement('@guide/search/results').children().should('have.length.above', 0);
+        cy.getTestElement('@guide/search').type('meow-wuf-nonsense');
+        cy.getTestElement('@guide/search/no-results');
+    });
+
+    it('in onboarding with device', () => {
+        cy.task('startEmu', { wipe: true });
+        cy.task('startBridge');
+        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@guide/button-open').click();
+        cy.getTestElement('@guide/panel').should('be.visible');
+        cy.getTestElement('@guide/button-feedback').click();
+        cy.getTestElement('@guide/panel').matchImageSnapshot({
+            blackout: ['[data-test="@guide/support/version"]'],
+        });
     });
 });

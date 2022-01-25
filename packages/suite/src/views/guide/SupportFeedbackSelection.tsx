@@ -216,7 +216,7 @@ const SupportFeedbackSelection = () => {
                 </Section>
 
                 <Details>
-                    <DetailItem>
+                    <DetailItem data-test="@guide/support/version">
                         <Translation id="TR_APP" />
                         :&nbsp;
                         {!isDev && appUpToDate ? (

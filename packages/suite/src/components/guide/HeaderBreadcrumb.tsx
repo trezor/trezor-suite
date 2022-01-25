@@ -109,7 +109,7 @@ const HeaderBreadcrumb = () => {
                         navigateToGuideDashboard();
                     }
                 }}
-                data-test="@guide/headerBreadcrumb/previousCategoryLink"
+                data-test="@guide/header-breadcrumb/previous-category-link"
             >
                 {grandParentNode ? (
                     getNodeTitle(grandParentNode, language)
@@ -126,7 +126,7 @@ const HeaderBreadcrumb = () => {
                         navigateToCategory(parentNode);
                     }
                 }}
-                data-test="@guide/headerBreadcrumb/categoryLink"
+                data-test="@guide/header-breadcrumb/category-link"
             >
                 {parentNode && getNodeTitle(parentNode, language)}
             </CategoryLink>

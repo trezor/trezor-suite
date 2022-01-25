@@ -12,8 +12,6 @@ const fetch = require('node-fetch');
 const path = require('path');
 const fs = require('fs');
 
-const { Controller } = require('../../websocket-client');
-
 const TEST_DIR = './packages/integration-tests/projects/suite-web';
 
 const getGrepCommand = (word = '', args = '-rlIw', path = TEST_DIR) =>
@@ -35,13 +33,13 @@ const grepForValue = (word, path) => {
     return result.replace(`// ${word}=`, '');
 };
 
-function getTestFiles() {
-    const { stage } = argv;
+const getTestFiles = () => {
+    const { group } = argv;
     let command;
-    if (stage) {
+    if (group) {
         // for arrays
         // command = getGrepCommand(stage.split(',').join('\\|'))
-        command = getGrepCommand(stage);
+        command = getGrepCommand(group);
     } else {
         command = getGrepCommand();
     }
@@ -49,7 +47,7 @@ function getTestFiles() {
         .exec(command, { silent: true })
         .stdout.split('\n')
         .filter(f => f.includes('.test.'));
-}
+};
 
 const wait = timeout =>
     new Promise(resolve => {
@@ -58,24 +56,7 @@ const wait = timeout =>
         }, timeout);
     });
 
-async function runTests() {
-    // wait for trezor-user-env
-    let retries = 0;
-    let connected = false;
-    const controller = new Controller({ url: 'ws://localhost:9001/' });
-    while (!connected && retries < 60) {
-        try {
-            // eslint-disable-next-line no-await-in-loop
-            await controller.connect();
-            connected = true;
-        } catch (err) {
-            console.log('waiting for trezor-user-env...');
-        }
-        // eslint-disable-next-line no-await-in-loop
-        await wait(1000);
-        retries++;
-    }
-
+const runTests = async () => {
     const {
         BROWSER = 'chrome',
         CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
@@ -91,7 +72,7 @@ async function runTests() {
         CYPRESS_updateSnapshots,
     } = process.env;
 
-    const { stage } = argv;
+    const { group } = argv;
 
     if (!TRACK_SUITE_URL || CYPRESS_updateSnapshots) {
         console.log(
@@ -117,7 +98,7 @@ async function runTests() {
         commitSha: CI_COMMIT_SHA,
         runnerDescription: CI_RUNNER_DESCRIPTION,
         duration: 0,
-        stage,
+        stage: group,
         records: {},
         tests: [],
     };
@@ -265,7 +246,7 @@ async function runTests() {
               exit 0
             fi
             git add .
-            git commit -m "e2e${stage ? `(${stage}):` : ':'} update snapshots"
+            git commit -m "e2e${group ? `(${group}):` : ':'} update snapshots"
             git log -n 2
             echo "You may now push your changes."
         `;
@@ -290,6 +271,6 @@ async function runTests() {
     }
 
     process.exit(failedTests);
-}
+};
 
 runTests();
