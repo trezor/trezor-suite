@@ -78,6 +78,18 @@ const CollapsibleBoxContentP = styled.p`
     }
 `;
 
+const CollapsibleBoxContentSpan = styled.span`
+    margin-bottom: 15px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.TYPE_LIGHT_GREY};
+    font-size: 20px;
+    line-height: 28px;
+    & strong {
+        font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+        color: #141414;
+    }
+`;
+
 const StyledCollapsibleBox = styled(CollapsibleBox)`
     width: 100%;
     box-shadow: none;
@@ -182,30 +194,37 @@ const StyledFromMytrezorBanner = () => (
                         }}
                     />
                 </CollapsibleBoxContentP>
-
-                <CollapsibleBoxContentHeadline>
-                    <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1" />
-                </CollapsibleBoxContentHeadline>
                 <CollapsibleBoxContentP>
                     <Translation
                         id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3"
                         values={{
-                            ul: chunks => <ul style={{ marginBottom: '15px' }}>{chunks}</ul>,
-                            li: chunks => <li>{chunks}</li>,
                             strong: chunks => <strong>{chunks}</strong>,
                         }}
                     />
                 </CollapsibleBoxContentP>
 
                 <CollapsibleBoxContentHeadline>
+                    <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1" />
+                </CollapsibleBoxContentHeadline>
+                <CollapsibleBoxContentSpan>
+                    <Translation
+                        id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4"
+                        values={{
+                            ul: chunks => <ul style={{ marginBottom: '15px' }}>{chunks}</ul>,
+                            li: chunks => <li>{chunks}</li>,
+                            strong: chunks => <strong>{chunks}</strong>,
+                        }}
+                    />
+                </CollapsibleBoxContentSpan>
+
+                <CollapsibleBoxContentHeadline>
                     <Translation id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2" />
                 </CollapsibleBoxContentHeadline>
                 <CollapsibleBoxContentP>
                     <Translation
-                        id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4"
+                        id="TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_5"
                         values={{
-                            ul: chunks => <ul>{chunks}</ul>,
-                            li: chunks => <li>{chunks}</li>,
+                            lineBreak: <br />,
                             StyledCollapsibleBoxLink: chunks => (
                                 <StyledCollapsibleBoxLink
                                     onClick={() =>
