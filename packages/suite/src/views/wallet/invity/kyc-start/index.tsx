@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Checkbox, Icon, Select, Tooltip } from '@trezor/components';
 import { useSavingsKYCStart } from '@wallet-hooks/coinmarket/savings/useSavingsKYCStart';
 import styled from 'styled-components';
@@ -83,8 +83,13 @@ const KYCStart = (props: WithInvityLayoutProps) => {
     const documentImageFrontInputName = 'documentImageFront';
     const documentImageBackInputName = 'documentImageBack';
     const documentImageSelfieInputName = 'documentImageSelfie';
+    const privacyPolicyAgreementInputName = 'privacyPolicyAgreement';
 
     const selectedDocumentType = watch(documentTypeSelectName, defaultDocumentType);
+    const privacyPolicyAgreement = watch(
+        privacyPolicyAgreementInputName,
+        !provider?.privacyPolicyUrl,
+    );
     const showFrontDropzone = documentTypes?.some(
         item =>
             item.documentType === selectedDocumentType.value &&
@@ -96,8 +101,7 @@ const KYCStart = (props: WithInvityLayoutProps) => {
             item.documentImageSides.includes('Back'),
     );
 
-    const [isChecked, setIsChecked] = useState<boolean>(!!provider?.privacyPolicyUrl);
-    const canSubmit = formState.isValid && isChecked;
+    const canSubmit = formState.isValid && privacyPolicyAgreement;
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -176,36 +180,43 @@ const KYCStart = (props: WithInvityLayoutProps) => {
             )}
             {provider?.privacyPolicyUrl && (
                 <Row>
-                    <Checkbox isChecked={isChecked} onClick={() => setIsChecked(!isChecked)}>
-                        <PrivacyPolicyCheckboxLabelTranslation
-                            isNested
-                            id="TR_SAVINGS_KYC_START_AGREE_WITH_TERMS"
-                            values={{
-                                providerName: provider.companyName,
-                                link: (
-                                    <TrezorLink
-                                        variant="nostyle"
-                                        href={provider.privacyPolicyUrl}
-                                        target="_blank"
-                                    >
-                                        <Tooltip
-                                            content={
-                                                <Translation
-                                                    id={
-                                                        isDesktop()
-                                                            ? 'TR_OPEN_IN_BROWSER'
-                                                            : 'TR_OPEN_IN_NEW_TAB'
+                    <Controller
+                        control={control}
+                        name={privacyPolicyAgreementInputName}
+                        defaultValue={privacyPolicyAgreement}
+                        render={({ onChange, value }) => (
+                            <Checkbox isChecked={value} onClick={() => onChange(!value)}>
+                                <PrivacyPolicyCheckboxLabelTranslation
+                                    isNested
+                                    id="TR_SAVINGS_KYC_START_AGREE_WITH_TERMS"
+                                    values={{
+                                        providerName: provider.companyName,
+                                        link: (
+                                            <TrezorLink
+                                                variant="nostyle"
+                                                href={provider.privacyPolicyUrl}
+                                                target="_blank"
+                                            >
+                                                <Tooltip
+                                                    content={
+                                                        <Translation
+                                                            id={
+                                                                isDesktop()
+                                                                    ? 'TR_OPEN_IN_BROWSER'
+                                                                    : 'TR_OPEN_IN_NEW_TAB'
+                                                            }
+                                                        />
                                                     }
-                                                />
-                                            }
-                                        >
-                                            <LinkIcon size={14} icon="EXTERNAL_LINK" />
-                                        </Tooltip>
-                                    </TrezorLink>
-                                ),
-                            }}
-                        />
-                    </Checkbox>
+                                                >
+                                                    <LinkIcon size={14} icon="EXTERNAL_LINK" />
+                                                </Tooltip>
+                                            </TrezorLink>
+                                        ),
+                                    }}
+                                />
+                            </Checkbox>
+                        )}
+                    />
                 </Row>
             )}
 

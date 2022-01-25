@@ -20,6 +20,7 @@ export interface SavingsKYCStartFormState {
     documentImageFront: string;
     documentImageBack: string;
     documentImageSelfie?: string;
+    privacyPolicyAgreement: boolean;
 }
 
 export type SavingsKYCStartContextValues = Omit<
