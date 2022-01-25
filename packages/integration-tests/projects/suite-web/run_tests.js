@@ -33,7 +33,7 @@ const grepForValue = (word, path) => {
     return result.replace(`// ${word}=`, '');
 };
 
-function getTestFiles() {
+const getTestFiles = () => {
     const { group } = argv;
     let command;
     if (group) {
@@ -47,7 +47,7 @@ function getTestFiles() {
         .exec(command, { silent: true })
         .stdout.split('\n')
         .filter(f => f.includes('.test.'));
-}
+};
 
 const wait = timeout =>
     new Promise(resolve => {
@@ -56,7 +56,7 @@ const wait = timeout =>
         }, timeout);
     });
 
-async function runTests() {
+const runTests = async () => {
     const {
         BROWSER = 'chrome',
         CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
@@ -271,6 +271,6 @@ async function runTests() {
     }
 
     process.exit(failedTests);
-}
+};
 
 runTests();
