@@ -91,7 +91,7 @@ const BackendsDropdown = ({ marginLeft }: BackendsDropdownProps) => {
         >
     ).map(([coin, settings]) => ({ coin, ...settings }));
 
-    return (
+    return customBackends.length ? (
         <Wrapper marginLeft={marginLeft}>
             <Dropdown
                 onToggle={() => setOpen(!open)}
@@ -124,15 +124,7 @@ const BackendsDropdown = ({ marginLeft }: BackendsDropdownProps) => {
                         options: [
                             {
                                 key: '1',
-                                label: (
-                                    <Translation
-                                        id={
-                                            customBackends.length
-                                                ? 'TR_OTHER_COINS_USE_DEFAULT_BACKEND'
-                                                : 'TR_ALL_COINS_USE_DEFAULT_BACKEND'
-                                        }
-                                    />
-                                ),
+                                label: <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />,
                                 noHover: true,
                                 isDisabled: true,
                                 separatorBefore: true,
@@ -145,11 +137,11 @@ const BackendsDropdown = ({ marginLeft }: BackendsDropdownProps) => {
                     label={<Translation id="TR_BACKENDS" />}
                     icon="BACKEND"
                     isOpen={open}
-                    indicator={customBackends.length ? 'check' : undefined}
+                    indicator="check"
                 />
             </Dropdown>
         </Wrapper>
-    );
+    ) : null;
 };
 
 export default BackendsDropdown;
