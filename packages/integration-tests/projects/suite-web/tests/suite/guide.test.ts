@@ -22,7 +22,7 @@ describe('Test Guide', () => {
                 cy.getTestElement('@guide/label').should('have.text', text);
             });
         cy.getTestElement('@guide/nodes').first().children().first().click();
-        cy.getTestElement('@guide/headerBreadcrumb/categoryLink').click();
+        cy.getTestElement('@guide/header-breadcrumb/category-link').click();
         cy.getTestElement('@guide/button-open').should('not.be.visible');
         cy.getTestElement('@guide/button-close').click();
         cy.getTestElement('@guide/panel').should('not.exist');
