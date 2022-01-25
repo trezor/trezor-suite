@@ -44,7 +44,25 @@
             "!build/static/bin/**/*",
             "dist/**/*.js",
             "!dist/__**",
-            "package.json"
+            "package.json",
+            "!**/node_modules/@trezor/**/src",
+            "!**/node_modules/@trezor/**/coverage",
+            "!**/node_modules/@trezor/**/build",
+            "!**/node_modules/@trezor/**/scripts",
+            "!**/node_modules/@trezor/**/webpack",
+            "!**/node_modules/@trezor/**/integration",
+            "!**/node_modules/@trezor/**/*.bin",
+            "!**/node_modules/**/*.js.flow",
+            "!**/node_modules/**/*.ts",
+            "!**/node_modules/**/.*",
+            "!**/jest*",
+            "!**/babel*",
+            "!**/bower*",
+            "!**/tsconfig*",
+            "!**/*.log",
+            "!**/LICENSE",
+            "!**/docs",
+            "!**/*.md"
         ],
         "extraResources": [
             {
@@ -165,9 +183,6 @@
         "node-fetch": "^2.6.1",
         "openpgp": "^5.0.0",
         "systeminformation": "^5.9.9",
-        "react": "17.0.2",
-        "react-dom": "17.0.2",
-        "styled-components": "^5.3.3",
         "trezor-connect": "8.2.7-beta.2"
     },
     "devDependencies": {
