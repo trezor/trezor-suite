@@ -4,25 +4,20 @@ import { TOR_URLS } from '@suite-constants/tor';
  * returns tor url if tor url is request and tor url is available for given domain
  */
 export const getTorUrlIfAvailable = (url: string) => {
-    let parsed: URL;
-    try {
-        parsed = new URL(url);
-    } catch (e) {
-        return;
-    }
-    const { host, pathname } = parsed;
+    const [, subdomain, domain, rest] =
+        url.match(/^https?:\/\/([^:/]+\.)?([^/.]+\.[^/.]+)(\/.*)?$/i) ?? [];
+    // ^https?:\/\/ - required http(s) protocol
+    // ([^:/]+\.)? - optional subdomains, e.g. 'blog.'
+    // ([^/.]+\.[^/.]+) - required two-part domain name, e.g. 'trezor.io'
+    // (\/.*)?$ - optional path and/or query, e.g. '/api/data?id=1234'
 
-    // blog.trezor.io => [a = io], [b= trezor], [sub=blog]
-    const [a, b, ...sub] = host.split('.').reverse();
-    const domain = `${b}.${a}`;
+    if (!domain) return;
 
     // TOR_URL contains a map of open:onion domains
-    const torCounterpartDomain = TOR_URLS[domain];
+    const onionDomain = TOR_URLS[domain];
+    if (!onionDomain) return;
 
-    if (!torCounterpartDomain) {
-        return;
-    }
-    return `http://${sub.length ? `${sub.join('.')}.` : ''}${torCounterpartDomain}${pathname}`;
+    return `http://${subdomain ?? ''}${onionDomain}${rest ?? ''}`;
 };
 
 export const toTorUrl = (url: string) => {
