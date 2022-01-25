@@ -3,8 +3,6 @@ import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
-import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
-import type { AppState } from '@suite-types';
 import { InvityContextDropdownButton } from './components/InvityContextDropdownButton';
 import invityAPI from '@suite-services/invityAPI';
 
@@ -24,11 +22,7 @@ const InvisibleIframe = styled.iframe`
     display: none;
 `;
 
-interface InvityContextDropdownProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
-}
-
-const InvityContextDropdown = ({ selectedAccount }: InvityContextDropdownProps) => {
+const InvityContextDropdown = () => {
     const [open, setOpen] = useState(false);
     const [logoutUrl, setLogoutUrl] = useState<string>();
     const { invityAuthentication } = useSelector(state => ({
@@ -36,14 +30,16 @@ const InvityContextDropdown = ({ selectedAccount }: InvityContextDropdownProps) 
     }));
     // TODO: Sometimes react warning pops up in console with misused ref?
     const dropdownRef = useRef<DropdownRef>();
-    const { navigateToInvityLogin } = useInvityNavigation(selectedAccount.account);
     const handleToggleChange = useCallback((isToggled: boolean) => {
         setOpen(isToggled);
     }, []);
     const isAuthenticated = !!invityAuthentication?.verified;
-    const handleUnauthenticatedUserButtonClick = useCallback(() => {
-        navigateToInvityLogin();
-    }, [navigateToInvityLogin]);
+
+    // Will be used later (after DCA for Invity features)
+    // const { navigateToInvityLogin } = useInvityNavigation(selectedAccount.account);
+    // const handleUnauthenticatedUserButtonClick = useCallback(() => {
+    //     navigateToInvityLogin();
+    // }, [navigateToInvityLogin]);
 
     return (
         <Wrapper>
@@ -102,10 +98,12 @@ const InvityContextDropdown = ({ selectedAccount }: InvityContextDropdownProps) 
                     <InvityContextDropdownButton labelTranslationId="TR_INVITY_SIGNIN_BUTTON_AUTHENTICATED" />
                 </Dropdown>
             ) : (
-                <InvityContextDropdownButton
-                    labelTranslationId="TR_INVITY_SIGNIN_BUTTON"
-                    onClick={() => handleUnauthenticatedUserButtonClick()}
-                />
+                <></>
+                // Will be used later (after DCA for Invity features)
+                // <InvityContextDropdownButton
+                //     labelTranslationId="TR_INVITY_SIGNIN_BUTTON"
+                //     onClick={() => handleUnauthenticatedUserButtonClick()}
+                // />
             )}
             {logoutUrl && (
                 <InvisibleIframe

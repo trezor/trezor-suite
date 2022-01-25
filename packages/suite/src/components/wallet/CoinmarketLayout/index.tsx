@@ -42,9 +42,7 @@ const CoinmarketLayout = ({ children, onClearFormButtonClick }: Props) => {
                         <Translation id="TR_CLEAR_ALL" />
                     </Button>
                 )}
-                {showInvityContextDropdown && (
-                    <InvityContextDropdown selectedAccount={selectedAccount} />
-                )}
+                {showInvityContextDropdown && <InvityContextDropdown />}
             </WalletLayoutHeader>
             <Card noPadding>
                 <Navigation />
