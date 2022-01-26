@@ -6346,7 +6346,11 @@ export default defineMessages({
     },
     TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR: {
         id: 'TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR',
-        defaultMessage: 'Read why',
+        defaultMessage: 'Read more',
+    },
+    TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR_WRAPUP: {
+        id: 'TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR_WRAPUP',
+        defaultMessage: 'Wrap up',
     },
     TR_SUITE_WEB_LANDING_SUB_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_SUB_HEADLINE',

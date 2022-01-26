@@ -139,7 +139,13 @@ const StyledFromMytrezorBanner = () => (
                     variant="tertiary"
                     onClick={() => (document.activeElement as HTMLElement).blur()}
                 >
-                    {collapsed ? 'Read why' : 'Wrap up'}
+                    <Translation
+                        id={
+                            collapsed
+                                ? 'TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR'
+                                : 'TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR_WRAPUP'
+                        }
+                    />
                     <Icon
                         icon="ARROW_DOWN"
                         size={22}
