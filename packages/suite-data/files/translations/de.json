@@ -1,6 +1,5 @@
 {
   "AMOUNT": "Menge",
-  "AMOUNT_ENOUGH_CURRENCY_FEE": "Nicht genug {symbol}, um die Transaktionsgebühr zu decken",
   "AMOUNT_IS_BELOW_DUST": "Betrag liegt unter der Staubgrenze ({dust})",
   "AMOUNT_IS_LESS_THAN_RESERVE": "Das Empfängerkonto erfordert eine Mindestreserve von {reserve} XRP um aktiviert zu werden",
   "AMOUNT_IS_MORE_THAN_RESERVE": "Betrag liegt über der erforderlichen nicht auszahlbaren Reserve ({Reserve} XRP)",
@@ -13,9 +12,7 @@
   "AMOUNT_SEND_MAX": "Sende Maximum",
   "BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION": "Ein früherer Versuch, dieses Gerät zu sichern, ist fehlgeschlagen. Die Gerätesicherung kann nur einmal durchgeführt werden.",
   "BACKUP_BACKUP_ALREADY_FAILED_HEADING": "Sicherung fehlgeschlagen",
-  "BACKUP_BACKUP_ALREADY_FINISHED": "Sicherung bereits abgeschlossen",
   "BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION": "Verbundenes Gerät bereits abgesichert. Der Recovery Seed sollte aufgeschrieben und an einem sicheren Ort aufbewahrt werden.",
-  "BACKUP_FAILED": "Sicherung fehlgeschlagen",
   "BROADCAST": "Übertragen",
   "BROADCAST_TOOLTIP": "Broadcasten Sie die Transaktion ins Netzwerk.",
   "COPY_TRANSACTION_TO_CLIPBOARD": "Transaktion in die Zwischenablage kopieren",
