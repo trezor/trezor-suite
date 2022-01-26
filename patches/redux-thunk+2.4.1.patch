@@ -1,0 +1,19 @@
+diff --git a/node_modules/redux-thunk/es/types.d.ts b/node_modules/redux-thunk/es/types.d.ts
+index 27e0aa9..96ba13a 100644
+--- a/node_modules/redux-thunk/es/types.d.ts
++++ b/node_modules/redux-thunk/es/types.d.ts
+@@ -48,3 +48,14 @@ export declare type ThunkActionDispatch<ActionCreator extends (...args: any[]) =
+  * inner function. (Only used if you call `thunk.withExtraArgument()`)
+  */
+ export declare type ThunkMiddleware<State = any, BasicAction extends Action = AnyAction, ExtraThunkArg = undefined> = Middleware<ThunkDispatch<State, ExtraThunkArg, BasicAction>, State, ThunkDispatch<State, ExtraThunkArg, BasicAction>>;
++
++declare module 'redux' {
++  /**
++   * Overload for bindActionCreators redux function, returns expects responses
++   * from thunk actions
++   */
++  function bindActionCreators<M extends ActionCreatorsMapObject<any>>(
++    actionCreators: M,
++    dispatch: Dispatch,
++  ): { [N in keyof M]: ReturnType<M[N]> extends ThunkAction<any, any, any, any> ? (...args: Parameters<M[N]>) => ReturnType<ReturnType<M[N]>> : M[N] }
++}

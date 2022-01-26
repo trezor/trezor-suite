@@ -49,6 +49,7 @@ const config: webpack.Configuration = {
             tls: false,
             os: false,
             path: false,
+            https: false,
         },
     },
     optimization: {

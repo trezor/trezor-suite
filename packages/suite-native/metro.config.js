@@ -40,6 +40,7 @@ module.exports = (async () => {
                 child_process: nodejs.path,
                 net: nodejs.path,
                 tls: nodejs.path,
+                https: nodejs.https,
                 '@trezor/blockchain-link': path.resolve(
                     __dirname,
                     '../../packages/blockchain-link',

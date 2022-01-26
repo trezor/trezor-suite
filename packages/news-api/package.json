@@ -18,14 +18,14 @@
         "axios": "0.21.2",
         "cheerio": "1.0.0-rc.3",
         "cors": "2.8.5",
-        "express": "4.17.1",
+        "express": "^4.17.2",
         "fast-xml-parser": "3.17.1",
         "rimraf": "3.0.2"
     },
     "devDependencies": {
         "@types/cheerio": "0.22.23",
         "@types/cors": "2.8.9",
-        "@types/express": "4.17.9",
+        "@types/express": "4.17.13",
         "ts-node-dev": "1.0.0-pre.44"
     }
 }
