@@ -1,6 +1,5 @@
 {
   "AMOUNT": "Beløb",
-  "AMOUNT_ENOUGH_CURRENCY_FEE": "Ikke nok {symbol} til at dække transaktionsgebyr",
   "AMOUNT_IS_BELOW_DUST": "Beløbet er under støvgrænsen ({dust})",
   "AMOUNT_IS_LESS_THAN_RESERVE": "Modtagerkonto kræver mindstereserve {reserve} XRP for at aktivere",
   "AMOUNT_IS_MORE_THAN_RESERVE": "Beløbet er over den krævede ubrugte reserve ({reserve} XRP)",
@@ -13,9 +12,7 @@
   "AMOUNT_SEND_MAX": "Send maks.",
   "BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION": "Et tidligere forsøg på at sikkerhedskopiere denne enhed mislykkedes. Enhedskopi kan kun udføres én gang.",
   "BACKUP_BACKUP_ALREADY_FAILED_HEADING": "Sikkerhedskopiering mislykkedes",
-  "BACKUP_BACKUP_ALREADY_FINISHED": "Sikkerhedskopiering allerede færdig",
   "BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION": "Forbundet enhed som backup allerede færdig. Du skal have en genoprettelses-seed skrevet ned og skjult på et sikkert sted.",
-  "BACKUP_FAILED": "Sikkerhedskopiering mislykkedes",
   "BROADCAST": "Udsend",
   "BROADCAST_TOOLTIP": "Udsend transaktionen til netværket.",
   "COPY_TRANSACTION_TO_CLIPBOARD": "Kopier transaktion til udklipsholder",

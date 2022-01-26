@@ -1,6 +1,5 @@
 {
   "AMOUNT": "Importo",
-  "AMOUNT_ENOUGH_CURRENCY_FEE": "Non abbastanza {symbol} per coprire il costo della transazione",
   "AMOUNT_IS_BELOW_DUST": "L'importo è inferiore al limite di dust ({dust})",
   "AMOUNT_IS_LESS_THAN_RESERVE": "Il profilo del destinatario richiede la riserva minima {reserve} XRP per attivare",
   "AMOUNT_IS_MORE_THAN_RESERVE": "L'importo supera la riserva non spendibile richiesta ({reserve} XRP)",
@@ -13,9 +12,7 @@
   "AMOUNT_SEND_MAX": "Invia massimo",
   "BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION": "Un tentativo precedente di backup di questo dispositivo è fallito. Il backup del dispositivo è eseguibile solo una volta.",
   "BACKUP_BACKUP_ALREADY_FAILED_HEADING": "Backup fallito",
-  "BACKUP_BACKUP_ALREADY_FINISHED": "Backup già terminato",
   "BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION": "Il dispositivo connesso come di backup è già terminato. Dovresti aver scritto un seed di recupero, nascosto in un luogo sicuro.",
-  "BACKUP_FAILED": "Backup fallito",
   "BROADCAST": "Trasmissione",
   "BROADCAST_TOOLTIP": "Trasmetti la transazione alla rete.",
   "COPY_TRANSACTION_TO_CLIPBOARD": "Copia la transazione negli appunti",
