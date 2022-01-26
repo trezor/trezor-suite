@@ -424,6 +424,8 @@ class RippleWorker extends BaseWorker<RippleAPI> {
             api = new RippleAPI({
                 server: this.endpoints[0],
                 connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT,
+                // @ts-ignore agent is added in patch
+                agent: this.proxyAgent,
             });
             // disable websocket auto reconnecting
             // workaround for RippleApi which doesn't have possibility to disable reconnection

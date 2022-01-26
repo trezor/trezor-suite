@@ -12,8 +12,9 @@
         "noUnusedParameters": true,
         "removeComments": true,
         "types": ["jest", "node"],
-        "useUnknownInCatchVariables": false
+        "useUnknownInCatchVariables": false,
+        "allowSyntheticDefaultImports": true
     },
-    "include": ["./src/index.ts", "./src/utils/ws.ts"],
+    "include": ["./src/index.ts", "./src/utils/ws.ts", "./src/utils/socks-proxy-agent.ts"],
     "exclude": ["node_modules"]
 }

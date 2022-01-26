@@ -25,7 +25,8 @@
     "types": "lib/index.d.ts",
     "typings": "lib/index.d.ts",
     "browser": {
-        "ws": "./lib/utils/ws.js"
+        "ws": "./lib/utils/ws.js",
+        "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js"
     },
     "scripts": {
         "dev": "webpack serve --config ./webpack/dev.js",
@@ -53,6 +54,7 @@
         "bignumber.js": "^9.0.1",
         "events": "^3.3.0",
         "ripple-lib": "1.10.0",
+        "socks-proxy-agent": "6.1.1",
         "ws": "7.4.6"
     }
 }

@@ -1,0 +1,29 @@
+diff --git a/node_modules/ripple-lib/dist/npm/common/connection.js b/node_modules/ripple-lib/dist/npm/common/connection.js
+index 8d46ea0..03ae2c1 100644
+--- a/node_modules/ripple-lib/dist/npm/common/connection.js
++++ b/node_modules/ripple-lib/dist/npm/common/connection.js
+@@ -42,6 +42,9 @@ const backoff_1 = require("./backoff");
+ const INTENTIONAL_DISCONNECT_CODE = 4000;
+ function createWebSocket(url, config) {
+     const options = {};
++    if (config.agent != null) {
++        options.agent = config.agent;
++    }
+     if (config.proxy != null) {
+         const parsedURL = url_1.parse(url);
+         const parsedProxyURL = url_1.parse(config.proxy);
+diff --git a/node_modules/ripple-lib/dist/npm/common/schemas/input/api-options.json b/node_modules/ripple-lib/dist/npm/common/schemas/input/api-options.json
+index 1da93be..6785a4b 100644
+--- a/node_modules/ripple-lib/dist/npm/common/schemas/input/api-options.json
++++ b/node_modules/ripple-lib/dist/npm/common/schemas/input/api-options.json
+@@ -26,6 +26,10 @@
+       "format": "uri",
+       "description": "URI for HTTP/HTTPS proxy to use to connect to the rippled server."
+     },
++    "agent": {
++      "format": "object",
++      "description": "Proxy agent to use to connect to the rippled server."
++    },
+     "timeout": {
+       "type": "integer",
+       "description": "Request timeout in milliseconds before considering a request to have failed. See also: connectionTimeout.",

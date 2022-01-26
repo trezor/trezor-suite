@@ -1,3 +1,4 @@
+import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type { BlockfrostTransaction } from './blockfrost';
 import type { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
@@ -8,6 +9,7 @@ export interface BlockchainSettings {
     name: string;
     worker: string | (() => any);
     server: string[];
+    proxy?: string | SocksProxyAgentOptions;
     debug?: boolean;
     timeout?: number;
     pingTimeout?: number;
