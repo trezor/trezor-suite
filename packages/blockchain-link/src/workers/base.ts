@@ -5,6 +5,7 @@
 // and
 // new BlockchainLink({ worker: () => new BlockchainLinkModule() });
 
+import * as SocksProxyAgent from 'socks-proxy-agent';
 import { CustomError } from '../constants/errors';
 import { WorkerState } from './state';
 import { MESSAGES, RESPONSES } from '../constants';
@@ -39,6 +40,7 @@ const shuffleEndpoints = (a: string[]) => {
 
 export class BaseWorker<API> {
     api: API | undefined;
+    proxyAgent: ReturnType<typeof SocksProxyAgent> | undefined;
     settings: Partial<BlockchainSettings> = {};
     endpoints: string[] = [];
     state: WorkerState;
@@ -112,6 +114,9 @@ export class BaseWorker<API> {
 
         if (data.type === MESSAGES.HANDSHAKE) {
             this.settings = data.settings;
+            this.proxyAgent = data.settings.proxy
+                ? SocksProxyAgent(data.settings.proxy)
+                : undefined;
             return true;
         }
         if (data.type === MESSAGES.CONNECT) {

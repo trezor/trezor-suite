@@ -371,6 +371,7 @@ class BlockbookWorker extends BaseWorker<BlockbookAPI> {
             timeout,
             pingTimeout,
             keepAlive,
+            agent: this.proxyAgent,
         });
 
         try {
