@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
+import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import { useSelector, useActions } from '@suite-hooks';
 import { WalletLayoutNavigation, WalletLayoutNavLink } from '@wallet-components';
 
@@ -21,12 +22,14 @@ const Navigation = () => {
         { route: 'wallet-coinmarket-spend', title: 'TR_NAV_SPEND' },
     ] as const;
 
-    const { routeName, account } = useSelector(state => ({
+    const { routeName, account, savingsInfo } = useSelector(state => ({
         routeName: state.router.route?.name,
         account: state.wallet.selectedAccount?.account,
+        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
     }));
-    const { goto } = useActions({
+    const { goto, loadSavingsTrade } = useActions({
         goto: routerActions.goto,
+        loadSavingsTrade: coinmarketSavingsActions.loadSavingsTrade,
     });
 
     return (
@@ -48,7 +51,9 @@ const Navigation = () => {
                             title="TR_NAV_SAVINGS"
                             active={!!routeName?.startsWith('wallet-coinmarket-savings')}
                             onClick={() =>
-                                goto('wallet-coinmarket-savings', { preserveParams: true })
+                                // TODO: Better to first redirect and then show loading spinner/skeleton during requests.
+                                savingsInfo?.savingsList?.providers &&
+                                loadSavingsTrade(savingsInfo?.savingsList?.providers[0].name)
                             }
                         />
                     </SavingsWalletLayoutNavLinkWrapper>

@@ -3,6 +3,7 @@ import type { AppState, Action, Dispatch } from '@suite-types';
 import { COINMARKET_COMMON } from '@wallet-actions/constants';
 import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import type { InvityAuthentication, AccountInfo } from '@wallet-types/invity';
 import * as routerActions from '@suite-actions/routerActions';
 
@@ -92,6 +93,7 @@ const invityAuthenticationMiddleware =
                                     invityAuthentication,
                                 ),
                             );
+                            api.dispatch(coinmarketSavingsActions.loadSavingsTrade);
                         }
                     })
                     .catch(error => {

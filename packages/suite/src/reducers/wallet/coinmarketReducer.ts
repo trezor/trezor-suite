@@ -77,6 +77,7 @@ interface Sell {
 interface Savings {
     savingsInfo?: SavingsInfo;
     savingsTrade?: SavingsTrade;
+    isSavingsTradeLoading: boolean;
 }
 
 export interface State {
@@ -130,6 +131,7 @@ export const initialState = {
     savings: {
         savingsInfo: undefined,
         savingsTrade: undefined,
+        isSavingsTradeLoading: false,
     },
     composedTransactionInfo: {},
     trades: [],
@@ -245,6 +247,9 @@ const coinmarketReducer = (
             case COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE:
                 draft.savings.savingsTrade = action.response.trade;
                 // TODO: later set also "savings payments"
+                break;
+            case COINMARKET_SAVINGS.SET_SAVINGS_TRADE_RESPONSE_LOADING:
+                draft.savings.isSavingsTradeLoading = action.isSavingsTradeLoading;
                 break;
             case COINMARKET_COMMON.SET_LOADING:
                 draft.isLoading = action.isLoading;

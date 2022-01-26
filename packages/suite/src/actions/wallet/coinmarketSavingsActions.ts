@@ -13,6 +13,14 @@ export interface SavingsInfo {
 }
 export type CoinmarketSavingsAction =
     | {
+          type: typeof COINMARKET_SAVINGS.LOAD_SAVINGS_TRADE_RESPONSE;
+          exchangeName: string;
+      }
+    | {
+          type: typeof COINMARKET_SAVINGS.SET_SAVINGS_TRADE_RESPONSE_LOADING;
+          isSavingsTradeLoading: boolean;
+      }
+    | {
           type: typeof COINMARKET_SAVINGS.SAVE_SAVINGS_INFO;
           savingsInfo: SavingsInfo;
       }
@@ -46,6 +54,18 @@ export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
         supportedCryptoCurrencies,
     };
 };
+
+export const loadSavingsTrade = (exchangeName: string): CoinmarketSavingsAction => ({
+    type: COINMARKET_SAVINGS.LOAD_SAVINGS_TRADE_RESPONSE,
+    exchangeName,
+});
+
+export const setSavingsTradeResponseLoading = (
+    isSavingsTradeLoading: boolean,
+): CoinmarketSavingsAction => ({
+    type: COINMARKET_SAVINGS.SET_SAVINGS_TRADE_RESPONSE_LOADING,
+    isSavingsTradeLoading,
+});
 
 export const saveSavingsInfo = (savingsInfo: SavingsInfo): CoinmarketSavingsAction => ({
     type: COINMARKET_SAVINGS.SAVE_SAVINGS_INFO,

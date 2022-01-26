@@ -25,6 +25,7 @@ import WalletCoinmarketExchangeDetail from '@wallet-views/coinmarket/exchange/de
 import WalletCoinmarketExchangeOffers from '@wallet-views/coinmarket/exchange/offers';
 import WalletCoinmarketSpend from '@wallet-views/coinmarket/spend';
 import WalletCoinmarketSavings from '@wallet-views/coinmarket/savings';
+import WalletCoinmarketSavingsSetup from '@wallet-views/coinmarket/savings/setup';
 import WalletInvityLogin from '@wallet-views/invity/login';
 import WalletInvityRegistration from '@wallet-views/invity/registration';
 import WalletInvityRegistrationSuccessful from '@wallet-views/invity/registration-successful';
@@ -63,6 +64,7 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'wallet-coinmarket-exchange-offers': WalletCoinmarketExchangeOffers,
     'wallet-coinmarket-spend': WalletCoinmarketSpend,
     'wallet-coinmarket-savings': WalletCoinmarketSavings,
+    'wallet-coinmarket-savings-setup': WalletCoinmarketSavingsSetup,
     'wallet-invity-login': WalletInvityLogin,
     'wallet-invity-registration': WalletInvityRegistration,
     'wallet-invity-registration-successful': WalletInvityRegistrationSuccessful,

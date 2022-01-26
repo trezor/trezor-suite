@@ -225,7 +225,7 @@ export interface SavingsTrade {
 
     amlQuestions?: SavingsTradeAMLQuestion[];
 
-    answers?: SavingsTradeAMLAnswer[];
+    amlAnswers?: SavingsTradeAMLAnswer[];
 
     // TODO: maybe encapsulate setup?
 }

@@ -8,6 +8,7 @@ import invityAPI from '@suite/services/suite/invityAPI';
 export const SavingsContext = createContext<SavingsContextValues | null>(null);
 SavingsContext.displayName = 'SavingsContext';
 
+// TODO: Find out if this hook is used or useful
 export const useSavings = (): SavingsContextValues => {
     // TODO: This shouldSomething doesn't seem to be right. Will decide and maybe later.
     // TODO: Do we really need the InvityAuthentication here?
@@ -50,7 +51,7 @@ export const useSavings = (): SavingsContextValues => {
     const providerInfo = savingsInfo?.savingsList?.providers[0];
 
     useEffect(() => {
-        if (providerInfo && !shouldRegisterUserInfo && !shouldVerifyPhoneNumber) {
+        if (providerInfo && shouldKYCStart) {
             const loadSavingsTrade = async () => {
                 const savingsTrade = await invityAPI.getSavingsTrade(providerInfo.name);
                 if (savingsTrade) {
@@ -59,7 +60,7 @@ export const useSavings = (): SavingsContextValues => {
             };
             loadSavingsTrade();
         }
-    }, [providerInfo, saveSavingsTradeResponse, shouldRegisterUserInfo, shouldVerifyPhoneNumber]);
+    }, [providerInfo, saveSavingsTradeResponse, shouldKYCStart]);
 
     return {
         invityAuthentication,
