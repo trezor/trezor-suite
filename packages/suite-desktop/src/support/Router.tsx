@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import routes from '@suite-constants/routes';
 
-import Index from '@dashboard-views';
+import Index from '@suite/views/dashboard';
 import Notification from '@suite-views/notifications';
 
 import Wallet from '@wallet-views/transactions';

@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, colors, variables, Button, H1, H2 } from '@trezor/components';
 import styled from 'styled-components';
 import CollapsibleBox from '@suite-components/CollapsibleBox';
-import Translation from '@suite-web-landing-components/Translation';
+import Translation from '../Translation';
 
 const FromMytrezorBanner = styled.div`
     display: flex;
