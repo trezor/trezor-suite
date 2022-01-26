@@ -100,7 +100,6 @@ describe('DeviceSettings Actions', () => {
             }
 
             await store.dispatch(f.action());
-
             if (f.result) {
                 if (f.result.actions) {
                     expect(store.getActions()).toMatchObject(f.result.actions);
