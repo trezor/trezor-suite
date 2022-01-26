@@ -1,5 +1,5 @@
 import React from 'react';
-import { CoinmarketLayout, withInvityAuthentication } from '@wallet-components';
+import { CoinmarketLayout, withSelectedAccountLoaded } from '@wallet-components';
 import type { AppState, ExtendedMessageDescriptor } from '@suite-types';
 import { useSelector } from '@suite-hooks';
 import styled from 'styled-components';
@@ -51,7 +51,7 @@ export const withCoinmarketSavingsLoaded = (
     options: WithCoinmarketSavingsLoadedOptions,
 ) => {
     const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
-    const Component = withInvityAuthentication(({ selectedAccount }) => {
+    const Component = withSelectedAccountLoaded(({ selectedAccount }) => {
         const { invityAuthentication } = useSelector(state => ({
             invityAuthentication: state.wallet.coinmarket.invityAuthentication,
         }));

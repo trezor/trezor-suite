@@ -27,7 +27,7 @@ import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
 import type { FeeLevel } from 'trezor-connect';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
 import type { SavingsTrade } from '@suite-services/invityAPI';
-import type { WhoAmI } from '@wallet-components/InvityAuthentication';
+import type { InvityAuthentication } from '@wallet-types/invity';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<
@@ -88,7 +88,8 @@ export interface State {
     trades: Trade[];
     isLoading: boolean;
     lastLoadedTimestamp: number;
-    invityAuthentication?: WhoAmI;
+    invityAuthentication?: InvityAuthentication;
+    isInvityAuthenticationLoading: boolean;
 }
 
 export const initialState = {
@@ -135,6 +136,7 @@ export const initialState = {
     isLoading: false,
     lastLoadedTimestamp: 0,
     invityAuthentication: undefined,
+    isInvityAuthenticationLoading: false,
 };
 
 const coinmarketReducer = (
@@ -250,6 +252,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_COMMON.SAVE_INVITY_AUTHENTICATION:
                 draft.invityAuthentication = action.invityAuthentication;
+                break;
+            case COINMARKET_COMMON.SET_INVITY_AUTHENTICATION_LOADING:
+                draft.isInvityAuthenticationLoading = action.isInvityAuthenticationLoading;
                 break;
             // no default
         }

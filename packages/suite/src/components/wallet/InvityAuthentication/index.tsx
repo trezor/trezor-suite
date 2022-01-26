@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import invityAPI from '@suite-services/invityAPI';
+import React, { useEffect, useState } from 'react';
 import { useActions, useSelector } from '@suite-hooks';
 import { useEffectOnce } from 'react-use';
 import { AccountSettings } from '@wallet-types/invity';
@@ -15,47 +14,21 @@ export interface AccountInfo {
     settings: AccountSettings;
 }
 
-// TODO: rename WhoAmI?
-export interface WhoAmI {
-    // properties from kratos
-    id?: string;
-    active?: boolean;
-    identity?: {
-        id: string;
-        traits: { [key: string]: string };
-        // eslint-disable-next-line camelcase
-        verifiable_addresses: Array<Record<string, any>>;
-    };
-    error?: {
-        code: number;
-        status: string;
-        reason: string;
-    };
-    // properties from API server or calculated
-    verified?: boolean;
-    email?: string;
-    accountInfo?: AccountInfo;
-}
-
 export interface InvityAuthenticationContextProps {
-    invityAuthentication?: WhoAmI;
-    fetching: boolean;
-    checkInvityAuthentication: () => void;
     iframeMessage?: IframeMessage;
 }
 
-export const InvityAuthenticationContext = React.createContext<InvityAuthenticationContextProps>({
-    fetching: true,
-    checkInvityAuthentication: () => {},
-});
+export const InvityAuthenticationContext = React.createContext<InvityAuthenticationContextProps>(
+    {},
+);
 
-function inIframe() {
+const inIframe = () => {
     try {
         return window.self !== window.top;
     } catch (e) {
         return true;
     }
-}
+};
 
 interface IframeMessage {
     name: 'invity-authentication';
@@ -77,125 +50,31 @@ export interface InvityAuthenticationProps {
 
 const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
     children,
-    checkInvityAuthenticationImmediately = true,
     selectedAccount,
     redirectUnauthorizedUserToLogin = false,
 }) => {
     const [iframeMessage, setIframeMessage] = useState<IframeMessage>();
     const { account } = selectedAccount;
-    const { invityEnvironment, invityAuthentication } = useSelector(state => ({
-        invityEnvironment: state.suite.settings.debug.invityServerEnvironment,
+    const { invityAuthentication } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
     }));
-    if (invityEnvironment) {
-        invityAPI.setInvityServersEnvironment(invityEnvironment);
-    }
-    const { saveInvityAuthentication, addToast } = useActions({
+
+    const { loadInvityAuthentication, saveInvityAuthentication, addToast } = useActions({
+        loadInvityAuthentication: coinmarketCommonActions.loadInvityAuthentication,
         saveInvityAuthentication: coinmarketCommonActions.saveInvityAuthentication,
         addToast: notificationActions.addToast,
     });
-    const { navigateToInvityRegistrationSuccessful, navigateToInvityLogin } =
-        useInvityNavigation(account);
+    const { navigateToInvityRegistrationSuccessful } = useInvityNavigation(account);
     const { navigateToSavings } = useCoinmarketNavigation(account);
-    const [fetching, setFetching] = useState(checkInvityAuthenticationImmediately);
-    const [checkCounter, setCheckCounter] = useState(0);
-
-    const checkInvityAuthentication = () => {
-        setCheckCounter(checkCounter + 1);
-    };
-
-    invityAPI.createInvityAPIKey(account.descriptor);
-
-    const loadAccountInfo = async () => {
-        try {
-            const accountInfoResponse = await invityAPI.accountInfo();
-            if (accountInfoResponse.data) {
-                const accountInfo = accountInfoResponse.data;
-
-                return {
-                    accountInfo,
-                };
-            }
-            return {
-                error: {
-                    code: 503,
-                    status: 'Error',
-                    reason: accountInfoResponse.error || '',
-                },
-            };
-        } catch (error) {
-            const reason = error instanceof Object ? error.toString() : '';
-            return { error: { code: 503, status: 'Error', reason } };
-        }
-    };
-
-    // TODO: rename
-    const fetchWhoami = useCallback(async () => {
-        setFetching(true);
-        // do not call whoami on the server render and in iframe
-        if (typeof window !== 'undefined' && !inIframe()) {
-            try {
-                const whoAmIResponse = await fetch(invityAPI.getCheckWhoAmIUrl(), {
-                    credentials: 'include',
-                });
-                let invityAuthentication: WhoAmI = await whoAmIResponse.json();
-                console.log('fetched data from who am i', invityAuthentication);
-                if (invityAuthentication.error) {
-                    invityAuthentication.active = false;
-                }
-                console.log('WHoAmIContext data', invityAuthentication);
-                if (invityAuthentication.identity && invityAuthentication.active) {
-                    invityAuthentication.verified =
-                        invityAuthentication.identity.verifiable_addresses[0].verified;
-                } else {
-                    invityAuthentication.verified = false;
-                }
-                // TODO: get rid off setProtectedAPI -> invityAPI.accountInfo should call itself the right endpoint with right parameters in within fetch(...)
-                // TODO: setProtectedAPI - this is an antipattern, because it mutates state of the InvityAPI instance while it can be used from somewhere else (calling /api/exchange/...).
-                invityAPI.setProtectedAPI(invityAuthentication.verified || false);
-                if (invityAuthentication.verified) {
-                    invityAuthentication.email = invityAuthentication.identity?.traits.email;
-                    const info = await loadAccountInfo();
-                    invityAPI.setProtectedAPI(false);
-                    invityAuthentication = { ...invityAuthentication, ...info };
-                } else if (redirectUnauthorizedUserToLogin) {
-                    navigateToInvityLogin();
-                }
-                saveInvityAuthentication(invityAuthentication);
-            } catch (error) {
-                const reason = error instanceof Object ? error.toString() : '';
-                saveInvityAuthentication({ error: { code: 503, status: 'Error', reason } });
-                invityAPI.setProtectedAPI(false);
-            }
-        }
-        setFetching(false);
-    }, [navigateToInvityLogin, redirectUnauthorizedUserToLogin, saveInvityAuthentication]);
 
     useEffectOnce(() => {
-        const messageHandler = async (event: MessageEvent) => {
+        const messageHandler = (event: MessageEvent) => {
             // Listen for iframe messages and redirect after user has logged in
             try {
                 // There are different messages (e.g. from Hotjar), not all of them return JSON
                 const message: IframeMessage = JSON.parse(event.data);
                 if (message && message.name === 'invity-authentication') {
                     setIframeMessage(message);
-                    switch (message.action) {
-                        case 'registration-successful':
-                            navigateToInvityRegistrationSuccessful();
-                            break;
-                        case 'login-successful':
-                            await fetchWhoami();
-                            navigateToSavings();
-                            break;
-                        case 'logout-successful':
-                            await fetchWhoami();
-                            addToast({
-                                type: 'invity-logout-successful',
-                            });
-                            break;
-                        // eslint-disable-next-line no-fallthrough
-                        default:
-                    }
                 }
                 // eslint-disable-next-line no-empty
             } catch {}
@@ -206,15 +85,50 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
     });
 
     useEffect(() => {
-        if (!invityAuthentication || checkCounter > 0) {
-            fetchWhoami();
+        if (iframeMessage) {
+            switch (iframeMessage.action) {
+                case 'registration-successful':
+                    navigateToInvityRegistrationSuccessful();
+                    break;
+                case 'login-successful':
+                    if (invityAuthentication) {
+                        navigateToSavings();
+                    } else {
+                        loadInvityAuthentication(redirectUnauthorizedUserToLogin);
+                    }
+                    break;
+                case 'logout-successful':
+                    if (invityAuthentication) {
+                        saveInvityAuthentication(undefined);
+                    } else {
+                        addToast({
+                            type: 'invity-logout-successful',
+                        });
+                    }
+                    break;
+                // eslint-disable-next-line no-fallthrough
+                default:
+            }
         }
-    }, [checkCounter, fetchWhoami, invityAuthentication]);
+    }, [
+        addToast,
+        iframeMessage,
+        invityAuthentication,
+        loadInvityAuthentication,
+        navigateToInvityRegistrationSuccessful,
+        navigateToSavings,
+        redirectUnauthorizedUserToLogin,
+        saveInvityAuthentication,
+    ]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && !inIframe() && !invityAuthentication) {
+            loadInvityAuthentication(redirectUnauthorizedUserToLogin);
+        }
+    }, [invityAuthentication, loadInvityAuthentication, redirectUnauthorizedUserToLogin]);
 
     return (
-        <InvityAuthenticationContext.Provider
-            value={{ invityAuthentication, fetching, checkInvityAuthentication, iframeMessage }}
-        >
+        <InvityAuthenticationContext.Provider value={{ iframeMessage }}>
             {children}
         </InvityAuthenticationContext.Provider>
     );

@@ -102,8 +102,8 @@ export type SavingsSetupStatus =
     | 'KYC'
     /** More like questionare - can't fail. */
     | 'AML'
-    /** User needs to verify bank account on partner's website. */
-    | 'BankAccountVerification'
+    /** User needs to verify crypto wallet. */
+    | 'WalletVerification'
     /** User setups savings plan parameters (frequency, amount, etc.). */
     | 'SetSavingsParameters';
 
@@ -870,7 +870,7 @@ class InvityAPI {
         }
     };
 
-    getCheckWhoAmIUrl() {
+    getCheckInvityAuthenticationUrl() {
         // TODO: this API client should do the request
         return `${this.getAuthServerUrl()}/sessions/whoami`;
     }

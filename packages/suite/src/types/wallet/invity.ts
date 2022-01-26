@@ -68,3 +68,24 @@ export interface AccountUpdateResponse {
     statusCode: number;
     error?: string;
 }
+
+export interface InvityAuthentication {
+    // properties from kratos
+    id?: string;
+    active?: boolean;
+    identity?: {
+        id: string;
+        traits: { [key: string]: string };
+        // eslint-disable-next-line camelcase
+        verifiable_addresses: Array<Record<string, any>>;
+    };
+    error?: {
+        code: number;
+        status: string;
+        reason: string;
+    };
+    // properties from API server or calculated
+    verified?: boolean;
+    email?: string;
+    accountInfo?: AccountInfo;
+}
