@@ -5916,7 +5916,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Not connected to the backend yet. Try going to Settings › Crypto › Advanced settings to establish the connection with the backend.',
+            'Not connected to the backend. Try reconnecting the device. Also, check your internet connection or the URL of your custom backend.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
