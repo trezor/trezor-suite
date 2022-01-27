@@ -6693,7 +6693,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_10: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
         defaultMessage:
-            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example For example <strong>> 2020-01-01 & < 2020-01-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.',
+            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong>> 2020-01-01 & < 2020-01-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.',
     },
     TR_PAGINATION_NEWER: {
         id: 'TR_PAGINATION_NEWER',
