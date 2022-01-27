@@ -150,12 +150,13 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
 
     async connect(): Promise<ElectrumClient> {
         if (!this.api?.connected()) {
-            const { server = [], debug, timeout, keepAlive } = this.settings;
+            const { server = [], debug, timeout, keepAlive, name } = this.settings;
             const url = this.chooseServer(server);
             const socket = createSocket(url, { timeout, keepAlive, proxyAgent: this.proxyAgent });
             const api = new CachingElectrumClient();
             await api.connect(socket, {
                 url,
+                coin: name ?? 'BTC',
                 debug,
                 client: {
                     name: 'blockchain-link',

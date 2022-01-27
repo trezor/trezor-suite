@@ -1,3 +1,5 @@
+import type { Network } from '@trezor/utxo-lib';
+
 // ElectrumX API 1.4
 // https://electrumx.readthedocs.io/en/latest/protocol-methods.html
 
@@ -64,6 +66,14 @@ export type TransactionVerbose = {
     vout: TxOut[];
 };
 
+export type Info = {
+    url: string;
+    coin: string;
+    network: Network;
+    version: Version;
+    block: BlockHeader;
+};
+
 type Balance = { confirmed: number; unconfirmed: number };
 type Tx = { tx_hash: string; height: number };
 type MempoolTx = Tx & { fee: number };
@@ -73,7 +83,6 @@ export type BlockHeader = { height: number; hex: string };
 type BlockHeaders = { count: number; max: number; hex: string };
 type Listener<T> = (data: T) => void;
 export type Version = [string, string];
-export type Info = { url: string; version: Version; block: BlockHeader };
 export type StatusChange = [string, string | null];
 
 export interface ElectrumAPI {

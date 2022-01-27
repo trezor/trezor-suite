@@ -24,7 +24,7 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
     const { state } = worker;
     const api = () => worker.api ?? fail('API not created');
 
-    const addressManager = createAddressManager();
+    const addressManager = createAddressManager(worker.api?.getInfo()?.network);
 
     const onTransaction = async ([scripthash, _status]: StatusChange) => {
         const { descriptor, addresses } = addressManager.getInfo(scripthash);

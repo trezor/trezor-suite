@@ -46,7 +46,7 @@ const getBalances =
 const getAccountInfo: Api<Req, Res> = async (client, payload) => {
     const { descriptor, details = 'basic', pageSize } = payload;
 
-    const parsed = tryGetScripthash(descriptor);
+    const parsed = tryGetScripthash(descriptor, client.getInfo()?.network);
     if (parsed.valid) {
         const { confirmed, unconfirmed, history } = await Promise.all([
             client.request('blockchain.scripthash.get_balance', parsed.scripthash),

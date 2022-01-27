@@ -27,7 +27,7 @@ const discoverAddress =
         address,
         path,
     }: ReturnType<typeof deriveAddresses>[number]): Promise<AddressHistory> => {
-        const scripthash = addressToScripthash(address);
+        const scripthash = addressToScripthash(address, client.getInfo()?.network);
         const history = await client.request('blockchain.scripthash.get_history', scripthash);
         return {
             address,
