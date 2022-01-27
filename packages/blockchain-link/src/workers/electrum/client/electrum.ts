@@ -1,3 +1,4 @@
+import { Network, networks } from '@trezor/utxo-lib';
 import { ElectrumAPI, BlockHeader, Version } from '../../../types/electrum';
 import { JsonRpcClientOptions } from './json-rpc';
 import { BatchingJsonRpcClient } from './batching';
@@ -11,10 +12,23 @@ type ElectrumClientOptions = JsonRpcClientOptions & {
         protocolVersion: string | [string, string];
     };
     url: string;
+    coin: string;
+};
+
+const selectNetwork = (shortcut?: string) => {
+    switch (shortcut) {
+        case 'REGTEST':
+            return networks.regtest;
+        case 'TEST':
+            return networks.testnet;
+        default:
+            return networks.bitcoin;
+    }
 };
 
 export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI {
     private options?: ElectrumClientOptions;
+    private network?: Network;
     private version?: Version;
     protected lastBlock?: BlockHeader;
     private timeLastCall = 0;
@@ -22,6 +36,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
     async connect(socket: ISocket, options: ElectrumClientOptions) {
         this.timeLastCall = 0;
         this.options = options;
+        this.network = selectNetwork(options.coin);
 
         const { name, protocolVersion } = options.client;
 
@@ -45,11 +60,13 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
     }
 
     getInfo() {
-        if (this.options?.url && this.version && this.lastBlock) {
+        if (this.options?.url && this.version && this.lastBlock && this.network) {
             return {
-                url: this.options?.url,
+                url: this.options.url,
                 version: this.version,
                 block: this.lastBlock,
+                coin: this.options.coin,
+                network: this.network,
             };
         }
     }

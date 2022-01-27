@@ -1,5 +1,6 @@
 import { flatten, notUndefined, separate, distinct } from './misc';
 import { addressToScripthash } from './transform';
+import type { Network } from '@trezor/utxo-lib';
 import type { AccountAddresses, SubscriptionAccountInfo } from '../../../types';
 
 type AddressMap = { [address: string]: string };
@@ -14,7 +15,7 @@ const addressesFromAccounts = (array: (AccountAddresses | undefined)[]) =>
             )
     );
 
-export const createAddressManager = () => {
+export const createAddressManager = (network?: Network) => {
     let subscribedAddrs: AddressMap = {};
     let subscribedAccs: AccountMap = {};
 
@@ -24,7 +25,7 @@ export const createAddressManager = () => {
         subscribedAddrs = toAdd.reduce<AddressMap>(
             (dic, addr) => ({
                 ...dic,
-                [addr]: addressToScripthash(addr),
+                [addr]: addressToScripthash(addr, network),
             }),
             subscribedAddrs
         );

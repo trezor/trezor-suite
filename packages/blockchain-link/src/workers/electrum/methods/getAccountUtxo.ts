@@ -24,7 +24,7 @@ const transformUtxo =
     });
 
 const getAccountUtxo: Api<Req, Res> = async (client, descriptor) => {
-    const parsed = tryGetScripthash(descriptor);
+    const parsed = tryGetScripthash(descriptor, client.getInfo()?.network);
     const {
         block: { height },
     } = client.getInfo() || fail('Client not initialized');

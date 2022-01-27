@@ -1,9 +1,9 @@
-import { address as a, crypto as c } from '@trezor/utxo-lib';
+import { address as a, crypto as c, Network } from '@trezor/utxo-lib';
 
 export const btcToSat = (btc: number) => Math.round(100000000 * btc).toString();
 
-export const addressToScripthash = (address: string) => {
-    const script = a.toOutputScript(address);
+export const addressToScripthash = (address: string, network?: Network) => {
+    const script = a.toOutputScript(address, network);
     const scripthash = c.sha256(script).reverse().toString('hex');
     return scripthash;
 };
@@ -20,12 +20,13 @@ export const blockheaderToBlockhash = (header: string) => {
 };
 
 export const tryGetScripthash = (
-    address: string
+    address: string,
+    network?: Network
 ): { valid: true; scripthash: string } | { valid: false } => {
     try {
         return {
             valid: true,
-            scripthash: addressToScripthash(address),
+            scripthash: addressToScripthash(address, network),
         };
     } catch {
         return {
