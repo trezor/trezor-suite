@@ -200,13 +200,14 @@ const PassphraseTypeCard = (props: Props) => {
         }
     }, [enterPressed, canSubmit, submit, value]);
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onPassphraseChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const tmpValue = event.target.value;
         // spread current value into array
         const newValue = [...value];
         const len = tmpValue.length;
         const pos = event.target.selectionStart ?? len;
         const diff = newValue.length - len;
+        setHiddenWalletTouched(true);
 
         // caret position is somewhere in the middle
         if (pos < len) {
@@ -319,7 +320,7 @@ const PassphraseTypeCard = (props: Props) => {
                             <PassphraseInput
                                 data-test="@passphrase/input"
                                 placeholder={translationString('TR_ENTER_PASSPHRASE')}
-                                onChange={onChange}
+                                onChange={onPassphraseChange}
                                 value={displayValue}
                                 innerRef={ref}
                                 bottomText={
