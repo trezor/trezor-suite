@@ -17,12 +17,12 @@ const Wrapper = styled.div`
     padding: 30px 24px;
 `;
 
-const Address = styled.span<{ confirmed?: boolean }>`
+const Address = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-variant-numeric: tabular-nums slashed-zero;
-    margin-bottom: ${props => (props.confirmed ? '20px' : '0')};
+    margin-bottom: 20px;
     width: 100%;
     background: ${props => props.theme.BG_LIGHT_GREY};
     border: 1px solid ${props => props.theme.STROKE_GREY};
@@ -97,20 +97,20 @@ const ConfirmAddress = ({
         >
             <Wrapper>
                 <QrCode value={address} />
-                <Address data-test="@modal/confirm-address/address-field" confirmed={confirmed}>
-                    {address}
-                </Address>
-                <CopyButtonWrapper ref={htmlElement}>
-                    {confirmed && (
-                        <Button
-                            data-test="@metadata/copy-address-button"
-                            variant="tertiary"
-                            onClick={copyAddress}
-                        >
-                            <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                        </Button>
-                    )}
-                </CopyButtonWrapper>
+                <Address data-test="@modal/confirm-address/address-field">{address}</Address>
+                {device.connected && (
+                    <CopyButtonWrapper ref={htmlElement}>
+                        {confirmed && (
+                            <Button
+                                data-test="@metadata/copy-address-button"
+                                variant="tertiary"
+                                onClick={copyAddress}
+                            >
+                                <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                            </Button>
+                        )}
+                    </CopyButtonWrapper>
+                )}
                 {!device.connected && <StyledDeviceDisconnected label={device.label} />}
             </Wrapper>
         </Modal>
