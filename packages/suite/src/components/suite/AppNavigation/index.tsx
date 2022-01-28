@@ -204,12 +204,10 @@ interface MenuWidths {
 const isRouteActive = (routeName?: Route['name'], id?: string): boolean => routeName === id;
 
 const isSubsection = (routeName: Route['name']): boolean =>
-    !(
-        routeName.startsWith('settings') ||
-        routeName === 'wallet-index' ||
-        routeName === 'wallet-details' ||
-        routeName === 'wallet-tokens'
-    );
+    routeName.startsWith('wallet') &&
+    routeName !== 'wallet-index' &&
+    routeName !== 'wallet-details' &&
+    routeName !== 'wallet-tokens';
 
 const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =>
     primary + secondary >= wrapper;
