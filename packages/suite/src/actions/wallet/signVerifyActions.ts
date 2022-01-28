@@ -1,10 +1,7 @@
 import TrezorConnect, { ButtonRequestMessage, UI, Unsuccessful, Success } from 'trezor-connect';
 import { SIGN_VERIFY } from './constants';
 import { addToast } from '@suite-actions/notificationActions';
-import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
-import { openModal, openDeferredModal } from '@suite-actions/modalActions';
-import { getProtocolInfo } from '@suite-utils/parseUri';
-import { isHex } from '@wallet-utils/ethUtils';
+import { openModal } from '@suite-actions/modalActions';
 import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import type { Account } from '@wallet-types';
 
@@ -77,7 +74,7 @@ const showAddressByNetwork =
     };
 
 const signByNetwork =
-    (path: string | number[], message: string, hex: boolean, aopp: boolean) =>
+    (path: string | number[], message: string, hex: boolean) =>
     ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
         const params = {
             device,
@@ -86,7 +83,7 @@ const signByNetwork =
             message,
             useEmptyPassphrase,
             hex,
-            no_script_type: aopp,
+            no_script_type: false,
         };
         switch (account.networkType) {
             case 'bitcoin':
@@ -175,10 +172,10 @@ export const showAddress =
             .catch(onError(dispatch, 'verify-address-error'));
 
 export const sign =
-    (path: string | number[], message: string, hex = false, aopp = false) =>
+    (path: string | number[], message: string, hex = false) =>
     (dispatch: Dispatch, getState: GetState) =>
         getStateParams(getState)
-            .then(signByNetwork(path, message, hex, aopp))
+            .then(signByNetwork(path, message, hex))
             .then(throwWhenFailed)
             .then(onSignSuccess(dispatch))
             .catch(onError(dispatch, 'sign-message-error'));
@@ -191,52 +188,3 @@ export const verify =
             .then(throwWhenFailed)
             .then(onVerifySuccess(dispatch))
             .catch(onError(dispatch, 'verify-message-error'));
-
-export const importAopp = (symbol?: Account['symbol']) => async (dispatch: Dispatch) => {
-    const uri = await dispatch(openDeferredModal({ type: 'qr-reader', allowPaste: true }));
-    if (!uri) return;
-    const info = getProtocolInfo(uri);
-    if (info?.scheme !== PROTOCOL_SCHEME.AOPP) return;
-    if (info.asset && symbol && info.asset !== symbol) return;
-    return {
-        asset: info.asset,
-        message: info.msg,
-        callback: info.callback,
-        format: info.format,
-    };
-};
-
-export const sendAopp =
-    (address: string, sig: string, callback: string) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const network = getState().wallet.selectedAccount.account?.networkType;
-        const signature =
-            network === 'ethereum' && isHex(sig) ? Buffer.from(sig, 'hex').toString('base64') : sig;
-
-        const confirm = await dispatch(
-            openDeferredModal({ type: 'send-aopp-message', address, signature, callback }),
-        );
-        if (!confirm) return;
-
-        const { success, error } = await fetch(callback, {
-            method: 'POST',
-            headers: { 'content-type': 'application/json; utf-8' },
-            body: JSON.stringify({
-                version: 0,
-                address,
-                signature,
-            }),
-        })
-            .then(res => ({
-                success: res.status === 204,
-                error: undefined,
-            }))
-            .catch(err => ({
-                success: false,
-                error: err.message,
-            }));
-
-        if (success) dispatch(addToast({ type: 'aopp-success' }));
-        else dispatch(addToast({ type: 'aopp-error', error }));
-        return success;
-    };

@@ -23,9 +23,6 @@ const protocolMiddleware =
             case PROTOCOL.SAVE_COIN_PROTOCOL:
                 closeNotifications(api, 'coin-scheme-protocol');
                 break;
-            case PROTOCOL.SAVE_AOPP_PROTOCOL:
-                closeNotifications(api, 'aopp-protocol');
-                break;
             default:
                 break;
         }

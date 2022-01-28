@@ -30,8 +30,7 @@ export type ToastPayload = (
               | 'backup-success'
               | 'backup-failed'
               | 'sign-message-success'
-              | 'verify-message-success'
-              | 'aopp-success';
+              | 'verify-message-success';
       }
     | {
           type: 'tx-sent';
@@ -66,7 +65,6 @@ export type ToastPayload = (
               | 'verify-address-error'
               | 'sign-message-error'
               | 'verify-message-error'
-              | 'aopp-error'
               | 'sign-tx-error'
               | 'metadata-auth-error'
               | 'metadata-not-found-error'
@@ -92,11 +90,6 @@ export type ToastPayload = (
           scheme: PROTOCOL_SCHEME;
           address: string;
           amount?: number;
-      }
-    | {
-          type: 'aopp-protocol';
-          message: string;
-          asset: Network['symbol'];
       }
 ) &
     Options;

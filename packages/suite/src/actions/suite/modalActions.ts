@@ -114,13 +114,6 @@ export type UserContextPayload =
       }
     | {
           type: 'safety-checks';
-      }
-    | {
-          type: 'send-aopp-message';
-          address: string;
-          signature: string;
-          callback: string;
-          decision: Deferred<boolean>;
       };
 
 export type ModalAction =
@@ -207,8 +200,7 @@ type DeferredModals = Extract<
             | 'coinmarket-buy-terms'
             | 'coinmarket-sell-terms'
             | 'coinmarket-exchange-dex-terms'
-            | 'coinmarket-exchange-terms'
-            | 'send-aopp-message';
+            | 'coinmarket-exchange-terms';
     }
 >;
 // extract single modal by `type` util
