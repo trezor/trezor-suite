@@ -1,10 +1,8 @@
-import TrezorConnect, { FeeLevel, Success, Unsuccessful } from 'trezor-connect';
 import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { Dispatch, GetState } from '@suite-types';
-import { Network } from '@wallet-types';
-import { NETWORKS } from '@wallet-config';
-import { toTorUrl } from '@suite-utils/tor';
+import type { FeeLevel } from 'trezor-connect';
+import type { Dispatch, GetState } from '@suite-types';
+import type { Network } from '@wallet-types';
 import type { BackendSettings } from '@wallet-reducers/settingsReducer';
 
 export type WalletSettingsAction =
@@ -90,45 +88,3 @@ export const removeBackend = (coin: Network['symbol']): WalletSettingsAction => 
     type: WALLET_SETTINGS.REMOVE_BACKEND,
     payload: { coin },
 });
-
-export const torifyBackends = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { backends } = getState().wallet.settings;
-    const alreadySet = Object.entries(backends)
-        .filter(([, { urls }]) => urls.length)
-        .map(([coin]) => coin as Network['symbol']);
-
-    const isSuccess = <T>(res: Success<T> | Unsuccessful): res is Success<T> => res.success;
-
-    const defaults = await Promise.all(
-        NETWORKS.filter(n => !n.accountType && !alreadySet.includes(n.symbol)).map(n =>
-            TrezorConnect.getCoinInfo({ coin: n.symbol }),
-        ),
-    ).then(results =>
-        results.filter(isSuccess).map(({ payload: { shortcut, blockchainLink } }) => ({
-            coin: shortcut.toLowerCase() as BackendSettings['coin'],
-            type: blockchainLink?.type as BackendSettings['type'] | undefined,
-            urls: blockchainLink?.url,
-        })),
-    );
-
-    defaults.forEach(({ coin, type, urls }) => {
-        if (type !== 'blockbook') return;
-        if (!urls?.find(url => url.endsWith('trezor.io'))) return;
-        dispatch(
-            setBackend({
-                coin,
-                type,
-                urls: urls.map(url => toTorUrl(url)),
-                tor: true,
-            }),
-        );
-    });
-};
-
-export const detorifyBackends = () => (dispatch: Dispatch, getState: GetState) => {
-    const { backends } = getState().wallet.settings;
-    Object.entries(backends)
-        .filter(([, { tor }]) => tor)
-        .map(([coin]) => coin as Network['symbol'])
-        .forEach(coin => dispatch(removeBackend(coin)));
-};

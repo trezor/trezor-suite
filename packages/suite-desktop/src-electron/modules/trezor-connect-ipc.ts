@@ -15,6 +15,9 @@ const init = () => {
     const { logger, resourcesPath } = global;
     logger.info(SERVICE_NAME, `Starting service`);
 
+    // manifest in nodejs is unnecessary required :(
+    TrezorConnect.manifest({ appUrl: 'https://suite.trezor.io', email: 'info@trezor.io' });
+
     // one time set listeners, at first connect call
     ipcMain.once('trezor-connect-call', ({ reply }) => {
         // propagate all events using trezor-connect-event channel
