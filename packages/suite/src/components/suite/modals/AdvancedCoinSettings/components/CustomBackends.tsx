@@ -5,6 +5,7 @@ import { Translation, TooltipSymbol, CollapsibleBox } from '@suite-components';
 import InputError from '@wallet-components/InputError';
 import { useSelector } from '@suite-hooks';
 import { useDefaultUrls, useBackendsForm } from '@settings-hooks/backends';
+import { toTorUrl } from '@suite-utils/tor';
 import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
@@ -61,8 +62,9 @@ interface CustomBackendsProps {
 export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
     const { symbol: coin } = network;
     const defaultUrls = useDefaultUrls(coin);
-    const { blockchain } = useSelector(state => ({
+    const { blockchain, tor } = useSelector(state => ({
         blockchain: state.wallet.blockchain,
+        tor: state.suite.tor,
     }));
     const { type, urls, input, changeType, addUrl, removeUrl, save } = useBackendsForm(coin);
     const editable = type !== 'default';
@@ -88,14 +90,17 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
             <BackendTypeSelect network={network} value={type} onChange={changeType} />
 
-            {(editable ? urls : defaultUrls).map(url => (
-                <BackendInput
-                    key={url}
-                    url={url}
-                    active={url === blockchain[coin]?.url}
-                    onRemove={editable ? () => removeUrl(url) : undefined}
-                />
-            ))}
+            {(editable ? urls : defaultUrls).map(u => {
+                const url = tor ? toTorUrl(u) : u;
+                return (
+                    <BackendInput
+                        key={url}
+                        url={url}
+                        active={url === blockchain[coin]?.url}
+                        onRemove={editable ? () => removeUrl(u) : undefined}
+                    />
+                );
+            })}
 
             {editable && (
                 <Input

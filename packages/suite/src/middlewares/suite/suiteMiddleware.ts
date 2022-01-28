@@ -5,7 +5,6 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import * as storageActions from '@suite-actions/storageActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
@@ -86,13 +85,6 @@ const suite =
                 api.dispatch(routerActions.init());
                 // backend connected, suite is ready to use
                 api.dispatch(suiteActions.onSuiteReady());
-                // Set or clear Tor backends when Suite is ready
-                const { tor } = api.getState().suite;
-                if (tor) {
-                    await api.dispatch(walletSettingsActions.torifyBackends());
-                } else {
-                    api.dispatch(walletSettingsActions.detorifyBackends());
-                }
                 break;
             }
 
@@ -112,19 +104,6 @@ const suite =
             case SUITE.REQUEST_AUTH_CONFIRM:
                 api.dispatch(suiteActions.authConfirm());
                 break;
-            case SUITE.TOR_STATUS: {
-                const { loaded } = api.getState().suite;
-                if (!loaded) {
-                    break;
-                }
-
-                if (action.payload) {
-                    await api.dispatch(walletSettingsActions.torifyBackends());
-                } else {
-                    api.dispatch(walletSettingsActions.detorifyBackends());
-                }
-                break;
-            }
             default:
                 break;
         }
