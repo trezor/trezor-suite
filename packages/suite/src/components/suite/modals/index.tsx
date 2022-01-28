@@ -40,7 +40,6 @@ import MetadataProvider from './metadata/MetadataProvider';
 import AdvancedCoinSettings from './AdvancedCoinSettings';
 import AddToken from './AddToken';
 import SafetyChecks from './SafetyChecks';
-import SendAoppMessage from './SendAoppMessage';
 import { useGuide } from '@guide-hooks';
 
 import type { AcquiredDevice } from '@suite-types';
@@ -234,8 +233,6 @@ const getUserContextModal = ({ modal, onCancel }: SharedProps) => {
             return <AddToken {...payload} onCancel={onCancel} />;
         case 'safety-checks':
             return <SafetyChecks onCancel={onCancel} />;
-        case 'send-aopp-message':
-            return <SendAoppMessage {...payload} onCancel={onCancel} />;
         default:
             return null;
     }

@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {
-    Input,
-    Button,
-    Textarea,
-    Card,
-    Switch,
-    variables,
-    Icon,
-    useTheme,
-} from '@trezor/components';
+import { Input, Button, Textarea, Card, Switch, variables } from '@trezor/components';
 import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import { CharacterCount, Translation } from '@suite-components';
 import { useActions, useDevice, useSelector, useTranslation } from '@suite-hooks';
@@ -66,9 +57,8 @@ const SignVerify = () => {
         revealedAddresses: state.wallet.receive,
     }));
 
-    const { isLocked, device } = useDevice();
+    const { isLocked } = useDevice();
     const { translationString } = useTranslation();
-    const theme = useTheme();
 
     const {
         formDirty,
@@ -77,7 +67,6 @@ const SignVerify = () => {
         formValues,
         formErrors,
         formSetSignature,
-        formSetAopp,
         messageRef,
         signatureRef,
         hexField,
@@ -85,31 +74,29 @@ const SignVerify = () => {
         pathField,
     } = useSignVerifyForm(page, selectedAccount.account);
 
-    const { sign, verify, importAopp, sendAopp } = useActions({
+    const { sign, verify } = useActions({
         sign: signVerifyActions.sign,
         verify: signVerifyActions.verify,
-        importAopp: signVerifyActions.importAopp,
-        sendAopp: signVerifyActions.sendAopp,
     });
 
-    const [stage, setStage] = useState<'init' | 'done' | 'sent'>('init');
+    const [completed, setCompleted] = useState(false);
 
     useEffect(() => {
         if (page === 'sign' && formValues.signature) return;
-        setStage('init');
+        setCompleted(false);
     }, [page, formValues.message, formValues.address, formValues.signature]);
 
     const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, aopp } = data;
+        const { address, path, message, signature, hex } = data;
         if (page === 'sign') {
-            const result = await sign(path, message, hex, aopp);
+            const result = await sign(path, message, hex);
             if (result) {
                 formSetSignature(result);
-                setStage('done');
+                setCompleted(true);
             }
         } else {
             const result = await verify(address, message, signature, hex);
-            if (result) setStage('done');
+            if (result) setCompleted(true);
         }
     };
 
@@ -120,21 +107,6 @@ const SignVerify = () => {
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY">
-                {!device?.unavailableCapabilities?.aopp && (
-                    /* TODO: This button available only for networks with aopp feature */
-                    <Button
-                        type="button"
-                        data-test="@sign-verify/import-aopp"
-                        variant="tertiary"
-                        onClick={() =>
-                            importAopp(selectedAccount.account?.symbol).then(
-                                aopp => aopp && formSetAopp(aopp),
-                            )
-                        }
-                    >
-                        <Translation id="TR_AOPP_IMPORT" />
-                    </Button>
-                )}
                 {page === 'sign' && canCopy && (
                     <Button type="button" variant="tertiary" onClick={copy}>
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
@@ -226,44 +198,18 @@ const SignVerify = () => {
                             type="submit"
                             isDisabled={isLocked()}
                             data-test="@sign-verify/submit"
-                            variant={stage === 'init' ? 'primary' : 'secondary'}
-                            icon={stage !== 'init' ? 'CHECK' : undefined}
+                            variant={!completed ? 'primary' : 'secondary'}
+                            icon={completed ? 'CHECK' : undefined}
                             size={24}
                         >
                             <Translation
                                 id={(() => {
                                     if (page === 'sign')
-                                        return stage === 'init' ? 'TR_SIGN' : 'TR_SIGNED';
-                                    return stage === 'init' ? 'TR_VERIFY' : 'TR_VERIFIED';
+                                        return !completed ? 'TR_SIGN' : 'TR_SIGNED';
+                                    return !completed ? 'TR_VERIFY' : 'TR_VERIFIED';
                                 })()}
                             />
                         </StyledButton>
-                        {formValues.callback && (
-                            <>
-                                <Icon size={24} color={theme.TYPE_LIGHT_GREY} icon="ARROW_RIGHT" />
-                                <StyledButton
-                                    type="button"
-                                    data-test="@sign-verify/send-aopp"
-                                    isDisabled={stage === 'init'}
-                                    onClick={() =>
-                                        sendAopp(
-                                            formValues.address,
-                                            formValues.signature,
-                                            formValues.callback,
-                                        ).then(res => {
-                                            if (res) setStage('sent');
-                                        })
-                                    }
-                                    variant={stage === 'done' ? 'primary' : 'secondary'}
-                                    icon={stage === 'sent' ? 'CHECK' : undefined}
-                                    size={24}
-                                >
-                                    <Translation
-                                        id={stage === 'sent' ? 'TR_SENT' : 'TR_AOPP_SEND'}
-                                    />
-                                </StyledButton>
-                            </>
-                        )}
                     </Row>
                 </Form>
             </Card>

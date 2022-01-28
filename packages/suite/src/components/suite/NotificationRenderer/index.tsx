@@ -3,7 +3,7 @@ import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import ActionRenderer from './renderers/ActionRenderer';
 import TransactionRenderer from './renderers/TransactionRenderer';
-import { AoppProtocolRenderer, CoinProtocolRenderer } from './renderers/UriSchemeRenderers';
+import { CoinProtocolRenderer } from './renderers/UriSchemeRenderers';
 import type { NotificationViewProps, NotificationRendererProps } from './types';
 import type { ExtendedMessageDescriptor } from '@suite-types';
 
@@ -52,10 +52,6 @@ const info = (
 
 const NotificationRenderer = ({ notification, render }: NotificationRendererProps) => {
     switch (notification.type) {
-        case 'aopp-success':
-            return success(render, notification, 'TOAST_AOPP_SUCCESS');
-        case 'aopp-error':
-            return error(render, notification, 'TOAST_AOPP_ERROR');
         case 'acquire-error':
             return error(render, notification, 'TOAST_ACQUIRE_ERROR');
         case 'auth-failed':
@@ -128,8 +124,6 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return error(render, notification, 'TR_GUIDE_FEEDBACK_ERROR');
         case 'coin-scheme-protocol':
             return <CoinProtocolRenderer render={render} notification={notification} />;
-        case 'aopp-protocol':
-            return <AoppProtocolRenderer render={render} notification={notification} />;
         case 'tx-received':
             return (
                 <TransactionRenderer

@@ -26,30 +26,6 @@ const useActionAllowed = (path: string, network?: Network['symbol']) => {
     return !!pathMatch && selectedAccount?.network?.symbol === network;
 };
 
-export const AoppProtocolRenderer = ({
-    render,
-    notification,
-}: NotificationRendererProps<'aopp-protocol'>) => {
-    const { fillAopp, resetProtocol } = useActions({
-        fillAopp: protocolActions.fillAopp,
-        resetProtocol: protocolActions.resetProtocol,
-    });
-    const allowed = useActionAllowed('/accounts/sign-verify', notification.asset);
-    return (
-        <ConditionalActionRenderer
-            render={render}
-            notification={notification}
-            header={<Translation id="TOAST_AOPP_FILL_HEADER" />}
-            body={notification.message}
-            icon={getIcon(notification.asset)}
-            actionLabel="TOAST_AOPP_FILL_ACTION"
-            actionAllowed={allowed}
-            onAction={() => fillAopp(true)}
-            onCancel={resetProtocol}
-        />
-    );
-};
-
 export const CoinProtocolRenderer = ({
     render,
     notification,
