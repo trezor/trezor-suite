@@ -1,1 +1,14 @@
-{}
+{
+  "AMOUNT": "Jumlah",
+  "AMOUNT_IS_NOT_ENOUGH": "Dana tidak mencukupi",
+  "AMOUNT_IS_NOT_INTEGER": "Jumlah bukan bilangan bulat",
+  "AMOUNT_IS_NOT_IN_RANGE_DECIMALS": "Maksimum {desimal} desimal diperbolehkan",
+  "AMOUNT_IS_NOT_NUMBER": "Masukkan nomor (misal 1.5)",
+  "AMOUNT_IS_NOT_SET": "Jumlahnya tidak ditetapkan",
+  "AMOUNT_IS_TOO_LOW": "Jumlahnya terlalu rendah",
+  "BACKUP_BACKUP_ALREADY_FAILED_HEADING": "Pencadangan gagal",
+  "BACKUP_BACKUP_ALREADY_FINISHED_HEADING": "Pencadangan telah selesai",
+  "BROADCAST": "Siaran",
+  "CUSTOM_FEE_IS_NOT_NUMBER": "Masukkan angka",
+  "CUSTOM_FEE_IS_NOT_SET": "Masukkan biaya yang diinginkan"
+}
