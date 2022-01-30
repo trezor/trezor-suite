@@ -57,18 +57,19 @@ suite-desktop deploy dev:
   tags:
     - deploy
 
-# Suite native deploy to dev
-suite-native deploy dev:
-  stage: deploy to dev
-  only:
-    <<: *run_everything_rules
-  variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-native/${CI_BUILD_REF_NAME}
-  script:
-    - mkdir -p ${DEPLOY_DIRECTORY}
-    - rsync --delete -va app-release.apk "${DEPLOY_DIRECTORY}/"
-  tags:
-    - deploy
+# # Suite native deploy to dev
+# suite-native deploy dev:
+#   stage: deploy to dev
+#   only:
+#     <<: *run_everything_rules
+#   variables:
+#     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-native/${CI_BUILD_REF_NAME}
+#   script:
+#     - mkdir -p ${DEPLOY_DIRECTORY}
+#     - rsync --delete -va app-release.apk "${DEPLOY_DIRECTORY}/"
+#   tags:
+#     - deploy
+# TODO: Disabled until the new suite native build is introduced. Fix this deploy job after.
 
 # Messaging system deploy to dev
 msg-system deploy dev:
