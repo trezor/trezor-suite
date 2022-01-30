@@ -76,6 +76,7 @@ const init = async () => {
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
         },
+        icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
     });
 
     // Load page
