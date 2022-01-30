@@ -4051,7 +4051,7 @@ export default defineMessages({
     MODAL_ADD_ACCOUNT_DESC: {
         id: 'MODAL_ADD_ACCOUNT_DESC',
         defaultMessage:
-            'Group transactions using addresses that belong to a particular account. Please note that 1500+ supported ERC20 tokens reside on the ETH network (Accounts › ETH Account › Tokens). All supported cryptocurrencies:  {trezorCoinsUrl} ',
+            'Please note that 1500+ supported ERC20 tokens reside on the ETH network (Accounts › ETH Account › Tokens). All supported cryptocurrencies: {trezorCoinsUrl}',
     },
     MODAL_ADD_ACCOUNT_NETWORK_MAINNET: {
         id: 'MODAL_ADD_ACCOUNT_NETWORK_MAINNET',
@@ -5401,7 +5401,7 @@ export default defineMessages({
     },
     RECIPIENT_REQUIRES_UPDATE: {
         defaultMessage:
-            'Taproot is not supported by your firmware version. Please upgrade your device firmware.',
+            'Taproot is not supported by your firmware version. Please update your device firmware.',
         id: 'RECIPIENT_REQUIRES_UPDATE',
     },
     RECIPIENT_FORMAT_DEPRECATED: {
@@ -5916,7 +5916,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Not connected to the backend yet. Try going to Settings › Crypto › Advanced settings to establish the connection with the backend.',
+            'Not connected to the backend. Try reconnecting the device. Also, check your internet connection or the URL of your custom backend.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
@@ -6332,17 +6332,16 @@ export default defineMessages({
     },
     TR_SUITE_WEB_LANDING_HEADLINE_FROM_MYTREZOR: {
         id: 'TR_SUITE_WEB_LANDING_HEADLINE_FROM_MYTREZOR',
-        defaultMessage:
-            'Trezor Suite makes managing{lineBreak}<em>your crypto safer and easier</em>',
+        defaultMessage: 'Start using <em>Trezor Suite</em>',
     },
     TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR: {
         id: 'TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR',
-        defaultMessage: 'Coming from Trezor Wallet?',
+        defaultMessage: 'Looking for Trezor Wallet?',
     },
     TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR: {
         id: 'TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR',
         defaultMessage:
-            'Trezor Suite offers new features, enhanced security and a more intuitive user interface.',
+            'Trezor Suite is a new interface that makes using your Trezor more private and secure.',
     },
     TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR: {
         id: 'TR_SUITE_WEB_LANDING_BANNER_CTA_FROM_MYTREZOR',
@@ -6358,7 +6357,7 @@ export default defineMessages({
     },
     TR_SUITE_WEB_LANDING_SUB_HEADLINE_FROM_MYTREZOR: {
         id: 'TR_SUITE_WEB_LANDING_SUB_HEADLINE_FROM_MYTREZOR',
-        defaultMessage: ' A safer, more private experience for desktop & browser.',
+        defaultMessage: 'A safer, more private experience for desktop & browser.',
     },
     TR_SUITE_WEB_LANDING_SUB_SOON: {
         id: 'TR_SUITE_WEB_LANDING_SUB_SOON',
@@ -6498,27 +6497,27 @@ export default defineMessages({
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0',
-        defaultMessage: 'Trezor Suite is replacing Trezor Wallet',
+        defaultMessage: 'Trezor Wallet is no longer supported',
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_0: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_0',
         defaultMessage:
-            '<strong>Move to Trezor Suite today to enjoy new features, more privacy, and regular updates.</strong>',
+            '<strong>Start using Trezor Suite today to enjoy new features, more privacy, and regular updates.</strong>',
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1',
         defaultMessage:
-            "Have you tried Trezor Suite yet? It's a brand new desktop and browser app that lets you do more with your hardware wallet. The old Trezor Wallet web interface <strong>will not be supported from January 31st 2022</strong>, so now's the time to get familiar with Trezor Suite.",
+            "Trezor Suite is a brand new interface for desktop and web that lets you do more with your hardware wallet. The old Trezor Wallet web interface will not be supported from January 31st 2022<strong>, so now's the time to get familiar with Trezor Suite.",
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2',
         defaultMessage:
-            "This won't affect your coins or keys, you'll just need to use Trezor Suite instead of Trezor Wallet to manage your assets. It's best experienced as a <strong>desktop app</strong>, which includes privacy options and isolation from phishing, but a <strong>web version</strong> is also available for those who need it.",
+            'For all the new features, download the desktop app. Trezor Suite can be accessed in your <strong>web browser</strong> by clicking the link at the top-right of this page.',
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_3',
         defaultMessage:
-            "This change won't affect your coins or keys. You will find all the same features (and more!), so you can just install the <strong>desktop app</strong> and continue from where you left off.",
+            "This change won't affect your coins or keys. You will find all the same features (and more!), so you can just install the desktop app and continue from where you left off.",
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1',
@@ -6527,7 +6526,7 @@ export default defineMessages({
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4',
         defaultMessage:
-            '<ul><li>Improved security, usability and privacy.</li> <li>Use the Tor privacy network at the flick of a switch</li> <li>Enjoy quicker transactions with RBF</li> <li>Look forward to the likes of CoinJoin, which helps anonymize Bitcoin transactions.</li></ul> Trezor Suite also has all the features you’re used to from the old Trezor Wallet so you can hit the ground running!',
+            "<ul><li>Privacy at the flick of a switch with Tor.</li> <li>A new, more intuitive interface</li> <li>Quicker transactions with RBF</li> <li>Enough power for exciting upcoming features!</li></ul> Trezor Suite also has all the features you're used to from the old Trezor Wallet so you can hit the ground running!",
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2',
@@ -6536,7 +6535,7 @@ export default defineMessages({
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_5: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_5',
         defaultMessage:
-            '<StyledCollapsibleBoxLink>Download and run Trezor Suite for desktop</StyledCollapsibleBoxLink>, plug in your hardware wallet and get set up in seconds!{lineBreak}Alternatively, use the web app to access standard functions (much like in Trezor Wallet). Advanced features are only available using the desktop app.',
+            '<StyledCollapsibleBoxLink>Download and run Trezor Suite for desktop</StyledCollapsibleBoxLink>, plug in your hardware wallet and get set up in seconds!{lineBreak}Alternatively, use the web app to access standard functions (just like in Trezor Wallet). Advanced features are only available using the desktop app.',
     },
     TR_COLOR_SCHEME: {
         id: 'TR_COLOR_SCHEME',
@@ -6657,7 +6656,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
         defaultMessage:
-            'Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1<strong> will show all transactions that have an amount of 1 or higher.',
+            'Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 or higher.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_3: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
@@ -6697,7 +6696,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_10: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
         defaultMessage:
-            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example For example <strong>> 2020-12-01 & < 2020-12-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.',
+            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong>> 2020-01-01 & < 2020-01-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.',
     },
     TR_PAGINATION_NEWER: {
         id: 'TR_PAGINATION_NEWER',
@@ -7100,7 +7099,7 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE',
-        defaultMessage: 'If you couldn’t see Trezor Bridge running, download and install it',
+        defaultMessage: 'If you can’t see Trezor Bridge running, download and install it',
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION',
