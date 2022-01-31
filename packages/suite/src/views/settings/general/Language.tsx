@@ -7,6 +7,8 @@ import LANGUAGES, { Locale, LocaleInfo } from '@suite-config/languages';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as languageActions from '@settings-actions/languageActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
     !!locale[1].complete;
@@ -49,6 +51,7 @@ export const Language = () => {
         setLanguage: languageActions.setLanguage,
         setAutodetect: suiteActions.setAutodetect,
     });
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Language);
 
     const { options, systemOption } = useLanguageOptions();
 
@@ -76,7 +79,11 @@ export const Language = () => {
     };
 
     return (
-        <SectionItem data-test="@settings/language">
+        <SectionItem
+            data-test="@settings/language"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn title={<Translation id="TR_LANGUAGE" />} />
             <ActionColumn>
                 <ActionSelect

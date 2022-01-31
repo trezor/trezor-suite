@@ -16,6 +16,8 @@ import {
     validate,
 } from '@suite-utils/homescreen';
 import { HOMESCREEN_EDITOR } from '@suite-constants/urls';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {
@@ -51,6 +53,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     });
     const analytics = useAnalytics();
     const fileInputElement = createRef<HTMLInputElement>();
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Homescreen);
 
     const [customHomescreen, setCustomHomescreen] = useState('');
     const [validationError, setValidationError] = useState<ImageValidationError | undefined>();
@@ -95,22 +98,18 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     return (
         <>
-            <SectionItem>
+            <SectionItem
+                data-test="@settings/device/homescreen"
+                ref={anchorRef}
+                shouldHighlight={shouldHighlight}
+            >
                 {isModelT ? (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT" />
                         }
-                    />
-                ) : (
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
-                        description={
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1" />
-                        }
-                        buttonLink={HOMESCREEN_EDITOR}
                         buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
+                        buttonLink={HOMESCREEN_EDITOR}
                     />
                 )}
                 <ActionColumn>

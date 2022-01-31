@@ -6,6 +6,8 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-comp
 import { variables } from '@trezor/components';
 import { useAnalytics, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const DISPLAY_ROTATIONS = [
     { label: <Translation id="TR_NORTH" />, value: 0 },
@@ -34,9 +36,14 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
         applySettings: deviceSettingsActions.applySettings,
     });
     const analytics = useAnalytics();
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.DisplayRotation);
 
     return (
-        <SectionItem>
+        <SectionItem
+            data-test="@settings/device/display-rotation"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />} />
             <ActionColumn>
                 {DISPLAY_ROTATIONS.map(variant => (

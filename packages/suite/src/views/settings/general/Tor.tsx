@@ -4,15 +4,18 @@ import { Switch } from '@trezor/components';
 import { useAnalytics, useSelector } from '@suite-hooks';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { Translation } from '@suite-components';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 export const Tor = () => {
     const analytics = useAnalytics();
     const { tor } = useSelector(state => ({
         tor: state.suite.tor,
     }));
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Tor);
 
     return (
-        <SectionItem>
+        <SectionItem data-test="@settings/tor" ref={anchorRef} shouldHighlight={shouldHighlight}>
             <TextColumn
                 title={<Translation id="TR_TOR_TITLE" />}
                 description={
