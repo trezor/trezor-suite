@@ -94,22 +94,6 @@ const DebugSettings = () => {
             <Section title="Debug">
                 <SectionItem>
                     <TextColumn
-                        title="Trezor Bridge dev mode (desktop)"
-                        description="Starts Trezor Bridge on port 21324"
-                    />
-                    <ActionColumn>
-                        <Switch
-                            checked={debug.bridgeDevMode}
-                            onChange={() => {
-                                setDebugMode({
-                                    bridgeDevMode: !debug.bridgeDevMode,
-                                });
-                            }}
-                        />
-                    </ActionColumn>
-                </SectionItem>
-                <SectionItem>
-                    <TextColumn
                         title="Open issue on Github"
                         description="Open issue on Github with pre-filled details. Do not use with sensitive data!"
                     />

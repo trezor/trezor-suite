@@ -1,7 +1,6 @@
 import Bridge from './bridge';
 import DeviceAcquire from './device-acquire';
 import DeviceBootloader from './device-bootloader';
-import DeviceConnect from './device-connect';
 import DeviceInitialize from './device-initialize';
 import DeviceNoFirmware from './device-no-firmware';
 import DeviceSeedless from './device-seedless';
@@ -17,7 +16,6 @@ export {
     Bridge,
     DeviceAcquire,
     DeviceBootloader,
-    DeviceConnect,
     DeviceInitialize,
     DeviceNoFirmware,
     DeviceSeedless,
