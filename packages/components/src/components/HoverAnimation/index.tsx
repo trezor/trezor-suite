@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 
-const Wrapper = styled.div<{ size?: string }>`
+const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     position: relative;
     display: flex;
     align-items: center;
@@ -23,35 +23,44 @@ const Wrapper = styled.div<{ size?: string }>`
         pointer-events: none;
     }
 
-    &:hover,
-    &:focus,
-    &:active {
-        &:after {
-            background-color: ${props =>
-                transparentize(
-                    props.theme.HOVER_TRANSPARENTIZE_FILTER,
-                    props.theme.HOVER_PRIMER_COLOR
-                )};
-            ${props =>
-                props.size === 'tiny'
-                    ? css`
-                          top: -8px;
-                          left: -8px;
-                          bottom: -8px;
-                          right: -8px;
-                      `
-                    : css`
-                          top: -12px;
-                          left: -12px;
-                          bottom: -12px;
-                          right: -12px;
-                      `}
-        }
-    }
+    ${props =>
+        props.isHoverable &&
+        css`
+            &:hover,
+            &:focus,
+            &:active {
+                &:after {
+                    background-color: ${props =>
+                        transparentize(
+                            props.theme.HOVER_TRANSPARENTIZE_FILTER,
+                            props.theme.HOVER_PRIMER_COLOR
+                        )};
+                    ${props.size === 'tiny'
+                        ? css`
+                              top: -8px;
+                              left: -8px;
+                              bottom: -8px;
+                              right: -8px;
+                          `
+                        : css`
+                              top: -12px;
+                              left: -12px;
+                              bottom: -12px;
+                              right: -12px;
+                          `}
+                }
+            }
+        `}
 `;
 
-const HoverAnimation: React.FC<{ size?: string }> = ({ children, size }) => (
-    <Wrapper size={size}>{children}</Wrapper>
+const HoverAnimation: React.FC<{ size?: string; isHoverable?: boolean }> = ({
+    children,
+    size,
+    isHoverable,
+}) => (
+    <Wrapper size={size} isHoverable={isHoverable}>
+        {children}
+    </Wrapper>
 );
 
 export { HoverAnimation };
