@@ -1,16 +1,18 @@
 import React from 'react';
+
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
+import * as routerActions from '@suite-actions/routerActions';
 import Wrapper from './components/Wrapper';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 interface Props {
     onDismiss?: () => void;
 }
 
 const SafetyChecksBanner = (props: Props) => {
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
+    const { goto } = useActions({
+        goto: routerActions.goto,
     });
 
     return (
@@ -19,7 +21,8 @@ const SafetyChecksBanner = (props: Props) => {
             body={<Translation id="TR_SAFETY_CHECKS_DISABLED_WARNING" />}
             action={{
                 label: <Translation id="TR_SAFETY_CHECKS_BANNER_CHANGE" />,
-                onClick: () => openModal({ type: 'safety-checks' }),
+                onClick: () =>
+                    goto('settings-device', undefined, true, SettingsAnchor.SafetyChecks),
                 'data-test': '@banner/safety-checks/button',
             }}
             dismissal={
