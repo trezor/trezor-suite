@@ -108,7 +108,7 @@ const TorDropdown = (props: Props) => {
                 }}
                 ref={dropdownRef}
                 alignMenu="right"
-                offset={34}
+                offset={5}
                 horizontalPadding={12}
                 topPadding={12}
                 bottomPadding={12}

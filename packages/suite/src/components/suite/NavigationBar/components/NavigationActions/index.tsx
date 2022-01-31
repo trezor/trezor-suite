@@ -12,7 +12,7 @@ import { NavNotifications } from './components/NavNotifications';
 import { NavSettings } from './components/NavSettings';
 import TorDropdown from './components/TorDropdown';
 import EarlyAccessDropdown from './components/EarlyAccessDropdown';
-import { variables } from '@trezor/components';
+import { variables, Tooltip } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
 import type { Route } from '@suite-types';
 
@@ -93,21 +93,23 @@ const NavigationActions = (props: Props) => {
     return (
         <WrapperComponent>
             <ActionItemWrapper>
-                <ActionItem
-                    onClick={() => {
-                        analytics.report({
-                            type: 'menu/toggle-discreet',
-                            payload: {
-                                value: !discreetMode,
-                            },
-                        });
-                        setDiscreetMode(!discreetMode);
-                    }}
-                    isActive={discreetMode}
-                    label={<Translation id="TR_DISCREET" />}
-                    icon={discreetMode ? 'HIDE' : 'SHOW'}
-                    isMobileLayout={props.isMobileLayout}
-                />
+                <Tooltip content={<Translation id="TR_DISCREET_MODE" />}>
+                    <ActionItem
+                        onClick={() => {
+                            analytics.report({
+                                type: 'menu/toggle-discreet',
+                                payload: {
+                                    value: !discreetMode,
+                                },
+                            });
+                            setDiscreetMode(!discreetMode);
+                        }}
+                        isActive={discreetMode}
+                        label={<Translation id="TR_DISCREET" />}
+                        icon={discreetMode ? 'HIDE' : 'SHOW'}
+                        isMobileLayout={props.isMobileLayout}
+                    />
+                </Tooltip>
             </ActionItemWrapper>
 
             {props.isMobileLayout ? (
@@ -118,7 +120,9 @@ const NavigationActions = (props: Props) => {
                     isMobileLayout={props.isMobileLayout}
                 />
             ) : (
-                <NavBackends />
+                <Tooltip content={<Translation id="TR_CUSTOM_BACKEND" />}>
+                    <NavBackends />
+                </Tooltip>
             )}
 
             {isDesktop() && (
@@ -143,7 +147,9 @@ const NavigationActions = (props: Props) => {
                             />
                         </ActionItemWrapper>
                     ) : (
-                        <TorDropdown isActive={tor} marginLeft />
+                        <Tooltip content={<Translation id="TR_TOR" />}>
+                            <TorDropdown isActive={tor} marginLeft />
+                        </Tooltip>
                     )}
                 </>
             )}
@@ -160,7 +166,9 @@ const NavigationActions = (props: Props) => {
                         isMobileLayout={props.isMobileLayout}
                     />
                 ) : (
-                    <EarlyAccessDropdown isActive marginLeft />
+                    <Tooltip content={<Translation id="TR_EARLY_ACCESS_MENU" />}>
+                        <EarlyAccessDropdown isActive marginLeft />
+                    </Tooltip>
                 ))}
 
             {!props.isMobileLayout && <Separator />}
@@ -176,10 +184,12 @@ const NavigationActions = (props: Props) => {
                     isMobileLayout={props.isMobileLayout}
                 />
             ) : (
-                <NavNotifications
-                    indicator={unseenNotifications}
-                    isActive={getIfRouteIsActive('notifications-index')}
-                />
+                <Tooltip content={<Translation id="TR_NOTIFICATIONS_TITLE" />}>
+                    <NavNotifications
+                        indicator={unseenNotifications}
+                        isActive={getIfRouteIsActive('notifications-index')}
+                    />
+                </Tooltip>
             )}
 
             {props.isMobileLayout ? (
@@ -192,7 +202,9 @@ const NavigationActions = (props: Props) => {
                     isMobileLayout={props.isMobileLayout}
                 />
             ) : (
-                <NavSettings isActive={getIfRouteIsActive('settings-index')} />
+                <Tooltip content={<Translation id="TR_SETTINGS" />}>
+                    <NavSettings isActive={getIfRouteIsActive('settings-index')} />
+                </Tooltip>
             )}
         </WrapperComponent>
     );
