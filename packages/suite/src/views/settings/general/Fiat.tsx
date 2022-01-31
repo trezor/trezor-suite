@@ -5,6 +5,8 @@ import { Translation } from '@suite-components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useAnalytics, useSelector, useActions } from '@suite-hooks';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
@@ -13,6 +15,7 @@ const buildCurrencyOption = (currency: string) => ({
 
 export const Fiat = () => {
     const analytics = useAnalytics();
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Fiat);
 
     const { localCurrency } = useSelector(state => ({
         localCurrency: state.wallet.settings.localCurrency,
@@ -23,7 +26,7 @@ export const Fiat = () => {
     });
 
     return (
-        <SectionItem data-test="@settings/fiat">
+        <SectionItem data-test="@settings/fiat" ref={anchorRef} shouldHighlight={shouldHighlight}>
             <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
             <ActionColumn>
                 <ActionSelect

@@ -9,6 +9,8 @@ import * as routerActions from '@suite-actions/routerActions';
 import { getFwVersion, isBitcoinOnly, getFwUpdateVersion } from '@suite-utils/device';
 import { Button, Tooltip } from '@trezor/components';
 import { AcquiredDevice } from '@suite-types';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const Version = styled.div`
     span {
@@ -60,6 +62,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
         goto: routerActions.goto,
     });
     const analytics = useAnalytics();
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareVersion);
 
     if (!device?.features) {
         return null;
@@ -70,7 +73,11 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const { revision } = device.features;
 
     return (
-        <SectionItem>
+        <SectionItem
+            data-test="@settings/device/firmware-version"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={<Translation id="TR_FIRMWARE_VERSION" />}
                 description={

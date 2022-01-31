@@ -4,6 +4,9 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
+
 import type { SuiteThemeVariantOptions } from '@suite-types';
 
 const useThemeOptions = () => {
@@ -50,6 +53,7 @@ export const Theme = () => {
         setTheme: suiteActions.setTheme,
         setAutodetect: suiteActions.setAutodetect,
     });
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Theme);
 
     const { options, getOption } = useThemeOptions();
 
@@ -70,7 +74,7 @@ export const Theme = () => {
     };
 
     return (
-        <SectionItem>
+        <SectionItem data-test="@settings/theme" ref={anchorRef} shouldHighlight={shouldHighlight}>
             <TextColumn
                 title={<Translation id="TR_COLOR_SCHEME" />}
                 description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}

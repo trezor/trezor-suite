@@ -5,11 +5,14 @@ import { ActionColumn, SectionItem, TextColumn, ActionButton } from '@suite-comp
 import { useSelector, useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { Translation } from '@suite-components';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 export const LabelingDisconnect = () => {
     const { metadata } = useSelector(state => ({
         metadata: state.metadata,
     }));
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.LabelingDisconnect);
 
     const { disconnectProvider } = useActions({
         disconnectProvider: metadataActions.disconnectProvider,
@@ -18,7 +21,11 @@ export const LabelingDisconnect = () => {
     if (!metadata.enabled || !metadata.provider) return null;
 
     return (
-        <SectionItem data-test="@settings/metadata-provider">
+        <SectionItem
+            data-test="@settings/metadata-provider"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={
                     metadata.provider.isCloud ? (

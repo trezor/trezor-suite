@@ -8,6 +8,8 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-comp
 import { useSelector, useActions } from '@suite-hooks';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import { isDev } from '@suite-utils/build';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const getUpdateStateMessage = (state: UpdateState) => {
     switch (state) {
@@ -32,6 +34,7 @@ export const VersionWithUpdate = () => {
     const { setUpdateWindow } = useActions({
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
     });
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.VersionWithUpdate);
 
     const { desktopUpdate } = useSelector(state => ({
         desktopUpdate: state.desktopUpdate,
@@ -42,7 +45,11 @@ export const VersionWithUpdate = () => {
     const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);
 
     return (
-        <SectionItem data-test="@settings/version">
+        <SectionItem
+            data-test="@settings/version"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={<Translation id="TR_SUITE_VERSION" />}
                 description={

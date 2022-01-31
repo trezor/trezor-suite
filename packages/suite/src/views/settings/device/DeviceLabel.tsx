@@ -11,6 +11,8 @@ import {
 import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from '@suite-constants/device';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;
@@ -22,6 +24,7 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
         applySettings: deviceSettingsActions.applySettings,
     });
     const analytics = useAnalytics();
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.DeviceLabel);
 
     const [label, setLabel] = useState('');
     useEffect(() => {
@@ -31,7 +34,11 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
     }, [device]);
 
     return (
-        <SectionItem>
+        <SectionItem
+            data-test="@settings/device/device-label"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />}
                 description={

@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { Translation } from '@suite-components';
 import { ActionColumn, ActionInput, SectionItem, TextColumn } from '@suite-components/Settings';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 // Default address of the bundled tor process.
 // Keep in sync with DEFAULT_ADDRESS in suite-desktop's TorProcess.
@@ -12,6 +14,7 @@ export const TorAddress = () => {
     useEffect(() => {
         window.desktopApi?.getTorAddress().then(address => setTorAddress(address));
     }, [setTorAddress]);
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.TorAddress);
 
     const saveTorAddress = useCallback(() => {
         // TODO: Validation
@@ -22,7 +25,11 @@ export const TorAddress = () => {
     }, [torAddress]);
 
     return (
-        <SectionItem>
+        <SectionItem
+            data-test="@settings/tor-address"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={<Translation id="TR_TOR_PARAM_TITLE" />}
                 description={<Translation id="TR_TOR_PARAM_DESCRIPTION" />}

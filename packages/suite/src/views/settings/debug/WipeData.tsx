@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { isWeb } from '@suite-utils/env';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 import type { Await } from '@suite/types/utils';
 
@@ -12,6 +14,7 @@ type UserData = Extract<
 
 export const WipeData = () => {
     const [userData, setUserData] = useState<UserData['payload'] | null>(null);
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.WipeData);
 
     useEffect(() => {
         if (isWeb()) {
@@ -27,7 +30,11 @@ export const WipeData = () => {
     }, []);
 
     return (
-        <SectionItem>
+        <SectionItem
+            data-test="@settings/debug/wipe-data"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title="Wipe app data"
                 description={`Clicking this button restarts your application and wipes all your data including locally saved labels. ${

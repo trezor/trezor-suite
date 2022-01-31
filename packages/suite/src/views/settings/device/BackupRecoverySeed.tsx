@@ -5,6 +5,9 @@ import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-comp
 import { SEED_MANUAL_URL } from '@suite-constants/urls';
 import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
+
 interface BackupRecoverySeedProps {
     isDeviceLocked: boolean;
 }
@@ -15,10 +18,15 @@ export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) 
         goto: routerActions.goto,
     });
     const analytics = useAnalytics();
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.BackupRecoverySeed);
 
     const needsBackup = !!device?.features?.needs_backup;
     return (
-        <SectionItem>
+        <SectionItem
+            data-test="@settings/device/backup-recovery-seed"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
                 description={<Translation id="TR_BACKUP_SUBHEADING_1" />}

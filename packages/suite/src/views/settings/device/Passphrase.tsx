@@ -6,6 +6,8 @@ import { Switch } from '@trezor/components';
 import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { PASSPHRASE_URL } from '@suite-constants/urls';
+import { useAnchor } from '@suite-hooks/useAnchor';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;
@@ -17,10 +19,15 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
         applySettings: deviceSettingsActions.applySettings,
     });
     const analytics = useAnalytics();
+    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Passphrase);
 
     const passphraseProtection = !!device?.features?.passphrase_protection;
     return (
-        <SectionItem>
+        <SectionItem
+            data-test="@settings/device/passphrase"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
