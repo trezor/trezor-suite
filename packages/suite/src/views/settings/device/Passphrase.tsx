@@ -23,7 +23,7 @@ const Passphrase = ({ isDeviceLocked }: Props) => {
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
-                learnMore={PASSPHRASE_URL}
+                buttonLink={PASSPHRASE_URL}
             />
             <ActionColumn>
                 <Switch

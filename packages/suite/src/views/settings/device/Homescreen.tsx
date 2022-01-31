@@ -7,7 +7,14 @@ import { useDevice, useAnalytics, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { getDeviceModel } from '@suite-utils/device';
-import * as homescreen from '@suite-utils/homescreen';
+import {
+    elementToHomescreen,
+    fileToDataUrl,
+    getImageResolution,
+    ImageValidationError,
+    validate,
+} from '@suite-utils/homescreen';
+import { HOMESCREEN_EDITOR } from '@suite-constants/urls';
 
 const StyledActionButton = styled(ActionButton)`
     &:not(:first-of-type) {
@@ -25,6 +32,12 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
+const ValidationMessage = styled.div`
+    color: ${props => props.theme.TYPE_ORANGE};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
 interface Props {
     isDeviceLocked: boolean;
 }
@@ -39,21 +52,26 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
     const fileInputElement = createRef<HTMLInputElement>();
 
     const [customHomescreen, setCustomHomescreen] = useState('');
+    const [validationError, setValidationError] = useState<ImageValidationError | undefined>();
 
     if (!device?.features) {
         return null;
     }
 
     const isModelT = getDeviceModel(device) === 'T';
+    const trezorModel = isModelT ? 2 : 1;
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
         const image = files[0];
-        const dataUrl = await homescreen.fileToDataUrl(image);
+        const dataUrl = await fileToDataUrl(image);
+
+        const validationResult = await validate(dataUrl, trezorModel);
+        setValidationError(validationResult);
 
         setCustomHomescreen(dataUrl);
 
-        const imageResolution = await homescreen.getImageResolution(dataUrl);
+        const imageResolution = await getImageResolution(dataUrl);
         analytics.report({
             type: 'settings/device/background',
             payload: {
@@ -68,7 +86,7 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
     const onSelectCustomHomescreen = async () => {
         const element = document.getElementById('custom-image');
         if (element instanceof HTMLImageElement) {
-            const hex = homescreen.elementToHomescreen(element, device.features.major_version);
+            const hex = elementToHomescreen(element, trezorModel);
             await applySettings({ homescreen: hex });
             setCustomHomescreen('');
         }
@@ -77,18 +95,23 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
     return (
         <>
             <SectionItem>
-                <TextColumn
-                    title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
-                    description={
-                        // display text only for model T, it relates to what kind of image may be uploaded
-                        // but custom upload is enabled only for T now.
-                        isModelT ? (
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS" />
-                        ) : (
-                            ''
-                        )
-                    }
-                />
+                {isModelT ? (
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT" />
+                        }
+                    />
+                ) : (
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1" />
+                        }
+                        buttonLink={HOMESCREEN_EDITOR}
+                        buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
+                    />
+                )}
                 <ActionColumn>
                     <HiddenInput
                         ref={fileInputElement}
@@ -98,25 +121,21 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
                             onUploadHomescreen(e.target.files);
                         }}
                     />
-                    {/* only available for model T at the moment. It works quite well there */}
-                    {isModelT && (
-                        <StyledActionButton
-                            onClick={() => {
-                                if (fileInputElement.current) {
-                                    fileInputElement.current.click();
-                                    analytics.report({
-                                        type: 'settings/device/goto/background',
-                                        payload: { custom: true },
-                                    });
-                                }
-                            }}
-                            isDisabled={isDeviceLocked}
-                            variant="secondary"
-                        >
-                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
-                        </StyledActionButton>
-                    )}
-
+                    <StyledActionButton
+                        onClick={() => {
+                            if (fileInputElement.current) {
+                                fileInputElement.current.click();
+                                analytics.report({
+                                    type: 'settings/device/goto/background',
+                                    payload: { custom: true },
+                                });
+                            }
+                        }}
+                        isDisabled={isDeviceLocked}
+                        variant="secondary"
+                    >
+                        <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
+                    </StyledActionButton>
                     <StyledActionButton
                         onClick={() => {
                             openModal({
@@ -136,7 +155,7 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
                     </StyledActionButton>
                 </ActionColumn>
             </SectionItem>
-            {customHomescreen && homescreen.isValid(customHomescreen) && (
+            {customHomescreen && !validationError && (
                 <SectionItem>
                     <Col>
                         <img
@@ -161,11 +180,27 @@ const Homescreen = ({ isDeviceLocked }: Props) => {
                     </ActionColumn>
                 </SectionItem>
             )}
-            {customHomescreen && !homescreen.isValid(customHomescreen) && (
+            {customHomescreen && validationError && (
                 <SectionItem>
-                    <Col>
-                        <Translation id="TR_INVALID_FILE_SELECTED" />
-                    </Col>
+                    <TextColumn
+                        title={<Translation id="TR_CUSTOM_HOMESCREEN" />}
+                        description={
+                            <ValidationMessage>
+                                <Translation id={validationError} />
+                            </ValidationMessage>
+                        }
+                    />
+
+                    {validationError !== ImageValidationError.InvalidFormat && (
+                        <Col>
+                            <img
+                                width="144px"
+                                alt="custom homescreen"
+                                id="custom-image"
+                                src={customHomescreen}
+                            />
+                        </Col>
+                    )}
                     <ActionColumn>
                         <ActionButton
                             variant="secondary"

@@ -82,7 +82,7 @@ const Details = () => {
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
                         description={<Translation id={accountTypeDesc} />}
-                        learnMore={accountTypeUrl}
+                        buttonLink={accountTypeUrl}
                     />
                     <AccountTypeLabel>
                         {accountTypeName && (
@@ -101,7 +101,7 @@ const Details = () => {
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
                         description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
-                        learnMore={WIKI_XPUB_URL}
+                        buttonLink={WIKI_XPUB_URL}
                     />
                     <ActionColumn>
                         <ActionButton

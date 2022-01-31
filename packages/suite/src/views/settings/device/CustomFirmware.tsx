@@ -19,7 +19,7 @@ const CustomFirmware = ({ isDeviceLocked }: Props) => {
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />}
-                learnMore={WIKI_FW_DOWNGRADE}
+                buttonLink={WIKI_FW_DOWNGRADE}
             />
             <ActionColumn>
                 <ActionButton

@@ -49,3 +49,4 @@ export const FIRMWARE_COMMIT_URL = 'https://github.com/trezor/trezor-firmware/co
 export const FIRMWARE_BINARIES_URL =
     'https://github.com/trezor/webwallet-data/tree/master/firmware';
 export const SL_SIGNING_KEY = 'https://trezor.io/security/satoshilabs-2021-signing-key.asc';
+export const HOMESCREEN_EDITOR = 'https://trezor.github.io/homescreen-editor/';

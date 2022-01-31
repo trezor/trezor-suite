@@ -68,7 +68,7 @@ describe('homescreen', () => {
         });
     });
 
-    describe('checkImage', () => {
+    describe('validate', () => {
         describe('with correct dimensions', () => {
             imgHashFixtures.forEach((fixture: Fixture) => {
                 it(`${fixture.img} should be checked as ok`, async () => {
@@ -78,7 +78,9 @@ describe('homescreen', () => {
 
                     const spy = jest.spyOn(homescreen, 'elementToImageData');
                     spy.mockImplementationOnce(getMockElementToImageData(image));
-                    expect(() => homescreen.checkImage(image, fixture.model)).not.toThrow();
+                    expect(homescreen.validateImageDimensions(image, fixture.model)).toBe(
+                        undefined,
+                    );
                 });
             });
         });
@@ -92,15 +94,15 @@ describe('homescreen', () => {
                     const spy = jest.spyOn(homescreen, 'elementToImageData');
                     spy.mockImplementationOnce(getMockElementToImageData(image));
                     const swappedModel = fixture.model === 1 ? 2 : 1;
-                    expect(() => homescreen.checkImage(image, swappedModel)).toThrow(
-                        'Not a correct height.',
+                    expect(homescreen.validateImageDimensions(image, swappedModel)).toBe(
+                        homescreen.ImageValidationError.InvalidHeight,
                     );
                 });
             });
         });
     });
 
-    describe('isValid', () => {
+    describe('validateImageFormat', () => {
         describe('returns true for', () => {
             const validExamples = [
                 'data:image/png,deadbeef',
@@ -109,7 +111,7 @@ describe('homescreen', () => {
                 'data:image/jpegsomecontent',
             ];
             it.each(validExamples)(`%p`, dataUrl => {
-                expect(homescreen.isValid(dataUrl)).toBe(true);
+                expect(homescreen.validateImageFormat(dataUrl)).toBe(undefined);
             });
         });
 
@@ -134,14 +136,18 @@ describe('homescreen', () => {
                 'data:text/html,%3Ch1%3EHello%2C%20World!%3C%2Fh1%3E',
             ];
             it.each(invalidExamples)(`%p`, dataUrl => {
-                expect(homescreen.isValid(dataUrl)).toBe(false);
+                expect(homescreen.validateImageFormat(dataUrl)).toBe(
+                    homescreen.ImageValidationError.InvalidFormat,
+                );
             });
         });
 
         describe('returns false for null', () => {
             // defensively test a corner case violating type-checking
             // @ts-ignore
-            expect(homescreen.isValid(null)).toBe(false);
+            expect(homescreen.validateImageFormat(null)).toBe(
+                homescreen.ImageValidationError.InvalidFormat,
+            );
         });
     });
 });

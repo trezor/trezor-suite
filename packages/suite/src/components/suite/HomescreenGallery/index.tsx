@@ -6,6 +6,7 @@ import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions'
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { AcquiredDevice } from '@suite-types';
 import { useActions, useAnalytics } from '@suite-hooks';
+import { getDeviceModel } from '@suite-utils/device';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
@@ -44,10 +45,13 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
     const analytics = useAnalytics();
 
+    const isModelT = getDeviceModel(device) === 'T';
+    const trezorModel = isModelT ? 2 : 1;
+
     const setHomescreen = (image: AnyImageName) => {
         const element = document.getElementById(image);
         if (element instanceof HTMLImageElement) {
-            const hex = elementToHomescreen(element, device.features.major_version);
+            const hex = elementToHomescreen(element, trezorModel);
             applySettings({ homescreen: hex });
             if (onConfirm) {
                 onConfirm();
@@ -57,7 +61,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
 
     return (
         <Wrapper>
-            {device.features.major_version === 1 && (
+            {!isModelT && (
                 <BackgroundGalleryWrapper>
                     {homescreensT1.map(image => (
                         <BackgroundImageT1
@@ -79,7 +83,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                     ))}
                 </BackgroundGalleryWrapper>
             )}
-            {device.features.major_version === 2 && (
+            {isModelT && (
                 <BackgroundGalleryWrapper>
                     {homescreensT2.map(image => (
                         <BackgroundImageT2

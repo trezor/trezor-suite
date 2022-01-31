@@ -296,7 +296,7 @@ const Settings = () => {
                                             }}
                                         />
                                     }
-                                    learnMore="https://www.torproject.org/"
+                                    buttonLink="https://www.torproject.org/"
                                 />
                                 <ActionColumn>
                                     <Switch
