@@ -8,7 +8,7 @@ import { findRouteByName } from '@suite-utils/router';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import ActionItem from './components/ActionItem';
 import { isDesktop } from '@suite-utils/env';
-import NotificationsDropdown from './components/NotificationsDropdown';
+import { NavNotifications } from './components/NavNotifications';
 import { NavSettings } from './components/NavSettings';
 import TorDropdown from './components/TorDropdown';
 import EarlyAccessDropdown from './components/EarlyAccessDropdown';
@@ -176,7 +176,7 @@ const NavigationActions = (props: Props) => {
                     isMobileLayout={props.isMobileLayout}
                 />
             ) : (
-                <NotificationsDropdown
+                <NavNotifications
                     indicator={unseenNotifications}
                     isActive={getIfRouteIsActive('notifications-index')}
                 />
