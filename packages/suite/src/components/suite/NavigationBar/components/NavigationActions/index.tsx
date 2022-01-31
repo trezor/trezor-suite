@@ -143,7 +143,7 @@ const NavigationActions = (props: Props) => {
                             />
                         </ActionItemWrapper>
                     ) : (
-                        <TorDropdown isActive={tor} marginLeft />
+                        <NavTor isActive={tor} />
                     )}
                 </>
             )}
