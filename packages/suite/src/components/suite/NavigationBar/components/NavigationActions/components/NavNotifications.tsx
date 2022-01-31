@@ -2,13 +2,13 @@ import { Translation, Notifications } from '@suite-components';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import React, { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import ActionItem from '../ActionItem';
+import ActionItem from './ActionItem';
 import { useActions, useAnalytics } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 
-const Wrapper = styled.div<Pick<Props, 'marginLeft' | 'marginRight'>>`
-    margin-left: ${props => props.marginLeft};
-    margin-right: ${props => props.marginRight};
+const Wrapper = styled.div`
+    margin-left: 0;
+    margin-right: 0;
 `;
 
 const NotificationsWrapper = styled.div`
@@ -20,19 +20,15 @@ const NotificationsWrapper = styled.div`
     }
 `;
 
-interface Props {
+interface NavNotificationsProps {
     indicator?: boolean;
     isActive?: boolean;
-    marginLeft?: string;
-    marginRight?: string;
 }
 
-const NotificationsDropdown = ({
+export const NavNotifications = ({
     indicator = false,
     isActive = false,
-    marginLeft = '0px',
-    marginRight = '0px',
-}: Props) => {
+}: NavNotificationsProps) => {
     const analytics = useAnalytics();
 
     // use "opened" state to decide if "active" styles on ActionItem should be applied
@@ -64,7 +60,7 @@ const NotificationsDropdown = ({
     );
 
     return (
-        <Wrapper marginLeft={marginLeft} marginRight={marginRight}>
+        <Wrapper>
             <Dropdown
                 onToggle={handleToggleChange}
                 ref={dropdownRef}
@@ -103,5 +99,3 @@ const NotificationsDropdown = ({
         </Wrapper>
     );
 };
-
-export default NotificationsDropdown;
