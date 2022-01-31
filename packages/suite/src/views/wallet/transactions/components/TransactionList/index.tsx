@@ -1,8 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
+
 import { Stack } from '@suite-components/Skeleton';
-import { Card, variables } from '@trezor/components';
+import { Card } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useSelector, useActions } from '@suite-hooks';
@@ -13,27 +14,19 @@ import {
 } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
-
 import Actions from './components/Actions';
 import TransactionItem from '@wallet-components/TransactionItem';
 import Pagination from './components/Pagination';
 import TransactionsGroup from './components/TransactionsGroup';
 import SkeletonTransactionItem from './components/SkeletonTransactionItem';
 import NoSearchResults from './components/NoSearchResults';
+import { findAnchorTransactionPage } from '@suite-utils/anchor';
 
 const StyledCard = styled(Card)<{ isPending: boolean }>`
     flex-direction: column;
-    padding: 0px 24px;
-    ${props =>
-        props.isPending &&
-        css`
-            border-left: 6px solid ${props => props.theme.TYPE_ORANGE};
-            padding-left: 18px;
-        `}
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 0px 16px;
-    }
+    padding: 0;
+    border-radius: 0;
+    background: none;
 `;
 
 const StyledSection = styled(Section)`
@@ -44,19 +37,22 @@ const PaginationWrapper = styled.div`
     margin-top: 20px;
 `;
 
-interface Props {
+interface TransactionListProps {
     transactions: WalletAccountTransaction[];
     symbol: WalletAccountTransaction['symbol'];
     isLoading?: boolean;
     account: Account;
 }
 
-const TransactionList = ({ transactions, isLoading, account, ...props }: Props) => {
+const TransactionList = ({ transactions, isLoading, account, ...props }: TransactionListProps) => {
     const ref = React.createRef<HTMLDivElement>();
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const { fetchTransactions } = useActions({
         fetchTransactions: transactionActions.fetchTransactions,
     });
+    const { anchor, localCurrency } = useSelector(state => ({
+        localCurrency: state.wallet.settings.localCurrency,
+        anchor: state.router.anchor,
+    }));
 
     // Search
     const [search, setSearch] = useState('');
@@ -72,13 +68,23 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
         [transactions, account.metadata, search],
     );
 
+    const [hasFetchedAll, setHasFetchedAll] = useState(false);
+    useEffect(() => {
+        if (anchor && !hasFetchedAll) {
+            fetchTransactions(account, 2, SETTINGS.TXS_PER_PAGE, true, true);
+            setHasFetchedAll(true);
+        }
+    }, [anchor, fetchTransactions, account, hasFetchedAll]);
+
     // Pagination
     const perPage = SETTINGS.TXS_PER_PAGE;
-    const [currentPage, setSelectedPage] = useState(1);
+    const startPage = findAnchorTransactionPage(transactions, perPage, anchor);
+    const [currentPage, setSelectedPage] = useState(startPage);
+
     useEffect(() => {
         // reset page on account change
-        setSelectedPage(1);
-    }, [account.descriptor, account.symbol]);
+        setSelectedPage(startPage);
+    }, [account.descriptor, account.symbol, startPage]);
 
     const { size, total } = {
         size: perPage,

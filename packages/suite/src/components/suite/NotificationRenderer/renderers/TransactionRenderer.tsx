@@ -6,6 +6,8 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as transactionUtils from '@wallet-utils/transactionUtils';
 import { useActions, useSelector } from '@suite-hooks';
+import { getTxAnchor } from '@suite-utils/anchor';
+
 import type { NotificationRendererProps, NotificationViewProps } from '../types';
 
 const TabularNums = styled.span`
@@ -54,11 +56,17 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
             action={{
                 onClick: () => {
                     selectDevice(accountDevice || device);
-                    goto('wallet-index', {
-                        accountIndex: account.index,
-                        accountType: account.accountType,
-                        symbol: account.symbol,
-                    });
+                    const txAnchor = getTxAnchor(tx?.txid);
+                    goto(
+                        'wallet-index',
+                        {
+                            accountIndex: account.index,
+                            accountType: account.accountType,
+                            symbol: account.symbol,
+                        },
+                        false,
+                        txAnchor,
+                    );
                 },
                 label: 'TOAST_TX_BUTTON',
             }}
