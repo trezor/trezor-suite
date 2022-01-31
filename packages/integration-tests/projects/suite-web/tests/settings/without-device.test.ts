@@ -22,7 +22,7 @@ describe('Settings changes persist when device disconnected', () => {
 
         // Open settings
         cy.getTestElement('@suite/menu/settings', { timeout: 30000 }).click();
-        cy.getTestElement('@suite/menu/settings-device').click();
+        cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/disconnected-device-banner').should('exist');
 
         cy.task('startEmu');
@@ -38,7 +38,7 @@ describe('Settings changes persist when device disconnected', () => {
 
         // Open settings, enable ETH
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@suite/menu/settings-coins').click();
+        cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/eth').click({ force: true });
 
         cy.task('startEmu');

@@ -59,7 +59,6 @@ describe('Analytics', () => {
         cy.task('startEmu', { wipe: false });
         cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@suite/menu/settings-index').click();
 
         // analytics is not enabled and no additional requests were fired
         cy.getTestElement('@analytics/toggle-switch').should('not.be.checked');

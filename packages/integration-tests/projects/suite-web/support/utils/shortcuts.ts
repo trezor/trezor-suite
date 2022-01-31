@@ -95,7 +95,7 @@ export const toggleDebugModeInSettings = () => {
 
 export const enableRegtestAndGetCoins = ({ payments = [] }) => {
     cy.getTestElement('@suite/menu/settings').click();
-    cy.getTestElement('@suite/menu/settings-coins').click();
+    cy.getTestElement('@settings/menu/wallet').click();
 
     cy.toggleDebugModeInSettings();
 
