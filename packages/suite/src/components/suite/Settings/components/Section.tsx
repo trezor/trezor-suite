@@ -25,7 +25,6 @@ const Description = styled(P)`
 
 const Content = styled(Card)`
     flex-direction: column;
-    flex: 1;
 `;
 
 interface Props {
@@ -42,7 +41,7 @@ const Section = ({ children, title, description, customHeader }: Props) => (
             {title && !customHeader && <Title>{title}</Title>}
             {description && !customHeader && <Description size="tiny">{description}</Description>}
         </Header>
-        <Content largePadding noVerticalPadding>
+        <Content largePadding noVerticalPadding noPadding>
             {children}
         </Content>
     </Wrapper>
