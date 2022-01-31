@@ -124,9 +124,11 @@ const AssetTable = React.memo(({ network, failed, cryptoValue, isLastRow }: Prop
                 isLastRow={isLastRow}
                 onClick={() => {
                     goto('wallet-index', {
-                        symbol,
-                        accountIndex: 0,
-                        accountType: 'normal',
+                        params: {
+                            symbol,
+                            accountIndex: 0,
+                            accountType: 'normal',
+                        },
                     });
                     // activate coin filter and reset account search string
                     setCoinFilter(symbol);

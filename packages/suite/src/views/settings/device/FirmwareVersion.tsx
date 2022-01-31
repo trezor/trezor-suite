@@ -116,7 +116,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                 <ActionButton
                     variant="secondary"
                     onClick={() => {
-                        goto('firmware-index', { cancelable: true });
+                        goto('firmware-index', { params: { cancelable: true } });
                         analytics.report({
                             type: 'settings/device/goto/firmware',
                         });

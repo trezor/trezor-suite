@@ -42,9 +42,11 @@ const CoinmarketDetail = () => {
     // go to the default coinmarket page, the trade is shown there in the previous trades
     if (!trade) {
         goto('wallet-coinmarket-exchange', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
+            params: {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            },
         });
         return null;
     }

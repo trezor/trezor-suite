@@ -94,12 +94,7 @@ const SecurityFeatures = () => {
                   label: <Translation id="TR_CHECK_SEED_IN_SETTINGS" />,
                   dataTest: 'seed-link',
                   action: () => {
-                      goto(
-                          'settings-device',
-                          undefined,
-                          undefined,
-                          SettingsAnchor.CheckRecoverySeed,
-                      );
+                      goto('settings-device', { anchor: SettingsAnchor.CheckRecoverySeed });
                       analytics.report({
                           type: 'dashboard/security-card/seed-link',
                       });
@@ -133,7 +128,7 @@ const SecurityFeatures = () => {
                   label: <Translation id="TR_CHANGE_PIN_IN_SETTINGS" />,
                   dataTest: 'pin-link',
                   action: () => {
-                      goto('settings-device', undefined, undefined, SettingsAnchor.ChangePin);
+                      goto('settings-device', { anchor: SettingsAnchor.ChangePin });
                       analytics.report({
                           type: 'dashboard/security-card/change-pin',
                       });

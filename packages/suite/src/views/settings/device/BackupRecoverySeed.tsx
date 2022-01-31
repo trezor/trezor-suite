@@ -36,7 +36,7 @@ export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) 
                 <ActionButton
                     data-test="@settings/device/create-backup-button"
                     onClick={() => {
-                        goto('backup-index', { cancelable: true });
+                        goto('backup-index', { params: { cancelable: true } });
                         analytics.report({
                             type: 'settings/device/goto/backup',
                         });

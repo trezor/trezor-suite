@@ -30,7 +30,7 @@ export const NavEarlyAccess = (props: NavEarlyAccessProps) => {
                 label={<Translation id="TR_EARLY_ACCESS_MENU" />}
                 icon="EXPERIMENTAL_FEATURES"
                 onClick={() => {
-                    goto('settings-index', undefined, undefined, SettingsAnchor.EarlyAccess);
+                    goto('settings-index', { anchor: SettingsAnchor.EarlyAccess });
                     analytics.report({ type: 'menu/goto/early-access' });
                 }}
             />

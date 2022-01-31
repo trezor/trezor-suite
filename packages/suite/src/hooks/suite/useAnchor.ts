@@ -39,6 +39,7 @@ export const useAnchor = (anchorId: string) => {
             };
         }
         if (!isActive && anchor !== anchorId) {
+            console.log('kuk');
             setIsActive(true);
         }
     }, [anchorRef, anchor, anchorId, isActive]);

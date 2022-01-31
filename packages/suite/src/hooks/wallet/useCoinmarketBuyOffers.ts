@@ -163,7 +163,7 @@ export const useOffers = (props: Props) => {
             }
             if (isDesktop()) {
                 saveTransactionDetailId(response.trade.paymentId);
-                goto('wallet-coinmarket-buy-detail', selectedAccount.params);
+                goto('wallet-coinmarket-buy-detail', { params: selectedAccount.params });
             }
         }
         setCallInProgress(false);

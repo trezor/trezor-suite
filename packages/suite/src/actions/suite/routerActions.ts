@@ -95,11 +95,15 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
 export const goto =
     (
         routeName: Route['name'],
-        params?: RouteParams,
-        preserveParams?: boolean,
-        anchor?: AnchorType,
+        options: {
+            params?: RouteParams;
+            preserveParams?: boolean;
+            anchor?: AnchorType;
+        } = {},
     ) =>
     (dispatch: Dispatch, getState: GetState) => {
+        const { params, preserveParams, anchor } = options;
+
         const { suite, router } = getState();
         const hasRouterLock = suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
         if (hasRouterLock) {

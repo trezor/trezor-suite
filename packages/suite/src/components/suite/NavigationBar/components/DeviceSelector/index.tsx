@@ -144,7 +144,9 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
     const switchDevice = useCallback(() => {
         goto('suite-switch-device', {
-            cancelable: true,
+            params: {
+                cancelable: true,
+            },
         });
         analytics.report({ type: 'menu/goto/switch-device' });
     }, [goto, analytics]);

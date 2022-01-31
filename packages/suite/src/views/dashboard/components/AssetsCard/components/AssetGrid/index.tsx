@@ -100,9 +100,11 @@ const AssetGrid = React.memo(({ network, failed, cryptoValue }: Props) => {
                 <CoinNameWrapper
                     onClick={() => {
                         goto('wallet-index', {
-                            symbol,
-                            accountIndex: 0,
-                            accountType: 'normal',
+                            params: {
+                                symbol,
+                                accountIndex: 0,
+                                accountType: 'normal',
+                            },
                         });
                         // activate coin filter and reset account search string
                         setCoinFilter(symbol);

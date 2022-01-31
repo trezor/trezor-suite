@@ -56,7 +56,11 @@ const DeviceInvalidModeLayout = (props: Props) => {
             <Buttons>
                 {resolveButton && resolveButton}
                 {allowSwitchDevice && devices.length > 1 && (
-                    <Button onClick={() => goto('suite-switch-device', { cancelable: true })}>
+                    <Button
+                        onClick={() =>
+                            goto('suite-switch-device', { params: { cancelable: true } })
+                        }
+                    >
                         <Translation id="TR_SWITCH_DEVICE" />
                     </Button>
                 )}

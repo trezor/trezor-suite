@@ -120,7 +120,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
         event => {
             event.stopPropagation();
             closeMenu();
-            goto('wallet-tokens', accountRouteParams);
+            goto('wallet-tokens', { params: accountRouteParams });
         },
         [accountRouteParams, closeMenu, goto],
     );
@@ -147,7 +147,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
             <AccountHeader
                 onClick={() => {
                     closeMenu();
-                    goto('wallet-index', accountRouteParams);
+                    goto('wallet-index', { params: accountRouteParams });
                 }}
                 data-test={dataTestKey}
             >

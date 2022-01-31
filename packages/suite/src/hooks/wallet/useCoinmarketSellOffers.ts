@@ -205,9 +205,11 @@ export const useOffers = (props: Props) => {
                 await saveTransactionId(selectedQuote.orderId);
 
                 goto('wallet-coinmarket-sell-detail', {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
+                    params: {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    },
                 });
             }
         } else {

@@ -47,7 +47,7 @@ const SettingsMenu = () => {
                             position: 'primary',
                             'data-test': '@settings/menu/general',
                             callback: () => {
-                                goto('settings-index', undefined, true);
+                                goto('settings-index', { preserveParams: true });
                             },
                         },
                         {
@@ -56,7 +56,7 @@ const SettingsMenu = () => {
                             position: 'primary',
                             'data-test': '@settings/menu/device',
                             callback: () => {
-                                goto('settings-device', undefined, true);
+                                goto('settings-device', { preserveParams: true });
                             },
                         },
                         {
@@ -65,7 +65,7 @@ const SettingsMenu = () => {
                             position: 'primary',
                             'data-test': '@settings/menu/wallet',
                             callback: () => {
-                                goto('settings-coins', undefined, true);
+                                goto('settings-coins', { preserveParams: true });
                             },
                         },
                         {
@@ -75,7 +75,7 @@ const SettingsMenu = () => {
                             isHidden: !showDebugMenu,
                             'data-test': '@settings/menu/debug',
                             callback: () => {
-                                goto('settings-debug', undefined, true);
+                                goto('settings-debug', { preserveParams: true });
                             },
                         },
                     ]}
@@ -83,7 +83,9 @@ const SettingsMenu = () => {
             }
             titleContent={
                 <CloseButton
-                    onClick={() => goto(settingsBackRoute.name, settingsBackRoute.params)}
+                    onClick={() =>
+                        goto(settingsBackRoute.name, { params: settingsBackRoute.params })
+                    }
                     data-test="@settings/menu/close"
                 />
             }

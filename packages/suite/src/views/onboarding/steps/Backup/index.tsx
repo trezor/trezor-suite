@@ -133,12 +133,7 @@ const BackupStep = () => {
                     innerActions={
                         <OnboardingButtonCta
                             onClick={() => {
-                                goto(
-                                    'settings-device',
-                                    undefined,
-                                    undefined,
-                                    SettingsAnchor.WipeDevice,
-                                );
+                                goto('settings-device', { anchor: SettingsAnchor.WipeDevice });
                             }}
                         >
                             <Translation id="TR_GO_TO_SETTINGS" />

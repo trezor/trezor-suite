@@ -15,9 +15,11 @@ export const useCoinmarketNavigation = (account: Account) => {
     const useNavigateToRouteName = (routeName: WalletCoinmarketRouteNameType) =>
         useCallback(() => {
             goto(routeName, {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
             });
         }, [routeName]);
 

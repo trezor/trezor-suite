@@ -31,9 +31,11 @@ const Dashboard = () => {
                 <Button
                     onPress={() =>
                         actions.goto('wallet-receive', {
-                            accountType: 'normal',
-                            accountIndex: 1,
-                            symbol: 'btc',
+                            params: {
+                                accountType: 'normal',
+                                accountIndex: 1,
+                                symbol: 'btc',
+                            },
                         })
                     }
                     title="Go to account details"

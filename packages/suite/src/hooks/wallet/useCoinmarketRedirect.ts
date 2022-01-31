@@ -80,7 +80,9 @@ export const useCoinmarketRedirect = () => {
         }
         saveBuyQuoteRequest(request);
         setBuyIsFromRedirect(true);
-        goto('wallet-coinmarket-buy-offers', { symbol, accountIndex: index, accountType });
+        goto('wallet-coinmarket-buy-offers', {
+            params: { symbol, accountIndex: index, accountType },
+        });
     };
 
     const redirectToSellOffers = (params: SellOfferRedirectParams) => {
@@ -121,7 +123,9 @@ export const useCoinmarketRedirect = () => {
             fee: '', // fee is not passed by redirect, will be recalculated
         };
         saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed });
-        goto('wallet-coinmarket-sell-offers', { symbol, accountIndex: index, accountType });
+        goto('wallet-coinmarket-sell-offers', {
+            params: { symbol, accountIndex: index, accountType },
+        });
     };
 
     interface DetailRedirectParams {
@@ -136,9 +140,11 @@ export const useCoinmarketRedirect = () => {
 
         saveBuyTransactionDetailId(transactionId);
         goto('wallet-coinmarket-buy-detail', {
-            symbol: params.symbol,
-            accountIndex: params.index,
-            accountType: params.accountType,
+            params: {
+                symbol: params.symbol,
+                accountIndex: params.index,
+                accountType: params.accountType,
+            },
         });
     };
 
