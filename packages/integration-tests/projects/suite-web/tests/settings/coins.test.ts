@@ -14,7 +14,7 @@ describe('Coin Settings', () => {
 
     it('go to wallet settings page, check BTC, activate all coins, deactivate all coins and check dashboard', () => {
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@suite/menu/settings-coins').click();
+        cy.getTestElement('@settings/menu/wallet').click();
 
         const defaultUnchecked = [
             'ltc',

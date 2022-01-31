@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
-import { Translation, SettingsDropdown } from '@suite-components';
+import { Translation } from '@suite-components';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';
@@ -13,6 +13,7 @@ import { resolveStaticPath } from '@suite-utils/build';
 import { useSelector } from '@suite-hooks';
 import { GuideButton, GuidePanel } from '@guide-components';
 import { useGuide } from '@guide-hooks';
+import { NavSettings } from '@suite-components/NavigationBar/components/NavigationActions/components/NavSettings';
 
 const Wrapper = styled.div`
     display: flex;
@@ -180,7 +181,7 @@ const WelcomeLayout: React.FC = ({ children }) => {
                 </WelcomeWrapper>
                 <Content>
                     <SettingsWrapper>
-                        <SettingsDropdown />
+                        <NavSettings />
                     </SettingsWrapper>
                     {children}
                 </Content>
