@@ -3,6 +3,7 @@ import { Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions } from '@suite-hooks';
 import Wrapper from './components/Wrapper';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const FailedBackup = () => {
     const { goto } = useActions({
@@ -15,7 +16,8 @@ const FailedBackup = () => {
             body={<Translation id="TR_FAILED_BACKUP" />}
             action={{
                 label: <Translation id="TR_CONTINUE" />,
-                onClick: () => goto('settings-device'),
+                onClick: () =>
+                    goto('settings-device', undefined, undefined, SettingsAnchor.BackupFailed),
                 'data-test': '@notification/failed-backup/cta',
             }}
         />
