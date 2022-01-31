@@ -16,7 +16,7 @@ stages:
   - deploy to dev
   - integration testing
   - build artifacts
-  - misc
+  - utils
   - deploy to staging
   - deploy to production
 
@@ -30,4 +30,4 @@ include:
   - ci/test.yml
   - ci/releases.yml
   # to be run only on scheduled pipelines
-  - ci/schedules.yml
+  - ci/utils.yml

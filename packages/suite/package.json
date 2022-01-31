@@ -12,6 +12,7 @@
         "translations:download": "crowdin download --all",
         "translations:backport-en": "yarn ts-node -O '{\"module\": \"commonjs\"}' ../suite-data/scripts/backport-en.ts && yarn eslint ./src/support/messages.ts --fix",
         "translations:list-duplicates": "yarn ts-node -O '{\"module\": \"commonjs\"}' ../suite-data/scripts/list-duplicates.ts",
+        "translations:list-unused": "yarn ts-node -O '{\"module\": \"commonjs\"}' ../suite-data/scripts/list-unused.ts",
         "type-check": "tsc --project tsconfig.json",
         "test": "run-s test:*",
         "test:unit": "jest",
