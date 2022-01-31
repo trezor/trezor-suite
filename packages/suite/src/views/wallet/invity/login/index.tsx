@@ -17,11 +17,11 @@ const Wrapper = styled.div`
 `;
 
 const Left = styled.div`
-    width: 216px;
+    width: 221px;
 `;
 
 const Right = styled.div`
-    width: calc(100% - 216px);
+    width: calc(100% - 221px);
 `;
 
 const Header = styled.div`

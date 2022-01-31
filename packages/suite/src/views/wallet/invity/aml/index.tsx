@@ -124,4 +124,6 @@ const AML = (props: WithInvityLayoutProps) => {
         </>
     );
 };
-export default withInvityLayout(AML);
+export default withInvityLayout(AML, {
+    showStepsGuide: true,
+});

@@ -30,4 +30,6 @@ const PhoneNumberVerification = (props: WithInvityLayoutProps) => {
     );
 };
 
-export default withInvityLayout(PhoneNumberVerification);
+export default withInvityLayout(PhoneNumberVerification, {
+    showStepsGuide: true,
+});

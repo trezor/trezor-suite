@@ -227,4 +227,6 @@ const KYCStart = (props: WithInvityLayoutProps) => {
     );
 };
 
-export default withInvityLayout(KYCStart);
+export default withInvityLayout(KYCStart, {
+    showStepsGuide: true,
+});

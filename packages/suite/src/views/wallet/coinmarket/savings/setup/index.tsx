@@ -5,4 +5,6 @@ const CoinmarketSavingsSetup = () => (
     // TODO: translations
     <>Setup</>
 );
-export default withInvityLayout(CoinmarketSavingsSetup);
+export default withInvityLayout(CoinmarketSavingsSetup, {
+    showStepsGuide: true,
+});

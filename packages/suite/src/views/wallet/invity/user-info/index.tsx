@@ -58,4 +58,6 @@ const UserInfo = (props: WithInvityLayoutProps) => {
     );
 };
 
-export default withInvityLayout(UserInfo);
+export default withInvityLayout(UserInfo, {
+    showStepsGuide: true,
+});

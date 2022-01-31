@@ -12,16 +12,20 @@ export interface WithInvityLayoutProps {
 
 interface WithInvityLayoutOptions {
     redirectUnauthorizedUserToLogin?: boolean;
+    showStepsGuide?: boolean;
 }
 
 export const withInvityLayout = (
     WrappedComponent: React.ComponentType<WithInvityLayoutProps>,
-    options: WithInvityLayoutOptions = { redirectUnauthorizedUserToLogin: true },
+    options: WithInvityLayoutOptions = {
+        redirectUnauthorizedUserToLogin: true,
+        showStepsGuide: false,
+    },
 ) => {
     const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
     const Component = withSelectedAccountLoaded(
         ({ selectedAccount }: WithSelectedAccountLoadedProps) => (
-            <InvityLayout selectedAccount={selectedAccount}>
+            <InvityLayout selectedAccount={selectedAccount} showStepsGuide={options.showStepsGuide}>
                 <WrappedComponent selectedAccount={selectedAccount} />
             </InvityLayout>
         ),

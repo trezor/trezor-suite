@@ -10,18 +10,10 @@ import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: stretch;
-    align-content: stretch;
-`;
-
-const Left = styled.div`
-    width: 216px;
 `;
 
 const Right = styled.div`
-    width: calc(100% - 216px);
+    width: 100%;
 `;
 
 const Header = styled.div`
@@ -93,9 +85,8 @@ const CoinmarketSavingsRegistration = ({
         accountType: selectedAccount.account.accountType,
     });
     return (
-        <InvityLayout selectedAccount={selectedAccount}>
+        <InvityLayout selectedAccount={selectedAccount} showStepsGuide>
             <Wrapper>
-                <Left />
                 <Right>
                     <Header>
                         <Translation id="TR_INVITY_REGISTRATION_HEADER" />
