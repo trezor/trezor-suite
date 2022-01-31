@@ -8,10 +8,10 @@ import { findRouteByName } from '@suite-utils/router';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import ActionItem from './components/ActionItem';
 import { isDesktop } from '@suite-utils/env';
+import { NavTor } from './components/NavTor';
+import { NavEarlyAccess } from './components/NavEarlyAccess';
 import { NavNotifications } from './components/NavNotifications';
 import { NavSettings } from './components/NavSettings';
-import TorDropdown from './components/TorDropdown';
-import EarlyAccessDropdown from './components/EarlyAccessDropdown';
 import { variables } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
 import type { Route } from '@suite-types';
@@ -160,7 +160,7 @@ const NavigationActions = (props: Props) => {
                         isMobileLayout={props.isMobileLayout}
                     />
                 ) : (
-                    <EarlyAccessDropdown isActive marginLeft />
+                    <NavEarlyAccess isActive />
                 ))}
 
             {!props.isMobileLayout && <Separator />}
