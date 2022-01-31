@@ -9,7 +9,7 @@ import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import ActionItem from './components/ActionItem';
 import { isDesktop } from '@suite-utils/env';
 import NotificationsDropdown from './components/NotificationsDropdown';
-import SettingsDropdown from './components/SettingsDropdown';
+import { NavSettings } from './components/NavSettings';
 import TorDropdown from './components/TorDropdown';
 import EarlyAccessDropdown from './components/EarlyAccessDropdown';
 import { variables } from '@trezor/components';
@@ -192,7 +192,7 @@ const NavigationActions = (props: Props) => {
                     isMobileLayout={props.isMobileLayout}
                 />
             ) : (
-                <SettingsDropdown isActive={getIfRouteIsActive('settings-index')} marginLeft />
+                <NavSettings isActive={getIfRouteIsActive('settings-index')} />
             )}
         </WrapperComponent>
     );

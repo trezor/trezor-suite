@@ -39,7 +39,6 @@ describe('Test Guide', () => {
 
         // Guide over modal
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/show-log-button').click();
         cy.getTestElement('@guide/button-close').click();
         cy.getTestElement('@guide/button-open').click();

@@ -11,7 +11,6 @@ describe('Log', () => {
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@suite/menu/settings-index').click();
     });
 
     it('there is a button in application setting that opens modal with application logs', () => {

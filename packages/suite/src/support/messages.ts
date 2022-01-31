@@ -2294,10 +2294,6 @@ export default defineMessages({
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
     },
-    TR_LEARN_AND_DISCOVER: {
-        defaultMessage: 'Suite Guide',
-        id: 'TR_LEARN_AND_DISCOVER',
-    },
     TR_TAPROOT_ACCOUNTS: {
         defaultMessage: 'Taproot accounts',
         id: 'TR_TAPROOT_ACCOUNTS',

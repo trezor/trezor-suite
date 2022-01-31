@@ -19,7 +19,6 @@ describe('General settings', () => {
 
         // go to settings
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@suite/menu/settings-index').click();
 
         // change fiat
         cy.getTestElement('@settings/fiat-select/input').click();
@@ -31,7 +30,6 @@ describe('General settings', () => {
 
         // go to settings
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@suite/menu/settings-index').click();
 
         // change language
         cy.getTestElement('@settings/language-select/input').click();

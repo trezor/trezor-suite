@@ -51,7 +51,6 @@ import Coin from './Coin';
 import CoinsGroup from './CoinsGroup';
 import CoinsList from './CoinsGroup/CoinsList';
 import CharacterCount from './CharacterCount';
-import SettingsDropdown from './NavigationBar/components/NavigationActions/components/SettingsDropdown';
 import CloseButton from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
@@ -114,7 +113,6 @@ export {
     CoinsGroup,
     CoinsList,
     CharacterCount,
-    SettingsDropdown,
     CloseButton,
     TooltipSymbol,
     StatusLight,

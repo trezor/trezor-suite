@@ -19,7 +19,6 @@ describe('Recovery - dry run', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/check-seed-button').click();
