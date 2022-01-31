@@ -134,7 +134,7 @@ const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement
 
     return (
         <Wrapper isActive={props.isActive} isOpen={props.isOpen} {...props} ref={ref}>
-            <HoverAnimation>
+            <HoverAnimation isHoverable={!props.isOpen}>
                 {iconComponent}
                 {props.indicator === 'alert' && (
                     <AlertDotWrapper>
