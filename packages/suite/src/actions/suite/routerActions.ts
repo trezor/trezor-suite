@@ -15,17 +15,23 @@ import {
 import { Dispatch, GetState, Route } from '@suite-types';
 import history from '@suite/support/history';
 
-interface LocationChange {
-    type: typeof ROUTER.LOCATION_CHANGE;
-    payload: {
-        url: string;
-        pathname: string;
-        hash?: string;
-        settingsBackRoute?: SettingsBackRoute;
-    } & RouterAppWithParams;
-}
+import type { AnchorType } from '@suite-constants/anchors';
 
-export type RouterAction = LocationChange;
+export type RouterAction =
+    | {
+          type: typeof ROUTER.LOCATION_CHANGE;
+          payload: {
+              url: string;
+              pathname: string;
+              hash?: string;
+              settingsBackRoute?: SettingsBackRoute;
+              anchor?: AnchorType;
+          } & RouterAppWithParams;
+      }
+    | {
+          type: typeof ROUTER.ANCHOR_CHANGE;
+          payload: AnchorType;
+      };
 
 /**
  * Handle Router.beforePopState action (back)
@@ -43,28 +49,35 @@ export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) 
  * Called from ./support/RouterHandler
  * @param {string} url
  */
-export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: GetState) => {
-    const unlocked = dispatch(onBeforePopState());
-    if (!unlocked) return;
-    const { router } = getState();
-    if (router.pathname === url && router.app !== 'unknown') return null;
-    // TODO: check if the view is not locked by the device request
+export const onLocationChange =
+    (url: string, anchor?: AnchorType) => (dispatch: Dispatch, getState: GetState) => {
+        const unlocked = dispatch(onBeforePopState());
+        if (!unlocked) return;
+        const { router } = getState();
+        if (router.pathname === url && router.app !== 'unknown') return null;
+        // TODO: check if the view is not locked by the device request
 
-    const [pathname, hash] = url.split('#');
+        const [pathname, hash] = url.split('#');
 
-    const appWithParams = getAppWithParams(url);
+        const appWithParams = getAppWithParams(url);
 
-    return dispatch({
-        type: ROUTER.LOCATION_CHANGE,
-        payload: {
-            url,
-            pathname,
-            hash,
-            ...appWithParams,
-        },
+        return dispatch({
+            type: ROUTER.LOCATION_CHANGE,
+            payload: {
+                url,
+                pathname,
+                hash,
+                anchor,
+                ...appWithParams,
+            },
+        });
+    };
+
+export const onAnchorChange = (anchor: AnchorType) => (dispatch: Dispatch, _getState: GetState) =>
+    dispatch({
+        type: ROUTER.ANCHOR_CHANGE,
+        payload: anchor,
     });
-};
-
 /**
  * Dispatch initial url
  * Called from `@suite-middlewares/suiteMiddleware`
@@ -80,7 +93,12 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
 
 // links inside of application
 export const goto =
-    (routeName: Route['name'], params?: RouteParams, preserveParams = false) =>
+    (
+        routeName: Route['name'],
+        params?: RouteParams,
+        preserveParams?: boolean,
+        anchor?: AnchorType,
+    ) =>
     (dispatch: Dispatch, getState: GetState) => {
         const { suite, router } = getState();
         const hasRouterLock = suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
@@ -91,10 +109,14 @@ export const goto =
         if (!unlocked) return;
 
         const urlBase = getPrefixedURL(getRoute(routeName, params));
-        if (urlBase === router.url) return;
+
+        if (urlBase === router.url) {
+            if (anchor && anchor !== router.anchor) dispatch(onAnchorChange(anchor));
+            return;
+        }
 
         const newUrl = `${urlBase}${preserveParams ? history.location.hash : ''}`;
-        dispatch(onLocationChange(newUrl));
+        dispatch(onLocationChange(newUrl, anchor));
 
         const route = findRouteByName(routeName);
         if (route?.isForegroundApp) {

@@ -23,18 +23,22 @@ import {
     isDrawerOpened,
 } from '@native/support/suite/NavigatorService';
 
-import { GetState, Dispatch } from '@suite-types';
+import type { AnchorType } from '@suite-constants/anchors';
+import type { GetState, Dispatch } from '@suite-types';
 
-interface LocationChange {
-    type: typeof ROUTER.LOCATION_CHANGE;
-    payload: {
-        url: string;
-        pathname: string;
-        hash?: string;
-    } & RouterAppWithParams;
-}
-
-export type RouterAction = LocationChange;
+export type RouterAction =
+    | {
+          type: typeof ROUTER.LOCATION_CHANGE;
+          payload: {
+              url: string;
+              pathname: string;
+              hash?: string;
+          } & RouterAppWithParams;
+      }
+    | {
+          type: typeof ROUTER.ANCHOR_CHANGE;
+          payload: AnchorType;
+      };
 
 /**
  * Check if router is not locked
@@ -88,7 +92,12 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
  * @param {boolean} preserveParams
  */
 export const goto =
-    (routeName: Route['name'], params?: RouteParams, _preserveParams = false) =>
+    (
+        routeName: Route['name'],
+        params?: RouteParams,
+        _preserveParams = false,
+        _anchor?: AnchorType,
+    ) =>
     (dispatch: Dispatch) => {
         const navigator = getNavigator();
         const state = getNavigatorState();

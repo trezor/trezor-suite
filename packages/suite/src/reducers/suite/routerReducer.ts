@@ -2,12 +2,15 @@ import { RouterAppWithParams, SettingsBackRoute } from '@suite-constants/routes'
 import { ROUTER } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 
+import type { AnchorType } from '@suite-constants/anchors';
+
 type State = {
     loaded: boolean;
     url: string;
     pathname: string;
     hash?: string;
     settingsBackRoute: SettingsBackRoute;
+    anchor?: AnchorType;
 } & RouterAppWithParams;
 
 const initialState: State = {
@@ -29,6 +32,12 @@ const routerReducer = (state: State = initialState, action: Action): State => {
                 ...state,
                 loaded: true,
                 ...action.payload,
+            };
+        }
+        case ROUTER.ANCHOR_CHANGE: {
+            return {
+                ...state,
+                anchor: action.payload,
             };
         }
         default:
