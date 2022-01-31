@@ -105,9 +105,11 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 goto('wallet-index', {
-                    symbol: selectedNetwork.symbol,
-                    accountIndex: 0,
-                    accountType: 'normal',
+                    params: {
+                        symbol: selectedNetwork.symbol,
+                        accountIndex: 0,
+                        accountType: 'normal',
+                    },
                 });
             }
         }
@@ -137,9 +139,11 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             goto('wallet-index', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
             });
         }
     };

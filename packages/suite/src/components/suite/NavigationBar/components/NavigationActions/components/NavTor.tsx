@@ -29,7 +29,7 @@ export const NavTor = ({ isActive }: TorProps) => {
                 icon="TOR"
                 indicator={isActive ? 'check' : undefined}
                 onClick={() => {
-                    goto('settings-index', undefined, undefined, SettingsAnchor.Tor);
+                    goto('settings-index', { anchor: SettingsAnchor.Tor });
                     analytics.report({ type: 'menu/goto/tor' });
                 }}
             />

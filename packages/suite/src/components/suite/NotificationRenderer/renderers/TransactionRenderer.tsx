@@ -57,16 +57,14 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
                 onClick: () => {
                     selectDevice(accountDevice || device);
                     const txAnchor = getTxAnchor(tx?.txid);
-                    goto(
-                        'wallet-index',
-                        {
+                    goto('wallet-index', {
+                        params: {
                             accountIndex: account.index,
                             accountType: account.accountType,
                             symbol: account.symbol,
                         },
-                        false,
-                        txAnchor,
-                    );
+                        anchor: txAnchor,
+                    });
                 },
                 label: 'TOAST_TX_BUTTON',
             }}

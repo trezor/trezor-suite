@@ -136,9 +136,11 @@ const SellTransaction = ({ trade, providers, account }: Props) => {
     const viewDetail = async () => {
         await saveTransactionDetailId(trade.key || '');
         goto('wallet-coinmarket-sell-detail', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
+            params: {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            },
         });
     };
 

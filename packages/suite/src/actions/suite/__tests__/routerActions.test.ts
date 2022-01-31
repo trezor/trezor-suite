@@ -85,7 +85,7 @@ describe('Suite Actions', () => {
             const store = initStore(state);
             // eslint-disable-next-line global-require
             require('@suite/support/history').default.location.hash = `#${f.hash}`;
-            store.dispatch(routerActions.goto(f.url as any, undefined, f.preserveHash));
+            store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
             if (f.result) {
                 expect(store.getActions()[0].payload.url).toEqual(f.result);
                 expect(store.getActions().length).toEqual(1);

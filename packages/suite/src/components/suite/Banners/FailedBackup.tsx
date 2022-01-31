@@ -16,8 +16,7 @@ const FailedBackup = () => {
             body={<Translation id="TR_FAILED_BACKUP" />}
             action={{
                 label: <Translation id="TR_CONTINUE" />,
-                onClick: () =>
-                    goto('settings-device', undefined, undefined, SettingsAnchor.BackupFailed),
+                onClick: () => goto('settings-device', { anchor: SettingsAnchor.BackupFailed }),
                 'data-test': '@notification/failed-backup/cta',
             }}
         />

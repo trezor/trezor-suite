@@ -121,9 +121,11 @@ const ExchangeTransaction = ({ trade, providers, account }: Props) => {
     const viewDetail = async () => {
         await saveTransactionId(trade.key || '');
         goto('wallet-coinmarket-exchange-detail', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
+            params: {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            },
         });
     };
 

@@ -23,7 +23,7 @@ const Navigation = () => {
                     key={route}
                     title={title}
                     active={routeName === route}
-                    onClick={() => goto(route, undefined, true)}
+                    onClick={() => goto(route, { preserveParams: true })}
                 />
             ))}
         </WalletLayoutNavigation>

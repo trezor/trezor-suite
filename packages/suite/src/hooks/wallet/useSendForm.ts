@@ -215,7 +215,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             updateContext({ isLoading: false });
             if (result?.success) {
                 resetContext();
-                goto('wallet-index', undefined, true);
+                goto('wallet-index', { preserveParams: true });
             }
         }
     }, [getValues, composedLevels, signTransaction, resetContext, updateContext, goto]);

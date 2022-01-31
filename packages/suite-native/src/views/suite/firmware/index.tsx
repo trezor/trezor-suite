@@ -26,9 +26,11 @@ const Backup = () => {
             <Button
                 onPress={() =>
                     actions.goto('wallet-receive', {
-                        symbol: 'btc',
-                        accountIndex: 2,
-                        accountType: 'normal',
+                        params: {
+                            symbol: 'btc',
+                            accountIndex: 2,
+                            accountType: 'normal',
+                        },
                     })
                 }
                 title="Go to wallet receive page"

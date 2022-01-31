@@ -110,7 +110,7 @@ const AccountEmpty = (props: Props) => {
                         data-test="@accounts/empty-account/receive"
                         variant="secondary"
                         onClick={() => {
-                            goto('wallet-receive', undefined, true);
+                            goto('wallet-receive', { preserveParams: true });
                             analytics.report({
                                 type: 'accounts/empty-account/receive',
                                 payload: {
@@ -125,7 +125,7 @@ const AccountEmpty = (props: Props) => {
                         data-test="@accounts/empty-account/buy"
                         variant="primary"
                         onClick={() => {
-                            goto('wallet-coinmarket-buy', undefined, true);
+                            goto('wallet-coinmarket-buy', { preserveParams: true });
                             analytics.report({
                                 type: 'accounts/empty-account/buy',
                                 payload: {

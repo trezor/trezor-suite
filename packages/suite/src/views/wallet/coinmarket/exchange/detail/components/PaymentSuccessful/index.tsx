@@ -53,9 +53,11 @@ const PaymentSuccessful = ({ account }: Props) => {
             <Button
                 onClick={() =>
                     goto('wallet-coinmarket-exchange', {
-                        symbol: account.symbol,
-                        accountIndex: account.index,
-                        accountType: account.accountType,
+                        params: {
+                            symbol: account.symbol,
+                            accountIndex: account.index,
+                            accountType: account.accountType,
+                        },
                     })
                 }
             >

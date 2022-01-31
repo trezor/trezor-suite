@@ -123,7 +123,9 @@ const ConnectDevicePrompt = ({
                 {allowSwitchDevice && (
                     <Button
                         variant="tertiary"
-                        onClick={() => goto('suite-switch-device', { cancelable: true })}
+                        onClick={() =>
+                            goto('suite-switch-device', { params: { cancelable: true } })
+                        }
                     >
                         <Translation id="TR_SWITCH_DEVICE" />
                     </Button>

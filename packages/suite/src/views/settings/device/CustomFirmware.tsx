@@ -32,7 +32,7 @@ export const CustomFirmware = ({ isDeviceLocked }: CustomFirmwareProps) => {
             <ActionColumn>
                 <ActionButton
                     onClick={() => {
-                        goto('firmware-custom', { cancelable: true });
+                        goto('firmware-custom', { params: { cancelable: true } });
                     }}
                     variant="danger"
                     isDisabled={isDeviceLocked}

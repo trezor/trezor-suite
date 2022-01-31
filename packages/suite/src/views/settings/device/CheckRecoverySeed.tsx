@@ -37,7 +37,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
                 <ActionButton
                     data-test="@settings/device/check-seed-button"
                     onClick={() => {
-                        goto('recovery-index', { cancelable: true });
+                        goto('recovery-index', { params: { cancelable: true } });
                         analytics.report({
                             type: 'settings/device/goto/recovery',
                         });

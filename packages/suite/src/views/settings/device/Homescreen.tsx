@@ -107,9 +107,17 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT" />
                         }
-                        buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
+                    />
+                ) : (
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1" />
+                        }
                         buttonLink={HOMESCREEN_EDITOR}
+                        buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
                     />
                 )}
                 <ActionColumn>

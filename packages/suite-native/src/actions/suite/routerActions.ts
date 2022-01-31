@@ -94,11 +94,15 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
 export const goto =
     (
         routeName: Route['name'],
-        params?: RouteParams,
-        _preserveParams = false,
-        _anchor?: AnchorType,
+        options: {
+            params?: RouteParams;
+            preserveParams?: boolean;
+            anchor?: AnchorType;
+        } = {},
     ) =>
     (dispatch: Dispatch) => {
+        const { params } = options;
+
         const navigator = getNavigator();
         const state = getNavigatorState();
         if (!navigator) {

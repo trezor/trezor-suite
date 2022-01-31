@@ -22,7 +22,10 @@ const SafetyChecksBanner = (props: Props) => {
             action={{
                 label: <Translation id="TR_SAFETY_CHECKS_BANNER_CHANGE" />,
                 onClick: () =>
-                    goto('settings-device', undefined, true, SettingsAnchor.SafetyChecks),
+                    goto('settings-device', {
+                        preserveParams: true,
+                        anchor: SettingsAnchor.SafetyChecks,
+                    }),
                 'data-test': '@banner/safety-checks/button',
             }}
             dismissal={
