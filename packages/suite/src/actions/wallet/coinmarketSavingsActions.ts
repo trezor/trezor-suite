@@ -34,8 +34,13 @@ export type CoinmarketSavingsAction =
           exchange: string;
       }
     | {
+          type: typeof COINMARKET_SAVINGS.SET_WATCHING_KYC_STATUS_METADATA;
+          timeoutId: number;
+          intervalId: number;
+      }
+    | {
           type: typeof COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS;
-          kycFinalStatus: SavingsKYCStatus;
+          kycFinalStatus: SavingsKYCStatus | undefined;
       };
 
 export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
@@ -93,8 +98,17 @@ export const startWatchingKYCStatus = (exchange: string): CoinmarketSavingsActio
     exchange,
 });
 
+export const setWatchingKYCStatusMetadata = (
+    intervalId: number,
+    timeoutId: number,
+): CoinmarketSavingsAction => ({
+    type: COINMARKET_SAVINGS.SET_WATCHING_KYC_STATUS_METADATA,
+    intervalId,
+    timeoutId,
+});
+
 export const stopWatchingKYCStatus = (
-    kycFinalStatus: SavingsKYCStatus,
+    kycFinalStatus: SavingsKYCStatus | undefined,
 ): CoinmarketSavingsAction => ({
     type: COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS,
     kycFinalStatus,

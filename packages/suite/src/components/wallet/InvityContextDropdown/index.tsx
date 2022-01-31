@@ -2,7 +2,8 @@ import { Dropdown, DropdownRef } from '@trezor/components';
 import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
+import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import { InvityContextDropdownButton } from './components/InvityContextDropdownButton';
 import invityAPI from '@suite-services/invityAPI';
 
@@ -28,6 +29,9 @@ const InvityContextDropdown = () => {
     const { invityAuthentication } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
     }));
+    const { stopWatchingKYCStatus } = useActions({
+        stopWatchingKYCStatus: coinmarketSavingsActions.stopWatchingKYCStatus,
+    });
     // TODO: Sometimes react warning pops up in console with misused ref?
     const dropdownRef = useRef<DropdownRef>();
     const handleToggleChange = useCallback((isToggled: boolean) => {
@@ -71,6 +75,7 @@ const InvityContextDropdown = () => {
                                     callback: async () => {
                                         const logoutUrl = await invityAPI.logout();
                                         setLogoutUrl(logoutUrl);
+                                        stopWatchingKYCStatus(undefined);
                                     },
                                     isRounded: true,
                                 },

@@ -1067,6 +1067,26 @@ export default defineMessages({
             'You should receive an email with link. Click on the link. That verifies your account.',
         id: 'TR_SAVINGS_REGISTRATION_SUCCESSFUL_DESCRIPTION',
     },
+    TR_SAVINGS_GUIDE_STEP_YOUR_CREDENTIALS: {
+        defaultMessage: 'Your credentials',
+        id: 'TR_SAVINGS_GUIDE_STEP_YOUR_CREDENTIALS',
+    },
+    TR_SAVINGS_GUIDE_STEP_YOUR_PHONE_NUMBER: {
+        defaultMessage: 'Your phone number',
+        id: 'TR_SAVINGS_GUIDE_STEP_YOUR_PHONE_NUMBER',
+    },
+    TR_SAVINGS_GUIDE_STEP_KYC_VERIFICATION: {
+        defaultMessage: 'KYC verification',
+        id: 'TR_SAVINGS_GUIDE_STEP_KYC_VERIFICATION',
+    },
+    TR_SAVINGS_GUIDE_STEP_AML: {
+        defaultMessage: 'AML',
+        id: 'TR_SAVINGS_GUIDE_STEP_AML',
+    },
+    TR_SAVINGS_GUIDE_STEP_DCA_SETUP: {
+        defaultMessage: 'DCA setup',
+        id: 'TR_SAVINGS_GUIDE_STEP_DCA_SETUP',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',

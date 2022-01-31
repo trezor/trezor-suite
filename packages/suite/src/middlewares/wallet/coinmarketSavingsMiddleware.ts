@@ -131,7 +131,7 @@ const coinmarketSavingsMiddleware =
 
             let counter = 0;
 
-            const intervalId = setInterval(() => {
+            const intervalId = window.setInterval(() => {
                 const startWatchingKYCStatus = () => {
                     if (counter === maxAttempts) {
                         clearInterval(intervalId);
@@ -141,10 +141,17 @@ const coinmarketSavingsMiddleware =
                     const request = invityAPI.watchKYCStatus(action.exchange);
                     let timeoutId: number;
                     const timeout = new Promise<'timeout'>(resolve => {
-                        timeoutId = setTimeout(() => {
+                        timeoutId = window.setTimeout(() => {
                             resolve('timeout');
                         }, timeoutMs);
+                        api.dispatch(
+                            coinmarketSavingsActions.setWatchingKYCStatusMetadata(
+                                intervalId,
+                                timeoutId,
+                            ),
+                        );
                     });
+
                     Promise.race([request, timeout]).then(result => {
                         if (result === 'timeout') {
                             clearTimeout(timeoutId);
@@ -164,6 +171,17 @@ const coinmarketSavingsMiddleware =
                 };
                 startWatchingKYCStatus();
             }, intervalMs);
+        }
+
+        if (action.type === COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS) {
+            const { intervalId, timeoutId } =
+                api.getState().wallet.coinmarket.savings.watchingKYCMetadata;
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
         }
 
         next(action);

@@ -80,7 +80,10 @@ interface Savings {
     isSavingsTradeLoading: boolean;
     kycFinalStatus?: SavingsKYCStatus;
     isWatchingKYCStatus: boolean;
-    watchingKYCStatusCounter: number;
+    watchingKYCMetadata: {
+        intervalId: number;
+        timeoutId: number;
+    };
 }
 
 export interface State {
@@ -137,7 +140,10 @@ export const initialState = {
         isSavingsTradeLoading: false,
         kycFinalStatus: undefined,
         isWatchingKYCStatus: false,
-        watchingKYCStatusCounter: 0,
+        watchingKYCMetadata: {
+            intervalId: 0,
+            timeoutId: 0,
+        },
     },
     composedTransactionInfo: {},
     trades: [],
@@ -269,6 +275,12 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS:
                 draft.savings.isWatchingKYCStatus = true;
+                break;
+            case COINMARKET_SAVINGS.SET_WATCHING_KYC_STATUS_METADATA:
+                draft.savings.watchingKYCMetadata = {
+                    intervalId: action.intervalId,
+                    timeoutId: action.timeoutId,
+                };
                 break;
             case COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS:
                 draft.savings.kycFinalStatus = action.kycFinalStatus;

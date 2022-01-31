@@ -2,12 +2,16 @@ import { useCallback, useEffect } from 'react';
 import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import { SavingsAMLContextValues, UseSavingsAMLProps } from '@wallet-types/coinmarket/savings/AML';
+import type {
+    SavingsAMLContextValues,
+    UseSavingsAMLProps,
+} from '@wallet-types/coinmarket/savings/AML';
 import invityAPI, { SavingsTradeAMLAnswer } from '@suite-services/invityAPI';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 
-// TODO: We will need navigation (thus selected account) later.
-// eslint-disable-next-line no-empty-pattern
-export const useSavingsAML = ({}: UseSavingsAMLProps): SavingsAMLContextValues => {
+export const useSavingsAML = ({ selectedAccount }: UseSavingsAMLProps): SavingsAMLContextValues => {
+    const { navigateToSavingsSetup } = useCoinmarketNavigation(selectedAccount.account);
+
     const { loadInvityData, saveSavingsTradeResponse } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
         saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
@@ -42,11 +46,11 @@ export const useSavingsAML = ({}: UseSavingsAMLProps): SavingsAMLContextValues =
                 };
                 const response = await invityAPI.doSavingsTrade(savingsTradeRequest);
                 if (!response?.trade.errors) {
-                    // TODO: navigate to setup
+                    navigateToSavingsSetup();
                 }
             }
         },
-        [savingsTrade],
+        [navigateToSavingsSetup, savingsTrade],
     );
 
     return {
