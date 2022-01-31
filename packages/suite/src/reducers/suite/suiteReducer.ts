@@ -12,7 +12,6 @@ import { getNumberFromPixelString } from '@trezor/utils';
 export interface DebugModeOptions {
     invityAPIUrl?: string;
     showDebugMenu: boolean;
-    bridgeDevMode: boolean;
 }
 
 export interface AutodetectSettings {
@@ -89,7 +88,6 @@ const initialState: SuiteState = {
         debug: {
             invityAPIUrl: undefined,
             showDebugMenu: false,
-            bridgeDevMode: false,
         },
         autodetect: {
             language: true,
