@@ -1,0 +1,92 @@
+.run_everything_rules: &run_everything_rules
+  refs:
+    - schedules
+
+# tests whether there are not 'too many' outdated dependencies
+.outdated:
+  stage: utils
+  needs: []
+  allow_failure: true
+  script:
+    - ./ci/scripts/outdated.sh
+
+outdated nightly:
+  extends: .outdated
+  only:
+    <<: *run_everything_rules
+
+outdated:
+  extends: .outdated
+  when: manual
+
+# tests whether urls in constants return 200 status (shall detect dead links)
+.urls health:
+  stage: utils
+  needs: []
+  retry: 2
+  script:
+    - yarn install --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/suite test-health
+
+urls health nightly:
+  extends: .urls health
+  only:
+    <<: *run_everything_rules
+
+urls health:
+  extends: .urls health
+  when: manual
+
+.translations duplicates:
+  stage: utils
+  needs: []
+  script:
+    - yarn install --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/suite translations:list-duplicates
+
+translations duplicates nightly:
+  extends: .translations duplicates
+  only:
+    <<: *run_everything_rules
+
+translations duplicates:
+  extends: .translations duplicates
+  when: manual
+
+.translations unused:
+  stage: utils
+  needs: []
+  script:
+    - yarn install --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/suite translations:list-unused
+
+translation unused nightly:
+  extends: .translations unused
+  only:
+    <<: *run_everything_rules
+
+translation unused:
+  extends: .translations unused
+  except:
+    <<: *run_everything_rules
+  when: manual
+
+.media duplicates:
+  stage: utils
+  needs: []
+  parallel:
+    matrix:
+      - EXT: ['.png', '.jpg', '.mp4', '.webm', '.svg']
+  script:
+    - ./ci/scripts/find_duplicates.sh ./packages/suite-data/files ${EXT}
+
+media duplicates nightly:
+  extends: .media duplicates
+  only:
+    <<: *run_everything_rules
+
+media duplicates:
+  extends: .media duplicates
+  when: manual
+  except:
+    <<: *run_everything_rules

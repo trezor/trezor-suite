@@ -8,6 +8,9 @@ const excluded = [
     URLS.TREZOR_DATA_URL,
     // TODO: it works locally but CI times out, probably cant handle the redirect or something..
     URLS.TOS_URL,
+    // 503 from CI
+    URLS.BLOG_URL,
+    URLS.LTC_ADDRESS_INFO_URL,
 ];
 
 const getUrls = () => {
