@@ -293,3 +293,14 @@ suite-desktop build windows codesign:
 #     expire_in: 1 day
 #     paths:
 #       - app-release.apk
+
+connect-explorer build:
+  stage: build
+  script:
+    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
+    - TREZOR_CONNECT_SRC=https://connect.corp.sldev.cz/develop/ yarn workspace @trezor/connect-explorer build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - packages/connect-explorer/build

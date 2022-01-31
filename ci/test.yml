@@ -51,7 +51,6 @@ suite web:
 
 suite web snapshots:
   extends: .e2e web
-  needs: ['install'] # make it available sooner
   when: manual
   variables:
     CYPRESS_SNAPSHOT: 1
@@ -161,5 +160,37 @@ blockchain-link:
 
 blockchain-link nightly:
   extends: .e2e blockchain-link
+  only:
+    - schedules
+
+# @trezor/connect-explorer
+.e2e connect-explorer:
+  stage: integration testing
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-explorer-ci.yml
+    URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}/
+  script:
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/utils build:lib
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix
+    - docker-compose run test-run
+  after_script:
+    - docker-compose down
+    - docker network prune -f
+  artifacts:
+    expire_in: 7 days
+    when: always
+    paths:
+      - ./packages/integration-tests/projects/connect-explorer/screenshots
+      - ./packages/integration-tests/connect-popup-overview.html
+
+connect-explorer:
+  extends: .e2e connect-explorer
+  when: manual
+
+connect-explorer nightly:
+  extends: .e2e connect-explorer
   only:
     - schedules

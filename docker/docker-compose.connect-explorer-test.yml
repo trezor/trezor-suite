@@ -1,0 +1,38 @@
+version: '2'
+services:
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    environment:
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+  connect-explorer-dev:
+    container_name: connect-explorer-dev
+    extends:
+      service: suite-base
+      file: docker-compose.suite-base.yml
+      # todo: we are going to dockerize connect and run it as another localhost service later
+    command: bash -c "TREZOR_CONNECT_SRC=https://connect.corp.sldev.cz/develop/ yarn workspace @trezor/connect-explorer dev"
+    network_mode: service:trezor-user-env-unix
+
+  test-run:
+    image: mcr.microsoft.com/playwright:focal
+    container_name: explorer-test-runner
+    depends_on:
+      - trezor-user-env-unix
+      - connect-explorer-dev
+    network_mode: service:trezor-user-env-unix
+    environment:
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+      - DISPLAY=$DISPLAY
+      - HEADLESS=false
+      # debug mode might be useful for debugging tests
+      # - PWDEBUG=1
+    working_dir: /trezor-suite
+    command: bash -c "npx playwright install && docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:connect-explorer"
+    volumes:
+      - ../:/trezor-suite
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
