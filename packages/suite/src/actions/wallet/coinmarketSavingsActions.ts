@@ -1,4 +1,5 @@
 import invityAPI, {
+    SavingsKYCStatus,
     SavingsListResponse,
     SavingsProviderInfo,
     SavingsTradeResponse,
@@ -27,6 +28,14 @@ export type CoinmarketSavingsAction =
     | {
           type: typeof COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE;
           response: SavingsTradeResponse;
+      }
+    | {
+          type: typeof COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS;
+          exchange: string;
+      }
+    | {
+          type: typeof COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS;
+          kycFinalStatus: SavingsKYCStatus;
       };
 
 export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
@@ -77,4 +86,16 @@ export const saveSavingsTradeResponse = (
 ): CoinmarketSavingsAction => ({
     type: COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE,
     response,
+});
+
+export const startWatchingKYCStatus = (exchange: string): CoinmarketSavingsAction => ({
+    type: COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS,
+    exchange,
+});
+
+export const stopWatchingKYCStatus = (
+    kycFinalStatus: SavingsKYCStatus,
+): CoinmarketSavingsAction => ({
+    type: COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS,
+    kycFinalStatus,
 });

@@ -211,7 +211,7 @@ export interface SavingsTrade {
     paymentFrequency?: PaymentFrequency;
 
     /** Name of savings provider. */
-    exchange?: string;
+    exchange: string;
 
     /** Crypto address where provider sends crypto. */
     receivingCryptoAddress?: string;
@@ -294,6 +294,15 @@ export interface SendVerificationSmsSuccessResponse {
 export type SendVerificationSmsResponse =
     | SendVerificationSmsSuccessResponse
     | SendVerificationSmsErrorResponse;
+
+export interface SavingsTradeKYCStatusSuccessfulResponse {
+    status: 'Success';
+    kycStatus: SavingsKYCStatus;
+}
+
+export type SavingsTradeKYCStatusResponse =
+    | SavingsTradeKYCStatusSuccessfulResponse
+    | SavingsErrorResponse;
 
 /** END: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 
@@ -382,6 +391,7 @@ class InvityAPI {
 
     private SAVINGS_LIST = '/savings/list';
     private SAVINGS_TRADE = '/account/savings/trade';
+    private WATCH_KYC = '/account/savings/watch-kyc';
 
     private ACCOUNT_INFO = '/account/info';
     private ACCOUNT_SETTINGS = '/account/settings';
@@ -853,6 +863,19 @@ class InvityAPI {
             );
         } catch (error) {
             console.log('[verifySmsCode]', error);
+        } finally {
+            this.setProtectedAPI(false);
+        }
+    };
+
+    watchKYCStatus = async (
+        exchange: string,
+    ): Promise<SavingsTradeKYCStatusResponse | undefined> => {
+        this.setProtectedAPI(true);
+        try {
+            return await this.requestApiServer(`${this.WATCH_KYC}/${exchange}`, {}, 'GET');
+        } catch (error) {
+            console.log('[watchKYCStatus]', error);
         } finally {
             this.setProtectedAPI(false);
         }

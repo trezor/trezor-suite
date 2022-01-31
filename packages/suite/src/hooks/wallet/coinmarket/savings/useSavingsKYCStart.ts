@@ -18,9 +18,10 @@ export const useSavingsKYCStart = ({
     selectedAccount,
 }: UseSavingsKYCStartProps): SavingsKYCStartContextValues => {
     const { navigateToInvityAML } = useInvityNavigation(selectedAccount.account);
-    const { loadInvityData, saveSavingsTradeResponse } = useActions({
+    const { loadInvityData, saveSavingsTradeResponse, startWatchingKYCStatus } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
         saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
+        startWatchingKYCStatus: coinmarketSavingsActions.startWatchingKYCStatus,
     });
     useEffect(() => {
         loadInvityData();
@@ -81,6 +82,7 @@ export const useSavingsKYCStart = ({
             const response = await invityAPI.doSavingsTrade({ trade });
             if (response) {
                 saveSavingsTradeResponse(response);
+                startWatchingKYCStatus(trade.exchange);
                 navigateToInvityAML();
             }
         }

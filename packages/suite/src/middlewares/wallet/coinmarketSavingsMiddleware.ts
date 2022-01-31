@@ -64,6 +64,13 @@ const coinmarketSavingsMiddleware =
                                 api.dispatch(
                                     coinmarketSavingsActions.saveSavingsTradeResponse(response),
                                 );
+                                if (response.trade.kycStatus === 'InProgress') {
+                                    api.dispatch(
+                                        coinmarketSavingsActions.startWatchingKYCStatus(
+                                            response.trade.exchange,
+                                        ),
+                                    );
+                                }
                                 if (response.trade.status === 'KYC') {
                                     if (response.trade.kycStatus === 'Open') {
                                         api.dispatch(
@@ -114,6 +121,49 @@ const coinmarketSavingsMiddleware =
                         });
                 }
             }
+        }
+
+        if (action.type === COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS) {
+            // TODO: Extract
+            const timeoutMs = 10_000;
+            const intervalMs = 5_000;
+            const maxAttempts = 60;
+
+            let counter = 0;
+
+            const intervalId = setInterval(() => {
+                const startWatchingKYCStatus = () => {
+                    if (counter === maxAttempts) {
+                        clearInterval(intervalId);
+                        return;
+                    }
+                    counter += 1;
+                    const request = invityAPI.watchKYCStatus(action.exchange);
+                    let timeoutId: number;
+                    const timeout = new Promise<'timeout'>(resolve => {
+                        timeoutId = setTimeout(() => {
+                            resolve('timeout');
+                        }, timeoutMs);
+                    });
+                    Promise.race([request, timeout]).then(result => {
+                        if (result === 'timeout') {
+                            clearTimeout(timeoutId);
+                            startWatchingKYCStatus();
+                            return;
+                        }
+                        if (
+                            result &&
+                            result.status === 'Success' &&
+                            ['Failed', 'Verified'].includes(result.kycStatus)
+                        ) {
+                            api.dispatch(
+                                coinmarketSavingsActions.stopWatchingKYCStatus(result.kycStatus),
+                            );
+                        }
+                    });
+                };
+                startWatchingKYCStatus();
+            }, intervalMs);
         }
 
         next(action);

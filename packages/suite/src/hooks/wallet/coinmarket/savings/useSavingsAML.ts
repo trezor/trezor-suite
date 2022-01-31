@@ -33,15 +33,17 @@ export const useSavingsAML = ({}: UseSavingsAMLProps): SavingsAMLContextValues =
 
     const handleSubmit = useCallback(
         async (amlAnswers: SavingsTradeAMLAnswer[]) => {
-            const savingsTradeRequest = {
-                trade: {
-                    ...savingsTrade,
-                    amlAnswers,
-                },
-            };
-            const response = await invityAPI.doSavingsTrade(savingsTradeRequest);
-            if (!response?.trade.errors) {
-                // TODO: navigate to setup
+            if (savingsTrade) {
+                const savingsTradeRequest = {
+                    trade: {
+                        ...savingsTrade,
+                        amlAnswers,
+                    },
+                };
+                const response = await invityAPI.doSavingsTrade(savingsTradeRequest);
+                if (!response?.trade.errors) {
+                    // TODO: navigate to setup
+                }
             }
         },
         [savingsTrade],

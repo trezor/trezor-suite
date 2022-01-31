@@ -26,7 +26,7 @@ import type { SellInfo } from '@wallet-actions/coinmarketSellActions';
 import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
 import type { FeeLevel } from 'trezor-connect';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type { SavingsTrade } from '@suite-services/invityAPI';
+import type { SavingsKYCStatus, SavingsTrade } from '@suite-services/invityAPI';
 import type { InvityAuthentication } from '@wallet-types/invity';
 
 export interface ComposedTransactionInfo {
@@ -78,6 +78,9 @@ interface Savings {
     savingsInfo?: SavingsInfo;
     savingsTrade?: SavingsTrade;
     isSavingsTradeLoading: boolean;
+    kycFinalStatus?: SavingsKYCStatus;
+    isWatchingKYCStatus: boolean;
+    watchingKYCStatusCounter: number;
 }
 
 export interface State {
@@ -132,6 +135,9 @@ export const initialState = {
         savingsInfo: undefined,
         savingsTrade: undefined,
         isSavingsTradeLoading: false,
+        kycFinalStatus: undefined,
+        isWatchingKYCStatus: false,
+        watchingKYCStatusCounter: 0,
     },
     composedTransactionInfo: {},
     trades: [],
@@ -260,6 +266,13 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_COMMON.SET_INVITY_AUTHENTICATION_LOADING:
                 draft.isInvityAuthenticationLoading = action.isInvityAuthenticationLoading;
+                break;
+            case COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS:
+                draft.savings.isWatchingKYCStatus = true;
+                break;
+            case COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS:
+                draft.savings.kycFinalStatus = action.kycFinalStatus;
+                draft.savings.isWatchingKYCStatus = false;
                 break;
             // no default
         }
