@@ -15,6 +15,7 @@ import { SEED_MANUAL_URL } from '@suite-constants/urls';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as backupActions from '@backup-actions/backupActions';
 import * as routerActions from '@suite-actions/routerActions';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const StyledImage = styled(Image)`
     flex: 1;
@@ -132,7 +133,12 @@ const BackupStep = () => {
                     innerActions={
                         <OnboardingButtonCta
                             onClick={() => {
-                                goto('settings-index');
+                                goto(
+                                    'settings-device',
+                                    undefined,
+                                    undefined,
+                                    SettingsAnchor.WipeDevice,
+                                );
                             }}
                         >
                             <Translation id="TR_GO_TO_SETTINGS" />
