@@ -1851,18 +1851,18 @@ export default defineMessages({
         defaultMessage: 'Display rotation',
         id: 'TR_DEVICE_SETTINGS_DISPLAY_ROTATION',
     },
-    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_1: {
+    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1: {
         defaultMessage:
             'Supports PNG or JPG 128 x 64 pixels, and using only black and white (not grayscale).',
-        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_1',
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR: {
         defaultMessage: 'Homescreen editor',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR',
     },
-    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_2: {
+    TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT: {
         defaultMessage: 'Supports PNG or JPG, 144 x 144 pixels',
-        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_2',
+        id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY: {
         defaultMessage: 'Choose from gallery',
@@ -5248,9 +5248,34 @@ export default defineMessages({
         id: 'TR_DROP_IMAGE',
         defaultMessage: 'Drop image',
     },
+    TR_CUSTOM_HOMESCREEN: {
+        id: 'TR_CUSTOM_HOMESCREEN',
+        defaultMessage: 'Custom homescreen uploaded',
+    },
     TR_INVALID_FILE_SELECTED: {
         id: 'TR_INVALID_FILE_SELECTED',
         defaultMessage: 'Invalid file selected. Must be .jpg or .png',
+    },
+    IMAGE_VALIDATION_ERROR_INVALID_FORMAT: {
+        id: 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT',
+        defaultMessage: 'Invalid file selected. Must be .jpg or .png',
+    },
+    IMAGE_VALIDATION_ERROR_INVALID_HEIGHT: {
+        id: 'IMAGE_VALIDATION_ERROR_INVALID_HEIGHT',
+        defaultMessage: 'Invalid height.',
+    },
+    IMAGE_VALIDATION_ERROR_INVALID_WIDTH: {
+        id: 'IMAGE_VALIDATION_ERROR_INVALID_WIDTH',
+        defaultMessage: 'Invalid width.',
+    },
+    IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA: {
+        id: 'IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA',
+        defaultMessage: 'Invalid image format. It must not contain transparency.',
+    },
+    IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION: {
+        id: 'IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION',
+        defaultMessage:
+            'Invalid image color. It must contain only black and white (not grayscale).',
     },
     TR_OPEN_IN_MEDIUM: {
         id: 'TR_OPEN_IN_MEDIUM',

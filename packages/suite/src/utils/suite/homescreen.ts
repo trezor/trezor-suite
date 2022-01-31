@@ -2,6 +2,8 @@
 /* eslint-disable prefer-spread */ // to be refactored
 import * as pako from 'pako';
 
+type TrezorModelNumber = 1 | 2;
+
 const T1_WIDTH = 128;
 const T1_HEIGHT = 64;
 
@@ -10,15 +12,15 @@ const T2_HEIGHT = 144;
 const canvasId = 'homescreen-canvas';
 const supportedDataUrlRE = /^data:image\/(jpeg|png)/;
 
-const getWidth = (model: number) => {
-    if (model === 2) {
+const getWidth = (trezorModel: TrezorModelNumber) => {
+    if (trezorModel === 2) {
         return T2_WIDTH;
     }
     return T1_WIDTH;
 };
 
-const getHeight = (model: number) => {
-    if (model === 2) {
+const getHeight = (trezorModel: TrezorModelNumber) => {
+    if (trezorModel === 2) {
         return T2_HEIGHT;
     }
     return T1_HEIGHT;
@@ -186,73 +188,96 @@ export const elementToImageData = (element: HTMLImageElement, width: number, hei
     return imageData;
 };
 
-export const checkImage = (origImage: HTMLImageElement, model: number) => {
-    const height = getHeight(model);
-    const width = getWidth(model);
-    if (origImage.height !== height) {
-        throw new Error('Not a correct height.');
-    }
-    if (origImage.width !== width) {
-        throw new Error('Not a correct width.');
-    }
+export const enum ImageValidationError {
+    InvalidFormat = 'IMAGE_VALIDATION_ERROR_INVALID_FORMAT',
+    InvalidHeight = 'IMAGE_VALIDATION_ERROR_INVALID_HEIGHT',
+    InvalidWidth = 'IMAGE_VALIDATION_ERROR_INVALID_WIDTH',
+    UnexpectedAlpha = 'IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA',
+    InvalidColorCombination = 'IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION',
+}
 
+export const validateImageColors = (
+    origImage: HTMLImageElement,
+    trezorModel: TrezorModelNumber,
+) => {
+    const height = getHeight(trezorModel);
+    const width = getWidth(trezorModel);
     const imageData = elementToImageData(origImage, width, height);
 
-    if (model === 1) {
-        range(imageData.height).forEach((j: number) => {
-            range(imageData.width).forEach(i => {
-                const index = j * 4 * imageData.width + i * 4;
-                const red = imageData.data[index];
-                const green = imageData.data[index + 1];
-                const blue = imageData.data[index + 2];
-                const alpha = imageData.data[index + 3];
-                if (alpha !== 255) {
-                    throw new Error('Unexpected alpha.');
-                }
-                let good = false;
-                if (red === 0 && green === 0 && blue === 0) {
-                    good = true;
-                }
-                if (red === 255 && green === 255 && blue === 255) {
-                    good = true;
-                }
-                if (!good) {
-                    throw new Error(`wrong color combination ${red} ${green} ${blue}.`);
-                }
+    if (trezorModel === 1) {
+        try {
+            range(imageData.height).forEach((j: number) => {
+                range(imageData.width).forEach(i => {
+                    const index = j * 4 * imageData.width + i * 4;
+                    const red = imageData.data[index];
+                    const green = imageData.data[index + 1];
+                    const blue = imageData.data[index + 2];
+                    const alpha = imageData.data[index + 3];
+                    if (alpha !== 255) {
+                        throw new Error(ImageValidationError.UnexpectedAlpha);
+                    }
+                    const isBlack = red === 0 && green === 0 && blue === 0;
+                    const isWhite = red === 255 && green === 255 && blue === 255;
+
+                    if (!isBlack && !isWhite) {
+                        throw new Error(ImageValidationError.InvalidColorCombination);
+                    }
+                });
             });
-        });
+        } catch (error) {
+            return error.message;
+        }
     }
 };
 
-export const check = (file: File, model: number) =>
-    fileToDataUrl(file)
-        .then((url: string) => dataUrlToImage(url))
-        .then(image => checkImage(image, model));
+export const validateImageDimensions = (
+    origImage: HTMLImageElement,
+    trezorModel: TrezorModelNumber,
+) => {
+    const height = getHeight(trezorModel);
+    const width = getWidth(trezorModel);
+    if (origImage.height !== height) {
+        return ImageValidationError.InvalidHeight;
+    }
+    if (origImage.width !== width) {
+        return ImageValidationError.InvalidWidth;
+    }
+};
 
-export const imageDataToHex = (imageData: ImageData, model: number) => {
-    const w = getWidth(model);
-    const h = getHeight(model);
+export const validateImageFormat = (dataUrl: string) =>
+    !!dataUrl && supportedDataUrlRE.test(dataUrl) ? undefined : ImageValidationError.InvalidFormat;
 
-    if (model === 2) {
+export const validate = (dataUrl: string, trezorModel: TrezorModelNumber) =>
+    validateImageFormat(dataUrl) ||
+    dataUrlToImage(dataUrl).then(
+        image =>
+            validateImageDimensions(image, trezorModel) ||
+            validateImageColors(image, trezorModel) ||
+            undefined,
+    );
+
+export const imageDataToHex = (imageData: ImageData, trezorModel: TrezorModelNumber) => {
+    const w = getWidth(trezorModel);
+    const h = getHeight(trezorModel);
+
+    if (trezorModel === 2) {
         return toif(w, h, imageData);
     }
     return toig(w, h, imageData);
 };
 
-export const isValid = (dataUrl: string) => !!dataUrl && supportedDataUrlRE.test(dataUrl);
-
 export const elementToHomescreen = (
     element: HTMLImageElement,
-    model: number,
+    trezorModel: TrezorModelNumber,
     customElToDataFn?: typeof elementToImageData | undefined,
 ) => {
     // customElToDataFn needed for injecting mocked elementToImageData function in jest tests
-    const w = getWidth(model);
-    const h = getHeight(model);
+    const w = getWidth(trezorModel);
+    const h = getHeight(trezorModel);
     const imageData = customElToDataFn
         ? customElToDataFn(element, w, h)
         : elementToImageData(element, w, h);
-    const hex = imageDataToHex(imageData, model);
+    const hex = imageDataToHex(imageData, trezorModel);
     removeCanvas();
     return hex;
 };
