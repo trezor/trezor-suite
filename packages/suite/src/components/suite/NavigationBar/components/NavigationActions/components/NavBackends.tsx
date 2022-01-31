@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown, DropdownRef, CoinLogo, variables } from '@trezor/components';
 import { Translation, StatusLight } from '@suite-components';
-import ActionItem from '../ActionItem';
+import ActionItem from './ActionItem';
 import { useActions, useSelector } from '@suite-hooks';
 import { goto as gotoAction } from '@suite-actions/routerActions';
 import { openModal as openModalAction } from '@suite-actions/modalActions';
@@ -10,8 +10,8 @@ import type { BackendType, BackendSettings } from '@wallet-reducers/settingsRedu
 import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
 import type { Network } from '@wallet-types';
 
-const Wrapper = styled.div<{ marginLeft?: boolean }>`
-    ${props => props.marginLeft && `margin-left: 8px;`}
+const Wrapper = styled.div`
+    margin-left: 8px;
     position: relative;
 `;
 
@@ -69,11 +69,7 @@ const BackendRow = ({
     );
 };
 
-type BackendsDropdownProps = {
-    marginLeft?: boolean;
-};
-
-const BackendsDropdown = ({ marginLeft }: BackendsDropdownProps) => {
+export const NavBackends = () => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
     const { backends, blockchain } = useSelector(state => ({
@@ -93,8 +89,10 @@ const BackendsDropdown = ({ marginLeft }: BackendsDropdownProps) => {
         .filter(([, { tor }]) => !tor)
         .map(([coin, settings]) => ({ coin, ...settings }));
 
+    if (!customBackends.length) return null;
+
     return (
-        <Wrapper marginLeft={marginLeft}>
+        <Wrapper>
             <Dropdown
                 onToggle={() => setOpen(!open)}
                 ref={dropdownRef}
@@ -153,5 +151,3 @@ const BackendsDropdown = ({ marginLeft }: BackendsDropdownProps) => {
         </Wrapper>
     );
 };
-
-export default BackendsDropdown;

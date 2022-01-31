@@ -13,7 +13,7 @@ import { NavSettings } from './components/NavSettings';
 import TorDropdown from './components/TorDropdown';
 import EarlyAccessDropdown from './components/EarlyAccessDropdown';
 import { variables } from '@trezor/components';
-import BackendsDropdown from './components/BackendsDropdown';
+import { NavBackends } from './components/NavBackends';
 import type { Route } from '@suite-types';
 
 const Wrapper = styled.div`
@@ -118,7 +118,7 @@ const NavigationActions = (props: Props) => {
                     isMobileLayout={props.isMobileLayout}
                 />
             ) : (
-                <BackendsDropdown marginLeft />
+                <NavBackends />
             )}
 
             {isDesktop() && (
