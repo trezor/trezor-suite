@@ -1,5 +1,5 @@
 import path from 'path';
-import { ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import TrezorConnect, {
     DEVICE_EVENT,
     UI_EVENT,
@@ -11,42 +11,59 @@ type Call = [keyof typeof TrezorConnect, string, ...any[]];
 
 const SERVICE_NAME = 'trezor-connect-ipc';
 
-const init = () => {
+const init = ({ mainWindow, store }: Dependencies) => {
     const { logger, resourcesPath } = global;
     logger.info(SERVICE_NAME, `Starting service`);
 
-    // manifest in nodejs is unnecessary required :(
-    TrezorConnect.manifest({ appUrl: 'https://suite.trezor.io', email: 'info@trezor.io' });
+    app.on('before-quit', TrezorConnect.dispose);
 
-    // one time set listeners, at first connect call
-    ipcMain.once('trezor-connect-call', ({ reply }) => {
+    mainWindow.webContents.on('did-finish-load', () => {
+        // reset previous instance, possible left over after renderer refresh (F5)
+        TrezorConnect.dispose();
+
         // propagate all events using trezor-connect-event channel
         // listeners references are managed by desktopApi (see ./src-electron/modules/trezor-connect-preload)
         TrezorConnect.on(DEVICE_EVENT, event => {
-            logger.info(SERVICE_NAME, `DEVICE_EVENT ${event.type}`);
-            reply(`trezor-connect-event`, event);
+            logger.debug(SERVICE_NAME, `DEVICE_EVENT ${event.type}`);
+            mainWindow.webContents.send(`trezor-connect-event`, event);
         });
 
         TrezorConnect.on(UI_EVENT, event => {
-            logger.info(SERVICE_NAME, `UI_EVENT ${event.type}`);
-            reply(`trezor-connect-event`, event);
+            logger.debug(SERVICE_NAME, `UI_EVENT ${event.type}`);
+            mainWindow.webContents.send(`trezor-connect-event`, event);
         });
 
         TrezorConnect.on(TRANSPORT_EVENT, event => {
-            logger.info(SERVICE_NAME, `TRANSPORT_EVENT ${event.type}`);
-            reply(`trezor-connect-event`, event);
+            logger.debug(SERVICE_NAME, `TRANSPORT_EVENT ${event.type}`);
+            mainWindow.webContents.send(`trezor-connect-event`, event);
         });
 
         TrezorConnect.on(BLOCKCHAIN_EVENT, event => {
-            logger.info(SERVICE_NAME, `BLOCKCHAIN_EVENT ${event.type}`);
-            reply(`trezor-connect-event`, event);
+            logger.debug(SERVICE_NAME, `BLOCKCHAIN_EVENT ${event.type}`);
+            mainWindow.webContents.send(`trezor-connect-event`, event);
         });
     });
+
+    const setProxy = (ifRunning = false) => {
+        const tor = store.getTorSettings();
+        if (ifRunning && !tor.running) return Promise.resolve();
+        const payload = tor.running
+            ? {
+                  proxy: `socks://${tor.address}`,
+                  useOnionLinks: true,
+              }
+            : { proxy: '', useOnionLinks: false };
+        logger.info(SERVICE_NAME, `${tor.running ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
+        return TrezorConnect.setProxy(payload);
+    };
+
+    ipcMain.on('tor/toggle', () => setProxy());
+    ipcMain.on('tor/set-address', () => setProxy(true));
 
     ipcMain.on(
         'trezor-connect-call',
         async ({ reply }: Electron.IpcMainEvent, [method, responseEvent, ...params]: Call) => {
-            logger.info(SERVICE_NAME, `TrezorConnect.${method}`);
+            logger.debug(SERVICE_NAME, `TrezorConnect.${method}`);
 
             // TODO: refactor desktopApi and send all app paths at the begging, then use this path in suite/firmwareUpdateActions
             // https://github.com/trezor/trezor-suite/issues/4809
@@ -55,6 +72,10 @@ const init = () => {
             }
             // @ts-ignore method name union
             const response = await TrezorConnect[method](...params);
+
+            if (method === 'init') {
+                await setProxy(true);
+            }
             reply(responseEvent, response);
         },
     );
