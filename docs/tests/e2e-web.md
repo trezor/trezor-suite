@@ -10,7 +10,7 @@ _Note: All paths below are relative to the root of trezor-suite repository._
 
 #### Prerequisites
 
--   [Docker](https://docs.docker.com/docker-for-mac/install/)
+-   [Docker](https://docs.docker.com/engine/install/)
 
 #### Steps
 
@@ -38,7 +38,7 @@ As of now M1 Macs aren't supported. See [this issue](https://github.com/trezor/t
 
 #### Prerequisites
 
--   [Docker](https://docs.docker.com/docker-for-mac/install/)
+-   [Docker](https://docs.docker.com/desktop/mac/install/)
 -   [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
 
 #### Steps
