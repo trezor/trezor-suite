@@ -84,21 +84,17 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
     private keepAliveHandle?: ReturnType<typeof setInterval>;
     private keepAlive() {
         if (!this.socket) return;
-        this.keepAliveHandle = setInterval(
-            async client => {
-                if (
-                    this.timeLastCall !== 0 &&
-                    new Date().getTime() > this.timeLastCall + KEEP_ALIVE_INTERVAL / 2
-                ) {
-                    await (this as ElectrumAPI).request('server.ping').catch(err => {
-                        console.error(`Ping to server failed: [${err}]`);
-                        client.close();
-                    });
-                }
-            },
-            KEEP_ALIVE_INTERVAL,
-            this
-        );
+        this.keepAliveHandle = setInterval(async () => {
+            if (
+                this.timeLastCall !== 0 &&
+                new Date().getTime() > this.timeLastCall + KEEP_ALIVE_INTERVAL / 2
+            ) {
+                await (this as ElectrumAPI).request('server.ping').catch(err => {
+                    console.error(`Ping to server failed: [${err}]`);
+                    this.close();
+                });
+            }
+        }, KEEP_ALIVE_INTERVAL);
     }
 
     onClose() {
