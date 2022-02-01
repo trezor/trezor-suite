@@ -6,8 +6,8 @@
 // about intent to acquire/release and then send another message when that is done.
 // Other windows then can acquire/release
 
-import { createDeferred, Deferred } from '@trezor/utils';
-
+import { create as createDeferred } from '../utils/defered';
+import type { Deferred } from '../utils/defered';
 import type { TrezorDeviceInfoDebug } from './sharedPlugin';
 import type { MessageFromSharedWorker, MessageToSharedWorker } from './withSharedConnections';
 
