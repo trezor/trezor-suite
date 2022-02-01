@@ -146,7 +146,8 @@
             "artifactName": "Trezor-Suite-${version}-win-${arch}.${ext}",
             "target": [
                 "nsis"
-            ]
+            ],
+            "signDlls": true
         },
         "linux": {
             "extraResources": [
