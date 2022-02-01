@@ -1087,6 +1087,47 @@ export default defineMessages({
         defaultMessage: 'DCA setup',
         id: 'TR_SAVINGS_GUIDE_STEP_DCA_SETUP',
     },
+    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED: {
+        defaultMessage: 'Amount must be a number.',
+        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED',
+    },
+    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM: {
+        defaultMessage: 'Amount is too low.',
+        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM',
+    },
+    TR_SAVINGS_SETUP_HEADER: {
+        defaultMessage: 'Your setup',
+        id: 'TR_SAVINGS_SETUP_HEADER',
+    },
+    TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_LABEL: {
+        defaultMessage: 'Frequency',
+        id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_LABEL',
+    },
+    TR_SAVINGS_SETUP_FIAT_AMOUNT_LABEL: {
+        defaultMessage: 'Amount',
+        id: 'TR_SAVINGS_SETUP_FIAT_AMOUNT_LABEL',
+    },
+    TR_SAVINGS_SETUP_SUMMARY_LABEL: {
+        defaultMessage: 'Yearly savings',
+        id: 'TR_SAVINGS_SETUP_SUMMARY_LABEL',
+    },
+    TR_SAVINGS_SETUP_CONFIRM_BUTTON: {
+        defaultMessage: 'Confirm setup',
+        id: 'TR_SAVINGS_SETUP_CONFIRM_BUTTON',
+    },
+    TR_SAVINGS_SETUP_CONTINUOUS_SAVING_NOTE: {
+        defaultMessage: 'Setup saved, continue after KYC.',
+        id: 'TR_SAVINGS_SETUP_CONTINUOUS_SAVING_NOTE',
+    },
+    TR_SAVINGS_SETUP_KYC_IN_PROGRESS_HEADER: {
+        defaultMessage: 'KYC in progress',
+        id: 'TR_SAVINGS_SETUP_KYC_IN_PROGRESS_HEADER',
+    },
+    TR_SAVINGS_SETUP_KYC_IN_PROGRESS_DESCRIPTION: {
+        defaultMessage:
+            'U can předvyplnit všechno, ale finishovat až když dokončí KYC. Pingnem tě až to bude.',
+        id: 'TR_SAVINGS_SETUP_KYC_IN_PROGRESS_DESCRIPTION',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',

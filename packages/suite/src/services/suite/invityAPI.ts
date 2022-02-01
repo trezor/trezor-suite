@@ -124,7 +124,7 @@ export type SavingsAMLStatus =
     /** AML process passed successfully. */
     | 'Verified';
 
-export type PaymentFrequency = 'Weekly' | 'BiWeekly' | 'Monthly' | 'Quarterly';
+export type PaymentFrequency = 'Weekly' | 'Biweekly' | 'Monthly' | 'Quarterly';
 
 export type SavingsTradePaymentStatus =
     | 'Cancelled'
