@@ -2,7 +2,6 @@
  * Tor feature (toggle, configure)
  */
 import { app, session, ipcMain } from 'electron';
-import TrezorConnect from 'trezor-connect';
 import TorProcess, { DEFAULT_ADDRESS } from '@desktop-electron/libs/processes/TorProcess';
 import { onionDomain } from '../config';
 
@@ -42,16 +41,8 @@ const init = async ({ mainWindow, store, interceptor }: Dependencies) => {
         // Start (or stop) routing all communication through tor.
         if (settings.running) {
             setProxy(`socks5://${settings.address}`);
-            await TrezorConnect.setProxy({
-                proxy: `socks://${settings.address}`, // socks5 doesn't work in blockchain-link. TODO: investigate
-                useOnionLinks: true,
-            });
         } else {
             setProxy('');
-            await TrezorConnect.setProxy({
-                proxy: undefined,
-                useOnionLinks: false,
-            });
         }
 
         // Notify the renderer.
