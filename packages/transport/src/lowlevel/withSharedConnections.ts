@@ -1,11 +1,10 @@
 // @ts-nocheck
 
-import { createDeferred, Deferred } from '@trezor/utils';
-import { resolveTimeoutPromise } from '../utils/defered';
+import { create as createDeferred, resolveTimeoutPromise } from '../utils/defered';
 import { parseConfigure } from './protobuf/messages';
 import { buildAndSend } from './send';
 import { receiveAndParse } from './receive';
-
+import type { Deferred } from '../utils/defered';
 import type { LowlevelTransportSharedPlugin, TrezorDeviceInfoDebug } from './sharedPlugin';
 import type { MessageFromTrezor, TrezorDeviceInfoWithSession, AcquireInput } from '../types';
 
