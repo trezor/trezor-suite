@@ -95,7 +95,7 @@ export const NavBackends = () => {
                 onToggle={() => setOpen(!open)}
                 ref={dropdownRef}
                 alignMenu="right"
-                offset={34}
+                offset={4}
                 topPadding={0}
                 minWidth={230}
                 masterLink={{
