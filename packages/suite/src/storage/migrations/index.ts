@@ -233,14 +233,16 @@ export const migrate = async (
             const settings: State & { blockbookUrls?: BlockbookUrl[] } = cursor.value;
             if (!settings.backends && settings.blockbookUrls) {
                 settings.backends = settings.blockbookUrls.reduce<{ [key: string]: any }>(
-                    (backends, { coin, url, tor }) => ({
-                        ...backends,
-                        [coin]: {
-                            type: 'blockbook',
-                            urls: [...(backends[coin]?.urls || []), url],
-                            tor: backends[coin]?.tor || tor,
-                        },
-                    }),
+                    (backends, { coin, url, tor }) =>
+                        tor // automatically torified backends should be omitted
+                            ? backends
+                            : {
+                                  ...backends,
+                                  [coin]: {
+                                      type: 'blockbook',
+                                      urls: [...(backends[coin]?.urls || []), url],
+                                  },
+                              },
                     {},
                 );
                 delete settings.blockbookUrls;
