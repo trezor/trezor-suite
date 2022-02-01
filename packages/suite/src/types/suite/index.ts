@@ -108,6 +108,7 @@ export interface ExtendedDevice {
     metadata: DeviceMetadata;
     processMode?: keyof typeof PROCESS_MODE;
     walletNumber?: number; // number of hidden wallet intended to be used in UI
+    reconnectRequested?: boolean; // currently only after wipeDevice
 }
 
 export type AcquiredDevice = KnownDevice & ExtendedDevice;

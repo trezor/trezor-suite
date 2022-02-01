@@ -5,7 +5,6 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { isWebUSB } from '@suite-utils/transport';
 import { Dispatch, GetState } from '@suite-types';
 import { DEVICE } from '@suite-constants';
 import { SUITE } from '@suite-actions/constants';
@@ -53,7 +52,7 @@ export const changePin =
     };
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device, transport } = getState().suite;
+    const { device } = getState().suite;
     if (!device) return;
     const bootloaderMode = device.mode === 'bootloader';
 
@@ -86,10 +85,10 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         // through old descriptor but suite already works with a new one. it kinda works but only until we try a new call,
         // typically resetDevice when in onboarding - we get device disconnected error;
         //
-        // disconnecting the device wiped from bootloader mode is also necessary
-        if (isWebUSB(transport) || bootloaderMode) {
-            dispatch(modalActions.openModal({ type: 'disconnect-device' }));
-        } else if (state.router.app === 'settings') {
+        // edit 1: disconnecting the device wiped from bootloader mode is also necessary
+        // edit 2: encountered libusb error with bridge 2.0.27. so let's enforce disconnecting for all devices
+        dispatch(suiteActions.requestDeviceReconnect());
+        if (state.router.app === 'settings') {
             // redirect to index to close the settings and show initial device setup
             dispatch(routerActions.goto('suite-index'));
         }

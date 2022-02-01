@@ -18,6 +18,7 @@ import DeviceInitialize from './components/DeviceInitialize';
 import DeviceBootloader from './components/DeviceBootloader';
 import DeviceNoFirmware from './components/DeviceNoFirmware';
 import DeviceUpdateRequired from './components/DeviceUpdateRequired';
+import DeviceDisconnectRequired from './components/DeviceDisconnectRequired';
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;
@@ -64,6 +65,8 @@ const PrerequisitesGuide = ({ prerequisite, padded, allowSwitchDevice }: Props) 
                 switch (prerequisite) {
                     case 'transport-bridge':
                         return <Transport />;
+                    case 'device-disconnect-required':
+                        return <DeviceDisconnectRequired />;
                     case 'device-disconnected':
                         return <DeviceConnect webusb={webusb} />;
                     case 'device-unacquired':

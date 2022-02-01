@@ -211,6 +211,12 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, false);
                 break;
 
+            case SUITE.REQUEST_DEVICE_RECONNECT:
+                if (draft.device) {
+                    draft.device.reconnectRequested = true;
+                }
+                break;
+
             // no default
         }
     });
