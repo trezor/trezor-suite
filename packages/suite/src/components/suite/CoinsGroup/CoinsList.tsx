@@ -47,7 +47,7 @@ const CoinsList = ({
                 const anyTooltip = lockedTooltip || unavailabilityTooltip || tooltip;
 
                 const backend = backends[symbol];
-                const note = backend && !backend.tor ? 'TR_CUSTOM_BACKEND' : label;
+                const note = backend ? 'TR_CUSTOM_BACKEND' : label;
                 const disabled = !!unavailable || locked;
 
                 return (

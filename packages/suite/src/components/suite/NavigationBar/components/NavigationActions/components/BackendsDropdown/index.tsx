@@ -89,9 +89,7 @@ const BackendsDropdown = ({ marginLeft }: BackendsDropdownProps) => {
         Object.entries(backends) as Array<
             [Network['symbol'], NonNullable<typeof backends[Network['symbol']]>]
         >
-    )
-        .filter(([, { tor }]) => !tor)
-        .map(([coin, settings]) => ({ coin, ...settings }));
+    ).map(([coin, settings]) => ({ coin, ...settings }));
 
     return (
         <Wrapper marginLeft={marginLeft}>
