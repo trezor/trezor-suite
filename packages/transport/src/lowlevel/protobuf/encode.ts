@@ -1,4 +1,4 @@
-import ByteBuffer = require('bytebuffer');
+import * as ByteBuffer from 'bytebuffer';
 import { Type } from 'protobufjs/light';
 
 import { isPrimitiveField } from '../../utils/protobuf';
@@ -12,7 +12,7 @@ const transform = (fieldType: string, value: any) => {
         if (typeof value === 'string' && !value) return value;
 
         // normal flow
-        return Buffer.from(value, `hex`);
+        return Buffer.from(value, 'hex');
     }
     if (typeof value === 'number' && !Number.isSafeInteger(value)) {
         throw new RangeError('field value is not within safe integer range');
@@ -66,7 +66,7 @@ export function patch(Message: Type, payload: any) {
     return patched;
 }
 
-export const encode = (Message: Type, data: Object) => {
+export const encode = (Message: Type, data: Record<string, unknown>) => {
     const payload = patch(Message, data);
     const message = Message.fromObject(payload);
     // Encode a message to an Uint8Array (browser) or Buffer (node)

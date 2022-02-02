@@ -199,7 +199,7 @@ describe('basic concepts', () => {
             describe(f.name, () => {
                 const Message = Messages.lookup(`messages.${f.name}`);
 
-                test(f.name, async () => {
+                test(f.name, () => {
                     // serialize new way - this is to confirm new lib won't break old behavior
                     const encoded = encode(Message, f.params);
                     expect(encoded.toString('hex')).toEqual(f.encoded);

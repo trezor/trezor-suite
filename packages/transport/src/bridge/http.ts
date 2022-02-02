@@ -1,5 +1,5 @@
 export type HttpRequestOptions = {
-    body?: Array<any> | Object | string;
+    body?: Array<any> | Record<string, unknown> | string;
     url: string;
     method: 'POST' | 'GET';
     skipContentTypeHeader?: boolean;
@@ -8,7 +8,7 @@ export type HttpRequestOptions = {
 // slight hack to make Flow happy, but to allow Node to set its own fetch
 // Request, RequestOptions and Response are built-in types of Flow for fetch API
 let _fetch: (input: string | Request, init?: any) => Promise<Response> =
-    typeof window === `undefined` ? () => Promise.reject() : window.fetch;
+    typeof window === 'undefined' ? () => Promise.reject() : window.fetch;
 
 let _isNode = false;
 
@@ -17,18 +17,18 @@ export function setFetch(fetch: any, isNode?: boolean) {
     _isNode = !!isNode;
 }
 
-function contentType(body: any): string {
-    if (typeof body === `string`) {
-        if (body === ``) {
-            return `text/plain`;
+function contentType(body: any) {
+    if (typeof body === 'string') {
+        if (body === '') {
+            return 'text/plain';
         }
-        return `application/octet-stream`;
+        return 'application/octet-stream';
     }
-    return `application/json`;
+    return 'application/json';
 }
 
 function wrapBody(body: any) {
-    if (typeof body === `string`) {
+    if (typeof body === 'string') {
         return body;
     }
     return JSON.stringify(body);
@@ -46,7 +46,7 @@ export async function request(options: HttpRequestOptions) {
     const fetchOptions = {
         method: options.method,
         body: wrapBody(options.body),
-        credentials: `same-origin`,
+        credentials: 'same-origin',
         headers: {},
     };
 
@@ -54,7 +54,7 @@ export async function request(options: HttpRequestOptions) {
     if (options.skipContentTypeHeader == null || options.skipContentTypeHeader === false) {
         fetchOptions.headers = {
             ...fetchOptions.headers,
-            'Content-Type': contentType(options.body == null ? `` : options.body),
+            'Content-Type': contentType(options.body == null ? '' : options.body),
         };
     }
 
@@ -62,7 +62,7 @@ export async function request(options: HttpRequestOptions) {
     if (_isNode) {
         fetchOptions.headers = {
             ...fetchOptions.headers,
-            Origin: `https://node.trezor.io`,
+            Origin: 'https://node.trezor.io',
         };
     }
 
@@ -72,7 +72,7 @@ export async function request(options: HttpRequestOptions) {
         return parseResult(resText);
     }
     const resJson = parseResult(resText);
-    if (typeof resJson === `object` && resJson != null && resJson.error != null) {
+    if (typeof resJson === 'object' && resJson != null && resJson.error != null) {
         throw new Error(resJson.error);
     } else {
         throw new Error(resText);
