@@ -28,7 +28,7 @@ async function receiveRest(
     const data = await receiver();
     // sanity check
     if (data == null) {
-        throw new Error(`Received no data.`);
+        throw new Error('Received no data.');
     }
 
     parsedInput.append(data);

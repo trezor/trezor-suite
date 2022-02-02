@@ -1,34 +1,26 @@
-// @ts-nocheck
-
-import type {
-    Transport,
-    AcquireInput,
-    TrezorDeviceInfoWithSession,
-    MessageFromTrezor,
-} from './types';
+import type { Transport, AcquireInput, TrezorDeviceInfoWithSession } from './types';
 
 export default class FallbackTransport {
-    name = `FallbackTransport`;
-    activeName = ``;
-
-    _availableTransports: Array<Transport>;
-    transports: Array<Transport>;
-    configured: boolean;
-    version: string;
-    debug = false;
-
-    // note: activeTransport is actually "?Transport", but
-    // everywhere I am using it is in `async`, so error gets returned as Promise.reject
+    _availableTransports: Array<Transport> = [];
+    activeName = '';
+    // @ts-ignore
     activeTransport: Transport;
+    configured = false;
+    debug = false;
+    isOutdated = false;
+    name = 'FallbackTransport';
+    requestNeeded = false;
+    transports: Array<Transport> = [];
+    version = '';
 
     constructor(transports: Array<Transport>) {
         this.transports = transports;
     }
 
-    // first one that inits successfuly is the final one; others won't even start initing
-    async _tryInitTransports(): Promise<Array<Transport>> {
+    // first one that inits successfully is the final one; others won't even start initiating
+    async _tryInitTransports() {
         const res: Array<Transport> = [];
-        let lastError: Error = null;
+        let lastError: any = null;
         for (const transport of this.transports) {
             try {
                 await transport.init(this.debug);
@@ -38,14 +30,14 @@ export default class FallbackTransport {
             }
         }
         if (res.length === 0) {
-            throw lastError || new Error(`No transport could be initialized.`);
+            throw lastError || new Error('No transport could be initialized.');
         }
         return res;
     }
 
     // first one that inits successfully is the final one; others won't even start initing
-    async _tryConfigureTransports(data: JSON | string): Promise<Transport> {
-        let lastError: Error = null;
+    async _tryConfigureTransports(data: JSON | string) {
+        let lastError: any = null;
         for (const transport of this._availableTransports) {
             try {
                 await transport.configure(data);
@@ -54,10 +46,10 @@ export default class FallbackTransport {
                 lastError = e;
             }
         }
-        throw lastError || new Error(`No transport could be initialized.`);
+        throw lastError || new Error('No transport could be initialized.');
     }
 
-    async init(debug?: boolean): Promise<void> {
+    async init(debug?: boolean) {
         this.debug = !!debug;
 
         // init ALL OF THEM
@@ -70,8 +62,7 @@ export default class FallbackTransport {
         this.configured = false;
     }
 
-    isOutdated: boolean;
-    async configure(signedData: JSON | string): Promise<void> {
+    async configure(signedData: JSON | string) {
         const pt: Promise<Transport> = this._tryConfigureTransports(signedData);
         this.activeTransport = await pt;
         this.configured = this.activeTransport.configured;
@@ -81,61 +72,51 @@ export default class FallbackTransport {
         this.isOutdated = this.activeTransport.isOutdated;
     }
 
-    // using async so I get Promise.recect on this.activeTransport == null (or other error), not Error
-    async enumerate(): Promise<Array<TrezorDeviceInfoWithSession>> {
+    enumerate() {
         return this.activeTransport.enumerate();
     }
 
-    async listen(
-        old?: Array<TrezorDeviceInfoWithSession>,
-    ): Promise<Array<TrezorDeviceInfoWithSession>> {
+    listen(old?: Array<TrezorDeviceInfoWithSession>) {
         return this.activeTransport.listen(old);
     }
 
-    async acquire(input: AcquireInput, debugLink: boolean): Promise<string> {
+    acquire(input: AcquireInput, debugLink: boolean) {
         return this.activeTransport.acquire(input, debugLink);
     }
 
-    async release(session: string, onclose: boolean, debugLink: boolean): Promise<void> {
+    release(session: string, onclose: boolean, debugLink: boolean) {
         return this.activeTransport.release(session, onclose, debugLink);
     }
 
-    async call(
-        session: string,
-        name: string,
-        data: Object,
-        debugLink: boolean,
-    ): Promise<MessageFromTrezor> {
+    call(session: string, name: string, data: Record<string, unknown>, debugLink: boolean) {
         return this.activeTransport.call(session, name, data, debugLink);
     }
 
-    async post(session: string, name: string, data: Object, debugLink: boolean): Promise<void> {
+    post(session: string, name: string, data: Record<string, unknown>, debugLink: boolean) {
         return this.activeTransport.post(session, name, data, debugLink);
     }
 
-    async read(session: string, debugLink: boolean): Promise<MessageFromTrezor> {
+    read(session: string, debugLink: boolean) {
         return this.activeTransport.read(session, debugLink);
     }
 
-    async requestDevice(): Promise<void> {
+    requestDevice() {
         return this.activeTransport.requestDevice();
     }
 
-    requestNeeded = false;
-
-    setBridgeLatestUrl(url: string): void {
+    setBridgeLatestUrl(url: string) {
         for (const transport of this.transports) {
             transport.setBridgeLatestUrl(url);
         }
     }
 
-    setBridgeLatestVersion(version: string): void {
+    setBridgeLatestVersion(version: string) {
         for (const transport of this.transports) {
             transport.setBridgeLatestVersion(version);
         }
     }
 
-    stop(): void {
+    stop() {
         for (const transport of this.transports) {
             transport.stop();
         }

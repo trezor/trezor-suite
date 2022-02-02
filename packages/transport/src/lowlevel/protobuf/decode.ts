@@ -28,7 +28,7 @@ const transform = (field: Field, value: any) => {
     return value;
 };
 
-function messageToJSON(Message: Message<{}>, fields: Type['fields']) {
+function messageToJSON(Message: Message<Record<string, unknown>>, fields: Type['fields']) {
     // get rid of Message.prototype references
     const { ...message } = Message;
     const res: { [key: string]: any } = {};
