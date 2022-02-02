@@ -79,9 +79,11 @@ const invityAuthenticationMiddleware =
                         if (action.redirectUnauthorizedUserToLogin) {
                             api.dispatch(
                                 routerActions.goto('wallet-invity-login', {
-                                    symbol: account.symbol,
-                                    accountIndex: account.index,
-                                    accountType: account.accountType,
+                                    params: {
+                                        symbol: account.symbol,
+                                        accountIndex: account.index,
+                                        accountType: account.accountType,
+                                    },
                                 }),
                             );
                         }

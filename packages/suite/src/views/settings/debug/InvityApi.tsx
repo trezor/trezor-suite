@@ -5,27 +5,13 @@ import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-comp
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useSelector, useActions } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
+import type { InvityServerEnvironment } from '@wallet-types/invity';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
 const StyledActionSelect = styled(ActionSelect)`
-    min-width: 250px;
+    min-width: 256px;
 `;
-
-const invityApiServerOptions = [
-    {
-        label: invityAPI.productionAPIServer,
-        value: invityAPI.productionAPIServer,
-    },
-    {
-        label: invityAPI.stagingAPIServer,
-        value: invityAPI.stagingAPIServer,
-    },
-    {
-        label: invityAPI.localhostAPIServer,
-        value: invityAPI.localhostAPIServer,
-    },
-];
 
 export const InvityApi = () => {
     const { setDebugMode } = useActions({
@@ -36,8 +22,15 @@ export const InvityApi = () => {
     }));
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.InvityApi);
 
+    const invityApiServerOptions = Object.entries(invityAPI.servers).map(
+        ([environment, server]) => ({
+            label: server.api,
+            value: environment as InvityServerEnvironment,
+        }),
+    );
+
     const selectedInvityApiServer =
-        invityApiServerOptions.find(s => s.value === debug.invityAPIUrl) ||
+        invityApiServerOptions.find(s => s.value === debug.invityServerEnvironment) ||
         invityApiServerOptions[0];
 
     return (
@@ -53,11 +46,11 @@ export const InvityApi = () => {
             <ActionColumn>
                 <StyledActionSelect
                     noTopLabel
-                    onChange={(item: { value: string; label: string }) => {
+                    onChange={(item: { value: InvityServerEnvironment; label: string }) => {
                         setDebugMode({
-                            invityAPIUrl: item.value,
+                            invityServerEnvironment: item.value,
                         });
-                        invityAPI.setInvityAPIServer(item.value);
+                        invityAPI.setInvityServersEnvironment(item.value);
                         // reload the Suite to reinitialize everything
                         if (typeof window !== 'undefined') {
                             window.location.reload();

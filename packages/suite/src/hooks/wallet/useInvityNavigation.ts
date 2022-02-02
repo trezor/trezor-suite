@@ -12,9 +12,11 @@ export const useInvityNavigation = (account: Account) => {
     const useNavigateToRouteName = (routeName: WalletInvityRouteNameType) =>
         useCallback(() => {
             goto(routeName, {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
             });
         }, [routeName]);
 

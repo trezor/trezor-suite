@@ -15,9 +15,11 @@ const coinmarketSavingsMiddleware =
             if (status === 'loaded' && account) {
                 const navigateToRouteName = (routeName: Route['name']) =>
                     routerActions.goto(routeName, {
-                        symbol: account.symbol,
-                        accountIndex: account.index,
-                        accountType: account.accountType,
+                        params: {
+                            symbol: account.symbol,
+                            accountIndex: account.index,
+                            accountType: account.accountType,
+                        },
                     });
 
                 const { invityAuthentication } = api.getState().wallet.coinmarket;
