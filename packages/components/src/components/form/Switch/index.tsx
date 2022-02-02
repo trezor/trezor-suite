@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ReactSwitch, { ReactSwitchProps } from 'react-switch';
 import styled, { css } from 'styled-components';
 import { useTheme } from '../../../utils';
@@ -27,10 +27,27 @@ const StyledReactSwitch = styled(({ isSmall, ...rest }) => <ReactSwitch {...rest
                     : 'translateX(3px) !important'};
             `}
     }
+
+    ${props =>
+        // react-switch set cursor as inline style, so this will apply custom cursor for disabled state
+        props.disabled &&
+        css`
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                cursor: not-allowed;
+                z-index: 2;
+            }
+        `}
 `;
 
 const Wrapper = styled.div`
     display: flex;
+    position: relative;
 `;
 
 export interface SwitchProps extends ReactSwitchProps {

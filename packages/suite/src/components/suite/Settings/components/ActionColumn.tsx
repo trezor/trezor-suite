@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Input, InputProps, Select, variables, Button } from '@trezor/components';
 
 const { SCREEN_SIZE } = variables;
@@ -49,7 +49,7 @@ export const ActionSelect = styled(Select)`
     }
 `;
 
-export const ActionButton = styled(Button)`
+export const ActionButton = styled(Button)<{ isDisabled?: boolean }>`
     min-width: 170px;
     margin: 4px 0 4px 4px;
     &:not(:first-child) {
@@ -64,4 +64,10 @@ export const ActionButton = styled(Button)`
         width: 100%;
         margin: 0;
     }
+
+    ${props =>
+        props.isDisabled &&
+        css`
+            cursor: not-allowed;
+        `}
 `;
