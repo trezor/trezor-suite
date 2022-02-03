@@ -20,12 +20,10 @@ Data from **production** builds (codesign branch) are sent to:
 -   Desktop build: https://data.trezor.io/suite/log/desktop/stable.log
 -   Web build: https://data.trezor.io/suite/log/web/stable.log
 
-Data from **development** builds are sent to:
+Data from **development** and **localhost** builds are sent to:
 
 -   Desktop build: https://data.trezor.io/suite/log/desktop/develop.log
 -   Web build: https://data.trezor.io/suite/log/web/develop.log
-
-Data from localhost are not currently tracked anywhere.
 
 List of available configured endpoints:
 
