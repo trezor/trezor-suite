@@ -1,9 +1,9 @@
-import { nativeTheme, ipcMain } from 'electron';
+import { nativeTheme } from 'electron';
+import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { getThemeSettings, setThemeSettings } from '../libs/store';
+import { ipcMain } from '../typed-electron';
 
-import { SuiteThemeVariantOptions } from '@suite-types';
-import { getThemeSettings, setThemeSettings } from '@desktop-electron/libs/store';
-
-const setThemeManually = (theme: SuiteThemeVariantOptions) => {
+const setThemeManually = (theme: SuiteThemeVariant) => {
     const { logger } = global;
 
     logger.info('theme', `Manually setting app window UI to ${theme} theme.`);
@@ -21,7 +21,7 @@ const init = () => {
         nativeTheme.themeSource = theme;
     }
 
-    ipcMain.handle('theme/change', (_, theme: SuiteThemeVariantOptions) => {
+    ipcMain.on('theme/change', (_, theme) => {
         if (theme === 'light') {
             setThemeManually('light');
         } else {
@@ -29,7 +29,7 @@ const init = () => {
         }
     });
 
-    ipcMain.handle('theme/system', () => {
+    ipcMain.on('theme/system', () => {
         setThemeManually('system');
     });
 };

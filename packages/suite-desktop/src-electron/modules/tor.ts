@@ -1,11 +1,13 @@
 /**
  * Tor feature (toggle, configure)
  */
-import { app, session, ipcMain } from 'electron';
-import TorProcess, { DEFAULT_ADDRESS } from '@desktop-electron/libs/processes/TorProcess';
+import { session } from 'electron';
+import TorProcess, { DEFAULT_ADDRESS } from '../libs/processes/TorProcess';
 import { onionDomain } from '../config';
+import { app, ipcMain } from '../typed-electron';
+import { Module } from '../libs/modules';
 
-const init = async ({ mainWindow, store, interceptor }: Dependencies) => {
+const init: Module = async ({ mainWindow, store, interceptor }) => {
     const { logger } = global;
     const tor = new TorProcess();
 
@@ -49,13 +51,13 @@ const init = async ({ mainWindow, store, interceptor }: Dependencies) => {
         mainWindow.webContents.send('tor/status', settings.running);
     };
 
-    ipcMain.on('tor/toggle', async (_, start: boolean) => {
+    ipcMain.on('tor/toggle', async (_, start) => {
         logger.info('tor', `Toggling ${start ? 'ON' : 'OFF'}`);
         const settings = persistSettings({ running: start });
         await setupTor(settings);
     });
 
-    ipcMain.on('tor/set-address', async (_, address: string) => {
+    ipcMain.on('tor/set-address', async (_, address) => {
         if (store.getTorSettings().address !== address) {
             logger.debug('tor', `Changed address to ${address}`);
             const settings = persistSettings({ address });

@@ -1,16 +1,16 @@
 /**
  * Local web server for handling requests to app
  */
-import { app, ipcMain } from 'electron';
-
-import { buyRedirectHandler } from '@desktop-electron/libs/buy';
-import { sellRedirectHandler } from '@desktop-electron/libs/sell';
-import { HttpReceiver } from '@desktop-electron/libs/http-receiver';
+import { app, ipcMain } from '../typed-electron';
+import { buyRedirectHandler } from '../libs/buy';
+import { sellRedirectHandler } from '../libs/sell';
+import { HttpReceiver } from '../libs/http-receiver';
+import { Module } from '../libs/modules';
 
 // External request handler
 const httpReceiver = new HttpReceiver();
 
-const init = ({ mainWindow, src }: Dependencies) => {
+const init: Module = ({ mainWindow, src }) => {
     const { logger } = global;
 
     // wait for httpReceiver to start accepting connections then register event handlers

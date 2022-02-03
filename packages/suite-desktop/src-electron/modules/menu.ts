@@ -1,9 +1,10 @@
 import { Menu } from 'electron';
 
-import { buildMainMenu, inputMenu, selectionMenu } from '@desktop-electron/libs/menu';
-import { b2t } from '@desktop-electron/libs/utils';
+import { buildMainMenu, inputMenu, selectionMenu } from '../libs/menu';
+import { b2t } from '../libs/utils';
+import { Module } from '../libs/modules';
 
-const init = ({ mainWindow }: Dependencies) => {
+const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     Menu.setApplicationMenu(buildMainMenu());

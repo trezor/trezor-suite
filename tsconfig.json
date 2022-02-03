@@ -293,8 +293,6 @@
             "@suite-web-landing-components/*": ["./packages/suite-web-landing/components/*"],
 
             "@native/*": ["./packages/suite-native/src/*"],
-            "@desktop/*": ["./packages/suite-desktop/src/*"],
-            "@desktop-electron/*": ["./packages/suite-desktop/src-electron/*"],
             "@data/*": ["./packages/suite-data/files/*"]
         },
         "jsx": "react-native",

@@ -1,10 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import { app, dialog, ipcMain } from 'electron';
+import { dialog } from 'electron';
+import { app, ipcMain } from '../typed-electron';
+import { Module } from '../libs/modules';
 
 const HANG_WAIT = 30000;
 
-const init = ({ mainWindow }: Dependencies) => {
+const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     let isReady = false;

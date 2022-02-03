@@ -39,7 +39,6 @@ module.exports = {
         '^@(.+)-hooks': '<rootDir>/../../packages/suite/src/hooks/$1/index',
         '^@(.+)-services/(.+)': '<rootDir>/../../packages/suite/src/services/$1/$2',
         '^@(.+)-services': '<rootDir>/../../packages/suite/src/services/$1/index',
-        '^@desktop/(.+)': './src/$1', // relative to this project
     },
     modulePathIgnorePatterns: ['node_modules'],
     transformIgnorePatterns: ['/node_modules/'],

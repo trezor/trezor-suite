@@ -2,8 +2,8 @@
  * Bridge runner
  */
 import { app } from 'electron';
-import BridgeProcess from '@desktop-electron/libs/processes/BridgeProcess';
-import { b2t } from '@desktop-electron/libs/utils';
+import BridgeProcess from '../libs/processes/BridgeProcess';
+import { b2t } from '../libs/utils';
 
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 

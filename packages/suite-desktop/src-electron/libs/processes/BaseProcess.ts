@@ -2,7 +2,7 @@ import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 
 import { isDev } from '@suite-utils/build';
-import { b2t } from '@desktop-electron/libs/utils';
+import { b2t } from '../utils';
 
 export type Status = {
     service: boolean;

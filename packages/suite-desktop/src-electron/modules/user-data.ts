@@ -1,6 +1,5 @@
-import * as userData from '@desktop-electron/libs/user-data';
-
-import { ipcMain } from 'electron';
+import * as userData from '../libs/user-data';
+import { ipcMain } from '../typed-electron';
 
 const init = () => {
     const { logger } = global;

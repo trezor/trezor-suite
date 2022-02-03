@@ -1,7 +1,9 @@
 /**
  * Enable development tools
  */
-const init = ({ mainWindow }: Dependencies) => {
+import { Module } from '../libs/modules';
+
+const init: Module = ({ mainWindow }) => {
     mainWindow.webContents.once('dom-ready', () => {
         mainWindow.webContents.openDevTools();
     });

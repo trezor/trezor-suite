@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { app, ipcMain } from 'electron';
 import { spawn } from 'child_process';
+import { app, ipcMain } from '../typed-electron';
 
 const FILE_NAME = '51-trezor.rules';
 
@@ -15,10 +15,8 @@ const fileExists = async (path: string) => {
     return false;
 };
 
-type Response = ReturnType<NonNullable<typeof window.desktopApi>['installUdevRules']>;
-
 const init = () => {
-    ipcMain.handle('udev/install', async (): Response => {
+    ipcMain.handle('udev/install', async () => {
         const { logger, resourcesPath } = global;
         const resourceRules = path.join(resourcesPath, `bin/udev/${FILE_NAME}`);
         const userRules = `${app.getPath('userData')}/${FILE_NAME}`;

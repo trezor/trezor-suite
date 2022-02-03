@@ -3,15 +3,15 @@ import url from 'url';
 import { app, BrowserWindow, ipcMain } from 'electron';
 
 import { isDev } from '@suite-utils/build';
-import { PROTOCOL } from '@desktop-electron/libs/constants';
-import * as store from '@desktop-electron/libs/store';
-import { MIN_HEIGHT, MIN_WIDTH } from '@desktop-electron/libs/screen';
-import Logger, { LogLevel, defaultOptions as loggerDefaults } from '@desktop-electron/libs/logger';
-import { buildInfo, computerInfo } from '@desktop-electron/libs/info';
-import modules from '@desktop-electron/libs/modules';
-import { createInterceptor } from '@desktop-electron/libs/request-interceptor';
+import { PROTOCOL } from './libs/constants';
+import * as store from './libs/store';
+import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
+import Logger, { LogLevel, defaultOptions as loggerDefaults } from './libs/logger';
+import { buildInfo, computerInfo } from './libs/info';
+import modules from './libs/modules';
+import { createInterceptor } from './libs/request-interceptor';
 
-let mainWindow: BrowserWindow;
+let mainWindow: BrowserWindow | typeof undefined;
 const APP_NAME = 'Trezor Suite';
 const src = isDev
     ? 'http://localhost:8000/'

@@ -21,7 +21,7 @@ interface Events {
     'oauth/error': (message: string) => void;
     'buy/redirect': (url: string) => void;
     'sell/redirect': (url: string) => void;
-    'spend/message': (event: { data: string | string[]; origin: string | string[] }) => void;
+    'spend/message': (event: Partial<MessageEvent>) => void;
 }
 
 export declare interface HttpReceiver {
@@ -131,6 +131,7 @@ export class HttpReceiver extends EventEmitter {
         this.server.close(() => {
             this.logger.info('http-receiver', 'Server stopped');
         });
+        this.removeAllListeners();
     }
 
     /**
@@ -320,8 +321,8 @@ export class HttpReceiver extends EventEmitter {
     private spendHandleMessage = (request: Request, response: http.ServerResponse) => {
         const { query } = url.parse(request.url, true);
         this.emit('spend/message', {
-            data: query.data ?? '',
-            origin: query.origin ?? '',
+            origin: Array.isArray(query.origin) ? query.origin.join(',') : query.origin,
+            data: Array.isArray(query.data) ? query.data.join(',') : query.data,
         });
 
         const template = this.applyTemplate('You may now close this window.');

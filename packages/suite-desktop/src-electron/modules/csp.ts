@@ -5,10 +5,11 @@
 import { app, dialog, session } from 'electron';
 
 import * as config from '../config';
+import { Module } from '../libs/modules';
 
 const disableCspFlag = app.commandLine.hasSwitch('disable-csp');
 
-const init = ({ mainWindow }: Dependencies) => {
+const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     if (disableCspFlag) {

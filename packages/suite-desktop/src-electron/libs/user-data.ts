@@ -1,7 +1,12 @@
 import fs from 'fs';
 import { app } from 'electron';
+import { InvokeResult } from '@trezor/suite-desktop-api';
 
-export const save = async (directory: string, name: string, content: string) => {
+export const save = async (
+    directory: string,
+    name: string,
+    content: string,
+): Promise<InvokeResult> => {
     const dir = `${app.getPath('userData')}${directory}`;
     const file = `${dir}/${name}`;
 
@@ -16,18 +21,18 @@ export const save = async (directory: string, name: string, content: string) => 
         return { success: true };
     } catch (error) {
         global.logger.error('user-data', `Save failed: ${error.message}`);
-        return { success: false, error };
+        return { success: false, error: error.message, code: error.code };
     }
 };
 
-export const read = async (directory: string, name: string) => {
+export const read = async (directory: string, name: string): Promise<InvokeResult<string>> => {
     const dir = `${app.getPath('userData')}${directory}`;
     const file = `${dir}/${name}`;
 
     try {
         await fs.promises.access(file, fs.constants.R_OK);
-    } catch {
-        return { success: true, payload: undefined };
+    } catch (error) {
+        return { success: false, error: error.message, code: error.code };
     }
 
     try {
@@ -35,22 +40,22 @@ export const read = async (directory: string, name: string) => {
         return { success: true, payload };
     } catch (error) {
         global.logger.error('user-data', `Read failed: ${error.message}`);
-        return { success: false, error };
+        return { success: false, error: error.message, code: error.code };
     }
 };
 
-export const clear = async () => {
+export const clear = async (): Promise<InvokeResult> => {
     const dir = app.getPath('userData');
     try {
         await fs.promises.rm(dir, { recursive: true, force: true });
         return { success: true };
     } catch (error) {
         global.logger.error('user-data', `Remove dir failed: ${error.message}`);
-        return { success: false, error };
+        return { success: false, error: error.message, code: error.code };
     }
 };
 
-export const getInfo = () => {
+export const getInfo = (): InvokeResult<{ dir: string }> => {
     const dir = app.getPath('userData');
     try {
         return {
@@ -62,6 +67,6 @@ export const getInfo = () => {
         };
     } catch (error) {
         global.logger.error('user-data', `getInfo failed: ${error.message}`);
-        return { success: false, error };
+        return { success: false, error: error.message, code: error.code };
     }
 };

@@ -5,8 +5,9 @@ import { shell, dialog } from 'electron';
 import { HandlerDetails } from 'electron/main';
 
 import * as config from '../config';
+import { Module } from '../libs/modules';
 
-const init = ({ mainWindow, store }: Dependencies) => {
+const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
 
     mainWindow.webContents.setWindowOpenHandler((details: HandlerDetails) => {
