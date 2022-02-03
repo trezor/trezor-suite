@@ -6,11 +6,11 @@ import {
 } from '@wallet-types/coinmarket/savings/savingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
 import invityAPI, { PaymentFrequency } from '@suite-services/invityAPI';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import { useActions, useSelector } from '@suite-hooks';
 import BigNumber from 'bignumber.js';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import useSavingsTrade from './useSavingsTrade';
 
 export const SavingsUserInfoContext = createContext<SavingsSetupContextValues | null>(null);
 SavingsUserInfoContext.displayName = 'SavingsUserInfoContext';
@@ -40,34 +40,20 @@ export const useSavingsSetup = ({
     selectedAccount,
 }: UseSavingsSetupProps): SavingsSetupContextValues => {
     const { account } = selectedAccount;
-    const { invityAuthentication, fiat, savingsTrade, isWatchingKYCStatus, savingsInfo } =
-        useSelector(state => ({
-            invityAuthentication: state.wallet.coinmarket.invityAuthentication,
-            fiat: state.wallet.fiat,
-            savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
-            savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
-            isWatchingKYCStatus: state.wallet.coinmarket.savings.isWatchingKYCStatus,
-        }));
+    const { fiat, isWatchingKYCStatus } = useSelector(state => ({
+        fiat: state.wallet.fiat,
+        isWatchingKYCStatus: state.wallet.coinmarket.savings.isWatchingKYCStatus,
+    }));
     const fiatRates = fiat.coins.find(item => item.symbol === 'btc');
     // const { } = useInvityNavigation(
     //     selectedAccount.account,
     // );
 
-    const { loadInvityData, loadSavingsTrade, verifyAddress } = useActions({
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-        loadSavingsTrade: coinmarketSavingsActions.loadSavingsTrade,
+    const { verifyAddress } = useActions({
         verifyAddress: coinmarketSavingsActions.verifyAddress,
     });
-    useEffect(() => {
-        loadInvityData();
-    }, [loadInvityData]);
 
-    const provider = savingsInfo?.savingsList?.providers[0];
-    useEffect(() => {
-        if (provider && invityAuthentication && !savingsTrade) {
-            loadSavingsTrade(provider.name);
-        }
-    }, [loadSavingsTrade, provider, invityAuthentication, savingsTrade]);
+    const savingsTrade = useSavingsTrade();
 
     // TODO: defaultValues hardcoded?
     const defaultPaymentFrequency = 'Weekly';
