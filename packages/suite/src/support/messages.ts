@@ -1156,6 +1156,18 @@ export default defineMessages({
         defaultMessage: 'Description',
         id: 'TR_SAVINGS_PAYMENT_INFO_DESCRIPTION_LABEL',
     },
+    TR_SAVINGS_KYC_FAILED_HEADER: {
+        defaultMessage: 'KYC failed',
+        id: 'TR_SAVINGS_KYC_FAILED_HEADER',
+    },
+    TR_SAVINGS_KYC_FAILED_DESCRIPTION: {
+        defaultMessage: 'For some reason, please try to vyřešit přímo s nima',
+        id: 'TR_SAVINGS_KYC_FAILED_DESCRIPTION',
+    },
+    TR_SAVINGS_KYC_FAILED_GO_TO_PARTNER_BUTTON: {
+        defaultMessage: 'Go to partner',
+        id: 'TR_SAVINGS_KYC_FAILED_GO_TO_PARTNER_BUTTON',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',

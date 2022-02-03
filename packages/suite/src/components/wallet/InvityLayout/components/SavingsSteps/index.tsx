@@ -7,7 +7,7 @@ import { ExtendedMessageDescriptor } from '@suite-types';
 import { Translation } from '@suite-components';
 
 interface SavingsSetupGuideListItemProps {
-    isBulletPointHidden?: boolean;
+    isBulletPointHidden: boolean;
 }
 
 const Wrapper = styled.div`
@@ -95,7 +95,11 @@ const SavingsSteps = () => {
         },
         TR_SAVINGS_GUIDE_STEP_KYC_VERIFICATION: {
             isBulletPointHidden: isWatchingKYCStatus,
-            className: currentRouteName === 'wallet-invity-kyc-start' ? 'isSelected' : '', // TODO: or KYC failed route name
+            className: ['wallet-invity-kyc-start', 'wallet-invity-kyc-failed'].includes(
+                currentRouteName,
+            )
+                ? 'isSelected'
+                : '',
         },
         TR_SAVINGS_GUIDE_STEP_AML: {
             isBulletPointHidden: false,
@@ -110,8 +114,8 @@ const SavingsSteps = () => {
                 ? 'isSelected'
                 : '',
         },
-    } as const;
-    console.log('currentRouteName', currentRouteName);
+    } as Record<string, SavingsSetupGuideListItemProps>;
+
     return (
         <Wrapper>
             <SavingsSetupGuideList>

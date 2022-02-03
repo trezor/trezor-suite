@@ -95,6 +95,9 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     'wallet-invity-kyc-start': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/invity/kyc-start'),
     ),
+    'wallet-invity-kyc-failed': lazy(
+        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/invity/kyc-failed'),
+    ),
     'wallet-invity-aml': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/invity/aml'),
     ),
