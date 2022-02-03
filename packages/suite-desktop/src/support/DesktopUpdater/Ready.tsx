@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, H2, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { Row, LeftCol, RightCol, Divider } from './styles';
@@ -16,7 +17,7 @@ interface Props {
 }
 
 const Ready = ({ hideWindow }: Props) => {
-    const installRestart = useCallback(() => window.desktopApi!.installUpdate(), []);
+    const installRestart = useCallback(() => desktopApi.installUpdate(), []);
 
     return (
         <Modal

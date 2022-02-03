@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Switch } from '@trezor/components';
 import { useAnalytics, useSelector } from '@suite-hooks';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
@@ -39,7 +39,7 @@ export const Tor = () => {
                                 value: !tor,
                             },
                         });
-                        window.desktopApi!.toggleTor(!tor);
+                        desktopApi.toggleTor(!tor);
                     }}
                 />
             </ActionColumn>

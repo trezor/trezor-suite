@@ -1,5 +1,6 @@
 import produce from 'immer';
 import { TRANSPORT, TransportInfo } from 'trezor-connect';
+import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
@@ -35,7 +36,7 @@ interface Flags {
 
 interface SuiteSettings {
     theme: {
-        variant: SuiteThemeVariant;
+        variant: Exclude<SuiteThemeVariant, 'system'>;
     };
     language: Locale;
     torOnionLinks: boolean;

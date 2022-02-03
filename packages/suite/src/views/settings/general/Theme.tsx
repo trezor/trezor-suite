@@ -1,13 +1,11 @@
 import React, { useMemo } from 'react';
-
+import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
-
-import type { SuiteThemeVariantOptions } from '@suite-types';
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();
@@ -27,7 +25,7 @@ const useThemeOptions = () => {
         ],
         [translationString],
     );
-    const getOption = (theme: SuiteThemeVariantOptions) => {
+    const getOption = (theme: SuiteThemeVariant) => {
         switch (theme) {
             case 'system':
                 return options[0].options[0];
@@ -61,15 +59,15 @@ export const Theme = () => {
 
     const selectedValue = getOption(autodetectTheme ? 'system' : getVariant(theme.variant));
 
-    const onChange = ({ value }: { value: SuiteThemeVariantOptions }) => {
+    const onChange = ({ value }: { value: SuiteThemeVariant }) => {
         if ((value === 'system') !== autodetectTheme) {
             setAutodetect({ theme: !autodetectTheme });
         }
         if (value === 'system') {
-            window.desktopApi?.themeSystem();
+            desktopApi.themeSystem();
         } else {
             setTheme(getVariant(value));
-            window.desktopApi?.themeChange(value);
+            desktopApi.themeChange(value);
         }
     };
 

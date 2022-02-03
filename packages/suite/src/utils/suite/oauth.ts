@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { getPrefixedURL } from '@suite-utils/router';
 import { METADATA } from '@suite-actions/constants';
 import { Deferred, createDeferred } from '@trezor/utils';
@@ -9,10 +9,10 @@ import { urlHashParams, urlSearchParams } from '@suite-utils/metadata';
  * For web, use oauth_receiver.html hosted on the same origin (localhost/sldev/trezor.io)
  */
 export const getOauthReceiverUrl = () => {
-    if (!window.desktopApi) {
+    if (!desktopApi.available) {
         return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
     }
-    return window.desktopApi.getHttpReceiverAddress('/oauth');
+    return desktopApi.getHttpReceiverAddress('/oauth');
 };
 
 type Credentials =
@@ -99,11 +99,11 @@ const getDesktopHandlerInstance = (
             message,
             originalParams,
             credentials => {
-                window.desktopApi!.removeAllListeners('oauth/response');
+                desktopApi.removeAllListeners('oauth/response');
                 dfd.resolve(credentials);
             },
             error => {
-                window.desktopApi!.removeAllListeners('oauth/response');
+                desktopApi.removeAllListeners('oauth/response');
                 dfd.reject(error);
             },
         );
@@ -144,9 +144,7 @@ export const extractCredentialsFromAuthorizationFlow = (url: string) => {
     const originalParams = urlHashParams(url);
     const dfd: Deferred<Credentials> = createDeferred();
 
-    const { desktopApi } = window;
-
-    if (desktopApi) {
+    if (desktopApi.available) {
         // to make sure that there is always only one listener registered remove all listeners before creating a new one
         desktopApi.removeAllListeners('oauth/response');
         // this listener may never be called in some cases

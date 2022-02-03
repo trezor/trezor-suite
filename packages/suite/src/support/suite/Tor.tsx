@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { useActions, useSelector } from '@suite-hooks';
 import { toTorUrl, isTorDomain } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -28,8 +29,8 @@ const Tor = () => {
         }
 
         if (isDesktop()) {
-            window.desktopApi?.getStatus();
-            window.desktopApi?.on('tor/status', updateTorStatus);
+            desktopApi.getStatus();
+            desktopApi.on('tor/status', updateTorStatus);
         }
     }, [updateTorStatus]);
 

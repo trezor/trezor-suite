@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Account } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { AmountLimits } from '@wallet-types/coinmarketBuyForm';
@@ -79,7 +80,7 @@ export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Ac
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        const url = await window.desktopApi?.getHttpReceiverAddress('/buy-redirect');
+        const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
 
@@ -92,7 +93,7 @@ export const createTxLink = async (trade: BuyTrade, account: Account) => {
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
 
     if (isDesktop()) {
-        const url = await window.desktopApi?.getHttpReceiverAddress('/buy-redirect');
+        const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
 

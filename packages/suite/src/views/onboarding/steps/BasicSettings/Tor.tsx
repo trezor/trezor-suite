@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { variables, Input, Switch } from '@trezor/components';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Translation } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
 
@@ -39,11 +40,11 @@ const Tor = ({ tor }: Props) => {
     const analytics = useAnalytics();
     const [torAddress, setTorAddress] = useState('');
     useEffect(() => {
-        window.desktopApi?.getTorAddress().then(address => setTorAddress(address));
+        desktopApi.getTorAddress().then(setTorAddress);
     }, [setTorAddress]);
 
     const saveTorAddress = useCallback(() => {
-        window.desktopApi!.setTorAddress(torAddress);
+        desktopApi.setTorAddress(torAddress);
     }, [torAddress]);
 
     return (
@@ -75,7 +76,7 @@ const Tor = ({ tor }: Props) => {
                                 value: !tor,
                             },
                         });
-                        window.desktopApi!.toggleTor(!tor);
+                        desktopApi.toggleTor(!tor);
                     }}
                 />
             </SwitchWrapper>

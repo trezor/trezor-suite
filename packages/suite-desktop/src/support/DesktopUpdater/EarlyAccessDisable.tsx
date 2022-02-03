@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button } from '@trezor/components';
 import { Translation, Modal, Image, TrezorLink } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
@@ -26,7 +27,7 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
                 allowPrerelease: false,
             },
         });
-        window.desktopApi?.allowPrerelease(false);
+        desktopApi.allowPrerelease(false);
         setEnabled(false);
     }, [analytics]);
 

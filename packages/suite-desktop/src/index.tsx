@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { store } from '@suite/reducers/store';
 import { isDev } from '@suite-utils/build';
@@ -31,7 +32,7 @@ const Index = () => {
         if (!isDev) {
             initSentry(SENTRY_CONFIG);
         }
-        window.desktopApi?.clientReady();
+        desktopApi.clientReady();
     }, []);
 
     return (

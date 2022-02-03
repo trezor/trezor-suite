@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useAnalytics, useSelector, useActions } from '@suite-hooks';
@@ -35,7 +35,7 @@ export const EarlyAccess = () => {
             },
         });
         openEarlyAccessSetup(desktopUpdate.allowPrerelease);
-        window.desktopApi?.cancelUpdate(); // stop downloading the update if it is in progress to prevent confusing state switching
+        desktopApi.cancelUpdate(); // stop downloading the update if it is in progress to prevent confusing state switching
     }, [analytics, openEarlyAccessSetup, desktopUpdate.allowPrerelease]);
 
     return (

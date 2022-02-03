@@ -1,3 +1,4 @@
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 
 class FileSystemProvider extends AbstractMetadataProvider {
@@ -25,20 +26,17 @@ class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     async getFileContent(file: string) {
-        const result = await window.desktopApi!.metadataRead({ file: `${file}.mtdt` });
-        if (!result.success) {
+        const result = await desktopApi.metadataRead({ file: `${file}.mtdt` });
+        if (!result.success && result.code !== 'ENOENT') {
             return this.error('PROVIDER_ERROR', result.error);
         }
-        if (!result.payload) {
-            return this.ok(undefined);
-        }
-        return this.ok(Buffer.from(result.payload, 'hex'));
+        return this.ok(result.success ? Buffer.from(result.payload, 'hex') : undefined);
     }
 
     async setFileContent(file: string, content: Buffer) {
         const hex = content.toString('hex');
 
-        const result = await window.desktopApi!.metadataWrite({
+        const result = await desktopApi.metadataWrite({
             file: `${file}.mtdt`,
             content: hex,
         });

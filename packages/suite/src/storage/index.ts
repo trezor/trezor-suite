@@ -1,4 +1,5 @@
 import SuiteDB, { OnUpgradeFunc } from '@trezor/suite-storage';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { migrate } from './migrations';
 
 import type { SuiteDBSchema } from './definitions';
@@ -82,14 +83,10 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     }
 };
 
-// ts-ignore below is for `suite-native:  Cannot find name 'window'`. TODO
 const onDowngrade = () => {
-    // @ts-ignore
-    if (window.desktopApi) {
-        // @ts-ignore
-        window.desktopApi.appRestart();
-    } else {
-        // @ts-ignore
+    if (desktopApi.available) {
+        desktopApi.appRestart();
+    } else if (typeof window !== 'undefined') {
         window.location.reload();
     }
 };
