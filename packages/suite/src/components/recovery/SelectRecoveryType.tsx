@@ -1,17 +1,16 @@
 import React from 'react';
+
 import { Option, OptionsWrapper, OptionsDivider } from '@onboarding-components';
 import { Translation } from '@suite-components';
 
-interface Props {
-    onSelect: (number: boolean) => void;
+interface SelectRecoveryTypeProps {
+    onSelect: (type: 'standard' | 'advanced') => void;
 }
 
-const SelectRecoveryType = ({ onSelect }: Props) => (
+const SelectRecoveryType = ({ onSelect }: SelectRecoveryTypeProps) => (
     <OptionsWrapper>
         <Option
-            onClick={() => {
-                onSelect(false);
-            }}
+            onClick={() => onSelect('standard')}
             icon="SEED_SINGLE"
             heading={<Translation id="TR_BASIC_RECOVERY" />}
             description={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
@@ -19,9 +18,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
         />
         <OptionsDivider />
         <Option
-            onClick={() => {
-                onSelect(true);
-            }}
+            onClick={() => onSelect('advanced')}
             icon="SEED_SHAMIR"
             heading={<Translation id="TR_ADVANCED_RECOVERY" />}
             description={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}

@@ -130,7 +130,7 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     return selected.id === device.id;
 };
 
-export const getDeviceModel = (device: TrezorDevice) => {
+export const getDeviceModel = (device: TrezorDevice): 'T' | '1' => {
     const { features } = device;
     return features && features.major_version > 1 ? 'T' : '1';
 };

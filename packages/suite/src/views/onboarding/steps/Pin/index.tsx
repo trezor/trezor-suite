@@ -16,7 +16,7 @@ const SetPinStep = () => {
     const [status, setStatus] = useState<'initial' | 'enter-pin' | 'repeat-pin' | 'success'>(
         'initial',
     );
-    const { goToNextStep, showPinMatrix } = useOnboarding();
+    const { goToNextStep, showPinMatrix, updateAnalytics } = useOnboarding();
 
     const { changePin } = useActions({
         changePin: deviceSettingsActions.changePin,
@@ -125,6 +125,7 @@ const SetPinStep = () => {
                             data-test="@onboarding/set-pin-button"
                             onClick={() => {
                                 changePin();
+                                updateAnalytics({ pin: 'create' });
                             }}
                         >
                             <Translation id="TR_SET_PIN" />
@@ -137,7 +138,10 @@ const SetPinStep = () => {
                     !showConfirmationPrompt ? (
                         <OnboardingButtonSkip
                             data-test="@onboarding/skip-button"
-                            onClick={() => setShowSkipConfirmation(true)}
+                            onClick={() => {
+                                setShowSkipConfirmation(true);
+                                updateAnalytics({ pin: 'skip' });
+                            }}
                         >
                             <Translation id="TR_SKIP" />
                         </OnboardingButtonSkip>

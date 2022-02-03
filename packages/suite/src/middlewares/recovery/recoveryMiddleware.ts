@@ -2,6 +2,8 @@ import { UI } from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const recovery =
@@ -30,6 +32,11 @@ const recovery =
             action.payload?.features?.recovery_mode &&
             recovery.status !== 'in-progress'
         ) {
+            api.dispatch(
+                onboardingActions.updateAnalytics({
+                    startTime: Date.now(),
+                }),
+            );
             if (!analytics.confirmed) {
                 // If you connect TT in recovery mode to fresh Suite, you should see analytics optout option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));

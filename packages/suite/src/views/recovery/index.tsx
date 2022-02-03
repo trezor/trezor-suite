@@ -110,8 +110,8 @@ const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
         actions.setStatus('select-recovery-type');
     };
 
-    const onSetRecoveryType = (type: boolean) => {
-        actions.setAdvancedRecovery(type);
+    const onSetRecoveryType = (type: 'standard' | 'advanced') => {
+        actions.setAdvancedRecovery(type === 'advanced');
         actions.checkSeed();
     };
 
@@ -263,7 +263,7 @@ const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
                         <StatusTitle>
                             <Translation id="TR_CHOSE_RECOVERY_TYPE" />
                         </StatusTitle>
-                        <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
+                        <SelectRecoveryType onSelect={onSetRecoveryType} />
                         <Buttons>
                             <CloseButton onClick={() => closeModalApp()}>
                                 <Translation id="TR_CANCEL" />

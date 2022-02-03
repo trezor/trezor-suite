@@ -70,9 +70,20 @@ const analytics =
 
         switch (action.type) {
             case ANALYTICS.INIT:
-                // reporting can start when analytics is properly initialized
+                // reporting can start when analytics is properly initialized and enabled
                 api.dispatch(reportSuiteReadyAction(state));
-
+                break;
+            case ANALYTICS.ENABLE:
+                if (state.suite.flags.initialRun) {
+                    // suite-ready event was not reported on analytics initialization because analytics was not yet confirmed
+                    api.dispatch(reportSuiteReadyAction(state));
+                }
+                api.dispatch(analyticsActions.report({ type: 'analytics/enable' }));
+                allowSentryReport(true);
+                break;
+            case ANALYTICS.DISPOSE:
+                api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }, true));
+                allowSentryReport(false);
                 break;
             case TRANSPORT.START:
                 api.dispatch(
@@ -118,6 +129,9 @@ const analytics =
                 }
                 break;
             }
+            case DEVICE.DISCONNECT:
+                api.dispatch(analyticsActions.report({ type: 'device-disconnect' }));
+                break;
             case DISCOVERY.COMPLETE: {
                 const accountsStatus = state.wallet.accounts
                     .filter(account => account.history.total + (account.history.unconfirmed || 0))
@@ -135,42 +149,6 @@ const analytics =
                 );
                 break;
             }
-            case DEVICE.DISCONNECT:
-                api.dispatch(analyticsActions.report({ type: 'device-disconnect' }));
-                break;
-            case SUITE.SET_FLAG:
-                // here we are reporting some information of user after he finishes initialRun
-                if (action.key === 'initialRun' && action.value === false) {
-                    if (state.analytics.enabled) {
-                        // suite-ready event was not reported before because analytics was not yet enabled
-                        api.dispatch(reportSuiteReadyAction(state));
-
-                        api.dispatch(
-                            analyticsActions.report({
-                                type: 'initial-run-completed',
-                                payload: {
-                                    analytics: true,
-                                    createSeed: state.onboarding.path.includes('create'),
-                                    recoverSeed: state.onboarding.path.includes('recovery'),
-                                },
-                            }),
-                        );
-                    } else {
-                        api.dispatch(
-                            analyticsActions.report(
-                                {
-                                    type: 'initial-run-completed',
-                                    payload: {
-                                        analytics: false,
-                                    },
-                                },
-                                true,
-                            ),
-                        );
-                    }
-                }
-
-                break;
             case ROUTER.LOCATION_CHANGE:
                 api.dispatch(
                     analyticsActions.report({
@@ -181,14 +159,6 @@ const analytics =
                         },
                     }),
                 );
-                break;
-            case ANALYTICS.ENABLE:
-                api.dispatch(analyticsActions.report({ type: 'analytics/enable' }));
-                allowSentryReport(true);
-                break;
-            case ANALYTICS.DISPOSE:
-                api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }, true));
-                allowSentryReport(false);
                 break;
             case SUITE.AUTH_DEVICE:
                 api.dispatch(
