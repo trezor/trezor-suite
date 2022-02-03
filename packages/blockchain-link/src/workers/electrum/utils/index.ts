@@ -2,7 +2,6 @@ import type { Response } from '../../../types';
 import type { ElectrumAPI } from '../../../types/electrum';
 
 export * from './addressManager';
-export * from './derivation';
 export * from './discovery';
 export * from './transform';
 export * from './transaction';

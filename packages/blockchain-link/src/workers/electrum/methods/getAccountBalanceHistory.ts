@@ -54,14 +54,15 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
 ) => {
     let history: HistoryTx[];
     let addresses: AccountAddresses | undefined;
+    const network = client.getInfo()?.network;
 
-    const parsed = tryGetScripthash(descriptor, client.getInfo()?.network);
+    const parsed = tryGetScripthash(descriptor, network);
     if (parsed.valid) {
         history = await client.request('blockchain.scripthash.get_history', parsed.scripthash);
         addresses = undefined;
     } else {
-        const receive = await discovery(client, descriptor, 'receive');
-        const change = await discovery(client, descriptor, 'change');
+        const receive = await discovery(client, descriptor, 'receive', network);
+        const change = await discovery(client, descriptor, 'change', network);
         addresses = {
             change: change.map(transformAddress),
             used: receive.filter(({ history }) => history.length).map(transformAddress),

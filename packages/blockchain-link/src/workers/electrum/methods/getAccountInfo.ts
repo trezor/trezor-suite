@@ -37,8 +37,9 @@ const getBalances =
 
 const getAccountInfo: Api<Req, Res> = async (client, payload) => {
     const { descriptor, details = 'basic', pageSize } = payload;
+    const network = client.getInfo()?.network;
 
-    const parsed = tryGetScripthash(descriptor, client.getInfo()?.network);
+    const parsed = tryGetScripthash(descriptor, network);
     if (parsed.valid) {
         const { confirmed, unconfirmed, history } = await Promise.all([
             client.request('blockchain.scripthash.get_balance', parsed.scripthash),
@@ -80,8 +81,10 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         };
     }
 
-    const receive = await discovery(client, descriptor, 'receive').then(getBalances(client));
-    const change = await discovery(client, descriptor, 'change').then(getBalances(client));
+    const receive = await discovery(client, descriptor, 'receive', network).then(
+        getBalances(client)
+    );
+    const change = await discovery(client, descriptor, 'change', network).then(getBalances(client));
     const batch = receive.concat(change);
     const [confirmed, unconfirmed] = batch.reduce(
         ([c, u], { confirmed, unconfirmed }) => [c + confirmed, u + unconfirmed],
