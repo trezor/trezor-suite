@@ -1,0 +1,25 @@
+{
+    "name": "@trezor/suite-desktop-api",
+    "version": "1.0.0",
+    "private": true,
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/suite-desktop-api",
+    "description": "Strongly typed DesktopApi",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "main": "./lib/main.js",
+    "browser": "./lib/renderer.js",
+    "files": ["lib/main.js", "lib/renderer.js"],
+    "types": "lib/main.d.ts",
+    "typings": "lib/main.d.ts",
+    "scripts": {
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "type-check": "tsc --project tsconfig.json",
+        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
+    }
+}
