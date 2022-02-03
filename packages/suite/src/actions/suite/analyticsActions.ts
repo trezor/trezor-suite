@@ -9,7 +9,7 @@ import { Dispatch, GetState, AppState } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
-import { setOnBeforeUnloadListener, getLocationHostname, getEnvironment } from '@suite-utils/env';
+import { setOnBeforeUnloadListener, getEnvironment } from '@suite-utils/env';
 import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
 import { DeviceMode } from 'trezor-connect';
@@ -421,18 +421,12 @@ export type AnalyticsEvent =
       };
 
 const getUrl = () => {
-    const hostname = getLocationHostname();
     const environment = getEnvironment();
 
     const base = `https://data.trezor.io/suite/log/${environment}`;
 
     if (process.env.CODESIGN_BUILD) {
         return `${base}/stable.log`;
-    }
-
-    // no reporting on localhost
-    if (hostname === 'localhost') {
-        return;
     }
 
     return `${base}/develop.log`;
