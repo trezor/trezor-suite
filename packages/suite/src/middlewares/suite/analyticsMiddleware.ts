@@ -2,16 +2,13 @@
 
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
+
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-
-import { AppState, Action, Dispatch } from '@suite-types';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import {
     getScreenWidth,
     getScreenHeight,
-    getPlatform,
-    getPlatformLanguage,
     getBrowserName,
     getBrowserVersion,
     getOsName,
@@ -23,6 +20,8 @@ import {
 import { isBitcoinOnly, getPhysicalDeviceCount } from '@suite-utils/device';
 import { allowSentryReport } from '@suite/utils/suite/sentry';
 
+import type { AppState, Action, Dispatch } from '@suite-types';
+
 const reportSuiteReadyAction = (state: AppState) =>
     analyticsActions.report({
         type: 'suite-ready',
@@ -33,8 +32,6 @@ const reportSuiteReadyAction = (state: AppState) =>
             discreetMode: state.wallet.settings.discreetMode,
             screenWidth: getScreenWidth(),
             screenHeight: getScreenHeight(),
-            platform: getPlatform(),
-            platformLanguage: getPlatformLanguage(),
             platformLanguages: getPlatformLanguages().join(','),
             tor: state.suite.tor,
             rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase)

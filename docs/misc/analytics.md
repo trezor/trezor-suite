@@ -62,7 +62,7 @@ Attributes which are always tracked:
 -   **c_commit**: current revision of app
 -   **c_instance_id**: until user does not wipe storage, the id is still same
 -   **c_session_id**: id changed on every launch of app
--   **c_timestamp**: time in ms when event is created
+-   **c_timestamp**: time in ms when event is created (added in 1.11)
 
 Other attributes are connected to a specific type of events.
 
@@ -119,7 +119,6 @@ Add event to the analytics overview in the [company Notion](https://www.notion.s
 1. **Option**: Open DevTools, navigate to **Network tab**, filter traffic by `.log` and check the **Query String Parameters** section
 2. **Option**: Get access to Keboola
 3. **Option**: Create a modified build of app with an analytics server URL pointing to your server
-4. **Option**: Edit NAT to resolve requests to `https://data.trezor.io/suite/log/web/stable.log` to your local server
 
 ## Changelog
 
@@ -139,6 +138,9 @@ Added:
 Removed:
 
 -   initial-run-completed (in favor of device-setup-completed, analytics/enable, and analytics/dispose)
+-   suite-ready
+    -   platform
+    -   platformLanguage
 
 ### 1.15
 
@@ -273,122 +275,6 @@ Added:
 
 Fixed:
 
--   device-update-firmware
-    -   toBtcOnly
--   accounts/empty-account/buy
-    -   symbol (lowercase instead of uppercase)
+### 1.0 - 1.8
 
-### 1.8
-
-Added:
-
--   settings/device/update-auto-lock
-    -   value: string
--   suite-ready
-    -   browserName: string
-    -   browserVersion: string
-    -   osName: string
-    -   osVersion: string
-    -   windowWidth: number
-    -   windowHeight: number
-
-Fixed:
-
--   suite-ready
-    -   suiteVersion
-    -   c_instance_id
-    -   c_session_id
--   device-update-firmware
-    -   fromFwVersion (changed separator to dots from commas)
-    -   fromBlVersion (changed separator to dots from commas)
--   analytics/dispose
-
-Removed:
-
--   menu/goto/exchange-index
-
-Changed:
-
--   `desktop` build is now tracked to `stable.log` instead of `beta.log`
-
-### 1.7
-
-Added:
-
--   send-raw-transaction
-    -   networkSymbol: string
--   device-connect
-    -   totalDevices: number
-
-### 1.6
-
-Added:
-
--   suite-ready
-    -   suiteVersion: string | ""
--   device-connect
-    -   isBitcoinOnly: boolean
--   desktop-init
-    -   desktopOSVersion: string | "" (in format: {platform}\_{release})
--   accounts/empty-account/buy
-    -   symbol: string
--   account-create
-    -   tokensCount: number
--   add-token
-    -   networkSymbol: string
-    -   addedNth: number
-
-### 1.5
-
-Added:
-
--   suite-ready
-    -   theme (dark mode)
--   wallet/created
-    -   type: standard | hidden
--   device-disconnect
-
-### 1.4
-
-Added:
-
--   suite-ready
-    -   rememberedStandardWallets
-    -   rememberedHiddenWallets
--   analytics/enable
--   analytics/dispose
--   check-seed/error
--   check-seed/success
-
-### 1.3
-
-Added:
-
--   device-connect
-    -   backup_type
--   router/location-change
-    -   prevRouterUrl
-    -   nextRouterUrl
-
-### 1.2
-
-Added
-
--   suite-ready
-    -   tor
-
-### 1.1
-
-Added:
-
--   device-update-firmware:
-    -   toFwVersion
--   suite-ready
-    -   platformLanguage
-    -   platform
--   device-connect:
-    -   totalInstances
-
-### 1.0
-
--   initial version
+-   initial version (<1.8 events are discarded)
