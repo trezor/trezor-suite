@@ -175,6 +175,7 @@
         "afterSign": "scripts/notarize.js"
     },
     "dependencies": {
+        "@trezor/suite-desktop-api": "1.0.0",
         "@trezor/utils": "*",
         "chalk": "^4.1.2",
         "electron-localshortcut": "^3.2.1",

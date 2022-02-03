@@ -48,14 +48,6 @@ if (triggerUpdateAfter > 0) {
 
 const updateInfo = {
     version: '31.33.7',
-    files: [
-        {
-            url: 'Trezor-Suite-31.33.7-fake.AppImage',
-            sha512: 'tfvdNXsjMe8YXJwTuujz4tKTdfsCuR/9VECF8EkcRP95YM7vuDV8dumru1jKtdiv0gaS1GT3SPEeAfmczY5jGg==',
-            size: 126231002,
-            blockMapSize: 131566,
-        },
-    ],
     path: 'Trezor-Suite-31.33.7-fake.AppImage',
     sha512: 'tfvdNXsjMe8YXJwTuujz4tKTdfsCuR/9VECF8EkcRP95YM7vuDV8dumru1jKtdiv0gaS1GT3SPEeAfmczY5jGg==',
     releaseDate: '2029-12-12T13:39:03.416Z',

@@ -3,26 +3,27 @@
  */
 
 import { unlinkSync } from 'fs';
-import { app, ipcMain } from 'electron';
 import {
     autoUpdater,
     CancellationToken,
     UpdateInfo,
     UpdateDownloadedEvent,
+    ProgressInfo,
 } from 'electron-updater';
-
-import { isDev } from '@suite-utils/build';
-import { b2t } from '@desktop-electron/libs/utils';
-import { verifySignature } from '@desktop-electron/libs/update-checker';
 import { bytesToHumanReadable } from '@trezor/utils';
 import { isEnabled } from '@suite-utils/features';
+import { isDev } from '@suite-utils/build';
+import { app, ipcMain } from '../typed-electron';
+import { b2t } from '../libs/utils';
+import { verifySignature } from '../libs/update-checker';
+import { Module } from '../libs/modules';
 
 // Runtime flags
 const enableUpdater = app.commandLine.hasSwitch('enable-updater');
 const disableUpdater = app.commandLine.hasSwitch('disable-updater');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 
-const init = ({ mainWindow, store }: Dependencies) => {
+const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
     if (!isEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info('auto-updater', 'Disabled via feature flag');
@@ -66,7 +67,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
     });
 
     let isManualCheck = false;
-    let latestVersion: Partial<UpdateInfo> = {};
     let updateCancellationToken: CancellationToken;
     let shouldInstallUpdateOnQuit = false;
 
@@ -102,9 +102,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
         mainWindow.webContents.send('update/checking');
     });
 
-    autoUpdater.on('update-available', updateInfo => {
-        const { version, releaseDate, files } = updateInfo;
-
+    autoUpdater.on('update-available', ({ version, releaseDate }: UpdateInfo) => {
         logger.warn('auto-updater', [
             'Update is available:',
             `- Update version: ${version}`,
@@ -112,14 +110,17 @@ const init = ({ mainWindow, store }: Dependencies) => {
             `- Manual check: ${b2t(isManualCheck)}`,
         ]);
 
-        latestVersion = { version, releaseDate, files };
-        mainWindow.webContents.send('update/available', { ...latestVersion, isManualCheck });
+        mainWindow.webContents.send('update/available', {
+            version,
+            releaseDate,
+            isManualCheck,
+        });
 
         // Reset manual check flag
         isManualCheck = false;
     });
 
-    autoUpdater.on('update-not-available', ({ version, releaseDate }) => {
+    autoUpdater.on('update-not-available', ({ version, releaseDate }: UpdateInfo) => {
         logger.info('auto-updater', [
             'No new update is available:',
             `- Last version: ${version}`,
@@ -127,26 +128,29 @@ const init = ({ mainWindow, store }: Dependencies) => {
             `- Manual check: ${b2t(isManualCheck)}`,
         ]);
 
-        latestVersion = { version, releaseDate };
-        mainWindow.webContents.send('update/not-available', { ...latestVersion, isManualCheck });
+        mainWindow.webContents.send('update/not-available', {
+            version,
+            releaseDate,
+            isManualCheck,
+        });
 
         // Reset manual check flag
         isManualCheck = false;
     });
 
-    autoUpdater.on('error', err => {
+    autoUpdater.on('error', (err: Error) => {
         logger.error('auto-updater', `An error happened: ${err.toString()}`);
         mainWindow.webContents.send('update/error', err);
     });
 
-    autoUpdater.on('download-progress', progressObj => {
+    autoUpdater.on('download-progress', (progressObj: ProgressInfo) => {
         logger.debug(
             'auto-updater',
             `Downloading ${progressObj.percent}% (${bytesToHumanReadable(
                 progressObj.transferred,
             )}/${bytesToHumanReadable(progressObj.total)})`,
         );
-        mainWindow.webContents.send('update/downloading', { ...progressObj });
+        mainWindow.webContents.send('update/downloading', progressObj);
     });
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent) => {
@@ -197,7 +201,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
         logger.info('auto-updater', 'before-quit-for-update event');
     });
 
-    ipcMain.on('update/check', (_, isManual?: boolean) => {
+    ipcMain.on('update/check', (_, isManual) => {
         if (isManual) {
             isManualCheck = true;
         }

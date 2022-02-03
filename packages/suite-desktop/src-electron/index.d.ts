@@ -60,14 +60,6 @@ declare interface RequestInterceptor {
     offBeforeRequest(listener: BeforeRequestListener): void;
 }
 
-// Dependencies
-declare type Dependencies = {
-    mainWindow: Electron.BrowserWindow;
-    store: LocalStore;
-    src: string;
-    interceptor: RequestInterceptor;
-};
-
 // Store
 declare interface LocalStore {
     getWinBounds(): WinBounds;

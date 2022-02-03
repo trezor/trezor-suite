@@ -4,9 +4,10 @@
 import path from 'path';
 import { session } from 'electron';
 
-import { PROTOCOL } from '@desktop-electron/libs/constants';
+import { PROTOCOL } from '../libs/constants';
+import { Module } from '../libs/modules';
 
-const init = ({ mainWindow, src }: Dependencies) => {
+const init: Module = ({ mainWindow, src }) => {
     // Point to the right directory for file protocol requests
     session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
         let url = request.url.substr(PROTOCOL.length + 1);

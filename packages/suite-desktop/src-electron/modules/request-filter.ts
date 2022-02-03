@@ -3,6 +3,7 @@
  */
 import { dialog } from 'electron';
 import * as config from '../config';
+import { Module } from '../libs/modules';
 
 const domainFilter = () => {
     const allowedDomains = [...config.allowedDomains];
@@ -15,7 +16,7 @@ const domainFilter = () => {
     return { isAllowed, addAllowed };
 };
 
-const init = ({ mainWindow, interceptor }: Dependencies) => {
+const init: Module = ({ mainWindow, interceptor }) => {
     const { logger } = global;
 
     const { isAllowed, addAllowed } = domainFilter();

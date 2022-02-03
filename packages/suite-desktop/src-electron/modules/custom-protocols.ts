@@ -1,10 +1,11 @@
 /**
  * Support custom protocols (for example: `bitcoin:`)
  */
-import { isValidProtocol } from '@desktop-electron/libs/protocol';
 import { app } from 'electron';
+import { isValidProtocol } from '../libs/protocol';
+import { Module } from '../libs/modules';
 
-const init = ({ mainWindow }: Dependencies) => {
+const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     const protocols = process.env.PROTOCOLS as unknown as string[];

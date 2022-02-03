@@ -6,12 +6,13 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
+import { Module } from '../libs/modules';
 
 type Call = [keyof typeof TrezorConnect, string, ...any[]];
 
 const SERVICE_NAME = 'trezor-connect-ipc';
 
-const init = ({ mainWindow, store }: Dependencies) => {
+const init: Module = ({ mainWindow, store }) => {
     const { logger, resourcesPath } = global;
     logger.info(SERVICE_NAME, `Starting service`);
 
@@ -21,26 +22,30 @@ const init = ({ mainWindow, store }: Dependencies) => {
         // reset previous instance, possible left over after renderer refresh (F5)
         TrezorConnect.dispose();
 
+        // DesktopApi is now too strict :)
+        // this channel is not declared in DesktopApi, it will be moved in to @trezor/connect-electron
+        const channel: any = 'trezor-connect-event';
+
         // propagate all events using trezor-connect-event channel
         // listeners references are managed by desktopApi (see ./src-electron/modules/trezor-connect-preload)
         TrezorConnect.on(DEVICE_EVENT, event => {
             logger.debug(SERVICE_NAME, `DEVICE_EVENT ${event.type}`);
-            mainWindow.webContents.send(`trezor-connect-event`, event);
+            mainWindow.webContents.send(channel, event);
         });
 
         TrezorConnect.on(UI_EVENT, event => {
             logger.debug(SERVICE_NAME, `UI_EVENT ${event.type}`);
-            mainWindow.webContents.send(`trezor-connect-event`, event);
+            mainWindow.webContents.send(channel, event);
         });
 
         TrezorConnect.on(TRANSPORT_EVENT, event => {
             logger.debug(SERVICE_NAME, `TRANSPORT_EVENT ${event.type}`);
-            mainWindow.webContents.send(`trezor-connect-event`, event);
+            mainWindow.webContents.send(channel, event);
         });
 
         TrezorConnect.on(BLOCKCHAIN_EVENT, event => {
             logger.debug(SERVICE_NAME, `BLOCKCHAIN_EVENT ${event.type}`);
-            mainWindow.webContents.send(`trezor-connect-event`, event);
+            mainWindow.webContents.send(channel, event);
         });
     });
 

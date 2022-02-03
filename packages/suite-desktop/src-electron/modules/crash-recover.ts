@@ -1,4 +1,5 @@
 import { app, dialog } from 'electron';
+import { Module } from '../libs/modules';
 
 // Reasons for prompting a restart
 const unexpectedReasons = [
@@ -7,7 +8,7 @@ const unexpectedReasons = [
     'launch-failure', // Process couldn't launch
 ];
 
-const init = ({ mainWindow }: Dependencies) => {
+const init: Module = ({ mainWindow }) => {
     // Check if the renderer process got unexpectedly terminated
     mainWindow.webContents.on('render-process-gone', (_, { reason }) => {
         if (unexpectedReasons.includes(reason)) {

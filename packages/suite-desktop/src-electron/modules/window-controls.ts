@@ -1,9 +1,10 @@
 /**
  * Window events handler
  */
-import { app, ipcMain } from 'electron';
+import { app, ipcMain } from '../typed-electron';
+import { Module } from '../libs/modules';
 
-const init = ({ mainWindow }: Dependencies) => {
+const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     if (process.platform === 'darwin') {

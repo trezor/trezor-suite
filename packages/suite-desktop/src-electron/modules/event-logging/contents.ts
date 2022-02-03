@@ -1,10 +1,11 @@
 import { app } from 'electron';
 
 import { isDev } from '@suite-utils/build';
+import { Module } from '../../libs/modules';
 
 const logUI = app.commandLine.hasSwitch('log-ui');
 
-const init = ({ mainWindow }: Dependencies) => {
+const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     mainWindow.webContents.on('did-fail-load', (_, errorCode, errorDescription, validatedUrl) => {

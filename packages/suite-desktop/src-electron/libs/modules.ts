@@ -1,9 +1,19 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-import { MODULES, MODULES_DEV, MODULES_PROD } from '@desktop-electron/libs/constants';
 import { isDev } from '@suite-utils/build';
+import { StrictBrowserWindow } from '../typed-electron';
+import { MODULES, MODULES_DEV, MODULES_PROD } from './constants';
 
-const modules = async (dependencies: Dependencies) => {
+export type Dependencies = {
+    mainWindow: StrictBrowserWindow;
+    store: LocalStore;
+    src: string;
+    interceptor: RequestInterceptor;
+};
+
+export type Module = (dependencies: Dependencies) => any;
+
+const modules: Module = async dependencies => {
     const { logger } = global;
 
     logger.info('modules', `Loading ${MODULES.length} modules`);
