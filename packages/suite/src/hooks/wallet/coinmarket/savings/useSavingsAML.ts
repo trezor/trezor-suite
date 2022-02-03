@@ -20,20 +20,19 @@ export const useSavingsAML = ({ selectedAccount }: UseSavingsAMLProps): SavingsA
         loadInvityData();
     }, [loadInvityData]);
 
-    const { savingsInfo, savingsTrade } = useSelector(state => ({
-        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
+    const { selectedProvider, savingsTrade } = useSelector(state => ({
+        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
         savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
         isLoading: state.wallet.coinmarket.isLoading,
     }));
 
-    const provider = savingsInfo?.savingsList?.providers[0];
     useEffect(() => {
-        if (provider && !savingsTrade) {
+        if (selectedProvider && !savingsTrade) {
             invityAPI
-                .getSavingsTrade(provider.name)
+                .getSavingsTrade(selectedProvider.name)
                 .then(response => response && saveSavingsTradeResponse(response));
         }
-    }, [provider, saveSavingsTradeResponse, savingsTrade]);
+    }, [selectedProvider, saveSavingsTradeResponse, savingsTrade]);
 
     const handleSubmit = useCallback(
         async (amlAnswers: SavingsTradeAMLAnswer[]) => {

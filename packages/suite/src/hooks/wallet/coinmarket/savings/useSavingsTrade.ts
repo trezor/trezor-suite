@@ -4,10 +4,10 @@ import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActi
 import { useActions, useSelector } from '@suite-hooks';
 
 const useSavingsTrade = () => {
-    const { invityAuthentication, savingsTrade, savingsInfo } = useSelector(state => ({
+    const { invityAuthentication, savingsTrade, selectedProvider } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
         savingsTrade: state.wallet.coinmarket.savings.savingsTrade,
-        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
+        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
     }));
 
     const { loadInvityData, loadSavingsTrade } = useActions({
@@ -19,12 +19,11 @@ const useSavingsTrade = () => {
         loadInvityData();
     }, [loadInvityData]);
 
-    const provider = savingsInfo?.savingsList?.providers[0];
     useEffect(() => {
-        if (provider && invityAuthentication?.verified) {
-            loadSavingsTrade(provider.name);
+        if (selectedProvider && invityAuthentication?.verified) {
+            loadSavingsTrade(selectedProvider.name);
         }
-    }, [loadSavingsTrade, provider, invityAuthentication]);
+    }, [loadSavingsTrade, selectedProvider, invityAuthentication]);
 
     return savingsTrade;
 };

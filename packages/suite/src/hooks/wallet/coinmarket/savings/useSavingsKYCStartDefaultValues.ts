@@ -1,32 +1,29 @@
-import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
+import type { SavingsProviderInfo } from '@suite/services/suite/invityAPI';
 import { useMemo } from 'react';
 
-export const useSavingsKYCStartDefaultValues = (savingsInfo?: SavingsInfo) => {
-    const provider = useMemo(
-        () => savingsInfo?.savingsList?.providers?.[0],
-        [savingsInfo?.savingsList?.providers],
-    );
+export const useSavingsKYCStartDefaultValues = (selectedProvider?: SavingsProviderInfo) => {
     const defaultDocumentType = useMemo(() => {
-        const identityDocumentType = provider?.identityDocuments[0].documentType || 'Passport';
+        const identityDocumentType =
+            selectedProvider?.identityDocuments[0].documentType || 'Passport';
         return { label: identityDocumentType, value: identityDocumentType };
-    }, [provider]);
+    }, [selectedProvider]);
     const documentTypes = useMemo(
         () =>
-            provider?.identityDocuments
+            selectedProvider?.identityDocuments
                 // Selfie is managed separately.
                 .filter(item => item.documentType !== 'Selfie'),
-        [provider],
+        [selectedProvider],
     );
     const defaultValues = useMemo(
         () =>
-            savingsInfo
+            selectedProvider
                 ? {
                       documentType: defaultDocumentType,
                   }
                 : undefined,
-        [savingsInfo, defaultDocumentType],
+        [selectedProvider, defaultDocumentType],
     );
-    const isSelfieRequired = provider?.identityDocuments.some(
+    const isSelfieRequired = selectedProvider?.identityDocuments.some(
         item => item.documentType === 'Selfie' && item.isRequired,
     );
     return {

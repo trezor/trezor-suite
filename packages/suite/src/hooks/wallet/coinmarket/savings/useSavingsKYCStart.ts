@@ -27,21 +27,19 @@ export const useSavingsKYCStart = ({
         loadInvityData();
     }, [loadInvityData]);
 
-    const { savingsInfo, isLoading } = useSelector(state => ({
-        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
+    const { selectedProvider, isLoading } = useSelector(state => ({
+        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
         isLoading: state.wallet.coinmarket.isLoading,
     }));
 
     const { defaultValues, defaultDocumentType, documentTypes, isSelfieRequired } =
-        useSavingsKYCStartDefaultValues(savingsInfo);
+        useSavingsKYCStartDefaultValues(selectedProvider);
 
     const methods = useForm<SavingsKYCStartFormState>({
         mode: 'onChange',
         defaultValues,
     });
     const { register, setValue } = methods;
-
-    const provider = savingsInfo?.savingsList?.providers[0];
 
     const onSubmit = async () => {
         const { documentType, documentImageFront, documentImageBack, documentImageSelfie } =
@@ -51,7 +49,7 @@ export const useSavingsKYCStart = ({
             item => item.documentType === documentType.value,
         );
 
-        if (provider && selectedDocumentType) {
+        if (selectedProvider && selectedDocumentType) {
             const documentImages = [{ documentSide: 'Front', data: documentImageFront }];
             if (
                 selectedDocumentType.documentImageSides.some(item => item === 'Back') &&
@@ -72,7 +70,7 @@ export const useSavingsKYCStart = ({
                 });
             }
             const trade = {
-                exchange: provider.name,
+                exchange: selectedProvider.name,
                 cryptoCurrency: selectedAccount.account.symbol,
                 fiatCurrency: 'EUR',
                 status: 'KYC',
@@ -128,6 +126,6 @@ export const useSavingsKYCStart = ({
         defaultDocumentType,
         isSelfieRequired,
         documentTypes,
-        provider,
+        provider: selectedProvider,
     };
 };

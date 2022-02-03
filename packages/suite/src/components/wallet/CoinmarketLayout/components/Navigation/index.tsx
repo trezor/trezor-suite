@@ -22,10 +22,10 @@ const Navigation = () => {
         { route: 'wallet-coinmarket-spend', title: 'TR_NAV_SPEND' },
     ] as const;
 
-    const { routeName, account, savingsInfo } = useSelector(state => ({
+    const { routeName, account, selectedProvider } = useSelector(state => ({
         routeName: state.router.route?.name,
         account: state.wallet.selectedAccount?.account,
-        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
+        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
     }));
     const { goto, loadSavingsTrade } = useActions({
         goto: routerActions.goto,
@@ -52,8 +52,7 @@ const Navigation = () => {
                             active={!!routeName?.startsWith('wallet-coinmarket-savings')}
                             onClick={() =>
                                 // TODO: Better to first redirect and then show loading spinner/skeleton during requests.
-                                savingsInfo?.savingsList?.providers &&
-                                loadSavingsTrade(savingsInfo?.savingsList?.providers[0].name)
+                                selectedProvider && loadSavingsTrade(selectedProvider.name)
                             }
                         />
                     </SavingsWalletLayoutNavLinkWrapper>

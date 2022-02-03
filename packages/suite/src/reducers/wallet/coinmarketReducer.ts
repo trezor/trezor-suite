@@ -26,7 +26,11 @@ import type { SellInfo } from '@wallet-actions/coinmarketSellActions';
 import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
 import type { FeeLevel } from 'trezor-connect';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
-import type { SavingsKYCStatus, SavingsTrade } from '@suite-services/invityAPI';
+import type {
+    SavingsKYCStatus,
+    SavingsProviderInfo,
+    SavingsTrade,
+} from '@suite-services/invityAPI';
 import type { InvityAuthentication } from '@wallet-types/invity';
 
 export interface ComposedTransactionInfo {
@@ -75,6 +79,7 @@ interface Sell {
 }
 
 interface Savings {
+    selectedProvider?: SavingsProviderInfo;
     savingsInfo?: SavingsInfo;
     savingsTrade?: SavingsTrade;
     isSavingsTradeLoading: boolean;
@@ -135,6 +140,7 @@ export const initialState = {
         isFromRedirect: false,
     },
     savings: {
+        selectedProvider: undefined,
         savingsInfo: undefined,
         savingsTrade: undefined,
         isSavingsTradeLoading: false,
@@ -255,6 +261,8 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SAVINGS.SAVE_SAVINGS_INFO:
                 draft.savings.savingsInfo = action.savingsInfo;
+                // TODO: remove after more providers and "selector control" implementation
+                draft.savings.selectedProvider = action.savingsInfo.savingsList?.providers[0];
                 break;
             case COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE:
                 draft.savings.savingsTrade = action.response.trade;

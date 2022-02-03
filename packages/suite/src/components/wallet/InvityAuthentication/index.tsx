@@ -57,9 +57,9 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
 }) => {
     const [iframeMessage, setIframeMessage] = useState<IframeMessage>();
     const { account } = selectedAccount;
-    const { invityAuthentication, savingsInfo } = useSelector(state => ({
+    const { invityAuthentication, selectedProvider } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
-        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
+        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
     }));
 
     const {
@@ -99,8 +99,6 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
         loadInvityData();
     }, [loadInvityData]);
 
-    const provider = savingsInfo?.savingsList?.providers[0];
-
     useEffect(() => {
         if (iframeMessage) {
             switch (iframeMessage.action) {
@@ -108,8 +106,8 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
                     navigateToInvityRegistrationSuccessful();
                     break;
                 case 'login-successful': {
-                    if (invityAuthentication && provider) {
-                        loadSavingsTrade(provider.name);
+                    if (invityAuthentication && selectedProvider) {
+                        loadSavingsTrade(selectedProvider.name);
                     } else {
                         loadInvityAuthentication(redirectUnauthorizedUserToLogin);
                     }
@@ -138,7 +136,7 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
         navigateToSavings,
         redirectUnauthorizedUserToLogin,
         saveInvityAuthentication,
-        provider,
+        selectedProvider,
     ]);
 
     useEffect(() => {

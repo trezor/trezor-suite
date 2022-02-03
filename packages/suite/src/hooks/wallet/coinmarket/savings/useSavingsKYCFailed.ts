@@ -4,9 +4,9 @@ import { useActions, useSelector } from '@suite-hooks';
 import type { SavingsKYCFailedContextValues } from '@wallet-types/coinmarket/savings/KYCFailed';
 
 export const useSavingsKYCFailed = (): SavingsKYCFailedContextValues => {
-    const { savingsInfo } = useSelector(state => ({
+    const { selectedProvider } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
-        savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
+        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
     }));
 
     const { loadInvityData } = useActions({
@@ -17,9 +17,7 @@ export const useSavingsKYCFailed = (): SavingsKYCFailedContextValues => {
         loadInvityData();
     }, [loadInvityData]);
 
-    const provider = savingsInfo?.savingsList?.providers[0];
-
     return {
-        supportUrl: provider?.supportUrl,
+        supportUrl: selectedProvider?.supportUrl,
     };
 };

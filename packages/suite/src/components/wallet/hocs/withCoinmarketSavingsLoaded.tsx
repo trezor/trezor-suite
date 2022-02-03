@@ -20,15 +20,14 @@ interface WithCoinmarketSavingsLoadedOptions {
     checkInvityAuthenticationImmediately?: boolean;
 }
 
-// TODO: translations
 export const withCoinmarketSavingsLoaded = (
     WrappedComponent: React.ComponentType<WithCoinmarketSavingsLoadedProps>,
     options: WithCoinmarketSavingsLoadedOptions,
 ) => {
     const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
     const Component = withSelectedAccountLoaded(({ selectedAccount }) => {
-        const { savingsInfo } = useSelector(state => ({
-            savingsInfo: state.wallet.coinmarket.savings.savingsInfo,
+        const { selectedProvider } = useSelector(state => ({
+            selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
         }));
         const { loadSavingsTrade, loadInvityData } = useActions({
             loadSavingsTrade: coinmarketSavingsAction.loadSavingsTrade,
@@ -40,11 +39,10 @@ export const withCoinmarketSavingsLoaded = (
         }, [loadInvityData]);
 
         useEffect(() => {
-            const provider = savingsInfo?.savingsList?.providers[0];
-            if (provider) {
-                loadSavingsTrade(provider.name);
+            if (selectedProvider) {
+                loadSavingsTrade(selectedProvider.name);
             }
-        }, [loadSavingsTrade, savingsInfo]);
+        }, [loadSavingsTrade, selectedProvider]);
 
         return (
             <CoinmarketLayout>

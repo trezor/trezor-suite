@@ -13,6 +13,7 @@ export interface SavingsInfo {
     providerInfos: { [name: string]: SavingsProviderInfo };
     supportedFiatCurrencies: Set<string>;
     supportedCryptoCurrencies: Set<string>;
+    supportedCountries: Set<string>;
 }
 export type CoinmarketSavingsAction =
     | {
@@ -54,6 +55,7 @@ export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
 
     const supportedFiatCurrencies = new Set<string>();
     const supportedCryptoCurrencies = new Set<string>();
+    const supportedCountries = new Set<string>();
     savingsList?.providers.forEach(p => {
         if (p.tradedFiatCurrencies) {
             p.tradedFiatCurrencies
@@ -61,6 +63,7 @@ export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
                 .forEach(c => supportedFiatCurrencies.add(c));
         }
         p.tradedCoins.map(c => c.toLowerCase()).forEach(c => supportedCryptoCurrencies.add(c));
+        p.supportedCountries.map(c => c.toLowerCase()).forEach(c => supportedCountries.add(c));
     });
 
     return {
@@ -68,6 +71,7 @@ export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
         providerInfos,
         supportedFiatCurrencies,
         supportedCryptoCurrencies,
+        supportedCountries,
     };
 };
 
