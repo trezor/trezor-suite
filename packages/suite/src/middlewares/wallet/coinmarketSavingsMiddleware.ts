@@ -104,6 +104,16 @@ const coinmarketSavingsMiddleware =
                                     return action;
                                 }
 
+                                if (response.trade.status === 'ConfirmPaymentInfo') {
+                                    api.dispatch(
+                                        navigateToRouteName(
+                                            'wallet-coinmarket-savings-payment-info',
+                                        ),
+                                    );
+                                    next(action);
+                                    return action;
+                                }
+
                                 next(action);
                                 return action;
                             }

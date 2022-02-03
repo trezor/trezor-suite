@@ -105,7 +105,9 @@ export type SavingsSetupStatus =
     /** User needs to verify crypto wallet. */
     | 'WalletVerification'
     /** User setups savings plan parameters (frequency, amount, etc.). */
-    | 'SetSavingsParameters';
+    | 'SetSavingsParameters'
+    /** Partner has generated payment details. */
+    | 'ConfirmPaymentInfo';
 
 export type SavingsStatus = SavingsSetupStatus | 'Cancelled' | 'Active';
 export type SavingsKYCStatus =
@@ -227,7 +229,16 @@ export interface SavingsTrade {
 
     amlAnswers?: SavingsTradeAMLAnswer[];
 
+    paymentInfo?: SavingsPaymentInfo;
+
     // TODO: maybe encapsulate setup?
+}
+
+export interface SavingsPaymentInfo {
+    name: string;
+    iban: string;
+    description: string;
+    bic: string;
 }
 
 export interface SavingsTradeRequest {

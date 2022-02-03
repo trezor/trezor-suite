@@ -75,11 +75,15 @@ const SavingsSteps = () => {
         currentRouteName: state.router.route?.name,
     }));
 
+    if (!currentRouteName) {
+        return null;
+    }
+
     const steps = {
         TR_SAVINGS_GUIDE_STEP_YOUR_CREDENTIALS: {
             isBulletPointHidden: false,
-            className: ['wallet-invity-registration', 'wallet-invity-user-info'].some(
-                item => item === currentRouteName,
+            className: ['wallet-invity-registration', 'wallet-invity-user-info'].includes(
+                currentRouteName,
             )
                 ? 'isSelected'
                 : '',
@@ -99,7 +103,12 @@ const SavingsSteps = () => {
         },
         TR_SAVINGS_GUIDE_STEP_DCA_SETUP: {
             isBulletPointHidden: false,
-            className: currentRouteName === 'wallet-coinmarket-savings-setup' ? 'isSelected' : '',
+            className: [
+                'wallet-coinmarket-savings-setup',
+                'wallet-coinmarket-savings-payment-info',
+            ].includes(currentRouteName)
+                ? 'isSelected'
+                : '',
         },
     } as const;
     console.log('currentRouteName', currentRouteName);
@@ -112,13 +121,6 @@ const SavingsSteps = () => {
                         <Translation id={key as ExtendedMessageDescriptor['id']} />
                     </SavingsSetupGuideListItem>
                 ))}
-                {/* <SavingsSetupGuideListItem>Your credentials</SavingsSetupGuideListItem>
-                <SavingsSetupGuideListItem>Your phone number</SavingsSetupGuideListItem>
-                <SavingsSetupGuideListItem isBulletPointHidden={isWatchingKYCStatus}>
-                    {isWatchingKYCStatus && <StyledLoader size={16} />} KYC verification
-                </SavingsSetupGuideListItem>
-                <SavingsSetupGuideListItem className="isSelected">AML</SavingsSetupGuideListItem>
-                <SavingsSetupGuideListItem>DCA Setup</SavingsSetupGuideListItem> */}
             </SavingsSetupGuideList>
         </Wrapper>
     );

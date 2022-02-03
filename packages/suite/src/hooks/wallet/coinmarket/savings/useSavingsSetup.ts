@@ -64,10 +64,10 @@ export const useSavingsSetup = ({
 
     const provider = savingsInfo?.savingsList?.providers[0];
     useEffect(() => {
-        if (provider && invityAuthentication) {
+        if (provider && invityAuthentication && !savingsTrade) {
             loadSavingsTrade(provider.name);
         }
-    }, [loadSavingsTrade, provider, invityAuthentication]);
+    }, [loadSavingsTrade, provider, invityAuthentication, savingsTrade]);
 
     // TODO: defaultValues hardcoded?
     const defaultPaymentFrequency = 'Weekly';

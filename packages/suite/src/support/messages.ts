@@ -1132,6 +1132,30 @@ export default defineMessages({
             'U can předvyplnit všechno, ale finishovat až když dokončí KYC. Pingnem tě až to bude.',
         id: 'TR_SAVINGS_SETUP_KYC_IN_PROGRESS_DESCRIPTION',
     },
+    TR_SAVINGS_PAYMENT_INFO_HEADER: {
+        defaultMessage: 'Setup a standing order',
+        id: 'TR_SAVINGS_PAYMENT_INFO_HEADER',
+    },
+    TR_SAVINGS_PAYMENT_INFO_DESCRIPTION: {
+        defaultMessage: 'Standing order — as opposed to sitting order — is an order which stands.',
+        id: 'TR_SAVINGS_PAYMENT_INFO_DESCRIPTION',
+    },
+    TR_SAVINGS_PAYMENT_INFO_NAME_LABEL: {
+        defaultMessage: 'Name',
+        id: 'TR_SAVINGS_PAYMENT_INFO_NAME_LABEL',
+    },
+    TR_SAVINGS_PAYMENT_INFO_IBAN_LABEL: {
+        defaultMessage: 'IBAN',
+        id: 'TR_SAVINGS_PAYMENT_INFO_IBAN_LABEL',
+    },
+    TR_SAVINGS_PAYMENT_INFO_BIC_LABEL: {
+        defaultMessage: 'BIC',
+        id: 'TR_SAVINGS_PAYMENT_INFO_BIC_LABEL',
+    },
+    TR_SAVINGS_PAYMENT_INFO_DESCRIPTION_LABEL: {
+        defaultMessage: 'Description',
+        id: 'TR_SAVINGS_PAYMENT_INFO_DESCRIPTION_LABEL',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',
