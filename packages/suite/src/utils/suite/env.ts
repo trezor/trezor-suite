@@ -9,8 +9,6 @@ export const getUserAgent = () => window.navigator.userAgent;
 // List of platforms https://docker.apachezone.com/blog/74
 export const getPlatform = () => window.navigator.platform;
 
-export const getPlatformLanguage = () => window.navigator.language;
-
 export const getPlatformLanguages = () => window.navigator.languages;
 
 export const getScreenWidth = () => window.screen.width;

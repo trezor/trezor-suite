@@ -49,9 +49,6 @@ export type AnalyticsEvent =
               discreetMode: AppState['wallet']['settings']['discreetMode'];
               screenWidth: number;
               screenHeight: number;
-              // added in 1.1
-              platform: string;
-              platformLanguage: string;
               // added in 1.2
               tor: boolean;
               // added in 1.4
