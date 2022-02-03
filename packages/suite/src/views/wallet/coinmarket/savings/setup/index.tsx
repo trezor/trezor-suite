@@ -8,6 +8,7 @@ import { resolveStaticPath } from '@suite-utils/build';
 import { useSavingsSetup } from '@wallet-hooks/coinmarket/savings/useSavingsSetup';
 import { Controller } from 'react-hook-form';
 import { FormattedCryptoAmount, FormattedNumber, Translation } from '@suite-components';
+import AddressOptions from '../../common/AddressOptions';
 
 const Header = styled.div`
     font-weight: 500;
@@ -105,6 +106,10 @@ const StyledInput = styled(Input)`
     width: 70px;
 `;
 
+const SetupSaved = styled.div`
+    display: flex;
+`;
+
 const getFiatAmountOptions = (amounts: string[]) =>
     amounts.map(amount => ({
         label: !Number.isNaN(Number(amount)) ? (
@@ -132,10 +137,16 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         errors,
         isWatchingKYCStatus,
         canConfirmSetup,
+        account,
+        setValue,
+        address,
+        handleSubmit,
+        onSubmit,
+        wasSetupSaved,
     } = useSavingsSetup(props);
 
     return (
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
             {isWatchingKYCStatus && <KYCInProgress />}
             <Header>
                 <Translation id="TR_SAVINGS_SETUP_HEADER" />
@@ -204,7 +215,16 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     </FiatAmountRightColumn>
                 )}
             </FiatAmount>
-
+            <Label>
+                <Translation id="TR_SAVINGS_SETUP_RECEIVING_ADDRESS" />
+            </Label>
+            <AddressOptions
+                account={account}
+                control={control}
+                receiveSymbol={account.symbol}
+                setValue={setValue}
+                address={address}
+            />
             <Divider />
             <Summary>
                 <Left>
@@ -228,8 +248,12 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                 <Button isDisabled={!canConfirmSetup}>
                     <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
                 </Button>
-                <StyledReactSVG src={resolveStaticPath('images/svg/cloud-upload.svg')} />
-                <Translation id="TR_SAVINGS_SETUP_CONTINUOUS_SAVING_NOTE" />
+                {wasSetupSaved && (
+                    <SetupSaved>
+                        <StyledReactSVG src={resolveStaticPath('images/svg/cloud-upload.svg')} />
+                        <Translation id="TR_SAVINGS_SETUP_CONTINUOUS_SAVING_NOTE" />
+                    </SetupSaved>
+                )}
             </Footer>
         </form>
     );

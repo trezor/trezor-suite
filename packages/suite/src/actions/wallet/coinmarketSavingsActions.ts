@@ -5,6 +5,8 @@ import invityAPI, {
     SavingsTradeResponse,
 } from '@suite-services/invityAPI';
 import { COINMARKET_SAVINGS } from './constants';
+import { verifyAddress as verifySavingsAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
+import type { Account } from '@wallet-types';
 
 export interface SavingsInfo {
     savingsList?: SavingsListResponse;
@@ -113,3 +115,6 @@ export const stopWatchingKYCStatus = (
     type: COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS,
     kycFinalStatus,
 });
+
+export const verifyAddress = (account: Account, address?: string, path?: string) =>
+    verifySavingsAddress(account, address, path, COINMARKET_SAVINGS.VERIFY_ADDRESS);

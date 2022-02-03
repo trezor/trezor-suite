@@ -1107,6 +1107,10 @@ export default defineMessages({
         defaultMessage: 'Amount',
         id: 'TR_SAVINGS_SETUP_FIAT_AMOUNT_LABEL',
     },
+    TR_SAVINGS_SETUP_RECEIVING_ADDRESS: {
+        defaultMessage: 'Receiving address',
+        id: 'TR_SAVINGS_SETUP_RECEIVING_ADDRESS',
+    },
     TR_SAVINGS_SETUP_SUMMARY_LABEL: {
         defaultMessage: 'Yearly savings',
         id: 'TR_SAVINGS_SETUP_SUMMARY_LABEL',

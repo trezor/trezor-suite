@@ -1,15 +1,16 @@
-import { createContext, useCallback, useEffect } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     SavingsSetupFormState,
     SavingsSetupContextValues,
     UseSavingsSetupProps,
 } from '@wallet-types/coinmarket/savings/savingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
-import { PaymentFrequency } from '@suite-services/invityAPI';
+import invityAPI, { PaymentFrequency } from '@suite-services/invityAPI';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import { useActions, useSelector } from '@suite-hooks';
 import BigNumber from 'bignumber.js';
+import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 export const SavingsUserInfoContext = createContext<SavingsSetupContextValues | null>(null);
 SavingsUserInfoContext.displayName = 'SavingsUserInfoContext';
@@ -21,9 +22,24 @@ const paymentFrequencyAnnualCoefficient: Record<PaymentFrequency, number> = {
     Quarterly: 4,
 };
 
-// TODO:
-// eslint-disable-next-line no-empty-pattern
-export const useSavingsSetup = ({}: UseSavingsSetupProps): SavingsSetupContextValues => {
+const getFiatAmountEffective = (
+    fiatAmount: string | undefined,
+    customFiatAmount: string | undefined,
+) => {
+    let fiatAmountEffective = fiatAmount;
+    if (fiatAmount === 'Custom') {
+        fiatAmountEffective = customFiatAmount;
+        if (!customFiatAmount || Number.isNaN(Number(customFiatAmount))) {
+            fiatAmountEffective = '0';
+        }
+    }
+    return fiatAmountEffective;
+};
+
+export const useSavingsSetup = ({
+    selectedAccount,
+}: UseSavingsSetupProps): SavingsSetupContextValues => {
+    const { account } = selectedAccount;
     const { invityAuthentication, fiat, savingsTrade, isWatchingKYCStatus, savingsInfo } =
         useSelector(state => ({
             invityAuthentication: state.wallet.coinmarket.invityAuthentication,
@@ -37,9 +53,10 @@ export const useSavingsSetup = ({}: UseSavingsSetupProps): SavingsSetupContextVa
     //     selectedAccount.account,
     // );
 
-    const { loadInvityData, loadSavingsTrade } = useActions({
+    const { loadInvityData, loadSavingsTrade, verifyAddress } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
         loadSavingsTrade: coinmarketSavingsActions.loadSavingsTrade,
+        verifyAddress: coinmarketSavingsActions.verifyAddress,
     });
     useEffect(() => {
         loadInvityData();
@@ -55,27 +72,29 @@ export const useSavingsSetup = ({}: UseSavingsSetupProps): SavingsSetupContextVa
     // TODO: defaultValues hardcoded?
     const defaultPaymentFrequency = 'Weekly';
     const defaultFiatAmount = '50';
-    const methods = useForm<SavingsSetupFormState>({
-        mode: 'onChange',
-        defaultValues: {
+    const { address: unusedAddress } = getUnusedAddressFromAccount(account);
+    const defaultValues: SavingsSetupFormState = useMemo(
+        () => ({
             fiatAmount: defaultFiatAmount,
             paymentFrequency: defaultPaymentFrequency,
             customFiatAmount: defaultFiatAmount,
-        },
+            address: unusedAddress,
+        }),
+        [unusedAddress],
+    );
+    const methods = useForm<SavingsSetupFormState>({
+        mode: 'onChange',
+        defaultValues,
     });
 
-    const { control, formState } = methods;
-
-    const { fiatAmount, paymentFrequency, customFiatAmount } = useWatch<
+    const { register, control, formState, handleSubmit, reset } = methods;
+    const { isDirty, isValid } = formState;
+    const { fiatAmount, paymentFrequency, customFiatAmount, address } = useWatch<
         Required<SavingsSetupFormState>
     >({
         control,
-        name: ['fiatAmount', 'paymentFrequency', 'customFiatAmount'],
-        defaultValue: {
-            fiatAmount: defaultFiatAmount,
-            paymentFrequency: defaultPaymentFrequency,
-            customFiatAmount: defaultFiatAmount,
-        },
+        name: ['fiatAmount', 'paymentFrequency', 'customFiatAmount', 'address'],
+        defaultValue: defaultValues,
     });
 
     let annualSavingsCalculationFiat = 0;
@@ -86,14 +105,7 @@ export const useSavingsSetup = ({}: UseSavingsSetupProps): SavingsSetupContextVa
         fiatRates?.current &&
         (fiatAmount || customFiatAmount)
     ) {
-        let fiatAmountEffective = fiatAmount;
-        if (fiatAmount === 'Custom') {
-            fiatAmountEffective = customFiatAmount;
-            if (!customFiatAmount || Number.isNaN(Number(customFiatAmount))) {
-                fiatAmountEffective = '0';
-            }
-        }
-
+        const fiatAmountEffective = getFiatAmountEffective(fiatAmount, customFiatAmount);
         annualSavingsCalculationFiat =
             Number(fiatAmountEffective) * paymentFrequencyAnnualCoefficient[paymentFrequency];
         const rate = fiatRates.current.rates[savingsTrade.fiatCurrency.toLowerCase()];
@@ -105,17 +117,66 @@ export const useSavingsSetup = ({}: UseSavingsSetupProps): SavingsSetupContextVa
         }
     }
 
-    const { register } = methods;
+    const [wasSetupSaved, setWasSetupSaved] = useState(false);
 
-    const onSubmit = async () => {
-        // TODO
-    };
+    const onSubmit = useCallback(
+        async ({
+            customFiatAmount,
+            fiatAmount,
+            paymentFrequency,
+            address,
+        }: SavingsSetupFormState) => {
+            if (savingsTrade) {
+                const trade = {
+                    ...savingsTrade,
+                    paymentFrequency,
+                    fiatStringAmount: getFiatAmountEffective(fiatAmount, customFiatAmount),
+                    receivingCryptoAddress: address,
+                };
+                const response = await invityAPI.doSavingsTrade({
+                    trade,
+                });
+                console.log(response);
+                reset({
+                    paymentFrequency,
+                    fiatAmount,
+                    customFiatAmount,
+                    address,
+                });
+                setWasSetupSaved(true);
+            }
+        },
+        [reset, savingsTrade],
+    );
 
     // TODO: extract
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
     const canConfirmSetup =
         formState.isValid && !isWatchingKYCStatus && savingsTrade?.kycStatus === 'Verified';
+
+    const timeoutId = useRef<number | undefined>();
+    useEffect(() => {
+        if (isWatchingKYCStatus) {
+            setWasSetupSaved(false);
+            window.clearTimeout(timeoutId.current);
+            timeoutId.current = window.setTimeout(() => {
+                if (isDirty && isValid) {
+                    handleSubmit(onSubmit)();
+                }
+            }, 1000);
+        }
+    }, [
+        fiatAmount,
+        paymentFrequency,
+        customFiatAmount,
+        address,
+        isDirty,
+        onSubmit,
+        isWatchingKYCStatus,
+        isValid,
+        handleSubmit,
+    ]);
 
     return {
         ...methods,
@@ -128,5 +189,9 @@ export const useSavingsSetup = ({}: UseSavingsSetupProps): SavingsSetupContextVa
         fiatAmount,
         isWatchingKYCStatus,
         canConfirmSetup,
+        account,
+        address,
+        wasSetupSaved,
+        verifyAddress,
     };
 };
