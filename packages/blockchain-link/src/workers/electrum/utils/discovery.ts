@@ -1,4 +1,4 @@
-import { deriveAddresses } from './derivation';
+import { deriveAddresses, Network } from '@trezor/utxo-lib';
 import { addressToScripthash } from './transform';
 import type { ElectrumAPI, HistoryTx } from '../../../types/electrum';
 
@@ -37,7 +37,12 @@ const discoverAddress =
         };
     };
 
-export const discovery = (client: ElectrumAPI, xpub: string, type: 'receive' | 'change') => {
+export const discovery = (
+    client: ElectrumAPI,
+    xpub: string,
+    type: 'receive' | 'change',
+    network?: Network
+) => {
     const discoverRecursive = async (
         from: number,
         prev: AddressHistory[]
@@ -45,7 +50,7 @@ export const discovery = (client: ElectrumAPI, xpub: string, type: 'receive' | '
         const unused = countUnusedFromEnd(prev);
         if (unused >= DISCOVERY_LOOKOUT) return prev;
         const moreCount = DISCOVERY_LOOKOUT - unused;
-        const addresses = deriveAddresses(xpub, type, from, moreCount);
+        const addresses = deriveAddresses(xpub, type, from, moreCount, network);
         const more = await Promise.all(addresses.map(discoverAddress(client)));
         return discoverRecursive(from + moreCount, prev.concat(more));
     };

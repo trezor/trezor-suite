@@ -25,18 +25,20 @@ const transformUtxo =
     });
 
 const getAccountUtxo: Api<Req, Res> = async (client, descriptor) => {
-    const parsed = tryGetScripthash(descriptor, client.getInfo()?.network);
     const {
         block: { height },
+        network,
     } = client.getInfo() || throwError('Client not initialized');
+
+    const parsed = tryGetScripthash(descriptor, network);
 
     if (parsed.valid) {
         const utxos = await client.request('blockchain.scripthash.listunspent', parsed.scripthash);
         return utxos.map(transformUtxo(height));
     }
 
-    const receive = await discovery(client, descriptor, 'receive');
-    const change = await discovery(client, descriptor, 'change');
+    const receive = await discovery(client, descriptor, 'receive', network);
+    const change = await discovery(client, descriptor, 'change', network);
     const result = await Promise.all(
         receive
             .concat(change)
