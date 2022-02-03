@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components';
-import { useActions } from '@suite-hooks';
+import { useOnboarding } from '@suite-hooks';
 import * as STEP from '@onboarding-constants/steps';
 import {
     Option,
@@ -9,14 +9,9 @@ import {
     OptionsDivider,
     OnboardingStepBox,
 } from '@onboarding-components';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
 const CreateOrRecoverStep = () => {
-    const { goToNextStep, addPath } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-        goToPreviousStep: onboardingActions.goToPreviousStep,
-        addPath: onboardingActions.addPath,
-    });
+    const { goToNextStep, addPath, updateAnalytics } = useOnboarding();
 
     return (
         <OnboardingStepBox
@@ -31,6 +26,7 @@ const CreateOrRecoverStep = () => {
                         onClick={() => {
                             addPath(STEP.PATH_CREATE);
                             goToNextStep();
+                            updateAnalytics({ seed: 'create' });
                         }}
                         heading={<Translation id="TR_CREATE_WALLET" />}
                     />
@@ -43,6 +39,7 @@ const CreateOrRecoverStep = () => {
                         onClick={() => {
                             addPath(STEP.PATH_RECOVERY);
                             goToNextStep();
+                            updateAnalytics({ seed: 'recover' });
                         }}
                         heading={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
                     />

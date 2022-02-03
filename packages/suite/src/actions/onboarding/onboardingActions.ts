@@ -1,6 +1,6 @@
 import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
-import { AnyStepId, AnyPath } from '@onboarding-types';
+import { AnyStepId, AnyPath, OnboardingAnalytics } from '@onboarding-types';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 
@@ -29,6 +29,10 @@ export type OnboardingAction =
     | {
           type: typeof ONBOARDING.SET_STEP_ACTIVE;
           stepId: AnyStepId;
+      }
+    | {
+          type: typeof ONBOARDING.ANALYTICS;
+          payload: Partial<OnboardingAnalytics>;
       };
 
 const goToStep = (stepId: AnyStepId): OnboardingAction => ({
@@ -98,6 +102,11 @@ const enableOnboardingReducer = (payload: boolean): OnboardingAction => ({
     payload,
 });
 
+const updateAnalytics = (payload: Partial<OnboardingAnalytics>): OnboardingAction => ({
+    type: ONBOARDING.ANALYTICS,
+    payload,
+});
+
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -107,4 +116,5 @@ export {
     addPath,
     removePath,
     resetOnboarding,
+    updateAnalytics,
 };

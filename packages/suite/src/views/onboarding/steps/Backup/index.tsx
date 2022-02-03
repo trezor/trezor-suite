@@ -23,10 +23,11 @@ const StyledImage = styled(Image)`
 
 const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
-    const { goToNextStep, backupDevice, goto } = useActions({
+    const { goToNextStep, backupDevice, goto, updateAnalytics } = useActions({
         goToNextStep: onboardingActions.goToNextStep,
         backupDevice: backupActions.backupDevice,
         goto: routerActions.goto,
+        updateAnalytics: onboardingActions.updateAnalytics,
     });
     const { device, backup, locks } = useSelector(state => ({
         device: state.suite.device,
@@ -67,7 +68,10 @@ const BackupStep = () => {
                     innerActions={
                         <OnboardingButtonCta
                             data-test="@backup/start-button"
-                            onClick={() => backupDevice()}
+                            onClick={() => {
+                                updateAnalytics({ backup: 'create' });
+                                backupDevice();
+                            }}
                             isDisabled={!canContinue(backup.userConfirmed, locks)}
                         >
                             <Translation id="TR_START_BACKUP" />
@@ -76,7 +80,10 @@ const BackupStep = () => {
                     outerActions={
                         <OnboardingButtonSkip
                             data-test="@onboarding/exit-app-button"
-                            onClick={() => setShowSkipConfirmation(true)}
+                            onClick={() => {
+                                updateAnalytics({ backup: 'skip' });
+                                setShowSkipConfirmation(true);
+                            }}
                         >
                             <Translation id="TR_SKIP_BACKUP" />
                         </OnboardingButtonSkip>

@@ -14,6 +14,8 @@ import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
 import { DeviceMode } from 'trezor-connect';
 
+import type { OnboardingAnalytics } from '@onboarding-types';
+
 export type AnalyticsAction =
     | { type: typeof ANALYTICS.ENABLE }
     | { type: typeof ANALYTICS.DISPOSE }
@@ -30,7 +32,7 @@ export type AnalyticsAction =
 
 // Don't forget to update docs with changelog!
 // <breaking-change>.<analytics-extended>
-export const version = '1.15';
+export const version = '1.16';
 
 export type AnalyticsEvent =
     | {
@@ -38,7 +40,6 @@ export type AnalyticsEvent =
          suite-ready
          Triggers on application start. Logs part of suite setup that might have been loaded from storage
          but it might also be suite default setup that is loaded when suite starts for the first time.
-         IMPORTANT: skipped if user opens suite for the first time. In such case, the first log will be 'initial-run-completed'
          */
           type: 'suite-ready';
           payload: {
@@ -136,24 +137,10 @@ export type AnalyticsEvent =
           };
       }
     | {
-          /**
-         initial-run-completed
-         when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
-         it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point
-          */
-          type: 'initial-run-completed';
-          payload: {
-              analytics: false;
-          };
-      }
-    | {
-          type: 'initial-run-completed';
-          payload: {
-              analytics: true;
-              /** how many users chose to create new wallet */
-              createSeed: boolean;
-              /** how many users chose to do recovery */
-              recoverSeed: boolean;
+          type: 'device-setup-completed';
+          payload: Partial<Omit<OnboardingAnalytics, 'startTime'>> & {
+              duration: number;
+              device: 'T' | '1';
           };
       }
     | {

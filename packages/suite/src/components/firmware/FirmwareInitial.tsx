@@ -6,9 +6,8 @@ import {
     OnboardingButtonSkip,
 } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { useDevice, useFirmware, useActions } from '@suite-hooks';
+import { useDevice, useFirmware, useOnboarding } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { TrezorDevice } from '@suite/types/suite';
 import { getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
 
@@ -48,9 +47,8 @@ const FirmwareInitial = ({
 }: Props) => {
     const { device: liveDevice } = useDevice();
     const { setStatus, status } = useFirmware();
-    const { goToNextStep } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-    });
+    const { goToNextStep, updateAnalytics } = useOnboarding();
+
     useEffect(() => {
         // When user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
         // This prompt (to reconnect a device in bootloader mode) is shown in modal which is visually layer above the content.
@@ -133,11 +131,10 @@ const FirmwareInitial = ({
             body: <FirmwareOffer device={device} />,
             innerActions: (
                 <Button
-                    onClick={() =>
-                        standaloneFwUpdate
-                            ? setStatus('check-seed')
-                            : setStatus('waiting-for-bootloader')
-                    }
+                    onClick={() => {
+                        setStatus(standaloneFwUpdate ? 'check-seed' : 'waiting-for-bootloader');
+                        updateAnalytics({ firmware: 'install' });
+                    }}
                     data-test="@firmware/get-ready-button"
                 >
                     <Translation id="TR_INSTALL" />
@@ -147,7 +144,10 @@ const FirmwareInitial = ({
                 device.firmware === 'outdated' && !standaloneFwUpdate ? (
                     // Fw update is not mandatory, show skip button
                     <OnboardingButtonSkip
-                        onClick={() => goToNextStep()}
+                        onClick={() => {
+                            goToNextStep();
+                            updateAnalytics({ firmware: 'skip' });
+                        }}
                         data-test="@firmware/skip-button"
                     >
                         <Translation id="TR_SKIP_UPDATE" />

@@ -22,3 +22,12 @@ export type AnyStepId =
     | typeof STEP.ID_COINS_STEP;
 
 export type AnyPath = typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY;
+
+export type OnboardingAnalytics = {
+    startTime: number;
+    firmware: 'install' | 'skip' | 'up-to-date';
+    seed: 'create' | 'recover';
+    recoveryType: 'standard' | 'advanced';
+    backup: 'create' | 'skip';
+    pin: 'create' | 'skip';
+};

@@ -16,7 +16,7 @@ const FirmwareStep = () => {
     const { device } = useSelector(state => ({
         device: state.suite.device,
     }));
-    const { goToNextStep } = useOnboarding();
+    const { goToNextStep, updateAnalytics } = useOnboarding();
     const { status, error, resetReducer, firmwareUpdate, showFingerprintCheck } = useFirmware();
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
 
@@ -62,7 +62,14 @@ const FirmwareStep = () => {
                         values={{ version: getFwVersion(device) }}
                     />
                 }
-                innerActions={<ContinueButton onClick={() => goToNextStep()} />}
+                innerActions={
+                    <ContinueButton
+                        onClick={() => {
+                            goToNextStep();
+                            updateAnalytics({ firmware: 'up-to-date' });
+                        }}
+                    />
+                }
             />
         );
     }

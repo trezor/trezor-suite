@@ -9,17 +9,16 @@ import {
     OnboardingStepBox,
 } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useOnboarding } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
 const ResetDeviceStep = () => {
     const [submitted, setSubmitted] = useState(false);
-    const { resetDevice, goToPreviousStep, goToNextStep } = useActions({
+    const { resetDevice } = useActions({
         resetDevice: deviceSettingsActions.resetDevice,
-        goToPreviousStep: onboardingActions.goToPreviousStep,
-        goToNextStep: onboardingActions.goToNextStep,
     });
+    const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
+
     const device = useSelector(state => state.suite.device);
 
     // this step expects device
@@ -75,6 +74,7 @@ const ResetDeviceStep = () => {
                                 } else {
                                     await onResetDevice();
                                 }
+                                updateAnalytics({ recoveryType: undefined });
                             }}
                             heading={<Translation id="SINGLE_SEED" />}
                             description={<Translation id="SINGLE_SEED_DESCRIPTION" />}
@@ -89,6 +89,7 @@ const ResetDeviceStep = () => {
                                     data-test="@onboarding/shamir-backup-option-button"
                                     onClick={async () => {
                                         await onResetDevice({ backup_type: 1 });
+                                        updateAnalytics({ recoveryType: undefined });
                                     }}
                                     heading={<Translation id="SHAMIR_SEED" />}
                                     description={<Translation id="SHAMIR_SEED_DESCRIPTION" />}

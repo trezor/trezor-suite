@@ -125,6 +125,23 @@ Add event to the analytics overview in the [company Notion](https://www.notion.s
 
 ## Changelog
 
+### 1.16
+
+Added:
+
+-   device-setup-completed
+    -   duration: number (in ms)
+    -   device: 'T' | '1'
+    -   firmware: 'install' | 'skip' | 'up-to-date'
+    -   seed: 'create' | 'recover'
+    -   recoveryType?: 'standard' | 'advanced' (empty if seed equals to 'create')
+    -   backup?: 'create' | 'skip' (empty if seed equals to 'recover')
+    -   pin: 'create' | 'skip'
+
+Removed:
+
+-   initial-run-completed (in favor of device-setup-completed, analytics/enable, and analytics/dispose)
+
 ### 1.15
 
 Added:

@@ -4,10 +4,12 @@ import styled from 'styled-components';
 import { Button, Icon, variables, Input, Dropdown, DropdownRef } from '@trezor/components';
 import { Translation, HomescreenGallery } from '@suite-components';
 import { DeviceAnimation, OnboardingStepBox } from '@onboarding-components';
-import { useActions, useDevice, useOnboarding, useSelector } from '@suite-hooks';
+import { useActions, useDevice, useSelector, useAnalytics } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from '@suite-constants/device';
 import { useGuide } from '@guide-hooks';
+import { getDeviceModel } from '@suite-utils/device';
+import * as routerActions from '@suite-actions/routerActions';
 
 const Wrapper = styled.div<{ guideOpen?: boolean }>`
     display: flex;
@@ -149,17 +151,20 @@ const DeviceLabelInput = styled(Input)`
 
 const FinalStep = () => {
     const dropdownRef = useRef<DropdownRef>();
-
-    const { applySettings } = useActions({
+    const analytics = useAnalytics();
+    const { applySettings, goto } = useActions({
         applySettings: deviceSettingsActions.applySettings,
+        goto: routerActions.goto,
     });
 
     const { guideOpen } = useGuide();
 
-    const { goto } = useOnboarding();
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
-    const modal = useSelector(s => s.modal);
+    const { modal, onboardingAnalytics } = useSelector(state => ({
+        modal: state.modal,
+        onboardingAnalytics: state.onboarding.onboardingAnalytics,
+    }));
 
     const [state, setState] = useState<'rename' | 'homescreen' | null>(null);
     const [label, setLabel] = useState('');
@@ -267,7 +272,21 @@ const FinalStep = () => {
                     <EnterSuiteButton
                         variant="secondary"
                         data-test="@onboarding/exit-app-button"
-                        onClick={() => goto('suite-index')}
+                        onClick={() => {
+                            goto('suite-index');
+
+                            const payload = {
+                                ...onboardingAnalytics,
+                                duration: Date.now() - onboardingAnalytics.startTime!,
+                                device: getDeviceModel(device),
+                            };
+                            delete payload.startTime;
+
+                            analytics.report({
+                                type: 'device-setup-completed',
+                                payload,
+                            });
+                        }}
                         icon="ARROW_RIGHT_LONG"
                         alignIcon="right"
                         guideOpen={guideOpen}

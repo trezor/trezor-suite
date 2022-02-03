@@ -4,7 +4,8 @@ import { DEVICE, Device } from 'trezor-connect';
 import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
 import { Action } from '@suite-types';
-import { AnyStepId, AnyPath } from '@onboarding-types';
+
+import type { AnyStepId, AnyPath, OnboardingAnalytics } from '@onboarding-types';
 
 export interface OnboardingState {
     reducerEnabled: boolean;
@@ -12,6 +13,7 @@ export interface OnboardingState {
     activeStepId: AnyStepId;
     activeSubStep: string | null;
     path: AnyPath[];
+    onboardingAnalytics: Partial<OnboardingAnalytics>;
 }
 
 const initialState: OnboardingState = {
@@ -20,10 +22,12 @@ const initialState: OnboardingState = {
     // would be better to implement field "isMatchingPrevDevice" along with prevDevice
     // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
     // and here leave only isMatchingPrevDevice ?
+
     prevDevice: null,
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
+    onboardingAnalytics: {},
 };
 
 const addPath = (path: AnyPath, state: OnboardingState) => {
@@ -64,6 +68,9 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = action.payload;
+                break;
+            case ONBOARDING.ANALYTICS:
+                draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
                 break;
             case ONBOARDING.RESET_ONBOARDING:
                 return initialState;
