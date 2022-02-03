@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { isWeb, isDesktop } from '@suite-utils/env';
 import { getProtocolInfo } from '@suite-utils/parseUri';
@@ -15,7 +16,7 @@ const Protocol = () => {
     });
 
     const handleProtocolRequest = useCallback(
-        uri => {
+        (uri: string) => {
             const protocolInfo = getProtocolInfo(uri);
             switch (protocolInfo?.scheme) {
                 case PROTOCOL_SCHEME.BITCOIN: {
@@ -59,8 +60,7 @@ const Protocol = () => {
         }
 
         if (isDesktop()) {
-            // @ts-ignore TS2339: Property 'desktopApi' does not exist on type 'Window & typeof globalThis'.
-            window.desktopApi?.on('protocol/open', handleProtocolRequest);
+            desktopApi.on('protocol/open', handleProtocolRequest);
         }
     }, [handleProtocolRequest]);
 

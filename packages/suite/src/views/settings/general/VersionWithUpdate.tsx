@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 import { VersionWithGithubTooltip } from '@suite-components/VersionWithGithubTooltip';
@@ -40,8 +41,8 @@ export const VersionWithUpdate = () => {
         desktopUpdate: state.desktopUpdate,
     }));
 
-    const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(true), []);
-    const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
+    const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
+    const installRestart = useCallback(() => desktopApi.installUpdate(), []);
     const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);
 
     return (

@@ -70,7 +70,7 @@ export type SuiteAction =
       }
     | {
           type: typeof SUITE.SET_THEME;
-          variant: SuiteThemeVariant;
+          variant: AppState['suite']['settings']['theme']['variant'];
       }
     | {
           type: typeof SUITE.SET_AUTODETECT;
@@ -96,7 +96,9 @@ export const setDbError = (payload: AppState['suite']['dbError']) => ({
     payload,
 });
 
-export const setTheme = (variant: SuiteThemeVariant): SuiteAction => ({
+export const setTheme = (
+    variant: AppState['suite']['settings']['theme']['variant'],
+): SuiteAction => ({
     type: SUITE.SET_THEME,
     variant,
 });

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { UpdateProgress } from '@trezor/suite-desktop-api';
+import { bytesToHumanReadable } from '@trezor/utils';
 
 import { H2, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { Row } from './styles';
-
-import { bytesToHumanReadable } from '@trezor/utils';
-import { UpdateProgress } from '@suite-types/desktop';
 
 const ModalHeadingWrapper = styled.div`
     display: flex;
@@ -39,7 +38,7 @@ const Text = styled(H2)`
 
 interface Props {
     hideWindow: () => void;
-    progress?: Partial<UpdateProgress>;
+    progress?: UpdateProgress;
 }
 
 const ellipsisArray = new Array(3).fill('.');

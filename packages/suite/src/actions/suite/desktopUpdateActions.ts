@@ -1,8 +1,8 @@
+import { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 import { DESKTOP_UPDATE } from '@suite-actions/constants';
 import { addToast } from '@suite-actions/notificationActions';
 import { Dispatch, GetState } from '@suite-types';
-import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
-import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
+import { UpdateState, UpdateWindow } from '@suite-reducers/desktopUpdateReducer';
 
 export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.ENABLE }
@@ -10,7 +10,7 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.AVAILABLE; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload?: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.DOWNLOAD }
-    | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: Partial<UpdateProgress> }
+    | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: UpdateProgress }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE }
@@ -41,7 +41,7 @@ export const download = (): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.DOWNLOAD,
 });
 
-export const downloading = (progress: Partial<UpdateProgress>): DesktopUpdateAction => ({
+export const downloading = (progress: UpdateProgress): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.DOWNLOADING,
     payload: progress,
 });

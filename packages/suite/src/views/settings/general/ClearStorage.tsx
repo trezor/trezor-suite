@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { Translation } from '@suite-components';
 import * as storageActions from '@suite-actions/storageActions';
@@ -30,11 +30,11 @@ export const ClearStorage = () => {
                     onClick={async () => {
                         localStorage.clear();
                         removeDatabase();
-                        if (window.desktopApi) {
+                        if (desktopApi.available) {
                             // Reset the desktop-specific store.
-                            window.desktopApi.clearStore();
+                            desktopApi.clearStore();
                             // relaunch desktop app
-                            window.desktopApi.appRestart();
+                            desktopApi.appRestart();
                         } else {
                             // redirect to / and reload the web
                             await goto('suite-index');

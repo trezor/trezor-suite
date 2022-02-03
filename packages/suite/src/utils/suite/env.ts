@@ -1,4 +1,5 @@
 import UAParser from 'ua-parser-js';
+import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import type { EnvironmentType } from '@suite-types';
 
@@ -122,7 +123,7 @@ export const submitRequestForm = async (
         Object.keys(fields).forEach(k => {
             params += `&${k}=${encodeURIComponent(fields[k])}`;
         });
-        const serverUrl = await window.desktopApi?.getHttpReceiverAddress('/buy-post');
+        const serverUrl = await desktopApi.getHttpReceiverAddress('/buy-post');
         window.open(`${serverUrl}?${params}`, '_blank');
     } else {
         const form = document.createElement('form');
@@ -155,10 +156,9 @@ const getDarkThemeQuery = (): MediaQueryList | undefined => {
     return matchMedia && matchMedia('(prefers-color-scheme: dark)');
 };
 
-export const getOsTheme = (): SuiteThemeVariant =>
-    getDarkThemeQuery()?.matches ? 'dark' : 'light';
+export const getOsTheme = () => (getDarkThemeQuery()?.matches ? 'dark' : 'light');
 
-export const watchOsTheme = (callback: (theme: SuiteThemeVariant) => void) => {
+export const watchOsTheme = (callback: (theme: Exclude<SuiteThemeVariant, 'system'>) => void) => {
     const onThemeChange = (e: MediaQueryListEvent) => callback(e.matches ? 'dark' : 'light');
     const query = getDarkThemeQuery();
     query?.addEventListener('change', onThemeChange);

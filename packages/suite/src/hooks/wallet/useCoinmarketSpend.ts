@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Props, SpendContextValues } from '@wallet-types/coinmarketSpend';
 import invityAPI from '@suite-services/invityAPI';
 import { SellVoucherTrade } from 'invity-api';
@@ -177,7 +178,7 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
     // create listener for messages from the spend partner
     useEffect(() => {
         if (!isLoading && !noProviders) {
-            const handleMessage = async (event: MessageEvent) => {
+            const handleMessage = async (event: Partial<MessageEvent>) => {
                 if (provider && provider.voucherSiteOrigin === event.origin) {
                     const trade = await invityAPI.requestVoucherTrade({
                         exchange: provider.name,
@@ -217,16 +218,16 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
                         });
                         composeRequest();
                         setTrade(trade);
-                        window.desktopApi?.appFocus();
+                        desktopApi.appFocus();
                     }
                 }
             };
 
             if (isDesktop()) {
                 // handle messages from desktop
-                window.desktopApi?.on('spend/message', handleMessage);
+                desktopApi.on('spend/message', handleMessage);
                 return () => {
-                    window.desktopApi?.removeAllListeners('spend/message');
+                    desktopApi.removeAllListeners('spend/message');
                 };
             }
 
@@ -239,8 +240,8 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
     }, [account.symbol, isLoading, noProviders, provider, addNotification, composeRequest]);
 
     const openWindow = async (voucherSiteUrl?: string) => {
-        const endpointIframe = await window.desktopApi?.getHttpReceiverAddress('/spend-iframe');
-        const handleMessageEndpoint = await window.desktopApi?.getHttpReceiverAddress(
+        const endpointIframe = await desktopApi.getHttpReceiverAddress('/spend-iframe');
+        const handleMessageEndpoint = await desktopApi.getHttpReceiverAddress(
             '/spend-handle-message',
         );
         if (voucherSiteUrl && handleMessageEndpoint) {

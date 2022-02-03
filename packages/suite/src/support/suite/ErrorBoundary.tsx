@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { AppState } from '@suite/types/suite';
 import { H1, P, Button, variables } from '@trezor/components';
 import { db } from '@suite/storage';
@@ -58,9 +59,9 @@ const ErrorMessage = styled.span`
 `;
 
 const refresh = () => {
-    if (window.desktopApi) {
-        window.desktopApi.appRestart();
-    } else {
+    if (desktopApi.available) {
+        desktopApi.appRestart();
+    } else if (typeof window !== 'undefined') {
         window.location.reload();
     }
 };

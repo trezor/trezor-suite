@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { useActions, useSelector } from '@suite-hooks';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
@@ -40,24 +41,28 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
 
     useEffect(() => {
-        window.desktopApi!.on('update/allow-prerelease', allowPrerelease);
+        desktopApi.on('update/allow-prerelease', allowPrerelease);
 
         if (!desktopUpdate.enabled) {
-            window.desktopApi?.on('update/enable', enable);
+            desktopApi.on('update/enable', enable);
             return;
         }
-        window.desktopApi!.on('update/checking', checking);
-        window.desktopApi!.on('update/available', available);
-        window.desktopApi!.on('update/not-available', notAvailable);
-        window.desktopApi!.on('update/downloaded', ready);
-        window.desktopApi!.on('update/downloading', downloading);
-        window.desktopApi!.on('update/error', error);
-        window.desktopApi!.on('update/new-version-first-run', newVersionFirstRun);
+        desktopApi.on('update/checking', checking);
+        desktopApi.on('update/available', available);
+        desktopApi.on('update/not-available', notAvailable);
+        desktopApi.on('update/downloaded', ready);
+        desktopApi.on('update/downloading', downloading);
+        desktopApi.on('update/error', error);
+        desktopApi.on('update/new-version-first-run', newVersionFirstRun);
 
         // Initial check for updates
-        window.desktopApi!.checkForUpdates();
+        desktopApi.checkForUpdates();
         // Check for updates every hour
-        setInterval(() => window.desktopApi!.checkForUpdates(), 60 * 60 * 1000);
+        const checkForUpdatesInterval = setInterval(() => {
+            desktopApi.checkForUpdates();
+        }, 60 * 60 * 1000);
+
+        return () => clearInterval(checkForUpdatesInterval);
     }, [
         available,
         checking,

@@ -1,7 +1,7 @@
 import produce from 'immer';
+import { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 import { DESKTOP_UPDATE } from '@suite-actions/constants';
 import { Action } from '@suite-types';
-import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
 
 /**
  * state: Current updater state
@@ -21,6 +21,8 @@ export enum UpdateState {
     EarlyAccessDisable = 'early-access-disable',
 }
 
+export type UpdateWindow = 'maximized' | 'minimized' | 'hidden';
+
 /**
  * state: UpdateState ↑
  * progress: Information about download progress (size, speed, ...)
@@ -33,7 +35,7 @@ export enum UpdateState {
 export interface State {
     enabled: boolean;
     state: UpdateState;
-    progress?: Partial<UpdateProgress>;
+    progress?: UpdateProgress;
     latest?: UpdateInfo;
     window: UpdateWindow;
     allowPrerelease: boolean;

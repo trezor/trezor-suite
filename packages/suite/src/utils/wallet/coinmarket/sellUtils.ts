@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Account } from '@wallet-types';
 import { AmountLimits } from '@wallet-types/coinmarketSellForm';
 import { SellFiatTrade, SellFiatTradeQuoteRequest, SellTradeStatus } from 'invity-api';
@@ -90,7 +91,7 @@ export const createQuoteLink = async (
     const params = `sell-offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        const url = await window.desktopApi?.getHttpReceiverAddress('/sell-redirect');
+        const url = await desktopApi.getHttpReceiverAddress('/sell-redirect');
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
 

@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 
+import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 import { Button, H2, variables, Link } from '@trezor/components';
 import { Translation, Modal, FormattedDate } from '@suite-components';
 import { Row, LeftCol, RightCol, Divider } from './styles';
 import { useActions } from '@suite-hooks';
 
 import { getReleaseNotes, getReleaseUrl } from '@suite/services/github';
-import type { UpdateInfo } from '@suite-types/desktop';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
 const GreenH2 = styled(H2)`
@@ -158,7 +158,7 @@ const Available = ({ hideWindow, latest }: Props) => {
 
     const downloadUpdate = useCallback(() => {
         download();
-        window.desktopApi!.downloadUpdate();
+        desktopApi.downloadUpdate();
     }, [download]);
 
     return (

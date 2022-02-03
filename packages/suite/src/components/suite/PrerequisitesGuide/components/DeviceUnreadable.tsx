@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { isLinux, isDesktop } from '@suite-utils/env';
 import { Translation, TroubleshootingTips } from '@suite-components';
 import UdevDownload from '@suite-components/UdevDownload';
@@ -68,7 +69,7 @@ const UdevDesktop = () => {
                     onClick={async event => {
                         event.preventDefault();
                         event.stopPropagation();
-                        const resp = await window.desktopApi?.installUdevRules();
+                        const resp = await desktopApi.installUdevRules();
                         if (resp?.success) {
                             setResponse(1);
                         } else {

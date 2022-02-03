@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, P, Tooltip } from '@trezor/components';
 import { CheckItem, Translation, Modal, Image } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
@@ -49,7 +50,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
                 allowPrerelease: true,
             },
         });
-        window.desktopApi?.allowPrerelease(true);
+        desktopApi.allowPrerelease(true);
         setEnabled(true);
     }, [analytics]);
     const checkForUpdates = useCallback(() => {
@@ -59,7 +60,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
                 checkNow: true,
             },
         });
-        window.desktopApi?.checkForUpdates(true);
+        desktopApi.checkForUpdates(true);
     }, [analytics]);
 
     return enabled ? (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { isWeb } from '@suite-utils/env';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -8,7 +8,7 @@ import { SettingsAnchor } from '@suite-constants/anchors';
 import type { Await } from '@suite/types/utils';
 
 type UserData = Extract<
-    Await<ReturnType<NonNullable<typeof window['desktopApi']>['getUserDataInfo']>>,
+    Await<ReturnType<NonNullable<typeof desktopApi>['getUserDataInfo']>>,
     { success: true }
 >;
 
@@ -21,7 +21,7 @@ export const WipeData = () => {
             return;
         }
         const getUserDataInfo = async () => {
-            const result = await window.desktopApi!.getUserDataInfo();
+            const result = await desktopApi.getUserDataInfo();
             if (result.success) {
                 setUserData(result.payload);
             }
@@ -45,8 +45,8 @@ export const WipeData = () => {
                 <ActionButton
                     variant="danger"
                     onClick={async () => {
-                        await window.desktopApi!.clearUserData();
-                        window.desktopApi!.appRestart();
+                        await desktopApi.clearUserData();
+                        desktopApi.appRestart();
                     }}
                 >
                     Wipe data
