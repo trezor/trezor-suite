@@ -7,6 +7,7 @@ import * as script from './script';
 import * as networks from './networks';
 import { composeTx } from './compose';
 import { deriveAddresses } from './derivation';
+import { discovery } from './discovery';
 
 export { Transaction } from './transaction';
 
@@ -20,6 +21,7 @@ export {
     networks,
     composeTx,
     deriveAddresses,
+    discovery,
 };
 
 export type { Network } from './networks';
