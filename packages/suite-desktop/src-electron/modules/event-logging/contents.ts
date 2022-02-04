@@ -1,7 +1,7 @@
 import { app } from 'electron';
 
 import { isDev } from '@suite-utils/build';
-import { Module } from '../../libs/modules';
+import { Module } from '../index';
 
 const logUI = app.commandLine.hasSwitch('log-ui');
 

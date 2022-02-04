@@ -2,7 +2,39 @@
 /* eslint-disable global-require */
 import { isDev } from '@suite-utils/build';
 import { StrictBrowserWindow } from '../typed-electron';
-import { MODULES, MODULES_DEV, MODULES_PROD } from './constants';
+
+// General modules (both dev & prod)
+const MODULES = [
+    // Event Logging
+    'event-logging/process',
+    'event-logging/app',
+    'event-logging/contents',
+    // Standard modules
+    'crash-recover',
+    'hang-detect',
+    'menu',
+    'shortcuts',
+    'request-filter',
+    'external-links',
+    'window-controls',
+    'theme',
+    'http-receiver',
+    'metadata',
+    'bridge',
+    'tor',
+    'custom-protocols',
+    'auto-updater',
+    'store',
+    'udev-install',
+    'user-data',
+    'trezor-connect-ipc',
+];
+
+// Modules only used in prod mode
+const MODULES_PROD = ['csp', 'file-protocol'];
+
+// Modules only used in dev mode
+const MODULES_DEV = ['dev-tools'];
 
 export type Dependencies = {
     mainWindow: StrictBrowserWindow;
@@ -13,7 +45,7 @@ export type Dependencies = {
 
 export type Module = (dependencies: Dependencies) => any;
 
-const modules: Module = async dependencies => {
+export const loadModules: Module = async dependencies => {
     const { logger } = global;
 
     logger.info('modules', `Loading ${MODULES.length} modules`);
@@ -33,5 +65,3 @@ const modules: Module = async dependencies => {
 
     logger.info('modules', 'All modules loaded');
 };
-
-export default modules;

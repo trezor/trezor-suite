@@ -1,5 +1,5 @@
 import { app, dialog } from 'electron';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 // Reasons for prompting a restart
 const unexpectedReasons = [

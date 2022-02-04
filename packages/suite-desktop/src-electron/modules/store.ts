@@ -1,5 +1,5 @@
 import { ipcMain } from '../typed-electron';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const init: Module = ({ store }) => {
     const { logger } = global;

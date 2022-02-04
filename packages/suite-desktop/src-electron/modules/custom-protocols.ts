@@ -3,7 +3,7 @@
  */
 import { app } from 'electron';
 import { isValidProtocol } from '../libs/protocol';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const init: Module = ({ mainWindow }) => {
     const { logger } = global;

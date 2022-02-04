@@ -5,7 +5,7 @@ import path from 'path';
 import { session } from 'electron';
 
 import { PROTOCOL } from '../libs/constants';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const init: Module = ({ mainWindow, src }) => {
     // Point to the right directory for file protocol requests

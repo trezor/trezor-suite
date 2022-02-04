@@ -2,7 +2,7 @@ import { Menu } from 'electron';
 
 import { buildMainMenu, inputMenu, selectionMenu } from '../libs/menu';
 import { b2t } from '../libs/utils';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const init: Module = ({ mainWindow }) => {
     const { logger } = global;

@@ -8,7 +8,7 @@ import * as store from './libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import Logger, { LogLevel, defaultOptions as loggerDefaults } from './libs/logger';
 import { buildInfo, computerInfo } from './libs/info';
-import modules from './libs/modules';
+import { loadModules } from './modules';
 import { createInterceptor } from './libs/request-interceptor';
 
 let mainWindow: BrowserWindow | typeof undefined;
@@ -103,7 +103,7 @@ const init = async () => {
     const interceptor = createInterceptor();
 
     // Modules
-    await modules({
+    await loadModules({
         mainWindow,
         src,
         store,
