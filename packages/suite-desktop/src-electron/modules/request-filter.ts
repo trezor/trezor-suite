@@ -3,7 +3,7 @@
  */
 import { dialog } from 'electron';
 import * as config from '../config';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const domainFilter = () => {
     const allowedDomains = [...config.allowedDomains];

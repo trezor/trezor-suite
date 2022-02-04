@@ -6,7 +6,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
 } from 'trezor-connect';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 type Call = [keyof typeof TrezorConnect, string, ...any[]];
 

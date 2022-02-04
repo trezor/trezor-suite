@@ -1,7 +1,7 @@
 /**
  * Enable development tools
  */
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const init: Module = ({ mainWindow }) => {
     mainWindow.webContents.once('dom-ready', () => {

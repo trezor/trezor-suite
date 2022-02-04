@@ -16,7 +16,7 @@ import { isDev } from '@suite-utils/build';
 import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';
 import { verifySignature } from '../libs/update-checker';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 // Runtime flags
 const enableUpdater = app.commandLine.hasSwitch('enable-updater');

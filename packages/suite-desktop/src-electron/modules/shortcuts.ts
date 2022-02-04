@@ -1,5 +1,5 @@
 import electronLocalshortcut from 'electron-localshortcut';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const init: Module = ({ mainWindow, src }) => {
     const { logger } = global;

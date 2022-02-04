@@ -5,7 +5,7 @@ import { app, ipcMain } from '../typed-electron';
 import { buyRedirectHandler } from '../libs/buy';
 import { sellRedirectHandler } from '../libs/sell';
 import { HttpReceiver } from '../libs/http-receiver';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 // External request handler
 const httpReceiver = new HttpReceiver();

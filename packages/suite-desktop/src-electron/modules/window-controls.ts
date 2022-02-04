@@ -2,7 +2,7 @@
  * Window events handler
  */
 import { app, ipcMain } from '../typed-electron';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const init: Module = ({ mainWindow }) => {
     const { logger } = global;

@@ -5,7 +5,7 @@ import { shell, dialog } from 'electron';
 import { HandlerDetails } from 'electron/main';
 
 import * as config from '../config';
-import { Module } from '../libs/modules';
+import { Module } from './index';
 
 const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
