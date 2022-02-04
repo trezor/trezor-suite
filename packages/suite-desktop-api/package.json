@@ -19,6 +19,7 @@
     "typings": "lib/main.d.ts",
     "scripts": {
         "lint": "eslint '**/*{.ts,.tsx}'",
+        "test:unit": "jest --verbose -c jest.config.js",
         "type-check": "tsc --project tsconfig.json",
         "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
     }
