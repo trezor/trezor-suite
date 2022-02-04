@@ -18,7 +18,7 @@ const validateUrl = (type: BackendOption, value: string) => {
         case 'blockbook':
             return isUrl(value);
         case 'electrum':
-            return /^[a-zA-Z0-9.]+:[0-9]{1,5}:[ts]$/.test(value);
+            return /^[a-zA-Z0-9.-]+:[0-9]{1,5}:[ts]$/.test(value);
         default:
             return false;
     }
