@@ -1,4 +1,5 @@
-import { Api, tryGetScripthash, discovery, AddressHistory, getTransactions } from '../utils';
+import { discovery } from '@trezor/utxo-lib';
+import { Api, tryGetScripthash, discoverAddress, AddressHistory, getTransactions } from '../utils';
 import { transformTransaction } from '../../blockbook/utils';
 import type { ElectrumAPI } from '../../../types/electrum';
 import type { GetAccountInfo as Req } from '../../../types/messages';
@@ -18,7 +19,7 @@ const getBalances =
     (client: ElectrumAPI) =>
     (addresses: AddressHistory[]): Promise<AddressInfo[]> =>
         Promise.all(
-            addresses.map(async ({ address, path, history, scripthash }) => {
+            addresses.map(async ({ address, path, history, scripthash, empty }) => {
                 const { confirmed, unconfirmed } = history.length
                     ? await client.request('blockchain.scripthash.get_balance', scripthash)
                     : {
@@ -29,6 +30,7 @@ const getBalances =
                     address,
                     path,
                     history,
+                    empty,
                     confirmed,
                     unconfirmed,
                 };
@@ -80,11 +82,13 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
             page,
         };
     }
-
-    const receive = await discovery(client, descriptor, 'receive', network).then(
+    const discover = discoverAddress(client);
+    const receive = await discovery(discover, descriptor, 'receive', network).then(
         getBalances(client)
     );
-    const change = await discovery(client, descriptor, 'change', network).then(getBalances(client));
+    const change = await discovery(discover, descriptor, 'change', network).then(
+        getBalances(client)
+    );
     const batch = receive.concat(change);
     const [confirmed, unconfirmed] = batch.reduce(
         ([c, u], { confirmed, unconfirmed }) => [c + confirmed, u + unconfirmed],

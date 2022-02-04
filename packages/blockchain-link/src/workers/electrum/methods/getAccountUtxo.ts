@@ -1,5 +1,6 @@
 import { throwError } from '@trezor/utils';
-import { Api, tryGetScripthash, discovery } from '../utils';
+import { discovery } from '@trezor/utxo-lib';
+import { Api, tryGetScripthash, discoverAddress } from '../utils';
 import type { GetAccountUtxo as Req } from '../../../types/messages';
 import type { GetAccountUtxo as Res } from '../../../types/responses';
 import type { Utxo } from '../../../types/electrum';
@@ -37,8 +38,9 @@ const getAccountUtxo: Api<Req, Res> = async (client, descriptor) => {
         return utxos.map(transformUtxo(height));
     }
 
-    const receive = await discovery(client, descriptor, 'receive', network);
-    const change = await discovery(client, descriptor, 'change', network);
+    const discover = discoverAddress(client);
+    const receive = await discovery(discover, descriptor, 'receive', network);
+    const change = await discovery(discover, descriptor, 'change', network);
     const result = await Promise.all(
         receive
             .concat(change)
