@@ -7,10 +7,9 @@ export const createInterceptor = (): RequestInterceptor => {
     let beforeRequestListeners: BeforeRequestListener[] = [];
 
     const filter = { urls: ['*://*/*'] };
-    session.defaultSession.webRequest.onBeforeRequest(filter, async (details, callback) => {
+    session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         for (let i = 0; i < beforeRequestListeners.length; ++i) {
-            /* eslint-disable no-await-in-loop */
-            const res = await beforeRequestListeners[i](details);
+            const res = beforeRequestListeners[i](details);
             if (res) {
                 callback(res);
                 return;

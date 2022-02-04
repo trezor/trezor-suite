@@ -1,29 +1,14 @@
 /**
- * Request Filter feature (blocks non-allowed requests and displays a warning)
+ * Request Filter feature (blocks non-allowed requests)
  */
-import { dialog } from 'electron';
-import * as config from '../config';
+import { allowedDomains } from '../config';
 import { Module } from './index';
 
-const domainFilter = () => {
-    const allowedDomains = [...config.allowedDomains];
-
-    const isAllowed = (hostname: string) =>
-        allowedDomains.find(d => hostname.endsWith(d)) !== undefined;
-
-    const addAllowed = (hostname: string) => allowedDomains.push(hostname);
-
-    return { isAllowed, addAllowed };
-};
-
-const init: Module = ({ mainWindow, interceptor }) => {
+const init: Module = ({ interceptor }) => {
     const { logger } = global;
 
-    const { isAllowed, addAllowed } = domainFilter();
-
     const resourceTypeFilter = ['xhr']; // What resource types we want to filter
-    const caughtDomainExceptions: string[] = []; // Domains that have already shown an exception
-    interceptor.onBeforeRequest(async details => {
+    interceptor.onBeforeRequest(details => {
         if (!resourceTypeFilter.includes(details.resourceType)) {
             logger.debug(
                 'request-filter',
@@ -34,26 +19,12 @@ const init: Module = ({ mainWindow, interceptor }) => {
 
         const { hostname } = new URL(details.url);
 
-        if (isAllowed(hostname)) {
+        if (allowedDomains.find(d => hostname.endsWith(d)) !== undefined) {
             logger.info(
                 'request-filter',
                 `${details.url} was allowed because ${hostname} is in the exception list`,
             );
             return;
-        }
-
-        if (caughtDomainExceptions.find(d => d === hostname) === undefined) {
-            const { response } = await dialog.showMessageBox(mainWindow, {
-                type: 'warning',
-                message: `Suite is trying to communicate with unknown host: ${hostname}.\n\nWould you like to allow the communication?`,
-                buttons: ['Allow', 'Deny'],
-            });
-            if (response === 0) {
-                addAllowed(hostname);
-                logger.info('request-filter', `${details.url} was manually allowed by the user`);
-                return;
-            }
-            caughtDomainExceptions.push(hostname);
         }
 
         logger.warn(
