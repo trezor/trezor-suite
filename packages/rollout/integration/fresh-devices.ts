@@ -4,10 +4,10 @@
  *
  * Find which fw should be offered for currently shipped T2 devices
  */
+import { versionUtils } from '@trezor/utils';
 
 import { getInfo, getBinary } from '../src';
 import { Release } from '../src/utils/parse';
-import { isNewerOrEqual } from '../src/utils/version';
 
 const { getDeviceFeatures } = global.JestMocks;
 
@@ -58,7 +58,7 @@ describe('Find firmware info for: ', () => {
         });
 
         const targetVersion = info!.release.version;
-        expect(isNewerOrEqual(targetVersion, [1, 10, 0])).toBe(true);
+        expect(versionUtils.isNewerOrEqual(targetVersion, [1, 10, 0])).toBe(true);
 
         // validate that with binary returns the same firmware
         const withBinary = await getBinary({
