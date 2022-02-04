@@ -1,4 +1,5 @@
-import { Api, tryGetScripthash, getTransactions, discovery, AddressHistory } from '../utils';
+import { discovery } from '@trezor/utxo-lib';
+import { Api, tryGetScripthash, getTransactions, discoverAddress, AddressHistory } from '../utils';
 import { transformTransaction } from '../../blockbook/utils';
 import type { GetAccountBalanceHistory as Req } from '../../../types/messages';
 import type { GetAccountBalanceHistory as Res } from '../../../types/responses';
@@ -61,8 +62,9 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
         history = await client.request('blockchain.scripthash.get_history', parsed.scripthash);
         addresses = undefined;
     } else {
-        const receive = await discovery(client, descriptor, 'receive', network);
-        const change = await discovery(client, descriptor, 'change', network);
+        const discover = discoverAddress(client);
+        const receive = await discovery(discover, descriptor, 'receive', network);
+        const change = await discovery(discover, descriptor, 'change', network);
         addresses = {
             change: change.map(transformAddress),
             used: receive.filter(({ history }) => history.length).map(transformAddress),
