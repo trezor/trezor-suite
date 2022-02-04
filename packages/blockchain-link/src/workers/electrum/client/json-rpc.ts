@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { fail } from '../utils';
+import { throwError } from '@trezor/utils';
 import type { ISocket } from '../sockets/interface';
 
 type Callback = (error: any, result?: any) => void;
@@ -67,7 +67,7 @@ export class JsonRpcClient {
     }
 
     protected send(message: string) {
-        const socket = this.socket || fail('Connection not established');
+        const socket = this.socket || throwError('Connection not established');
         this.log('SENDING:', message);
         socket.send(`${message}\n`);
     }

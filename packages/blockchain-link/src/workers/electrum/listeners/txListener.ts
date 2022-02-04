@@ -1,3 +1,4 @@
+import { throwError } from '@trezor/utils';
 import { RESPONSES } from '../../../constants';
 import { createAddressManager, getTransactions } from '../utils';
 import { transformTransaction } from '../../blockbook/utils';
@@ -22,7 +23,7 @@ const mostRecent = (previous: HistoryTx | undefined, current: HistoryTx) => {
 
 export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
     const { state } = worker;
-    const api = () => worker.api ?? fail('API not created');
+    const api = () => worker.api ?? throwError('API not created');
 
     const addressManager = createAddressManager(worker.api?.getInfo()?.network);
 
