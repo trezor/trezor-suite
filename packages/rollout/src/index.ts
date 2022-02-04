@@ -1,8 +1,9 @@
 /* eslint-disable camelcase */
+import { versionUtils } from '@trezor/utils';
+
 import { filterSafeListByFirmware, filterSafeListByBootloader } from './utils/releases';
 import { fetchFirmware } from './utils/fetch';
 import { getScore } from './utils/score';
-import * as versionUtils from './utils/version';
 import { parseFeatures, parseReleases, Release, Features } from './utils/parse';
 
 type ParsedFeatures = ReturnType<typeof parseFeatures>;

@@ -11,3 +11,4 @@ export * from './getNumberFromPixelString';
 export * from './isUrl';
 export * from './hasUppercaseLetter';
 export * from './isAscii';
+export * as versionUtils from './versionUtils';

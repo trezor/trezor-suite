@@ -32,6 +32,7 @@
         "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
     },
     "dependencies": {
+        "@trezor/utils": "1.0.0",
         "cross-fetch": "^3.1.4",
         "runtypes": "^5.0.1"
     },

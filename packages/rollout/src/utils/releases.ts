@@ -1,4 +1,4 @@
-import * as versionUtils from './version';
+import { versionUtils } from '@trezor/utils';
 import { Release, VersionArray } from './parse';
 
 export const filterSafeListByBootloader = (
