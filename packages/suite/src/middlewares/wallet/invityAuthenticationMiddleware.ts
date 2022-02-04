@@ -25,10 +25,8 @@ const invityAuthenticationMiddleware =
 
                 invityAPI.createInvityAPIKey(account.descriptor);
 
-                fetch(invityAPI.getCheckInvityAuthenticationUrl(), {
-                    credentials: 'include',
-                })
-                    .then(response => response.json())
+                invityAPI
+                    .getInvityAuthentication()
                     .then((invityAuthentication: InvityAuthentication) => {
                         if (invityAuthentication.error) {
                             invityAuthentication.active = false;
@@ -45,36 +43,27 @@ const invityAuthenticationMiddleware =
                         if (invityAuthentication.verified) {
                             invityAuthentication.email =
                                 invityAuthentication.identity?.traits.email;
-                            return invityAPI
-                                .accountInfo()
-                                .then(response => {
-                                    if (response.data) {
-                                        const accountInfo: AccountInfo = response.data;
-                                        invityAPI.setProtectedAPI(false);
-                                        invityAuthentication = {
-                                            ...invityAuthentication,
-                                            accountInfo,
-                                        };
-                                    } else {
-                                        invityAuthentication = {
-                                            ...invityAuthentication,
-                                            error: {
-                                                code: 503,
-                                                status: 'Error',
-                                                reason: response.error || '',
-                                            },
-                                        };
-                                    }
-                                    return invityAuthentication;
-                                })
-                                .catch(error => {
-                                    const reason = error instanceof Object ? error.toString() : '';
+
+                            return invityAPI.getAccountInfo().then(response => {
+                                invityAPI.setProtectedAPI(false);
+                                if (response.data) {
+                                    const accountInfo: AccountInfo = response.data;
                                     invityAuthentication = {
                                         ...invityAuthentication,
-                                        error: { code: 503, status: 'Error', reason },
+                                        accountInfo,
                                     };
-                                    return invityAuthentication;
-                                });
+                                } else {
+                                    invityAuthentication = {
+                                        ...invityAuthentication,
+                                        error: {
+                                            code: 503,
+                                            status: 'Error',
+                                            reason: response.error || '',
+                                        },
+                                    };
+                                }
+                                return invityAuthentication;
+                            });
                         }
                         if (action.redirectUnauthorizedUserToLogin) {
                             api.dispatch(

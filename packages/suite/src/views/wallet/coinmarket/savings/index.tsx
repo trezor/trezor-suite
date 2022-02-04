@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    CoinmarketLayout,
-    withSelectedAccountLoaded,
-    WithSelectedAccountLoadedProps,
-} from '@wallet-components';
-// TODO: do not forget...
-// import UnsupportedCountry from './unsupported-country';
+import { withCoinmarketSavingsLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
@@ -41,25 +35,23 @@ const CoinmarketSavingsLoaded = ({ selectedAccount }: WithSelectedAccountLoadedP
 
     // TODO: translations
     return (
-        <CoinmarketLayout>
-            <Wrapper>
-                <Header>Start investing periodically</Header>
-                <Description>
-                    Amet minim mollit non deserunt ullamco est sit aliqua dolor do.
-                </Description>
-                <StyledButtons>
-                    <Button variant="primary" onClick={() => navigateToInvityRegistration()}>
-                        Create an Invity account
-                    </Button>
-                    <Button variant="secondary" onClick={() => navigateToInvityLogin()}>
-                        Log in
-                    </Button>
-                </StyledButtons>
-            </Wrapper>
-        </CoinmarketLayout>
+        <Wrapper>
+            <Header>Start investing periodically</Header>
+            <Description>
+                Amet minim mollit non deserunt ullamco est sit aliqua dolor do.
+            </Description>
+            <StyledButtons>
+                <Button variant="primary" onClick={() => navigateToInvityRegistration()}>
+                    Create an Invity account
+                </Button>
+                <Button variant="secondary" onClick={() => navigateToInvityLogin()}>
+                    Log in
+                </Button>
+            </StyledButtons>
+        </Wrapper>
     );
 };
-export default withSelectedAccountLoaded(CoinmarketSavingsLoaded, {
+export default withCoinmarketSavingsLoaded(CoinmarketSavingsLoaded, {
     title: 'TR_NAV_SAVINGS',
     redirectUnauthorizedUserToLogin: false,
 });

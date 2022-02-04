@@ -205,6 +205,13 @@ const routes = [
         exact: true,
     },
     {
+        name: 'wallet-coinmarket-savings-unsupported-country',
+        pattern: '/accounts/coinmarket/savings/unsupported-country',
+        app: 'wallet',
+        params: walletParams,
+        exact: true,
+    },
+    {
         name: 'wallet-coinmarket-savings-setup',
         pattern: '/accounts/coinmarket/savings/setup',
         app: 'wallet',

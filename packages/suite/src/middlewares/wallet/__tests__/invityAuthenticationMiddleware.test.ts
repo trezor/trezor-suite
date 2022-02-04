@@ -3,14 +3,19 @@ import thunk from 'redux-thunk';
 import coinmarketReducer, { initialState } from '@wallet-reducers/coinmarketReducer';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import invityAuthenticationMiddleware from '@wallet-middlewares/invityAuthenticationMiddleware';
-import { Action } from '@suite-types';
+import type { Action } from '@suite-types';
 import { COINMARKET_COMMON } from '@wallet-actions/constants';
 import invityAPI from '@suite-services/invityAPI';
 import suiteReducer from '@suite-reducers/suiteReducer';
+import {
+    ACCOUNT_INFO_RESOPONSE,
+    INVITY_AUTHENTICATION,
+} from '../__fixtures__/invityAuthenticationMiddleware';
 
 jest.mock('@suite-services/invityAPI');
 invityAPI.setInvityServersEnvironment = () => {};
 invityAPI.createInvityAPIKey = () => {};
+invityAPI.setProtectedAPI = () => {};
 
 export const ACCOUNT = {
     descriptor: 'btc-descriptor',
@@ -89,13 +94,17 @@ describe('invityAuthenticationMiddleware', () => {
         jest.clearAllMocks();
     });
 
-    it('load Invity authentication', () => {
+    it('load Invity authentication - success', () => {
+        invityAPI.getInvityAuthentication = () => Promise.resolve(INVITY_AUTHENTICATION);
+        invityAPI.getAccountInfo = () => Promise.resolve(ACCOUNT_INFO_RESOPONSE);
         invityAPI.getCurrentAccountDescriptor = () => 'FakeDescriptor';
 
         const setInvityServersEnvironmentMock = jest.spyOn(
             invityAPI,
             'setInvityServersEnvironment',
         );
+
+        const getInvityAuthenticationMock = jest.spyOn(invityAPI, 'getInvityAuthentication');
 
         // @ts-ignore
         const store = initStore(
@@ -115,5 +124,85 @@ describe('invityAuthenticationMiddleware', () => {
             },
         ]);
         expect(setInvityServersEnvironmentMock).toBeCalledTimes(1);
+        expect(getInvityAuthenticationMock).toBeCalledTimes(1);
+    });
+
+    it('load Invity authentication - authentication server returned error authentication', () => {
+        invityAPI.getInvityAuthentication = () =>
+            Promise.resolve({
+                ...INVITY_AUTHENTICATION,
+                error: {
+                    code: 0,
+                    reason: 'FAKE',
+                    status: 'FAKE',
+                },
+            });
+        invityAPI.getAccountInfo = () => Promise.resolve(ACCOUNT_INFO_RESOPONSE);
+        invityAPI.getCurrentAccountDescriptor = () => 'FakeDescriptor';
+
+        const setInvityServersEnvironmentMock = jest.spyOn(
+            invityAPI,
+            'setInvityServersEnvironment',
+        );
+
+        const getInvityAuthenticationMock = jest.spyOn(invityAPI, 'getInvityAuthentication');
+
+        // @ts-ignore
+        const store = initStore(
+            getInitialState({
+                coinmarket: initialState,
+            }),
+        );
+
+        store.dispatch({ type: COINMARKET_COMMON.LOAD_INVITY_AUTHENTICATION });
+        expect(store.getActions()).toEqual([
+            {
+                type: COINMARKET_COMMON.SET_INVITY_AUTHENTICATION_LOADING,
+                isInvityAuthenticationLoading: true,
+            },
+            {
+                type: COINMARKET_COMMON.LOAD_INVITY_AUTHENTICATION,
+            },
+        ]);
+        expect(setInvityServersEnvironmentMock).toBeCalledTimes(1);
+        expect(getInvityAuthenticationMock).toBeCalledTimes(1);
+    });
+
+    it('load Invity authentication - Invity API server returned error', () => {
+        invityAPI.getInvityAuthentication = () => Promise.resolve(INVITY_AUTHENTICATION);
+        invityAPI.getAccountInfo = () =>
+            Promise.resolve({
+                ...ACCOUNT_INFO_RESOPONSE,
+                data: undefined,
+                error: 'FAKE_ERROR',
+            });
+        invityAPI.getCurrentAccountDescriptor = () => 'FakeDescriptor';
+
+        const setInvityServersEnvironmentMock = jest.spyOn(
+            invityAPI,
+            'setInvityServersEnvironment',
+        );
+
+        const getInvityAuthenticationMock = jest.spyOn(invityAPI, 'getInvityAuthentication');
+
+        // @ts-ignore
+        const store = initStore(
+            getInitialState({
+                coinmarket: initialState,
+            }),
+        );
+
+        store.dispatch({ type: COINMARKET_COMMON.LOAD_INVITY_AUTHENTICATION });
+        expect(store.getActions()).toEqual([
+            {
+                type: COINMARKET_COMMON.SET_INVITY_AUTHENTICATION_LOADING,
+                isInvityAuthenticationLoading: true,
+            },
+            {
+                type: COINMARKET_COMMON.LOAD_INVITY_AUTHENTICATION,
+            },
+        ]);
+        expect(setInvityServersEnvironmentMock).toBeCalledTimes(1);
+        expect(getInvityAuthenticationMock).toBeCalledTimes(1);
     });
 });

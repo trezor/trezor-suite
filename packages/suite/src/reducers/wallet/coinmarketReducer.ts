@@ -79,6 +79,7 @@ interface Sell {
 }
 
 interface Savings {
+    countryEffective?: string;
     selectedProvider?: SavingsProviderInfo;
     savingsInfo?: SavingsInfo;
     savingsTrade?: SavingsTrade;
@@ -140,6 +141,7 @@ export const initialState = {
         isFromRedirect: false,
     },
     savings: {
+        countryEffective: undefined,
         selectedProvider: undefined,
         savingsInfo: undefined,
         savingsTrade: undefined,
@@ -293,6 +295,9 @@ const coinmarketReducer = (
             case COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS:
                 draft.savings.kycFinalStatus = action.kycFinalStatus;
                 draft.savings.isWatchingKYCStatus = false;
+                break;
+            case COINMARKET_SAVINGS.SET_USER_COUNTRY_EFFECTIVE:
+                draft.savings.countryEffective = action.countryEffective;
                 break;
             // no default
         }

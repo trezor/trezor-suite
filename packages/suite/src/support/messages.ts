@@ -1168,6 +1168,19 @@ export default defineMessages({
         defaultMessage: 'Go to partner',
         id: 'TR_SAVINGS_KYC_FAILED_GO_TO_PARTNER_BUTTON',
     },
+    TR_SAVINGS_UNSUPPORTED_COUNTRY_HEADER: {
+        defaultMessage: 'Hm, it seems you are far away.',
+        id: 'TR_SAVINGS_UNSUPPORTED_COUNTRY_HEADER',
+    },
+    TR_SAVINGS_UNSUPPORTED_COUNTRY_DESCRIPTION: {
+        defaultMessage:
+            'We provider this service only in EU - if you are travelling just change your location and you may proceed.',
+        id: 'TR_SAVINGS_UNSUPPORTED_COUNTRY_DESCRIPTION',
+    },
+    TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL: {
+        defaultMessage: 'Select your country',
+        id: 'TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',

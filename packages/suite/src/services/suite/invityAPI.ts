@@ -34,6 +34,7 @@ import type {
     AccountInfoResponse,
     AccountSettings,
     AccountUpdateResponse,
+    InvityAuthentication,
     InvityServerEnvironment,
     InvityServers,
 } from '@wallet-types/invity';
@@ -904,10 +905,21 @@ class InvityAPI {
         }
     };
 
-    getCheckInvityAuthenticationUrl() {
-        // TODO: this API client should do the request
-        return `${this.getAuthServerUrl()}/sessions/whoami`;
-    }
+    getInvityAuthentication = async (): Promise<InvityAuthentication> => {
+        try {
+            const response = await fetch(`${this.getAuthServerUrl()}/sessions/whoami`, {
+                credentials: 'include',
+            });
+            const result: InvityAuthentication = await response.json();
+            return result;
+        } catch (error) {
+            console.log('[getInvityAuthentication]', error);
+            const reason = error instanceof Object ? error.toString() : '';
+            return {
+                error: { code: 503, status: 'Error', reason },
+            };
+        }
+    };
 
     private getInvityAuthenticationPageSrc(
         flow: 'login' | 'registration',
@@ -957,7 +969,7 @@ class InvityAPI {
     //     }
     // }
 
-    accountInfo = async (): Promise<AccountInfoResponse> => {
+    getAccountInfo = async (): Promise<AccountInfoResponse> => {
         try {
             const response: AccountInfoResponse = await this.requestApiServer(
                 this.ACCOUNT_INFO,

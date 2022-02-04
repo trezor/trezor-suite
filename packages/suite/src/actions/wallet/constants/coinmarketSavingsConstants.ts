@@ -10,3 +10,4 @@ export const SET_WATCHING_KYC_STATUS_METADATA =
     '@coinmarket-savings/set_watching_kyc_status_metadata';
 
 export const VERIFY_ADDRESS = '@coinmarket-savings/verify_address';
+export const SET_USER_COUNTRY_EFFECTIVE = '@coinmarket-savings/set_user_country_effective';
