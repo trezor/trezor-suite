@@ -5,7 +5,7 @@ import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import * as routerActions from '@suite-actions/routerActions';
 import type { Account } from '@wallet-types';
-import { loadSavingsTrade } from '@wallet-actions/coinmarketSavingsActions';
+// import { loadSavingsTrade } from '@wallet-actions/coinmarketSavingsActions';
 
 const navigateToRouteName = (routeName: Route['name'], account: Account) =>
     routerActions.goto(routeName, {

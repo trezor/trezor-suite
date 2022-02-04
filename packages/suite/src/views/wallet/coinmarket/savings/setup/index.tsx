@@ -215,16 +215,21 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     </FiatAmountRightColumn>
                 )}
             </FiatAmount>
-            <Label>
-                <Translation id="TR_SAVINGS_SETUP_RECEIVING_ADDRESS" />
-            </Label>
-            <AddressOptions
-                account={account}
-                control={control}
-                receiveSymbol={account.symbol}
-                setValue={setValue}
-                address={address}
-            />
+            {!isWatchingKYCStatus && (
+                <>
+                    <Label>
+                        <Translation id="TR_SAVINGS_SETUP_RECEIVING_ADDRESS" />
+                    </Label>
+                    <AddressOptions
+                        account={account}
+                        control={control}
+                        receiveSymbol={account.symbol}
+                        setValue={setValue}
+                        address={address}
+                    />
+                </>
+            )}
+
             <Divider />
             <Summary>
                 <Left>
