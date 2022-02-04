@@ -1,5 +1,7 @@
 export * from './createDeferred';
+export * from './arrayDistinct';
 export * from './arrayPartition';
+export * from './arrayToDictionary';
 export * from './bytesToHumanReadable';
 export * from './mergeObject';
 export * from './getWeakRandomId';
@@ -11,4 +13,7 @@ export * from './getNumberFromPixelString';
 export * from './isUrl';
 export * from './hasUppercaseLetter';
 export * from './isAscii';
+export * from './isNotUndefined';
 export * as versionUtils from './versionUtils';
+export * from './objectPartition';
+export * from './throwError';
