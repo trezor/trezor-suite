@@ -1,5 +1,6 @@
 import { DesktopApi, RendererChannels } from './api';
 import { StrictIpcRenderer } from './ipc';
+import * as validation from './validation';
 
 // Provide fallback for missing ipcRenderer
 const fallbackMethod = (...args: any[]) => console.error('desktopApi not available:', ...args);
@@ -22,7 +23,7 @@ const omitElectronEvent = <
     channel: Channel,
     listener: Listener,
 ) => {
-    on(channel, (_, ...args) => listener(...args)); // call listener without event
+    if (validation.isValidChannel(channel)) on(channel, (_, ...args) => listener(...args)); // call listener without event
 };
 
 export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): DesktopApi => {
@@ -32,39 +33,69 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
         on: (channel, listener) =>
             omitElectronEvent(ipcRenderer.on.bind(ipcRenderer), channel, listener),
         once: (channel, listener) =>
-            omitElectronEvent(ipcRenderer.on.bind(ipcRenderer), channel, listener),
-        removeAllListeners: ipcRenderer.removeAllListeners,
+            omitElectronEvent(ipcRenderer.once.bind(ipcRenderer), channel, listener),
+        removeAllListeners: channel => {
+            if (validation.isValidChannel(channel)) ipcRenderer.removeAllListeners(channel);
+        },
 
         // App
         appRestart: () => ipcRenderer.send('app/restart'),
         appFocus: () => ipcRenderer.send('app/focus'),
 
         // Auto-updater
-        checkForUpdates: isManual => ipcRenderer.send('update/check', isManual),
+        checkForUpdates: isManual => {
+            if (validation.isPrimitive(['boolean', true], isManual))
+                ipcRenderer.send('update/check', isManual);
+        },
         downloadUpdate: () => ipcRenderer.send('update/download'),
         installUpdate: () => ipcRenderer.send('update/install'),
         cancelUpdate: () => ipcRenderer.send('update/cancel'),
-        allowPrerelease: value => ipcRenderer.send('update/allow-prerelease', value),
+        allowPrerelease: value => {
+            if (validation.isPrimitive('boolean', value))
+                ipcRenderer.send('update/allow-prerelease', value);
+        },
 
         // Theme
-        themeChange: theme => ipcRenderer.send('theme/change', theme),
+        themeChange: theme => {
+            if (validation.isTheme(theme)) ipcRenderer.send('theme/change', theme);
+        },
         themeSystem: () => ipcRenderer.send('theme/system'),
 
         // Client
         clientReady: () => ipcRenderer.send('client/ready'),
 
         // Metadata
-        metadataRead: options => ipcRenderer.invoke('metadata/read', options),
-        metadataWrite: options => ipcRenderer.invoke('metadata/write', options),
+        metadataRead: options => {
+            if (validation.isObject({ file: 'string' }, options)) {
+                return ipcRenderer.invoke('metadata/read', options);
+            }
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
+        metadataWrite: options => {
+            if (validation.isObject({ file: 'string', content: 'string' }, options)) {
+                return ipcRenderer.invoke('metadata/write', options);
+            }
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
 
         // HttpReceiver
-        getHttpReceiverAddress: route => ipcRenderer.invoke('server/request-address', route),
+        getHttpReceiverAddress: route => {
+            if (validation.isPrimitive('string', route)) {
+                return ipcRenderer.invoke('server/request-address', route);
+            }
+            return Promise.resolve(undefined);
+        },
 
         // Tor
         getStatus: () => ipcRenderer.send('tor/get-status'),
-        toggleTor: start => ipcRenderer.send('tor/toggle', start),
+        toggleTor: start => {
+            if (validation.isPrimitive('boolean', start)) ipcRenderer.send('tor/toggle', start);
+        },
         getTorAddress: () => ipcRenderer.invoke('tor/get-address'),
-        setTorAddress: address => ipcRenderer.send('tor/set-address', address),
+        setTorAddress: address => {
+            if (validation.isPrimitive('string', address))
+                ipcRenderer.send('tor/set-address', address);
+        },
 
         // Store
         clearStore: () => ipcRenderer.send('store/clear'),
