@@ -1,4 +1,4 @@
-import { flatten, notUndefined, separate, distinct } from './misc';
+import { isNotUndefined, arrayDistinct, objectPartition } from '@trezor/utils';
 import { addressToScripthash } from './transform';
 import type { Network } from '@trezor/utxo-lib';
 import type { AccountAddresses, SubscriptionAccountInfo } from '../../../types';
@@ -7,20 +7,18 @@ type AddressMap = { [address: string]: string };
 type AccountMap = { [descriptor: string]: AccountAddresses };
 
 const addressesFromAccounts = (array: (AccountAddresses | undefined)[]) =>
-    flatten(
-        array
-            .filter(notUndefined)
-            .map(({ change, used, unused }) =>
-                change.concat(used, unused).map(({ address }) => address)
-            )
-    );
+    array
+        .filter(isNotUndefined)
+        .flatMap(({ change, used, unused }) =>
+            change.concat(used, unused).map(({ address }) => address)
+        );
 
 export const createAddressManager = (network?: Network) => {
     let subscribedAddrs: AddressMap = {};
     let subscribedAccs: AccountMap = {};
 
     const addAddresses = (addresses: string[]) => {
-        const toAdd = addresses.filter(distinct).filter(addr => !subscribedAddrs[addr]);
+        const toAdd = addresses.filter(arrayDistinct).filter(addr => !subscribedAddrs[addr]);
 
         subscribedAddrs = toAdd.reduce<AddressMap>(
             (dic, addr) => ({
@@ -35,7 +33,7 @@ export const createAddressManager = (network?: Network) => {
 
     const removeAddresses = (addresses?: string[]) => {
         const [toRemove, toPreserve] = addresses
-            ? separate(subscribedAddrs, addresses)
+            ? objectPartition(subscribedAddrs, addresses)
             : [subscribedAddrs, {}];
 
         subscribedAddrs = toPreserve;
@@ -61,7 +59,7 @@ export const createAddressManager = (network?: Network) => {
 
     const removeAccounts = (accounts?: SubscriptionAccountInfo[]) => {
         const [toRemove, toPreserve] = accounts
-            ? separate(
+            ? objectPartition(
                   subscribedAccs,
                   accounts.map(({ descriptor }) => descriptor)
               )

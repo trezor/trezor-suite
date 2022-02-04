@@ -1,11 +1,4 @@
-import {
-    Api,
-    tryGetScripthash,
-    getTransactions,
-    discovery,
-    flatten,
-    AddressHistory,
-} from '../utils';
+import { Api, tryGetScripthash, getTransactions, discovery, AddressHistory } from '../utils';
 import { transformTransaction } from '../../blockbook/utils';
 import type { GetAccountBalanceHistory as Req } from '../../../types/messages';
 import type { GetAccountBalanceHistory as Res } from '../../../types/responses';
@@ -74,9 +67,10 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
             used: receive.filter(({ history }) => history.length).map(transformAddress),
             unused: receive.filter(({ history }) => !history.length).map(transformAddress),
         };
-        history = flatten(
-            receive.map(({ history }) => history).concat(change.map(({ history }) => history))
-        );
+        history = receive
+            .map(({ history }) => history)
+            .concat(change.map(({ history }) => history))
+            .flat();
     }
 
     const txs = await getTransactions(client, history).then(txs =>

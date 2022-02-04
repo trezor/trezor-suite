@@ -1,4 +1,5 @@
-import { Api, blockheaderToBlockhash, fail } from '../utils';
+import { throwError } from '@trezor/utils';
+import { Api, blockheaderToBlockhash } from '../utils';
 import type { GetInfo as Req } from '../../../types/messages';
 import type { GetInfo as Res } from '../../../types/responses';
 
@@ -8,7 +9,7 @@ const getInfo: Api<Req, Res> = client => {
         coin,
         block: { hex, height },
         version: [_name, version],
-    } = client.getInfo() || fail('Client not initialized');
+    } = client.getInfo() || throwError('Client not initialized');
     return Promise.resolve({
         url,
         version,

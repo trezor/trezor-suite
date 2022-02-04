@@ -1,11 +1,12 @@
+import { throwError } from '@trezor/utils';
 import { RESPONSES } from '../../../constants';
-import { blockheaderToBlockhash, fail } from '../utils';
+import { blockheaderToBlockhash } from '../utils';
 import type { BaseWorker } from '../../base';
 import type { BlockHeader, ElectrumAPI } from '../../../types/electrum';
 
 export const blockListener = (worker: BaseWorker<ElectrumAPI>) => {
     const { state } = worker;
-    const api = () => worker.api ?? fail('API not created');
+    const api = () => worker.api ?? throwError('API not created');
 
     const onBlock = (blocks: BlockHeader[]) => {
         blocks.forEach(({ height, hex }) =>

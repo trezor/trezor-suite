@@ -1,12 +1,4 @@
-import {
-    Api,
-    flatten,
-    tryGetScripthash,
-    discovery,
-    AddressHistory,
-    getTransactions,
-    sum,
-} from '../utils';
+import { Api, tryGetScripthash, discovery, AddressHistory, getTransactions } from '../utils';
 import { transformTransaction } from '../../blockbook/utils';
 import type { ElectrumAPI } from '../../../types/electrum';
 import type { GetAccountInfo as Req } from '../../../types/messages';
@@ -95,7 +87,7 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         ([c, u], { confirmed, unconfirmed }) => [c + confirmed, u + unconfirmed],
         [0, 0]
     );
-    const history = flatten(batch.map(({ history }) => history));
+    const history = batch.flatMap(({ history }) => history);
     const historyUnconfirmed = history.filter(r => r.height <= 0).length;
 
     const transformAddressInfo = ({ address, path, history, confirmed }: AddressInfo): Address => ({
@@ -121,13 +113,13 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         address: string,
         getVinVouts: (tr: ReturnType<typeof transformTransaction>) => VinVout[]
     ) =>
-        flatten(
-            transactions.map(tx =>
+        transactions
+            .flatMap(tx =>
                 getVinVouts(tx)
                     .filter(({ addresses }) => addresses?.includes(address))
                     .map(({ value }) => (value ? Number.parseFloat(value) : 0))
             )
-        ).reduce(sum, 0);
+            .reduce((a, b) => a + b, 0);
 
     const extendAddressInfo = ({ address, path, transfers, balance }: Address): Address => ({
         address,

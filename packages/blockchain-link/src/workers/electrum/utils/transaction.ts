@@ -1,4 +1,4 @@
-import { arrayToDic, flatten, distinct, sum } from './misc';
+import { arrayToDictionary, arrayDistinct } from '@trezor/utils';
 import { btcToSat } from './transform';
 import type { Transaction as BlockbookTransaction } from '../../../types/blockbook';
 import type {
@@ -40,10 +40,10 @@ const formatTransaction =
     (tx: TransactionVerbose): BlockbookTransaction => {
         const { txid, version, vin, vout, hex, blockhash, confirmations, blocktime, locktime } = tx;
         const vinRegular = vin.filter(isNotCoinbase);
-        const value = vout.map(({ value }) => value).reduce(sum, 0);
+        const value = vout.map(({ value }) => value).reduce((a, b) => a + b, 0);
         const valueIn = vinRegular
             .map(({ txid, vout }) => getVout(txid, vout).value)
-            .reduce(sum, 0);
+            .reduce((a, b) => a + b, 0);
         return {
             txid,
             hex,
@@ -78,40 +78,36 @@ export const getTransactions = async (
     client: ElectrumAPI,
     history: HistoryTx[]
 ): Promise<BlockbookTransaction[]> => {
-    const txids = history.map(({ tx_hash }) => tx_hash).filter(distinct);
+    const txids = history.map(({ tx_hash }) => tx_hash).filter(arrayDistinct);
 
     // TODO optimize blockchain.transaction.get to not use verbose mode but parse
     // binary data locally instead. Then the transaction could be cached indefinitely.
 
     const origTxs = await Promise.all(
         txids.map(txid => client.request('blockchain.transaction.get', txid, true))
-    ).then(txs => arrayToDic(txs, ({ txid }) => txid));
+    ).then(txs => arrayToDictionary(txs, ({ txid }) => txid));
 
     const prevTxs = await Promise.all(
-        flatten(
-            Object.values(origTxs).map(({ vin }) =>
-                vin.filter(isNotCoinbase).map(({ txid }) => txid)
-            )
-        )
-            .filter(distinct)
+        Object.values(origTxs)
+            .flatMap(({ vin }) => vin.filter(isNotCoinbase).map(({ txid }) => txid))
+            .filter(arrayDistinct)
             .filter(txid => !origTxs[txid])
             .map(txid => client.request('blockchain.transaction.get', txid, true))
-    ).then(txs => arrayToDic(txs, ({ txid }) => txid));
+    ).then(txs => arrayToDictionary(txs, ({ txid }) => txid));
 
     /* TODO
      * listunspent is too long for some addresses, but it's probably not a problem
      * to ignore it as vout[n].spent is not used anywhere anyway
     const unspentOutputs = await Promise.all(
-        flatten(
-            Object.values(origTxs).map(({ vout }) => vout.map(({ scriptPubKey: { hex } }) => hex))
-        )
-            .filter(distinct)
+        Object.values(origTxs)
+            .flatMap(({ vout }) => vout.map(({ scriptPubKey: { hex } }) => hex))
+            .filter(arrayDistinct)
             .map(scriptToScripthash)
             .map(scripthash => client.request('blockchain.scripthash.listunspent', scripthash))
     )
-        .then(flatten)
         .then(utxos =>
             utxos
+                .flat()
                 .filter(({ tx_hash }) => origTxs[tx_hash])
                 .reduce(
                     (dic, { tx_hash, tx_pos }) => ({
