@@ -14,6 +14,11 @@ const networks = [
             account: 'https://btc1.trezor.io/xpub/',
         },
         features: ['rbf', 'sign-verify'],
+        // todo: to be used with cardano. leaving it here temporarily for review purposes
+        // support: {
+        //     1: '1.9.9',
+        //     2: '2.9.9',
+        // },
     },
     {
         name: 'Bitcoin (Taproot)',
@@ -426,6 +431,9 @@ type Network = {
     features?: string[];
     label?: ExtendedMessageDescriptor['id'];
     tooltip?: ExtendedMessageDescriptor['id'];
+    support?: {
+        [key: number]: string;
+    };
 } & ArrayElement<typeof networks>;
 
 export default [...networks] as Network[];
