@@ -1,9 +1,10 @@
 // bridge v2 is half-way between lowlevel and not
 // however, it is not doing actual sending in/to the devices
 // and it refers enumerate to bridge
+import { versionUtils } from '@trezor/utils';
+
 import { request as http, setFetch as rSetFetch } from './http';
 import * as check from '../utils/highlevel-checks';
-import { semverCompare } from '../utils/semver-compare';
 import { buildOne } from '../lowlevel/send';
 import { parseConfigure } from '../lowlevel/protobuf/messages';
 import { receiveOne } from '../lowlevel/receive';
@@ -70,7 +71,7 @@ export default class BridgeTransport {
                           method: `GET`,
                       }),
                   );
-        this.isOutdated = semverCompare(this.version, newVersion) < 0;
+        this.isOutdated = versionUtils.isNewer(newVersion, this.version);
     }
 
     async configure(signedData: INamespace) {
