@@ -106,20 +106,21 @@ suite desktop nightly:
 
 # This test should exist only until trezor-connect is in monorepo.
 # It checks whether rollout works with currently released webwallet data
-rollout nightly:
-  only:
-    - schedules
+.rollout-e2e:
   stage: integration testing
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/utils build:lib
     - yarn workspace @trezor/rollout test:integration
 
 rollout:
+  extends: .rollout-e2e
   when: manual
-  stage: integration testing
-  script:
-    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/rollout test:integration
+
+rollout nightly:
+  extends: .rollout-e2e
+  only:
+    - schedules
 
 # @trezor/transport
 .e2e transport:
