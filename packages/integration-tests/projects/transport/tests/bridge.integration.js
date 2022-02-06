@@ -23,40 +23,47 @@ describe('bridge', () => {
         await wait(1000);
     });
 
-    afterEach(() => {
+    afterAll(() => {
         controller.disconnect();
     });
 
-    test('enumerate - acquire - getFeatures', async () => {
-        BridgeV2.setFetch(fetch, true);
+    // there might be more versions of bridge out there, see https://github.com/trezor/webwallet-data/tree/master/bridge
+    // but they are not available from trezor-user-env, see https://github.com/trezor/trezor-user-env/tree/master/src/binaries/trezord-go/bin
+    ['2.0.26', '2.0.27', undefined].forEach(bridgeVersion => {
+        test(`${bridgeVersion || 'latest'}: enumerate - acquire - getFeatures`, async () => {
+            // note: sending undefined should run the latest version
+            await controller.send({ type: 'bridge-start', version: bridgeVersion });
 
-        const bridge = new BridgeV2(null, null);
-        await bridge.init(false);
-        await bridge.configure(messages);
+            BridgeV2.setFetch(fetch, true);
 
-        const devices = await bridge.enumerate();
+            const bridge = new BridgeV2(null, null);
+            await bridge.init(false);
+            bridge.configure(messages);
 
-        expect(devices).toEqual([
-            {
-                path: '1',
-                session: null,
-                debugSession: null,
-                product: 0,
-                vendor: 0,
-                debug: true,
-            },
-        ]);
+            const devices = await bridge.enumerate();
 
-        const session = await bridge.acquire({ path: devices[0].path });
+            expect(devices).toEqual([
+                {
+                    path: '1',
+                    session: null,
+                    debugSession: null,
+                    product: 0,
+                    vendor: 0,
+                    debug: true,
+                },
+            ]);
 
-        const message = await bridge.call(session, 'GetFeatures', {});
+            const session = await bridge.acquire({ path: devices[0].path }, false);
 
-        expect(message).toMatchObject({
-            type: 'Features',
-            message: {
-                vendor: 'trezor.io',
-                label: 'TrezorT',
-            },
+            const message = await bridge.call(session, 'GetFeatures', {}, false);
+
+            expect(message).toMatchObject({
+                type: 'Features',
+                message: {
+                    vendor: 'trezor.io',
+                    label: 'TrezorT',
+                },
+            });
         });
     });
 });
