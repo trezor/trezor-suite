@@ -19,9 +19,9 @@ const wait = ms =>
 
 const setup = async controller => {
     await controller.connect();
+    await controller.send({ type: 'bridge-stop' });
     await controller.send({ type: 'emulator-start', ...emulatorStartOpts });
     await controller.send({ type: 'emulator-setup', ...emulatorSetupOpts });
-    await controller.send({ type: 'bridge-start' });
 };
 
 global.Trezor = {
