@@ -131,15 +131,6 @@ describe('DesktopApi', () => {
             expect(spy).toBeCalledTimes(1); // invalid param not processed
         });
 
-        it('DesktopApi.themeSystem', () => {
-            const spy = jest.spyOn(ipcRenderer, 'send');
-            api.themeSystem();
-            expect(spy).toBeCalledWith('theme/system');
-
-            // @ts-expect-error no expected params
-            api.themeSystem(true);
-        });
-
         it('DesktopApi.clientReady', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.clientReady();
