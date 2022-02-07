@@ -108,6 +108,7 @@ const StyledInput = styled(Input)`
 
 const SetupSaved = styled.div`
     display: flex;
+    align-items: center;
 `;
 
 const getFiatAmountOptions = (amounts: string[]) =>
@@ -143,9 +144,10 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         handleSubmit,
         onSubmit,
         wasSetupSaved,
+        isLoading,
     } = useSavingsSetup(props);
 
-    return (
+    return !isLoading ? (
         <form onSubmit={handleSubmit(onSubmit)}>
             {isWatchingKYCStatus && <KYCInProgress />}
             <Header>
@@ -261,6 +263,10 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                 )}
             </Footer>
         </form>
+    ) : (
+        <>
+            <Translation id="TR_LOADING" />
+        </>
     );
 };
 export default withInvityLayout(CoinmarketSavingsSetup, {

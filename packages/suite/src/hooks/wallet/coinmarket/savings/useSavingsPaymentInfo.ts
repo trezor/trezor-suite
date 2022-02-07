@@ -9,7 +9,7 @@ import type {
 } from '@wallet-types/coinmarket/savings/paymentInfo';
 import useSavingsTrade from './useSavingsTrade';
 import { useActions } from '@suite-hooks';
-import { SavingsPaymentInfo } from '@suite/services/suite/invityAPI';
+import invityAPI, { SavingsPaymentInfo } from '@suite/services/suite/invityAPI';
 
 export const SavingsUserInfoContext = createContext<SavingsPaymentInfoContextValues | null>(null);
 SavingsUserInfoContext.displayName = 'SavingsPaymentInfoContext';
@@ -17,7 +17,9 @@ SavingsUserInfoContext.displayName = 'SavingsPaymentInfoContext';
 export const useSavingsPaymentInfo = ({
     selectedAccount,
 }: UseSavingsPaymentInfoProps): SavingsPaymentInfoContextValues => {
-    const { navigateToSavingsSetup } = useCoinmarketNavigation(selectedAccount.account);
+    const { navigateToSavingsSetup, navigateToSavingsOverview } = useCoinmarketNavigation(
+        selectedAccount.account,
+    );
 
     const handleEditButtonClick = useCallback(() => {
         navigateToSavingsSetup();
@@ -25,7 +27,12 @@ export const useSavingsPaymentInfo = ({
 
     const savingsTrade = useSavingsTrade();
 
-    const handleSubmit = () => {};
+    const handleSubmit = async () => {
+        if (savingsTrade) {
+            await invityAPI.doSavingsTrade({ trade: savingsTrade });
+            navigateToSavingsOverview();
+        }
+    };
 
     const { addNotification } = useActions({ addNotification: notificationActions.addToast });
     const copy = (paymentInfoKey: keyof SavingsPaymentInfo) => {

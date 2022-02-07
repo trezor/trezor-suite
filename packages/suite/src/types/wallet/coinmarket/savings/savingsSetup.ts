@@ -16,8 +16,8 @@ export interface SavingsSetupFormState {
 export type SavingsSetupContextValues = Omit<UseFormMethods<SavingsSetupFormState>, 'register'> & {
     register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
     onSubmit: (data: SavingsSetupFormState) => void;
-    defaultPaymentFrequency: PaymentFrequency;
-    defaultFiatAmount: string;
+    defaultPaymentFrequency?: PaymentFrequency;
+    defaultFiatAmount?: string;
     annualSavingsCalculationFiat: number;
     annualSavingsCalculationCrypto: string;
     fiatAmount?: string;
@@ -26,9 +26,5 @@ export type SavingsSetupContextValues = Omit<UseFormMethods<SavingsSetupFormStat
     account: Account;
     address?: string;
     wasSetupSaved: boolean;
-    verifyAddress: (
-        account: Account,
-        address?: string | undefined,
-        path?: string | undefined,
-    ) => Promise<void>;
+    isLoading: boolean;
 };

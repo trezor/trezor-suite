@@ -6,11 +6,12 @@ import {
 } from '@wallet-types/coinmarket/savings/savingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
 import invityAPI, { PaymentFrequency } from '@suite-services/invityAPI';
-import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { useSelector } from '@suite-hooks';
 import BigNumber from 'bignumber.js';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import useSavingsTrade from './useSavingsTrade';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import useSavingsSetupDefaultValues from './useSavingsSetupDefaultValues';
 
 export const SavingsUserInfoContext = createContext<SavingsSetupContextValues | null>(null);
 SavingsUserInfoContext.displayName = 'SavingsUserInfoContext';
@@ -45,29 +46,15 @@ export const useSavingsSetup = ({
         isWatchingKYCStatus: state.wallet.coinmarket.savings.isWatchingKYCStatus,
     }));
     const fiatRates = fiat.coins.find(item => item.symbol === 'btc');
-    // const { } = useInvityNavigation(
-    //     selectedAccount.account,
-    // );
-
-    const { verifyAddress } = useActions({
-        verifyAddress: coinmarketSavingsActions.verifyAddress,
-    });
-
+    const { navigateToSavingsPaymentInfo } = useCoinmarketNavigation(selectedAccount.account);
     const savingsTrade = useSavingsTrade();
-
-    // TODO: defaultValues hardcoded?
-    const defaultPaymentFrequency = 'Weekly';
-    const defaultFiatAmount = '50';
+    const isLoading = !savingsTrade;
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
-    // TODO: define 'fiat amount options' and set fiatAmount = 'Custom' if not from 'fiat amount options'
-    const defaultValues: SavingsSetupFormState = {
-        fiatAmount: savingsTrade?.fiatStringAmount || defaultFiatAmount,
-        paymentFrequency: savingsTrade?.paymentFrequency || defaultPaymentFrequency,
-        customFiatAmount: savingsTrade?.fiatStringAmount || defaultFiatAmount,
-        address: isWatchingKYCStatus
-            ? undefined
-            : savingsTrade?.receivingCryptoAddress || unusedAddress,
-    };
+    const defaultValues = useSavingsSetupDefaultValues(
+        savingsTrade,
+        isWatchingKYCStatus,
+        unusedAddress,
+    );
 
     const methods = useForm<SavingsSetupFormState>({
         mode: 'onChange',
@@ -75,7 +62,7 @@ export const useSavingsSetup = ({
     });
 
     const { register, control, formState, handleSubmit, setValue } = methods;
-    const { isValid } = formState;
+    const { isValid, isDirty } = formState;
     const { fiatAmount, paymentFrequency, customFiatAmount, address } = useWatch<
         Required<SavingsSetupFormState>
     >({
@@ -130,23 +117,24 @@ export const useSavingsSetup = ({
                     trade,
                 });
                 setWasSetupSaved(true);
+                if (!isWatchingKYCStatus) {
+                    navigateToSavingsPaymentInfo();
+                }
             }
         },
-        [savingsTrade],
+        [isWatchingKYCStatus, navigateToSavingsPaymentInfo, savingsTrade],
     );
 
     // TODO: extract
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
     const canConfirmSetup =
-        formState.isValid && !isWatchingKYCStatus && savingsTrade?.kycStatus === 'Verified';
+        isValid && !isWatchingKYCStatus && savingsTrade?.kycStatus === 'Verified';
 
     useEffect(() => {
-        if (isWatchingKYCStatus) {
-            setWasSetupSaved(false);
-            if (isValid) {
-                handleSubmit(onSubmit)();
-            }
+        setWasSetupSaved(false);
+        if (isWatchingKYCStatus && isValid && isDirty) {
+            handleSubmit(onSubmit)();
         }
     }, [
         fiatAmount,
@@ -156,14 +144,15 @@ export const useSavingsSetup = ({
         isWatchingKYCStatus,
         isValid,
         handleSubmit,
+        isDirty,
     ]);
 
     return {
         ...methods,
         register: typedRegister,
         onSubmit,
-        defaultPaymentFrequency,
-        defaultFiatAmount,
+        defaultPaymentFrequency: defaultValues?.paymentFrequency,
+        defaultFiatAmount: defaultValues?.fiatAmount,
         annualSavingsCalculationFiat,
         annualSavingsCalculationCrypto,
         fiatAmount,
@@ -172,6 +161,6 @@ export const useSavingsSetup = ({
         account,
         address,
         wasSetupSaved,
-        verifyAddress,
+        isLoading,
     };
 };
