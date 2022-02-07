@@ -171,6 +171,10 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             );
         case 'invity-logout-successful':
             return success(render, notification, 'TR_INVITY_LOGGED_OUT_SUCCESSFUL_NOTIFICATION');
+        case 'invity-kyc-failed':
+            return error(render, notification, 'TR_INVITY_KYC_FAILED_NOTIFICATION');
+        case 'invity-kyc-success':
+            return success(render, notification, 'TR_INVITY_KYC_SUCCESS_NOTIFICATION');
 
         // Events:
         case SUITE.AUTH_DEVICE:

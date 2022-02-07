@@ -102,6 +102,12 @@ export type ToastPayload = (
     | {
           type: 'invity-logout-successful';
       }
+    | {
+          type: 'invity-kyc-failed';
+      }
+    | {
+          type: 'invity-kyc-success';
+      }
 ) &
     Options;
 

@@ -37,11 +37,6 @@ export type CoinmarketSavingsAction =
           exchange: string;
       }
     | {
-          type: typeof COINMARKET_SAVINGS.SET_WATCHING_KYC_STATUS_METADATA;
-          timeoutId: number;
-          intervalId: number;
-      }
-    | {
           type: typeof COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS;
           kycFinalStatus: SavingsKYCStatus | undefined;
       }
@@ -106,15 +101,6 @@ export const saveSavingsTradeResponse = (
 export const startWatchingKYCStatus = (exchange: string): CoinmarketSavingsAction => ({
     type: COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS,
     exchange,
-});
-
-export const setWatchingKYCStatusMetadata = (
-    intervalId: number,
-    timeoutId: number,
-): CoinmarketSavingsAction => ({
-    type: COINMARKET_SAVINGS.SET_WATCHING_KYC_STATUS_METADATA,
-    intervalId,
-    timeoutId,
 });
 
 export const stopWatchingKYCStatus = (

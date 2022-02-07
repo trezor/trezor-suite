@@ -286,12 +286,6 @@ const coinmarketReducer = (
             case COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS:
                 draft.savings.isWatchingKYCStatus = true;
                 break;
-            case COINMARKET_SAVINGS.SET_WATCHING_KYC_STATUS_METADATA:
-                draft.savings.watchingKYCMetadata = {
-                    intervalId: action.intervalId,
-                    timeoutId: action.timeoutId,
-                };
-                break;
             case COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS:
                 draft.savings.kycFinalStatus = action.kycFinalStatus;
                 draft.savings.isWatchingKYCStatus = false;

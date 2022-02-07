@@ -918,6 +918,14 @@ export default defineMessages({
         defaultMessage: 'Logged out of Invity.',
         id: 'TR_INVITY_LOGGED_OUT_SUCCESSFUL_NOTIFICATION',
     },
+    TR_INVITY_KYC_SUCCESS_NOTIFICATION: {
+        defaultMessage: 'KYC successfully passed.',
+        id: 'TR_INVITY_KYC_SUCCESS_NOTIFICATION',
+    },
+    TR_INVITY_KYC_FAILED_NOTIFICATION: {
+        defaultMessage: 'KYC failed.',
+        id: 'TR_INVITY_KYC_FAILED_NOTIFICATION',
+    },
     TR_INVITY_LOGIN_HEADER: {
         defaultMessage: 'Log in to Invity',
         id: 'TR_INVITY_LOGIN_HEADER',

@@ -6,8 +6,6 @@ export const SET_SAVINGS_TRADE_RESPONSE_LOADING =
 
 export const START_WATCHING_KYC_STATUS = '@coinmarket-savings/start_watching_kyc_status';
 export const STOP_WATCHING_KYC_STATUS = '@coinmarket-savings/stop_watching_kyc_status';
-export const SET_WATCHING_KYC_STATUS_METADATA =
-    '@coinmarket-savings/set_watching_kyc_status_metadata';
 
 export const VERIFY_ADDRESS = '@coinmarket-savings/verify_address';
 export const SET_USER_COUNTRY_EFFECTIVE = '@coinmarket-savings/set_user_country_effective';

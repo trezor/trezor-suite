@@ -17,6 +17,7 @@ import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountAction } from '@wallet-actions/selectedAccountActions';
 import { FormDraftAction } from '@wallet-actions/formDraftActions';
 import { CardanoStakingAction } from '@wallet-actions/cardanoStakingActions';
+import { PollingAction } from '@wallet-actions/pollingActions';
 import { NETWORKS } from '@wallet-config';
 import { ArrayElement } from '../utils';
 
@@ -67,4 +68,5 @@ export type WalletAction =
     | SendFormAction
     | AccountSearchAction
     | FormDraftAction
-    | CardanoStakingAction;
+    | CardanoStakingAction
+    | PollingAction;

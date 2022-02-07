@@ -7,6 +7,7 @@ import graphMiddleware from './graphMiddleware';
 import coinmarketMiddleware from './coinmarketMiddleware';
 import invityAuthenticationMiddleware from './invityAuthenticationMiddleware';
 import coinmarketSavingsMiddleware from './coinmarketSavingsMiddleware';
+import pollingMiddleware from './pollingMiddleware';
 
 export default [
     blockchainMiddleware,
@@ -18,4 +19,5 @@ export default [
     coinmarketMiddleware,
     invityAuthenticationMiddleware,
     coinmarketSavingsMiddleware,
+    pollingMiddleware,
 ];
