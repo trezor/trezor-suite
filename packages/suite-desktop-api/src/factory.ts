@@ -59,7 +59,6 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
         themeChange: theme => {
             if (validation.isTheme(theme)) ipcRenderer.send('theme/change', theme);
         },
-        themeSystem: () => ipcRenderer.send('theme/system'),
 
         // Client
         clientReady: () => ipcRenderer.send('client/ready'),

@@ -10,7 +10,6 @@ export interface MainChannels {
     'client/ready': void;
     'store/clear': void;
     'theme/change': SuiteThemeVariant;
-    'theme/system': void;
     'tor/get-status': void;
     'tor/toggle': boolean;
     'tor/set-address': string;
@@ -83,7 +82,6 @@ export interface DesktopApi {
     allowPrerelease: DesktopApiSend<'update/allow-prerelease'>;
     // Theme
     themeChange: DesktopApiSend<'theme/change'>;
-    themeSystem: DesktopApiSend<'theme/system'>;
     // Client controls
     clientReady: DesktopApiSend<'client/ready'>;
     // Metadata

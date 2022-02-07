@@ -21,17 +21,7 @@ const init = () => {
         nativeTheme.themeSource = theme;
     }
 
-    ipcMain.on('theme/change', (_, theme) => {
-        if (theme === 'light') {
-            setThemeManually('light');
-        } else {
-            setThemeManually('dark');
-        }
-    });
-
-    ipcMain.on('theme/system', () => {
-        setThemeManually('system');
-    });
+    ipcMain.on('theme/change', (_, theme) => setThemeManually(theme));
 };
 
 export default init;

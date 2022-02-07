@@ -55,18 +55,16 @@ export const Theme = () => {
 
     const { options, getOption } = useThemeOptions();
 
-    const getVariant = (variant: SuiteThemeVariant) => (variant !== 'light' ? 'dark' : 'light');
-
-    const selectedValue = getOption(autodetectTheme ? 'system' : getVariant(theme.variant));
+    const selectedValue = getOption(autodetectTheme ? 'system' : theme.variant);
 
     const onChange = ({ value }: { value: SuiteThemeVariant }) => {
         if ((value === 'system') !== autodetectTheme) {
             setAutodetect({ theme: !autodetectTheme });
         }
-        if (value === 'system') {
-            desktopApi.themeSystem();
-        } else {
-            setTheme(getVariant(value));
+        if (value !== 'system') {
+            setTheme(value);
+        }
+        if (desktopApi.available) {
             desktopApi.themeChange(value);
         }
     };
