@@ -52,6 +52,7 @@ export const getInitialState = ({ coinmarket, selectedAccount }: Args = {}) => (
                 } as any,
                 { type: 'foo' } as any,
             ),
+        formDrafts: {},
     },
     suite: suiteReducer(
         {
@@ -83,6 +84,7 @@ const initStore = (state: State) => {
         store.getState().wallet = {
             coinmarket: coinmarketReducer(coinmarket, action),
             selectedAccount: selectedAccountReducer(selectedAccount, action),
+            formDrafts: {},
         };
         store.getState().suite = suiteReducer(
             {
