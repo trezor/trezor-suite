@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 import { useSavingsUnsupportedCountry } from '@wallet-hooks/coinmarket/savings/useSavingsUnsupportedCountry';
-import { withCoinmarketSavingsLoaded } from '@wallet-components';
+import { withCoinmarketSavingsLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
 import regional from '@wallet-constants/coinmarket/regional';
 import type { CountryOption } from '@wallet-types/coinmarketCommonTypes';
 import { Button, Flag, Select, variables } from '@trezor/components';
@@ -42,9 +42,9 @@ const StyledSelect = styled(Select)`
     margin-bottom: 8px;
 `;
 
-const UnsupportedCountry = () => {
+const UnsupportedCountry = (props: WithSelectedAccountLoadedProps) => {
     const { supportedCountries, control, formState, handleSubmit, onSubmit } =
-        useSavingsUnsupportedCountry();
+        useSavingsUnsupportedCountry(props);
     const { isDirty } = formState;
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -57,6 +57,7 @@ const UnsupportedCountry = () => {
             <Controller
                 control={control}
                 name="country"
+                defaultValue=""
                 render={({ onChange, value }) => (
                     <StyledSelect
                         value={value}

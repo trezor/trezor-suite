@@ -7,6 +7,7 @@ import * as pollingActions from '@wallet-actions/pollingActions';
 import * as routerActions from '@suite-actions/routerActions';
 import type { Account } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
+import { getFormDraftKey } from '@wallet-utils/formDraftUtils';
 
 const navigateToRouteName = (routeName: Route['name'], account: Account) =>
     routerActions.goto(routeName, {
@@ -33,9 +34,16 @@ const coinmarketSavingsMiddleware =
 
         if (action.type === COINMARKET_SAVINGS.LOAD_SAVINGS_TRADE_RESPONSE) {
             const { account, status } = api.getState().wallet.selectedAccount;
-            const { selectedProvider, countryEffective } = api.getState().wallet.coinmarket.savings;
+            const { selectedProvider } = api.getState().wallet.coinmarket.savings;
+            const { formDrafts } = api.getState().wallet;
             if (status === 'loaded' && account && selectedProvider) {
-                if (selectedProvider.isClientFromUnsupportedCountry && !countryEffective) {
+                const unsupportedCountryFormDraft = formDrafts[
+                    getFormDraftKey('coinmarket-savings-unsupported-country', account.descriptor)
+                ] as { country: string } | undefined;
+                if (
+                    selectedProvider.isClientFromUnsupportedCountry &&
+                    !unsupportedCountryFormDraft?.country
+                ) {
                     api.dispatch(
                         navigateToRouteName(
                             'wallet-coinmarket-savings-unsupported-country',
@@ -135,6 +143,17 @@ const coinmarketSavingsMiddleware =
                                     api.dispatch(
                                         navigateToRouteName(
                                             'wallet-coinmarket-savings-payment-info',
+                                            account,
+                                        ),
+                                    );
+                                    next(action);
+                                    return action;
+                                }
+
+                                if (response.trade.status === 'Active') {
+                                    api.dispatch(
+                                        navigateToRouteName(
+                                            'wallet-coinmarket-savings-overview',
                                             account,
                                         ),
                                     );
