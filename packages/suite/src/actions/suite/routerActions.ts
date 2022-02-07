@@ -54,7 +54,7 @@ export const onLocationChange =
         const unlocked = dispatch(onBeforePopState());
         if (!unlocked) return;
         const { router } = getState();
-        if (router.pathname === url && router.app !== 'unknown') return null;
+        if (router.url === url && router.app !== 'unknown') return null;
         // TODO: check if the view is not locked by the device request
 
         const [pathname, hash] = url.split('#');
