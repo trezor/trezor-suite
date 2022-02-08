@@ -12,11 +12,11 @@ export type GuideAction =
     | { type: typeof GUIDE.UNSET_NODE }
     | { type: typeof GUIDE.OPEN_NODE; payload: Node };
 
-export const open = () => ({
+export const open = (): GuideAction => ({
     type: GUIDE.OPEN,
 });
 
-export const close = () => ({
+export const close = (): GuideAction => ({
     type: GUIDE.CLOSE,
 });
 

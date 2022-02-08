@@ -152,6 +152,6 @@ export const setLoading = (isLoading: boolean, lastLoadedTimestamp?: number) => 
     ...(lastLoadedTimestamp && { lastLoadedTimestamp }),
 });
 
-export const loadInvityData = () => ({
+export const loadInvityData = (): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.LOAD_DATA,
 });

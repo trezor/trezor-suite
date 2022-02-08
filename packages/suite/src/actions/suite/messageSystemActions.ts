@@ -118,7 +118,7 @@ export const saveValidMessages = (payload: ValidMessagesPayload) => ({
     payload,
 });
 
-export const dismissMessage = (id: string, category: Category) => ({
+export const dismissMessage = (id: string, category: Category): MessageSystemAction => ({
     type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
     id,
     category,
