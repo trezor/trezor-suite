@@ -25,7 +25,7 @@ export type WalletSettingsAction =
           };
       };
 
-export const setLocalCurrency = (localCurrency: string) => ({
+export const setLocalCurrency = (localCurrency: string): WalletSettingsAction => ({
     type: WALLET_SETTINGS.SET_LOCAL_CURRENCY,
     localCurrency: localCurrency.toLowerCase(),
 });

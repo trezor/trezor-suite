@@ -96,12 +96,12 @@ export const setDbError = (payload: AppState['suite']['dbError']) => ({
     payload,
 });
 
-export const setTheme = (variant: SuiteThemeVariant) => ({
+export const setTheme = (variant: SuiteThemeVariant): SuiteAction => ({
     type: SUITE.SET_THEME,
     variant,
 });
 
-export const setAutodetect = (payload: Partial<AutodetectSettings>) => ({
+export const setAutodetect = (payload: Partial<AutodetectSettings>): SuiteAction => ({
     type: SUITE.SET_AUTODETECT,
     payload,
 });
@@ -144,12 +144,12 @@ export const updateOnlineStatus = (payload: boolean): SuiteAction => ({
  * @param {boolean} payload
  * @returns {Action}
  */
-export const updateTorStatus = (payload: boolean) => ({
+export const updateTorStatus = (payload: boolean): SuiteAction => ({
     type: SUITE.TOR_STATUS,
     payload,
 });
 
-export const setOnionLinks = (payload: boolean) => ({
+export const setOnionLinks = (payload: boolean): SuiteAction => ({
     type: SUITE.ONION_LINKS,
     payload,
 });
