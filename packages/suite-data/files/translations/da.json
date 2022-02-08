@@ -170,5 +170,6 @@
   "TR_DATE_MONTH_SHORT": "1M",
   "TR_DATE_WEEK_LONG": "1 uge",
   "TR_DATE_WEEK_SHORT": "1W",
-  "TR_DATE_YEAR_LONG": "1 år"
+  "TR_DATE_YEAR_LONG": "1 år",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

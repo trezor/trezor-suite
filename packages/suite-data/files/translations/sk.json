@@ -3,5 +3,6 @@
   "AMOUNT_IS_NOT_ENOUGH": "Nedostatok prostriedkov",
   "AMOUNT_IS_NOT_NUMBER": "Zadajte číslo (napr. 1,5)",
   "AMOUNT_IS_NOT_SET": "Suma nie je nastavená",
-  "AMOUNT_IS_TOO_LOW": "Suma je príliš nízka"
+  "AMOUNT_IS_TOO_LOW": "Suma je príliš nízka",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

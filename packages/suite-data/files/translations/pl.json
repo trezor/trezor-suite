@@ -116,5 +116,6 @@
   "RECIPIENT_ADD": "Dodaj odbiorcę",
   "RECIPIENT_ADDRESS": "Adres",
   "RECIPIENT_ADD_LABEL": "Dodaj etykietę",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
   "TR_UPDATE_MODAL_NOT_NOW": "Nie teraz"
 }
