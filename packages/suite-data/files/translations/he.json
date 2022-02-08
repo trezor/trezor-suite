@@ -121,6 +121,7 @@
   "TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON": "התקן קושחה",
   "TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION": "זה אפשרי להתקין קושחה מותאמת אישית על מכשיר ה-Trezor שלך במידת הצורך. התקנת קושחה מותאמת אישית תמחק את הזיכרון שלו ועלולה להפוך אותו לבלתי שמיש. אין לבצע תהליך זה אלא אם את ממש יודעת מה את עושה.",
   "TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE": "התקן קושחה מותאמת אישית",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).",
   "TR_FEEDBACK_ANALYTICS_ITEM_FW": "גרסת הקושחה של המכשיר",
   "TR_FIRMWARE": "קושחה",
   "TR_FIRMWARE_INSTALLED": "מוכן לפעולה! הקושחה העדכנית הותקנה.",
