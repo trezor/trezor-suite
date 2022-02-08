@@ -2,22 +2,19 @@ import React from 'react';
 import QRCode from 'qrcode.react';
 import styled from 'styled-components';
 
-import { colors, variables } from '@trezor/components';
+import { colors } from '@trezor/components';
 
 export const QRCODE_SIZE = 384;
 export const QRCODE_PADDING = 12;
 
 const Wrapper = styled.div`
     margin: 0 auto 20px;
+    max-height: 50vh;
 
     /* some qr code scanners can't recognize qr codes on dark background, having white border around helps with this */
     padding: ${QRCODE_PADDING}px;
     background: ${colors.BG_WHITE};
-    width: ${QRCODE_SIZE}px;
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 100%;
-    }
+    max-width: ${QRCODE_SIZE}px;
 `;
 
 interface QrCodeProps {
@@ -32,7 +29,7 @@ export const QrCode = ({ value }: QrCodeProps) => (
             level="Q"
             size={QRCODE_SIZE}
             value={value}
-            style={{ width: '100%', height: 'auto' }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
     </Wrapper>
 );
