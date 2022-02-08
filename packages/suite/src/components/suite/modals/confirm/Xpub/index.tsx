@@ -12,7 +12,6 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-self: center;
-    padding: 30px 24px;
 `;
 
 const Address = styled.div`
