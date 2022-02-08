@@ -1,3 +1,4 @@
+import { versionUtils } from '@trezor/utils';
 import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
 import { addToast } from '@suite-actions/notificationActions';
@@ -164,20 +165,31 @@ const handleProgress =
         );
     };
 
-const filterUnavailableNetworks = (
-    enabledNetworks: Account['symbol'][],
-    unavailableCapabilities: TrezorDevice['unavailableCapabilities'] = {},
-) =>
-    NETWORKS.filter(
-        n =>
+const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?: TrezorDevice) =>
+    NETWORKS.filter(n => {
+        const isSupportedInSuite =
+            !n.support || // support is not defined => is supported
+            !device?.features || // typescript. device undefined. => supported
+            versionUtils.isNewerOrEqual(
+                [
+                    device.features.major_version,
+                    device.features.minor_version,
+                    device.features.patch_version,
+                ],
+                n.support[device.features.major_version],
+            ); // device version is newer or equal to support field in networks => supported
+
+        return (
             enabledNetworks.includes(n.symbol) &&
             !n.isHidden &&
-            !unavailableCapabilities[n.accountType!] && // exclude by account types (ex: taproot)
-            !unavailableCapabilities[n.symbol], // exclude by network symbol (ex: xrp on T1)
-    );
+            !device?.unavailableCapabilities?.[n.accountType!] && // exclude by account types (ex: taproot)
+            !device?.unavailableCapabilities?.[n.symbol] && // exclude by network symbol (ex: xrp on T1)
+            isSupportedInSuite
+        );
+    });
 
 const getBundle =
-    (discovery: Discovery, unavailableCapabilities: TrezorDevice['unavailableCapabilities']) =>
+    (discovery: Discovery, device: TrezorDevice) =>
     (_d: Dispatch, getState: GetState): DiscoveryItem[] => {
         const bundle: DiscoveryItem[] = [];
         // find all accounts
@@ -196,7 +208,7 @@ const getBundle =
             return bundle;
         }
 
-        const networks = filterUnavailableNetworks(discovery.networks, unavailableCapabilities);
+        const networks = filterUnavailableNetworks(discovery.networks, device);
         networks.forEach(configNetwork => {
             // find all existed accounts
             const accountType = configNetwork.accountType || 'normal';
@@ -237,10 +249,7 @@ export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetSta
     const { discovery } = getState().wallet;
     discovery.forEach(d => {
         const device = getState().devices.find(dev => dev.state === d.deviceState);
-        const networks = filterUnavailableNetworks(
-            enabledNetworks,
-            device?.unavailableCapabilities,
-        ).map(n => n.symbol);
+        const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
         const progress = dispatch(
             calculateProgress({
                 ...d,
@@ -261,10 +270,8 @@ export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetSta
 export const create =
     (deviceState: string, device: TrezorDevice) => (dispatch: Dispatch, getState: GetState) => {
         const { enabledNetworks } = getState().wallet.settings;
-        const networks = filterUnavailableNetworks(
-            enabledNetworks,
-            device?.unavailableCapabilities,
-        ).map(n => n.symbol);
+        const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
+
         dispatch({
             type: DISCOVERY.CREATE,
             payload: {
@@ -334,7 +341,7 @@ export const start =
         }
 
         // prepare bundle of accounts to discover, exclude unsupported account types
-        const bundle = dispatch(getBundle(discovery, device.unavailableCapabilities));
+        const bundle = dispatch(getBundle(discovery, device));
 
         // discovery process complete
         if (bundle.length === 0) {
