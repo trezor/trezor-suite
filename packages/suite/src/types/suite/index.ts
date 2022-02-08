@@ -1,4 +1,4 @@
-import type { ThunkDispatch } from 'redux-thunk';
+import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
 import type {
     UiEvent,
@@ -69,6 +69,8 @@ export type Action =
     | MessageSystemAction
     | GuideAction
     | ProtocolAction;
+
+export type ThunkAction = TAction<any, AppState, any, Action>;
 
 // export type Dispatch = ReduxDispatch<Action>;
 // export type Dispatch = ThunkDispatch<AppState, any, Action>;
