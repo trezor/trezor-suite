@@ -138,5 +138,6 @@
   "TR_ADDRESS_MODAL_TITLE": "{networkName} endereço de recebimento",
   "TR_ADD_ACCOUNT": "Adicionar conta",
   "TR_ADD_HIDDEN_WALLET": "Adicionar carteira oculta",
-  "TR_ADD_NEW_BLOCKBOOK_BACKEND": "Adicionar nova"
+  "TR_ADD_NEW_BLOCKBOOK_BACKEND": "Adicionar nova",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

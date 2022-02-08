@@ -83,5 +83,6 @@
   "TOAST_DEVICE_WIPED": "Laite pyyhittiin onnistuneesti",
   "TOAST_GENERIC_ERROR": "Virhe: {error}",
   "TOAST_PIN_CHANGED": "PIN-koodin vaihto onnistui",
-  "TOAST_TX_BUTTON": "Näytä tiedot"
+  "TOAST_TX_BUTTON": "Näytä tiedot",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

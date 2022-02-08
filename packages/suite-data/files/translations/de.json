@@ -490,5 +490,6 @@
   "TR_DEVICE_LABEL_IS_NOT_CONNECTED": "Gerät {deviceLabel} ist nicht verbunden",
   "TR_DEVICE_LABEL_IS_UNAVAILABLE": "Gerät \"{deviceLabel}\" ist nicht verfügbar",
   "TR_DEVICE_NEEDS_ATTENTION": "Trezor braucht Aufmerksamkeit.",
-  "TR_DEVICE_NOT_CONNECTED": "Gerät nicht verbunden"
+  "TR_DEVICE_NOT_CONNECTED": "Gerät nicht verbunden",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

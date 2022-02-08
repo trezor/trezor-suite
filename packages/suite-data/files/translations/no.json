@@ -56,5 +56,6 @@
   "ONBOARDING_PAIR_ALREADY_INITIALIZED": "Fortsett bare hvis du utførte oppsettet selv. Hvis noen andre satte opp Trezoren din, kan midlene dine være i fare; <a>kontakt Trezor kundestøtte</a>.",
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING": "Du bruker en annen Trezor",
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1": "Dette er ikke den samme Trezor du har brukt. Koble til den riktige igjen.",
-  "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2": "Hvis du vil bruke denne enheten i stedet, start på nytt."
+  "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2": "Hvis du vil bruke denne enheten i stedet, start på nytt.",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

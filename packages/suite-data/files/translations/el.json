@@ -100,5 +100,6 @@
   "TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT": "Το Trezor σας φαίνεται να χρησιμοποιείται σε άλλο παράθυρο. Παρακαλώ κλείστε όλα τα υπόλοιπα παράθυρα ή καρτέλες που μπορεί να χρησιμοποιούν το Trezor σας.",
   "TR_DEVICE_NOT_CONNECTED": "Η συσκευή δεν συνδέθηκε",
   "TR_DEVICE_NOT_INITIALIZED": "Το Trezor δεν έχει ρυθμιστεί",
-  "TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE": "Διαγραφή μνήμης"
+  "TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE": "Διαγραφή μνήμης",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }

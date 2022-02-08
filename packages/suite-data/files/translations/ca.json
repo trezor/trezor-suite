@@ -48,5 +48,6 @@
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Adreça invàlida",
   "TR_ADD_WALLET": "Afegir un moneder",
   "TR_ALL": "Tot",
-  "TR_ASSETS": "Moneda"
+  "TR_ASSETS": "Moneda",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }
