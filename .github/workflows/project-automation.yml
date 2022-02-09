@@ -13,30 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: add-new-issues-to-repository-based-project-column
-        uses: docker://takanabe/github-actions-automate-projects:latest
+        uses: docker://takanabe/github-actions-automate-projects:v0.0.1
         if: github.event_name == 'issues' && github.event.action == 'opened'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PROJECT_URL: https://github.com/trezor/trezor-suite/projects/1
           GITHUB_PROJECT_COLUMN_NAME: 📥 Inbox
       - name: add-new-prs-to-repository-based-project-column
-        uses: docker://takanabe/github-actions-automate-projects:latest
+        uses: docker://takanabe/github-actions-automate-projects:v0.0.1
         if: github.event_name == 'pull_request' && github.event.action == 'opened'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PROJECT_URL: https://github.com/trezor/trezor-suite/projects/8
           GITHUB_PROJECT_COLUMN_NAME: 🗒 Draft
-      - name: move-prs-to-review-column-by-label
-        uses: docker://takanabe/github-actions-automate-projects:latest
-        if: github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label == 'READY TO REVIEW'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PROJECT_URL: https://github.com/trezor/trezor-suite/projects/8
-          GITHUB_PROJECT_COLUMN_NAME: 🔎 To be reviewed
-      - name: move-prs-to-review-column-by-status
-        uses: docker://takanabe/github-actions-automate-projects:latest
-        if: github.event_name == 'pull_request' && github.event.action == 'ready_for_review'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PROJECT_URL: https://github.com/trezor/trezor-suite/projects/8
-          GITHUB_PROJECT_COLUMN_NAME: 🔎 To be reviewed
