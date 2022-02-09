@@ -10,7 +10,7 @@ export const DOCS_LOADING = 'docs_loading';
 export const DOCS_LOADED = 'docs_loaded';
 export const DOCS_ERROR = 'docs_error';
 
-const CDN = 'https://gitcdn.link/repo/trezor/connect/develop/docs/';
+const CDN = 'https://raw.githubusercontent.com/trezor/connect/develop/docs/';
 const GITHUB = 'https://github.com/trezor/connect/blob/develop/docs/';
 
 export type DocsAction =
