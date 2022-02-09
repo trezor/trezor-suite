@@ -74,6 +74,8 @@ const messageSystemReducer = (state: State = initialState, action: Action): Stat
             default:
                 break;
         }
+
+        return;
     });
 
 export default messageSystemReducer;

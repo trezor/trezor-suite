@@ -176,66 +176,74 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
 
     // create listener for messages from the spend partner
     useEffect(() => {
-        if (!isLoading && !noProviders) {
-            const handleMessage = async (event: MessageEvent) => {
-                if (provider && provider.voucherSiteOrigin === event.origin) {
-                    const trade = await invityAPI.requestVoucherTrade({
-                        exchange: provider.name,
-                        cryptoCurrency: account.symbol.toUpperCase(),
-                        data: event.data,
-                    });
+        if (isLoading || noProviders) {
+            return;
+        }
 
-                    if (trade.error) {
-                        addNotification({
-                            type: 'error',
-                            error: trade.error,
-                        });
-                    }
-
-                    if (
-                        trade.status === 'SEND_CRYPTO' &&
-                        !trade.error &&
-                        trade.cryptoAmount &&
-                        trade.destinationAddress
-                    ) {
-                        // initiate crypto transaction - specify outputs, initiate compose and store trade for later use
-                        setState(prevState => {
-                            if (prevState)
-                                return {
-                                    ...prevState,
-                                    formValues: {
-                                        ...prevState?.formValues,
-                                        outputs: [
-                                            {
-                                                ...DEFAULT_PAYMENT,
-                                                address: trade.destinationAddress || '',
-                                                amount: trade.cryptoAmount?.toString() || '',
-                                            },
-                                        ],
-                                    },
-                                };
-                        });
-                        composeRequest();
-                        setTrade(trade);
-                        window.desktopApi?.appFocus();
-                    }
-                }
-            };
-
-            if (isDesktop()) {
-                // handle messages from desktop
-                window.desktopApi?.on('spend/message', handleMessage);
-                return () => {
-                    window.desktopApi?.removeAllListeners('spend/message');
-                };
+        const handleMessage = async (event: MessageEvent) => {
+            if (!provider || provider.voucherSiteOrigin !== event.origin) {
+                return;
             }
 
-            // handle messages from web
-            window.addEventListener('message', handleMessage);
+            const trade = await invityAPI.requestVoucherTrade({
+                exchange: provider.name,
+                cryptoCurrency: account.symbol.toUpperCase(),
+                data: event.data,
+            });
+
+            if (trade.error) {
+                addNotification({
+                    type: 'error',
+                    error: trade.error,
+                });
+            }
+
+            if (
+                trade.status === 'SEND_CRYPTO' &&
+                !trade.error &&
+                trade.cryptoAmount &&
+                trade.destinationAddress
+            ) {
+                // initiate crypto transaction - specify outputs, initiate compose and store trade for later use
+                setState(prevState => {
+                    if (prevState) {
+                        return {
+                            ...prevState,
+                            formValues: {
+                                ...prevState?.formValues,
+                                outputs: [
+                                    {
+                                        ...DEFAULT_PAYMENT,
+                                        address: trade.destinationAddress || '',
+                                        amount: trade.cryptoAmount?.toString() || '',
+                                    },
+                                ],
+                            },
+                        };
+                    }
+
+                    return;
+                });
+                composeRequest();
+                setTrade(trade);
+                window.desktopApi?.appFocus();
+            }
+        };
+
+        if (isDesktop()) {
+            // handle messages from desktop
+            window.desktopApi?.on('spend/message', handleMessage);
             return () => {
-                window.removeEventListener('message', handleMessage);
+                window.desktopApi?.removeAllListeners('spend/message');
             };
         }
+
+        // handle messages from web
+        window.addEventListener('message', handleMessage);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
     }, [account.symbol, isLoading, noProviders, provider, addNotification, composeRequest]);
 
     const openWindow = async (voucherSiteUrl?: string) => {

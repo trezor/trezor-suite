@@ -564,6 +564,8 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
     }
 
     dispatch(receiveAuthConfirm(device, true));
+
+    return;
 };
 
 /**

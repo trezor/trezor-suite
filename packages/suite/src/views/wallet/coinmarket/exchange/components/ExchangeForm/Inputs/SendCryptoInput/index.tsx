@@ -84,74 +84,76 @@ const SendCryptoInput = () => {
             isToken={!!tokenData}
             innerRef={register({
                 validate: (value: string) => {
+                    if (!value) {
+                        return;
+                    }
+
                     const amountBig = new Bignumber(value);
-                    if (value) {
-                        if (amountBig.isNaN()) {
-                            return 'AMOUNT_IS_NOT_NUMBER';
-                        }
 
-                        if (amountBig.lte(0)) {
-                            return 'AMOUNT_IS_TOO_LOW';
-                        }
+                    if (amountBig.isNaN()) {
+                        return 'AMOUNT_IS_NOT_NUMBER';
+                    }
 
-                        if (amountLimits) {
-                            const amount = Number(value);
-                            if (amountLimits.min && amount < amountLimits.min) {
-                                return (
-                                    <Translation
-                                        id="TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO"
-                                        values={{
-                                            minimum: formatCryptoAmount(amountLimits.min),
-                                            currency: amountLimits.currency,
-                                        }}
-                                    />
-                                );
-                            }
+                    if (amountBig.lte(0)) {
+                        return 'AMOUNT_IS_TOO_LOW';
+                    }
 
-                            if (amountLimits.max && amount > amountLimits.max) {
-                                return (
-                                    <Translation
-                                        id="TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO"
-                                        values={{
-                                            maximum: formatCryptoAmount(amountLimits.max),
-                                            currency: amountLimits.currency,
-                                        }}
-                                    />
-                                );
-                            }
-                        }
-
-                        if (amountBig.gt(formattedAvailableBalance)) {
-                            if (
-                                reserve &&
-                                amountBig.lt(formatNetworkAmount(account.balance, symbol))
-                            ) {
-                                return (
-                                    <Translation
-                                        key="AMOUNT_IS_MORE_THAN_RESERVE"
-                                        id="AMOUNT_IS_MORE_THAN_RESERVE"
-                                        values={{ reserve }}
-                                    />
-                                );
-                            }
-                            return 'AMOUNT_IS_NOT_ENOUGH';
-                        }
-
-                        // ERC20 without decimal places
-                        if (!decimals && !isInteger(value)) {
-                            return 'AMOUNT_IS_NOT_INTEGER';
-                        }
-
-                        if (!isDecimalsValid(value, decimals)) {
+                    if (amountLimits) {
+                        const amount = Number(value);
+                        if (amountLimits.min && amount < amountLimits.min) {
                             return (
                                 <Translation
-                                    key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                    values={{ decimals }}
+                                    id="TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO"
+                                    values={{
+                                        minimum: formatCryptoAmount(amountLimits.min),
+                                        currency: amountLimits.currency,
+                                    }}
+                                />
+                            );
+                        }
+
+                        if (amountLimits.max && amount > amountLimits.max) {
+                            return (
+                                <Translation
+                                    id="TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO"
+                                    values={{
+                                        maximum: formatCryptoAmount(amountLimits.max),
+                                        currency: amountLimits.currency,
+                                    }}
                                 />
                             );
                         }
                     }
+
+                    if (amountBig.gt(formattedAvailableBalance)) {
+                        if (reserve && amountBig.lt(formatNetworkAmount(account.balance, symbol))) {
+                            return (
+                                <Translation
+                                    key="AMOUNT_IS_MORE_THAN_RESERVE"
+                                    id="AMOUNT_IS_MORE_THAN_RESERVE"
+                                    values={{ reserve }}
+                                />
+                            );
+                        }
+                        return 'AMOUNT_IS_NOT_ENOUGH';
+                    }
+
+                    // ERC20 without decimal places
+                    if (!decimals && !isInteger(value)) {
+                        return 'AMOUNT_IS_NOT_INTEGER';
+                    }
+
+                    if (!isDecimalsValid(value, decimals)) {
+                        return (
+                            <Translation
+                                key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                values={{ decimals }}
+                            />
+                        );
+                    }
+
+                    return;
                 },
             })}
             bottomText={<InputError error={amountError} />}

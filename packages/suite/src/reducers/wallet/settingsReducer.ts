@@ -80,6 +80,8 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
 
             // no default
         }
+
+        return;
     });
 
 export default settingsReducer;

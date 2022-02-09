@@ -216,12 +216,15 @@ export const useCompose = ({
         const composedTx = composedLevels
             ? composedLevels[values.selectedFee || 'normal']
             : undefined;
+
         if (composedTx && composedTx.type === 'final') {
             // sign workflow in Actions:
             // signTransaction > sign[COIN]Transaction > requestPushTransaction (modal with promise decision)
             const result = await signAction(values, composedTx);
             return result?.success;
         }
+
+        return;
     };
 
     return {

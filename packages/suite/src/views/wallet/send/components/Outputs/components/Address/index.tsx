@@ -185,6 +185,7 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                 validate: value => {
                     if (!isAddressValid(value, symbol)) {
                         const addressDeprecatedUrl = isAddressDeprecated(value, symbol);
+
                         if (addressDeprecatedUrl) {
                             return (
                                 <ReadMoreLink
@@ -193,6 +194,7 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                                 />
                             );
                         }
+
                         return 'RECIPIENT_IS_NOT_VALID';
                     }
                     // bech32m/Taproot addresses are valid but may not be supported by older FW
@@ -234,6 +236,8 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                     if (networkType === 'ripple' && value === descriptor) {
                         return 'RECIPIENT_CANNOT_SEND_TO_MYSELF';
                     }
+
+                    return;
                 },
             })}
         />

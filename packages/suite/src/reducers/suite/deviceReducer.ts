@@ -453,6 +453,8 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
                 break;
             // no default
         }
+
+        return;
     });
 
 export default deviceReducer;

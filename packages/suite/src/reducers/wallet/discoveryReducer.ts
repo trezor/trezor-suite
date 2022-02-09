@@ -98,6 +98,8 @@ const discoveryReducer = (state: State = initialState, action: WalletAction | Su
                 break;
             // no default
         }
+
+        return;
     });
 
 export default discoveryReducer;

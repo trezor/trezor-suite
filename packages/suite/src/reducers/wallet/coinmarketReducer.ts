@@ -227,6 +227,8 @@ const coinmarketReducer = (
                 break;
             // no default
         }
+
+        return;
     });
 
 export default coinmarketReducer;

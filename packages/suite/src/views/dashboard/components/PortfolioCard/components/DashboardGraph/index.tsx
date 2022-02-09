@@ -91,37 +91,40 @@ const DashboardGraph = ({ accounts }: Props) => {
     );
 
     useEffect(() => {
-        if (!isLoading) {
-            const worker = new GraphWorker();
-            setIsProcessing(true);
-            const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState });
-
-            worker.postMessage({
-                history: rawData,
-                groupBy: selectedRange.groupBy,
-                type: 'dashboard',
-            });
-
-            const handleMessage = (event: MessageEvent) => {
-                const aggregatedData = event.data;
-                const graphTicks =
-                    selectedRange.label === 'all'
-                        ? calcTicksFromData(aggregatedData).map(getUnixTime)
-                        : calcTicks(selectedRange.startDate, selectedRange.endDate).map(
-                              getUnixTime,
-                          );
-
-                setData(aggregatedData);
-                setXticks(graphTicks);
-                setIsProcessing(false);
-            };
-
-            worker.addEventListener('message', handleMessage);
-            return () => {
-                worker.removeEventListener('message', handleMessage);
-                worker.terminate();
-            };
+        if (isLoading) {
+            return;
         }
+
+        const worker = new GraphWorker();
+
+        setIsProcessing(true);
+
+        const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState });
+
+        worker.postMessage({
+            history: rawData,
+            groupBy: selectedRange.groupBy,
+            type: 'dashboard',
+        });
+
+        const handleMessage = (event: MessageEvent) => {
+            const aggregatedData = event.data;
+            const graphTicks =
+                selectedRange.label === 'all'
+                    ? calcTicksFromData(aggregatedData).map(getUnixTime)
+                    : calcTicks(selectedRange.startDate, selectedRange.endDate).map(getUnixTime);
+
+            setData(aggregatedData);
+            setXticks(graphTicks);
+            setIsProcessing(false);
+        };
+
+        worker.addEventListener('message', handleMessage);
+
+        return () => {
+            worker.removeEventListener('message', handleMessage);
+            worker.terminate();
+        };
     }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);
 
     return (

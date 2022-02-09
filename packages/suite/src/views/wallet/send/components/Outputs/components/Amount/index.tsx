@@ -233,6 +233,8 @@ const Amount = ({ output, outputId }: Props) => {
                                     />
                                 );
                             }
+
+                            return;
                         },
                     })}
                     innerAddon={<TokenSelect output={output} outputId={outputId} />}

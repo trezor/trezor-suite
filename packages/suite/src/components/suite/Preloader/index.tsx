@@ -23,6 +23,7 @@ import type { AppState } from '@suite-types';
 
 const getForegroundApplication = (route: AppState['router']['route']) => {
     if (!route) return;
+
     switch (route.app) {
         case 'onboarding':
             return Onboarding;
@@ -43,7 +44,7 @@ const getForegroundApplication = (route: AppState['router']['route']) => {
         case 'backup':
             return Backup;
         default:
-            break;
+            return;
     }
 };
 

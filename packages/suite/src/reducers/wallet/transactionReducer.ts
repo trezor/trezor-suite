@@ -181,6 +181,8 @@ const transactionReducer = (state: State = initialState, action: Action | Wallet
                 break;
             // no default
         }
+
+        return;
     });
 
 export default transactionReducer;

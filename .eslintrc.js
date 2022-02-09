@@ -133,5 +133,6 @@ module.exports = {
         'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': ['error'],
         'require-await': ['error'],
+        'no-useless-return': 'off',
     },
 };

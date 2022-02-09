@@ -20,7 +20,8 @@ export const getNotificationIcon = (variant: ToastNotificationVariant) => {
             return 'WARNING_ACTIVE';
         case 'success':
             return 'CHECK';
-        // no default
+        default:
+            return;
     }
 };
 

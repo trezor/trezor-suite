@@ -22,6 +22,8 @@ const formDraftReducer = (state: FormDraftState = initialState, action: Action):
                 break;
             // no default
         }
+
+        return;
     });
 
 export default formDraftReducer;

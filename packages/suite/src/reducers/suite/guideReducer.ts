@@ -45,6 +45,8 @@ const guideReducer = (state: State = initialState, action: Action): State =>
             default:
                 return state;
         }
+
+        return;
     });
 
 export default guideReducer;

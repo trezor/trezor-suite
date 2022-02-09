@@ -69,6 +69,8 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 return initialState;
             //  no default
         }
+
+        return;
     });
 };
 

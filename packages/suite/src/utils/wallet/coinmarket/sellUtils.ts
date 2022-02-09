@@ -36,6 +36,7 @@ export function getAmountLimits(
             }
         }
     }
+
     if (minAmount) {
         if (!maxAmount) {
             return request.amountInCrypto
@@ -47,6 +48,8 @@ export function getAmountLimits(
             ? { currency: request.cryptoCurrency, maxCrypto: maxAmount }
             : { currency: request.fiatCurrency, maxFiat: maxAmount };
     }
+
+    return;
 }
 
 // split the quotes to base and alternative and assign order and payment ids

@@ -35,6 +35,8 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
     if (symbol === 'bch' && address.startsWith('1') && isAddressValid(address, 'btc')) {
         return 'BCH_ADDRESS_INFO_URL';
     }
+
+    return;
 };
 
 export const isTaprootAddress = (address: string, symbol: Account['symbol']) => {

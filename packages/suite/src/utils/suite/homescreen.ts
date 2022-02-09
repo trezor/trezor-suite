@@ -236,12 +236,15 @@ export const validateImageDimensions = (
 ) => {
     const height = getHeight(trezorModel);
     const width = getWidth(trezorModel);
+
     if (origImage.height !== height) {
         return ImageValidationError.InvalidHeight;
     }
     if (origImage.width !== width) {
         return ImageValidationError.InvalidWidth;
     }
+
+    return;
 };
 
 export const validateImageFormat = (dataUrl: string) =>

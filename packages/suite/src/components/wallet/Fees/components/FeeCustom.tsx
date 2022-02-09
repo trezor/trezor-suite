@@ -124,6 +124,7 @@ const FeeCustom = ({
                                 required: 'CUSTOM_FEE_IS_NOT_SET',
                                 validate: (value: string) => {
                                     const feeBig = new BigNumber(value);
+
                                     if (feeBig.isNaN()) {
                                         return 'CUSTOM_FEE_IS_NOT_NUMBER';
                                     }
@@ -141,6 +142,8 @@ const FeeCustom = ({
                                             />
                                         );
                                     }
+
+                                    return;
                                 },
                             })}
                             bottomText={<InputError error={feeLimitError} />}
@@ -165,6 +168,7 @@ const FeeCustom = ({
                         required: 'CUSTOM_FEE_IS_NOT_SET',
                         validate: (value: string) => {
                             const feeBig = new BigNumber(value);
+
                             if (feeBig.isNaN()) {
                                 return 'CUSTOM_FEE_IS_NOT_NUMBER';
                             }
@@ -192,6 +196,8 @@ const FeeCustom = ({
                                     />
                                 );
                             }
+
+                            return;
                         },
                     })}
                     bottomText={<InputError error={feePerUnitError} />}

@@ -75,8 +75,11 @@ const Raw = ({ network }: { network: Network }) => {
                                     value,
                                     network.networkType === 'ethereum' ? '0x' : undefined,
                                 )
-                            )
+                            ) {
                                 return 'DATA_NOT_VALID_HEX';
+                            }
+
+                            return;
                         },
                     })}
                     bottomText={<InputError error={error} />}

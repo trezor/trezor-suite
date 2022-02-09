@@ -37,6 +37,8 @@ const protocolReducer = (state: State = initialState, action: Action): State =>
                 return initialState;
             // no default
         }
+
+        return;
     });
 
 export default protocolReducer;

@@ -38,10 +38,13 @@ export const useAnchor = (anchorId: string) => {
                 });
             };
         }
+
         if (!isActive && anchor !== anchorId) {
             console.log('kuk');
             setIsActive(true);
         }
+
+        return;
     }, [anchorRef, anchor, anchorId, isActive]);
 
     return {

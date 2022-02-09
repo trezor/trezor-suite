@@ -40,8 +40,10 @@ const backup = (state: BackupState = initialState, action: Action) =>
             case BACKUP.RESET_REDUCER:
                 return initialState;
             default:
-            // no default
+                break;
         }
+
+        return;
     });
 
 export default backup;

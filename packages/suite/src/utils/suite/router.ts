@@ -133,10 +133,15 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
 // Used in @suite-native routerActions
 export const getTopLevelRoute = (url: string) => {
     if (typeof url !== 'string') return;
+
     const clean = stripPrefixedPathname(url);
     const split = clean.split('/');
+
     split.splice(0, 1);
+
     if (split.length > 1) {
         return getPrefixedURL(`/${split[0]}`);
     }
+
+    return;
 };

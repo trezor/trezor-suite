@@ -38,6 +38,8 @@ const recovery = (state: RecoveryState = initialState, action: Action): Recovery
             default:
             // no default
         }
+
+        return;
     });
 
 export default recovery;

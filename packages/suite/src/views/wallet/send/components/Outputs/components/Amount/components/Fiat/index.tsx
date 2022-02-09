@@ -117,6 +117,7 @@ const Fiat = ({ output, outputId }: Props) => {
                     required: 'AMOUNT_IS_NOT_SET',
                     validate: (value: string) => {
                         const amountBig = new BigNumber(value);
+
                         if (amountBig.isNaN()) {
                             return 'AMOUNT_IS_NOT_NUMBER';
                         }
@@ -132,6 +133,8 @@ const Fiat = ({ output, outputId }: Props) => {
                                 />
                             );
                         }
+
+                        return;
                     },
                 })}
                 bottomText={<InputError error={errorToDisplay} />}

@@ -196,6 +196,8 @@ export const getInputState = (error?: FieldError, value?: string) => {
     if (value && value.length > 0 && !error) {
         return 'success';
     }
+
+    return;
 };
 
 export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: string) => {

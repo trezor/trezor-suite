@@ -68,19 +68,21 @@ const ProgressBar = ({
 
     useEffect(() => {
         // This hook is used only for calculating fake progress
-        if (fakeProgressDuration) {
-            const interval = setInterval(() => {
-                setStoreProgress(storedProgress =>
-                    storedProgress < fakeProgressBarrier
-                        ? Math.floor(storedProgress + fakeIncrement)
-                        : storedProgress,
-                );
-            }, 1000);
-
-            return () => {
-                clearInterval(interval);
-            };
+        if (!fakeProgressDuration) {
+            return;
         }
+
+        const interval = setInterval(() => {
+            setStoreProgress(storedProgress =>
+                storedProgress < fakeProgressBarrier
+                    ? Math.floor(storedProgress + fakeIncrement)
+                    : storedProgress,
+            );
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
     }, [fakeIncrement, fakeProgressBarrier, fakeProgressDuration, total]);
 
     useEffect(() => {

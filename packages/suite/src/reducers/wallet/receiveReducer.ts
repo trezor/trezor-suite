@@ -52,6 +52,8 @@ const receiveReducer = (state: State = [], action: SuiteAction): State =>
 
             // no default
         }
+
+        return;
     });
 
 export default receiveReducer;

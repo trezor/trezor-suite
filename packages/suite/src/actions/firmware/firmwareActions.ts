@@ -162,6 +162,8 @@ const firmwareInstall =
                 model === 1 && device.features.minor_version < 10 ? 'unplug' : 'wait-for-reboot',
             ),
         );
+
+        return;
     };
 
 export const firmwareUpdate = () => firmwareInstall();

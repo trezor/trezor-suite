@@ -57,6 +57,8 @@ const useBackendUrlInput = (
             if (currentUrls.find(url => url === value)) {
                 return 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED';
             }
+
+            return;
         },
     });
 

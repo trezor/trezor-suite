@@ -97,4 +97,6 @@ export const validateFirmware = (
     if (!isOneV2 && format === 'ONE_V2') {
         return 'TR_FIRMWARE_VALIDATION_ONE_V2';
     }
+
+    return;
 };

@@ -51,6 +51,7 @@ export type SendFormAction =
 
 export const saveDraft = (formState: FormState) => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount } = getState().wallet;
+
     if (selectedAccount.status !== 'loaded') return null;
 
     dispatch({
@@ -58,6 +59,8 @@ export const saveDraft = (formState: FormState) => (dispatch: Dispatch, getState
         key: selectedAccount.account.key,
         formState,
     });
+
+    return;
 };
 
 export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
@@ -96,6 +99,8 @@ export const composeTransaction =
         if (account.networkType === 'ripple') {
             return dispatch(sendFormRippleActions.composeTransaction(formValues, formState));
         }
+
+        return;
     };
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
@@ -315,10 +320,13 @@ export const signTransaction =
         const decision = await dispatch(
             modalActions.openDeferredModal({ type: 'review-transaction' }),
         );
+
         if (decision) {
             // push tx to the network
             return dispatch(pushTransaction());
         }
+
+        return;
     };
 
 export const sendRaw = (payload?: boolean): SendFormAction => ({

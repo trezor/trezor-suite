@@ -48,58 +48,62 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
             defaultValue=""
             innerRef={register({
                 validate: (value: string) => {
-                    if (activeInput === FIAT_INPUT) {
-                        if (!value) {
-                            if (formState.isSubmitting) {
-                                return <Translation id="TR_SELL_VALIDATION_ERROR_EMPTY" />;
-                            }
-                            return;
-                        }
+                    if (activeInput !== FIAT_INPUT) {
+                        return;
+                    }
 
-                        const amountBig = new Bignumber(value);
-                        if (amountBig.isNaN()) {
-                            return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
+                    if (!value) {
+                        if (formState.isSubmitting) {
+                            return <Translation id="TR_SELL_VALIDATION_ERROR_EMPTY" />;
                         }
+                        return;
+                    }
 
-                        if (amountBig.lte(0)) {
-                            return <Translation id="AMOUNT_IS_TOO_LOW" />;
-                        }
+                    const amountBig = new Bignumber(value);
+                    if (amountBig.isNaN()) {
+                        return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
+                    }
 
-                        if (!isDecimalsValid(value, 2)) {
+                    if (amountBig.lte(0)) {
+                        return <Translation id="AMOUNT_IS_TOO_LOW" />;
+                    }
+
+                    if (!isDecimalsValid(value, 2)) {
+                        return (
+                            <Translation
+                                id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                values={{ decimals: 2 }}
+                            />
+                        );
+                    }
+
+                    if (amountLimits) {
+                        const amount = Number(value);
+                        if (amountLimits.minFiat && amount < amountLimits.minFiat) {
                             return (
                                 <Translation
-                                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                    values={{ decimals: 2 }}
+                                    id="TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT"
+                                    values={{
+                                        minimum: amountLimits.minFiat,
+                                        currency: amountLimits.currency,
+                                    }}
                                 />
                             );
                         }
-
-                        if (amountLimits) {
-                            const amount = Number(value);
-                            if (amountLimits.minFiat && amount < amountLimits.minFiat) {
-                                return (
-                                    <Translation
-                                        id="TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT"
-                                        values={{
-                                            minimum: amountLimits.minFiat,
-                                            currency: amountLimits.currency,
-                                        }}
-                                    />
-                                );
-                            }
-                            if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
-                                return (
-                                    <Translation
-                                        id="TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT"
-                                        values={{
-                                            maximum: amountLimits.maxFiat,
-                                            currency: amountLimits.currency,
-                                        }}
-                                    />
-                                );
-                            }
+                        if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
+                            return (
+                                <Translation
+                                    id="TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT"
+                                    values={{
+                                        maximum: amountLimits.maxFiat,
+                                        currency: amountLimits.currency,
+                                    }}
+                                />
+                            );
                         }
                     }
+
+                    return;
                 },
             })}
             onFocus={() => {

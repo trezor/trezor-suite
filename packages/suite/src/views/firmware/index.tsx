@@ -67,6 +67,8 @@ const Firmware = () => {
         if (device.type === 'unreadable') return DeviceUnreadable;
         // device features unknown (this shouldn't happened tho)
         if (!device.features) return DeviceUnknown;
+
+        return;
     };
 
     const getComponent = () => {

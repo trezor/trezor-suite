@@ -38,6 +38,8 @@ export const getDraft =
             // draft is a read-only redux object. make a copy to be able to modify values
             return JSON.parse(JSON.stringify(draft)) as T;
         }
+
+        return;
     };
 
 export const removeDraft =

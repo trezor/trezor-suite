@@ -102,9 +102,10 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
             case FIRMWARE.RESET_REDUCER:
                 return initialState;
             default:
-
             // no default
         }
+
+        return;
     });
 
 export default firmwareUpdate;

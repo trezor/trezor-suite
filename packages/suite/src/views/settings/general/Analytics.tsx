@@ -35,7 +35,10 @@ export const Analytics = () => {
                             if (enabled) {
                                 return dispose();
                             }
+
                             enable();
+
+                            return;
                         }}
                     />
                 </PositionedSwitch>

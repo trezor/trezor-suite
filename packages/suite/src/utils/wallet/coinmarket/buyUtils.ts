@@ -48,6 +48,8 @@ export function getAmountLimits(
             ? { currency: request.receiveCurrency, maxCrypto: maxAmount }
             : { currency: request.fiatCurrency, maxFiat: maxAmount };
     }
+
+    return;
 }
 
 // split the quotes to base and alternative and assign order and payment ids

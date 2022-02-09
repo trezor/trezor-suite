@@ -80,6 +80,8 @@ const fiatRatesReducer = (state: State = initialState, action: Action): State =>
                 return action.payload.wallet.fiat;
             // no default
         }
+
+        return;
     });
 
 export default fiatRatesReducer;

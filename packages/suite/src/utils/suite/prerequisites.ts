@@ -48,6 +48,8 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
 
     // device firmware update required
     if (device.firmware === 'required') return 'firmware-required';
+
+    return;
 };
 
 const getExcludedPrerequisites = (router: PrerequisitesInput['router']): PrerequisiteType[] => {

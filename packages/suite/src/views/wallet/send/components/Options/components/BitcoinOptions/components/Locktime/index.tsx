@@ -91,6 +91,7 @@ const Locktime = ({ close }: Props) => {
                     required: 'LOCKTIME_IS_NOT_SET',
                     validate: (value: string) => {
                         const amountBig = new BigNumber(value);
+
                         if (amountBig.isNaN()) {
                             return 'LOCKTIME_IS_NOT_NUMBER';
                         }
@@ -104,6 +105,8 @@ const Locktime = ({ close }: Props) => {
                         if (amountBig.gt(4294967294)) {
                             return 'LOCKTIME_IS_TOO_BIG';
                         }
+
+                        return;
                     },
                 })}
                 onChange={() => {

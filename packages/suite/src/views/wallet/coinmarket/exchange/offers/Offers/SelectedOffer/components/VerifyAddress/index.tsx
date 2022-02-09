@@ -193,6 +193,8 @@ const VerifyAddressComponent = () => {
                                             return 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID';
                                         }
                                     }
+
+                                    return;
                                 },
                             })}
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
@@ -243,6 +245,7 @@ const VerifyAddressComponent = () => {
                                 ) : undefined,
                                 validate: value => {
                                     let valid = true;
+
                                     if (value) {
                                         if (selectedQuote?.extraFieldDescription?.type === 'hex') {
                                             valid = isHexValid(value);
@@ -252,6 +255,7 @@ const VerifyAddressComponent = () => {
                                             valid = isInteger(value);
                                         }
                                     }
+
                                     if (!valid) {
                                         return (
                                             <Translation
@@ -260,6 +264,8 @@ const VerifyAddressComponent = () => {
                                             />
                                         );
                                     }
+
+                                    return;
                                 },
                             })}
                             state={errors.extraField ? 'error' : undefined}

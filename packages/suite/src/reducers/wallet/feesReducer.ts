@@ -40,7 +40,8 @@ const feesReducer = (state: State = initialState, action: WalletAction) =>
                     ...draft,
                     ...action.payload,
                 };
-            // no default
+            default:
+                return;
         }
     });
 

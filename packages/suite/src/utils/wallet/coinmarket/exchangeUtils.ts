@@ -27,9 +27,12 @@ export const getAmountLimits = (quotes: ExchangeTrade[]): AmountLimits | undefin
             currency = quote.send;
         }
     }
+
     if (min || max) {
         return { currency, min, max };
     }
+
+    return;
 };
 
 export const isQuoteError = (quote: ExchangeTrade): boolean => {

@@ -63,6 +63,8 @@ const sendFormReducer = (state: SendState = initialState, action: Action): SendS
                 break;
             // no default
         }
+
+        return;
     });
 
 export default sendFormReducer;

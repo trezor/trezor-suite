@@ -215,6 +215,7 @@ export const openDeferredModal =
     <T extends DeferredModals['type']>(payload: DeferredPayload<T>) =>
     (dispatch: Dispatch) => {
         const dfd = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
+
         dispatch({
             type: MODAL.OPEN_USER_CONTEXT,
             payload: {
@@ -222,9 +223,12 @@ export const openDeferredModal =
                 decision: dfd,
             },
         });
+
         try {
             return dfd.promise;
         } catch (error) {
             // do nothing, return void
         }
+
+        return;
     };

@@ -20,9 +20,12 @@ export const renderWithProviders = (store: any, children: React.ReactNode) => {
 export const waitForLoader = (text = /Loading/i) => {
     try {
         const loading = screen.queryByText(text);
+
         if (loading) {
             return waitForElementToBeRemoved(() => screen.queryByText(text));
         }
+
+        return;
     } catch (e) {
         return true;
     }

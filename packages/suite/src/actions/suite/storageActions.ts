@@ -40,11 +40,15 @@ export const removeDraft = async (accountKey: string) => {
 // eslint-disable-next-line require-await
 export const saveAccountDraft = (account: Account) => async (_: Dispatch, getState: GetState) => {
     if (!(await isDBAccessible())) return;
+
     const { drafts } = getState().wallet.send;
     const draft = drafts[account.key];
+
     if (draft) {
         return db.addItem('sendFormDrafts', draft, account.key, true);
     }
+
+    return;
 };
 
 export const removeAccountDraft = async (account: Account) => {
@@ -238,6 +242,8 @@ export const rememberDevice =
         } catch (error) {
             console.error('Remember device:', error);
         }
+
+        return;
     };
 
 export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: GetState) => {

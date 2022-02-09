@@ -126,6 +126,8 @@ const accountsReducer = (
 
             // no default
         }
+
+        return;
     });
 
 export default accountsReducer;

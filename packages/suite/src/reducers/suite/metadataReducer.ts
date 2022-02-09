@@ -31,6 +31,8 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 break;
             // no default
         }
+
+        return;
     });
 
 export default metadataReducer;

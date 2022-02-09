@@ -193,10 +193,13 @@ class InvityAPI {
                 params,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getExchangeQuotes]', error);
         }
+
+        return;
     };
 
     doExchangeTrade = async (tradeRequest: ConfirmExchangeTradeRequest): Promise<ExchangeTrade> => {
@@ -233,10 +236,13 @@ class InvityAPI {
     getBuyList = async (): Promise<BuyListResponse | undefined> => {
         try {
             const response = await this.request(this.BUY_LIST, {}, 'GET');
+
             return response;
         } catch (error) {
             console.log('[getBuyList]', error);
         }
+
+        return;
     };
 
     getBuyQuotes = async (params: BuyTradeQuoteRequest): Promise<BuyTrade[] | undefined> => {
@@ -246,10 +252,13 @@ class InvityAPI {
                 params,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getBuyQuotes]', error);
         }
+
+        return;
     };
 
     doBuyTrade = async (tradeRequest: BuyTradeRequest): Promise<BuyTradeResponse> => {
@@ -297,10 +306,13 @@ class InvityAPI {
     getSellList = async (): Promise<SellListResponse | undefined> => {
         try {
             const response = await this.request(this.SELL_LIST, {}, 'GET');
+
             return response;
         } catch (error) {
             console.log('[getSellList]', error);
         }
+
+        return;
     };
 
     getVoucherQuotes = async (
@@ -312,10 +324,13 @@ class InvityAPI {
                 params,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getVoucherQuotes]', error);
         }
+
+        return;
     };
 
     requestVoucherTrade = async (
@@ -357,10 +372,13 @@ class InvityAPI {
                 params,
                 'POST',
             );
+
             return response;
         } catch (error) {
             console.log('[getSellQuotes]', error);
         }
+
+        return;
     };
 
     doSellTrade = async (tradeRequest: SellFiatTradeRequest): Promise<SellFiatTradeResponse> => {

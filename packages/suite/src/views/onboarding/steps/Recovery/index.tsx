@@ -111,9 +111,12 @@ const RecoveryStep = () => {
                     </>
                 );
             }
+
             if (wordRequestInputType === 6 || wordRequestInputType === 9) {
                 return <Translation id="TR_ADVANCED_RECOVERY_TEXT" />;
             }
+
+            return;
         };
         return (
             <RecoveryStepBox

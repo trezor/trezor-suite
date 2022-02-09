@@ -15,13 +15,17 @@ const verifyAvailibility = ({
         // prev account is empty, do not add another
         return <Translation id="MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY" />;
     }
+
     if (account.index === 0 && account.empty && account.accountType === 'normal') {
         // current (first normal) account is empty, do not add another
         return <Translation id="MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY" />;
     }
+
     if (account.index >= 10) {
         return <Translation id="MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED" />;
     }
+
+    return;
 };
 
 interface ButtonProps {

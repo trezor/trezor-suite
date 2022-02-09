@@ -55,16 +55,21 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
     if (stepId) {
         return dispatch(goToStep(stepId));
     }
+
     const { activeStepId, path } = getState().onboarding;
     const stepsInPath = steps.filter(step => isStepInPath(step, path));
     const nextStep = findNextStep(activeStepId, stepsInPath);
+
     dispatch(goToStep(nextStep.id));
+
+    return;
 };
 
 const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     if (stepId) {
         return dispatch(goToStep(stepId));
     }
+
     const { activeStepId, path } = getState().onboarding;
     const stepsInPath = steps.filter(step => isStepInPath(step, path));
     const prevStep = findPrevStep(activeStepId, stepsInPath);
@@ -79,6 +84,8 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     }
 
     dispatch(goToStep(prevStep.id));
+
+    return;
 };
 
 /**

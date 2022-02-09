@@ -57,6 +57,8 @@ const UnexpectedState = ({ children, prerequisite, prerequisitesGuidePadded }: P
                 <PrerequisitesGuide prerequisite={prerequisite} padded={prerequisitesGuidePadded} />
             );
         }
+
+        return null;
     }, [activeStep, prerequisite, isNotSameDevice, prerequisitesGuidePadded]);
 
     const getPinComponent = () => {
@@ -68,6 +70,8 @@ const UnexpectedState = ({ children, prerequisite, prerequisitesGuidePadded }: P
         if (showPinMatrix) {
             return <PinMatrix device={device} />;
         }
+
+        return null;
     };
 
     if (!activeStep) {

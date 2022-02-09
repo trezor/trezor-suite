@@ -505,6 +505,7 @@ export const start =
 
 export const stop = () => (dispatch: Dispatch) => {
     const discovery = dispatch(getDiscoveryForDevice());
+
     if (discovery && discovery.running) {
         dispatch(
             update(
@@ -516,6 +517,8 @@ export const stop = () => (dispatch: Dispatch) => {
 
         return discovery.running.promise;
     }
+
+    return;
 };
 
 export const restart = () => async (dispatch: Dispatch) => {

@@ -105,10 +105,14 @@ export const useOffers = (props: Props) => {
 
     const doSellTrade = async (quote: SellFiatTrade) => {
         if (!quotesRequest) return;
+
         setCallInProgress(true);
+
         const returnUrl = await createQuoteLink(quotesRequest, account, { selectedFee, composed });
         const response = await invityAPI.doSellTrade({ trade: quote, returnUrl });
+
         setCallInProgress(false);
+
         if (response) {
             if (response.trade.error) {
                 console.log(`[doSellTrade] ${response.trade.error}`);
@@ -118,6 +122,7 @@ export const useOffers = (props: Props) => {
                 });
                 return undefined;
             }
+
             if (
                 response.trade.status === 'LOGIN_REQUEST' ||
                 response.trade.status === 'SITE_ACTION_REQUEST'
@@ -125,14 +130,20 @@ export const useOffers = (props: Props) => {
                 submitRequestForm(response.tradeForm?.form);
                 return undefined;
             }
+
             return response.trade;
         }
+
         const errorMessage = 'No response from the server';
+
         console.log(`[doSellTrade] ${errorMessage}`);
+
         addNotification({
             type: 'error',
             error: errorMessage,
         });
+
+        return;
     };
 
     const needToRegisterOrVerifyBankAccount = (quote: SellFiatTrade) =>

@@ -96,6 +96,8 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                     validate: (value: string) => {
                         if (!isHexValid(value)) return 'DATA_NOT_VALID_HEX';
                         if (value.length > 80 * 2) return 'DATA_HEX_TOO_BIG';
+
+                        return;
                     },
                 })}
                 onChange={event => {
