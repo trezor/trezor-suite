@@ -180,7 +180,7 @@
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^8.0.1",
         "electron-updater": "^4.3.9",
-        "node-fetch": "^2.6.1",
+        "node-fetch": "^2.6.7",
         "openpgp": "^5.0.0",
         "systeminformation": "^5.9.9",
         "trezor-connect": "8.2.7-beta.3"
