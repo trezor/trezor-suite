@@ -91,7 +91,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
             <BackendTypeSelect network={network} value={type} onChange={changeType} />
 
             {(editable ? urls : defaultUrls).map(u => {
-                const url = tor ? toTorUrl(u) : u;
+                const url = tor && !editable ? toTorUrl(u) : u;
                 return (
                     <BackendInput
                         key={url}
