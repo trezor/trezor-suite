@@ -1,6 +1,6 @@
 name: Add to GitHub Project
 
-on: [issues]
+on: [issues, pull_request]
 
 permissions:
   contents: read
