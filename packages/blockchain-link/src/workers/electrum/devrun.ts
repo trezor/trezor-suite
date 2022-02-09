@@ -41,6 +41,7 @@ const TX_HASH =
     const resolvers: { [id: number]: (value: any) => void } = {};
 
     worker.onmessage = ({ data }: { data: Response }) => {
+        // eslint-disable-next-line no-console
         console.log('ONMESSAGE', JSON.stringify(data, null, 4));
         if (resolvers[data.id]) resolvers[data.id](data);
     };
