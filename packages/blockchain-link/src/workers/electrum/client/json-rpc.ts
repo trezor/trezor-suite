@@ -122,6 +122,7 @@ export class JsonRpcClient {
 
     protected log(...data: any[]) {
         if (this.debug) {
+            // eslint-disable-next-line no-console
             console.log(...data);
         }
     }

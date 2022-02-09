@@ -116,6 +116,7 @@ const getDescriptorInfo = (descriptor: string, paymentType: PaymentType) => {
     const { xpub, purpose, coinType, account } = parseDescriptor(descriptor);
     const { node, ...rest } = getXpubInfo(xpub);
     if (rest.account !== account) {
+        // eslint-disable-next-line no-console
         console.warn(`Account indices doesn't match: ${rest.account}, ${account}`);
     }
     return {
