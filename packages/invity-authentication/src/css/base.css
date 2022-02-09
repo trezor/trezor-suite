@@ -1,31 +1,150 @@
-html, body {
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
     font-family: "TT Hoves",-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+}
+
+:root {
+    --BG_GREEN: #00854D;
+    --BG_GREY: #f4f4f4;
+    --TYPE_DARK_GREY: #1F1F1F;
+    --BG_WHITE: #ffffff;
+    --STROKE_GREY: #e8e8e8;
+    --TYPE_RED: #cd4949;
+    --TYPE_WHITE: #ffffff;
+    --TYPE_LIGHT_GREY: #808080;
+}
+
+.dark {
+    --BG_GREEN: #00854D;
+    --BG_GREY: #18191a;
+    --TYPE_DARK_GREY: #eaebed;
+    --BG_WHITE: #242526;
+    --STROKE_GREY: #3a3b3c;
+    --TYPE_RED: #c65353;
+    --TYPE_WHITE: #fafafa;
+    --TYPE_LIGHT_GREY: #959596;
+}
+
+html, body {
     overflow: hidden;
     margin: 0;
     padding: 0;
+    color: var(--TYPE_DARK_GREY);
+    background: var(--BG_WHITE);
 }
+
 input {
+    color-scheme: dark;
     -webkit-font-smoothing: antialiased;
     margin: 0;
-    font-family: "TT Hoves",-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
     font-weight: 500;
     padding: 1px 16px 0 16px;
     font-size: 14px;
     border-radius: 4px;
-    border: solid 2px #e8e8e8;
-    background-color: #ffffff;
+    border: solid 2px var(--STROKE_GREY);
+    background-color: var(--BG_WHITE);
     outline: none;
     box-sizing: border-box;
     width: 100%;
     height: 48px;
-    color: #1F1F1F;
+    color: var(--TYPE_DARK_GREY);
 }
 
 input.valid {
-    border: 2px solid #00854D;
+    border: 2px solid var(--BG_GREEN);
 }
 input.invalid {
-    border: 2px solid #cd4949;
+    border: 2px solid var(--TYPE_RED);
+}
+.hidden {
+    display: none !important;
+}
+
+.checkbox-wrapper {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box;
+    display: flex;
+    cursor: pointer;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.checkbox {
+    color-scheme: light;
+    font-size: 16px;
+    color: var(--TYPE_DARK_GREY);
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    width: 24px;
+    min-width: 24px;
+    max-width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.checkbox.checked {
+    background: var(--BG_GREEN);
+    border: 2px solid var(--BG_GREEN);
+}
+
+.checkbox.unchecked {
+    background: var(--BG_WHITE);
+    border: 2px solid var(--STROKE_GREY);
+}
+
+.checkbox-input {
+    display: block;
+    top: 0px;
+    left: 0px;
+    z-index: -1;
+}
+
+.checkbox-checked-icon {
+    font-size: 16px;
+    color: var(--TYPE_DARK_GREY);
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+}
+
+.checkbox-label {
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box;
+    display: flex;
+    padding-left: 12px;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.checkbox-wrapper.registration {
+    margin-bottom: 20px;
 }
 
 .input-wrapper {
@@ -33,20 +152,17 @@ input.invalid {
     position: relative;
 }
 .input-message {
-    -webkit-font-smoothing: antialiased;
     margin: 0;
     outline: none;
     box-sizing: border-box;
     display: flex;
     font-size: 12px;
-    color: #cd4949;
+    color: var(--TYPE_RED);
     padding: 10px 10px 0 10px;
     min-height: 27px;
 }
 button {
-    -webkit-font-smoothing: antialiased;
     margin: 0;
-    font-family: "TT Hoves",-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
     box-sizing: border-box;
     display: flex;
     -webkit-box-align: center;
@@ -59,9 +175,13 @@ button {
     border-radius: 8px;
     outline: none;
     padding: 9px 12px;
-    transition: background 150ms ease-out;
-    color: #ffffff;
+    color: var(--TYPE_WHITE);
     font-weight: 600;
     font-size: 16px;
-    background: #00854D;
+    background: var(--BG_GREEN);
+}
+
+button:disabled {
+    background: var(--BG_GREY);
+    color: var(--TYPE_LIGHT_GREY);
 }

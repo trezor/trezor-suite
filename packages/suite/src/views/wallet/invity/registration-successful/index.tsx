@@ -18,6 +18,7 @@ const SpecularImg = styled.img`
 const Header = styled.div`
     font-size: 24px;
     align-self: center;
+    margin-bottom: 12px;
 `;
 
 const Description = styled.div`
@@ -26,12 +27,7 @@ const Description = styled.div`
 
 const RegistrationSuccessful = () => (
     <Wrapper>
-        <SpecularImg
-            src={resolveStaticPath('images/suite/3d/specular.png')}
-            width="77.42"
-            height="61.21"
-            alt=""
-        />
+        <SpecularImg src={resolveStaticPath('images/suite/3d/folder.png')} alt="" />
         <Header>
             <Translation id="TR_SAVINGS_REGISTRATION_SUCCESSFUL_HEADER" />
         </Header>
@@ -43,4 +39,5 @@ const RegistrationSuccessful = () => (
 
 export default withInvityLayout(RegistrationSuccessful, {
     redirectUnauthorizedUserToLogin: false,
+    showStepsGuide: true,
 });

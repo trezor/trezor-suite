@@ -1,11 +1,14 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { InvityLayout, withSelectedAccountLoaded } from '@wallet-components';
 import invityAPI from '@suite-services/invityAPI';
 import { InvityLayoutProps } from '@suite/components/wallet/InvityLayout';
 import { InvityAuthenticationContext } from '@suite/components/wallet/InvityAuthentication';
 import { Translation } from '@suite-components';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
+import { Loader } from '@trezor/components';
+
+const DefaultIframeHeight = 188;
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,10 +40,11 @@ const Description = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const StyledIframe = styled.iframe`
+const StyledIframe = styled.iframe<{ isHidden: boolean }>`
     width: 100%;
     margin: 0;
     padding: 0;
+    display: ${props => (props.isHidden ? 'none' : 'block')};
 `;
 
 const Divider = styled.div`
@@ -48,7 +52,7 @@ const Divider = styled.div`
     margin-bottom: 15px;
     height: 1px;
     width: 100%;
-    border: 1px solid ${props => props.theme.BG_GREY};
+    border: 1px solid ${props => props.theme.BG_SECONDARY};
 `;
 
 const Footer = styled.div`
@@ -79,15 +83,28 @@ const CreateAnAccount = styled(NoAccount)`
     cursor: pointer;
 `;
 
+const StyledLoader = styled(Loader)<{ isHidden: boolean }>`
+    height: ${`${DefaultIframeHeight}px`};
+    width: 100%;
+    display: ${props => (props.isHidden ? 'none' : 'flex')};
+`;
+
 const CoinmarketSavingsLogin = ({ selectedAccount }: InvityLayoutProps) => {
     const { iframeMessage } = useContext(InvityAuthenticationContext);
     const { navigateToInvityRegistration } = useInvityNavigation(selectedAccount.account);
-    const [iframeHeight, setIframeHeight] = useState<number>(0);
+    const [iframeHeight, setIframeHeight] = useState<number>();
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [isFrameLoading, setIsIframeLoading] = useState(true);
 
     useEffect(() => {
         if (iframeMessage?.action === 'resize') {
             setIframeHeight(iframeMessage.data);
+        }
+        if (iframeMessage?.action === 'loaded') {
+            setIsIframeLoading(false);
+        }
+        if (iframeMessage?.action === 'login-successful') {
+            setIsIframeLoading(true);
         }
     }, [iframeMessage]);
 
@@ -95,6 +112,7 @@ const CoinmarketSavingsLogin = ({ selectedAccount }: InvityLayoutProps) => {
         () => navigateToInvityRegistration(),
         [navigateToInvityRegistration],
     );
+    const theme = useTheme();
 
     return (
         <InvityLayout selectedAccount={selectedAccount}>
@@ -105,14 +123,16 @@ const CoinmarketSavingsLogin = ({ selectedAccount }: InvityLayoutProps) => {
                         <Translation id="TR_INVITY_LOGIN_HEADER" />
                     </Header>
                     <Description>
-                        Amet minim mollit non deserunt ullamco est sit aliqua dolor do.
+                        <Translation id="TR_INVITY_LOGIN_DESCRIPTION" />
                     </Description>
+                    <StyledLoader isHidden={!isFrameLoading} />
                     <StyledIframe
+                        isHidden={isFrameLoading}
                         ref={iframeRef}
                         title="login"
                         frameBorder="0"
-                        height={`${iframeHeight}px`}
-                        src={invityAPI.getLoginPageSrc()}
+                        height={`${iframeHeight || DefaultIframeHeight}px`}
+                        src={invityAPI.getLoginPageSrc(theme.THEME)}
                         sandbox="allow-scripts allow-forms allow-same-origin"
                     />
                     <Divider />

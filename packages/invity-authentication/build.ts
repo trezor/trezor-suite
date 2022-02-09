@@ -28,11 +28,19 @@ const getStyleFilePath = (fileName: string) => path.join(StylesPath, fileName);
 
 const pageAssetCollection: PageAssetCollection = {
     login: {
-        js: [getScriptFilePath('flow.js'), getScriptFilePath('login.js')],
+        js: [
+            getScriptFilePath('core.js'),
+            getScriptFilePath('flow.js'),
+            getScriptFilePath('login.js'),
+        ],
         css: [getStyleFilePath('fonts.css'), getStyleFilePath('base.css')],
     },
     registration: {
-        js: [getScriptFilePath('flow.js'), getScriptFilePath('registration.js')],
+        js: [
+            getScriptFilePath('core.js'),
+            getScriptFilePath('flow.js'),
+            getScriptFilePath('registration.js'),
+        ],
         css: [getStyleFilePath('fonts.css'), getStyleFilePath('base.css')],
     },
     'login-success': {

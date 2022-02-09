@@ -40,6 +40,8 @@ import type {
 } from '@wallet-types/invity';
 import { resolveStaticPath } from '@suite-utils/build';
 import { getPrefixedURL } from '@suite-utils/router';
+import type { SuiteThemeColors } from '@trezor/components';
+import { InvityAuthenticationThemeKey } from '@wallet-constants/coinmarket/metadata';
 
 /** BEGIN: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 export type SavingsPaymentMethods = 'bankTransfer';
@@ -923,6 +925,7 @@ class InvityAPI {
 
     private getInvityAuthenticationPageSrc(
         flow: 'login' | 'registration',
+        theme: SuiteThemeColors['THEME'],
         afterVerificationReturnToPath?: string,
     ) {
         // TODO: where to put the http://localhost:21335?
@@ -947,15 +950,23 @@ class InvityAPI {
             );
         }
         url.hash = this.getAuthServerUrl();
+        url.searchParams.append(InvityAuthenticationThemeKey, theme);
         return url.toString();
     }
 
-    getLoginPageSrc() {
-        return this.getInvityAuthenticationPageSrc('login');
+    getLoginPageSrc(theme: SuiteThemeColors['THEME']) {
+        return this.getInvityAuthenticationPageSrc('login', theme);
     }
 
-    getRegistrationPageSrc(afterVerificationReturnToPath: string) {
-        return this.getInvityAuthenticationPageSrc('registration', afterVerificationReturnToPath);
+    getRegistrationPageSrc(
+        afterVerificationReturnToPath: string,
+        theme: SuiteThemeColors['THEME'],
+    ) {
+        return this.getInvityAuthenticationPageSrc(
+            'registration',
+            theme,
+            afterVerificationReturnToPath,
+        );
     }
 
     // TODO:

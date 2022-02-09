@@ -9,26 +9,21 @@
 </head>
 
 <body>
-    <!-- <div id="spinner-div" class="d-flex align-items-center justify-content-center">
-                <div id="spinner" class="spinner-border text-primary" role="status">
-                    <span id="loading_spinner" class="sr-only">Loading...</span>
-                </div>
-            </div> -->
     <!-- TODO: add onerror? -->
     <form id="form" action="" method="">
         <div id="auth_email" class="input-wrapper">
-            <input type="email" autocomplete="email" placeholder="Email" autofocus="" required class="email">
+            <input id="email" type="email" autocomplete="email" placeholder="Email" required class="email">
         </div>
         <div class="input-message">
             <span id="error-email"></span>
         </div>
 
         <div id="auth_password" class="input-wrapper">
-            <input type="password" placeholder="Password" autocomplete="current-password" required class="form-control"
-                class="password">
+            <input id="password" type="password" placeholder="Password" autocomplete="current-password" required
+                class="form-control" class="password">
         </div>
         <div class="input-message">
-            <span id="error-general"></span>
+            <span id="error-password"></span>
         </div>
 
         <div class="form-group">

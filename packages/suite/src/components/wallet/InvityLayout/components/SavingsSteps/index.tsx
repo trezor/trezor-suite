@@ -82,9 +82,11 @@ const SavingsSteps = () => {
     const steps = {
         TR_SAVINGS_GUIDE_STEP_YOUR_CREDENTIALS: {
             isBulletPointHidden: false,
-            className: ['wallet-invity-registration', 'wallet-invity-user-info'].includes(
-                currentRouteName,
-            )
+            className: [
+                'wallet-invity-registration',
+                'wallet-invity-user-info',
+                'wallet-invity-registration-successful',
+            ].includes(currentRouteName)
                 ? 'isSelected'
                 : '',
         },

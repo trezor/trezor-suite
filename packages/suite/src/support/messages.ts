@@ -930,6 +930,10 @@ export default defineMessages({
         defaultMessage: 'Log in to Invity',
         id: 'TR_INVITY_LOGIN_HEADER',
     },
+    TR_INVITY_LOGIN_DESCRIPTION: {
+        defaultMessage: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do.',
+        id: 'TR_INVITY_LOGIN_DESCRIPTION',
+    },
     TR_INVITY_LOGIN_FORGOT_PASSWORD: {
         defaultMessage: 'Forgot your password?',
         id: 'TR_INVITY_LOGIN_FORGOT_PASSWORD',
@@ -945,6 +949,10 @@ export default defineMessages({
     TR_INVITY_REGISTRATION_HEADER: {
         defaultMessage: 'Create an Invity account',
         id: 'TR_INVITY_REGISTRATION_HEADER',
+    },
+    TR_INVITY_REGISTRATION_DESCRIPTION: {
+        defaultMessage: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do.',
+        id: 'TR_INVITY_REGISTRATION_DESCRIPTION',
     },
     TR_INVITY_REGISTRATION_FOOTER_ALREADY_HAVE_AN_ACCOUNT: {
         defaultMessage: 'Already have an account? {login}',

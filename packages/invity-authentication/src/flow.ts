@@ -5,22 +5,8 @@
     Use element.classList.add/remove instead.    
  */
 
-const showSpinner = active => {
-    const spinner = document.getElementById('spinner-div');
-    if (!spinner) {
-        return;
-    }
-    if (window.top.location.pathname === '/account/reset-sent') {
-        active = false;
-    }
-    spinner.classList.toggle('hidden', !active);
-};
-
-const sendMessageToParent = (data, _showSpinner = true) => {
+const sendMessageToParent = (data) => {
     // Send a message to the parent window (ask for a redirect, or inform it whether the user is authorized)
-    if (_showSpinner) {
-        showSpinner(true);
-    }
     window.top.postMessage(
         JSON.stringify({
             name: 'invity-authentication',
@@ -43,11 +29,6 @@ const translate = (translations, key, fallback) => {
 };
 
 const translateForm = _ => {
-    const spinner = document.getElementById('loading_spinner');
-    if (spinner) {
-        spinner.innerText = 'Loading...';
-    }
-
     const forgotPassword = document.getElementById('forgot_password_link');
     if (forgotPassword) {
         forgotPassword.innerText = 'Forgot your password?';
@@ -74,7 +55,7 @@ const disableForm = () => {
     submitButton.disabled = true;
 };
 
-const showMessage = (type, message, _disableForm = false) => {
+const showMessage = (type: string, message: string, _disableForm = false) => {
     if (_disableForm) {
         disableForm();
     }
@@ -84,7 +65,7 @@ const showMessage = (type, message, _disableForm = false) => {
         return;
     }
 
-    document.getElementById('error-general').innerText = message;
+    document.getElementById('error-password').innerText = message;
 };
 
 const getVerificationCookie = () => {
@@ -164,7 +145,6 @@ const getFlowId = (urls, flowType) => {
 };
 
 const getFlowInfo = async (urls, flowType) => {
-    showSpinner(true);
     // Get flow Id from URL params
     const flowId = getFlowId(urls, flowType);
     // Request form info for the flow ID, or get redirected
@@ -179,7 +159,6 @@ const getFlowInfo = async (urls, flowType) => {
         credentials: 'include',
     });
     const json = await response.json();
-    showSpinner(false);
     if (json.error) {
         if (json?.error?.details?.redirect_to) {
             // Flow has expired - reload an iframe & get a new flow ID
@@ -268,12 +247,10 @@ const checkPrivilegedSession = (authenticatedAt: number, flowType) => {
 
 const checkWhoami = async (flowType, urls) => {
     try {
-        showSpinner(true);
         const response = await fetch(`${urls.authServerUrl}/sessions/whoami`, {
             credentials: 'include',
         });
         const data = await response.json();
-        showSpinner(false);
         if (data.error) {
             // Unauthorized, prefill e-mail from cookie (only for verification & recovery flows)
             if (prefillEmail(null, flowType) === false) {
@@ -330,15 +307,13 @@ const parseFlowAttributes = (flowData, flowType) => {
             ['password_identifier', 'traits.email', 'email'].includes(node.attributes.name) &&
             flowType !== 'settings'
         ) {
-            const element = document.getElementById('auth_email').getElementsByTagName('input')[0];
+            const element = document.getElementById('email') as HTMLInputElement;
             element.setAttribute('name', node.attributes.name);
             if (node.attributes.value) {
                 element.value = node.attributes.value;
             }
         } else if (node.attributes.name === 'password') {
-            const element = document
-                .getElementById('auth_password')
-                .getElementsByTagName('input')[0];
+            const element = document.getElementById('password');
             element.setAttribute('name', node.attributes.name);
         } else if (node.attributes.name === 'method' && node.attributes.value) {
             const submitButton = document.getElementById('submit') as HTMLButtonElement;
@@ -417,7 +392,6 @@ const parseFlowAttributes = (flowData, flowType) => {
                     sendMessageToParent({
                         action: { type: 'showMessage', variant: 'success', text },
                     });
-                    showSpinner(false);
                     exit();
                 } else {
                     message.text = text;
@@ -448,7 +422,6 @@ const parseFlowAttributes = (flowData, flowType) => {
 
 const checkIsIframe = urls => {
     if (!inIframe()) {
-        showSpinner(true);
         window.location.replace(urls.redirectUrl);
         exit();
     }
@@ -513,7 +486,7 @@ const checkFlowType = flowType => {
 
 const onEmailChange = event => {
     const submit = document.getElementById('submit') as HTMLButtonElement;
-    const emailInput = document.getElementById('auth_email').getElementsByTagName('input')[0];
+    const emailInput = document.getElementById('email');
     const emailErrorDiv = document.getElementById('error-email');
     const passwordErrorDiv = document.getElementById('error-password');
     const re =
@@ -522,7 +495,6 @@ const onEmailChange = event => {
     if (re.test(String(event.target.value).toLowerCase())) {
         emailInput.classList.add('valid');
         emailErrorDiv.innerText = '';
-        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         submit.disabled = false;
         if (passwordErrorDiv && passwordErrorDiv.textContent) {
             submit.disabled = true;
@@ -530,21 +502,20 @@ const onEmailChange = event => {
     } else {
         emailInput.classList.add('invalid');
         emailErrorDiv.innerText = 'Please, enter a valid email address';
-        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         submit.disabled = true;
     }
+    sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
 };
 
 const onPasswordChange = event => {
     const submit = document.getElementById('submit') as HTMLButtonElement;
-    const passwordInput = document.getElementById('auth_password').getElementsByTagName('input')[0];
+    const passwordInput = document.getElementById('password');
     const emailErrorDiv = document.getElementById('error-email');
     const passwordErrorDiv = document.getElementById('error-password');
     passwordInput.classList.remove(...passwordInput.classList);
     if (event.target.value.length > 6) {
         passwordInput.classList.add('valid');
         passwordErrorDiv.innerText = '';
-        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         submit.disabled = false;
         if (emailErrorDiv && emailErrorDiv.textContent) {
             submit.disabled = true;
@@ -552,25 +523,23 @@ const onPasswordChange = event => {
     } else {
         passwordInput.classList.add('invalid');
         passwordErrorDiv.innerText = 'Your password is too short!';
-        sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
         submit.disabled = true;
     }
+    sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
 };
 
 const addInputValidation = flowType => {
-    if (['login', 'registration', 'settings', 'recovery'].includes(flowType) === false) {
+    if (!['login', 'registration', 'settings', 'recovery'].includes(flowType)) {
         return;
     }
-    const emailDiv = document.getElementById('auth_email');
-    if (emailDiv) {
-        const emailInput = emailDiv.getElementsByTagName('input')[0];
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
         emailInput.addEventListener('keydown', onEmailChange);
         emailInput.addEventListener('paste', onEmailChange);
         emailInput.addEventListener('input', onEmailChange);
     }
-    const passwordDiv = document.getElementById('auth_password');
-    if (flowType !== 'login' && passwordDiv) {
-        const passwordInput = passwordDiv.getElementsByTagName('input')[0];
+    const passwordInput = document.getElementById('password');
+    if (flowType !== 'login' && passwordInput) {
         passwordInput.addEventListener('keydown', onPasswordChange);
         passwordInput.addEventListener('paste', onPasswordChange);
         passwordInput.addEventListener('input', onPasswordChange);
@@ -578,6 +547,7 @@ const addInputValidation = flowType => {
 };
 
 const runFlow = async flowType => {
+    sendMessageToParent({ action: 'loading' });
     sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
     try {
         // eslint-disable-next-line no-debugger
@@ -591,6 +561,7 @@ const runFlow = async flowType => {
         await checkWhoami(flowType, urls); // Get user info and redirect if needed
         const flowData = await getFlowInfo(urls, flowType); // Get flowID from URL params & request form info (or get redirected)
         parseFlowAttributes(flowData, flowType); // Fill the form or show messages according to flow info
+        sendMessageToParent({ action: 'loaded' });
     } catch (error) {
         if (error !== 'exit') {
             console.error(error);

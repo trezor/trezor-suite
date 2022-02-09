@@ -10,34 +10,42 @@
 </head>
 
 <body>
-    <!-- <div id="spinner-div" class="d-flex align-items-center justify-content-center">
-                <div id="spinner" class="spinner-border text-primary" role="status">
-                    <span id="loading_spinner" class="sr-only">Loading...</span>
-                </div>
-            </div> -->
     <!-- TODO: add onerror? -->
     <form id="form" action="" method="">
         <div id="auth_email" class="input-wrapper">
-            <input type="email" autocomplete="email" placeholder="Email" autofocus="" required class="email">
+            <input id="email" type="email" autocomplete="email" placeholder="Email" required class="email">
         </div>
         <div class="input-message">
             <span id="error-email"></span>
         </div>
 
         <div id="auth_password" class="input-wrapper">
-            <input type="password" placeholder="Password" autocomplete="current-password" required class="form-control"
+            <input id="password" type="password" placeholder="Password" autocomplete="current-password" required class="form-control"
                 class="password">
         </div>
         <div class="input-message">
-            <span id="error-general"></span>
+            <span id="error-password"></span>
         </div>
 
         <div class="form-group">
             <input id="csrf_token" name="csrf_token" type="hidden" class="form-control">
         </div>
 
-        <p>TBD: checkbox with terms</p>
-
+        <div class="checkbox-wrapper registration">
+            <div class="checkbox unchecked">
+                <input class="checkbox-input" type="checkbox" required>
+                <div class="checkbox-checked-icon hidden" size="24" color="#ffffff"><svg xmlns="http://www.w3.org/2000/svg"
+                        height="24px" viewBox="0 0 16 16" width="24px" class="injected-svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        fill="#ffffff">
+                        <path
+                            d="m3.22133834 7.46014065c.29511778-.29202634.77359824-.29202634 1.06871602 0l2.19855294 2.1755225 5.2213383-5.16664339c.2951178-.29202635.7735983-.29202635 1.0687161 0 .2951177.29202634.2951177.76549459 0 1.05752093l-6.29076687 6.22345931-3.26655649-3.23233842c-.29511779-.29202634-.29511779-.76549459 0-1.05752093z"
+                            fill-rule="evenodd"></path>
+                    </svg></div>
+            </div>
+            <div class="checkbox-label">I agree with Terms and conditions</div>
+        </div>
+        
         <!-- <div class="form-group">
                     <small id="info" class="text-primary form-text"></small>
                     <div id='popup' class="popup">

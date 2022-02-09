@@ -8,6 +8,7 @@ import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActi
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import type { AppState } from '@suite-types';
+import invityAPI from '@suite/services/suite/invityAPI';
 // TODO: move interfaces/types to types folder
 
 export interface AccountInfo {
@@ -34,6 +35,7 @@ const inIframe = () => {
 interface IframeMessage {
     name: 'invity-authentication';
     action?:
+        | 'loading'
         | 'loaded'
         | 'resize'
         | 'registration-successful'
@@ -57,10 +59,17 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
 }) => {
     const [iframeMessage, setIframeMessage] = useState<IframeMessage>();
     const { account } = selectedAccount;
-    const { invityAuthentication, selectedProvider } = useSelector(state => ({
-        invityAuthentication: state.wallet.coinmarket.invityAuthentication,
-        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
-    }));
+    const { invityAuthentication, selectedProvider, invityServerEnvironment } = useSelector(
+        state => ({
+            invityServerEnvironment: state.suite.settings.debug.invityServerEnvironment,
+            invityAuthentication: state.wallet.coinmarket.invityAuthentication,
+            selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
+        }),
+    );
+
+    if (invityServerEnvironment) {
+        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
+    }
 
     const {
         loadInvityAuthentication,
