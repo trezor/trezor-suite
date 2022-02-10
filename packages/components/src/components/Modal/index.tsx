@@ -7,29 +7,7 @@ import { Icon } from '../Icon';
 import { H1 } from '../typography/Heading';
 import { variables } from '../../config';
 
-// each item in array corresponds to a screen size  [SM, MD, LG, XL]
-const ZERO_PADDING: [string, string, string, string] = ['0px', '0px', '0px', '0px'];
-
-// padding for Modal container
-const MODAL_PADDING_TOP: [string, string, string, string] = ['16px', '35px', '35px', '35px'];
-const MODAL_PADDING_TOP_TINY: [string, string, string, string] = ['16px', '24px', '24px', '24px'];
-
-const MODAL_PADDING_BOTTOM: [string, string, string, string] = ['16px', '35px', '35px', '35px'];
-const MODAL_PADDING_BOTTOM_TINY: [string, string, string, string] = [
-    '16px',
-    '24px',
-    '24px',
-    '24px',
-];
-
-// padding for Heading, Description, Content and BottomBar
-const SIDE_PADDING: [string, string, string, string] = ['16px', '40px', '40px', '40px'];
-const SIDE_PADDING_TINY: [string, string, string, string] = ['16px', '32px', '32px', '32px'];
-
-const FIXED_WIDTH: [string, string, string, string] = ['95vw', '90vw', '720px', '720px'];
-const FIXED_WIDTH_SMALL: [string, string, string, string] = ['95vw', '90vw', '600px', '600px'];
-const FIXED_WIDTH_TINY: [string, string, string, string] = ['360px', '360px', '360px', '360px'];
-const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px', '620px'];
+type Padding = [string, string, string, string];
 
 const ModalOverlay = styled.div<{ guidePanelSize: string }>`
     position: fixed;
@@ -56,20 +34,14 @@ const Header = styled.div`
     margin-bottom: 25px;
 `;
 
-type ModalWindowProps = Omit<
-    Props,
-    'fixedWidth' | 'fixedHeight' | 'modalPaddingBottom' | 'modalPaddingTop' | 'modalPaddingSide'
-> &
-    Required<
-        Pick<
-            Props,
-            | 'fixedWidth'
-            | 'fixedHeight'
-            | 'modalPaddingBottom'
-            | 'modalPaddingTop'
-            | 'modalPaddingSide'
-        >
-    >; // make some props mandatory
+type ModalWindowProps = Omit<Props, 'fixedWidth' | 'fixedHeight' | 'size'> &
+    Required<Pick<Props, 'fixedWidth' | 'fixedHeight' | 'size'>>;
+
+const pd = (size: SIZE, noPadding?: boolean) => {
+    if (noPadding) return '0';
+    return size === 'tiny' ? '24px' : '35px';
+};
+
 const ModalWindow = styled.div<ModalWindowProps>`
     display: flex;
     flex-direction: column;
@@ -78,25 +50,25 @@ const ModalWindow = styled.div<ModalWindowProps>`
     text-align: center;
     overflow-x: hidden; /* retains border-radius when using background in child component */
     transition: all 0.3s;
-    padding: ${(props: ModalWindowProps) =>
-        `${props.modalPaddingTop[3]} ${props.modalPaddingSide[3]} ${props.modalPaddingBottom[3]}`};
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: ${(props: ModalWindowProps) =>
-            `${props.modalPaddingTop[0]} ${props.modalPaddingSide[0]} ${props.modalPaddingBottom[0]}`};
-    }
-
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${variables
-            .SCREEN_SIZE.MD}) {
-        padding: ${(props: ModalWindowProps) =>
-            `${props.modalPaddingTop[1]} ${props.modalPaddingSide[1]} ${props.modalPaddingBottom[1]}`};
-    }
-
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${variables
-            .SCREEN_SIZE.LG}) {
-        padding: ${(props: ModalWindowProps) =>
-            `${props.modalPaddingTop[2]} ${props.modalPaddingSide[2]} ${props.modalPaddingBottom[2]}`};
-    }
+    ${({ size, noPadding, heading }) => css`
+        padding-top: ${pd(size, !!heading || noPadding)};
+        padding-bottom: ${pd(size, noPadding)};
+        @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+            padding-top: ${heading || noPadding ? '0' : '16px'};
+            padding-bottom: ${noPadding ? '0' : '16px'};
+        }
+        @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${variables
+                .SCREEN_SIZE.MD}) {
+            padding-top: ${pd(size, !!heading || noPadding)};
+            padding-bottom: ${pd(size, noPadding)};
+        }
+        @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${variables
+                .SCREEN_SIZE.LG}) {
+            padding-top: ${pd(size, !!heading || noPadding)};
+            padding-bottom: ${pd(size, noPadding)};
+        }
+    `}
 
     ${props =>
         !props.noBackground &&
@@ -114,6 +86,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
                 padding-bottom: 0px;
             }
         `}
+
     /* content-based width mode */
     ${props =>
         !props.useFixedWidth &&
@@ -173,7 +146,6 @@ interface HeadingProps {
     cancelable: boolean;
     showHeaderBorder: boolean;
     showProgressBar: boolean;
-    hiddenProgressBar: boolean;
     noHeadingPadding: boolean;
 }
 
@@ -189,10 +161,7 @@ const Heading = styled(H1)<HeadingProps>`
         props.showHeaderBorder ? `1px solid ${props.theme.STROKE_GREY}` : 'none'};
 
     /* if progress bar with green bar is being showed, do not show header border (set color to white) */
-    border-color: ${props =>
-        props.showProgressBar && !props.hiddenProgressBar
-            ? 'transparent'
-            : props.theme.STROKE_GREY};
+    border-color: ${props => (props.showProgressBar ? 'transparent' : props.theme.STROKE_GREY)};
 
     /* align content based on the 'cancelable' prop */
     text-align: ${props => (props.cancelable ? 'left' : 'center')};
@@ -226,12 +195,11 @@ const CancelIconWrapper = styled.div<{ withComponents: boolean }>`
     cursor: pointer;
 `;
 
-const ProgressBarPlaceholder = styled.div<{ hiddenProgressBar: boolean }>`
+const ProgressBarPlaceholder = styled.div`
     height: 4px;
     width: 100%;
     margin-bottom: 20px;
-    background-color: ${props =>
-        props.hiddenProgressBar ? 'transparent' : props.theme.STROKE_GREY};
+    background-color: ${props => props.theme.STROKE_GREY};
 `;
 
 const GreenBar = styled.div<{ width: number }>`
@@ -242,7 +210,7 @@ const GreenBar = styled.div<{ width: number }>`
     width: ${props => `${props.width}%`};
 `;
 
-const SidePaddingWrapper = styled.div<{ sidePadding: [string, string, string, string] }>`
+const SidePaddingWrapper = styled.div<{ sidePadding: Padding }>`
     /* This component applies responsive side padding to all components that inherit from this component */
     padding-left: ${props => props.sidePadding[3]};
     padding-right: ${props => props.sidePadding[3]};
@@ -291,65 +259,30 @@ const BottomBar = styled(SidePaddingWrapper)`
 
 type SIZE = 'large' | 'small' | 'tiny';
 
-const getFixedWidth = (size: SIZE) => {
+const getFixedWidth = (size: SIZE): Padding => {
     switch (size) {
         case 'large':
-            return FIXED_WIDTH;
+            return ['95vw', '90vw', '720px', '720px'];
         case 'small':
-            return FIXED_WIDTH_SMALL;
+            return ['95vw', '90vw', '600px', '600px'];
         case 'tiny':
-            return FIXED_WIDTH_TINY;
+            return ['360px', '360px', '360px', '360px'];
         // no default
     }
 };
 
 // returns the value of padding-left/right for Heading, Description, Content and BottomBar
-const getContentPaddingSide = (size: SIZE, noPadding: boolean, noSidePadding: boolean) => {
+const getContentPaddingSide = (size: SIZE, noPadding: boolean, noSidePadding: boolean): Padding => {
     if (noPadding || noSidePadding) {
-        return ZERO_PADDING;
+        return ['0px', '0px', '0px', '0px'];
     }
 
     switch (size) {
         case 'large':
-            return SIDE_PADDING;
         case 'small':
-            return SIDE_PADDING;
+            return ['16px', '40px', '40px', '40px'];
         case 'tiny':
-            return SIDE_PADDING_TINY;
-        // no default
-    }
-};
-
-const getModalPaddingTop = (size: SIZE, heading: React.ReactNode, noPadding: boolean) => {
-    // if heading is present, do not add any padding to the top
-    if (heading || noPadding) {
-        return ZERO_PADDING;
-    }
-
-    switch (size) {
-        case 'large':
-            return MODAL_PADDING_TOP;
-        case 'small':
-            return MODAL_PADDING_TOP;
-        case 'tiny':
-            return MODAL_PADDING_TOP_TINY;
-        // no default
-    }
-};
-
-// returns the value of padding-bottom for the main Modal container
-const getModalPaddingBottom = (size: SIZE, noPadding: boolean) => {
-    if (noPadding) {
-        return ZERO_PADDING;
-    }
-
-    switch (size) {
-        case 'large':
-            return MODAL_PADDING_BOTTOM;
-        case 'small':
-            return MODAL_PADDING_BOTTOM;
-        case 'tiny':
-            return MODAL_PADDING_BOTTOM_TINY;
+            return ['16px', '32px', '32px', '32px'];
         // no default
     }
 };
@@ -363,13 +296,10 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     cancelable?: boolean;
     size?: SIZE;
     useFixedWidth?: boolean;
-    fixedWidth?: [string, string, string, string]; // [SM, MD, LG, XL]
+    fixedWidth?: Padding; // [SM, MD, LG, XL]
     useFixedHeight?: boolean;
-    fixedHeight?: [string, string, string, string]; // [SM, MD, LG, XL]
-    modalPaddingTop?: [string, string, string, string]; // [SM, MD, LG, XL]
-    modalPaddingBottom?: [string, string, string, string]; // [SM, MD, LG, XL]
-    modalPaddingSide?: [string, string, string, string]; // [SM, MD, LG, XL]
-    contentPaddingSide?: [string, string, string, string]; // [SM, MD, LG, XL]
+    fixedHeight?: Padding; // [SM, MD, LG, XL]
+    contentPaddingSide?: Padding; // [SM, MD, LG, XL]
     noPadding?: boolean;
     noHeadingPadding?: boolean;
     noSidePadding?: boolean;
@@ -383,6 +313,28 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     isGuideOpen?: boolean;
     headerComponents?: Array<React.ReactElement>;
 }
+
+const ConditionalOverlay = ({
+    condition,
+    header,
+    onClick,
+    children,
+    guidePanelSize,
+}: {
+    condition: boolean;
+    header?: React.ReactNode;
+    onClick: () => void;
+    children: React.ReactElement;
+    guidePanelSize: string;
+}) =>
+    condition ? (
+        <ModalOverlay guidePanelSize={guidePanelSize} onClick={onClick} data-test="@modal">
+            {header && <Header>{header}</Header>}
+            {children}
+        </ModalOverlay>
+    ) : (
+        children
+    );
 
 const Modal = ({
     children,
@@ -398,17 +350,15 @@ const Modal = ({
     useFixedWidth = true,
     fixedWidth = getFixedWidth(size),
     useFixedHeight = false,
-    fixedHeight = FIXED_HEIGHT,
+    fixedHeight = ['90vh', '90vh', '620px', '620px'],
     noPadding = false,
     noHeadingPadding = false,
     noSidePadding = false,
-    // TODO: get rid of all these padding props bellow. Usage should be simple: Either use default paddings provided by modal, or use noPadding and then do all necessary work in components which will be passed as heading, description, children/content. We cannot keep handling whole universe here for few stupid custom components
-    modalPaddingTop = getModalPaddingTop(size, heading, noPadding),
-    modalPaddingBottom = getModalPaddingBottom(size, noPadding),
-    modalPaddingSide = ZERO_PADDING, // default value is zero padding on sides for Modal container
+    // TODO: get rid of all these padding props bellow. Usage should be simple: Either use default paddings provided by modal,
+    // or use noPadding and then do all necessary work in components which will be passed as heading, description, children/content.
+    // We cannot keep handling whole universe here for few stupid custom components
     contentPaddingSide = getContentPaddingSide(size, noPadding, noSidePadding),
     showHeaderBorder = true,
-    hiddenProgressBar = false, // reserves the space for progress bar (4px under the heading), but not showing the green bar
     totalProgressBarSteps,
     currentProgressBarStep,
     centerContent = false,
@@ -421,12 +371,11 @@ const Modal = ({
 
     // check if progress bar placeholder should be rendered
     const showProgressBarPlaceholder: boolean =
-        hiddenProgressBar ||
-        (totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined);
+        totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined;
 
     // compute progress bar width if all data is available and hiddenProgressBar is not selected
     let progressBarWidth = null;
-    if (!hiddenProgressBar && totalProgressBarSteps && currentProgressBarStep) {
+    if (totalProgressBarSteps && currentProgressBarStep) {
         progressBarWidth = (100 / totalProgressBarSteps) * currentProgressBarStep;
     }
 
@@ -434,92 +383,77 @@ const Modal = ({
         onCancel();
     }
 
-    const modalWindow = (
-        <ModalWindow
-            size={size}
-            useFixedWidth={useFixedWidth}
-            fixedWidth={fixedWidth}
-            useFixedHeight={useFixedHeight}
-            fixedHeight={fixedHeight}
-            modalPaddingTop={modalPaddingTop}
-            modalPaddingBottom={modalPaddingBottom}
-            modalPaddingSide={modalPaddingSide}
-            bottomBar={bottomBar}
-            noBackground={noBackground}
-            onClick={e => {
-                if (onClick) onClick(e);
-                e.stopPropagation();
-            }}
-            data-test="@modal"
-            {...rest}
-        >
-            {heading && (
-                <Heading
-                    cancelable={cancelable}
-                    showHeaderBorder={showHeaderBorder}
-                    hiddenProgressBar={hiddenProgressBar}
-                    showProgressBar={showProgressBarPlaceholder}
-                    noHeadingPadding={noHeadingPadding}
-                >
-                    {heading}
-                    {headerComponents && (
-                        <HeaderComponentsContainer isAbsolute={!cancelable}>
-                            {headerComponents}
-                        </HeaderComponentsContainer>
-                    )}
-                    {cancelable && (
-                        <CancelIconWrapper
-                            data-test="@modal/close-button"
-                            onClick={onCancel}
-                            withComponents={!!headerComponents}
-                        >
-                            <Icon
-                                size={24}
-                                color={theme.TYPE_DARK_GREY}
-                                hoverColor={theme.TYPE_LIGHT_GREY}
-                                icon="CROSS"
-                            />
-                        </CancelIconWrapper>
-                    )}
-                </Heading>
-            )}
-
-            {showProgressBarPlaceholder && (
-                <ProgressBarPlaceholder hiddenProgressBar={hiddenProgressBar}>
-                    {/* Make sure that hiddenProgressBar is not selected and that progressBarWidth was successfully computed */}
-                    {!hiddenProgressBar && progressBarWidth && (
-                        <GreenBar width={progressBarWidth} />
-                    )}
-                </ProgressBarPlaceholder>
-            )}
-
-            {description && (
-                <Description sidePadding={contentPaddingSide}>{description}</Description>
-            )}
-            <Content sidePadding={contentPaddingSide} centerContent={centerContent}>
-                {children}
-            </Content>
-            {bottomBar && <BottomBar sidePadding={contentPaddingSide}>{bottomBar}</BottomBar>}
-        </ModalWindow>
-    );
-
-    if (noBackground) {
-        return modalWindow;
-    }
-
-    // if there is some background, return modal with a blurred background
     return (
-        <ModalOverlay
+        <ConditionalOverlay
             guidePanelSize={isGuideOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : '0px'}
             onClick={() => {
                 if (cancelable && onCancel) {
                     onCancel();
                 }
             }}
+            header={header}
+            condition={!noBackground}
         >
-            {header && <Header>{header}</Header>}
-            {modalWindow}
-        </ModalOverlay>
+            <ModalWindow
+                size={size}
+                useFixedWidth={useFixedWidth}
+                fixedWidth={fixedWidth}
+                useFixedHeight={useFixedHeight}
+                fixedHeight={fixedHeight}
+                bottomBar={bottomBar}
+                noBackground={noBackground}
+                onClick={e => {
+                    if (onClick) onClick(e);
+                    e.stopPropagation();
+                }}
+                {...rest}
+            >
+                {heading && (
+                    <Heading
+                        cancelable={cancelable}
+                        showHeaderBorder={showHeaderBorder}
+                        showProgressBar={showProgressBarPlaceholder}
+                        noHeadingPadding={noHeadingPadding}
+                    >
+                        {heading}
+                        {headerComponents && (
+                            <HeaderComponentsContainer isAbsolute={!cancelable}>
+                                {headerComponents}
+                            </HeaderComponentsContainer>
+                        )}
+                        {cancelable && (
+                            <CancelIconWrapper
+                                data-test="@modal/close-button"
+                                onClick={onCancel}
+                                withComponents={!!headerComponents}
+                            >
+                                <Icon
+                                    size={24}
+                                    color={theme.TYPE_DARK_GREY}
+                                    hoverColor={theme.TYPE_LIGHT_GREY}
+                                    icon="CROSS"
+                                />
+                            </CancelIconWrapper>
+                        )}
+                    </Heading>
+                )}
+
+                {showProgressBarPlaceholder && (
+                    <ProgressBarPlaceholder>
+                        {/* Make sure that hiddenProgressBar is not selected and that progressBarWidth was successfully computed */}
+                        {progressBarWidth && <GreenBar width={progressBarWidth} />}
+                    </ProgressBarPlaceholder>
+                )}
+
+                {description && (
+                    <Description sidePadding={contentPaddingSide}>{description}</Description>
+                )}
+                <Content sidePadding={contentPaddingSide} centerContent={centerContent}>
+                    {children}
+                </Content>
+                {bottomBar && <BottomBar sidePadding={contentPaddingSide}>{bottomBar}</BottomBar>}
+            </ModalWindow>
+        </ConditionalOverlay>
     );
 };
 
