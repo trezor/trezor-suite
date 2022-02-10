@@ -20,4 +20,4 @@ logs
 .yarnclean
 
 # Compiled files
-src/js/flow.js
+flow.js
