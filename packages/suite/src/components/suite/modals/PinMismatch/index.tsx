@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { Translation, Loading, Image, Modal, ModalProps } from '@suite-components';
+import { Translation, Image, Modal, ModalProps } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { useActions } from '@suite-hooks';
 
@@ -10,16 +10,10 @@ const StyledImage = styled(Image)`
 `;
 
 const PinMismatch = (props: ModalProps) => {
-    const [submitted, setSubmitted] = useState(false);
     const { changePin } = useActions({ changePin: deviceSettingsActions.changePin });
     const onTryAgain = () => {
-        setSubmitted(true);
         changePin({});
     };
-
-    if (submitted) {
-        return <Loading />;
-    }
 
     return (
         <Modal

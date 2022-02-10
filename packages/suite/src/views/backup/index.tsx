@@ -205,7 +205,7 @@ const Backup = (props: InjectedModalApplicationProps) => {
                 </>
             )}
 
-            {backup.status === 'in-progress' && <Loading noBackground />}
+            {backup.status === 'in-progress' && <Loading />}
 
             {backup.status === 'finished' && (
                 <>

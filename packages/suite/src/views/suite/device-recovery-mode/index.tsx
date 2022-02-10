@@ -36,7 +36,7 @@ const Index = ({ modalProps }: Props) => {
     return (
         <Modal {...modalProps}>
             <Wrapper data-test="@device-invalid-mode/recovery">
-                {recovery.status === 'in-progress' && <Loading noBackground />}
+                {recovery.status === 'in-progress' && <Loading />}
                 {/*
                     The section below shall actually never render. RecoveryDevice call should be triggered
                     immediately after suite finds that user has connected device in recovery mode

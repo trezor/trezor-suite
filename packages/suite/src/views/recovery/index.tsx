@@ -275,7 +275,7 @@ const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
                 {(recovery.status === 'in-progress' ||
                     recovery.status === 'waiting-for-confirmation') && (
                     <>
-                        {!modal && <Loading noBackground />}
+                        {!modal && <Loading />}
                         {modal && (
                             <>
                                 {model === 2 && (

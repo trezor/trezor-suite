@@ -29,7 +29,7 @@ const InitialLoading = () => {
         }
     }, [dbError, error, seconds]);
 
-    return <StyledLoading noBackground />;
+    return <StyledLoading />;
 };
 
 export default InitialLoading;

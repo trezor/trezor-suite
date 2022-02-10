@@ -5,7 +5,6 @@ import { TrezorDevice } from '@suite-types';
 interface OwnProps extends ModalProps {
     device: TrezorDevice;
     cancelable?: boolean;
-    noBackground?: boolean;
     onCancel: () => void;
 }
 
