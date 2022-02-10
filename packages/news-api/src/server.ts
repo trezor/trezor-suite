@@ -56,6 +56,10 @@ app.get('/status', (_req, res) => {
     );
 });
 
+app.get('*', (_req, res) => {
+    res.send(`not found`);
+});
+
 app.listen(PORT, () => {
     console.log(`>>> Server listening on http://localhost:${PORT}`);
 });
