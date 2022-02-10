@@ -1,17 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Image, Modal, ModalProps } from '@suite-components';
-
-interface Props extends ModalProps {
-    noBackground?: boolean;
-    imageProps?: React.ImgHTMLAttributes<HTMLImageElement>;
-}
-
-const StyledModal = styled(props => <Modal {...props} />)`
-    margin: auto;
-`;
+import { Image } from '@suite-components';
 
 const LoaderWrapper = styled.div`
+    margin: auto;
     display: flex;
     flex: 1;
     justify-content: center;
@@ -19,12 +11,10 @@ const LoaderWrapper = styled.div`
     flex-direction: column;
 `;
 
-const Loading = ({ imageProps, ...props }: Props) => (
-    <StyledModal useFixedWidth={false} {...props}>
-        <LoaderWrapper data-test="@suite/loading">
-            <Image width={80} height={80} image="SPINNER" {...imageProps} />
-        </LoaderWrapper>
-    </StyledModal>
+const Loading = () => (
+    <LoaderWrapper data-test="@suite/loading">
+        <Image width={80} height={80} image="SPINNER" />
+    </LoaderWrapper>
 );
 
 export default Loading;
