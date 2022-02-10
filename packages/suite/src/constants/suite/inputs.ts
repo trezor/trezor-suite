@@ -6,7 +6,7 @@ export enum MAX_LENGTH {
     ETH_MESSAGE = 255,
 
     // send form
-    ADDRESS = 100,
+    ADDRESS = 150,
     LABEL = 16,
     AMOUNT = 255,
     FIAT = 255,

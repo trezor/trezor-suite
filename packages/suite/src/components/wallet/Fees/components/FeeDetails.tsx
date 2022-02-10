@@ -6,7 +6,11 @@ import { Translation } from '@suite-components';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 import { formatDuration } from '@suite-utils/date';
 import { Network } from '@wallet-types';
-import { FeeInfo, PrecomposedTransaction } from '@wallet-types/sendForm';
+import {
+    FeeInfo,
+    PrecomposedTransaction,
+    PrecomposedTransactionCardano,
+} from '@wallet-types/sendForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,7 +42,7 @@ interface Props {
     // eslint-disable-next-line react/no-unused-prop-types
     feeInfo: FeeInfo;
     // eslint-disable-next-line react/no-unused-prop-types
-    transactionInfo?: PrecomposedTransaction;
+    transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
 }
 
 const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: Props) => (

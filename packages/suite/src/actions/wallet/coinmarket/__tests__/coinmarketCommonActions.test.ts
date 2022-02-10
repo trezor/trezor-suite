@@ -27,6 +27,12 @@ const initStore = (state: State) => {
             coinmarket: coinmarketReducer(coinmarket, action),
             selectedAccount: selectedAccountReducer({ ...selectedAccount }, action),
             transactions: transactionReducer(transactions, action),
+            settings: {
+                cardanoDerivationType: {
+                    label: 'Icarus',
+                    value: 1,
+                },
+            },
         };
         store.getActions().push(action);
     });

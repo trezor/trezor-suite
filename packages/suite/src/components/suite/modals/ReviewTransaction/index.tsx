@@ -3,11 +3,14 @@ import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { useDevice, useActions, useSelector } from '@suite-hooks';
+import { Account } from '@wallet-types';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { OutputProps } from './components/Output';
 import OutputList from './components/OutputList';
 import Summary from './components/Summary';
+import { isCardanoTx, getShortFingerprint } from '@wallet-utils/cardanoUtils';
+import { CardanoOutput } from 'trezor-connect';
 
 const ModalInner = styled.div`
     display: flex;
@@ -17,6 +20,42 @@ const ModalInner = styled.div`
         flex-direction: column;
     }
 `;
+
+const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
+    // Transforms cardano's tokenBundle into outputs, 1 output per one token
+    // since suite supports only 1 token per output it will return just one item
+    if (!output.tokenBundle || output.tokenBundle.length === 0 || 'addressParameters' in output)
+        return undefined;
+
+    if (account.tokens) {
+        return output.tokenBundle
+            .map(policyGroup =>
+                policyGroup.tokenAmounts.map(token => {
+                    const accountToken = account.tokens!.find(
+                        accountToken =>
+                            accountToken.address ===
+                            `${policyGroup.policyId}${token.assetNameBytes}`,
+                    );
+                    if (!accountToken) return;
+
+                    const fingerprint = accountToken.name
+                        ? getShortFingerprint(accountToken.name)
+                        : undefined;
+
+                    return {
+                        type: 'cardano',
+                        address: output.address,
+                        balance: token.amount,
+                        symbol: token.assetNameBytes
+                            ? Buffer.from(token.assetNameBytes, 'hex').toString('utf8')
+                            : fingerprint,
+                        decimals: accountToken.decimals,
+                    };
+                }),
+            )
+            .flat();
+    }
+};
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
@@ -40,13 +79,15 @@ const ReviewTransaction = ({ decision }: Props) => {
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm)
         return null;
 
-    const { networkType } = selectedAccount.account;
+    const { account } = selectedAccount;
+    const { networkType } = account;
     const isRbfAction = !!precomposedTx.prevTxid;
     const decreaseOutputId = precomposedTx.useNativeRbf
         ? precomposedForm.setMaxOutputId
         : undefined;
 
     const outputs: OutputProps[] = [];
+
     if (precomposedTx.useNativeRbf) {
         outputs.push(
             {
@@ -69,6 +110,19 @@ const ReviewTransaction = ({ decision }: Props) => {
                 value2: precomposedTx.transaction.outputs[decreaseOutputId].amount.toString(),
             });
         }
+    } else if (isCardanoTx(account, precomposedTx)) {
+        precomposedTx.transaction.outputs.forEach(o => {
+            // iterate only through "external" outputs (change output has addressParameters field instead of address)
+            if ('address' in o) {
+                const tokenBundle = getCardanoTokenBundle(account, o)?.[0]; // send form supports one token per output
+                outputs.push({
+                    type: 'regular',
+                    label: o.address,
+                    value: tokenBundle ? tokenBundle.balance ?? '0' : o.amount,
+                    token: tokenBundle,
+                });
+            }
+        });
     } else {
         precomposedTx.transaction.outputs.forEach(o => {
             if (typeof o.address === 'string') {

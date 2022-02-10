@@ -138,16 +138,16 @@ const ConfirmOnDevice = ({
         </Left>
         <Middle>
             <Title>{title}</Title>
-            {successText && typeof steps === 'number' && activeStep && activeStep > steps && (
+            {successText && typeof steps === 'number' && activeStep && activeStep > steps ? (
                 <Success>{successText}</Success>
-            )}
-            {typeof steps === 'number' && activeStep && activeStep <= steps && (
+            ) : undefined}
+            {typeof steps === 'number' && activeStep && activeStep <= steps ? (
                 <Steps>
                     {Array.from(Array(steps).keys()).map((s, i) => (
                         <Step key={s} isActive={isStepActive(i, activeStep)} />
                     ))}
                 </Steps>
-            )}
+            ) : undefined}
         </Middle>
         <Right>
             <CloseWrapper>

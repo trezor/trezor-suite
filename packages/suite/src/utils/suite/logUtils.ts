@@ -28,6 +28,20 @@ export const redactAccount = (account: DeepPartial<Account> | undefined) => {
         utxo: REDACTED_REPLACEMENT,
         metadata: REDACTED_REPLACEMENT,
         key: REDACTED_REPLACEMENT,
+        misc: account.misc
+            ? {
+                  ...account.misc,
+                  staking:
+                      'staking' in account.misc
+                          ? {
+                                ...account.misc.staking,
+                                address: REDACTED_REPLACEMENT,
+                                rewards: REDACTED_REPLACEMENT,
+                                poolId: account.misc.staking?.poolId ? REDACTED_REPLACEMENT : null,
+                            }
+                          : undefined,
+              }
+            : undefined,
     };
 };
 

@@ -8,8 +8,9 @@ import {
     FormattedDateWithBullet,
 } from '@suite-components';
 import { WalletAccountTransaction, Network } from '@wallet-types';
-import { getFeeRate, isTxFinal, getTxIcon } from '@wallet-utils/transactionUtils';
+import { getFeeRate, isTxFinal, getTxIcon, isPending } from '@wallet-utils/transactionUtils';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
+import TransactionHeader from '@suite/components/wallet/TransactionItem/components/TransactionHeader';
 
 const Wrapper = styled.div`
     background-color: ${props => props.theme.BG_GREY};
@@ -119,6 +120,7 @@ const NestedIconWrapper = styled(IconWrapper)`
 
 const TxStatus = styled.div`
     text-align: left;
+    overflow: hidden;
 `;
 
 const ConfirmationStatusWrapper = styled.div`
@@ -128,6 +130,8 @@ const ConfirmationStatusWrapper = styled.div`
 `;
 
 const TxSentStatus = styled(H3)`
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
@@ -167,27 +171,9 @@ interface Props {
     explorerUrl: string;
 }
 
-const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
-    switch (tx.type) {
-        case 'sent':
-            return <Translation id="TR_SENT" />;
-        case 'recv':
-            return <Translation id="TR_RECEIVED" />;
-        case 'self':
-            return <Translation id="TR_SENT_TO_SELF" />;
-        case 'unknown':
-            return <Translation id="TR_UNKNOWN" />;
-        default:
-            return <Translation id="TR_UNKNOWN" />;
-    }
-};
-
 const BasicDetails = ({ tx, confirmations, network, explorerUrl }: Props) => {
     const theme = useTheme();
     const isConfirmed = confirmations > 0;
-    const transactionStatus = getHumanReadableTxType(tx);
-    const tokenSymbol = tx.tokens.length > 0 ? tx.tokens[0].symbol : undefined;
-    const assetSymbol = tokenSymbol ? tokenSymbol.toUpperCase() : tx.symbol.toUpperCase();
     const isFinal = isTxFinal(tx, confirmations);
 
     return (
@@ -205,13 +191,7 @@ const BasicDetails = ({ tx, confirmations, network, explorerUrl }: Props) => {
                 </MainIconWrapper>
                 <TxStatus>
                     <TxSentStatus>
-                        {tx.type === 'failed' ? (
-                            <Translation id="TR_FAILED_TRANSACTION" />
-                        ) : (
-                            <>
-                                {transactionStatus} {assetSymbol}
-                            </>
-                        )}
+                        <TransactionHeader transaction={tx} isPending={isPending(tx)} />
                     </TxSentStatus>
                 </TxStatus>
 

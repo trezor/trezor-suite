@@ -6,9 +6,64 @@ import TrezorConnect, {
 } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { lockDevice } from '@suite-actions/suiteActions';
-import { resolveStaticPath } from '@suite-utils/build';
 import { Dispatch, GetState } from '@suite-types';
 import { isWeb } from '@suite-utils/env';
+import { resolveStaticPath } from '@suite-utils/build';
+
+export const cardanoPatch = () => (_dispatch: Dispatch, getState: GetState) => {
+    // Pass additional parameter `useCardanoDerivation` to Trezor Connect methods
+    // in order to enable cardano derivation on a device
+    // https://github.com/trezor/trezor-firmware/blob/master/core/src/apps/cardano/README.md#seed-derivation-schemes
+    type ConnectKey = keyof typeof TrezorConnect;
+
+    // List of methods that doesn't work with additional `useCardanoDerivation` param
+    // (eg. because they don't accept options object as a param)
+    // or they don't trigger seed derivation on a device so there is no need to pass it.
+    const blacklist: ConnectKey[] = [
+        'manifest',
+        'init',
+        'getSettings',
+        'on',
+        'off',
+        'removeAllListeners',
+        'uiResponse',
+        'blockchainGetAccountBalanceHistory',
+        'blockchainGetCurrentFiatRates',
+        'blockchainGetFiatRatesForTimestamps',
+        'blockchainDisconnect',
+        'blockchainEstimateFee',
+        'blockchainGetTransactions',
+        'blockchainSetCustomBackend',
+        'blockchainSubscribe',
+        'blockchainSubscribeFiatRates',
+        'blockchainUnsubscribe',
+        'blockchainUnsubscribeFiatRates',
+        'customMessage',
+        'requestLogin',
+        'getCoinInfo',
+        'dispose',
+        'cancel',
+        'renderWebUSBButton',
+        'disableWebUSB',
+    ];
+
+    Object.keys(TrezorConnect)
+        .filter(k => !blacklist.includes(k as ConnectKey))
+        .forEach(key => {
+            // typescript complains about params and return type, need to be "any"
+            const original: any = TrezorConnect[key as ConnectKey];
+            if (!original) return;
+            (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
+                const { enabledNetworks } = getState().wallet.settings;
+                const cardanoEnabled = !!enabledNetworks.find(a => a === 'ada' || a === 'tada');
+                const result = await original({
+                    ...params,
+                    useCardanoDerivation: cardanoEnabled,
+                });
+                return result;
+            };
+        });
+};
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // set event listeners and dispatch as
@@ -38,12 +93,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         'getAddress',
         'ethereumGetAddress',
         'rippleGetAddress',
+        'cardanoGetAddress',
         'applySettings',
         'changePin',
         'pushTransaction',
         'ethereumSignTransaction',
         'signTransaction',
         'rippleSignTransaction',
+        'cardanoSignTransaction',
         'backupDevice',
         'recoveryDevice',
     ] as const;
@@ -58,6 +115,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             return result;
         };
     });
+
+    dispatch(cardanoPatch());
 
     try {
         const connectSrc = resolveStaticPath('connect/');

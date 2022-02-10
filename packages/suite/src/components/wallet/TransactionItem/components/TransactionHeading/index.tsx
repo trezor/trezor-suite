@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, Icon, useTheme } from '@trezor/components';
-import { Translation, HiddenPlaceholder, Sign } from '@suite-components';
-import { isTxUnknown, getTargetAmount, getTxOperation } from '@wallet-utils/transactionUtils';
+import { HiddenPlaceholder, Sign } from '@suite-components';
+import { getTargetAmount, getTxHeaderSymbol, getTxOperation } from '@wallet-utils/transactionUtils';
+import TransactionHeader from '../TransactionHeader';
 import { WalletAccountTransaction } from '@wallet-types';
 
 const Wrapper = styled.span`
@@ -14,7 +15,10 @@ const Wrapper = styled.span`
     cursor: pointer;
 `;
 
-const HeadingWrapper = styled.div``;
+const HeadingWrapper = styled.div`
+    text-overflow: ellipsis;
+    overflow: hidden;
+`;
 
 const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
     display: flex;
@@ -65,30 +69,33 @@ const TransactionHeading = ({
     onClick,
 }: Props) => {
     const theme = useTheme();
+    const symbol = getTxHeaderSymbol(transaction);
+    const nTokens = transaction.tokens.length;
     const isTokenTransaction = transaction.tokens.length;
+    const isSingleTokenTransaction = nTokens === 1;
     const target = transaction.targets[0];
     const transfer = transaction.tokens[0];
-    const symbol = !isTokenTransaction
-        ? transaction.symbol.toUpperCase()
-        : transfer.symbol.toUpperCase();
+    const targetSymbol = transaction.type === 'self' ? transaction.symbol.toUpperCase() : symbol;
     let amount = null;
 
     const [headingIsHovered, setHeadingIsHovered] = useState(false);
 
     if (useSingleRowLayout) {
-        const targetAmount = !isTokenTransaction
-            ? getTargetAmount(target, transaction)
-            : transfer.amount;
+        // For single token transaction instead of showing coin amount we rather show the token amount
+        // In case of sent-to-self transaction we rely on getTargetAmount returning transaction.amount which will be equal to a fee
+        const targetAmount =
+            !isSingleTokenTransaction || transaction.type === 'self'
+                ? getTargetAmount(target, transaction)
+                : transfer.amount;
         const operation = !isTokenTransaction
             ? getTxOperation(transaction)
             : getTxOperation(transfer);
-
         amount = (
             <CryptoAmount>
                 {targetAmount && (
                     <StyledHiddenPlaceholder>
                         {operation && <Sign value={operation} />}
-                        {targetAmount} {symbol}
+                        {targetAmount} {targetSymbol}
                     </StyledHiddenPlaceholder>
                 )}
             </CryptoAmount>
@@ -96,40 +103,14 @@ const TransactionHeading = ({
     }
 
     if (transaction.type === 'failed') {
-        // only fee was spent, which is shown in fee row
-        amount = null;
-    }
-
-    // TODO: intl once the structure and all combinations are decided
-    let heading = null;
-    // const symbol = transaction.symbol.toUpperCase();
-
-    // We have types: sent, recv, self, failed. We miss approve, swap, ...
-    const headingTxType = isTokenTransaction ? transfer.type : transaction.type;
-    if (isTxUnknown(transaction)) {
-        heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
-    } else if (headingTxType === 'sent') {
-        heading = isPending ? (
-            <Translation id="TR_SENDING_TRANSACTION" values={{ symbol }} />
-        ) : (
-            <Translation id="TR_SENT_TRANSACTION" values={{ symbol }} />
+        amount = (
+            <CryptoAmount>
+                <StyledHiddenPlaceholder>
+                    <Sign value="neg" />
+                    {transaction.fee} {transaction.symbol.toUpperCase()}
+                </StyledHiddenPlaceholder>
+            </CryptoAmount>
         );
-    } else if (headingTxType === 'recv') {
-        heading = isPending ? (
-            <Translation id="TR_RECEIVING_TRANSACTION" values={{ symbol }} />
-        ) : (
-            <Translation id="TR_RECEIVED_TRANSACTION" values={{ symbol }} />
-        );
-    } else if (headingTxType === 'self') {
-        heading = isPending ? (
-            <Translation id="TR_SENDING_TO_MYSELF_TRANSACTION" values={{ symbol }} />
-        ) : (
-            <Translation id="TR_SENT_TO_MYSELF_TRANSACTION" values={{ symbol }} />
-        );
-    } else if (headingTxType === 'failed') {
-        heading = <Translation id="TR_FAILED_TRANSACTION" />;
-    } else {
-        heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
     }
 
     return (
@@ -139,7 +120,9 @@ const TransactionHeading = ({
                 onMouseLeave={() => setHeadingIsHovered(false)}
                 onClick={onClick}
             >
-                <HeadingWrapper>{heading}</HeadingWrapper>
+                <HeadingWrapper>
+                    <TransactionHeader transaction={transaction} isPending={isPending} />
+                </HeadingWrapper>
                 <ChevronIconWrapper
                     show={txItemIsHovered}
                     animate={nestedItemIsHovered || headingIsHovered}

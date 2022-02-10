@@ -98,6 +98,15 @@ const getDeviceContextModal = ({ modal, device, onPinCancel }: SharedProps) => {
         case 'ButtonRequest_SignTx': {
             return <ReviewTransaction type="sign-transaction" />;
         }
+        // firmware bug https://github.com/trezor/trezor-firmware/issues/35
+        // ugly hack to make Cardano review modal work
+        // root cause of this bug is wrong button request ButtonRequest_Other from CardanoSignTx - should be ButtonRequest_SignTx
+        case 'ButtonRequest_Other': {
+            if (device.processMode === 'sign-tx') {
+                return <ReviewTransaction type="sign-transaction" />;
+            }
+            return <ConfirmAction device={device} />;
+        }
         case 'ButtonRequest_FirmwareCheck':
             return <ConfirmFingerPrint device={device} />;
         // Generic Button requests
@@ -108,7 +117,6 @@ const getDeviceContextModal = ({ modal, device, onPinCancel }: SharedProps) => {
         case 'ButtonRequest_MnemonicWordCount':
         case 'ButtonRequest_MnemonicInput':
         case 'ButtonRequest_ProtectCall':
-        case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
         case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for model One
         case 'ButtonRequest_WipeDevice':

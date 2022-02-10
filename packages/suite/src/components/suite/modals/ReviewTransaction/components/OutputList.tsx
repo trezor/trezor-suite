@@ -12,7 +12,11 @@ import Output, { OutputProps } from './Output';
 import OutputElement from './OutputElement';
 import type { ButtonRequest } from '@suite-types';
 import type { Account } from '@wallet-types';
-import type { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import type {
+    FormState,
+    PrecomposedTransactionFinal,
+    TxFinalCardano,
+} from '@wallet-types/sendForm';
 
 const Content = styled.div`
     display: flex;
@@ -76,7 +80,7 @@ const StyledButton = styled(Button)`
 interface Props {
     account: Account;
     precomposedForm: FormState;
-    precomposedTx: PrecomposedTransactionFinal;
+    precomposedTx: PrecomposedTransactionFinal | TxFinalCardano;
     signedTx?: { tx: string }; // send reducer
     decision?: { resolve: (success: boolean) => void }; // dfd
     detailsOpen: boolean;

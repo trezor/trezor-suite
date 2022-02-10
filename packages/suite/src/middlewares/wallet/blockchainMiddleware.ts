@@ -1,7 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 import { BLOCKCHAIN } from 'trezor-connect';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
+import { validatePendingTxOnBlock } from '@wallet-actions/cardanoStakingActions';
 import { AppState, Action, Dispatch } from '@suite-types';
+import { getUnixTime } from 'date-fns';
 
 const blockchainMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -17,6 +19,7 @@ const blockchainMiddleware =
             case BLOCKCHAIN.BLOCK:
                 api.dispatch(blockchainActions.updateFeeInfo(action.payload.coin.shortcut));
                 api.dispatch(blockchainActions.onBlockMined(action.payload));
+                api.dispatch(validatePendingTxOnBlock(action.payload, getUnixTime(new Date())));
                 break;
             case BLOCKCHAIN.NOTIFICATION:
                 api.dispatch(blockchainActions.onNotification(action.payload));

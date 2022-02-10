@@ -339,6 +339,13 @@ describe('Discovery Actions', () => {
             wallet: {
                 accounts: [],
                 discovery: [],
+                settings: {
+                    cardanoDerivationType: {
+                        label: 'Icarus',
+                        value: 1,
+                    },
+                    enabledNetworks: ['btc'],
+                },
             },
         };
         // @ts-ignore: invalid state (suite empty)

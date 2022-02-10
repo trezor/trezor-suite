@@ -187,7 +187,11 @@ const UsedAddresses = ({ account, addresses, pendingAddresses, showAddress, lock
 
     if (!account) return null;
 
-    if (account.networkType !== 'bitcoin' || !account.addresses) return null;
+    if (
+        (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||
+        !account.addresses
+    )
+        return null;
     const { used, unused } = account.addresses;
     const { addressLabels } = account.metadata;
     // find revealed addresses in `unused` list

@@ -7,6 +7,13 @@ import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarket
 import { Account } from '@wallet-types';
 import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
 import * as suiteActions from '@suite-actions/suiteActions';
+import {
+    getStakingPath,
+    getProtocolMagic,
+    getNetworkId,
+    getAddressType,
+} from '@wallet-utils/cardanoUtils';
+
 import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
 
 export type CoinmarketCommonAction =
@@ -69,6 +76,8 @@ export const verifyAddress =
             coin: account.symbol,
         };
 
+        const derivationType = getState().wallet.settings.cardanoDerivationType.value;
+
         // catch button request and open modal
         const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
             if (!event || event.code !== 'ButtonRequest_Address') return;
@@ -80,27 +89,41 @@ export const verifyAddress =
             );
         };
 
-        let fn;
-        switch (networkType) {
+        TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
+
+        let response;
+        switch (account.networkType) {
             case 'ethereum':
-                fn = TrezorConnect.ethereumGetAddress;
+                response = await TrezorConnect.ethereumGetAddress(params);
+                break;
+            case 'cardano':
+                response = await TrezorConnect.cardanoGetAddress({
+                    device,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
+                    addressParameters: {
+                        stakingPath: getStakingPath(account),
+                        addressType: getAddressType(account.accountType),
+                        path,
+                    },
+                    protocolMagic: getProtocolMagic(account.symbol),
+                    networkId: getNetworkId(account.symbol),
+                    derivationType,
+                });
                 break;
             case 'ripple':
-                fn = TrezorConnect.rippleGetAddress;
+                response = await TrezorConnect.rippleGetAddress(params);
                 break;
             case 'bitcoin':
-                fn = TrezorConnect.getAddress;
+                response = await TrezorConnect.getAddress(params);
                 break;
             default:
-                fn = () => ({
+                response = {
                     success: false,
                     payload: { error: 'Method for getAddress not defined', code: undefined },
-                });
+                };
                 break;
         }
 
-        TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
-        const response = await fn(params);
         TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
 
         if (response.success) {

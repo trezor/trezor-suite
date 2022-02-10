@@ -5,6 +5,9 @@ import {
     UseSendFormState,
     SendContextValues,
     PrecomposedTransaction,
+    PrecomposedTransactionCardano,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
 } from '@wallet-types/sendForm';
 import { useActions, useAsyncDebounce } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
@@ -116,7 +119,7 @@ export const useSendFormCompose = ({
 
     // update fields AFTER composedLevels change or selectedFee change (below)
     const updateComposedValues = useCallback(
-        (composed: PrecomposedTransaction) => {
+        (composed: PrecomposedTransaction | PrecomposedTransactionCardano) => {
             const values = getValues();
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
@@ -212,10 +215,13 @@ export const useSendFormCompose = ({
             if (current === 'custom') {
                 // set custom level from previously selected level
                 const prevLevel = composedLevels[prev || 'normal'];
-                setComposedLevels({
+                const level = {
                     ...composedLevels,
                     custom: prevLevel,
-                });
+                } as
+                    | (PrecomposedLevels & { custom: PrecomposedTransaction })
+                    | (PrecomposedLevelsCardano & { custom: PrecomposedTransactionCardano });
+                setComposedLevels(level);
             } else {
                 const currentLevel = composedLevels[current || 'normal'];
                 updateComposedValues(currentLevel);

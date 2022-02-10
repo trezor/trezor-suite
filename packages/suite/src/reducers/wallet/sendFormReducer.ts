@@ -2,14 +2,14 @@ import produce from 'immer';
 import { STORAGE } from '@suite-actions/constants';
 import { ACCOUNT, SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
-import { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
 
 export interface SendState {
     drafts: {
         [key: string]: FormState; // Key: account key
     };
     sendRaw?: boolean;
-    precomposedTx?: PrecomposedTransactionFinal;
+    precomposedTx?: PrecomposedTransactionFinal | TxFinalCardano;
     precomposedForm?: FormState;
     signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
 }

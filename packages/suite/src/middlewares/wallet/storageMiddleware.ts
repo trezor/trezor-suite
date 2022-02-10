@@ -121,6 +121,7 @@ const storageMiddleware =
             case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
             case WALLET_SETTINGS.SET_BACKEND:
             case WALLET_SETTINGS.REMOVE_BACKEND:
+            case WALLET_SETTINGS.SET_CARDANO_DERIVATION_TYPE:
                 api.dispatch(storageActions.saveWalletSettings());
                 break;
 

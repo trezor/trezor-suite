@@ -6,6 +6,7 @@ import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { hasSignVerify } from '@wallet-utils/accountUtils';
+import Dot from './components/Dot';
 
 interface Props {
     account?: Account;
@@ -21,6 +22,11 @@ const AccountNavigation = (props: Props) => {
         goto: routerActions.goto,
         openModal: modalActions.openModal,
     });
+
+    let showStakingStatus = false;
+    if (account && account.networkType === 'cardano') {
+        showStakingStatus = !account.misc.staking.isActive;
+    }
 
     const ITEMS: AppNavigationItem[] = [
         {
@@ -39,7 +45,7 @@ const AccountNavigation = (props: Props) => {
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             position: 'primary',
-            isHidden: account?.networkType !== 'bitcoin',
+            isHidden: !account ? false : !['cardano', 'bitcoin'].includes(account.networkType),
         },
         {
             id: 'wallet-tokens',
@@ -48,7 +54,17 @@ const AccountNavigation = (props: Props) => {
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             position: 'primary',
-            isHidden: account?.networkType !== 'ethereum',
+            isHidden: !account ? false : !['cardano', 'ethereum'].includes(account.networkType),
+        },
+        {
+            id: 'wallet-staking',
+            callback: () => {
+                goto('wallet-staking', { preserveParams: true });
+            },
+            title: <Translation id="TR_NAV_STAKING" />,
+            position: 'primary',
+            isHidden: !account ? false : !['cardano'].includes(account.networkType),
+            rightContent: showStakingStatus ? <Dot /> : undefined,
         },
         {
             id: 'wallet-send',

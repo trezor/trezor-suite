@@ -4,6 +4,7 @@ import { AccountAddress } from 'trezor-connect';
 import { Button, Card, variables, H2 } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import { AppState } from '@suite-types';
+import { isUtxoBased } from '@suite/utils/wallet/accountUtils';
 
 const StyledCard = styled(Card)`
     width: 100%;
@@ -71,16 +72,16 @@ const Overlay = styled.div`
 
 const TooltipLabel = ({
     symbol,
-    isBitcoin,
+    multipleAddresses,
     accountType,
 }: {
     symbol: string;
-    isBitcoin: boolean;
+    multipleAddresses: boolean;
     accountType: string;
 }) => {
     const addressLabel = (
         <AddressLabel>
-            <Translation id={isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS'} />
+            <Translation id={multipleAddresses ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS'} />
         </AddressLabel>
     );
 
@@ -124,7 +125,6 @@ const FreshAddress = ({
 }: Props) => {
     if (!account) return null; // Needed?
 
-    const isBitcoin = account.networkType === 'bitcoin';
     const unused = account.addresses
         ? account.addresses.unused
         : [
@@ -139,9 +139,11 @@ const FreshAddress = ({
         a =>
             !addresses.find(r => r.path === a.path) && !pendingAddresses.find(p => p === a.address),
     );
-    // const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
+
+    const utxoBasedAccount = isUtxoBased(account);
+    // const addressLabel = utxoBasedAccount ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
-    const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
+    const firstFreshAddress = utxoBasedAccount ? unrevealed[0] : unused[0];
 
     const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
@@ -157,7 +159,7 @@ const FreshAddress = ({
         <StyledCard>
             <AddressContainer>
                 <TooltipLabel
-                    isBitcoin={isBitcoin}
+                    multipleAddresses={utxoBasedAccount}
                     symbol={account.symbol}
                     accountType={account.accountType}
                 />

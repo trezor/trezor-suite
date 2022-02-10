@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
-
 import { variables, Button } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import { useActions } from '@suite-hooks';
@@ -109,6 +108,13 @@ const Content = styled.div`
     overflow: hidden;
     flex-direction: column;
     font-variant-numeric: tabular-nums;
+    /* workarounds for nice blur effect without cutoffs even inside parent with overflow: hidden */
+    padding-left: 10px;
+    margin-left: -10px;
+    padding-right: 10px;
+    margin-right: -10px;
+    margin-top: -10px;
+    padding-top: 10px;
 `;
 
 const Description = styled(props => <HiddenPlaceholder {...props} />)`
@@ -167,17 +173,13 @@ const TransactionItem = React.memo(
     }: TransactionItemProps) => {
         const { type, targets, tokens } = transaction;
         const [limit, setLimit] = useState(0);
-        const isTokenTransaction = tokens.length > 0;
         const isUnknown = isTxUnknown(transaction);
-        const isExpandable = isTokenTransaction
-            ? tokens.length - DEFAULT_LIMIT > 0
-            : targets.length - DEFAULT_LIMIT > 0;
-        const toExpand = isTokenTransaction
-            ? tokens.length - DEFAULT_LIMIT - limit
-            : targets.length - DEFAULT_LIMIT - limit;
         const useFiatValues = !isTestnet(transaction.symbol);
-        const hasSingleTargetOrTransfer = !isUnknown && targets.length + tokens.length === 1;
+        const useSingleRowLayout =
+            !isUnknown && (targets.length + tokens.length === 1 || transaction.type === 'self');
+
         const showFeeRow = !isUnknown && type !== 'recv' && transaction.fee !== '0';
+
         const [txItemIsHovered, setTxItemIsHovered] = useState(false);
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
 
@@ -185,7 +187,22 @@ const TransactionItem = React.memo(
             `${AccountTransactionBaseAnchor}/${transaction.txid}`,
         );
 
-        const previewTargets = targets.slice(0, DEFAULT_LIMIT);
+        // join together regular targets and token transfers
+        // ethereum tx has either targets or transfers
+        // cardano tx can have both at the same time
+        const allOutputs: (
+            | { type: 'token'; payload: typeof tokens[number] }
+            | { type: 'target'; payload: WalletAccountTransaction['targets'][number] }
+        )[] =
+            transaction.type === 'self'
+                ? [...targets.map(t => ({ type: 'target' as const, payload: t }))]
+                : [
+                      ...targets.map(t => ({ type: 'target' as const, payload: t })),
+                      ...tokens.map(t => ({ type: 'token' as const, payload: t })),
+                  ];
+        const previewTargets = allOutputs.slice(0, DEFAULT_LIMIT);
+        const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
+        const toExpand = allOutputs.length - DEFAULT_LIMIT - limit;
 
         const { openModal } = useActions({
             openModal: modalActions.openModal,
@@ -229,7 +246,7 @@ const TransactionItem = React.memo(
                             <TransactionHeading
                                 transaction={transaction}
                                 isPending={isPending}
-                                useSingleRowLayout={hasSingleTargetOrTransfer}
+                                useSingleRowLayout={useSingleRowLayout}
                                 txItemIsHovered={txItemIsHovered}
                                 nestedItemIsHovered={nestedItemIsHovered}
                                 onClick={() => openTxDetailsModal()}
@@ -247,76 +264,79 @@ const TransactionItem = React.memo(
                                 {!isUnknown && type !== 'failed' && previewTargets.length ? (
                                     <>
                                         {previewTargets.map((t, i) => (
-                                            // render first n targets, n = DEFAULT_LIMIT
-                                            <Target
-                                                key={i}
-                                                target={t}
-                                                transaction={transaction}
-                                                singleRowLayout={hasSingleTargetOrTransfer}
-                                                isFirst={i === 0}
-                                                isLast={
-                                                    limit > 0
-                                                        ? false
-                                                        : i === previewTargets.length - 1
-                                                } // if list of targets is expanded we won't get last item here
-                                                accountMetadata={accountMetadata}
-                                                accountKey={accountKey}
-                                                isActionDisabled={isActionDisabled}
-                                            />
+                                            <React.Fragment key={i}>
+                                                {t.type === 'target' ? (
+                                                    <Target
+                                                        // render first n targets, n = DEFAULT_LIMIT
+                                                        target={t.payload}
+                                                        transaction={transaction}
+                                                        singleRowLayout={useSingleRowLayout}
+                                                        isFirst={i === 0}
+                                                        isLast={
+                                                            limit > 0
+                                                                ? false
+                                                                : i === previewTargets.length - 1
+                                                        } // if list of targets is expanded we won't get last item here
+                                                        accountMetadata={accountMetadata}
+                                                        accountKey={accountKey}
+                                                        isActionDisabled={isActionDisabled}
+                                                    />
+                                                ) : (
+                                                    <TokenTransfer
+                                                        transfer={t.payload}
+                                                        transaction={transaction}
+                                                        singleRowLayout={useSingleRowLayout}
+                                                        isFirst={i === 0}
+                                                        isLast={
+                                                            limit > 0
+                                                                ? false
+                                                                : i === previewTargets.length - 1
+                                                        }
+                                                    />
+                                                )}
+                                            </React.Fragment>
                                         ))}
                                         <AnimatePresence initial={false}>
                                             {limit > 0 &&
-                                                targets
+                                                allOutputs
                                                     .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
                                                     .map((t, i) => (
-                                                        <Target
-                                                            key={i}
-                                                            target={t}
-                                                            transaction={transaction}
-                                                            useAnimation
-                                                            isLast={
-                                                                // if list is not fully expanded, an index of last is limit (num of currently showed items) - 1,
-                                                                // otherwise the index is calculated as num of all targets - num of targets that are always shown (DEFAULT_LIMIT) - 1
-                                                                targets.length >
-                                                                limit + DEFAULT_LIMIT
-                                                                    ? i === limit - 1
-                                                                    : i ===
-                                                                      targets.length -
-                                                                          DEFAULT_LIMIT -
-                                                                          1
-                                                            }
-                                                            accountMetadata={accountMetadata}
-                                                            accountKey={accountKey}
-                                                        />
-                                                    ))}
-                                        </AnimatePresence>
-                                    </>
-                                ) : null}
-
-                                {!isUnknown && tokens.length ? (
-                                    <>
-                                        {tokens.slice(0, DEFAULT_LIMIT).map((t, i) => (
-                                            <TokenTransfer
-                                                key={i}
-                                                transfer={t}
-                                                transaction={transaction}
-                                                singleRowLayout={hasSingleTargetOrTransfer}
-                                                isFirst={i === 0}
-                                                isLast={i === tokens.length - 1}
-                                            />
-                                        ))}
-                                        <AnimatePresence initial={false}>
-                                            {limit > 0 &&
-                                                tokens
-                                                    .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                                    .map((t, i) => (
-                                                        <TokenTransfer
-                                                            key={i}
-                                                            transfer={t}
-                                                            transaction={transaction}
-                                                            useAnimation
-                                                            isLast={i === tokens.length - 1}
-                                                        />
+                                                        <React.Fragment key={i}>
+                                                            {t.type === 'target' ? (
+                                                                <Target
+                                                                    target={t.payload}
+                                                                    transaction={transaction}
+                                                                    useAnimation
+                                                                    isLast={
+                                                                        // if list is not fully expanded, an index of last is limit (num of currently showed items) - 1,
+                                                                        // otherwise the index is calculated as num of all targets - num of targets that are always shown (DEFAULT_LIMIT) - 1
+                                                                        allOutputs.length >
+                                                                        limit + DEFAULT_LIMIT
+                                                                            ? i === limit - 1
+                                                                            : i ===
+                                                                              allOutputs.length -
+                                                                                  DEFAULT_LIMIT -
+                                                                                  1
+                                                                    }
+                                                                    accountMetadata={
+                                                                        accountMetadata
+                                                                    }
+                                                                    accountKey={accountKey}
+                                                                />
+                                                            ) : (
+                                                                <TokenTransfer
+                                                                    transfer={t.payload}
+                                                                    transaction={transaction}
+                                                                    useAnimation
+                                                                    isLast={
+                                                                        i ===
+                                                                        allOutputs.length -
+                                                                            DEFAULT_LIMIT -
+                                                                            1
+                                                                    }
+                                                                />
+                                                            )}
+                                                        </React.Fragment>
                                                     ))}
                                         </AnimatePresence>
                                     </>

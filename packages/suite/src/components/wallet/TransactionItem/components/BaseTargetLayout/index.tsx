@@ -14,6 +14,7 @@ const CryptoAmount = styled.span`
     /* line-height: 1.5; */
     text-transform: uppercase;
     white-space: nowrap;
+    width: 100%;
 `;
 
 const FiatAmount = styled.span`
@@ -35,7 +36,13 @@ const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
     flex-direction: column;
     align-items: flex-end;
     align-self: center;
-    padding-bottom: ${props => (props.paddingBottom ? '20px' : '0px')};
+    padding-right: 10px;
+    margin-right: -10px;
+
+    padding-top: 10px;
+    margin-top: -10px;
+    margin-bottom: -10px;
+    padding-bottom: ${props => (props.paddingBottom ? '30px' : '10px')};
 `;
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
@@ -69,7 +76,7 @@ const TargetAddress = styled(motion.div)`
 
 const TimelineDotWrapper = styled.div`
     margin-right: 8px;
-    width: 8px;
+    min-width: 8px;
     display: flex;
     align-items: center;
     flex-direction: column;

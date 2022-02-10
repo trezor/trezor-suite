@@ -54,6 +54,15 @@ export const getInitialState = (suite?: Partial<SuiteState>, devices?: DevicesSt
         ...suite,
     },
     devices: devices || [],
+    wallet: {
+        settings: {
+            cardanoDerivationType: {
+                label: 'Icarus',
+                value: 1,
+            },
+            enabledNetworks: [],
+        },
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;

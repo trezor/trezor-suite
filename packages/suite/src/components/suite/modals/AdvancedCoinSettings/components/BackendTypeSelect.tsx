@@ -17,7 +17,11 @@ const useBackendOptions = (network: Network) => {
     const options = useMemo(() => {
         const backends: BackendOption[] = [];
         if (network.symbol !== 'regtest') backends.push('default');
-        if (network.networkType !== 'ripple') backends.push('blockbook');
+        if (network.networkType === 'cardano') {
+            backends.push('blockfrost');
+        } else if (network.networkType !== 'ripple') {
+            backends.push('blockbook');
+        }
         if (['btc', 'regtest'].includes(network.symbol) && isDesktop() && debug)
             backends.push('electrum');
 

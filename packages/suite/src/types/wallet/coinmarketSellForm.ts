@@ -5,7 +5,12 @@ import { FeeLevel } from 'trezor-connect';
 import { SellFiatTrade, SellFiatTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
 import { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellActions';
 import { TypedValidationRules } from './form';
-import { FeeInfo, FormState, PrecomposedLevels } from '@wallet-types/sendForm';
+import {
+    FeeInfo,
+    FormState,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+} from '@wallet-types/sendForm';
 import { Option, DefaultCountryOption } from './coinmarketCommonTypes';
 
 export const OUTPUT_AMOUNT = 'outputs[0].amount';
@@ -64,7 +69,7 @@ export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'registe
     ) => CoinmarketSellAction;
     saveTrade: (sellTrade: SellFiatTrade, account: Account, date: string) => CoinmarketSellAction;
     amountLimits?: AmountLimits;
-    composedLevels?: PrecomposedLevels;
+    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     fiatRates?: CoinFiatRates;
     setAmountLimits: (limits?: AmountLimits) => void;
     quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
