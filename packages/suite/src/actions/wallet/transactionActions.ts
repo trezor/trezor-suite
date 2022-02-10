@@ -7,7 +7,7 @@ import { TRANSACTION } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
-import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
 import { formatData } from '@wallet-utils/exportTransactions';
 
 export type TransactionAction =
@@ -213,4 +213,38 @@ export const exportTransactions =
 
         // Save file
         saveAs(data, `export-${account.symbol}-${+new Date()}.${type}`);
+    };
+
+export const addFakePendingTx =
+    (
+        precomposedTx: Pick<PrecomposedTransactionFinal | TxFinalCardano, 'totalSpent' | 'fee'>,
+        txid: string,
+        account: Account,
+    ) =>
+    (dispatch: Dispatch) => {
+        // Used in cardano send form and staking tab until Blockfrost supports pending txs on its backend
+        // https://github.com/trezor/trezor-suite/issues/4932
+        const fakeTx = {
+            type: 'sent' as const,
+            txid,
+            blockTime: Math.floor(new Date().getTime() / 1000),
+            blockHash: undefined,
+            // amounts (as most of props below) don't matter much since it is temp fake anyway
+            amount: precomposedTx.totalSpent,
+            fee: precomposedTx.fee,
+            totalSpent: precomposedTx.totalSpent,
+            targets: [],
+            tokens: [],
+            cardanoSpecific: {
+                subtype: null,
+            },
+            details: {
+                vin: [],
+                vout: [],
+                size: 0,
+                totalInput: '0',
+                totalOutput: '0',
+            },
+        };
+        dispatch(add([fakeTx], account));
     };

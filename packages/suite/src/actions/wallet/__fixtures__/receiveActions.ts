@@ -41,7 +41,22 @@ export default [
     },
     {
         description: 'Show address success (bitcoin)',
-        initialState: undefined,
+        initialState: {
+            wallet: {
+                selectedAccount: {
+                    account: {
+                        networkType: 'bitcoin',
+                    },
+                },
+                settings: {
+                    cardanoDerivationType: {
+                        label: 'Icarus',
+                        value: 1,
+                    },
+                    enabledNetworks: ['btc'],
+                },
+            },
+        },
         mocks: {},
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
@@ -64,6 +79,13 @@ export default [
                     account: {
                         networkType: 'ethereum',
                     },
+                },
+                settings: {
+                    cardanoDerivationType: {
+                        label: 'Icarus',
+                        value: 1,
+                    },
+                    enabledNetworks: ['eth'],
                 },
             },
         },
@@ -90,6 +112,13 @@ export default [
                         networkType: 'ripple',
                     },
                 },
+                settings: {
+                    cardanoDerivationType: {
+                        label: 'Icarus',
+                        value: 1,
+                    },
+                    enabledNetworks: ['xrp'],
+                },
             },
         },
         mocks: {},
@@ -114,6 +143,13 @@ export default [
                     account: {
                         networkType: 'ripple-2',
                     },
+                },
+                settings: {
+                    cardanoDerivationType: {
+                        label: 'Icarus',
+                        value: 1,
+                    },
+                    enabledNetworks: ['xrp'],
                 },
             },
         },
@@ -165,7 +201,22 @@ export default [
     },
     {
         description: 'Show address, trezor-connect error',
-        initialState: undefined,
+        initialState: {
+            wallet: {
+                selectedAccount: {
+                    account: {
+                        networkType: 'bitcoin',
+                    },
+                },
+                settings: {
+                    cardanoDerivationType: {
+                        label: 'Icarus',
+                        value: 1,
+                    },
+                    enabledNetworks: ['btc'],
+                },
+            },
+        },
         mocks: {
             getAddress: { success: false, payload: { error: 'Runtime error' } },
         },

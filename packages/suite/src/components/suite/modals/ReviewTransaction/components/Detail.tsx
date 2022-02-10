@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { Icon, useTheme, Box, variables } from '@trezor/components';
-import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
 
 const TransactionDetailsWrapper = styled.div`
     display: flex;
@@ -110,7 +110,7 @@ const Pre = styled.pre`
 `;
 
 export interface Props {
-    tx: PrecomposedTransactionFinal;
+    tx: PrecomposedTransactionFinal | TxFinalCardano;
     txHash?: string;
     onClose: () => void;
 }

@@ -3,6 +3,7 @@ export default {
         { symbol: 'eth', coingeckoId: 'ethereum' },
         { symbol: 'etc', coingeckoId: 'ethereum-classic' },
         { symbol: 'xrp', coingeckoId: 'ripple' },
+        { symbol: 'ada', coingeckoId: 'cardano' },
         { symbol: 'btc', coingeckoId: 'bitcoin' },
         { symbol: 'ltc', coingeckoId: 'litecoin' },
         { symbol: 'bch', coingeckoId: 'bitcoin-cash' },

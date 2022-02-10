@@ -84,6 +84,15 @@ const getInitialState = (
         ...firmwareReducer(undefined, { type: 'foo' } as any),
         ...firmware,
     },
+    wallet: {
+        settings: {
+            cardanoDerivationType: {
+                label: 'Icarus',
+                value: 1,
+            },
+            enabledNetworks: [],
+        },
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;

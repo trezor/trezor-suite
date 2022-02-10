@@ -13,6 +13,7 @@ import coinmarketReducer from './coinmarketReducer';
 import sendFormReducer from './sendFormReducer';
 import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
+import cardanoStakingReducer from './cardanoStakingReducer';
 
 const WalletReducers = combineReducers({
     fiat: fiatRateReducer,
@@ -29,6 +30,7 @@ const WalletReducers = combineReducers({
     send: sendFormReducer,
     accountSearch: accountSearchReducer,
     formDrafts: formDraftReducer,
+    cardanoStaking: cardanoStakingReducer,
 });
 
 export default WalletReducers;

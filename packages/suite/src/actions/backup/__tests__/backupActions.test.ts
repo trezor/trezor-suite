@@ -50,6 +50,15 @@ export const getInitialState = (override: any) => {
         },
         // doesnt affect anything, just needed for TrezorConnect.init action
         devices: [],
+        wallet: {
+            settings: {
+                cardanoDerivationType: {
+                    label: 'Icarus',
+                    value: 1,
+                },
+                enabledNetworks: ['btc'],
+            },
+        },
     };
     if (override) {
         return mergeObject(defaults, override);

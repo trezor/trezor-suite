@@ -4,12 +4,31 @@ import {
     TokenInfo,
     ComposeOutput,
     PrecomposedTransaction as PrecomposedTransactionBase,
+    CardanoInput,
+    CardanoOutput,
 } from 'trezor-connect';
+
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
 import { Account, Network, CoinFiatRates, RbfTransactionParams } from '@wallet-types';
 import { TypedValidationRules } from './form';
 
-// react-hook-form state
+type FinalTransaction = Extract<PrecomposedTransactionBase, { type: 'final' }>;
+export type PrecomposedTransactionFinalCardano = Omit<FinalTransaction, 'transaction'> & {
+    ttl?: number;
+    transaction: {
+        inputs: CardanoInput[];
+        outputs: CardanoOutput[];
+        unsignedTx: {
+            body: string;
+            hash: string;
+        };
+    };
+};
+
+type PrecomposedTransactionBaseCardano =
+    | Extract<PrecomposedTransactionBase, { type: 'error' }>
+    | Extract<PrecomposedTransactionBase, { type: 'nonfinal' }>
+    | PrecomposedTransactionFinalCardano;
 
 export type CurrencyOption = { value: string; label: string };
 
@@ -80,8 +99,25 @@ export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { 
     errorMessage?: ExtendedMessageDescriptor;
 };
 
+export type PrecomposedTransactionErrorCardano = Extract<
+    PrecomposedTransactionBaseCardano,
+    { type: 'error' }
+> & {
+    errorMessage?: ExtendedMessageDescriptor;
+};
+
 export type PrecomposedTransactionNonFinal = Extract<
     PrecomposedTransactionBase,
+    { type: 'nonfinal' }
+> & {
+    max: string | undefined;
+    feeLimit?: string;
+    estimatedFeeLimit?: string;
+    token?: TokenInfo;
+};
+
+export type PrecomposedTransactionNonFinalCardano = Extract<
+    PrecomposedTransactionBaseCardano,
     { type: 'nonfinal' }
 > & {
     max: string | undefined;
@@ -97,6 +133,20 @@ type TxFinal = Extract<PrecomposedTransactionBase, { type: 'final' }> & {
     estimatedFeeLimit?: string;
     token?: TokenInfo;
     rbf?: boolean;
+};
+
+// base of PrecomposedTransactionFinal
+export type TxFinalCardano = Extract<PrecomposedTransactionBaseCardano, { type: 'final' }> & {
+    max: string | undefined;
+    feeLimit?: string;
+    estimatedFeeLimit?: string;
+    token?: TokenInfo;
+    // fake all rbf props just to make it easier to work with since the codebase doesn't use type guards
+    rbf?: false;
+    prevTxid?: undefined;
+    feeDifference?: undefined;
+    useNativeRbf?: undefined;
+    useDecreaseOutput?: undefined;
 };
 
 // strict distinction between normal and RBF type
@@ -119,7 +169,13 @@ export type PrecomposedTransaction =
     | PrecomposedTransactionNonFinal
     | PrecomposedTransactionFinal;
 
+export type PrecomposedTransactionCardano =
+    | PrecomposedTransactionErrorCardano
+    | PrecomposedTransactionNonFinalCardano
+    | TxFinalCardano;
+
 export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
+export type PrecomposedLevelsCardano = { [key: string]: PrecomposedTransactionCardano };
 
 // Props of @wallet-views/send/index
 export interface SendFormProps {
@@ -147,7 +203,7 @@ export type UseSendFormState = {
     localCurrencyOption: CurrencyOption;
     isLoading: boolean;
     isDirty: boolean;
-    composedLevels?: PrecomposedLevels;
+    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     online: boolean;
     metadataEnabled: boolean;
 };

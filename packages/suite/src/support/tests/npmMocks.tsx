@@ -40,4 +40,10 @@ jest.mock('dropbox', () => {
 // @ts-ignore
 jest.mock('react-markdown', () => props => <>{props.children}</>);
 
+jest.mock('@fivebinaries/coin-selection', () => ({
+    __esModule: true,
+    default: () => {},
+    coinSelection: () => {},
+}));
+
 export {};

@@ -18,6 +18,7 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     'wallet-details': lazy(() => import(/* webpackChunkName: "wallet" */ '@wallet-views/details')),
     'wallet-tokens': lazy(() => import(/* webpackChunkName: "wallet" */ '@wallet-views/tokens')),
     'wallet-send': lazy(() => import(/* webpackChunkName: "wallet" */ '@wallet-views/send')),
+    'wallet-staking': lazy(() => import(/* webpackChunkName: "wallet" */ '@wallet-views/staking')),
     'wallet-sign-verify': lazy(
         () => import(/* webpackChunkName: "wallet" */ '@wallet-views/sign-verify'),
     ),

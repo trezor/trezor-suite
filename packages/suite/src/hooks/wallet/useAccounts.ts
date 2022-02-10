@@ -41,6 +41,7 @@ export const useFastAccounts = () => {
 export const useAccountAddressDictionary = (account: Account | undefined) =>
     useMemo(() => {
         switch (account?.networkType) {
+            case 'cardano':
             case 'bitcoin': {
                 return (account?.addresses?.unused ?? [])
                     .concat(account?.addresses?.used ?? [])

@@ -45,8 +45,16 @@ export const create = (
             discoveryItem.coin,
         ),
         tokens: accountUtils.enhanceTokens(accountInfo.tokens),
-        addresses: accountInfo.addresses,
-        utxo: accountInfo.utxo,
+        addresses: accountUtils.enhanceAddresses(
+            accountInfo.addresses,
+            discoveryItem.networkType,
+            discoveryItem.index,
+        ),
+        utxo: accountUtils.enhanceUtxo(
+            accountInfo.utxo,
+            discoveryItem.networkType,
+            discoveryItem.index,
+        ),
         history: accountInfo.history,
         metadata: {
             key: accountInfo.legacyXpub || accountInfo.descriptor,
@@ -71,6 +79,12 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
             // xrp `availableBalance` is reduced by reserve, use regular balance
             account.networkType === 'ripple' ? accountInfo.balance : accountInfo.availableBalance,
             account.symbol,
+        ),
+        utxo: accountUtils.enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
+        addresses: accountUtils.enhanceAddresses(
+            accountInfo.addresses,
+            account.networkType,
+            account.index,
         ),
         tokens: accountUtils.enhanceTokens(accountInfo.tokens),
         ...accountUtils.getAccountSpecific(accountInfo, account.networkType),
@@ -145,6 +159,14 @@ export const fetchAndUpdateAccount =
             const { payload } = response;
 
             const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
+
+            if (account.networkType === 'cardano') {
+                // filter out cardano pending tx as they are added manually and backend never returns them
+                // if tx got confirmed then it will be added as part of analyze.add array and replaced in reducer
+                // (TRANSACTION.ADD will replace the tx if tx with same txid already exists)
+                analyze.remove = analyze.remove.filter(tx => !!tx.blockHeight);
+            }
+
             if (analyze.remove.length > 0) {
                 dispatch(transactionActions.remove(account, analyze.remove));
             }

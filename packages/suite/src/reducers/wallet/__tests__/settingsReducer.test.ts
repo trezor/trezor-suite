@@ -81,6 +81,24 @@ describe('settings reducer', () => {
         });
     });
 
+    it('SET_CARDANO_DERIVATION_TYPE - set different derivation', () => {
+        expect(
+            reducer(fixtures, {
+                type: WALLET_SETTINGS.SET_CARDANO_DERIVATION_TYPE,
+                payload: {
+                    value: 2,
+                    label: 'Icarus Trezor',
+                },
+            }),
+        ).toEqual({
+            ...fixtures,
+            cardanoDerivationType: {
+                value: 2,
+                label: 'Icarus Trezor',
+            },
+        });
+    });
+
     it('REMOVE_BACKEND - invalid', () => {
         expect(
             reducer(fixtures, {

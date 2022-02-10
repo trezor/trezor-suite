@@ -15,16 +15,18 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ selectedAccount, children }) => {
     if (selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
+    const explorerUrl =
+        network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
 
     return (
         <WalletLayout title="TR_TOKENS" account={selectedAccount} showEmptyHeaderPlaceholder>
-            {account.networkType === 'ethereum' && (
-                <TokenList
-                    isTestnet={isTestnet(account.symbol)}
-                    explorerUrl={network.explorer.account}
-                    tokens={account.tokens}
-                />
-            )}
+            <TokenList
+                isTestnet={isTestnet(account.symbol)}
+                explorerUrl={explorerUrl}
+                tokens={account.tokens}
+                networkType={account.networkType}
+            />
+
             {children}
         </WalletLayout>
     );

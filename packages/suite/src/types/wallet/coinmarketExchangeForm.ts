@@ -5,7 +5,12 @@ import { FeeLevel } from 'trezor-connect';
 import { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
 import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import { TypedValidationRules } from './form';
-import { FeeInfo, FormState, PrecomposedLevels } from '@wallet-types/sendForm';
+import {
+    FeeInfo,
+    FormState,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+} from '@wallet-types/sendForm';
 import { Option } from './coinmarketCommonTypes';
 
 export const CRYPTO_INPUT = 'outputs[0].amount';
@@ -63,7 +68,7 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
         date: string,
     ) => CoinmarketExchangeAction;
     amountLimits?: AmountLimits;
-    composedLevels?: PrecomposedLevels;
+    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     fiatRates?: CoinFiatRates;
     setAmountLimits: (limits?: AmountLimits) => void;
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];

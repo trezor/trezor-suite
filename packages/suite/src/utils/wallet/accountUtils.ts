@@ -1,9 +1,13 @@
 import { State as TransactionsState } from '@wallet-reducers/transactionReducer';
-import { AccountInfo, AccountAddress, PrecomposedTransaction } from 'trezor-connect';
+import { AccountInfo, AccountAddresses, AccountAddress } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
-import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import {
+    PrecomposedTransactionFinal,
+    PrecomposedTransactionFinalCardano,
+    TxFinalCardano,
+} from '@wallet-types/sendForm';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -13,6 +17,9 @@ import {
     WIKI_ACCOUNT_BIP49_URL,
     WIKI_ACCOUNT_BIP44_URL,
 } from '@suite-constants/urls';
+
+export const isUtxoBased = (account: Account) =>
+    account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
 export const parseBIP44Path = (path: string) => {
     const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
@@ -81,6 +88,8 @@ export const getTitleForNetwork = (symbol: Account['symbol']) => {
             return 'TR_NETWORK_XRP';
         case 'txrp':
             return 'TR_NETWORK_XRP_TESTNET';
+        case 'tada':
+            return 'TR_NETWORK_CARDANO_TESTNET';
         default:
             return 'TR_NETWORK_UNKNOWN';
     }
@@ -99,6 +108,8 @@ export const getBip43Type = (path: string) => {
             return 'bip49';
         case `44'`:
             return 'bip44';
+        case `1852'`:
+            return 'shelley';
         default:
             return 'unknown';
     }
@@ -109,6 +120,7 @@ export const getAccountTypeName = (path: string) => {
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_NAME';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_NAME';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_NAME';
+    if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
 };
 
@@ -117,6 +129,7 @@ export const getAccountTypeTech = (path: string) => {
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_TECH';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_TECH';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_TECH';
+    if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
     return 'TR_ACCOUNT_TYPE_BIP44_TECH';
 };
 
@@ -125,6 +138,7 @@ export const getAccountTypeDesc = (path: string) => {
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_DESC';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_DESC';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_DESC';
+    if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY_DESC';
     return 'TR_ACCOUNT_TYPE_BIP44_DESC';
 };
 
@@ -133,6 +147,7 @@ export const getAccountTypeUrl = (path: string) => {
     if (bip43 === 'bip86') return WIKI_ACCOUNT_BIP86_URL;
     if (bip43 === 'bip84') return WIKI_ACCOUNT_BIP84_URL;
     if (bip43 === 'bip49') return WIKI_ACCOUNT_BIP49_URL;
+    if (bip43 === 'shelley') return undefined;
     return WIKI_ACCOUNT_BIP44_URL;
 };
 
@@ -292,6 +307,54 @@ export const enhanceTokens = (tokens: Account['tokens']) => {
         }));
 };
 
+export const enhanceAddresses = (
+    addresses: AccountAddresses | undefined,
+    networkType: Account['networkType'],
+    accountIndex: Account['index'],
+): AccountAddresses | undefined => {
+    // Addresses used in Suite include full derivation path including account index.
+    // These addresses are derived on a backend (Blockbook/Blockfrost) from a public key.
+    // In bitcoin an account index is encoded directly in a public key, so blockbook will extract it
+    // and return full derivation path for each derived address.
+    // (https://github.com/trezor/blockbook/blob/b82dc92522eee957b7a139c38269a1844fe102f8/bchain/coins/btc/bitcoinparser.go#L428)
+    // Since cardano account public key doesn't encode information about the account index, like Bitcoin does,
+    // Blockfrost backend returns partial derivation path where account index is replaced with character 'i'.
+    // So we rely on the client (this function) to replace it with correct account index.
+
+    if (!addresses) return undefined;
+    if (networkType !== 'cardano') return addresses;
+
+    const accountIndexStr = accountIndex.toString();
+
+    const replaceAccountIndex = (address: AccountAddress) => ({
+        ...address,
+        path: address.path.replace('i', accountIndexStr),
+    });
+
+    const used = addresses.used.map(replaceAccountIndex);
+    const unused = addresses.unused.map(replaceAccountIndex);
+    const change = addresses.change.map(replaceAccountIndex);
+
+    return { used, unused, change };
+};
+
+export const enhanceUtxo = (
+    utxos: Account['utxo'],
+    networkType: Account['networkType'],
+    accountIndex: Account['index'],
+): Account['utxo'] => {
+    if (!utxos) return undefined;
+    if (networkType !== 'cardano') return utxos;
+
+    const accountIndexStr = accountIndex.toString();
+    const enhancedUtxos = utxos.map(utxo => ({
+        ...utxo,
+        path: utxo.path.replace('i', accountIndexStr),
+    }));
+
+    return enhancedUtxos;
+};
+
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
@@ -373,10 +436,16 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     const changedEthereum =
         account.networkType === 'ethereum' && freshInfo.misc!.nonce !== account.misc.nonce;
 
+    const changedCardano =
+        account.networkType === 'cardano' &&
+        freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive &&
+        freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId;
+
     return (
         changedTxCountOfflineFresh ||
         changedTxCountOffline ||
         changedTxCountOnline ||
+        changedCardano ||
         changedRipple ||
         changedEthereum
     );
@@ -405,6 +474,22 @@ export const getAccountSpecific = (
             networkType,
             misc: {
                 nonce: misc && misc.nonce ? misc.nonce : '0',
+            },
+            marker: undefined,
+            page: accountInfo.page,
+        };
+    }
+
+    if (networkType === 'cardano') {
+        return {
+            networkType,
+            misc: {
+                staking: {
+                    rewards: misc && misc.staking ? misc.staking.rewards : '0',
+                    isActive: misc && misc.staking ? misc.staking.isActive : false,
+                    address: misc && misc.staking ? misc.staking.address : '',
+                    poolId: misc && misc.staking ? misc.staking.poolId : null,
+                },
             },
             marker: undefined,
             page: accountInfo.page,
@@ -506,7 +591,7 @@ export const accountSearchFn = (
 
 export const getUtxoFromSignedTransaction = (
     account: Account,
-    tx: PrecomposedTransaction,
+    tx: PrecomposedTransactionFinalCardano | PrecomposedTransactionFinal,
     txid: string,
     prevTxid?: string,
 ) => {
@@ -516,13 +601,23 @@ export const getUtxoFromSignedTransaction = (
     const replaceUtxo = (prevTxid && account.utxo?.filter(u => u.txid === prevTxid)) || [];
 
     // remove utxo used by signed transaction or replaced by new tx (rbf)
-    const utxo =
+
+    const findUtxo = (
+        // this little func is needed in order to slightly change type inputs array to stop ts complaining
+        // not sure how to do this in more elegant way
+        inputs:
+            | (
+                  | PrecomposedTransactionFinalCardano['transaction']['inputs'][number]
+                  | PrecomposedTransactionFinal['transaction']['inputs'][number]
+              )[],
+    ) =>
         account.utxo?.filter(
             u =>
-                !tx.transaction.inputs.find(
-                    i => i.prev_hash === u.txid && i.prev_index === u.vout,
-                ) && u.txid !== prevTxid,
+                !inputs.find(i => i.prev_hash === u.txid && i.prev_index === u.vout) &&
+                u.txid !== prevTxid,
         ) || [];
+
+    const utxo = findUtxo(tx.transaction.inputs);
 
     // join all account addresses
     const addresses = account.addresses
@@ -532,12 +627,12 @@ export const getUtxoFromSignedTransaction = (
     // append utxo created by this transaction
     tx.transaction.outputs.forEach((output, vout) => {
         let addr: AccountAddress | undefined;
-        if (output.address_n) {
+        if ('address_n' in output && output.address_n) {
             // find change address
             const serialized = output.address_n.slice(3, 5).join('/');
             addr = account.addresses?.change.find(a => a.path.endsWith(serialized));
         }
-        if (output.address) {
+        if ('address' in output) {
             // find self address
             addr = addresses.find(a => a.address === output.address);
         }
@@ -567,11 +662,16 @@ export const getUtxoFromSignedTransaction = (
 // solves race condition between pushing transaction and received notification
 export const getPendingAccount = (
     account: Account,
-    tx: PrecomposedTransactionFinal,
+    tx: PrecomposedTransactionFinal | TxFinalCardano,
     txid: string,
 ) => {
     // TODO: implement ETH
-    if (tx.type !== 'final' || account.networkType !== 'bitcoin' || tx.useDecreaseOutput) return; // do not change user balance if tx output was decreased. balance is still the same: 0
+    if (
+        tx.type !== 'final' ||
+        (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||
+        tx.useDecreaseOutput
+    )
+        return; // do not change user balance if tx output was decreased. balance is still the same: 0
 
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance).minus(
@@ -589,7 +689,7 @@ export const getPendingAccount = (
             : [];
 
         tx.transaction.outputs.forEach(output => {
-            if (output.address) {
+            if ('address' in output) {
                 // find self address
                 if (addresses.find(a => a.address === output.address)) {
                     // append self outputs to balance

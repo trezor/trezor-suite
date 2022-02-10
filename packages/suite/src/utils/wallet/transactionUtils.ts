@@ -297,20 +297,33 @@ export const getTxIcon = (txType: WalletAccountTransaction['type']) => {
 };
 
 export const getTargetAmount = (
-    target: WalletAccountTransaction['targets'][number],
+    target: WalletAccountTransaction['targets'][number] | undefined,
     transaction: WalletAccountTransaction,
 ) => {
-    const isLocalTarget =
+    const validTxAmount = typeof transaction.amount === 'string' && transaction.amount !== '0';
+    if (!target) {
+        return validTxAmount ? transaction.amount : null;
+    }
+
+    const sentToSelfTarget =
         (transaction.type === 'sent' || transaction.type === 'self') && target.isAccountTarget;
-    const hasAmount = !isLocalTarget && typeof target.amount === 'string' && target.amount !== '0';
-    const targetAmount =
-        (hasAmount ? target.amount : null) ||
-        (target === transaction.targets[0] &&
-        typeof transaction.amount === 'string' &&
-        transaction.amount !== '0'
-            ? transaction.amount
-            : null);
-    return targetAmount;
+    const validTargetAmount = typeof target.amount === 'string' && target.amount !== '0';
+    if (!sentToSelfTarget && validTargetAmount) {
+        // show target amount for all non "sent to myself" targets
+        return target.amount;
+    }
+
+    if (
+        target === transaction.targets.find(t => t.isAccountTarget) &&
+        !transaction.targets.find(t => !t.isAccountTarget) &&
+        validTxAmount
+    ) {
+        // "sent to self" target, if it is first of its type and there are no other non-self targets show a fee
+        return transaction.amount;
+    }
+
+    // "sent to self" target while other non-self targets are also present
+    return null;
 };
 
 export const isTxUnknown = (transaction: WalletAccountTransaction) => {
@@ -318,7 +331,9 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     // eg. tx with eth smart contract that creates a new token has no valid target
     const isTokenTransaction = transaction.tokens.length > 0;
     return (
-        (!isTokenTransaction && !transaction.targets.find(t => t.addresses)) ||
+        (!isTokenTransaction &&
+            !transaction.cardanoSpecific && // cardano staking txs (de/registration of staking key, stake delegation) don't need to have any target
+            !transaction.targets.find(t => t.addresses)) ||
         transaction.type === 'unknown'
     );
 };
@@ -807,3 +822,14 @@ export const advancedSearchTransactions = (
 export const isTxFinal = (tx: WalletAccountTransaction, confirmations: number) =>
     // checks RBF status
     !tx.rbf || confirmations > 0;
+
+export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
+    const isSingleTokenTransaction = transaction.tokens.length === 1;
+    const transfer = transaction.tokens[0];
+    // In case of single token transactions show the token symbol instead of symbol of a main network
+    const symbol =
+        !isSingleTokenTransaction || !transfer
+            ? transaction.symbol.toUpperCase()
+            : transfer.symbol.toUpperCase();
+    return symbol;
+};

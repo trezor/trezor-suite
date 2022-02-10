@@ -7,6 +7,7 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import { init } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
+import { DerivationType } from '@wallet-types/cardano';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import fixtures from '../__fixtures__/receiveActions';
 
@@ -80,6 +81,10 @@ interface InitialState {
                 networkType: 'bitcoin' | 'ethereum' | 'ripple';
             };
         };
+        settings: {
+            enabledNetworks: string[];
+            cardanoDerivationType: DerivationType;
+        };
     };
     modal: ModalState;
 }
@@ -96,6 +101,13 @@ export const getInitialState = (state: Partial<InitialState> | undefined) => ({
             account: {
                 networkType: 'bitcoin',
             },
+        },
+        settings: {
+            cardanoDerivationType: {
+                label: 'Icarus',
+                value: 1,
+            },
+            enabledNetworks: ['btc'],
         },
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
@@ -137,7 +149,23 @@ describe('ReceiveActions', () => {
     it('show unverified address then verify', async () => {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         require('trezor-connect').setTestFixtures({});
-        const state = getInitialState(undefined);
+        const state = getInitialState({
+            wallet: {
+                receive: receiveReducer([], { type: 'foo' } as any),
+                selectedAccount: {
+                    account: {
+                        networkType: 'bitcoin',
+                    },
+                },
+                settings: {
+                    cardanoDerivationType: {
+                        label: 'Icarus',
+                        value: 1,
+                    },
+                    enabledNetworks: ['btc'],
+                },
+            },
+        });
         const store = initStore(state);
         await store.dispatch(init());
 

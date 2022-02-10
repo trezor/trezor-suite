@@ -14,6 +14,7 @@ import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState } from '@suite-types';
 import { Account, Network } from '@wallet-types';
 import { BLOCKCHAIN } from './constants';
+import { getDefaultBackendType } from '@suite-utils/backend';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
@@ -150,7 +151,10 @@ export const setCustomBackend = (coin?: Network['symbol']) => (_: Dispatch, getS
     if (!coins.length) return;
 
     const promises = coins.map(coin => {
-        const { type, urls } = backends[coin] ?? { type: 'blockbook', urls: [] };
+        const { type, urls } = backends[coin] ?? {
+            type: getDefaultBackendType(coin),
+            urls: [],
+        };
         return TrezorConnect.blockchainSetCustomBackend({
             coin,
             blockchainLink: {

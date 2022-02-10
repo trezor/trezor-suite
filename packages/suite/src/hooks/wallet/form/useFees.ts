@@ -3,7 +3,7 @@ import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from 'trezor-connect';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { useActions } from '@suite-hooks';
-import { FeeInfo, PrecomposedLevels } from '@wallet-types/sendForm';
+import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@wallet-types/sendForm';
 
 type Props = UseFormMethods<{
     selectedFee?: FeeLevel['label'];
@@ -16,7 +16,7 @@ type Props = UseFormMethods<{
     saveLastUsedFee?: boolean;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
     composeRequest: (field?: string) => void;
-    composedLevels?: PrecomposedLevels;
+    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
 };
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)

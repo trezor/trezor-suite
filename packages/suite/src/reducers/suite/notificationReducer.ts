@@ -91,6 +91,14 @@ export type ToastPayload = (
           address: string;
           amount?: number;
       }
+    | {
+          type: 'cardano-delegate-error';
+          error: string;
+      }
+    | {
+          type: 'cardano-withdrawal-error';
+          error: string;
+      }
 ) &
     Options;
 

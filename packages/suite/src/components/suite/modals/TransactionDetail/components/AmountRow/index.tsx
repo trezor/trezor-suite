@@ -20,7 +20,8 @@ interface RowContentProps {
 const Column = styled.div<RowContentProps>`
     display: flex;
     align-items: center;
-    height: 36px;
+    align-self: start;
+    min-height: 36px;
     color: ${props =>
         props.color === 'light'
             ? `${props.theme.TYPE_LIGHT_GREY}`

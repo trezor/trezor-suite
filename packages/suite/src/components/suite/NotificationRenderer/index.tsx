@@ -78,6 +78,10 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return success(render, notification, 'TOAST_RAW_TX_SENT', 'SEND', {
                 txid: notification.txid,
             });
+        case 'cardano-delegate-error':
+            return error(render, notification, 'TR_ERROR_CARDANO_DELEGATE');
+        case 'cardano-withdrawal-error':
+            return error(render, notification, 'TR_ERROR_CARDANO_WITHDRAWAL');
         case 'sign-tx-error':
             return error(render, notification, 'TOAST_SIGN_TX_ERROR');
         case 'verify-address-error':

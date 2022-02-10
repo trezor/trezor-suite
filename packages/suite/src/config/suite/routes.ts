@@ -117,6 +117,12 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-staking',
+        pattern: '/accounts/staking',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-receive',
         pattern: '/accounts/receive',
         app: 'wallet',

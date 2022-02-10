@@ -1,19 +1,24 @@
 import React, { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import { Select } from '@trezor/components';
+import { Select, variables } from '@trezor/components';
+import { components } from 'react-select';
+import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Account } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
+import { getShortFingerprint } from '@wallet-utils/cardanoUtils';
 
 interface Option {
     label: string;
     value: string | null;
+    fingerprint: string | undefined;
 }
 
 export const buildTokenOptions = (account: Account) => {
     const result: Option[] = [
         {
             value: null,
+            fingerprint: undefined,
             label: account.symbol.toUpperCase(),
         },
     ];
@@ -24,6 +29,7 @@ export const buildTokenOptions = (account: Account) => {
             result.push({
                 value: token.address,
                 label: tokenName.toUpperCase(),
+                fingerprint: token.name,
             });
         });
     }
@@ -35,6 +41,68 @@ interface Props {
     output: Partial<Output>;
     outputId: number;
 }
+
+const OptionValueName = styled.div`
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: 1.2em;
+    white-space: nowrap;
+    margin: 5px 0;
+`;
+
+const OptionWrapper = styled.div`
+    max-width: 200px;
+    @media (max-width: ${variables.SCREEN_SIZE.XL}) {
+        max-width: 120px;
+    }
+`;
+
+const OptionValue = styled.div`
+    word-break: break-all;
+    font-variant-numeric: slashed-zero tabular-nums;
+`;
+
+const OptionEmptyName = styled.div`
+    font-style: italic;
+`;
+
+const CardanoOption = ({ tokenInputName, ...optionProps }: any) => (
+    <components.Option
+        {...optionProps}
+        innerProps={{
+            ...optionProps.innerProps,
+            'data-test': `${tokenInputName}/option/${optionProps.value}`,
+        }}
+    >
+        <OptionWrapper>
+            <OptionValueName>
+                {optionProps.data.fingerprint &&
+                optionProps.data.label.toLowerCase() ===
+                    optionProps.data.fingerprint.toLowerCase() ? (
+                    // eslint-disable-next-line react/jsx-indent
+                    <OptionEmptyName>No name</OptionEmptyName>
+                ) : (
+                    optionProps.data.label
+                )}
+            </OptionValueName>
+            <OptionValue>
+                {optionProps.data.fingerprint
+                    ? getShortFingerprint(optionProps.data.fingerprint)
+                    : null}
+            </OptionValue>
+        </OptionWrapper>
+    </components.Option>
+);
+
+const CardanoSingleValue = ({ tokenInputName, ...optionProps }: any) => (
+    <components.SingleValue {...optionProps} innerProps={{ ...optionProps.innerProps }}>
+        {optionProps.data.fingerprint &&
+        optionProps.data.label.toLowerCase() === optionProps.data.fingerprint.toLowerCase()
+            ? getShortFingerprint(optionProps.data.fingerprint)
+            : optionProps.data.label}
+    </components.SingleValue>
+);
+
 const TokenSelect = ({ output, outputId }: Props) => {
     const {
         account,
@@ -67,6 +135,14 @@ const TokenSelect = ({ output, outputId }: Props) => {
         }
     }, [outputId, tokenWatch, setAmount, getValues, account.networkType, isSetMaxActive]);
 
+    const customComponents =
+        account.networkType === 'cardano'
+            ? {
+                  Option: CardanoOption,
+                  SingleValue: CardanoSingleValue,
+              }
+            : undefined;
+
     return (
         <Controller
             control={control}
@@ -76,12 +152,13 @@ const TokenSelect = ({ output, outputId }: Props) => {
             render={({ onChange }) => (
                 <Select
                     options={options}
+                    minWidth="58px"
                     isSearchable
                     isDisabled={options.length === 1} // disable when account has no tokens to choose from
                     hideTextCursor
                     value={options.find(o => o.value === tokenValue)}
                     isClearable={false}
-                    minWidth="58px"
+                    components={customComponents}
                     isClean
                     onChange={(selected: Option) => {
                         // change selected value

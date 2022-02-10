@@ -7,7 +7,7 @@ import { Translation, FormattedCryptoAmount } from '@suite-components';
 import { getTitleForNetwork, formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { Account, Network } from '@wallet-types';
 import { formatDuration } from '@suite-utils/date';
-import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
 import { isEnabled } from '@suite-utils/features';
 
 const Wrapper = styled.div`
@@ -154,7 +154,7 @@ const ReviewRbfLeftDetailsLineRight = styled.div<{ color: string; uppercase?: bo
 
 interface Props {
     estimateTime?: number;
-    tx: PrecomposedTransactionFinal;
+    tx: PrecomposedTransactionFinal | TxFinalCardano;
     account: Account;
     network: Network;
     broadcast?: boolean;

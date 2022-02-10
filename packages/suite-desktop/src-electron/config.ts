@@ -20,6 +20,9 @@ export const allowedDomains = [
     'oauth2.googleapis.com',
     'googleapis.com',
     onionDomain,
+    'trezor-cardano-mainnet.blockfrost.io',
+    'trezor-cardano-testnet.blockfrost.io',
+    'blockfrost.dev',
 ];
 
 export const cspRules = [

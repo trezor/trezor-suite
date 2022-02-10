@@ -162,12 +162,14 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                         <Balance>
                             <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
                         </Balance>
-                        {account.networkType === 'ethereum' && !!account.tokens?.length && (
-                            <TokensCount
-                                count={account.tokens.length}
-                                onClick={handleClickOnTokens}
-                            />
-                        )}
+                        {(account.networkType === 'ethereum' ||
+                            account.networkType === 'cardano') &&
+                            !!account.tokens?.length && (
+                                <TokensCount
+                                    count={account.tokens.length}
+                                    onClick={handleClickOnTokens}
+                                />
+                            )}
                     </Row>
                     <Row>
                         <FiatValue

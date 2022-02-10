@@ -5,6 +5,7 @@ import { isUrl } from '@trezor/utils';
 import { setBackend as setBackendAction } from '@settings-actions/walletSettingsActions';
 import type { Network } from '@wallet-types';
 import type { BackendType } from '@wallet-reducers/settingsReducer';
+import { getDefaultBackendType } from '@suite-utils/backend';
 
 export type BackendOption = BackendType | 'default';
 
@@ -17,6 +18,8 @@ const validateUrl = (type: BackendOption, value: string) => {
     switch (type) {
         case 'blockbook':
             return isUrl(value);
+        case 'blockfrost':
+            return isUrl(value);
         case 'electrum':
             return /^[a-zA-Z0-9.-]+:[0-9]{1,5}:[ts]$/.test(value);
         default:
@@ -28,6 +31,8 @@ const getUrlPlaceholder = (coin: Network['symbol'], type: BackendOption) => {
     switch (type) {
         case 'blockbook':
             return `https://${coin}1.trezor.io/`;
+        case 'blockfrost':
+            return `wss://blockfrost.io`;
         case 'electrum':
             return `electrum.foobar.com:50001:t`;
         default:
@@ -117,9 +122,11 @@ export const useBackendsForm = (coin: Network['symbol']) => {
     const save = () => {
         const { type, urls } = currentValues;
         const lastUrl = input.value && !input.error ? [input.value] : [];
+        const defaultType = getDefaultBackendType(coin);
+
         setBackend({
             coin,
-            type: type === 'default' ? 'blockbook' : type,
+            type: type === 'default' ? defaultType : type,
             urls: type === 'default' ? [] : urls.concat(lastUrl),
         });
     };

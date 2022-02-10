@@ -2716,30 +2716,6 @@ export default defineMessages({
         defaultMessage: 'Failed transaction',
         id: 'TR_FAILED_TRANSACTION',
     },
-    TR_SENDING_TRANSACTION: {
-        defaultMessage: 'Sending {symbol}',
-        id: 'TR_SENDING_TRANSACTION',
-    },
-    TR_SENT_TRANSACTION: {
-        defaultMessage: 'Sent {symbol}',
-        id: 'TR_SENT_TRANSACTION',
-    },
-    TR_SENDING_TO_MYSELF_TRANSACTION: {
-        defaultMessage: 'Sending {symbol} to myself',
-        id: 'TR_SENDING_TO_MYSELF_TRANSACTION',
-    },
-    TR_SENT_TO_MYSELF_TRANSACTION: {
-        defaultMessage: 'Sent {symbol} to myself',
-        id: 'TR_SENT_TO_MYSELF_TRANSACTION',
-    },
-    TR_RECEIVING_TRANSACTION: {
-        defaultMessage: 'Receiving {symbol}',
-        id: 'TR_RECEIVING_TRANSACTION',
-    },
-    TR_RECEIVED_TRANSACTION: {
-        defaultMessage: 'Received {symbol}',
-        id: 'TR_RECEIVED_TRANSACTION',
-    },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
         id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',
@@ -4897,6 +4873,10 @@ export default defineMessages({
         defaultMessage:
             'Trezor Suite uses Blockbook for the wallet backend. You can also use your own custom blockbook.',
     },
+    SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION: {
+        id: 'SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION',
+        defaultMessage: 'Trezor Suite uses Blockfrost websocket-link for the wallet backend.',
+    },
     SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
         id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
         defaultMessage: 'e.g. {url}',
@@ -6210,5 +6190,165 @@ export default defineMessages({
     TR_COPY_SIGNED_MESSAGE: {
         id: 'TR_COPY_SIGNED_MESSAGE',
         defaultMessage: 'Copy signed message',
+    },
+    TR_NAV_STAKING: {
+        defaultMessage: 'Staking',
+        id: 'TR_NAV_STAKING',
+    },
+    TR_ACCOUNT_TYPE_SHELLEY: {
+        defaultMessage: 'Shelley',
+        id: 'TR_ACCOUNT_TYPE_SHELLEY',
+    },
+    TR_NETWORK_CARDANO_TESTNET: {
+        defaultMessage: 'Cardano Testnet',
+        id: 'TR_NETWORK_CARDANO_TESTNET',
+    },
+    TR_STAKING_REWARDS_TITLE: {
+        id: 'TR_STAKING_REWARDS_TITLE',
+        defaultMessage: 'Cardano Staking is Active',
+    },
+    TR_STAKING_STAKE_TITLE: {
+        id: 'TR_STAKING_STAKE_TITLE',
+        defaultMessage: 'Cardano Staking is NOT Active',
+    },
+    TR_STAKING_STAKE_ADDRESS: {
+        id: 'TR_STAKING_STAKE_ADDRESS',
+        defaultMessage: 'Your stake address',
+    },
+    TR_STAKING_DELEGATE: {
+        id: 'TR_STAKING_DELEGATE',
+        defaultMessage: 'Delegate',
+    },
+    TR_STAKING_REDELEGATE: {
+        id: 'TR_STAKING_REDELEGATE',
+        defaultMessage: 'Redelegate',
+    },
+    TR_STAKING_WITHDRAW: {
+        id: 'TR_STAKING_WITHDRAW',
+        defaultMessage: 'Withdraw',
+    },
+    TR_STAKING_DEPOSIT: {
+        id: 'TR_STAKING_DEPOSIT',
+        defaultMessage: 'Refundable Deposit',
+    },
+    TR_STAKING_FEE: {
+        id: 'TR_STAKING_FEE',
+        defaultMessage: 'Fee',
+    },
+    TR_STAKING_REWARDS: {
+        id: 'TR_STAKING_REWARDS',
+        defaultMessage: 'Available Rewards',
+    },
+    TR_STAKING_REWARDS_DESCRIPTION: {
+        id: 'TR_STAKING_REWARDS_DESCRIPTION',
+        defaultMessage:
+            'Please note that it can take up to 20 days until you start receiving your rewards after initial stake registration and delegation. After this period is completed you will receive you reward every 5 days.',
+    },
+    TR_STAKING_STAKE_DESCRIPTION: {
+        id: 'TR_STAKING_STAKE_DESCRIPTION',
+        defaultMessage:
+            'Staking Cardano is a great way to earn ADA staking rewards as a form of passive income for holding Cardano.{br}By staking your ADA, you actively support the Cardano network and contribute to the stability of the network.',
+    },
+    TR_STAKING_DEPOSIT_FEE_DECRIPTION: {
+        id: 'TR_STAKING_DEPOSIT_FEE_DECRIPTION',
+        defaultMessage:
+            'The deposit fee is {feeAmount} ADA and is required to register your address to start staking. If you choose to unstake your Cardano you will get the deposit back.',
+    },
+    TR_STAKING_NOT_ENOUGH_FUNDS: {
+        id: 'TR_STAKING_NOT_ENOUGH_FUNDS',
+        defaultMessage: "You don't have enough funds on your account.",
+    },
+    TR_STAKING_TREZOR_POOL_FAIL: {
+        id: 'TR_STAKING_TREZOR_POOL_FAIL',
+        defaultMessage: 'Cannot reach Trezor stake pool to delegate on.',
+    },
+    TR_STAKING_TX_PENDING: {
+        id: 'TR_STAKING_TX_PENDING',
+        defaultMessage:
+            'Your transaction {txid} was successfully sent to the blockchain and waits for confirmation.',
+    },
+    TR_STAKING_ON_3RD_PARTY_TITLE: {
+        id: 'TR_STAKING_ON_3RD_PARTY_TITLE',
+        defaultMessage: 'You are delegating on 3rd party stake pool',
+    },
+    TR_STAKING_ON_3RD_PARTY_DESCRIPTION: {
+        id: 'TR_STAKING_ON_3RD_PARTY_DESCRIPTION',
+        defaultMessage:
+            'By staking on Trezor stake pool you are directly supporting Trezor and Cardano ecosystem within Trezor Suite.',
+    },
+    TR_STAKING_POOL_OVERSATURATED_TITLE: {
+        id: 'TR_STAKING_POOL_OVERSATURATED_TITLE',
+        defaultMessage: 'Stake pool is oversaturated',
+    },
+    TR_STAKING_POOL_OVERSATURATED_DESCRIPTION: {
+        id: 'TR_STAKING_POOL_OVERSATURATED_DESCRIPTION',
+        defaultMessage:
+            'Stake pool your are delegating on is oversaturated. Please redelegate your stake to maximize your staking rewards',
+    },
+    TR_RECEIVING_SYMBOL: {
+        id: 'TR_RECEIVING_SYMBOL',
+        defaultMessage: 'Receiving {symbol}',
+    },
+    TR_RECEIVED_SYMBOL: {
+        id: 'TR_RECEIVING_SYMBOL',
+        defaultMessage:
+            'Received {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}}',
+    },
+    TR_SENDING_SYMBOL: {
+        id: 'TR_SENDING_SYMBOL',
+        defaultMessage:
+            'Sending {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}}',
+    },
+    TR_SENT_SYMBOL: {
+        id: 'TR_SENT_SYMBOL',
+        defaultMessage:
+            'Sent {multiple, select, true {multiple tokens} false {{symbol}} other {{smbol}}}',
+    },
+    TR_SENDING_SYMBOL_TO_SELF: {
+        id: 'TR_SENDING_SYMBOL_TO_SELF',
+        defaultMessage:
+            'Sending {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}} to myself',
+    },
+    TR_SENT_SYMBOL_TO_SELF: {
+        id: 'TR_SENT_SYMBOL_TO_SELF',
+        defaultMessage:
+            'Sent {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}} to myself',
+    },
+    TR_REWARDS_WITHDRAWAL: {
+        id: 'TR_REWARDS_WITHDRAWAL',
+        defaultMessage: 'Rewards withdrawal',
+    },
+    TR_STAKE_DELEGATED: {
+        id: 'TR_STAKE_DELEGATED',
+        defaultMessage: 'Stake delegation',
+    },
+    TR_STAKE_REGISTERED: {
+        id: 'TR_STAKE_REGISTERED',
+        defaultMessage: 'Registration of a stake address',
+    },
+    TR_STAKE_DEREGISTERED: {
+        id: 'TR_STAKE_DEREGISTERED',
+        defaultMessage: 'Deregistration of a stake address',
+    },
+    SETTINGS_ADV_CARDANO_DERIVATION_TITLE: {
+        id: 'SETTINGS_ADV_CARDANO_DERIVATION_TITLE',
+        defaultMessage: 'Cardano derivation type',
+    },
+    SETTINGS_ADV_CARDANO_DERIVATION_DESCRIPTION: {
+        id: 'SETTINGS_ADV_CARDANO_DERIVATION_DESCRIPTION',
+        defaultMessage: 'Cardano derivation type description',
+    },
+    TR_ERROR_CARDANO_DELEGATE: {
+        id: 'TR_ERROR_CARDANO_DELEGATE',
+        defaultMessage: 'Amount is not enough',
+    },
+    TR_ERROR_CARDANO_WITHDRAWAL: {
+        id: 'TR_ERROR_CARDANO_WITHDRAWAL',
+        defaultMessage: 'Amount is not enough',
+    },
+    TR_ACCOUNT_TYPE_SHELLEY_DESC: {
+        id: 'TR_ACCOUNT_TYPE_SHELLEY_DESC',
+        defaultMessage:
+            'Shelley era addresses have introduced a new type of wallet, that can support stake delegation and earning rewards.',
     },
 });

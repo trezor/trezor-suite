@@ -76,7 +76,13 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                 <TooltipSymbol
                     content={
                         <TooltipContent>
-                            <Translation id="SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION" />
+                            <Translation
+                                id={
+                                    network?.networkType === 'cardano'
+                                        ? 'SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION'
+                                        : 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION'
+                                }
+                            />
                             <Translation
                                 id="TR_DEFAULT_VALUE"
                                 values={{

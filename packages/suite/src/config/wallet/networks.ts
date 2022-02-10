@@ -421,6 +421,42 @@ const networks = [
             account: 'https://test.bithomp.com/explorer/',
         },
     },
+    {
+        name: 'Cardano',
+        networkType: 'cardano',
+        symbol: 'ada',
+        bip43Path: "m/1852'/1815'/i'",
+        decimals: 6,
+        testnet: false,
+        explorer: {
+            tx: 'https://explorer.blockfrost.dev/transaction/',
+            account: 'https://explorer.blockfrost.dev/account/',
+            token: 'https://explorer.blockfrost.dev/token/',
+        },
+        support: {
+            2: '2.4.3',
+        },
+    },
+    // TODO:
+    // Disabled until we have final decision about derivation path.
+    // Don't forget to remove addition Network type below!
+    // {
+    //     name: 'Cardano Testnet',
+    //     networkType: 'cardano',
+    //     symbol: 'tada',
+    //     bip43Path: "m/1852'/1'/i'",
+    //     label: 'TR_TESTNET_COINS_LABEL',
+    //     decimals: 6,
+    //     testnet: true,
+    //     explorer: {
+    //         tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
+    //         account: 'https://testnet-explorer.blockfrost.dev/account/',
+    //         token: 'https://testnet-explorer.blockfrost.dev/token/',
+    //     },
+    //     support: {
+    //         2: '2.4.3', // if  bip43Path is "m/1852'/1'/i'" then we need to bump this requirement as 2.4.3 doesn't support 1852'/1'
+    //     },
+    // },
 ] as const;
 
 type Network = {
@@ -434,6 +470,23 @@ type Network = {
     support?: {
         [key: number]: string;
     };
-} & ArrayElement<typeof networks>;
+} & (
+    | ArrayElement<typeof networks>
+    // TODO: Additional type for disabled cardano testnet. Without this TS would complain about invalid "tada" symbol
+    | {
+          name: 'Cardano Testnet';
+          networkType: 'cardano';
+          symbol: 'tada';
+          bip43Path: string;
+          label: string;
+          decimals: 6;
+          testnet: true;
+          explorer: {
+              tx: string;
+              account: string;
+              token: string;
+          };
+      }
+);
 
 export default [...networks] as Network[];

@@ -66,6 +66,15 @@ export const getInitialState = () => ({
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...{ device },
     },
+    wallet: {
+        settings: {
+            cardanoDerivationType: {
+                label: 'Icarus',
+                value: 1,
+            },
+            enabledNetworks: [],
+        },
+    },
     devices: [device],
 });
 

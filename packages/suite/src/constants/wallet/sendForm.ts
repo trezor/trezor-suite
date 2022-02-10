@@ -47,3 +47,8 @@ export const DEFAULT_VALUES = {
     rippleDestinationTag: '',
     outputs: [],
 } as const;
+
+// Time-to-live (TTL) in cardano represents a slot, or deadline by which a transaction must be submitted.
+// By setting offset to 7200s transaction sent from Suite will be valid for 2h.
+// If it is not included in a block until then it will be rejected by the network.
+export const CARDANO_DEFAULT_TTL_OFFSET = 7200;
