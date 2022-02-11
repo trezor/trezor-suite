@@ -2,7 +2,16 @@ import React from 'react';
 import { withCoinmarketSavingsLoaded } from '@wallet-components';
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
-import { FormattedCryptoAmount, FormattedNumber } from '@suite-components';
+import { FormattedCryptoAmount, FormattedNumber, Translation } from '@suite-components';
+import { PaymentDetail } from './components/PaymentDetail';
+import { WithCoinmarketSavingsLoadedProps } from '@suite/components/wallet/hocs/withCoinmarketSavingsLoaded';
+import {
+    SavingsOverviewContext,
+    useSavingsOverview,
+} from '@wallet-hooks/coinmarket/savings/useSavingsOverview';
+import { PaymentFrequency } from '@suite/services/suite/invityAPI';
+import WaitingForFirstPayment from './components/WaitingForFirstPayment';
+import { darken } from 'polished';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,19 +25,31 @@ const SavingsOverviewHeader = styled.div`
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;
+    margin-bottom: 42px;
 `;
 
-const Setup = styled.div`
+const HeaderBlock = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;
-    width: 100%;
+`;
+const Setup = styled(HeaderBlock)`
+    width: calc(100% / 3);
     background-color: ${props => props.theme.BG_GREY};
     padding: 21px;
     border-radius: 8px;
+    margin-right: 12px;
+`;
+
+const WaitingForFirstPaymentWrapper = styled(HeaderBlock)`
+    display: flex;
+    width: calc(100% / 3 * 2);
+    & > div {
+        width: 100%;
+    }
 `;
 
 const SetupValues = styled.div``;
@@ -38,7 +59,7 @@ const FiatPayment = styled.div`
     line-height: 34px;
 `;
 
-const PaymentFrequency = styled.div`
+const Period = styled.div`
     font-size: 16px;
     line-height: 24px;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
@@ -47,14 +68,14 @@ const PaymentFrequency = styled.div`
 const SoFarSaved = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: calc(100% / 3);
     background-color: ${props => props.theme.BG_WHITE};
     padding: 21px;
 `;
 
 const Graph = styled.div`
     display: flex;
-    width: 100%;
+    width: calc(100% / 3);
     background-color: ${props => props.theme.BG_WHITE};
 `;
 
@@ -74,37 +95,108 @@ const Crypto = styled.div`
     display: flex;
 `;
 
-const NextPayment = styled.div``;
+const CurrentPayment = styled.div`
+    margin-bottom: 13px;
+`;
 
-const Overview = () => {
-    console.log('TODO');
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
+    & div {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: ${props => darken(0.1)(props.theme.BG_GREY)};
+    }
+`;
 
-    // TODO: translations
+type SavingsOverviewPeriodTranslationId =
+    `TR_SAVINGS_OVERVIEW_PERIOD_${Uppercase<PaymentFrequency>}`;
+
+const getPeriodTranslationId = (
+    paymentFrequency: PaymentFrequency,
+): SavingsOverviewPeriodTranslationId =>
+    `TR_SAVINGS_OVERVIEW_PERIOD_${paymentFrequency.toUpperCase() as Uppercase<PaymentFrequency>}`;
+
+const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
+    const contextValues = useSavingsOverview(props);
+    const { savingsTrade, savingsTradePayments, handleEditSetupButtonClick } = contextValues;
+    // TODO: Not nice handling of missing data...
+    if (
+        !savingsTrade?.paymentFrequency ||
+        !savingsTrade?.fiatStringAmount ||
+        !savingsTradePayments
+    ) {
+        return <></>;
+    }
+    // NOTE: There are always two payments in state 'NextUp'.
+    const nextUpPayments = savingsTradePayments
+        .filter(payment => payment.status === 'NextUp')
+        .sort((a, b) => Date.parse(a.plannedPaymentAt) - Date.parse(b.plannedPaymentAt.valueOf()));
+    const waitingForFirstPayment = savingsTradePayments.every(
+        payment => payment.status !== 'Completed',
+    );
+    const currentPayment = nextUpPayments[0];
+    const nextPayment = nextUpPayments[1];
+
     return (
-        <Wrapper>
-            <SavingsOverviewHeader>
-                <Setup>
-                    <SetupValues>
-                        <FiatPayment>
-                            <FormattedNumber value={500} currency="EUR" />
-                        </FiatPayment>
-                        <PaymentFrequency>each week</PaymentFrequency>
-                    </SetupValues>
-                    <Icon icon="PENCIL" />
-                </Setup>
-                <SoFarSaved>
-                    <Fiat>
-                        <FormattedNumber currency="EUR" value={0} />
-                    </Fiat>
-                    <Crypto>
-                        ≈&nbsp;
-                        <FormattedCryptoAmount value={0} symbol="btc" />
-                    </Crypto>
-                </SoFarSaved>
-                <Graph>Graph</Graph>
-            </SavingsOverviewHeader>
-            <NextPayment>next payment</NextPayment>
-        </Wrapper>
+        <SavingsOverviewContext.Provider value={contextValues}>
+            <Wrapper>
+                <SavingsOverviewHeader>
+                    <Setup>
+                        <SetupValues>
+                            <FiatPayment>
+                                <FormattedNumber
+                                    value={savingsTrade.fiatStringAmount}
+                                    currency={savingsTrade.fiatCurrency}
+                                    maximumFractionDigits={2}
+                                    minimumFractionDigits={0}
+                                />
+                            </FiatPayment>
+                            <Period>
+                                <Translation
+                                    id={getPeriodTranslationId(savingsTrade.paymentFrequency)}
+                                />
+                            </Period>
+                        </SetupValues>
+                        <StyledIcon icon="PENCIL" size={13} onClick={handleEditSetupButtonClick} />
+                    </Setup>
+                    {waitingForFirstPayment ? (
+                        <WaitingForFirstPaymentWrapper>
+                            <WaitingForFirstPayment />
+                        </WaitingForFirstPaymentWrapper>
+                    ) : (
+                        <>
+                            <SoFarSaved>
+                                <Fiat>
+                                    <FormattedNumber
+                                        currency={savingsTrade.fiatCurrency}
+                                        value={0}
+                                    />
+                                </Fiat>
+                                <Crypto>
+                                    ≈&nbsp;
+                                    <FormattedCryptoAmount
+                                        value={0}
+                                        symbol={savingsTrade.cryptoCurrency}
+                                    />
+                                </Crypto>
+                            </SoFarSaved>
+                            <Graph>Graph</Graph>
+                        </>
+                    )}
+                </SavingsOverviewHeader>
+                <CurrentPayment>
+                    <PaymentDetail
+                        title="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT"
+                        savingsTradePayment={currentPayment}
+                    />
+                </CurrentPayment>
+                <PaymentDetail
+                    title="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT"
+                    savingsTradePayment={nextPayment}
+                />
+            </Wrapper>
+        </SavingsOverviewContext.Provider>
     );
 };
 export default withCoinmarketSavingsLoaded(Overview, {

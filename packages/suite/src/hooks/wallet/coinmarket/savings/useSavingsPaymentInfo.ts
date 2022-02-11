@@ -25,12 +25,15 @@ export const useSavingsPaymentInfo = ({
         navigateToSavingsSetup();
     }, [navigateToSavingsSetup]);
 
-    const savingsTrade = useSavingsTrade();
+    const { savingsTrade, saveSavingsTradeResponse } = useSavingsTrade();
 
     const handleSubmit = async () => {
         if (savingsTrade) {
-            await invityAPI.doSavingsTrade({ trade: savingsTrade });
-            navigateToSavingsOverview();
+            const response = await invityAPI.doSavingsTrade({ trade: savingsTrade });
+            if (response) {
+                saveSavingsTradeResponse(response);
+                navigateToSavingsOverview();
+            }
         }
     };
 

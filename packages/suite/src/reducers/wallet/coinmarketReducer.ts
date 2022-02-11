@@ -30,6 +30,7 @@ import type {
     SavingsKYCStatus,
     SavingsProviderInfo,
     SavingsTrade,
+    SavingsTradePayment,
 } from '@suite-services/invityAPI';
 import type { InvityAuthentication } from '@wallet-types/invity';
 
@@ -83,6 +84,7 @@ interface Savings {
     selectedProvider?: SavingsProviderInfo;
     savingsInfo?: SavingsInfo;
     savingsTrade?: SavingsTrade;
+    savingsTradePayments?: SavingsTradePayment[];
     isSavingsTradeLoading: boolean;
     kycFinalStatus?: SavingsKYCStatus;
     isWatchingKYCStatus: boolean;
@@ -145,6 +147,7 @@ export const initialState = {
         selectedProvider: undefined,
         savingsInfo: undefined,
         savingsTrade: undefined,
+        savingsTradePayments: undefined,
         isSavingsTradeLoading: false,
         kycFinalStatus: undefined,
         isWatchingKYCStatus: false,
@@ -268,6 +271,7 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE:
                 draft.savings.savingsTrade = action.response.trade;
+                draft.savings.savingsTradePayments = action.response.payments;
                 // TODO: later set also "savings payments"
                 break;
             case COINMARKET_SAVINGS.SET_SAVINGS_TRADE_RESPONSE_LOADING:

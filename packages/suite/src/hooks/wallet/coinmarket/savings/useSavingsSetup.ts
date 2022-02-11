@@ -5,7 +5,7 @@ import {
     UseSavingsSetupProps,
 } from '@wallet-types/coinmarket/savings/savingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
-import invityAPI, { PaymentFrequency } from '@suite-services/invityAPI';
+import invityAPI, { PaymentFrequency, SavingsTrade } from '@suite-services/invityAPI';
 import { useSelector } from '@suite-hooks';
 import BigNumber from 'bignumber.js';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
@@ -47,7 +47,7 @@ export const useSavingsSetup = ({
     }));
     const fiatRates = fiat.coins.find(item => item.symbol === 'btc');
     const { navigateToSavingsPaymentInfo } = useCoinmarketNavigation(selectedAccount.account);
-    const savingsTrade = useSavingsTrade();
+    const { savingsTrade, saveSavingsTradeResponse } = useSavingsTrade();
     const isLoading = !savingsTrade;
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
     const defaultValues = useSavingsSetupDefaultValues(
@@ -107,22 +107,27 @@ export const useSavingsSetup = ({
             address,
         }: SavingsSetupFormState) => {
             if (savingsTrade) {
-                const trade = {
+                const trade: SavingsTrade = {
                     ...savingsTrade,
+                    // User can navigate back to setup page and change already active plan. Thus we need to set the status back also.
+                    status: 'SetSavingsParameters',
                     paymentFrequency,
                     fiatStringAmount: getFiatAmountEffective(fiatAmount, customFiatAmount),
                     receivingCryptoAddress: address,
                 };
-                await invityAPI.doSavingsTrade({
+                const response = await invityAPI.doSavingsTrade({
                     trade,
                 });
-                setWasSetupSaved(true);
-                if (!isWatchingKYCStatus) {
-                    navigateToSavingsPaymentInfo();
+                if (response) {
+                    saveSavingsTradeResponse(response);
+                    setWasSetupSaved(true);
+                    if (!isWatchingKYCStatus) {
+                        navigateToSavingsPaymentInfo();
+                    }
                 }
             }
         },
-        [isWatchingKYCStatus, navigateToSavingsPaymentInfo, savingsTrade],
+        [isWatchingKYCStatus, navigateToSavingsPaymentInfo, saveSavingsTradeResponse, savingsTrade],
     );
 
     // TODO: extract

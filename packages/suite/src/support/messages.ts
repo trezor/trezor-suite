@@ -1197,6 +1197,46 @@ export default defineMessages({
         defaultMessage: 'Select your country',
         id: 'TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL',
     },
+    TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY: {
+        defaultMessage: 'each week',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY',
+    },
+    TR_SAVINGS_OVERVIEW_PERIOD_BIWEEKLY: {
+        defaultMessage: 'each two weeks',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_BIWEEKLY',
+    },
+    TR_SAVINGS_OVERVIEW_PERIOD_MONTHLY: {
+        defaultMessage: 'each month',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_MONTHLY',
+    },
+    TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY: {
+        defaultMessage: 'each quarter',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT: {
+        defaultMessage: 'Current payment',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT: {
+        defaultMessage: 'Next payment',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_VIEW_PAYMENT_DETAILS_BUTTON_LABEL: {
+        defaultMessage: 'View payment details',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_VIEW_PAYMENT_DETAILS_BUTTON_LABEL',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_HIDE_PAYMENT_DETAILS_BUTTON_LABEL: {
+        defaultMessage: 'Hide payment details',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_HIDE_PAYMENT_DETAILS_BUTTON_LABEL',
+    },
+    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER: {
+        defaultMessage: 'Waiting for your first payment.',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER',
+    },
+    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION: {
+        defaultMessage: 'Didn’t make it yet? Check View payment details.',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',
