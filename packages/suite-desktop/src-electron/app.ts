@@ -83,6 +83,23 @@ const init = async () => {
     logger.debug('init', `Load URL (${src})`);
     mainWindow.loadURL(src);
 
+    let resizeDebounce: ReturnType<typeof setTimeout> | null = null;
+    mainWindow.on('resize', () => {
+        if (resizeDebounce) return;
+        resizeDebounce = setTimeout(() => {
+            resizeDebounce = null;
+            if (!mainWindow) return;
+            const winBound = mainWindow.getBounds() as WinBounds;
+            store.setWinBounds(winBound);
+            logger.debug('app', 'new winBounds saved');
+        }, 1000);
+    });
+    mainWindow.on('closed', () => {
+        if (resizeDebounce) {
+            clearTimeout(resizeDebounce);
+        }
+    });
+
     const interceptor = createInterceptor();
 
     // Modules
