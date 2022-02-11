@@ -3,7 +3,7 @@
  */
 import { app, ipcMain } from 'electron';
 
-const init = ({ mainWindow, store }: Dependencies) => {
+const init = ({ mainWindow }: Dependencies) => {
     const { logger } = global;
 
     if (process.platform === 'darwin') {
@@ -79,12 +79,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
     ipcMain.on('app/focus', () => {
         logger.debug('window-control', 'Focus requested');
         app.focus({ steal: true });
-    });
-
-    app.on('before-quit', () => {
-        // store window bounds on cmd/ctrl+q
-        const winBound = mainWindow.getBounds() as WinBounds;
-        store.setWinBounds(winBound);
     });
 };
 
