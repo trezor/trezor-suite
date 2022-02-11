@@ -1,0 +1,20 @@
+version: '3'
+services:
+  electrum-regtest:
+    image: ghcr.io/vdovhanych/electrs:latest
+    network_mode: bridge  # this makes docker reuse existing networks
+
+  test-run:
+    build:
+      context: .
+      dockerfile: ./suite/Dockerfile
+    depends_on:
+      - electrum-regtest
+    network_mode: service:electrum-regtest
+    environment:
+      - NODE_ENV=development
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+    working_dir: /trezor-suite
+    command: bash -c "yarn workspace @trezor/blockchain-link test:integration"
+    volumes:
+      - ../:/trezor-suite
