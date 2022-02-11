@@ -246,47 +246,39 @@ const getUserContextModal = ({ modal, onCancel }: SharedProps) => {
     }
 };
 
-type Props = {
-    background?: boolean;
+const getModal = (props: SharedProps) => {
+    switch (props.modal.context) {
+        case MODAL.CONTEXT_DEVICE:
+            return getDeviceContextModal(props);
+        case MODAL.CONTEXT_DEVICE_CONFIRMATION:
+            return getDeviceConfirmationModal(props);
+        case MODAL.CONTEXT_USER:
+            return getUserContextModal(props);
+        default:
+            return null;
+    }
 };
 
 // Action modal container component
-const Modal = ({ background }: Props) => {
+export const Modals = () => {
     const props = useSharedProps();
-
-    let modalComponent;
-
-    switch (props.modal.context) {
-        case MODAL.CONTEXT_DEVICE:
-            modalComponent = getDeviceContextModal(props);
-            break;
-        case MODAL.CONTEXT_DEVICE_CONFIRMATION:
-            modalComponent = getDeviceConfirmationModal(props);
-            break;
-        case MODAL.CONTEXT_USER:
-            modalComponent = getUserContextModal(props);
-            break;
-        default:
-            break;
-    }
-
-    if (!modalComponent) return null;
-
-    const useBackground = background ?? true;
-    if (useBackground) {
-        return (
-            <FocusLock disabled={props.isGuideOpen} autoFocus={false}>
-                {modalComponent}
-            </FocusLock>
-        );
-    }
-
-    return React.cloneElement(modalComponent, {
-        noBackground: true,
-        showHeaderBorder: false,
-        noPadding: true,
-        cancelable: false,
-    });
+    const modalComponent = getModal(props);
+    return modalComponent ? (
+        <FocusLock disabled={props.isGuideOpen} autoFocus={false}>
+            {modalComponent}
+        </FocusLock>
+    ) : null;
 };
 
-export default Modal;
+export const RawModals = () => {
+    const props = useSharedProps();
+    const modalComponent = getModal(props);
+    return modalComponent
+        ? React.cloneElement(modalComponent, {
+              noBackground: true,
+              showHeaderBorder: false,
+              noPadding: true,
+              cancelable: false,
+          })
+        : null;
+};
