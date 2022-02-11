@@ -169,13 +169,15 @@ transport manual:
 # @trezor/blockchain-link
 .e2e blockchain-link:
   stage: integration testing
+  variables:
+    COMPOSE_FILE: ./docker/docker-compose.blockchain-link-ci.yml
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/utils build:lib
     - yarn workspace @trezor/utxo-lib build:lib
     - yarn workspace @trezor/blockchain-link build:lib
     - yarn workspace @trezor/blockchain-link build:workers
-    - yarn workspace @trezor/blockchain-link test:integration
+    - docker-compose up
 
 blockchain-link:
   extends: .e2e blockchain-link
