@@ -4,7 +4,7 @@ import { SUITE } from '@suite-actions/constants';
 import { SuiteLayout } from '@suite-components';
 import InitialLoading from './components/InitialLoading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
-import Modals from '@suite-components/modals';
+import { Modals, RawModals } from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
 import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
 import PrerequisiteScreen from './components/PrerequisiteScreen';
@@ -118,7 +118,7 @@ const Preloader = ({ children, hideModals = false }: Props) => {
                     onCancel={actions.closeModalApp}
                     closeModalApp={actions.closeModalApp}
                     getBackgroundRoute={actions.getBackgroundRoute}
-                    modal={hasActionModal ? <Modals background={false} /> : null}
+                    modal={hasActionModal ? <RawModals /> : null}
                     prerequisite={prerequisite}
                 />
                 {!isFullscreenApp && <SuiteLayout>{children}</SuiteLayout>}
