@@ -111,7 +111,7 @@ describe('coinmarketMiddleware', () => {
 
         store.dispatch({ type: COINMARKET_COMMON.LOAD_DATA });
         expect(store.getActions()).toEqual([
-            { type: COINMARKET_COMMON.SET_LOADING, isLoading: true },
+            { type: COINMARKET_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
             { type: COINMARKET_COMMON.LOAD_DATA },
         ]);
         expect(getCurrentAccountDescriptorMock).toBeCalledTimes(1);
@@ -139,7 +139,7 @@ describe('coinmarketMiddleware', () => {
 
         store.dispatch({ type: COINMARKET_COMMON.LOAD_DATA });
         expect(store.getActions()).toEqual([
-            { type: COINMARKET_COMMON.SET_LOADING, isLoading: true },
+            { type: COINMARKET_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
             { type: COINMARKET_COMMON.LOAD_DATA },
         ]);
         expect(getCurrentAccountDescriptorMock).toBeCalledTimes(1);
