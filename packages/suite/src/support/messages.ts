@@ -1905,6 +1905,10 @@ export default defineMessages({
         defaultMessage: 'Device "{deviceLabel}" is unavailable',
         id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
     },
+    TR_EDIT: {
+        defaultMessage: 'Edit',
+        id: 'TR_EDIT',
+    },
     TR_NEEDS_ATTENTION_BOOTLOADER: {
         defaultMessage: 'Trezor is in Bootloader mode.',
         id: 'TR_NEEDS_ATTENTION_BOOTLOADER',
