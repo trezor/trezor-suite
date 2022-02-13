@@ -284,6 +284,9 @@ const coinmarketReducer = (
             case COINMARKET_COMMON.SAVE_INVITY_AUTHENTICATION:
                 draft.invityAuthentication = action.invityAuthentication;
                 break;
+            case COINMARKET_COMMON.CLEAR_INVITY_AUTHENTICATION:
+                draft.invityAuthentication = undefined;
+                break;
             case COINMARKET_COMMON.SET_INVITY_AUTHENTICATION_LOADING:
                 draft.isInvityAuthenticationLoading = action.isInvityAuthenticationLoading;
                 break;

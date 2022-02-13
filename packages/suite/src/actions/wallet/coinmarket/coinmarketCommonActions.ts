@@ -45,6 +45,9 @@ export type CoinmarketCommonAction =
           invityAuthentication: InvityAuthentication;
       }
     | {
+          type: typeof COINMARKET_COMMON.CLEAR_INVITY_AUTHENTICATION;
+      }
+    | {
           type: typeof COINMARKET_COMMON.SET_INVITY_AUTHENTICATION_LOADING;
           isInvityAuthenticationLoading: boolean;
       };
@@ -187,29 +190,40 @@ export const submitRequestForm =
         }
     };
 
-export const setLoading = (isLoading: boolean, lastLoadedTimestamp?: number) => ({
+export const setLoading = (
+    isLoading: boolean,
+    lastLoadedTimestamp = 0,
+): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.SET_LOADING,
     isLoading,
-    ...(lastLoadedTimestamp && { lastLoadedTimestamp }),
+    lastLoadedTimestamp,
 });
 
 export const loadInvityData = (): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.LOAD_DATA,
 });
 
-export const loadInvityAuthentication = (redirectUnauthorizedUserToLogin: boolean) => ({
+export const loadInvityAuthentication = (
+    redirectUnauthorizedUserToLogin: boolean,
+): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.LOAD_INVITY_AUTHENTICATION,
     redirectUnauthorizedUserToLogin,
 });
 
 export const saveInvityAuthentication = (
-    invityAuthentication: InvityAuthentication | undefined,
-) => ({
+    invityAuthentication: InvityAuthentication,
+): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.SAVE_INVITY_AUTHENTICATION,
     invityAuthentication,
 });
 
-export const setInvityAuthenticationLoading = (isInvityAuthenticationLoading: boolean) => ({
+export const clearInvityAuthentication = (): CoinmarketCommonAction => ({
+    type: COINMARKET_COMMON.CLEAR_INVITY_AUTHENTICATION,
+});
+
+export const setInvityAuthenticationLoading = (
+    isInvityAuthenticationLoading: boolean,
+): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.SET_INVITY_AUTHENTICATION_LOADING,
     isInvityAuthenticationLoading,
 });

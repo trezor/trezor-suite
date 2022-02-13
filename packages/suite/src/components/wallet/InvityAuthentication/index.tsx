@@ -73,13 +73,13 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
 
     const {
         loadInvityAuthentication,
-        saveInvityAuthentication,
+        clearInvityAuthentication,
         addToast,
         loadSavingsTrade,
         loadInvityData,
     } = useActions({
         loadInvityAuthentication: coinmarketCommonActions.loadInvityAuthentication,
-        saveInvityAuthentication: coinmarketCommonActions.saveInvityAuthentication,
+        clearInvityAuthentication: coinmarketCommonActions.clearInvityAuthentication,
         loadInvityData: coinmarketCommonActions.loadInvityData,
         loadSavingsTrade: coinmarketSavingsActions.loadSavingsTrade,
         addToast: notificationActions.addToast,
@@ -124,7 +124,7 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
                 }
                 case 'logout-successful':
                     if (invityAuthentication) {
-                        saveInvityAuthentication(undefined);
+                        clearInvityAuthentication();
                     } else {
                         addToast({
                             type: 'invity-logout-successful',
@@ -144,7 +144,7 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
         navigateToInvityRegistrationSuccessful,
         navigateToSavings,
         redirectUnauthorizedUserToLogin,
-        saveInvityAuthentication,
+        clearInvityAuthentication,
         selectedProvider,
     ]);
 
