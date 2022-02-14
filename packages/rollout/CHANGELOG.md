@@ -1,5 +1,10 @@
+# 1.3.0
+- Added @trezor/utils dependency.
+- Add possibility to fetch binary from local filesystem (in nodejs env)
+
 # 1.2.1
 - cross-fetch updated to 3.0.6
+
 # 1.2.0
 - added condition for stripping firmware binary header based on `trezorlib` (python-trezor).
 - exposed `modifyFirmware` function for this binary modification.
