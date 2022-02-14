@@ -133,6 +133,16 @@ beta transport deploy npm:
   script:
     - nix-shell --run "yarn && yarn workspace @trezor/transport build:lib && cd ./packages/transport && npm publish --tag beta"
 
+beta utils deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn workspace @trezor/utils build:lib && cd ./packages/utils && npm publish --tag beta"
+
+beta utxo-lib deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn workspace @trezor/utxo-lib build:lib && cd ./packages/utxo-lib && npm publish --tag beta"
+
 blockchain-link deploy npm:
   only:
     <<: *run_everything_rules
@@ -160,3 +170,17 @@ transport deploy npm:
   <<: *npm_deploy_rules
   script:
     - nix-shell --run "yarn && yarn workspace @trezor/transport build:lib && cd ./packages/transport && npm publish"
+
+utils deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn workspace @trezor/utils build:lib && cd ./packages/utils && npm publish"
+
+utxo-lib deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn workspace @trezor/utxo-lib build:lib && cd ./packages/utxo-lib && npm publish"
