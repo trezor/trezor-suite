@@ -1,3 +1,10 @@
+.run_everything_rules: &run_everything_rules
+  refs:
+    - develop
+    - releases
+    - schedules
+    - /^release\//
+
 # @trezor/suite-web
 .e2e web:
   stage: integration testing
@@ -56,11 +63,19 @@ suite web snapshots:
     CYPRESS_SNAPSHOT: 1
     CYPRESS_updateSnapshots: 1
 
-# Nightly tests against latest trezor-firmware master
-suite web nightly:
+# Tests against latest trezor-firmware master
+suite web 2-master:
   extends: .e2e web
   only:
-    - schedules
+    <<: *run_everything_rules
+  variables:
+    FIRMWARE: 2-master
+
+suite web 2-master manual:
+  extends: .e2e web
+  except:
+    <<: *run_everything_rules
+  when: manual
   variables:
     FIRMWARE: 2-master
 
@@ -95,12 +110,14 @@ suite web nightly:
 
 suite desktop:
   extends: .e2e desktop
-  when: manual
-
-suite desktop nightly:
-  extends: .e2e desktop
   only:
-    - schedules
+    <<: *run_everything_rules
+
+suite desktop manual:
+  extends: .e2e desktop
+  except:
+    <<: *run_everything_rules
+  when: manual
 
 # @trezor/rollout
 
@@ -115,12 +132,14 @@ suite desktop nightly:
 
 rollout:
   extends: .rollout-e2e
-  when: manual
-
-rollout nightly:
-  extends: .rollout-e2e
   only:
-    - schedules
+    <<: *run_everything_rules
+
+rollout manual:
+  extends: .rollout-e2e
+  except:
+    <<: *run_everything_rules
+  when: manual
 
 # @trezor/transport
 .e2e transport:
@@ -138,12 +157,14 @@ rollout nightly:
 
 transport:
   extends: .e2e transport
-  when: manual
-
-transport nightly:
-  extends: .e2e transport
   only:
-    - schedules
+    <<: *run_everything_rules
+
+transport manual:
+  extends: .e2e transport
+  except:
+    <<: *run_everything_rules
+  when: manual
 
 # @trezor/blockchain-link
 .e2e blockchain-link:
@@ -158,12 +179,14 @@ transport nightly:
 
 blockchain-link:
   extends: .e2e blockchain-link
-  when: manual
-
-blockchain-link nightly:
-  extends: .e2e blockchain-link
   only:
-    - schedules
+    <<: *run_everything_rules
+
+blockchain-link manual:
+  extends: .e2e blockchain-link
+  except:
+    <<: *run_everything_rules
+  when: manual
 
 # @trezor/connect-explorer
 .e2e connect-explorer:
@@ -190,9 +213,11 @@ blockchain-link nightly:
 
 connect-explorer:
   extends: .e2e connect-explorer
-  when: manual
-
-connect-explorer nightly:
-  extends: .e2e connect-explorer
   only:
-    - schedules
+    <<: *run_everything_rules
+
+connect-explorer manual:
+  extends: .e2e connect-explorer
+  except:
+    <<: *run_everything_rules
+  when: manual
