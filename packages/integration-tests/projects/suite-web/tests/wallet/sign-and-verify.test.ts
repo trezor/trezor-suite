@@ -10,7 +10,8 @@ const SIGNATURE =
 
 describe('Sign and verify', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true });
+        // todo: removed pinned version '2-master', once 2.4.4 is released
+        cy.task('startEmu', { wipe: true, version: '2-master' });
         cy.task('setupEmu', { mnemonic: SEED });
         cy.task('startBridge');
 
@@ -41,6 +42,8 @@ describe('Sign and verify', () => {
         cy.getTestElement('@sign-verify/signature').type(SIGNATURE);
         cy.getTestElement('@sign-verify/submit').click();
         cy.getConfirmActionOnDeviceModal().task('pressYes');
+        cy.getConfirmActionOnDeviceModal().task('pressYes');
+        // since 2.4.4 there is another screen that needs to be confirmed
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getTestElement('@toast/verify-message-success');
     });
