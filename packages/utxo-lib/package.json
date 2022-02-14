@@ -1,6 +1,6 @@
 {
     "name": "@trezor/utxo-lib",
-    "version": "1.0.0-beta.10",
+    "version": "1.0.0",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/packages/utxo-lib",
     "description": "Client-side Bitcoin-like JavaScript library",
