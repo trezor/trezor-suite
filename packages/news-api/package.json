@@ -10,6 +10,7 @@
     "private": true,
     "scripts": {
         "build": "rimraf ./build && tsc",
+        "type-check": "tsc --noEmit",
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "start": "yarn build && ts-node ./build/src/server.js",
         "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts"
