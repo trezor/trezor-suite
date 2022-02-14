@@ -10,7 +10,7 @@ interface OwnProps extends ModalProps {
 
 type Props = OwnProps;
 
-const Pin = ({ device, cancelable, noBackground, noPadding, ...rest }: Props) => {
+const Pin = ({ device, noPadding, ...rest }: Props) => {
     const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
     const invalidCounter =
         device.buttonRequests.filter(r => r.code === 'ui-invalid_pin').length || 0;
@@ -30,12 +30,8 @@ const Pin = ({ device, cancelable, noBackground, noPadding, ...rest }: Props) =>
     return (
         <Modal
             useFixedWidth={false}
-            cancelable={cancelable}
-            noBackground={noBackground}
             heading={<Translation id="TR_ENTER_PIN" />}
             description={<Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />}
-            // to squeeze pin matrix to Recovery modal flow we need to disable padding on heading element
-            noHeadingPadding={noPadding}
             {...rest}
             data-test="@modal/pin"
         >

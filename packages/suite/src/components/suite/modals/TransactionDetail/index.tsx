@@ -47,14 +47,13 @@ const Right = styled(Col)`
     }
 `;
 
-type Props = {
+type TransactionDetailProps = {
     tx: WalletAccountTransaction;
     rbfForm?: boolean;
     onCancel: () => void;
 };
 
-const TransactionDetail = (props: Props) => {
-    const { tx } = props;
+const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailProps) => {
     const { blockchain, transactions } = useSelector(state => ({
         blockchain: state.wallet.blockchain[tx.symbol],
         transactions: state.wallet.transactions.transactions,
@@ -76,7 +75,7 @@ const TransactionDetail = (props: Props) => {
     const network = getNetwork(tx.symbol);
 
     const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
-        props.rbfForm ? 'CHANGE_FEE' : 'DETAILS',
+        rbfForm ? 'CHANGE_FEE' : 'DETAILS',
     );
     const [tab, setTab] = useState<TabID | undefined>(undefined);
     const [finalize, setFinalize] = useState<boolean>(false);
@@ -84,7 +83,7 @@ const TransactionDetail = (props: Props) => {
     return (
         <Modal
             cancelable
-            onCancel={props.onCancel}
+            onCancel={onCancel}
             fixedWidth={['95vw', '90vw', '755px', '755px']}
             contentPaddingSide={['8px', '21px', '21px', '21px']}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}

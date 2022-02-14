@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal, ModalProps, ConfirmOnDevice } from '@trezor/components';
-import { Translation } from '@suite-components/Translation';
+import { ConfirmOnDevice } from '@trezor/components';
+import { Translation, Modal, ModalProps } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import { Fingerprint } from '@firmware-components';
 
