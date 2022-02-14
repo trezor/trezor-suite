@@ -1,4 +1,4 @@
-import { RippleAPI } from 'ripple-lib';
+import { RippleAPI, APIOptions } from 'ripple-lib';
 import { RippleError } from 'ripple-lib/dist/npm/common/errors';
 import BigNumber from 'bignumber.js';
 import { CustomError } from '../../constants/errors';
@@ -421,12 +421,17 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         let api: RippleAPI;
 
         try {
-            api = new RippleAPI({
+            const options: APIOptions = {
                 server: this.endpoints[0],
                 connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT,
-                // @ts-ignore agent is added in patch
-                agent: this.proxyAgent,
-            });
+            };
+            // proxy agent is available only in suite because of the patch.
+            // it will fail in standalone trezor-connect implementation where this patch is not present.
+            // TODO: https://github.com/trezor/trezor-suite/issues/4942
+            if (RippleAPI._ALLOW_AGENT) {
+                options.agent = this.proxyAgent;
+            }
+            api = new RippleAPI(options);
             // disable websocket auto reconnecting
             // workaround for RippleApi which doesn't have possibility to disable reconnection
             // issue: https://github.com/ripple/ripple-lib/issues/1068
