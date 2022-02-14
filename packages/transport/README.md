@@ -14,3 +14,7 @@ Intended as a "building block" for other packages - it is used in ~~trezor.js~~ 
   - Trezor Bridge
   - Webusb
 
+
+### Publishing
+
+[Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.
