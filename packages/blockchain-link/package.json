@@ -51,7 +51,7 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
-        "@trezor/utils": "1.0.0",
+        "@trezor/utils": "^1.0.0",
         "@trezor/utxo-lib": "^1.0.0-beta.10",
         "bignumber.js": "^9.0.1",
         "events": "^3.3.0",
