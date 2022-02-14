@@ -14,15 +14,17 @@ const Wrapper = styled.div`
     justify-content: center;
     margin: 24px 0px;
 `;
+
 const Actions = styled.div`
     display: flex;
     justify-content: center;
 `;
-interface Props {
+
+interface AddTokenProps {
     onCancel: () => void;
 }
 
-const AddToken = (props: Props) => {
+const AddToken = ({ onCancel }: AddTokenProps) => {
     const [contractAddress, setContractAddress] = useState<string>('');
     const [tokenInfo, setTokenInfo] = useState<TokenInfo[] | undefined>(undefined);
     const [isFetching, setIsFetching] = useState(false);
@@ -105,11 +107,7 @@ const AddToken = (props: Props) => {
     };
 
     return (
-        <Modal
-            cancelable
-            onCancel={props.onCancel}
-            heading={<Translation id="TR_ADD_TOKEN_TITLE" />}
-        >
+        <Modal cancelable onCancel={onCancel} heading={<Translation id="TR_ADD_TOKEN_TITLE" />}>
             <Wrapper>
                 <Input
                     label={
@@ -130,7 +128,7 @@ const AddToken = (props: Props) => {
                     onClick={() => {
                         if (tokenInfo) {
                             addToken(account, tokenInfo);
-                            props.onCancel();
+                            onCancel();
 
                             analytics.report({
                                 type: 'add-token',

@@ -44,7 +44,7 @@ type Props = {
     onCancel: () => void;
 };
 
-const Log = (props: Props) => {
+const Log = ({ onCancel }: Props) => {
     const htmlElement = createRef<HTMLPreElement>();
 
     const { excludeBalanceRelated } = useSelector(state => state.log);
@@ -79,7 +79,7 @@ const Log = (props: Props) => {
     return (
         <Modal
             cancelable
-            onCancel={props.onCancel}
+            onCancel={onCancel}
             heading={<Translation id="TR_LOG" />}
             description={<Translation id="LOG_DESCRIPTION" />}
             data-test="@log"

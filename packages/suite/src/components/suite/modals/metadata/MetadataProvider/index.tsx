@@ -51,15 +51,15 @@ type Props = {
     decision: Deferred<boolean>;
 };
 
-const MetadataProvider = (props: Props) => {
+const MetadataProvider = ({ onCancel, decision }: Props) => {
     const [isLoading, setIsLoading] = useState('');
     // error from authorization popup
     const [error, setError] = useState('');
     const { connectProvider } = useActions({ connectProvider: metadataActions.connectProvider });
 
-    const onCancel = () => {
-        props.decision.resolve(false);
-        props.onCancel();
+    const onModalCancel = () => {
+        decision.resolve(false);
+        onCancel();
     };
 
     const connect = async (type: MetadataProviderType) => {
@@ -77,14 +77,14 @@ const MetadataProvider = (props: Props) => {
             return;
         }
 
-        props.decision.resolve(true);
-        props.onCancel();
+        decision.resolve(true);
+        onCancel();
     };
 
     return (
         <Modal
             cancelable
-            onCancel={onCancel}
+            onCancel={onModalCancel}
             size="small"
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-test="@modal/metadata-provider"
