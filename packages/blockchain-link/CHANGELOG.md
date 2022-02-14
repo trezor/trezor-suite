@@ -1,3 +1,11 @@
+# 2.1.0
+
+#### changes
+- Added `proxy` param allowing workers to initialize SocksProxyAgent and use it for proxying communication
+- Added support for `Electrum` backend
+- Using common utilities from new `@trezor/utils` package
+- Updated dependencies
+
 # 2.0.0
 
 #### changes

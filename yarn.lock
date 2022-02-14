@@ -4626,6 +4626,16 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
+"@trezor/blockchain-link@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@trezor/blockchain-link/-/blockchain-link-2.0.0.tgz#12d18bc96662dda999e8e5412ae3f24474eb4deb"
+  integrity sha512-Jx9nedFSduSMXpf8Z61rnbcFg0WoYNGA45a7iO15Z92/aIu4TqoQWCvTn7OWhLf+ibMA52NPSyMc1xsQicJpRg==
+  dependencies:
+    bignumber.js "^9.0.1"
+    events "^3.3.0"
+    ripple-lib "1.10.0"
+    ws "^7.4.0"
+
 "@trezor/transport@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@trezor/transport/-/transport-1.0.1.tgz#bf0d11a44d1220fe1486e7679370920f9f60afa4"
@@ -25200,10 +25210,10 @@ ws@^6.1.4:
   dependencies:
     async-limiter "~1.0.0"
 
-ws@^7, ws@^7.2.0, ws@^7.3.1, ws@^7.4.6, ws@^7.5.3, ws@^7.5.5:
-  version "7.5.6"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.6.tgz#e59fc509fb15ddfb65487ee9765c5a51dec5fe7b"
-  integrity sha512-6GLgCqo2cy2A2rjCNFlxQS6ZljG/coZfZXclldI8FB/1G3CCI36Zd8xy2HrFVACi8tfk5XrgLQEk+P0Tnz9UcA==
+ws@^7, ws@^7.2.0, ws@^7.3.1, ws@^7.4.0, ws@^7.4.6, ws@^7.5.3, ws@^7.5.5:
+  version "7.5.7"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.7.tgz#9e0ac77ee50af70d58326ecff7e85eb3fa375e67"
+  integrity sha512-KMvVuFzpKBuiIXW3E4u3mySRO2/mCHSyZDJQM5NQ9Q9KHWHWh0NHgfbRMLLrceUK5qAL4ytALJbpRMjixFZh8A==
 
 ws@^8.1.0, ws@^8.2.3:
   version "8.4.0"
