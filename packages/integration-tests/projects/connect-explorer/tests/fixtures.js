@@ -195,6 +195,12 @@ const verifyMessage = [
                     type: 'emulator-press-yes',
                 },
             },
+            {
+                selector: '.follow-device >> visible=true',
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
         ],
     },
 ];
