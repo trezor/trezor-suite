@@ -12,3 +12,6 @@ __Incremental downgrade__: it is not possible to downgrade to lower version of b
 __Rollout update__: sometimes we might want to offer firmware only to small portion of users. This behaviour is defined by `rollout` field and handled by this lib.
 
 __Firmware headers__: any firmware that is applied on firmware with bootloader  >= 1.8.0 has old firmware header of 256 bytes, that should be removed before installing. This should be only temporary state and will be solved in future by introducing special intermediate firmwares for updating.
+### Publishing
+
+[Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.
