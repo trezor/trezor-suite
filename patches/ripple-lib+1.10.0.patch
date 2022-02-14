@@ -1,3 +1,33 @@
+diff --git a/node_modules/ripple-lib/dist/npm/api.d.ts b/node_modules/ripple-lib/dist/npm/api.d.ts
+index fd47470..8c9b929 100644
+--- a/node_modules/ripple-lib/dist/npm/api.d.ts
++++ b/node_modules/ripple-lib/dist/npm/api.d.ts
+@@ -52,11 +52,13 @@ export interface APIOptions extends ConnectionUserOptions {
+     maxFeeXRP?: string;
+     proxy?: string;
+     timeout?: number;
++    agent?: any;
+ }
+ declare class RippleAPI extends EventEmitter {
+     _feeCushion: number;
+     _maxFeeXRP: string;
+     connection: Connection;
++    static _ALLOW_AGENT: boolean;
+     static _PRIVATE: {
+         validate: typeof validate;
+         RangeSet: typeof RangeSet;
+diff --git a/node_modules/ripple-lib/dist/npm/api.js b/node_modules/ripple-lib/dist/npm/api.js
+index 5d48807..4ac1631 100644
+--- a/node_modules/ripple-lib/dist/npm/api.js
++++ b/node_modules/ripple-lib/dist/npm/api.js
+@@ -234,6 +234,7 @@ class RippleAPI extends events_1.EventEmitter {
+     }
+ }
+ exports.RippleAPI = RippleAPI;
++RippleAPI._ALLOW_AGENT = true;
+ RippleAPI._PRIVATE = {
+     validate: common_1.validate,
+     RangeSet: rangeset_1.default,
 diff --git a/node_modules/ripple-lib/dist/npm/common/connection.js b/node_modules/ripple-lib/dist/npm/common/connection.js
 index 8d46ea0..03ae2c1 100644
 --- a/node_modules/ripple-lib/dist/npm/common/connection.js
