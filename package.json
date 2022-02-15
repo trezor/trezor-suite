@@ -18,25 +18,38 @@
         ]
     },
     "scripts": {
-        "bootstrap": "lerna bootstrap",
+        "_______ Hooks _______": "Yarn hooks.",
         "postinstall": "yarn run patch && yarn lerna run patch",
-        "patch": "yarn patch-package",
+        "_______ Library Scripts #####": "Some libraries have their own build scripts.",
         "build:libs": "lerna run build:lib",
-        "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
-        "deps:update": "rimraf 'yarn.lock' 'node_modules' '*/**/node_modules' && yarn",
+        "suite:build:web": "yarn workspace @trezor/suite-web build",
+        "_______ Start Scripts _______": "Here are standalone scripts for running individual applications for development.",
         "suite:dev": "yarn workspace @trezor/suite-web dev",
         "suite:dev:ios": "yarn workspace @trezor/suite-native dev:ios",
         "suite:dev:android": "yarn workspace @trezor/suite-native dev:android",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
-        "suite:build:web": "yarn workspace @trezor/suite-web build",
+        "_______ Testing _______": "Testing, linting, type checking...",
         "type-check": "yarn lerna run type-check",
+        "type-check:force": "rimraf -rf **/libDev && yarn type-check",
         "test:unit": "yarn lerna run test:unit",
         "lint:js": "eslint --cache --ignore-path .gitignore --ext .js,.ts,.tsx ./",
         "lint": "yarn lerna run lint:styles && yarn lint:js",
         "lint-staged": "npx lint-staged",
+        "_______ Commands _______": "Useful commands and scripts.",
+        "patch": "yarn patch-package",
         "deduplicate": "yarn-deduplicate && yarn",
+        "run-script": "babel-node --experimental-specifier-resolution=node --experimental-loader=ts-node/esm --",
+        "update-project-references": "yarn run-script ./scripts/updateProjectReferences.js",
+        "verify-project-references": "yarn update-project-references --test",
+        "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
+        "msg-system-sign-config": "yarn workspace @trezor/suite-data msg-system-sign-config",
         "format": "yarn prettier --write --ignore-path  .gitignore \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
-        "format:verify": "yarn prettier --check --ignore-path  .gitignore \"**/*.{js,ts,tsx,mdx,md,html,json}\""
+        "format:verify": "yarn prettier --check --ignore-path  .gitignore \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
+        "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
+        "refs": "yarn update-project-references",
+        "types": "yarn type-check",
+        "dedup": "yarn deduplicate",
+        "messages": "yarn msg-system-sign-config"
     },
     "lint-staged": {
         "packages/**/*.{ts,tsx}": [
@@ -89,7 +102,7 @@
         "ts-jest": "^26.5.4",
         "ts-node": "^10.3.0",
         "tsconfig-paths": "^3.9.0",
-        "typescript": "4.4.4",
+        "typescript": "4.5.5",
         "yarn-deduplicate": "^3.1.0"
     }
 }
