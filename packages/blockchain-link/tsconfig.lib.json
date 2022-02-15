@@ -1,20 +1,11 @@
 {
-    "compileOnSave": false,
+    "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
-        "module": "commonjs",
         "target": "es2017",
-        "lib": ["dom", "es2019"],
+        "lib": ["webworker", "es2019"],
         "outDir": "./lib",
-        "strict": true,
-        "declaration": true,
-        "resolveJsonModule": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "removeComments": true,
-        "types": ["jest", "node"],
-        "useUnknownInCatchVariables": false,
-        "allowSyntheticDefaultImports": true
+        "types": ["jest", "node", "web"],
+        "esModuleInterop": false
     },
-    "include": ["./src/index.ts", "./src/utils/ws.ts", "./src/utils/socks-proxy-agent.ts"],
-    "exclude": ["node_modules"]
+    "include": ["./src"]
 }
