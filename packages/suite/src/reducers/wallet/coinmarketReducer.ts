@@ -70,7 +70,7 @@ interface Sell {
     isFromRedirect: boolean;
 }
 
-interface State {
+export interface State {
     buy: Buy;
     exchange: Exchange;
     sell: Sell;

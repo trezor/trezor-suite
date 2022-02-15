@@ -7,7 +7,7 @@ import {
     IDBPDatabase,
     IDBPTransaction,
 } from 'idb';
-import { StorageUpdateMessage, StorageMessageEvent } from './types';
+import { StorageMessageEvent } from './types';
 
 export type OnUpgradeFunc<TDBStructure> = (
     db: IDBPDatabase<TDBStructure>,
@@ -196,4 +196,4 @@ class CommonDB<TDBStructure> {
 }
 
 export default CommonDB;
-export { StorageUpdateMessage };
+export type { StorageUpdateMessage } from './types';

@@ -16,7 +16,7 @@ import { Action } from '@suite-types';
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 
-export const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => ({
+const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => ({
     router: {
         ...routerReducer(undefined, { type: 'foo' } as any),
         ...router,

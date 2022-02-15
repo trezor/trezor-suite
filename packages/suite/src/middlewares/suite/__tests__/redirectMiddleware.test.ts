@@ -24,7 +24,7 @@ type DevicesState = ReturnType<typeof deviceReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 type ModalState = ReturnType<typeof modalReducer>;
 
-export const getInitialState = (
+const getInitialState = (
     suite?: Partial<SuiteState>,
     devices?: DevicesState,
     router?: Partial<RouterState>,

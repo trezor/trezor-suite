@@ -98,7 +98,7 @@ type Props = Omit<Extract<UserContextPayload, { type: 'qr-reader' }>, 'type'> & 
     onCancel: () => void;
 };
 
-interface State {
+export interface State {
     readerLoaded: boolean;
     error: JSX.Element | null;
 }

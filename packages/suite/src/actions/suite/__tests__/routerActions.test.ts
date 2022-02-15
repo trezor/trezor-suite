@@ -14,7 +14,8 @@ interface InitialState {
     router?: Exclude<RouterState, 'app|url|pathname'>;
 }
 
-export const getInitialState = (state: InitialState | undefined) => {
+// some super long recursive type will make TSC to fail with export
+const getInitialState = (state: InitialState | undefined) => {
     const suite = state ? state.suite : undefined;
     const router = state ? state.router : undefined;
     return {

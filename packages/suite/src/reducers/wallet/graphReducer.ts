@@ -6,7 +6,7 @@ import { GraphRange, GraphScale, AccountIdentifier, GraphData } from '@wallet-ty
 import { Action as SuiteAction } from '@suite-types';
 import { SETTINGS } from '@suite-config';
 
-interface State {
+export interface State {
     data: GraphData[];
     error: null | AccountIdentifier[];
     isLoading: boolean;

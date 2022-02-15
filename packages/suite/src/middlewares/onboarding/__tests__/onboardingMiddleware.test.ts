@@ -22,7 +22,7 @@ type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 type OnboardingState = ReturnType<typeof onboardingReducer>;
 
-export const getInitialState = (
+const getInitialState = (
     router?: RouterState,
     suite?: Partial<SuiteState>,
     onboarding?: Partial<OnboardingState>,

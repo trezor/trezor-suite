@@ -153,7 +153,7 @@ export type UseSendFormState = {
 };
 
 // strongly typed UseFormMethods.getValues with fallback value
-interface GetDefaultValue {
+export interface GetDefaultValue {
     <K extends keyof FormState, T = undefined>(
         fieldName: K,
         fallback?: T,

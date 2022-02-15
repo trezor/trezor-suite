@@ -20,7 +20,7 @@ export interface AutodetectSettings {
     theme: boolean;
 }
 
-interface Flags {
+export interface Flags {
     initialRun: boolean; // true on very first launch of Suite, will switch to false after completing onboarding process
     // is not saved to storage at the moment, so for simplicity of types set to be optional now
     // recoveryCompleted: boolean;
@@ -34,7 +34,7 @@ interface Flags {
     dashboardAssetsGridMode: boolean; // dashboard UI
 }
 
-interface SuiteSettings {
+export interface SuiteSettings {
     theme: {
         variant: Exclude<SuiteThemeVariant, 'system'>;
     };
