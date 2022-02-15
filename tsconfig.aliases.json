@@ -135,7 +135,8 @@
             "@native/*": ["./packages/suite-native/src/*"],
 
             "@desktop/*": ["./packages/suite-desktop/src/*"],
-            "@desktop-electron/*": ["./packages/suite-desktop/src-electron/*"]
+            "@desktop-electron/*": ["./packages/suite-desktop/src-electron/*"],
+            "@trezor/utils": ["./packages/utils/src"]
         }
     }
 }
