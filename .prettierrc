@@ -21,6 +21,12 @@
             "options": {
                 "tabWidth": 2
             }
+        },
+        {
+            "files": ["tsconfig.json"],
+            "options": {
+                "printWidth": 50
+            }
         }
     ]
 }
