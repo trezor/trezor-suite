@@ -5582,6 +5582,11 @@
   resolved "https://registry.yarnpkg.com/@types/w3c-web-usb/-/w3c-web-usb-1.0.5.tgz#90284d17f35de981670c85d29053ae8b88fa5543"
   integrity sha512-dYolx2XWesl1TMu+1BjtjU6eC6c2zZ2VDKhjU4f/mtR3+UBfMW6h1tPCQt7leY5Y8JBg0Fe/mMnoDMkPPNX9sw==
 
+"@types/web@^0.0.51":
+  version "0.0.51"
+  resolved "https://registry.yarnpkg.com/@types/web/-/web-0.0.51.tgz#46159de9f95a76b7d11686ca75a561c3bbca5c34"
+  integrity sha512-smrw+XhG5Z5GybrvcOoOqZwPKgX+FJYRn33LR7wuWdgb+CLw4bZfy0opDulWn/1/bpFCSsaQ4SjAe1xinMf/kQ==
+
 "@types/webpack-bundle-analyzer@^4.4.1":
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/@types/webpack-bundle-analyzer/-/webpack-bundle-analyzer-4.4.1.tgz#bcc2501be10c8cdd1d170bc6b7847b3321f20440"
@@ -7225,7 +7230,7 @@ babel-plugin-styled-components@1.12.0:
     babel-plugin-syntax-jsx "^6.18.0"
     lodash "^4.17.11"
 
-"babel-plugin-styled-components@>= 1.12.0":
+babel-plugin-styled-components@2.0.2, "babel-plugin-styled-components@>= 1.12.0":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-styled-components/-/babel-plugin-styled-components-2.0.2.tgz#0fac11402dc9db73698b55847ab1dc73f5197c54"
   integrity sha512-7eG5NE8rChnNTDxa6LQfynwgHTVOYYaHJbUYSlOhk8QBXIQiMBKq4gyfHBBKPrxUcVBXVJL61ihduCpCQbuNbw==
@@ -17655,7 +17660,7 @@ next-videos@^1.4.0:
   dependencies:
     file-loader "^4.2.0"
 
-next@^12.0.10:
+next@^12.0.8:
   version "12.0.10"
   resolved "https://registry.yarnpkg.com/next/-/next-12.0.10.tgz#fcc4584177418bd777ce157f3165b7ba5e7708f7"
   integrity sha512-1y3PpGzpb/EZzz1jgne+JfZXKAVJUjYXwxzrADf/LWN+8yi9o79vMLXpW3mevvCHkEF2sBnIdjzNn16TJrINUw==
