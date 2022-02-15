@@ -1,18 +1,8 @@
 {
-    "compileOnSave": false,
+    "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
-        "module": "commonjs",
         "target": "esnext",
-        "lib": ["dom"],
-        "outDir": "./lib",
-        "strict": true,
-        "declaration": true,
-        "resolveJsonModule": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "removeComments": true,
-        "types": ["jest", "node"]
+        "outDir": "./lib"
     },
-    "include": ["./src/index.ts", "./src/utils/fetch-browser.ts"],
-    "exclude": ["node_modules", "**/__tests__/**", "**/__mocks__/**", "**/*.test.ts"]
+    "include": ["./src"]
 }
