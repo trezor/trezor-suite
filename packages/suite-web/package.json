@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "type-check": "tsc --project tsconfig.json",
+        "type-check": "tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
