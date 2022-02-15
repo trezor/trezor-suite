@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FADE_IN } from '@trezor/components/lib/config/animations';
+import { FADE_IN } from '@trezor/components/src/config/animations';
 
 interface Props {
     show?: boolean;
