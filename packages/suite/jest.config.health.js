@@ -10,7 +10,7 @@ module.exports = {
         ...config.moduleNameMapper,
     },
     moduleFileExtensions: ['js', 'ts'],
-    modulePathIgnorePatterns: ['node_modules'],
+    modulePathIgnorePatterns: ['node_modules', '<rootDir>/libDev'],
     testMatch: ['**/test/health/**'],
     transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
