@@ -1,0 +1,17 @@
+{
+    "name": "@trezor/scripts",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "prettier": "2.5.1",
+        "yargs": "17.3.1",
+        "minimatch": "^3.0.4"
+    },
+    "devDependencies": {
+        "@types/prettier": "2.4.3"
+    }
+}
