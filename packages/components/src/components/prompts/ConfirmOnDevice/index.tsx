@@ -161,4 +161,5 @@ const ConfirmOnDevice = ({
     </Wrapper>
 );
 
-export { ConfirmOnDevice, Props as ConfirmOnDeviceProps };
+export type { Props as ConfirmOnDeviceProps };
+export { ConfirmOnDevice };

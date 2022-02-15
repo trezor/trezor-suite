@@ -123,4 +123,5 @@ const SelectBar: <V extends string>(props: Props<V>) => JSX.Element = ({
     );
 };
 
-export { SelectBar, Props as SelectBarProps };
+export type { Props as SelectBarProps };
+export { SelectBar };

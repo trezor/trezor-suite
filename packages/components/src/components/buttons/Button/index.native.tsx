@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, ButtonProps, TouchableWithoutFeedback } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    ButtonProps as RNButtonProps,
+    TouchableWithoutFeedback,
+} from 'react-native';
 import { SuiteThemeColors } from '../../../support/types';
 import { useTheme } from '../../../utils/hooks';
 
@@ -19,12 +25,12 @@ const styles = (theme: SuiteThemeColors) =>
         },
     });
 
-interface Props {
-    onClick: ButtonProps['onPress'];
+export interface ButtonProps {
+    onClick: RNButtonProps['onPress'];
     children?: React.ReactNode;
 }
 
-const Button = (props: Props) => {
+const Button = (props: ButtonProps) => {
     const theme = useTheme();
     return (
         <TouchableWithoutFeedback onPress={props.onClick}>
@@ -35,4 +41,4 @@ const Button = (props: Props) => {
     );
 };
 
-export { Button, ButtonProps };
+export { Button };

@@ -7,13 +7,13 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-interface Props {
+export interface FlagProps {
     className?: string;
     country: FlagType;
     size?: number;
 }
 
-const Flag = ({ size = 24, country, className }: Props) => (
+const Flag = ({ size = 24, country, className }: FlagProps) => (
     <Wrapper>
         <img
             // eslint-disable-next-line global-require, import/no-dynamic-require
@@ -25,4 +25,4 @@ const Flag = ({ size = 24, country, className }: Props) => (
     </Wrapper>
 );
 
-export { Flag, Props as FlagProps };
+export { Flag };

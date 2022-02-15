@@ -71,8 +71,8 @@ const SvgWrapper = styled.div<WrapperProps>`
         `}
 `;
 
-type WrapperProps = Omit<Props, 'icon'>;
-interface Props extends React.SVGAttributes<HTMLDivElement> {
+type WrapperProps = Omit<IconProps, 'icon'>;
+export interface IconProps extends React.SVGAttributes<HTMLDivElement> {
     className?: string;
     icon: IconType;
     size?: number;
@@ -99,7 +99,7 @@ const Icon = React.forwardRef(
             onMouseLeave,
             onFocus,
             ...rest
-        }: Props,
+        }: IconProps,
         ref?: React.Ref<HTMLDivElement>,
     ) => {
         const theme = useTheme();
@@ -134,4 +134,4 @@ const Icon = React.forwardRef(
     },
 );
 
-export { Icon, Props as IconProps };
+export { Icon };

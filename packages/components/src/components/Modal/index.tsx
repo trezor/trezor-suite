@@ -497,4 +497,5 @@ const Modal = ({
     );
 };
 
-export { Modal, Props as ModalProps };
+export type { Props as ModalProps };
+export { Modal };

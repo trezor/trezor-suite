@@ -124,7 +124,7 @@ const LabelAddon = styled.div``;
 type BaseTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 // TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
-interface Props extends StyledTextareaProps {
+export interface TextareaProps extends StyledTextareaProps {
     isDisabled?: boolean;
     label?: React.ReactNode;
     labelAddon?: React.ReactNode;
@@ -140,7 +140,7 @@ interface Props extends StyledTextareaProps {
     borderRadius?: number;
 }
 
-const Textarea: React.FC<Props> = ({
+const Textarea: React.FC<TextareaProps> = ({
     className,
     maxLength,
     labelAddon,
@@ -205,4 +205,4 @@ const Textarea: React.FC<Props> = ({
     );
 };
 
-export { Textarea, Props as TextareaProps };
+export { Textarea };

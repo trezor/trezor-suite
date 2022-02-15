@@ -55,4 +55,5 @@ const P = ({
     </Paragraph>
 );
 
-export { P, Props as PProps };
+export type { Props as PProps };
+export { P };

@@ -82,4 +82,5 @@ const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => {
     );
 };
 
-export { Checkbox, Props as CheckboxProps };
+export type { Props as CheckboxProps };
+export { Checkbox };

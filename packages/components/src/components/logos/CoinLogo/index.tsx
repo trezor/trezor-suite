@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { COINS } from './coins';
 import { CoinType } from '../../../support/types';
 
-const SvgWrapper = styled.div<Omit<Props, 'symbol'>>`
+const SvgWrapper = styled.div<Omit<CoinLogoProps, 'symbol'>>`
     display: inline-block;
     height: ${props => props.size}px;
 
@@ -14,13 +14,13 @@ const SvgWrapper = styled.div<Omit<Props, 'symbol'>>`
     }
 `;
 
-interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
+export interface CoinLogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     symbol: CoinType;
     className?: string;
     size?: number;
 }
 
-const CoinLogo = ({ symbol, className, size = 32, ...rest }: Props) => (
+const CoinLogo = ({ symbol, className, size = 32, ...rest }: CoinLogoProps) => (
     <SvgWrapper className={className} size={size} {...rest}>
         <ReactSVG
             src={COINS[symbol]}
@@ -33,4 +33,4 @@ const CoinLogo = ({ symbol, className, size = 32, ...rest }: Props) => (
     </SvgWrapper>
 );
 
-export { CoinLogo, Props as CoinLogoProps };
+export { CoinLogo };

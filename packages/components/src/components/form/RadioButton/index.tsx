@@ -51,20 +51,23 @@ const Label = styled.div`
     line-height: 22px;
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface RadioButtonProps extends React.HTMLAttributes<HTMLDivElement> {
     onClick: (
         event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
     ) => any;
     isChecked?: boolean;
 }
 
-const handleKeyboard = (event: React.KeyboardEvent<HTMLElement>, onClick: Props['onClick']) => {
+const handleKeyboard = (
+    event: React.KeyboardEvent<HTMLElement>,
+    onClick: RadioButtonProps['onClick'],
+) => {
     if (event.code === KEYBOARD_CODE.SPACE) {
         onClick(event);
     }
 };
 
-const RadioButton = ({ isChecked, children, onClick, ...rest }: Props) => (
+const RadioButton = ({ isChecked, children, onClick, ...rest }: RadioButtonProps) => (
     <Wrapper
         onClick={onClick}
         onKeyUp={event => handleKeyboard(event, onClick)}
@@ -77,4 +80,4 @@ const RadioButton = ({ isChecked, children, onClick, ...rest }: Props) => (
     </Wrapper>
 );
 
-export { RadioButton, Props as RadioButtonProps };
+export { RadioButton };

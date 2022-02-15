@@ -422,4 +422,5 @@ const Select = ({
     );
 };
 
-export { Select, Props as SelectProps };
+export type { Props as SelectProps };
+export { Select };

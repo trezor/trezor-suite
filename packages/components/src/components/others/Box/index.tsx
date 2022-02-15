@@ -3,12 +3,12 @@ import styled, { css } from 'styled-components';
 import { getStateColor } from '../../../utils/colors';
 import { colors } from '../../../config';
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
     state?: 'success' | 'error' | 'warning';
     children: ReactNode;
 }
 
-const Wrapper = styled.div<{ state: Props['state'] }>`
+const Wrapper = styled.div<{ state: BoxProps['state'] }>`
     display: flex;
     flex: 1;
     border-radius: 8px;
@@ -20,10 +20,10 @@ const Wrapper = styled.div<{ state: Props['state'] }>`
     ${props => !props.state && css && `padding-left: 20px`}
 `;
 
-const Box = ({ state, children, ...rest }: Props) => (
+const Box = ({ state, children, ...rest }: BoxProps) => (
     <Wrapper state={state} {...rest}>
         {children}
     </Wrapper>
 );
 
-export { Box, Props as BoxProps };
+export { Box };

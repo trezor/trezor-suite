@@ -1,117 +1,45 @@
 import colors, { THEME } from './config/colors';
-import * as variables from './config/variables';
-import { useTheme } from './utils';
-import type { SuiteThemeColors, CoinType } from './support/types';
 
-import { Button, ButtonProps } from './components/buttons/Button';
-import { Flag, FlagProps } from './components/Flag';
-import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
-import { DeviceImage, DeviceImageProps } from './components/DeviceImage';
-import {
-    Dropdown,
-    DropdownRef,
-    DropdownProps,
-    DropdownMenuItemProps,
-    DropdownMenuProps,
-} from './components/Dropdown';
-import { Input, InputProps } from './components/form/Input';
-import { Textarea, TextareaProps } from './components/form/Textarea';
-import { Select, SelectProps } from './components/form/Select';
-import { Checkbox, CheckboxProps } from './components/form/Checkbox';
-import { RadioButton, RadioButtonProps } from './components/form/RadioButton';
-import { Switch, SwitchProps } from './components/form/Switch';
-import { Icon, IconProps } from './components/Icon';
-import { H1, H2, H3 } from './components/typography/Heading';
-import { P, PProps } from './components/typography/Paragraph';
-import { Link, LinkProps } from './components/typography/Link';
-import { Warning } from './components/Warning';
-import { Box, BoxProps } from './components/others/Box';
-import { Card, CardProps } from './components/others/Card';
-import { SecurityCard, SecurityCardProps } from './components/others/SecurityCard';
-import { ConfirmOnDevice, ConfirmOnDeviceProps } from './components/prompts/ConfirmOnDevice';
-import { Modal, ModalProps } from './components/Modal';
-import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
-import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
-import { Loader, LoaderProps } from './components/loaders/Loader';
-import { Tooltip, TooltipProps } from './components/Tooltip';
-import { Timerange, TimerangeProps } from './components/Timerange';
-import { Truncate } from './components/Truncate';
-import { SelectBar, SelectBarProps } from './components/form/SelectBar';
-import { ThemeProvider, ThemeContext } from './support/ThemeProvider';
-import * as types from './support/types';
-import { HoverAnimation } from './components/HoverAnimation';
-import { Fade } from './components/Fade';
-import { KEYBOARD_CODE } from './constants/keyboardEvents';
+export * as variables from './config/variables';
 
-export {
-    colors,
-    THEME,
-    variables,
-    Button,
-    ButtonProps,
-    ButtonPin,
-    ButtonPinProps,
-    Dropdown,
-    DropdownRef,
-    DropdownProps,
-    DropdownMenuItemProps,
-    DropdownMenuProps,
-    Input,
-    InputProps,
-    Textarea,
-    TextareaProps,
-    Select,
-    SelectProps,
-    Checkbox,
-    CheckboxProps,
-    RadioButton,
-    RadioButtonProps,
-    Switch,
-    SwitchProps,
-    Icon,
-    IconProps,
-    H1,
-    H2,
-    H3,
-    P,
-    PProps,
-    Link,
-    LinkProps,
-    Warning,
-    Modal,
-    ModalProps,
-    CoinLogo,
-    CoinLogoProps,
-    TrezorLogo,
-    TrezorLogoProps,
-    Loader,
-    LoaderProps,
-    Tooltip,
-    TooltipProps,
-    Timerange,
-    TimerangeProps,
-    Truncate,
-    types,
-    ConfirmOnDevice,
-    ConfirmOnDeviceProps,
-    DeviceImage,
-    DeviceImageProps,
-    Box,
-    BoxProps,
-    Card,
-    CardProps,
-    SecurityCard,
-    SecurityCardProps,
-    SelectBar,
-    SelectBarProps,
-    Flag,
-    FlagProps,
-    useTheme,
-    SuiteThemeColors,
-    CoinType,
-    ThemeProvider,
-    ThemeContext,
-    HoverAnimation,
-    Fade,
-    KEYBOARD_CODE,
-};
+export * as types from './support/types';
+
+export * from './utils';
+
+export * from './components/buttons/Button';
+export * from './components/Flag';
+export * from './components/buttons/Pin';
+export * from './components/DeviceImage';
+export * from './components/Dropdown';
+export * from './components/form/Input';
+export * from './components/form/Textarea';
+export * from './components/form/Select';
+export * from './components/form/Checkbox';
+export * from './components/form/RadioButton';
+export * from './components/form/Switch';
+export * from './components/Icon';
+export * from './components/typography/Heading';
+export * from './components/typography/Paragraph';
+export * from './components/typography/Link';
+export * from './components/Warning';
+export * from './components/others/Box';
+export * from './components/others/Card';
+export * from './components/others/SecurityCard';
+export * from './components/prompts/ConfirmOnDevice';
+export * from './components/Modal';
+export * from './components/logos/CoinLogo';
+export * from './components/logos/TrezorLogo';
+export * from './components/loaders/Loader';
+export * from './components/Tooltip';
+export * from './components/Timerange';
+export * from './components/Truncate';
+export * from './components/form/SelectBar';
+export * from './support/ThemeProvider';
+
+export * from './components/HoverAnimation';
+export * from './components/Fade';
+export * from './constants/keyboardEvents';
+
+export * from './support/types';
+
+export { colors, THEME };

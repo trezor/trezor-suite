@@ -23,18 +23,17 @@ const getPaddingSize = (
     if (largePadding) return '26px';
     return '20px';
 };
-
-export interface Props {
+export interface CardProps {
     children?: React.ReactNode;
     largePadding?: boolean;
     noPadding?: boolean;
     noVerticalPadding?: boolean;
 }
 
-const Card = ({ children, largePadding, noPadding, noVerticalPadding, ...rest }: Props) => (
+const Card = ({ children, largePadding, noPadding, noVerticalPadding, ...rest }: CardProps) => (
     <Wrapper paddingSize={getPaddingSize(largePadding, noPadding, noVerticalPadding)} {...rest}>
         {children}
     </Wrapper>
 );
 
-export { Card, Props as CardProps };
+export { Card };

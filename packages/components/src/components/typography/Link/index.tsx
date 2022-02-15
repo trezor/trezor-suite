@@ -93,5 +93,5 @@ const Link = ({ icon, iconProps, ...props }: Props) => {
         </A>
     );
 };
-
-export { Link, Props as LinkProps };
+export type { Props as LinkProps };
+export { Link };

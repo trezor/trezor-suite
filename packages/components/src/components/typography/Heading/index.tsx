@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
 
-interface Props {
+export interface Props {
     textAlign?: 'left' | 'center' | 'right' | 'justify';
     noMargin?: boolean;
     fontWeight?: typeof FONT_WEIGHT[keyof typeof FONT_WEIGHT];
