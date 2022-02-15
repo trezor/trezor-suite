@@ -28,16 +28,6 @@ const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMo
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
 
-// HACK: suite-storage has as a react-native version of the lib as a 'main' entry in package.json
-// It is a hacky 'solution' to prevent TSC in suite-native from throwing errors on IDB.
-// Path to the web version is in 'browser' field. Jest loads the lib from the main entry (and that is fine).
-// This essentially replaces the react-native version of the lib with web version.
-jest.mock('@trezor/suite-storage', () => ({
-    __esModule: true,
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    ...(jest.requireActual('@trezor/suite-storage/lib/web/index') as object), // cast so ts stops complaining
-}));
-
 const dev1 = getSuiteDevice({
     state: 'state1',
     path: '1',

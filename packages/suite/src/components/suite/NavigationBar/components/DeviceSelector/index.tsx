@@ -98,8 +98,8 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
     const [showTextStatus, setShowTextStatus] = useState(false);
 
     const countChanged = localCount && localCount !== deviceCount;
-    const shakeAnimationTimerRef = useRef<number | undefined>(undefined);
-    const stateAnimationTimerRef = useRef<number | undefined>(undefined);
+    const shakeAnimationTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const stateAnimationTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     const analytics = useAnalytics();
 
