@@ -1,5 +1,5 @@
 {
-    "extends": "../../../tsconfig.json",
+    "extends": "../../../tsconfig.aliases.json",
     "compilerOptions": {
         "watch": false,
         "preserveWatchOutput": true,
@@ -10,7 +10,11 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "sourceMap": true,
-        "lib": ["dom", "es2019", "esnext.asynciterable"],
+        "lib": [
+            "dom",
+            "es2019",
+            "esnext.asynciterable"
+        ],
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
@@ -20,6 +24,6 @@
         "noUnusedParameters": true,
         "noImplicitAny": true
     },
-    "include": ["index.d.ts", "**/*.ts"],
+    "include": ["**/*.ts"],
     "exclude": ["**/*.js"]
 }

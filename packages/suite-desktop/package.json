@@ -25,9 +25,7 @@
         "publish:mac": "yarn build:mac && yarn build:app:electron --publish always --mac",
         "publish:win": "yarn build:win && yarn build:app:electron --publish always --win",
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn type-check:app && yarn type-check:ui",
-        "type-check:app": "tsc --project src-electron/tsconfig.json",
-        "type-check:ui": "tsc --project tsconfig.json",
+        "type-check": "tsc --build tsconfig.json",
         "test:unit": "jest"
     },
     "build": {
@@ -175,6 +173,7 @@
         "afterSign": "scripts/notarize.js"
     },
     "dependencies": {
+        "@trezor/suite": "1.0.0",
         "@trezor/suite-desktop-api": "1.0.0",
         "@trezor/utils": "*",
         "chalk": "^4.1.2",
