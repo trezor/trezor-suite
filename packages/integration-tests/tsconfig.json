@@ -1,14 +1,14 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.aliases.json",
     "compilerOptions": {
-        "noEmit": false,
         "isolatedModules": false,
-        "types": ["trezor-connect", "cypress", "cypress-wait-until"],
-        "allowJs": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "resolveJsonModule": true
+        "types": [
+            "trezor-connect",
+            "cypress",
+            "cypress-wait-until"
+        ]
     },
     "include": ["**/*.ts"],
-    "exclude": []
+    "exclude": [],
+    "references": []
 }
