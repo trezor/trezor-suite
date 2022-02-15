@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as jws from 'jws';
 import { join } from 'path';
 
-import { CONFIG_PATH, PACKAGE_ROOT, PROJECT_ROOT, JWS_CONFIG_FILENAME } from '../constants';
+import { CONFIG_PATH, PACKAGE_ROOT, JWS_CONFIG_FILENAME } from '../constants';
 
 /* Only CI jobs flagged with "codesign", sign message system config by production private key.
  * All other branches use development key. */

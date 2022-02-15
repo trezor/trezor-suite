@@ -214,7 +214,7 @@ const MetadataLabeling = (props: Props) => {
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(props.payload.defaultValue);
-    let timeout: number | undefined;
+    let timeout: ReturnType<typeof setTimeout>;
 
     useEffect(() => {
         setPending(false);
@@ -278,7 +278,6 @@ const MetadataLabeling = (props: Props) => {
         // ensures that success state does not appear if it is no longer relevant
         if (isSubscribedToSubmitResult.current === props.payload.defaultValue) {
             setPending(false);
-
             if (result) {
                 setShowSuccess(true);
             }

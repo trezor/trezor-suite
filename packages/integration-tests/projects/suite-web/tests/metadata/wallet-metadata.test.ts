@@ -1,7 +1,6 @@
 // @group:metadata
 // @retry=2
 
-import firmware from '@suite/middlewares/firmware';
 import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
 const firmwares = ['2.2.0', '2-master'] as const;
@@ -106,7 +105,9 @@ describe('Metadata - wallet labeling', () => {
                 .invoke('getState')
                 .then(state => {
                     console.log(state);
-                    const errors = state.notifications.filter(n => n.type === 'error');
+                    const errors = state.notifications.filter(
+                        (n: { type: string }) => n.type === 'error',
+                    );
                     return expect(errors).to.be.empty;
                 });
         });
