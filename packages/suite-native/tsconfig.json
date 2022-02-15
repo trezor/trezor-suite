@@ -9,10 +9,10 @@
         "baseUrl": ".",
         "noEmit": true,
         "paths": {
-            // See NOTES.md for regular expression
-
-            // react-native
-            "@native/*": ["./src/*", "../../packages/suite-native/src/*"],
+            "@native/*": [
+                "./src/*",
+                "../../packages/suite-native/src/*"
+            ],
             "@native-components": [
                 "./src/components/index",
                 "../../packages/suite-native/src/components/index"
@@ -21,11 +21,10 @@
                 "./src/components/*",
                 "../../packages/suite-native/src/components/*"
             ],
-
-            "@suite/*": ["./src/*", "../../packages/suite/src/*"],
-            "@suite": ["./src/index", "../../packages/suite/src/index"],
-
-            // suite
+            "@suite/*": [
+                "./src/*",
+                "../../packages/suite/src/*"
+            ],
             "@suite-components/*": [
                 "./src/components/suite/*",
                 "../../packages/suite/src/components/suite/*"
@@ -34,7 +33,10 @@
                 "./src/components/suite/index",
                 "../../packages/suite/src/components/suite/index"
             ],
-            "@suite-views/*": ["./src/views/suite/*", "../../packages/suite/src/views/suite/*"],
+            "@suite-views/*": [
+                "./src/views/suite/*",
+                "../../packages/suite/src/views/suite/*"
+            ],
             "@suite-views": [
                 "./src/views/suite/index",
                 "../../packages/suite/src/views/suite/index"
@@ -47,12 +49,18 @@
                 "./src/actions/suite/index",
                 "../../packages/suite/src/actions/suite/index"
             ],
-            "@suite-utils/*": ["./src/utils/suite/*", "../../packages/suite/src/utils/suite/*"],
+            "@suite-utils/*": [
+                "./src/utils/suite/*",
+                "../../packages/suite/src/utils/suite/*"
+            ],
             "@suite-utils": [
                 "./src/utils/suite/index",
                 "../../packages/suite/src/utils/suite/index"
             ],
-            "@suite-types/*": ["./src/types/suite/*", "../../packages/suite/src/types/suite/*"],
+            "@suite-types/*": [
+                "./src/types/suite/*",
+                "../../packages/suite/src/types/suite/*"
+            ],
             "@suite-types": [
                 "./src/types/suite/index",
                 "../../packages/suite/src/types/suite/index"
@@ -81,7 +89,10 @@
                 "./src/constants/suite/index",
                 "../../packages/suite/src/constants/suite/index"
             ],
-            "@suite-config/*": ["./src/config/suite/*", "../../packages/suite/src/config/suite/*"],
+            "@suite-config/*": [
+                "./src/config/suite/*",
+                "../../packages/suite/src/config/suite/*"
+            ],
             "@suite-config": [
                 "./src/config/suite/index",
                 "../../packages/suite/src/config/suite/index"
@@ -94,7 +105,10 @@
                 "./src/middlewares/suite/index",
                 "../../packages/suite/src/middlewares/suite/index"
             ],
-            "@suite-hooks/*": ["./src/hooks/suite/*", "../../packages/suite/src/hooks/suite/*"],
+            "@suite-hooks/*": [
+                "./src/hooks/suite/*",
+                "../../packages/suite/src/hooks/suite/*"
+            ],
             "@suite-hooks": [
                 "./src/hooks/suite/index",
                 "../../packages/suite/src/hooks/suite/index"
@@ -107,8 +121,6 @@
                 "./src/services/suite/index",
                 "../../packages/suite/src/services/suite/index"
             ],
-
-            // dashboard
             "@dashboard-components/*": [
                 "./src/components/dashboard/*",
                 "../../packages/suite/src/components/dashboard/*"
@@ -197,7 +209,6 @@
                 "./src/hooks/dashboard/index",
                 "../../packages/suite/src/hooks/dashboard/index"
             ],
-            // onboarding
             "@onboarding-components/*": [
                 "./src/components/onboarding/*",
                 "../../packages/suite/src/components/onboarding/*"
@@ -286,7 +297,6 @@
                 "./src/hooks/onboarding/index",
                 "../../packages/suite/src/hooks/onboarding/index"
             ],
-            // wallet
             "@wallet-components/*": [
                 "./src/components/wallet/*",
                 "../../packages/suite/src/components/wallet/*"
@@ -295,7 +305,10 @@
                 "./src/components/wallet/index",
                 "../../packages/suite/src/components/wallet/index"
             ],
-            "@wallet-views/*": ["./src/views/wallet/*", "../../packages/suite/src/views/wallet/*"],
+            "@wallet-views/*": [
+                "./src/views/wallet/*",
+                "../../packages/suite/src/views/wallet/*"
+            ],
             "@wallet-views": [
                 "./src/views/wallet/index",
                 "../../packages/suite/src/views/wallet/index"
@@ -308,12 +321,18 @@
                 "./src/actions/wallet/index",
                 "../../packages/suite/src/actions/wallet/index"
             ],
-            "@wallet-utils/*": ["./src/utils/wallet/*", "../../packages/suite/src/utils/wallet/*"],
+            "@wallet-utils/*": [
+                "./src/utils/wallet/*",
+                "../../packages/suite/src/utils/wallet/*"
+            ],
             "@wallet-utils": [
                 "./src/utils/wallet/index",
                 "../../packages/suite/src/utils/wallet/index"
             ],
-            "@wallet-types/*": ["./src/types/wallet/*", "../../packages/suite/src/types/wallet/*"],
+            "@wallet-types/*": [
+                "./src/types/wallet/*",
+                "../../packages/suite/src/types/wallet/*"
+            ],
             "@wallet-types": [
                 "./src/types/wallet/index",
                 "../../packages/suite/src/types/wallet/index"
@@ -358,12 +377,14 @@
                 "./src/middlewares/wallet/index",
                 "../../packages/suite/src/middlewares/wallet/index"
             ],
-            "@wallet-hooks/*": ["./src/hooks/wallet/*", "../../packages/suite/src/hooks/wallet/*"],
+            "@wallet-hooks/*": [
+                "./src/hooks/wallet/*",
+                "../../packages/suite/src/hooks/wallet/*"
+            ],
             "@wallet-hooks": [
                 "./src/hooks/wallet/index",
                 "../../packages/suite/src/hooks/wallet/index"
             ],
-            // passwords
             "@passwords-components/*": [
                 "./src/components/passwords/*",
                 "../../packages/suite/src/components/passwords/*"
@@ -452,7 +473,6 @@
                 "./src/hooks/passwords/index",
                 "../../packages/suite/src/hooks/passwords/index"
             ],
-            // exchange
             "@exchange-components/*": [
                 "./src/components/exchange/*",
                 "../../packages/suite/src/components/exchange/*"
@@ -541,7 +561,6 @@
                 "./src/hooks/exchange/index",
                 "../../packages/suite/src/hooks/exchange/index"
             ],
-            // settings
             "@settings-components/*": [
                 "./src/components/settings/*",
                 "../../packages/suite/src/components/settings/*"
@@ -630,8 +649,6 @@
                 "./src/hooks/settings/index",
                 "../../packages/suite/src/hooks/settings/index"
             ],
-
-            // firmware
             "@firmware-components/*": [
                 "./src/components/firmware/*",
                 "../../packages/suite/src/components/firmware/*"
@@ -720,8 +737,6 @@
                 "./src/hooks/firmware/index",
                 "../../packages/suite/src/hooks/firmware/index"
             ],
-
-            // backup
             "@backup-components/*": [
                 "./src/components/backup/*",
                 "../../packages/suite/src/components/backup/*"
@@ -730,7 +745,10 @@
                 "./src/components/backup/index",
                 "../../packages/suite/src/components/backup/index"
             ],
-            "@backup-views/*": ["./src/views/backup/*", "../../packages/suite/src/views/backup/*"],
+            "@backup-views/*": [
+                "./src/views/backup/*",
+                "../../packages/suite/src/views/backup/*"
+            ],
             "@backup-views": [
                 "./src/views/backup/index",
                 "../../packages/suite/src/views/backup/index"
@@ -743,12 +761,18 @@
                 "./src/actions/backup/index",
                 "../../packages/suite/src/actions/backup/index"
             ],
-            "@backup-utils/*": ["./src/utils/backup/*", "../../packages/suite/src/utils/backup/*"],
+            "@backup-utils/*": [
+                "./src/utils/backup/*",
+                "../../packages/suite/src/utils/backup/*"
+            ],
             "@backup-utils": [
                 "./src/utils/backup/index",
                 "../../packages/suite/src/utils/backup/index"
             ],
-            "@backup-types/*": ["./src/types/backup/*", "../../packages/suite/src/types/backup/*"],
+            "@backup-types/*": [
+                "./src/types/backup/*",
+                "../../packages/suite/src/types/backup/*"
+            ],
             "@backup-types": [
                 "./src/types/backup/index",
                 "../../packages/suite/src/types/backup/index"
@@ -793,13 +817,14 @@
                 "./src/middlewares/backup/index",
                 "../../packages/suite/src/middlewares/backup/index"
             ],
-            "@backup-hooks/*": ["./src/hooks/backup/*", "../../packages/suite/src/hooks/backup/*"],
+            "@backup-hooks/*": [
+                "./src/hooks/backup/*",
+                "../../packages/suite/src/hooks/backup/*"
+            ],
             "@backup-hooks": [
                 "./src/hooks/backup/index",
                 "../../packages/suite/src/hooks/backup/index"
             ],
-
-            // guide
             "@guide-components": [
                 "./src/components/guide/index",
                 "../../packages/suite/src/components/guide/index"
@@ -808,13 +833,14 @@
                 "./src/views/guide/index",
                 "../../packages/suite/src/views/guide/index"
             ],
-            "@guide-hooks/*": ["./src/hooks/guide/*", "../../packages/suite/src/hooks/guide/*"],
+            "@guide-hooks/*": [
+                "./src/hooks/guide/*",
+                "../../packages/suite/src/hooks/guide/*"
+            ],
             "@guide-hooks": [
                 "./src/hooks/guide/index",
                 "../../packages/suite/src/hooks/guide/index"
             ],
-
-            // recovery
             "@recovery-components/*": [
                 "./src/components/recovery/*",
                 "../../packages/suite/src/components/recovery/*"
@@ -914,10 +940,15 @@
     "include": [
         "./src/App.tsx",
         "./index.d.ts",
-        // TODO: remove paths below if used somewhere, otherwise eslint complaints
         "./src/utils/suite/oauth.ts",
         "./src/hooks/suite/useLocales.ts",
         "./src/actions/settings/languageActions.ts"
     ],
-    "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"]
+    "exclude": [
+        "node_modules",
+        "babel.config.js",
+        "metro.config.js",
+        "jest.config.js"
+    ],
+    "references": [{ "path": "../suite-storage" }]
 }
