@@ -2,7 +2,7 @@
     "name": "@trezor/components",
     "version": "1.0.0",
     "private": true,
-    "main": "lib/index.js",
+    "main": "src/index",
     "author": "SatoshiLabs s.r.o.",
     "license": "SEE LICENSE IN LICENSE.md",
     "scripts": {
@@ -10,10 +10,8 @@
         "lint:js": "eslint '**/*.{ts,tsx,js}'",
         "lint:styles": "npx stylelint './src/**/*{.tsx,.ts}'",
         "lint-fix": "npx eslint ./src --fix",
-        "build:lib": "rm -rf lib && yarn tsc -p tsconfig.json && babel-node ./scripts/copyAssets.js",
-        "type-check": "tsc --project tsconfig.types.json",
+        "type-check": "tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "prepublishOnly": "npm run build:lib",
         "storybook": "start-storybook -s ./public -p 9001 -c .storybook",
         "storybook-build": "build-storybook -s ./public -c .storybook -o .build-storybook"
     },
