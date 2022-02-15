@@ -15,9 +15,10 @@
         "dev": "webpack-dev-server --config ./webpack/dev.babel.js --mode development",
         "build": "rm -rf build && webpack --config ./webpack/prod.babel.js --progress",
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "type-check": "tsc --noEmit"
+        "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
+        "@trezor/components": "*",
         "markdown-it": "^12.3.2",
         "markdown-it-link-attributes": "^4.0.0",
         "markdown-it-replace-link": "^1.0.1",
