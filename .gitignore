@@ -36,6 +36,7 @@ __docker-snapshots__
 __pycache__/
 .cache/
 .eslintcache
+*.tsbuildinfo
 
 # model 1 emulation file
 docker/trezor-user-env/controller/emulator.img
@@ -45,6 +46,7 @@ docker/trezor-user-env/controller/emulator.img
 
 # build outputs
 lib
+libDev
 dist
 public
 coverage
