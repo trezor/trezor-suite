@@ -3634,9 +3634,139 @@ export default defineMessages({
         id: 'TR_TRADE_SPENDS',
         defaultMessage: 'spends',
     },
+    TR_PAYMENT_METHOD_CREDITCARD: {
+        id: 'TR_PAYMENT_METHOD_CREDITCARD',
+        defaultMessage: 'Credit Card',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_BANKTRANSFER: {
+        id: 'TR_PAYMENT_METHOD_BANKTRANSFER',
+        defaultMessage: 'Bank Transfer',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_BANCONTACT: {
+        id: 'TR_PAYMENT_METHOD_BANCONTACT',
+        defaultMessage: 'Bancontact',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_SOFORT: {
+        id: 'TR_PAYMENT_METHOD_SOFORT',
+        defaultMessage: 'Sofort',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_IDEAL: {
+        id: 'TR_PAYMENT_METHOD_IDEAL',
+        defaultMessage: 'iDEAL',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_SEPA: {
+        id: 'TR_PAYMENT_METHOD_SEPA',
+        defaultMessage: 'SEPA',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_GIROPAY: {
+        id: 'TR_PAYMENT_METHOD_GIROPAY',
+        defaultMessage: 'Giropay',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_EPS: {
+        id: 'TR_PAYMENT_METHOD_EPS',
+        defaultMessage: 'EPS',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_APPLEPAY: {
+        id: 'TR_PAYMENT_METHOD_APPLEPAY',
+        defaultMessage: 'Apple Pay',
+        dynamic: true,
+    },
     TR_PAYMENT_METHOD_UNKOWN: {
         id: 'TR_PAYMENT_METHOD_UNKOWN',
         defaultMessage: 'Unknown',
+    },
+    TR_PAYMENT_METHOD_POLI: {
+        id: 'TR_PAYMENT_METHOD_POLI',
+        defaultMessage: 'POLi',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_AUSPOST: {
+        id: 'TR_PAYMENT_METHOD_AUSPOST',
+        defaultMessage: 'Australia Post',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_WORLDPAYCREDIT: {
+        id: 'TR_PAYMENT_METHOD_WORLDPAYCREDIT',
+        defaultMessage: 'Worldpay Credit',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_BPAY: {
+        id: 'TR_PAYMENT_METHOD_BPAY',
+        defaultMessage: 'BPAY',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_DCINTERAC: {
+        id: 'TR_PAYMENT_METHOD_DCINTERAC',
+        defaultMessage: 'DC Interac',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_TEN31SEPA: {
+        id: 'TR_PAYMENT_METHOD_TEN31SEPA',
+        defaultMessage: 'TEN31 SEPA',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_ACH: {
+        id: 'TR_PAYMENT_METHOD_ACH',
+        defaultMessage: 'ACH',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_PAYNOW: {
+        id: 'TR_PAYMENT_METHOD_PAYNOW',
+        defaultMessage: 'PayNow',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_FPS: {
+        id: 'TR_PAYMENT_METHOD_FPS',
+        defaultMessage: 'FPS',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_PROMPTPAY: {
+        id: 'TR_PAYMENT_METHOD_PROMPTPAY',
+        defaultMessage: 'Prompt Pay',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_INSTAPAY: {
+        id: 'TR_PAYMENT_METHOD_INSTAPAY',
+        defaultMessage: 'InstaPay',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_UPI: {
+        id: 'TR_PAYMENT_METHOD_UPI',
+        defaultMessage: 'UPI',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_GOJEKID: {
+        id: 'TR_PAYMENT_METHOD_GOJEKID',
+        defaultMessage: 'GoJek',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_VIETTELPAY: {
+        id: 'TR_PAYMENT_METHOD_VIETTELPAY',
+        defaultMessage: 'Viettel Pay',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_DUITNOW: {
+        id: 'TR_PAYMENT_METHOD_DUITNOW',
+        defaultMessage: 'DuitNow',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_PAYID: {
+        id: 'TR_PAYMENT_METHOD_PAYID',
+        defaultMessage: 'PayID',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_NZBANKTRANSFER: {
+        id: 'TR_PAYMENT_METHOD_NZBANKTRANSFER',
+        defaultMessage: 'NZ Bank Transfer',
+        dynamic: true,
     },
     TR_OFFER_FEE_INFO: {
         id: 'TR_OFFER_FEE_INFO',
