@@ -1,17 +1,10 @@
 {
-    "compileOnSave": false,
+    "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
-        "module": "commonjs",
         "target": "esnext",
         "outDir": "./lib",
-        "strict": true,
-        "declaration": true,
-        "removeComments": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noErrorTruncation": true,
-        "types": ["jest", "node"]
+        "noImplicitAny": false,
+        "esModuleInterop": false
     },
-    "include": ["./src/main.ts", "./src/renderer.ts"],
-    "exclude": ["node_modules"]
+    "include": ["./src"]
 }
