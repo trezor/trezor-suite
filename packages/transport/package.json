@@ -16,12 +16,13 @@
     ],
     "main": "./lib/index.js",
     "files": [
-        "lib/"
+        "lib/",
+        "!**/*.map"
     ],
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --project tsconfig.json",
-        "build:lib": "rm -rf lib && tsc --p ./tsconfig.lib.json",
+        "type-check": "tsc --build tsconfig.json",
+        "build:lib": "rimraf -rf lib && tsc --build ./tsconfig.lib.json",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration"
