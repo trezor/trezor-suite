@@ -1,14 +1,10 @@
 {
-    "compileOnSave": false,
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
         "module": "commonjs",
-        "strict": true,
-        "declaration": true,
-        "resolveJsonModule": true,
         "noImplicitAny": false,
-        "removeComments": true,
-        "types": ["jest", "node"],
-        "esModuleInterop": true
+        "outDir": "./libDev"
     },
-    "exclude": ["node_modules"]
+    "include": ["./src"],
+    "references": []
 }

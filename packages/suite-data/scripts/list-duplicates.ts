@@ -28,7 +28,7 @@ Object.keys(messages as unknown as Message[]).forEach((key: string) => {
 
 const getDuplicates = obj =>
     Object.entries(obj as Record<string, number>)
-        .filter(([key, value]) => value > 1)
+        .filter(([_, value]) => value > 1)
         .map(([key, value]) => ({ value: key, occurrences: value }));
 
 const duplicatedIds = getDuplicates(ids);
