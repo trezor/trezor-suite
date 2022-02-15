@@ -21,14 +21,15 @@
         "lib/",
         "files/**/*.json",
         "files/**/*.txt",
-        "CHANGELOG.md"
+        "CHANGELOG.md",
+        "!**/*.map"
     ],
     "types": "lib/index.d.ts",
     "typings": "lib/index.d.ts",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json",
-        "type-check": "tsc --project tsconfig.json"
+        "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json",
+        "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {},
     "devDependencies": {}
