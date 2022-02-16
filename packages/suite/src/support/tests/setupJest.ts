@@ -109,7 +109,6 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     fw_minor: null,
     fw_patch: null,
     fw_vendor: null,
-    fw_vendor_keys: null,
     unfinished_backup: false,
     no_backup: false,
     recovery_mode: false,
