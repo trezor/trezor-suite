@@ -3,12 +3,12 @@ import { WalletLayoutNavigation, WalletLayoutNavLink } from '@wallet-components'
 
 export type NavPages = 'sign' | 'verify';
 
-type Props = {
+interface NavigationProps {
     page: NavPages;
     setPage: (page: NavPages) => void;
-};
+}
 
-const Navigation = ({ page, setPage }: Props) => (
+export const Navigation: React.FC<NavigationProps> = ({ page, setPage }) => (
     <WalletLayoutNavigation>
         <WalletLayoutNavLink
             title="TR_SIGN_MESSAGE"
@@ -24,5 +24,3 @@ const Navigation = ({ page, setPage }: Props) => (
         />
     </WalletLayoutNavigation>
 );
-
-export default Navigation;

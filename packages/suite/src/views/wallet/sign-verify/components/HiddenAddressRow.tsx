@@ -7,20 +7,22 @@ type OverlayVariant = 'option' | 'option-focused' | 'input';
 
 const getOverlayColor = ({ theme, variant }: { theme: DefaultTheme; variant: OverlayVariant }) => {
     if (variant === 'option-focused') return theme.BG_WHITE_ALT_HOVER;
+
     if (variant === 'option') return theme.BG_WHITE_ALT;
+
     return theme.BG_WHITE;
 };
 
 const Overlay = styled.div<{ variant: OverlayVariant }>`
+    position: absolute;
     bottom: 0;
     top: 0;
     left: 0;
     right: 0;
-    border-radius: 3px;
-    position: absolute;
-    z-index: 1;
     margin: -8px;
+    border-radius: 3px;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, ${getOverlayColor} 160px);
+    z-index: 1;
 `;
 
 const DerivationPathColumn = styled.div`
@@ -34,29 +36,26 @@ const AddressColumn = styled.div`
 `;
 
 const Wrapper = styled.div`
-    width: 100%;
     display: flex;
     align-items: center;
+    width: 100%;
+    max-width: 250px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const HiddenAddressRow = ({
-    item,
-    variant,
-    className,
-}: {
-    item?: AddressItem;
+interface HiddenAddressRowProps {
+    item: AddressItem;
     variant: OverlayVariant;
     className?: string;
-}) =>
-    item ? (
-        <Wrapper className={className}>
-            <DerivationPathColumn>/{item.value.split('/').pop()}</DerivationPathColumn>
-            <AddressColumn>
-                <Overlay variant={variant} />
-                {item.label}
-            </AddressColumn>
-        </Wrapper>
-    ) : null;
+}
 
-export default HiddenAddressRow;
+export const HiddenAddressRow: React.FC<HiddenAddressRowProps> = ({ item, variant, className }) => (
+    <Wrapper className={className}>
+        <DerivationPathColumn>/{item.value.split('/').pop()}</DerivationPathColumn>
+
+        <AddressColumn>
+            <Overlay variant={variant} />
+            {item.label}
+        </AddressColumn>
+    </Wrapper>
+);

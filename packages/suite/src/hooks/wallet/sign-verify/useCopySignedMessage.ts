@@ -18,18 +18,22 @@ ${address}
 ${signature}
 -----END ${network} SIGNED MESSAGE-----`;
 
-export const useCopySignedMessage = (
-    { message, address, signature }: SignedMessageData,
+export const useCopySignedMessage = <T extends SignedMessageData>(
+    { message, address, signature }: T,
     network?: string,
 ) => {
     const { addNotification } = useActions({ addNotification: addToast });
+
     const canCopy = address && signature;
+
     const copy = () => {
         const formatted = format(
             { message, address, signature },
             (network || '').split('(')[0].toUpperCase(),
         );
+
         const result = copyToClipboard(formatted, null);
+
         if (typeof result !== 'string') {
             addNotification({ type: 'copy-to-clipboard' });
         }

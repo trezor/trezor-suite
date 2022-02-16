@@ -12,6 +12,7 @@ export const MAX_LENGTH_SIGNATURE = 255;
 export type SignVerifyFields = {
     message: string;
     address: string;
+    isElectrum: boolean;
     path: string;
     signature: string;
     hex: boolean;
@@ -20,6 +21,7 @@ export type SignVerifyFields = {
 const DEFAULT_VALUES: SignVerifyFields = {
     message: '',
     address: '',
+    isElectrum: false,
     path: '',
     signature: '',
     hex: false,
@@ -31,7 +33,7 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
     const {
         register,
         handleSubmit,
-        formState: { isDirty, errors },
+        formState,
         reset,
         setValue,
         clearErrors,
@@ -43,6 +45,8 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
         reValidateMode: 'onChange',
         defaultValues: DEFAULT_VALUES,
     });
+
+    const { isDirty, errors, isSubmitting } = formState;
 
     const formValues = watch();
 
@@ -95,13 +99,18 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
         },
     });
 
+    const { field: isElectrumField } = useController({
+        control,
+        name: 'isElectrum',
+    });
+
     useEffect(() => {
         if (control?.fieldsRef?.current?.message) trigger('message');
     }, [trigger, formValues.message, formValues.hex, control?.fieldsRef]);
 
     useEffect(() => {
         if (page === 'sign') setValue('signature', '');
-    }, [setValue, page, formValues.address, formValues.message]);
+    }, [setValue, page, formValues.address, formValues.message, formValues.isElectrum]);
 
     useEffect(() => {
         const overrideValues =
@@ -111,6 +120,7 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
                       address: account.descriptor,
                   }
                 : {};
+
         reset({
             ...DEFAULT_VALUES,
             ...overrideValues,
@@ -118,16 +128,12 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
     }, [reset, account, page]);
 
     return {
-        formDirty: isDirty,
-        formReset: () => reset(),
+        isFormDirty: isDirty,
+        isSubmitting,
+        resetForm: () => reset(),
         formSubmit: handleSubmit,
         formValues,
-        formErrors: {
-            message: errors.message?.message,
-            path: errors.path?.message,
-            address: errors.address?.message,
-            signature: errors.signature?.message,
-        },
+        formErrors: errors,
         formSetSignature: (value: string) => setValue('signature', value),
         messageRef,
         signatureRef,
@@ -149,6 +155,10 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
                 addressField.onChange(addr?.address || '');
             },
             isDisabled: account?.networkType === 'ethereum',
+        },
+        isElectrumField: {
+            selectedOption: isElectrumField.value,
+            onChange: isElectrumField.onChange,
         },
     };
 };

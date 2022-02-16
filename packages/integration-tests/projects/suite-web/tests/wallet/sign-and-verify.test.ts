@@ -7,6 +7,8 @@ const ADDRESS = 'bc1q6hr68ewf72l6r7cj6ut286x0xkwg5706jq450u';
 const MESSAGE = 'hello world';
 const SIGNATURE =
     'JxpInbBQH8LYgBBnRt4/QCV+HBW3hL1o1Yg85biWX1DdBTbfN96pyLL7tLQdYn+VtjvuZWJhEYbUCasjZLmih6w=';
+const ELECTRUM_SIGNATURE =
+    'HxpInbBQH8LYgBBnRt4/QCV+HBW3hL1o1Yg85biWX1DdBTbfN96pyLL7tLQdYn+VtjvuZWJhEYbUCasjZLmih6w=';
 
 describe('Sign and verify', () => {
     beforeEach(() => {
@@ -33,6 +35,20 @@ describe('Sign and verify', () => {
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getTestElement('@sign-verify/signature').should('have.value', SIGNATURE);
+    });
+
+    it('Sign Electrum', () => {
+        cy.getTestElement('@sign-verify/message').type(MESSAGE);
+        cy.getTestElement('@sign-verify/sign-address/input').click();
+        cy.getTestElement(`@sign-verify/sign-address/option/${PATH}`).click();
+        cy.getTestElement('@sign-verify/sign-address/input').should('contain', ADDRESS);
+        cy.getTestElement('@sign-verify/format').within(() =>
+            cy.getTestElement(`select-bar/${true}`).click(),
+        );
+        cy.getTestElement('@sign-verify/submit').click();
+        cy.getConfirmActionOnDeviceModal().task('pressYes');
+        cy.getConfirmActionOnDeviceModal().task('pressYes');
+        cy.getTestElement('@sign-verify/signature').should('have.value', ELECTRUM_SIGNATURE);
     });
 
     it('Verify', () => {
