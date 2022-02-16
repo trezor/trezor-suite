@@ -4626,48 +4626,6 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@trezor/blockchain-link@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@trezor/blockchain-link/-/blockchain-link-2.0.0.tgz#12d18bc96662dda999e8e5412ae3f24474eb4deb"
-  integrity sha512-Jx9nedFSduSMXpf8Z61rnbcFg0WoYNGA45a7iO15Z92/aIu4TqoQWCvTn7OWhLf+ibMA52NPSyMc1xsQicJpRg==
-  dependencies:
-    bignumber.js "^9.0.1"
-    events "^3.3.0"
-    ripple-lib "1.10.0"
-    ws "^7.4.0"
-
-"@trezor/transport@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@trezor/transport/-/transport-1.0.1.tgz#bf0d11a44d1220fe1486e7679370920f9f60afa4"
-  integrity sha512-JWjA3QlVhcn6zPJFDt80Ayqj5+zrY9m9jzWVd9sceFKYTUuCrsuhze1ho0CBlXLm8GF2/CzFijGbo6O93aL23Q==
-  dependencies:
-    bytebuffer "^5.0.1"
-    json-stable-stringify "^1.0.1"
-    long "^4.0.0"
-    protobufjs "^6.11.2"
-
-"@trezor/utxo-lib@1.0.0-beta.10":
-  version "1.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/@trezor/utxo-lib/-/utxo-lib-1.0.0-beta.10.tgz#93f16ce607d94e50f8338a75ca8a3710f106c20e"
-  integrity sha512-osQwFYe/xC9TeRzuUXqVjZPHwBziN0vioYTPq95xgAAZZ9fCWjgJdL98rLLBgFJd0sOz/JwUdLefNGS257YYUQ==
-  dependencies:
-    bchaddrjs "^0.5.2"
-    bech32 "^2.0.0"
-    bip66 "^1.1.5"
-    bitcoin-ops "^1.4.1"
-    blake-hash "^2.0.0"
-    bn.js "^4.0.0"
-    bs58 "^4.0.1"
-    bs58check "^2.1.2"
-    create-hash "^1.2.0"
-    create-hmac "^1.1.7"
-    int64-buffer "^1.0.1"
-    pushdata-bitcoin "^1.0.1"
-    tiny-secp256k1 "^1.1.6"
-    typeforce "^1.18.0"
-    varuint-bitcoin "^1.1.2"
-    wif "^2.0.6"
-
 "@tsconfig/node10@^1.0.7":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.8.tgz#c1e4e80d6f964fbecb3359c43bd48b40f7cadad9"
@@ -23414,36 +23372,17 @@ trezor-address-validator@^0.4.2:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.2.7-beta.2:
-  version "8.2.7-beta.2"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.7-beta.2.tgz#94dfe8625bcd402450e6956923ecbabe54195356"
-  integrity sha512-H/GoMtFUwGn2xq53G5yMRgwzmlVJoE2R0LNSLMdNlgu817nPydS1JPhfIUGGZPn1DBec6bE3SXVjNEf3ZFRzbg==
+trezor-connect@8.2.7-beta.4:
+  version "8.2.7-beta.4"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.7-beta.4.tgz#e0ed5943f317596e13cfc2463c833edee1a878be"
+  integrity sha512-owbXtyiXMGM6qAyDmdOqLzOhTdrGmk7dDWIXNLcLtlHPCOOa02DgQ2v6kBcd3VCoZyJ/tf416iifgW8keM2eDw==
   dependencies:
     "@babel/runtime" "^7.15.4"
-    "@trezor/blockchain-link" "2.0.0"
-    "@trezor/connect-common" "0.0.4"
-    "@trezor/rollout" "^1.2.1"
-    "@trezor/transport" "1.0.1"
-    "@trezor/utxo-lib" "1.0.0-beta.10"
-    bignumber.js "^9.0.1"
-    bowser "^2.11.0"
-    cbor-web "^7.0.6"
-    cross-fetch "^3.1.4"
-    events "^3.3.0"
-    parse-uri "^1.0.3"
-    randombytes "2.1.0"
-
-trezor-connect@8.2.7-beta.3:
-  version "8.2.7-beta.3"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.7-beta.3.tgz#9a2bf4d8a2c7040e4a47d3ad49964272492c6f0c"
-  integrity sha512-Ies5atahVqlbV5QgUlAkQ3UYdGkwigfEneV8QiD9NZgXmCI0vSBThSeUaFfECCbVWO+3fRrmD5CWzbUTk2YIoQ==
-  dependencies:
-    "@babel/runtime" "^7.15.4"
-    "@trezor/blockchain-link" "2.0.0"
-    "@trezor/connect-common" "0.0.4"
-    "@trezor/rollout" "^1.2.1"
-    "@trezor/transport" "1.0.1"
-    "@trezor/utxo-lib" "1.0.0-beta.10"
+    "@trezor/blockchain-link" "^2.1.1"
+    "@trezor/connect-common" "^0.0.4"
+    "@trezor/rollout" "^1.3.0"
+    "@trezor/transport" "^1.1.0"
+    "@trezor/utxo-lib" "^1.0.0"
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
     cbor-web "^7.0.6"
@@ -25210,7 +25149,7 @@ ws@^6.1.4:
   dependencies:
     async-limiter "~1.0.0"
 
-ws@^7, ws@^7.2.0, ws@^7.3.1, ws@^7.4.0, ws@^7.4.6, ws@^7.5.3, ws@^7.5.5:
+ws@^7, ws@^7.2.0, ws@^7.3.1, ws@^7.4.6, ws@^7.5.3, ws@^7.5.5:
   version "7.5.7"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.7.tgz#9e0ac77ee50af70d58326ecff7e85eb3fa375e67"
   integrity sha512-KMvVuFzpKBuiIXW3E4u3mySRO2/mCHSyZDJQM5NQ9Q9KHWHWh0NHgfbRMLLrceUK5qAL4ytALJbpRMjixFZh8A==

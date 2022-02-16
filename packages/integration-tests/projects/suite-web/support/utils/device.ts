@@ -42,7 +42,6 @@ export const connectBootloaderDevice = (path: string) =>
                     fw_minor: null,
                     fw_patch: null,
                     fw_vendor: null,
-                    fw_vendor_keys: null,
                     imported: null,
                     initialized: null,
                     label: null,
