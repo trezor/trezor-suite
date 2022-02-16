@@ -1,8 +1,8 @@
-import React, { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isInLine: boolean }>`
     display: flex;
     height: 32px;
 
@@ -10,110 +10,144 @@ const Wrapper = styled.div`
         height: auto;
         width: 100%;
     }
+
+    ${({ isInLine }) =>
+        !isInLine &&
+        css`
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        `};
 `;
 
-const Label = styled.div`
-    padding-right: 20px;
+const Label = styled.div<{ isInLine: boolean }>`
     display: flex;
-    align-items: center;
+    align-items: ${({ isInLine }) => isInLine && 'center'};
+    min-height: ${({ isInLine }) => !isInLine && '32px'};
+    padding-right: 20px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
-const Options = styled.div`
+const Options = styled.div<{ isInLine: boolean }>`
     display: flex;
-    flex: 1;
+    flex: ${({ isInLine }) => isInLine && '1'};
     padding: 0 2px;
     border-radius: 4px;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
         width: 100%;
     }
+
+    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
+        height: ${({ isInLine }) => !isInLine && '48px'};
+    }
 `;
 
-const Option = styled.div<{ isSelected: boolean }>`
-    white-space: nowrap;
-    padding: 0 14px;
-    margin: 2px 0;
-    padding-top: 1px;
+const Option = styled.div<{ isSelected: boolean; isInLine: boolean }>`
     display: flex;
-    align-items: center;
     flex: 1;
+    justify-content: ${({ isInLine }) => !isInLine && 'center'};
+    align-items: center;
+    margin: 2px 0;
+    padding: 0 14px;
+    padding-top: 1px;
     border-radius: 4px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     text-transform: capitalize;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    cursor: pointer;
+    white-space: nowrap;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    cursor: pointer;
 
-    ${props =>
-        props.isSelected &&
+    ${({ isSelected }) =>
+        isSelected &&
         css`
-            background: ${props => props.theme.BG_WHITE};
+            background: ${({ theme }) => theme.BG_WHITE};
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-            color: ${props => props.theme.TYPE_DARK_GREY};
+            color: ${({ theme }) => theme.TYPE_DARK_GREY};
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
         `}
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        height: 40px;
+        flex: auto;
         justify-content: center;
         width: 100%;
-        flex: auto;
+        height: 40px;
     }
 `;
 
-interface Option<V> {
+type ValueTypes = number | string | boolean;
+
+interface Option<V extends ValueTypes> {
     label: ReactNode;
     value: V;
 }
 
-interface Props<V> {
+interface SelectBarProps<V extends ValueTypes> {
     label?: ReactNode;
-    selectedOption?: V;
     options: Option<V>[];
-    className?: string;
-    isDisabled?: boolean;
+    selectedOption?: V;
     onChange?: (value: V) => void;
+    isInLine?: boolean;
+    isDisabled?: boolean;
+    className?: string;
 }
 
 // Generic type V is determined by selectedOption/options values
-const SelectBar: <V extends string>(props: Props<V>) => JSX.Element = ({
+const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.Element = ({
+    label,
     options,
     selectedOption,
-    label,
     onChange,
-    className,
+    isInLine = true,
     isDisabled,
+    className,
+    ...rest
 }) => {
-    const [selectedOptionIn, setSelected] = useState<typeof selectedOption>(selectedOption);
+    const [selectedOptionIn, setSelected] = useState<ValueTypes | undefined>(selectedOption);
 
     useEffect(() => {
-        if (selectedOption) {
+        if (selectedOption !== undefined) {
             setSelected(selectedOption);
         }
     }, [selectedOption, setSelected]);
 
+    const handleOptionClick = useCallback(
+        (option: Option<ValueTypes>) => () => {
+            if (isDisabled || option.value === selectedOptionIn) {
+                return;
+            }
+
+            setSelected(option.value);
+
+            onChange?.(option?.value as any);
+        },
+        [isDisabled, selectedOptionIn, onChange],
+    );
+
     return (
-        <Wrapper className={className}>
-            {label && <Label>{label}</Label>}
-            <Options>
+        <Wrapper className={className} isInLine={isInLine} {...rest}>
+            {label && <Label isInLine={isInLine}>{label}</Label>}
+
+            <Options isInLine={isInLine}>
                 {options.map(option => (
                     <Option
-                        onClick={() => {
-                            if (isDisabled) return;
-                            setSelected(option.value);
-                            if (onChange) {
-                                onChange(option.value);
-                            }
-                        }}
-                        isSelected={selectedOptionIn ? selectedOptionIn === option.value : false}
-                        key={option.value}
-                        data-test={`select-bar/${option.value}`}
+                        key={String(option.value)}
+                        onClick={handleOptionClick(option)}
+                        isSelected={
+                            selectedOptionIn !== undefined
+                                ? selectedOptionIn === option.value
+                                : false
+                        }
+                        isInLine={isInLine}
+                        data-test={`select-bar/${String(option.value)}`}
                     >
                         {option.label}
                     </Option>
@@ -123,5 +157,5 @@ const SelectBar: <V extends string>(props: Props<V>) => JSX.Element = ({
     );
 };
 
-export type { Props as SelectBarProps };
+export type { SelectBarProps };
 export { SelectBar };

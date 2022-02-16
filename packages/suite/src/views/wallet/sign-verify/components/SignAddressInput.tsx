@@ -8,8 +8,8 @@ import {
     useSignAddressOptions,
     AddressItem,
 } from '@wallet-hooks/sign-verify/useSignAddressOptions';
-import HiddenAddressRow from './HiddenAddressRow';
-import VerifyAddressButton from './VerifyAddressButton';
+import { HiddenAddressRow } from './HiddenAddressRow';
+import { VerifyAddressButton } from './VerifyAddressButton';
 
 const HiddenAddressSingleValue = styled(HiddenAddressRow)`
     margin-left: 6px;
@@ -30,7 +30,7 @@ const Option = ({ data, value, isFocused, innerProps, ...rest }: any) => (
         }}
         {...rest}
     >
-        <HiddenAddressRow item={data} variant={isFocused ? 'option-focused' : 'option'} />
+        {data && <HiddenAddressRow item={data} variant={isFocused ? 'option-focused' : 'option'} />}
     </components.Option>
 );
 
@@ -51,7 +51,7 @@ const optionToAddress = (option: AddressItem | null) =>
           }
         : null;
 
-const SignAddressInput = ({
+export const SignAddressInput = ({
     name,
     label,
     error,
@@ -97,5 +97,3 @@ const SignAddressInput = ({
         />
     );
 };
-
-export default SignAddressInput;

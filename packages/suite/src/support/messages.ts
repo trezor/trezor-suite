@@ -6233,4 +6233,29 @@ export default defineMessages({
         id: 'TR_DO_YOU_REALLY_WANT_TO_SKIP',
         defaultMessage: 'Do you really want to skip this step?',
     },
+    TR_FORMAT: {
+        id: 'TR_FORMAT',
+        defaultMessage: 'Format',
+    },
+    TR_FORMAT_TOOLTIP: {
+        id: 'TR_FORMAT_TOOLTIP',
+        defaultMessage:
+            '<FormatDescription> <span>Trezor</span> – standard signature format according to BIP137 </FormatDescription> <FormatDescription> <span>Electrum</span> – compatibility signature format </FormatDescription>',
+    },
+    TR_BIP_SIG_FORMAT: {
+        id: 'TR_BIP_SIG_FORMAT',
+        defaultMessage: 'Trezor',
+    },
+    TR_COMPATIBILITY_SIG_FORMAT: {
+        id: 'TR_COMPATIBILITY_SIG_FORMAT',
+        defaultMessage: 'Electrum',
+    },
+    TR_COPY_AND_CLOSE: {
+        id: 'TR_COPY_AND_CLOSE',
+        defaultMessage: 'Copy & Close',
+    },
+    TR_COPY_SIGNED_MESSAGE: {
+        id: 'TR_COPY_SIGNED_MESSAGE',
+        defaultMessage: 'Copy signed message',
+    },
 });

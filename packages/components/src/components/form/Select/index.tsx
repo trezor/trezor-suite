@@ -4,6 +4,7 @@ import ReactSelect, {
     Props as SelectProps,
     OptionsType,
     GroupedOptionsType,
+    StylesConfig,
 } from 'react-select';
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
@@ -21,8 +22,8 @@ const selectStyle = (
     borderWidth: number,
     theme: SuiteThemeColors,
     selectState?: InputState,
-) => ({
-    singleValue: (base: Record<string, any>) => ({
+): StylesConfig<Option, boolean> => ({
+    singleValue: base => ({
         ...base,
         display: 'flex',
         alignItems: 'center',
@@ -39,13 +40,12 @@ const selectStyle = (
             cursor: hideTextCursor || !isSearchable ? 'pointer' : 'text',
         },
     }),
-    control: (
-        base: Record<string, any>,
-        { isDisabled, isFocused }: { isDisabled: boolean; isFocused: boolean },
-    ) => {
+    control: (base, { isDisabled, isFocused }) => {
         let height = variant === 'small' ? '36px' : '48px';
         const borderColor = selectState ? getStateColor(selectState, theme) : theme.STROKE_GREY;
+
         if (isClean) height = '22px';
+
         return {
             ...base,
             display: 'flex',
@@ -58,6 +58,7 @@ const selectStyle = (
             borderStyle: isClean ? 'none' : 'solid',
             backgroundColor: 'transparent',
             boxShadow: 'none',
+            flexWrap: 'nowrap',
             '&:hover, &:focus': {
                 cursor: 'pointer',
                 borderRadius: `${borderRadius}px`,
@@ -66,7 +67,7 @@ const selectStyle = (
             },
         };
     },
-    valueContainer: (base: Record<string, any>) =>
+    valueContainer: base =>
         ({
             ...base,
             border: 0,
@@ -80,7 +81,7 @@ const selectStyle = (
     indicatorSeparator: () => ({
         display: 'none',
     }),
-    dropdownIndicator: (base: Record<string, any>, { isDisabled }: { isDisabled: boolean }) => ({
+    dropdownIndicator: (base, { isDisabled, isFocused }) => ({
         ...base,
         display: !withDropdownIndicator || isDisabled ? 'none' : 'flex',
         alignItems: 'center',
@@ -88,18 +89,20 @@ const selectStyle = (
         cursor: 'pointer',
         path: '',
         padding: isClean ? 0 : '8px',
+        transform: isFocused ? 'rotate(180deg)' : 'none',
+        transition: `transform 0.24s ease-in-out`,
         '&:hover': {
             color: isClean ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY,
         },
     }),
-    menu: (base: Record<string, any>) => ({
+    menu: base => ({
         ...base,
         background: theme.BG_WHITE_ALT,
         margin: '5px 0',
         boxShadow: `box-shadow: 0 4px 10px 0 ${theme.BOX_SHADOW_BLACK_20}`,
         zIndex: 9,
     }),
-    menuList: (base: Record<string, any>) => ({
+    menuList: base => ({
         ...base,
         boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2)',
         background: theme.BG_WHITE_ALT,
@@ -107,14 +110,14 @@ const selectStyle = (
         padding: '8px',
     }),
     // textTransform does not work in TS with makeStyles => base: any
-    groupHeading: (base: any) => ({
+    groupHeading: base => ({
         ...base,
         fontSize: variables.NEUE_FONT_SIZE.TINY,
         textTransform: 'initial',
         margin: 0,
         padding: '8px',
     }),
-    group: (base: Record<string, any>) => ({
+    group: base => ({
         ...base,
         padding: 0,
         '& + &': {
@@ -123,7 +126,7 @@ const selectStyle = (
             marginTop: '4px',
         },
     }),
-    option: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => ({
+    option: (base, { isFocused }) => ({
         ...base,
         color: theme.TYPE_DARK_GREY,
         background: isFocused ? theme.BG_WHITE_ALT_HOVER : theme.BG_WHITE_ALT,
@@ -139,7 +142,7 @@ const selectStyle = (
             background: theme.BG_WHITE_ALT_HOVER,
         },
     }),
-    input: (base: Record<string, any>) => ({
+    input: base => ({
         ...base,
         fontSize: variables.NEUE_FONT_SIZE.NORMAL,
         color: hideTextCursor ? 'transparent' : theme.TYPE_DARK_GREY,
@@ -147,7 +150,7 @@ const selectStyle = (
             textShadow: hideTextCursor ? `0 0 0 ${theme.TYPE_DARK_GREY} !important` : 'none',
         },
     }),
-    placeholder: (base: Record<string, any>) => ({
+    placeholder: base => ({
         ...base,
         fontWeight: variables.FONT_WEIGHT.MEDIUM,
         fontSize: variables.NEUE_FONT_SIZE.SMALL,
@@ -397,6 +400,7 @@ const Select = ({
     return (
         <Wrapper className={className} width={width} isClean={isClean} {...wrapperProps}>
             {!noTopLabel && <Label>{label}</Label>}
+
             <ReactSelect
                 ref={selectRef}
                 onKeyDown={onKeyDown}
@@ -417,6 +421,7 @@ const Select = ({
                 {...props}
                 components={{ Control, Option, GroupHeading, ...props.components }}
             />
+
             {!noError && <BottomText state={state}>{bottomText}</BottomText>}
         </Wrapper>
     );

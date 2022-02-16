@@ -74,7 +74,7 @@ const showAddressByNetwork =
     };
 
 const signByNetwork =
-    (path: string | number[], message: string, hex: boolean) =>
+    (path: string | number[], message: string, hex: boolean, isElectrum: boolean) =>
     ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
         const params = {
             device,
@@ -83,8 +83,9 @@ const signByNetwork =
             message,
             useEmptyPassphrase,
             hex,
-            no_script_type: false,
+            no_script_type: isElectrum,
         };
+
         switch (account.networkType) {
             case 'bitcoin':
                 return TrezorConnect.signMessage(params);
@@ -172,10 +173,10 @@ export const showAddress =
             .catch(onError(dispatch, 'verify-address-error'));
 
 export const sign =
-    (path: string | number[], message: string, hex = false) =>
+    (path: string | number[], message: string, hex = false, isElectrum = false) =>
     (dispatch: Dispatch, getState: GetState) =>
         getStateParams(getState)
-            .then(signByNetwork(path, message, hex))
+            .then(signByNetwork(path, message, hex, isElectrum))
             .then(throwWhenFailed)
             .then(onSignSuccess(dispatch))
             .catch(onError(dispatch, 'sign-message-error'));

@@ -6,55 +6,64 @@ import { useActions } from '@suite-hooks';
 import { Translation } from '@suite-components';
 
 const RevealText = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    max-width: 0;
+    margin-right: 2px;
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
     overflow: hidden;
-    margin-right: 2px;
     transition: max-width 0.3s;
-    max-width: 0;
 `;
 
 const ButtonWrapper = styled.button`
-    border: none;
-    border-radius: 4px;
-    margin-left: auto;
+    position: absolute;
+    right: 0px;
     display: flex;
     align-items: center;
+    margin-left: auto;
     padding: 2px 6px;
-    pointer-events: all;
+    border: none;
+    border-radius: 4px;
     background-color: transparent;
-    cursor: pointer;
     transition: background-color 0.3s;
-    &:hover {
+    pointer-events: all;
+    z-index: 1;
+    cursor: pointer;
+
+    :hover {
         background-color: ${props => props.theme.BG_WHITE_ALT_HOVER};
-        & > div {
+
+        > div {
             max-width: 100px;
         }
     }
 `;
 
-const VerifyAddressButton = ({
-    item: { label, value },
-}: {
+interface VerifyAddressButtonProps {
     item: { label: string; value: string };
+}
+
+export const VerifyAddressButton: React.FC<VerifyAddressButtonProps> = ({
+    item: { label, value },
 }) => {
     const { showAddress } = useActions({
         showAddress: showAddressAction,
     });
+
     const reveal = (e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
+
         showAddress(label, value);
     };
+
     return (
         <ButtonWrapper type="button" onMouseDown={e => e.stopPropagation()} onClick={reveal}>
             <RevealText>
                 <Translation id="TR_REVEAL_ADDRESS" />
             </RevealText>
+
             <Icon size={20} icon="SHOW" />
         </ButtonWrapper>
     );
 };
-
-export default VerifyAddressButton;

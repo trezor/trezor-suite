@@ -1,12 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Input, Button, Textarea, Card, Switch, variables } from '@trezor/components';
+import {
+    Input,
+    Button,
+    Textarea,
+    Card,
+    Switch,
+    variables,
+    SelectBar,
+    Tooltip,
+} from '@trezor/components';
 import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import { CharacterCount, Translation } from '@suite-components';
 import { useActions, useDevice, useSelector, useTranslation } from '@suite-hooks';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
-import Navigation, { NavPages } from './components/Navigation';
-import SignAddressInput from './components/SignAddressInput';
+import * as routerActions from '@suite-actions/routerActions';
+import { Navigation, NavPages } from './components/Navigation';
+import { SignAddressInput } from './components/SignAddressInput';
+import { ButtonRow, Row } from './components/ButtonRow';
 import { useCopySignedMessage } from '@wallet-hooks/sign-verify/useCopySignedMessage';
 import {
     useSignVerifyForm,
@@ -14,28 +25,14 @@ import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
 } from '@wallet-hooks/sign-verify/useSignVerifyForm';
-
-const Row = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    & + & {
-        padding-top: 12px;
-    }
-    & > * + * {
-        margin-left: 40px;
-    }
-`;
-
-const StyledButton = styled(Button)`
-    width: 200px;
-`;
+import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 const SwitchWrapper = styled.label`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     align-items: center;
     height: 100%;
+
     & > * + * {
         margin-left: 10px;
     }
@@ -49,20 +46,62 @@ const Form = styled.form`
     }
 `;
 
-const SignVerify = () => {
-    const [page, setPage] = useState<NavPages>('sign');
+const FormatDescription = styled.p`
+    span {
+        font-weight: ${variables.FONT_WEIGHT.BOLD};
+    }
 
+    & + & {
+        margin-top: 10px;
+    }
+`;
+
+const StyledSelectBar = styled(SelectBar)`
+    margin: 12px 0 20px;
+
+    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 320px;
+        margin: 0 0 0 20px;
+    }
+
+    @media (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        width: 100%;
+        margin: 12px 0 20px;
+    }
+
+    @media (min-width: ${variables.SCREEN_SIZE.LG}) {
+        width: 320px;
+        margin: 0 0 0 20px;
+    }
+`;
+
+const Divider = styled.div`
+    margin: 15px 0 30px;
+    height: 1px;
+    background: ${({ theme }) => theme.STROKE_GREY};
+`;
+
+const Copybutton = styled(Button)`
+    position: absolute;
+    right: 0;
+    top: -2px;
+`;
+
+const SignVerify: React.FC = () => {
     const { selectedAccount, revealedAddresses } = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         revealedAddresses: state.wallet.receive,
     }));
 
-    const { isLocked } = useDevice();
-    const { translationString } = useTranslation();
+    const [page, setPage] = useState<NavPages>('sign');
+    const [isCompleted, setIsCompleted] = useState(false);
+
+    const isSignPage = page === 'sign';
 
     const {
-        formDirty,
-        formReset,
+        isFormDirty,
+        isSubmitting,
+        resetForm,
         formSubmit,
         formValues,
         formErrors,
@@ -72,54 +111,87 @@ const SignVerify = () => {
         hexField,
         addressField,
         pathField,
+        isElectrumField,
     } = useSignVerifyForm(page, selectedAccount.account);
 
-    const { sign, verify } = useActions({
+    const { isLocked } = useDevice();
+    const { translationString } = useTranslation();
+    const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network?.name);
+
+    const { sign, verify, goto } = useActions({
         sign: signVerifyActions.sign,
         verify: signVerifyActions.verify,
+        goto: routerActions.goto,
     });
 
-    const [completed, setCompleted] = useState(false);
-
     useEffect(() => {
-        if (page === 'sign' && formValues.signature) return;
-        setCompleted(false);
-    }, [page, formValues.message, formValues.address, formValues.signature]);
+        if (isSignPage && formValues.signature) return;
+
+        setIsCompleted(false);
+    }, [isSignPage, formValues.message, formValues.address, formValues.signature]);
 
     const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex } = data;
-        if (page === 'sign') {
-            const result = await sign(path, message, hex);
+        const { address, path, message, signature, hex, isElectrum } = data;
+
+        if (isSignPage) {
+            const result = await sign(path, message, hex, isElectrum);
+
             if (result) {
                 formSetSignature(result);
-                setCompleted(true);
+                setIsCompleted(true);
             }
         } else {
             const result = await verify(address, message, signature, hex);
-            if (result) setCompleted(true);
+
+            if (result) setIsCompleted(true);
         }
     };
 
-    const errorState = (err?: string) => (err ? 'error' : undefined);
+    const tooltipContent = (
+        <Translation
+            id="TR_FORMAT_TOOLTIP"
+            values={{
+                FormatDescription: chunks => <FormatDescription>{chunks}</FormatDescription>,
+                span: chunks => <span>{chunks}</span>,
+            }}
+        />
+    );
 
-    const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network?.name);
+    const formatOptions = useMemo(
+        () => [
+            { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
+            {
+                value: true,
+                label: <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />,
+            },
+        ],
+        [],
+    );
+
+    const closeScreen = useCallback(
+        (withCopy?: boolean) => {
+            if (withCopy) {
+                copy();
+            }
+
+            goto('wallet-index', { preserveParams: true });
+        },
+        [copy, goto],
+    );
 
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY">
-                {page === 'sign' && canCopy && (
-                    <Button type="button" variant="tertiary" onClick={copy}>
-                        <Translation id="TR_COPY_TO_CLIPBOARD" />
-                    </Button>
-                )}
-                {formDirty && (
-                    <Button type="button" variant="tertiary" onClick={formReset}>
+                {isFormDirty && (
+                    <Button type="button" variant="tertiary" onClick={resetForm}>
                         <Translation id="TR_CLEAR_ALL" />
                     </Button>
                 )}
             </WalletLayoutHeader>
+
             <Card noPadding>
                 <Navigation page={page} setPage={setPage} />
+
                 <Form onSubmit={formSubmit(onSubmit)}>
                     <Row>
                         <Textarea
@@ -132,8 +204,8 @@ const SignVerify = () => {
                                 </SwitchWrapper>
                             }
                             innerRef={messageRef}
-                            state={errorState(formErrors.message)}
-                            bottomText={formErrors.message}
+                            state={getInputState(formErrors.message)}
+                            bottomText={formErrors.message?.message}
                             rows={4}
                             maxRows={4}
                             data-test="@sign-verify/message"
@@ -144,14 +216,15 @@ const SignVerify = () => {
                             />
                         </Textarea>
                     </Row>
+
                     <Row>
-                        {page === 'sign' ? (
+                        {isSignPage ? (
                             <SignAddressInput
                                 name="path"
                                 label={<Translation id="TR_ADDRESS" />}
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
-                                error={formErrors.path}
+                                error={formErrors.path?.message}
                                 data-test="@sign-verify/path"
                                 {...pathField}
                             />
@@ -160,57 +233,88 @@ const SignVerify = () => {
                                 name="address"
                                 label={<Translation id="TR_ADDRESS" />}
                                 type="text"
-                                state={errorState(formErrors.address)}
-                                bottomText={formErrors.address}
+                                state={getInputState(formErrors.address)}
+                                bottomText={formErrors.address?.message}
                                 data-test="@sign-verify/select-address"
                                 {...addressField}
                             />
                         )}
+
+                        {isSignPage && (
+                            <StyledSelectBar
+                                label={
+                                    <Tooltip maxWidth={330} content={tooltipContent} dashed>
+                                        <Translation id="TR_FORMAT" />
+                                    </Tooltip>
+                                }
+                                options={formatOptions}
+                                isInLine={false}
+                                data-test="@sign-verify/format"
+                                {...isElectrumField}
+                            />
+                        )}
                     </Row>
+
+                    <Divider />
+
                     <Row>
-                        <Textarea
-                            name="signature"
-                            label={<Translation id="TR_SIGNATURE" />}
-                            maxLength={MAX_LENGTH_SIGNATURE}
-                            innerRef={signatureRef}
-                            readOnly={page === 'sign'}
-                            state={errorState(formErrors.signature)}
-                            bottomText={formErrors.signature}
-                            rows={4}
-                            maxRows={4}
-                            placeholder={
-                                page === 'sign'
-                                    ? translationString('TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER')
-                                    : undefined
-                            }
-                            data-test="@sign-verify/signature"
-                        >
-                            {page === 'verify' && (
+                        {isSignPage ? (
+                            <>
+                                {canCopy && (
+                                    <Copybutton
+                                        type="button"
+                                        variant="tertiary"
+                                        onClick={copy}
+                                        icon="COPY"
+                                    >
+                                        <Translation id="TR_COPY_SIGNED_MESSAGE" />
+                                    </Copybutton>
+                                )}
+
+                                <Input
+                                    name="signature"
+                                    label={<Translation id="TR_SIGNATURE" />}
+                                    maxLength={MAX_LENGTH_SIGNATURE}
+                                    type="text"
+                                    innerRef={signatureRef}
+                                    readOnly={isSignPage}
+                                    isDisabled={!formValues.signature?.length}
+                                    state={getInputState(formErrors.signature)}
+                                    bottomText={formErrors.signature?.message}
+                                    placeholder={translationString(
+                                        'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
+                                    )}
+                                    data-test="@sign-verify/signature"
+                                />
+                            </>
+                        ) : (
+                            <Textarea
+                                name="signature"
+                                label={<Translation id="TR_SIGNATURE" />}
+                                maxLength={MAX_LENGTH_SIGNATURE}
+                                innerRef={signatureRef}
+                                state={getInputState(formErrors.signature)}
+                                bottomText={formErrors.signature?.message}
+                                rows={4}
+                                maxRows={4}
+                                data-test="@sign-verify/signature"
+                            >
                                 <CharacterCount
                                     current={formValues.signature?.length || 0}
                                     max={MAX_LENGTH_SIGNATURE}
                                 />
-                            )}
-                        </Textarea>
+                            </Textarea>
+                        )}
                     </Row>
-                    <Row>
-                        <StyledButton
-                            type="submit"
-                            isDisabled={isLocked()}
-                            data-test="@sign-verify/submit"
-                            variant={!completed ? 'primary' : 'secondary'}
-                            icon={completed ? 'CHECK' : undefined}
-                            size={24}
-                        >
-                            <Translation
-                                id={(() => {
-                                    if (page === 'sign')
-                                        return !completed ? 'TR_SIGN' : 'TR_SIGNED';
-                                    return !completed ? 'TR_VERIFY' : 'TR_VERIFIED';
-                                })()}
-                            />
-                        </StyledButton>
-                    </Row>
+
+                    <ButtonRow
+                        isCompleted={isCompleted}
+                        isSubmitting={isSubmitting}
+                        isSignPage={isSignPage}
+                        isTrezorLocked={isLocked()}
+                        resetForm={resetForm}
+                        closeScreen={closeScreen}
+                    />
                 </Form>
             </Card>
         </WalletLayout>
