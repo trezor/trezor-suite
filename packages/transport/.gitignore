@@ -1,7 +1,0 @@
-node_modules
-lib
-
-.nix_bash_history
-yarn-error.log
-coverage
-messages.json

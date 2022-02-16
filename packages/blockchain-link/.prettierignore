@@ -1,6 +1,0 @@
-lib
-build
-coverage
-**/_old/*
-node_modules
-src/ui/**
