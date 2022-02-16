@@ -1,3 +1,8 @@
+# 2.1.1
+
+#### changes
+- Proxy agent in Ripple worker is set based on `RippleAPI._ALLOW_AGENT` flag, in order not to fail in standalone `trezor-connect` implementation (#4942)
+
 # 2.1.0
 
 #### changes
