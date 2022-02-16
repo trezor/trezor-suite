@@ -33,7 +33,9 @@
         "lint:js": "eslint --cache --ignore-path .gitignore --ext .js,.ts,.tsx ./",
         "lint": "yarn lerna run lint:styles && yarn lint:js",
         "lint-staged": "npx lint-staged",
-        "deduplicate": "yarn-deduplicate && yarn"
+        "deduplicate": "yarn-deduplicate && yarn",
+        "format": "yarn prettier --write --ignore-path  .gitignore \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
+        "format:verify": "yarn prettier --check --ignore-path  .gitignore \"**/*.{js,ts,tsx,mdx,md,html,json}\""
     },
     "lint-staged": {
         "packages/**/*.{ts,tsx}": [

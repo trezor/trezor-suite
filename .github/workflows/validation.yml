@@ -17,6 +17,8 @@ jobs:
         run: npx yarn-deduplicate --list --fail
       - name: install deps
         run: yarn
+      - name: check code formatting
+        run: yarn format:verify
       - name: build libs
         run: yarn build:libs
       - name: type check
