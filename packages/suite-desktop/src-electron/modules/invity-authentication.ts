@@ -1,6 +1,7 @@
 // TODO: description
 import { session } from 'electron';
 import invityAPI from '@suite-services/invityAPI';
+import { Dependencies } from './index';
 
 // TODO: inject httpServerUrl?
 const httpServerUrl = 'http://localhost:21335';

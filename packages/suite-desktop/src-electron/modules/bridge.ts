@@ -2,6 +2,7 @@
  * Bridge runner
  */
 import { app } from 'electron';
+import { Dependencies } from './index';
 import BridgeProcess from '../libs/processes/BridgeProcess';
 import { b2t } from '../libs/utils';
 
