@@ -10,11 +10,7 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "sourceMap": true,
-        "lib": [
-            "dom",
-            "es2019",
-            "esnext.asynciterable"
-        ],
+        "lib": ["dom", "es2019", "esnext.asynciterable"],
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
@@ -24,11 +20,6 @@
         "noUnusedParameters": true,
         "noImplicitAny": true
     },
-    "include": [
-        "index.d.ts",
-        "**/*.ts"
-    ],
-    "exclude": [
-        "**/*.js"
-    ]
+    "include": ["index.d.ts", "**/*.ts"],
+    "exclude": ["**/*.js"]
 }

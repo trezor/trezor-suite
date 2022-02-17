@@ -14,7 +14,7 @@ storiesOf('Buttons', module).add('Button', () => {
             Tertiary: 'tertiary',
             Danger: 'danger',
         },
-        null
+        null,
     );
     const size: any = select(
         'Size',
@@ -22,7 +22,7 @@ storiesOf('Buttons', module).add('Button', () => {
             'Default (large)': null,
             Small: 'small',
         },
-        null
+        null,
     );
 
     const iconOptions: any = {
@@ -39,7 +39,7 @@ storiesOf('Buttons', module).add('Button', () => {
                   'Default (left)': 'left',
                   Right: 'right',
               },
-              'left'
+              'left',
           )
         : null;
 

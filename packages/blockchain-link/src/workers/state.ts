@@ -65,7 +65,7 @@ export class WorkerState {
         this.accounts = others.concat(valid);
         const addresses = this.accounts.reduce(
             (addr, a) => addr.concat(this.getAccountAddresses(a)),
-            [] as string[]
+            [] as string[],
         );
         this.addAddresses(addresses);
         return valid;
@@ -91,11 +91,11 @@ export class WorkerState {
     removeAccounts(acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] {
         const valid = this.validateAccounts(acc);
         const accountsToRemove = this.accounts.filter(a =>
-            valid.find(b => b.descriptor === a.descriptor)
+            valid.find(b => b.descriptor === a.descriptor),
         );
         const addressesToRemove = accountsToRemove.reduce(
             (addr, acc) => addr.concat(this.getAccountAddresses(acc)),
-            [] as string[]
+            [] as string[],
         );
         this.accounts = this.accounts.filter(a => accountsToRemove.indexOf(a) < 0);
         this.removeAddresses(addressesToRemove);

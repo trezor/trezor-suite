@@ -13,7 +13,7 @@ storiesOf('Typography', module).add('Link', () => {
             Parent: '_parent',
             Top: '_top',
         },
-        null
+        null,
     );
     const href = text('URL', 'https://trezor.io');
     const linkText = text('Text', 'This is a link.');

@@ -76,7 +76,7 @@ const formatTransaction =
 
 export const getTransactions = async (
     client: ElectrumAPI,
-    history: HistoryTx[]
+    history: HistoryTx[],
 ): Promise<BlockbookTransaction[]> => {
     const txids = history.map(({ tx_hash }) => tx_hash).filter(arrayDistinct);
 
@@ -84,7 +84,7 @@ export const getTransactions = async (
     // binary data locally instead. Then the transaction could be cached indefinitely.
 
     const origTxs = await Promise.all(
-        txids.map(txid => client.request('blockchain.transaction.get', txid, true))
+        txids.map(txid => client.request('blockchain.transaction.get', txid, true)),
     ).then(txs => arrayToDictionary(txs, ({ txid }) => txid));
 
     const prevTxs = await Promise.all(
@@ -92,7 +92,7 @@ export const getTransactions = async (
             .flatMap(({ vin }) => vin.filter(isNotCoinbase).map(({ txid }) => txid))
             .filter(arrayDistinct)
             .filter(txid => !origTxs[txid])
-            .map(txid => client.request('blockchain.transaction.get', txid, true))
+            .map(txid => client.request('blockchain.transaction.get', txid, true)),
     ).then(txs => arrayToDictionary(txs, ({ txid }) => txid));
 
     /* TODO

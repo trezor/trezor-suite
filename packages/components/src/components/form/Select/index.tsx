@@ -20,7 +20,7 @@ const selectStyle = (
     borderRadius: number,
     borderWidth: number,
     theme: SuiteThemeColors,
-    selectState?: InputState
+    selectState?: InputState,
 ) => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
@@ -41,7 +41,7 @@ const selectStyle = (
     }),
     control: (
         base: Record<string, any>,
-        { isDisabled, isFocused }: { isDisabled: boolean; isFocused: boolean }
+        { isDisabled, isFocused }: { isDisabled: boolean; isFocused: boolean },
     ) => {
         let height = variant === 'small' ? '36px' : '48px';
         const borderColor = selectState ? getStateColor(selectState, theme) : theme.STROKE_GREY;
@@ -193,7 +193,7 @@ interface Option {
 
 /** Custom Type Guards to check if options are grouped or not */
 const isOptionGrouped = (
-    x: OptionsType<Option> | GroupedOptionsType<Option>
+    x: OptionsType<Option> | GroupedOptionsType<Option>,
 ): x is GroupedOptionsType<Option> => (x as GroupedOptionsType<Option>)[0]?.options !== undefined;
 
 interface CommonProps extends Omit<SelectProps, 'components' | 'isSearchable'> {
@@ -364,7 +364,7 @@ const Select = ({
                     // Find the option
                     const optionToFocusOn = findOption(
                         optionsToSearchThrough,
-                        searchedTerm.current
+                        searchedTerm.current,
                     );
 
                     // Also get the last option, so I can scroll to it later
@@ -411,7 +411,7 @@ const Select = ({
                     borderRadius,
                     borderWidth,
                     theme,
-                    state
+                    state,
                 )}
                 isSearchable={isSearchable}
                 {...props}

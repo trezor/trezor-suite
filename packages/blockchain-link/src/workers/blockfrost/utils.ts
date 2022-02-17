@@ -32,7 +32,7 @@ export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
                     unit: u.unit,
                 },
             });
-        })
+        }),
     );
     return result;
 };
@@ -82,7 +82,7 @@ export const parseAsset = (hex: string): ParseAssetResult => {
 };
 
 export const transformTokenInfo = (
-    tokens: BlockfrostAccountInfo['tokens']
+    tokens: BlockfrostAccountInfo['tokens'],
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const info = tokens.map(t => {
@@ -102,7 +102,7 @@ export const transformTokenInfo = (
 
 export const transformInputOutput = (
     data: BlockfrostTransaction['txUtxos']['inputs'] | BlockfrostTransaction['txUtxos']['outputs'],
-    asset = 'lovelace'
+    asset = 'lovelace',
 ): VinVout[] =>
     data.map(utxo => ({
         n: utxo.output_index,
@@ -114,7 +114,7 @@ export const transformInputOutput = (
 export const filterTokenTransfers = (
     accountAddress: AccountAddresses,
     tx: BlockfrostTransaction,
-    type: Transaction['type']
+    type: Transaction['type'],
 ): TokenTransfer[] => {
     const transfers: TokenTransfer[] = [];
     const myNonChangeAddresses = accountAddress.used.concat(accountAddress.unused);
@@ -134,7 +134,7 @@ export const filterTokenTransfers = (
 
                 const incomingForOutput = filterTargets(
                     myNonChangeAddresses,
-                    transformInputOutput([output], token)
+                    transformInputOutput([output], token),
                 );
 
                 let amount = '0';
@@ -173,7 +173,7 @@ export const filterTokenTransfers = (
 export const transformTransaction = (
     descriptor: string,
     accountAddress: AccountAddresses | undefined,
-    blockfrostTxData: BlockfrostTransaction
+    blockfrostTxData: BlockfrostTransaction,
 ): Transaction => {
     const myAddresses = accountAddress
         ? accountAddress.change.concat(accountAddress.used, accountAddress.unused)
@@ -272,7 +272,7 @@ export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo =
             transactions: !blockfrostTxs
                 ? []
                 : blockfrostTxs?.map(tx =>
-                      transformTransaction(info.descriptor, info.addresses, tx)
+                      transformTransaction(info.descriptor, info.addresses, tx),
                   ),
         },
     };

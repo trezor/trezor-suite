@@ -43,7 +43,7 @@ export const Fade: React.FC<FadeProps> = ({
                     }
                 });
             },
-            { threshold }
+            { threshold },
         );
         observer.observe(div);
         return () => observer.unobserve(div);

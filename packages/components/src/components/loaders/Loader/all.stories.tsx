@@ -39,5 +39,5 @@ storiesOf('Loaders', module).add(
         options: {
             showPanel: false,
         },
-    }
+    },
 );

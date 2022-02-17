@@ -14,10 +14,5 @@
         "types": ["jest", "node"]
     },
     "include": ["./src/index.ts", "./src/utils/fetch-browser.ts"],
-    "exclude": [
-        "node_modules",
-        "**/__tests__/**",
-        "**/__mocks__/**",
-        "**/*.test.ts"
-    ]
+    "exclude": ["node_modules", "**/__tests__/**", "**/__mocks__/**", "**/*.test.ts"]
 }

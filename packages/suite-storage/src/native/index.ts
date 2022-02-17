@@ -13,7 +13,7 @@ export type OnUpgradeFunc<TDBStructure> = (
     db: IDBPDatabase<TDBStructure>,
     oldVersion: number,
     newVersion: number | null,
-    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[], 'versionchange'>
+    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[], 'versionchange'>,
 ) => Promise<void>;
 
 class CommonDB<TDBStructure> {
@@ -36,7 +36,7 @@ class CommonDB<TDBStructure> {
         onUpgrade: OnUpgradeFunc<TDBStructure>,
         onDowngrade: () => any,
         onBlocked?: () => void,
-        onBlocking?: () => void
+        onBlocking?: () => void,
     ) {
         if (CommonDB.instance) {
             return CommonDB.instance;
@@ -100,31 +100,31 @@ class CommonDB<TDBStructure> {
     addItem = <
         TStoreName extends StoreNames<TDBStructure>,
         TItem extends StoreValue<TDBStructure, TStoreName>,
-        TKey extends StoreKey<TDBStructure, TStoreName>
+        TKey extends StoreKey<TDBStructure, TStoreName>,
     >(
         _store: TStoreName,
         _item: TItem,
         _key?: TKey,
-        _upsert?: boolean
+        _upsert?: boolean,
     ): Promise<StoreKey<TDBStructure, TStoreName>> =>
         // @ts-ignore
         Promise.resolve();
 
     addItems = <
         TStoreName extends StoreNames<TDBStructure>,
-        TItem extends StoreValue<TDBStructure, TStoreName>
+        TItem extends StoreValue<TDBStructure, TStoreName>,
     >(
         _store: TStoreName,
         _items: TItem[],
-        _upsert?: boolean
+        _upsert?: boolean,
     ) => Promise.resolve();
 
     getItemByPK = <
         TStoreName extends StoreNames<TDBStructure>,
-        TKey extends StoreKey<TDBStructure, TStoreName>
+        TKey extends StoreKey<TDBStructure, TStoreName>,
     >(
         _store: TStoreName,
-        _primaryKey: TKey
+        _primaryKey: TKey,
     ): Promise<StoreValue<TDBStructure, TStoreName> | undefined> =>
         // @ts-ignore
         Promise.resolve();
@@ -132,49 +132,49 @@ class CommonDB<TDBStructure> {
     getItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
-        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
+        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
     >(
         _store: TStoreName,
         _indexName: TIndexName,
-        _key: TKey
+        _key: TKey,
     ) => Promise.resolve();
 
     updateItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
-        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
+        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
     >(
         _store: TStoreName,
         _indexName: TIndexName,
         _key: TKey,
-        _updateObject: { [key: string]: any }
+        _updateObject: { [key: string]: any },
     ) => Promise.resolve();
 
     removeItemByPK = <
         TStoreName extends StoreNames<TDBStructure>,
-        TKey extends StoreKey<TDBStructure, TStoreName>
+        TKey extends StoreKey<TDBStructure, TStoreName>,
     >(
         _store: TStoreName,
-        _key: TKey
+        _key: TKey,
     ) => Promise.resolve();
 
     removeItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
-        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
+        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
     >(
         _store: TStoreName,
         _indexName: TIndexName,
-        _key: TKey
+        _key: TKey,
     ) => Promise.resolve();
 
     getItemsExtended = <
         TStoreName extends StoreNames<TDBStructure>,
-        TIndexName extends IndexNames<TDBStructure, TStoreName>
+        TIndexName extends IndexNames<TDBStructure, TStoreName>,
     >(
         _store: TStoreName,
         _indexName?: TIndexName,
-        _filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
+        _filters?: { key?: any; offset?: number; count?: number; reverse?: boolean },
     ) => Promise.resolve() as unknown as Promise<StoreValue<TDBStructure, TStoreName>[]>;
 
     getItemsWithKeys = <TStoreName extends StoreNames<TDBStructure>>(_store: TStoreName) =>

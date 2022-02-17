@@ -14,7 +14,10 @@
     },
     "main": "./lib/main.js",
     "browser": "./lib/renderer.js",
-    "files": ["lib/main.js", "lib/renderer.js"],
+    "files": [
+        "lib/main.js",
+        "lib/renderer.js"
+    ],
     "types": "lib/main.d.ts",
     "typings": "lib/main.d.ts",
     "scripts": {

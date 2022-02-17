@@ -36,5 +36,5 @@ storiesOf('Timerange', module).add(
     },
     {
         argTypes: { onChange: { action: 'onChange' } },
-    }
+    },
 );

@@ -42,7 +42,7 @@ type ResponseType<T extends MessageType> = T extends typeof MESSAGES.GET_INFO
 type Reply<T extends MessageType> = Without<Extract<Response, { type: ResponseType<T> }>, 'id'>;
 
 const onRequest = async <T extends Message>(
-    request: Request<T>
+    request: Request<T>,
 ): Promise<Reply<typeof request.type>> => {
     const client = await request.connect();
     switch (request.type) {

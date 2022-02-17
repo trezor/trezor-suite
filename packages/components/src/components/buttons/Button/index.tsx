@@ -229,7 +229,7 @@ const Button = React.forwardRef(
             onChange,
             ...rest
         }: Props,
-        ref?: React.Ref<HTMLButtonElement>
+        ref?: React.Ref<HTMLButtonElement>,
     ) => {
         const theme = useTheme();
         const hasLabel = !!children;
@@ -267,7 +267,7 @@ const Button = React.forwardRef(
                 {isLoading && alignIcon === 'right' && Loader}
             </Wrapper>
         );
-    }
+    },
 );
 
 export { Button, Props as ButtonProps };

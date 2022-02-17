@@ -1,49 +1,57 @@
 # 2.1.1
 
 #### changes
-- Proxy agent in Ripple worker is set based on `RippleAPI._ALLOW_AGENT` flag, in order not to fail in standalone `trezor-connect` implementation (#4942)
+
+-   Proxy agent in Ripple worker is set based on `RippleAPI._ALLOW_AGENT` flag, in order not to fail in standalone `trezor-connect` implementation (#4942)
 
 # 2.1.0
 
 #### changes
-- Added `proxy` param allowing workers to initialize SocksProxyAgent and use it for proxying communication
-- Added support for `Electrum` backend
-- Using common utilities from new `@trezor/utils` package
-- Updated dependencies
+
+-   Added `proxy` param allowing workers to initialize SocksProxyAgent and use it for proxying communication
+-   Added support for `Electrum` backend
+-   Using common utilities from new `@trezor/utils` package
+-   Updated dependencies
 
 # 2.0.0
 
 #### changes
-- Refactored architecture of workers. They may now be used as commonjs module in main context or in WebWorker context like before.
-- Updated library build targets to es2017 reducing polyfills from typescript transpilation.
-- Removed `build` directory from npm registry.
-- Updated dependencies.
+
+-   Refactored architecture of workers. They may now be used as commonjs module in main context or in WebWorker context like before.
+-   Updated library build targets to es2017 reducing polyfills from typescript transpilation.
+-   Removed `build` directory from npm registry.
+-   Updated dependencies.
 
 # 1.1.0
 
 #### changes
-- lower default XRP reserve
-- set XRP reserve after `getInfo` call (get server info)
-- added support for `Cardano` using `Blockfrost` backend
-- fix blockbook transaction target when tx is sent to change address
-- fix blockbook (ETH) transaction target when swapping ETH <> ERC20
+
+-   lower default XRP reserve
+-   set XRP reserve after `getInfo` call (get server info)
+-   added support for `Cardano` using `Blockfrost` backend
+-   fix blockbook transaction target when tx is sent to change address
+-   fix blockbook (ETH) transaction target when swapping ETH <> ERC20
 
 # 1.0.17
 
 #### changes
-- Fixed tx.amount for btc-like sent txs
-- Added tx.totalSpent
-- Added tx.details.locktime
+
+-   Fixed tx.amount for btc-like sent txs
+-   Added tx.totalSpent
+-   Added tx.details.locktime
+
 # 1.0.16
 
 #### changes
-- Fixed an issue where account with non-zero balance could be marked as empty (eth)
-- Pending ETH transaction fee calculated from `ethereumSpecific` field
-- Added missing types (data) to `ethereumSpecific` field
+
+-   Fixed an issue where account with non-zero balance could be marked as empty (eth)
+-   Pending ETH transaction fee calculated from `ethereumSpecific` field
+-   Added missing types (data) to `ethereumSpecific` field
 
 # 1.0.15
 
 #### changes
+
 -   Added `details` to `Transaction` object (vin, vout, size)
 -   Fixed types in `BlockchainLink` event listeners
 -   Move "workersDepenedecies" to regular "dependencies" in package.json

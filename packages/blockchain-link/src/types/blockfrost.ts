@@ -247,31 +247,31 @@ export interface BlockfrostUtxos {
 declare function FSend(method: 'GET_SERVER_INFO'): Promise<ServerInfo>;
 declare function FSend(
     method: 'GET_BLOCK',
-    params: { hashOrNumber: number | string }
+    params: { hashOrNumber: number | string },
 ): Promise<BlockContent>;
 declare function FSend(
     method: 'GET_ACCOUNT_INFO',
-    params: AccountInfoParams
+    params: AccountInfoParams,
 ): Promise<BlockfrostAccountInfo>;
 declare function FSend(
     method: 'GET_ACCOUNT_UTXO',
-    params: AccountUtxoParams
+    params: AccountUtxoParams,
 ): Promise<BlockfrostUtxos[]>;
 declare function FSend(
     method: 'GET_TRANSACTION',
-    params: { txId: string }
+    params: { txId: string },
 ): Promise<BlockfrostTransaction>;
 declare function FSend(method: 'PUSH_TRANSACTION', params: { txData: string }): Promise<string>;
 declare function FSend(method: 'SUBSCRIBE_BLOCK'): Promise<Subscribe>;
 declare function FSend(method: 'UNSUBSCRIBE_BLOCK'): Promise<Subscribe>;
 declare function FSend(
     method: 'SUBSCRIBE_ADDRESS',
-    params: { addresses: string[] }
+    params: { addresses: string[] },
 ): Promise<Subscribe>;
 declare function FSend(method: 'UNSUBSCRIBE_ADDRESS'): Promise<Subscribe>;
 declare function FSend(
     method: 'GET_BALANCE_HISTORY',
-    params: AccountBalanceHistoryParams
+    params: AccountBalanceHistoryParams,
 ): Promise<AccountBalanceHistory[]>;
 declare function FSend(method: 'ESTIMATE_FEE', params: EstimateFeeParams): Promise<Fee>;
 export type Send = typeof FSend;

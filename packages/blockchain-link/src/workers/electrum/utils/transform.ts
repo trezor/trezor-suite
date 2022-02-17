@@ -21,7 +21,7 @@ export const blockheaderToBlockhash = (header: string) => {
 
 export const tryGetScripthash = (
     address: string,
-    network?: Network
+    network?: Network,
 ): { valid: true; scripthash: string } | { valid: false } => {
     try {
         return {

@@ -52,7 +52,7 @@ const Label = styled.div<IconWrapperProps>`
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     onClick: (
-        event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null
+        event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
     ) => any;
     isChecked?: boolean;
 }

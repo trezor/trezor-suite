@@ -61,8 +61,8 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
 
         await Promise.all(
             shToSubscribe.map(scripthash =>
-                api().request('blockchain.scripthash.subscribe', scripthash)
-            )
+                api().request('blockchain.scripthash.subscribe', scripthash),
+            ),
         );
         return { subscribed: true };
     };
@@ -82,8 +82,8 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
 
         await Promise.all(
             shToUnsubscribe.map(scripthash =>
-                api().request('blockchain.scripthash.unsubscribe', scripthash)
-            )
+                api().request('blockchain.scripthash.unsubscribe', scripthash),
+            ),
         );
         return { subscribed: false };
     };

@@ -22,7 +22,7 @@ describe('getBinary()', () => {
                 version: [1, 999, 9],
                 releases: RELEASES_T1,
                 baseUrl: BASE_URL,
-            })
+            }),
         ).rejects.toThrow('no firmware found for this device');
     });
 
@@ -63,7 +63,7 @@ describe('getBinary()', () => {
                 releases: RELEASES_T1,
                 baseUrl: BASE_URL,
                 btcOnly: true,
-            })
+            }),
         ).rejects.toThrow('firmware version 1,8,2 does not exist in btc only variant');
     });
 
@@ -85,9 +85,9 @@ describe('getBinary()', () => {
                 version: [1, 8, 2],
                 releases: RELEASES_T1,
                 baseUrl: BASE_URL,
-            })
+            }),
         ).rejects.toThrow(
-            'version provided as param does not match firmware version found by features in bootloader'
+            'version provided as param does not match firmware version found by features in bootloader',
         );
     });
 
@@ -107,7 +107,7 @@ describe('getBinary()', () => {
                 version: RELEASES_T1[0].version, // last version
                 releases: RELEASES_T1,
                 baseUrl: BASE_URL,
-            })
+            }),
         );
         expect(result).toBeDefined();
     });

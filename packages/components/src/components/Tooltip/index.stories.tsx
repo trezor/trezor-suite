@@ -22,7 +22,7 @@ storiesOf('Tooltip', module).add('Tooltip', () => {
             Left: 'left',
             Right: 'right',
         },
-        'bottom'
+        'bottom',
     );
 
     return (

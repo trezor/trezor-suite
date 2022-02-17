@@ -10,7 +10,7 @@ const addressesFromAccounts = (array: (AccountAddresses | undefined)[]) =>
     array
         .filter(isNotUndefined)
         .flatMap(({ change, used, unused }) =>
-            change.concat(used, unused).map(({ address }) => address)
+            change.concat(used, unused).map(({ address }) => address),
         );
 
 export const createAddressManager = (network?: Network) => {
@@ -25,7 +25,7 @@ export const createAddressManager = (network?: Network) => {
                 ...dic,
                 [addr]: addressToScripthash(addr, network),
             }),
-            subscribedAddrs
+            subscribedAddrs,
         );
 
         return toAdd.map(addr => subscribedAddrs[addr]);
@@ -49,7 +49,7 @@ export const createAddressManager = (network?: Network) => {
                 ...dic,
                 [acc.descriptor]: acc.addresses || { change: [], used: [], unused: [] },
             }),
-            subscribedAccs
+            subscribedAccs,
         );
 
         const addresses = addressesFromAccounts(toAdd.map(acc => acc.addresses));
@@ -61,7 +61,7 @@ export const createAddressManager = (network?: Network) => {
         const [toRemove, toPreserve] = accounts
             ? objectPartition(
                   subscribedAccs,
-                  accounts.map(({ descriptor }) => descriptor)
+                  accounts.map(({ descriptor }) => descriptor),
               )
             : [subscribedAccs, {}];
 
@@ -81,7 +81,7 @@ export const createAddressManager = (network?: Network) => {
         const [account, addresses] =
             Object.entries(subscribedAccs).find(
                 ([_acc, { change, unused, used }]) =>
-                    !!change.concat(used, unused).find(ad => ad.address === address)
+                    !!change.concat(used, unused).find(ad => ad.address === address),
             ) || [];
         return {
             descriptor: account || address,

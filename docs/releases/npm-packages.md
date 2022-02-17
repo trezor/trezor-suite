@@ -29,7 +29,6 @@ If you want to publish to npm as `beta` (from any branch) do the following:
 1. Commit your changes as `release: @trezor/<PACKAGE-NAME> X.X.X-beta.X`.
 1. Use `beta <PACKAGE-NAME> deploy npm` job.
 
-
 ### Release new trezor-connect with updated package.
 
 1. Upgrade the version of the package in `devDependencies` and `extendedDependencies` of `trezor-connect`.

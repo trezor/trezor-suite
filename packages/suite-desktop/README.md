@@ -3,6 +3,7 @@
 Trezor Suite desktop application. [Wiki page](https://wiki.trezor.io/Apps:Trezor_Suite)
 
 ## Development
+
 ```
 yarn workspace @trezor/suite-desktop dev
 ```
@@ -12,7 +13,9 @@ yarn workspace @trezor/suite-desktop dev
 ---
 
 ## Build
+
 Prerequisites:
+
 ```
 yarn && yarn build:libs
 yarn workspace @trezor/suite-data msg-system-sign-config
@@ -20,6 +23,7 @@ yarn workspace @trezor/suite-data copy-static-files
 ```
 
 ### Linux
+
 ```
 yarn workspace @trezor/suite-desktop build:linux
 chmod u+x ./packages/suite-desktop/build-electron/Trezor-Suite[version].AppImage
@@ -29,6 +33,7 @@ chmod u+x ./packages/suite-desktop/build-electron/Trezor-Suite[version].AppImage
 _Note: On Debian, CentOS and similar distributions you might need to add a `--no-sandbox` flag_
 
 ### MacOS
+
 ```
 yarn workspace @trezor/suite-desktop build:mac
 ```
@@ -36,11 +41,13 @@ yarn workspace @trezor/suite-desktop build:mac
 Go to `./packages/suite-desktop/build-electron/mac` add open app from the right click
 
 or open app from terminal:
+
 ```
 ./packages/suite-desktop/build-electron/mac/Trezor\ Suite.app/Contents/MacOS/Trezor\ Suite
 ```
 
 ### Windows
+
 ```
 yarn workspace @trezor/suite-desktop build:win
 ```
@@ -56,7 +63,7 @@ yarn workspace @trezor/suite-desktop build:linux
 appimage-run ./packages/suite-desktop/build-electron/Trezor-Suite[version].AppImage
 ```
 
-_Note: If build fail on missing cache file _(.cache/**/mksquashfsthis)_ additionally run `./nixos-fix-binaries.sh` script and repeat build step._
+_Note: If build fail on missing cache file _(.cache/\*\*/mksquashfsthis)_ additionally run `./nixos-fix-binaries.sh` script and repeat build step._
 
 ---
 

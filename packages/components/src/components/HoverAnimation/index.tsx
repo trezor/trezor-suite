@@ -33,7 +33,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
                     background-color: ${props =>
                         transparentize(
                             props.theme.HOVER_TRANSPARENTIZE_FILTER,
-                            props.theme.HOVER_PRIMER_COLOR
+                            props.theme.HOVER_PRIMER_COLOR,
                         )};
                     ${props.size === 'tiny'
                         ? css`

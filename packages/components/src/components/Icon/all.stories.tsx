@@ -46,5 +46,5 @@ storiesOf('Icons', module).add(
         options: {
             showPanel: false,
         },
-    }
+    },
 );

@@ -53,5 +53,5 @@ storiesOf('Flags', module).add(
         options: {
             showPanel: false,
         },
-    }
+    },
 );

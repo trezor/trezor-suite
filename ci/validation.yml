@@ -1,3 +1,9 @@
+code format lint:
+  stage: validation
+  script:
+    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn format:verify
+
 lint:
   stage: validation
   script:

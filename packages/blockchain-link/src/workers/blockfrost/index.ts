@@ -33,7 +33,7 @@ const getBlockHash = async (request: Request<MessageTypes.GetBlockHash>) => {
 };
 
 const getAccountBalanceHistory = async (
-    request: Request<MessageTypes.GetAccountBalanceHistory>
+    request: Request<MessageTypes.GetAccountBalanceHistory>,
 ) => {
     const socket = await request.connect();
     const history = await socket.getAccountBalanceHistory(request.payload);
@@ -188,7 +188,7 @@ const unsubscribeBlock = async ({ state, connect }: Context) => {
 
 const unsubscribeAccounts = async (
     { state, connect }: Context,
-    accounts?: SubscriptionAccountInfo[]
+    accounts?: SubscriptionAccountInfo[],
 ) => {
     state.removeAccounts(accounts || state.getAccounts());
 

@@ -12,7 +12,7 @@ storiesOf('Dropdown', module).add('Dropdown', () => {
             left: 'left',
             right: 'right',
         },
-        null
+        null,
     );
     const isDisabled = boolean('isDisabled', false);
     const offset = number('offset', 10);

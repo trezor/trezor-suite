@@ -100,7 +100,7 @@ const Icon = React.forwardRef(
             onFocus,
             ...rest
         }: Props,
-        ref?: React.Ref<HTMLDivElement>
+        ref?: React.Ref<HTMLDivElement>,
     ) => {
         const theme = useTheme();
         const defaultColor = color ?? theme.TYPE_LIGHT_GREY;
@@ -131,7 +131,7 @@ const Icon = React.forwardRef(
                 />
             </SvgWrapper>
         );
-    }
+    },
 );
 
 export { Icon, Props as IconProps };

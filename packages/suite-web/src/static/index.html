@@ -3,53 +3,68 @@
     <head>
         <title>Trezor Suite</title>
         <meta name="google" content="notranslate" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta charset="utf-8">
-        
-        <link
-            media="all"
-            rel="stylesheet"
-            href="<%= assetPrefix %>/static/fonts/fonts.css"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charset="utf-8" />
+
+        <link media="all" rel="stylesheet" href="<%= assetPrefix %>/static/fonts/fonts.css" />
         <link rel="icon" href="<%= assetPrefix %>/static/images/icons/favicon/favicon.png" />
         <link
             rel="apple-touch-icon"
             href="<%= assetPrefix %>/static/images/icons/favicon/favicon.png"
         />
         <% if(isOnionLocation) { %>
-            <meta
-                http-equiv="onion-location"
-                content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
-            />
+        <meta
+            http-equiv="onion-location"
+            content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
+        />
         <% } %>
         <script type="text/javascript">
             if (localStorage.getItem('translation_mode') === 'true') {
-                console.warn("INJECTING CROWDIN IN-CONTEXT");
+                console.warn('INJECTING CROWDIN IN-CONTEXT');
                 var _jipt = [];
                 _jipt.push(['project', 'trezor-suite']);
-                _jipt.push(['escape', function() {
-                    localStorage.removeItem('translation_mode');
-                    window.location.reload();
-                }]);
+                _jipt.push([
+                    'escape',
+                    function () {
+                        localStorage.removeItem('translation_mode');
+                        window.location.reload();
+                    },
+                ]);
                 var script = document.createElement('script');
-                script.setAttribute('src','//cdn.crowdin.com/jipt/jipt.js');
+                script.setAttribute('src', '//cdn.crowdin.com/jipt/jipt.js');
                 document.head.prepend(script);
             }
 
             // switch favicon if dark mode
-            var icon = document.querySelector('link[rel=icon]')
-            var appleIcon = document.querySelector('link[rel=apple-touch-icon]')
+            var icon = document.querySelector('link[rel=icon]');
+            var appleIcon = document.querySelector('link[rel=apple-touch-icon]');
             function switchIcons(event) {
-              var isDarkMode = event ? event.matches : window.matchMedia('(prefers-color-scheme: dark)').matches
-              if (isDarkMode) {
-                  icon.setAttribute('href', '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png')
-                  appleIcon.setAttribute('href', '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png')
-              } else {
-                icon.setAttribute('href', '<%= assetPrefix %>/static/images/icons/favicon/favicon.png')
-                appleIcon.setAttribute('href', '<%= assetPrefix %>/static/images/icons/favicon/favicon.png')
-              }
+                var isDarkMode = event
+                    ? event.matches
+                    : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (isDarkMode) {
+                    icon.setAttribute(
+                        'href',
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png',
+                    );
+                    appleIcon.setAttribute(
+                        'href',
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png',
+                    );
+                } else {
+                    icon.setAttribute(
+                        'href',
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png',
+                    );
+                    appleIcon.setAttribute(
+                        'href',
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png',
+                    );
+                }
             }
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', switchIcons)
+            window
+                .matchMedia('(prefers-color-scheme: dark)')
+                .addEventListener('change', switchIcons);
             switchIcons();
         </script>
         <script src="<%= assetPrefix %>/static/browser-detection/index.js"></script>

@@ -170,31 +170,31 @@ declare function FSend(method: 'getTransaction', params: { txid: string }): Prom
 declare function FSend(method: 'sendTransaction', params: { hex: string }): Promise<Push>;
 declare function FSend(
     method: 'getBalanceHistory',
-    params: AccountBalanceHistoryParams
+    params: AccountBalanceHistoryParams,
 ): Promise<AccountBalanceHistory[]>;
 declare function FSend(
     method: 'getCurrentFiatRates',
-    params: GetCurrentFiatRatesParams
+    params: GetCurrentFiatRatesParams,
 ): Promise<TimestampedFiatRates>;
 declare function FSend(
     method: 'getFiatRatesTickersList',
-    params: GetFiatRatesTickersListParams
+    params: GetFiatRatesTickersListParams,
 ): Promise<AvailableCurrencies>;
 declare function FSend(
     method: 'getFiatRatesForTimestamps',
-    params: GetFiatRatesForTimestampsParams
+    params: GetFiatRatesForTimestampsParams,
 ): Promise<FiatRatesForTimestamp>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
     method: 'subscribeAddresses',
-    params: { addresses: string[] }
+    params: { addresses: string[] },
 ): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeAddresses'): Promise<Subscribe>;
 declare function FSend(method: 'subscribeNewBlock'): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeNewBlock'): Promise<Subscribe>;
 declare function FSend(
     method: 'subscribeFiatRates',
-    params: { currency?: string }
+    params: { currency?: string },
 ): Promise<Subscribe>;
 declare function FSend(method: 'unsubscribeFiatRates'): Promise<Subscribe>;
 export type Send = typeof FSend;

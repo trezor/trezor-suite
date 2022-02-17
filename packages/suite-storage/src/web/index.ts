@@ -17,7 +17,7 @@ export type OnUpgradeFunc<TDBStructure> = (
     db: IDBPDatabase<TDBStructure>,
     oldVersion: number,
     newVersion: number | null,
-    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[], 'versionchange'>
+    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[], 'versionchange'>,
 ) => Promise<void>;
 
 class CommonDB<TDBStructure> {
@@ -40,7 +40,7 @@ class CommonDB<TDBStructure> {
         onUpgrade: OnUpgradeFunc<TDBStructure>,
         onDowngrade: () => any,
         onBlocked?: () => void,
-        onBlocking?: () => void
+        onBlocking?: () => void,
     ) {
         if (CommonDB.instance) {
             return CommonDB.instance;
@@ -154,7 +154,7 @@ class CommonDB<TDBStructure> {
                 if (error && error.name === 'VersionError') {
                     indexedDB.deleteDatabase(this.dbName);
                     console.warn(
-                        'IndexedDB was deleted because your version is higher than it should be (downgrade)'
+                        'IndexedDB was deleted because your version is higher than it should be (downgrade)',
                     );
                     this.onDowngrade();
                     throw error;
@@ -169,12 +169,12 @@ class CommonDB<TDBStructure> {
     addItem = async <
         TStoreName extends StoreNames<TDBStructure>,
         TItem extends StoreValue<TDBStructure, TStoreName>,
-        TKey extends StoreKey<TDBStructure, TStoreName>
+        TKey extends StoreKey<TDBStructure, TStoreName>,
     >(
         store: TStoreName,
         item: TItem,
         key?: TKey,
-        upsert?: boolean
+        upsert?: boolean,
     ): Promise<StoreKey<TDBStructure, TStoreName>> => {
         // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
         // and I couldn't figure out how to catch it. Maybe a bug in idb?
@@ -207,11 +207,11 @@ class CommonDB<TDBStructure> {
 
     addItems = async <
         TStoreName extends StoreNames<TDBStructure>,
-        TItem extends StoreValue<TDBStructure, TStoreName>
+        TItem extends StoreValue<TDBStructure, TStoreName>,
     >(
         store: TStoreName,
         items: TItem[],
-        upsert?: boolean
+        upsert?: boolean,
     ) => {
         const db = await this.getDB();
         // jest won't resolve tx.done when 'items' is empty array
@@ -231,7 +231,7 @@ class CommonDB<TDBStructure> {
                         keys.push(result);
                     });
                 })
-                .concat(tx.done)
+                .concat(tx.done),
         ).then(_ => {
             this.notify(store, keys);
         });
@@ -241,10 +241,10 @@ class CommonDB<TDBStructure> {
 
     getItemByPK = async <
         TStoreName extends StoreNames<TDBStructure>,
-        TKey extends StoreKey<TDBStructure, TStoreName>
+        TKey extends StoreKey<TDBStructure, TStoreName>,
     >(
         store: TStoreName,
-        primaryKey: TKey
+        primaryKey: TKey,
     ): Promise<StoreValue<TDBStructure, TStoreName> | undefined> => {
         const db = await this.getDB();
         const tx = db.transaction(store);
@@ -255,11 +255,11 @@ class CommonDB<TDBStructure> {
     getItemByIndex = async <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
-        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
+        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
     >(
         store: TStoreName,
         indexName: TIndexName,
-        key: TKey
+        key: TKey,
     ) => {
         // returns the tx with txID
         const db = await this.getDB();
@@ -272,12 +272,12 @@ class CommonDB<TDBStructure> {
     updateItemByIndex = async <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
-        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
+        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
     >(
         store: TStoreName,
         indexName: TIndexName,
         key: TKey,
-        updateObject: { [key: string]: any }
+        updateObject: { [key: string]: any },
     ) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
@@ -292,10 +292,10 @@ class CommonDB<TDBStructure> {
 
     removeItemByPK = async <
         TStoreName extends StoreNames<TDBStructure>,
-        TKey extends StoreKey<TDBStructure, TStoreName>
+        TKey extends StoreKey<TDBStructure, TStoreName>,
     >(
         store: TStoreName,
-        key: TKey
+        key: TKey,
     ) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
@@ -310,11 +310,11 @@ class CommonDB<TDBStructure> {
     removeItemByIndex = async <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
-        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
+        TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>,
     >(
         store: TStoreName,
         indexName: TIndexName,
-        key: TKey
+        key: TKey,
     ) => {
         const db = await this.getDB();
         const tx = db.transaction(store, 'readwrite');
@@ -330,11 +330,11 @@ class CommonDB<TDBStructure> {
 
     getItemsExtended = async <
         TStoreName extends StoreNames<TDBStructure>,
-        TIndexName extends IndexNames<TDBStructure, TStoreName>
+        TIndexName extends IndexNames<TDBStructure, TStoreName>,
     >(
         store: TStoreName,
         indexName?: TIndexName,
-        filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
+        filters?: { key?: any; offset?: number; count?: number; reverse?: boolean },
     ) => {
         const db = await this.getDB();
         const tx = db.transaction(store);
@@ -344,7 +344,7 @@ class CommonDB<TDBStructure> {
                 if (filters.offset !== undefined || filters.count !== undefined) {
                     // cursor with keyrange for given accountId (covers all timestamps)
                     let cursor = await index.openCursor(
-                        IDBKeyRange.bound([filters.key], [filters.key, ''])
+                        IDBKeyRange.bound([filters.key], [filters.key, '']),
                     );
                     const items = [];
                     let counter = 0;
@@ -401,7 +401,7 @@ class CommonDB<TDBStructure> {
     };
 
     clearStores = async <TStoreName extends StoreNames<TDBStructure>>(
-        storeNames?: TStoreName[]
+        storeNames?: TStoreName[],
     ) => {
         const db = await this.getDB();
 

@@ -89,5 +89,5 @@ storiesOf('Prompts', module).add(
         options: {
             showPanel: false,
         },
-    }
+    },
 );

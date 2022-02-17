@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ paddingSize: string }>`
 const getPaddingSize = (
     largePadding?: boolean,
     noPadding?: boolean,
-    noVerticalPadding?: boolean
+    noVerticalPadding?: boolean,
 ) => {
     if (noPadding) return '0px';
     if (noVerticalPadding) {

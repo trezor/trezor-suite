@@ -34,7 +34,7 @@ packageJSON.main = 'lib/index.js';
 fs.writeFileSync(
     path.resolve(npm, 'package.json'),
     JSON.stringify(packageJSON, null, '  '),
-    'utf-8'
+    'utf-8',
 );
 
 fs.copySync(path.resolve(npm, '../README.md'), path.resolve(npm, 'README.md'));

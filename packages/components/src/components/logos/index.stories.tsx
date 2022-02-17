@@ -82,5 +82,5 @@ storiesOf('Logos', module).add(
         options: {
             showPanel: false,
         },
-    }
+    },
 );

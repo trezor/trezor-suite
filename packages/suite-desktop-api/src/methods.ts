@@ -43,19 +43,15 @@ type StrictChannel = { [name: string]: any };
  * equals
  * type Fn = ('foo', (event: Event, payload: number) => {}) & ('bar', (event: Event, payload: string) => {})
  */
-export type ListenerMethod<Channels extends StrictChannel, E = null> = MethodFactory<
-    {
-        [C in keyof Channels]: (
-            channel: C,
-            listener: OmitEvent<
-                E,
-                Channels[C] extends void
-                    ? (event: E) => void
-                    : (event: E, payload: Channels[C]) => void
-            >,
-        ) => void;
-    }
->;
+export type ListenerMethod<Channels extends StrictChannel, E = null> = MethodFactory<{
+    [C in keyof Channels]: (
+        channel: C,
+        listener: OmitEvent<
+            E,
+            Channels[C] extends void ? (event: E) => void : (event: E, payload: Channels[C]) => void
+        >,
+    ) => void;
+}>;
 
 /**
  * Send method transforms channels list in to send function.
@@ -71,14 +67,12 @@ export type ListenerMethod<Channels extends StrictChannel, E = null> = MethodFac
  * equals
  * type Fn = (c: 'foo', p: number) => {} & (c: 'bar', p?: string) => {} & (c: 'xyz') => {}
  */
-export type SendMethod<Channels extends StrictChannel, E = null> = MethodFactory<
-    {
-        [C in keyof Channels]: OmitEvent<
-            E,
-            Channels[C] extends void ? (channel: C) => void : OptionalParams<C, Channels[C]>
-        >;
-    }
->;
+export type SendMethod<Channels extends StrictChannel, E = null> = MethodFactory<{
+    [C in keyof Channels]: OmitEvent<
+        E,
+        Channels[C] extends void ? (channel: C) => void : OptionalParams<C, Channels[C]>
+    >;
+}>;
 
 /**
  * Invoke method transforms channels list in to intersection of invoke functions.
@@ -94,14 +88,12 @@ export type SendMethod<Channels extends StrictChannel, E = null> = MethodFactory
  * equals
  * type Fn = (channel: 'foo') => Promise<void> & (channel: 'bar', arg1: number, arg2: boolean) => Promise<{ success: boolean }>;
  */
-export type InvokeMethod<Channels extends StrictChannel, E = null> = MethodFactory<
-    {
-        [C in keyof Channels]: OmitEvent<
-            E,
-            (channel: C, ...args: Parameters<Channels[C]>) => Promise<ReturnType<Channels[C]>>
-        >;
-    }
->;
+export type InvokeMethod<Channels extends StrictChannel, E = null> = MethodFactory<{
+    [C in keyof Channels]: OmitEvent<
+        E,
+        (channel: C, ...args: Parameters<Channels[C]>) => Promise<ReturnType<Channels[C]>>
+    >;
+}>;
 
 /**
  * HandleMethod method transforms channels list in to intersection of handle functions.
@@ -112,17 +104,15 @@ export type InvokeMethod<Channels extends StrictChannel, E = null> = MethodFacto
  * equals
  * type Fn = (('foo', (event: Electron.IpcMainInvokeEvent) => void) & ('bar', (event: Event, arg1: number, arg2: boolean) => { success: boolean })
  */
-export type HandleMethod<Channels extends StrictChannel, E = null> = MethodFactory<
-    {
-        [C in keyof Channels]: (
-            channel: C,
-            handler: OmitEvent<
-                E,
-                (
-                    event: E,
-                    ...args: Parameters<Channels[C]>
-                ) => ReturnType<Channels[C]> | Promise<ReturnType<Channels[C]>>
-            >,
-        ) => void;
-    }
->;
+export type HandleMethod<Channels extends StrictChannel, E = null> = MethodFactory<{
+    [C in keyof Channels]: (
+        channel: C,
+        handler: OmitEvent<
+            E,
+            (
+                event: E,
+                ...args: Parameters<Channels[C]>
+            ) => ReturnType<Channels[C]> | Promise<ReturnType<Channels[C]>>
+        >,
+    ) => void;
+}>;

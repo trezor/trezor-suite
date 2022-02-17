@@ -73,5 +73,5 @@ storiesOf('Tooltip', module).add(
         options: {
             showPanel: false,
         },
-    }
+    },
 );

@@ -148,7 +148,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const api = await request.connect();
     const transactionsData: RawTxData = await api.request('account_tx', requestOptions);
     account.history.transactions = transactionsData.transactions.map(raw =>
-        utils.transformTransaction(payload.descriptor, raw.tx)
+        utils.transformTransaction(payload.descriptor, raw.tx),
     );
 
     return {
@@ -503,7 +503,7 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         }
         this.pingTimeout = setTimeout(
             () => this.onPing(),
-            this.settings.pingTimeout || DEFAULT_PING_TIMEOUT
+            this.settings.pingTimeout || DEFAULT_PING_TIMEOUT,
         );
     }
 

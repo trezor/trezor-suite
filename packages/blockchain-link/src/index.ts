@@ -112,7 +112,7 @@ class BlockchainLink extends EventEmitter {
 
     /** Get hash of a block of given height. */
     getBlockHash(
-        payload: MessageTypes.GetBlockHash['payload']
+        payload: MessageTypes.GetBlockHash['payload'],
     ): Promise<ResponseTypes.GetBlockHash['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_BLOCK_HASH,
@@ -122,7 +122,7 @@ class BlockchainLink extends EventEmitter {
 
     /** Get info about an account, eg. derived addresses, balance, transaction history etc. */
     getAccountInfo(
-        payload: MessageTypes.GetAccountInfo['payload']
+        payload: MessageTypes.GetAccountInfo['payload'],
     ): Promise<ResponseTypes.GetAccountInfo['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_ACCOUNT_INFO,
@@ -132,7 +132,7 @@ class BlockchainLink extends EventEmitter {
 
     /** Get unspent inputs for given account. Works only for bitcoin(like) networks. */
     getAccountUtxo(
-        payload: MessageTypes.GetAccountUtxo['payload']
+        payload: MessageTypes.GetAccountUtxo['payload'],
     ): Promise<ResponseTypes.GetAccountUtxo['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_ACCOUNT_UTXO,
@@ -146,7 +146,7 @@ class BlockchainLink extends EventEmitter {
      * this method exposes raw response from the BE.
      */
     getTransaction(
-        payload: MessageTypes.GetTransaction['payload']
+        payload: MessageTypes.GetTransaction['payload'],
     ): Promise<ResponseTypes.GetTransaction['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_TRANSACTION,
@@ -159,7 +159,7 @@ class BlockchainLink extends EventEmitter {
      * Used for rendering a graph in Suite's dashboard.
      */
     getAccountBalanceHistory(
-        payload: MessageTypes.GetAccountBalanceHistory['payload']
+        payload: MessageTypes.GetAccountBalanceHistory['payload'],
     ): Promise<ResponseTypes.GetAccountBalanceHistory['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_ACCOUNT_BALANCE_HISTORY,
@@ -168,7 +168,7 @@ class BlockchainLink extends EventEmitter {
     }
 
     getCurrentFiatRates(
-        payload: MessageTypes.GetCurrentFiatRates['payload']
+        payload: MessageTypes.GetCurrentFiatRates['payload'],
     ): Promise<ResponseTypes.GetCurrentFiatRates['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_CURRENT_FIAT_RATES,
@@ -178,7 +178,7 @@ class BlockchainLink extends EventEmitter {
 
     /** Get historical fiat rates. Only some backends support this. */
     getFiatRatesForTimestamps(
-        payload: MessageTypes.GetFiatRatesForTimestamps['payload']
+        payload: MessageTypes.GetFiatRatesForTimestamps['payload'],
     ): Promise<ResponseTypes.GetFiatRatesForTimestamps['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_FIAT_RATES_FOR_TIMESTAMPS,
@@ -188,7 +188,7 @@ class BlockchainLink extends EventEmitter {
 
     /** Get fiat currencies for which rates are available. */
     getFiatRatesTickersList(
-        payload: MessageTypes.GetFiatRatesTickersList['payload']
+        payload: MessageTypes.GetFiatRatesTickersList['payload'],
     ): Promise<ResponseTypes.GetFiatRatesTickersList['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_FIAT_RATES_TICKERS_LIST,
@@ -198,7 +198,7 @@ class BlockchainLink extends EventEmitter {
 
     /** Get ‘recommended’ fee value inferred from current traffic in the network. */
     estimateFee(
-        payload: MessageTypes.EstimateFee['payload']
+        payload: MessageTypes.EstimateFee['payload'],
     ): Promise<ResponseTypes.EstimateFee['payload']> {
         return this.sendMessage({
             type: MESSAGES.ESTIMATE_FEE,
@@ -216,7 +216,7 @@ class BlockchainLink extends EventEmitter {
      * Handling subscription state is left to the user. Hence the purpose of CONNECT and DISCONNECT notifications.
      */
     subscribe(
-        payload: MessageTypes.Subscribe['payload']
+        payload: MessageTypes.Subscribe['payload'],
     ): Promise<ResponseTypes.Subscribe['payload']> {
         return this.sendMessage({
             type: MESSAGES.SUBSCRIBE,
@@ -226,7 +226,7 @@ class BlockchainLink extends EventEmitter {
 
     /** Discard a subscription. */
     unsubscribe(
-        payload: MessageTypes.Unsubscribe['payload']
+        payload: MessageTypes.Unsubscribe['payload'],
     ): Promise<ResponseTypes.Unsubscribe['payload']> {
         return this.sendMessage({
             type: MESSAGES.UNSUBSCRIBE,
@@ -236,7 +236,7 @@ class BlockchainLink extends EventEmitter {
 
     /** Broadcast a transaction to the network. */
     pushTransaction(
-        payload: MessageTypes.PushTransaction['payload']
+        payload: MessageTypes.PushTransaction['payload'],
     ): Promise<ResponseTypes.PushTransaction['payload']> {
         return this.sendMessage({
             type: MESSAGES.PUSH_TRANSACTION,

@@ -30,14 +30,13 @@ const link = new BlockchainLink({
 
 try {
     const resp = link.getInfo();
-} catch(error) {
-
-}
+} catch (error) {}
 ```
 
 For complete API see the methods of `BlockchainLink` class in [index.ts](./src/index.ts).
 
 ## Workers
+
 Each `src/workers/*/index` file can be used in WebWorker thread.
 Built from source using webpack `worker-loader`:
 
@@ -53,11 +52,12 @@ Run UI with webworkers support
 ```shell
 yarn workspace @trezor/blockchain-link dev
 ```
+
 or without webworkes support (workers are compiled into a bundle)
+
 ```shell
 yarn workspace @trezor/blockchain-link dev:module
 ```
-
 
 ### Tests
 
@@ -68,7 +68,9 @@ yarn workspace @trezor/blockchain-link test:unit
 ```
 
 ### Integration tests
+
 Testing `lib` and `build` outputs:
+
 ```
 yarn workspace @trezor/blockchain-link build:lib
 yarn workspace @trezor/blockchain-link build:workers
