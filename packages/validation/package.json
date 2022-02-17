@@ -1,0 +1,19 @@
+{
+    "name": "@trezor/validation",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": [
+        "src/config.ts"
+    ],
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@trezor/utils": "*",
+        "yup": "^0.32.11"
+    }
+}

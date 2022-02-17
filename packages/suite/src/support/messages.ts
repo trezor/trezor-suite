@@ -680,9 +680,9 @@ export default defineMessages({
         defaultMessage: 'Show offers',
         id: 'TR_SELL_SHOW_OFFERS',
     },
-    TR_SELL_VALIDATION_ERROR_EMPTY: {
+    TR_REQUIRED_FIELD: {
         defaultMessage: 'Required',
-        id: 'TR_SELL_VALIDATION_ERROR_EMPTY',
+        id: 'TR_REQUIRED_FIELD',
     },
     TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO: {
         defaultMessage: 'Minimum is {minimum} {currency}',
@@ -6431,5 +6431,9 @@ export default defineMessages({
     TR_CARDANO_FINGERPRINT_HEADLINE: {
         id: 'TR_CARDANO_FINGERPRINT_HEADLINE',
         defaultMessage: 'Fingerprint',
+    },
+    TR_EXCEEDS_MAX: {
+        id: 'TR_EXCEEDS_MAX',
+        defaultMessage: 'Exceeds max length',
     },
 });

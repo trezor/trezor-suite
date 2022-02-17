@@ -38,3 +38,5 @@ export type DeepPartial<T> = T extends () => any
     : T extends { [key: string]: any }
     ? { [P in keyof T]?: DeepPartial<T[P]> }
     : T;
+
+export type PrimitiveType = string | number | boolean | Date | null | undefined;

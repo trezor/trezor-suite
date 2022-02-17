@@ -86,7 +86,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                     if (activeInput === CRYPTO_INPUT) {
                         if (!value) {
                             if (formState.isSubmitting) {
-                                return <Translation id="TR_SELL_VALIDATION_ERROR_EMPTY" />;
+                                return <Translation id="TR_REQUIRED_FIELD" />;
                             }
                             return;
                         }

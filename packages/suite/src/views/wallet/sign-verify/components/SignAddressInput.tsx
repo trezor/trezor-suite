@@ -1,7 +1,7 @@
-import React, { FocusEventHandler } from 'react';
+import React from 'react';
 import { components } from 'react-select';
 import styled from 'styled-components';
-import { Select } from '@trezor/components';
+import { Select, SelectProps } from '@trezor/components';
 import type { Account } from '@wallet-types';
 import type { State as RevealedAddresses } from '@wallet-reducers/receiveReducer';
 import {
@@ -51,49 +51,34 @@ const optionToAddress = (option: AddressItem | null) =>
           }
         : null;
 
-export const SignAddressInput = ({
-    name,
-    label,
-    error,
+type SignAddressInputProps = {
+    account?: Account;
+    revealedAddresses: RevealedAddresses;
+} & Omit<SelectProps, 'useKeyPressScroll'>;
+
+export const SignAddressInput: React.FC<SignAddressInputProps> = ({
     account,
     revealedAddresses,
     value,
     onChange,
-    onBlur,
-    isDisabled,
-}: {
-    name: string;
-    label?: string | React.ReactElement;
-    error?: string | React.ReactElement;
-    account?: Account;
-    revealedAddresses: RevealedAddresses;
-    value: string;
-    onChange: (addr: { path: string; address: string } | null) => void;
-    onBlur?: FocusEventHandler;
-    isDisabled?: boolean;
+    ...selectProps
 }) => {
     const { getValue, groupedOptions } = useSignAddressOptions(account, revealedAddresses);
 
     return (
         <Select
-            name={name}
-            label={label}
             value={getValue(value)}
             options={groupedOptions}
             onChange={(addr: AddressItem | null) => onChange(optionToAddress(addr))}
-            onBlur={onBlur}
             noError={false}
-            bottomText={error || null}
-            state={error ? 'error' : undefined}
             isSearchable
-            isDisabled={!!isDisabled}
             placeholder=""
             components={{
                 Option,
                 Input,
                 SingleValue,
             }}
-            data-test="@sign-verify/sign-address"
+            {...selectProps}
         />
     );
 };
