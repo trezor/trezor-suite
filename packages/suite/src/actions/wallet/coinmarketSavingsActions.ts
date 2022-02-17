@@ -1,10 +1,11 @@
 import invityAPI, {
+    SavingsTradeItem,
     SavingsKYCStatus,
     SavingsListResponse,
     SavingsProviderInfo,
     SavingsTradeResponse,
 } from '@suite-services/invityAPI';
-import { COINMARKET_SAVINGS } from './constants';
+import { COINMARKET_COMMON, COINMARKET_SAVINGS } from './constants';
 import { verifyAddress as verifySavingsAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import type { Account } from '@wallet-types';
 
@@ -43,6 +44,19 @@ export type CoinmarketSavingsAction =
     | {
           type: typeof COINMARKET_SAVINGS.SET_USER_COUNTRY_EFFECTIVE;
           countryEffective: string;
+      }
+    | {
+          type: typeof COINMARKET_COMMON.SAVE_TRADE;
+          date: string;
+          key?: string;
+          tradeType: 'savings';
+          data: SavingsTradeItem;
+          account: {
+              symbol: Account['symbol'];
+              descriptor: Account['descriptor'];
+              accountIndex: Account['index'];
+              accountType: Account['accountType'];
+          };
       };
 
 export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
@@ -116,4 +130,22 @@ export const verifyAddress = (account: Account, address?: string, path?: string)
 export const setUserCountryEffective = (countryEffective: string): CoinmarketSavingsAction => ({
     type: COINMARKET_SAVINGS.SET_USER_COUNTRY_EFFECTIVE,
     countryEffective,
+});
+
+export const saveTrade = (
+    savingsTrade: SavingsTradeItem,
+    account: Account,
+    date: string,
+): CoinmarketSavingsAction => ({
+    type: COINMARKET_COMMON.SAVE_TRADE,
+    tradeType: 'savings',
+    key: savingsTrade.id,
+    date,
+    data: savingsTrade,
+    account: {
+        descriptor: account.descriptor,
+        symbol: account.symbol,
+        accountType: account.accountType,
+        accountIndex: account.index,
+    },
 });

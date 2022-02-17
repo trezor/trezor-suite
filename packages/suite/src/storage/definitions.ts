@@ -14,6 +14,7 @@ import type { TradeType } from '@wallet-types/coinmarketCommonTypes';
 import type { MessageSystem } from '@suite-types/messageSystem';
 import type { MessageState } from '@suite/reducers/suite/messageSystemReducer';
 import type { FormDraft } from '@wallet-types/form';
+import type { SavingsTradeItem } from '@suite-services/invityAPI';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -84,7 +85,7 @@ export interface SuiteDBSchema extends DBSchema {
             key?: string;
             date: string;
             tradeType: TradeType;
-            data: BuyTrade | ExchangeTrade | SpendTrade;
+            data: BuyTrade | ExchangeTrade | SpendTrade | SavingsTradeItem;
             account: {
                 descriptor?: Account['descriptor'];
                 symbol: Account['symbol'];

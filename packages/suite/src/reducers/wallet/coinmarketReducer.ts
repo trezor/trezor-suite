@@ -30,7 +30,7 @@ import type {
     SavingsKYCStatus,
     SavingsProviderInfo,
     SavingsTrade,
-    SavingsTradePayment,
+    SavingsTradePlannedPayment,
 } from '@suite-services/invityAPI';
 import type { InvityAuthentication } from '@wallet-types/invity';
 
@@ -84,7 +84,7 @@ interface Savings {
     selectedProvider?: SavingsProviderInfo;
     savingsInfo?: SavingsInfo;
     savingsTrade?: SavingsTrade;
-    savingsTradePayments?: SavingsTradePayment[];
+    savingsTradePayments?: SavingsTradePlannedPayment[];
     isSavingsTradeLoading: boolean;
     kycFinalStatus?: SavingsKYCStatus;
     isWatchingKYCStatus: boolean;

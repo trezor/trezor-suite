@@ -7,6 +7,7 @@ import type {
     SellVoucherTrade as SpendTrade,
 } from 'invity-api';
 import type { FlagProps } from '@trezor/components';
+import type { SavingsTradeItem } from '@suite/services/suite/invityAPI';
 
 type CommonTrade = {
     date: string;
@@ -18,12 +19,13 @@ type CommonTrade = {
         accountIndex: Account['index'];
     };
 };
-export type TradeType = 'buy' | 'sell' | 'exchange' | 'spend';
+export type TradeType = 'buy' | 'sell' | 'exchange' | 'spend' | 'savings';
 export type TradeBuy = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
 export type TradeSell = CommonTrade & { tradeType: 'sell'; data: SellFiatTrade };
 export type TradeExchange = CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade };
 export type TradeSpend = CommonTrade & { tradeType: 'spend'; data: SpendTrade };
-export type Trade = TradeBuy | TradeSell | TradeExchange | TradeSpend;
+export type TradeSavings = CommonTrade & { tradeType: 'savings'; data: SavingsTradeItem };
+export type Trade = TradeBuy | TradeSell | TradeExchange | TradeSpend | TradeSavings;
 
 export type Option = { value: string; label: string };
 export type CountryOption = { value: FlagProps['country']; label: string };

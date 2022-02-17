@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Button, Icon } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/build';
 import { Translation } from '@suite-components';
-import type { SavingsTradePayment } from '@suite-services/invityAPI';
+import type { SavingsTradePlannedPayment } from '@suite-services/invityAPI';
 import type { ExtendedMessageDescriptor } from '@suite/types/suite';
 
 const Label = styled.div`
@@ -103,7 +103,7 @@ const DetailRow = styled(Row)`
 `;
 
 interface PaymentDetail {
-    savingsTradePayment: SavingsTradePayment;
+    savingsTradePayment: SavingsTradePlannedPayment;
     title: ExtendedMessageDescriptor['id'];
 }
 

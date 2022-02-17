@@ -19,6 +19,7 @@ export const INVITY_AUTHENTICATION: InvityAuthentication = {
         buyTrades: [],
         exchangeTrades: [],
         sellTrades: [],
+        savingsTrades: [],
         sessions: [],
     },
     identity: {

@@ -12,6 +12,7 @@ export const INVITY_AUTHENTICATION: InvityAuthentication = {
         buyTrades: [],
         exchangeTrades: [],
         sellTrades: [],
+        savingsTrades: [],
         sessions: [],
     },
     identity: {
@@ -33,6 +34,7 @@ export const ACCOUNT_INFO_RESOPONSE: AccountInfoResponse = {
         buyTrades: [],
         exchangeTrades: [],
         sellTrades: [],
+        savingsTrades: [],
         id: 'FAKE',
         sessions: [],
         settings: {

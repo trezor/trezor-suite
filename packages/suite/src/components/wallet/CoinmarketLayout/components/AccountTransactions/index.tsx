@@ -8,6 +8,7 @@ import BuyTransaction from './components/BuyTransaction';
 import SellTransaction from './components/SellTransaction';
 import ExchangeTransaction from './components/ExchangeTransaction';
 import SpendTransaction from './components/SpendTransaction';
+import SavingsTransaction from './components/SavingsTransaction';
 
 const Wrapper = styled.div`
     padding: 64px 0 0 0;
@@ -41,14 +42,21 @@ const TransactionCount = styled.div`
 `;
 
 const AccountTransactions = () => {
-    const { selectedAccount, allTransactions, buyProviders, exchangeProviders, sellProviders } =
-        useSelector(state => ({
-            selectedAccount: state.wallet.selectedAccount,
-            allTransactions: state.wallet.coinmarket.trades,
-            buyProviders: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
-            exchangeProviders: state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
-            sellProviders: state.wallet.coinmarket.sell.sellInfo?.providerInfos,
-        }));
+    const {
+        selectedAccount,
+        allTransactions,
+        buyProviders,
+        exchangeProviders,
+        sellProviders,
+        savingsProviders,
+    } = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        allTransactions: state.wallet.coinmarket.trades,
+        buyProviders: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
+        exchangeProviders: state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
+        sellProviders: state.wallet.coinmarket.sell.sellInfo?.providerInfos,
+        savingsProviders: state.wallet.coinmarket.savings.savingsInfo?.providerInfos,
+    }));
 
     if (selectedAccount.status !== 'loaded') {
         return null;
@@ -69,6 +77,7 @@ const AccountTransactions = () => {
     );
     const spendTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'spend');
     const sellTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'sell');
+    const savingsTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'savings');
 
     return (
         <Wrapper>
@@ -87,7 +96,8 @@ const AccountTransactions = () => {
                                 {sellTransactions.length} <Translation id="TR_TRADE_SELLS" /> •{' '}
                                 {exchangeTransactions.length}{' '}
                                 <Translation id="TR_TRADE_EXCHANGES" /> • {spendTransactions.length}{' '}
-                                <Translation id="TR_TRADE_SPENDS" />
+                                <Translation id="TR_TRADE_SPENDS" /> • {savingsTransactions.length}{' '}
+                                <Translation id="TR_TRADE_SAVINGS" />
                             </TransactionCount>
                         </StyledH2>
                     </Header>
@@ -129,6 +139,15 @@ const AccountTransactions = () => {
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
                                         providers={sellProviders}
+                                    />
+                                );
+                            }
+                            if (trade.tradeType === 'savings') {
+                                return (
+                                    <SavingsTransaction
+                                        key={`${trade.tradeType}-${trade.key}`}
+                                        trade={trade}
+                                        providers={savingsProviders}
                                     />
                                 );
                             }

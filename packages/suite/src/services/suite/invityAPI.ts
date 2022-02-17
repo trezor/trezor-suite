@@ -44,7 +44,7 @@ import type { SuiteThemeColors } from '@trezor/components';
 import { InvityAuthenticationThemeKey } from '@wallet-constants/coinmarket/metadata';
 
 /** BEGIN: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
-export type SavingsPaymentMethods = 'bankTransfer';
+export type SavingsPaymentMethod = 'bankTransfer';
 
 export interface SavingsErrorResponse {
     status: 'Error';
@@ -77,7 +77,7 @@ export interface SavingsProviderInfo {
     supportUrl?: string;
 
     /** Defines methods of how a user can pay to save crypto. */
-    paymentMethods?: SavingsPaymentMethods[];
+    paymentMethods?: SavingsPaymentMethod[];
 
     isClientFromUnsupportedCountry: boolean;
 
@@ -109,10 +109,10 @@ export type SavingsSetupStatus =
     | 'WalletVerification'
     /** User setups savings plan parameters (frequency, amount, etc.). */
     | 'SetSavingsParameters'
-    /** Partner has generated payment details. */
+    /** Partner has generated payment info parameters. */
     | 'ConfirmPaymentInfo';
 
-export type SavingsStatus = SavingsSetupStatus | 'Cancelled' | 'Active';
+export type SavingsStatus = SavingsSetupStatus | 'Cancelled' | 'Active' | 'Error';
 export type SavingsKYCStatus =
     /** KYC process didn't start yet. */
     | 'Open'
@@ -131,7 +131,7 @@ export type SavingsAMLStatus =
 
 export type PaymentFrequency = 'Weekly' | 'Biweekly' | 'Monthly' | 'Quarterly';
 
-export type SavingsTradePaymentStatus =
+export type SavingsTradePlannedPaymentStatus =
     | 'NextUp'
     | 'Cancelled'
     | 'Pending'
@@ -140,14 +140,14 @@ export type SavingsTradePaymentStatus =
     | 'Completed'
     | 'Refunded';
 
-export interface SavingsTradePayment {
+export interface SavingsTradePlannedPayment {
     /** Our id. */
     paymentId: string;
 
     /** Partner's id. */
     partnerPaymentId?: string;
 
-    status: SavingsTradePaymentStatus;
+    status: SavingsTradePlannedPaymentStatus;
     fiatAmount?: string;
     cryptoAmount?: string;
     plannedPaymentAt: string;
@@ -237,6 +237,8 @@ export interface SavingsTrade {
 
     paymentInfo?: SavingsPaymentInfo;
 
+    tradeItems?: SavingsTradeItem[];
+
     // TODO: maybe encapsulate setup?
 }
 
@@ -255,7 +257,7 @@ export interface SavingsTradeResponse {
     trade: SavingsTrade;
 
     /** Payments in savings plan. */
-    payments?: SavingsTradePayment[];
+    payments?: SavingsTradePlannedPayment[];
 }
 
 export interface SavingsKYCInfoSuccessResponse {
@@ -284,6 +286,35 @@ export interface SavingsAMLAnswersSuccessResponse {
 
 export type SavingsAMLAnswersResponse = SavingsAMLAnswersSuccessResponse | SavingsErrorResponse;
 
+export interface SavingsTradeKYCStatusSuccessfulResponse {
+    status: 'Success';
+    kycStatus: SavingsKYCStatus;
+}
+
+export type SavingsTradeKYCStatusResponse =
+    | SavingsTradeKYCStatusSuccessfulResponse
+    | SavingsErrorResponse;
+
+export type SavingsTradeItemStatus =
+    | 'Cancelled'
+    | 'Pending'
+    | 'InProgress'
+    | 'Blocked'
+    | 'Completed'
+    | 'Refunded';
+
+export interface SavingsTradeItem {
+    id: string;
+    exchange: string;
+    status: SavingsTradeItemStatus;
+    receiveAddress: string;
+    fiatStringAmount: string;
+    fiatCurrency: string;
+    receiveStringAmount: string;
+    receiveCurrency: string;
+    paymentMethod: SavingsPaymentMethod;
+    created: string;
+}
 export interface VerifySmsCodeRequest {
     code: string;
 }
@@ -311,15 +342,6 @@ export interface SendVerificationSmsSuccessResponse {
 export type SendVerificationSmsResponse =
     | SendVerificationSmsSuccessResponse
     | SendVerificationSmsErrorResponse;
-
-export interface SavingsTradeKYCStatusSuccessfulResponse {
-    status: 'Success';
-    kycStatus: SavingsKYCStatus;
-}
-
-export type SavingsTradeKYCStatusResponse =
-    | SavingsTradeKYCStatusSuccessfulResponse
-    | SavingsErrorResponse;
 
 /** END: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 

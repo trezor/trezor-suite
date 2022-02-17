@@ -1237,6 +1237,22 @@ export default defineMessages({
         defaultMessage: 'Didn’t make it yet? Check View payment details.',
         id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION',
     },
+    TR_SAVINGS_STATUS_PENDING: {
+        defaultMessage: 'Pending',
+        id: 'TR_SAVINGS_STATUS_PENDING',
+    },
+    TR_SAVINGS_STATUS_ERROR: {
+        defaultMessage: 'Error',
+        id: 'TR_SAVINGS_STATUS_ERROR',
+    },
+    TR_SAVINGS_STATUS_SUCCESS: {
+        defaultMessage: 'Success',
+        id: 'TR_SAVINGS_STATUS_SUCCESS',
+    },
+    TR_SAVINGS_TRANS_ID: {
+        defaultMessage: 'Trans. ID:',
+        id: 'TR_SAVINGS_TRANS_ID',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',
@@ -4020,6 +4036,10 @@ export default defineMessages({
     TR_TRADE_SPENDS: {
         id: 'TR_TRADE_SPENDS',
         defaultMessage: 'spends',
+    },
+    TR_TRADE_SAVINGS: {
+        id: 'TR_TRADE_SAVINGS',
+        defaultMessage: 'savings',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',

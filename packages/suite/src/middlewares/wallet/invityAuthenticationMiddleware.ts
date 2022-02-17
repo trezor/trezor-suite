@@ -52,6 +52,9 @@ const invityAuthenticationMiddleware =
                                         ...invityAuthentication,
                                         accountInfo,
                                     };
+                                    // TODO: how to save savings trades/orders from partners?
+                                    // accountInfo.savingsTrades.map(trade => trade.par);
+                                    // api.dispatch(coinmarketSavingsActions.saveTrade());
                                 } else {
                                     invityAuthentication = {
                                         ...invityAuthentication,

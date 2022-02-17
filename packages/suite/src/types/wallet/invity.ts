@@ -1,4 +1,5 @@
-import {
+import type { SavingsTrade } from '@suite/services/suite/invityAPI';
+import type {
     BuyCryptoPaymentMethod,
     BuyTrade,
     ExchangeTrade,
@@ -48,8 +49,8 @@ export interface Session {
 export type AccountBuyTrade = BuyTrade & TradeMetadata;
 export type AccountSellTrade = SellFiatTrade & TradeMetadata;
 export type AccountExchangeTrade = ExchangeTrade & TradeMetadata;
+export type AccountSavingsTrade = SavingsTrade & TradeMetadata;
 
-// TODO: Do we need buyTrades/sellTrades/exchangeTrades here?
 export interface AccountInfo {
     id: string;
     settings: AccountSettings;
@@ -57,6 +58,7 @@ export interface AccountInfo {
     buyTrades: AccountBuyTrade[];
     sellTrades: AccountSellTrade[];
     exchangeTrades: AccountExchangeTrade[];
+    savingsTrades: AccountSavingsTrade[];
 }
 
 export interface AccountInfoResponse {
