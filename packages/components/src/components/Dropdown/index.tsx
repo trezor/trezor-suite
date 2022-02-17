@@ -279,7 +279,7 @@ const Dropdown = forwardRef(
             masterLink,
             ...rest
         }: Props,
-        ref
+        ref,
     ) => {
         const theme = useTheme();
         const [toggled, setToggledState] = useState(false);
@@ -300,7 +300,7 @@ const Dropdown = forwardRef(
                 if (onToggle) onToggle(isToggled);
                 setToggledState(isToggled);
             },
-            [onToggle]
+            [onToggle],
         );
 
         useLayoutEffect(() => {
@@ -471,7 +471,7 @@ const Dropdown = forwardRef(
                 {toggled && portalMenu}
             </Wrapper>
         );
-    }
+    },
 );
 
 Dropdown.displayName = 'Dropdown';

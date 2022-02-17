@@ -3,33 +3,34 @@
 ## Main differences between suite-web and suite-desktop builds
 
 ### trezor-connect API
-- suite-web
-  
-  `trezor-connect` is hosted at `[url]/build/static/connect` and injected as an iframe into DOM.
 
-  `iframe.postMessage/iframe.onmessage` interface is used as communication channel between suite and connect API.
+-   suite-web
 
-- suite-desktop
+    `trezor-connect` is hosted at `[url]/build/static/connect` and injected as an iframe into DOM.
 
-  `trezor-connect` is installed as regular node_module in electron main process and works in nodejs environment.
+    `iframe.postMessage/iframe.onmessage` interface is used as communication channel between suite and connect API.
 
-  `trezor-connect` files are __not__ hosted on the electron renderer side, there is no iframe or /build/static/connect dir.
+-   suite-desktop
 
-  `Electron.IpcRenderer.send/Electron.IpcRenderer.on` interface is used as communication channel between suite (electron renderer) and connect API (electron main). see @trezor/suite-desktop/src-electron/trezor-connect-preload.ts
+    `trezor-connect` is installed as regular node_module in electron main process and works in nodejs environment.
+
+    `trezor-connect` files are **not** hosted on the electron renderer side, there is no iframe or /build/static/connect dir.
+
+    `Electron.IpcRenderer.send/Electron.IpcRenderer.on` interface is used as communication channel between suite (electron renderer) and connect API (electron main). see @trezor/suite-desktop/src-electron/trezor-connect-preload.ts
 
 ### Firmware binaries
-- suite-web
 
-  newest firmware binaries are hosted at `[url]/build/static/connect/data/firmware` and they are downloaded using regular `fetch` API.
+-   suite-web
 
-- suite-desktop
+    newest firmware binaries are hosted at `[url]/build/static/connect/data/firmware` and they are downloaded using regular `fetch` API.
 
-  firmware binaries are bundled as application resources in `bin` directory, full path depends on OS but it could be found on the as level as `app.asar` file, and they are downloaded using `fs.readFile` API. see @trezor/rollout/src/utils/fetch
+-   suite-desktop
+
+    firmware binaries are bundled as application resources in `bin` directory, full path depends on OS but it could be found on the as level as `app.asar` file, and they are downloaded using `fs.readFile` API. see @trezor/rollout/src/utils/fetch
 
 ### Trezor Bridge (trezord)
 
 ### Tor
-
 
 ## Debugging (VS Code)
 
@@ -90,22 +91,29 @@ The auto-updater has been mocked to simulate similar behavior to the actual libr
 ## Debugging build
 
 #### Linux
+
 `./Trezor-Suite-20.10.1.AppImage --log-level=debug`
 
 #### MacOS
+
 `./Trezor\ Suite.app/Contents/MacOS/Trezor\ Suite --log-level=debug`
 
 #### NixOS
+
 `appimage-run ./Trezor-Suite.AppImage --log-level=debug`
 
 ## Extract application
 
 #### MacOS
+
 `npx asar extract ./Trezor\ Suite.app/Contents/Resources/app.asar ./decompiled`
 
 #### NixOS
+
 Run application to get mount-id like:
+
 ```
 Trezor-Suite.AppImage installed in ~/.cache/appimage-run/e4f67ae8624c4079527c669d8a3c4bbc1dd00b83b2e1d15807a5863b11bd4f38
 ```
+
 `npx asar extract ~/.cache/appimage-run/[mount-id]/resources/app.asar ./decompiled`

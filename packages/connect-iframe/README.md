@@ -3,6 +3,7 @@
 Bundle and build `trezor-connect` iframe.
 
 ### Usage
+
 This build will be used by `suite-web` and `suite-desktop` packages.
 Build files are copied into `suite-*/build/static` directory.
 

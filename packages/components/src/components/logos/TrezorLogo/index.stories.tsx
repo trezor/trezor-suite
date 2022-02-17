@@ -17,7 +17,7 @@ storiesOf('Logos', module).add('Trezor', () => {
             vertical: 'vertical',
             symbol: 'symbol',
         },
-        'horizontal'
+        'horizontal',
     ) as LogoType;
 
     return <TrezorLogo type={type} {...(width ? { width } : {})} {...(height ? { height } : {})} />;

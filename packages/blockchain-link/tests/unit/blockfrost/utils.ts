@@ -48,7 +48,7 @@ describe('blockfrost/utils', () => {
             it(f.description, () => {
                 // @ts-expect-error incorrect params
                 expect(transformTransaction(f.descriptor, f.accountAddress, f.data)).toMatchObject(
-                    f.result
+                    f.result,
                 );
             });
         });

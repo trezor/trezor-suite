@@ -1,3 +1,3 @@
 # Suite docs
 
-- [Send form](./SEND.md)
+-   [Send form](./SEND.md)

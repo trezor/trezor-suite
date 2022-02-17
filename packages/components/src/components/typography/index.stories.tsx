@@ -63,5 +63,5 @@ storiesOf('Typography', module).add(
         options: {
             showPanel: false,
         },
-    }
+    },
 );

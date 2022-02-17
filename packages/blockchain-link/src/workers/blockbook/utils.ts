@@ -29,7 +29,7 @@ export const transformServerInfo = (payload: ServerInfo) => ({
 
 export const filterTokenTransfers = (
     addresses: Addresses,
-    transfers: BlockbookTransaction['tokenTransfers']
+    transfers: BlockbookTransaction['tokenTransfers'],
 ): TokenTransfer[] => {
     if (typeof addresses === 'string') {
         addresses = [addresses];
@@ -81,7 +81,7 @@ export const filterTokenTransfers = (
 export const transformTransaction = (
     descriptor: string,
     addresses: AccountAddresses | undefined,
-    tx: BlockbookTransaction
+    tx: BlockbookTransaction,
 ): Transaction => {
     // combine all addresses into array
     const myAddresses = addresses
@@ -196,7 +196,7 @@ export const transformTransaction = (
 };
 
 export const transformTokenInfo = (
-    tokens: BlockbookAccountInfo['tokens']
+    tokens: BlockbookAccountInfo['tokens'],
 ): TokenInfo[] | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const info = tokens.reduce((arr, t) => {
@@ -216,7 +216,7 @@ export const transformTokenInfo = (
 };
 
 export const transformAddresses = (
-    tokens: BlockbookAccountInfo['tokens']
+    tokens: BlockbookAccountInfo['tokens'],
 ): AccountAddresses | undefined => {
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const addresses = tokens.reduce((arr, t) => {

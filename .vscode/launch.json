@@ -10,15 +10,10 @@
             "args": [],
             "cwd": "${workspaceRoot}/packages/suite-desktop/dist",
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
-            "runtimeArgs": [
-                "--enable-logging",
-                "--remote-debugging-port=9223"
-            ],
+            "runtimeArgs": ["--enable-logging", "--remote-debugging-port=9223"],
             "env": {},
             "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/packages/suite-desktop/dist/**/*.js"
-            ],
+            "outFiles": ["${workspaceRoot}/packages/suite-desktop/dist/**/*.js"],
             "preLaunchTask": "desktop:dev",
             "postDebugTask": "end-tasks"
         }

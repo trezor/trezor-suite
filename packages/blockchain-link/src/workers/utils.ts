@@ -28,7 +28,7 @@ export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout
 export const sumVinVout = (
     vinVout: VinVout[],
     initialValue = '0',
-    operation: 'sum' | 'reduce' = 'sum'
+    operation: 'sum' | 'reduce' = 'sum',
 ) => {
     const sum = vinVout.reduce((bn, v) => {
         if (typeof v.value !== 'string') return bn;

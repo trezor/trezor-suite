@@ -4,22 +4,12 @@
         "jsx": "preserve",
         "moduleResolution": "node",
         "sourceMap": true,
-        "lib": [
-            "dom",
-            "es2019",
-            "esnext.asynciterable"
-        ],
+        "lib": ["dom", "es2019", "esnext.asynciterable"],
         "forceConsistentCasingInFileNames": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "isolatedModules": true
     },
-    "include": [
-        "**/*.ts",
-        "**/*.tsx"
-    ],
-    "exclude": [
-        "**/*.js",
-        "src-electron/**/*.ts"
-    ]
+    "include": ["**/*.ts", "**/*.tsx"],
+    "exclude": ["**/*.js", "src-electron/**/*.ts"]
 }

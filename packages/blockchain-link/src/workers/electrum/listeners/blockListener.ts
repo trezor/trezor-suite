@@ -20,7 +20,7 @@ export const blockListener = (worker: BaseWorker<ElectrumAPI>) => {
                         blockHash: blockheaderToBlockhash(hex),
                     },
                 },
-            })
+            }),
         );
     };
 

@@ -14,7 +14,7 @@ storiesOf('Typography', module).add('Heading', () => {
             H1: 'H1',
             H2: 'H2',
         },
-        'H1'
+        'H1',
     );
     const textAlign: any = select(
         'Align',
@@ -23,7 +23,7 @@ storiesOf('Typography', module).add('Heading', () => {
             Right: 'right',
             Center: 'center',
         },
-        'left'
+        'left',
     );
 
     if (size === 'H1') {

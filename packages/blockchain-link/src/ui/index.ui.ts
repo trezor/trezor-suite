@@ -208,7 +208,7 @@ const handleClick = (event: MouseEvent) => {
                     .getFiatRatesTickersList({
                         timestamp: parseInt(
                             getInputValue('get-fiat-rates-ticker-list-timestamp'),
-                            10
+                            10,
                         ),
                     })
                     .then(onResponse)
@@ -283,7 +283,7 @@ const handleConnectionEvent = (blockchain: BlockchainLink, status: boolean) => {
             blockchain: blockchain.settings.name,
             connected: status,
         },
-        !status
+        !status,
     );
 };
 

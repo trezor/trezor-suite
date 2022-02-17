@@ -221,7 +221,7 @@ const createServer = async (type: keyof typeof DEFAULT_RESPONSES) => {
         }
         if (Array.isArray(request.accounts_proposed)) {
             server.addresses = server.addresses.filter(
-                a => request.accounts_proposed.indexOf(a) < 0
+                a => request.accounts_proposed.indexOf(a) < 0,
             );
             if (server.addresses.length === 0) server.addresses = undefined;
         }

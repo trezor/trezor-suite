@@ -40,7 +40,7 @@ export const useKeyPress = (targetKey: string) => {
 
 export const useOnClickOutside = (
     elementRefs: React.MutableRefObject<HTMLElement | null>[],
-    callback: (event: MouseEvent | TouchEvent) => void
+    callback: (event: MouseEvent | TouchEvent) => void,
 ) => {
     useEffect(() => {
         if (!elementRefs?.length) return;

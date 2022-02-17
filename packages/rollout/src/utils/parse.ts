@@ -27,7 +27,7 @@ export interface StrictFeatures<
     MV extends Features['major_version'],
     BL extends Features['bootloader_mode'],
     FW extends Features['firmware_present'],
-    FW_MV extends Features['fw_major'] = null
+    FW_MV extends Features['fw_major'] = null,
 > extends Features {
     major_version: MV;
     fw_major: FW_MV;
@@ -83,7 +83,7 @@ const Release = Record({
         notes: String,
         rollout: Number,
         channel: String,
-    })
+    }),
 );
 
 export type Release = Static<typeof Release>;

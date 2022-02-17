@@ -29,7 +29,7 @@ export const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: Pa
     if (
         versionUtils.isNewerOrEqual(
             [features.major_version, features.minor_version, features.patch_version],
-            [1, 8, 0]
+            [1, 8, 0],
         )
     ) {
         const fwView = new Uint8Array(fw);
@@ -66,7 +66,7 @@ const getChangelog = (releases: Release[], features: ParsedFeatures) => {
                     features.fw_major,
                     features.fw_minor,
                     features.fw_patch,
-                ])
+                ]),
             );
         }
         // for fresh devices, we can assume that all releases are actually "new"
@@ -81,7 +81,7 @@ const getChangelog = (releases: Release[], features: ParsedFeatures) => {
             features.major_version,
             features.minor_version,
             features.patch_version,
-        ])
+        ]),
     );
 };
 
@@ -237,11 +237,11 @@ export const getBinary = async ({
     // in case of improper update
     if (!versionUtils.isEqual(releaseByFirmware.version, infoByBootloader.release.version)) {
         throw new Error(
-            'version provided as param does not match firmware version found by features in bootloader'
+            'version provided as param does not match firmware version found by features in bootloader',
         );
     }
     const fw = await fetchFirmware(
-        `${baseUrl}/${btcOnly ? releaseByFirmware.url_bitcoinonly : releaseByFirmware.url}`
+        `${baseUrl}/${btcOnly ? releaseByFirmware.url_bitcoinonly : releaseByFirmware.url}`,
     );
     return {
         ...infoByBootloader,

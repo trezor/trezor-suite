@@ -12,7 +12,7 @@ storiesOf('Typography', module).add('Paragraph', () => {
             Right: 'right',
             Center: 'center',
         },
-        'left'
+        'left',
     );
     const size: any = select(
         'Size',
@@ -21,7 +21,7 @@ storiesOf('Typography', module).add('Paragraph', () => {
             Small: 'small',
             Tiny: 'tiny',
         },
-        'normal'
+        'normal',
     );
     const weight: any = select(
         'Weight',
@@ -29,7 +29,7 @@ storiesOf('Typography', module).add('Paragraph', () => {
             Normal: 'normal',
             Bold: 'bold',
         },
-        'normal'
+        'normal',
     );
 
     return (

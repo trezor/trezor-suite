@@ -56,7 +56,7 @@ const getAccountUtxo = async (request: Request<MessageTypes.GetAccountUtxo>) => 
 };
 
 const getAccountBalanceHistory = async (
-    request: Request<MessageTypes.GetAccountBalanceHistory>
+    request: Request<MessageTypes.GetAccountBalanceHistory>,
 ) => {
     const { payload } = request;
     const api = await request.connect();
@@ -78,7 +78,7 @@ const getCurrentFiatRates = async (request: Request<MessageTypes.GetCurrentFiatR
 };
 
 const getFiatRatesForTimestamps = async (
-    request: Request<MessageTypes.GetFiatRatesForTimestamps>
+    request: Request<MessageTypes.GetFiatRatesForTimestamps>,
 ) => {
     const { payload } = request;
     const api = await request.connect();
@@ -244,7 +244,7 @@ const subscribe = async (request: Request<MessageTypes.Subscribe>) => {
 
 const unsubscribeAccounts = async (
     { state, connect }: Context,
-    accounts?: SubscriptionAccountInfo[]
+    accounts?: SubscriptionAccountInfo[],
 ) => {
     state.removeAccounts(accounts || state.getAccounts());
 

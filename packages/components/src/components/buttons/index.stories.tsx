@@ -76,5 +76,5 @@ storiesOf('Buttons', module).add(
         options: {
             showPanel: false,
         },
-    }
+    },
 );

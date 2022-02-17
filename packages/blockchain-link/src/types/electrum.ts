@@ -106,7 +106,7 @@ export interface ElectrumAPI {
     request(
         method: 'server.version',
         client_name: string,
-        protocol_version: string | [string, string]
+        protocol_version: string | [string, string],
     ): Promise<Version>;
     request(method: 'server.banner'): Promise<string>;
     request(method: 'server.ping'): Promise<null>;
@@ -124,7 +124,7 @@ export interface ElectrumAPI {
         method: 'blockchain.block.headers',
         start_height: number,
         count: number,
-        cp_height?: number
+        cp_height?: number,
     ): Promise<BlockHeaders>;
     request(method: 'blockchain.estimatefee', number: number): Promise<number>;
     request(method: 'blockchain.headers.subscribe'): Promise<BlockHeader>;
@@ -133,24 +133,24 @@ export interface ElectrumAPI {
     request(
         method: 'blockchain.transaction.get',
         tx_hash: string,
-        verbose?: false
+        verbose?: false,
     ): Promise<string>;
     request(
         method: 'blockchain.transaction.get',
         tx_hash: string,
-        verbose: true
+        verbose: true,
     ): Promise<TransactionVerbose>;
     request(
         method: 'blockchain.transaction.get_merkle',
         tx_hash: string,
-        height: number
+        height: number,
     ): Promise<unknown>;
     request(method: 'mempool.get_fee_histogram'): Promise<unknown>;
     /** @deprecated 1.1 */
     request(
         method: 'blockchain.utxo.get_address',
         tx_hash: string,
-        index: unknown
+        index: unknown,
     ): Promise<unknown>;
     /** @deprecated 1.1 */
     request(method: 'blockchain.numblocks.subscribe'): Promise<unknown>;

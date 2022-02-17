@@ -34,7 +34,7 @@ const getBalances =
                     confirmed,
                     unconfirmed,
                 };
-            })
+            }),
         );
 
 const getAccountInfo: Api<Req, Res> = async (client, payload) => {
@@ -56,7 +56,7 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         const transactions =
             details === 'txs'
                 ? await getTransactions(client, history).then(txs =>
-                      txs.map(tx => transformTransaction(descriptor, undefined, tx))
+                      txs.map(tx => transformTransaction(descriptor, undefined, tx)),
                   )
                 : undefined;
 
@@ -84,15 +84,15 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
     }
     const discover = discoverAddress(client);
     const receive = await discovery(discover, descriptor, 'receive', network).then(
-        getBalances(client)
+        getBalances(client),
     );
     const change = await discovery(discover, descriptor, 'change', network).then(
-        getBalances(client)
+        getBalances(client),
     );
     const batch = receive.concat(change);
     const [confirmed, unconfirmed] = batch.reduce(
         ([c, u], { confirmed, unconfirmed }) => [c + confirmed, u + unconfirmed],
-        [0, 0]
+        [0, 0],
     );
     const history = batch.flatMap(({ history }) => history);
     const historyUnconfirmed = history.filter(r => r.height <= 0).length;
@@ -112,19 +112,19 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
 
     const transactions = ['tokenBalances', 'txids', 'txs'].includes(details)
         ? await getTransactions(client, history).then(txs =>
-              txs.map(tx => transformTransaction(descriptor, addresses, tx))
+              txs.map(tx => transformTransaction(descriptor, addresses, tx)),
           )
         : [];
 
     const sumAddressValues = (
         address: string,
-        getVinVouts: (tr: ReturnType<typeof transformTransaction>) => VinVout[]
+        getVinVouts: (tr: ReturnType<typeof transformTransaction>) => VinVout[],
     ) =>
         transactions
             .flatMap(tx =>
                 getVinVouts(tx)
                     .filter(({ addresses }) => addresses?.includes(address))
-                    .map(({ value }) => (value ? Number.parseFloat(value) : 0))
+                    .map(({ value }) => (value ? Number.parseFloat(value) : 0)),
             )
             .reduce((a, b) => a + b, 0);
 

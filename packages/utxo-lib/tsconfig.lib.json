@@ -13,10 +13,5 @@
         "types": ["jest", "node"]
     },
     "include": ["./src/index.ts", "./src/global.d.ts"],
-    "exclude": [
-        "node_modules",
-        "**/__tests__/**",
-        "**/__fixtures__/**",
-        "**/*.test.ts"
-    ]
+    "exclude": ["node_modules", "**/__tests__/**", "**/__fixtures__/**", "**/*.test.ts"]
 }

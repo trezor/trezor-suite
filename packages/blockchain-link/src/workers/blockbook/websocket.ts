@@ -67,7 +67,7 @@ export class BlockbookAPI extends EventEmitter {
         this.clearConnectionTimeout();
         this.connectionTimeout = setTimeout(
             this.onTimeout.bind(this),
-            this.options.timeout || DEFAULT_TIMEOUT
+            this.options.timeout || DEFAULT_TIMEOUT,
         );
     }
 
@@ -84,7 +84,7 @@ export class BlockbookAPI extends EventEmitter {
         }
         this.pingTimeout = setTimeout(
             this.onPing.bind(this),
-            this.options.pingTimeout || DEFAULT_PING_TIMEOUT
+            this.options.pingTimeout || DEFAULT_PING_TIMEOUT,
         );
     }
 

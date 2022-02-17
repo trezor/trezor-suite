@@ -7,8 +7,8 @@ const estimateFee: Api<Req, Res> = (client, payload) =>
         (payload.blocks || []).map(num =>
             client
                 .request('blockchain.estimatefee', num)
-                .then(btc => ({ feePerUnit: btcToSat(btc) }))
-        )
+                .then(btc => ({ feePerUnit: btcToSat(btc) })),
+        ),
     );
 
 export default estimateFee;

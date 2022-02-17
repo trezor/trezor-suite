@@ -48,8 +48,8 @@ const getAccountUtxo: Api<Req, Res> = async (client, descriptor) => {
             .map(({ address, path, scripthash }) =>
                 client
                     .request('blockchain.scripthash.listunspent', scripthash)
-                    .then(utxos => utxos.map(transformUtxo(height, { address, path })))
-            )
+                    .then(utxos => utxos.map(transformUtxo(height, { address, path }))),
+            ),
     ).then(res => res.flat());
     return result;
 };

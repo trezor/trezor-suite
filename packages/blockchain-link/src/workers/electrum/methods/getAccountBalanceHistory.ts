@@ -51,7 +51,7 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
 
 const getAccountBalanceHistory: Api<Req, Res> = async (
     client,
-    { descriptor, from, to, groupBy }
+    { descriptor, from, to, groupBy },
 ) => {
     let history: HistoryTx[];
     let addresses: AccountAddresses | undefined;
@@ -80,10 +80,10 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
         txs
             .filter(
                 ({ blockTime }) =>
-                    (from || 0) <= blockTime && blockTime <= (to || Number.MAX_SAFE_INTEGER)
+                    (from || 0) <= blockTime && blockTime <= (to || Number.MAX_SAFE_INTEGER),
             )
             .sort((a, b) => a.blockTime - b.blockTime)
-            .map(tx => ({ blockTime: -1, ...transformTransaction(descriptor, addresses, tx) }))
+            .map(tx => ({ blockTime: -1, ...transformTransaction(descriptor, addresses, tx) })),
     );
 
     return aggregateTransactions(txs, groupBy);
