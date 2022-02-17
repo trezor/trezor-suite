@@ -15,6 +15,12 @@
                 "tabWidth": 2,
                 "singleQuote": false
             }
+        },
+        {
+            "files": ["packages/suite-data/files/translations/*.json"],
+            "options": {
+                "tabWidth": 2
+            }
         }
     ]
 }
