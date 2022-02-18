@@ -226,8 +226,8 @@ const SuiteLayout: React.FC = ({ children }) => {
         <PageWrapper>
             <Metadata title={title} />
             <SuiteBanners />
-            <DiscoveryProgress />
             {isNavigationBarVisible && <NavigationBar />}
+            <DiscoveryProgress />
             <LayoutContext.Provider value={{ title, menu, isMenuInline, setLayout }}>
                 {!isMobileLayout && (
                     <BodyNormal
