@@ -6,7 +6,7 @@ import { Section } from '@dashboard-components';
 import AssetTable, { AssetTableSkeleton } from './components/AssetTable';
 import AssetGrid, { AssetGridSkeleton } from './components/AssetGrid';
 import { Account, Network } from '@wallet-types';
-import { variables, Icon, Button, colors } from '@trezor/components';
+import { variables, Icon, Button, colors, LoadingContent } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useDiscovery, useActions, useSelector } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
@@ -75,7 +75,7 @@ interface assetType {
 
 const AssetsCard = () => {
     const theme = useTheme();
-    const { discovery, getDiscoveryStatus } = useDiscovery();
+    const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { accounts } = useAccounts(discovery);
     const { dashboardAssetsGridMode } = useSelector(s => s.suite.flags);
     const { goto, setFlag } = useActions({
@@ -118,7 +118,9 @@ const AssetsCard = () => {
         <Section
             heading={
                 <>
-                    <Translation id="TR_MY_ASSETS" />
+                    <LoadingContent isLoading={isDiscoveryRunning}>
+                        <Translation id="TR_MY_ASSETS" />
+                    </LoadingContent>
                     {/* This button is interim solution as described here https://github.com/trezor/trezor-suite/issues/2329 */}
                     <StyledAddAccountButton
                         variant="tertiary"
