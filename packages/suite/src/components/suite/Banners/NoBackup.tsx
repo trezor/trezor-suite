@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions } from '@suite-hooks';
-import Wrapper from './components/Wrapper';
+import { Banner } from './Banner';
 
 const Message = styled.span``;
 
@@ -14,7 +14,7 @@ const NoBackup = () => {
     });
 
     return (
-        <Wrapper
+        <Banner
             variant="critical"
             body={
                 <Message>

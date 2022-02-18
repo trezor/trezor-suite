@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, SuiteThemeColors, useTheme, variables } from '@trezor/components';
 
-const getBgColor = (variant: BannerWrapperProps['variant'], theme: SuiteThemeColors) => {
+const getBgColor = (variant: BannerProps['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
         case 'info':
             return theme.TYPE_BLUE;
@@ -15,7 +15,7 @@ const getBgColor = (variant: BannerWrapperProps['variant'], theme: SuiteThemeCol
     }
 };
 
-const getIcon = (variant: BannerWrapperProps['variant'], theme: SuiteThemeColors) => {
+const getIcon = (variant: BannerProps['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
         case 'info':
             return <Icon icon="INFO" size={18} color={theme.TYPE_WHITE} />;
@@ -27,7 +27,7 @@ const getIcon = (variant: BannerWrapperProps['variant'], theme: SuiteThemeColors
     }
 };
 
-const Wrapper = styled.div<{ variant: BannerWrapperProps['variant'] }>`
+const Wrapper = styled.div<{ variant: BannerProps['variant'] }>`
     display: flex;
     background: ${props => getBgColor(props.variant, props.theme)};
     color: ${props => props.theme.TYPE_WHITE};
@@ -94,7 +94,7 @@ const ActionsWrapper = styled.div`
     }
 `;
 
-const ActionButton = styled(Button)<{ color: BannerWrapperProps['variant'] }>`
+const ActionButton = styled(Button)<{ color: BannerProps['variant'] }>`
     height: 24px;
     margin-right: 4px;
     margin-left: 10px;
@@ -108,7 +108,7 @@ const CancelWrapper = styled.div`
     margin-left: 5px;
 `;
 
-interface BannerWrapperProps {
+interface BannerProps {
     body: React.ReactNode;
     variant: 'info' | 'warning' | 'critical';
     action?: {
@@ -123,7 +123,7 @@ interface BannerWrapperProps {
     className?: string;
 }
 
-const BannerWrapper = ({ body, variant, action, dismissal, className }: BannerWrapperProps) => {
+export const Banner = ({ body, variant, action, dismissal, className }: BannerProps) => {
     const theme = useTheme();
     const iconElement = getIcon(variant, theme);
 
@@ -160,5 +160,3 @@ const BannerWrapper = ({ body, variant, action, dismissal, className }: BannerWr
         </Wrapper>
     );
 };
-
-export default BannerWrapper;

@@ -1,9 +1,9 @@
 import React from 'react';
-import Wrapper from './components/Wrapper';
+import { Banner } from './Banner';
 import { setTranslationMode } from '@suite-utils/l10n';
 
 const TranslationMode = () => (
-    <Wrapper
+    <Banner
         variant="warning"
         body="TRANSLATION MODE IS ON, ALL TEXTS MAY BE INCORRECT"
         action={{

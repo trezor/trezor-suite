@@ -4,7 +4,7 @@ import { Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions } from '@suite-hooks';
 
-import Wrapper from './components/Wrapper';
+import { Banner } from './Banner';
 
 const UpdateBridge = () => {
     const { goto } = useActions({
@@ -12,7 +12,7 @@ const UpdateBridge = () => {
     });
 
     return (
-        <Wrapper
+        <Banner
             variant="info"
             body={<Translation id="TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE" />}
             action={{

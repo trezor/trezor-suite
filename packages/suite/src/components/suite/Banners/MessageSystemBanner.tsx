@@ -6,11 +6,11 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { getTorUrlIfAvailable } from '@suite-utils/tor';
-import BannerWrapper from './components/Wrapper';
+import { Banner } from './Banner';
 
 import type { Message } from '@suite-types/messageSystem';
 
-const Wrapper = styled(BannerWrapper)`
+const BannerOnTop = styled(Banner)`
     z-index: ${variables.Z_INDEX.BANNER_ON_TOP};
 `;
 
@@ -63,7 +63,7 @@ const MessageSystemBanner = ({ message }: Props) => {
     }, [id, dismissible, dismissNotification]);
 
     return (
-        <Wrapper
+        <BannerOnTop
             variant={variant}
             body={content[language] || content.en}
             action={actionConfig}

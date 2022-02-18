@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions } from '@suite-hooks';
-import Wrapper from './components/Wrapper';
+import { Banner } from './Banner';
 
 const UpdateFirmware = () => {
     const { goto } = useActions({
@@ -11,7 +11,7 @@ const UpdateFirmware = () => {
     });
 
     return (
-        <Wrapper
+        <Banner
             variant="info"
             body={<Translation id="TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT" />}
             action={{

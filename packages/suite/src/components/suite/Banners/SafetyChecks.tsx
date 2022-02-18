@@ -3,7 +3,7 @@ import React from 'react';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import Wrapper from './components/Wrapper';
+import { Banner } from './Banner';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
 interface Props {
@@ -16,7 +16,7 @@ const SafetyChecksBanner = (props: Props) => {
     });
 
     return (
-        <Wrapper
+        <Banner
             variant="warning"
             body={<Translation id="TR_SAFETY_CHECKS_DISABLED_WARNING" />}
             action={{
