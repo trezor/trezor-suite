@@ -1,8 +1,52 @@
 {
     "version": 1,
     "timestamp": "2022-02-17T00:00:00+00:00",
-    "sequence": 7,
+    "sequence": 8,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ["22.2.1", "22.2.2"],
+                        "mobile": "!",
+                        "web": "!"
+                    },
+                    "os": {
+                        "macos": "*",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "!",
+                        "chromeos": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "13644716-b26b-4f62-808d-6ee0dfb23069",
+                "priority": 97,
+                "dismissible": true,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "We’re sorry, the auto-update feature is broken. Please install the latest version of Trezor Suite.",
+                    "en": "We’re sorry, the auto-update feature is broken. Please install the latest version of Trezor Suite.",
+                    "es": "Lo sentimos, la función de actualización automática no funciona. Por favor, instale la última versión de Trezor Suite.",
+                    "cs": "Je nám líto, ale automatická aktualizace je nefunkční. Nainstalujte si prosím nejnovější verzi Trezor Suite.",
+                    "ru": " К сожалению, функция авто-обновления сломалась. Пожалуйста, установите последнюю версию Trezor Suite вручную."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://suite.trezor.io/",
+                    "label": {
+                        "en-GB": "Go to suite.trezor.io",
+                        "en": "Go to suite.trezor.io",
+                        "es": "Vaya a suite.trezor.io",
+                        "cs": "Přejít na suite.trezor.io",
+                        "ru": "Перейти на suite.trezor.io"
+                    }
+                }
+            }
+        },
         {
             "conditions": [
                 {
