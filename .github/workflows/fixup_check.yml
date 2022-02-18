@@ -1,9 +1,9 @@
-name: Git Checks
+name: Fixup commit check
 
 on: [pull_request]
 
 jobs:
-  block-fixup:
+  block-fixup-commit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.0.0
