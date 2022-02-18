@@ -1,12 +1,18 @@
 import React, { useMemo } from 'react';
 
+import styled from 'styled-components';
+import { variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { getTorUrlIfAvailable } from '@suite-utils/tor';
-import Wrapper from './components/Wrapper';
+import BannerWrapper from './components/Wrapper';
 
 import type { Message } from '@suite-types/messageSystem';
+
+const Wrapper = styled(BannerWrapper)`
+    z-index: ${variables.Z_INDEX.BANNER_ON_TOP};
+`;
 
 type Props = {
     message: Message;

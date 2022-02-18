@@ -33,7 +33,7 @@ const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px',
 
 const ModalOverlay = styled.div<{ guidePanelSize: string }>`
     position: fixed;
-    z-index: 10000;
+    z-index: ${variables.Z_INDEX.MODAL};
     width: 100%;
     height: 100%;
     top: 0px;

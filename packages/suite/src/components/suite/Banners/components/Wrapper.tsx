@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, SuiteThemeColors, useTheme, variables } from '@trezor/components';
 
-const getBgColor = (variant: Props['variant'], theme: SuiteThemeColors) => {
+const getBgColor = (variant: BannerWrapperProps['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
         case 'info':
             return theme.TYPE_BLUE;
@@ -15,7 +15,7 @@ const getBgColor = (variant: Props['variant'], theme: SuiteThemeColors) => {
     }
 };
 
-const getIcon = (variant: Props['variant'], theme: SuiteThemeColors) => {
+const getIcon = (variant: BannerWrapperProps['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
         case 'info':
             return <Icon icon="INFO" size={18} color={theme.TYPE_WHITE} />;
@@ -27,7 +27,7 @@ const getIcon = (variant: Props['variant'], theme: SuiteThemeColors) => {
     }
 };
 
-const Wrapper = styled.div<{ variant: Props['variant'] }>`
+const Wrapper = styled.div<{ variant: BannerWrapperProps['variant'] }>`
     display: flex;
     background: ${props => getBgColor(props.variant, props.theme)};
     color: ${props => props.theme.TYPE_WHITE};
@@ -94,7 +94,7 @@ const ActionsWrapper = styled.div`
     }
 `;
 
-const ActionButton = styled(Button)<{ color: Props['variant'] }>`
+const ActionButton = styled(Button)<{ color: BannerWrapperProps['variant'] }>`
     height: 24px;
     margin-right: 4px;
     margin-left: 10px;
@@ -108,7 +108,7 @@ const CancelWrapper = styled.div`
     margin-left: 5px;
 `;
 
-interface Props {
+interface BannerWrapperProps {
     body: React.ReactNode;
     variant: 'info' | 'warning' | 'critical';
     action?: {
@@ -120,14 +120,15 @@ interface Props {
         onClick: () => void;
         'data-test': string;
     };
+    className?: string;
 }
 
-const BannerWrapper = ({ body, variant, action, dismissal }: Props) => {
+const BannerWrapper = ({ body, variant, action, dismissal, className }: BannerWrapperProps) => {
     const theme = useTheme();
     const iconElement = getIcon(variant, theme);
 
     return (
-        <Wrapper variant={variant}>
+        <Wrapper variant={variant} className={className}>
             <BlankLeft />
             <Body>
                 {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
