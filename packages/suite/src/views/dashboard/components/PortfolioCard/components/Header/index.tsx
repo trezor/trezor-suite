@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { H2, Button } from '@trezor/components';
+import { H2, Button, LoadingContent } from '@trezor/components';
 import { Translation, FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { updateGraphData } from '@wallet-actions/graphActions';
@@ -50,6 +50,7 @@ export interface Props {
     isWalletEmpty: boolean;
     isWalletLoading: boolean;
     isWalletError: boolean;
+    isDiscoveryRunning?: boolean;
     showGraphControls: boolean;
     hideBorder: boolean;
     // buyClickHandler: () => void;
@@ -82,16 +83,18 @@ const Header = (props: Props) => {
     return (
         <Wrapper hideBorder={props.hideBorder}>
             <Left>
-                <ValueWrapper>
-                    <HiddenPlaceholder intensity={7}>
-                        <span>
-                            <FormattedNumber
-                                value={props.portfolioValue}
-                                currency={props.localCurrency}
-                            />
-                        </span>
-                    </HiddenPlaceholder>
-                </ValueWrapper>
+                <LoadingContent isLoading={props.isDiscoveryRunning}>
+                    <ValueWrapper>
+                        <HiddenPlaceholder intensity={7}>
+                            <span>
+                                <FormattedNumber
+                                    value={props.portfolioValue}
+                                    currency={props.localCurrency}
+                                />
+                            </span>
+                        </HiddenPlaceholder>
+                    </ValueWrapper>
+                </LoadingContent>
             </Left>
             <Right>{actions}</Right>
         </Wrapper>

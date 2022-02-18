@@ -30,7 +30,7 @@ const Body = styled.div`
 
 const PortfolioCard = React.memo(() => {
     const { fiat, localCurrency } = useFiatValue();
-    const { discovery, getDiscoveryStatus } = useDiscovery();
+    const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
     const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
     const { setFlag, goto } = useActions({
@@ -125,6 +125,7 @@ const PortfolioCard = React.memo(() => {
                     isWalletEmpty={isWalletEmpty}
                     isWalletLoading={isWalletLoading}
                     isWalletError={isWalletError}
+                    isDiscoveryRunning={isDiscoveryRunning}
                     receiveClickHandler={() => goto('wallet-receive')}
                 />
 

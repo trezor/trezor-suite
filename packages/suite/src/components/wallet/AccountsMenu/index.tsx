@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDiscovery, useAccountSearch, useSelector } from '@suite-hooks';
-import { H2, variables, useTheme, Icon } from '@trezor/components';
+import { H2, variables, useTheme, Icon, LoadingContent } from '@trezor/components';
 import { Translation, AddAccountButton, LayoutContext } from '@suite-components';
 
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
@@ -123,7 +123,7 @@ const NoResults = styled.div`
 
 const AccountsMenu = () => {
     const theme = useTheme();
-    const { discovery, getDiscoveryStatus } = useDiscovery();
+    const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { device, accounts, selectedAccount } = useSelector(state => ({
         device: state.suite.device,
         accounts: state.wallet.accounts,
@@ -298,7 +298,9 @@ const AccountsMenu = () => {
                 <MenuHeader>
                     <Row>
                         <Heading noMargin>
-                            <Translation id="TR_MY_ACCOUNTS" />
+                            <LoadingContent isLoading={isDiscoveryRunning}>
+                                <Translation id="TR_MY_ACCOUNTS" />
+                            </LoadingContent>
                         </Heading>
                         <AddAccountButton device={device} noButtonLabel />
                     </Row>

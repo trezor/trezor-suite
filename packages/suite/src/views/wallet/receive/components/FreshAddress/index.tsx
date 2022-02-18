@@ -171,6 +171,7 @@ const FreshAddress = ({
                 icon="TREZOR_LOGO"
                 onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
                 isDisabled={disabled || locked || !firstFreshAddress}
+                isLoading={locked}
             >
                 <Translation id="RECEIVE_ADDRESS_REVEAL" />
             </StyledButton>
