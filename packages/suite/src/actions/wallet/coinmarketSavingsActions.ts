@@ -8,6 +8,7 @@ import invityAPI, {
 import { COINMARKET_COMMON, COINMARKET_SAVINGS } from './constants';
 import { verifyAddress as verifySavingsAddress } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import type { Account } from '@wallet-types';
+import regional from '@wallet-constants/coinmarket/regional';
 
 export interface SavingsInfo {
     savingsList?: SavingsListResponse;
@@ -15,6 +16,7 @@ export interface SavingsInfo {
     supportedFiatCurrencies: Set<string>;
     supportedCryptoCurrencies: Set<string>;
     supportedCountries: Set<string>;
+    country: string;
 }
 export type CoinmarketSavingsAction =
     | {
@@ -79,12 +81,15 @@ export const loadSavingsInfo = async (): Promise<SavingsInfo> => {
         p.supportedCountries.map(c => c.toLowerCase()).forEach(c => supportedCountries.add(c));
     });
 
+    const country = savingsList?.country || regional.unknownCountry;
+
     return {
         savingsList,
         providerInfos,
         supportedFiatCurrencies,
         supportedCryptoCurrencies,
         supportedCountries,
+        country,
     };
 };
 

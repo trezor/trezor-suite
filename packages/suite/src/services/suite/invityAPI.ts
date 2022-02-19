@@ -197,6 +197,7 @@ export interface SavingsTradeAMLQuestion {
 }
 
 export interface SavingsTrade {
+    country?: string;
     status?: SavingsStatus;
     kycStatus?: SavingsKYCStatus;
     amlStatus?: SavingsAMLStatus;

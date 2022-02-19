@@ -13,6 +13,8 @@ import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketC
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import { useSavingsKYCStartDefaultValues } from './useSavingsKYCStartDefaultValues';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
+import { useFormDraft } from '@wallet-hooks/useFormDraft';
+import type { SavingsUnsupportedCountryFormState } from '@wallet-types/coinmarket/savings/unsupportedCountry';
 
 export const useSavingsKYCStart = ({
     selectedAccount,
@@ -27,8 +29,9 @@ export const useSavingsKYCStart = ({
         loadInvityData();
     }, [loadInvityData]);
 
-    const { selectedProvider, isLoading } = useSelector(state => ({
+    const { selectedProvider, isLoading, country } = useSelector(state => ({
         selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
+        country: state.wallet.coinmarket.savings.savingsInfo?.country,
         isLoading: state.wallet.coinmarket.isLoading,
     }));
 
@@ -40,6 +43,11 @@ export const useSavingsKYCStart = ({
         defaultValues,
     });
     const { register, setValue } = methods;
+
+    const { getDraft } = useFormDraft<SavingsUnsupportedCountryFormState>(
+        'coinmarket-savings-unsupported-country',
+    );
+    const unsupportedCountryFormState = getDraft(selectedAccount.account.descriptor);
 
     const onSubmit = async () => {
         const { documentType, documentImageFront, documentImageBack, documentImageSelfie } =
@@ -70,6 +78,7 @@ export const useSavingsKYCStart = ({
                 });
             }
             const trade = {
+                country: unsupportedCountryFormState?.country || country,
                 exchange: selectedProvider.name,
                 cryptoCurrency: selectedAccount.account.symbol,
                 fiatCurrency: 'EUR',
