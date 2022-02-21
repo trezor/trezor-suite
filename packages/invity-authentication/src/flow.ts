@@ -92,6 +92,17 @@ const getUrls = (flowType: string) => {
     const authServerUrl = window.location.hash.replace('#', '');
     let flowUrl = `${authServerUrl}/self-service/${flowType}/flows`;
     let redirectUrl = `/account/${flowType}`;
+    switch (flowType) {
+        case 'settings':
+            redirectUrl = '/accounts/invity/settings'; // Trezor Suite relative URL hardcoded
+        case 'recovery':
+            redirectUrl = redirectUrl.replace('recovery', 'reset');
+            break;
+        case 'error':
+            flowUrl = `${authServerUrl}/self-service/errors`;
+        default:
+            break;
+    }
     const browserUrl = new URL(`${authServerUrl}/self-service/${flowType}/browser`);
     if (returnToUrl) {
         browserUrl.searchParams.append('return_to', returnToUrl);
@@ -103,11 +114,7 @@ const getUrls = (flowType: string) => {
             afterVerificationReturnToUrl,
         );
     }
-    if (flowType === 'recovery') {
-        redirectUrl = redirectUrl.replace('recovery', 'reset');
-    } else if (flowType === 'error') {
-        flowUrl = `${authServerUrl}/self-service/errors`;
-    }
+
     return { authServerUrl, flowUrl, redirectUrl, browserUrl: browserUrl.toString() };
 };
 
@@ -136,7 +143,7 @@ const getFlowId = (urls, flowType) => {
     }
 
     if (!flowId) {
-        // Flow id not found, redirect to kratos browser, get a new flow ID and return back to this page
+        // Flow id not found, redirect to kratos browser, get a new flow ID and return back to this pageconsole.log('checkIsIframe');
         window.location.replace(urls.browserUrl);
         exit();
     }
@@ -172,7 +179,7 @@ const getFlowInfo = async (urls, flowType) => {
 };
 
 const prefillEmail = (email = '', flowType) => {
-    const emailInput = document.getElementById('auth_email').getElementsByTagName('input')[0];
+    const emailInput = document.getElementById('email') as HTMLInputElement;
     if (email && flowType === 'settings') {
         emailInput.placeholder = email;
         return true;
@@ -223,6 +230,7 @@ const reloadAfterTimeout = (urls, flowType) => {
     }
     if (expirationTimeMinutes) {
         setTimeout(() => {
+            console.log('reloadAfterTimeout');
             window.location.replace(urls.browserUrl);
         }, expirationTimeMinutes * 60 * 1000);
     }
@@ -253,7 +261,7 @@ const checkWhoami = async (flowType, urls) => {
         const data = await response.json();
         if (data.error) {
             // Unauthorized, prefill e-mail from cookie (only for verification & recovery flows)
-            if (prefillEmail(null, flowType) === false) {
+            if (!prefillEmail(null, flowType)) {
                 if (window.top.location.pathname === '/account/reset-sent') {
                     // cannot pre-fill recovery email, redir to "reset"
                     sendMessageToParent({ redirectTo: 'recovery' });
@@ -271,8 +279,15 @@ const checkWhoami = async (flowType, urls) => {
                 (flowType === 'verification' && verifiableAddress.verified)
             ) {
                 sendMessageToParent({ state: 'login-successful' });
+            } else if (flowType === 'recovery') {
+                if (verifiableAddress.verified) {
+                    sendMessageToParent({ redirectTo: "settings" });
+                } else {
+                    sendMessageToParent({ redirectTo: "verification" });
+                }
+                exit();
             }
-            exit();
+            prefillEmail(verifiableAddress.value, flowType); // pre-fill email from user info (if needed)
         }
     } catch (error) {
         if (error !== 'exit') {
@@ -318,10 +333,10 @@ const parseFlowAttributes = (flowData, flowType) => {
         } else if (node.attributes.name === 'method' && node.attributes.value) {
             const submitButton = document.getElementById('submit') as HTMLButtonElement;
             submitButton.value = node.attributes.value;
-            // if (flowType === 'settings' && node.attributes.value === 'password') {
-            //     // Settings flow has multiple submit buttons (for email & password), we need just the password submit
-            //     submitButton.value = node.attributes.value;
-            // }
+            if (flowType === 'settings' && node.attributes.value === 'password') {
+                // Settings flow has multiple submit buttons (for email & password), we need just the password submit
+                submitButton.value = node.attributes.value;
+            }
         }
         // Attribute-specific messages
         if (node.messages.length > 0) {
@@ -363,6 +378,7 @@ const parseFlowAttributes = (flowData, flowType) => {
             case 4000007:
                 // User already registered - redirect to verification anyway
                 disableForm();
+                // TODO: redirect to proper page by setting registration successful
                 sendMessageToParent({ redirectTo: 'verification' });
                 exit();
                 break;
@@ -379,19 +395,16 @@ const parseFlowAttributes = (flowData, flowType) => {
             case 1060002:
                 if (window.top.location.pathname !== '/account/reset-sent') {
                     disableForm();
-                    sendMessageToParent({ redirectTo: 'recover' }); // "recovery mail sent" page
+                    sendMessageToParent({ action: 'recovery-sent' }); // "recovery mail sent" page
                     exit();
                 }
                 break;
 
             case 1050001:
                 // Your changes have been saved!
-                // eslint-disable-next-line no-case-declarations
                 const { text } = message;
                 if (flowType === 'settings') {
-                    sendMessageToParent({
-                        action: { type: 'showMessage', variant: 'success', text },
-                    });
+                    sendMessageToParent({ action: 'settings-successful' });
                     exit();
                 } else {
                     message.text = text;
@@ -404,11 +417,7 @@ const parseFlowAttributes = (flowData, flowType) => {
                 break;
 
             case 1070001:
-                // message.text = translate(
-                //     translations,
-                //     'accounts.recovery_email_sent',
-                //     message.text,
-                // );
+                message.text = 'An email containing a recovery link has been sent to the email address you provided.';
                 break;
 
             default:
@@ -424,6 +433,8 @@ const checkIsIframe = urls => {
     if (!inIframe()) {
         window.location.replace(urls.redirectUrl);
         exit();
+    } else {
+        window.document.body.classList.remove('hidden');
     }
 };
 
@@ -437,7 +448,7 @@ const checkPasswordLength = password => {
 };
 
 const checkFlowType = flowType => {
-    if (['registration', 'recovery', 'settings'].includes(flowType) === false) {
+    if (!['registration', 'recovery', 'settings'].includes(flowType)) {
         return;
     }
     const urlParams = new URLSearchParams(window.location.search);
@@ -449,11 +460,16 @@ const checkFlowType = flowType => {
     } else if (flowType === 'settings') {
         const form = document.getElementById('form');
         form.onsubmit = () => {
-            sendMessageToParent({ action: { type: 'hideMessage' } }); // remove the tooltip, so it can be opened again
+            sendMessageToParent({ action: 'loading' });
             return true;
         };
         return;
     } else if (flowType === 'recovery') {
+        const form = document.getElementById('form');
+        form.onsubmit = () => {
+            sendMessageToParent({ action: 'loading' });
+            return true;
+        };
         if (window.top.location.pathname === '/account/reset-sent') {
             // Remove verification re-send text & submit link-button
             document.getElementById('submit').remove();
@@ -553,9 +569,8 @@ const runFlow = async flowType => {
         // eslint-disable-next-line no-debugger
         const urls = getUrls(flowType);
         reloadAfterTimeout(urls, flowType);
-        // checkIsIframe(urls); // If not an iframe, redirect to react UI
+        checkIsIframe(urls); // If not an iframe, redirect to react UI
         checkFlowType(flowType); // Do registration & recovery-specific form changes
-        // translations = await loadTranslations();
         addInputValidation(flowType);
         translateForm(flowType);
         await checkWhoami(flowType, urls); // Get user info and redirect if needed

@@ -22,6 +22,8 @@ export const useInvityNavigation = (account: Account) => {
 
     return {
         navigateToInvityLogin: useNavigateToRouteName('wallet-invity-login'),
+        navigateToInvityRecovery: useNavigateToRouteName('wallet-invity-recovery'),
+        navigateToInvityRecoverySent: useNavigateToRouteName('wallet-invity-recovery-sent'),
         navigateToInvityRegistration: useNavigateToRouteName('wallet-invity-registration'),
         navigateToInvityRegistrationSuccessful: useNavigateToRouteName(
             'wallet-invity-registration-successful',

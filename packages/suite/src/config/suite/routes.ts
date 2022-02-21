@@ -245,6 +245,24 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-invity-recovery',
+        pattern: '/accounts/invity/recovery',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-invity-recovery-sent',
+        pattern: '/accounts/invity/recovery-sent',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-invity-settings',
+        pattern: '/accounts/invity/settings',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-invity-registration-successful',
         pattern: '/accounts/invity/registration-successful',
         app: 'wallet',

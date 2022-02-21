@@ -6,7 +6,7 @@ import { InvityLayoutProps } from '@suite/components/wallet/InvityLayout';
 import { InvityAuthenticationContext } from '@suite/components/wallet/InvityAuthentication';
 import { Translation } from '@suite-components';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
-import { Loader } from '@trezor/components';
+import { Loader, Link } from '@trezor/components';
 
 const DefaultIframeHeight = 188;
 
@@ -64,12 +64,14 @@ const Footer = styled.div`
     align-content: stretch;
 `;
 
-const ForgotPassword = styled.span`
+const ForgotPassword = styled(Link)`
     font-size: 14px;
     line-height: 24px;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     text-decoration: underline;
-    cursor: not-allowed;
+    &:hover {
+        color: ${props => props.theme.TYPE_LIGHT_GREY};
+    }
 `;
 
 const NoAccount = styled.span`
@@ -78,9 +80,10 @@ const NoAccount = styled.span`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const CreateAnAccount = styled(NoAccount)`
+const CreateAnAccount = styled(Link)`
+    font-size: 14px;
+    line-height: 24px;
     text-decoration: underline;
-    cursor: pointer;
 `;
 
 const StyledLoader = styled(Loader)<{ isHidden: boolean }>`
@@ -91,7 +94,9 @@ const StyledLoader = styled(Loader)<{ isHidden: boolean }>`
 
 const CoinmarketSavingsLogin = ({ selectedAccount }: InvityLayoutProps) => {
     const { iframeMessage } = useContext(InvityAuthenticationContext);
-    const { navigateToInvityRegistration } = useInvityNavigation(selectedAccount.account);
+    const { navigateToInvityRegistration, navigateToInvityRecovery } = useInvityNavigation(
+        selectedAccount.account,
+    );
     const [iframeHeight, setIframeHeight] = useState<number>();
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [isFrameLoading, setIsIframeLoading] = useState(true);
@@ -111,6 +116,10 @@ const CoinmarketSavingsLogin = ({ selectedAccount }: InvityLayoutProps) => {
     const handleCreateAnAccountClick = useCallback(
         () => navigateToInvityRegistration(),
         [navigateToInvityRegistration],
+    );
+    const handleForgotPasswordClick = useCallback(
+        () => navigateToInvityRecovery(),
+        [navigateToInvityRecovery],
     );
     const theme = useTheme();
 
@@ -137,15 +146,18 @@ const CoinmarketSavingsLogin = ({ selectedAccount }: InvityLayoutProps) => {
                     />
                     <Divider />
                     <Footer>
-                        <ForgotPassword>
-                            TBD: <Translation id="TR_INVITY_LOGIN_FORGOT_PASSWORD" />
+                        <ForgotPassword variant="nostyle" onClick={handleForgotPasswordClick}>
+                            <Translation id="TR_INVITY_LOGIN_FORGOT_PASSWORD" />
                         </ForgotPassword>
                         <NoAccount>
                             <Translation
                                 id="TR_INVITY_LOGIN_NO_ACCOUNT"
                                 values={{
                                     createAnAccount: (
-                                        <CreateAnAccount onClick={handleCreateAnAccountClick}>
+                                        <CreateAnAccount
+                                            variant="nostyle"
+                                            onClick={handleCreateAnAccountClick}
+                                        >
                                             <Translation id="TR_INVITY_LOGIN_NO_ACCOUNT_CREATE_AN_ACCOUNT" />
                                         </CreateAnAccount>
                                     ),

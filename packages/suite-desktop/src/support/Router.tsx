@@ -30,6 +30,9 @@ import WalletCoinmarketSavingsSetup from '@wallet-views/coinmarket/savings/setup
 import WalletCoinmarketSavingsPaymentInfo from '@wallet-views/coinmarket/savings/payment-info';
 import WalletCoinmarketSavingsOverview from '@wallet-views/coinmarket/savings/overview';
 import WalletInvityLogin from '@wallet-views/invity/login';
+import WalletInvityRecovery from '@wallet-views/invity/recovery';
+import WalletInvityRecoverySent from '@wallet-views/invity/recovery-sent';
+import WalletInvityRecoverySettings from '@wallet-views/invity/settings';
 import WalletInvityRegistration from '@wallet-views/invity/registration';
 import WalletInvityRegistrationSuccessful from '@wallet-views/invity/registration-successful';
 import WalletInvityAccountVerified from '@wallet-views/invity/account-verified';
@@ -73,6 +76,9 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'wallet-coinmarket-savings-payment-info': WalletCoinmarketSavingsPaymentInfo,
     'wallet-coinmarket-savings-overview': WalletCoinmarketSavingsOverview,
     'wallet-invity-login': WalletInvityLogin,
+    'wallet-invity-recovery': WalletInvityRecovery,
+    'wallet-invity-recovery-sent': WalletInvityRecoverySent,
+    'wallet-invity-settings': WalletInvityRecoverySettings,
     'wallet-invity-registration': WalletInvityRegistration,
     'wallet-invity-registration-successful': WalletInvityRegistrationSuccessful,
     'wallet-invity-account-verified': WalletInvityAccountVerified,

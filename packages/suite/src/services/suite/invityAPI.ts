@@ -950,7 +950,7 @@ class InvityAPI {
     };
 
     private getInvityAuthenticationPageSrc(
-        flow: 'login' | 'registration',
+        flow: 'login' | 'registration' | 'recovery' | 'settings',
         theme: SuiteThemeColors['THEME'],
         afterVerificationReturnToPath?: string,
     ) {
@@ -993,6 +993,14 @@ class InvityAPI {
             theme,
             afterVerificationReturnToPath,
         );
+    }
+
+    getRecoveryPageSrc(theme: SuiteThemeColors['THEME']) {
+        return this.getInvityAuthenticationPageSrc('recovery', theme);
+    }
+
+    getSettingsPageSrc(theme: SuiteThemeColors['THEME']) {
+        return this.getInvityAuthenticationPageSrc('settings', theme);
     }
 
     // TODO:

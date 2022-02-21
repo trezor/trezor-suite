@@ -107,6 +107,16 @@ export class HttpReceiver extends EventEmitter {
                 handler: this.invityRegistrationSuccessHandler,
                 origins: ['', 'http://localhost:21335'],
             },
+            {
+                pathname: '/invity-recovery',
+                handler: this.invityRecoveryHandler,
+                origins: ['', 'http://localhost:21335'],
+            },
+            {
+                pathname: '/invity-settings',
+                handler: this.invityRecoverySettingsHandler,
+                origins: ['', 'http://localhost:21335'],
+            },
             /**
              * Register more routes here. Each route must have pathname and handler function.
              */
@@ -351,7 +361,9 @@ export class HttpReceiver extends EventEmitter {
             | 'login-success.html'
             | 'logout-success.html'
             | 'registration.html'
-            | 'registration-success.html',
+            | 'registration-success.html'
+            | 'recovery.html'
+            | 'settings.html',
     ) => path.join(__dirname, '..', '..', 'build', 'static', 'invity-authentication', htmlFileName);
 
     private setInvityHtmlFileToResponse = (
@@ -370,6 +382,14 @@ export class HttpReceiver extends EventEmitter {
 
     private invityLoginHandler = (_: Request, response: http.ServerResponse) => {
         this.setInvityHtmlFileToResponse(response, 'login.html');
+    };
+
+    private invityRecoveryHandler = (_: Request, response: http.ServerResponse) => {
+        this.setInvityHtmlFileToResponse(response, 'recovery.html');
+    };
+
+    private invityRecoverySettingsHandler = (_: Request, response: http.ServerResponse) => {
+        this.setInvityHtmlFileToResponse(response, 'settings.html');
     };
 
     private invityLoginSuccessHandler = (_: Request, response: http.ServerResponse) => {

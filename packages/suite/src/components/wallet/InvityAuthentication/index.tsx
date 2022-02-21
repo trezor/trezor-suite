@@ -40,7 +40,8 @@ interface IframeMessage {
         | 'resize'
         | 'registration-successful'
         | 'login-successful'
-        | 'logout-successful';
+        | 'logout-successful'
+        | 'recovery-sent';
     data?: any;
 }
 

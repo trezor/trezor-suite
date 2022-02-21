@@ -930,6 +930,22 @@ export default defineMessages({
         defaultMessage: 'Log in to Invity',
         id: 'TR_INVITY_LOGIN_HEADER',
     },
+    TR_INVITY_RECOVERY_HEADER: {
+        defaultMessage: 'Reset your password',
+        id: 'TR_INVITY_RECOVERY_HEADER',
+    },
+    TR_INVITY_RECOVERY_DESCRIPTION: {
+        defaultMessage: "We'll send you a link to reset your password",
+        id: 'TR_INVITY_RECOVERY_DESCRIPTION',
+    },
+    TR_INVITY_SETTINGS_HEADER: {
+        defaultMessage: 'Password reset',
+        id: 'TR_INVITY_SETTINGS_HEADER',
+    },
+    TR_INVITY_SETTINGS_DESCRIPTION: {
+        defaultMessage: 'Description TBD',
+        id: 'TR_INVITY_SETTINGS_DESCRIPTION',
+    },
     TR_INVITY_LOGIN_DESCRIPTION: {
         defaultMessage: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do.',
         id: 'TR_INVITY_LOGIN_DESCRIPTION',
@@ -1082,6 +1098,14 @@ export default defineMessages({
         defaultMessage:
             'You should receive an email with link. Click on the link. That verifies your account.',
         id: 'TR_SAVINGS_REGISTRATION_SUCCESSFUL_DESCRIPTION',
+    },
+    TR_SAVINGS_RECOVERY_SENT_HEADER: {
+        defaultMessage: 'Password reset email sent',
+        id: 'TR_SAVINGS_RECOVERY_SENT_HEADER',
+    },
+    TR_SAVINGS_RECOVERY_SENT_DESCRIPTION: {
+        defaultMessage: 'Click the link in your email to reset your Invity account password.',
+        id: 'TR_SAVINGS_RECOVERY_SENT_DESCRIPTION',
     },
     TR_SAVINGS_GUIDE_STEP_YOUR_CREDENTIALS: {
         defaultMessage: 'Your credentials',

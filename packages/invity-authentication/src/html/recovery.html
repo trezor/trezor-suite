@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Recovery</title>
+    <!-- StylePlaceholder -->
+</head>
+
+<body>
+    <form id="form" action="" method="">
+        <div id="auth_email" class="input-wrapper">
+            <input id="email" type="email" autocomplete="email" placeholder="Email" required class="email">
+        </div>
+        <div class="input-message">
+            <span id="error-email"></span>
+        </div>
+
+        <div class="form-group">
+            <input id="csrf_token" name="csrf_token" type="hidden" class="form-control">
+        </div>
+        <button id='submit' name="method" type="submit" class="btn btn-primary">Recover</button>
+        <div id="verification" class="verification center-link">Nothing arrived?
+            <button id='submit_link' name="method" type="submit" value="link" class="btn btn-link">
+                Re-send e-mail
+            </button>
+        </div>
+    </form>
+</body>
+<!-- ScriptPlaceholder -->
+
+</html>

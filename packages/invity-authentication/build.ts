@@ -52,6 +52,22 @@ const pageAssetCollection: PageAssetCollection = {
     'logout-success': {
         js: [getScriptFilePath('logout-success.js')],
     },
+    recovery: {
+        js: [
+            getScriptFilePath('core.js'),
+            getScriptFilePath('flow.js'),
+            getScriptFilePath('recovery.js'),
+        ],
+        css: [getStyleFilePath('fonts.css'), getStyleFilePath('base.css')],
+    },
+    settings: {
+        js: [
+            getScriptFilePath('core.js'),
+            getScriptFilePath('flow.js'),
+            getScriptFilePath('settings.js'),
+        ],
+        css: [getStyleFilePath('fonts.css'), getStyleFilePath('base.css')],
+    },
 };
 
 const ScriptPlaceholder = /<!-- ScriptPlaceholder -->/g;
