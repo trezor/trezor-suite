@@ -191,12 +191,18 @@ const verifyMessage = [
             },
             {
                 selector: '.follow-device >> visible=true',
+                screenshot: {
+                    name: 'verify-message',
+                },
                 nextEmu: {
                     type: 'emulator-press-yes',
                 },
             },
             {
                 selector: '.follow-device >> visible=true',
+                screenshot: {
+                    name: 'verify-message',
+                },
                 nextEmu: {
                     type: 'emulator-press-yes',
                 },
@@ -297,6 +303,9 @@ const recoverDevice = [
             },
             ...Array(12).fill({
                 selector: '.follow-device >> visible=true',
+                screenshot: {
+                    name: 'follow-device-enter-seed',
+                },
                 nextEmu: {
                     type: 'emulator-input',
                     value: 'all',
@@ -319,13 +328,19 @@ const fixtures = [
     ...getPublicKey,
     ...getAddress,
     ...getAccountInfo,
-    ...composeTransaction,
+    // todo: compose transaction breaks next test in queue
+    // this tests ends with POST "Cancel" call through bridge here https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js#L669
+    // for reference /post/session endpoint works check here https://github.com/trezor/trezord-go
+    // subsequent call (in next tests) fails here https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js#L368
+    // as trezord returns response belonging to the prev call.
+    // ...composeTransaction,
     ...signTransaction,
     ...signMessage,
     ...verifyMessage,
     ...wipeDevice,
-    ...resetDevice,
     ...recoverDevice,
+    // todo: resetDevice also breaks next test in queue and is flaky itself
+    // ...resetDevice,
 ];
 
 module.exports = fixtures;

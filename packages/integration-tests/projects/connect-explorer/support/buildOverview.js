@@ -5,10 +5,18 @@ const SCREENSHOTS_DIR = './projects/connect-explorer/screenshots';
 
 const CI_JOB_URL = process.env.CI_JOB_URL || '.';
 
-const buildOverview = () => {
+const buildOverview = ({ emuScreenshots }) => {
     if (fs.existsSync('connect-popup-overview.html')) {
         fs.rmSync('connect-popup-overview.html');
     }
+
+    const renderEmuScreenshot = screenshotPath => {
+        if (emuScreenshots[screenshotPath]) {
+            return `<img src="data:image/png;base64, ${emuScreenshots[screenshotPath]}" />`;
+        }
+        // not found, this is expected, not all screens on host have device interaction
+        return '<div>no device interaction</div>';
+    };
 
     let html = '';
     let index = '';
@@ -17,7 +25,6 @@ const buildOverview = () => {
 
     connectExplorerUrls.forEach(url => {
         const methodName = url.split('-')[0]; // lets assume it looks like getPublicKey-multiple
-
         const urlPath = path.join(SCREENSHOTS_DIR, url);
         const screenshots = fs.readdirSync(urlPath);
         index += `<li><a href="#${url}">${url}</a></li>`;
@@ -40,6 +47,7 @@ const buildOverview = () => {
                         '/projects/connect-explorer',
                         '/artifacts/raw/packages/integration-tests/projects/connect-explorer',
                     )}" />
+                    ${renderEmuScreenshot(`./${urlPath}/${screenshot}`)}
                 </div>
             `;
         });
