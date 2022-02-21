@@ -212,6 +212,7 @@ blockchain-link manual:
     paths:
       - ./packages/integration-tests/projects/connect-explorer/screenshots
       - ./packages/integration-tests/connect-popup-overview.html
+      - ./packages/integration-tests/test-results
 
 connect-explorer:
   extends: .e2e connect-explorer

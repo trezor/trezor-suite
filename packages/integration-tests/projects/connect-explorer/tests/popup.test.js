@@ -1,9 +1,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 
-const { test, expect } = require('@playwright/test');
+const { test } = require('@playwright/test');
 const fs = require('fs');
-const path = require('path');
 
 const { Controller } = require('../../../websocket-client');
 const fixtures = require('./fixtures');
@@ -11,6 +10,8 @@ const buildOverview = require('../support/buildOverview');
 
 const url = process.env.URL || 'http://localhost:8082/';
 const SCREENSHOTS_DIR = './projects/connect-explorer/screenshots';
+const controller = new Controller({ url: 'ws://localhost:9001/' });
+const emuScreenshots = {};
 
 const log = (...val) => {
     console.log(`[===]`, ...val);
@@ -26,7 +27,12 @@ const ensureScreenshotsDir = () => {
     }
 };
 
-const controller = new Controller({ url: 'ws://localhost:9001/' });
+const screenshotEmu = async path => {
+    const { response } = await controller.send({
+        type: 'emulator-get-screenshot',
+    });
+    emuScreenshots[path] = response;
+};
 
 test.beforeAll(async () => {
     await controller.connect();
@@ -34,7 +40,7 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(() => {
-    buildOverview();
+    buildOverview({ emuScreenshots });
 });
 
 let device = {};
@@ -57,6 +63,7 @@ fixtures.forEach(f => {
             await controller.send({
                 type: 'emulator-start',
                 wipe: true,
+                save_screenshots: true,
             });
             if (!f.device.wiped) {
                 await controller.send({
@@ -81,11 +88,11 @@ fixtures.forEach(f => {
         // screenshot request
         log(f.url, 'screenshot trezor-connect call params');
 
-        const code = await page.locator('[data-test="@code"]');
+        const code = page.locator('[data-test="@code"]');
         await code.screenshot({ path: `${screenshotsPath}/1-request.png` });
 
         log(f.url, 'submitting in connect explorer');
-        await page.waitForSelector("button[data-test='@submit-button']", { visible: true });
+        await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
         log(f.url, 'waiting for popup promise');
         const [popup] = await Promise.all([
             // It is important to call waitForEvent before click to set up waiting.
@@ -97,15 +104,15 @@ fixtures.forEach(f => {
         log(f.url, 'popup promise resolved');
 
         log(f.url, 'waiting for confirm permissions button');
-        await popup.waitForSelector('button.confirm', { visible: true, timeout: 40000 });
+        await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
         await popup.screenshot({
             path: `${screenshotsPath}/2-permissions.png`,
             fullPage: true,
         });
         await popup.click('button.confirm');
 
-        let screenshotCount = 0;
-        for (v of f.views) {
+        let screenshotCount = 1;
+        for (const v of f.views) {
             log(f.url, v.selector, 'expecting view');
 
             if (v.action === 'close') {
@@ -117,12 +124,14 @@ fixtures.forEach(f => {
                 await element.waitFor({ state: 'visible' });
 
                 if (v.screenshot) {
+                    const path = `${screenshotsPath}/3-${screenshotCount}-${v.screenshot.name}.png`;
+
                     await popup.screenshot({
-                        path: `${screenshotsPath}/3-${screenshotCount + 1}-${
-                            v.screenshot.name
-                        }.png`,
+                        path,
                         fullPage: true,
                     });
+                    await screenshotEmu(path);
+
                     screenshotCount++;
                 }
             }
@@ -144,7 +153,7 @@ fixtures.forEach(f => {
 
         // screenshot response
         log(f.url, 'screenshot response');
-        const response = await page.locator('[data-test="@response"]');
+        const response = page.locator('[data-test="@response"]');
         await response.screenshot({ path: `${screenshotsPath}/4-response.png` });
         log(f.url, 'method finished');
     });
