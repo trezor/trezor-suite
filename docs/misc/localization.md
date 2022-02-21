@@ -117,6 +117,15 @@ To join the ranks of translators follow [Crowdin contributions](https://www.noti
 
 ## Synchronization with Crowdin
 
+### With the automated CI job from GitHub.
+
+Navigate to the [Crowdin translations update](https://github.com/trezor/trezor-suite/actions/workflows/crowdin_sync.yml) action and trigger manual job with a base branch `develop`
+Before triggering the job, make sure there is no pull request already opened with the title `Crowdin translations update`
+
+Action will create a pull request with the title `Crowdin translations update`, review it and merge.
+
+### Locally
+
 All work could be done with shortcuts defined in [package.json scripts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/package.json#L5) section. In order to interact with Crowdin you need to ask the project owner for access token and either store it in your `$HOME/.crowdin.yml` file:
 
 ```yaml
