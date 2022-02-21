@@ -2,11 +2,11 @@ export const TRANSLATION_PSEUDOLANGUAGE = 'lol' as const;
 
 const LANGUAGES = {
     en: { name: 'English', en: 'English', complete: true },
-    es: { name: 'Español (BETA)', en: 'Spanish (BETA)', complete: true },
+    es: { name: 'Español', en: 'Spanish', complete: true },
     af: { name: 'Afrikaans', en: 'Afrikaans' },
     ar: { name: 'العربية‬', en: 'Arabic' },
     ca: { name: 'Català', en: 'Catalan' },
-    cs: { name: 'Česky (BETA)', en: 'Czech (BETA)', complete: true },
+    cs: { name: 'Česky', en: 'Czech', complete: true },
     da: { name: 'Dansk', en: 'Danish' },
     de: { name: 'Deutsch', en: 'German' },
     el: { name: 'Ελληνικά', en: 'Greek' },
@@ -25,7 +25,7 @@ const LANGUAGES = {
     pl: { name: 'Polski', en: 'Polish' },
     pt: { name: 'Português', en: 'Portuguese' },
     ro: { name: 'Română', en: 'Romanian' },
-    ru: { name: 'Русский (БЕТА)', en: 'Russian (BETA)', complete: true },
+    ru: { name: 'Русский', en: 'Russian', complete: true },
     sk: { name: 'Slovenčina', en: 'Slovak' },
     sr: { name: 'Српски', en: 'Serbian' },
     sv: { name: 'Svenska', en: 'Swedish' },
