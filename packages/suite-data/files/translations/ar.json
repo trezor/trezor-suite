@@ -173,6 +173,7 @@
   "TR_DATE_YEAR_SHORT": "سنة واحدة",
   "TR_DEACTIVATE_ALL": "تعطيل الكل",
   "TR_DECREASED_AMOUNT": "مبلغ جديد",
+  "TR_EXCHANGE_FEES_INFO": "({ll fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat.",
   "TR_HELP": "الدعم ",
   "TR_IS_NOT_NEW_DEVICE_HEADING": "تم استخدام تريزور الخاص بك",
   "TR_I_HAVE_INITIALIZED_DEVICE": "استخدام الجهاز",

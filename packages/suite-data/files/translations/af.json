@@ -28,5 +28,6 @@
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Ja, ek doen!",
   "FW_CAPABILITY_NO_CAPABILITY": "Nie ondersteun nie",
   "FW_CAPABILITY_NO_SUPPORT": "Nie ondersteun nie",
-  "FW_CAPABILITY_UPDATE_REQUIRED": "Vereis opdatering"
+  "FW_CAPABILITY_UPDATE_REQUIRED": "Vereis opdatering",
+  "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }
