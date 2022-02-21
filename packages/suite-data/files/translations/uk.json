@@ -1,3 +1,4 @@
 {
+  "AMOUNT": "Сума",
   "TR_EXCHANGE_FEES_INFO": "All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat})."
 }
