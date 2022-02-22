@@ -5,7 +5,7 @@
     Use element.classList.add/remove instead.    
  */
 
-const sendMessageToParent = (data) => {
+const sendMessageToParent = data => {
     // Send a message to the parent window (ask for a redirect, or inform it whether the user is authorized)
     window.top.postMessage(
         JSON.stringify({
@@ -26,20 +26,6 @@ const translate = (translations, key, fallback) => {
         return fallback;
     }
     return translations[key];
-};
-
-const translateForm = _ => {
-    const forgotPassword = document.getElementById('forgot_password_link');
-    if (forgotPassword) {
-        forgotPassword.innerText = 'Forgot your password?';
-    }
-
-    const verificationDiv = document.getElementById('verification') as HTMLDivElement;
-    if (verificationDiv) {
-        const submitVerification = verificationDiv.getElementsByTagName('button')[0];
-        submitVerification.innerText = 'Re-send e-mail';
-        verificationDiv.innerHTML = `Nothing arrived? ${submitVerification.innerHTML}`;
-    }
 };
 
 const disableForm = () => {
@@ -281,9 +267,9 @@ const checkWhoami = async (flowType, urls) => {
                 sendMessageToParent({ state: 'login-successful' });
             } else if (flowType === 'recovery') {
                 if (verifiableAddress.verified) {
-                    sendMessageToParent({ redirectTo: "settings" });
+                    sendMessageToParent({ redirectTo: 'settings' });
                 } else {
-                    sendMessageToParent({ redirectTo: "verification" });
+                    sendMessageToParent({ redirectTo: 'verification' });
                 }
                 exit();
             }
@@ -378,18 +364,13 @@ const parseFlowAttributes = (flowData, flowType) => {
             case 4000007:
                 // User already registered - redirect to verification anyway
                 disableForm();
-                // TODO: redirect to proper page by setting registration successful
-                sendMessageToParent({ redirectTo: 'verification' });
+                sendMessageToParent({ action: 'registration-successful' });
                 exit();
                 break;
 
             case 4000006:
-                // The provided credentials are invalid, check for spelling mistakes in your password or username, email address, or phone number.
-                // message.text = translate(
-                //     translations,
-                //     'accounts.invalid_credentials',
-                //     message.text,
-                // );
+                message.text =
+                    'The provided credentials are invalid, check for spelling mistakes in your password or username, email address, or phone number.';
                 break;
 
             case 1060002:
@@ -417,7 +398,8 @@ const parseFlowAttributes = (flowData, flowType) => {
                 break;
 
             case 1070001:
-                message.text = 'An email containing a recovery link has been sent to the email address you provided.';
+                message.text =
+                    'An email containing a recovery link has been sent to the email address you provided.';
                 break;
 
             default:
@@ -566,13 +548,11 @@ const runFlow = async flowType => {
     sendMessageToParent({ action: 'loading' });
     sendMessageToParent({ action: 'resize', data: document.body.scrollHeight });
     try {
-        // eslint-disable-next-line no-debugger
         const urls = getUrls(flowType);
         reloadAfterTimeout(urls, flowType);
         checkIsIframe(urls); // If not an iframe, redirect to react UI
         checkFlowType(flowType); // Do registration & recovery-specific form changes
         addInputValidation(flowType);
-        translateForm(flowType);
         await checkWhoami(flowType, urls); // Get user info and redirect if needed
         const flowData = await getFlowInfo(urls, flowType); // Get flowID from URL params & request form info (or get redirected)
         parseFlowAttributes(flowData, flowType); // Fill the form or show messages according to flow info

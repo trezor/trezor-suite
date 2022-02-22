@@ -1,3 +1,4 @@
+// TODO: core.js -> core.ts
 /** Adds checkbox click event listeners. Checkbox is a div element (not input type="checkbox"). */
 function addCheckboxClickEventListeners() {
     const checkboxWrapper = document.querySelector('.checkbox-wrapper');

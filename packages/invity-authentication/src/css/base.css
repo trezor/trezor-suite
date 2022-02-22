@@ -2,13 +2,13 @@
     margin: 0;
     padding: 0;
     outline: none;
-    font-family: "TT Hoves",-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    font-family: 'TT Hoves', -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 }
 
 :root {
-    --BG_GREEN: #00854D;
+    --BG_GREEN: #00854d;
     --BG_GREY: #f4f4f4;
-    --TYPE_DARK_GREY: #1F1F1F;
+    --TYPE_DARK_GREY: #1f1f1f;
     --BG_WHITE: #ffffff;
     --STROKE_GREY: #e8e8e8;
     --TYPE_RED: #cd4949;
@@ -17,7 +17,7 @@
 }
 
 .dark {
-    --BG_GREEN: #00854D;
+    --BG_GREEN: #00854d;
     --BG_GREY: #18191a;
     --TYPE_DARK_GREY: #eaebed;
     --BG_WHITE: #242526;
@@ -27,7 +27,8 @@
     --TYPE_LIGHT_GREY: #959596;
 }
 
-html, body {
+html,
+body {
     overflow: hidden;
     margin: 0;
     padding: 0;
@@ -184,4 +185,32 @@ button {
 button:disabled {
     background: var(--BG_GREY);
     color: var(--TYPE_LIGHT_GREY);
+}
+
+.small-text {
+    font-size: 14px;
+    line-height: 24px;
+    color: var(--TYPE_LIGHT_GREY);
+}
+
+.centered-text {
+    text-align: center;
+}
+
+.verification,
+.verification-info {
+    margin-top: 12px;
+}
+
+button.link {
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 24px;
+    color: var(--TYPE_LIGHT_GREY);
+    font-weight: unset;
+    display: unset;
 }

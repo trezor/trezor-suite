@@ -43,6 +43,14 @@ const pageAssetCollection: PageAssetCollection = {
         ],
         css: [getStyleFilePath('fonts.css'), getStyleFilePath('base.css')],
     },
+    verification: {
+        js: [
+            getScriptFilePath('core.js'),
+            getScriptFilePath('flow.js'),
+            getScriptFilePath('verification.js'),
+        ],
+        css: [getStyleFilePath('fonts.css'), getStyleFilePath('base.css')],
+    },
     'login-success': {
         js: [getScriptFilePath('login-success.js')],
     },

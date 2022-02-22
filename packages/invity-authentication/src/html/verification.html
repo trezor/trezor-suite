@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Verification</title>
+        <!-- StylePlaceholder -->
+    </head>
+
+    <body>
+        <form id="form" action="" method="">
+            <div id="auth_email">
+                <input type="email" id="email" required="" class="hidden" />
+            </div>
+            <div>
+                <input id="csrf_token" name="csrf_token" type="hidden" />
+            </div>
+            <div id="verification" class="small-text verification centered-text">
+                Nothing arrived?
+                <button id="submit" name="method" type="submit" value="link" class="link">
+                    Re-send email
+                </button>
+            </div>
+            <p id="info" class="small-text centered-text verification-info"></p>
+        </form>
+    </body>
+    <!-- ScriptPlaceholder -->
+</html>
