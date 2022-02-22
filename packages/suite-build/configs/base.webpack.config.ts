@@ -20,6 +20,11 @@ import { getPathForProject } from '../utils/path';
 import { suiteVersion } from '../../suite/package.json';
 
 const gitRevision = getRevision();
+
+/**
+ * Assemble release name for Sentry
+ * Same definition is in packages/suite-desktop/scripts/build.js
+ */
 const sentryRelease = `${suiteVersion}.${project}${
     isCodesignBuild ? '.codesign' : ''
 }.${gitRevision}`;
