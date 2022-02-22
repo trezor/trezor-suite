@@ -1,6 +1,7 @@
 /**
  * Request Filter feature (blocks non-allowed requests)
  */
+import { captureMessage, Severity } from '@sentry/electron';
 import { allowedDomains } from '../config';
 import { Module } from './index';
 
@@ -31,6 +32,7 @@ const init: Module = ({ interceptor }) => {
             'request-filter',
             `${details.url} was blocked because ${hostname} is not in the exception list`,
         );
+        captureMessage(`request-filter: ${hostname}`, Severity.Warning);
         return { cancel: true };
     });
 };

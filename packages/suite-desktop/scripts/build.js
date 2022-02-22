@@ -6,7 +6,8 @@ const { build } = require('esbuild');
 const pkg = require('../package.json');
 const { suiteVersion } = require('../../suite/package.json');
 
-const { NODE_ENV, USE_MOCKS } = process.env;
+const { NODE_ENV, USE_MOCKS, IS_CODESIGN_BUILD } = process.env;
+const PROJECT = 'desktop';
 
 const electronSource = path.join(__dirname, '..', 'src-electron');
 const isDev = NODE_ENV !== 'production';
@@ -14,6 +15,15 @@ const useMocks = USE_MOCKS === 'true' || (isDev && USE_MOCKS !== 'false');
 
 // Get git revision
 const gitRevision = childProcess.execSync('git rev-parse HEAD').toString().trim();
+
+/**
+ * Assemble release name for Sentry
+ * Same definition is in packages/suite-build/configs/base.webpack.config.ts,
+ * but reusing is not straightforward because this is JS script run by Node during build.
+ */
+const sentryRelease = `${suiteVersion}.${PROJECT}${
+    IS_CODESIGN_BUILD === 'true' ? '.codesign' : ''
+}.${gitRevision}`;
 
 // Get all modules (used as entry points)
 const modulePath = path.join(electronSource, 'modules');
@@ -69,6 +79,8 @@ build({
         'process.env.PROTOCOLS': JSON.stringify(pkg.build.protocols.schemes),
         'process.env.PKGNAME': JSON.stringify(pkg.name),
         'process.env.VERSION': JSON.stringify(suiteVersion),
+        'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
+        'process.env.SUITE_TYPE': JSON.stringify(PROJECT),
     },
     inject: [path.join(__dirname, 'build-inject.js')],
     plugins: useMocks ? [mockPlugin] : [],
