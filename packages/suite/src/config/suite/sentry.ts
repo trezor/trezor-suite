@@ -1,9 +1,9 @@
 import { CaptureConsole, Dedupe } from '@sentry/integrations';
-import { BrowserOptions } from '@sentry/browser';
+import type { Options } from '@sentry/types';
 
 export const allowReportTag = 'allowReport';
 
-const beforeSend: BrowserOptions['beforeSend'] = event => {
+const beforeSend: Options['beforeSend'] = event => {
     // sentry events are skipped until user confirm analytics reporting
     const allowReport = event.tags?.[allowReportTag];
     if (allowReport === false) {
@@ -16,7 +16,7 @@ const beforeSend: BrowserOptions['beforeSend'] = event => {
     return event;
 };
 
-const beforeBreadcrumb: BrowserOptions['beforeBreadcrumb'] = breadcrumb => {
+const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     // filter out analytics requests and image fetche
     const isAnalytics =
         breadcrumb.category === 'fetch' &&
@@ -30,7 +30,7 @@ const beforeBreadcrumb: BrowserOptions['beforeBreadcrumb'] = breadcrumb => {
     return breadcrumb;
 };
 
-export default {
+const config: Options = {
     dsn: 'https://6d91ca6e6a5d4de7b47989455858b5f6@o117836.ingest.sentry.io/5193825',
     autoSessionTracking: false, // do not send analytical data to Sentry
     integrations: [
@@ -45,4 +45,11 @@ export default {
     normalizeDepth: 4,
     maxBreadcrumbs: 30,
     beforeBreadcrumb,
-} as BrowserOptions;
+    initialScope: {
+        tags: {
+            version: process.env.VERSION || 'undefined',
+        },
+    },
+};
+
+export default config;

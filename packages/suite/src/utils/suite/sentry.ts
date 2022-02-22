@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/minimal';
 import { allowReportTag } from '@suite-config/sentry';
 
 export const allowSentryReport = (value: boolean) => {
@@ -17,15 +17,4 @@ export const unsetSentryUser = () => {
     Sentry.configureScope(scope => {
         scope.setUser(null);
     });
-};
-
-export const setSentryVersionTag = () => {
-    Sentry.configureScope(scope => {
-        scope.setTag('version', process.env.VERSION || 'undefined');
-    });
-};
-
-export const initSentry = (options: Sentry.BrowserOptions) => {
-    Sentry.init(options);
-    setSentryVersionTag();
 };

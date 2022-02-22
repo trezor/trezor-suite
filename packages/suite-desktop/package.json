@@ -173,6 +173,7 @@
         "afterSign": "scripts/notarize.js"
     },
     "dependencies": {
+        "@sentry/electron": "3.0.0",
         "@trezor/suite-desktop-api": "1.0.0",
         "@trezor/utils": "*",
         "chalk": "^4.1.2",

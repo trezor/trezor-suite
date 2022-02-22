@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 import TrezorConnect from 'trezor-connect';
+import { init as initSentry } from '@sentry/browser';
 
 import { store } from '@suite/reducers/store';
 import { isDev } from '@suite-utils/build';
 import { SENTRY_CONFIG } from '@suite-config';
 
-import { initSentry } from '@suite-utils/sentry';
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';

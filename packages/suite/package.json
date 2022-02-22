@@ -24,8 +24,8 @@
         "@ethereumjs/common": "^2.6.0",
         "@ethereumjs/tx": "^3.4.0",
         "@fivebinaries/coin-selection": "2.0.0-beta.10",
-        "@sentry/browser": "^6.16.1",
-        "@sentry/integrations": "^6.16.1",
+        "@sentry/integrations": "6.17.2",
+        "@sentry/minimal": "6.17.2",
         "@trezor/components": "1.0.0",
         "@trezor/suite-data": "1.0.0",
         "@trezor/suite-desktop-api": "1.0.0",
@@ -75,6 +75,7 @@
     "devDependencies": {
         "@crowdin/cli": "^3.7.8",
         "@formatjs/cli": "^3.0.5",
+        "@sentry/types": "6.17.2",
         "@testing-library/dom": "^7.29.2",
         "@testing-library/react": "^11.2.3",
         "@testing-library/react-hooks": "^4.0.0",
