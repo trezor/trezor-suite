@@ -51,6 +51,76 @@ export interface SavingsErrorResponse {
     errors: string[];
 }
 
+// starts after login to invity account
+// 0 - external site
+//      BTCD: nothing
+//      Swan: redirect to OIDC // TODO: Isn't this a problem for Suite Desktop? Suite Desktop needs to allow open this link. Probably without the dialog about unknown site page load in browser?
+// 1 - your credentials
+//      BTCD: personal info (name+surname+phone+DOB?)
+//      Swan: personal info (phone)
+// 2 - your phone number
+//      BTCD: sms verification
+//      Swan: nothing
+// 3 - KYC verification
+//      BTCD: internal KYC, document type, KYC upload (we can move forward)
+//      Swan: KYC status page (is it blocking until done?)
+// 4 - AML
+//      BTCD: AML
+//      Swan: nothing
+// 5 - Bank account
+//      BTCD: nothing
+//      Swan: enter bank account + server side validation on change
+// 6 - Upload wallet screenshot for non-Trezor ClientApp?
+//      BTCD: upload wallet screenshot only for non-Trezor ClientApp
+//      Swan: ???
+// 7 - DCA setup
+//      BTCD: savings parameters, choose crypto address
+//      Swan: savings parameters, choose crypto address(es)
+// 8 - DCA setup
+//      BTCD: confirmation
+//      Swan: confirmation
+
+type SavingsStepEnabled = {
+    /** Indicates whether the step is enabled (meaning the flow process has to go through this step) or this step will be skipped. */
+    isEnabled: boolean;
+};
+
+type SavingsStepAfterLogin = SavingsStepEnabled;
+
+type SavingsStepCredentials = SavingsStepEnabled & {
+    isFamilyNameEnabled: boolean;
+    isGivenNameEnabled: boolean;
+    isPhoneEnabled: boolean;
+};
+
+type SavingsStepPhoneVerification = SavingsStepEnabled;
+
+type SavingsStepKYC = SavingsStepEnabled & {
+    documentUploadType: 'ClientApp' | 'External';
+    isWaitingForKYCResult: boolean;
+};
+
+type SavingsStepAML = SavingsStepEnabled;
+
+type SavingsStepBankAccount = SavingsStepEnabled;
+type SavingsStepCryptoWalletVerification = SavingsStepEnabled;
+
+type SavingsStepParameters = SavingsStepEnabled & {
+    receivingAddressCount: number;
+};
+
+interface SavingsProviderFlow {
+    /** Defines what should happend after login. */
+    afterLogin: SavingsStepAfterLogin;
+    credentials: SavingsStepCredentials;
+    phoneVerification: SavingsStepPhoneVerification;
+    kyc: SavingsStepKYC;
+    aml: SavingsStepAML;
+    bankAccount: SavingsStepBankAccount;
+    cryptoWalletVerification: SavingsStepCryptoWalletVerification;
+    parameters: SavingsStepParameters;
+}
+
 export interface SavingsProviderInfo {
     /** Name of provider as our identifier e.g.: btcdirect. */
     name: string;
@@ -79,6 +149,7 @@ export interface SavingsProviderInfo {
     /** Defines methods of how a user can pay to save crypto. */
     paymentMethods?: SavingsPaymentMethod[];
 
+    // TODO: Remove. And use isClientFromUnsupportedCountry as variable on client.
     isClientFromUnsupportedCountry: boolean;
 
     /** List of document types required by provider's KYC process. User has to choose one. */
@@ -86,6 +157,9 @@ export interface SavingsProviderInfo {
 
     /** URL where a privacy policy of the provider is located. */
     privacyPolicyUrl: string;
+
+    /** Defines a savings flow. Different providers might have different steps in the savings flow. */
+    flow: SavingsProviderFlow;
 }
 
 export interface SavingsProviderInfoIdentityDocument {
@@ -95,7 +169,6 @@ export interface SavingsProviderInfoIdentityDocument {
 }
 
 export interface SavingsListResponse {
-    // TODO: Need country here?
     country: string;
     providers: SavingsProviderInfo[];
 }
@@ -107,12 +180,14 @@ export type SavingsSetupStatus =
     | 'AML'
     /** User needs to verify crypto wallet. */
     | 'WalletVerification'
+    /** User needs to verify bank account. */
+    | 'BankAccountVerification'
     /** User setups savings plan parameters (frequency, amount, etc.). */
     | 'SetSavingsParameters'
     /** Partner has generated payment info parameters. */
     | 'ConfirmPaymentInfo';
 
-export type SavingsStatus = SavingsSetupStatus | 'Cancelled' | 'Active' | 'Error';
+export type SavingsStatus = SavingsSetupStatus | 'Cancelled' | 'Active';
 export type SavingsKYCStatus =
     /** KYC process didn't start yet. */
     | 'Open'
@@ -131,6 +206,7 @@ export type SavingsAMLStatus =
 
 export type PaymentFrequency = 'Weekly' | 'Biweekly' | 'Monthly' | 'Quarterly';
 
+// TODO: cleanup
 export type SavingsTradePlannedPaymentStatus =
     | 'NextUp'
     | 'Cancelled'
@@ -202,6 +278,7 @@ export interface SavingsTrade {
     kycStatus?: SavingsKYCStatus;
     amlStatus?: SavingsAMLStatus;
 
+    // TODO: Errors must be at SavingsTradeResponse!
     errors?: string[];
 
     /** Customer's bank account from which payments should be paid to receive crypto. */
@@ -219,11 +296,13 @@ export interface SavingsTrade {
     /** How often payment should be paid by customer. */
     paymentFrequency?: PaymentFrequency;
 
+    paymentMethod?: SavingsPaymentMethod;
+
     /** Name of savings provider. */
     exchange: string;
 
     /** Crypto address where provider sends crypto. */
-    receivingCryptoAddress?: string;
+    receivingCryptoAddresses?: string[];
 
     /** Indicates whether the user is registred in partner's system. */
     isUserRegistredInPartnerSystem?: boolean;
@@ -296,6 +375,7 @@ export type SavingsTradeKYCStatusResponse =
     | SavingsTradeKYCStatusSuccessfulResponse
     | SavingsErrorResponse;
 
+// TODO: cleanup
 export type SavingsTradeItemStatus =
     | 'Cancelled'
     | 'Pending'

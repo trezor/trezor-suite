@@ -106,14 +106,14 @@ export const useSavingsSetup = ({
             paymentFrequency,
             address,
         }: SavingsSetupFormState) => {
-            if (savingsTrade) {
+            if (savingsTrade && address) {
                 const trade: SavingsTrade = {
                     ...savingsTrade,
                     // User can navigate back to setup page and change already active plan. Thus we need to set the status back also.
                     status: 'SetSavingsParameters',
                     paymentFrequency,
                     fiatStringAmount: getFiatAmountEffective(fiatAmount, customFiatAmount),
-                    receivingCryptoAddress: address,
+                    receivingCryptoAddresses: [address],
                 };
                 const response = await invityAPI.doSavingsTrade({
                     trade,

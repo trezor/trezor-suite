@@ -1,4 +1,5 @@
-import { InvityAuthentication } from '@wallet-types/invity';
+import type { SavingsProviderInfo } from '@suite-services/invityAPI';
+import type { InvityAuthentication } from '@wallet-types/invity';
 
 export const ACCOUNT = {
     descriptor: 'btc-descriptor',
@@ -35,7 +36,7 @@ export const INVITY_AUTHENTICATION: InvityAuthentication = {
     },
 };
 
-export const SELECTED_PROVIDER = {
+export const SELECTED_PROVIDER: SavingsProviderInfo = {
     isClientFromUnsupportedCountry: false,
     name: '',
     companyName: '',
@@ -45,4 +46,36 @@ export const SELECTED_PROVIDER = {
     supportedCountries: [],
     identityDocuments: [],
     privacyPolicyUrl: '',
+    flow: {
+        afterLogin: {
+            isEnabled: false,
+        },
+        aml: {
+            isEnabled: false,
+        },
+        bankAccount: {
+            isEnabled: false,
+        },
+        credentials: {
+            isEnabled: false,
+            isFamilyNameEnabled: false,
+            isGivenNameEnabled: false,
+            isPhoneEnabled: false,
+        },
+        cryptoWalletVerification: {
+            isEnabled: false,
+        },
+        kyc: {
+            documentUploadType: 'ClientApp',
+            isEnabled: false,
+            isWaitingForKYCResult: false,
+        },
+        parameters: {
+            isEnabled: false,
+            receivingAddressCount: 1,
+        },
+        phoneVerification: {
+            isEnabled: false,
+        },
+    },
 };

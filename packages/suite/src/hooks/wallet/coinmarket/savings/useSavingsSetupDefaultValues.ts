@@ -21,7 +21,7 @@ const useSavingsSetupDefaultValues = (
                       customFiatAmount: savingsTrade.fiatStringAmount || defaultFiatAmount,
                       address: isWatchingKYCStatus
                           ? undefined
-                          : savingsTrade.receivingCryptoAddress || unusedAddress,
+                          : savingsTrade.receivingCryptoAddresses?.[0] || unusedAddress,
                   }
                 : undefined,
         [isWatchingKYCStatus, savingsTrade, unusedAddress],
