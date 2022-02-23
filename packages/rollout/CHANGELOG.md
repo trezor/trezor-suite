@@ -1,3 +1,8 @@
+# 1.3.1
+
+-   updated cross-fetch lib to 3.1.5
+-   updated runtypes lib to 6.5.1
+
 # 1.3.0
 
 -   Added @trezor/utils dependency.
