@@ -978,6 +978,22 @@ export default defineMessages({
         defaultMessage: 'Log in.',
         id: 'TR_INVITY_REGISTRATION_FOOTER_ALREADY_HAVE_AN_ACCOUNT_LOGIN',
     },
+    TR_SAVINGS_USERINFO_HEADER: {
+        defaultMessage: 'Tell us about yourself',
+        id: 'TR_SAVINGS_USERINFO_HEADER',
+    },
+    TR_SAVINGS_USERINFO_GIVEN_NAME_LABEL: {
+        defaultMessage: 'Given name',
+        id: 'TR_SAVINGS_USERINFO_GIVEN_NAME_LABEL',
+    },
+    TR_SAVINGS_USERINFO_FAMILY_NAME_LABEL: {
+        defaultMessage: 'Family name',
+        id: 'TR_SAVINGS_USERINFO_FAMILY_NAME_LABEL',
+    },
+    TR_SAVINGS_USERINFO_PHONE_NUMBER_LABEL: {
+        defaultMessage: 'Phone number',
+        id: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_LABEL',
+    },
     TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED: {
         defaultMessage: 'Given name is required.',
         id: 'TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED',
@@ -993,6 +1009,10 @@ export default defineMessages({
     TR_SAVINGS_USERINFO_PHONE_NUMBER_IS_REQUIRED: {
         defaultMessage: 'Phone number is required.',
         id: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_IS_REQUIRED',
+    },
+    TR_SAVINGS_USERINFO_PHONE_NUMBER_MAXLENGTH: {
+        defaultMessage: 'Max total length of phone number is {maxLength}.',
+        id: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_MAXLENGTH',
     },
     TR_SAVINGS_KYC_START_DOCUMENT_TYPE_PASSPORT: {
         defaultMessage: 'Passport',

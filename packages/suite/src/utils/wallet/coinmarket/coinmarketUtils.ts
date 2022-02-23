@@ -165,3 +165,5 @@ export const mapTestnetSymbol = (symbol: Network['symbol']) => {
     if (symbol === 'tada') return 'ada';
     return symbol;
 };
+
+export const PhoneNumberRegularExpression = /^\d+$/;

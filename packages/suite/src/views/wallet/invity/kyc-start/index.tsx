@@ -219,7 +219,6 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                     />
                 </Row>
             )}
-
             <Button isDisabled={!canSubmit}>
                 <Translation id="TR_SAVINGS_KYC_START_CONFIRM" />
             </Button>
