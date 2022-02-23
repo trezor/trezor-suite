@@ -21,11 +21,12 @@ for I in **/*.exe **/*.dll; do echo "---Checking $I"---; chktrust "$I"; done
 ## CI signing details for windows
 
 Certificate file is with extension: `.pfx`
-Env variables for signing: `WIN_CSC_KEY_PASSWORD`  `WIN_CSC_LINK`.
+Env variables for signing: `WIN_CSC_KEY_PASSWORD` `WIN_CSC_LINK`.
 
 ## Creating Self-signed pfx and cer certificates with OpenSSL
 
 Generate directly the pem:
+
 ```bash
 openssl req -x509 -days 365 -newkey rsa:2048 -keyout cert.pem -out cert.pem
 ```
