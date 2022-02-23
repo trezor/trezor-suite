@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Input, Button, H3 } from '@trezor/components';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { Translation, TooltipSymbol, CollapsibleBox } from '@suite-components';
 import InputError from '@wallet-components/InputError';
 import { useSelector } from '@suite-hooks';
@@ -9,6 +10,7 @@ import { toTorUrl } from '@suite-utils/tor';
 import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
+import { TorModal, TorResult } from './TorModal';
 import type { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
@@ -66,8 +68,34 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
         blockchain: state.wallet.blockchain,
         tor: state.suite.tor,
     }));
-    const { type, urls, input, changeType, addUrl, removeUrl, save } = useBackendsForm(coin);
+    const { type, urls, input, changeType, addUrl, removeUrl, save, hasOnlyOnions } =
+        useBackendsForm(coin);
     const editable = type !== 'default';
+
+    const [torModalOpen, setTorModalOpen] = React.useState(false);
+
+    const onSaveClick = () => {
+        if (!tor && hasOnlyOnions()) {
+            setTorModalOpen(true);
+        } else {
+            save();
+            onCancel();
+        }
+    };
+
+    const onTorResult = (result: TorResult) => {
+        setTorModalOpen(false);
+        switch (result) {
+            case 'enable-tor':
+                desktopApi.toggleTor(true);
+                save();
+                onCancel();
+                break;
+            case 'use-defaults':
+                changeType('default');
+            // no default
+        }
+    };
 
     return (
         <Wrapper>
@@ -143,12 +171,11 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                 <ConnectionInfo coin={coin} />
             </TransparentCollapsibleBox>
 
+            {torModalOpen && <TorModal onResult={onTorResult} />}
+
             <SaveButton
                 variant="primary"
-                onClick={() => {
-                    save();
-                    onCancel();
-                }}
+                onClick={onSaveClick}
                 isDisabled={!!input.error}
                 data-test="@settings/advance/button/save"
             >

@@ -3162,10 +3162,23 @@ export default defineMessages({
         id: 'TR_TOR_TITLE',
         defaultMessage: 'Tor',
     },
+    TR_TOR_ENABLE: {
+        id: 'TR_TOR_ENABLE',
+        defaultMessage: 'Enable Tor',
+    },
+    TR_TOR_ENABLE_AND_CONFIRM: {
+        id: 'TR_TOR_ENABLE_AND_CONFIRM',
+        defaultMessage: 'Enable Tor and confirm',
+    },
     TR_TOR_DESCRIPTION: {
         id: 'TR_TOR_DESCRIPTION',
         defaultMessage:
             "Enabling this will route all of Suite's traffic through the Tor network.{lineBreak}All requests to Trezor infrastructure will be pointed to our Tor services, increasing your privacy and security.",
+    },
+    TR_ONION_BACKEND_TOR_NEEDED: {
+        id: 'TR_ONION_BACKEND_TOR_NEEDED',
+        defaultMessage:
+            'You used an onion address for your backends. To use onion addresses, you need to have access to Tor network.',
     },
     TR_ONION_LINKS_TITLE: {
         id: 'TR_ONION_LINKS_TITLE',
@@ -4931,6 +4944,10 @@ export default defineMessages({
     TR_OTHER_COINS_USE_DEFAULT_BACKEND: {
         id: 'TR_OTHER_COINS_USE_DEFAULT_BACKEND',
         defaultMessage: 'Other coins use their default backends',
+    },
+    TR_USE_DEFAULT_BACKENDS: {
+        id: 'TR_USE_DEFAULT_BACKENDS',
+        defaultMessage: 'Use default backends',
     },
     TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD',
