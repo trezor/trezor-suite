@@ -53,14 +53,15 @@ suite-web build stable codesign:
     refs:
       - codesign
   tags:
-    - darwin
+    - darwin_arm
   variables:
     IS_CODESIGN_BUILD: "true"
   script:
-    - nix-shell --run "git lfs pull"
-    - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
-    - nix-shell --run "yarn build:libs"
-    - nix-shell --run "ASSET_PREFIX=/web yarn workspace @trezor/suite-web build"
+    - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
+    - nix-shell --option system x86_64-darwin --run "git lfs pull"
+    - nix-shell --option system x86_64-darwin --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
+    - nix-shell --option system x86_64-darwin --run "yarn build:libs"
+    - nix-shell --option system x86_64-darwin --run "ASSET_PREFIX=/web yarn workspace @trezor/suite-web build"
   artifacts:
     expire_in: 7 days
     paths:
@@ -119,12 +120,13 @@ suite-web-landing build stable:
 
 .build_nix: &build_nix
   script:  # override build script to use nix-shell instead
-    - nix-shell --run "git lfs pull"
-    - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
-    - nix-shell --run "yarn build:libs"
-    - nix-shell --run "yarn workspace @trezor/suite-data copy-static-files"
-    - nix-shell --run "yarn workspace @trezor/suite-desktop build:${platform}"
-    - nix-shell --run "bash packages/suite-desktop/scripts/gnupg-sign.sh"
+    - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
+    - nix-shell --option system x86_64-darwin --run "git lfs pull"
+    - nix-shell --option system x86_64-darwin --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
+    - nix-shell --option system x86_64-darwin --run "yarn build:libs"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data copy-static-files"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
+    - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
@@ -135,7 +137,7 @@ suite-desktop build mac:
   only:
     <<: *run_everything_rules
   tags:
-    - darwin
+    - darwin_arm
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: mac
@@ -148,7 +150,7 @@ suite-desktop build mac manual:
   except:
     <<: *run_everything_rules
   tags:
-    - darwin
+    - darwin_arm
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: mac
@@ -161,7 +163,7 @@ suite-desktop build mac codesign:
     refs:
       - codesign
   tags:
-    - darwin
+    - darwin_arm
   variables:
     IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
@@ -200,7 +202,7 @@ suite-desktop build linux codesign:
     refs:
       - codesign
   tags:
-    - darwin
+    - darwin_arm
   variables:
     IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
@@ -241,7 +243,7 @@ suite-desktop build windows codesign:
     refs:
       - codesign
   tags:
-    - darwin
+    - darwin_arm
   image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/vdovhanych/electron-builder:wine
   variables:
     IS_CODESIGN_BUILD: "true"
