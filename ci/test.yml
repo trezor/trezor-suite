@@ -4,6 +4,7 @@
     - releases
     - schedules
     - /^release\//
+  interruptible: true
 
 # @trezor/suite-web
 .e2e web:

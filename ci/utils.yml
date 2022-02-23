@@ -1,6 +1,7 @@
 .run_everything_rules: &run_everything_rules
   refs:
     - schedules
+  interruptible: true
 
 # tests whether there are not 'too many' outdated dependencies
 .outdated:

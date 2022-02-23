@@ -5,6 +5,7 @@
     - releases
     - schedules
     - /^release\//
+  interruptible: true
 
 # Suite web deploy to dev
 suite-web deploy dev:
@@ -24,6 +25,7 @@ suite-web deploy dev:
     - rsync --delete -va packages/suite-web/build/ "${DEPLOY_DIRECTORY}/web/"
   tags:
     - deploy
+  interruptible: true
 
 # Suite web landing deploy to dev
 suite-web-landing deploy dev:
@@ -41,6 +43,7 @@ suite-web-landing deploy dev:
     - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
+  interruptible: true
 
 # Suite desktop deploy to dev and production
 suite-desktop deploy dev:
@@ -56,6 +59,7 @@ suite-desktop deploy dev:
     - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/" || :'
   tags:
     - deploy
+  interruptible: true
 
 # # Suite native deploy to dev
 # suite-native deploy dev:
@@ -101,6 +105,7 @@ connect-explorer deploy dev:
     - rsync --delete -va packages/connect-explorer/build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
+  interruptible: true
 
 # npm packages deploy to npm registry
 .npm_deploy_rules: &npm_deploy_rules
