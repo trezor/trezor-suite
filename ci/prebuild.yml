@@ -15,13 +15,13 @@ msg-system config sign stable:
     refs:
       - codesign
   tags:
-    - darwin
+    - darwin_arm
   variables:
     IS_CODESIGN_BUILD: "true"
   script:
-    - nix-shell --run "git lfs pull"
-    - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
-    - nix-shell --run "yarn workspace @trezor/suite-data msg-system-sign-config"
+    - nix-shell --option system x86_64-darwin --run "git lfs pull"
+    - nix-shell --option system x86_64-darwin --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data msg-system-sign-config"
   artifacts:
     expire_in: 7 days
     paths:
