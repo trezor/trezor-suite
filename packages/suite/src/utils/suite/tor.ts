@@ -30,3 +30,5 @@ export const toTorUrl = (url: string) => {
 };
 
 export const isTorDomain = (domain: string) => domain.endsWith('.onion');
+
+export const isOnionUrl = (url: string) => url.includes('.onion');
