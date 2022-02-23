@@ -167,3 +167,5 @@ export const mapTestnetSymbol = (symbol: Network['symbol']) => {
 };
 
 export const PhoneNumberRegularExpression = /^\d+$/;
+export const PhoneNumberVerificationCodeLength = 6;
+export const PhoneNumberVerificationCodeDigitRegularExpression = /^\d{1}$/;

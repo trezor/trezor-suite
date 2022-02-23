@@ -1,6 +1,6 @@
-import { createContext, useCallback, useEffect } from 'react';
+import { createContext, useCallback, useContext, useEffect } from 'react';
 import {
-    SavingsPhoneNumberVerificationFormState,
+    SavingsPhoneNumberVerificationFieldValues,
     SavingsPhoneNumberVerificationContextValues,
     UseSavingsPhoneNumberVerificationProps,
 } from '@wallet-types/coinmarket/savings/phoneNumberVerification';
@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import invityAPI from '@suite-services/invityAPI';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 
 export const SavingsPhoneNumberVerificationContext =
     createContext<SavingsPhoneNumberVerificationContextValues | null>(null);
@@ -17,6 +17,9 @@ SavingsPhoneNumberVerificationContext.displayName = 'SavingsPhoneNumberVerificat
 export const useSavingsPhoneNumberVerification = ({
     selectedAccount,
 }: UseSavingsPhoneNumberVerificationProps): SavingsPhoneNumberVerificationContextValues => {
+    const phoneNumber = useSelector(
+        state => state.wallet.coinmarket.invityAuthentication?.accountInfo?.settings?.phoneNumber,
+    );
     const { loadInvityData } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
     });
@@ -24,29 +27,62 @@ export const useSavingsPhoneNumberVerification = ({
         loadInvityData();
     }, [loadInvityData]);
 
-    const { navigateToInvityKYCStart } = useInvityNavigation(selectedAccount.account);
-    const methods = useForm<SavingsPhoneNumberVerificationFormState>({
+    const { navigateToInvityKYCStart, navigateToInvityUserInfo } = useInvityNavigation(
+        selectedAccount.account,
+    );
+    const methods = useForm<SavingsPhoneNumberVerificationFieldValues>({
         mode: 'onChange',
     });
-    const { register } = methods;
+    const { register, setError, clearErrors, reset, errors } = methods;
 
-    const onSubmit = async () => {
-        const { code } = methods.getValues();
+    const onSubmit = async (fieldValues: SavingsPhoneNumberVerificationFieldValues) => {
+        clearErrors();
+        const code = Object.values(fieldValues).join('');
         const response = await invityAPI.verifySmsCode(code);
         if (response) {
-            if (response.status === 'Verified') {
+            // TODO: Conditions has to be based on errorCode instead of error.
+            if (
+                response.status === 'Verified' ||
+                response.error === 'Account phone number already verified.'
+            ) {
                 navigateToInvityKYCStart();
-            } else {
-                // TODO: show validation error from API server or translation
+                return;
             }
+            if (response.error === 'Verification code is invalid.') {
+                setError('codeDigitIndex0', {
+                    message: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_INVALID',
+                });
+                reset(fieldValues, {
+                    errors: true,
+                });
+            }
+        } else {
+            setError('codeDigitIndex0', {
+                message: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_ERROR',
+            });
+            reset(fieldValues, {
+                errors: true,
+            });
         }
     };
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
-
+    const error = Object.values(errors).find(error => error.message);
+    const handlePhoneNumberChange = useCallback(() => {
+        navigateToInvityUserInfo();
+    }, [navigateToInvityUserInfo]);
     return {
         ...methods,
         register: typedRegister,
+        error,
         onSubmit,
+        phoneNumber,
+        handlePhoneNumberChange,
     };
+};
+
+export const useSavingsPhoneNumberVerificationContext = () => {
+    const context = useContext(SavingsPhoneNumberVerificationContext);
+    if (context === null) throw Error('SavingsPhoneNumberVerificationContext used without Context');
+    return context;
 };

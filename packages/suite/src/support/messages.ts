@@ -999,8 +999,32 @@ export default defineMessages({
         id: 'TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED',
     },
     TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_REQUIRED: {
-        defaultMessage: 'Verification code is required.',
+        defaultMessage: 'Verification code is required',
         id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_REQUIRED',
+    },
+    TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_MUST_BE_NUMBER: {
+        defaultMessage: 'Verification code must be a number',
+        id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_MUST_BE_NUMBER',
+    },
+    TR_SAVINGS_PHONE_NUMBER_VERIFICATION_HEADER: {
+        defaultMessage: 'Verify your phone',
+        id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_HEADER',
+    },
+    TR_SAVINGS_PHONE_NUMBER_VERIFICATION_DESCRIPTION: {
+        defaultMessage: 'Verification code sent to {phoneNumber}',
+        id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_DESCRIPTION',
+    },
+    TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_LABEL: {
+        defaultMessage: 'Code',
+        id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_LABEL',
+    },
+    TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_INVALID: {
+        defaultMessage: 'Verification code is invalid',
+        id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_INVALID',
+    },
+    TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_ERROR: {
+        defaultMessage: 'Verification code cannot be verified, please contact our support',
+        id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_ERROR',
     },
     TR_SAVINGS_USERINFO_FAMILY_NAME_IS_REQUIRED: {
         defaultMessage: 'Family name is required.',

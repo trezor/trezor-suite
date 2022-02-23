@@ -47,6 +47,12 @@ export const useSavingsUserInfo = ({
     const methods = useForm<SavingsUserInfoFormState>({
         mode: 'onChange',
         defaultValues: {
+            givenName: invityAuthentication?.accountInfo?.settings?.givenName,
+            familyName: invityAuthentication?.accountInfo?.settings?.familyName,
+            phoneNumber: invityAuthentication?.accountInfo?.settings?.phoneNumber?.replace(
+                regional.getPhoneNumberPrefixByCountryCode(selectedCountryCode) || '',
+                '',
+            ),
             phoneNumberPrefixCountryOption: defaultPhoneNumberPrefixCountryOption,
         },
     });

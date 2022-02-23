@@ -279,8 +279,8 @@ class Regional {
         .filter(item => item[2])
         .map(this.toCountryPhoneNumberPrefixOption);
 
-    getPhoneNumberPrefixByCountryCode(countryCode: string) {
-        return this.countriesPhoneNumberPrefixMap.get(countryCode);
+    getPhoneNumberPrefixByCountryCode(countryCode: string | undefined) {
+        return countryCode && this.countriesPhoneNumberPrefixMap.get(countryCode);
     }
 }
 
