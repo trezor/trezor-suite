@@ -39,7 +39,7 @@
         "patch": "yarn patch-package",
         "deduplicate": "yarn-deduplicate && yarn",
         "run-script": "babel-node --experimental-specifier-resolution=node --experimental-loader=ts-node/esm --",
-        "update-project-references": "yarn run-script ./scripts/updateProjectReferences.js",
+        "update-project-references": "yarn run-script ./scripts/updateProjectReferences.js --ignore packages/suite-desktop",
         "verify-project-references": "yarn update-project-references --test",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
         "msg-system-sign-config": "yarn workspace @trezor/suite-data msg-system-sign-config",
