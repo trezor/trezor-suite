@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -61,10 +60,10 @@ const NavigationActions = (props: Props) => {
         theme: state.suite.settings.theme,
         allowPrerelease: state.desktopUpdate.allowPrerelease,
     }));
-    const { goto, setDiscreetMode } = useActions({
+    const { goto, setDiscreetMode, toggleTor } = useActions({
         goto: routerActions.goto,
         setDiscreetMode: walletSettingsActions.setDiscreetMode,
-        setTheme: suiteActions.setTheme,
+        toggleTor: suiteActions.toggleTor,
     });
 
     const WrapperComponent = props.isMobileLayout ? MobileWrapper : Wrapper;
@@ -134,7 +133,7 @@ const NavigationActions = (props: Props) => {
                                             value: !tor,
                                         },
                                     });
-                                    desktopApi.toggleTor(!tor);
+                                    toggleTor(!tor);
                                 }}
                                 label={<Translation id="TR_TOR" />}
                                 icon="TOR"
