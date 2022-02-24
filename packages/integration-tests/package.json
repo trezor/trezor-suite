@@ -9,7 +9,7 @@
         "test:connect-explorer": "xvfb-maybe -- playwright test --config=./projects/connect-explorer/playwright.config.ts"
     },
     "dependencies": {
-        "cypress": "9.4.1",
+        "cypress": "9.5.0",
         "express": "^4.17.2",
         "ts-loader": "^9.2.5",
         "webpack": "^5.55.1"
