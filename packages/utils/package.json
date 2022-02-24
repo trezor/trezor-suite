@@ -12,16 +12,16 @@
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
-    "main": "./lib/index.js",
+    "sideEffects": false,
+    "main": "lib/index",
     "files": [
-        "lib/"
+        "lib/",
+        "!**/*.map"
     ],
-    "types": "lib/index.d.ts",
-    "typings": "lib/index.d.ts",
     "scripts": {
-        "lint": "eslint '**/*{.ts,.tsx}'",
+        "lint": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --verbose -c jest.config.js",
-        "type-check": "tsc --project tsconfig.json",
-        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
+        "type-check": "tsc --build tsconfig.json",
+        "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json"
     }
 }

@@ -64,7 +64,7 @@ type DevicesState = ReturnType<typeof deviceReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 type FirmwareState = ReturnType<typeof firmwareReducer>;
 
-export const getInitialState = (
+const getInitialState = (
     suite?: Partial<SuiteState>,
     devices?: DevicesState,
     router?: RouterState,

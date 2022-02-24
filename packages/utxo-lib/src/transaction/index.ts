@@ -15,7 +15,7 @@ import * as decred from './decred';
 import * as peercoin from './peercoin';
 import * as zcash from './zcash';
 
-type TxOptions = TransactionOptions & {
+export type TxOptions = TransactionOptions & {
     txSpecific?: dash.DashSpecific | zcash.ZcashSpecific;
 };
 
@@ -49,4 +49,5 @@ class Transaction extends TransactionBase<dash.DashSpecific | zcash.ZcashSpecifi
     }
 }
 
-export { TransactionOptions, TxOptions, Transaction };
+export type { TransactionOptions } from './base';
+export { Transaction };

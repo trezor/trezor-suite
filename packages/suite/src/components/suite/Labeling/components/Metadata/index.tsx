@@ -214,14 +214,14 @@ const MetadataLabeling = (props: Props) => {
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(props.payload.defaultValue);
-    let timeout: number | undefined;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
 
     useEffect(() => {
         setPending(false);
         setShowSuccess(false);
         return () => {
             isSubscribedToSubmitResult.current = '';
-            clearTimeout(timeout);
+            clearTimeout(timeout!);
         };
     }, [props.payload.defaultValue, timeout]);
 
@@ -278,7 +278,6 @@ const MetadataLabeling = (props: Props) => {
         // ensures that success state does not appear if it is no longer relevant
         if (isSubscribedToSubmitResult.current === props.payload.defaultValue) {
             setPending(false);
-
             if (result) {
                 setShowSuccess(true);
             }

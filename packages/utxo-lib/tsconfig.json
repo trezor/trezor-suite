@@ -1,9 +1,10 @@
 {
-    "extends": "./tsconfig.lib.json",
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "noEmit": true,
-        "skipLibCheck": false
+        "skipLibCheck": false,
+        "esModuleInterop": false,
+        "outDir": "./libDev"
     },
-    "include": ["**/*.ts"],
-    "exclude": ["node_modules"]
+    "include": ["."],
+    "references": [{ "path": "../utils" }]
 }

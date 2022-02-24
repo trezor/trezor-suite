@@ -2,10 +2,8 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es6",
-        "allowJs": true,
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "baseUrl": "."
-    }
+        "outDir": "./libDev"
+    },
+    "include": ["."],
+    "references": [{ "path": "../suite" }]
 }

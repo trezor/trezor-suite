@@ -43,8 +43,8 @@ const Button = styled.button`
 `;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export interface ButtonPinProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
-const ButtonPin = ({ onClick, ...rest }: Props) => <Button onClick={onClick} {...rest} />;
+const ButtonPin = ({ onClick, ...rest }: ButtonPinProps) => <Button onClick={onClick} {...rest} />;
 
-export { ButtonPin, Props as ButtonPinProps };
+export { ButtonPin };

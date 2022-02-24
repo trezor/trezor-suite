@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface Props {
+export interface DeviceImageProps {
     trezorModel: 1 | 2;
     height?: string | number;
     hires?: boolean;
@@ -11,7 +11,7 @@ interface Props {
 
 const Image = styled.img``;
 
-const DeviceImage = ({ trezorModel, height = '100%', hires, className }: Props) => {
+const DeviceImage = ({ trezorModel, height = '100%', hires, className }: DeviceImageProps) => {
     switch (trezorModel) {
         case 1:
             return (
@@ -53,4 +53,4 @@ const DeviceImage = ({ trezorModel, height = '100%', hires, className }: Props) 
     }
 };
 
-export { DeviceImage, Props as DeviceImageProps };
+export { DeviceImage };

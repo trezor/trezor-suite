@@ -5,7 +5,7 @@ import routes from '@suite-constants/routes';
 import { BundleLoader } from '@suite-components';
 
 const components: { [key: string]: React.LazyExoticComponent<any> } = {
-    'suite-index': lazy(() => import(/* webpackChunkName: "dashboard" */ '@dashboard-views')),
+    'suite-index': lazy(() => import(/* webpackChunkName: "dashboard" */ '@suite/views/dashboard')),
     'notifications-index': lazy(
         () => import(/* webpackChunkName: "notifications" */ '@suite-views/notifications'),
     ),

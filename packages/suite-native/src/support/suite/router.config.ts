@@ -1,4 +1,4 @@
-import Dashboard from '@dashboard-views';
+import Dashboard from '@suite/views/dashboard';
 
 import AccountTransactions from '@wallet-views';
 import AccountReceive from '@wallet-views/receive';

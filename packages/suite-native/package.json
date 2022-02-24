@@ -12,7 +12,6 @@
         "start:clean": "yarn workspace @trezor/suite-native clean && yarn workspace @trezor/suite-native start -- --reset-cache",
         "clean": "watchman watch-del-all && rimraf $TMPDIR/react-native-packager-cache-* && rimraf $TMPDIR/metro-bundler-cache-* && rimraf /tmp/metro-*",
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "type-check": "tsc --project tsconfig.json",
         "postinstall": "sed -e 's:node ./node_modules/react-native/cli.js config:node \" + root + \"/../../node_modules/react-native/cli.js config:g' -i.bak ../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle",
         "bundle:android": "yarn workspace @trezor/suite-native react-native bundle --entry-file packages/suite-native/index.js --bundle-output ./android/app/src/main/assets/index.android.bundle --assets-dest ./android/app/build/generated/res/react/release --platform android --dev false",
         "build:android": "rimraf packages/suite-native/android/app/build && yarn workspace @trezor/suite-native bundle:android && cd ./android && ./gradlew bundleRelease -x bundleReleaseJsAndAssets --no-build-cache && ./gradlew assembleRelease -x bundleReleaseJsAndAssets --no-build-cache"

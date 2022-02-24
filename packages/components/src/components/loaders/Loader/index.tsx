@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { SPIN } from '../../../config/animations';
 
-const Wrapper = styled.div<Props>`
+const Wrapper = styled.div<LoaderProps>`
     position: relative;
     width: ${props => `${props.size}px`};
     height: ${props => `${props.size}px`};
@@ -29,16 +29,16 @@ const StyledLoader = styled.div<{ size: number; strokeWidth: number }>`
     }
 `;
 
-interface Props {
+export interface LoaderProps {
     className?: string;
     size?: number;
     strokeWidth?: number;
 }
 
-const Loader = ({ className, size = 100, strokeWidth = 2, ...rest }: Props) => (
+const Loader = ({ className, size = 100, strokeWidth = 2, ...rest }: LoaderProps) => (
     <Wrapper className={className} size={size} {...rest}>
         <StyledLoader size={size} strokeWidth={strokeWidth} />
     </Wrapper>
 );
 
-export { Loader, Props as LoaderProps };
+export { Loader };

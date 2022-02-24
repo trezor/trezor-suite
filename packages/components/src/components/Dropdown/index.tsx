@@ -475,11 +475,10 @@ const Dropdown = forwardRef(
 );
 
 Dropdown.displayName = 'Dropdown';
-
-export {
-    Dropdown,
+export type {
     DropdownRef,
     Props as DropdownProps,
     MenuItemProps as DropdownMenuItemProps,
     MenuProps as DropdownMenuProps,
 };
+export { Dropdown };

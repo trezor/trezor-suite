@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, P, variables } from '@trezor/components';
-import { FADE_IN } from '@trezor/components/lib/config/animations';
+import { FADE_IN } from '@trezor/components/src/config/animations';
 import { CoinsList, Translation } from '@suite-components';
 import type { Network } from '@wallet-types';
 

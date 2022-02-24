@@ -11,7 +11,7 @@ import {
     deleteDB,
 } from 'idb';
 import { BroadcastChannel } from 'broadcast-channel';
-import { StorageUpdateMessage, StorageMessageEvent } from './types';
+import { StorageMessageEvent } from './types';
 
 export type OnUpgradeFunc<TDBStructure> = (
     db: IDBPDatabase<TDBStructure>,
@@ -189,8 +189,10 @@ class CommonDB<TDBStructure> {
                 const tx = db.transaction(storeName, 'readwrite');
                 const params: [TItem, TKey | undefined] = key ? [item, key] : [item, undefined];
                 const req: IDBRequest = upsert
-                    ? tx.objectStore(storeName).put(...params)
-                    : tx.objectStore(storeName).add(...params);
+                    ? // @ts-ignore
+                      tx.objectStore(storeName).put(...params)
+                    : // @ts-ignore
+                      tx.objectStore(storeName).add(...params);
                 req.onerror = _event => {
                     reject(req.error);
                 };
@@ -447,4 +449,4 @@ class CommonDB<TDBStructure> {
 }
 
 export default CommonDB;
-export { StorageUpdateMessage };
+export type { StorageUpdateMessage } from './types';

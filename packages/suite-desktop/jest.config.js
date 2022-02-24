@@ -40,7 +40,7 @@ module.exports = {
         '^@(.+)-services/(.+)': '<rootDir>/../../packages/suite/src/services/$1/$2',
         '^@(.+)-services': '<rootDir>/../../packages/suite/src/services/$1/index',
     },
-    modulePathIgnorePatterns: ['node_modules'],
+    modulePathIgnorePatterns: ['node_modules', '<rootDir>/lib', '<rootDir>/libDev'],
     transformIgnorePatterns: ['/node_modules/'],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
@@ -49,7 +49,7 @@ module.exports = {
     verbose: false,
     globals: {
         'ts-jest': {
-            tsconfig: '<rootDir>/src-electron/tsconfig.json',
+            tsconfig: '<rootDir>/tsconfig.json',
         },
     },
 };

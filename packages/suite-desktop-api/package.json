@@ -16,14 +16,15 @@
     "browser": "./lib/renderer.js",
     "files": [
         "lib/main.js",
-        "lib/renderer.js"
+        "lib/renderer.js",
+        "!**/*.map"
     ],
     "types": "lib/main.d.ts",
     "typings": "lib/main.d.ts",
     "scripts": {
         "lint": "eslint '**/*{.ts,.tsx}'",
         "test:unit": "jest --verbose -c jest.config.js",
-        "type-check": "tsc --project tsconfig.json",
-        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
+        "type-check": "tsc --build tsconfig.json",
+        "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
     }
 }

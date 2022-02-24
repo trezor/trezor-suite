@@ -270,4 +270,5 @@ const Button = React.forwardRef(
     },
 );
 
-export { Button, Props as ButtonProps };
+export type { Props as ButtonProps };
+export { Button };

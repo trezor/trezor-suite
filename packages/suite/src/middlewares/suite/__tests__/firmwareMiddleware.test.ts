@@ -17,7 +17,7 @@ type FirmwareState = ReturnType<typeof firmwareReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
 
-export const getInitialState = (
+const getInitialState = (
     router?: Partial<RouterState>,
     firmware?: Partial<FirmwareState>,
     suite?: Partial<SuiteState>,

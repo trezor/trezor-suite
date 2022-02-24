@@ -1,5 +1,5 @@
 {
-    "extends": "../../tsconfig.json",
+    "extends": "../../tsconfig.aliases.json",
     "compilerOptions": {
         "plugins": [
             {
@@ -7,14 +7,14 @@
                 "tags": ["styled", "css", "sty"]
             }
         ],
-        "jsx": "react", // https://github.com/kulshekhar/ts-jest/issues/937#issuecomment-456814377
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "lib": ["dom", "es2019", "esnext.asynciterable"],
-        "forceConsistentCasingInFileNames": true,
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true
+        "outDir": "./libDev"
     },
-    "include": ["global.d.ts", "**/*.ts", "**/*.tsx"]
+    "include": [".", "**/*.json"],
+    "references": [
+        { "path": "../components" },
+        { "path": "../suite-data" },
+        { "path": "../suite-desktop-api" },
+        { "path": "../suite-storage" },
+        { "path": "../utils" }
+    ]
 }

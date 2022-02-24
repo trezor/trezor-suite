@@ -1,41 +1,13 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "baseUrl": "./",
-        // Target latest version of ECMAScript.
-        "target": "es5",
-        "lib": ["es6", "dom"],
-        "allowSyntheticDefaultImports": true,
-        // fix "duplicate identifier" error
-        "skipLibCheck": true,
-        // Enable strictest settings like strictNullChecks & noImplicitAny.
-        "strict": true,
-        // Import non-ES modules as default imports.
-        "esModuleInterop": true,
-        "declaration": true,
-        // Only emit ‘.d.ts’ declaration files.
-        "emitDeclarationOnly": false,
-        "declarationMap": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "jsx": "react",
-        "outDir": "lib"
+        "plugins": [
+            { "name": "typescript-styled-plugin" }
+        ],
+        "outDir": "./libDev",
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
     },
-    "include": ["src/**/*", "styled.d.ts"],
-    "exclude": [
-        "node_modules",
-        "build",
-        "lib",
-        "dist",
-        // "src/components/**/*.stories.tsx",
-        "scripts",
-        "acceptance-tests",
-        "webpack",
-        "jest",
-        "src/setupTests.ts",
-        "examples"
-    ]
+    "include": ["."],
+    "references": []
 }

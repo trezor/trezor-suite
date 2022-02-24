@@ -1,7 +1,7 @@
 import colors, { THEME } from './config/colors';
 import * as variables from './config/variables';
 import { useTheme } from './utils';
-import { SuiteThemeColors } from './support/types';
+import type { SuiteThemeColors } from './support/types';
 import { Button } from './components/buttons/Button';
 import { ButtonPin } from './components/buttons/Pin';
 import { DeviceImage } from './components/DeviceImage';

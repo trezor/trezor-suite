@@ -17,7 +17,8 @@
         "msg-system-types": "ts-node ./src/message-system/scripts/generate-types.ts",
         "msg-system-validate-config": "ts-node ./src/message-system/scripts/validate-config.ts",
         "msg-system-sign-config": "ts-node ./src/message-system/scripts/sign-config.ts",
-        "guide-pull-content": "ts-node ./src/guide/index.ts"
+        "guide-pull-content": "ts-node ./src/guide/index.ts",
+        "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
         "ua-parser-js": "^1.0.2"

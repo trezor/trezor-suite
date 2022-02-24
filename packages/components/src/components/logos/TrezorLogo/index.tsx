@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { LOGOS } from './logos';
 import { TrezorLogoType, TrezorLogoVariant } from '../../../support/types';
 
-const SvgWrapper = styled.div<Omit<Props, 'type'>>`
+const SvgWrapper = styled.div<Omit<TrezorLogoProps, 'type'>>`
     display: inline-block;
     width: ${props => props.width};
     height: ${props => props.height};
@@ -18,13 +18,13 @@ const StyledReactSVG = styled(ReactSVG)`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
+export interface TrezorLogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
     type: TrezorLogoType;
     width?: string | number;
     height?: string | number;
 }
 
-const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: Props) => (
+const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: TrezorLogoProps) => (
     <SvgWrapper
         width={typeof width === 'number' ? `${width}px` : width}
         height={typeof height === 'number' ? `${height}px` : height}
@@ -42,4 +42,4 @@ const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: Props) =
     </SvgWrapper>
 );
 
-export { TrezorLogo, Props as TrezorLogoProps };
+export { TrezorLogo };

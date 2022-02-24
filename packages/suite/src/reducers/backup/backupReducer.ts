@@ -3,7 +3,7 @@ import { BACKUP } from '@backup-actions/constants';
 import { ConfirmKey, BackupStatus } from '@backup-actions/backupActions';
 import { Action } from '@suite-types';
 
-interface BackupState {
+export interface BackupState {
     userConfirmed: ConfirmKey[];
     status: BackupStatus;
     error?: string;

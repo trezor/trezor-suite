@@ -1,6 +1,8 @@
-import path from 'path';
+import * as path from 'path';
 
-import { compilerOptions } from '../../../tsconfig.json';
+// we cannot import file outside root dir as module in TS composite project
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { compilerOptions } = require('../../../tsconfig.aliases.json');
 
 const { paths } = compilerOptions;
 type PathKey = keyof typeof paths;

@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const { compilerOptions } = require('../../../../tsconfig.json');
+const { compilerOptions } = require('../../../../tsconfig.aliases.json');
 
 const { paths } = compilerOptions;
 const pathKeys = Object.keys(paths).filter(p => !p.includes('*'));

@@ -1,4 +1,4 @@
-import { THEME } from '@trezor/components/lib/config/colors';
+import { THEME } from '@trezor/components/src/config/colors';
 import { AppState } from '@suite-types';
 
 export const getThemeColors = (theme: AppState['suite']['settings']['theme']) => {

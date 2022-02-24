@@ -1,5 +1,5 @@
 import produce from 'immer';
-import * as variables from '@trezor/components/lib/config/variables'; // can't import from index cause it would import all UI components
+import * as variables from '@trezor/components/src/config/variables'; // can't import from index cause it would import all UI components
 import { RESIZE } from '@suite-actions/constants';
 import { getNumberFromPixelString } from '@trezor/utils';
 import { Action } from '@suite-types';

@@ -4,7 +4,7 @@ import { ACCOUNT, SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 
-interface SendState {
+export interface SendState {
     drafts: {
         [key: string]: FormState; // Key: account key
     };

@@ -11,11 +11,8 @@ import { WorkerState } from './state';
 import { MESSAGES, RESPONSES } from '../constants';
 import type { Message, Response, BlockchainSettings } from '../types';
 
-// declare worker types locally
-// tsconfig is using "dom" in compilerOptions.
-declare const WorkerGlobalScope: ObjectConstructor | undefined;
+// self is not declared in TS Webworker lib typings
 declare const self: { postMessage: (...args: any[]) => any };
-declare const importScripts: any;
 
 // detect if script is running in worker context
 export const CONTEXT =

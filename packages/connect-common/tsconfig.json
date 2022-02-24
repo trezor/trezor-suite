@@ -1,8 +1,6 @@
 {
-    "extends": "./tsconfig.lib.json",
-    "compilerOptions": {
-        "noEmit": true
-    },
-    "include": ["./src/**/*.ts", "./tests/**/*.ts"],
-    "exclude": ["node_modules"]
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "include": ["."],
+    "references": []
 }

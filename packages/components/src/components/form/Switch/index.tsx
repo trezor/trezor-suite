@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { useTheme } from '../../../utils';
 
 const StyledReactSwitch = styled(({ isSmall, ...rest }) => <ReactSwitch {...rest} />)<
-    Pick<Props, 'isSmall'>
+    Pick<SwitchProps, 'isSmall'>
 >`
     .react-switch-handle {
         top: ${props => (props.isSmall ? 2 : 3)}px !important;
@@ -33,14 +33,14 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-interface Props extends ReactSwitchProps {
+export interface SwitchProps extends ReactSwitchProps {
     onChange: (checked: boolean) => any;
     isDisabled?: boolean;
     isSmall?: boolean;
     dataTest?: string;
 }
 
-const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: Props) => {
+const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: SwitchProps) => {
     const theme = useTheme();
 
     return (
@@ -66,4 +66,4 @@ const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: P
     );
 };
 
-export { Switch, Props as SwitchProps };
+export { Switch };

@@ -16,6 +16,7 @@ typescript:
   stage: validation
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn verify-project-references
     - yarn build:libs
     - lerna run type-check
 

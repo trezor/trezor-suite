@@ -26,4 +26,4 @@ const P = ({ variant = 'primary', style, children }: Props) => {
     return <Text style={[baseStyle, style]}>{children}</Text>;
 };
 
-export { P, Props as PProps };
+export { P };

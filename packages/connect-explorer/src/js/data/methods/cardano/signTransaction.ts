@@ -1,7 +1,7 @@
 import { CardanoTxSigningMode } from 'trezor-connect';
 
 // todo: import from trezor-connect
-enum CardanoDerivationType {
+export enum CardanoDerivationType {
     LEDGER = 0,
     ICARUS = 1,
     ICARUS_TREZOR = 2,

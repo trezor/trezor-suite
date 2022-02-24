@@ -175,7 +175,7 @@ const Calendar = styled.div`
     }
 `;
 
-interface Props {
+export interface TimerangeProps {
     onSubmit: (startDate: Date, endDate: Date) => any;
     onCancel: () => any;
     startDate?: Date;
@@ -185,7 +185,7 @@ interface Props {
     ctaSubmit: React.ReactNode | string;
 }
 
-const Timerange = (props: Props) => {
+const Timerange = (props: TimerangeProps) => {
     const today = new Date();
 
     const [state, setState] = useState({
@@ -235,4 +235,4 @@ const Timerange = (props: Props) => {
     );
 };
 
-export { Timerange, Props as TimerangeProps };
+export { Timerange };

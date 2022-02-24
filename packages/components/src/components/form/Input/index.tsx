@@ -329,4 +329,5 @@ const Input = ({
     );
 };
 
-export { Input, Props as InputProps };
+export type { Props as InputProps };
+export { Input };

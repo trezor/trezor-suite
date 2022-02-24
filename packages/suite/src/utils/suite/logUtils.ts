@@ -58,8 +58,8 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
     };
 };
 
-export const redactAction = (action: Action) => {
-    let payload;
+export const redactAction = (action: Action): Action => {
+    let payload: any;
     switch (action.type) {
         case DEVICE.CONNECT:
         case DEVICE.DISCONNECT:

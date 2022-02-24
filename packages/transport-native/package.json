@@ -22,7 +22,7 @@
         "!**/__mocks__"
     ],
     "scripts": {
-        "type-check": "tsc --noEmit",
+        "type-check": "tsc --build tsconfig.json",
         "lint": "eslint '**/*.{ts,tsx,js}'"
     },
     "keywords": [

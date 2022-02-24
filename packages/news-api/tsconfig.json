@@ -26,5 +26,6 @@
         "**/api/generated/**/*.*",
         "**/_old/**/*.*",
         ".next"
-    ]
+    ],
+    "references": []
 }

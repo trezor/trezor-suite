@@ -13,7 +13,7 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "build:lib": "rimraf build && webpack --config ./webpack/prod.webpack.config.js",
-        "type-check": "tsc --project tsconfig.json"
+        "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {},
     "devDependencies": {

@@ -20,7 +20,9 @@
     ],
     "main": "./lib/index.js",
     "files": [
-        "lib/"
+        "lib/",
+        "!lib/ui",
+        "!**/*.map"
     ],
     "types": "lib/index.d.ts",
     "typings": "lib/index.d.ts",
@@ -32,14 +34,14 @@
         "dev": "webpack serve --config ./webpack/dev.js",
         "dev:electrum": "ts-node ./src/workers/electrum/devrun.ts",
         "dev:module": "USE_MODULES=true webpack serve --config ./webpack/dev.js",
-        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json && tsc --p ./tsconfig.workers.json",
+        "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json",
         "build:workers": "rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --verbose -c jest.config.unit.js",
         "test:integration": "jest -c jest.config.integration.js",
-        "type-check": "tsc --project tsconfig.json"
+        "type-check": "tsc --build tsconfig.json"
     },
     "devDependencies": {
         "html-webpack-plugin": "^5.3.2",
@@ -53,6 +55,7 @@
     "dependencies": {
         "@trezor/utils": "^1.0.0",
         "@trezor/utxo-lib": "^1.0.0",
+        "@types/web": "^0.0.51",
         "bignumber.js": "^9.0.1",
         "events": "^3.3.0",
         "ripple-lib": "1.10.0",

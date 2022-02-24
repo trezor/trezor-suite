@@ -1,8 +1,15 @@
 {
     "extends": "./tsconfig.lib.json",
     "compilerOptions": {
-        "noEmit": true
+        "rootDir": ".",
+        "outDir": "libDev",
+        "composite": true,
+        "incremental": true,
+        "declarationMap": true
     },
-    "include": ["./src/**/*.ts", "./tests/**/*.ts"],
-    "exclude": ["node_modules"]
+    "include": [".", "**/*.json"],
+    "references": [
+        { "path": "../utils" },
+        { "path": "../utxo-lib" }
+    ]
 }

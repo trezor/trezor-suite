@@ -1,6 +1,14 @@
 // all tests have same UTC timezone
 process.env.TZ = 'UTC';
 
+const babelConfig = {
+    presets: [
+        ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
+        '@babel/preset-typescript',
+        '@babel/preset-react',
+    ],
+};
+
 module.exports = {
     roots: ['./src'],
     setupFiles: [
@@ -68,12 +76,13 @@ module.exports = {
         'node_modules',
         '<rootDir>/src/utils/suite/dom',
         '<rootDir>/src/utils/wallet/promiseUtils',
+        '<rootDir>/libDev',
     ],
     transformIgnorePatterns: ['/node_modules/(?!d3-(.*)|internmap)/'],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
-        '(d3-|internmap).*\\.js$': 'ts-jest',
-        '\\.(ts|tsx)$': 'ts-jest',
+        '(d3-|internmap).*\\.js$': ['babel-jest', babelConfig],
+        '\\.(ts|tsx)$': ['babel-jest', babelConfig],
         '\\.svg$': '<rootDir>/src/support/tests/svgTransform.js', // https://stackoverflow.com/questions/46791263/jest-test-fail-syntaxerror-unexpected-token
     },
     verbose: false,

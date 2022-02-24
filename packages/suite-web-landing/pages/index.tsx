@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
-import Layout from '@suite-web-landing-components/Layout';
-import Translation, { TranslationModeContext } from '@suite-web-landing-components/Translation';
-import Download from '@suite-web-landing-components/Download';
-import Feature from '@suite-web-landing-components/Feature';
+import Layout from '../components/Layout';
+import Translation, { TranslationModeContext } from '../components/Translation';
+import Download from '../components/Download';
+import Feature from '../components/Feature';
 import { resolveStaticPath } from '@suite-utils/build';
 import Metadata from '@suite-components/Metadata';
 import { URLS } from '@suite-constants';
@@ -20,8 +20,8 @@ import {
     StyledP,
     StyledSoon,
     TranslationModeTrigger,
-} from '@suite-web-landing-components/LandingPage';
-import StyledFromMytrezorBanner from '@suite-web-landing-components/FromMytrezorBanner';
+} from '../components/LandingPage';
+import StyledFromMytrezorBanner from '../components/FromMytrezorBanner';
 import { switchFavicon } from '../utils/switchFavicon';
 import { useRouter } from 'next/router';
 

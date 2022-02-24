@@ -1,5 +1,4 @@
 import React from 'react';
-import { SuiteThemeColors } from 'src/support/types';
 import styled from 'styled-components';
 import { CardProps, Card } from '../Card';
 import { IconProps, Icon } from '../../Icon';
@@ -100,7 +99,7 @@ const Line = styled.div`
     /* border-top: 1px solid ${props => props.theme.STROKE_GREY}; */
 `;
 
-export interface Props extends CardProps {
+interface Props extends CardProps {
     variant: 'primary' | 'secondary';
     icon: IconProps['icon'];
     heading: React.ReactNode;
@@ -175,4 +174,5 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
     );
 };
 
-export { SecurityCard, Props as SecurityCardProps };
+export type { Props as SecurityCardProps };
+export { SecurityCard };

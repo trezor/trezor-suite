@@ -4,7 +4,7 @@ import { Flag, variables, types } from '../../index';
 import { storiesOf } from '@storybook/react';
 import randomColor from 'randomcolor';
 import { FLAGS } from './flags';
-import { FlagType } from 'src/support/types';
+import { FlagType } from '../../support/types';
 
 const color = randomColor({ luminosity: 'light' });
 

@@ -210,5 +210,5 @@ const Tooltip = ({
         <>{children}</>
     );
 };
-
-export { Tooltip, TippyProps as TooltipProps };
+export type TooltipProps = TippyProps;
+export { Tooltip };

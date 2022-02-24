@@ -19,6 +19,8 @@ jobs:
         run: yarn
       - name: check code formatting
         run: yarn format:verify
+      - name: verify TS project references
+        run: yarn verify-project-references
       - name: build libs
         run: yarn build:libs
       - name: type check

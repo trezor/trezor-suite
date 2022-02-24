@@ -44,12 +44,17 @@ console.log('[Electron Build] Starting...');
 console.log(`[Electron Build] Mode: ${isDev ? 'development' : 'production'}`);
 console.log(`[Electron Build] Using mocks: ${useMocks}`);
 
+// we want to bundle this
+delete pkg.dependencies['@trezor/utils'];
+// TODO: maybe desktop-api could be build too?
+
 build({
     entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(electronSource, f)),
     platform: 'node',
     bundle: true,
     target: 'node16.5.0', // Electron 15
     external: Object.keys({
+        // do we need all of these as external? isn't just electron enough?
         ...pkg.dependencies,
         ...pkg.devDependencies,
     }),

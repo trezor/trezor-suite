@@ -22,7 +22,7 @@ module.exports = {
                 use: [
                     {
                         loader: 'ts-loader',
-                        options: { configFile: 'tsconfig.workers.json' },
+                        options: { configFile: 'tsconfig.lib.json' },
                     },
                 ],
             },
