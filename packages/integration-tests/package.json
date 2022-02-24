@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "@cypress/skip-test": "^2.6.1",
-        "@cypress/webpack-preprocessor": "^5.9.1",
+        "@cypress/webpack-preprocessor": "^5.11.1",
         "cypress-image-snapshot": "^4.0.1",
         "cypress-wait-until": "^1.7.2",
         "chrome-remote-interface": "^0.31.0",
