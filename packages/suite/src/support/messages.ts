@@ -4280,17 +4280,6 @@ export default defineMessages({
         id: 'TR_RESTORE_EXISTING_WALLET',
         defaultMessage: 'Recover wallet',
     },
-    TR_USING_EITHER_YOUR_SINGLE_BACKUP: {
-        id: 'TR_USING_EITHER_YOUR_SINGLE_BACKUP',
-        defaultMessage:
-            'If you have a seed or Shamir backup of another wallet, you can choose to restore it',
-    },
-    TR_SELECT_DEVICE_STATUS: {
-        id: 'TR_SELECT_DEVICE_STATUS',
-        defaultMessage: 'Have you used this Trezor before?',
-        description:
-            'In onboarding, where user is choosing whether device is brand new or already used',
-    },
     TR_RECEIVED: {
         id: 'TR_RECEIVED',
         defaultMessage: 'Received',
@@ -4300,42 +4289,6 @@ export default defineMessages({
         id: 'TR_SENT',
         defaultMessage: 'Sent',
         description: 'Used in graph tooltip: Sent x USD/BTC',
-    },
-    TR_LANDING_TITLE: {
-        id: 'TR_LANDING_TITLE',
-        defaultMessage: 'Download new Trezor Beta Wallet desktop app',
-    },
-    TR_LANDING_DESC: {
-        id: 'TR_LANDING_DESC',
-        defaultMessage: 'For testing purposes only. Please keep in mind this is a beta version.',
-    },
-    TR_LANDING_CHOOSE_LABEL: {
-        id: 'TR_LANDING_CHOOSE_LABEL',
-        defaultMessage: 'Choose your platform',
-    },
-    TR_LANDING_CHOOSE_VALUE: {
-        id: 'TR_LANDING_CHOOSE_VALUE',
-        defaultMessage: '– Click to choose –',
-    },
-    TR_LANDING_WINDOWS: {
-        id: 'TR_LANDING_WINDOWS',
-        defaultMessage: 'Windows',
-    },
-    TR_LANDING_LINUX: {
-        id: 'TR_LANDING_LINUX',
-        defaultMessage: 'Linux',
-    },
-    TR_LANDING_MACOS: {
-        id: 'TR_LANDING_MACOS',
-        defaultMessage: 'macOS',
-    },
-    TR_LANDING_DOWNLOAD: {
-        id: 'TR_LANDING_DOWNLOAD',
-        defaultMessage: 'Download',
-    },
-    TR_LANDING_CONTINUE: {
-        id: 'TR_LANDING_CONTINUE',
-        defaultMessage: 'or continue in browser',
     },
     TR_HOLD_BOTH_BUTTONS: {
         id: 'TR_HOLD_BOTH_BUTTONS',
