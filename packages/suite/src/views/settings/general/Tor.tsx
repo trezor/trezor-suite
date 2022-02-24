@@ -1,8 +1,8 @@
 import React from 'react';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { Switch } from '@trezor/components';
-import { useAnalytics, useSelector } from '@suite-hooks';
+import { useAnalytics, useSelector, useActions } from '@suite-hooks';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
+import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -12,6 +12,9 @@ export const Tor = () => {
     const { tor } = useSelector(state => ({
         tor: state.suite.tor,
     }));
+    const { toggleTor } = useActions({
+        toggleTor: toggleTorAction,
+    });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Tor);
 
     return (
@@ -39,7 +42,7 @@ export const Tor = () => {
                                 value: !tor,
                             },
                         });
-                        desktopApi.toggleTor(!tor);
+                        toggleTor(!tor);
                     }}
                 />
             </ActionColumn>
