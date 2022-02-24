@@ -10,7 +10,6 @@ import {
     amountToSatoshi,
     formatAmount,
     formatNetworkAmount,
-    isTestnet,
     networkAmountToSatoshi,
 } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
@@ -40,10 +39,7 @@ export const getNetworkId = (accountSymbol: Account['symbol']) =>
 export const getAddressType = (accountType: Account['accountType']) =>
     accountType === 'normal' ? CardanoAddressType.BASE : CardanoAddressType.BYRON;
 
-export const getStakingPath = (account: Account) => {
-    const testnet = isTestnet(account.symbol);
-    return `m/1852'/${testnet ? '1' : '1815'}'/${account.index}'/2/0`;
-};
+export const getStakingPath = (account: Account) => `m/1852'/1815'/${account.index}'/2/0`;
 
 export const getChangeAddressParameters = (account: Account) => {
     if (!account.addresses || account.networkType !== 'cardano') return;
