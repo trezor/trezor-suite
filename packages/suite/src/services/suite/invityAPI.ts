@@ -900,7 +900,6 @@ class InvityAPI {
     };
 
     getSavingsList = async (): Promise<SavingsListResponse | undefined> => {
-        this.setProtectedAPI(true);
         try {
             const response: SavingsListResponse = await this.requestApiServer(
                 this.SAVINGS_LIST,
@@ -910,8 +909,6 @@ class InvityAPI {
             return response;
         } catch (error) {
             console.log('[getSavingsList]', error);
-        } finally {
-            this.setProtectedAPI(false);
         }
     };
 
