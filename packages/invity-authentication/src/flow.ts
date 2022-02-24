@@ -16,18 +16,6 @@ const sendMessageToParent = data => {
     );
 };
 
-const translate = (translations, key, fallback) => {
-    if (!translations) {
-        console.error(`Translations are not defined, falling back to "${fallback}"`);
-        return fallback;
-    }
-    if (!translations[key]) {
-        console.error(`Translation error: key "${key}" not found, falling back to "${fallback}"`);
-        return fallback;
-    }
-    return translations[key];
-};
-
 const disableForm = () => {
     const email = document.getElementById('auth_email');
     if (email) {
@@ -572,3 +560,5 @@ window.addEventListener('resize', () =>
 // window.addEventListener('DOMContentLoaded', _ => {
 //     sendMessageToParent({ action: 'loaded' });
 // });
+
+export {}

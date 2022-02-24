@@ -19,7 +19,7 @@ const pollingMiddleware =
             const polling = api.getState().wallet.pollings[action.key];
             if (polling) {
                 Promise.resolve(polling.pollingFunction()).then(() => {
-                    const timeoutId = setTimeout(() => {
+                    const timeoutId = window.setTimeout(() => {
                         api.dispatch(pollingActions.request(action.key));
                     }, polling.intervalMs);
                     pollingTimeoutIds[action.key] = timeoutId;

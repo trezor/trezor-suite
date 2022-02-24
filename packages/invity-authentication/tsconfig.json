@@ -13,7 +13,11 @@
         "esModuleInterop": true,
         "noEmit": false,
         "outDir": "./src/js",
-        "sourceMap": false
+        "sourceMap": false,
+        "incremental": true,
+        "declarationMap": false,
+        "composite": false,
+        "noUnusedLocals": false,
     },
     "files": ["./src/flow.ts"],
     "exclude": ["node_modules", "./src/js/**", "./build.ts"]
