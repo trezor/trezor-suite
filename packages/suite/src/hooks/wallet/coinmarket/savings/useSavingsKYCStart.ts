@@ -116,7 +116,7 @@ export const useSavingsKYCStart = ({
     const dropzoneOptions = {
         onDrop,
         multiple: false,
-        noClick: true,
+        noClick: false,
         accept: 'image/jpeg, image/png',
         maxSize: 2 ** 20 * 5, // 5MB
     } as DropzoneOptions;

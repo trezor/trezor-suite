@@ -4,6 +4,7 @@ import { Control, Controller, FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { colors, variables, Icon } from '@trezor/components';
+import { resolveStaticPath } from '@suite/utils/suite/build';
 
 interface DropzoneProps {
     isError: boolean;
@@ -31,6 +32,7 @@ const DropzoneElement = styled.div`
     justify-content: center;
     flex-flow: row;
     align-items: center;
+    line-height: 24px;
 `;
 
 const Grey = styled.div`
@@ -76,6 +78,10 @@ const CenteredRow = styled.div`
     height: 24px;
 `;
 
+const LabelIcon = styled.img`
+    margin-right: 8px;
+`;
+
 interface KYCImageDropzoneProps {
     control: Control;
     name: string;
@@ -83,6 +89,7 @@ interface KYCImageDropzoneProps {
     dropzoneState: DropzoneState;
     error?: FieldError;
     required?: boolean;
+    iconStaticPath: string;
 }
 
 const KYCImageDropzone = ({
@@ -92,6 +99,7 @@ const KYCImageDropzone = ({
     label,
     error,
     required,
+    iconStaticPath,
 }: KYCImageDropzoneProps) => (
     <Controller
         control={control}
@@ -108,7 +116,9 @@ const KYCImageDropzone = ({
                 <DropzoneWrapper>
                     <Dropzone {...dropzoneState.getRootProps()} isError={!!error || !!rejectedFile}>
                         <input {...dropzoneState.getInputProps({ onChange, name })} />
-                        <DropzoneLabel>(TODO: Icon) {label}</DropzoneLabel>
+                        <DropzoneLabel>
+                            <LabelIcon src={resolveStaticPath(iconStaticPath)} /> {label}
+                        </DropzoneLabel>
                         <DropzoneElement>
                             <Grey>
                                 <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_VALID_IMAGE_REQUIREMENTS" />

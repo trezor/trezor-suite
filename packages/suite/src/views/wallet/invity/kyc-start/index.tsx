@@ -145,6 +145,7 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                                 }
                             />
                         }
+                        iconStaticPath="images/svg/identification-card-front.svg"
                         error={errors.documentImageFront}
                         required
                     />
@@ -159,6 +160,7 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                         label={
                             <Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_BACK_LABEL" />
                         }
+                        iconStaticPath="images/svg/identification-card-back.svg"
                         error={errors.documentImageBack}
                         required
                     />
@@ -173,6 +175,7 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                         label={
                             <Translation id="TR_SAVINGS_KYC_START_DOCUMENT_DROPZONE_SELFIE_LABEL" />
                         }
+                        iconStaticPath="images/svg/identification-card-back.svg"
                         error={errors.documentImageSelfie}
                         required
                     />
@@ -220,7 +223,7 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                 </Row>
             )}
             <Button isDisabled={!canSubmit}>
-                <Translation id="TR_SAVINGS_KYC_START_CONFIRM" />
+                <Translation id="TR_CONFIRM" />
             </Button>
         </form>
     );
