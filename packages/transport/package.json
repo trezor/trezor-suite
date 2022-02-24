@@ -29,7 +29,6 @@
     },
     "devDependencies": {
         "@types/bytebuffer": "^5.0.42",
-        "@types/jest": "^27.0.1",
         "@types/w3c-web-usb": "^1.0.5"
     },
     "dependencies": {
