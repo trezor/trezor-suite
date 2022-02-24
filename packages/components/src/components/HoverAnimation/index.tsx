@@ -56,7 +56,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
 const HoverAnimation: React.FC<{ size?: string; isHoverable?: boolean }> = ({
     children,
     size,
-    isHoverable,
+    isHoverable = true,
 }) => (
     <Wrapper size={size} isHoverable={isHoverable}>
         {children}
