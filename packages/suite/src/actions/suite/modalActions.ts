@@ -114,6 +114,10 @@ export type UserContextPayload =
       }
     | {
           type: 'safety-checks';
+      }
+    | {
+          type: 'disable-tor';
+          decision: Deferred<boolean>;
       };
 
 export type ModalAction =
@@ -195,6 +199,7 @@ type DeferredModals = Extract<
     {
         type:
             | 'qr-reader'
+            | 'disable-tor'
             | 'review-transaction'
             | 'import-transaction'
             | 'coinmarket-buy-terms'
