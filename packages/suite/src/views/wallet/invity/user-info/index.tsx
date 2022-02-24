@@ -38,10 +38,8 @@ const UserInfo = (props: WithInvityLayoutProps) => {
         onSubmit,
         handleSubmit,
         control,
-        formState,
         phoneNumberPrefixCountryOption,
     } = useSavingsUserInfo(props);
-    const { isValid } = formState;
     const { familyName, givenName, phoneNumber } = getValues();
 
     const givenNameInputName = 'givenName';
@@ -49,6 +47,7 @@ const UserInfo = (props: WithInvityLayoutProps) => {
     const phoneNumberPrefixCountryInputName = 'phoneNumberPrefixCountryOption';
     const phoneNumberInputName = 'phoneNumber';
     // TODO: translations
+    const isNextStepButtonDisabled = Object.keys(errors).length > 0;
     return (
         <>
             <Header>
@@ -147,7 +146,7 @@ const UserInfo = (props: WithInvityLayoutProps) => {
                         />
                     }
                 />
-                <Button isDisabled={!isValid}>Next step</Button>
+                <Button isDisabled={isNextStepButtonDisabled}>Next step</Button>
             </form>
         </>
     );

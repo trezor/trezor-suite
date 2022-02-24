@@ -34,6 +34,7 @@ export interface AccountSettings {
     newsletter1Mails?: boolean;
     newsletter2Mails?: boolean;
     transactionMails?: boolean;
+    phoneNumberPrefix?: string;
     phoneNumber?: string;
     phoneNumberVerified?: string;
     givenName?: string;

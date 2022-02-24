@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import type {
     SavingsUserInfoFormState,
     SavingsUserInfoContextValues,
@@ -20,8 +20,8 @@ SavingsUserInfoContext.displayName = 'SavingsUserInfoContext';
 export const useSavingsUserInfo = ({
     selectedAccount,
 }: UseSavingsUserInfoProps): SavingsUserInfoContextValues => {
-    const { invityAuthentication, country } = useSelector(state => ({
-        invityAuthentication: state.wallet.coinmarket.invityAuthentication,
+    const { accountSettings, country } = useSelector(state => ({
+        accountSettings: state.wallet.coinmarket.invityAuthentication?.accountInfo?.settings,
         country: state.wallet.coinmarket.savings.savingsInfo?.country,
     }));
     const { navigateToInvityPhoneNumberVerification } = useInvityNavigation(
@@ -41,15 +41,18 @@ export const useSavingsUserInfo = ({
     const unsupportedCountryFormDraft = getDraft(selectedAccount.account.descriptor);
     const selectedCountryCode = unsupportedCountryFormDraft?.country || country;
     const defaultPhoneNumberPrefixCountryOption = regional.countriesPhoneNumberPrefixOptions.find(
-        item => item.value === selectedCountryCode,
+        item =>
+            (accountSettings?.phoneNumberPrefix &&
+                item.label.endsWith(accountSettings?.phoneNumberPrefix)) ||
+            item.value === selectedCountryCode,
     );
 
     const methods = useForm<SavingsUserInfoFormState>({
         mode: 'onChange',
         defaultValues: {
-            givenName: invityAuthentication?.accountInfo?.settings?.givenName,
-            familyName: invityAuthentication?.accountInfo?.settings?.familyName,
-            phoneNumber: invityAuthentication?.accountInfo?.settings?.phoneNumber?.replace(
+            givenName: accountSettings?.givenName,
+            familyName: accountSettings?.familyName,
+            phoneNumber: accountSettings?.phoneNumber?.replace(
                 regional.getPhoneNumberPrefixByCountryCode(selectedCountryCode) || '',
                 '',
             ),
@@ -57,13 +60,7 @@ export const useSavingsUserInfo = ({
         },
     });
 
-    const { register, control } = methods;
-    const values = useWatch<SavingsUserInfoFormState>({
-        control,
-        defaultValue: {
-            phoneNumberPrefixCountryOption: defaultPhoneNumberPrefixCountryOption,
-        },
-    });
+    const { register } = methods;
 
     const onSubmit = async ({
         familyName,
@@ -71,16 +68,16 @@ export const useSavingsUserInfo = ({
         phoneNumber,
         phoneNumberPrefixCountryOption,
     }: SavingsUserInfoFormState) => {
-        if (invityAuthentication?.accountInfo?.settings) {
-            const phoneNumerPrefix = regional.getPhoneNumberPrefixByCountryCode(
+        if (accountSettings) {
+            const phoneNumberPrefix = regional.getPhoneNumberPrefixByCountryCode(
                 phoneNumberPrefixCountryOption.value,
             );
-            const phoneNumberEffective = `${phoneNumerPrefix}${phoneNumber}`;
             const response = await invityAPI.saveAccountSettings({
-                ...invityAuthentication.accountInfo.settings,
+                ...accountSettings,
                 familyName,
                 givenName,
-                phoneNumber: phoneNumberEffective,
+                phoneNumberPrefix,
+                phoneNumber,
             });
             if (!response?.error) {
                 const sendVerificationSmsResponse = await invityAPI.sendVerificationSms();
@@ -100,6 +97,6 @@ export const useSavingsUserInfo = ({
         ...methods,
         register: typedRegister,
         onSubmit,
-        phoneNumberPrefixCountryOption: values.phoneNumberPrefixCountryOption as Option,
+        phoneNumberPrefixCountryOption: defaultPhoneNumberPrefixCountryOption as Option,
     };
 };

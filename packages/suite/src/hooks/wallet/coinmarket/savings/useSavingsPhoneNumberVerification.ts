@@ -17,9 +17,12 @@ SavingsPhoneNumberVerificationContext.displayName = 'SavingsPhoneNumberVerificat
 export const useSavingsPhoneNumberVerification = ({
     selectedAccount,
 }: UseSavingsPhoneNumberVerificationProps): SavingsPhoneNumberVerificationContextValues => {
-    const phoneNumber = useSelector(
-        state => state.wallet.coinmarket.invityAuthentication?.accountInfo?.settings?.phoneNumber,
-    );
+    const { phoneNumberPrefix, phoneNumber } = useSelector(state => ({
+        phoneNumberPrefix:
+            state.wallet.coinmarket.invityAuthentication?.accountInfo?.settings?.phoneNumberPrefix,
+        phoneNumber:
+            state.wallet.coinmarket.invityAuthentication?.accountInfo?.settings?.phoneNumber,
+    }));
     const { loadInvityData } = useActions({
         loadInvityData: coinmarketCommonActions.loadInvityData,
     });
@@ -71,12 +74,13 @@ export const useSavingsPhoneNumberVerification = ({
     const handlePhoneNumberChange = useCallback(() => {
         navigateToInvityUserInfo();
     }, [navigateToInvityUserInfo]);
+
     return {
         ...methods,
         register: typedRegister,
         error,
         onSubmit,
-        phoneNumber,
+        phoneNumber: `${phoneNumberPrefix}${phoneNumber}`,
         handlePhoneNumberChange,
     };
 };
