@@ -72,7 +72,7 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
-        "@crowdin/cli": "^3.6.5",
+        "@crowdin/cli": "^3.7.8",
         "@formatjs/cli": "^3.0.5",
         "@testing-library/dom": "^7.29.2",
         "@testing-library/react": "^11.2.3",

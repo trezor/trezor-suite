@@ -1213,11 +1213,12 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@crowdin/cli@^3.6.5":
-  version "3.7.6"
-  resolved "https://registry.yarnpkg.com/@crowdin/cli/-/cli-3.7.6.tgz#272a5417c964c28c4ceb4ab0adb31d482b1f6cf1"
-  integrity sha512-iXKPexzaave7mNadVA0nAhhdi3DsSmU/hbrt1LhpYNW6Lngp74PXQ1hShxCgflPeqpExF/ZJaptWW8qAgNpwQg==
+"@crowdin/cli@^3.7.8":
+  version "3.7.8"
+  resolved "https://registry.yarnpkg.com/@crowdin/cli/-/cli-3.7.8.tgz#a32bb78836b20cefd91c83b193c3d003c906b2d6"
+  integrity sha512-DDA2ggfnYsfoprWmxNpZ5QOxO58RSsbFHHSi+558bqBJMag1z0RjSGSCriqfCQtvBnn2SIVnBsBOaw+HDWXF4w==
   dependencies:
+    njre "^0.2.0"
     shelljs "^0.8.4"
 
 "@cspotcode/source-map-consumer@0.8.0":
@@ -8669,6 +8670,11 @@ comma-separated-tokens@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/comma-separated-tokens/-/comma-separated-tokens-2.0.2.tgz#d4c25abb679b7751c880be623c1179780fe1dd98"
   integrity sha512-G5yTt3KQN4Yn7Yk4ed73hlZ1evrFKXeUW3086p3PRFNp7m2vIjI6Pg+Kgb+oyzhd9F2qdcoj67+y3SdxL5XWsg==
+
+command-exists-promise@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/command-exists-promise/-/command-exists-promise-2.0.2.tgz#7beecc4b218299f3c61fa69a4047aa0b36a64a99"
+  integrity sha512-T6PB6vdFrwnHXg/I0kivM3DqaCGZLjjYSOe0a5WgFKcz1sOnmOeIjnhQPXVXX3QjVbLyTJ85lJkX6lUpukTzaA==
 
 command-exists@^1.2.8:
   version "1.2.9"
@@ -17695,6 +17701,16 @@ nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
+
+njre@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/njre/-/njre-0.2.0.tgz#e5abfbafafb3db4438fe6b149da9a733fab0bf3d"
+  integrity sha512-+Wq8R6VmjK+jI8a9NdzfU6Vh50r3tjsdvl5KJE1OyHeH8I/nx5Ptm12qpO3qNUbstXuZfBDgDL0qQZw9JyjhMw==
+  dependencies:
+    command-exists-promise "^2.0.2"
+    node-fetch "^2.5.0"
+    tar "^4.4.8"
+    yauzl "^2.10.0"
 
 no-case@^3.0.4:
   version "3.0.4"
