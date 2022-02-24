@@ -235,16 +235,20 @@ const checkWhoami = async (flowType, urls) => {
         const data = await response.json();
         if (data.error) {
             // Unauthorized, prefill e-mail from cookie (only for verification & recovery flows)
-            if (!prefillEmail(null, flowType)) {
-                if (window.top.location.pathname === '/account/reset-sent') {
-                    // cannot pre-fill recovery email, redir to "reset"
-                    sendMessageToParent({ redirectTo: 'recovery' });
-                } else if (window.top.location.pathname === '/account/verification') {
-                    // cannot pre-fill verif email, redir to "signup"
-                    sendMessageToParent({ redirectTo: 'registration' });
-                }
-                exit();
-            }
+            /**
+             * TODO: Remove window.top.location or resolve error in electron for Suite Desktop:
+             * Blocked a frame with origin "http://localhost:21335" from accessing a cross-origin frame.
+             */
+            // if (!prefillEmail(null, flowType)) {
+            //     if (window.top.location.pathname === '/account/reset-sent') {
+            //         // cannot pre-fill recovery email, redir to "reset"
+            //         sendMessageToParent({ redirectTo: 'recovery' });
+            //     } else if (window.top.location.pathname === '/account/verification') {
+            //         // cannot pre-fill verif email, redir to "signup"
+            //         sendMessageToParent({ redirectTo: 'registration' });
+            //     }
+            //     exit();
+            // }
         } else {
             checkPrivilegedSession(new Date(data.authenticated_at).valueOf(), flowType); // If privileged session expired, log out on submit
             const verifiableAddress = data.identity.verifiable_addresses[0];
@@ -261,7 +265,7 @@ const checkWhoami = async (flowType, urls) => {
                 }
                 exit();
             }
-            prefillEmail(verifiableAddress.value, flowType); // pre-fill email from user info (if needed)
+            // prefillEmail(verifiableAddress.value, flowType); // pre-fill email from user info (if needed)
         }
     } catch (error) {
         if (error !== 'exit') {
@@ -362,11 +366,16 @@ const parseFlowAttributes = (flowData, flowType) => {
                 break;
 
             case 1060002:
-                if (window.top.location.pathname !== '/account/reset-sent') {
-                    disableForm();
-                    sendMessageToParent({ action: 'recovery-sent' }); // "recovery mail sent" page
-                    exit();
-                }
+                // Password recovery email sent.
+                /**
+                 * TODO: Remove window.top.location or resolve error in electron for Suite Desktop:
+                 * Blocked a frame with origin "http://localhost:21335" from accessing a cross-origin frame.
+                 */
+                // if (window.top.location.pathname !== '/account/reset-sent') {
+                disableForm();
+                sendMessageToParent({ action: 'recovery-sent' }); // "recovery mail sent" page
+                exit();
+                // }
                 break;
 
             case 1050001:
@@ -381,7 +390,8 @@ const parseFlowAttributes = (flowData, flowType) => {
                 break;
 
             case 4060005:
-                sendMessageToParent({ action: { type: 'reload' } }); // The flow has expired - reload the page
+                // The flow has expired - reload the page
+                sendMessageToParent({ action: { type: 'reload' } });
                 exit();
                 break;
 
@@ -440,13 +450,18 @@ const checkFlowType = flowType => {
             sendMessageToParent({ action: 'loading' });
             return true;
         };
-        if (window.top.location.pathname === '/account/reset-sent') {
-            // Remove verification re-send text & submit link-button
-            document.getElementById('submit').remove();
-            document.getElementById('submit_link').setAttribute('id', 'submit');
-        } else {
-            document.getElementById('verification').remove(); // Remove the "nothing arrived?" div
-        }
+        document.getElementById('verification').remove();
+        /**
+         * TODO: Remove window.top.location or resolve error in electron for Suite Desktop:
+         * Blocked a frame with origin "http://localhost:21335" from accessing a cross-origin frame.
+         */
+        // if (window.top.location.pathname === '/account/reset-sent') {
+        //     // Remove verification re-send text & submit link-button
+        //     document.getElementById('submit').remove();
+        //     document.getElementById('submit_link').setAttribute('id', 'submit');
+        // } else {
+        //     document.getElementById('verification').remove(); // Remove the "nothing arrived?" div
+        // }
     }
     const form = document.getElementById('form');
     form.onsubmit = () => {

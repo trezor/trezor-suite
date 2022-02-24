@@ -18,8 +18,12 @@
         "declarationMap": false,
         "composite": false,
         "noUnusedLocals": false,
-        "isolatedModules": false,
+        "isolatedModules": false
     },
     "files": ["./src/flow.ts"],
-    "exclude": ["node_modules", "./src/js/**", "./build.ts"]
+    "exclude": [
+        "node_modules",
+        "./src/js/**",
+        "./build.ts"
+    ]
 }
