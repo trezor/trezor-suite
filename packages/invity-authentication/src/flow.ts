@@ -560,5 +560,3 @@ window.addEventListener('resize', () =>
 // window.addEventListener('DOMContentLoaded', _ => {
 //     sendMessageToParent({ action: 'loaded' });
 // });
-
-export {}
