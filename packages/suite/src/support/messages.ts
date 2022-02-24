@@ -3166,6 +3166,27 @@ export default defineMessages({
         id: 'TR_TOR_ENABLE',
         defaultMessage: 'Enable Tor',
     },
+    TR_TOR_DISABLE: {
+        id: 'TR_TOR_DISABLE',
+        defaultMessage: 'Disable Tor',
+    },
+    TR_TOR_DISABLE_ONIONS_ONLY: {
+        id: 'TR_TOR_DISABLE_ONIONS_ONLY',
+        defaultMessage: 'Missing non-onion Custom Backends',
+    },
+    TR_TOR_DISABLE_ONIONS_ONLY_RESOLVED: {
+        id: 'TR_TOR_DISABLE_ONIONS_ONLY_RESOLVED',
+        defaultMessage: 'Disable Tor',
+    },
+    TR_TOR_DISABLE_ONIONS_ONLY_TITLE: {
+        id: 'TR_TOR_DISABLE_ONIONS_ONLY_TITLE',
+        defaultMessage:
+            'Disabling Tor now will reset all Onion Backends to the default Trezor servers.',
+    },
+    TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION: {
+        id: 'TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION',
+        defaultMessage: 'Please add non-onion custom backend addresses to prevent this behavior.',
+    },
     TR_TOR_ENABLE_AND_CONFIRM: {
         id: 'TR_TOR_ENABLE_AND_CONFIRM',
         defaultMessage: 'Enable Tor and confirm',
@@ -3175,10 +3196,26 @@ export default defineMessages({
         defaultMessage:
             "Enabling this will route all of Suite's traffic through the Tor network.{lineBreak}All requests to Trezor infrastructure will be pointed to our Tor services, increasing your privacy and security.",
     },
+    TR_TOR_REMOVE_ONION_AND_DISABLE: {
+        id: 'TR_TOR_REMOVE_ONION_AND_DISABLE',
+        defaultMessage: 'Disable Tor and switch to Default Backends',
+    },
+    TR_TOR_ONION_REMOVAL_NEEDED: {
+        id: 'TR_TOR_ONION_REMOVAL_NEEDED',
+        defaultMessage: 'These onion addresses must be removed in order to disable Tor:',
+    },
+    TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_TITLE: {
+        id: 'TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_TITLE',
+        defaultMessage: 'Custom Backends are no longer using onion addresses only.',
+    },
+    TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION: {
+        id: 'TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION',
+        defaultMessage: 'You can safely disable Tor now.',
+    },
     TR_ONION_BACKEND_TOR_NEEDED: {
         id: 'TR_ONION_BACKEND_TOR_NEEDED',
         defaultMessage:
-            'You used an onion address for your backends. To use onion addresses, you need to have access to Tor network.',
+            'You used an onion address for your backends. To use onion addresses, you need to have access to the Tor network.',
     },
     TR_ONION_LINKS_TITLE: {
         id: 'TR_ONION_LINKS_TITLE',
