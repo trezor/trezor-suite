@@ -19,7 +19,7 @@
         "@cypress/webpack-preprocessor": "^5.11.1",
         "cypress-image-snapshot": "^4.0.1",
         "cypress-wait-until": "^1.7.2",
-        "chrome-remote-interface": "^0.31.0",
+        "chrome-remote-interface": "^0.31.2",
         "shelljs": "^0.8.5",
         "ws": "^7.5.5",
         "@playwright/test": "^1.19.1",

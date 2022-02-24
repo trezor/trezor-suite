@@ -8412,10 +8412,10 @@ chownr@^2.0.0:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
-chrome-remote-interface@^0.31.0:
-  version "0.31.1"
-  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.31.1.tgz#87c37c81f10d9f0832b6d6a42e52ac2c7ebb4008"
-  integrity sha512-cvNTnXfx4kYCaeh2sEKrdlqZsYRleACPL47O8LrrjihVfBQbfPmf03vVqSSm7SIeqyo2P77ZXovrBAs4D/nopQ==
+chrome-remote-interface@^0.31.2:
+  version "0.31.2"
+  resolved "https://registry.yarnpkg.com/chrome-remote-interface/-/chrome-remote-interface-0.31.2.tgz#97fa391420cba0dc0ee9126334246ab377f20e98"
+  integrity sha512-vpdJoI9cDRNAfV5oB2ulwXDltvu3Ov9PTblnV48VXcF4zUx1p4xvCLssc5AZ/WLYp4003YxJqLEi8FagPw2vTQ==
   dependencies:
     commander "2.11.x"
     ws "^7.2.0"
