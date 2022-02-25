@@ -10,5 +10,6 @@ export type SavingsPaymentInfoContextValues = {
     paymentInfo?: SavingsPaymentInfo;
     handleEditButtonClick: () => void;
     handleSubmit: () => void;
+    isSubmitting: boolean;
     copy: (paymentInfoKey: keyof SavingsPaymentInfo) => void;
 };

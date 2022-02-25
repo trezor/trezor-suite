@@ -7,7 +7,6 @@ import {
 } from '@wallet-hooks/coinmarket/savings/useSavingsPhoneNumberVerification';
 import { InputError, withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
 import { Translation } from '@suite-components';
-import { PhoneNumberVerificationCodeLength } from '@wallet-utils/coinmarket/coinmarketUtils';
 import VerificationCodeDigitInput from './components/VerificationCodeDigitInput';
 
 const Header = styled.div`
@@ -60,11 +59,6 @@ const PhoneNumberVerification = (props: WithInvityLayoutProps) => {
     const { error, onSubmit, handleSubmit, formState, phoneNumber, handlePhoneNumberChange } =
         contextValues;
     const { isSubmitting } = formState;
-    // TODO: translations
-
-    const verificationCodeInputs = Array(PhoneNumberVerificationCodeLength).fill(
-        StyledVerificationCodeDigitInput,
-    ) as typeof StyledVerificationCodeDigitInput[];
 
     return (
         <SavingsPhoneNumberVerificationContext.Provider value={contextValues}>
@@ -79,20 +73,23 @@ const PhoneNumberVerification = (props: WithInvityLayoutProps) => {
                     }}
                 />
                 <ChangePhoneNumberLink onClick={handlePhoneNumberChange}>
-                    Change
+                    <Translation id="TR_CHANGE" />
                 </ChangePhoneNumberLink>
             </Description>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <VerificationCodeDigitInputsWrapper>
-                    {verificationCodeInputs.map((Input, index) => (
-                        <Input index={index} />
-                    ))}
+                    <StyledVerificationCodeDigitInput index={0} />
+                    <StyledVerificationCodeDigitInput index={1} />
+                    <StyledVerificationCodeDigitInput index={2} />
+                    <StyledVerificationCodeDigitInput index={3} />
+                    <StyledVerificationCodeDigitInput index={4} />
+                    <StyledVerificationCodeDigitInput index={5} />
                 </VerificationCodeDigitInputsWrapper>
                 <InputErrorWrapper>
                     <InputError error={error} />
                 </InputErrorWrapper>
                 <Button isDisabled={isSubmitting} isLoading={isSubmitting}>
-                    Next step
+                    <Translation id="TR_CONFIRM" />
                 </Button>
             </form>
         </SavingsPhoneNumberVerificationContext.Provider>

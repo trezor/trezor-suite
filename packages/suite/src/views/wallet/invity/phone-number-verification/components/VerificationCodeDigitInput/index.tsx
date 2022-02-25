@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Input, KEYBOARD_CODE } from '@trezor/components';
 import { useSavingsPhoneNumberVerificationContext } from '@wallet-hooks/coinmarket/savings/useSavingsPhoneNumberVerification';
 import { Translation } from '@suite-components';
-import { PhoneNumberVerificationCodeDigitRegularExpression } from '@wallet-utils/coinmarket/coinmarketUtils';
+import type { CodeDigitIndex } from '@wallet-types/coinmarket/savings/phoneNumberVerification';
 
 const StyledInput = styled(Input)`
     font-size: 24px;
@@ -14,7 +14,7 @@ const StyledInput = styled(Input)`
 const getVerificationCodeInputSelector = (index: number) => `input[data-input-index='${index}']`;
 
 interface VerificationCodeDigitInputProps {
-    index: number;
+    index: CodeDigitIndex;
 }
 
 const VerificationCodeDigitInput = ({ index }: VerificationCodeDigitInputProps) => {
@@ -76,21 +76,13 @@ const VerificationCodeDigitInput = ({ index }: VerificationCodeDigitInputProps) 
             width={61}
             label={label}
             name={name}
-            key={name}
             data-input-index={index}
             maxLength={1}
             innerRef={register({
-                validate: (value: string) => {
-                    if (!value) {
-                        return (
-                            <Translation id="TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_REQUIRED" />
-                        );
-                    }
-                    if (!PhoneNumberVerificationCodeDigitRegularExpression.test(value)) {
-                        return (
-                            <Translation id="TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_MUST_BE_NUMBER" />
-                        );
-                    }
+                required: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_REQUIRED',
+                pattern: {
+                    value: /[0-9]{1}/,
+                    message: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_MUST_BE_NUMBER',
                 },
             })}
         />

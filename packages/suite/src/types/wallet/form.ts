@@ -6,6 +6,10 @@ import { FormDraftPrefixKeyValues } from '@wallet-constants/formDraft';
 // strongly typed UseFormMethods.register
 export interface TypedValidationRules {
     required?: ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
+    pattern?: {
+        value: RegExp;
+        message: ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
+    };
     validate?: (data: string) => ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
 }
 

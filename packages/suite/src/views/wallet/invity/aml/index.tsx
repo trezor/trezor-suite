@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { Button } from '@trezor/components';
 import { withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
 import { useSavingsAML } from '@wallet-hooks/coinmarket/savings/useSavingsAML';
@@ -45,7 +45,7 @@ const AmlAnswerOptions = styled.div`
 `;
 
 const AmlAnswerOption = styled.div<AmlAnswerOptionProps>`
-    color: ${props => (props.isSelected ? '#141414' : props.theme.TYPE_LIGHT_GREY)};
+    color: ${props => (props.isSelected ? 'initial' : props.theme.TYPE_LIGHT_GREY)};
     background: ${props => props.theme.BG_WHITE};
     border: ${props =>
         props.isSelected ? `2px solid ${props.theme.TYPE_GREEN}` : '2px solid #E8E8E8'};
@@ -60,27 +60,17 @@ interface AmlAnswerOptionProps {
     isSelected: boolean;
 }
 
-interface KeyAnswer {
-    [key: string]: string;
-}
-
 const AML = (props: WithInvityLayoutProps) => {
-    const { amlQuestions, handleSubmit } = useSavingsAML(props);
-    const [selectedAnswerKeys, setSelectedAnswerKeys] = useState<KeyAnswer>({});
-    const handleAmlAnswerOptionClick = useCallback(
-        (key: string, answer: string) => {
-            setSelectedAnswerKeys({
-                ...selectedAnswerKeys,
-                [key]: answer,
-            });
-        },
-        [selectedAnswerKeys],
-    );
-    const canSubmitAnswers = Object.entries(selectedAnswerKeys).length === amlQuestions?.length;
-    const answers = Object.entries(selectedAnswerKeys).map(([key, answer]) => ({
-        key,
-        answer,
-    }));
+    const {
+        amlQuestions,
+        handleSubmit,
+        isSubmitting,
+        handleAmlAnswerOptionClick,
+        answers,
+        canSubmitAnswers,
+        selectedQuestionAnswers,
+    } = useSavingsAML(props);
+
     return (
         <>
             <Header>
@@ -106,7 +96,7 @@ const AML = (props: WithInvityLayoutProps) => {
                             <AmlAnswerOption
                                 key={answer}
                                 onClick={() => handleAmlAnswerOptionClick(question.key, answer)}
-                                isSelected={selectedAnswerKeys[question.key] === answer}
+                                isSelected={selectedQuestionAnswers[question.key] === answer}
                             >
                                 {answer}
                             </AmlAnswerOption>
@@ -117,9 +107,10 @@ const AML = (props: WithInvityLayoutProps) => {
             <Button
                 type="button"
                 isDisabled={!canSubmitAnswers}
+                isLoading={isSubmitting}
                 onClick={() => handleSubmit(answers)}
             >
-                <Translation id="TR_SAVINGS_AML_SUBMIT_BUTTON" />
+                <Translation id="TR_CONFIRM" />
             </Button>
         </>
     );

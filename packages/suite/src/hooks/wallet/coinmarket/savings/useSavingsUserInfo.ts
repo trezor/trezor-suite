@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import type {
     SavingsUserInfoFormState,
     SavingsUserInfoContextValues,
@@ -60,7 +60,20 @@ export const useSavingsUserInfo = ({
         },
     });
 
-    const { register } = methods;
+    const { register, control, trigger } = methods;
+
+    const { phoneNumberPrefixCountryOption } = useWatch<SavingsUserInfoFormState>({
+        control,
+        defaultValue: {
+            phoneNumberPrefixCountryOption: defaultPhoneNumberPrefixCountryOption,
+        },
+    });
+
+    useEffect(() => {
+        if (phoneNumberPrefixCountryOption) {
+            trigger('phoneNumber');
+        }
+    }, [phoneNumberPrefixCountryOption, trigger]);
 
     const onSubmit = async ({
         familyName,
@@ -77,7 +90,8 @@ export const useSavingsUserInfo = ({
                 familyName,
                 givenName,
                 phoneNumberPrefix,
-                phoneNumber,
+                // trim all white spaces
+                phoneNumber: phoneNumber.replace(/\s+/g, ''),
             });
             if (!response?.error) {
                 const sendVerificationSmsResponse = await invityAPI.sendVerificationSms();
@@ -97,6 +111,6 @@ export const useSavingsUserInfo = ({
         ...methods,
         register: typedRegister,
         onSubmit,
-        phoneNumberPrefixCountryOption: defaultPhoneNumberPrefixCountryOption as Option,
+        phoneNumberPrefixCountryOption: phoneNumberPrefixCountryOption as Option,
     };
 };

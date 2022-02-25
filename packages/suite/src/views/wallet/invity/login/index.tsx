@@ -2,13 +2,13 @@ import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { InvityLayout, withSelectedAccountLoaded } from '@wallet-components';
 import invityAPI from '@suite-services/invityAPI';
-import { InvityLayoutProps } from '@suite/components/wallet/InvityLayout';
+import type { InvityLayoutProps } from '@wallet-components/InvityLayout';
 import { Translation } from '@suite-components';
 import { Loader, Link, LinkProps } from '@trezor/components';
 import { isDesktop } from '@suite-utils/env';
-import { getPrefixedURL, getRoute } from '@suite/utils/suite/router';
-import { SUITE_URL } from '@suite/constants/suite/urls';
-import { useInvityLogin } from '@suite/hooks/wallet/useInvityLogin';
+import { getRoute } from '@suite-utils/router';
+import { SUITE_URL } from '@suite-constants/urls';
+import { useInvityLogin } from '@wallet-hooks/useInvityLogin';
 
 const DefaultIframeHeight = 188;
 

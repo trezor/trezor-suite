@@ -4,10 +4,11 @@ import type { TypedValidationRules } from '@wallet-types/form';
 
 export type UseSavingsPhoneNumberVerificationProps = WithSelectedAccountLoadedProps;
 
-type CodeDigitIndexType = `codeDigitIndex${0 | 1 | 2 | 3 | 4 | 5}`;
+export type CodeDigitIndex = 0 | 1 | 2 | 3 | 4 | 5;
+type CodeDigitIndexInputNameType = `codeDigitIndex${CodeDigitIndex}`;
 
 export type SavingsPhoneNumberVerificationFieldValues = {
-    [key in CodeDigitIndexType]: string;
+    [key in CodeDigitIndexInputNameType]: string;
 };
 
 export type SavingsPhoneNumberVerificationContextValues = Omit<

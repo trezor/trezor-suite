@@ -76,6 +76,7 @@ const PaymentInfo = (props: WithInvityLayoutProps) => {
         handleEditButtonClick,
         handleSubmit,
         copy,
+        isSubmitting,
     } = useSavingsPaymentInfo(props);
 
     return (
@@ -150,7 +151,7 @@ const PaymentInfo = (props: WithInvityLayoutProps) => {
                     </PaymentInfoItem>
                 </div>
             </PaymentInfoOverview>
-            <Button onClick={handleSubmit}>
+            <Button onClick={handleSubmit} isDisabled={isSubmitting} isLoading={isSubmitting}>
                 <Translation id="TR_CONFIRM" />
             </Button>
         </>

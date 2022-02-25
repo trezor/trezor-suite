@@ -1034,9 +1034,9 @@ export default defineMessages({
         defaultMessage: 'Phone number is required.',
         id: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_IS_REQUIRED',
     },
-    TR_SAVINGS_USERINFO_PHONE_NUMBER_MAXLENGTH: {
-        defaultMessage: 'Max total length of phone number is {maxLength}.',
-        id: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_MAXLENGTH',
+    TR_SAVINGS_USERINFO_PHONE_NUMBER_INVALID_FORMAT_ERROR_MESSAGE: {
+        defaultMessage: 'Please enter valid telephone number.',
+        id: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_INVALID_FORMAT_ERROR_MESSAGE',
     },
     TR_SAVINGS_KYC_START_DOCUMENT_TYPE_PASSPORT: {
         defaultMessage: 'Passport',
@@ -1126,10 +1126,6 @@ export default defineMessages({
         defaultMessage: '{index} of {totalCount}',
         id: 'TR_SAVINGS_AML_ONE_OF_MANY',
     },
-    TR_SAVINGS_AML_SUBMIT_BUTTON: {
-        defaultMessage: 'Confirm',
-        id: 'TR_SAVINGS_AML_SUBMIT_BUTTON',
-    },
     TR_SAVINGS_REGISTRATION_SUCCESSFUL_HEADER: {
         defaultMessage: 'Confirm your email',
         id: 'TR_SAVINGS_REGISTRATION_SUCCESSFUL_HEADER',
@@ -1198,10 +1194,6 @@ export default defineMessages({
     TR_SAVINGS_SETUP_CONFIRM_BUTTON: {
         defaultMessage: 'Confirm setup',
         id: 'TR_SAVINGS_SETUP_CONFIRM_BUTTON',
-    },
-    TR_SAVINGS_SETUP_CONTINUOUS_SAVING_NOTE: {
-        defaultMessage: 'Setup saved, continue after KYC.',
-        id: 'TR_SAVINGS_SETUP_CONTINUOUS_SAVING_NOTE',
     },
     TR_SAVINGS_SETUP_KYC_IN_PROGRESS_HEADER: {
         defaultMessage: 'KYC in progress',
@@ -1854,6 +1846,10 @@ export default defineMessages({
     TR_COINS: {
         defaultMessage: 'Crypto',
         id: 'TR_COINS',
+    },
+    TR_CHANGE: {
+        defaultMessage: 'Change',
+        id: 'TR_CHANGE',
     },
     TR_CONFIRM: {
         defaultMessage: 'Confirm',

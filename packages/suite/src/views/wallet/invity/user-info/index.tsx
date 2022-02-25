@@ -5,8 +5,9 @@ import { Translation } from '@suite-components';
 import { Button, Input, Select } from '@trezor/components';
 import { InputError, withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
 import { useSavingsUserInfo } from '@wallet-hooks/coinmarket/savings/useSavingsUserInfo';
-import regional, { PhoneNumberMaxLength } from '@wallet-constants/coinmarket/regional';
-import { PhoneNumberRegularExpression } from '@wallet-utils/coinmarket/coinmarketUtils';
+import regional, {
+    InternationalPhoneNumberRegularExpression,
+} from '@wallet-constants/coinmarket/regional';
 import { getInputState } from '@wallet-views/coinmarket';
 
 const Header = styled.div`
@@ -34,11 +35,11 @@ const UserInfo = (props: WithInvityLayoutProps) => {
         register,
         errors,
         getValues,
-        trigger,
         onSubmit,
         handleSubmit,
         control,
         phoneNumberPrefixCountryOption,
+        formState,
     } = useSavingsUserInfo(props);
     const { familyName, givenName, phoneNumber } = getValues();
 
@@ -47,7 +48,8 @@ const UserInfo = (props: WithInvityLayoutProps) => {
     const phoneNumberPrefixCountryInputName = 'phoneNumberPrefixCountryOption';
     const phoneNumberInputName = 'phoneNumber';
     // TODO: translations
-    const isNextStepButtonDisabled = Object.keys(errors).length > 0;
+    const { isSubmitting } = formState;
+    const canSubmit = Object.keys(errors).length === 0 && !isSubmitting;
     return (
         <>
             <Header>
@@ -61,13 +63,7 @@ const UserInfo = (props: WithInvityLayoutProps) => {
                         maxLength={255}
                         state={getInputState(errors.givenName, givenName)}
                         innerRef={register({
-                            validate: (value: string) => {
-                                if (!value) {
-                                    return (
-                                        <Translation id="TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED" />
-                                    );
-                                }
-                            },
+                            required: 'TR_SAVINGS_USERINFO_GIVEN_NAME_IS_REQUIRED',
                         })}
                         bottomText={<InputError error={errors[givenNameInputName]} />}
                     />
@@ -77,13 +73,7 @@ const UserInfo = (props: WithInvityLayoutProps) => {
                         maxLength={255}
                         state={getInputState(errors.familyName, familyName)}
                         innerRef={register({
-                            validate: (value: string) => {
-                                if (!value) {
-                                    return (
-                                        <Translation id="TR_SAVINGS_USERINFO_FAMILY_NAME_IS_REQUIRED" />
-                                    );
-                                }
-                            },
+                            required: 'TR_SAVINGS_USERINFO_FAMILY_NAME_IS_REQUIRED',
                         })}
                         bottomText={<InputError error={errors[familyNameInputName]} />}
                     />
@@ -93,27 +83,19 @@ const UserInfo = (props: WithInvityLayoutProps) => {
                     label={<Translation id="TR_SAVINGS_USERINFO_PHONE_NUMBER_LABEL" />}
                     name={phoneNumberInputName}
                     innerRef={register({
-                        validate: (value: string) => {
-                            if (!PhoneNumberRegularExpression.test(value)) {
-                                return (
-                                    <Translation id="TR_SAVINGS_USERINFO_PHONE_NUMBER_IS_REQUIRED" />
-                                );
-                            }
-
-                            const { phoneNumberPrefixCountryOption } = getValues();
+                        required: 'TR_SAVINGS_USERINFO_PHONE_NUMBER_IS_REQUIRED',
+                        validate: (phoneNumber: string) => {
                             const phoneNumberPrefix = regional.getPhoneNumberPrefixByCountryCode(
-                                phoneNumberPrefixCountryOption.value,
+                                phoneNumberPrefixCountryOption?.value,
                             );
-                            const totalPhoneNumberLength = `${phoneNumberPrefix}${value}`.length;
-
-                            if (totalPhoneNumberLength > PhoneNumberMaxLength) {
+                            const internationalPhoneNumber = `${phoneNumberPrefix}${phoneNumber}`;
+                            if (
+                                !InternationalPhoneNumberRegularExpression.test(
+                                    internationalPhoneNumber,
+                                )
+                            ) {
                                 return (
-                                    <Translation
-                                        id="TR_SAVINGS_USERINFO_PHONE_NUMBER_MAXLENGTH"
-                                        values={{
-                                            maxLength: PhoneNumberMaxLength,
-                                        }}
-                                    />
+                                    <Translation id="TR_SAVINGS_USERINFO_PHONE_NUMBER_INVALID_FORMAT_ERROR_MESSAGE" />
                                 );
                             }
                         },
@@ -135,18 +117,15 @@ const UserInfo = (props: WithInvityLayoutProps) => {
                                     minWidth="86px"
                                     isClean
                                     hideTextCursor
-                                    onChange={(value: any) => {
-                                        onChange(value);
-                                        if (phoneNumber) {
-                                            trigger(phoneNumberInputName);
-                                        }
-                                    }}
+                                    onChange={onChange}
                                 />
                             )}
                         />
                     }
                 />
-                <Button isDisabled={isNextStepButtonDisabled}>Next step</Button>
+                <Button isDisabled={!canSubmit} isLoading={isSubmitting}>
+                    <Translation id="TR_CONFIRM" />
+                </Button>
             </form>
         </>
     );

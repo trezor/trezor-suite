@@ -21,10 +21,10 @@ export type SavingsSetupContextValues = Omit<UseFormMethods<SavingsSetupFormStat
     annualSavingsCalculationFiat: number;
     annualSavingsCalculationCrypto: string;
     fiatAmount?: string;
+    fiatCurrency?: string;
     isWatchingKYCStatus: boolean;
     canConfirmSetup: boolean;
     account: Account;
     address?: string;
-    wasSetupSaved: boolean;
-    isLoading: boolean;
+    isSubmitting: boolean;
 };

@@ -1,4 +1,4 @@
-import { createContext, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { copyToClipboard } from '@suite-utils/dom';
@@ -10,9 +10,6 @@ import type {
 import useSavingsTrade from './useSavingsTrade';
 import { useActions } from '@suite-hooks';
 import invityAPI, { SavingsPaymentInfo } from '@suite/services/suite/invityAPI';
-
-export const SavingsUserInfoContext = createContext<SavingsPaymentInfoContextValues | null>(null);
-SavingsUserInfoContext.displayName = 'SavingsPaymentInfoContext';
 
 export const useSavingsPaymentInfo = ({
     selectedAccount,
@@ -27,7 +24,9 @@ export const useSavingsPaymentInfo = ({
 
     const { savingsTrade, saveSavingsTradeResponse } = useSavingsTrade();
 
-    const handleSubmit = async () => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const handleSubmit = useCallback(async () => {
+        setIsSubmitting(true);
         if (savingsTrade) {
             const response = await invityAPI.doSavingsTrade({ trade: savingsTrade });
             if (response) {
@@ -35,7 +34,8 @@ export const useSavingsPaymentInfo = ({
                 navigateToSavingsOverview();
             }
         }
-    };
+        setIsSubmitting(false);
+    }, [navigateToSavingsOverview, saveSavingsTradeResponse, savingsTrade]);
 
     const { addNotification } = useActions({ addNotification: notificationActions.addToast });
     const copy = (paymentInfoKey: keyof SavingsPaymentInfo) => {
@@ -55,5 +55,6 @@ export const useSavingsPaymentInfo = ({
         handleEditButtonClick,
         handleSubmit,
         copy,
+        isSubmitting,
     };
 };

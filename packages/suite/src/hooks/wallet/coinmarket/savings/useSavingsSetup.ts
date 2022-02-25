@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
     SavingsSetupFormState,
     SavingsSetupContextValues,
@@ -12,9 +12,6 @@ import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarket
 import useSavingsTrade from './useSavingsTrade';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import useSavingsSetupDefaultValues from './useSavingsSetupDefaultValues';
-
-export const SavingsUserInfoContext = createContext<SavingsSetupContextValues | null>(null);
-SavingsUserInfoContext.displayName = 'SavingsUserInfoContext';
 
 const paymentFrequencyAnnualCoefficient: Record<PaymentFrequency, number> = {
     Weekly: 52,
@@ -48,7 +45,6 @@ export const useSavingsSetup = ({
     const fiatRates = fiat.coins.find(item => item.symbol === 'btc');
     const { navigateToSavingsPaymentInfo } = useCoinmarketNavigation(selectedAccount.account);
     const { savingsTrade, saveSavingsTradeResponse } = useSavingsTrade();
-    const isLoading = !savingsTrade;
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
     const defaultValues = useSavingsSetupDefaultValues(
         savingsTrade,
@@ -62,7 +58,7 @@ export const useSavingsSetup = ({
     });
 
     const { register, control, formState, handleSubmit, setValue } = methods;
-    const { isValid, isDirty } = formState;
+    const { isValid, isDirty, isSubmitting } = formState;
     const { fiatAmount, paymentFrequency, customFiatAmount, address } = useWatch<
         Required<SavingsSetupFormState>
     >({
@@ -97,8 +93,6 @@ export const useSavingsSetup = ({
         }
     }
 
-    const [wasSetupSaved, setWasSetupSaved] = useState(false);
-
     const onSubmit = useCallback(
         async ({
             customFiatAmount,
@@ -120,7 +114,6 @@ export const useSavingsSetup = ({
                 });
                 if (response) {
                     saveSavingsTradeResponse(response);
-                    setWasSetupSaved(true);
                     if (!isWatchingKYCStatus) {
                         navigateToSavingsPaymentInfo();
                     }
@@ -134,10 +127,9 @@ export const useSavingsSetup = ({
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
     const canConfirmSetup =
-        isValid && !isWatchingKYCStatus && savingsTrade?.kycStatus === 'Verified';
+        isValid && !isWatchingKYCStatus && savingsTrade?.kycStatus === 'Verified' && !isSubmitting;
 
     useEffect(() => {
-        setWasSetupSaved(false);
         if (isWatchingKYCStatus && isValid && isDirty) {
             handleSubmit(onSubmit)();
         }
@@ -161,11 +153,11 @@ export const useSavingsSetup = ({
         annualSavingsCalculationFiat,
         annualSavingsCalculationCrypto,
         fiatAmount,
+        fiatCurrency: savingsTrade?.fiatCurrency,
         isWatchingKYCStatus,
         canConfirmSetup,
         account,
         address,
-        wasSetupSaved,
-        isLoading,
+        isSubmitting,
     };
 };

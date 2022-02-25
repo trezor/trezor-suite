@@ -100,8 +100,8 @@ const KYCStart = (props: WithInvityLayoutProps) => {
             item.documentType === selectedDocumentType.value &&
             item.documentImageSides.includes('Back'),
     );
-
-    const canSubmit = formState.isValid && privacyPolicyAgreement;
+    const { isValid, isSubmitting } = formState;
+    const canSubmit = isValid && privacyPolicyAgreement && !isSubmitting;
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -222,7 +222,7 @@ const KYCStart = (props: WithInvityLayoutProps) => {
                     />
                 </Row>
             )}
-            <Button isDisabled={!canSubmit}>
+            <Button isDisabled={!canSubmit} isLoading={isSubmitting}>
                 <Translation id="TR_CONFIRM" />
             </Button>
         </form>

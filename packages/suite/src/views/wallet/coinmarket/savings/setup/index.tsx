@@ -3,8 +3,6 @@ import { InputError, withInvityLayout, WithSelectedAccountLoadedProps } from '@w
 import styled from 'styled-components';
 import KYCInProgress from './components/KYCInProgress';
 import { Button, Input, SelectBar, variables } from '@trezor/components';
-import { ReactSVG } from 'react-svg';
-import { resolveStaticPath } from '@suite-utils/build';
 import { useSavingsSetup } from '@wallet-hooks/coinmarket/savings/useSavingsSetup';
 import { Controller } from 'react-hook-form';
 import { FormattedCryptoAmount, FormattedNumber, Translation } from '@suite-components';
@@ -36,16 +34,13 @@ const StyledSelectBar = styled(SelectBar)`
     }
 `;
 
-const Divider = styled.div`
-    margin: 15px 0;
-    height: 1px;
-    width: 100%;
-    border: 1px solid ${props => props.theme.BG_GREY};
-`;
-
 const Summary = styled.div`
     display: flex;
     justify-content: space-between;
+    border-top: 1px solid ${props => props.theme.BG_GREY};
+    border-bottom: 1px solid ${props => props.theme.BG_GREY};
+    margin: 15px 0;
+    padding: 15px 0;
 `;
 
 const Left = styled.div`
@@ -92,31 +87,18 @@ const Crypto = styled.div`
     display: flex;
 `;
 
-const StyledReactSVG = styled(ReactSVG)`
-    margin: 0 10px;
-`;
-const Footer = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
 const StyledInput = styled(Input)`
     display: flex;
     max-width: 70px;
     width: 70px;
 `;
 
-const SetupSaved = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const getFiatAmountOptions = (amounts: string[]) =>
+const getFiatAmountOptions = (amounts: string[], fiatCurrency?: string) =>
     amounts.map(amount => ({
         label: !Number.isNaN(Number(amount)) ? (
             <FormattedNumber
                 value={amount}
-                currency="eur"
+                currency={fiatCurrency}
                 minimumFractionDigits={0}
                 maximumFractionDigits={0}
             />
@@ -134,6 +116,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         annualSavingsCalculationFiat,
         annualSavingsCalculationCrypto,
         fiatAmount,
+        fiatCurrency,
         register,
         errors,
         isWatchingKYCStatus,
@@ -143,11 +126,10 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         address,
         handleSubmit,
         onSubmit,
-        wasSetupSaved,
-        isLoading,
+        isSubmitting,
     } = useSavingsSetup(props);
 
-    return !isLoading ? (
+    return (
         <form onSubmit={handleSubmit(onSubmit)}>
             {isWatchingKYCStatus && <KYCInProgress />}
             <Header>
@@ -165,6 +147,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         onChange={onChange}
                         selectedOption={value}
                         options={[
+                            // TODO: set from selectedProvider
                             { label: 'Weekly', value: 'Weekly' },
                             { label: 'Biweekly', value: 'Biweekly' },
                             { label: 'Monthly', value: 'Monthly' },
@@ -186,7 +169,10 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                             <StyledSelectBar
                                 onChange={onChange}
                                 selectedOption={value}
-                                options={getFiatAmountOptions(['10', '50', '100', '500', 'Custom'])}
+                                options={getFiatAmountOptions(
+                                    ['10', '50', '100', '500', 'Custom'],
+                                    fiatCurrency,
+                                )} // TODO: set from selectedProvider
                             />
                         )}
                     />
@@ -217,22 +203,16 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     </FiatAmountRightColumn>
                 )}
             </FiatAmount>
-            {!isWatchingKYCStatus && (
-                <>
-                    <Label>
-                        <Translation id="TR_SAVINGS_SETUP_RECEIVING_ADDRESS" />
-                    </Label>
-                    <AddressOptions
-                        account={account}
-                        control={control}
-                        receiveSymbol={account.symbol}
-                        setValue={setValue}
-                        address={address}
-                    />
-                </>
-            )}
-
-            <Divider />
+            <Label>
+                <Translation id="TR_SAVINGS_SETUP_RECEIVING_ADDRESS" />
+            </Label>
+            <AddressOptions
+                account={account}
+                control={control}
+                receiveSymbol={account.symbol}
+                setValue={setValue}
+                address={address}
+            />
             <Summary>
                 <Left>
                     <Translation id="TR_SAVINGS_SETUP_SUMMARY_LABEL" />
@@ -250,23 +230,10 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     </Crypto>
                 </Right>
             </Summary>
-            <Divider />
-            <Footer>
-                <Button isDisabled={!canConfirmSetup}>
-                    <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
-                </Button>
-                {wasSetupSaved && (
-                    <SetupSaved>
-                        <StyledReactSVG src={resolveStaticPath('images/svg/cloud-upload.svg')} />
-                        <Translation id="TR_SAVINGS_SETUP_CONTINUOUS_SAVING_NOTE" />
-                    </SetupSaved>
-                )}
-            </Footer>
+            <Button isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
+                <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
+            </Button>
         </form>
-    ) : (
-        <>
-            <Translation id="TR_LOADING" />
-        </>
     );
 };
 export default withInvityLayout(CoinmarketSavingsSetup, {

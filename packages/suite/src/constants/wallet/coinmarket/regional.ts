@@ -288,5 +288,11 @@ const regional = new Regional();
 
 export default regional;
 
-export const PhoneNumberPrefixSign = '+';
-export const PhoneNumberMaxLength = 20;
+/** Based on international phone numbering plan ITU-T E.164.
+ *
+ *  Facts:
+ *  - Phone numbers cannot contain more than 15 digits.
+ *  - The shortest international phone numbers in use contain 7 digits.
+ *  - Allows single space character between two digits.
+ *  - Phone number cannot end with space character. */
+export const InternationalPhoneNumberRegularExpression = /^\+(?:[0-9]\u0020?){6,14}[0-9]$/;
