@@ -9277,7 +9277,7 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-fetch@^3.0.4, cross-fetch@^3.1.4, cross-fetch@^3.1.5:
+cross-fetch@^3.0.4, cross-fetch@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
   integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
@@ -18744,10 +18744,10 @@ parse-path@^4.0.0:
     qs "^6.9.4"
     query-string "^6.13.8"
 
-parse-uri@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/parse-uri/-/parse-uri-1.0.3.tgz#f3c24a74907a4e357c1741e96ca9faadecfd6db5"
-  integrity sha512-upMnGxNcm+45So85HoguwZTVZI9u11i36DdxJfGF2HYWS2eh3TIx7+/tTi7qrEq15qzGkVhsKjesau+kCk48pA==
+parse-uri@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/parse-uri/-/parse-uri-1.0.5.tgz#41954321ef7a9623182b7c44cc6bba3257b45d4d"
+  integrity sha512-v0TPDnYmnDu1w19tAkX8XI+5zO8qjUH8Htdh0YkZsMSp7iYkNPSgMOih0qRjJNSgvM1GI7arNXwSASGna/jB1w==
 
 parse-url@^6.0.0:
   version "6.0.0"
@@ -23466,23 +23466,23 @@ trezor-address-validator@^0.4.2:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.2.7-beta.4:
-  version "8.2.7-beta.4"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.7-beta.4.tgz#e0ed5943f317596e13cfc2463c833edee1a878be"
-  integrity sha512-owbXtyiXMGM6qAyDmdOqLzOhTdrGmk7dDWIXNLcLtlHPCOOa02DgQ2v6kBcd3VCoZyJ/tf416iifgW8keM2eDw==
+trezor-connect@8.2.8-beta.1:
+  version "8.2.8-beta.1"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.8-beta.1.tgz#3c101e329b0de804b9084bb97e57f29c61f25465"
+  integrity sha512-lk5cTY3fgWiBpEe6T8pZHjxs+IMthTaq2WVtQPTeQZzxPcm9qwJza1ptThgTr3g9GxXlNDIddnIbZaWdXaYbeQ==
   dependencies:
     "@babel/runtime" "^7.15.4"
     "@trezor/blockchain-link" "^2.1.1"
     "@trezor/connect-common" "^0.0.4"
-    "@trezor/rollout" "^1.3.0"
+    "@trezor/rollout" "^1.3.1"
     "@trezor/transport" "^1.1.0"
     "@trezor/utxo-lib" "^1.0.0"
-    bignumber.js "^9.0.1"
+    bignumber.js "^9.0.2"
     bowser "^2.11.0"
     cbor-web "^7.0.6"
-    cross-fetch "^3.1.4"
+    cross-fetch "^3.1.5"
     events "^3.3.0"
-    parse-uri "^1.0.3"
+    parse-uri "^1.0.5"
     randombytes "2.1.0"
 
 trim-newlines@^1.0.0:
