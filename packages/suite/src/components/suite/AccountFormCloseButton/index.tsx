@@ -7,7 +7,12 @@ const AccountFormCloseButton = () => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
-    return <CloseButton onClick={() => goto('wallet-index', { preserveParams: true })} />;
+    return (
+        <CloseButton
+            onClick={() => goto('wallet-index', { preserveParams: true })}
+            data-test="@wallet/menu/close-button"
+        />
+    );
 };
 
 export default AccountFormCloseButton;
