@@ -141,7 +141,11 @@ const ScrollAppWrapper = ({ url, children }: ScrollAppWrapperProps) => {
         if (!current) return;
         current.scrollTop = 0; // reset scroll position on url change
     }, [ref, url]);
-    return <AppWrapper ref={ref}>{children}</AppWrapper>;
+    return (
+        <AppWrapper ref={ref} data-test="@app">
+            {children}
+        </AppWrapper>
+    );
 };
 
 const BodyNormal = ({
