@@ -99,17 +99,17 @@ window.addEventListener('load', () => {
     const supportedBrowsers = [
         {
             name: 'Chrome',
-            version: 69,
+            version: 84,
             mobile: true,
         },
         {
             name: 'Chromium',
-            version: 69,
+            version: 84,
             mobile: true,
         },
         {
             name: 'Firefox',
-            version: 62,
+            version: 78,
             mobile: false, // no webusb support
         },
     ];
