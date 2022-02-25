@@ -188,6 +188,11 @@ const AccountsMenu = () => {
     const legacyAccounts = filteredAccounts.filter(
         a => a.accountType === 'legacy' && (!a.empty || a.visible),
     );
+
+    // cardano ledger accounts
+    const ledgerAccounts = filteredAccounts.filter(
+        a => a.accountType === 'ledger' && (!a.empty || a.visible),
+    );
     // const uniqueNetworks = [...new Set(filteredAccounts.map(item => item.symbol))];
 
     const buildGroup = (type: Account['accountType'], accounts: Account[]) => {
@@ -224,7 +229,10 @@ const AccountsMenu = () => {
     };
 
     const listedAccountsLength =
-        normalAccounts.length + segwitAccounts.length + legacyAccounts.length;
+        normalAccounts.length +
+        segwitAccounts.length +
+        legacyAccounts.length +
+        ledgerAccounts.length;
 
     const accountsComponent =
         listedAccountsLength > 0 || !searchString ? (
@@ -233,6 +241,7 @@ const AccountsMenu = () => {
                 {buildGroup('taproot', taprootAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
+                {buildGroup('ledger', ledgerAccounts)}
             </>
         ) : (
             <NoResults>

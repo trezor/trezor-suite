@@ -9,6 +9,7 @@ import {
     getProtocolMagic,
     getNetworkId,
     getAddressType,
+    getDerivationType,
 } from '@wallet-utils/cardanoUtils';
 
 export type ReceiveAction =
@@ -47,7 +48,6 @@ export const showAddress =
     (path: string, address: string) => async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         const { account } = getState().wallet.selectedAccount;
-        const derivationType = getState().wallet.settings.cardanoDerivationType.value;
         if (!device || !account) return;
 
         const modalPayload = {
@@ -112,7 +112,7 @@ export const showAddress =
                     },
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(account.symbol),
-                    derivationType,
+                    derivationType: getDerivationType(account.accountType),
                 });
                 break;
             case 'ripple':

@@ -2024,6 +2024,10 @@ export default defineMessages({
         defaultMessage: 'Legacy accounts',
         id: 'TR_LEGACY_ACCOUNTS',
     },
+    TR_CARDANO_LEDGER_ACCOUNTS: {
+        defaultMessage: 'Ledger accounts',
+        id: 'TR_CARDANO_LEDGER_ACCOUNTS',
+    },
     TR_LOG: {
         defaultMessage: 'Application log',
         description: 'application event and error',
@@ -6339,14 +6343,6 @@ export default defineMessages({
     TR_STAKE_DEREGISTERED: {
         id: 'TR_STAKE_DEREGISTERED',
         defaultMessage: 'Deregistration of a stake address',
-    },
-    SETTINGS_ADV_CARDANO_DERIVATION_TITLE: {
-        id: 'SETTINGS_ADV_CARDANO_DERIVATION_TITLE',
-        defaultMessage: 'Cardano derivation type',
-    },
-    SETTINGS_ADV_CARDANO_DERIVATION_DESCRIPTION: {
-        id: 'SETTINGS_ADV_CARDANO_DERIVATION_DESCRIPTION',
-        defaultMessage: 'Cardano derivation type description',
     },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',

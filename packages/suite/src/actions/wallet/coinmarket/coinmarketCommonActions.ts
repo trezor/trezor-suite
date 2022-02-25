@@ -12,6 +12,7 @@ import {
     getProtocolMagic,
     getNetworkId,
     getAddressType,
+    getDerivationType,
 } from '@wallet-utils/cardanoUtils';
 
 import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
@@ -76,8 +77,6 @@ export const verifyAddress =
             coin: account.symbol,
         };
 
-        const derivationType = getState().wallet.settings.cardanoDerivationType.value;
-
         // catch button request and open modal
         const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
             if (!event || event.code !== 'ButtonRequest_Address') return;
@@ -107,7 +106,7 @@ export const verifyAddress =
                     },
                     protocolMagic: getProtocolMagic(account.symbol),
                     networkId: getNetworkId(account.symbol),
-                    derivationType,
+                    derivationType: getDerivationType(account.accountType),
                 });
                 break;
             case 'ripple':

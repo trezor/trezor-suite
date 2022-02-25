@@ -17,6 +17,7 @@ import {
     getStakePoolForDelegation,
     getTtl,
     loadCardanoLib,
+    getDerivationType,
 } from '@wallet-utils/cardanoUtils';
 import { getNetwork, isTestnet } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
@@ -62,8 +63,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         throw Error('useCardanoStaking used for other network');
     }
 
-    const { derivationType, device, locks, pendingStakeTxs } = useSelector(state => ({
-        derivationType: state.wallet.settings.cardanoDerivationType,
+    const { device, locks, pendingStakeTxs } = useSelector(state => ({
         device: state.suite.device,
         locks: state.suite.locks,
         pendingStakeTxs: state.wallet.cardanoStaking.pendingTx,
@@ -204,7 +204,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 fee: txPlan.fee,
                 protocolMagic: getProtocolMagic(account.symbol),
                 networkId: getNetworkId(account.symbol),
-                derivationType: derivationType.value,
+                derivationType: getDerivationType(account.accountType),
                 ttl: txPlan.ttl?.toString(),
                 ...(certificates.length > 0 ? { certificates } : {}),
                 ...(withdrawals.length > 0 ? { withdrawals } : {}),
@@ -245,15 +245,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 }
             }
         },
-        [
-            account,
-            addFakePendingTx,
-            addToast,
-            derivationType.value,
-            device,
-            prepareTxPlan,
-            setPendingStakeTx,
-        ],
+        [account, addFakePendingTx, addToast, device, prepareTxPlan, setPendingStakeTx],
     );
 
     const action = useCallback(

@@ -12,7 +12,7 @@ import {
     formatNetworkAmount,
     networkAmountToSatoshi,
 } from '@wallet-utils/accountUtils';
-import { Account } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
 import {
     Output,
     PrecomposedTransactionFinal,
@@ -36,8 +36,20 @@ export const getProtocolMagic = (accountSymbol: Account['symbol']) =>
 export const getNetworkId = (accountSymbol: Account['symbol']) =>
     accountSymbol === 'ada' ? CARDANO.NETWORK_IDS.mainnet : CARDANO.NETWORK_IDS.testnet;
 
-export const getAddressType = (accountType: Account['accountType']) =>
-    accountType === 'normal' ? CardanoAddressType.BASE : CardanoAddressType.BYRON;
+export const getDerivationType = (accountType: Network['accountType']) => {
+    switch (accountType) {
+        case 'normal':
+            return 1;
+        case 'legacy':
+            return 2;
+        case 'ledger':
+            return 0;
+        default:
+            return 1;
+    }
+};
+
+export const getAddressType = (_accountType: Account['accountType']) => CardanoAddressType.BASE;
 
 export const getStakingPath = (account: Account) => `m/1852'/1815'/${account.index}'/2/0`;
 

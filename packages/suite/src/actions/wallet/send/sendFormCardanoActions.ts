@@ -8,6 +8,7 @@ import {
     transformUtxos,
     formatMaxOutputAmount,
     loadCardanoLib,
+    getDerivationType,
 } from '@wallet-utils/cardanoUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import {
@@ -148,9 +149,7 @@ export const signTransaction =
     (_formValues: FormState, transactionInfo: PrecomposedTransactionFinalCardano) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { trezorUtils } = await loadCardanoLib();
-
         const { selectedAccount } = getState().wallet;
-        const cardanoDerivationType = getState().wallet.settings.cardanoDerivationType.value;
         const { device } = getState().suite;
 
         if (
@@ -181,7 +180,7 @@ export const signTransaction =
             networkId: getNetworkId(account.symbol),
             fee: transactionInfo.fee,
             ttl: transactionInfo.ttl?.toString(),
-            derivationType: cardanoDerivationType,
+            derivationType: getDerivationType(account.accountType),
         });
 
         if (!res.success) {

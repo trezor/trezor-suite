@@ -260,7 +260,8 @@ export const getSelectedAccount = (
     );
 };
 
-export const getNetwork = (symbol: string) => NETWORKS.find(c => c.symbol === symbol) || null;
+export const getNetwork = (symbol: string): Network | null =>
+    NETWORKS.find(c => c.symbol === symbol) || null;
 
 export const isNetworkSymbol = (symbol: string): symbol is Network['symbol'] =>
     !!getNetwork(symbol);
