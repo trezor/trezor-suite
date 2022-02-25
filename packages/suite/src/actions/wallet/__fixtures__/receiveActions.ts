@@ -49,10 +49,6 @@ export default [
                     },
                 },
                 settings: {
-                    cardanoDerivationType: {
-                        label: 'Icarus',
-                        value: 1,
-                    },
                     enabledNetworks: ['btc'],
                 },
             },
@@ -81,10 +77,6 @@ export default [
                     },
                 },
                 settings: {
-                    cardanoDerivationType: {
-                        label: 'Icarus',
-                        value: 1,
-                    },
                     enabledNetworks: ['eth'],
                 },
             },
@@ -113,10 +105,6 @@ export default [
                     },
                 },
                 settings: {
-                    cardanoDerivationType: {
-                        label: 'Icarus',
-                        value: 1,
-                    },
                     enabledNetworks: ['xrp'],
                 },
             },
@@ -145,10 +133,6 @@ export default [
                     },
                 },
                 settings: {
-                    cardanoDerivationType: {
-                        label: 'Icarus',
-                        value: 1,
-                    },
                     enabledNetworks: ['xrp'],
                 },
             },
@@ -209,10 +193,6 @@ export default [
                     },
                 },
                 settings: {
-                    cardanoDerivationType: {
-                        label: 'Icarus',
-                        value: 1,
-                    },
                     enabledNetworks: ['btc'],
                 },
             },

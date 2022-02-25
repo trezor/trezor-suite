@@ -7,7 +7,6 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import { init } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
-import { DerivationType } from '@wallet-types/cardano';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import fixtures from '../__fixtures__/receiveActions';
 
@@ -83,7 +82,6 @@ interface InitialState {
         };
         settings: {
             enabledNetworks: string[];
-            cardanoDerivationType: DerivationType;
         };
     };
     modal: ModalState;
@@ -103,10 +101,6 @@ export const getInitialState = (state: Partial<InitialState> | undefined) => ({
             },
         },
         settings: {
-            cardanoDerivationType: {
-                label: 'Icarus',
-                value: 1,
-            },
             enabledNetworks: ['btc'],
         },
     },
@@ -158,10 +152,6 @@ describe('ReceiveActions', () => {
                     },
                 },
                 settings: {
-                    cardanoDerivationType: {
-                        label: 'Icarus',
-                        value: 1,
-                    },
                     enabledNetworks: ['btc'],
                 },
             },

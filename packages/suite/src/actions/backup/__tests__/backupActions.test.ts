@@ -52,10 +52,6 @@ export const getInitialState = (override: any) => {
         devices: [],
         wallet: {
             settings: {
-                cardanoDerivationType: {
-                    label: 'Icarus',
-                    value: 1,
-                },
                 enabledNetworks: ['btc'],
             },
         },

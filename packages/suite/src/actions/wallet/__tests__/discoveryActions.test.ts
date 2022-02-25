@@ -340,10 +340,6 @@ describe('Discovery Actions', () => {
                 accounts: [],
                 discovery: [],
                 settings: {
-                    cardanoDerivationType: {
-                        label: 'Icarus',
-                        value: 1,
-                    },
                     enabledNetworks: ['btc'],
                 },
             },

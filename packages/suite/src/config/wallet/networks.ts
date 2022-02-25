@@ -435,6 +435,7 @@ const networks = [
         },
     },
     {
+        // icarus derivation
         name: 'Cardano',
         networkType: 'cardano',
         symbol: 'ada',
@@ -450,8 +451,44 @@ const networks = [
             2: '2.4.3',
         },
     },
-
     {
+        // icarus-trezor derivation
+        name: 'Cardano',
+        networkType: 'cardano',
+        accountType: 'legacy',
+        symbol: 'ada',
+        bip43Path: "m/1852'/1815'/i'",
+        decimals: 6,
+        testnet: false,
+        explorer: {
+            tx: 'https://explorer.blockfrost.dev/transaction/',
+            account: 'https://explorer.blockfrost.dev/account/',
+            token: 'https://explorer.blockfrost.dev/token/',
+        },
+        support: {
+            2: '2.4.3',
+        },
+    },
+    {
+        // ledger derivation
+        name: 'Cardano',
+        networkType: 'cardano',
+        accountType: 'ledger',
+        symbol: 'ada',
+        bip43Path: "m/1852'/1815'/i'",
+        decimals: 6,
+        testnet: false,
+        explorer: {
+            tx: 'https://explorer.blockfrost.dev/transaction/',
+            account: 'https://explorer.blockfrost.dev/account/',
+            token: 'https://explorer.blockfrost.dev/token/',
+        },
+        support: {
+            2: '2.4.3',
+        },
+    },
+    {
+        // icarus derivation
         name: 'Cardano Testnet',
         networkType: 'cardano',
         symbol: 'tada',
@@ -468,10 +505,48 @@ const networks = [
             2: '2.4.3',
         },
     },
+    {
+        // icarus-trezor derivation
+        name: 'Cardano Testnet',
+        networkType: 'cardano',
+        accountType: 'legacy',
+        symbol: 'tada',
+        bip43Path: "m/1852'/1815'/i'",
+        label: 'TR_TESTNET_COINS_LABEL',
+        decimals: 6,
+        testnet: true,
+        explorer: {
+            tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
+            account: 'https://testnet-explorer.blockfrost.dev/account/',
+            token: 'https://testnet-explorer.blockfrost.dev/token/',
+        },
+        support: {
+            2: '2.4.3',
+        },
+    },
+    {
+        // ledger derivation
+        name: 'Cardano Testnet',
+        networkType: 'cardano',
+        symbol: 'tada',
+        accountType: 'ledger',
+        bip43Path: "m/1852'/1815'/i'",
+        label: 'TR_TESTNET_COINS_LABEL',
+        decimals: 6,
+        testnet: true,
+        explorer: {
+            tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
+            account: 'https://testnet-explorer.blockfrost.dev/account/',
+            token: 'https://testnet-explorer.blockfrost.dev/token/',
+        },
+        support: {
+            2: '2.4.3',
+        },
+    },
 ] as const;
 
 type Network = {
-    accountType?: 'normal' | 'legacy' | 'segwit' | 'taproot';
+    accountType?: 'normal' | 'legacy' | 'segwit' | 'taproot' | 'ledger';
     testnet?: boolean;
     isHidden?: boolean;
     chainId?: number;

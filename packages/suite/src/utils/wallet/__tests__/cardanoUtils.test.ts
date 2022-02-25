@@ -10,7 +10,7 @@ describe('cardano utils', () => {
     expect(cardanoUtils.getNetworkId('tada')).toEqual(CARDANO.NETWORK_IDS.testnet);
 
     expect(cardanoUtils.getAddressType('normal')).toEqual(CARDANO.ADDRESS_TYPE.Base);
-    expect(cardanoUtils.getAddressType('legacy')).toEqual(CARDANO.ADDRESS_TYPE.Byron);
+    expect(cardanoUtils.getAddressType('legacy')).toEqual(CARDANO.ADDRESS_TYPE.Base);
 
     // @ts-ignore
     expect(cardanoUtils.getStakingPath({ index: 1, symbol: 'ada' })).toEqual(

@@ -86,10 +86,6 @@ const getInitialState = (
     },
     wallet: {
         settings: {
-            cardanoDerivationType: {
-                label: 'Icarus',
-                value: 1,
-            },
             enabledNetworks: [],
         },
     },

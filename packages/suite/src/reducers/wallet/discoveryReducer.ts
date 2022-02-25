@@ -26,6 +26,9 @@ export interface Discovery {
     running?: Deferred<void>;
     error?: string;
     errorCode?: string | number;
+    // Array of account types which should be discovered for given device.
+    // It will be set during discovery process if cardano network is enabled.
+    availableCardanoDerivations?: ('normal' | 'legacy' | 'ledger')[];
 }
 
 export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;

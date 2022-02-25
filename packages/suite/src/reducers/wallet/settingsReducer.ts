@@ -4,7 +4,6 @@ import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { Action } from '@suite-types';
 import { Network } from '@wallet-types';
-import { DerivationType } from '@wallet-types/cardano';
 
 export type BackendType = 'blockbook' | 'electrum' | 'ripple' | 'blockfrost';
 
@@ -26,7 +25,6 @@ export interface State {
         [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']
     };
     backends: Partial<Backends>;
-    cardanoDerivationType: DerivationType;
 }
 
 export const initialState: State = {
@@ -35,10 +33,6 @@ export const initialState: State = {
     enabledNetworks: ['btc'],
     lastUsedFeeLevel: {},
     backends: {},
-    cardanoDerivationType: {
-        label: 'Icarus',
-        value: 1,
-    },
 };
 
 const settingsReducer = (state: State = initialState, action: Action): State =>
@@ -79,10 +73,6 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                 }
                 break;
             }
-
-            case WALLET_SETTINGS.SET_CARDANO_DERIVATION_TYPE:
-                draft.cardanoDerivationType = action.payload;
-                break;
 
             case WALLET_SETTINGS.REMOVE_BACKEND:
                 delete draft.backends[action.payload.coin];

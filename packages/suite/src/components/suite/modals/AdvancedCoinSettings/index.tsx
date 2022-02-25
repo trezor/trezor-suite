@@ -5,7 +5,6 @@ import { Modal, Translation } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
 import { Network } from '@suite/types/wallet';
 import { CustomBackends } from './components/CustomBackends';
-import CardanoDerivationSettings from './components/CardanoDerivationSettings';
 
 const Section = styled.div`
     display: flex;
@@ -59,12 +58,6 @@ const AdvancedCoinSettings = ({ coin, onCancel }: Props) => {
                 </Heading>
             }
         >
-            {network.networkType === 'cardano' && (
-                <Section>
-                    <CardanoDerivationSettings />
-                </Section>
-            )}
-
             {/* <AccountUnits /> */}
             <Section>
                 <CustomBackends network={network} onCancel={onCancel} />

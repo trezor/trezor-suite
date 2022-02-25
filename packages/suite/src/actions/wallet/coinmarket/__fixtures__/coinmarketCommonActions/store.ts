@@ -50,12 +50,6 @@ export const DEFAULT_STORE = {
         coinmarket: coinmarketReducer(undefined, { type: 'foo' } as any),
         selectedAccount: selectedAccountReducer(undefined, { type: 'foo' } as any),
         transactions: transactionReducer(undefined, { type: 'foo' } as any),
-        settings: {
-            cardanoDerivationType: {
-                label: 'Icarus',
-                value: 1,
-            },
-        },
     },
     suite: {
         device: undefined,

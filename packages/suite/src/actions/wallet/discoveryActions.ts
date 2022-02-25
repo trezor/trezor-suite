@@ -10,6 +10,7 @@ import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
+import { getDerivationType } from '@wallet-utils/cardanoUtils';
 
 export type DiscoveryAction =
     | { type: typeof DISCOVERY.CREATE; payload: Discovery }
@@ -193,7 +194,6 @@ const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?
 const getBundle =
     (discovery: Discovery, device: TrezorDevice) =>
     (_d: Dispatch, getState: GetState): DiscoveryItem[] => {
-        const cardanoDerivationType = getState().wallet.settings.cardanoDerivationType.value;
         const bundle: DiscoveryItem[] = [];
         // find all accounts
         const accounts = getState().wallet.accounts.filter(
@@ -231,7 +231,14 @@ const getBundle =
                     account.symbol === configNetwork.symbol && account.accountType === accountType,
             );
 
-            if (!hasEmptyAccount && !failed) {
+            // skip legacy/ledger accounts if availableCardanoDerivations doesn't include their respective derivation
+            const skipCardanoDerivation =
+                configNetwork.networkType === 'cardano' &&
+                (configNetwork.accountType === 'ledger' ||
+                    configNetwork.accountType === 'legacy') &&
+                !discovery.availableCardanoDerivations?.includes(configNetwork.accountType);
+
+            if (!hasEmptyAccount && !failed && !skipCardanoDerivation) {
                 const index = prevAccounts[0] ? prevAccounts[0].index + 1 : 0;
                 bundle.push({
                     path: configNetwork.bip43Path.replace('i', index.toString()),
@@ -241,7 +248,7 @@ const getBundle =
                     pageSize: SETTINGS.TXS_PER_PAGE,
                     accountType,
                     networkType: configNetwork.networkType,
-                    derivationType: cardanoDerivationType,
+                    derivationType: getDerivationType(accountType),
                 });
             }
         });
@@ -271,6 +278,83 @@ export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetSta
         );
     });
 };
+
+const getAvailableCardanoDerivations =
+    (deviceState: string, device: TrezorDevice) =>
+    async (dispatch: Dispatch): Promise<('normal' | 'legacy' | 'ledger')[] | undefined> => {
+        // If icarus and icarus-trezor derivations return same pub key
+        // we can skip derivation of the latter as it would discover same accounts.
+        // Ledger derivation will always result in different pub key except in shamir where all derivations are the same
+        const commonParams = {
+            device,
+            keepSession: true,
+            useEmptyPassphrase: device.useEmptyPassphrase,
+            path: "m/1852'/1815'/0'",
+        };
+        const icarusPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
+            ...commonParams,
+            derivationType: getDerivationType('normal'),
+        });
+
+        const icarusTrezorPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
+            ...commonParams,
+            derivationType: getDerivationType('legacy'),
+        });
+
+        const ledgerPubKeyResult = await TrezorConnect.cardanoGetPublicKey({
+            ...commonParams,
+            derivationType: getDerivationType('ledger'),
+        });
+
+        if (
+            !icarusPubKeyResult.success ||
+            !icarusTrezorPubKeyResult.success ||
+            !ledgerPubKeyResult.success
+        ) {
+            let error: string | undefined;
+            let code: string | undefined;
+
+            // extract error from first failed cardanoGetPublicKey request
+            const derivationFail = [
+                icarusPubKeyResult,
+                icarusTrezorPubKeyResult,
+                ledgerPubKeyResult,
+            ].find(r => !r.success);
+            if (derivationFail && !derivationFail.success) {
+                error = derivationFail.payload.error;
+                code = derivationFail.payload.code;
+            }
+
+            dispatch(
+                update(
+                    {
+                        deviceState,
+                        status: DISCOVERY.STATUS.STOPPED,
+                        error,
+                        errorCode: code,
+                    },
+                    DISCOVERY.STOP,
+                ),
+            );
+            return;
+        }
+
+        const icarusPubKey = icarusPubKeyResult.payload.publicKey;
+        const icarusTrezorPubKey = icarusTrezorPubKeyResult.payload.publicKey;
+        const ledgerPubKey = ledgerPubKeyResult.payload.publicKey;
+
+        if (icarusPubKey === icarusTrezorPubKey && icarusPubKey === ledgerPubKey) {
+            // all pub keys are the same
+            return ['normal'];
+        }
+        if (icarusPubKey === icarusTrezorPubKey) {
+            // ledger pub key is different
+            return ['normal', 'ledger'];
+        }
+
+        // each pub key is different
+        return ['normal', 'legacy', 'ledger'];
+    };
 
 export const create =
     (deviceState: string, device: TrezorDevice) => (dispatch: Dispatch, getState: GetState) => {
@@ -321,6 +405,7 @@ export const start =
             dispatch(addToast({ type: 'discovery-error', error: 'Discovery not found' }));
             return;
         }
+
         const { deviceState, authConfirm } = discovery;
         const metadataEnabled = metadata.enabled && device.metadata.status === 'disabled';
 
@@ -345,8 +430,33 @@ export const start =
             });
         }
 
+        let { availableCardanoDerivations } = discovery;
+        // This will run only during first discovery (on per device basis).
+        // List of available derivations will be
+        // stored inside `availableCardanoDerivations` after first run
+        if (
+            discovery.networks.find(n => n === 'ada' || n === 'tada') &&
+            availableCardanoDerivations === undefined
+        ) {
+            // check if discovery of legacy (icarus-trezor) or ledger accounts is needed and update discovery accordingly
+            availableCardanoDerivations = await dispatch(
+                getAvailableCardanoDerivations(deviceState, device),
+            );
+            if (!availableCardanoDerivations) {
+                // Edge case where getAvailableCardanoDerivations dispatches error, stops discovery and returns undefined.
+                return;
+            }
+            dispatch({
+                type: DISCOVERY.UPDATE,
+                payload: {
+                    ...discovery,
+                    availableCardanoDerivations,
+                },
+            });
+        }
+
         // prepare bundle of accounts to discover, exclude unsupported account types
-        const bundle = dispatch(getBundle(discovery, device));
+        const bundle = dispatch(getBundle({ ...discovery, availableCardanoDerivations }, device));
 
         // discovery process complete
         if (bundle.length === 0) {
