@@ -1,8 +1,8 @@
 {
-    "extends": "../../tsconfig.lib.json",
     "compileOnSave": false,
     "compilerOptions": {
         "module": "commonjs",
+        "target": "es6",
         "strict": false,
         "strictFunctionTypes": true,
         "declaration": false,
