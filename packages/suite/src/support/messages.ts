@@ -5475,7 +5475,7 @@ export default defineMessages({
     },
     TR_SUITE_WEB_LANDING_START_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_START_HEADLINE',
-        defaultMessage: 'Congratulations on getting{lineBreak}<em>new Trezor</em>',
+        defaultMessage: 'Congratulations on getting{lineBreak}<em>your new Trezor</em>',
     },
     TR_SUITE_WEB_LANDING_START_SUB_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_START_SUB_HEADLINE',
