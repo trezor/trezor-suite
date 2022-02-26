@@ -11,31 +11,21 @@ const Navigation = () => {
         { route: 'wallet-coinmarket-spend', title: 'TR_NAV_SPEND' },
     ] as const;
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const routeName = useSelector(state => state.router.route?.name);
     const { goto } = useActions({
         goto: routerActions.goto,
     });
 
-    const isRouteVisibleInCardano = (i: { route: string; title: string }) =>
-        !(i.route === 'wallet-coinmarket-sell' || i.route === 'wallet-coinmarket-exchange');
-
     return (
         <WalletLayoutNavigation>
-            {items
-                .filter(i =>
-                    selectedAccount.account?.networkType === 'cardano'
-                        ? isRouteVisibleInCardano(i)
-                        : true,
-                )
-                .map(({ route, title }) => (
-                    <WalletLayoutNavLink
-                        key={route}
-                        title={title}
-                        active={routeName === route}
-                        onClick={() => goto(route, { preserveParams: true })}
-                    />
-                ))}
+            {items.map(({ route, title }) => (
+                <WalletLayoutNavLink
+                    key={route}
+                    title={title}
+                    active={routeName === route}
+                    onClick={() => goto(route, { preserveParams: true })}
+                />
+            ))}
         </WalletLayoutNavigation>
     );
 };
