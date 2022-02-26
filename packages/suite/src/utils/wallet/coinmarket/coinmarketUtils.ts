@@ -114,7 +114,7 @@ export const getComposeAddressPlaceholder = async (
     switch (networkType) {
         case 'bitcoin': {
             // use legacy (the most expensive) address for fee calculation
-            // as we do not know what address type the sell will use
+            // as we do not know what address type the exchange will use
             const legacy =
                 NETWORKS.find(
                     network =>
@@ -147,6 +147,10 @@ export const getComposeAddressPlaceholder = async (
             // as a fallback, use the change address of current account
             return account.addresses?.change[0].address;
         }
+        case 'cardano':
+            // it is not possible to use change address of the current account as the placeholder, some exchanges use Byron addresses
+            // which need more fees than Shelley addresses used in the Suite, using dummy Byron address for the placeholder
+            return '37btjrVyb4KDXBNC4haBVPCrro8AQPHwvCMp3RFhhSVWwfFmZ6wwzSK6JK1hY6wHNmtrpTf1kdbva8TCneM2YsiXT7mrzT21EacHnPpz5YyUdj64na';
         case 'ethereum':
         case 'ripple':
             return account.descriptor;
