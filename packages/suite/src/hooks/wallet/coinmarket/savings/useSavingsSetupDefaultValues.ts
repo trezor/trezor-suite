@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 
 const useSavingsSetupDefaultValues = (
     savingsTrade: SavingsTrade | undefined,
-    isWatchingKYCStatus: boolean,
     unusedAddress: string | undefined,
 ) => {
     // TODO: defaultValues hardcoded?
@@ -19,12 +18,10 @@ const useSavingsSetupDefaultValues = (
                       fiatAmount: savingsTrade.fiatStringAmount || defaultFiatAmount,
                       paymentFrequency: savingsTrade.paymentFrequency || defaultPaymentFrequency,
                       customFiatAmount: savingsTrade.fiatStringAmount || defaultFiatAmount,
-                      address: isWatchingKYCStatus
-                          ? undefined
-                          : savingsTrade.receivingCryptoAddresses?.[0] || unusedAddress,
+                      address: savingsTrade.receivingCryptoAddresses?.[0] || unusedAddress,
                   }
                 : undefined,
-        [isWatchingKYCStatus, savingsTrade, unusedAddress],
+        [savingsTrade, unusedAddress],
     );
 
     return defaultValues;

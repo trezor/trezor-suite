@@ -45,7 +45,7 @@ export const withCoinmarketSavingsLoaded = (
         }, [loadSavingsTrade, selectedProvider]);
 
         return (
-            <CoinmarketLayout>
+            <CoinmarketLayout selectedAccount={selectedAccount}>
                 <WrappedComponent selectedAccount={selectedAccount} />
             </CoinmarketLayout>
         );

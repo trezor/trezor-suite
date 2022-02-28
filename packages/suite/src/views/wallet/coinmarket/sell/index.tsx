@@ -16,6 +16,7 @@ const CoinmarketSell = (props: WithSelectedAccountLoadedProps) => {
     } = coinmarketSellContextValues;
     return (
         <CoinmarketLayout
+            selectedAccount={props.selectedAccount}
             onClearFormButtonClick={isDirty || isDraft ? handleClearFormButtonClick : undefined}
         >
             <SellFormContext.Provider value={coinmarketSellContextValues}>

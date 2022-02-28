@@ -10,7 +10,6 @@ import type { ExtendedMessageDescriptor } from '@suite/types/suite';
 const InvityPrimaryColor = 'rgb(0, 191, 217)';
 const InvityPrimaryBackbgroundColor = 'rgba(0, 191, 217, 0.05)';
 
-// TODO: The button is not properly designed. Need to wait until designer designs the button by design manual correctly.
 const StyledButton = styled(Button)`
     cursor: pointer;
     font-size: ${variables.FONT_SIZE.SMALL};

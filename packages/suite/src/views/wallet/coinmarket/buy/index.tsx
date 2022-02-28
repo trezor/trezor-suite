@@ -7,8 +7,8 @@ import {
 } from '@wallet-components';
 import BuyForm from './components/BuyForm';
 
-const CoinmarketBuy = ({ selectedAccount }: WithSelectedAccountLoadedProps) => {
-    const coinmarketBuyContextValues = useCoinmarketBuyForm({ selectedAccount });
+const CoinmarketBuy = (props: WithSelectedAccountLoadedProps) => {
+    const coinmarketBuyContextValues = useCoinmarketBuyForm(props);
     const {
         isDraft,
         formState: { isDirty },
@@ -16,6 +16,7 @@ const CoinmarketBuy = ({ selectedAccount }: WithSelectedAccountLoadedProps) => {
     } = coinmarketBuyContextValues;
     return (
         <CoinmarketLayout
+            selectedAccount={props.selectedAccount}
             onClearFormButtonClick={isDirty || isDraft ? handleClearFormButtonClick : undefined}
         >
             <BuyFormContext.Provider value={coinmarketBuyContextValues}>

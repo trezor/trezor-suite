@@ -11,7 +11,7 @@ const CoinmarketSpend = (props: WithSelectedAccountLoadedProps) => {
     const coinmarketSpendContextValues = useCoinmarketSpend(props);
 
     return (
-        <CoinmarketLayout>
+        <CoinmarketLayout selectedAccount={props.selectedAccount}>
             <SpendContext.Provider value={coinmarketSpendContextValues}>
                 <Spend />
             </SpendContext.Provider>

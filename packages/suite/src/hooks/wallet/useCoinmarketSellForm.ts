@@ -8,7 +8,6 @@ import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-// TODO: constants in types? clean it
 import {
     SellFormState,
     UseCoinmarketSellFormProps,

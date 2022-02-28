@@ -17,7 +17,6 @@ import type {
 import type { Option } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 
-// TODO: clean up these constants
 export const CRYPTO_INPUT = 'outputs[0].amount';
 export const CRYPTO_TOKEN = 'outputs[0].token';
 export const FIAT_INPUT = 'outputs[0].fiat';

@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useActions, useSelector } from '@suite-hooks';
 import { useEffectOnce } from 'react-use';
-import { AccountSettings } from '@wallet-types/invity';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import type { AppState } from '@suite-types';
-import invityAPI from '@suite/services/suite/invityAPI';
-// TODO: move interfaces/types to types folder
-
-export interface AccountInfo {
-    id: string;
-    settings: AccountSettings;
-}
+import invityAPI from '@suite-services/invityAPI';
 
 export interface InvityAuthenticationContextProps {
     iframeMessage?: IframeMessage;

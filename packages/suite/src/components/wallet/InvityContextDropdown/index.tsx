@@ -37,79 +37,65 @@ const InvityContextDropdown = () => {
     const handleToggleChange = useCallback((isToggled: boolean) => {
         setOpen(isToggled);
     }, []);
-    const isAuthenticated = !!invityAuthentication?.verified;
 
-    // Will be used later (after DCA for Invity features)
-    // const { navigateToInvityLogin } = useInvityNavigation(selectedAccount.account);
-    // const handleUnauthenticatedUserButtonClick = useCallback(() => {
-    //     navigateToInvityLogin();
-    // }, [navigateToInvityLogin]);
+    if (!invityAuthentication?.verified) {
+        return <></>;
+    }
 
     return (
         <Wrapper>
-            {isAuthenticated ? (
-                <Dropdown
-                    ref={dropdownRef}
-                    onToggle={() => handleToggleChange(!open)}
-                    alignMenu="right"
-                    horizontalPadding={6}
-                    topPadding={0}
-                    minWidth={230}
-                    items={[
-                        {
-                            key: 'signed-as',
-                            label: <Translation id="TR_INVITY_SIGNIN_DROPDOWN_MENU_LABEL" />,
-                            options: [
-                                {
-                                    key: '1',
-                                    label: invityAuthentication?.email,
-                                    callback: () => false,
-                                    isRounded: true,
-                                    noHover: true,
+            <Dropdown
+                ref={dropdownRef}
+                onToggle={() => handleToggleChange(!open)}
+                alignMenu="right"
+                horizontalPadding={6}
+                topPadding={0}
+                minWidth={230}
+                items={[
+                    {
+                        key: 'signed-as',
+                        label: <Translation id="TR_INVITY_SIGNIN_DROPDOWN_MENU_LABEL" />,
+                        options: [
+                            {
+                                key: '1',
+                                label: invityAuthentication?.email,
+                                callback: () => false,
+                                isRounded: true,
+                                noHover: true,
+                            },
+                            {
+                                key: '2',
+                                label: <Translation id="TR_INVITY_SIGNIN_DROPDOWN_MENU_SIGNOUT" />,
+                                callback: async () => {
+                                    const logoutUrl = await invityAPI.logout();
+                                    setLogoutUrl(logoutUrl);
+                                    stopWatchingKYCStatus(undefined);
                                 },
-                                {
-                                    key: '2',
-                                    label: (
-                                        <Translation id="TR_INVITY_SIGNIN_DROPDOWN_MENU_SIGNOUT" />
-                                    ),
-                                    callback: async () => {
-                                        const logoutUrl = await invityAPI.logout();
-                                        setLogoutUrl(logoutUrl);
-                                        stopWatchingKYCStatus(undefined);
-                                    },
-                                    isRounded: true,
-                                },
-                            ],
-                        },
-                        {
-                            key: 'note',
-                            options: [
-                                {
-                                    key: '3',
-                                    label: (
-                                        <Note>
-                                            <Translation id="TR_INVITY_SIGNIN_DROPDOWN_MENU_NOTE" />
-                                        </Note>
-                                    ),
-                                    callback: () => false,
-                                    isRounded: true,
-                                    noHover: true,
-                                    separatorBefore: true,
-                                },
-                            ],
-                        },
-                    ]}
-                >
-                    <InvityContextDropdownButton labelTranslationId="TR_INVITY_SIGNIN_BUTTON_AUTHENTICATED" />
-                </Dropdown>
-            ) : (
-                <></>
-                // Will be used later (after DCA for Invity features)
-                // <InvityContextDropdownButton
-                //     labelTranslationId="TR_INVITY_SIGNIN_BUTTON"
-                //     onClick={() => handleUnauthenticatedUserButtonClick()}
-                // />
-            )}
+                                isRounded: true,
+                            },
+                        ],
+                    },
+                    {
+                        key: 'note',
+                        options: [
+                            {
+                                key: '3',
+                                label: (
+                                    <Note>
+                                        <Translation id="TR_INVITY_SIGNIN_DROPDOWN_MENU_NOTE" />
+                                    </Note>
+                                ),
+                                callback: () => false,
+                                isRounded: true,
+                                noHover: true,
+                                separatorBefore: true,
+                            },
+                        ],
+                    },
+                ]}
+            >
+                <InvityContextDropdownButton labelTranslationId="TR_INVITY_SIGNIN_BUTTON_AUTHENTICATED" />
+            </Dropdown>
             {logoutUrl && (
                 <InvisibleIframe
                     title="logout"

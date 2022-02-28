@@ -46,19 +46,15 @@ export const useSavingsSetup = ({
     const { navigateToSavingsPaymentInfo } = useCoinmarketNavigation(selectedAccount.account);
     const { savingsTrade, saveSavingsTradeResponse } = useSavingsTrade();
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
-    const defaultValues = useSavingsSetupDefaultValues(
-        savingsTrade,
-        isWatchingKYCStatus,
-        unusedAddress,
-    );
+    const defaultValues = useSavingsSetupDefaultValues(savingsTrade, unusedAddress);
 
     const methods = useForm<SavingsSetupFormState>({
         mode: 'onChange',
         defaultValues,
     });
 
-    const { register, control, formState, handleSubmit, setValue } = methods;
-    const { isValid, isDirty, isSubmitting } = formState;
+    const { register, control, formState, setValue } = methods;
+    const { isValid, isSubmitting } = formState;
     const { fiatAmount, paymentFrequency, customFiatAmount, address } = useWatch<
         Required<SavingsSetupFormState>
     >({
@@ -114,35 +110,17 @@ export const useSavingsSetup = ({
                 });
                 if (response) {
                     saveSavingsTradeResponse(response);
-                    if (!isWatchingKYCStatus) {
-                        navigateToSavingsPaymentInfo();
-                    }
+                    navigateToSavingsPaymentInfo();
                 }
             }
         },
-        [isWatchingKYCStatus, navigateToSavingsPaymentInfo, saveSavingsTradeResponse, savingsTrade],
+        [navigateToSavingsPaymentInfo, saveSavingsTradeResponse, savingsTrade],
     );
 
     // TODO: extract
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
-    const canConfirmSetup =
-        isValid && !isWatchingKYCStatus && savingsTrade?.kycStatus === 'Verified' && !isSubmitting;
-
-    useEffect(() => {
-        if (isWatchingKYCStatus && isValid && isDirty) {
-            handleSubmit(onSubmit)();
-        }
-    }, [
-        fiatAmount,
-        paymentFrequency,
-        customFiatAmount,
-        onSubmit,
-        isWatchingKYCStatus,
-        isValid,
-        handleSubmit,
-        isDirty,
-    ]);
+    const canConfirmSetup = isValid && !isSubmitting;
 
     return {
         ...methods,

@@ -8,7 +8,6 @@ import { toFiatCurrency, fromFiatCurrency } from '@wallet-utils/fiatConverterUti
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-// TODO: constants in types? clean it
 import {
     ExchangeFormState,
     AmountLimits,
