@@ -170,14 +170,15 @@ const filterUnavailableNetworks = (enabledNetworks: Account['symbol'][], device?
         const isSupportedInSuite =
             !n.support || // support is not defined => is supported
             !device?.features || // typescript. device undefined. => supported
-            versionUtils.isNewerOrEqual(
-                [
-                    device.features.major_version,
-                    device.features.minor_version,
-                    device.features.patch_version,
-                ],
-                n.support[device.features.major_version],
-            ); // device version is newer or equal to support field in networks => supported
+            (n.support[device.features.major_version] && // support is defined for current device
+                versionUtils.isNewerOrEqual(
+                    [
+                        device.features.major_version,
+                        device.features.minor_version,
+                        device.features.patch_version,
+                    ],
+                    n.support[device.features.major_version],
+                )); // device version is newer or equal to support field in networks => supported
 
         return (
             enabledNetworks.includes(n.symbol) &&
@@ -250,6 +251,7 @@ export const updateNetworkSettings = () => (dispatch: Dispatch, getState: GetSta
     discovery.forEach(d => {
         const device = getState().devices.find(dev => dev.state === d.deviceState);
         const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
+
         const progress = dispatch(
             calculateProgress({
                 ...d,
