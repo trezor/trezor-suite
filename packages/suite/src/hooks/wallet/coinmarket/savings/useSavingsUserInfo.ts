@@ -60,8 +60,8 @@ export const useSavingsUserInfo = ({
         },
     });
 
-    const { register, control, trigger } = methods;
-
+    const { register, control, trigger, formState } = methods;
+    const { isDirty } = formState;
     const { phoneNumberPrefixCountryOption } = useWatch<SavingsUserInfoFormState>({
         control,
         defaultValue: {
@@ -70,10 +70,10 @@ export const useSavingsUserInfo = ({
     });
 
     useEffect(() => {
-        if (phoneNumberPrefixCountryOption) {
+        if (phoneNumberPrefixCountryOption && isDirty) {
             trigger('phoneNumber');
         }
-    }, [phoneNumberPrefixCountryOption, trigger]);
+    }, [phoneNumberPrefixCountryOption, trigger, isDirty]);
 
     const onSubmit = async ({
         familyName,
