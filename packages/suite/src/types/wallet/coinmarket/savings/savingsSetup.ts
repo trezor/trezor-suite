@@ -3,6 +3,7 @@ import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 import type { TypedValidationRules } from '@wallet-types/form';
 import type { UseFormMethods } from 'react-hook-form';
 import type { Account } from '@wallet-types';
+import type { Option } from '@wallet-types/coinmarketCommonTypes';
 
 export type UseSavingsSetupProps = WithSelectedAccountLoadedProps;
 
@@ -27,4 +28,6 @@ export type SavingsSetupContextValues = Omit<UseFormMethods<SavingsSetupFormStat
     account: Account;
     address?: string;
     isSubmitting: boolean;
+    paymentFrequencyOptions: Option[];
+    paymentAmounts: string[];
 };

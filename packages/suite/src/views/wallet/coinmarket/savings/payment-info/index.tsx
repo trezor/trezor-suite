@@ -95,7 +95,7 @@ const PaymentInfo = (props: WithInvityLayoutProps) => {
                         value={fiatAmount || 0}
                         currency={fiatCurrency}
                         minimumFractionDigits={0}
-                        maximumFractionDigits={0}
+                        maximumFractionDigits={2}
                     />
                 </Values>
                 <Button variant="tertiary" onClick={handleEditButtonClick}>

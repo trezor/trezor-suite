@@ -160,6 +160,12 @@ export interface SavingsProviderInfo {
 
     /** Defines a savings flow. Different providers might have different steps in the savings flow. */
     flow: SavingsProviderFlow;
+
+    /** List of payment frequencies selectable by user during savings setup. */
+    setupPaymentFrequencies: PaymentFrequency[];
+
+    /** List of payment amounts selectable by user during savings setup. */
+    setupPaymentAmounts: string[];
 }
 
 export interface SavingsProviderInfoIdentityDocument {

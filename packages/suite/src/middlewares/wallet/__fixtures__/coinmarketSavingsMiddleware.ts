@@ -46,6 +46,8 @@ export const SELECTED_PROVIDER: SavingsProviderInfo = {
     supportedCountries: [],
     identityDocuments: [],
     privacyPolicyUrl: '',
+    setupPaymentAmounts: [],
+    setupPaymentFrequencies: [],
     flow: {
         afterLogin: {
             isEnabled: false,

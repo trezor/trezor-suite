@@ -127,6 +127,8 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         handleSubmit,
         onSubmit,
         isSubmitting,
+        paymentAmounts,
+        paymentFrequencyOptions,
     } = useSavingsSetup(props);
 
     return (
@@ -146,13 +148,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     <StyledSelectBar
                         onChange={onChange}
                         selectedOption={value}
-                        options={[
-                            // TODO: set from selectedProvider
-                            { label: 'Weekly', value: 'Weekly' },
-                            { label: 'Biweekly', value: 'Biweekly' },
-                            { label: 'Monthly', value: 'Monthly' },
-                            { label: 'Quarterly', value: 'Quarterly' },
-                        ]}
+                        options={paymentFrequencyOptions}
                     />
                 )}
             />
@@ -169,10 +165,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                             <StyledSelectBar
                                 onChange={onChange}
                                 selectedOption={value}
-                                options={getFiatAmountOptions(
-                                    ['10', '50', '100', '500', 'Custom'],
-                                    fiatCurrency,
-                                )} // TODO: set from selectedProvider
+                                options={getFiatAmountOptions(paymentAmounts, fiatCurrency)}
                             />
                         )}
                     />

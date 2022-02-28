@@ -12,6 +12,8 @@ import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarket
 import useSavingsTrade from './useSavingsTrade';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import useSavingsSetupDefaultValues from './useSavingsSetupDefaultValues';
+import type { Option } from '@wallet-types/coinmarketCommonTypes';
+import { CustomPaymentAmountKey } from '@wallet-constants/coinmarket/savings';
 
 const paymentFrequencyAnnualCoefficient: Record<PaymentFrequency, number> = {
     Weekly: 52,
@@ -25,7 +27,7 @@ const getFiatAmountEffective = (
     customFiatAmount: string | undefined,
 ) => {
     let fiatAmountEffective = fiatAmount;
-    if (fiatAmount === 'Custom') {
+    if (fiatAmount === CustomPaymentAmountKey) {
         fiatAmountEffective = customFiatAmount;
         if (!customFiatAmount || Number.isNaN(Number(customFiatAmount))) {
             fiatAmountEffective = '0';
@@ -38,15 +40,32 @@ export const useSavingsSetup = ({
     selectedAccount,
 }: UseSavingsSetupProps): SavingsSetupContextValues => {
     const { account } = selectedAccount;
-    const { fiat, isWatchingKYCStatus } = useSelector(state => ({
+    const { fiat, isWatchingKYCStatus, selectedProvider } = useSelector(state => ({
         fiat: state.wallet.fiat,
         isWatchingKYCStatus: state.wallet.coinmarket.savings.isWatchingKYCStatus,
+        selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
     }));
     const fiatRates = fiat.coins.find(item => item.symbol === 'btc');
     const { navigateToSavingsPaymentInfo } = useCoinmarketNavigation(selectedAccount.account);
     const { savingsTrade, saveSavingsTradeResponse } = useSavingsTrade();
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
-    const defaultValues = useSavingsSetupDefaultValues(savingsTrade, unusedAddress);
+    const defaultValues = useSavingsSetupDefaultValues(
+        savingsTrade,
+        unusedAddress,
+        selectedProvider,
+    );
+
+    const paymentFrequencyOptions =
+        selectedProvider?.setupPaymentFrequencies.map(
+            paymentFrequency =>
+                ({
+                    label: paymentFrequency,
+                    value: paymentFrequency,
+                } as Option),
+        ) ?? [];
+
+    const paymentAmounts =
+        selectedProvider?.setupPaymentAmounts.concat(CustomPaymentAmountKey) ?? [];
 
     const methods = useForm<SavingsSetupFormState>({
         mode: 'onChange',
@@ -120,7 +139,13 @@ export const useSavingsSetup = ({
     // TODO: extract
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
-    const canConfirmSetup = isValid && !isSubmitting;
+    const canConfirmSetup =
+        !!paymentFrequency &&
+        !!fiatAmount &&
+        (fiatAmount !== CustomPaymentAmountKey || !!customFiatAmount) &&
+        !!address &&
+        isValid &&
+        !isSubmitting;
 
     return {
         ...methods,
@@ -137,5 +162,7 @@ export const useSavingsSetup = ({
         account,
         address,
         isSubmitting,
+        paymentFrequencyOptions,
+        paymentAmounts,
     };
 };
