@@ -1,10 +1,13 @@
 # Storage changelog
 
+## 26
+
+-   added VTC bech32 accounts
+
 ## 25
 
 -   added walletSettings.backends
 -   removed walletSettings.blockbookUrls
--   added VTC bech32 accounts
 
 ## 24
 

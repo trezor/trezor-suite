@@ -242,7 +242,6 @@ const networks = [
         networkType: 'bitcoin',
         symbol: 'vtc',
         bip43Path: "m/84'/28'/i'",
-        hasSignVerify: true,
         decimals: 8,
         explorer: {
             tx: 'https://vtc1.trezor.io/tx/',
