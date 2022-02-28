@@ -4,7 +4,7 @@ import { Control, Controller, FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { colors, variables, Icon } from '@trezor/components';
-import { resolveStaticPath } from '@suite/utils/suite/build';
+import { resolveStaticPath } from '@suite-utils/build';
 
 interface DropzoneProps {
     isError: boolean;
@@ -131,9 +131,7 @@ const KYCImageDropzone = ({
                                         id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION"
                                         values={{
                                             selectFromFiles: (
-                                                <SelectFromFilesWrapper
-                                                    onClick={dropzoneState.open}
-                                                >
+                                                <SelectFromFilesWrapper>
                                                     <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_DESCRIPTION_SELECT_FROM_FILES" />
                                                 </SelectFromFilesWrapper>
                                             ),
@@ -146,7 +144,7 @@ const KYCImageDropzone = ({
                                     <Icon icon="CHECK" color={colors.TYPE_GREEN} />
                                     <AcceptedFile>{acceptedFile.name}</AcceptedFile>
                                     &nbsp;
-                                    <SelectFromFilesWrapper onClick={dropzoneState.open}>
+                                    <SelectFromFilesWrapper>
                                         <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD" />
                                     </SelectFromFilesWrapper>
                                 </>
@@ -157,7 +155,7 @@ const KYCImageDropzone = ({
                                         <Icon icon="CROSS" color={colors.TYPE_RED} />
                                         <RejectedFile>{rejectedFile.file.name}</RejectedFile>
                                         &nbsp;
-                                        <SelectFromFilesWrapper onClick={dropzoneState.open}>
+                                        <SelectFromFilesWrapper>
                                             <Translation id="TR_SAVINGS_KYC_START_IMAGE_DROPZONE_REUPLOAD" />
                                         </SelectFromFilesWrapper>
                                     </CenteredRow>

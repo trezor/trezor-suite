@@ -42,7 +42,7 @@ export const useSavingsKYCStart = ({
         mode: 'onChange',
         defaultValues,
     });
-    const { register, setValue } = methods;
+    const { register, setValue, setError } = methods;
 
     const { getDraft } = useFormDraft<SavingsUnsupportedCountryFormState>(
         'coinmarket-savings-unsupported-country',
@@ -98,7 +98,11 @@ export const useSavingsKYCStart = ({
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
     const onDrop = useCallback(
-        (acceptedFiles: File[], _: FileRejection[], event: DropEvent) => {
+        (acceptedFiles: File[], rejectedFiles: FileRejection[], event: DropEvent) => {
+            if (rejectedFiles.length > 0) {
+                setError((event.target as HTMLInputElement).name, { types: {} });
+                return;
+            }
             const file = acceptedFiles[0];
             const reader = new FileReader();
             const input = event.target as HTMLInputElement;
@@ -110,7 +114,7 @@ export const useSavingsKYCStart = ({
             };
             reader.readAsDataURL(file);
         },
-        [setValue],
+        [setValue, setError],
     );
 
     const dropzoneOptions = {
