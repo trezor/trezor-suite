@@ -237,7 +237,8 @@ export default defineMessages({
     },
     TR_EXCHANGE_FEES_INFO: {
         id: 'TR_EXCHANGE_FEES_INFO',
-        defaultMessage: 'See info about fees in each DEX offer.',
+        defaultMessage:
+            'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
     },
     TR_EXCHANGE_DEX_FEES_INFO: {
         id: 'TR_EXCHANGE_DEX_FEES_INFO',
@@ -1649,7 +1650,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1: {
         defaultMessage:
-            'Supports PNG or JPG 128 x 64 pixels, and using only black and white (not grayscale).',
+            'Supports PNG or JPG, 128 x 64 pixels, and using only black and white (not grayscale).',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR: {
@@ -3336,7 +3337,7 @@ export default defineMessages({
     },
     TR_DRY_RUN_CHECK_ITEM_TITLE: {
         id: 'TR_DRY_RUN_CHECK_ITEM_TITLE',
-        defaultMessage: 'I understand this is simulated check and it won’t affect my seed',
+        defaultMessage: 'I understand this is a simulated check and it won’t affect my device',
     },
     TR_DRY_RUN_CHECK_ITEM_DESCRIPTION: {
         id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
@@ -4335,7 +4336,7 @@ export default defineMessages({
     },
     IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA: {
         id: 'IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA',
-        defaultMessage: 'Invalid image format. It must not contain transparency.',
+        defaultMessage: 'Invalid image format. It must not contain transparencies.',
     },
     IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION: {
         id: 'IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION',
@@ -5484,7 +5485,7 @@ export default defineMessages({
     },
     TR_SUITE_WEB_LANDING_START_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_START_HEADLINE',
-        defaultMessage: 'Congratulations on getting{lineBreak}<em>new Trezor</em>',
+        defaultMessage: 'Congratulations on getting{lineBreak}<em>your new Trezor</em>',
     },
     TR_SUITE_WEB_LANDING_START_SUB_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_START_SUB_HEADLINE',
@@ -5510,7 +5511,7 @@ export default defineMessages({
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_1',
         defaultMessage:
-            "Trezor Suite is a brand new interface for desktop and web that lets you do more with your hardware wallet. The old Trezor Wallet web interface will not be supported from January 31st 2022<strong>, so now's the time to get familiar with Trezor Suite.",
+            "Trezor Suite is a brand new interface for desktop and web that lets you do more with your hardware wallet. <strong>The old Trezor Wallet web interface will not be supported from January 31st 2022</strong>, so now's the time to get familiar with Trezor Suite.",
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_2',
