@@ -172,7 +172,7 @@ const Exception = ({ exception, discovery }: Props) => {
                             values={{ details: discoveryFailedMessage(discovery) }}
                         />
                     }
-                    cta={{ action: actions.restartDiscovery }}
+                    cta={{ action: actions.restartDiscovery, icon: 'REFRESH' }}
                     dataTestBase={exception.type}
                 />
             );
