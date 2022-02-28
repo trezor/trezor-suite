@@ -24,7 +24,7 @@ export type TradeBuy = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
 export type TradeSell = CommonTrade & { tradeType: 'sell'; data: SellFiatTrade };
 export type TradeExchange = CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade };
 export type TradeSpend = CommonTrade & { tradeType: 'spend'; data: SpendTrade };
-export type TradeSavings = CommonTrade & { tradeType: 'savings'; data: SavingsTradeItem; };
+export type TradeSavings = CommonTrade & { tradeType: 'savings'; data: SavingsTradeItem };
 export type Trade = TradeBuy | TradeSell | TradeExchange | TradeSpend | TradeSavings;
 
 export type Option = { value: string; label: string };
