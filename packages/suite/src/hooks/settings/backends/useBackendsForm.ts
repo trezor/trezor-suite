@@ -6,7 +6,7 @@ import { isOnionUrl } from '@suite-utils/tor';
 import { setBackend as setBackendAction } from '@settings-actions/walletSettingsActions';
 import type { Network } from '@wallet-types';
 import type { BackendType } from '@wallet-reducers/settingsReducer';
-import { getDefaultBackendType } from '@suite-utils/backend';
+import { getDefaultBackendType, isElectrumUrl } from '@suite-utils/backend';
 
 export type BackendOption = BackendType | 'default';
 
@@ -22,7 +22,7 @@ const validateUrl = (type: BackendOption, value: string) => {
         case 'blockfrost':
             return isUrl(value);
         case 'electrum':
-            return /^[a-zA-Z0-9.-]+:[0-9]{1,5}:[ts]$/.test(value);
+            return isElectrumUrl(value);
         default:
             return false;
     }

@@ -1,5 +1,5 @@
 import { TOR_URLS } from '@suite-constants';
-import { getTorUrlIfAvailable, isTorDomain, toTorUrl } from '@suite-utils/tor';
+import { getTorUrlIfAvailable, isTorDomain, isOnionUrl, toTorUrl } from '@suite-utils/tor';
 
 describe('tor', () => {
     describe('getTorUrlIfAvailable', () => {
@@ -55,6 +55,37 @@ describe('tor', () => {
         fixtures.forEach(f => {
             it(f.desc, () => {
                 expect(isTorDomain(f.in)).toEqual(f.out);
+            });
+        });
+    });
+
+    describe('isOnionUrl', () => {
+        const fixtures = [
+            {
+                desc: 'yes',
+                in: `https://${TOR_URLS['trezor.io']}`,
+                out: true,
+            },
+            {
+                desc: 'no',
+                in: 'https://google.com',
+                out: false,
+            },
+            {
+                desc: 'yes with params',
+                in: `https://${TOR_URLS['trezor.io']}/foo/bar?foo=bar`,
+                out: true,
+            },
+            {
+                desc: 'no false positive',
+                in: 'https://my.onion.com',
+                out: false,
+            },
+        ];
+
+        fixtures.forEach(f => {
+            it(f.desc, () => {
+                expect(isOnionUrl(f.in)).toEqual(f.out);
             });
         });
     });
