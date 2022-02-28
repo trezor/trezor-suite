@@ -254,7 +254,7 @@ export const migrate = async (
         }
     }
 
-    if (oldVersion < 25) {
+    if (oldVersion < 26) {
         let cursor = await transaction.objectStore('accounts').openCursor();
         while (cursor) {
             const account = cursor.value;
