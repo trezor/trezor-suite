@@ -1,7 +1,7 @@
 import type { MiddlewareAPI } from 'redux';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { COINMARKET_COMMON } from '@wallet-actions/constants';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI, { SavingsTradeItem } from '@suite-services/invityAPI';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import type { InvityAuthentication, AccountInfo } from '@wallet-types/invity';
@@ -52,9 +52,24 @@ const invityAuthenticationMiddleware =
                                         ...invityAuthentication,
                                         accountInfo,
                                     };
-                                    // TODO: how to save savings trades/orders from partners?
-                                    // accountInfo.savingsTrades.map(trade => trade.par);
-                                    // api.dispatch(coinmarketSavingsActions.saveTrade());
+                                    const savingsTradeItems = accountInfo.savingsTrades.reduce(
+                                        (previous, current) => {
+                                            if (current.tradeItems) {
+                                                previous = previous.concat(current.tradeItems);
+                                            }
+                                            return previous;
+                                        },
+                                        [] as SavingsTradeItem[],
+                                    );
+                                    savingsTradeItems.forEach(savingsTradeItem =>
+                                        api.dispatch(
+                                            coinmarketSavingsActions.saveTrade(
+                                                savingsTradeItem,
+                                                account,
+                                                savingsTradeItem.created,
+                                            ),
+                                        ),
+                                    );
                                 } else {
                                     invityAuthentication = {
                                         ...invityAuthentication,

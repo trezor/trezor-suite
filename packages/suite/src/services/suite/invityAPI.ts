@@ -382,7 +382,8 @@ export type SavingsTradeItemStatus =
     | 'InProgress'
     | 'Blocked'
     | 'Completed'
-    | 'Refunded';
+    | 'Refunded'
+    | 'Error';
 
 export interface SavingsTradeItem {
     id: string;
@@ -423,6 +424,11 @@ export interface SendVerificationSmsSuccessResponse {
 export type SendVerificationSmsResponse =
     | SendVerificationSmsSuccessResponse
     | SendVerificationSmsErrorResponse;
+
+export interface WatchSavingTradeItemResponse {
+    savingsTradeItem?: SavingsTradeItem;
+    error?: string;
+}
 
 /** END: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 
@@ -511,6 +517,7 @@ class InvityAPI {
 
     private SAVINGS_LIST = '/savings/list';
     private SAVINGS_TRADE = '/account/savings/trade';
+    private SAVINGS_WATCH_TRADE = '/account/savings/watch';
     private WATCH_KYC = '/account/savings/watch-kyc';
 
     private ACCOUNT_INFO = '/account/info';
@@ -896,6 +903,26 @@ class InvityAPI {
         } catch (error) {
             console.log('[watchSellFiatTrade]', error);
             return { error: error.toString() };
+        }
+    };
+
+    watchSavingsTrade = async (
+        exchangeName: string,
+        tradeItemId: string,
+    ): Promise<WatchSavingTradeItemResponse> => {
+        this.setProtectedAPI(true);
+        try {
+            const response: WatchSavingTradeItemResponse = await this.requestApiServer(
+                `${this.SAVINGS_WATCH_TRADE}/${exchangeName}/${tradeItemId}`,
+                {},
+                'GET',
+            );
+            return response;
+        } catch (error) {
+            console.log('[watchSavingsTrade]', error);
+            return { error: error.toString() };
+        } finally {
+            this.setProtectedAPI(false);
         }
     };
 

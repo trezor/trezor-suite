@@ -145,6 +145,7 @@ const AccountTransactions = () => {
                             if (trade.tradeType === 'savings') {
                                 return (
                                     <SavingsTransaction
+                                        account={account}
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
                                         providers={savingsProviders}

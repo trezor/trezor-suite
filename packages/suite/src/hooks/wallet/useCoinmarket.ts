@@ -3,12 +3,18 @@ import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api
 import useUnmount from 'react-use/lib/useUnmount';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import { useActions } from '@suite-hooks';
-import invityAPI from '@suite-services/invityAPI';
+import invityAPI, { SavingsTradeItemStatus } from '@suite-services/invityAPI';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
+import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
 import { Account } from '@wallet-types';
-import { TradeBuy, TradeSell, TradeExchange } from '@wallet-types/coinmarketCommonTypes';
+import type {
+    TradeBuy,
+    TradeSell,
+    TradeExchange,
+    TradeSavings,
+} from '@wallet-types/coinmarketCommonTypes';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 
 const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
@@ -156,4 +162,51 @@ export const useWatchSellTrade = (account: Account, trade?: TradeSell) => {
     }, [account, cancelRefresh, refreshCount, removeDraft, resetRefresh, saveTrade, trade]);
 };
 
-// TODO: useWatchSavingsTrade
+export const SavingsTradeFinalStatuses: SavingsTradeItemStatus[] = [
+    'Blocked',
+    'Cancelled',
+    'Completed',
+    'Error',
+    'Refunded',
+];
+
+const shouldRefreshSavingsTrade = (trade?: TradeSavings) =>
+    trade?.data?.status && !SavingsTradeFinalStatuses.includes(trade.data.status);
+
+export const useWatchSavingsTrade = (account: Account, trade: TradeSavings) => {
+    const REFRESH_SECONDS = 30;
+    const { saveTrade } = useActions({ saveTrade: coinmarketSavingsActions.saveTrade });
+    const [refreshCount, setRefreshCount] = useState(0);
+    const invokeRefresh = () => {
+        if (shouldRefreshSavingsTrade(trade)) {
+            setRefreshCount(prevValue => prevValue + 1);
+        }
+    };
+    const [, cancelRefresh, resetRefresh] = useTimeoutFn(invokeRefresh, REFRESH_SECONDS * 1000);
+
+    useUnmount(() => {
+        cancelRefresh();
+    });
+
+    useEffect(() => {
+        if (trade && shouldRefreshSavingsTrade(trade)) {
+            cancelRefresh();
+            invityAPI.createInvityAPIKey(account.descriptor);
+            invityAPI.watchSavingsTrade(trade.data.exchange, trade.data.id).then(response => {
+                if (
+                    response.savingsTradeItem?.status &&
+                    response.savingsTradeItem?.status !== trade.data.status
+                ) {
+                    const newDate = new Date().toISOString();
+                    const tradeData = {
+                        ...trade.data,
+                        status: response.savingsTradeItem?.status || 'Error',
+                        error: response.error,
+                    };
+                    saveTrade(tradeData, account, newDate);
+                }
+            });
+            resetRefresh();
+        }
+    }, [account, cancelRefresh, refreshCount, resetRefresh, saveTrade, trade]);
+};

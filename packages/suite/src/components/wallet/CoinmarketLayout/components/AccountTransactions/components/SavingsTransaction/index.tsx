@@ -7,9 +7,12 @@ import Status from '../Status';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import type { SavingsProviderInfo } from '@suite-services/invityAPI';
 import { CoinmarketProviderInfo, CoinmarketPaymentType } from '@wallet-components';
+import { useWatchSavingsTrade } from '@wallet-hooks/useCoinmarket';
+import type { Account } from '@wallet-types';
 
 interface Props {
     trade: TradeSavings;
+    account: Account;
     providers?: {
         [name: string]: SavingsProviderInfo;
     };
@@ -95,10 +98,10 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-const SavingsTransaction = ({ trade, providers }: Props) => {
+const SavingsTransaction = ({ trade, providers, account }: Props) => {
     const theme = useTheme();
 
-    // TODO: Do we want to watch the savings trade?
+    useWatchSavingsTrade(account, trade);
 
     const { date, data } = trade;
     const {
