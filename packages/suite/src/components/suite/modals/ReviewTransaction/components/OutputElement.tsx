@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Truncate } from '@trezor/components';
-import { FiatValue, FormattedCryptoAmount } from '@suite-components';
+import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
 import { Network } from '@wallet-types';
+import { TokenInfo } from 'trezor-connect';
+import { amountToSatoshi } from '@wallet-utils/accountUtils';
 
 const OutputWrapper = styled.div`
     display: flex;
@@ -72,6 +74,10 @@ const OutputRight = styled.div`
     text-align: left;
 `;
 
+const CardanoTrezorAmountWrapper = styled.div`
+    margin-top: 10px;
+`;
+
 const OutputRightLine = styled.div`
     & + & {
         margin-top: 37px;
@@ -113,6 +119,8 @@ export type Props = {
     fiatSymbol: Network['symbol'];
     hasExpansion?: boolean;
     fiatVisible?: boolean;
+    token?: TokenInfo;
+    networkType: Network['networkType'];
 };
 
 const TruncateWrapper = ({
@@ -126,10 +134,12 @@ const TruncateWrapper = ({
 const OutputLine = ({
     indicator,
     lines,
+    token,
     cryptoSymbol,
     fiatSymbol,
     hasExpansion = false,
     fiatVisible = false,
+    networkType,
 }: Props) => (
     <OutputWrapper>
         <OutputLeft>
@@ -176,6 +186,14 @@ const OutputLine = ({
                             )}
                         </TruncateWrapper>
                     </OutputValue>
+                    {networkType === 'cardano' && token && token.decimals !== 0 && (
+                        <CardanoTrezorAmountWrapper>
+                            <OutputHeadline>
+                                <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
+                            </OutputHeadline>
+                            <OutputValue>{amountToSatoshi(line.value, token.decimals)}</OutputValue>
+                        </CardanoTrezorAmountWrapper>
+                    )}
                 </OutputRightLine>
             ))}
         </OutputRight>
