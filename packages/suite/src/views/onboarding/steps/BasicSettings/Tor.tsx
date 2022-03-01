@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { variables, Input, Switch } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Translation } from '@suite-components';
-import { useAnalytics } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
+import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
 
 const TorWrapper = styled.div`
     width: 100%;
@@ -37,7 +38,9 @@ interface Props {
 }
 
 const Tor = ({ tor }: Props) => {
-    const analytics = useAnalytics();
+    const { toggleTor } = useActions({
+        toggleTor: toggleTorAction,
+    });
     const [torAddress, setTorAddress] = useState('');
     useEffect(() => {
         desktopApi.getTorAddress().then(setTorAddress);
@@ -70,13 +73,7 @@ const Tor = ({ tor }: Props) => {
                     data-test="@onboarding/tor-switch"
                     checked={tor}
                     onChange={() => {
-                        analytics.report({
-                            type: 'menu/toggle-tor',
-                            payload: {
-                                value: !tor,
-                            },
-                        });
-                        desktopApi.toggleTor(!tor);
+                        toggleTor(!tor);
                     }}
                 />
             </SwitchWrapper>

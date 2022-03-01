@@ -16,12 +16,14 @@ import { useOnboarding, useSelector } from '@suite-hooks';
 import { MODAL } from '@suite-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
 import type { InjectedModalApplicationProps } from '@suite-types';
+import type { UserContextPayload } from '@suite-actions/modalActions';
 
-const useIsModalCoinSettings = () => {
+const useIsModalAllowed = () => {
     const { modal } = useSelector(state => ({
         modal: state.modal,
     }));
-    return modal.context === MODAL.CONTEXT_USER && modal.payload.type === 'advanced-coin-settings';
+    const allowedModals: UserContextPayload['type'][] = ['advanced-coin-settings', 'disable-tor'];
+    return modal.context === MODAL.CONTEXT_USER && allowedModals.includes(modal.payload.type);
 };
 
 const Onboarding = ({ prerequisite, modal }: InjectedModalApplicationProps) => {
@@ -66,7 +68,7 @@ const Onboarding = ({ prerequisite, modal }: InjectedModalApplicationProps) => {
 
     return (
         <LayoutComponent>
-            {useIsModalCoinSettings() ? modal : null}
+            {useIsModalAllowed() ? modal : null}
             <UnexpectedState
                 prerequisite={prerequisite}
                 prerequisitesGuidePadded={prerequisitesGuidePadded}
