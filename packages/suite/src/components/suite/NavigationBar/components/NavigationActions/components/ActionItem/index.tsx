@@ -126,6 +126,11 @@ const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement
                             <AlertDot />
                         </AlertDotWrapper>
                     )}
+                    {props.indicator === 'check' && (
+                        <Indicator>
+                            <Icon icon="CHECK" size={10} color={theme.TYPE_GREEN} />
+                        </Indicator>
+                    )}
                 </MobileIconWrapper>
                 <Label>{props.label}</Label>
             </MobileWrapper>
