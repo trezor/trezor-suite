@@ -129,10 +129,11 @@ Added:
 -   device-setup-completed
     -   duration: number (in ms)
     -   device: 'T' | '1'
-    -   firmware: 'install' | 'skip' | 'up-to-date'
-    -   seed: 'create' | 'recover'
-    -   recoveryType?: 'standard' | 'advanced' (empty if seed equals to 'create')
-    -   backup?: 'create' | 'skip' (empty if seed equals to 'recover')
+    -   firmware?: 'install' | 'update' | 'skip' | 'up-to-date' (empty if seed === 'recovery-in-progress')
+    -   seed: 'create' | 'recovery' | 'recovery-in-progress'
+    -   seedType?: 'standard' | 'shamir' (empty seed === 'recovery')
+    -   recoveryType?: 'standard' | 'advanced' (empty if seed === 'create' || device === 'T')
+    -   backup?: 'create' | 'skip' (empty if seed === 'recovery')
     -   pin: 'create' | 'skip'
 
 Removed:
