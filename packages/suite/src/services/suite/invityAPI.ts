@@ -149,9 +149,6 @@ export interface SavingsProviderInfo {
     /** Defines methods of how a user can pay to save crypto. */
     paymentMethods?: SavingsPaymentMethod[];
 
-    // TODO: Remove. And use isClientFromUnsupportedCountry as variable on client.
-    isClientFromUnsupportedCountry: boolean;
-
     /** List of document types required by provider's KYC process. User has to choose one. */
     identityDocuments: SavingsProviderInfoIdentityDocument[];
 

@@ -44,10 +44,6 @@ export type CoinmarketSavingsAction =
           kycFinalStatus: SavingsKYCStatus | undefined;
       }
     | {
-          type: typeof COINMARKET_SAVINGS.SET_USER_COUNTRY_EFFECTIVE;
-          countryEffective: string;
-      }
-    | {
           type: typeof COINMARKET_COMMON.SAVE_TRADE;
           date: string;
           key?: string;
@@ -131,11 +127,6 @@ export const stopWatchingKYCStatus = (
 
 export const verifyAddress = (account: Account, address?: string, path?: string) =>
     verifySavingsAddress(account, address, path, COINMARKET_SAVINGS.VERIFY_ADDRESS);
-
-export const setUserCountryEffective = (countryEffective: string): CoinmarketSavingsAction => ({
-    type: COINMARKET_SAVINGS.SET_USER_COUNTRY_EFFECTIVE,
-    countryEffective,
-});
 
 export const saveTrade = (
     savingsTrade: SavingsTradeItem,

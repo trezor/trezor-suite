@@ -10,8 +10,6 @@ export type SavingsContextValues = {
     isLoading: boolean;
     savingsInfo?: SavingsInfo;
     savingsTrade?: SavingsTrade;
-    isRegisteredAccount: boolean;
-    isClientFromUnsupportedCountry: boolean;
     shouldRegisterUserInfo: boolean;
     shouldVerifyPhoneNumber: boolean;
     shouldKYCStart: boolean;

@@ -52,7 +52,9 @@ export const getInitialState = ({ coinmarket, selectedAccount }: Args = {}) => (
                 } as any,
                 { type: 'foo' } as any,
             ),
-        formDrafts: {},
+        formDrafts: {
+            [`coinmarket-savings-unsupported-country/${ACCOUNT.descriptor}`]: { county: null },
+        },
     },
     suite: suiteReducer(
         {
@@ -104,47 +106,9 @@ describe('coinmarketSavingsMiddleware', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
-    it('load savings trade - redirect to savings after country set', () => {
-        invityAPI.getCurrentAccountDescriptor = () => 'FakeDescriptor';
-
-        // @ts-ignore
-        const store = initStore(
-            getInitialState({
-                coinmarket: initialState,
-            }),
-        );
-
-        store.dispatch({ type: COINMARKET_SAVINGS.SET_USER_COUNTRY_EFFECTIVE });
-        expect(store.getActions()).toEqual([
-            {
-                payload: {
-                    anchor: undefined,
-                    app: 'wallet',
-                    hash: '/btc/0',
-                    params: {
-                        accountIndex: 0,
-                        accountType: 'normal',
-                        symbol: 'btc',
-                    },
-                    pathname: '/accounts/coinmarket/savings',
-                    route: {
-                        app: 'wallet',
-                        exact: true,
-                        name: 'wallet-coinmarket-savings',
-                        params: ['symbol', 'accountIndex', 'accountType'],
-                        pattern: '/accounts/coinmarket/savings',
-                    },
-                    url: '/accounts/coinmarket/savings#/btc/0',
-                },
-                type: ROUTER.LOCATION_CHANGE,
-            },
-            { type: COINMARKET_SAVINGS.SET_USER_COUNTRY_EFFECTIVE },
-        ]);
-    });
 
     it('load savings trade - redirect to savings unsupported country', () => {
         invityAPI.getCurrentAccountDescriptor = () => 'FakeDescriptor';
-
         // @ts-ignore
         const store = initStore(
             getInitialState({
@@ -152,10 +116,16 @@ describe('coinmarketSavingsMiddleware', () => {
                     ...initialState,
                     savings: {
                         ...initialState.savings,
-                        countryEffective: undefined,
+                        savingsInfo: {
+                            providerInfos: {},
+                            supportedCountries: new Set<string>(),
+                            supportedCryptoCurrencies: new Set<string>(),
+                            supportedFiatCurrencies: new Set<string>(),
+                            country: 'CZ',
+                        },
                         selectedProvider: {
                             ...SELECTED_PROVIDER,
-                            isClientFromUnsupportedCountry: true,
+                            supportedCountries: [],
                         },
                     },
                 },
@@ -200,6 +170,13 @@ describe('coinmarketSavingsMiddleware', () => {
                     ...initialState,
                     savings: {
                         ...initialState.savings,
+                        savingsInfo: {
+                            providerInfos: {},
+                            supportedCountries: new Set<string>(),
+                            supportedCryptoCurrencies: new Set<string>(),
+                            supportedFiatCurrencies: new Set<string>(),
+                            country: 'CZ',
+                        },
                         selectedProvider: SELECTED_PROVIDER,
                     },
                     invityAuthentication: undefined,
@@ -244,6 +221,13 @@ describe('coinmarketSavingsMiddleware', () => {
                     invityAuthentication: INVITY_AUTHENTICATION,
                     savings: {
                         ...initialState.savings,
+                        savingsInfo: {
+                            providerInfos: {},
+                            supportedCountries: new Set<string>(),
+                            supportedCryptoCurrencies: new Set<string>(),
+                            supportedFiatCurrencies: new Set<string>(),
+                            country: 'CZ',
+                        },
                         selectedProvider: SELECTED_PROVIDER,
                     },
                 },
@@ -296,6 +280,13 @@ describe('coinmarketSavingsMiddleware', () => {
                     },
                     savings: {
                         ...initialState.savings,
+                        savingsInfo: {
+                            providerInfos: {},
+                            supportedCountries: new Set<string>(),
+                            supportedCryptoCurrencies: new Set<string>(),
+                            supportedFiatCurrencies: new Set<string>(),
+                            country: 'CZ',
+                        },
                         selectedProvider: SELECTED_PROVIDER,
                     },
                 },
@@ -396,6 +387,13 @@ describe('coinmarketSavingsMiddleware', () => {
                         },
                         savings: {
                             ...initialState.savings,
+                            savingsInfo: {
+                                providerInfos: {},
+                                supportedCountries: new Set<string>(),
+                                supportedCryptoCurrencies: new Set<string>(),
+                                supportedFiatCurrencies: new Set<string>(),
+                                country: 'CZ',
+                            },
                             selectedProvider: SELECTED_PROVIDER,
                         },
                     },

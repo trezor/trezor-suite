@@ -23,27 +23,18 @@ const coinmarketSavingsMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        if (action.type === COINMARKET_SAVINGS.SET_USER_COUNTRY_EFFECTIVE) {
-            const { account, status } = api.getState().wallet.selectedAccount;
-            if (status === 'loaded' && account) {
-                api.dispatch(navigateToRouteName('wallet-coinmarket-savings', account));
-                next(action);
-                return action;
-            }
-        }
-
         if (action.type === COINMARKET_SAVINGS.LOAD_SAVINGS_TRADE_RESPONSE) {
             const { account, status } = api.getState().wallet.selectedAccount;
-            const { selectedProvider } = api.getState().wallet.coinmarket.savings;
+            const { selectedProvider, savingsInfo } = api.getState().wallet.coinmarket.savings;
             const { formDrafts } = api.getState().wallet;
             if (status === 'loaded' && account && selectedProvider) {
+                const isClientFromSupportedCountry =
+                    savingsInfo &&
+                    selectedProvider.supportedCountries.includes(savingsInfo?.country);
                 const unsupportedCountryFormDraft = formDrafts[
                     getFormDraftKey('coinmarket-savings-unsupported-country', account.descriptor)
                 ] as { country: string } | undefined;
-                if (
-                    selectedProvider.isClientFromUnsupportedCountry &&
-                    !unsupportedCountryFormDraft?.country
-                ) {
+                if (!isClientFromSupportedCountry && !unsupportedCountryFormDraft?.country) {
                     api.dispatch(
                         navigateToRouteName(
                             'wallet-coinmarket-savings-unsupported-country',

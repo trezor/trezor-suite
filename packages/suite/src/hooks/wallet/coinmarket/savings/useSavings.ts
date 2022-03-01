@@ -67,9 +67,6 @@ export const useSavings = (): SavingsContextValues => {
         isLoading,
         savingsInfo,
         savingsTrade,
-        // TODO: Will be indicated by Invity API later.
-        isRegisteredAccount: false,
-        isClientFromUnsupportedCountry: !!selectedProvider?.isClientFromUnsupportedCountry,
         shouldRegisterUserInfo,
         shouldVerifyPhoneNumber,
         shouldKYCStart,

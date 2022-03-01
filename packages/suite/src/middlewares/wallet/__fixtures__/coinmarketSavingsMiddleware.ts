@@ -37,13 +37,12 @@ export const INVITY_AUTHENTICATION: InvityAuthentication = {
 };
 
 export const SELECTED_PROVIDER: SavingsProviderInfo = {
-    isClientFromUnsupportedCountry: false,
     name: '',
     companyName: '',
     logo: '',
     isActive: true,
     tradedCoins: [],
-    supportedCountries: [],
+    supportedCountries: ['CZ'],
     identityDocuments: [],
     privacyPolicyUrl: '',
     setupPaymentAmounts: [],
