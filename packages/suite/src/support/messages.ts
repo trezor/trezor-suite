@@ -6300,7 +6300,7 @@ export default defineMessages({
         defaultMessage: 'Receiving {symbol}',
     },
     TR_RECEIVED_SYMBOL: {
-        id: 'TR_RECEIVING_SYMBOL',
+        id: 'TR_RECEIVED_SYMBOL',
         defaultMessage:
             'Received {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}}',
     },
