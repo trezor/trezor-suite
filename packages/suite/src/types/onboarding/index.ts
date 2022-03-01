@@ -25,8 +25,9 @@ export type AnyPath = typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY;
 
 export type OnboardingAnalytics = {
     startTime: number;
-    firmware: 'install' | 'skip' | 'up-to-date';
-    seed: 'create' | 'recover';
+    firmware: 'install' | 'update' | 'skip' | 'up-to-date';
+    seed: 'create' | 'recovery' | 'recovery-in-progress';
+    seedType: 'standard' | 'shamir';
     recoveryType: 'standard' | 'advanced';
     backup: 'create' | 'skip';
     pin: 'create' | 'skip';

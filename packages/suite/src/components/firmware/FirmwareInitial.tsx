@@ -11,7 +11,7 @@ import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-c
 import { TrezorDevice } from '@suite/types/suite';
 import { getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
 
-interface Props {
+interface FirmwareInitialProps {
     cachedDevice?: TrezorDevice;
     setCachedDevice: React.Dispatch<React.SetStateAction<TrezorDevice | undefined>>;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
@@ -44,7 +44,7 @@ const FirmwareInitial = ({
     setCachedDevice,
     onInstall,
     standaloneFwUpdate = false,
-}: Props) => {
+}: FirmwareInitialProps) => {
     const { device: liveDevice } = useDevice();
     const { setStatus, status } = useFirmware();
     const { goToNextStep, updateAnalytics } = useOnboarding();
@@ -93,7 +93,14 @@ const FirmwareInitial = ({
             body: cachedDevice?.firmwareRelease ? (
                 <FirmwareOffer device={cachedDevice} />
             ) : undefined,
-            innerActions: <InstallButton onClick={onInstall} />,
+            innerActions: (
+                <InstallButton
+                    onClick={() => {
+                        onInstall();
+                        updateAnalytics({ firmware: 'install' });
+                    }}
+                />
+            ),
         };
     } else if (device.mode === 'bootloader' && !standaloneFwUpdate) {
         // We can check if device.mode is bootloader only after checking that firmware !== none (condition above)
@@ -133,7 +140,7 @@ const FirmwareInitial = ({
                 <Button
                     onClick={() => {
                         setStatus(standaloneFwUpdate ? 'check-seed' : 'waiting-for-bootloader');
-                        updateAnalytics({ firmware: 'install' });
+                        updateAnalytics({ firmware: 'update' });
                     }}
                     data-test="@firmware/get-ready-button"
                 >

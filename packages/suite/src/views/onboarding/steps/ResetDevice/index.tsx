@@ -74,7 +74,7 @@ const ResetDeviceStep = () => {
                                 } else {
                                     await onResetDevice();
                                 }
-                                updateAnalytics({ recoveryType: undefined });
+                                updateAnalytics({ recoveryType: undefined, seedType: 'standard' });
                             }}
                             heading={<Translation id="SINGLE_SEED" />}
                             description={<Translation id="SINGLE_SEED_DESCRIPTION" />}
@@ -89,7 +89,10 @@ const ResetDeviceStep = () => {
                                     data-test="@onboarding/shamir-backup-option-button"
                                     onClick={async () => {
                                         await onResetDevice({ backup_type: 1 });
-                                        updateAnalytics({ recoveryType: undefined });
+                                        updateAnalytics({
+                                            recoveryType: undefined,
+                                            seedType: 'shamir',
+                                        });
                                     }}
                                     heading={<Translation id="SHAMIR_SEED" />}
                                     description={<Translation id="SHAMIR_SEED_DESCRIPTION" />}

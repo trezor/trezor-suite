@@ -434,11 +434,6 @@ export const report =
     (_dispatch: Dispatch, getState: GetState) => {
         const url = getUrl();
 
-        // no reporting on localhost
-        if (!url) {
-            return;
-        }
-
         const { enabled, sessionId, instanceId, confirmed } = getState().analytics;
 
         // don't report until user confirmed his choice

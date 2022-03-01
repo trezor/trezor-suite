@@ -39,7 +39,7 @@ const CreateOrRecoverStep = () => {
                         onClick={() => {
                             addPath(STEP.PATH_RECOVERY);
                             goToNextStep();
-                            updateAnalytics({ seed: 'recover' });
+                            updateAnalytics({ seed: 'recovery' });
                         }}
                         heading={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
                     />

@@ -35,6 +35,7 @@ const recovery =
             api.dispatch(
                 onboardingActions.updateAnalytics({
                     startTime: Date.now(),
+                    seed: 'recovery-in-progress',
                 }),
             );
             if (!analytics.confirmed) {
