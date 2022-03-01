@@ -1,9 +1,9 @@
 import path from 'path';
 import url from 'url';
-import { app, BrowserWindow, ipcMain, session } from 'electron';
-import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
+// import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
 
-import { SENTRY_CONFIG } from '@suite-config';
+// import { SENTRY_CONFIG } from '@suite-config';
 import { isDev } from '@suite-utils/build';
 import { PROTOCOL } from './libs/constants';
 import * as store from './libs/store';
@@ -143,12 +143,12 @@ ipcMain.on('app/restart', () => {
     app.exit();
 });
 
-if (!isDev) {
-    const sentryConfig: ElectronOptions = {
-        ...SENTRY_CONFIG,
-        ipcMode: IPCMode.Classic,
-        getSessions: () => [session.defaultSession],
-    };
+// if (!isDev) {
+//     const sentryConfig: ElectronOptions = {
+//         ...SENTRY_CONFIG,
+//         ipcMode: IPCMode.Classic,
+//         getSessions: () => [session.defaultSession],
+//     };
 
-    initSentry(sentryConfig);
-}
+//     initSentry(sentryConfig);
+// }
