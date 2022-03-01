@@ -165,6 +165,16 @@ const analytics =
                     }),
                 );
                 break;
+            case SUITE.TOR_STATUS:
+                api.dispatch(
+                    analyticsActions.report({
+                        type: 'menu/toggle-tor',
+                        payload: {
+                            value: action.payload,
+                        },
+                    }),
+                );
+                break;
             default:
                 break;
         }

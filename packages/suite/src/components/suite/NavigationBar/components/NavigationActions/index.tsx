@@ -127,12 +127,6 @@ const NavigationActions = (props: Props) => {
                         <ActionItemWrapper>
                             <ActionItem
                                 onClick={() => {
-                                    analytics.report({
-                                        type: 'menu/toggle-tor',
-                                        payload: {
-                                            value: !tor,
-                                        },
-                                    });
                                     toggleTor(!tor);
                                 }}
                                 label={<Translation id="TR_TOR" />}

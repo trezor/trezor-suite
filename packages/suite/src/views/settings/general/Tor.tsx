@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch } from '@trezor/components';
-import { useAnalytics, useSelector, useActions } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components';
@@ -8,7 +8,6 @@ import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
 export const Tor = () => {
-    const analytics = useAnalytics();
     const { tor } = useSelector(state => ({
         tor: state.suite.tor,
     }));
@@ -36,12 +35,6 @@ export const Tor = () => {
                     data-test="@settings/general/tor-switch"
                     checked={tor}
                     onChange={() => {
-                        analytics.report({
-                            type: 'menu/toggle-tor',
-                            payload: {
-                                value: !tor,
-                            },
-                        });
                         toggleTor(!tor);
                     }}
                 />
