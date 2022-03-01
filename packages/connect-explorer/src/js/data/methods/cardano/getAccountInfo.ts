@@ -18,6 +18,16 @@ export default [
                     { value: 'tada', label: 'Cardano Testnet' },
                 ],
             },
+            {
+                name: 'useCardanoDerivation',
+                type: 'boolean',
+                value: true,
+            },
+            {
+                name: 'derivationType',
+                type: 'number',
+                value: 2,
+            },
         ],
     },
 ];
