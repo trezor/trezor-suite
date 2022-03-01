@@ -35,15 +35,14 @@ const Navigation = () => {
     return (
         <WalletLayoutNavigation>
             <>
-                {items
-                    .map(({ route, title }) => (
-                        <WalletLayoutNavLink
-                            key={route}
-                            title={title}
-                            active={routeName === route}
-                            onClick={() => goto(route, { preserveParams: true })}
-                        />
-                    ))}
+                {items.map(({ route, title }) => (
+                    <WalletLayoutNavLink
+                        key={route}
+                        title={title}
+                        active={routeName === route}
+                        onClick={() => goto(route, { preserveParams: true })}
+                    />
+                ))}
                 {account?.symbol === 'btc' && (
                     <SavingsWalletLayoutNavLinkWrapper>
                         <WalletLayoutNavLink
