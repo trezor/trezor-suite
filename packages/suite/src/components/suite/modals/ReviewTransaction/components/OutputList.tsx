@@ -108,7 +108,7 @@ const OutputList = ({
     isRbfAction,
     toggleDetails,
 }: Props) => {
-    const { symbol } = account;
+    const { symbol, networkType } = account;
     const { options, selectedFee } = precomposedForm;
     const broadcastEnabled = options.includes('broadcast');
 
@@ -151,9 +151,18 @@ const OutputList = ({
                             const state = signedTx
                                 ? 'success'
                                 : getState(index, buttonRequests.length);
-                            // it's safe to use array index since outputs do not change
-                            // eslint-disable-next-line react/no-array-index-key
-                            return <Output key={index} {...output} state={state} symbol={symbol} />;
+
+                            return (
+                                <Output
+                                    // it's safe to use array index since outputs do not change
+                                    // eslint-disable-next-line react/no-array-index-key
+                                    key={index}
+                                    {...output}
+                                    state={state}
+                                    networkType={networkType}
+                                    symbol={symbol}
+                                />
+                            );
                         })}
                         {!precomposedTx.token && (
                             <OutputElement
@@ -170,6 +179,7 @@ const OutputList = ({
                                         ),
                                     },
                                 ]}
+                                networkType={networkType}
                                 cryptoSymbol={symbol}
                                 fiatSymbol={symbol}
                                 fiatVisible={!isTestnet(symbol)}

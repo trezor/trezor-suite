@@ -6424,4 +6424,8 @@ export default defineMessages({
         defaultMessage:
             'Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
     },
+    TR_CARDANO_TREZOR_AMOUNT_HEADLINE: {
+        id: 'TR_CARDANO_TREZOR_AMOUNT_HEADLINE',
+        defaultMessage: 'Trezor Amount',
+    },
 });
