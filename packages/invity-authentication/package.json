@@ -5,8 +5,8 @@
     "description": "Invity authentication package.",
     "scripts": {
         "lint": "eslint '**/*.ts'",
-        "build:lib": "rimraf build && tsc --project tsconfig.json && ts-node build.ts",
-        "type-check": "tsc --project tsconfig.json"
+        "build:lib": "rimraf build && tsc && ts-node build.ts",
+        "type-check": "tsc"
     },
     "dependencies": {},
     "devDependencies": {
