@@ -118,6 +118,11 @@ const ReviewTransaction = ({ decision }: Props) => {
                 outputs.push({
                     type: 'regular',
                     label: o.address,
+                    value: o.amount,
+                });
+                outputs.push({
+                    type: 'regular',
+                    label: o.address,
                     value: tokenBundle ? tokenBundle.balance ?? '0' : o.amount,
                     token: tokenBundle,
                 });

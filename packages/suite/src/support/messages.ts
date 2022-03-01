@@ -6428,4 +6428,8 @@ export default defineMessages({
         id: 'TR_CARDANO_TREZOR_AMOUNT_HEADLINE',
         defaultMessage: 'Trezor Amount',
     },
+    TR_CARDANO_FINGERPRINT_HEADLINE: {
+        id: 'TR_CARDANO_FINGERPRINT_HEADLINE',
+        defaultMessage: 'Fingerprint',
+    },
 });

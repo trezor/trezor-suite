@@ -108,7 +108,7 @@ const OutputList = ({
     isRbfAction,
     toggleDetails,
 }: Props) => {
-    const { symbol, networkType } = account;
+    const { symbol } = account;
     const { options, selectedFee } = precomposedForm;
     const broadcastEnabled = options.includes('broadcast');
 
@@ -159,13 +159,14 @@ const OutputList = ({
                                     key={index}
                                     {...output}
                                     state={state}
-                                    networkType={networkType}
                                     symbol={symbol}
+                                    account={account}
                                 />
                             );
                         })}
                         {!precomposedTx.token && (
                             <OutputElement
+                                account={account}
                                 indicator={
                                     <Indicator state={signedTx ? 'success' : undefined} size={16} />
                                 }
@@ -179,7 +180,6 @@ const OutputList = ({
                                         ),
                                     },
                                 ]}
-                                networkType={networkType}
                                 cryptoSymbol={symbol}
                                 fiatSymbol={symbol}
                                 fiatVisible={!isTestnet(symbol)}
