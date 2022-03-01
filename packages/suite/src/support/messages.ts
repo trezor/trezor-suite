@@ -1130,6 +1130,18 @@ export default defineMessages({
         defaultMessage: 'Confirm your email',
         id: 'TR_SAVINGS_REGISTRATION_SUCCESSFUL_HEADER',
     },
+    TR_SAVINGS_ACCOUNT_VERIFIED_HEADER: {
+        defaultMessage: 'Your account has been verified.',
+        id: 'TR_SAVINGS_ACCOUNT_VERIFIED_HEADER',
+    },
+    TR_SAVINGS_ACCOUNT_VERIFIED_DESCRIPTION: {
+        defaultMessage: 'Click the button for your 1st login.',
+        id: 'TR_SAVINGS_ACCOUNT_VERIFIED_DESCRIPTION',
+    },
+    TR_SAVINGS_ACCOUNT_VERIFIED_BUTTON_LABEL: {
+        defaultMessage: 'Go to Login',
+        id: 'TR_SAVINGS_ACCOUNT_VERIFIED_BUTTON_LABEL',
+    },
     TR_SAVINGS_REGISTRATION_SUCCESSFUL_DESCRIPTION: {
         defaultMessage:
             'You should receive an email with link. Click on the link. That verifies your account.',
