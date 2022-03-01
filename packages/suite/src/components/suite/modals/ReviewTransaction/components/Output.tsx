@@ -42,11 +42,11 @@ export type OutputProps =
 export type Props = OutputProps & {
     state: IndicatorProps['state'];
     symbol: Network['symbol'];
-    networkType: Account['networkType'];
+    account: Account;
 };
 
 const Output = (props: Props) => {
-    const { type, state, label, value, symbol, token, networkType } = props;
+    const { type, state, label, value, symbol, token, account } = props;
     let outputLabel: React.ReactNode = label;
 
     if (type === 'opreturn') {
@@ -132,10 +132,10 @@ const Output = (props: Props) => {
 
     return (
         <OutputElement
+            account={account}
             indicator={<Indicator state={state} size={16} />}
             lines={outputLines}
             token={token}
-            networkType={networkType}
             cryptoSymbol={outputSymbol}
             fiatSymbol={symbol}
             hasExpansion={hasExpansion}
