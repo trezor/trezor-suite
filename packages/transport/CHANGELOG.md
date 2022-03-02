@@ -1,3 +1,7 @@
+# 1.1.1 (not released)
+
+-   Changed latest bridge url to https://connect.trezor.io/8/data/bridge/latest.txt'
+
 # 1.1.0
 
 -   Added @trezor/utils dependency.
