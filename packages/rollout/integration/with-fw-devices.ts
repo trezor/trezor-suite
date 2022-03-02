@@ -4,16 +4,15 @@
  * Find which fw should be offered for currently shipped T2 devices
  */
 
-import { getInfo, getBinary } from '../src/index';
+import { getInfo } from '../src/index';
 import { Release } from '../src/utils/parse';
+
+import RELEASES_T1 from '@trezor/connect-common/files/firmware/1/releases.json';
 
 const { getDeviceFeatures } = global.JestMocks;
 
-const RELEASES_T1 = JSON.parse(process.env.RELEASES_T1) as Release[];
-const { BASE_FW_URL } = process.env;
-
 describe('Testing if getInfo and getBinary return same result when first called in firmware mode and later in bootloader', () => {
-    it('firmware version 1.6.0 (bootloader 1.4.0)', async () => {
+    it('firmware version 1.6.0 (bootloader 1.4.0)', () => {
         const features = getDeviceFeatures({
             bootloader_mode: null,
             major_version: 1,
@@ -25,27 +24,12 @@ describe('Testing if getInfo and getBinary return same result when first called 
         // first get info in firmware mode
         const info = getInfo({
             features,
-            releases: RELEASES_T1,
+            releases: RELEASES_T1 as Release[],
         });
         expect(info).toMatchObject({ release: { version: [1, 6, 3] } });
-
-        // validate that with binary returns the same firmware
-        const withBinary = await getBinary({
-            features: getDeviceFeatures({
-                bootloader_mode: true,
-                major_version: 1,
-                minor_version: 4,
-                patch_version: 0,
-                firmware_present: true,
-            }),
-            releases: RELEASES_T1,
-            baseUrl: BASE_FW_URL,
-            version: [1, 6, 3],
-        });
-        expect(withBinary).toMatchObject({ release: { version: [1, 6, 3] } });
     });
 
-    it('firmware version 1.6.3 (bootloader 1.5.1)', async () => {
+    it('firmware version 1.6.3 (bootloader 1.5.1)', () => {
         const targetVersion = RELEASES_T1[0].version; // latest
         // first get info in firmware mode
         const info = getInfo({
@@ -56,23 +40,8 @@ describe('Testing if getInfo and getBinary return same result when first called 
                 patch_version: 3,
                 firmware_present: null,
             }),
-            releases: RELEASES_T1,
+            releases: RELEASES_T1 as Release[],
         });
         expect(info).toMatchObject({ release: { version: targetVersion } });
-
-        // validate that with binary returns the same firmware
-        const withBinary = await getBinary({
-            features: getDeviceFeatures({
-                bootloader_mode: true,
-                major_version: 1,
-                minor_version: 5,
-                patch_version: 1,
-                firmware_present: true,
-            }),
-            version: targetVersion,
-            releases: RELEASES_T1,
-            baseUrl: BASE_FW_URL,
-        });
-        expect(withBinary).toMatchObject({ release: { version: targetVersion } });
     });
 });
