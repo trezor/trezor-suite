@@ -94,6 +94,12 @@ export class BaseWorker<API> {
         if (this.endpoints.length < 1) {
             this.endpoints = shuffleEndpoints(server.slice(0));
         }
+
+        // @sentry/node (used in suite-desktop) is wrapping each outgoing request
+        // and requires protocol to be explicitly set to https while using TOR + https/wss address combination
+        if (this.proxyAgent) {
+            this.proxyAgent.protocol = /^(https|wss):/.test(this.endpoints[0]) ? 'https:' : 'http:';
+        }
     }
 
     disconnect() {
