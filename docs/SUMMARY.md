@@ -7,6 +7,7 @@
     -   [Versioning](releases/versioning.md)
     -   [Environments](releases/environments.md)
 -   [Packages](packages/index.md)
+    -   [Creating packages](packages/creating-packages.md)
     -   [Connect](packages/connect/index.md)
         -   [Bump](packages/connect/bump.md)
         -   [Debugging](packages/connect/debugging.md)
