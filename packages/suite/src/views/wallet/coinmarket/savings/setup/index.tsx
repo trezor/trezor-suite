@@ -106,6 +106,10 @@ const CustomAmountInputErrorWrapper = styled.div`
     justify-content: end;
 `;
 
+const AddressOptionsWrapper = styled.div`
+    margin-bottom: 16px;
+`;
+
 const getFiatAmountOptions = (amounts: string[], fiatCurrency?: string) =>
     amounts.map(amount => ({
         label: !Number.isNaN(Number(amount)) ? (
@@ -239,16 +243,6 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
             <CustomAmountInputErrorWrapper>
                 <InputError error={errors.customFiatAmount} />
             </CustomAmountInputErrorWrapper>
-            <Label>
-                <Translation id="TR_SAVINGS_SETUP_RECEIVING_ADDRESS" />
-            </Label>
-            <AddressOptions
-                account={account}
-                control={control}
-                receiveSymbol={account.symbol}
-                setValue={setValue}
-                address={address}
-            />
             <Summary>
                 <Left>
                     <Translation id="TR_SAVINGS_SETUP_SUMMARY_LABEL" />
@@ -266,6 +260,19 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     </Crypto>
                 </Right>
             </Summary>
+            <Label>
+                <Translation id="TR_SAVINGS_SETUP_RECEIVING_ADDRESS" />
+            </Label>
+            <AddressOptionsWrapper>
+                <AddressOptions
+                    account={account}
+                    control={control}
+                    receiveSymbol={account.symbol}
+                    setValue={setValue}
+                    address={address}
+                    menuPlacement="auto"
+                />
+            </AddressOptionsWrapper>
             <Button isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
                 <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
             </Button>

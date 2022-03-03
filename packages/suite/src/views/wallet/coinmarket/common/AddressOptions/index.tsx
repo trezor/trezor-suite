@@ -7,6 +7,7 @@ import { UseFormMethods, Control, Controller } from 'react-hook-form';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import type { Account } from '@wallet-types';
 import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
+import type { MenuPlacement } from 'react-select/src/types';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -73,9 +74,10 @@ interface Props extends Pick<UseFormMethods<FormState>, 'setValue'> {
     receiveSymbol?: string;
     account?: Account;
     address?: string;
+    menuPlacement?: MenuPlacement;
 }
 const AddressOptions = (props: Props) => {
-    const { control, receiveSymbol, setValue, address, account } = props;
+    const { control, receiveSymbol, setValue, address, account, menuPlacement } = props;
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);
 
@@ -102,6 +104,7 @@ const AddressOptions = (props: Props) => {
                         value={addressDictionary && address && addressDictionary[address]}
                         options={buildOptions(addresses)}
                         minWidth="70px"
+                        menuPlacement={menuPlacement}
                         formatOptionLabel={(accountAddress: AccountAddress) => {
                             if (!accountAddress) return null;
                             const formattedCryptoAmount = formatNetworkAmount(
