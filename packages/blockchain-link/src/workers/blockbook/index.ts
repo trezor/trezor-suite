@@ -358,36 +358,21 @@ class BlockbookWorker extends BaseWorker<BlockbookAPI> {
         super.cleanup();
     }
 
-    async connect(): Promise<BlockbookAPI> {
-        if (this.api && this.api.isConnected()) return this.api;
+    protected isConnected(api: BlockbookAPI | undefined): api is BlockbookAPI {
+        return api?.isConnected() ?? false;
+    }
 
+    async tryConnect(url: string): Promise<BlockbookAPI> {
         const { timeout, pingTimeout, keepAlive } = this.settings;
-        this.validateEndpoints();
-
-        this.debug('Connecting to', this.endpoints[0]);
 
         const api = new BlockbookAPI({
-            url: this.endpoints[0],
+            url,
             timeout,
             pingTimeout,
             keepAlive,
             agent: this.proxyAgent,
         });
-
-        try {
-            await api.connect();
-            this.api = api;
-        } catch (error) {
-            this.debug('Websocket connection failed', error);
-            this.api = undefined;
-            // connection error. remove endpoint
-            this.endpoints.splice(0, 1);
-            // and try another one or throw error
-            if (this.endpoints.length < 1) {
-                throw new CustomError('connect', 'All backends are down');
-            }
-            return this.connect();
-        }
+        await api.connect();
 
         api.on('disconnected', () => {
             this.post({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
@@ -399,7 +384,6 @@ class BlockbookWorker extends BaseWorker<BlockbookAPI> {
             type: RESPONSES.CONNECTED,
         });
 
-        this.debug('Connected');
         return api;
     }
 

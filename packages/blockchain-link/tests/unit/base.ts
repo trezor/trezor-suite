@@ -1,6 +1,16 @@
 import { BaseWorker } from '../../src/workers/base';
 
-const state = new BaseWorker();
+class MockWorker extends BaseWorker<any> {
+    protected isConnected(api: any): api is any {
+        return !!api;
+    }
+
+    protected tryConnect(): Promise<any> {
+        return Promise.resolve();
+    }
+}
+
+const state = new MockWorker();
 
 describe('Debug', () => {
     it('logs', () => {
