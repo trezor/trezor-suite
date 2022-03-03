@@ -35,6 +35,7 @@ const backup = (state: BackupState = initialState, action: Action) =>
                 draft.status = action.payload;
                 break;
             case BACKUP.SET_ERROR:
+                draft.status = 'error';
                 draft.error = action.payload;
                 break;
             case BACKUP.RESET_REDUCER:

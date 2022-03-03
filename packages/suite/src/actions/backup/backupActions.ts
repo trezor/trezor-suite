@@ -12,7 +12,7 @@ export type ConfirmKey =
     | 'made-no-digital-copy'
     | 'will-hide-seed';
 
-export type BackupStatus = 'initial' | 'in-progress' | 'finished';
+export type BackupStatus = 'initial' | 'in-progress' | 'finished' | 'error';
 export type BackupAction =
     | { type: typeof BACKUP.RESET_REDUCER }
     | { type: typeof BACKUP.TOGGLE_CHECKBOX_BY_KEY; payload: ConfirmKey }
@@ -70,9 +70,9 @@ export const backupDevice =
             });
         } else {
             dispatch(notificationActions.addToast({ type: 'backup-success' }));
+            dispatch({
+                type: BACKUP.SET_STATUS,
+                payload: 'finished',
+            });
         }
-        dispatch({
-            type: BACKUP.SET_STATUS,
-            payload: 'finished',
-        });
     };

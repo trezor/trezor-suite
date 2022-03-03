@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
@@ -39,8 +40,6 @@ const BackupStep = () => {
         return null;
     }
 
-    const { status } = backup;
-
     return (
         <>
             {showSkipConfirmation && (
@@ -49,7 +48,7 @@ const BackupStep = () => {
                     variant="backup"
                 />
             )}
-            {status === 'initial' && (
+            {backup.status === 'initial' && (
                 <OnboardingStepBox
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
@@ -94,7 +93,7 @@ const BackupStep = () => {
                     </OptionsWrapper>
                 </OnboardingStepBox>
             )}
-            {status === 'in-progress' && (
+            {backup.status === 'in-progress' && (
                 <OnboardingStepBox
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
@@ -114,7 +113,7 @@ const BackupStep = () => {
                 />
             )}
 
-            {status === 'finished' && !backup.error && (
+            {backup.status === 'finished' && (
                 <OnboardingStepBox
                     image="BACKUP"
                     heading={<Translation id="TR_BACKUP_CREATED" />}
@@ -130,7 +129,7 @@ const BackupStep = () => {
                     }
                 />
             )}
-            {status === 'finished' && backup.error && (
+            {backup.status === 'error' && (
                 <OnboardingStepBox
                     image="BACKUP"
                     heading={<Translation id="TOAST_BACKUP_FAILED" />}
