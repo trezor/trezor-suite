@@ -31,7 +31,7 @@ export class JsonRpcClient {
         }
     }
 
-    connected() {
+    isConnected() {
         return !!this.socket;
     }
 
