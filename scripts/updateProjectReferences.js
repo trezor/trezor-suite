@@ -5,6 +5,7 @@ import prettier from 'prettier';
 import minimatch from 'minimatch';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import chalk from 'chalk';
 
 (async () => {
     const { argv } = yargs(hideBin(process.argv))
@@ -63,7 +64,7 @@ import { hideBin } from 'yargs/helpers';
                     ? JSON.parse(fs.readFileSync(workspaceConfigPath).toString())
                     : defaultWorkspaceConfig;
             } catch {
-                console.error('Error while parsing file: ', workspaceConfigPath);
+                console.error(chalk.bold.red('Error while parsing file: '), workspaceConfigPath);
                 process.exit(1);
             }
 
@@ -82,7 +83,9 @@ import { hideBin } from 'yargs/helpers';
                     nextWorkspaceReferences.push({ path: relativeDependencyPath });
                 } else {
                     console.warn(
-                        `${dependencyName} might be referencing itself in package.json#dependencies.`,
+                        chalk.yellow(
+                            `${dependencyName} might be referencing itself in package.json#dependencies.`,
+                        ),
                     );
                 }
             });
@@ -93,8 +96,10 @@ import { hideBin } from 'yargs/helpers';
                     serializeConfig(nextWorkspaceReferences)
                 ) {
                     console.error(
-                        `TypeScript project references in ${workspace.location} are inconsistent with package.json#dependencies.`,
-                        `Run "yarn update-project-references" to fix them.`,
+                        chalk.red(
+                            `TypeScript project references in ${workspace.location} are inconsistent with package.json#dependencies.`,
+                        ),
+                        chalk.red.bold(`Run "yarn update-project-references" to fix them.`),
                     );
 
                     process.exit(1);
