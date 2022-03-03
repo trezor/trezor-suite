@@ -32,7 +32,7 @@ export type AnalyticsAction =
 
 // Don't forget to update docs with changelog!
 // <breaking-change>.<analytics-extended>
-export const version = '1.16';
+export const version = '1.17';
 
 export type AnalyticsEvent =
     | {
@@ -138,6 +138,13 @@ export type AnalyticsEvent =
           payload: Partial<Omit<OnboardingAnalytics, 'startTime'>> & {
               duration: number;
               device: 'T' | '1';
+          };
+      }
+    | {
+          type: 'create-backup';
+          payload: {
+              status: 'finished' | 'error';
+              error: string;
           };
       }
     | {

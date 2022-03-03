@@ -2,6 +2,13 @@
 
 This changelog lists all events that Suite tracks.
 
+### 1.17
+
+Added:
+
+-   create-backup
+    -   status: 'finished' | 'error'
+    -   error: string
 ### 1.16
 
 Added:

@@ -4,6 +4,7 @@ import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
+import { BACKUP } from '@backup-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import {
@@ -171,6 +172,30 @@ const analytics =
                         type: 'menu/toggle-tor',
                         payload: {
                             value: action.payload,
+                        },
+                    }),
+                );
+                break;
+            case BACKUP.SET_STATUS:
+                if (action.payload === 'finished') {
+                    api.dispatch(
+                        analyticsActions.report({
+                            type: 'create-backup',
+                            payload: {
+                                status: 'finished',
+                                error: '',
+                            },
+                        }),
+                    );
+                }
+                break;
+            case BACKUP.SET_ERROR:
+                api.dispatch(
+                    analyticsActions.report({
+                        type: 'create-backup',
+                        payload: {
+                            status: 'error',
+                            error: action.payload,
                         },
                     }),
                 );

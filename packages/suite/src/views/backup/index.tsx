@@ -8,7 +8,9 @@ import { Loading, Image, Translation, TrezorLink, Modal } from '@suite-component
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { FAILED_BACKUP_URL } from '@suite-constants/urls';
+
 import type { InjectedModalApplicationProps } from '@suite-types';
+import type { BackupStatus } from '@backup-actions/backupActions';
 
 const Row = styled.div`
     display: flex;
@@ -45,18 +47,16 @@ const CloseButton = (props: ButtonProps) => (
     </StyledButton>
 );
 
-type BACKUP_STATUS = 'initial' | 'in-progress' | 'finished';
-
-const getModalHeading = (backupStatus: BACKUP_STATUS, backupError: any) => {
+const getModalHeading = (backupStatus: BackupStatus) => {
     if (backupStatus === 'initial') {
         return <Translation id="TR_CREATE_BACKUP" />;
     }
 
-    if (backupStatus === 'finished' && !backupError) {
+    if (backupStatus === 'finished') {
         return <Translation id="TR_BACKUP_CREATED" />;
     }
 
-    if (backupStatus === 'finished' && backupError) {
+    if (backupStatus === 'error') {
         return <Translation id="TOAST_BACKUP_FAILED" />;
     }
     return null;
@@ -85,7 +85,7 @@ const Backup = (props: InjectedModalApplicationProps) => {
     const { closeModalApp, modal } = props;
     const onClose = () => closeModalApp();
 
-    const backupStatuses = ['initial', 'in-progress', 'finished'] as const;
+    const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
 
     if (modal) {
         // modal is shown as standalone not inner modal as expected
@@ -178,9 +178,9 @@ const Backup = (props: InjectedModalApplicationProps) => {
             cancelable={props.cancelable}
             onCancel={props.onCancel}
             data-test="@backup"
-            heading={getModalHeading(backup.status, backup.error)}
-            totalProgressBarSteps={backupStatuses.length}
-            currentProgressBarStep={backupStatuses.findIndex(s => s === backup.status) + 1}
+            heading={getModalHeading(backup.status)}
+            totalProgressBarSteps={nonErrorBackupStatuses.length}
+            currentProgressBarStep={nonErrorBackupStatuses.findIndex(s => s === backup.status) + 1}
         >
             {backup.status === 'initial' && (
                 <>
@@ -207,7 +207,7 @@ const Backup = (props: InjectedModalApplicationProps) => {
 
             {backup.status === 'in-progress' && <Loading noBackground />}
 
-            {backup.status === 'finished' && !backup.error && (
+            {backup.status === 'finished' && (
                 <>
                     <StyledP data-test="@backup/success-message">
                         <Translation id="TR_BACKUP_FINISHED_TEXT" />
@@ -244,7 +244,7 @@ const Backup = (props: InjectedModalApplicationProps) => {
                     </Buttons>
                 </>
             )}
-            {backup.status === 'finished' && backup.error && (
+            {backup.status === 'error' && (
                 <>
                     <StyledImage image="UNI_ERROR" />
                     <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
