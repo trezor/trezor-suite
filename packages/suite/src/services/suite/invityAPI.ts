@@ -166,6 +166,9 @@ export interface SavingsProviderInfo {
 
     minimumPaymentAmountLimit: number;
     maximumPaymentAmountLimit: number;
+
+    defaultPaymentFrequency: PaymentFrequency;
+    defaultPaymentAmount: number;
 }
 
 export interface SavingsProviderInfoIdentityDocument {

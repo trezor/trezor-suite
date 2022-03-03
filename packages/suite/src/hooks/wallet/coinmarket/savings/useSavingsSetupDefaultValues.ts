@@ -7,23 +7,29 @@ const useSavingsSetupDefaultValues = (
     unusedAddress: string | undefined,
     selectedProvider?: SavingsProviderInfo,
 ) => {
-    let fiatAmount = savingsTrade?.fiatStringAmount;
-    if (fiatAmount && !selectedProvider?.setupPaymentAmounts.includes(fiatAmount)) {
-        fiatAmount = CustomPaymentAmountKey;
-    }
+    const defaultValues = useMemo(() => {
+        let fiatAmount =
+            savingsTrade?.fiatStringAmount || selectedProvider?.defaultPaymentAmount?.toString();
+        if (fiatAmount && !selectedProvider?.setupPaymentAmounts.includes(fiatAmount)) {
+            fiatAmount = CustomPaymentAmountKey;
+        }
 
-    const defaultValues = useMemo(
-        () =>
-            savingsTrade
-                ? {
-                      fiatAmount,
-                      paymentFrequency: savingsTrade.paymentFrequency,
-                      customFiatAmount: savingsTrade.fiatStringAmount,
-                      address: savingsTrade.receivingCryptoAddresses?.[0] || unusedAddress,
-                  }
-                : undefined,
-        [fiatAmount, savingsTrade, unusedAddress],
-    );
+        return savingsTrade
+            ? {
+                  fiatAmount,
+                  paymentFrequency:
+                      savingsTrade.paymentFrequency || selectedProvider?.defaultPaymentFrequency,
+                  customFiatAmount: savingsTrade.fiatStringAmount,
+                  address: savingsTrade.receivingCryptoAddresses?.[0] || unusedAddress,
+              }
+            : undefined;
+    }, [
+        savingsTrade,
+        selectedProvider?.defaultPaymentAmount,
+        selectedProvider?.defaultPaymentFrequency,
+        selectedProvider?.setupPaymentAmounts,
+        unusedAddress,
+    ]);
 
     return defaultValues;
 };
