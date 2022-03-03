@@ -1,7 +1,8 @@
 import React from 'react';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
-import { Card, Translation } from '@suite-components';
+import Card from '@suite-components/Card';
+import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@suite-utils/build';
 
 const StyledCard = styled(Card)`

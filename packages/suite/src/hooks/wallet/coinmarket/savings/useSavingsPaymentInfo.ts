@@ -8,7 +8,7 @@ import type {
     UseSavingsPaymentInfoProps,
 } from '@wallet-types/coinmarket/savings/paymentInfo';
 import useSavingsTrade from './useSavingsTrade';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import invityAPI, { SavingsPaymentInfo } from '@suite/services/suite/invityAPI';
 
 export const useSavingsPaymentInfo = ({
@@ -16,6 +16,10 @@ export const useSavingsPaymentInfo = ({
 }: UseSavingsPaymentInfoProps): SavingsPaymentInfoContextValues => {
     const { navigateToSavingsSetup, navigateToSavingsOverview } = useCoinmarketNavigation(
         selectedAccount.account,
+    );
+
+    const isWatchingKYCStatus = useSelector(
+        state => state.wallet.coinmarket.savings.isWatchingKYCStatus,
     );
 
     const handleEditButtonClick = useCallback(() => {
@@ -56,5 +60,6 @@ export const useSavingsPaymentInfo = ({
         handleSubmit,
         copy,
         isSubmitting,
+        isWatchingKYCStatus,
     };
 };

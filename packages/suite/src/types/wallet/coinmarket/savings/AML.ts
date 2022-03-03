@@ -17,4 +17,5 @@ export type SavingsAMLContextValues = {
     selectedQuestionAnswers: QuestionAnswer;
 
     handleAmlAnswerOptionClick: (key: string, answer: string) => void;
+    isWatchingKYCStatus: boolean;
 };

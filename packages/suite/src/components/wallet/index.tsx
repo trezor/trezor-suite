@@ -30,6 +30,7 @@ import CoinmarketRefreshTime from './CoinmarketRefreshTime';
 import InvityAuthentication from './InvityAuthentication';
 import InvityLayout from './InvityLayout';
 import InvityContextDropdown from './InvityContextDropdown';
+import KYCInProgress from './KYCInProgress';
 import {
     withInvityAuthentication,
     WithInvityAuthenticationProps,
@@ -72,6 +73,7 @@ export {
     OnOffSwitcher,
     InputError,
     AccountExceptionLayout,
+    KYCInProgress,
 };
 export type {
     WithInvityLayoutProps,

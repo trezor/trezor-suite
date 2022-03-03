@@ -12,4 +12,5 @@ export type SavingsPaymentInfoContextValues = {
     handleSubmit: () => void;
     isSubmitting: boolean;
     copy: (paymentInfoKey: keyof SavingsPaymentInfo) => void;
+    isWatchingKYCStatus: boolean;
 };

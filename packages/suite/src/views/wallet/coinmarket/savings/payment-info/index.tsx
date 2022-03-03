@@ -1,4 +1,4 @@
-import { withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
+import { KYCInProgress, withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
 import { useSavingsPaymentInfo } from '@wallet-hooks/coinmarket/savings/useSavingsPaymentInfo';
 import { Button } from '@trezor/components';
 import React from 'react';
@@ -77,10 +77,12 @@ const PaymentInfo = (props: WithInvityLayoutProps) => {
         handleSubmit,
         copy,
         isSubmitting,
+        isWatchingKYCStatus,
     } = useSavingsPaymentInfo(props);
 
     return (
         <>
+            {isWatchingKYCStatus && <KYCInProgress />}
             <Header>
                 <Translation id="TR_SAVINGS_PAYMENT_INFO_HEADER" />
             </Header>

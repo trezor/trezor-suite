@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputError, withInvityLayout, WithSelectedAccountLoadedProps } from '@wallet-components';
 import styled from 'styled-components';
-import KYCInProgress from './components/KYCInProgress';
+import KYCInProgress from '@wallet-components/KYCInProgress';
 import { Button, Input, SelectBar, variables } from '@trezor/components';
 import { useSavingsSetup } from '@wallet-hooks/coinmarket/savings/useSavingsSetup';
 import { Controller } from 'react-hook-form';

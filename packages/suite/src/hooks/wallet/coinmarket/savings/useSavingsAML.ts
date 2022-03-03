@@ -20,9 +20,9 @@ export const useSavingsAML = ({ selectedAccount }: UseSavingsAMLProps): SavingsA
         loadInvityData();
     }, [loadInvityData]);
 
-    const { selectedProvider } = useSelector(state => ({
+    const { selectedProvider, isWatchingKYCStatus } = useSelector(state => ({
         selectedProvider: state.wallet.coinmarket.savings.selectedProvider,
-        isLoading: state.wallet.coinmarket.isLoading,
+        isWatchingKYCStatus: state.wallet.coinmarket.savings.isWatchingKYCStatus,
     }));
 
     const { savingsTrade, saveSavingsTradeResponse } = useSavingsTrade();
@@ -82,5 +82,6 @@ export const useSavingsAML = ({ selectedAccount }: UseSavingsAMLProps): SavingsA
         canSubmitAnswers,
         answers,
         selectedQuestionAnswers,
+        isWatchingKYCStatus,
     };
 };

@@ -4,6 +4,7 @@ import { withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
 import { useSavingsAML } from '@wallet-hooks/coinmarket/savings/useSavingsAML';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
+import KYCInProgress from '@wallet-components/KYCInProgress';
 
 const Header = styled.div`
     font-size: 24px;
@@ -69,10 +70,12 @@ const AML = (props: WithInvityLayoutProps) => {
         answers,
         canSubmitAnswers,
         selectedQuestionAnswers,
+        isWatchingKYCStatus,
     } = useSavingsAML(props);
 
     return (
         <>
+            {isWatchingKYCStatus && <KYCInProgress />}
             <Header>
                 <Translation id="TR_SAVINGS_AML_HEADER" />
             </Header>
