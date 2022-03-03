@@ -27,11 +27,14 @@ const Label = styled.div`
 `;
 
 const StyledSelectBar = styled(SelectBar)`
-    margin-bottom: 26px;
     width: 100%;
     & div div {
         justify-content: center;
     }
+`;
+
+const FrequencyStyledSelectBar = styled(StyledSelectBar)`
+    margin-bottom: 26px;
 `;
 
 const Summary = styled.div`
@@ -93,6 +96,16 @@ const StyledInput = styled(Input)`
     width: 70px;
 `;
 
+const CustomAmountInputErrorWrapper = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${props => props.theme.TYPE_RED};
+    align-items: end;
+    padding: 10px 10px 0 10px;
+    min-height: 27px;
+    justify-content: end;
+`;
+
 const getFiatAmountOptions = (amounts: string[], fiatCurrency?: string) =>
     amounts.map(amount => ({
         label: !Number.isNaN(Number(amount)) ? (
@@ -129,6 +142,8 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
         isSubmitting,
         paymentAmounts,
         paymentFrequencyOptions,
+        minimumPaymentAmountLimit,
+        maximumPaymentAmountLimit,
     } = useSavingsSetup(props);
 
     return (
@@ -145,7 +160,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                 name="paymentFrequency"
                 defaultValue={defaultPaymentFrequency}
                 render={({ onChange, value }) => (
-                    <StyledSelectBar
+                    <FrequencyStyledSelectBar
                         onChange={onChange}
                         selectedOption={value}
                         options={paymentFrequencyOptions}
@@ -178,17 +193,42 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                             width={70}
                             noTopLabel
                             variant="small"
-                            noError={!errors.customFiatAmount}
+                            noError
                             state={errors.customFiatAmount ? 'error' : 'success'}
-                            bottomText={<InputError error={errors.customFiatAmount} />}
                             innerRef={register({
                                 validate: (value: string) => {
-                                    if (!value || Number.isNaN(Number(value))) {
+                                    if (!value) {
                                         return 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED';
                                     }
+                                    if (Number.isNaN(Number(value))) {
+                                        return 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT';
+                                    }
                                     const numberValue = Number(value);
-                                    if (numberValue < 10) {
-                                        return 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM';
+                                    if (
+                                        minimumPaymentAmountLimit &&
+                                        numberValue < minimumPaymentAmountLimit
+                                    ) {
+                                        return (
+                                            <Translation
+                                                id="TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM"
+                                                values={{
+                                                    amount: minimumPaymentAmountLimit,
+                                                }}
+                                            />
+                                        );
+                                    }
+                                    if (
+                                        maximumPaymentAmountLimit &&
+                                        numberValue > maximumPaymentAmountLimit
+                                    ) {
+                                        return (
+                                            <Translation
+                                                id="TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM"
+                                                values={{
+                                                    amount: maximumPaymentAmountLimit,
+                                                }}
+                                            />
+                                        );
                                     }
                                 },
                             })}
@@ -196,6 +236,9 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     </FiatAmountRightColumn>
                 )}
             </FiatAmount>
+            <CustomAmountInputErrorWrapper>
+                <InputError error={errors.customFiatAmount} />
+            </CustomAmountInputErrorWrapper>
             <Label>
                 <Translation id="TR_SAVINGS_SETUP_RECEIVING_ADDRESS" />
             </Label>

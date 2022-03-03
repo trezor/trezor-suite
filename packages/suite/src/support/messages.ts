@@ -1176,12 +1176,20 @@ export default defineMessages({
         id: 'TR_SAVINGS_GUIDE_STEP_DCA_SETUP',
     },
     TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED: {
-        defaultMessage: 'Amount must be a number.',
+        defaultMessage: 'Amount is required.',
         id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED',
     },
+    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT: {
+        defaultMessage: 'Amount must be a number.',
+        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT',
+    },
     TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM: {
-        defaultMessage: 'Amount is too low.',
+        defaultMessage: 'Minimum amount is {amount}.',
         id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM',
+    },
+    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM: {
+        defaultMessage: 'Maximum amount is {amount}.',
+        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM',
     },
     TR_SAVINGS_SETUP_HEADER: {
         defaultMessage: 'Your setup',

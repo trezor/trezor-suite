@@ -164,5 +164,7 @@ export const useSavingsSetup = ({
         isSubmitting,
         paymentFrequencyOptions,
         paymentAmounts,
+        minimumPaymentAmountLimit: selectedProvider?.minimumPaymentAmountLimit,
+        maximumPaymentAmountLimit: selectedProvider?.maximumPaymentAmountLimit,
     };
 };

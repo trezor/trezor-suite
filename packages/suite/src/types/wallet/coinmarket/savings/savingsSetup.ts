@@ -30,4 +30,6 @@ export type SavingsSetupContextValues = Omit<UseFormMethods<SavingsSetupFormStat
     isSubmitting: boolean;
     paymentFrequencyOptions: Option[];
     paymentAmounts: string[];
+    minimumPaymentAmountLimit?: number;
+    maximumPaymentAmountLimit?: number;
 };

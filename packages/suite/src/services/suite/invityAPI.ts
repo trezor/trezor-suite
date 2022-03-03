@@ -163,6 +163,9 @@ export interface SavingsProviderInfo {
 
     /** List of payment amounts selectable by user during savings setup. */
     setupPaymentAmounts: string[];
+
+    minimumPaymentAmountLimit: number;
+    maximumPaymentAmountLimit: number;
 }
 
 export interface SavingsProviderInfoIdentityDocument {
