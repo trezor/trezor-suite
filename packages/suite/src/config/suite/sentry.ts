@@ -1,4 +1,6 @@
 import { CaptureConsole, Dedupe } from '@sentry/integrations';
+import { isDev } from '@suite-utils/build';
+
 import type { Options } from '@sentry/types';
 
 export const allowReportTag = 'allowReport';
@@ -40,6 +42,7 @@ const config: Options = {
         new Dedupe(),
     ],
     beforeSend,
+    enabled: !isDev,
     release: process.env.SENTRY_RELEASE,
     environment: process.env.SUITE_TYPE,
     normalizeDepth: 4,

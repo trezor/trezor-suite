@@ -143,12 +143,10 @@ ipcMain.on('app/restart', () => {
     app.exit();
 });
 
-if (!isDev) {
-    const sentryConfig: ElectronOptions = {
-        ...SENTRY_CONFIG,
-        ipcMode: IPCMode.Classic,
-        getSessions: () => [session.defaultSession],
-    };
+const sentryConfig: ElectronOptions = {
+    ...SENTRY_CONFIG,
+    ipcMode: IPCMode.Classic,
+    getSessions: () => [session.defaultSession],
+};
 
-    initSentry(sentryConfig);
-}
+initSentry(sentryConfig);

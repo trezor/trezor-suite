@@ -6,8 +6,6 @@ import { init as initSentry } from '@sentry/electron/renderer';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { store } from '@suite/reducers/store';
-import { isDev } from '@suite-utils/build';
-import { SENTRY_CONFIG } from '@suite-config';
 
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
@@ -24,14 +22,14 @@ import ThemeProvider from '@suite-support/ThemeProvider';
 import history from '@suite/support/history';
 import AppRouter from './support/Router';
 import DesktopUpdater from './support/DesktopUpdater';
+import { SENTRY_CONFIG } from '@suite/config/suite';
 
 const Index = () => {
     const [isUpdateVisible, setIsUpdateVisible] = useState(false);
 
     useEffect(() => {
-        if (!isDev) {
-            initSentry(SENTRY_CONFIG);
-        }
+        initSentry(SENTRY_CONFIG);
+
         desktopApi.clientReady();
     }, []);
 
