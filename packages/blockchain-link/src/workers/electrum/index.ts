@@ -141,29 +141,42 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
         this.txListener = L.txListener(this);
     }
 
-    private chooseServer(server: string[]): string {
-        if (!server || !Array.isArray(server) || server.length < 1) {
-            throw new CustomError('connect', 'Endpoint not set');
-        }
-        return server[0];
-    }
-
     async connect(): Promise<ElectrumClient> {
         if (!this.api?.connected()) {
-            const { server = [], debug, timeout, keepAlive, name } = this.settings;
-            const url = this.chooseServer(server);
-            const socket = createSocket(url, { timeout, keepAlive, proxyAgent: this.proxyAgent });
-            const api = new CachingElectrumClient();
-            await api.connect(socket, {
-                url,
-                coin: name ?? 'BTC',
-                debug,
-                client: {
-                    name: 'blockchain-link',
-                    protocolVersion: '1.4',
-                },
-            });
-            this.api = api;
+            const { debug, timeout, keepAlive, name } = this.settings;
+
+            this.validateEndpoints();
+            const url = this.endpoints[0];
+            this.debug('Connecting to', url);
+
+            try {
+                const socket = createSocket(url, {
+                    timeout,
+                    keepAlive,
+                    proxyAgent: this.proxyAgent,
+                });
+                const api = new CachingElectrumClient();
+                await api.connect(socket, {
+                    url,
+                    coin: name ?? 'BTC',
+                    debug,
+                    client: {
+                        name: 'blockchain-link',
+                        protocolVersion: '1.4',
+                    },
+                });
+                this.api = api;
+            } catch (error) {
+                this.debug('Connection failed', error);
+                this.api = undefined;
+                // connection error, remove endpoint
+                this.endpoints.splice(0, 1);
+                // and try another one or throw error
+                if (this.endpoints.length < 1) {
+                    throw new CustomError('connect', 'All backends are down');
+                }
+                return this.connect();
+            }
 
             this.post({
                 id: -1,
