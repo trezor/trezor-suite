@@ -1011,8 +1011,12 @@ export default defineMessages({
         id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_HEADER',
     },
     TR_SAVINGS_PHONE_NUMBER_VERIFICATION_DESCRIPTION: {
-        defaultMessage: 'Verification code sent to {phoneNumber}',
+        defaultMessage: 'Verification code sent to',
         id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_DESCRIPTION',
+    },
+    TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CHANGE_PHONE_NUMBER_TOOLTIP: {
+        defaultMessage: 'Change phone number',
+        id: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CHANGE_PHONE_NUMBER_TOOLTIP',
     },
     TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_LABEL: {
         defaultMessage: 'Code',

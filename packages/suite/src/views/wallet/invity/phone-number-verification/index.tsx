@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, variables, Link } from '@trezor/components';
+import { Button, variables, Icon, Tooltip } from '@trezor/components';
 import {
     SavingsPhoneNumberVerificationContext,
     useSavingsPhoneNumberVerification,
@@ -15,12 +15,17 @@ const Header = styled.div`
     margin-bottom: 14px;
 `;
 
-const Description = styled.span`
+const Description = styled.div`
     font-size: 14px;
     line-height: 22px;
     margin-bottom: 38px;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-    display: inline-block;
+    display: flex;
+    align-items: baseline;
+    span + div,
+    div + div {
+        margin: 0 8px;
+    }
 `;
 
 const PhoneNumber = styled(Description)`
@@ -50,8 +55,14 @@ const InputErrorWrapper = styled.div`
     margin-bottom: 44px;
 `;
 
-const ChangePhoneNumberLink = styled(Link)`
-    margin-left: 6px;
+const StyledIcon = styled(Icon)`
+    cursor: help;
+    & div {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: ${props => props.theme.BG_GREY};
+    }
 `;
 
 const PhoneNumberVerification = (props: WithInvityLayoutProps) => {
@@ -66,15 +77,16 @@ const PhoneNumberVerification = (props: WithInvityLayoutProps) => {
                 <Translation id="TR_SAVINGS_PHONE_NUMBER_VERIFICATION_HEADER" />
             </Header>
             <Description>
-                <Translation
-                    id="TR_SAVINGS_PHONE_NUMBER_VERIFICATION_DESCRIPTION"
-                    values={{
-                        phoneNumber: <PhoneNumber>{phoneNumber}</PhoneNumber>,
-                    }}
-                />
-                <ChangePhoneNumberLink onClick={handlePhoneNumberChange}>
-                    <Translation id="TR_CHANGE" />
-                </ChangePhoneNumberLink>
+                <Translation id="TR_SAVINGS_PHONE_NUMBER_VERIFICATION_DESCRIPTION" />
+                <PhoneNumber>{phoneNumber}</PhoneNumber>
+                <Tooltip
+                    content={
+                        <Translation id="TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CHANGE_PHONE_NUMBER_TOOLTIP" />
+                    }
+                    placement="bottom"
+                >
+                    <StyledIcon icon="PENCIL" size={13} onClick={handlePhoneNumberChange} />
+                </Tooltip>
             </Description>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <VerificationCodeDigitInputsWrapper>

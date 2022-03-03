@@ -80,7 +80,7 @@ export const useSavingsPhoneNumberVerification = ({
         register: typedRegister,
         error,
         onSubmit,
-        phoneNumber: `${phoneNumberPrefix}${phoneNumber}`,
+        phoneNumber: `${phoneNumberPrefix} ${phoneNumber}`,
         handlePhoneNumberChange,
     };
 };
