@@ -7,9 +7,12 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "chalk": "^5.0.0",
+        "fs-extra": "^10.0.1",
+        "minimatch": "^3.0.4",
         "prettier": "2.5.1",
-        "yargs": "17.3.1",
-        "minimatch": "^3.0.4"
+        "sort-package-json": "^1.54.0",
+        "yargs": "17.3.1"
     },
     "devDependencies": {
         "@types/prettier": "2.4.3"
