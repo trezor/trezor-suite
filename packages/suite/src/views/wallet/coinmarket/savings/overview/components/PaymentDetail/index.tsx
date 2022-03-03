@@ -40,6 +40,7 @@ const PaymentItemDate = styled.div`
     margin: 4px 0;
     padding: 9px 38px;
     border-right: 1px solid ${props => props.theme.STROKE_GREY};
+    width: 25%;
 `;
 
 const PaymentItemStatus = styled.div`
@@ -55,6 +56,7 @@ const PaymentItemButton = styled(Button)`
     margin: 12px 17px;
     font-size: 12px;
     line-height: 16px;
+    width: 25%;
 `;
 const PaymentItemStatusIcon = styled.div`
     margin-right: 3px;
@@ -93,6 +95,7 @@ const Row = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    text-align: center;
     ${PaymentItem} &:nth-child(2) {
         border-top: 1px solid ${props => props.theme.STROKE_GREY};
     }
