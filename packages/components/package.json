@@ -63,7 +63,7 @@
         "stylelint-config-styled-components": "^0.1.1",
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.10.0",
-        "ts-loader": "^9.2.5",
+        "ts-loader": "^9.2.7",
         "typescript-styled-plugin": "^0.15.0"
     },
     "peerDependencies": {
