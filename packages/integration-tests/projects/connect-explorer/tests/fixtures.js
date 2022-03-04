@@ -328,12 +328,7 @@ const fixtures = [
     ...getPublicKey,
     ...getAddress,
     ...getAccountInfo,
-    // todo: compose transaction breaks next test in queue
-    // this tests ends with POST "Cancel" call through bridge here https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js#L669
-    // for reference /post/session endpoint works check here https://github.com/trezor/trezord-go
-    // subsequent call (in next tests) fails here https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js#L368
-    // as trezord returns response belonging to the prev call.
-    // ...composeTransaction,
+    ...composeTransaction,
     ...signTransaction,
     ...signMessage,
     ...verifyMessage,
