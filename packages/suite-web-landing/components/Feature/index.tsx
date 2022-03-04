@@ -1,12 +1,10 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { variables, Fade } from '@trezor/components';
-import { rgba } from 'polished';
 
+// due to iOS browser bug, we need to use transparent color in gradient instead of 'transparent'
 const LIGHT_GREY = '#f5f5f5';
-
-// due to iOS browser bug, it doesn't handle transparent color in gradients well
-const transparent = rgba(LIGHT_GREY, 0);
+const LIGHT_GREY_TRANSPARENT = `${LIGHT_GREY}00`;
 
 const Feature = styled.section<{ flip?: boolean }>`
     position: relative;
@@ -56,7 +54,7 @@ const StyledText = styled.div<{ flip?: boolean }>`
         `
             &:after {
                 right: -70%;
-                background: linear-gradient(to left, ${transparent} 0%, ${LIGHT_GREY} 100%);
+                background: linear-gradient(to left, ${LIGHT_GREY_TRANSPARENT} 0%, ${LIGHT_GREY} 100%);
             }
 
             &:before {
@@ -71,7 +69,7 @@ const StyledText = styled.div<{ flip?: boolean }>`
         `
             &:after {
                 left: -70%;
-                background: linear-gradient(to right, ${transparent} 0%, ${LIGHT_GREY} 100%);
+                background: linear-gradient(to right, ${LIGHT_GREY_TRANSPARENT} 0%, ${LIGHT_GREY} 100%);
             }
 
             &:before {
