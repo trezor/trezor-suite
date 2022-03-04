@@ -71,11 +71,14 @@ const BackendRow = ({
     );
 };
 
-export const NavBackends = () => {
+type NavBackendsProps = {
+    customBackends: BackendSettings[];
+};
+
+export const NavBackends = ({ customBackends }: NavBackendsProps) => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
-    const { backends, blockchain } = useSelector(state => ({
-        backends: state.wallet.settings.backends,
+    const { blockchain } = useSelector(state => ({
         blockchain: state.wallet.blockchain,
     }));
     const { goto, openModal } = useActions({
@@ -83,13 +86,7 @@ export const NavBackends = () => {
         openModal: openModalAction,
     });
 
-    const customBackends: BackendSettings[] = (
-        Object.entries(backends) as Array<
-            [Network['symbol'], NonNullable<typeof backends[Network['symbol']]>]
-        >
-    ).map(([coin, settings]) => ({ coin, ...settings }));
-
-    return customBackends.length ? (
+    return (
         <Wrapper>
             <Dropdown
                 onToggle={() => setOpen(!open)}
@@ -139,5 +136,5 @@ export const NavBackends = () => {
                 />
             </Dropdown>
         </Wrapper>
-    ) : null;
+    );
 };
