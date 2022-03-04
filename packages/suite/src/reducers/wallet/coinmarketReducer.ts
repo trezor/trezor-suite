@@ -83,7 +83,7 @@ interface Savings {
     selectedProvider?: SavingsProviderInfo;
     savingsInfo?: SavingsInfo;
     savingsTrade?: SavingsTrade;
-    savingsTradePayments?: SavingsTradePlannedPayment[];
+    savingsTradePayments: SavingsTradePlannedPayment[];
     isSavingsTradeLoading: boolean;
     kycFinalStatus?: SavingsKYCStatus;
     isWatchingKYCStatus: boolean;
@@ -145,7 +145,7 @@ export const initialState = {
         selectedProvider: undefined,
         savingsInfo: undefined,
         savingsTrade: undefined,
-        savingsTradePayments: undefined,
+        savingsTradePayments: [],
         isSavingsTradeLoading: false,
         kycFinalStatus: undefined,
         isWatchingKYCStatus: false,
