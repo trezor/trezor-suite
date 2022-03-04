@@ -113,6 +113,6 @@
         "stylelint": "^13.8.0",
         "stylelint-config-recommended": "^3.0.0",
         "stylelint-config-styled-components": "^0.1.1",
-        "typescript-styled-plugin": "^0.15.0"
+        "typescript-styled-plugin": "^0.18.2"
     }
 }
