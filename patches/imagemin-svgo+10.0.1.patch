@@ -1,0 +1,22 @@
+diff --git a/node_modules/imagemin-svgo/package.json b/node_modules/imagemin-svgo/package.json
+index e45d9e7..97fd641 100644
+--- a/node_modules/imagemin-svgo/package.json
++++ b/node_modules/imagemin-svgo/package.json
+@@ -5,7 +5,7 @@
+ 	"license": "MIT",
+ 	"repository": "imagemin/imagemin-svgo",
+ 	"type": "module",
+-	"exports": "./index.js",
++	"exports": "./index.cjs",
+ 	"funding": {
+ 		"url": "https://github.com/sindresorhus/imagemin-svgo?sponsor=1"
+ 	},
+@@ -16,7 +16,7 @@
+ 		"test": "xo && ava"
+ 	},
+ 	"files": [
+-		"index.js"
++		"index.cjs"
+ 	],
+ 	"keywords": [
+ 		"compress",
