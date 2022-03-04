@@ -5658,7 +5658,7 @@
   resolved "https://registry.yarnpkg.com/@types/webpack-env/-/webpack-env-1.16.3.tgz#b776327a73e561b71e7881d0cd6d34a1424db86a"
   integrity sha512-9gtOPPkfyNoEqCQgx4qJKkuNm/x0R2hKR7fdl7zvTJyHnIisuE/LfvXOsYWL0o3qq6uiBnKZNNNzi3l0y/X+xw==
 
-"@types/webpack-plugin-serve@^1.4.1":
+"@types/webpack-plugin-serve@^1.4.2":
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/@types/webpack-plugin-serve/-/webpack-plugin-serve-1.4.2.tgz#30ca8f4b9f74e74b29be682265e92ceb23269a8c"
   integrity sha512-h7tKnZfAm3w6e9iiT60KzSeETiO19fLTUd/Z9Wc3dNMrztMXASoMhX1mIogySUjwW4fHsTpXhCUrJEZ02dkQLQ==
@@ -24842,19 +24842,19 @@ webpack-nano@^1.1.1:
     rechoir "^0.7.0"
     yargs-parser "^20.2.1"
 
-webpack-plugin-ramdisk@^0.1.2:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/webpack-plugin-ramdisk/-/webpack-plugin-ramdisk-0.1.8.tgz#f97db5f7c57a961baf7682872437b9f372ac28d4"
-  integrity sha512-JXIZZHKEeYA45yNPp5XDJ/VSt+j3yV2/zw5trF30I4lYcrWRnQ/45yKrmeu8dtPe4Wxm36os20XAtN6u1NAfqQ==
+webpack-plugin-ramdisk@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/webpack-plugin-ramdisk/-/webpack-plugin-ramdisk-0.2.0.tgz#8fb9c5dfd5343a7c9a2cdf6bf3a0aaddeaa00bbf"
+  integrity sha512-I5OTfDuaQdiZQUm19Ok/8oCBmYCGqFu8e2sY6ytGT9xehZQJXB6cqdf+rHUr98gzwhcC2O96Wuhs6BQTmOy2hg==
   dependencies:
     chalk "^4.1.0"
     execa "^4.0.3"
     superstruct "^0.12.1"
 
-webpack-plugin-serve@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/webpack-plugin-serve/-/webpack-plugin-serve-1.5.0.tgz#95e7642833930ddfb4a84c70ffd052f7a9248b51"
-  integrity sha512-7arXrfs0C6Plfwjxv0tLLNAgyOL45XHvRChnBmIqMAwF5g1uyo0LacgRR3Ub5xEYrzMPDPqBY9VfHQx5jukctw==
+webpack-plugin-serve@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/webpack-plugin-serve/-/webpack-plugin-serve-1.6.0.tgz#81d467f4ab1cbb549657bff0e0be6129886a87bf"
+  integrity sha512-0163GYEpDdRmd0D82XCeYalpSrRg9+oqEtoVUeCnn1o1lnGjqFoKdgSZBhXNOg2at52l4ESwLskPhPp3cHLAqA==
   dependencies:
     chalk "^4.0.0"
     connect-history-api-fallback "^1.5.0"
@@ -24877,7 +24877,7 @@ webpack-plugin-serve@^1.5.0:
     rimraf "^3.0.2"
     strip-ansi "^6.0.0"
     superstruct "^0.12.1"
-    webpack-plugin-ramdisk "^0.1.2"
+    webpack-plugin-ramdisk "^0.2.0"
     ws "^7.5.3"
 
 webpack-sources@^1.4.0, webpack-sources@^1.4.1, webpack-sources@^1.4.3:
