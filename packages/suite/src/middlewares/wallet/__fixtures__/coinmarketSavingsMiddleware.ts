@@ -47,6 +47,10 @@ export const SELECTED_PROVIDER: SavingsProviderInfo = {
     privacyPolicyUrl: '',
     setupPaymentAmounts: [],
     setupPaymentFrequencies: [],
+    minimumPaymentAmountLimit: 30,
+    maximumPaymentAmountLimit: 2500,
+    defaultPaymentFrequency: 'Monthly',
+    defaultPaymentAmount: 100,
     flow: {
         afterLogin: {
             isEnabled: false,
