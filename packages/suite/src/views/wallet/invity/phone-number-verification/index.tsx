@@ -22,8 +22,7 @@ const Description = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     display: flex;
     align-items: baseline;
-    span + div,
-    div + div {
+    & > * + div {
         margin: 0 8px;
     }
 `;
