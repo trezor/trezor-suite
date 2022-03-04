@@ -46,7 +46,7 @@ services:
       # useful for debugging tests
       - PWDEBUG=console
     working_dir: /trezor-suite
-    command: bash -c "npx playwright install && docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:connect-explorer"
+    command: bash -c "npx playwright install && docker/wait-for-env.sh && docker/wait-for-200.sh https://localhost:8088/popup.html &&  yarn workspace @trezor/integration-tests test:connect-explorer"
     volumes:
       - ../:/trezor-suite
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
