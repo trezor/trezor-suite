@@ -3200,10 +3200,6 @@ export default defineMessages({
         id: 'TR_TOR_REMOVE_ONION_AND_DISABLE',
         defaultMessage: 'Disable Tor and switch to Default Backends',
     },
-    TR_TOR_ONION_REMOVAL_NEEDED: {
-        id: 'TR_TOR_ONION_REMOVAL_NEEDED',
-        defaultMessage: 'These onion addresses must be removed in order to disable Tor:',
-    },
     TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_TITLE: {
         id: 'TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_TITLE',
         defaultMessage: 'Custom Backends are no longer using onion addresses only.',
