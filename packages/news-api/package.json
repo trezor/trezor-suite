@@ -13,7 +13,7 @@
         "type-check": "tsc --noEmit",
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "start": "yarn build && ts-node ./build/src/server.js",
-        "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts"
+        "dev": "ts-node-dev ./src/server.ts --respawn --transpileOnly"
     },
     "dependencies": {
         "axios": "0.21.2",
@@ -27,6 +27,6 @@
         "@types/cheerio": "0.22.23",
         "@types/cors": "2.8.9",
         "@types/express": "4.17.13",
-        "ts-node-dev": "1.0.0-pre.44"
+        "ts-node-dev": "1.1.8"
     }
 }
