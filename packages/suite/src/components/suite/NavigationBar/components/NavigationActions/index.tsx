@@ -6,6 +6,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
 import { findRouteByName } from '@suite-utils/router';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
+import { useCustomBackends } from '@settings-hooks/backends';
 import ActionItem from './components/ActionItem';
 import { isDesktop } from '@suite-utils/env';
 import { NavTor } from './components/NavTor';
@@ -102,6 +103,8 @@ const NavigationActions: React.FC<NavigationActionsProps> = ({
 
     const unseenNotifications = useMemo(() => notifications.some(n => !n.seen), [notifications]);
 
+    const customBackends = useCustomBackends();
+
     return (
         <WrapperComponent>
             <ActionItemWrapper>
@@ -122,16 +125,18 @@ const NavigationActions: React.FC<NavigationActionsProps> = ({
                 />
             </ActionItemWrapper>
 
-            {isMobileLayout ? (
-                <ActionItem
-                    onClick={() => action('settings-coins')}
-                    label={<Translation id="TR_BACKENDS" />}
-                    icon="BACKEND"
-                    isMobileLayout
-                />
-            ) : (
-                <NavBackends />
-            )}
+            {!!customBackends.length &&
+                (isMobileLayout ? (
+                    <ActionItem
+                        onClick={() => action('settings-coins')}
+                        label={<Translation id="TR_BACKENDS" />}
+                        icon="BACKEND"
+                        isMobileLayout
+                        indicator="check"
+                    />
+                ) : (
+                    <NavBackends customBackends={customBackends} />
+                ))}
 
             {isDesktop() && (
                 <>

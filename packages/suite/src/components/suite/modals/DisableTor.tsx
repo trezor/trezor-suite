@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, H3, P, CoinLogo, variables } from '@trezor/components';
 import { Modal, Translation } from '@suite-components';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import { isOnionUrl } from '@suite-utils/tor';
+import { useCustomBackends } from '@settings-hooks/backends';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { setBackend as setBackendAction } from '@settings-actions/walletSettingsActions';
 import AdvancedCoinSettings from './AdvancedCoinSettings';
@@ -89,14 +90,11 @@ type DisableTorProps = Omit<Extract<UserContextPayload, { type: 'disable-tor' }>
 };
 
 export const DisableTor = ({ onCancel, decision }: DisableTorProps) => {
-    const backends = useSelector(state => state.wallet.settings.backends);
     const { setBackend } = useActions({
         setBackend: setBackendAction,
     });
     const [coin, setCoin] = React.useState<Network['symbol']>();
-    const onionBackends = Object.entries(backends)
-        .filter(([_, settings]) => settings.urls.every(isOnionUrl))
-        .map(([coin, settings]) => ({ coin: coin as Network['symbol'], ...settings }));
+    const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {
         onionBackends.forEach(({ coin, type, urls }) =>
