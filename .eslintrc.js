@@ -23,6 +23,7 @@ module.exports = {
     },
     ignorePatterns: [
         '**/lib/*',
+        '**/libDev/*',
         '**/dist/*',
         '**/coverage/*',
         '**/build/*',
