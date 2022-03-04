@@ -17,6 +17,24 @@ const followDevice = {
     },
 };
 
+const confirmExportAddressScreen = {
+    selector: '.export-address >> visible=true',
+    screenshot: {
+        name: 'export-address',
+    },
+    next: 'button.confirm >> visible=true',
+};
+
+const getConfirmAddressOnDeviceScreen = address => ({
+    selector: `text=${address}`,
+    screenshot: {
+        name: 'confirm-on-device',
+    },
+    nextEmu: {
+        type: 'emulator-press-yes',
+    },
+});
+
 // todo: method field is not used anywhere at the moment;
 
 const getPublicKey = [
@@ -43,22 +61,8 @@ const getAddress = [
         url: 'getAddress',
         method: 'getAddress',
         views: [
-            {
-                selector: '.export-address >> visible=true',
-                screenshot: {
-                    name: 'export-address',
-                },
-                next: 'button.confirm >> visible=true',
-            },
-            {
-                selector: 'text=3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
-                screenshot: {
-                    name: 'confirm-on-device',
-                },
-                nextEmu: {
-                    type: 'emulator-press-yes',
-                },
-            },
+            confirmExportAddressScreen,
+            getConfirmAddressOnDeviceScreen('3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX'),
         ],
     },
 ];
@@ -324,6 +328,98 @@ const recoverDevice = [
     },
 ];
 
+const ethereumGetPublicKey = [
+    {
+        ...getPublicKey[0],
+        url: 'ethereumGetPublicKey',
+    },
+];
+
+const ethereumGetAddress = [
+    {
+        ...getAddress[0],
+        url: 'ethereumGetAddress',
+        views: [
+            confirmExportAddressScreen,
+            getConfirmAddressOnDeviceScreen('0x3f2329C9ADFbcCd9A84f52c906E936A42dA18CB8'),
+        ],
+    },
+];
+
+const cardanoGetPublicKey = [
+    {
+        ...getPublicKey[0],
+        url: 'cardanoGetPublicKey',
+    },
+];
+
+const cardanoGetAddress = [
+    {
+        ...getAddress[0],
+        url: 'cardanoGetAddress',
+        views: [
+            confirmExportAddressScreen,
+            getConfirmAddressOnDeviceScreen(
+                'addr1q9hsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrqhtk02t',
+            ),
+        ],
+    },
+];
+
+const tezosGetPublicKey = [
+    {
+        ...getAddress[0],
+        url: 'tezosGetPublicKey',
+        views: [confirmExportAddressScreen, followDevice],
+    },
+];
+
+const tezosGetAddress = [
+    {
+        ...getAddress[0],
+        url: 'tezosGetAddress',
+        views: [
+            confirmExportAddressScreen,
+            getConfirmAddressOnDeviceScreen('tz1ckrgqGGGBt4jGDmwFhtXc1LNpZJUnA9F2'),
+        ],
+    },
+];
+
+const eosGetPublicKey = [
+    {
+        ...getPublicKey[0],
+        url: 'eosGetPublicKey',
+        views: [confirmExportAddressScreen, followDevice],
+    },
+];
+
+const eosGetAddress = [
+    {
+        ...getAddress[0],
+        url: 'eosGetAddress',
+        views: [confirmExportAddressScreen, getConfirmAddressOnDeviceScreen('meow')],
+    },
+];
+
+const binanceGetPublicKey = [
+    {
+        ...getPublicKey[0],
+        url: 'binanceGetPublicKey',
+        views: [confirmExportAddressScreen, followDevice],
+    },
+];
+
+const binanceGetAddress = [
+    {
+        ...getAddress[0],
+        url: 'binanceGetAddress',
+        views: [
+            confirmExportAddressScreen,
+            getConfirmAddressOnDeviceScreen('bnb1afwh46v6nn30nkmugw5swdmsyjmlxslgjfugre'),
+        ],
+    },
+];
+
 const fixtures = [
     ...getPublicKey,
     ...getAddress,
@@ -336,6 +432,20 @@ const fixtures = [
     ...recoverDevice,
     // todo: resetDevice also breaks next test in queue and is flaky itself
     // ...resetDevice,
+    ...ethereumGetPublicKey,
+    ...ethereumGetAddress,
+    ...cardanoGetPublicKey,
+    ...cardanoGetAddress,
+    // todo: unify tezosGetPublicKey with other getPublicKey calls (show on device)
+    ...tezosGetPublicKey,
+    ...tezosGetAddress,
+    // todo: unify eosGetPublicKey with other getPublicKey calls (show on device)
+    ...eosGetPublicKey,
+    // todo: missing in connect-explorer
+    // ...eosGetAddress,
+    // todo: unify binanceGetPublicKey with other getPublicKey calls (show on device)
+    ...binanceGetPublicKey,
+    ...binanceGetAddress,
 ];
 
 module.exports = fixtures;
