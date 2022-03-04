@@ -269,8 +269,11 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE:
                 draft.savings.savingsTrade = action.response.trade;
-                draft.savings.savingsTradePayments = action.response.payments;
-                // TODO: later set also "savings payments"
+                draft.savings.savingsTradePayments = (action.response.payments ?? []).sort(
+                    (a, b) =>
+                        new Date(b.plannedPaymentAt).valueOf() -
+                        new Date(a.plannedPaymentAt).valueOf(),
+                );
                 break;
             case COINMARKET_SAVINGS.SET_SAVINGS_TRADE_RESPONSE_LOADING:
                 draft.savings.isSavingsTradeLoading = action.isSavingsTradeLoading;

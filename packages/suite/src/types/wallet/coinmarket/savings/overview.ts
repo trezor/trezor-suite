@@ -5,6 +5,6 @@ export type UseSavingsOverviewProps = WithSelectedAccountLoadedProps;
 
 export type SavingsOverviewContextValues = {
     savingsTrade: SavingsTrade | undefined;
-    savingsTradePayments: SavingsTradePlannedPayment[] | undefined;
+    savingsTradePayments: SavingsTradePlannedPayment[];
     handleEditSetupButtonClick: () => void;
 };

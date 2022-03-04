@@ -215,24 +215,9 @@ export type SavingsAMLStatus =
 
 export type PaymentFrequency = 'Weekly' | 'Biweekly' | 'Monthly' | 'Quarterly';
 
-// TODO: cleanup
-export type SavingsTradePlannedPaymentStatus =
-    | 'NextUp'
-    | 'Cancelled'
-    | 'Pending'
-    | 'InProgress'
-    | 'Blocked'
-    | 'Completed'
-    | 'Refunded';
-
 export interface SavingsTradePlannedPayment {
     /** Our id. */
     paymentId: string;
-
-    /** Partner's id. */
-    partnerPaymentId?: string;
-
-    status: SavingsTradePlannedPaymentStatus;
     fiatAmount?: string;
     cryptoAmount?: string;
     plannedPaymentAt: string;

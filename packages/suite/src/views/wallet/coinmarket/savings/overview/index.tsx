@@ -120,23 +120,11 @@ const getPeriodTranslationId = (
 const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
     const contextValues = useSavingsOverview(props);
     const { savingsTrade, savingsTradePayments, handleEditSetupButtonClick } = contextValues;
-    // TODO: Not nice handling of missing data...
-    if (
-        !savingsTrade?.paymentFrequency ||
-        !savingsTrade?.fiatStringAmount ||
-        !savingsTradePayments
-    ) {
-        return <></>;
-    }
-    // NOTE: There are always two payments in state 'NextUp'.
-    const nextUpPayments = savingsTradePayments
-        .filter(payment => payment.status === 'NextUp')
-        .sort((a, b) => Date.parse(a.plannedPaymentAt) - Date.parse(b.plannedPaymentAt.valueOf()));
-    const waitingForFirstPayment = savingsTradePayments.every(
-        payment => payment.status !== 'Completed',
-    );
-    const currentPayment = nextUpPayments[0];
-    const nextPayment = nextUpPayments[1];
+    const waitingForFirstPayment = true; // TODO: read the logic value based on savingsTransaction resp. TradeSavings...
+
+    // NOTE: Planned payments are sorted in descending order by plannedPaymentAt.
+    const followingPayment = savingsTradePayments[0];
+    const nextPayment = savingsTradePayments[1];
 
     return (
         <SavingsOverviewContext.Provider value={contextValues}>
@@ -146,16 +134,18 @@ const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
                         <SetupValues>
                             <FiatPayment>
                                 <FormattedNumber
-                                    value={savingsTrade.fiatStringAmount}
-                                    currency={savingsTrade.fiatCurrency}
+                                    value={savingsTrade?.fiatStringAmount || 0}
+                                    currency={savingsTrade?.fiatCurrency}
                                     maximumFractionDigits={2}
                                     minimumFractionDigits={0}
                                 />
                             </FiatPayment>
                             <Period>
-                                <Translation
-                                    id={getPeriodTranslationId(savingsTrade.paymentFrequency)}
-                                />
+                                {savingsTrade?.paymentFrequency && (
+                                    <Translation
+                                        id={getPeriodTranslationId(savingsTrade.paymentFrequency)}
+                                    />
+                                )}
                             </Period>
                         </SetupValues>
                         <StyledIcon icon="PENCIL" size={13} onClick={handleEditSetupButtonClick} />
@@ -169,7 +159,7 @@ const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
                             <SoFarSaved>
                                 <Fiat>
                                     <FormattedNumber
-                                        currency={savingsTrade.fiatCurrency}
+                                        currency={savingsTrade?.fiatCurrency}
                                         value={0}
                                     />
                                 </Fiat>
@@ -177,7 +167,7 @@ const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
                                     ≈&nbsp;
                                     <FormattedCryptoAmount
                                         value={0}
-                                        symbol={savingsTrade.cryptoCurrency}
+                                        symbol={savingsTrade?.cryptoCurrency}
                                     />
                                 </Crypto>
                             </SoFarSaved>
@@ -188,12 +178,12 @@ const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
                 <CurrentPayment>
                     <PaymentDetail
                         title="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT"
-                        savingsTradePayment={currentPayment}
+                        savingsTradePayment={nextPayment}
                     />
                 </CurrentPayment>
                 <PaymentDetail
                     title="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT"
-                    savingsTradePayment={nextPayment}
+                    savingsTradePayment={followingPayment}
                 />
             </Wrapper>
         </SavingsOverviewContext.Provider>

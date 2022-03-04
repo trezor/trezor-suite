@@ -106,7 +106,7 @@ const DetailRow = styled(Row)`
 `;
 
 interface PaymentDetail {
-    savingsTradePayment: SavingsTradePlannedPayment;
+    savingsTradePayment?: SavingsTradePlannedPayment;
     title: ExtendedMessageDescriptor['id'];
 }
 
@@ -125,7 +125,8 @@ export const PaymentDetail = ({ savingsTradePayment, title }: PaymentDetail) => 
             <PaymentItem>
                 <Row>
                     <PaymentItemDate>
-                        {format(parseISO(savingsTradePayment.plannedPaymentAt), 'dd MMM yyyy')}
+                        {savingsTradePayment &&
+                            format(parseISO(savingsTradePayment.plannedPaymentAt), 'dd MMM yyyy')}
                     </PaymentItemDate>
                     <PaymentItemStatus>
                         <PaymentItemStatusIcon>
@@ -153,7 +154,7 @@ export const PaymentDetail = ({ savingsTradePayment, title }: PaymentDetail) => 
                                     <Translation id="TR_SAVINGS_PAYMENT_INFO_NAME_LABEL" />
                                 </PaymentInfoItemLabel>
                                 <PaymentInfoItemValue>
-                                    {savingsTradePayment.paymentInfo.name}
+                                    {savingsTradePayment?.paymentInfo?.name}
                                     <CopyButton variant="tertiary" onClick={() => null}>
                                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                                     </CopyButton>
@@ -164,7 +165,7 @@ export const PaymentDetail = ({ savingsTradePayment, title }: PaymentDetail) => 
                                     <Translation id="TR_SAVINGS_PAYMENT_INFO_IBAN_LABEL" />
                                 </PaymentInfoItemLabel>
                                 <PaymentInfoItemValue>
-                                    {savingsTradePayment.paymentInfo.iban}{' '}
+                                    {savingsTradePayment?.paymentInfo?.iban}{' '}
                                     <CopyButton variant="tertiary" onClick={() => null}>
                                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                                     </CopyButton>
@@ -175,7 +176,7 @@ export const PaymentDetail = ({ savingsTradePayment, title }: PaymentDetail) => 
                                     <Translation id="TR_SAVINGS_PAYMENT_INFO_BIC_LABEL" />
                                 </PaymentInfoItemLabel>
                                 <PaymentInfoItemValue>
-                                    {savingsTradePayment.paymentInfo.bic}{' '}
+                                    {savingsTradePayment?.paymentInfo?.bic}{' '}
                                     <CopyButton variant="tertiary" onClick={() => null}>
                                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                                     </CopyButton>
@@ -186,7 +187,7 @@ export const PaymentDetail = ({ savingsTradePayment, title }: PaymentDetail) => 
                                     <Translation id="TR_SAVINGS_PAYMENT_INFO_DESCRIPTION_LABEL" />
                                 </PaymentInfoItemLabel>
                                 <PaymentInfoItemValue>
-                                    {savingsTradePayment.paymentInfo.description}{' '}
+                                    {savingsTradePayment?.paymentInfo?.description}{' '}
                                     <CopyButton variant="tertiary" onClick={() => null}>
                                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                                     </CopyButton>
