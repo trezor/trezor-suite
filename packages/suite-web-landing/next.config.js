@@ -26,8 +26,10 @@ module.exports = withTranspileModules(
                 ignoreDevErrors: true,
                 ignoreBuildErrors: true,
             },
+            compiler: {
+                styledComponents: true,
+            },
             inlineImageLimit: 0,
-            babelConfigFile: path.resolve('babel.config.js'),
             // https://github.com/zeit/next.js/issues/6219
             // target: 'serverless',
             trailingSlash: true,
