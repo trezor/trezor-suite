@@ -40,9 +40,8 @@
     "devDependencies": {
         "@types/react": "^17.0.38",
         "@types/react-native": "0.66.12",
-        "pod-install": "^0.1.31",
         "react": "17.0.2",
-        "react-native": "0.66.4"
+        "react-native": "0.68.0-rc.1"
     },
     "peerDependencies": {
         "react": "*",

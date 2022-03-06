@@ -62,7 +62,8 @@
         ]
     },
     "resolutions": {
-        "**/@types/react": "17.0.0"
+        "**/@types/react": "17.0.0",
+        "@react-native-community/cli-server-api": "7.0.3"
     },
     "devDependencies": {
         "@babel/cli": "^7.13.14",

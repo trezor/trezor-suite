@@ -2,29 +2,36 @@ require_relative '../../../node_modules/react-native/scripts/react_native_pods'
 require_relative '../../../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 platform :ios, '11.0'
+install! 'cocoapods', :deterministic_uuids => false
+
 target 'TrezorSuite' do
   config = use_native_modules!
-  # By default there should be config["reactNativePath"] instead of explicit path,
-  # but it points to suite-native/node_modules while our react-native dep is hoisted to the root of monorepo
-  use_react_native!(:path => './../../../node_modules/react-native/')
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # to enable hermes on iOS, change `false` to `true` and then install pods
+    :hermes_enabled => flags[:hermes_enabled],
+    :fabric_enabled => flags[:fabric_enabled],
+    # An abosolute path to your application root.
+    :app_path => "#{Dir.pwd}/.."
+  )
+
   target 'TrezorSuiteTests' do
     inherit! :complete
     # Pods for testing
   end
+
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable these next few lines.
-  use_flipper!
-  post_install do |installer|
-    flipper_post_install(installer)
-  end
-end
+  # you should disable the next line.
+  use_flipper!()
 
-target 'TrezorSuite-tvOS' do
-    # Pods for TrezorSuite-tvOS
-    target 'TrezorSuite-tvOSTests' do
-      inherit! :search_paths
-      # Pods for testing
-    end
+  post_install do |installer|
+    react_native_post_install(installer)
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+  end
 end
