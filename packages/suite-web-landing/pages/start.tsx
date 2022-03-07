@@ -28,7 +28,7 @@ const features = [
         headline: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_1_HEADLINE" />,
         text: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_1_TEXT" />,
         backgroundPosition: 'bottom right',
-        backgroundSize: '616px auto',
+        backgroundSize: 'auto 386px',
         soon: false,
     },
     {
@@ -36,14 +36,15 @@ const features = [
         headline: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_2_HEADLINE" />,
         text: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_2_TEXT" />,
         backgroundPosition: 'center left',
-        backgroundSize: '489px auto',
+        backgroundSize: 'auto 409px',
         soon: false,
     },
     {
         id: 3,
         headline: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_3_HEADLINE" />,
         text: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_3_TEXT" />,
-        backgroundSize: '500px auto',
+        backgroundSize: 'auto 416px',
+        backgroundPosition: 'center right',
         soon: false,
     },
 ];
