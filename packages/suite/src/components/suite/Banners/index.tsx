@@ -16,17 +16,20 @@ import SafetyChecksBanner from './SafetyChecks';
 import TranslationMode from './TranslationMode';
 import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.div<{ isOnTop?: boolean; guideOpen?: boolean; isModalOpen?: boolean }>`
+const Wrapper = styled.div<{ isOnTop?: boolean; isGuideOpen?: boolean; isModalOpen?: boolean }>`
     z-index: ${props =>
         props.isOnTop ? variables.Z_INDEX.BANNER_ON_TOP : variables.Z_INDEX.BANNER};
     transition: all 0.3s;
     background: ${props => props.theme.BG_WHITE};
-    margin-right: ${props =>
-        props.guideOpen && props.isModalOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0};
+
+    ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
+        margin-right: ${props =>
+            props.isGuideOpen && props.isModalOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0};
+    }
 `;
 
 const Banners = () => {
-    const { guideOpen, isModalOpen } = useGuide();
+    const { isGuideOpen, isModalOpen } = useGuide();
 
     const { transport, device, online } = useSelector(state => ({
         transport: state.suite.transport,
@@ -93,12 +96,12 @@ const Banners = () => {
     return (
         <>
             {useMessageSystemBanner && (
-                <Wrapper isOnTop guideOpen={guideOpen} isModalOpen={isModalOpen}>
+                <Wrapper isOnTop isGuideOpen={isGuideOpen} isModalOpen={isModalOpen}>
                     {/* @ts-ignore - fix ts which thinks that "messageSystemBanner" can be null */}
                     <MessageSystemBanner message={messageSystemBanner} />
                 </Wrapper>
             )}
-            <Wrapper guideOpen={guideOpen} isModalOpen={isModalOpen}>
+            <Wrapper isGuideOpen={isGuideOpen} isModalOpen={isModalOpen}>
                 {isTranslationMode() && <TranslationMode />}
                 <OnlineStatus isOnline={online} />
                 {!useMessageSystemBanner && banner}

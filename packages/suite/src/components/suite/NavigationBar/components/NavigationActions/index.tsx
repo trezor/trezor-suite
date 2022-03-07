@@ -14,6 +14,8 @@ import { NavNotifications } from './components/NavNotifications';
 import { NavSettings } from './components/NavSettings';
 import { variables } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
+import { useGuide } from '@guide-hooks/useGuide';
+
 import type { Route } from '@suite-types';
 
 const Wrapper = styled.div`
@@ -45,12 +47,15 @@ const Separator = styled.div`
     opacity: 0.7;
 `;
 
-interface Props {
+interface NavigationActionsProps {
     closeMainNavigation?: () => void;
     isMobileLayout?: boolean;
 }
 
-const NavigationActions = (props: Props) => {
+const NavigationActions: React.FC<NavigationActionsProps> = ({
+    closeMainNavigation,
+    isMobileLayout,
+}) => {
     const analytics = useAnalytics();
     const { activeApp, notifications, discreetMode, tor, allowPrerelease } = useSelector(state => ({
         activeApp: state.router.app,
@@ -66,7 +71,9 @@ const NavigationActions = (props: Props) => {
         toggleTor: suiteActions.toggleTor,
     });
 
-    const WrapperComponent = props.isMobileLayout ? MobileWrapper : Wrapper;
+    const { openGuide } = useGuide();
+
+    const WrapperComponent = isMobileLayout ? MobileWrapper : Wrapper;
 
     // used only in mobile layout
     const gotoWithReport = (routeName: Route['name']) => {
@@ -80,7 +87,12 @@ const NavigationActions = (props: Props) => {
 
     const action = (route: Route['name']) => {
         gotoWithReport(route);
-        if (props.closeMainNavigation) props.closeMainNavigation();
+        if (closeMainNavigation) closeMainNavigation();
+    };
+
+    const handleOpenGuide = () => {
+        closeMainNavigation?.();
+        openGuide();
     };
 
     const getIfRouteIsActive = (route: Route['name']) => {
@@ -106,16 +118,16 @@ const NavigationActions = (props: Props) => {
                     isActive={discreetMode}
                     label={<Translation id="TR_DISCREET" />}
                     icon={discreetMode ? 'HIDE' : 'SHOW'}
-                    isMobileLayout={props.isMobileLayout}
+                    isMobileLayout={isMobileLayout}
                 />
             </ActionItemWrapper>
 
-            {props.isMobileLayout ? (
+            {isMobileLayout ? (
                 <ActionItem
                     onClick={() => action('settings-coins')}
                     label={<Translation id="TR_BACKENDS" />}
                     icon="BACKEND"
-                    isMobileLayout={props.isMobileLayout}
+                    isMobileLayout
                 />
             ) : (
                 <NavBackends />
@@ -123,7 +135,7 @@ const NavigationActions = (props: Props) => {
 
             {isDesktop() && (
                 <>
-                    {props.isMobileLayout ? (
+                    {isMobileLayout ? (
                         <ActionItemWrapper>
                             <ActionItem
                                 onClick={() => {
@@ -131,7 +143,7 @@ const NavigationActions = (props: Props) => {
                                 }}
                                 label={<Translation id="TR_TOR" />}
                                 icon="TOR"
-                                isMobileLayout={props.isMobileLayout}
+                                isMobileLayout={isMobileLayout}
                                 marginLeft
                                 indicator={tor ? 'check' : undefined}
                             />
@@ -143,7 +155,7 @@ const NavigationActions = (props: Props) => {
             )}
 
             {allowPrerelease &&
-                (props.isMobileLayout ? (
+                (isMobileLayout ? (
                     <ActionItem
                         onClick={() => {
                             analytics.report({ type: 'menu/goto/early-access' });
@@ -151,15 +163,15 @@ const NavigationActions = (props: Props) => {
                         }}
                         label={<Translation id="TR_EARLY_ACCESS_MENU" />}
                         icon="EXPERIMENTAL_FEATURES"
-                        isMobileLayout={props.isMobileLayout}
+                        isMobileLayout
                     />
                 ) : (
                     <NavEarlyAccess isActive />
                 ))}
 
-            {!props.isMobileLayout && <Separator />}
+            {!isMobileLayout && <Separator />}
 
-            {props.isMobileLayout ? (
+            {isMobileLayout ? (
                 <ActionItem
                     label={<Translation id="TR_NOTIFICATIONS" />}
                     data-test="@suite/menu/notifications-index"
@@ -167,7 +179,7 @@ const NavigationActions = (props: Props) => {
                     isActive={getIfRouteIsActive('notifications-index')}
                     icon="NOTIFICATION"
                     indicator={unseenNotifications ? 'alert' : undefined}
-                    isMobileLayout={props.isMobileLayout}
+                    isMobileLayout
                 />
             ) : (
                 <NavNotifications
@@ -176,14 +188,24 @@ const NavigationActions = (props: Props) => {
                 />
             )}
 
-            {props.isMobileLayout ? (
+            {isMobileLayout && (
+                <ActionItem
+                    label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />}
+                    data-test="@suite/menu/guide-index"
+                    onClick={handleOpenGuide}
+                    icon="LIGHTBULB"
+                    isMobileLayout
+                />
+            )}
+
+            {isMobileLayout ? (
                 <ActionItem
                     label={<Translation id="TR_SETTINGS" />}
                     data-test="@suite/menu/settings-index"
                     onClick={() => action('settings-index')}
                     isActive={getIfRouteIsActive('settings-index')}
                     icon="SETTINGS"
-                    isMobileLayout={props.isMobileLayout}
+                    isMobileLayout
                 />
             ) : (
                 <NavSettings isActive={getIfRouteIsActive('settings-index')} />

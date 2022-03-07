@@ -40,6 +40,7 @@ const HamburgerWrapper = styled.div`
 const MobileNavigationWrapper = styled.div`
     position: relative;
     height: 100vh;
+    z-index: ${variables.Z_INDEX.NAVIGATION_BAR};
 `;
 
 const ExpandedMobileNavigation = styled.div`

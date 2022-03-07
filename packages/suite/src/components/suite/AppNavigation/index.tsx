@@ -111,7 +111,7 @@ const SecondaryMenu = styled.div<{ visible: boolean }>`
 `;
 
 const StyledNavLink = styled.div<{ active?: boolean }>`
-    cursor: pointer;
+    cursor: ${({ active }) => !active && 'pointer'};
     font-size: ${FONT_SIZE.NORMAL};
     color: ${props =>
         props.active ? props => props.theme.TYPE_DARK_GREY : props => props.theme.TYPE_LIGHT_GREY};
@@ -276,7 +276,7 @@ const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props) => {
                                                 'data-test': item['data-test'],
                                             })}
                                         >
-                                            <HoverAnimation>
+                                            <HoverAnimation isHoverable={!active}>
                                                 {item.icon && (
                                                     <IconWrapper>
                                                         <StyledIcon

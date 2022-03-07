@@ -27,11 +27,12 @@ const FeedbackButton = styled.button`
     transition: ${props =>
         `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
 
-    &:hover {
+    :hover,
+    :focus {
         background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_WHITE)};
     }
 
-    &:last-child {
+    :last-child {
         left: auto;
     }
 `;
