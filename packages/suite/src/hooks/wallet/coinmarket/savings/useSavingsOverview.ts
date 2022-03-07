@@ -5,6 +5,7 @@ import {
 } from '@wallet-types/coinmarket/savings/overview';
 import useSavingsTrade from './useSavingsTrade';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { useSelector } from '@suite-hooks';
 
 export const SavingsOverviewContext = createContext<SavingsOverviewContextValues | null>(null);
 SavingsOverviewContext.displayName = 'SavingsOverviewContext';
@@ -13,6 +14,10 @@ export const useSavingsOverview = ({
     selectedAccount,
 }: UseSavingsOverviewProps): SavingsOverviewContextValues => {
     const { navigateToSavingsSetup } = useCoinmarketNavigation(selectedAccount.account);
+
+    const isWatchingKYCStatus = useSelector(
+        state => state.wallet.coinmarket.savings.isWatchingKYCStatus,
+    );
 
     const { savingsTrade, savingsTradePayments } = useSavingsTrade();
 
@@ -24,6 +29,7 @@ export const useSavingsOverview = ({
         savingsTrade,
         savingsTradePayments,
         handleEditSetupButtonClick,
+        isWatchingKYCStatus,
     };
 };
 

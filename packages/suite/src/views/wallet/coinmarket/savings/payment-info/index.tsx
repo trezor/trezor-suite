@@ -8,6 +8,7 @@ import { FormattedNumber, Translation } from '@suite-components';
 const Header = styled.div`
     font-size: 24px;
     line-height: 30px;
+    margin: 20px 0 0;
 `;
 
 const Description = styled.div`

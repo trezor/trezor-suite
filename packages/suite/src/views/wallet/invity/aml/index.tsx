@@ -9,7 +9,7 @@ import KYCInProgress from '@wallet-components/KYCInProgress';
 const Header = styled.div`
     font-size: 24px;
     line-height: 24px;
-    margin-bottom: 8px;
+    margin: 20px 0 8px;
 `;
 
 const Description = styled.div`

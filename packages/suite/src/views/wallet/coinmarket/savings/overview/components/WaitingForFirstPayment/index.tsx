@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Card, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
 
-const StyledCard = styled(Card)`
+const StyledCard = styled.div`
     background: rgba(239, 201, 65, 0.1);
     color: #ba9924;
     border-radius: 6px;
@@ -11,6 +11,7 @@ const StyledCard = styled(Card)`
     width: 100%;
     height: 100%;
     justify-content: center;
+    padding: 12px 20px;
 `;
 
 const Header = styled.div`
@@ -25,14 +26,12 @@ const Description = styled.div`
 
 const WaitingForFirstPayment = () => (
     <StyledCard>
-        <div>
-            <Header>
-                <Translation id="TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER" />
-            </Header>
-            <Description>
-                <Translation id="TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION" />
-            </Description>
-        </div>
+        <Header>
+            <Translation id="TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER" />
+        </Header>
+        <Description>
+            <Translation id="TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION" />
+        </Description>
     </StyledCard>
 );
 export default WaitingForFirstPayment;

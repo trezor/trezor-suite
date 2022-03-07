@@ -1,5 +1,5 @@
 import React from 'react';
-import { withCoinmarketSavingsLoaded } from '@wallet-components';
+import { KYCInProgress, withCoinmarketSavingsLoaded } from '@wallet-components';
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
 import { FormattedCryptoAmount, FormattedNumber, Translation } from '@suite-components';
@@ -18,14 +18,19 @@ const Wrapper = styled.div`
     flex-flow: column;
 `;
 
-const SavingsOverviewHeader = styled.div`
+const HeaderWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: stretch;
-    align-content: stretch;
-    margin-bottom: 42px;
+`;
+
+const Left = styled.div`
+    display: flex;
+    width: calc(100% / 3);
+`;
+
+const Right = styled.div`
+    display: flex;
+    width: calc(100% / 3 * 2);
 `;
 
 const HeaderBlock = styled.div`
@@ -35,21 +40,14 @@ const HeaderBlock = styled.div`
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;
+    height: 104px;
 `;
 const Setup = styled(HeaderBlock)`
-    width: calc(100% / 3);
     background-color: ${props => props.theme.BG_GREY};
     padding: 21px;
     border-radius: 8px;
     margin-right: 12px;
-`;
-
-const WaitingForFirstPaymentWrapper = styled(HeaderBlock)`
-    display: flex;
-    width: calc(100% / 3 * 2);
-    & > div {
-        width: 100%;
-    }
+    width: 100%;
 `;
 
 const SetupValues = styled.div``;
@@ -68,15 +66,8 @@ const Period = styled.div`
 const SoFarSaved = styled.div`
     display: flex;
     flex-direction: column;
-    width: calc(100% / 3);
     background-color: ${props => props.theme.BG_WHITE};
     padding: 21px;
-`;
-
-const Graph = styled.div`
-    display: flex;
-    width: calc(100% / 3);
-    background-color: ${props => props.theme.BG_WHITE};
 `;
 
 const Fiat = styled.div`
@@ -93,10 +84,6 @@ const Crypto = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     justify-content: end;
     display: flex;
-`;
-
-const CurrentPayment = styled.div`
-    margin-bottom: 13px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -117,45 +104,58 @@ const getPeriodTranslationId = (
 ): SavingsOverviewPeriodTranslationId =>
     `TR_SAVINGS_OVERVIEW_PERIOD_${paymentFrequency.toUpperCase() as Uppercase<PaymentFrequency>}`;
 
+function renderSavingsStatus(isWatchingKYCStatus: boolean, isWaitingForFirstPayment: boolean) {
+    switch (true) {
+        case isWatchingKYCStatus:
+            return <KYCInProgress />;
+        case isWaitingForFirstPayment:
+            return <WaitingForFirstPayment />;
+        default:
+            return <>Graph</>;
+    }
+}
+
 const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
     const contextValues = useSavingsOverview(props);
-    const { savingsTrade, savingsTradePayments, handleEditSetupButtonClick } = contextValues;
+    const { savingsTrade, savingsTradePayments, handleEditSetupButtonClick, isWatchingKYCStatus } =
+        contextValues;
     const waitingForFirstPayment = true; // TODO: read the logic value based on savingsTransaction resp. TradeSavings...
 
     // NOTE: Planned payments are sorted in descending order by plannedPaymentAt.
     const followingPayment = savingsTradePayments[0];
     const nextPayment = savingsTradePayments[1];
-
     return (
         <SavingsOverviewContext.Provider value={contextValues}>
             <Wrapper>
-                <SavingsOverviewHeader>
-                    <Setup>
-                        <SetupValues>
-                            <FiatPayment>
-                                <FormattedNumber
-                                    value={savingsTrade?.fiatStringAmount || 0}
-                                    currency={savingsTrade?.fiatCurrency}
-                                    maximumFractionDigits={2}
-                                    minimumFractionDigits={0}
-                                />
-                            </FiatPayment>
-                            <Period>
-                                {savingsTrade?.paymentFrequency && (
-                                    <Translation
-                                        id={getPeriodTranslationId(savingsTrade.paymentFrequency)}
+                <HeaderWrapper>
+                    <Left>
+                        <Setup>
+                            <SetupValues>
+                                <FiatPayment>
+                                    <FormattedNumber
+                                        value={savingsTrade?.fiatStringAmount || 0}
+                                        currency={savingsTrade?.fiatCurrency}
+                                        maximumFractionDigits={2}
+                                        minimumFractionDigits={0}
                                     />
-                                )}
-                            </Period>
-                        </SetupValues>
-                        <StyledIcon icon="PENCIL" size={13} onClick={handleEditSetupButtonClick} />
-                    </Setup>
-                    {waitingForFirstPayment ? (
-                        <WaitingForFirstPaymentWrapper>
-                            <WaitingForFirstPayment />
-                        </WaitingForFirstPaymentWrapper>
-                    ) : (
-                        <>
+                                </FiatPayment>
+                                <Period>
+                                    {savingsTrade?.paymentFrequency && (
+                                        <Translation
+                                            id={getPeriodTranslationId(
+                                                savingsTrade.paymentFrequency,
+                                            )}
+                                        />
+                                    )}
+                                </Period>
+                            </SetupValues>
+                            <StyledIcon
+                                icon="PENCIL"
+                                size={13}
+                                onClick={handleEditSetupButtonClick}
+                            />
+                        </Setup>
+                        {!isWatchingKYCStatus && !waitingForFirstPayment && (
                             <SoFarSaved>
                                 <Fiat>
                                     <FormattedNumber
@@ -171,17 +171,17 @@ const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
                                     />
                                 </Crypto>
                             </SoFarSaved>
-                            <Graph>Graph</Graph>
-                        </>
-                    )}
-                </SavingsOverviewHeader>
-                <CurrentPayment>
-                    <PaymentDetail
-                        isNextUp
-                        title="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT"
-                        savingsTradePayment={nextPayment}
-                    />
-                </CurrentPayment>
+                        )}
+                    </Left>
+                    <Right>
+                        {renderSavingsStatus(isWatchingKYCStatus, waitingForFirstPayment)}
+                    </Right>
+                </HeaderWrapper>
+                <PaymentDetail
+                    isNextUp
+                    title="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT"
+                    savingsTradePayment={nextPayment}
+                />
                 <PaymentDetail
                     title="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT"
                     savingsTradePayment={followingPayment}

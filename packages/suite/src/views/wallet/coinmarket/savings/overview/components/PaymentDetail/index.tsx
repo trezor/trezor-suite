@@ -9,6 +9,10 @@ import { Translation } from '@suite-components';
 import type { SavingsTradePlannedPayment } from '@suite-services/invityAPI';
 import type { ExtendedMessageDescriptor } from '@suite/types/suite';
 
+const Wrapper = styled.div`
+    margin-top: 18px;
+`;
+
 const Label = styled.div`
     font-size: 14px;
     line-height: 22px;
@@ -115,7 +119,7 @@ interface PaymentDetail {
 export const PaymentDetail = ({ savingsTradePayment, title, isNextUp = false }: PaymentDetail) => {
     const [showDetail, setShowDetail] = useState(false);
     return (
-        <>
+        <Wrapper>
             <Label>
                 <IconWrapper>
                     <Icon icon="CALENDAR" size={14} />
@@ -214,6 +218,6 @@ export const PaymentDetail = ({ savingsTradePayment, title, isNextUp = false }: 
                     </>
                 )}
             </PaymentItem>
-        </>
+        </Wrapper>
     );
 };

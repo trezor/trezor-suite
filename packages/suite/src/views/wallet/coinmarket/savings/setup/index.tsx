@@ -12,7 +12,7 @@ const Header = styled.div`
     font-weight: 500;
     font-size: 24px;
     line-height: 30px;
-    margin-bottom: 35px;
+    margin: 20px 0 35px;
 `;
 
 const Label = styled.div`

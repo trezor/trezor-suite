@@ -10,7 +10,6 @@ const StyledCard = styled(Card)`
     color: #ba9924;
     border-radius: 6px;
     display: flex;
-    margin-bottom: 28px;
 `;
 
 const Icon = styled.div`

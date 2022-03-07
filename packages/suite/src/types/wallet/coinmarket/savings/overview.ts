@@ -7,4 +7,5 @@ export type SavingsOverviewContextValues = {
     savingsTrade: SavingsTrade | undefined;
     savingsTradePayments: SavingsTradePlannedPayment[];
     handleEditSetupButtonClick: () => void;
+    isWatchingKYCStatus: boolean;
 };
