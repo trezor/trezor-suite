@@ -1297,9 +1297,17 @@ export default defineMessages({
         defaultMessage: 'Current payment',
         id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT',
     },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT_STATUS: {
+        defaultMessage: 'next up',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT_STATUS',
+    },
     TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT: {
         defaultMessage: 'Next payment',
         id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT_STATUS: {
+        defaultMessage: 'following',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT_STATUS',
     },
     TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_VIEW_PAYMENT_DETAILS_BUTTON_LABEL: {
         defaultMessage: 'View payment details',

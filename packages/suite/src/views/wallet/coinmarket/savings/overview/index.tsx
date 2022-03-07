@@ -177,6 +177,7 @@ const Overview = (props: WithCoinmarketSavingsLoadedProps) => {
                 </SavingsOverviewHeader>
                 <CurrentPayment>
                     <PaymentDetail
+                        isNextUp
                         title="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT"
                         savingsTradePayment={nextPayment}
                     />

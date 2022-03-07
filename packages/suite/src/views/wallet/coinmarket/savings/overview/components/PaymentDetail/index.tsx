@@ -43,9 +43,9 @@ const PaymentItemDate = styled.div`
     width: 25%;
 `;
 
-const PaymentItemStatus = styled.div`
+const PaymentItemStatus = styled.div<{ isNextUp: boolean }>`
     margin: 13px 38px;
-    color: ${props => props.theme.TYPE_ORANGE};
+    color: ${props => (props.isNextUp ? props.theme.TYPE_ORANGE : props.theme.TYPE_LIGHT_GREY)};
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -62,12 +62,12 @@ const PaymentItemStatusIcon = styled.div`
     margin-right: 3px;
     display: flex;
 `;
-const PaymentItemStatusIconReactSVG = styled(ReactSVG)`
+const PaymentItemStatusIconReactSVG = styled(ReactSVG)<{ isNextUp: boolean }>`
     & div {
         display: flex;
     }
     & path {
-        fill: ${props => props.theme.TYPE_ORANGE};
+        fill: ${props => (props.isNextUp ? props.theme.TYPE_ORANGE : props.theme.TYPE_LIGHT_GREY)};
     }
 `;
 
@@ -77,6 +77,7 @@ const PaymentInfoItem = styled.div`
     width: calc(50% - 70px);
 `;
 const PaymentInfoItemLabel = styled.div`
+    display: flex;
     font-weight: 600;
     font-size: 12px;
     line-height: 24px;
@@ -108,9 +109,10 @@ const DetailRow = styled(Row)`
 interface PaymentDetail {
     savingsTradePayment?: SavingsTradePlannedPayment;
     title: ExtendedMessageDescriptor['id'];
+    isNextUp?: boolean;
 }
 
-export const PaymentDetail = ({ savingsTradePayment, title }: PaymentDetail) => {
+export const PaymentDetail = ({ savingsTradePayment, title, isNextUp = false }: PaymentDetail) => {
     const [showDetail, setShowDetail] = useState(false);
     return (
         <>
@@ -128,13 +130,28 @@ export const PaymentDetail = ({ savingsTradePayment, title }: PaymentDetail) => 
                         {savingsTradePayment &&
                             format(parseISO(savingsTradePayment.plannedPaymentAt), 'dd MMM yyyy')}
                     </PaymentItemDate>
-                    <PaymentItemStatus>
-                        <PaymentItemStatusIcon>
-                            <PaymentItemStatusIconReactSVG
-                                src={resolveStaticPath('images/svg/hourglass.svg')}
-                            />
-                        </PaymentItemStatusIcon>
-                        next up
+                    <PaymentItemStatus isNextUp={isNextUp}>
+                        {isNextUp ? (
+                            <>
+                                <PaymentItemStatusIcon>
+                                    <PaymentItemStatusIconReactSVG
+                                        isNextUp={isNextUp}
+                                        src={resolveStaticPath('images/svg/hourglass.svg')}
+                                    />
+                                </PaymentItemStatusIcon>
+                                <Translation id="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT_STATUS" />
+                            </>
+                        ) : (
+                            <>
+                                <PaymentItemStatusIcon>
+                                    <PaymentItemStatusIconReactSVG
+                                        isNextUp={isNextUp}
+                                        src={resolveStaticPath('images/svg/watch.svg')}
+                                    />
+                                </PaymentItemStatusIcon>
+                                <Translation id="TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT_STATUS" />
+                            </>
+                        )}
                     </PaymentItemStatus>
                     <PaymentItemButton type="button" onClick={() => setShowDetail(!showDetail)}>
                         <Translation
