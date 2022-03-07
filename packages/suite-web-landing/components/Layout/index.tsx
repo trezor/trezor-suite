@@ -14,12 +14,12 @@ const Layout = styled.div`
 const Header = styled.header`
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin: 28px 0 0 0;
-`;
+    align-items: center;
+    margin: 28px 0 10px 0;
 
-const StyledTrezorLogo = styled(TrezorLogo)`
-    min-height: 46px;
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        align-items: flex-start;
+    }
 `;
 
 const Content = styled.div`
@@ -111,7 +111,7 @@ interface Props {
 const Index = ({ children, pathToApp }: Props) => (
     <Layout>
         <Header>
-            <StyledTrezorLogo type="suite" width={185} />
+            <TrezorLogo type="suite" width={185} />
             <Button
                 variant="tertiary"
                 icon="EXTERNAL_LINK"
