@@ -6,7 +6,6 @@ import type {
     SavingsKYCStartContextValues,
     UseSavingsKYCStartProps,
 } from '@wallet-types/coinmarket/savings/KYCStart';
-
 import invityAPI, { SavingsTrade, SavingsTradeUserKYCStart } from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
@@ -15,6 +14,10 @@ import { useSavingsKYCStartDefaultValues } from './useSavingsKYCStartDefaultValu
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import type { SavingsUnsupportedCountryFormState } from '@wallet-types/coinmarket/savings/unsupportedCountry';
+import {
+    AllowedKYCFileTypes,
+    MaxKYCDocumentFileSizeMB,
+} from '@wallet-constants/coinmarket/savings';
 
 export const useSavingsKYCStart = ({
     selectedAccount,
@@ -108,7 +111,8 @@ export const useSavingsKYCStart = ({
             const input = event.target as HTMLInputElement;
             reader.onload = event => {
                 if (typeof event.target?.result === 'string') {
-                    const base64 = event.target.result.replace(/data:.+\/.+;base64,/g, '');
+                    // NOTE: Data URL consits of metadata and base64 data joined with "," (comma).
+                    const base64 = event.target.result.split(',')[1];
                     setValue(input.name as keyof SavingsKYCStartFormState, base64);
                 }
             };
@@ -121,8 +125,8 @@ export const useSavingsKYCStart = ({
         onDrop,
         multiple: false,
         noClick: false,
-        accept: 'image/jpeg, image/png',
-        maxSize: 2 ** 20 * 5, // 5MB
+        accept: AllowedKYCFileTypes,
+        maxSize: MaxKYCDocumentFileSizeMB,
     } as DropzoneOptions;
 
     const frontDropzoneState = useDropzone(dropzoneOptions);
