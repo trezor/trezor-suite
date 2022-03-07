@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/build';
-import { useLayoutSize, useAnalytics } from '@suite-hooks';
+import { useAnalytics } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
 
 const Wrapper = styled.button<{ guideOpen?: boolean; isModalOpen?: boolean }>`
@@ -35,11 +35,8 @@ const Wrapper = styled.button<{ guideOpen?: boolean; isModalOpen?: boolean }>`
 `;
 
 const GuideButton = () => {
-    const { isMobileLayout } = useLayoutSize();
     const { openGuide, guideOpen, isModalOpen } = useGuide();
     const analytics = useAnalytics();
-
-    if (isMobileLayout) return null;
 
     return (
         <Wrapper

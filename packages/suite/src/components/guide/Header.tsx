@@ -35,9 +35,18 @@ const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
 
 const ActionButton = styled.button`
     border: 0;
-    background: none;
     left: auto;
+    padding: 8px;
+    border-radius: 8px;
+    background: ${props => props.theme.BG_WHITE};
+    transition: ${props =>
+        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
     cursor: pointer;
+
+    :hover,
+    :focus {
+        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_WHITE)};
+    }
 `;
 
 const MainLabel = styled.div`
@@ -61,16 +70,8 @@ const StyledIcon = styled(Icon)`
     width: 40px;
     height: 40px;
     flex-grow: 0;
-    padding: 8px;
-    border-radius: 8px;
-    margin: 0 -8px;
-    background: ${props => props.theme.BG_WHITE};
-    transition: ${props =>
-        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
 
-    &:hover {
-        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_WHITE)};
-    }
+    margin: -8px;
 `;
 
 interface Props {

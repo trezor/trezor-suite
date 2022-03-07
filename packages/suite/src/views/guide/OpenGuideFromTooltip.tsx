@@ -4,7 +4,6 @@ import { Translation } from '@suite-components';
 import TrezorLink from '@suite-components/TrezorLink';
 import { transparentize } from 'polished';
 import { useGuideOpenNode } from '@guide-hooks';
-import { useLayoutSize } from '@suite-hooks';
 import styled from 'styled-components';
 
 const OpenGuideLink = styled(TrezorLink)`
@@ -39,13 +38,13 @@ type OpenGuideFromTooltipProps = {
 
 const OpenGuideFromTooltip = ({ id, dataTest }: OpenGuideFromTooltipProps) => {
     const { openNodeById } = useGuideOpenNode();
-    const { isMobileLayout } = useLayoutSize();
+
     return (
         <OpenGuideLink
             data-test={dataTest}
             onClick={(e: React.MouseEvent<any>) => {
                 e.stopPropagation();
-                if (!isMobileLayout) openNodeById(id);
+                openNodeById(id);
             }}
             variant="nostyle"
         >

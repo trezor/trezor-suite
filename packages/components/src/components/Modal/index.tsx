@@ -206,13 +206,23 @@ const Heading = styled(H1)<HeadingProps>`
     }
 `;
 
-const CancelIconWrapper = styled.div`
+const HeaderComponentsContainer = styled.div<{ isAbsolute: boolean }>`
+    position: ${({ isAbsolute }) => isAbsolute && 'absolute'};
+    right: ${({ isAbsolute }) => isAbsolute && '22px'};
+    margin-left: ${({ isAbsolute }) => !isAbsolute && '30px'};
+
+    ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
+        right: ${({ isAbsolute }) => isAbsolute && '30px'};
+    }
+`;
+
+const CancelIconWrapper = styled.div<{ withComponents: boolean }>`
     display: inline-block;
     position: relative;
     top: auto;
     right: auto;
     align-items: center;
-    margin-left: 30px;
+    margin-left: ${({ withComponents }) => (withComponents ? 20 : 30)}px;
     cursor: pointer;
 `;
 
@@ -371,6 +381,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     currentProgressBarStep?: number;
     centerContent?: boolean;
     guideOpen?: boolean;
+    headerComponents?: Array<React.ReactElement>;
 }
 
 const Modal = ({
@@ -402,6 +413,7 @@ const Modal = ({
     currentProgressBarStep,
     centerContent = false,
     guideOpen = false,
+    headerComponents,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -450,9 +462,23 @@ const Modal = ({
                     noHeadingPadding={noHeadingPadding}
                 >
                     {heading}
+                    {headerComponents && (
+                        <HeaderComponentsContainer isAbsolute={!cancelable}>
+                            {headerComponents}
+                        </HeaderComponentsContainer>
+                    )}
                     {cancelable && (
-                        <CancelIconWrapper data-test="@modal/close-button" onClick={onCancel}>
-                            <Icon size={24} color={theme.TYPE_DARK_GREY} icon="CROSS" />
+                        <CancelIconWrapper
+                            data-test="@modal/close-button"
+                            onClick={onCancel}
+                            withComponents={!!headerComponents}
+                        >
+                            <Icon
+                                size={24}
+                                color={theme.TYPE_DARK_GREY}
+                                hoverColor={theme.TYPE_LIGHT_GREY}
+                                icon="CROSS"
+                            />
                         </CancelIconWrapper>
                     )}
                 </Heading>

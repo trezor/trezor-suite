@@ -8,6 +8,23 @@ export const SCREEN_SIZE = {
     XL: '1200px', // extra Large laptops/desktops
 } as const;
 
+// Temporary solution to enable the simultaious use of above and below breakpoints, ideally SCREEN SIZE should be just numbers IMO
+const HELPER_SCREEN_SIZE = {
+    SM: '575px', // phones
+    MD: '767px', // tablets
+    LG: '991px', // laptops/desktops
+    XL: '1199px', // extra Large laptops/desktops
+};
+
+export const SCREEN_QUERY = {
+    MOBILE: `@media (max-width: ${HELPER_SCREEN_SIZE.SM})`,
+    ABOVE_MOBILE: `@media (min-width: ${SCREEN_SIZE.SM})`,
+    BELOW_TABLET: `@media (max-width: ${HELPER_SCREEN_SIZE.MD})`,
+    ABOVE_TABLET: `@media (min-width: ${SCREEN_SIZE.MD})`,
+    BELOW_LAPTOP: `@media (max-width: ${HELPER_SCREEN_SIZE.LG})`,
+    ABOVE_LAPTOP: `@media (min-width: ${SCREEN_SIZE.LG})`,
+} as const;
+
 export const LAYOUT_SIZE = {
     MENU_SECONDARY_WIDTH: '300px',
     GUIDE_PANEL_WIDTH: '350px',

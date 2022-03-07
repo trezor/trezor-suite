@@ -30,8 +30,8 @@ const MobileWrapper = styled.div`
 
 const MenuItem = styled.div<ComponentProps>`
     display: flex;
-    cursor: ${props => (!props.isDisabled ? 'pointer' : 'auto')};
     font-size: 16px;
+    cursor: ${props => (!props.isDisabled && !props.isActive ? 'pointer' : 'default')};
 
     & + & {
         margin-left: 36px;
@@ -41,8 +41,8 @@ const MenuItem = styled.div<ComponentProps>`
 const MobileMenuItem = styled.div<ComponentProps>`
     display: flex;
     padding: 20px 24px;
-    cursor: ${props => (!props.isDisabled ? 'pointer' : 'auto')};
     font-size: ${props => (props.isActive ? '20px' : '16px')};
+    cursor: ${props => (!props.isDisabled && !props.isActive ? 'pointer' : 'default')};
 
     ${props =>
         props.isActive &&
@@ -150,7 +150,7 @@ const MainNavigation = (props: Props) => {
                         isDisabled={isDisabled}
                     >
                         <ItemTitleWrapper>
-                            <HoverAnimation>
+                            <HoverAnimation isHoverable={!isActive}>
                                 <ItemTitle isActive={isActive} isDisabled={isDisabled}>
                                     <Translation id={translationId} />
                                 </ItemTitle>
