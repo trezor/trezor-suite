@@ -6,6 +6,7 @@ import signTransactionERC20 from './signTransaction.erc20';
 import pushTransaction from './pushTransaction';
 import signMessage from './signMessage';
 import verifyMessage from './verifyMessage';
+import signTypedData from './signTypedData';
 
 export default [
     ...getPublicKey,
@@ -17,4 +18,5 @@ export default [
     // ...composeTransaction,
     ...signMessage,
     ...verifyMessage,
+    ...signTypedData,
 ];

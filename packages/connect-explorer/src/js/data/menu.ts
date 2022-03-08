@@ -183,6 +183,10 @@ export default [
                 name: 'Verify message',
                 url: '/method/ethereumVerifyMessage',
             },
+            {
+                name: 'Sign typed data',
+                url: '/method/ethereumSignTypedData',
+            },
         ],
     },
     {
@@ -308,6 +312,10 @@ export default [
                         url: '/method/cardanoGetAddress-multiple',
                     },
                 ],
+            },
+            {
+                name: 'Get native script hash',
+                url: '/method/cardanoGetNativeScriptHash',
             },
             {
                 name: 'Sign transaction',
