@@ -1,3 +1,5 @@
+import { cardanoDerivationType } from './common';
+
 const name = 'getAccountInfo';
 const docs = 'methods/getAccountInfo.md';
 
@@ -23,11 +25,7 @@ export default [
                 type: 'boolean',
                 value: true,
             },
-            {
-                name: 'derivationType',
-                type: 'number',
-                value: 2,
-            },
+            cardanoDerivationType,
         ],
     },
 ];

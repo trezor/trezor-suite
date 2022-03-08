@@ -1,14 +1,9 @@
 import { CardanoAddressType } from 'trezor-connect';
 
+import { cardanoDerivationType } from './common';
+
 const name = 'cardanoGetAddress';
 const docs = 'methods/cardanoGetAddress.md';
-
-// todo: import from trezor-connect
-export enum CardanoDerivationType {
-    LEDGER = 0,
-    ICARUS = 1,
-    ICARUS_TREZOR = 2,
-}
 
 const batch = [
     {
@@ -35,12 +30,7 @@ const batch = [
         defaultValue: true,
         value: true,
     },
-    {
-        name: 'derivation_type',
-        label: 'Derivation type',
-        type: 'number',
-        value: CardanoDerivationType.ICARUS_TREZOR,
-    },
+    cardanoDerivationType,
 ];
 
 export default [

@@ -10,6 +10,13 @@ const batch = [
         value: `m/49'/0'/0'`,
     },
     {
+        name: 'showOnTrezor',
+        label: 'Show on Trezor',
+        type: 'checkbox',
+        defaultValue: true,
+        value: true,
+    },
+    {
         name: 'coin',
         optional: true,
         type: 'select',

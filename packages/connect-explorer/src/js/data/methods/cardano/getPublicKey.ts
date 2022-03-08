@@ -1,9 +1,4 @@
-// todo: import from trezor-connect
-export enum CardanoDerivationType {
-    LEDGER = 0,
-    ICARUS = 1,
-    ICARUS_TREZOR = 2,
-}
+import { cardanoDerivationType } from './common';
 
 const name = 'cardanoGetPublicKey';
 const docs = 'methods/cardanoGetPublicKey.md';
@@ -21,12 +16,7 @@ const batch = [
         defaultValue: true,
         value: true,
     },
-    {
-        name: 'derivation_type',
-        label: 'Derivation type',
-        type: 'number',
-        value: CardanoDerivationType.ICARUS_TREZOR,
-    },
+    cardanoDerivationType,
 ];
 
 export default [

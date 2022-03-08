@@ -1,11 +1,6 @@
 import { CardanoTxSigningMode } from 'trezor-connect';
 
-// todo: import from trezor-connect
-export enum CardanoDerivationType {
-    LEDGER = 0,
-    ICARUS = 1,
-    ICARUS_TREZOR = 2,
-}
+import { cardanoDerivationType, cardanoTxSigningMode } from './common';
 
 const name = 'cardanoSignTransaction';
 const docs = 'methods/cardanoSignTransaction.md';
@@ -70,22 +65,13 @@ export default [
                 type: 'json',
                 value: JSON.stringify(tx.outputs),
             },
-            {
-                name: 'signingMode',
-                type: 'number',
-                value: CardanoTxSigningMode.ORDINARY_TRANSACTION,
-            },
+            cardanoTxSigningMode,
             {
                 name: 'fee',
                 type: 'input',
                 value: '42',
             },
-            {
-                name: 'derivation_type',
-                label: 'Derivation type',
-                type: 'number',
-                value: CardanoDerivationType.ICARUS_TREZOR,
-            },
+            cardanoDerivationType,
         ],
     },
 ];
