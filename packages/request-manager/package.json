@@ -1,0 +1,21 @@
+{
+    "name": "@trezor/request-manager",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "lib/index",
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest --verbose -c jest.config.js",
+        "type-check": "tsc --build tsconfig.json",
+        "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json"
+    },
+    "dependencies": {
+        "socks-proxy-agent": "6.1.1"
+    }
+}
