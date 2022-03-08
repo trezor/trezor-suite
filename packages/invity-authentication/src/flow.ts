@@ -159,10 +159,7 @@ const prefillEmail = (email = '', flowType) => {
         return true;
     }
     // Prefill the verification email field using either whoami data, or a cookie
-    if (
-        ['verification', 'recovery'].includes(flowType) === false ||
-        window.top.location.pathname === '/account/reset'
-    ) {
+    if (!['verification', 'recovery'].includes(flowType)) {
         return null;
     }
     if (!email) {
@@ -235,20 +232,9 @@ const checkWhoami = async (flowType, urls) => {
         const data = await response.json();
         if (data.error) {
             // Unauthorized, prefill e-mail from cookie (only for verification & recovery flows)
-            /**
-             * TODO: Remove window.top.location or resolve error in electron for Suite Desktop:
-             * Blocked a frame with origin "http://localhost:21335" from accessing a cross-origin frame.
-             */
-            // if (!prefillEmail(null, flowType)) {
-            //     if (window.top.location.pathname === '/account/reset-sent') {
-            //         // cannot pre-fill recovery email, redir to "reset"
-            //         sendMessageToParent({ redirectTo: 'recovery' });
-            //     } else if (window.top.location.pathname === '/account/verification') {
-            //         // cannot pre-fill verif email, redir to "signup"
-            //         sendMessageToParent({ redirectTo: 'registration' });
-            //     }
-            //     exit();
-            // }
+            if (!prefillEmail(null, flowType)) {
+                exit();
+            }
         } else {
             checkPrivilegedSession(new Date(data.authenticated_at).valueOf(), flowType); // If privileged session expired, log out on submit
             const verifiableAddress = data.identity.verifiable_addresses[0];
