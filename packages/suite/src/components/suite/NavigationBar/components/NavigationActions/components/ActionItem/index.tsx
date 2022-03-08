@@ -27,7 +27,6 @@ const MobileWrapper = styled.div<Pick<Props, 'isActive'>>`
     position: relative;
     cursor: pointer;
     align-items: center;
-    margin-right: 16px;
 
     & + & {
         border-top: 1px solid ${props => props.theme.STROKE_GREY};
