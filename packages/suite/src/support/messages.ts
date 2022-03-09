@@ -5584,7 +5584,7 @@ export default defineMessages({
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_PARAGRAPH_4',
         defaultMessage:
-            "<ul><li>Privacy at the flick of a switch with Tor.</li> <li>A new, more intuitive interface</li> <li>Quicker transactions with RBF</li> <li>Enough power for exciting upcoming features!</li></ul> Trezor Suite also has all the features you're used to from the old Trezor Wallet so you can hit the ground running!",
+            "<ul><li>Privacy at the flick of a switch with Tor.</li> <li>A new, more intuitive interface</li> <li>Cheaper transactions with RBF</li> <li>Enough power for exciting upcoming features!</li></ul> Trezor Suite also has all the features you're used to from the old Trezor Wallet so you can hit the ground running!",
     },
     TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2: {
         id: 'TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_2',
@@ -6329,16 +6329,16 @@ export default defineMessages({
     TR_STAKING_TX_PENDING: {
         id: 'TR_STAKING_TX_PENDING',
         defaultMessage:
-            'Your transaction {txid} was successfully sent to the blockchain and waits for confirmation.',
+            'Your transaction {txid} was successfully sent to the blockchain and is waiting for confirmation.',
     },
     TR_STAKING_ON_3RD_PARTY_TITLE: {
         id: 'TR_STAKING_ON_3RD_PARTY_TITLE',
-        defaultMessage: 'You are delegating on 3rd party stake pool',
+        defaultMessage: 'You are delegating on a 3rd party stake pool',
     },
     TR_STAKING_ON_3RD_PARTY_DESCRIPTION: {
         id: 'TR_STAKING_ON_3RD_PARTY_DESCRIPTION',
         defaultMessage:
-            'By staking on Trezor stake pool you are directly supporting Trezor and Cardano ecosystem within Trezor Suite.',
+            'By staking on Trezor stake pool you are directly supporting Trezor and the Cardano ecosystem within Trezor Suite.',
     },
     TR_STAKING_POOL_OVERSATURATED_TITLE: {
         id: 'TR_STAKING_POOL_OVERSATURATED_TITLE',
@@ -6347,7 +6347,7 @@ export default defineMessages({
     TR_STAKING_POOL_OVERSATURATED_DESCRIPTION: {
         id: 'TR_STAKING_POOL_OVERSATURATED_DESCRIPTION',
         defaultMessage:
-            'Stake pool your are delegating on is oversaturated. Please redelegate your stake to maximize your staking rewards',
+            'The stake pool you are delegating on is oversaturated. Please redelegate your stake to maximize your staking rewards',
     },
     TR_STAKING_IS_NOT_SUPPORTED: {
         id: 'TR_STAKING_IS_NOT_SUPPORTED',
@@ -6355,7 +6355,8 @@ export default defineMessages({
     },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
-        defaultMessage: 'Receiving {symbol}',
+        defaultMessage:
+            'Received {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}}',
     },
     TR_RECEIVED_SYMBOL: {
         id: 'TR_RECEIVED_SYMBOL',
@@ -6409,6 +6410,6 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_SHELLEY_DESC: {
         id: 'TR_ACCOUNT_TYPE_SHELLEY_DESC',
         defaultMessage:
-            'Shelley era addresses have introduced a new type of wallet, that can support stake delegation and earning rewards.',
+            'Shelley era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
     },
 });
