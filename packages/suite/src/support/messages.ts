@@ -6353,6 +6353,10 @@ export default defineMessages({
         defaultMessage:
             'Stake pool your are delegating on is oversaturated. Please redelegate your stake to maximize your staking rewards',
     },
+    TR_STAKING_IS_NOT_SUPPORTED: {
+        id: 'TR_STAKING_IS_NOT_SUPPORTED',
+        defaultMessage: 'Staking is not supported on this network.',
+    },
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
         defaultMessage: 'Receiving {symbol}',
