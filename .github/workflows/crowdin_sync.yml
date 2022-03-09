@@ -23,7 +23,8 @@ jobs:
           yarn workspace @trezor/suite translations:backport-en
           yarn workspace @trezor/suite translations:format
           yarn workspace @trezor/suite translations:extract
-          yarn workspace @trezor/suite translations:upload --dry-run
+          cat packages/suite-data/files/translations/master.json
+          yarn workspace @trezor/suite translations:upload --dryrun --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
           git add . && git commit -m "chore: crowdin translation update" && git push origin trezor-ci/crowdin-sync -f
           gh config set prompt disabled
           gh pr create --repo trezor/trezor-suite --title "Crowdin translations update" --body "Automatically generated PR for updating crowdin translations." --base develop --label translations
