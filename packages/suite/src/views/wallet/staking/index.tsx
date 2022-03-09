@@ -1,5 +1,6 @@
 import React from 'react';
-import { WalletLayout } from '@wallet-components';
+import { Translation } from '@suite-components';
+import { AccountExceptionLayout, WalletLayout } from '@wallet-components';
 import { AppState } from '@suite-types';
 import { useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
 import Rewards from './components/Rewards';
@@ -34,7 +35,21 @@ const CardanoStaking = () => {
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_STAKING" account={selectedAccount} />;
     }
-    return <CardanoStakingLoaded selectedAccount={selectedAccount} />;
+
+    // render staking component only in cardano
+    if (selectedAccount.account.networkType === 'cardano') {
+        return <CardanoStakingLoaded selectedAccount={selectedAccount} />;
+    }
+
+    // unsupported network
+    return (
+        <WalletLayout title="TR_NAV_STAKING" account={selectedAccount}>
+            <AccountExceptionLayout
+                title={<Translation id="TR_STAKING_IS_NOT_SUPPORTED" />}
+                image="CLOUDY"
+            />
+        </WalletLayout>
+    );
 };
 
 export default CardanoStaking;
