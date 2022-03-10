@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import ReactMarkdown from 'react-markdown';
 
@@ -7,8 +7,7 @@ import { Button, H2, variables, Link } from '@trezor/components';
 import { Translation, Modal, FormattedDate } from '@suite-components';
 import { Row, LeftCol, RightCol, Divider } from './styles';
 import { useActions } from '@suite-hooks';
-
-import { getReleaseNotes, getReleaseUrl } from '@suite/services/github';
+import { getReleaseUrl } from '@suite/services/github';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
 const GreenH2 = styled(H2)`
@@ -76,13 +75,6 @@ const DateWrapper = styled.span`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-type ReleaseState = {
-    loading: boolean;
-    version?: string;
-    notes?: string;
-    prerelease: boolean;
-};
-
 interface VersionNameProps {
     latestVersion?: string;
     prerelease: boolean;
@@ -105,56 +97,15 @@ const getVersionName = ({ latestVersion, prerelease }: VersionNameProps): string
     return latestVersion;
 };
 
-interface Props {
+interface AvailableProps {
     hideWindow: () => void;
     latest?: UpdateInfo;
 }
 
-const Available = ({ hideWindow, latest }: Props) => {
-    const [releaseNotes, setReleaseNotes] = useState<ReleaseState>({
-        loading: false,
-        version: undefined,
-        notes: undefined,
-        prerelease: false,
-    });
-
+const Available = ({ hideWindow, latest }: AvailableProps) => {
     const { download } = useActions({
         download: desktopUpdateActions.download,
     });
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setReleaseNotes({
-                ...releaseNotes,
-                loading: true,
-            });
-
-            let notes;
-            let prerelease = false;
-            const version = latest?.version;
-
-            try {
-                if (!version) {
-                    throw new Error("Couldn't get latest version.");
-                }
-
-                const release = await getReleaseNotes(version);
-                notes = release?.body;
-                prerelease = !!release?.prerelease;
-            } finally {
-                setReleaseNotes({
-                    loading: false,
-                    version,
-                    notes,
-                    prerelease,
-                });
-            }
-        };
-
-        if (latest?.version !== releaseNotes.version && !releaseNotes.loading) {
-            fetchData();
-        }
-    }, [latest, releaseNotes]);
 
     const downloadUpdate = useCallback(() => {
         download();
@@ -173,15 +124,15 @@ const Available = ({ hideWindow, latest }: Props) => {
                     values={{
                         version: getVersionName({
                             latestVersion: latest?.version,
-                            prerelease: !!releaseNotes?.prerelease,
+                            prerelease: !!latest?.prerelease,
                         }),
                     }}
                 />
             </GreenH2>
 
             <ChangelogWrapper>
-                {releaseNotes.notes ? (
-                    <ReactMarkdown>{releaseNotes.notes}</ReactMarkdown>
+                {latest?.changelog ? (
+                    <ReactMarkdown>{latest?.changelog}</ReactMarkdown>
                 ) : (
                     <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                 )}

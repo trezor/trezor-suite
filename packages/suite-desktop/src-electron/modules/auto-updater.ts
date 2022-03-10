@@ -17,6 +17,7 @@ import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';
 import { verifySignature } from '../libs/update-checker';
 import { Module } from './index';
+import { getReleaseNotes } from '@suite/services/github';
 
 // Runtime flags
 const enableUpdater = app.commandLine.hasSwitch('enable-updater');
@@ -102,22 +103,33 @@ const init: Module = ({ mainWindow, store }) => {
         mainWindow.webContents.send('update/checking');
     });
 
-    autoUpdater.on('update-available', ({ version, releaseDate }: UpdateInfo) => {
-        logger.warn('auto-updater', [
-            'Update is available:',
-            `- Update version: ${version}`,
-            `- Release date: ${releaseDate}`,
-            `- Manual check: ${b2t(isManualCheck)}`,
-        ]);
+    autoUpdater.on('update-available', async ({ version, releaseDate }: UpdateInfo) => {
+        let release;
+        try {
+            release = await getReleaseNotes(version);
+        } catch (error) {
+            logger.error('auto-updater', 'Fetching release notes failed!');
+        } finally {
+            logger.warn('auto-updater', [
+                'Update is available:',
+                `- Update version: ${version}`,
+                `- Prerelease: ${release?.prerelease}`,
+                `- Changelog: ${release?.body ? 'available' : 'unavailable'}`,
+                `- Release date: ${releaseDate}`,
+                `- Manual check: ${b2t(isManualCheck)}`,
+            ]);
 
-        mainWindow.webContents.send('update/available', {
-            version,
-            releaseDate,
-            isManualCheck,
-        });
+            mainWindow.webContents.send('update/available', {
+                version,
+                releaseDate,
+                isManualCheck,
+                prerelease: release?.prerelease,
+                changelog: release?.body,
+            });
 
-        // Reset manual check flag
-        isManualCheck = false;
+            // Reset manual check flag
+            isManualCheck = false;
+        }
     });
 
     autoUpdater.on('update-not-available', ({ version, releaseDate }: UpdateInfo) => {

@@ -1,8 +1,11 @@
-import { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 import { DESKTOP_UPDATE } from '@suite-actions/constants';
 import { addToast } from '@suite-actions/notificationActions';
 import { Dispatch, GetState } from '@suite-types';
 import { UpdateState, UpdateWindow } from '@suite-reducers/desktopUpdateReducer';
+import * as analyticsActions from '@suite-actions/analyticsActions';
+import { AppUpdateEventStatus, getAppUpdatePayload } from '@suite-utils/analytics';
+
+import type { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 
 export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.ENABLE }
@@ -46,20 +49,42 @@ export const downloading = (progress: UpdateProgress): DesktopUpdateAction => ({
     payload: progress,
 });
 
-export const ready = (info: UpdateInfo): DesktopUpdateAction => ({
-    type: DESKTOP_UPDATE.READY,
-    payload: info,
-});
+export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState) => {
+    const { latest, allowPrerelease } = getState().desktopUpdate;
+
+    // update can fail even if it was downloaded successfully
+    // TODO: Update successful status from electron layer
+    const payload = getAppUpdatePayload(AppUpdateEventStatus.Downloaded, allowPrerelease, latest);
+    dispatch(
+        analyticsActions.report({
+            type: 'app-update',
+            payload,
+        }),
+    );
+
+    dispatch({
+        type: DESKTOP_UPDATE.READY,
+        payload: info,
+    });
+};
 
 export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) => {
     // TODO: Properly display error
     console.error('auto-updater', err);
 
-    const { state } = getState().desktopUpdate;
+    const { state, latest, allowPrerelease } = getState().desktopUpdate;
 
     // Ignore displaying errors while checking
     if (state !== UpdateState.Checking) {
         dispatch(addToast({ type: 'auto-updater-error', state }));
+
+        const payload = getAppUpdatePayload(AppUpdateEventStatus.Error, allowPrerelease, latest);
+        dispatch(
+            analyticsActions.report({
+                type: 'app-update',
+                payload,
+            }),
+        );
     }
 
     dispatch({

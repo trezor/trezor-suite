@@ -9,6 +9,35 @@ Added:
 -   create-backup
     -   status: 'finished' | 'error'
     -   error: string
+-   app-update
+    -   fromVersion: string
+    -   toVersion: string
+    -   status: 'finished' | 'cancelled' | 'error'
+    -   version: 'stable' | 'beta'
+    -   status: 'downloaded' | 'cancelled' | 'error'
+    -   earlyAccessProgram: boolean
+    -   isPrerelease: boolean
+-   suite-ready
+    -   customBackends: ['btc', 'eth', 'ada', ...] (array of coins with custom backend)
+    -   autodetectLanguage: boolean;
+    -   autodetectTheme: boolean;
+-   settings/coin-backend
+    -   symbol: 'btc', 'eth', 'ada', ...
+    -   type: 'default' | 'blockbook' | 'electrum' | 'ripple' | 'blockfrost'
+    -   totalRegular: number
+    -   totalOnion: number
+-   settings/general/change-language
+    -   previousLanguage: string
+    -   previousAutodetectLanguage: boolean
+    -   autodetectLanguage: boolean
+    -   platformLanguages: string
+-   settings/general/change-theme
+    -   previousTheme: 'light' | 'dark'
+    -   previousAutodetectTheme: boolean;
+    -   theme: 'light' | 'dark'
+    -   autodetectTheme: boolean;
+    -   platformTheme: 'light' | 'dark'
+
 ### 1.16
 
 Added:

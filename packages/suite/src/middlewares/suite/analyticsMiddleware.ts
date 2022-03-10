@@ -7,49 +7,11 @@ import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import {
-    getScreenWidth,
-    getScreenHeight,
-    getBrowserName,
-    getBrowserVersion,
-    getOsName,
-    getOsVersion,
-    getWindowWidth,
-    getWindowHeight,
-    getPlatformLanguages,
-} from '@suite-utils/env';
 import { isBitcoinOnly, getPhysicalDeviceCount } from '@suite-utils/device';
-import { allowSentryReport } from '@suite/utils/suite/sentry';
+import { allowSentryReport } from '@suite-utils/sentry';
+import { reportSuiteReadyAction } from '@suite-utils/analytics';
 
 import type { AppState, Action, Dispatch } from '@suite-types';
-
-const reportSuiteReadyAction = (state: AppState) =>
-    analyticsActions.report({
-        type: 'suite-ready',
-        payload: {
-            language: state.suite.settings.language,
-            enabledNetworks: state.wallet.settings.enabledNetworks,
-            localCurrency: state.wallet.settings.localCurrency,
-            discreetMode: state.wallet.settings.discreetMode,
-            screenWidth: getScreenWidth(),
-            screenHeight: getScreenHeight(),
-            platformLanguages: getPlatformLanguages().join(','),
-            tor: state.suite.tor,
-            rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase)
-                .length,
-            rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase)
-                .length,
-            theme: state.suite.settings.theme.variant,
-            suiteVersion: process.env.VERSION || '',
-            earlyAccessProgram: state.desktopUpdate.allowPrerelease,
-            browserName: getBrowserName(),
-            browserVersion: getBrowserVersion(),
-            osName: getOsName(),
-            osVersion: getOsVersion(),
-            windowWidth: getWindowWidth(),
-            windowHeight: getWindowHeight(),
-        },
-    });
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:

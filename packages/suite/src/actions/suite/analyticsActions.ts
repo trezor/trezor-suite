@@ -7,7 +7,7 @@
 import { ANALYTICS } from '@suite-actions/constants';
 import { Dispatch, GetState, AppState } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
-import { encodeDataToQueryString } from '@suite-utils/analytics';
+import { AppUpdateEvent, encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
 import { setOnBeforeUnloadListener, getEnvironment } from '@suite-utils/env';
 import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
@@ -421,6 +421,18 @@ export type AnalyticsEvent =
           type: 'send-raw-transaction';
           payload: {
               networkSymbol: Account['symbol'];
+          };
+      }
+    | {
+          type: 'app-update';
+          payload: AppUpdateEvent;
+      }
+    | {
+          payload: {
+              fromVersion?: string;
+              toVersion?: string;
+              status: 'finished' | 'closed' | 'error';
+              version: 'stable' | 'beta';
           };
       };
 
