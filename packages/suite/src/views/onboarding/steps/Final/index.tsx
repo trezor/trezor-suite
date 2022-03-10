@@ -11,13 +11,13 @@ import { useGuide } from '@guide-hooks';
 import { getDeviceModel } from '@suite-utils/device';
 import * as routerActions from '@suite-actions/routerActions';
 
-const Wrapper = styled.div<{ guideOpen?: boolean }>`
+const Wrapper = styled.div<{ isGuideOpen?: boolean }>`
     display: flex;
     width: 100%;
     align-items: center;
 
     @media (max-width: ${props =>
-            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         padding: 0;
         margin: 0;
         flex-direction: column;
@@ -70,7 +70,7 @@ const GalleryWrapper = styled.div`
     border: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
-const DeviceImageWrapper = styled.div<{ guideOpen?: boolean }>`
+const DeviceImageWrapper = styled.div<{ isGuideOpen?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,7 +79,7 @@ const DeviceImageWrapper = styled.div<{ guideOpen?: boolean }>`
     margin: 0 20px 0 -60px;
 
     @media (max-width: ${props =>
-            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         margin: 0 0 20px 0;
     }
 
@@ -90,13 +90,13 @@ const DeviceImageWrapper = styled.div<{ guideOpen?: boolean }>`
     }
 `;
 
-const Heading = styled.div<{ guideOpen?: boolean }>`
+const Heading = styled.div<{ isGuideOpen?: boolean }>`
     font-size: 48px;
     font-weight: ${variables.FONT_WEIGHT.BOLD};
     margin-bottom: 32px;
 
     @media (max-width: ${props =>
-            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         text-align: center;
     }
 
@@ -105,7 +105,7 @@ const Heading = styled.div<{ guideOpen?: boolean }>`
     }
 `;
 
-const SetupActions = styled.div<{ guideOpen?: boolean }>`
+const SetupActions = styled.div<{ isGuideOpen?: boolean }>`
     display: flex;
     margin-bottom: 32px;
     padding-bottom: 32px;
@@ -113,7 +113,7 @@ const SetupActions = styled.div<{ guideOpen?: boolean }>`
     width: fit-content;
 
     @media (max-width: ${props =>
-            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         justify-content: center;
         width: auto;
     }
@@ -123,14 +123,14 @@ const SetupActions = styled.div<{ guideOpen?: boolean }>`
     }
 `;
 
-const RenameDevice = styled(SetupActions)<{ guideOpen?: boolean }>`
+const RenameDevice = styled(SetupActions)<{ isGuideOpen?: boolean }>`
     @media (max-width: ${props =>
-            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         justify-content: center;
     }
 `;
 
-const EnterSuiteButton = styled(Button)<{ guideOpen?: boolean }>`
+const EnterSuiteButton = styled(Button)<{ isGuideOpen?: boolean }>`
     height: 64px;
     min-width: 280px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -140,7 +140,7 @@ const EnterSuiteButton = styled(Button)<{ guideOpen?: boolean }>`
     padding-right: 26px;
 
     @media (max-width: ${props =>
-            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         width: 100%;
     }
 `;
@@ -157,7 +157,7 @@ const FinalStep = () => {
         goto: routerActions.goto,
     });
 
-    const { guideOpen } = useGuide();
+    const { isGuideOpen } = useGuide();
 
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
@@ -183,16 +183,16 @@ const FinalStep = () => {
             data-test="@onboarding/final"
             confirmOnDevice={isWaitingForConfirm ? device.features?.major_version : undefined}
         >
-            <Wrapper guideOpen={guideOpen}>
-                <DeviceImageWrapper guideOpen={guideOpen}>
+            <Wrapper isGuideOpen={isGuideOpen}>
+                <DeviceImageWrapper isGuideOpen={isGuideOpen}>
                     <DeviceAnimation type="SUCCESS" size={400} device={device} />
                 </DeviceImageWrapper>
                 <Content>
-                    <Heading guideOpen={guideOpen}>
+                    <Heading isGuideOpen={isGuideOpen}>
                         <Translation id="TR_FINAL_HEADING" />
                     </Heading>
                     {!state && (
-                        <SetupActions guideOpen={guideOpen}>
+                        <SetupActions isGuideOpen={isGuideOpen}>
                             <Option onClick={() => setState('rename')}>
                                 <OptionIconWrapper>
                                     <Icon size={16} icon="SIGN" />
@@ -242,7 +242,7 @@ const FinalStep = () => {
                         </SetupActions>
                     )}
                     {state === 'rename' && (
-                        <RenameDevice guideOpen={guideOpen}>
+                        <RenameDevice isGuideOpen={isGuideOpen}>
                             <DeviceLabelInput
                                 noTopLabel
                                 noError
@@ -289,7 +289,7 @@ const FinalStep = () => {
                         }}
                         icon="ARROW_RIGHT_LONG"
                         alignIcon="right"
-                        guideOpen={guideOpen}
+                        isGuideOpen={isGuideOpen}
                     >
                         <Translation id="TR_GO_TO_SUITE" />
                     </EnterSuiteButton>

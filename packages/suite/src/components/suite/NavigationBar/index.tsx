@@ -16,13 +16,13 @@ const Wrapper = styled.div`
     z-index: ${variables.Z_INDEX.NAVIGATION_BAR};
     padding: 6px 8px;
     align-items: center;
-    background: ${props => props.theme.BG_WHITE};
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
     &${StyledDeviceSelector}:hover {
         /* apply same device selector's hover styles on hover anywhere in navigation panel */
         border-radius: 4px;
-        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+        box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     }
 
     @media screen and (min-width: ${variables.SCREEN_SIZE.LG}) {
@@ -53,7 +53,7 @@ const ExpandedMobileNavigation = styled.div`
     height: 100%;
 `;
 
-const NavigationBar = () => {
+export const NavigationBar: React.FC = () => {
     const [opened, setOpened] = useState(false);
     const { isMobileLayout } = useLayoutSize();
     const theme = useTheme();
@@ -76,6 +76,7 @@ const NavigationBar = () => {
                         />
                     </HamburgerWrapper>
                 </Wrapper>
+
                 {opened && (
                     <MobileNavigationWrapper>
                         <ExpandedMobileNavigation>
@@ -102,5 +103,3 @@ const NavigationBar = () => {
         </Wrapper>
     );
 };
-
-export default NavigationBar;

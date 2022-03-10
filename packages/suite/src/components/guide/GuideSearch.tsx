@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import { Icon, Input, Loader, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useTranslation } from '@suite-hooks';
-import type { Category } from '@suite-types/guide';
 import { GuideNode } from '@guide-components';
 import { useGuideSearch } from '@guide-hooks';
+
+import type { Category } from '@suite-types/guide';
 
 const Wrapper = styled.div`
     margin-bottom: 40px;
@@ -22,7 +23,7 @@ const NoResults = styled.p`
     margin-top: 10px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const PreviewContent = styled.div`
@@ -30,27 +31,34 @@ const PreviewContent = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+
     & > em {
         font-style: inherit;
-        color: ${props => props.theme.TYPE_DARK_GREY};
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
     }
 `;
 
 const StyledInput = styled(Input)`
     && {
-        background-color: ${props => props.theme.BG_GREY_ALT};
+        background-color: ${({ theme }) => theme.BG_GREY_ALT};
         border: none;
         border-radius: 8px;
         height: 40px;
     }
 `;
 
-const Preview = ({ content, from, length }: { content: string; from: number; length: number }) => (
+interface PreviewProps {
+    content: string;
+    from: number;
+    length: number;
+}
+
+const Preview: React.FC<PreviewProps> = ({ content, from, length }) => (
     <PreviewContent>
-        {content.substr(0, from)}
-        <em>{content.substr(from, length)}</em>
-        {content.substr(from + length)}
+        {content.substring(0, from)}
+        <em>{content.substring(from, length)}</em>
+        {content.substring(from + length)}
     </PreviewContent>
 );
 
@@ -59,8 +67,9 @@ type GuideSearchProps = {
     setSearchActive: (active: boolean) => void;
 };
 
-const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => {
+export const GuideSearch: React.FC<GuideSearchProps> = ({ pageRoot, setSearchActive }) => {
     const [query, setQuery] = useState('');
+
     const { translationString } = useTranslation();
     const { searchResult, loading } = useGuideSearch(query, pageRoot);
 
@@ -85,6 +94,7 @@ const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => {
                 innerAddon={loading ? <Loader size={16} /> : <Icon icon="SEARCH" size={16} />}
                 data-test="@guide/search"
             />
+
             {searchResult.length ? (
                 <PageFoundList data-test="@guide/search/results">
                     {searchResult.map(({ page, preview }) => (
@@ -106,5 +116,3 @@ const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => {
         </Wrapper>
     );
 };
-
-export default GuideSearch;

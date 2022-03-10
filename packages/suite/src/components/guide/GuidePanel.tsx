@@ -64,31 +64,31 @@ const GuideWrapper = styled.div<{ isModalOpen?: boolean }>`
 const MotionGuide = styled(motion.div)`
     max-width: 100vw;
     height: 100%;
-    border-left: 1px solid ${props => props.theme.STROKE_GREY};
+    border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
     display: flex;
 `;
 
-const GuidePanel = () => {
+export const GuidePanel: React.FC = () => {
     const { activeView } = useSelector(state => ({
         activeView: state.guide.view,
     }));
 
-    const { guideOpen, isModalOpen, closeGuide } = useGuide();
+    const { isGuideOpen, isModalOpen, closeGuide } = useGuide();
 
     // if guide is open, do not animate guide opening if transitioning between onboarding, welcome and suite layout
-    const [guideAlreadyOpen, setGuideAlreadyOpen] = useState(guideOpen);
+    const [guideAlreadyOpen, setGuideAlreadyOpen] = useState(isGuideOpen);
 
     useEffect(() => {
         setGuideAlreadyOpen(false);
     }, []);
 
     return (
-        <FocusLock disabled={!guideOpen} autoFocus={false}>
-            {guideOpen && <BackDrop onClick={closeGuide} />}
+        <FocusLock disabled={!isGuideOpen} autoFocus={false}>
+            {isGuideOpen && <BackDrop onClick={closeGuide} />}
 
             <GuideWrapper isModalOpen={isModalOpen}>
                 <AnimatePresence>
-                    {guideOpen && (
+                    {isGuideOpen && (
                         <MotionGuide
                             data-test="@guide/panel"
                             initial={
@@ -128,5 +128,3 @@ const GuidePanel = () => {
         </FocusLock>
     );
 };
-
-export default GuidePanel;

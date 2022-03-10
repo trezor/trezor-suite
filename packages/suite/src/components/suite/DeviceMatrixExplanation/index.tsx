@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DeviceImage, Icon, IconProps, variables } from '@trezor/components';
 import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.div<{ guideOpen?: boolean }>`
+const Wrapper = styled.div<{ isGuideOpen?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,7 +15,7 @@ const Wrapper = styled.div<{ guideOpen?: boolean }>`
     border-radius: 5px;
 
     @media only screen and (max-width: ${props =>
-            props.guideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         display: none;
     }
 `;
@@ -68,10 +68,10 @@ interface Props {
 }
 
 const DeviceMatrixExplanation = ({ items }: Props) => {
-    const { guideOpen } = useGuide();
+    const { isGuideOpen } = useGuide();
 
     return (
-        <Wrapper guideOpen={guideOpen}>
+        <Wrapper isGuideOpen={isGuideOpen}>
             {items.map(item => (
                 <Item key={item.key}>
                     <ItemIconWrapper>

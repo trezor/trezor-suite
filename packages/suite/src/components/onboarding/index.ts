@@ -8,7 +8,7 @@ import OnboardingButtonSkip from './Buttons/ButtonSkip';
 
 import Box, { BoxProps } from './Box/Box';
 import ConnectDevicePromptManager from './ConnectDevicePromptManager';
-import OnboardingLayout from './Layouts/OnboardingLayout';
+import { OnboardingLayout } from './Layouts/OnboardingLayout';
 import ProgressBar from './ProgressBar';
 import Hologram from './Hologram';
 import DeviceAnimation, { DeviceAnimationType } from './DeviceAnimation';

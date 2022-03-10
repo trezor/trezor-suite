@@ -80,7 +80,7 @@ interface Props {
     useBreadcrumb?: boolean;
 }
 
-const Header = ({ back, label, useBreadcrumb }: Props) => {
+export const Header = ({ back, label, useBreadcrumb }: Props) => {
     const theme = useTheme();
     const analytics = useAnalytics();
 
@@ -136,5 +136,3 @@ const Header = ({ back, label, useBreadcrumb }: Props) => {
         </HeaderWrapper>
     );
 };
-
-export default Header;

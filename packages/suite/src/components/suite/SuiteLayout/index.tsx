@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from 'react';
+import React, { useState, createContext, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -8,7 +8,7 @@ import { Metadata } from '@suite-components';
 import { GuidePanel, GuideButton } from '@guide-components';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
-import NavigationBar from '../NavigationBar';
+import { NavigationBar } from '../NavigationBar';
 import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
 
@@ -31,7 +31,7 @@ const Body = styled.div`
 // AppWrapper and MenuSecondary creates own scrollbars independently
 const Columns = styled.div<{
     isModalOpen?: boolean;
-    guideOpen?: boolean;
+    isGuideOpen?: boolean;
     isModalOpenLastChange?: boolean;
     isNarrow?: boolean;
 }>`
@@ -45,11 +45,6 @@ const Columns = styled.div<{
         isNarrow &&
         css`
             padding-right: ${variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH};
-        `}
-
-    ${({ isNarrow }) =>
-        isNarrow &&
-        css`
             transition: all 0.3s;
         `}
 
@@ -73,7 +68,7 @@ const AppWrapper = styled.div`
     align-items: center;
     position: relative;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         overflow-x: hidden;
     }
 `;
@@ -92,11 +87,11 @@ const DefaultPaddings = styled.div`
     width: 100%;
     padding: 24px 32px 90px 32px;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         padding: 24px 16px 70px 16px;
     }
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         padding-bottom: 50px;
     }
 `;
@@ -105,13 +100,11 @@ interface MobileBodyProps {
     url: string;
     menu?: React.ReactNode;
     appMenu?: React.ReactNode;
-    children?: React.ReactNode;
 }
 
 interface NormalBodyProps extends MobileBodyProps {
     isMenuInline: boolean;
     isModalOpen?: boolean;
-    guideOpen?: boolean;
     isNarrow?: boolean;
     isModalOpenLastChange?: boolean;
 }
@@ -132,13 +125,15 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
-type ScrollAppWrapperProps = Pick<MobileBodyProps, 'url' | 'children'>;
+type ScrollAppWrapperProps = Pick<MobileBodyProps, 'url'>;
 // ScrollAppWrapper is mandatory to reset AppWrapper scroll position on url change, fix: issue #1658
-const ScrollAppWrapper = ({ url, children }: ScrollAppWrapperProps) => {
+const ScrollAppWrapper: React.FC<ScrollAppWrapperProps> = ({ url, children }) => {
     const ref = React.useRef<HTMLDivElement>(null);
     React.useEffect(() => {
         const { current } = ref;
+
         if (!current) return;
+
         current.scrollTop = 0; // reset scroll position on url change
     }, [ref, url]);
     return (
@@ -148,7 +143,7 @@ const ScrollAppWrapper = ({ url, children }: ScrollAppWrapperProps) => {
     );
 };
 
-const BodyNormal = ({
+const BodyNormal: React.FC<NormalBodyProps> = ({
     url,
     menu,
     appMenu,
@@ -156,13 +151,11 @@ const BodyNormal = ({
     isNarrow,
     isMenuInline,
     isModalOpen,
-    guideOpen,
     isModalOpenLastChange,
-}: NormalBodyProps) => (
+}) => (
     <Body>
         <Columns
             isModalOpen={isModalOpen}
-            guideOpen={guideOpen}
             isModalOpenLastChange={isModalOpenLastChange}
             isNarrow={isNarrow}
         >
@@ -174,12 +167,13 @@ const BodyNormal = ({
                     <MaxWidthWrapper>{children}</MaxWidthWrapper>
                 </DefaultPaddings>
             </ScrollAppWrapper>
+
             <GuidePanel />
         </Columns>
     </Body>
 );
 
-const BodyMobile = ({ url, menu, appMenu, children }: MobileBodyProps) => (
+const BodyMobile: React.FC<MobileBodyProps> = ({ url, menu, appMenu, children }) => (
     <Body>
         <Columns>
             <ScrollAppWrapper url={url}>
@@ -187,36 +181,31 @@ const BodyMobile = ({ url, menu, appMenu, children }: MobileBodyProps) => (
                 {appMenu}
                 <DefaultPaddings>{children}</DefaultPaddings>
             </ScrollAppWrapper>
+
             <GuidePanel />
         </Columns>
     </Body>
 );
 
-const SuiteLayout: React.FC = ({ children }) => {
-    const { isMobileLayout, layoutSize } = useLayoutSize();
+export const SuiteLayout: React.FC = ({ children }) => {
     const { router } = useSelector(state => ({
         router: state.router,
     }));
-    const { guideOpen, isModalOpen, isGuideOnTop } = useGuide();
+
+    const [isModalOpenLastChange, setIsModalOpenLastChange] = useState<boolean>(false);
+    const [title, setTitle] = useState<string | undefined>(undefined);
+    const [menu, setMenu] = useState<React.ReactNode>(undefined);
+    const [appMenu, setAppMenu] = useState<React.ReactNode>(undefined);
+
+    const { isMobileLayout, layoutSize } = useLayoutSize();
+    const { isGuideOpen, isModalOpen, isGuideOnTop } = useGuide();
+    const { device } = useDevice();
 
     // fixes problem of animated layout movement when guide was open and user opened a modal
-    const [isModalOpenLastChange, setIsModalOpenLastChange] = useState<boolean>(false);
     useEffect(() => setIsModalOpenLastChange(true), [isModalOpen]);
-    useEffect(() => setIsModalOpenLastChange(false), [guideOpen]);
+    useEffect(() => setIsModalOpenLastChange(false), [isGuideOpen]);
 
-    const [title, setTitle] = useState<string | undefined>(undefined);
-    const [menu, setMenu] = useState<any>(undefined);
-    // There are three layout configurations WRT the guide and menu:
-    // - On XLARGE viewports menu, body and guide are displayed in three columns.
-    // - On viewports wider than mobile but smaller than XLARGE body and menu are
-    //   are displayed in two columns unless guide is open. In such case, it takes
-    //   its own column and menu is inlined on top of body.
-    // - On mobile viewports the guide is simply hidden and menu is inlined on top
-    //   of body constantly.
-    const isMenuInline = isMobileLayout || (layoutSize === 'LARGE' && guideOpen);
-
-    const [appMenu, setAppMenu] = useState<any>(undefined);
-    const setLayout = React.useCallback<NonNullable<LayoutContextI['setLayout']>>(
+    const setLayout = useCallback<NonNullable<LayoutContextI['setLayout']>>(
         (newTitle, newMenu, newAppMenu) => {
             setTitle(newTitle);
             setMenu(newMenu);
@@ -225,7 +214,15 @@ const SuiteLayout: React.FC = ({ children }) => {
         [],
     );
 
-    const { device } = useDevice();
+    // There are three layout configurations WRT the guide and menu:
+    // - On XLARGE viewports menu, body and guide are displayed in three columns.
+    // - On viewports wider than mobile but smaller than XLARGE body and menu are
+    //   are displayed in two columns unless guide is open. In such case, it takes
+    //   its own column and menu is inlined on top of body.
+    // - On mobile viewports the guide is simply hidden and menu is inlined on top
+    //   of body constantly.
+    const isMenuInline = isMobileLayout || (layoutSize === 'LARGE' && isGuideOpen);
+
     // Setting screens are available even if the device is not connected in normal mode
     // but then we need to hide NavigationBar so user can't navigate to Dashboard and Accounts.
     const isNavigationBarVisible = device?.mode === 'normal';
@@ -234,14 +231,19 @@ const SuiteLayout: React.FC = ({ children }) => {
         <PageWrapper>
             <Metadata title={title} />
             <SuiteBanners />
+
             {isNavigationBarVisible && <NavigationBar />}
+
             <DiscoveryProgress />
+
             <LayoutContext.Provider value={{ title, menu, isMenuInline, setLayout }}>
-                {!isMobileLayout && (
+                {isMobileLayout ? (
+                    <BodyMobile menu={menu} appMenu={appMenu} url={router.url}>
+                        {children}
+                    </BodyMobile>
+                ) : (
                     <BodyNormal
-                        isNarrow={guideOpen && isModalOpen && !isGuideOnTop}
-                        guideOpen={guideOpen}
-                        isModalOpen={isModalOpen}
+                        isNarrow={isGuideOpen && isModalOpen && !isGuideOnTop}
                         isModalOpenLastChange={isModalOpenLastChange}
                         menu={menu}
                         appMenu={appMenu}
@@ -251,16 +253,9 @@ const SuiteLayout: React.FC = ({ children }) => {
                         {children}
                     </BodyNormal>
                 )}
-                {isMobileLayout && (
-                    <BodyMobile menu={menu} appMenu={appMenu} url={router.url}>
-                        {children}
-                    </BodyMobile>
-                )}
             </LayoutContext.Provider>
 
             {!isMobileLayout && <GuideButton />}
         </PageWrapper>
     );
 };
-
-export default SuiteLayout;

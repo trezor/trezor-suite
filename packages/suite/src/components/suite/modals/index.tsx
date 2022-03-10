@@ -45,7 +45,7 @@ import { useGuide } from '@guide-hooks';
 import type { AcquiredDevice } from '@suite-types';
 
 const useSharedProps = () => {
-    const { guideOpen } = useGuide();
+    const { isGuideOpen } = useGuide();
     const props = useSelector(state => ({
         modal: state.modal,
         device: state.suite.device,
@@ -61,7 +61,7 @@ const useSharedProps = () => {
     return {
         ...props,
         ...actions,
-        guideOpen,
+        isGuideOpen,
     };
 };
 
@@ -275,7 +275,7 @@ const Modal = ({ background }: Props) => {
     const useBackground = background ?? true;
     if (useBackground) {
         return (
-            <FocusLock disabled={props.guideOpen} autoFocus={false}>
+            <FocusLock disabled={props.isGuideOpen} autoFocus={false}>
                 {modalComponent}
             </FocusLock>
         );
