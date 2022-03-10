@@ -441,9 +441,6 @@ type BodyType =
 
 class InvityAPI {
     unknownCountry = 'unknown';
-    productionAPIServer = 'https://exchange.trezor.io';
-    stagingAPIServer = 'https://staging-exchange1.invity.io';
-    localhostAPIServer = 'http://localhost:3330';
 
     authenticationServersForSuiteDesktop = {
         production: 'https://suite-desktop-auth.invity.io', // TODO: update the desktop URL accordingly, current value is just suggestion
