@@ -12,7 +12,7 @@ const Section = styled.section`
 const SectionHeading = styled.h3`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     padding: 0 0 18px 0;
 `;
 
@@ -27,7 +27,7 @@ type GuideCategoriesProps = {
     label: string | ReactNode;
 };
 
-const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
+export const GuideCategories: React.FC<GuideCategoriesProps> = ({ node, label }) => {
     if (!node || node.type !== 'category') {
         return null;
     }
@@ -43,5 +43,3 @@ const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
         </Section>
     );
 };
-
-export default GuideCategories;

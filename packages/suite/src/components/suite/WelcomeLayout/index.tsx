@@ -107,7 +107,7 @@ const WelcomeLayout: React.FC = ({ children }) => {
     const { screenWidth } = useSelector(state => ({
         screenWidth: state.resize.screenWidth,
     }));
-    const { guideOpen } = useGuide();
+    const { isGuideOpen, isGuideOnTop } = useGuide();
 
     // do not animate welcome bar on initial load
     const [firstRenderDone, setFirstRenderDone] = useState(false);
@@ -125,7 +125,7 @@ const WelcomeLayout: React.FC = ({ children }) => {
             <Body>
                 <WelcomeWrapper>
                     <AnimatePresence>
-                        {!guideOpen && (
+                        {((isGuideOpen && isGuideOnTop) || !isGuideOpen) && (
                             <MotionWelcome
                                 initial={
                                     !firstRenderDone

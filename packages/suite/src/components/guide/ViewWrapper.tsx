@@ -1,8 +1,8 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
@@ -11,20 +11,16 @@ const Wrapper = styled.div`
 
 export const ContentScrolledContext = createContext<boolean>(false);
 
-type Props = {
-    children?: React.ReactNode;
-};
-
-const ViewWrapper = ({ children, ...rest }: Props) => {
+export const ViewWrapper: React.FC = ({ children, ...rest }) => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
-    const onScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const onScroll = useCallback((e: React.UIEvent<HTMLDivElement, UIEvent>) => {
         if (e?.currentTarget?.scrollTop) {
             setIsScrolled(true);
         } else {
             setIsScrolled(false);
         }
-    };
+    }, []);
 
     return (
         <Wrapper onScroll={onScroll} {...rest}>
@@ -34,5 +30,3 @@ const ViewWrapper = ({ children, ...rest }: Props) => {
         </Wrapper>
     );
 };
-
-export default ViewWrapper;

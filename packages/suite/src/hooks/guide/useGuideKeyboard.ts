@@ -4,24 +4,24 @@ import { KEYBOARD_CODE } from '@trezor/components';
 import { useGuide } from '@guide-hooks';
 
 export const useGuideKeyboard = () => {
-    const { openGuide, closeGuide, guideOpen, isModalOpen } = useGuide();
+    const { openGuide, closeGuide, isGuideOpen, isModalOpen } = useGuide();
 
     const onGuideKeys = useCallback(
         (event: KeyboardEvent) => {
             if (event.key === KEYBOARD_CODE.ESCAPE) {
                 if (isModalOpen) return;
-                if (guideOpen) {
+                if (isGuideOpen) {
                     closeGuide();
                 }
             }
 
             if (event.key === KEYBOARD_CODE.FUNCTION_KEY_ONE) {
-                if (!guideOpen) openGuide();
+                if (!isGuideOpen) openGuide();
                 else closeGuide();
                 event.preventDefault();
             }
         },
-        [guideOpen, isModalOpen, closeGuide, openGuide],
+        [isGuideOpen, isModalOpen, closeGuide, openGuide],
     );
 
     useEffect(() => {

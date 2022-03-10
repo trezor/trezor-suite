@@ -12,14 +12,8 @@ const WrapperWidth = styled.div`
     width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_CONTENT_WIDTH};
 `;
 
-interface Props {
-    children: React.ReactNode;
-}
-
-const Content = ({ ...props }: Props) => (
+export const Content: React.FC = ({ ...props }) => (
     <Wrapper>
         <WrapperWidth {...props} />
     </Wrapper>
 );
-
-export default Content;

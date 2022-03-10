@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { TrezorLogo, Button, variables } from '@trezor/components';
 import { TrezorLink, Translation } from '@suite-components';
 import ProgressBar from '@onboarding-components/ProgressBar';
-import { useOnboarding, useSelector } from '@suite-hooks';
+import { useOnboarding } from '@suite-hooks';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import steps from '@onboarding-config/steps';
 import { GuideButton, GuidePanel } from '@guide-components';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
+import { useGuide } from '@guide-hooks/useGuide';
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
     height: 100%;
     flex-direction: column;
-    background: ${props => props.theme.BG_LIGHT_GREY};
+    background: ${({ theme }) => theme.BG_LIGHT_GREY};
 `;
 
 const Body = styled.div`
@@ -45,11 +46,11 @@ const Header = styled.div`
     flex-direction: column;
     max-width: ${MAX_WIDTH};
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         padding: 0px 20px;
     }
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         /* low width screen (mobile) */
         margin-bottom: 26px;
     }
@@ -67,7 +68,7 @@ const LogoHeaderRow = styled.div`
     justify-content: space-between;
     margin-bottom: 30px;
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         display: none;
     }
 `;
@@ -75,7 +76,7 @@ const LogoHeaderRow = styled.div`
 const ProgressBarRow = styled.div`
     margin-bottom: 20px;
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         margin-bottom: 0;
     }
 `;
@@ -91,41 +92,59 @@ const Content = styled.div`
     padding-bottom: 48px;
 `;
 
-const StyledProgressBar = styled(ProgressBar)<{ guideOpen?: boolean }>`
+const StyledProgressBar = styled(ProgressBar)<{ isGuideOpen?: boolean }>`
     transition: all 0.3s;
+    margin-right: ${props => (props.isGuideOpen ? '128px' : '224px')};
 
-    margin-right: ${props => (props.guideOpen ? '128px' : '224px')};
-
-    @media (max-width: ${variables.SCREEN_SIZE.XL}) {
-        margin-right: ${props => (props.guideOpen ? '0px' : '192px')};
+    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
+        margin-right: ${props => (props.isGuideOpen ? '0px' : '192px')};
     }
 
-    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
-        margin-right: ${props => (props.guideOpen ? '0px' : '64px')};
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
+        margin-right: ${props => (props.isGuideOpen ? '0px' : '64px')};
     }
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         margin-right: 0px;
     }
 `;
 
-interface Props {
-    children: React.ReactNode;
-}
-
-const OnboardingLayout = ({ children }: Props) => {
+export const OnboardingLayout: React.FC = ({ children }) => {
     const { banner } = useMessageSystem();
-
     const { activeStepId } = useOnboarding();
-    const activeStep = steps.find(step => step.id === activeStepId)!;
+    const { isGuideOpen } = useGuide();
 
-    const { guideOpen } = useSelector(state => ({
-        guideOpen: state.guide.open,
-    }));
+    const activeStep = useMemo(() => steps.find(step => step.id === activeStepId)!, [activeStepId]);
+
+    const progressBarSteps = useMemo(
+        () => [
+            {
+                key: 'fw',
+                label: <Translation id="TR_ONBOARDING_STEP_FIRMWARE" />,
+            },
+            {
+                key: 'wallet',
+                label: <Translation id="TR_ONBOARDING_STEP_WALLET" />,
+            },
+            {
+                key: 'pin',
+                label: <Translation id="TR_ONBOARDING_STEP_PIN" />,
+            },
+            {
+                key: 'coins',
+                label: <Translation id="TR_ONBOARDING_STEP_COINS" />,
+            },
+            {
+                key: 'final',
+            },
+        ],
+        [],
+    );
 
     return (
         <Wrapper>
             {banner && <MessageSystemBanner message={banner} />}
+
             <Body>
                 <ContentWrapper>
                     <Header>
@@ -138,30 +157,11 @@ const OnboardingLayout = ({ children }: Props) => {
                                 </Button>
                             </TrezorLink>
                         </LogoHeaderRow>
+
                         <ProgressBarRow>
                             <StyledProgressBar
-                                guideOpen={guideOpen}
-                                steps={[
-                                    {
-                                        key: 'fw',
-                                        label: <Translation id="TR_ONBOARDING_STEP_FIRMWARE" />,
-                                    },
-                                    {
-                                        key: 'wallet',
-                                        label: <Translation id="TR_ONBOARDING_STEP_WALLET" />,
-                                    },
-                                    {
-                                        key: 'pin',
-                                        label: <Translation id="TR_ONBOARDING_STEP_PIN" />,
-                                    },
-                                    {
-                                        key: 'coins',
-                                        label: <Translation id="TR_ONBOARDING_STEP_COINS" />,
-                                    },
-                                    {
-                                        key: 'final',
-                                    },
-                                ]}
+                                isGuideOpen={isGuideOpen}
+                                steps={progressBarSteps}
                                 activeStep={activeStep.stepGroup}
                             />
                         </ProgressBarRow>
@@ -169,11 +169,10 @@ const OnboardingLayout = ({ children }: Props) => {
 
                     <Content>{children}</Content>
                 </ContentWrapper>
+
                 <GuideButton />
                 <GuidePanel />
             </Body>
         </Wrapper>
     );
 };
-
-export default OnboardingLayout;

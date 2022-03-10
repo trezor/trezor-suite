@@ -17,38 +17,38 @@ const BreadcrumbWrapper = styled.span`
 `;
 
 const PreviousCategoryLink = styled(TrezorLink)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    transition: ${props =>
-        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    transition: ${({ theme }) =>
+        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
-    &:hover {
-        color: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.TYPE_LIGHT_GREY)};
+    :hover {
+        color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_LIGHT_GREY)};
     }
 `;
 
 const BreadcrumbDelimiter = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin: 0 5px;
 `;
 
 const CategoryLink = styled(TrezorLink)`
-    color: ${props => props.theme.TYPE_GREEN};
-    transition: ${props =>
-        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+    color: ${({ theme }) => theme.TYPE_GREEN};
+    transition: ${({ theme }) =>
+        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
-    &:hover {
-        color: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.TYPE_GREEN)};
+    :hover {
+        color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.TYPE_GREEN)};
     }
 `;
 
-const HeaderBreadcrumb = () => {
-    const analytics = useAnalytics();
-
+export const HeaderBreadcrumb: React.FC = () => {
     const { language, indexNode, currentNode } = useSelector(state => ({
         language: state.suite.settings.language,
         indexNode: state.guide.indexNode,
         currentNode: state.guide.currentNode,
     }));
+
+    const analytics = useAnalytics();
 
     const { setView, openNode } = useActions({
         setView: guideActions.setView,
@@ -56,7 +56,7 @@ const HeaderBreadcrumb = () => {
     });
 
     // if no parent available, offer navigation to guide dashboard
-    const fallbackBreadcrumb = (
+    const FallbackBreadcrumb = (
         <BreadcrumbWrapper>
             <CategoryLink onClick={() => setView('GUIDE_DEFAULT')}>
                 <Translation id="TR_GUIDE_DASHBOARD" />
@@ -64,13 +64,13 @@ const HeaderBreadcrumb = () => {
         </BreadcrumbWrapper>
     );
 
-    if (!currentNode || !indexNode) return fallbackBreadcrumb;
+    if (!currentNode || !indexNode) return FallbackBreadcrumb;
 
     const parentNodes = findAncestorNodes(currentNode, indexNode).filter(
         node => node.type === 'category',
     ) as Category[];
 
-    if (!parentNodes.length) return fallbackBreadcrumb;
+    if (!parentNodes.length) return FallbackBreadcrumb;
 
     const navigateToCategory = (node: Category) => {
         openNode(node);
@@ -133,5 +133,3 @@ const HeaderBreadcrumb = () => {
         </BreadcrumbWrapper>
     );
 };
-
-export default HeaderBreadcrumb;

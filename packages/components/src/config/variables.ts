@@ -23,6 +23,8 @@ export const SCREEN_QUERY = {
     ABOVE_TABLET: `@media (min-width: ${SCREEN_SIZE.MD})`,
     BELOW_LAPTOP: `@media (max-width: ${HELPER_SCREEN_SIZE.LG})`,
     ABOVE_LAPTOP: `@media (min-width: ${SCREEN_SIZE.LG})`,
+    BELOW_DESKTOP: `@media (min-width: ${HELPER_SCREEN_SIZE.XL})`,
+    ABOVE_DESKTOP: `@media (min-width: ${SCREEN_SIZE.XL})`,
 } as const;
 
 export const LAYOUT_SIZE = {

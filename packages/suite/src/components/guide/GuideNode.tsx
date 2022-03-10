@@ -12,18 +12,18 @@ const NodeButton = styled.button`
     display: flex;
     align-items: center;
     border-radius: 8px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     width: 100%;
     background: none;
     padding: 13px 17px;
     cursor: pointer;
     line-height: 1.57;
-    transition: ${props =>
-        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+    transition: ${({ theme }) =>
+        `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 
     :hover,
     :focus {
-        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_WHITE)};
+        background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_WHITE)};
     }
 `;
 
@@ -37,11 +37,11 @@ const PageNodeButtonIcon = styled(Icon)`
     margin: 0 18px 0 0;
 `;
 
-const Label = styled.div<{ bold: boolean }>`
+const Label = styled.div<{ isBold: boolean }>`
     width: 100%;
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${props =>
-        props.bold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
+    font-weight: ${({ isBold }) =>
+        isBold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
     overflow: hidden;
     line-height: 20px;
@@ -59,7 +59,11 @@ type GuideNodeProps = {
     description?: React.ReactNode;
 };
 
-const GuideNode = ({ node, description }: GuideNodeProps) => {
+export const GuideNode: React.FC<GuideNodeProps> = ({ node, description }) => {
+    const { language } = useSelector(state => ({
+        language: state.suite.settings.language,
+    }));
+
     const theme = useTheme();
     const analytics = useAnalytics();
 
@@ -67,11 +71,8 @@ const GuideNode = ({ node, description }: GuideNodeProps) => {
         setView: guideActions.setView,
         openNode: guideActions.openNode,
     });
-    const { language } = useSelector(state => ({
-        language: state.suite.settings.language,
-    }));
 
-    const navigateToNode = (node: Node) => {
+    const navigateToNode = () => {
         openNode(node);
         analytics.report({
             type: 'guide/node/navigation',
@@ -83,7 +84,7 @@ const GuideNode = ({ node, description }: GuideNodeProps) => {
     };
 
     const label = (
-        <Label bold={!description}>
+        <Label isBold={!description}>
             {getNodeTitle(node, language)}
             {description}
         </Label>
@@ -91,10 +92,7 @@ const GuideNode = ({ node, description }: GuideNodeProps) => {
 
     if (node.type === 'page') {
         return (
-            <PageNodeButton
-                data-test={`@guide/node${node.id}`}
-                onClick={() => navigateToNode(node)}
-            >
+            <PageNodeButton data-test={`@guide/node${node.id}`} onClick={navigateToNode}>
                 <PageNodeButtonIcon icon="ARTICLE" size={20} color={theme.TYPE_LIGHT_GREY} />
                 {label}
             </PageNodeButton>
@@ -103,10 +101,7 @@ const GuideNode = ({ node, description }: GuideNodeProps) => {
 
     if (node.type === 'category') {
         return (
-            <CategoryNodeButton
-                data-test={`@guide/category${node.id}`}
-                onClick={() => navigateToNode(node)}
-            >
+            <CategoryNodeButton data-test={`@guide/category${node.id}`} onClick={navigateToNode}>
                 {label}
             </CategoryNodeButton>
         );
@@ -114,5 +109,3 @@ const GuideNode = ({ node, description }: GuideNodeProps) => {
 
     return null;
 };
-
-export default GuideNode;

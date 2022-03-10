@@ -5,7 +5,7 @@ import { useGuide } from '@guide-hooks';
 
 export const useGuideOpenNode = () => {
     const analytics = useAnalytics();
-    const { guideOpen, openGuide } = useGuide();
+    const { isGuideOpen, openGuide } = useGuide();
 
     const { openNode } = useActions({
         openNode: guideActions.openNode,
@@ -28,7 +28,7 @@ export const useGuideOpenNode = () => {
 
         openNode(node);
 
-        if (!guideOpen) {
+        if (!isGuideOpen) {
             openGuide();
         }
 

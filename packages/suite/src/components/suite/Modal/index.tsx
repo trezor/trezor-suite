@@ -24,7 +24,7 @@ const GuideIcon = styled(Icon)`
 `;
 
 const Modal: React.FC<ModalProps> = ({ headerComponents, ...props }) => {
-    const { guideOpen, isModalOpen, isGuideOnTop, openGuide } = useGuide();
+    const { isGuideOpen, isModalOpen, isGuideOnTop, openGuide } = useGuide();
 
     const GuideButton = useMemo(
         () => (
@@ -40,7 +40,7 @@ const Modal: React.FC<ModalProps> = ({ headerComponents, ...props }) => {
 
     return (
         <TrezorModal
-            guideOpen={guideOpen && isModalOpen && !isGuideOnTop}
+            isGuideOpen={isGuideOpen && isModalOpen && !isGuideOnTop}
             headerComponents={[GuideButton, ...(headerComponents || [])]}
             {...props}
         />
