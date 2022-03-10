@@ -7,6 +7,8 @@ export interface UpdateInfo {
     releaseDate: string;
     isManualCheck?: boolean;
     downloadedFile?: string;
+    prerelease?: boolean;
+    changelog?: string;
 }
 
 export type UpdateProgress = Partial<{

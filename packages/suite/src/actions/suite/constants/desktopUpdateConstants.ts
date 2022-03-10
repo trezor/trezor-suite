@@ -5,7 +5,6 @@ export const NOT_AVAILABLE = '@desktop-update/not-available';
 export const DOWNLOAD = '@desktop-update/download';
 export const DOWNLOADING = '@desktop-update/downloading';
 export const READY = '@desktop-update/ready';
-export const ERROR = '@desktop-update/error';
 export const WINDOW = '@desktop-update/window';
 export const OPEN_EARLY_ACCESS_ENABLE = '@desktop-update/open-early-access-enable';
 export const OPEN_EARLY_ACCESS_DISABLE = '@desktop-update/open-early-access-disable';
