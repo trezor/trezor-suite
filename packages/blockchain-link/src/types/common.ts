@@ -14,6 +14,7 @@ export interface BlockchainSettings {
     timeout?: number;
     pingTimeout?: number;
     keepAlive?: boolean;
+    throttleBlockEvent?: number;
 }
 
 export interface ServerInfo {

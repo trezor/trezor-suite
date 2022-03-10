@@ -73,9 +73,14 @@ class BlockchainLink extends EventEmitter {
 
     deferred: Deferred<any>[] = [];
 
+    private throttleBlockEvent: ReturnType<typeof setTimeout> | undefined;
+    private throttleBlockEventTimeout: number;
+
     constructor(settings: BlockchainSettings) {
         super();
         this.settings = settings;
+        this.throttleBlockEventTimeout =
+            typeof settings.throttleBlockEvent === 'number' ? settings.throttleBlockEvent : 500;
     }
 
     async getWorker(): Promise<Worker> {
@@ -282,7 +287,17 @@ class BlockchainLink extends EventEmitter {
             this.emit('disconnected');
         }
         if (data.type === RESPONSES.NOTIFICATION) {
-            this.emit(data.payload.type, data.payload.payload);
+            const notification = data.payload;
+            if (notification.type === 'block') {
+                // throttle block events
+                if (this.throttleBlockEvent) clearTimeout(this.throttleBlockEvent);
+                this.throttleBlockEvent = setTimeout(() => {
+                    this.emit(notification.type, notification.payload);
+                    this.throttleBlockEvent = undefined;
+                }, this.throttleBlockEventTimeout);
+            } else {
+                this.emit(notification.type, notification.payload);
+            }
         }
     };
 

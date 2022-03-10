@@ -27,6 +27,7 @@ workers.forEach(instance => {
                 ...instance,
                 server: [`ws://localhost:${server.options.port}`],
                 debug: false,
+                throttleBlockEvent: 50,
             });
         };
 
@@ -83,8 +84,13 @@ workers.forEach(instance => {
 
                     await server.sendNotification(f.notifications);
 
+                    // wait for block event throttling
+                    await new Promise(resolve =>
+                        setTimeout(resolve, blockchain.settings.throttleBlockEvent),
+                    );
+
                     if (f.result) {
-                        expect(callback).toHaveBeenCalledTimes(f.notifications.length);
+                        expect(callback).toHaveBeenCalledTimes(f.notificationsCount);
                         expect(callback).toHaveBeenLastCalledWith(f.result);
                     } else {
                         expect(callback).not.toHaveBeenCalled();

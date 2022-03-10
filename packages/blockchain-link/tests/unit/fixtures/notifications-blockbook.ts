@@ -26,13 +26,14 @@ const notifyBlocks = [
                 data: { hash: 'abcd', height: 1 },
             },
         ],
+        notificationsCount: 1,
         result: {
             blockHash: 'abcd',
             blockHeight: 1,
         },
     },
     {
-        description: 'multiple block notifications',
+        description: 'multiple block notifications, no throttle',
         method: 'subscribe',
         notifications: [
             {
@@ -45,9 +46,45 @@ const notifyBlocks = [
                 data: { hash: 'efgh', height: 2 },
             },
         ],
+        notificationsCount: 2,
         result: {
             blockHash: 'efgh',
             blockHeight: 2,
+        },
+    },
+    {
+        description: 'block notifications flood, throttled',
+        method: 'subscribe',
+        notifications: [
+            {
+                id: '0',
+                data: { hash: 'abcd01', height: 1 },
+            },
+            {
+                id: '0',
+                delay: 5,
+                data: { hash: 'efgh02', height: 2 },
+            },
+            {
+                id: '0',
+                delay: 10,
+                data: { hash: 'efgh03', height: 3 },
+            },
+            {
+                id: '0',
+                delay: 15,
+                data: { hash: 'efgh04', height: 4 },
+            },
+            {
+                id: '0',
+                delay: 20,
+                data: { hash: 'efgh05', height: 5 },
+            },
+        ],
+        notificationsCount: 1,
+        result: {
+            blockHash: 'efgh05',
+            blockHeight: 5,
         },
     },
     {
@@ -64,6 +101,7 @@ const notifyBlocks = [
                 data: { hash: 'efgh', height: 2 },
             },
         ],
+        notificationsCount: 0,
         result: undefined,
     },
     {
@@ -75,6 +113,7 @@ const notifyBlocks = [
                 data: { hash: 'abcd', height: 1 },
             },
         ],
+        notificationsCount: 1,
         result: {
             blockHash: 'abcd',
             blockHeight: 1,
