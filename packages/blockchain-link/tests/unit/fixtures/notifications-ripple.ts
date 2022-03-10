@@ -46,6 +46,7 @@ const notifyBlocks = [
                 ...block,
             },
         ],
+        notificationsCount: 1,
         result: {
             blockHash: 'abcd',
             blockHeight: 1,
@@ -67,6 +68,7 @@ const notifyBlocks = [
                 ...block,
             },
         ],
+        notificationsCount: 2,
         result: {
             blockHash: 'efgh',
             blockHeight: 2,
@@ -88,6 +90,7 @@ const notifyBlocks = [
                 ...block,
             },
         ],
+        notificationsCount: 0,
         result: undefined,
     },
 ] as const;

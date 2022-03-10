@@ -26,6 +26,7 @@ const notifyBlocks = [
                 data: { hash: 'abcd', height: 1 },
             },
         ],
+        notificationsCount: 1,
         result: {
             blockHash: 'abcd',
             blockHeight: 1,
@@ -45,6 +46,7 @@ const notifyBlocks = [
                 data: { hash: 'efgh', height: 2 },
             },
         ],
+        notificationsCount: 2,
         result: {
             blockHash: 'efgh',
             blockHeight: 2,
@@ -64,6 +66,7 @@ const notifyBlocks = [
                 data: { hash: 'efgh', height: 2 },
             },
         ],
+        notificationsCount: 0,
         result: undefined,
     },
     {
@@ -75,6 +78,7 @@ const notifyBlocks = [
                 data: { hash: 'abcd', height: 1 },
             },
         ],
+        notificationsCount: 1,
         result: {
             blockHash: 'abcd',
             blockHeight: 1,
