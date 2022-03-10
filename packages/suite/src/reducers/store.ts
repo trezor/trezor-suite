@@ -2,7 +2,6 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import { isDev } from '@suite-utils/build';
 import suiteMiddlewares from '@suite-middlewares';
 import walletMiddlewares from '@wallet-middlewares';
 import onboardingMiddlewares from '@onboarding-middlewares';
@@ -44,7 +43,7 @@ const middlewares = [
 
 const enhancers: any[] = [];
 const excludedActions = ['@log/add'];
-if (isDev) {
+if (!process.env.CODESIGN_BUILD) {
     const excludeLogger = (_getState: any, action: any): boolean => {
         const pass = excludedActions.filter(act => action.type === act);
         return pass.length === 0;
