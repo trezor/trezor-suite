@@ -18,6 +18,8 @@ outdated nightly:
 outdated:
   extends: .outdated
   when: manual
+  except:
+    <<: *run_everything_rules
 
 # tests whether urls in constants return 200 status (shall detect dead links)
 .urls health:
@@ -36,6 +38,8 @@ urls health nightly:
 urls health:
   extends: .urls health
   when: manual
+  except:
+    <<: *run_everything_rules
 
 .translations duplicates:
   stage: utils
@@ -52,6 +56,8 @@ translations duplicates nightly:
 translations duplicates:
   extends: .translations duplicates
   when: manual
+  except:
+    <<: *run_everything_rules
 
 .translations unused:
   stage: utils
@@ -67,9 +73,9 @@ translation unused nightly:
 
 translation unused:
   extends: .translations unused
+  when: manual
   except:
     <<: *run_everything_rules
-  when: manual
 
 .media duplicates:
   stage: utils
