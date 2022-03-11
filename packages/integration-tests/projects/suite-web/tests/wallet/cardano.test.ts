@@ -46,10 +46,6 @@ describe('Cardano', () => {
         cy.getTestElement('@modal').matchImageSnapshot('cardano-show-xpub');
         cy.get('body').type('{esc}');
 
-        // go to cardano account #1 - staking
-        cy.getTestElement('@wallet/menu/wallet-tokens').click();
-        cy.getTestElement('@app').matchImageSnapshot('cardano-tokens');
-
         // todo: enable staking - cardano lib problem
         // go to cardano account #1 - staking
         // cy.getTestElement('@wallet/menu/wallet-staking').click();
@@ -63,5 +59,20 @@ describe('Cardano', () => {
         cy.getTestElement('@wallet/menu/wallet-receive').click();
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
         cy.getTestElement('@modal').matchImageSnapshot('cardano-receive');
+        cy.task('pressYes');
+        cy.getTestElement('@modal/close-button').click();
+        cy.getTestElement('@wallet/menu/close-button').last().click();
+
+        // go to cardano account #1 - staking
+        cy.getTestElement('@wallet/menu/wallet-tokens').click();
+        cy.getTestElement('@app').matchImageSnapshot('cardano-tokens');
+
+        // lets 'hack' routing
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/wallet').click();
+        cy.getTestElement('@settings/wallet/network/tada').click();
+        cy.go('back');
+        cy.go('back');
+        cy.getTestElement('@app').matchImageSnapshot('staking-not-enabled');
     });
 });
