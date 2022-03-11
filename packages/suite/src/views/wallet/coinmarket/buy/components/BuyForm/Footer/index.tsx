@@ -111,6 +111,7 @@ const Footer = () => {
                     isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
                     isLoading={formState.isSubmitting}
                     type="submit"
+                    data-test="@coinmarket/buy/compare-button"
                 >
                     <Translation id="TR_BUY_SHOW_OFFERS" />
                 </StyledButton>
