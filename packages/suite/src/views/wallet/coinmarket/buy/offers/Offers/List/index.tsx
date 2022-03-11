@@ -93,7 +93,7 @@ const List = ({ isAlternative, quotes }: Props) => {
         quotesRequest;
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@coinmarket/buy/offers-list">
             <Header>
                 <Left>
                     {isAlternative ? (

@@ -72,7 +72,10 @@ const CoinmarketTopPanel = ({ backRoute }: Props) => {
         <Wrapper>
             <Content>
                 <Left>
-                    <Back onClick={() => goto(backRoute, { params: selectedAccount.params })}>
+                    <Back
+                        onClick={() => goto(backRoute, { params: selectedAccount.params })}
+                        data-test="@coinmarket/back"
+                    >
                         <StyledIcon icon="ARROW_LEFT" />
                         <AccountLabeling account={account} />
                     </Back>

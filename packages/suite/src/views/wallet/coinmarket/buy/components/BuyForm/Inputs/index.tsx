@@ -164,6 +164,7 @@ const Inputs = () => {
                             )}
                         />
                     }
+                    data-test="@coinmarket/buy/fiat-input"
                 />
             </Left>
             <Middle responsiveSize="LG">
@@ -284,6 +285,7 @@ const Inputs = () => {
                             )}
                         />
                     }
+                    data-test="@coinmarket/buy/crypto-input"
                 />
             </Right>
         </Wrapper>

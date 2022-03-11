@@ -93,7 +93,7 @@ const AppNavigationPanel = (props: Props) => {
                     <BasicInfo>
                         <TitleRow>
                             <Title noMargin>{props.title}</Title>
-                            <Aside>{props.titleContent}</Aside>
+                            <Aside data-test="@app/navigation/aside">{props.titleContent}</Aside>
                         </TitleRow>
                         {props.children && <Row>{props.children}</Row>}
                     </BasicInfo>
