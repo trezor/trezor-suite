@@ -24,7 +24,7 @@ describe('Bridge page', () => {
         // there is a dropdown with installers
         cy.getTestElement('@bridge/installers/input').click();
         systems.forEach(system => {
-            cy.getTestElement('@modal').should('contain', system);
+            cy.getTestElement('@bridge').should('contain', system);
         });
 
         // select listens to keyboard events

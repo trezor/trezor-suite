@@ -438,6 +438,7 @@ const Modal = ({
                 if (onClick) onClick(e);
                 e.stopPropagation();
             }}
+            data-test="@modal"
             {...rest}
         >
             {heading && (
@@ -484,7 +485,6 @@ const Modal = ({
     return (
         <ModalOverlay
             guidePanelSize={guideOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : '0px'}
-            data-test="@modal"
             onClick={() => {
                 if (cancelable && onCancel) {
                     onCancel();
