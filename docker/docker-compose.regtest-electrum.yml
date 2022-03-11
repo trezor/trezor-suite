@@ -4,3 +4,5 @@ services:
     image: ghcr.io/vdovhanych/electrs:latest
     ports:
       - "50001:50001"
+    volumes:
+      - ../:/trezor-suite
