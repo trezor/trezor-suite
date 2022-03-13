@@ -33,7 +33,7 @@ const Delegate = (props: { account: Account }) => {
         calculateFeeAndDeposit,
         fee,
         loading,
-        actionAvailable,
+        delegatingAvailable,
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
@@ -47,7 +47,7 @@ const Delegate = (props: { account: Account }) => {
         <Button
             isDisabled={
                 account.availableBalance === '0' ||
-                !actionAvailable.status ||
+                !delegatingAvailable.status ||
                 !deviceAvailable.status ||
                 !!pendingStakeTx
             }
@@ -59,7 +59,7 @@ const Delegate = (props: { account: Account }) => {
         </Button>
     );
 
-    const reasonMessageId = getReasonForDisabledAction(actionAvailable?.reason);
+    const reasonMessageId = getReasonForDisabledAction(delegatingAvailable?.reason);
 
     return (
         <StyledCard>
@@ -85,7 +85,7 @@ const Delegate = (props: { account: Account }) => {
                 </Content>
             </Row>
             <Row>
-                {actionAvailable.status && !pendingStakeTx ? (
+                {delegatingAvailable.status && !pendingStakeTx ? (
                     // delegation is allowed
                     <>
                         <Column>
@@ -110,8 +110,8 @@ const Delegate = (props: { account: Account }) => {
                 ) : (
                     // If building a transaction fails we don't have the information about used deposit and fee required
                     <>
-                        {!actionAvailable.status &&
-                            actionAvailable.reason === 'UTXO_BALANCE_INSUFFICIENT' && (
+                        {!delegatingAvailable.status &&
+                            delegatingAvailable.reason === 'UTXO_BALANCE_INSUFFICIENT' && (
                                 <Column>
                                     <InfoBox>
                                         <Translation id="TR_STAKING_NOT_ENOUGH_FUNDS" />
@@ -127,7 +127,7 @@ const Delegate = (props: { account: Account }) => {
                 )}
             </Row>
             <Actions>
-                {deviceAvailable.status && actionAvailable.status ? (
+                {deviceAvailable.status && delegatingAvailable.status ? (
                     actionButton
                 ) : (
                     <Tooltip

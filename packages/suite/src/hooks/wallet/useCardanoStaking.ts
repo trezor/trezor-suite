@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { CardanoStaking, PoolsResponse } from '@wallet-types/cardanoStaking';
+import { ActionAvailability, CardanoStaking, PoolsResponse } from '@wallet-types/cardanoStaking';
 import { SUITE } from '@suite-actions/constants';
 import trezorConnect, { CardanoTxSigningMode } from 'trezor-connect';
 import { useActions, useSelector } from '@suite-hooks';
@@ -46,7 +46,7 @@ const getDeviceAvailability = (
     };
 };
 
-export const getReasonForDisabledAction = (reason: CardanoStaking['actionAvailable']['reason']) => {
+export const getReasonForDisabledAction = (reason: ActionAvailability['reason']) => {
     switch (reason) {
         case 'POOL_ID_FETCH_FAIL':
             return 'TR_STAKING_TREZOR_POOL_FAIL';
@@ -78,7 +78,14 @@ export const useCardanoStaking = (): CardanoStaking => {
     const [fee, setFee] = useState<undefined | string>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
     const [isFetching, setIsFetching] = useState<boolean>(false);
-    const [actionAvailable, setActionAvailable] = useState<CardanoStaking['actionAvailable']>({
+    const [delegatingAvailable, setDelegatingAvailable] = useState<
+        CardanoStaking['delegatingAvailable']
+    >({
+        status: false,
+    });
+    const [withdrawingAvailable, seWithdrawingAvailable] = useState<
+        CardanoStaking['withdrawingAvailable']
+    >({
         status: false,
     });
     const [error, setError] = useState<string | undefined>(undefined);
@@ -158,7 +165,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 if (composeRes) {
                     setFee(composeRes.txPlan.fee);
                     setDeposit(composeRes.txPlan.deposit);
-                    setActionAvailable(
+                    const actionAvailability: ActionAvailability =
                         composeRes.txPlan.type === 'final'
                             ? {
                                   status: true,
@@ -166,14 +173,17 @@ export const useCardanoStaking = (): CardanoStaking => {
                             : {
                                   status: false,
                                   reason: 'TX_NOT_FINAL',
-                              },
-                    );
+                              };
+                    setDelegatingAvailable(actionAvailability);
+                    seWithdrawingAvailable(actionAvailability);
                 }
             } catch (err) {
-                setActionAvailable({
+                const actionAvailability: ActionAvailability = {
                     status: false,
                     reason: err instanceof CoinSelectionError ? err.code : err.message,
-                });
+                };
+                setDelegatingAvailable(actionAvailability);
+                seWithdrawingAvailable(actionAvailability);
             }
 
             setLoading(false);
@@ -300,7 +310,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                 setTrezorPools(responseJson);
                 setLoading(false);
             } catch (err) {
-                setActionAvailable({
+                setDelegatingAvailable({
                     status: false,
                     reason: 'POOL_ID_FETCH_FAIL',
                 });
@@ -320,7 +330,8 @@ export const useCardanoStaking = (): CardanoStaking => {
         loading,
         pendingStakeTx,
         deviceAvailable: getDeviceAvailability(device, locks),
-        actionAvailable,
+        delegatingAvailable,
+        withdrawingAvailable,
         registeredPoolId,
         isActive: isStakingActive,
         rewards: rewardsAmount,

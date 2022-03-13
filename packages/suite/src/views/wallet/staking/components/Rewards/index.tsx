@@ -35,7 +35,7 @@ const Rewards = (props: { account: Account }) => {
         withdraw,
         calculateFeeAndDeposit,
         loading,
-        actionAvailable,
+        withdrawingAvailable,
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
@@ -50,7 +50,7 @@ const Rewards = (props: { account: Account }) => {
             isLoading={loading}
             isDisabled={
                 rewards === '0' ||
-                !actionAvailable.status ||
+                !withdrawingAvailable.status ||
                 !deviceAvailable.status ||
                 !!pendingStakeTx
             }
@@ -61,7 +61,7 @@ const Rewards = (props: { account: Account }) => {
         </Button>
     );
 
-    const reasonMessageId = getReasonForDisabledAction(actionAvailable?.reason);
+    const reasonMessageId = getReasonForDisabledAction(withdrawingAvailable?.reason);
 
     return (
         <StyledCard>
@@ -102,7 +102,7 @@ const Rewards = (props: { account: Account }) => {
             )}
 
             <Actions>
-                {deviceAvailable.status && actionAvailable.status ? (
+                {deviceAvailable.status && withdrawingAvailable.status ? (
                     actionButton
                 ) : (
                     <Tooltip
