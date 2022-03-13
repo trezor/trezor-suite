@@ -9,7 +9,7 @@ const Redelegate = () => {
         delegate,
         calculateFeeAndDeposit,
         loading,
-        actionAvailable,
+        delegatingAvailable,
         deviceAvailable,
         pendingStakeTx,
         isCurrentPoolOversaturated,
@@ -22,7 +22,7 @@ const Redelegate = () => {
     const actionButton = (
         <Button
             isLoading={loading}
-            isDisabled={!actionAvailable.status || !deviceAvailable.status || !!pendingStakeTx}
+            isDisabled={!delegatingAvailable.status || !deviceAvailable.status || !!pendingStakeTx}
             icon="T2"
             onClick={() => delegate()}
         >
@@ -30,7 +30,7 @@ const Redelegate = () => {
         </Button>
     );
 
-    const reasonMessageId = getReasonForDisabledAction(actionAvailable?.reason);
+    const reasonMessageId = getReasonForDisabledAction(delegatingAvailable?.reason);
 
     return (
         <StyledCard>
@@ -58,7 +58,7 @@ const Redelegate = () => {
                 </Text>
 
                 <Actions>
-                    {deviceAvailable.status && actionAvailable.status ? (
+                    {deviceAvailable.status && delegatingAvailable.status ? (
                         actionButton
                     ) : (
                         <Tooltip
