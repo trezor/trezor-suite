@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import { fetchFirmware as httpFetch } from './fetch-browser';
 
 // This module should be used only in nodejs environment. see package.json "browser" field.
