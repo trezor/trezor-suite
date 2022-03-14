@@ -1,36 +1,43 @@
-import React, { useMemo } from 'react';
-
-import { colors, Icon, Modal as TrezorModal, ModalProps, variables } from '@trezor/components';
-import { useGuide } from '@guide-hooks';
+import React, { useMemo, ComponentType } from 'react';
 import styled from 'styled-components';
+import {
+    Modal as TrezorModal,
+    ModalProps as TrezorModalProps,
+    Icon,
+    Backdrop,
+    colors,
+    variables,
+} from '@trezor/components';
+import { useGuide } from '@guide-hooks';
+import { useLayoutSize } from '@suite-hooks/useLayoutSize';
 
-const GuideIcon = styled(Icon)`
-    svg {
-        width: 28px;
-        height: 28px;
-        padding: 5px;
-    }
-
-    ${variables.SCREEN_QUERY.ABOVE_MOBILE} {
-        svg {
-            width: 32px;
-            height: 32px;
-        }
-    }
-
-    ${variables.SCREEN_QUERY.ABOVE_TABLET} {
-        display: none;
+const GuideBackdrop = styled(Backdrop)<{ guideOpen: boolean }>`
+    transition: all 0.3s;
+    right: ${({ guideOpen }) => (guideOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : '0')};
+    & & {
+        right: 0;
     }
 `;
 
-const Modal: React.FC<ModalProps> = ({ headerComponents, ...props }) => {
+export type ModalProps = TrezorModalProps & {
+    render?: ComponentType<TrezorModalProps>;
+};
+
+const DefaultRenderer = ({
+    headerComponents = [],
+    cancelable,
+    onCancel,
+    ...rest
+}: TrezorModalProps) => {
     const { isGuideOpen, isModalOpen, isGuideOnTop, openGuide } = useGuide();
+    const { isMobileLayout } = useLayoutSize();
 
     const GuideButton = useMemo(
         () => (
-            <GuideIcon
+            <Icon
+                key="guide-button"
                 icon="LIGHTBULB"
-                size={22}
+                size={24}
                 hoverColor={colors.TYPE_ORANGE}
                 onClick={openGuide}
             />
@@ -39,12 +46,30 @@ const Modal: React.FC<ModalProps> = ({ headerComponents, ...props }) => {
     );
 
     return (
-        <TrezorModal
-            isGuideOpen={isGuideOpen && isModalOpen && !isGuideOnTop}
-            headerComponents={[GuideButton, ...(headerComponents || [])]}
-            {...props}
-        />
+        <GuideBackdrop
+            guideOpen={isGuideOpen && isModalOpen && !isGuideOnTop}
+            onClick={() => {
+                if (cancelable) {
+                    onCancel?.();
+                }
+            }}
+        >
+            <TrezorModal
+                cancelable={cancelable}
+                onCancel={onCancel}
+                headerComponents={[...(isMobileLayout ? [GuideButton] : []), ...headerComponents]}
+                {...rest}
+            />
+        </GuideBackdrop>
     );
 };
-export { Modal };
-export type { ModalProps };
+
+export const Modal = ({ render: View = DefaultRenderer, ...props }: ModalProps) => (
+    <View {...props} />
+);
+
+Modal.HeaderBar = TrezorModal.HeaderBar;
+Modal.Body = TrezorModal.Body;
+Modal.Description = TrezorModal.Description;
+Modal.Content = TrezorModal.Content;
+Modal.BottomBar = TrezorModal.BottomBar;

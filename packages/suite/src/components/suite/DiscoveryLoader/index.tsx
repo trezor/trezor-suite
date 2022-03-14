@@ -9,9 +9,12 @@ const Expand = styled.div`
     margin: 40px 0px;
 `;
 
+const StyledModal = styled(Modal)`
+    width: 360px;
+`;
+
 const DiscoveryLoader = () => (
-    <Modal
-        size="tiny"
+    <StyledModal
         heading={<Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />}
         description={<Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />}
         data-test="@discovery/loader"
@@ -19,7 +22,7 @@ const DiscoveryLoader = () => (
         <Expand>
             <Image width={80} height={80} image="SPINNER" />
         </Expand>
-    </Modal>
+    </StyledModal>
 );
 
 export default DiscoveryLoader;

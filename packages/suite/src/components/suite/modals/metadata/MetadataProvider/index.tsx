@@ -11,12 +11,6 @@ import { isEnabled } from '@suite-utils/features';
 
 const { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } = variables;
 
-const Buttons = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-`;
-
 const Error = styled.div`
     margin-top: 8px;
     font-size: ${FONT_SIZE.TINY};
@@ -46,12 +40,16 @@ const StyledP = styled(P)`
     font-weight: ${FONT_WEIGHT.REGULAR};
 `;
 
-type Props = {
+const StyledModal = styled(Modal)`
+    width: 600px;
+`;
+
+type MetadataProviderProps = {
     onCancel: () => void;
     decision: Deferred<boolean>;
 };
 
-const MetadataProvider = ({ onCancel, decision }: Props) => {
+const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) => {
     const [isLoading, setIsLoading] = useState('');
     // error from authorization popup
     const [error, setError] = useState('');
@@ -82,58 +80,57 @@ const MetadataProvider = ({ onCancel, decision }: Props) => {
     };
 
     return (
-        <Modal
+        <StyledModal
             cancelable
             onCancel={onModalCancel}
-            size="small"
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-test="@modal/metadata-provider"
+            bottomBar={
+                <>
+                    <StyledButton
+                        variant="tertiary"
+                        onClick={() => connect('dropbox')}
+                        isLoading={isLoading === 'dropbox'}
+                        isDisabled={!!isLoading}
+                        data-test="@modal/metadata-provider/dropbox-button"
+                        icon="DROPBOX"
+                    >
+                        <Translation id="TR_DROPBOX" />
+                    </StyledButton>
+
+                    {isEnabled('GOOGLE_DRIVE_SYNC') && (
+                        <StyledButton
+                            variant="tertiary"
+                            onClick={() => connect('google')}
+                            isLoading={isLoading === 'google'}
+                            isDisabled={!!isLoading}
+                            data-test="@modal/metadata-provider/google-button"
+                            icon="GOOGLE_DRIVE"
+                        >
+                            <Translation id="TR_GOOGLE_DRIVE" />
+                        </StyledButton>
+                    )}
+
+                    {/* desktop only */}
+                    {isEnabled('FILE_SYSTEM_SYNC') && (
+                        <StyledButton
+                            variant="tertiary"
+                            onClick={() => connect('fileSystem')}
+                            isLoading={isLoading === 'fileSystem'}
+                            isDisabled={!!isLoading}
+                            data-test="@modal/metadata-provider/file-system-button"
+                        >
+                            Local file system
+                        </StyledButton>
+                    )}
+                </>
+            }
         >
             <StyledP>
                 <Translation id="METADATA_MODAL_DESCRIPTION" />
             </StyledP>
-
-            <Buttons>
-                <StyledButton
-                    variant="tertiary"
-                    onClick={() => connect('dropbox')}
-                    isLoading={isLoading === 'dropbox'}
-                    isDisabled={!!isLoading}
-                    data-test="@modal/metadata-provider/dropbox-button"
-                    icon="DROPBOX"
-                >
-                    <Translation id="TR_DROPBOX" />
-                </StyledButton>
-
-                {isEnabled('GOOGLE_DRIVE_SYNC') && (
-                    <StyledButton
-                        variant="tertiary"
-                        onClick={() => connect('google')}
-                        isLoading={isLoading === 'google'}
-                        isDisabled={!!isLoading}
-                        data-test="@modal/metadata-provider/google-button"
-                        icon="GOOGLE_DRIVE"
-                    >
-                        <Translation id="TR_GOOGLE_DRIVE" />
-                    </StyledButton>
-                )}
-
-                {/* desktop only */}
-                {isEnabled('FILE_SYSTEM_SYNC') && (
-                    <StyledButton
-                        variant="tertiary"
-                        onClick={() => connect('fileSystem')}
-                        isLoading={isLoading === 'fileSystem'}
-                        isDisabled={!!isLoading}
-                        data-test="@modal/metadata-provider/file-system-button"
-                    >
-                        Local file system
-                    </StyledButton>
-                )}
-            </Buttons>
-
             {error && <Error>{error}</Error>}
-        </Modal>
+        </StyledModal>
     );
 };
 

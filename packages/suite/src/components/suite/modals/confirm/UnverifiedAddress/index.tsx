@@ -11,19 +11,21 @@ const ImageWrapper = styled.div`
     padding: 60px 0px;
 `;
 
-const Actions = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+const StyledModal = styled(Modal)`
+    width: 600px;
 `;
 
-type Props = {
+type ConfirmUnverifiedAddressProps = {
     address: string;
     addressPath: string;
     onCancel: () => void;
 };
 
-const ConfirmUnverifiedAddress = ({ address, addressPath, onCancel }: Props) => {
+const ConfirmUnverifiedAddress = ({
+    address,
+    addressPath,
+    onCancel,
+}: ConfirmUnverifiedAddressProps) => {
     const { device, isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const { showAddress, showUnverifiedAddress, applySettings } = useActions({
@@ -65,10 +67,9 @@ const ConfirmUnverifiedAddress = ({ address, addressPath, onCancel }: Props) => 
     }
 
     return (
-        <Modal
+        <StyledModal
             heading={<Translation id={deviceStatus} values={{ deviceLabel: device.label }} />}
             cancelable
-            size="small"
             onCancel={onCancel}
             description={
                 <Translation
@@ -76,23 +77,25 @@ const ConfirmUnverifiedAddress = ({ address, addressPath, onCancel }: Props) => 
                     values={{ claim: <Translation id={claim} /> }}
                 />
             }
+            bottomBar={
+                <>
+                    <Button variant="secondary" onClick={() => unverifiedAddress()}>
+                        <Translation id="TR_SHOW_UNVERIFIED_ADDRESS" />
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={() => verifyAddress()}
+                        isDisabled={isDeviceLocked}
+                    >
+                        <Translation id={actionLabel} />
+                    </Button>
+                </>
+            }
         >
             <ImageWrapper>
                 <Image image="UNI_ERROR" />
             </ImageWrapper>
-            <Actions>
-                <Button variant="secondary" onClick={() => unverifiedAddress()}>
-                    <Translation id="TR_SHOW_UNVERIFIED_ADDRESS" />
-                </Button>
-                <Button
-                    variant="primary"
-                    onClick={() => verifyAddress()}
-                    isDisabled={isDeviceLocked}
-                >
-                    <Translation id={actionLabel} />
-                </Button>
-            </Actions>
-        </Modal>
+        </StyledModal>
     );
 };
 

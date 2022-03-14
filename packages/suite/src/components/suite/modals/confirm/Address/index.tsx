@@ -41,6 +41,10 @@ const StyledDeviceDisconnected = styled(DeviceDisconnected)`
     max-width: calc(${QRCODE_SIZE}px + ${QRCODE_PADDING * 2}px);
 `;
 
+const StyledModal = styled(Modal)`
+    width: unset;
+`;
+
 type ConfirmAddressProps = {
     device: TrezorDevice;
     address: string;
@@ -72,7 +76,7 @@ const ConfirmAddress = ({
     };
 
     return (
-        <Modal
+        <StyledModal
             heading={
                 <Translation
                     id="TR_ADDRESS_MODAL_TITLE"
@@ -92,12 +96,11 @@ const ConfirmAddress = ({
             }
             cancelable={cancelable}
             onCancel={onCancel}
-            useFixedWidth={false}
         >
             <Wrapper>
                 <QrCode value={address} />
                 <Address data-test="@modal/confirm-address/address-field">{address}</Address>
-                {device.connected && (
+                {device.connected ? (
                     <CopyButtonWrapper ref={htmlElement}>
                         {confirmed && (
                             <Button
@@ -109,10 +112,11 @@ const ConfirmAddress = ({
                             </Button>
                         )}
                     </CopyButtonWrapper>
+                ) : (
+                    <StyledDeviceDisconnected label={device.label} />
                 )}
-                {!device.connected && <StyledDeviceDisconnected label={device.label} />}
             </Wrapper>
-        </Modal>
+        </StyledModal>
     );
 };
 

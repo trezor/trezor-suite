@@ -8,12 +8,16 @@ const ImageWrapper = styled.div`
     margin: 20px;
 `;
 
+const StyledModal = styled(Modal)`
+    width: 600px;
+`;
+
 interface Props {
     variant: 'blocking' | 'blocked';
 }
 
 const DatabaseUpgradeModal = (props: Props) => (
-    <Modal
+    <StyledModal
         heading={
             <Translation
                 id={
@@ -23,13 +27,12 @@ const DatabaseUpgradeModal = (props: Props) => (
                 }
             />
         }
-        size="small"
         description={<Translation id="TR_RUNNING_MULTIPLE_INSTANCES" />}
     >
         <ImageWrapper>
             <Image image="DEVICE_ANOTHER_SESSION" width="250" />
         </ImageWrapper>
-    </Modal>
+    </StyledModal>
 );
 
 export default DatabaseUpgradeModal;

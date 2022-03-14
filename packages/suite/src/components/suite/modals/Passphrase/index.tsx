@@ -33,6 +33,14 @@ const Divider = styled.div`
     background: ${props => props.theme.STROKE_GREY};
 `;
 
+const TinyModal = styled(Modal)`
+    width: 360px;
+`;
+
+const SmallModal = styled(Modal)`
+    width: 600px;
+`;
+
 type Props = {
     device: TrezorDevice;
 };
@@ -73,7 +81,7 @@ const Passphrase = ({ device }: Props) => {
     if (authConfirmation || stateConfirmation) {
         // show borderless one-column modal for confirming passphrase and state confirmation
         return (
-            <Modal
+            <TinyModal
                 heading={
                     !authConfirmation ? (
                         <Translation id="TR_ENTER_PASSPHRASE" />
@@ -88,7 +96,6 @@ const Passphrase = ({ device }: Props) => {
                         <Translation id="TR_THIS_HIDDEN_WALLET_IS_EMPTY" />
                     )
                 }
-                size="tiny"
             >
                 <PassphraseTypeCard
                     type="hidden"
@@ -99,17 +106,16 @@ const Passphrase = ({ device }: Props) => {
                     onSubmit={onSubmit}
                     singleColModal
                 />
-            </Modal>
+            </TinyModal>
         );
     }
 
     // creating a hidden wallet
     if (!noPassphraseOffer) {
         return (
-            <Modal
+            <TinyModal
                 heading={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
                 description={<Translation id="TR_HIDDEN_WALLET_MODAL_DESCRIPTION" />}
-                size="tiny"
             >
                 <PassphraseTypeCard
                     title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
@@ -120,17 +126,13 @@ const Passphrase = ({ device }: Props) => {
                     offerPassphraseOnDevice={onDeviceOffer}
                     onSubmit={onSubmit}
                 />
-            </Modal>
+            </TinyModal>
         );
     }
 
     // show 2-column modal for selecting between standard and hidden wallets
     return (
-        <Modal
-            cancelable={false}
-            heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}
-            size="small"
-        >
+        <SmallModal cancelable={false} heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}>
             <Wrapper>
                 <WalletsWrapper>
                     <PassphraseTypeCard
@@ -151,7 +153,7 @@ const Passphrase = ({ device }: Props) => {
                     />
                 </WalletsWrapper>
             </Wrapper>
-        </Modal>
+        </SmallModal>
     );
 };
 

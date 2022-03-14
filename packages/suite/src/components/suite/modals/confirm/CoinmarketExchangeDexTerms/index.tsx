@@ -1,29 +1,16 @@
 import { Button, Icon, variables, Checkbox } from '@trezor/components';
 import React, { useState } from 'react';
 import { Translation, Modal } from '@suite-components';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
 
-const Text = styled.div<{ isLast?: boolean; isFirst?: boolean }>`
-    padding: 20px 0;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+const Text = styled.div`
+    padding-bottom: 20px;
     text-align: left;
-
-    ${props =>
-        props.isLast &&
-        css`
-            border-bottom: 0;
-        `};
-
-    ${props =>
-        props.isFirst &&
-        css`
-            padding-top: 0;
-        `};
-`;
-
-const Terms = styled.div`
-    padding: 10px 35px;
+    & + & {
+        padding-top: 20px;
+        border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    }
 `;
 
 const Header = styled.div`
@@ -78,7 +65,6 @@ const CoinmarketExchangeDexTerms = ({ decision, onCancel, provider }: Props) => 
         <Modal
             cancelable
             onCancel={onCancel}
-            noPadding
             heading={
                 <Header>
                     <Left>
@@ -88,23 +74,21 @@ const CoinmarketExchangeDexTerms = ({ decision, onCancel, provider }: Props) => 
                 </Header>
             }
         >
-            <Terms>
-                <Text isFirst>
-                    <Translation id="TR_EXCHANGE_DEX_TERMS_1" values={{ provider: providerName }} />
-                </Text>
-                <Text>
-                    <Translation id="TR_EXCHANGE_TERMS_2" />
-                </Text>
-                <Text>
-                    <Translation id="TR_EXCHANGE_TERMS_3" />
-                </Text>
-                <Text>
-                    <Translation id="TR_EXCHANGE_TERMS_4" />
-                </Text>
-                <Text isLast>
-                    <Translation id="TR_EXCHANGE_TERMS_5" />
-                </Text>
-            </Terms>
+            <Text>
+                <Translation id="TR_EXCHANGE_DEX_TERMS_1" values={{ provider: providerName }} />
+            </Text>
+            <Text>
+                <Translation id="TR_EXCHANGE_TERMS_2" />
+            </Text>
+            <Text>
+                <Translation id="TR_EXCHANGE_TERMS_3" />
+            </Text>
+            <Text>
+                <Translation id="TR_EXCHANGE_TERMS_4" />
+            </Text>
+            <Text>
+                <Translation id="TR_EXCHANGE_TERMS_5" />
+            </Text>
             <Footer>
                 <FooterContent>
                     <Checkbox isChecked={isChecked} onClick={() => setIsChecked(!isChecked)}>

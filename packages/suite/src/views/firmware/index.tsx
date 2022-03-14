@@ -35,6 +35,23 @@ const CancelIconWrapper = styled.div`
     cursor: pointer;
 `;
 
+const StyledModal = styled(Modal)`
+    width: 620px;
+    min-height: 500px;
+    ${Modal.Body} {
+        padding: 0;
+        margin-top: 0;
+        height: 100%;
+        > * {
+            height: 100%;
+        }
+    }
+    ${Modal.Content} {
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
 const Firmware = () => {
     const theme = useTheme();
     const { resetReducer, status, setStatus, error, firmwareUpdate } = useFirmware();
@@ -139,7 +156,7 @@ const Firmware = () => {
     ].includes(status);
 
     return (
-        <Modal
+        <StyledModal
             cancelable={isCancelable}
             header={
                 status === 'waiting-for-confirmation' && (
@@ -151,12 +168,7 @@ const Firmware = () => {
                 )
             }
             onCancel={onClose}
-            useFixedHeight
-            fixedHeight={['90vh', '90vh', '500px', '500px']}
-            fixedWidth={['95vw', '90vw', '620px', '620px']}
             data-test="@firmware"
-            centerContent
-            noPadding
         >
             <Wrapper>
                 {isCancelable && (
@@ -167,7 +179,7 @@ const Firmware = () => {
                 )}
                 {Component}
             </Wrapper>
-        </Modal>
+        </StyledModal>
     );
 };
 

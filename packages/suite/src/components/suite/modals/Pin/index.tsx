@@ -1,16 +1,17 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Translation, Modal, ModalProps, PinMatrix } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 
-interface OwnProps extends ModalProps {
+const StyledModal = styled(Modal)`
+    width: unset;
+`;
+
+interface PinProps extends ModalProps {
     device: TrezorDevice;
-    cancelable?: boolean;
-    onCancel: () => void;
 }
 
-type Props = OwnProps;
-
-const Pin = ({ device, noPadding, ...rest }: Props) => {
+const Pin = ({ device, ...rest }: PinProps) => {
     const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
     const invalidCounter =
         device.buttonRequests.filter(r => r.code === 'ui-invalid_pin').length || 0;
@@ -28,15 +29,14 @@ const Pin = ({ device, noPadding, ...rest }: Props) => {
         invalidCounter > 0;
 
     return (
-        <Modal
-            useFixedWidth={false}
+        <StyledModal
             heading={<Translation id="TR_ENTER_PIN" />}
             description={<Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />}
             {...rest}
             data-test="@modal/pin"
         >
             <PinMatrix device={device} hideExplanation={!isExtended} invalid={invalidCounter > 0} />
-        </Modal>
+        </StyledModal>
     );
 };
 

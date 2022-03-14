@@ -34,7 +34,11 @@ const CopyButtonWrapper = styled.div`
     justify-content: center;
 `;
 
-interface Props {
+const StyledModal = styled(Modal)`
+    width: unset;
+`;
+
+interface XpubProps {
     xpub: string;
     accountIndex: number;
     symbol: Account['symbol'];
@@ -42,7 +46,7 @@ interface Props {
     onCancel: () => void;
 }
 
-const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: Props) => {
+const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: XpubProps) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
     const { addNotification } = useActions({
@@ -59,7 +63,7 @@ const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: Props) => 
     };
 
     return (
-        <Modal
+        <StyledModal
             cancelable
             onCancel={onCancel}
             heading={
@@ -75,7 +79,6 @@ const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: Props) => 
                     />
                 )
             }
-            useFixedWidth={false}
         >
             <Wrapper>
                 <QrCode value={xpub} />
@@ -86,7 +89,7 @@ const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: Props) => 
                     </Button>
                 </CopyButtonWrapper>
             </Wrapper>
-        </Modal>
+        </StyledModal>
     );
 };
 

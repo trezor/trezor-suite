@@ -102,6 +102,8 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
 
     return (
         <Wrapper>
+            {torModalOpen && <TorModal onResult={onTorResult} />}
+
             <Heading>
                 <Translation id="TR_BACKENDS" />
                 <TooltipSymbol
@@ -173,8 +175,6 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
             >
                 <ConnectionInfo coin={coin} />
             </TransparentCollapsibleBox>
-
-            {torModalOpen && <TorModal onResult={onTorResult} />}
 
             <SaveButton
                 variant="primary"
