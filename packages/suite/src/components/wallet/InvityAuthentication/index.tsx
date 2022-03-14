@@ -119,10 +119,6 @@ const InvityAuthentication: React.FC<InvityAuthenticationProps> = ({
                 case 'logout-successful':
                     if (invityAuthentication) {
                         clearInvityAuthentication();
-                    } else {
-                        addToast({
-                            type: 'invity-logout-successful',
-                        });
                     }
                     break;
                 // eslint-disable-next-line no-fallthrough

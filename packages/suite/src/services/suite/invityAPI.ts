@@ -1052,7 +1052,7 @@ class InvityAPI {
         }
     };
 
-    logout = async (): Promise<string | undefined> => {
+    getLogoutUrl = async (): Promise<string | undefined> => {
         try {
             const response = await fetch(`${this.getAuthServerUrl()}/self-service/logout/browser`, {
                 credentials: 'include',
@@ -1137,17 +1137,6 @@ class InvityAPI {
     getVerificationPageSrc(theme: SuiteThemeColors['THEME']) {
         return this.getInvityAuthenticationPageSrc('verification', theme);
     }
-
-    // TODO:
-    // async logout() {
-    //     const response = await fetch(`${this.getAuthServerUrl()}/self-service/logout/browser`, {
-    //         credentials: 'include',
-    //     });
-    //     const json = await response.json();
-    //     if (json.logout_url) {
-    //         window.location.replace(json.logout_url);
-    //     }
-    // }
 
     getAccountInfo = async (): Promise<AccountInfoResponse> => {
         try {

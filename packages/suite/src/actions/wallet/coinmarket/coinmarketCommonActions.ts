@@ -217,9 +217,16 @@ export const saveInvityAuthentication = (
     invityAuthentication,
 });
 
-export const clearInvityAuthentication = (): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.CLEAR_INVITY_AUTHENTICATION,
-});
+export const clearInvityAuthentication = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: COINMARKET_COMMON.CLEAR_INVITY_AUTHENTICATION,
+    });
+    dispatch(
+        notificationActions.addToast({
+            type: 'invity-logout-successful',
+        }),
+    );
+};
 
 export const setInvityAuthenticationLoading = (
     isInvityAuthenticationLoading: boolean,

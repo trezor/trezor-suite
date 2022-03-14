@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketSavingsActions from '@wallet-actions/coinmarketSavingsActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { InvityContextDropdownButton } from './components/InvityContextDropdownButton';
 import invityAPI from '@suite-services/invityAPI';
 
@@ -29,8 +30,9 @@ const InvityContextDropdown = () => {
     const { invityAuthentication } = useSelector(state => ({
         invityAuthentication: state.wallet.coinmarket.invityAuthentication,
     }));
-    const { stopWatchingKYCStatus } = useActions({
+    const { stopWatchingKYCStatus, clearInvityAuthentication } = useActions({
         stopWatchingKYCStatus: coinmarketSavingsActions.stopWatchingKYCStatus,
+        clearInvityAuthentication: coinmarketCommonActions.clearInvityAuthentication,
     });
     // TODO: Sometimes react warning pops up in console with misused ref?
     const dropdownRef = useRef<DropdownRef>();
@@ -67,8 +69,12 @@ const InvityContextDropdown = () => {
                                 key: '2',
                                 label: <Translation id="TR_INVITY_SIGNIN_DROPDOWN_MENU_SIGNOUT" />,
                                 callback: async () => {
-                                    const logoutUrl = await invityAPI.logout();
-                                    setLogoutUrl(logoutUrl);
+                                    const logoutUrl = await invityAPI.getLogoutUrl();
+                                    if (logoutUrl) {
+                                        setLogoutUrl(logoutUrl);
+                                    } else {
+                                        clearInvityAuthentication();
+                                    }
                                     stopWatchingKYCStatus(undefined);
                                 },
                                 isRounded: true,
