@@ -175,7 +175,8 @@ export const fetchTransactions =
             // updates the marker/page object for the account
             dispatch(accountActions.update(account, result.payload));
 
-            if (recursive && page < totalPages) {
+            // totalPages (blockbook + blockfrost), marker (ripple) if is undefined, no more pages are available
+            if (recursive && (page < totalPages || (marker && updatedAccount.marker))) {
                 await dispatch(
                     fetchTransactions(updatedAccount, page + 1, perPage, noLoading, true),
                 );
