@@ -1,11 +1,12 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Button } from '@trezor/components';
-import { Image as Img, Translation, Modal } from '@suite-components';
+import { Image, Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
+import { Modal } from '../Modal';
 
-const Image = styled(Img)`
+const StyledImage = styled(Image)`
     flex: 1;
     margin: 20px 0;
 
@@ -17,9 +18,8 @@ const Image = styled(Img)`
         `}
 `;
 
-const Buttons = styled.div`
-    display: flex;
-    justify-content: space-around;
+const StyledModal = styled(Modal)`
+    width: 600px;
 `;
 
 /**
@@ -36,7 +36,7 @@ const Buttons = styled.div`
 type Props = {
     title: React.ReactNode;
     text?: React.ReactNode;
-    image?: React.ComponentProps<typeof Img>['image'];
+    image?: React.ComponentProps<typeof Image>['image'];
     allowSwitchDevice?: boolean;
     resolveButton?: React.ReactNode;
     ['data-test']?: string;
@@ -51,21 +51,27 @@ const DeviceInvalidModeLayout = (props: Props) => {
     });
 
     return (
-        <Modal size="small" heading={title} description={text} data-test={props['data-test']}>
-            <Image image={image} />
-            <Buttons>
-                {resolveButton && resolveButton}
-                {allowSwitchDevice && devices.length > 1 && (
-                    <Button
-                        onClick={() =>
-                            goto('suite-switch-device', { params: { cancelable: true } })
-                        }
-                    >
-                        <Translation id="TR_SWITCH_DEVICE" />
-                    </Button>
-                )}
-            </Buttons>
-        </Modal>
+        <StyledModal
+            heading={title}
+            description={text}
+            data-test={props['data-test']}
+            bottomBar={
+                <>
+                    {resolveButton && resolveButton}
+                    {allowSwitchDevice && devices.length > 1 && (
+                        <Button
+                            onClick={() =>
+                                goto('suite-switch-device', { params: { cancelable: true } })
+                            }
+                        >
+                            <Translation id="TR_SWITCH_DEVICE" />
+                        </Button>
+                    )}
+                </>
+            }
+        >
+            <StyledImage image={image} />
+        </StyledModal>
     );
 };
 

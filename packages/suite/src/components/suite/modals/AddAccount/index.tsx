@@ -16,15 +16,9 @@ import { SelectNetwork } from './components/SelectNetwork';
 import { EnableNetwork } from './components/EnableNetwork';
 import { AddAccountButton } from './components/AddAccountButton';
 
-const StyledModal = styled(props => <Modal {...props} />)`
+const StyledModal = styled(Modal)`
     min-height: 550px;
     text-align: left;
-`;
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: center;
-    padding-top: 24px;
 `;
 
 const Expander = styled.div`
@@ -155,6 +149,22 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
             cancelable
             onCancel={onCancel}
             heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
+            bottomBar={
+                selectedNetwork &&
+                (selectedNetworkEnabled ? (
+                    <AddAccountButton
+                        emptyAccounts={emptyAccounts}
+                        onEnableAccount={onEnableAccount}
+                    />
+                ) : (
+                    <Button variant="primary" onClick={onEnableNetwork}>
+                        <Translation
+                            id="TR_ENABLE_NETWORK_BUTTON"
+                            values={{ networkName: selectedNetwork.name }}
+                        />
+                    </Button>
+                ))
+            }
         >
             <SelectNetwork
                 networks={
@@ -184,22 +194,6 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
                     )}
 
                     <Expander />
-
-                    <Actions>
-                        {selectedNetworkEnabled ? (
-                            <AddAccountButton
-                                emptyAccounts={emptyAccounts}
-                                onEnableAccount={onEnableAccount}
-                            />
-                        ) : (
-                            <Button variant="primary" onClick={onEnableNetwork}>
-                                <Translation
-                                    id="TR_ENABLE_NETWORK_BUTTON"
-                                    values={{ networkName: selectedNetwork.name }}
-                                />
-                            </Button>
-                        )}
-                    </Actions>
                 </>
             )}
         </StyledModal>

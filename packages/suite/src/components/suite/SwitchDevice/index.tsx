@@ -29,7 +29,11 @@ const DeviceItemsWrapper = styled.div`
     flex: 1;
 `;
 
-const SwitchDeviceModal = (props: InjectedModalApplicationProps) => {
+const WrapperModal = styled(Modal)`
+    width: unset;
+`;
+
+const SwitchDevice = (props: InjectedModalApplicationProps) => {
     const { selectedDevice, devices, transport } = useSelector(state => ({
         router: state.router,
         selectedDevice: state.suite.device,
@@ -43,7 +47,7 @@ const SwitchDeviceModal = (props: InjectedModalApplicationProps) => {
     if (modal)
         return (
             // Wrap modal in Modal component because modal passed to ApplicationModal has no background (overlay)
-            <Modal useFixedWidth={false}>{modal}</Modal>
+            <WrapperModal>{modal}</WrapperModal>
         );
     // exclude selectedDevice from list, because other devices could have a higher priority
     // and we want to have selectedDevice on top
@@ -90,4 +94,4 @@ const SwitchDeviceModal = (props: InjectedModalApplicationProps) => {
     );
 };
 
-export default SwitchDeviceModal;
+export default SwitchDevice;

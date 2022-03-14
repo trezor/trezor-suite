@@ -9,6 +9,10 @@ const StyledImage = styled(Image)`
     margin: 48px auto;
 `;
 
+const StyledModal = styled(Modal)`
+    width: 360px;
+`;
+
 const PinMismatch = (props: ModalProps) => {
     const { changePin } = useActions({ changePin: deviceSettingsActions.changePin });
     const onTryAgain = () => {
@@ -16,10 +20,9 @@ const PinMismatch = (props: ModalProps) => {
     };
 
     return (
-        <Modal
+        <StyledModal
             // need to pass props when cloning this inside nested modal
             {...props}
-            size="tiny"
             heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
             description={<Translation id="TR_PIN_MISMATCH_TEXT" />}
             data-test="@pin-mismatch"
@@ -28,7 +31,7 @@ const PinMismatch = (props: ModalProps) => {
             <Button onClick={onTryAgain} data-test="@pin-mismatch/try-again-button">
                 <Translation id="TR_TRY_AGAIN" />
             </Button>
-        </Modal>
+        </StyledModal>
     );
 };
 

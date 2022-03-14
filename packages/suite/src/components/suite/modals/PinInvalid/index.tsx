@@ -10,13 +10,16 @@ const Divider = styled.div`
     margin-bottom: 10px;
 `;
 
-interface Props extends ModalProps {
+const StyledModal = styled(Modal)`
+    width: 360px;
+`;
+
+interface PinInvalidProps extends ModalProps {
     device: TrezorDevice;
 }
 
-const PinInvalid = ({ device, ...rest }: Props) => (
-    <Modal
-        size="tiny"
+const PinInvalid = ({ device, ...rest }: PinInvalidProps) => (
+    <StyledModal
         heading={
             <Translation id="TR_ENTERED_PIN_NOT_CORRECT" values={{ deviceLabel: device.label }} />
         }
@@ -27,7 +30,7 @@ const PinInvalid = ({ device, ...rest }: Props) => (
         <P size="small">
             <Translation id="TR_RETRYING_DOT_DOT" />
         </P>
-    </Modal>
+    </StyledModal>
 );
 
 export default PinInvalid;

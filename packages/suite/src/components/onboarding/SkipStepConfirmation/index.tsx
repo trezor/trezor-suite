@@ -13,13 +13,8 @@ const Wrapper = styled.div`
     padding: 16px 0px;
 `;
 
-const Buttons = styled.div`
-    display: flex;
-    width: 100%;
-
-    button + button {
-        margin-left: 24px;
-    }
+const StyledModal = styled(Modal)`
+    width: 600px;
 `;
 
 interface SkipStepConfirmationProps {
@@ -47,13 +42,12 @@ const SkipStepConfirmation = ({ variant, onCancel }: SkipStepConfirmationProps) 
     const { children, heading, skipCtaLabel } = getVariant(variant);
 
     return (
-        <Modal
-            size="small"
+        <StyledModal
             cancelable
             heading={heading}
             onCancel={() => onCancel()}
             bottomBar={
-                <Buttons>
+                <>
                     <Button
                         fullWidth
                         variant="danger"
@@ -65,11 +59,11 @@ const SkipStepConfirmation = ({ variant, onCancel }: SkipStepConfirmationProps) 
                     <Button fullWidth variant="secondary" onClick={() => onCancel()}>
                         <Translation id="TR_DONT_SKIP" />
                     </Button>
-                </Buttons>
+                </>
             }
         >
             <Wrapper>{children}</Wrapper>
-        </Modal>
+        </StyledModal>
     );
 };
 

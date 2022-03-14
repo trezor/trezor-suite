@@ -1,17 +1,21 @@
 import React from 'react';
+import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
 import { Modal, ModalProps } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';
 
-interface Props extends ModalProps {
+const StyledModal = styled(Modal)`
+    width: 360px;
+`;
+
+interface ConfirmActionProps extends ModalProps {
     device: TrezorDevice;
 }
 
-const ConfirmAction = ({ device, ...rest }: Props) => (
-    <Modal
-        size="tiny"
+const ConfirmAction = ({ device, ...rest }: ConfirmActionProps) => (
+    <StyledModal
         header={
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -26,7 +30,7 @@ const ConfirmAction = ({ device, ...rest }: Props) => (
         {...rest}
     >
         <DeviceConfirmImage device={device} />
-    </Modal>
+    </StyledModal>
 );
 
 export default ConfirmAction;

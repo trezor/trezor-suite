@@ -21,25 +21,6 @@ const LogWrapper = styled.pre`
     word-break: break-all;
 `;
 
-const ButtonWrapper = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: center;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
-
-const StyledButton = styled(Button)`
-    margin: 0 5px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-        margin: 5px 0;
-    }
-`;
-
 type Props = {
     onCancel: () => void;
 };
@@ -84,22 +65,18 @@ const Log = ({ onCancel }: Props) => {
             description={<Translation id="LOG_DESCRIPTION" />}
             data-test="@log"
             bottomBar={
-                <ButtonWrapper>
-                    <StyledButton
-                        variant="secondary"
-                        onClick={() => copy()}
-                        data-test="@log/copy-button"
-                    >
+                <>
+                    <Button variant="secondary" onClick={() => copy()} data-test="@log/copy-button">
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
-                    </StyledButton>
-                    <StyledButton
+                    </Button>
+                    <Button
                         variant="secondary"
                         onClick={() => download()}
                         data-test="@log/export-button"
                     >
                         <Translation id="TR_EXPORT_TO_FILE" />
-                    </StyledButton>
-                </ButtonWrapper>
+                    </Button>
+                </>
             }
         >
             <LogWrapper ref={htmlElement} data-test="@log/content">

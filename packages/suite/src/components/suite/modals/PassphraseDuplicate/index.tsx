@@ -22,6 +22,14 @@ const StyledImage = styled(Image)`
     margin: 24px 0px;
 `;
 
+const StyledModal = styled(Modal)`
+    width: 360px;
+    ${Modal.Content} {
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
 const PassphraseDuplicate = ({ device, duplicate }: Props) => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
@@ -30,12 +38,10 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
         authorizeDevice: suiteActions.authorizeDevice,
     });
     return (
-        <Modal
-            size="tiny"
+        <StyledModal
             heading={<Translation id="TR_WALLET_DUPLICATE_TITLE" />}
             description={<Translation id="TR_WALLET_DUPLICATE_DESC" />}
             data-test="@passphrase-duplicate"
-            centerContent
             bottomBar={
                 <Actions>
                     <Button
@@ -58,7 +64,7 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
             }
         >
             <StyledImage image="UNI_WARNING" width="160" />
-        </Modal>
+        </StyledModal>
     );
 };
 

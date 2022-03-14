@@ -1,14 +1,16 @@
 import React from 'react';
+import styled from 'styled-components';
 import TrezorConnect, { UI } from 'trezor-connect';
 import { Translation, WordInput, Modal, ModalProps } from '@suite-components';
 
+const StyledModal = styled(Modal)`
+    width: 100%;
+    height: 100%;
+`;
+
 const Word = (props: ModalProps) => (
-    <Modal
-        fixedWidth={['100%', '100%', '100%', '100%']}
-        fixedHeight={['100%', '100%', '100%', '100%']}
-        useFixedHeight
+    <StyledModal
         data-test="@recovery/word"
-        noPadding
         heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
         description={
             <>
@@ -23,7 +25,7 @@ const Word = (props: ModalProps) => (
                 TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
             }}
         />
-    </Modal>
+    </StyledModal>
 );
 
 export default Word;

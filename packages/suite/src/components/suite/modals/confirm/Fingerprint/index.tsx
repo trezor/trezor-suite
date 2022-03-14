@@ -1,16 +1,20 @@
 import React from 'react';
+import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
 import { Translation, Modal, ModalProps } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import { Fingerprint } from '@firmware-components';
 
-interface Props extends ModalProps {
+const StyledModal = styled(Modal)`
+    width: 360px;
+`;
+
+interface ConfirmFingerprintProps extends ModalProps {
     device: TrezorDevice;
 }
 
-const ConfirmFingerprint = ({ device, ...rest }: Props) => (
-    <Modal
-        size="tiny"
+const ConfirmFingerprint = ({ device, ...rest }: ConfirmFingerprintProps) => (
+    <StyledModal
         header={
             <ConfirmOnDevice
                 title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -23,7 +27,7 @@ const ConfirmFingerprint = ({ device, ...rest }: Props) => (
         {...rest}
     >
         <Fingerprint device={device} />
-    </Modal>
+    </StyledModal>
 );
 
 export default ConfirmFingerprint;

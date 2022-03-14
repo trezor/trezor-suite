@@ -22,16 +22,19 @@ const CheckItems = styled(Row)`
     margin-bottom: 16px;
 `;
 
-const Buttons = styled(Row)`
-    justify-content: center;
-    width: 100%;
+const StyledModal = styled(Modal)`
+    width: 600px;
+    ${Modal.Content} {
+        justify-content: center;
+        align-items: center;
+    }
 `;
 
-type Props = {
+type WipeDeviceProps = {
     onCancel: () => void;
 };
 
-const WipeDevice = ({ onCancel }: Props) => {
+const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
     const { wipeDevice } = useActions({ wipeDevice: deviceSettingsActions.wipeDevice });
@@ -39,27 +42,21 @@ const WipeDevice = ({ onCancel }: Props) => {
     const { isLocked } = useDevice();
 
     return (
-        <Modal
-            size="small"
+        <StyledModal
             cancelable
             onCancel={onCancel}
             heading={<Translation id="TR_WIPE_DEVICE_HEADING" />}
             description={<Translation id="TR_WIPE_DEVICE_TEXT" />}
             bottomBar={
-                <Buttons>
-                    <Col>
-                        <Button
-                            variant="danger"
-                            onClick={() => wipeDevice()}
-                            isDisabled={isLocked() || !checkbox1 || !checkbox2}
-                            data-test="@wipe/wipe-button"
-                        >
-                            <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
-                        </Button>
-                    </Col>
-                </Buttons>
+                <Button
+                    variant="danger"
+                    onClick={() => wipeDevice()}
+                    isDisabled={isLocked() || !checkbox1 || !checkbox2}
+                    data-test="@wipe/wipe-button"
+                >
+                    <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
+                </Button>
             }
-            centerContent
         >
             <Image image="UNI_ERROR" />
             <CheckItems>
@@ -80,7 +77,7 @@ const WipeDevice = ({ onCancel }: Props) => {
                     />
                 </Col>
             </CheckItems>
-        </Modal>
+        </StyledModal>
     );
 };
 

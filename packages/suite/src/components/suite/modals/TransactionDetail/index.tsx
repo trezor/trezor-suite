@@ -14,6 +14,13 @@ import {
 } from '@wallet-utils/transactionUtils';
 import { useSelector } from '@suite-hooks';
 
+const StyledModal = styled(Modal)`
+    width: 755px;
+    ${Modal.Body} {
+        padding: 10px;
+    }
+`;
+
 const Wrapper = styled.div`
     width: 100%;
     flex-direction: column;
@@ -81,11 +88,9 @@ const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailProps) =>
     const [finalize, setFinalize] = useState<boolean>(false);
 
     return (
-        <Modal
+        <StyledModal
             cancelable
             onCancel={onCancel}
-            fixedWidth={['95vw', '90vw', '755px', '755px']}
-            contentPaddingSide={['8px', '21px', '21px', '21px']}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >
             <Wrapper>
@@ -177,7 +182,7 @@ const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailProps) =>
                     />
                 )}
             </Wrapper>
-        </Modal>
+        </StyledModal>
     );
 };
 

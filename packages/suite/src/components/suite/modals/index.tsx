@@ -41,6 +41,7 @@ import AddToken from './AddToken';
 import SafetyChecks from './SafetyChecks';
 import { DisableTor } from './DisableTor';
 import { useGuide } from '@guide-hooks';
+import { RawRenderer } from '../Modal/RawRenderer';
 
 import type { AcquiredDevice } from '@suite-types';
 
@@ -263,22 +264,23 @@ const getModal = (props: SharedProps) => {
 export const Modals = () => {
     const props = useSharedProps();
     const modalComponent = getModal(props);
-    return modalComponent ? (
+    if (!modalComponent) {
+        return null;
+    }
+    return (
         <FocusLock disabled={props.isGuideOpen} autoFocus={false}>
             {modalComponent}
         </FocusLock>
-    ) : null;
+    );
 };
 
 export const RawModals = () => {
     const props = useSharedProps();
     const modalComponent = getModal(props);
-    return modalComponent
-        ? React.cloneElement(modalComponent, {
-              noBackground: true,
-              showHeaderBorder: false,
-              noPadding: true,
-              cancelable: false,
-          })
-        : null;
+    if (!modalComponent) {
+        return null;
+    }
+    return React.cloneElement(modalComponent, {
+        render: RawRenderer,
+    });
 };

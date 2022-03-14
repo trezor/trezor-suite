@@ -17,6 +17,10 @@ import {
 } from '@firmware-components';
 import * as suiteActions from '@suite-actions/suiteActions';
 
+const StyledModal = styled(Modal)`
+    width: 620px;
+`;
+
 const ModalContent = styled.div`
     text-align: left;
     display: flex;
@@ -78,7 +82,7 @@ const FirmwareCustom = () => {
     if (liveDevice?.type === 'unreadable') return <DeviceUnreadable />;
     if (liveDevice && !liveDevice.features) return <DeviceUnknown />;
     return (
-        <Modal
+        <StyledModal
             cancelable={isCancelable}
             onCancel={onClose}
             heading={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
@@ -91,7 +95,6 @@ const FirmwareCustom = () => {
                     />
                 )
             }
-            fixedWidth={['95vw', '90vw', '620px', '620px']}
             data-test="@firmware-custom"
         >
             <ModalContent>
@@ -157,7 +160,7 @@ const FirmwareCustom = () => {
                     }
                 })()}
             </ModalContent>
-        </Modal>
+        </StyledModal>
     );
 };
 

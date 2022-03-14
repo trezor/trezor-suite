@@ -1,51 +1,54 @@
-import { Translation, Image, Modal, ModalProps } from '@suite-components';
-import { Button } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
+import { Button } from '@trezor/components';
+import { Translation, Image, Modal, ModalProps } from '@suite-components';
 
 const ImageWrapper = styled.div`
     padding: 60px 0px;
 `;
 
-const Actions = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+const StyledModal = styled(Modal)`
+    width: 600px;
 `;
 
-interface Props extends ModalProps {
+interface ConfirmNoBackupProps extends ModalProps {
     onReceiveConfirmation: (confirmed: boolean) => void;
     onCreateBackup: () => void;
 }
 
-const ConfirmNoBackup = ({ onReceiveConfirmation, onCreateBackup, ...rest }: Props) => (
-    <Modal
-        size="small"
+const ConfirmNoBackup = ({
+    onReceiveConfirmation,
+    onCreateBackup,
+    ...rest
+}: ConfirmNoBackupProps) => (
+    <StyledModal
         heading={<Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />}
         description={<Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />}
+        bottomBar={
+            <>
+                <Button
+                    variant="secondary"
+                    onClick={() => onReceiveConfirmation(true)}
+                    data-test="@no-backup/take-risk-button"
+                >
+                    <Translation id="TR_SHOW_ADDRESS_ANYWAY" />
+                </Button>
+                <Button
+                    onClick={() => {
+                        onReceiveConfirmation(false);
+                        onCreateBackup();
+                    }}
+                >
+                    <Translation id="TR_CREATE_BACKUP" />
+                </Button>
+            </>
+        }
         {...rest}
     >
         <ImageWrapper>
             <Image image="UNI_ERROR" />
         </ImageWrapper>
-        <Actions>
-            <Button
-                variant="secondary"
-                onClick={() => onReceiveConfirmation(true)}
-                data-test="@no-backup/take-risk-button"
-            >
-                <Translation id="TR_SHOW_ADDRESS_ANYWAY" />
-            </Button>
-            <Button
-                onClick={() => {
-                    onReceiveConfirmation(false);
-                    onCreateBackup();
-                }}
-            >
-                <Translation id="TR_CREATE_BACKUP" />
-            </Button>
-        </Actions>
-    </Modal>
+    </StyledModal>
 );
 
 export default ConfirmNoBackup;

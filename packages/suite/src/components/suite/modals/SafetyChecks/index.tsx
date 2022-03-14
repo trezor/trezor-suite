@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import { useActions, useDevice } from '@suite-hooks';
 import { RadioButton, Button, H3, P, Warning } from '@trezor/components';
 import { Translation, Modal, ModalProps } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import styled from 'styled-components';
-
-const Buttons = styled.div`
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 40px;
-`;
 
 const StyledButton = styled(Button)`
     min-width: 230px;
@@ -46,27 +39,23 @@ const SafetyChecks = ({ onCancel }: ModalProps) => {
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
     const [level, setLevel] = useState(device?.features?.safety_checks || undefined);
 
-    const ApplyButton = (
-        <Buttons>
-            <StyledButton
-                onClick={() => {
-                    applySettings({ safety_checks: level });
-                }}
-                // Only allow confirming when the value will be changed.
-                isDisabled={isLocked() || level === device?.features?.safety_checks}
-                data-test="@safety-checks-apply"
-            >
-                <Translation id="TR_CONFIRM" />
-            </StyledButton>
-        </Buttons>
-    );
-
     return (
         <Modal
             cancelable
             onCancel={onCancel}
             heading={<Translation id="TR_SAFETY_CHECKS_MODAL_TITLE" />}
-            bottomBar={ApplyButton}
+            bottomBar={
+                <StyledButton
+                    onClick={() => {
+                        applySettings({ safety_checks: level });
+                    }}
+                    // Only allow confirming when the value will be changed.
+                    isDisabled={isLocked() || level === device?.features?.safety_checks}
+                    data-test="@safety-checks-apply"
+                >
+                    <Translation id="TR_CONFIRM" />
+                </StyledButton>
+            }
         >
             <OptionsWrapper>
                 <RadioButton

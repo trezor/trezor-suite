@@ -16,13 +16,16 @@ const BottomText = styled.div`
     margin-top: 20px;
 `;
 
+const StyledModal = styled(Modal)`
+    width: 100%;
+`;
+
 interface Props extends ModalProps {
     count: 6 | 9;
 }
 
 const WordAdvanced = ({ count, ...rest }: Props) => (
-    <Modal
-        fixedWidth={['100%', '100%', '100%', '100%']}
+    <StyledModal
         heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
         description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
         {...rest}
@@ -43,7 +46,7 @@ const WordAdvanced = ({ count, ...rest }: Props) => (
                 </P>
             </BottomText>
         </ContentWrapper>
-    </Modal>
+    </StyledModal>
 );
 
 export default WordAdvanced;

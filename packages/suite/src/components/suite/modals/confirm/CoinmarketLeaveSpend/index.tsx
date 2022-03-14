@@ -11,25 +11,8 @@ const Text = styled(H3)`
     width: 100%;
     padding: 10px 0;
     align-items: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-`;
-
-const LeftButton = styled(Button)`
-    margin-right: 20px;
-`;
-
-const Content = styled.div`
-    display: flex;
-    padding: 40px;
-    flex: 1;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
-`;
-
-const Buttons = styled.div`
-    display: flex;
-    margin: 20px;
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 export type Props = {
@@ -43,20 +26,19 @@ const CoinmarketLeaveSpend = ({ onCancel }: Props) => {
     });
 
     return (
-        <Modal cancelable onCancel={onCancel} noPadding>
-            <Content>
-                <Text>
-                    <Translation id="TR_SPEND_LEAVE_MODAL_INFO" />
-                </Text>
-                <Buttons>
-                    <LeftButton
+        <Modal
+            cancelable
+            onCancel={onCancel}
+            bottomBar={
+                <>
+                    <Button
                         onClick={() => {
                             onCancel();
                             setShowLeaveModal(false);
                         }}
                     >
                         <Translation id="TR_SPEND_LEAVE" />
-                    </LeftButton>
+                    </Button>
                     <Button
                         onClick={() => {
                             onCancel();
@@ -65,8 +47,12 @@ const CoinmarketLeaveSpend = ({ onCancel }: Props) => {
                     >
                         <Translation id="TR_SPEND_STAY" />
                     </Button>
-                </Buttons>
-            </Content>
+                </>
+            }
+        >
+            <Text>
+                <Translation id="TR_SPEND_LEAVE_MODAL_INFO" />
+            </Text>
         </Modal>
     );
 };

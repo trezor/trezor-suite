@@ -15,11 +15,6 @@ const Wrapper = styled.div`
     margin: 24px 0px;
 `;
 
-const Actions = styled.div`
-    display: flex;
-    justify-content: center;
-`;
-
 interface AddTokenProps {
     onCancel: () => void;
 }
@@ -107,23 +102,11 @@ const AddToken = ({ onCancel }: AddTokenProps) => {
     };
 
     return (
-        <Modal cancelable onCancel={onCancel} heading={<Translation id="TR_ADD_TOKEN_TITLE" />}>
-            <Wrapper>
-                <Input
-                    label={
-                        <Tooltip content={<Translation id="TR_ADD_TOKEN_TOOLTIP" />} dashed>
-                            <Translation id="TR_ADD_TOKEN_LABEL" />
-                        </Tooltip>
-                    }
-                    placeholder={translationString('TR_ADD_TOKEN_PLACEHOLDER')}
-                    value={contractAddress}
-                    bottomText={error}
-                    state={getInputState()}
-                    onChange={onChange}
-                />
-            </Wrapper>
-
-            <Actions>
+        <Modal
+            cancelable
+            onCancel={onCancel}
+            heading={<Translation id="TR_ADD_TOKEN_TITLE" />}
+            bottomBar={
                 <Button
                     onClick={() => {
                         if (tokenInfo) {
@@ -145,7 +128,22 @@ const AddToken = ({ onCancel }: AddTokenProps) => {
                 >
                     <Translation id="TR_ADD_TOKEN_SUBMIT" />
                 </Button>
-            </Actions>
+            }
+        >
+            <Wrapper>
+                <Input
+                    label={
+                        <Tooltip content={<Translation id="TR_ADD_TOKEN_TOOLTIP" />} dashed>
+                            <Translation id="TR_ADD_TOKEN_LABEL" />
+                        </Tooltip>
+                    }
+                    placeholder={translationString('TR_ADD_TOKEN_PLACEHOLDER')}
+                    value={contractAddress}
+                    bottomText={error}
+                    state={getInputState()}
+                    onChange={onChange}
+                />
+            </Wrapper>
         </Modal>
     );
 };
