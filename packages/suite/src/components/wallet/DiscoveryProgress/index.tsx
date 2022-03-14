@@ -6,7 +6,7 @@ import { useDiscovery } from '@suite-hooks';
 const Wrapper = styled.div`
     width: 100%;
     height: 0;
-    z-index: ${variables.Z_INDEX.NAVIGATION_BAR};
+    z-index: ${variables.Z_INDEX.DISCOVERY_PROGRESS};
     background: ${props => props.theme.BG_WHITE};
 `;
 
