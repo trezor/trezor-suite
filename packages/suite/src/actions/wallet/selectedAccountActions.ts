@@ -231,6 +231,7 @@ export const getStateForAction = (action: Action) => (dispatch: Dispatch, getSta
             'descriptor',
             'availableBalance',
             'misc',
+            'marker',
             'tokens',
             'metadata',
             'addresses',
