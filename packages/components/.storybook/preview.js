@@ -2,11 +2,14 @@ import React from 'react';
 import { StoryWrapper } from '../src/support/Story';
 
 export const decorators = [
-    Story => (
-        <StoryWrapper>
+    (Story, context) =>
+        context?.parameters?.noWrapper ? (
             <Story />
-        </StoryWrapper>
-    ),
+        ) : (
+            <StoryWrapper>
+                <Story />
+            </StoryWrapper>
+        ),
 ];
 export const parameters = {
     options: {
