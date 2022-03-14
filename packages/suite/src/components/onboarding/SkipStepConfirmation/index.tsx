@@ -22,12 +22,12 @@ const Buttons = styled.div`
     }
 `;
 
-interface Props {
+interface SkipStepConfirmationProps {
     variant: 'backup' | 'pin';
     onCancel: () => void;
 }
 
-const getVariant = (variant: Props['variant']) => {
+const getVariant = (variant: SkipStepConfirmationProps['variant']) => {
     if (variant === 'backup') {
         return {
             heading: <Translation id="TR_SKIP_BACKUP" />,
@@ -42,7 +42,7 @@ const getVariant = (variant: Props['variant']) => {
     };
 };
 
-const SkipStepConfirmation = ({ variant, onCancel }: Props) => {
+const SkipStepConfirmation = ({ variant, onCancel }: SkipStepConfirmationProps) => {
     const { goToStep } = useOnboarding();
     const { children, heading, skipCtaLabel } = getVariant(variant);
 

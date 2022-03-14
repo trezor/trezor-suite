@@ -5,7 +5,6 @@ import ReactMarkdown from 'react-markdown';
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 import { Button, H2, variables, Link } from '@trezor/components';
 import { Translation, Modal, FormattedDate } from '@suite-components';
-import { Row, LeftCol, RightCol, Divider } from './styles';
 import { useActions } from '@suite-hooks';
 import { getReleaseUrl } from '@suite/services/github';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
@@ -117,6 +116,16 @@ const Available = ({ hideWindow, latest }: AvailableProps) => {
             heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
             cancelable
             onCancel={hideWindow}
+            bottomBar={
+                <>
+                    <Button onClick={hideWindow} variant="secondary" fullWidth>
+                        <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
+                    </Button>
+                    <Button onClick={downloadUpdate} variant="primary" fullWidth>
+                        <Translation id="TR_UPDATE_MODAL_START_DOWNLOAD" />
+                    </Button>
+                </>
+            }
         >
             <GreenH2>
                 <Translation
@@ -148,21 +157,6 @@ const Available = ({ hideWindow, latest }: AvailableProps) => {
                     <FormattedDate value={latest?.releaseDate} date />
                 </DateWrapper>
             </GithubWrapper>
-
-            <Divider />
-
-            <Row>
-                <LeftCol>
-                    <Button onClick={hideWindow} variant="secondary" fullWidth>
-                        <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
-                    </Button>
-                </LeftCol>
-                <RightCol>
-                    <Button onClick={downloadUpdate} variant="primary" fullWidth>
-                        <Translation id="TR_UPDATE_MODAL_START_DOWNLOAD" />
-                    </Button>
-                </RightCol>
-            </Row>
         </Modal>
     );
 };
