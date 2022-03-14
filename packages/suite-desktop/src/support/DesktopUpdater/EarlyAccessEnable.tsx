@@ -5,15 +5,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, P, Tooltip } from '@trezor/components';
 import { CheckItem, Translation, Modal, Image } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
-import {
-    ImageWrapper,
-    ButtonWrapper,
-    Description,
-    Divider,
-    LeftCol,
-    RightCol,
-    Title,
-} from './styles';
+import { ImageWrapper, Description, Divider, Title } from './styles';
 
 const DescriptionWrapper = styled.div`
     display: flex;
@@ -64,19 +56,9 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
     }, [analytics]);
 
     return enabled ? (
-        <Modal>
-            <ImageWrapper>
-                <Image image="UNI_SUCCESS" />
-            </ImageWrapper>
-            <Title>
-                <Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />
-            </Title>
-            <Description>
-                <Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />
-            </Description>
-
-            <ButtonWrapper>
-                <LeftCol>
+        <Modal
+            bottomBar={
+                <>
                     <Button
                         onClick={() => {
                             analytics.report({
@@ -92,16 +74,40 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
                     >
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
                     </Button>
-                </LeftCol>
-                <RightCol>
                     <Button onClick={checkForUpdates} fullWidth>
                         <Translation id="TR_EARLY_ACCESS_CHECK_UPDATE" />
                     </Button>
-                </RightCol>
-            </ButtonWrapper>
+                </>
+            }
+        >
+            <ImageWrapper>
+                <Image image="UNI_SUCCESS" />
+            </ImageWrapper>
+            <Title>
+                <Translation id="TR_EARLY_ACCESS_JOINED_TITLE" />
+            </Title>
+            <Description>
+                <Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />
+            </Description>
         </Modal>
     ) : (
-        <Modal heading={<Translation id="TR_EARLY_ACCESS" />} cancelable onCancel={hideWindow}>
+        <Modal
+            heading={<Translation id="TR_EARLY_ACCESS" />}
+            cancelable
+            onCancel={hideWindow}
+            bottomBar={
+                <Tooltip
+                    maxWidth={285}
+                    content={
+                        !understood && <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP" />
+                    }
+                >
+                    <Button onClick={allowPrerelease} isDisabled={!understood}>
+                        <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM" />
+                    </Button>
+                </Tooltip>
+            }
+        >
             <DescriptionWrapper>
                 <Image width={60} height={60} image="EARLY_ACCESS" />
                 <DescriptionTextWrapper>
@@ -125,19 +131,6 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
                 isChecked={understood}
                 onClick={() => setUnderstood(!understood)}
             />
-
-            <ButtonWrapper>
-                <Tooltip
-                    maxWidth={285}
-                    content={
-                        !understood && <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP" />
-                    }
-                >
-                    <Button onClick={allowPrerelease} isDisabled={!understood}>
-                        <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM" />
-                    </Button>
-                </Tooltip>
-            </ButtonWrapper>
         </Modal>
     );
 };
