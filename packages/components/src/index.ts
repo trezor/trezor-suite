@@ -27,6 +27,7 @@ export * from './components/others/Card';
 export * from './components/others/SecurityCard';
 export * from './components/prompts/ConfirmOnDevice';
 export * from './components/Modal';
+export * from './components/Modal/Backdrop';
 export * from './components/logos/CoinLogo';
 export * from './components/logos/TrezorLogo';
 export * from './components/loaders/Loader';
