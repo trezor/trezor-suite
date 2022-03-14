@@ -201,7 +201,7 @@ export const useWatchSavingsTrade = (account: Account, trade: TradeSavings) => {
                     const tradeData = {
                         ...trade.data,
                         status: response.savingsTradeItem?.status || 'Error',
-                        error: response.error,
+                        error: response.errorMessage,
                     };
                     saveTrade(tradeData, account, newDate);
                 }

@@ -8,6 +8,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import type { Account } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { getFormDraftKey } from '@wallet-utils/formDraftUtils';
+import { submitRequestForm } from '@suite-utils/env';
 
 const navigateToRouteName = (routeName: Route['name'], account: Account) =>
     routerActions.goto(routeName, {
@@ -28,9 +29,9 @@ const coinmarketSavingsMiddleware =
             const { selectedProvider, savingsInfo } = api.getState().wallet.coinmarket.savings;
             const { formDrafts } = api.getState().wallet;
             if (status === 'loaded' && account && selectedProvider) {
+                const { flow, supportedCountries } = selectedProvider;
                 const isClientFromSupportedCountry =
-                    savingsInfo &&
-                    selectedProvider.supportedCountries.includes(savingsInfo?.country);
+                    savingsInfo && supportedCountries.includes(savingsInfo?.country);
                 const unsupportedCountryFormDraft = formDrafts[
                     getFormDraftKey('coinmarket-savings-unsupported-country', account.descriptor)
                 ] as { country: string } | undefined;
@@ -52,6 +53,23 @@ const coinmarketSavingsMiddleware =
                     next(action);
                     return action;
                 }
+
+                if (flow.afterLogin.isEnabled) {
+                    invityAPI.getAfterLogin(selectedProvider.name).then(result => {
+                        if (result.form) {
+                            const { formMethod, formAction, fields } = result.form;
+                            submitRequestForm(formMethod, formAction, fields);
+                        } else {
+                            // TODO: Need to decide where to navigate user.
+                            api.dispatch(navigateToRouteName('wallet-coinmarket-savings', account));
+                            next(action);
+                            return action;
+                        }
+                    });
+                    next(action);
+                    return action;
+                }
+
                 const userInfoRequired =
                     !!invityAuthentication.accountInfo?.settings &&
                     (!invityAuthentication.accountInfo.settings.givenName ||
@@ -83,10 +101,7 @@ const coinmarketSavingsMiddleware =
                     invityAPI
                         .getSavingsTrade(action.exchangeName)
                         .then(response => {
-                            if (
-                                response?.trade &&
-                                (!response.trade.errors || response.trade.errors.length === 0)
-                            ) {
+                            if (response?.trade && !response.errorCode && !response.errorMessage) {
                                 api.dispatch(
                                     coinmarketSavingsActions.saveSavingsTradeResponse(response),
                                 );
@@ -155,15 +170,12 @@ const coinmarketSavingsMiddleware =
                                 next(action);
                                 return action;
                             }
-                            if (response?.trade?.errors && response.trade.errors.length > 0) {
-                                // TODO: Fix error message resp. codes
-                                if (response.trade.errors[0] === 'Savings transaction not found.') {
-                                    api.dispatch(
-                                        navigateToRouteName('wallet-invity-kyc-start', account),
-                                    );
-                                    next(action);
-                                    return action;
-                                }
+                            if (response?.errorCode === 'SavingsTransactionNotFound') {
+                                api.dispatch(
+                                    navigateToRouteName('wallet-invity-kyc-start', account),
+                                );
+                                next(action);
+                                return action;
                             }
                         })
                         .catch(error => {
@@ -190,8 +202,7 @@ const coinmarketSavingsMiddleware =
                         () =>
                             invityAPI.watchKYCStatus(selectedProvider.name).then(result => {
                                 if (
-                                    result &&
-                                    result.status === 'Success' &&
+                                    result?.kycStatus &&
                                     ['Failed', 'Verified'].includes(result.kycStatus)
                                 ) {
                                     api.dispatch(pollingActions.stopPolling(pollingKey));
@@ -232,6 +243,16 @@ const coinmarketSavingsMiddleware =
                         5_000,
                     ),
                 );
+            }
+        }
+
+        if (action.type === COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS) {
+            const { account, status } = api.getState().wallet.selectedAccount;
+            const { selectedProvider } = api.getState().wallet.coinmarket.savings;
+
+            if (account && status === 'loaded' && selectedProvider) {
+                const pollingKey = `coinmarket-savings-kyc/${account.descriptor}` as const;
+                api.dispatch(pollingActions.stopPolling(pollingKey));
             }
         }
 

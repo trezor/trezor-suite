@@ -45,10 +45,9 @@ import { InvityAuthenticationThemeKey } from '@wallet-constants/coinmarket/metad
 
 /** BEGIN: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 export type SavingsPaymentMethod = 'bankTransfer';
-
 export interface SavingsErrorResponse {
-    status: 'Error';
-    errors: string[];
+    errorCode?: string;
+    errorMessage?: string;
 }
 
 // starts after login to invity account
@@ -109,7 +108,9 @@ type SavingsStepParameters = SavingsStepEnabled & {
     receivingAddressCount: number;
 };
 
-interface SavingsProviderFlow {
+type SavingsStepPaymentInfo = SavingsStepEnabled;
+
+export interface SavingsProviderFlow {
     /** Defines what should happend after login. */
     afterLogin: SavingsStepAfterLogin;
     credentials: SavingsStepCredentials;
@@ -119,6 +120,7 @@ interface SavingsProviderFlow {
     bankAccount: SavingsStepBankAccount;
     cryptoWalletVerification: SavingsStepCryptoWalletVerification;
     parameters: SavingsStepParameters;
+    paymentInfo: SavingsStepPaymentInfo;
 }
 
 export interface SavingsProviderInfo {
@@ -165,9 +167,11 @@ export interface SavingsProviderInfo {
     setupPaymentAmounts: string[];
 
     minimumPaymentAmountLimit: number;
+
     maximumPaymentAmountLimit: number;
 
     defaultPaymentFrequency: PaymentFrequency;
+
     defaultPaymentAmount: number;
 }
 
@@ -272,9 +276,6 @@ export interface SavingsTrade {
     kycStatus?: SavingsKYCStatus;
     amlStatus?: SavingsAMLStatus;
 
-    // TODO: Errors must be at SavingsTradeResponse!
-    errors?: string[];
-
     /** Customer's bank account from which payments should be paid to receive crypto. */
     bankAccount?: BankAccount;
 
@@ -327,8 +328,19 @@ export interface SavingsTradeRequest {
     trade: SavingsTrade;
 }
 
-export interface SavingsTradeResponse {
-    trade: SavingsTrade;
+export interface SavingsTradeErrorResponse extends SavingsErrorResponse {
+    errorCode?:
+        | 'AppIDRequired'
+        | 'ExchangeNotFound'
+        | 'SavingsTradeCountryRequired'
+        | 'SavingsTransactionNotFound'
+        | 'GetUserInfoFailed'
+        | 'FlowStepDisabled'
+        | 'UnknownStatus';
+}
+
+export interface SavingsTradeResponse extends SavingsTradeErrorResponse {
+    trade?: SavingsTrade;
 
     /** Payments in savings plan. */
     payments?: SavingsTradePlannedPayment[];
@@ -339,12 +351,7 @@ export interface SavingsKYCInfoSuccessResponse {
     documentTypes: SavingsTradeUserKYCStartDocumentType[];
 }
 
-export interface SavingsKYCInfoErrorResponse {
-    status: 'Error';
-    errors: string[];
-}
-
-export type SavingsKYCInfoResponse = SavingsKYCInfoSuccessResponse | SavingsKYCInfoErrorResponse;
+export type SavingsKYCInfoResponse = SavingsKYCInfoSuccessResponse | SavingsErrorResponse;
 
 export interface SavingsTradeAMLAnswer {
     key: string;
@@ -361,13 +368,11 @@ export interface SavingsAMLAnswersSuccessResponse {
 export type SavingsAMLAnswersResponse = SavingsAMLAnswersSuccessResponse | SavingsErrorResponse;
 
 export interface SavingsTradeKYCStatusSuccessfulResponse {
-    status: 'Success';
-    kycStatus: SavingsKYCStatus;
+    kycStatus?: SavingsKYCStatus;
 }
 
-export type SavingsTradeKYCStatusResponse =
-    | SavingsTradeKYCStatusSuccessfulResponse
-    | SavingsErrorResponse;
+export type SavingsTradeKYCStatusResponse = SavingsTradeKYCStatusSuccessfulResponse &
+    SavingsErrorResponse;
 
 // TODO: cleanup
 export type SavingsTradeItemStatus =
@@ -391,6 +396,31 @@ export interface SavingsTradeItem {
     paymentMethod: SavingsPaymentMethod;
     created: string;
 }
+
+export interface WatchSavingTradeItemErrorResponse extends SavingsErrorResponse {
+    errorCode?:
+        | 'SavingsTradeItemIdRequired'
+        | 'SavingsTradeItemNotFound'
+        | 'AppIDRequired'
+        | 'ExchangeNotFound'
+        | 'SavingsTransactionNotFound';
+}
+
+export interface WatchSavingTradeItemResponse extends WatchSavingTradeItemErrorResponse {
+    savingsTradeItem?: SavingsTradeItem;
+}
+
+export interface AfterLoginErrorResponse extends SavingsErrorResponse {
+    errorCode?: 'ReturnUrlRequiredOnAfterLogin' | 'ExchangeNotFound' | 'AfterLoginFailed';
+}
+export interface AfterLoginResponse extends AfterLoginErrorResponse {
+    form?: {
+        formMethod: 'GET';
+        formAction: string;
+        fields: Record<string, string>;
+    };
+}
+
 export interface VerifySmsCodeRequest {
     code: string;
 }
@@ -399,16 +429,26 @@ export interface VerifySmsCodeSuccessResponse {
     status: 'Verified';
 }
 
-export interface VerifySmsCodeErrorResponse {
-    status: 'Error';
-    error: string;
+export interface VerifySmsCodeInvalidResponse {
+    status: 'VerificationCodeInvalid';
 }
 
-export type VerifySmsCodeResponse = VerifySmsCodeSuccessResponse | VerifySmsCodeErrorResponse;
+export interface VerifySmsCodeErrorResponse {
+    status: 'Error';
+    // InternalError masks the real error.
+    errorCode: 'VerificationCodeRequired' | 'InternalError';
+    errorMessage: string;
+}
+
+export type VerifySmsCodeResponse =
+    | VerifySmsCodeSuccessResponse
+    | VerifySmsCodeInvalidResponse
+    | VerifySmsCodeErrorResponse;
 
 export interface SendVerificationSmsErrorResponse {
     status: 'Error';
-    error: string;
+    errorCode: 'InternalError';
+    errorMessage: string;
 }
 
 export interface SendVerificationSmsSuccessResponse {
@@ -418,11 +458,6 @@ export interface SendVerificationSmsSuccessResponse {
 export type SendVerificationSmsResponse =
     | SendVerificationSmsSuccessResponse
     | SendVerificationSmsErrorResponse;
-
-export interface WatchSavingTradeItemResponse {
-    savingsTradeItem?: SavingsTradeItem;
-    error?: string;
-}
 
 /** END: TEMPORARILY PLACED TYPES - Will be moved to @types/invity-api */
 
@@ -509,7 +544,8 @@ class InvityAPI {
     private SAVINGS_LIST = '/savings/list';
     private SAVINGS_TRADE = '/account/savings/trade';
     private SAVINGS_WATCH_TRADE = '/account/savings/watch';
-    private WATCH_KYC = '/account/savings/watch-kyc';
+    private SAVINGS_WATCH_KYC = '/account/savings/watch-kyc';
+    private SAVINGS_AFTER_LOGIN = '/account/savings/after-login';
 
     private ACCOUNT_INFO = '/account/info';
     private ACCOUNT_SETTINGS = '/account/settings';
@@ -911,7 +947,7 @@ class InvityAPI {
             return response;
         } catch (error) {
             console.log('[watchSavingsTrade]', error);
-            return { error: error.toString() };
+            return { errorMessage: error.toString() };
         } finally {
             this.setProtectedAPI(false);
         }
@@ -1008,7 +1044,7 @@ class InvityAPI {
     ): Promise<SavingsTradeKYCStatusResponse | undefined> => {
         this.setProtectedAPI(true);
         try {
-            return await this.requestApiServer(`${this.WATCH_KYC}/${exchange}`, {}, 'GET');
+            return await this.requestApiServer(`${this.SAVINGS_WATCH_KYC}/${exchange}`, {}, 'GET');
         } catch (error) {
             console.log('[watchKYCStatus]', error);
         } finally {
@@ -1124,6 +1160,24 @@ class InvityAPI {
         } catch (error) {
             console.log('[accountInfo]', error);
             return { error: error.toString() };
+        }
+    };
+
+    getAfterLogin = async (exchangeName: string): Promise<AfterLoginResponse> => {
+        this.setProtectedAPI(true);
+        try {
+            return await this.requestApiServer(
+                `${this.SAVINGS_AFTER_LOGIN}/${exchangeName}?returnUrl=${encodeURIComponent(
+                    'https://TODO:8000',
+                )}`,
+                {},
+                'GET',
+            );
+        } catch (error) {
+            console.log('[getAfterLogin]', error);
+            return { errorMessage: error.toString() };
+        } finally {
+            this.setProtectedAPI(false);
         }
     };
 }

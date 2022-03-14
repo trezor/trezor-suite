@@ -28,8 +28,11 @@ const pollingMiddleware =
         }
 
         if (action.type === POLLING.STOP) {
-            clearTimeout(pollingTimeoutIds[action.key]);
-            delete pollingTimeoutIds[action.key];
+            const timeoutId = pollingTimeoutIds[action.key];
+            if (timeoutId) {
+                window.clearTimeout(pollingTimeoutIds[action.key]);
+                delete pollingTimeoutIds[action.key];
+            }
         }
 
         return action;

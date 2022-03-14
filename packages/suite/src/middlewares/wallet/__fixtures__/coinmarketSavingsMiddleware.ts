@@ -82,5 +82,8 @@ export const SELECTED_PROVIDER: SavingsProviderInfo = {
         phoneVerification: {
             isEnabled: false,
         },
+        paymentInfo: {
+            isEnabled: false,
+        },
     },
 };

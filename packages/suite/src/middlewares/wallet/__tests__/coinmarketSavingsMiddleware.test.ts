@@ -361,7 +361,6 @@ describe('coinmarketSavingsMiddleware', () => {
             {
                 trade: {
                     exchange: 'FAKE',
-                    errors: ['FAKE_ERROR'],
                 },
             },
         ];

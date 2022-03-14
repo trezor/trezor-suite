@@ -46,8 +46,10 @@ export const useSavingsAML = ({ selectedAccount }: UseSavingsAMLProps): SavingsA
                     },
                 };
                 const response = await invityAPI.doSavingsTrade(savingsTradeRequest);
-                if (!response?.trade.errors) {
+                if (!response?.errorMessage) {
                     navigateToSavingsSetup();
+                } else {
+                    // TODO: show error
                 }
             }
             setIsSubmitting(false);

@@ -43,15 +43,11 @@ export const useSavingsPhoneNumberVerification = ({
         const code = Object.values(fieldValues).join('');
         const response = await invityAPI.verifySmsCode(code);
         if (response) {
-            // TODO: Conditions has to be based on errorCode instead of error.
-            if (
-                response.status === 'Verified' ||
-                response.error === 'Account phone number already verified.'
-            ) {
+            if (response.status === 'Verified') {
                 navigateToInvityKYCStart();
                 return;
             }
-            if (response.error === 'Verification code is invalid.') {
+            if (response.status === 'VerificationCodeInvalid') {
                 setError('codeDigitIndex0', {
                     message: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_INVALID',
                 });
