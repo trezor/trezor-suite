@@ -57,7 +57,7 @@ export default {
                 blockHeight: 1,
                 blockHash: 'test_block_hash-hash',
                 decimals: 6,
-                name: 'Cardano',
+                name: 'Blockfrost',
                 shortcut: 'ada',
                 testnet: false,
                 version: '1.4.0',

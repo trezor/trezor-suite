@@ -1,7 +1,7 @@
 {
     "GET_SERVER_INFO": {
         "data": {
-            "name": "Cardano",
+            "name": "Blockfrost",
             "shortcut": "ada",
             "decimals": 6,
             "testnet": false,

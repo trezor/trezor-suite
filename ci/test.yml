@@ -177,7 +177,12 @@ transport manual:
     - yarn workspace @trezor/utxo-lib build:lib
     - yarn workspace @trezor/blockchain-link build:lib
     - yarn workspace @trezor/blockchain-link build:workers
-    - docker-compose up
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix electrum-regtest
+    - docker-compose run test-run
+  after_script:
+    - docker-compose down
+    - docker network prune -f
 
 blockchain-link:
   extends: .e2e blockchain-link
