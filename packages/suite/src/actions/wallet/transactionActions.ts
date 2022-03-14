@@ -4,7 +4,6 @@ import { getAccountTransactions, formatNetworkAmount } from '@wallet-utils/accou
 import { enhanceTransaction, findTransactions } from '@wallet-utils/transactionUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
-import { SETTINGS } from '@suite-config';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
@@ -126,13 +125,13 @@ export const replaceTransaction =
     };
 
 export const fetchTransactions =
-    (account: Account, page: number, perPage?: number, noLoading = false, recursive = false) =>
+    (account: Account, page: number, perPage: number, noLoading = false, recursive = false) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { transactions } = getState().wallet.transactions;
         const reducerTxs = getAccountTransactions(transactions, account);
 
-        const startIndex = (page - 1) * (perPage || SETTINGS.TXS_PER_PAGE);
-        const stopIndex = startIndex + (perPage || SETTINGS.TXS_PER_PAGE);
+        const startIndex = (page - 1) * perPage;
+        const stopIndex = startIndex + perPage;
         const txsForPage = reducerTxs.slice(startIndex, stopIndex).filter(tx => !!tx.txid); // filter out "empty" values
 
         // we already got txs for the page in reducer
@@ -167,6 +166,8 @@ export const fetchTransactions =
             const updatedAccount = accountActions.update(account, result.payload)
                 .payload as Account;
             const transactions = result.payload.history.transactions || [];
+            const totalPages = result.payload.page?.total || 0;
+
             dispatch({
                 type: TRANSACTION.FETCH_SUCCESS,
             });
@@ -174,7 +175,7 @@ export const fetchTransactions =
             // updates the marker/page object for the account
             dispatch(accountActions.update(account, result.payload));
 
-            if (recursive && transactions.length === (perPage || SETTINGS.TXS_PER_PAGE)) {
+            if (recursive && page < totalPages) {
                 await dispatch(
                     fetchTransactions(updatedAccount, page + 1, perPage, noLoading, true),
                 );

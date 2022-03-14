@@ -86,18 +86,15 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
         setSelectedPage(startPage);
     }, [account.descriptor, account.symbol, startPage]);
 
-    const { size, total } = {
-        size: perPage,
-        total: isSearching
-            ? Math.ceil(searchedTransactions.length / perPage)
-            : account?.page?.total ?? 1,
-    };
+    const total = isSearching
+        ? Math.ceil(searchedTransactions.length / perPage)
+        : account?.page?.total ?? 1;
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
 
         if (!isSearching) {
-            fetchTransactions(account, page, size);
+            fetchTransactions(account, page, perPage);
         }
 
         if (ref.current) {
