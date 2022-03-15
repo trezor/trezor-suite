@@ -51,6 +51,7 @@ const getPublicKey = [
                 },
                 next: 'button.confirm >> visible=true',
             },
+            followDevice,
         ],
     },
 ];
@@ -346,6 +347,56 @@ const ethereumGetAddress = [
     },
 ];
 
+const ethereumSignMessage = [
+    {
+        ...signMessage[0],
+        url: 'ethereumSignMessage',
+        method: 'ethereumSignMessage',
+    },
+];
+
+const ethereumVerifyMessage = [
+    {
+        ...verifyMessage[0],
+        url: 'ethereumVerifyMessage',
+        method: 'ethereumVerifyMessage',
+    },
+];
+
+const ethereumSignTypedData = [
+    {
+        url: 'ethereumSignTypedData',
+        method: 'ethereumSignTypedData',
+        device: initializedDevice,
+        views: [
+            {
+                selector: '.info-panel',
+                screenshot: {
+                    name: 'sign-message',
+                },
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+            {
+                selector: '.info-panel',
+                screenshot: {
+                    name: 'sign-message',
+                },
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+            {
+                selector: '.info-panel',
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+        ],
+    },
+];
+
 const cardanoGetPublicKey = [
     {
         ...getPublicKey[0],
@@ -363,6 +414,14 @@ const cardanoGetAddress = [
                 'addr1q9hsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrqhtk02t',
             ),
         ],
+    },
+];
+
+const cardanoGetNativeScriptHash = [
+    {
+        url: 'cardanoGetNativeScriptHash',
+        device: initializedDevice,
+        views: [followDevice, followDevice],
     },
 ];
 
@@ -393,14 +452,6 @@ const eosGetPublicKey = [
     },
 ];
 
-const eosGetAddress = [
-    {
-        ...getAddress[0],
-        url: 'eosGetAddress',
-        views: [confirmExportAddressScreen, getConfirmAddressOnDeviceScreen('meow')],
-    },
-];
-
 const binanceGetPublicKey = [
     {
         ...getPublicKey[0],
@@ -420,6 +471,41 @@ const binanceGetAddress = [
     },
 ];
 
+const stellarGetAddress = [
+    {
+        ...getAddress[0],
+        url: 'stellarGetAddress',
+        views: [
+            confirmExportAddressScreen,
+            getConfirmAddressOnDeviceScreen(
+                'GAK5MSF74TJW6GLM7NLTL76YZJKM2S4CGP3UH4REJHPHZ4YBZW2GSBPW',
+            ),
+        ],
+    },
+];
+
+const rippleGetAddress = [
+    {
+        ...getAddress[0],
+        url: 'rippleGetAddress',
+        views: [
+            confirmExportAddressScreen,
+            getConfirmAddressOnDeviceScreen('rh5ZnEVySAy7oGd3nebT3wrohGDrsNS83E'),
+        ],
+    },
+];
+
+const nemGetAddress = [
+    {
+        ...getAddress[0],
+        url: 'nemGetAddress',
+        views: [
+            confirmExportAddressScreen,
+            getConfirmAddressOnDeviceScreen('ND7FI2VK7ZRCPDRUII62XL567V72IPO5CALURY6D'),
+        ],
+    },
+];
+
 const fixtures = [
     ...getPublicKey,
     ...getAddress,
@@ -434,18 +520,20 @@ const fixtures = [
     // ...resetDevice,
     ...ethereumGetPublicKey,
     ...ethereumGetAddress,
+    ...ethereumSignMessage,
+    ...ethereumVerifyMessage,
+    ...ethereumSignTypedData,
     ...cardanoGetPublicKey,
     ...cardanoGetAddress,
-    // todo: unify tezosGetPublicKey with other getPublicKey calls (show on device)
+    ...cardanoGetNativeScriptHash,
     ...tezosGetPublicKey,
     ...tezosGetAddress,
-    // todo: unify eosGetPublicKey with other getPublicKey calls (show on device)
     ...eosGetPublicKey,
-    // todo: missing in connect-explorer
-    // ...eosGetAddress,
-    // todo: unify binanceGetPublicKey with other getPublicKey calls (show on device)
     ...binanceGetPublicKey,
     ...binanceGetAddress,
+    ...stellarGetAddress,
+    ...rippleGetAddress,
+    ...nemGetAddress,
 ];
 
 module.exports = fixtures;
