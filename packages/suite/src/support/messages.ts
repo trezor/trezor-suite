@@ -3455,6 +3455,10 @@ export default defineMessages({
         id: 'TR_DEVICE_IN_RECOVERY_MODE',
         defaultMessage: 'Your device is in recovery mode.',
     },
+    TR_DEVICE_IN_RECOVERY_MODE_DESC: {
+        id: 'TR_DEVICE_IN_RECOVERY_MODE_DESC',
+        defaultMessage: 'This device is in recovery mode. Click the button to continue.',
+    },
     TR_SUITE_STORAGE: {
         id: 'TR_SUITE_STORAGE',
         defaultMessage: 'App storage',
