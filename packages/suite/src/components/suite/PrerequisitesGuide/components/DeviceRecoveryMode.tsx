@@ -39,8 +39,7 @@ const DeviceRecoveryMode = () => {
                     {
                         key: 'recovery-mode',
                         heading: <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />,
-                        description:
-                            'This device is in recovery mode. Click the button to continue.',
+                        description: <Translation id="TR_DEVICE_IN_RECOVERY_MODE_DESC" />,
                     },
                 ]}
             />
