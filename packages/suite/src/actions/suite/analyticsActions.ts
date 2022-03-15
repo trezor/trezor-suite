@@ -72,6 +72,9 @@ export type AnalyticsEvent =
               windowHeight: number;
               // added in 1.9
               platformLanguages: string;
+              // added in 1.17
+              autodetectLanguage: boolean;
+              autodetectTheme: boolean;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
@@ -325,7 +328,21 @@ export type AnalyticsEvent =
     | {
           type: 'settings/general/change-language';
           payload: {
+              previousLanguage: AppState['suite']['settings']['language'];
+              previousAutodetectLanguage: boolean;
               language: AppState['suite']['settings']['language'];
+              autodetectLanguage: boolean;
+              platformLanguages: string;
+          };
+      }
+    | {
+          type: 'settings/general/change-theme';
+          payload: {
+              previousTheme: AppState['suite']['settings']['theme']['variant'];
+              previousAutodetectTheme: boolean;
+              theme: AppState['suite']['settings']['theme']['variant'];
+              autodetectTheme: boolean;
+              platformTheme: AppState['suite']['settings']['theme']['variant'];
           };
       }
     | {

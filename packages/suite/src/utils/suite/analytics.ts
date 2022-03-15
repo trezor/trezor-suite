@@ -74,6 +74,8 @@ export const reportSuiteReadyAction = (state: AppState) =>
             osVersion: getOsVersion(),
             windowWidth: getWindowWidth(),
             windowHeight: getWindowHeight(),
+            autodetectLanguage: state.suite.settings.autodetect.language,
+            autodetectTheme: state.suite.settings.autodetect.theme,
         },
     });
 
