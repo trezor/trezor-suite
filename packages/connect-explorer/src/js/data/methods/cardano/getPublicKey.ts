@@ -13,7 +13,6 @@ const batch = [
         name: 'showOnTrezor',
         label: 'Show on Trezor',
         type: 'checkbox',
-        defaultValue: true,
         value: true,
     },
     cardanoDerivationType,
