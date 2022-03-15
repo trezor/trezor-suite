@@ -95,6 +95,11 @@ const config: webpack.Configuration = {
     experiments: {
         asyncWebAssembly: true,
     },
+    ignoreWarnings: [
+        {
+            module: /cardano-serialization-lib-browser/, // see the comment above `experiments`
+        },
+    ],
     module: {
         rules: [
             // TypeScript/JavaScript
