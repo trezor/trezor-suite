@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react';
+
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
+import { useActions, useSelector, useTranslation, useAnalytics } from '@suite-hooks';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { getOsTheme } from '@suite-utils/env';
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();
@@ -43,6 +45,7 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
+    const analytics = useAnalytics();
     const { theme, autodetectTheme } = useSelector(state => ({
         theme: state.suite.settings.theme,
         autodetectTheme: state.suite.settings.autodetect.theme,
@@ -58,6 +61,17 @@ export const Theme = () => {
     const selectedValue = getOption(autodetectTheme ? 'system' : theme.variant);
 
     const onChange = ({ value }: { value: SuiteThemeVariant }) => {
+        const platformTheme = getOsTheme();
+        analytics.report({
+            type: 'settings/general/change-theme',
+            payload: {
+                platformTheme,
+                previousTheme: theme.variant,
+                previousAutodetectTheme: autodetectTheme,
+                theme: value === 'system' ? platformTheme : value,
+                autodetectTheme: value === 'system',
+            },
+        });
         if ((value === 'system') !== autodetectTheme) {
             setAutodetect({ theme: !autodetectTheme });
         }
