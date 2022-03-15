@@ -1,3 +1,11 @@
+# 2.1.2
+
+#### changes
+
+-   throttling of block events (#5093)
+-   backend selection refactoring (#5047)
+-   set proxyAgent protocol to satisfy sentry wrapper (#5033)
+
 # 2.1.1
 
 #### changes
