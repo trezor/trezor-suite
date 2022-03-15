@@ -135,8 +135,6 @@
   "SEND_RAW_TRANSACTION": "Enviar transacción en bruto",
   "SEND_RAW_TRANSACTION_TOOLTIP": "Puedes proporcionar todos los datos en bruto para tu transacción por ti mismo.",
   "SEND_TRANSACTION": "Enviar",
-  "SETTINGS_ADV_CARDANO_DERIVATION_DESCRIPTION": "Descripción del tipo de derivación de Cardano",
-  "SETTINGS_ADV_CARDANO_DERIVATION_TITLE": "Tipo de derivación de Cardano",
   "SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION": "Trezor Suite utiliza Blockbook para el backend de la cartera. También puede utilizar su propio blockbook personalizado.",
   "SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH": "Hash del bloque: {hash}",
   "SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT": "Tamaño del bloque: {height}",

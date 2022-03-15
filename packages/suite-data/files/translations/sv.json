@@ -50,6 +50,8 @@
   "TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR": "Trezor Suite erbjuder nya funktioner, förbättrad säkerhet och ett mer intuitivt användargränssnitt.",
   "TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_0": "Trezor Suite ersätter Trezor Wallet",
   "TR_SUITE_WEB_LANDING_DEPRECATION_BANNER_HEADLINE_1": "Vad är nytt i Trezor Suite?",
+  "TR_TOR_DISABLE": "Inaktivera Tor",
+  "TR_TOR_ENABLE": "Aktivera Tor",
   "TR_TRANSACTIONS": "Transaktioner",
   "TR_TREZOR": "Trezor",
   "TR_TRY_AGAIN": "Försök igen",

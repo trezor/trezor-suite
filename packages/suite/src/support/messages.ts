@@ -1354,7 +1354,7 @@ export default defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            'Your Trezor will generate a list of words which you need write down. This information is the most important part of securing your Trezor: it is the only offline backup of your Trezor and all wallets associated with it.',
+            'Your Trezor will generate a list of words which you need to write down. This information is the most important part of securing your Trezor: it is the only offline backup of your Trezor and all wallets associated with it.',
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
@@ -6360,7 +6360,7 @@ export default defineMessages({
     TR_RECEIVING_SYMBOL: {
         id: 'TR_RECEIVING_SYMBOL',
         defaultMessage:
-            'Received {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}}',
+            'Receiving {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}}',
     },
     TR_RECEIVED_SYMBOL: {
         id: 'TR_RECEIVED_SYMBOL',
