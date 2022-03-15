@@ -81,6 +81,16 @@ const init = async () => {
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
     });
 
+    const interceptor = createInterceptor();
+
+    // Modules
+    await loadModules({
+        mainWindow,
+        src,
+        store,
+        interceptor,
+    });
+
     // Load page
     logger.debug('init', `Load URL (${src})`);
     mainWindow.loadURL(src);
@@ -100,16 +110,6 @@ const init = async () => {
         if (resizeDebounce) {
             clearTimeout(resizeDebounce);
         }
-    });
-
-    const interceptor = createInterceptor();
-
-    // Modules
-    await loadModules({
-        mainWindow,
-        src,
-        store,
-        interceptor,
     });
 };
 
