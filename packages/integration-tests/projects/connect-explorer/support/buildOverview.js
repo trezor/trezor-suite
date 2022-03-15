@@ -42,7 +42,7 @@ const buildOverview = ({ emuScreenshots }) => {
             const screenshotPath = `${CI_JOB_URL}/${urlPath}/${screenshot}`;
             html += `
                 <div>
-                    <div>${screenshot}</div>
+                    <div>${methodName}/${screenshot}</div>
                     <img src="${screenshotPath.replace(
                         '/projects/connect-explorer',
                         '/artifacts/raw/packages/integration-tests/projects/connect-explorer',
