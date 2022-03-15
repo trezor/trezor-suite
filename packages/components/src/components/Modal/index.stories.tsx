@@ -1,24 +1,30 @@
 import React from 'react';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { ConfirmOnDevice, Modal, Backdrop, Button, THEME } from '../../index';
 import { text, boolean, number, select } from '@storybook/addon-knobs';
 
+const StyledButton = styled(Button)<{ flex: boolean }>`
+    ${({ flex }) => flex && 'flex: 1;'}
+`;
+
 const Buttons = ({
     count,
     fullWidth,
+    flex,
     prefix,
 }: {
     count: number;
     fullWidth: boolean;
+    flex: boolean;
     prefix: string;
 }) => (
     <>
         {new Array(count).fill(undefined).map((_a, i) => (
             // eslint-disable-next-line react/no-array-index-key
-            <Button key={i} fullWidth={fullWidth} variant="primary">
+            <StyledButton key={i} fullWidth={fullWidth} flex={flex} variant="primary">
                 {prefix} {i}
-            </Button>
+            </StyledButton>
         ))}
     </>
 );
@@ -41,6 +47,7 @@ storiesOf('Modals', module)
         const bottomBarButtonCount = number('Button count', 0, undefined, 'Bottom bar');
         const bottomBarButtonPrefix = text('Button text', 'Button', 'Bottom bar');
         const bottomBarButtonFullWidth = boolean('Full-width buttons', false, 'Bottom bar');
+        const bottomBarButtonFlex = boolean('Flex buttons', false, 'Bottom bar');
 
         return (
             <>
@@ -55,6 +62,7 @@ storiesOf('Modals', module)
                                 prefix={bottomBarButtonPrefix}
                                 count={bottomBarButtonCount}
                                 fullWidth={bottomBarButtonFullWidth}
+                                flex={bottomBarButtonFlex}
                             />
                         ) : undefined
                     }

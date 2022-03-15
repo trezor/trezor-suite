@@ -63,11 +63,10 @@ const Content = styled.div`
 
 const BottomBar = styled.div`
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     padding: 0 32px 32px;
-    > * + * {
-        margin-left: 16px;
-    }
+    gap: 16px;
 `;
 
 const ModalWindow = styled.div`

@@ -11,13 +11,6 @@ type Props = {
     duplicate: TrezorDevice;
 };
 
-const Actions = styled.div`
-    width: 100%;
-    button + button {
-        margin-top: 8px;
-    }
-`;
-
 const StyledImage = styled(Image)`
     margin: 24px 0px;
 `;
@@ -27,6 +20,11 @@ const StyledModal = styled(Modal)`
     ${Modal.Content} {
         justify-content: center;
         align-items: center;
+    }
+    ${Modal.BottomBar} {
+        > * {
+            flex: 1;
+        }
     }
 `;
 
@@ -43,12 +41,11 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
             description={<Translation id="TR_WALLET_DUPLICATE_DESC" />}
             data-test="@passphrase-duplicate"
             bottomBar={
-                <Actions>
+                <>
                     <Button
                         variant="primary"
                         onClick={() => switchDuplicatedDevice(device, duplicate)}
                         isDisabled={isDeviceLocked}
-                        fullWidth
                     >
                         <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
                     </Button>
@@ -56,11 +53,10 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
                         variant="secondary"
                         onClick={authorizeDevice}
                         isDisabled={isDeviceLocked}
-                        fullWidth
                     >
                         <Translation id="TR_WALLET_DUPLICATE_RETRY" />
                     </Button>
-                </Actions>
+                </>
             }
         >
             <StyledImage image="UNI_WARNING" width="160" />

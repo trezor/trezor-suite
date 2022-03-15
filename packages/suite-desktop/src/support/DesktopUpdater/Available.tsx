@@ -74,6 +74,14 @@ const DateWrapper = styled.span`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
+const StyledModal = styled(Modal)`
+    ${Modal.BottomBar} {
+        > * {
+            flex: 1;
+        }
+    }
+`;
+
 interface VersionNameProps {
     latestVersion?: string;
     prerelease: boolean;
@@ -112,16 +120,16 @@ const Available = ({ hideWindow, latest }: AvailableProps) => {
     }, [download]);
 
     return (
-        <Modal
+        <StyledModal
             heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
             cancelable
             onCancel={hideWindow}
             bottomBar={
                 <>
-                    <Button onClick={hideWindow} variant="secondary" fullWidth>
+                    <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_UPDATE_MODAL_NOT_NOW" />
                     </Button>
-                    <Button onClick={downloadUpdate} variant="primary" fullWidth>
+                    <Button onClick={downloadUpdate} variant="primary">
                         <Translation id="TR_UPDATE_MODAL_START_DOWNLOAD" />
                     </Button>
                 </>
@@ -157,7 +165,7 @@ const Available = ({ hideWindow, latest }: AvailableProps) => {
                     <FormattedDate value={latest?.releaseDate} date />
                 </DateWrapper>
             </GithubWrapper>
-        </Modal>
+        </StyledModal>
     );
 };
 
