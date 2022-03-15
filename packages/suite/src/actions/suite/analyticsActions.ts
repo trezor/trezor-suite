@@ -5,16 +5,18 @@
  */
 
 import { ANALYTICS } from '@suite-actions/constants';
-import { Dispatch, GetState, AppState } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { AppUpdateEvent, encodeDataToQueryString } from '@suite-utils/analytics';
-import { Account } from '@wallet-types';
 import { setOnBeforeUnloadListener, getEnvironment } from '@suite-utils/env';
 import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
 import { DeviceMode } from 'trezor-connect';
 
+import type { Dispatch, GetState, AppState } from '@suite-types';
+import type { Account } from '@wallet-types';
 import type { OnboardingAnalytics } from '@onboarding-types';
+import type { BackendOption } from '@settings-hooks/backends';
+import type { BackendSettings } from '@wallet-reducers/settingsReducer';
 
 export type AnalyticsAction =
     | { type: typeof ANALYTICS.ENABLE }
@@ -45,6 +47,7 @@ export type AnalyticsEvent =
           payload: {
               language: AppState['suite']['settings']['language'];
               enabledNetworks: AppState['wallet']['settings']['enabledNetworks'];
+              customBackends: BackendSettings['coin'][];
               localCurrency: AppState['wallet']['settings']['localCurrency'];
               discreetMode: AppState['wallet']['settings']['discreetMode'];
               screenWidth: number;
@@ -428,11 +431,12 @@ export type AnalyticsEvent =
           payload: AppUpdateEvent;
       }
     | {
+          type: 'settings/coin-backend';
           payload: {
-              fromVersion?: string;
-              toVersion?: string;
-              status: 'finished' | 'closed' | 'error';
-              version: 'stable' | 'beta';
+              symbol: Account['symbol'];
+              type: BackendOption;
+              totalRegular: number;
+              totalOnion: number;
           };
       };
 
