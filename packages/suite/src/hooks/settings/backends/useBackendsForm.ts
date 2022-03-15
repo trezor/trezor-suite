@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
+import { useActions, useSelector, useTranslation, useAnalytics } from '@suite-hooks';
 import { isUrl } from '@trezor/utils';
 import { isOnionUrl } from '@suite-utils/tor';
 import { setBackend as setBackendAction } from '@settings-actions/walletSettingsActions';
+import { getDefaultBackendType, isElectrumUrl } from '@suite-utils/backend';
+
 import type { Network } from '@wallet-types';
 import type { BackendType } from '@wallet-reducers/settingsReducer';
-import { getDefaultBackendType, isElectrumUrl } from '@suite-utils/backend';
 
 export type BackendOption = BackendType | 'default';
 
@@ -91,6 +92,7 @@ const useInitialSettings = (coin: Network['symbol']): BackendSettings => {
 };
 
 export const useBackendsForm = (coin: Network['symbol']) => {
+    const analytics = useAnalytics();
     const initial = useInitialSettings(coin);
     const [currentValues, setCurrentValues] = useState(initial);
     const { setBackend } = useActions({
@@ -133,10 +135,22 @@ export const useBackendsForm = (coin: Network['symbol']) => {
     const save = () => {
         const { type } = currentValues;
         const defaultType = getDefaultBackendType(coin);
+        const urls = type === 'default' ? [] : getUrls();
         setBackend({
             coin,
             type: type === 'default' ? defaultType : type,
-            urls: type === 'default' ? [] : getUrls(),
+            urls,
+        });
+        const totalOnion = urls.filter(isOnionUrl).length;
+
+        analytics.report({
+            type: 'settings/coin-backend',
+            payload: {
+                symbol: coin,
+                type,
+                totalRegular: urls.length - totalOnion,
+                totalOnion,
+            },
         });
     };
 

@@ -21,6 +21,8 @@ Added:
     -   customBackends: ['btc', 'eth', 'ada', ...] (array of coins with custom backend)
     -   autodetectLanguage: boolean;
     -   autodetectTheme: boolean;
+-   suite-ready
+    -   customBackends: ['btc', 'eth', 'ada', ...] (array of coins with custom backend)
 -   settings/coin-backend
     -   symbol: 'btc', 'eth', 'ada', ...
     -   type: 'default' | 'blockbook' | 'electrum' | 'ripple' | 'blockfrost'
