@@ -65,6 +65,7 @@ export const getInitialState = () => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...{ device },
+        storageLoaded: true,
     },
     wallet: {
         settings: {

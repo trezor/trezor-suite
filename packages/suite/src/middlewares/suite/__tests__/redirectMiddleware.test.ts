@@ -33,6 +33,7 @@ const getInitialState = (
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
+        storageLoaded: true,
     },
     devices: devices || [],
     router: {

@@ -64,6 +64,7 @@ export const getInitialState = (state?: InitialState) => {
         suite: {
             ...suite,
             device, // device is needed for notification/event
+            storageLoaded: true,
         },
         wallet: {
             accounts,

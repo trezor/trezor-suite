@@ -23,6 +23,7 @@ const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => (
     },
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
+        storageLoaded: true,
         ...suite,
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
@@ -256,5 +257,36 @@ describe('suite middleware', () => {
             expect(goto).toHaveBeenCalledTimes(0);
             goto.mockClear();
         });
+    });
+
+    it('throttle actions', () => {
+        const store = initStore(getInitialState(undefined, { storageLoaded: false }));
+
+        store.dispatch({ type: 'foo' });
+        store.dispatch({ type: 'bar' });
+
+        expect(store.getActions().length).toBe(0); // actions are throttled
+
+        store.dispatch({
+            type: STORAGE.LOADED,
+            payload: {
+                suite: {
+                    settings: {
+                        language: 'cs',
+                    },
+                    flags: {
+                        initialRun: false,
+                    },
+                },
+                analytics: {},
+            },
+        });
+
+        // throttled actions are dispatched after STORAGE.LOADED
+        expect(store.getActions()).toMatchObject([
+            { type: STORAGE.LOADED },
+            { type: 'foo' },
+            { type: 'bar' },
+        ]);
     });
 });

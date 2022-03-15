@@ -119,7 +119,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case STORAGE.LOADED:
                 draft.flags = action.payload.suite.flags;
                 draft.settings = action.payload.suite.settings;
-                draft.storageLoaded = action.payload.suite.storageLoaded;
+                draft.storageLoaded = true;
                 break;
 
             case SUITE.READY:

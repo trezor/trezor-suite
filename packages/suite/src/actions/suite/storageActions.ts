@@ -429,7 +429,6 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                             ...suite?.settings.debug,
                         },
                     },
-                    storageLoaded: true,
                 },
                 devices,
                 wallet: {

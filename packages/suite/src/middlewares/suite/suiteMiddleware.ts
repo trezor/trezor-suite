@@ -13,12 +13,32 @@ import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { sortByTimestamp } from '@suite-utils/device';
 
+const throttledActions: Action[] = [];
+
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     async (action: Action): Promise<Action> => {
-        const prevApp = api.getState().router.app;
-        if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
+        // this should be the first action dispatched by redux
+        if (action.type === SUITE.INIT) {
+            // pass action to reducers
+            next(action);
+            await api.dispatch(storageActions.init());
+            // load storage
+            api.dispatch(storageActions.loadStorage());
+            return action;
+        }
+
+        const prevState = api.getState();
+
+        // throttle all actions dispatched before STORAGE.LOADED
+        // prevent writing to state while the state is loading
+        if (!prevState.suite.storageLoaded && action.type !== STORAGE.LOADED) {
+            throttledActions.push(action);
+            return action;
+        }
+
+        if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevState.router.app) {
             api.dispatch({ type: SUITE.APP_CHANGED, payload: action.payload.app });
         }
 
@@ -32,15 +52,10 @@ const suite =
         next(action);
 
         switch (action.type) {
-            case SUITE.INIT:
-                await api.dispatch(storageActions.init());
-                // load storage
-                api.dispatch(storageActions.loadStorage());
-                break;
             case STORAGE.LOADED: {
                 // select first device from storage
                 if (
-                    !api.getState().suite.device &&
+                    !prevState.suite.device &&
                     action.payload.devices &&
                     action.payload.devices[0]
                 ) {
@@ -59,6 +74,14 @@ const suite =
                         ),
                     );
                 }
+
+                if (throttledActions.length > 0) {
+                    // resolve all throttled actions
+                    await Promise.all(throttledActions.map(a => api.dispatch(a)));
+                    // and clear references
+                    throttledActions.splice(0);
+                }
+
                 // right after storage is loaded, we might start:
                 // 1. fetching locales
                 // 2. fetch message system config
