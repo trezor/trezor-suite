@@ -11,6 +11,19 @@ import { SUITE_URL } from '@suite-constants/urls';
 export const Link = styled(TrezorLink)`
     width: 100%;
 `;
+
+const StyledModal = styled(Modal)`
+    ${Modal.BottomBar} {
+        > * {
+            flex: 1;
+        }
+    }
+`;
+
+const LinkButton = styled(Button)`
+    width: 100%;
+`;
+
 interface Props {
     hideWindow: () => void;
 }
@@ -32,13 +45,13 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
     }, [analytics]);
 
     return enabled ? (
-        <Modal
+        <StyledModal
             bottomBar={
                 <>
-                    <Button onClick={hideWindow} variant="secondary" fullWidth>
+                    <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_EARLY_ACCESS_STAY_IN" />
                     </Button>
-                    <Button onClick={allowPrerelease} fullWidth>
+                    <Button onClick={allowPrerelease}>
                         <Translation id="TR_EARLY_ACCESS_DISABLE" />
                     </Button>
                 </>
@@ -53,12 +66,12 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
             <Description>
                 <Translation id="TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION" />
             </Description>
-        </Modal>
+        </StyledModal>
     ) : (
-        <Modal
+        <StyledModal
             bottomBar={
                 <>
-                    <Button onClick={hideWindow} variant="secondary" fullWidth>
+                    <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
                     </Button>
                     <Link
@@ -70,9 +83,9 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
                             });
                         }}
                     >
-                        <Button icon="EXTERNAL_LINK" alignIcon="right" fullWidth>
+                        <LinkButton icon="EXTERNAL_LINK" alignIcon="right">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
-                        </Button>
+                        </LinkButton>
                     </Link>
                 </>
             }
@@ -86,7 +99,7 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
             <Description>
                 <Translation id="TR_EARLY_ACCESS_LEFT_DESCRIPTION" />
             </Description>
-        </Modal>
+        </StyledModal>
     );
 };
 

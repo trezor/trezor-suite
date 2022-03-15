@@ -25,6 +25,14 @@ const Checkbox = styled(CheckItem)`
     max-width: 100%;
 `;
 
+const StyledModal = styled(Modal)`
+    ${Modal.BottomBar} {
+        > * {
+            flex: 1;
+        }
+    }
+`;
+
 interface Props {
     hideWindow: () => void;
 }
@@ -56,7 +64,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
     }, [analytics]);
 
     return enabled ? (
-        <Modal
+        <StyledModal
             bottomBar={
                 <>
                     <Button
@@ -70,11 +78,10 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
                             hideWindow();
                         }}
                         variant="secondary"
-                        fullWidth
                     >
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
                     </Button>
-                    <Button onClick={checkForUpdates} fullWidth>
+                    <Button onClick={checkForUpdates}>
                         <Translation id="TR_EARLY_ACCESS_CHECK_UPDATE" />
                     </Button>
                 </>
@@ -89,7 +96,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
             <Description>
                 <Translation id="TR_EARLY_ACCESS_JOINED_DESCRIPTION" />
             </Description>
-        </Modal>
+        </StyledModal>
     ) : (
         <Modal
             heading={<Translation id="TR_EARLY_ACCESS" />}

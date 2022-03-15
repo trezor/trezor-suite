@@ -15,14 +15,21 @@ const Wrapper = styled.div`
 
 const StyledModal = styled(Modal)`
     width: 600px;
+    ${Modal.BottomBar} {
+        > * {
+            flex: 1;
+        }
+    }
 `;
 
+type SkipStepConfirmationVariant = 'backup' | 'pin';
+
 interface SkipStepConfirmationProps {
-    variant: 'backup' | 'pin';
+    variant: SkipStepConfirmationVariant;
     onCancel: () => void;
 }
 
-const getVariant = (variant: SkipStepConfirmationProps['variant']) => {
+const getVariant = (variant: SkipStepConfirmationVariant) => {
     if (variant === 'backup') {
         return {
             heading: <Translation id="TR_SKIP_BACKUP" />,
@@ -49,14 +56,13 @@ const SkipStepConfirmation = ({ variant, onCancel }: SkipStepConfirmationProps) 
             bottomBar={
                 <>
                     <Button
-                        fullWidth
                         variant="danger"
                         data-test="@onboarding/skip-button-confirm"
                         onClick={() => goToStep(variant === 'backup' ? 'set-pin' : 'coins')}
                     >
                         {skipCtaLabel}
                     </Button>
-                    <Button fullWidth variant="secondary" onClick={() => onCancel()}>
+                    <Button variant="secondary" onClick={() => onCancel()}>
                         <Translation id="TR_DONT_SKIP" />
                     </Button>
                 </>
