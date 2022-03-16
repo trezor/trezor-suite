@@ -75,6 +75,10 @@ input.invalid {
     align-items: center;
 }
 
+.checkbox-control {
+    display: flex;
+}
+
 .checkbox {
     color-scheme: light;
     font-size: 16px;
@@ -213,4 +217,18 @@ button.link {
     color: var(--TYPE_LIGHT_GREY);
     font-weight: unset;
     display: unset;
+}
+
+a.link-icon {
+    color: var(--BG_GREY);
+    display: flex;
+}
+
+a.link-icon div {
+    display: flex;
+    align-self: center;
+}
+
+.tos {
+    margin-left: 6px;
 }

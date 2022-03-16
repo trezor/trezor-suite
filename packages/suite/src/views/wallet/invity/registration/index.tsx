@@ -67,7 +67,7 @@ const LogIn = styled(AlreadyHaveAccount)`
     cursor: pointer;
 `;
 
-const StyledLoader = styled(Loader)<{ isHidden: boolean }>`
+const StyledLoader = styled(Loader) <{ isHidden: boolean }>`
     height: ${`${DefaultIframeHeight}px`};
     width: 100%;
     display: ${props => (props.isHidden ? 'none' : 'flex')};
@@ -120,7 +120,7 @@ const CoinmarketSavingsRegistration = ({
                             afterVerificationReturnToPath,
                             theme.THEME,
                         )}
-                        sandbox="allow-scripts allow-forms allow-same-origin"
+                        sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
                     />
                     <Divider />
                     <Footer>
