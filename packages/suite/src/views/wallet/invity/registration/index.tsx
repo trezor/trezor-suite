@@ -73,11 +73,11 @@ const StyledLoader = styled(Loader)<{ isHidden: boolean }>`
     display: ${props => (props.isHidden ? 'none' : 'flex')};
 `;
 
-type CoinmarketSavingsLoginRgistrationProps = WithInvityLayoutProps;
+type CoinmarketSavingsLoginRegistrationProps = WithInvityLayoutProps;
 
 const CoinmarketSavingsRegistration = ({
     selectedAccount,
-}: CoinmarketSavingsLoginRgistrationProps) => {
+}: CoinmarketSavingsLoginRegistrationProps) => {
     const { iframeMessage } = useContext(InvityAuthenticationContext);
     const { navigateToInvityLogin } = useInvityNavigation(selectedAccount.account);
     const [iframeHeight, setIframeHeight] = useState<number>();
