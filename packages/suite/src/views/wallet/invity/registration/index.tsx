@@ -67,7 +67,7 @@ const LogIn = styled(AlreadyHaveAccount)`
     cursor: pointer;
 `;
 
-const StyledLoader = styled(Loader) <{ isHidden: boolean }>`
+const StyledLoader = styled(Loader)<{ isHidden: boolean }>`
     height: ${`${DefaultIframeHeight}px`};
     width: 100%;
     display: ${props => (props.isHidden ? 'none' : 'flex')};
