@@ -4,7 +4,7 @@
 version: "2"
 services:
   trezor-user-env-unix:
-    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    image: ghcr.io/trezor/trezor-user-env
     environment:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1

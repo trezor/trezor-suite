@@ -1,7 +1,7 @@
 version: '3'
 services:
   trezor-user-env-unix:
-    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    image: ghcr.io/trezor/trezor-user-env
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
