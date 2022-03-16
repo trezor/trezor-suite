@@ -1,7 +1,7 @@
 version: "2"
 services:
   trezor-user-env-unix:
-    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    image: ghcr.io/trezor/trezor-user-env
     environment:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
@@ -42,5 +42,5 @@ services:
       - ../:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
   bitcoin-regtest:
-    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
+    image: ghcr.io/trezor/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
     network_mode: service:trezor-user-env-unix
