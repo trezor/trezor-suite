@@ -1,0 +1,39 @@
+name: connect-explorer deploy
+
+on: [workflow_dispatch]
+
+jobs:
+  crowdin-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: trezor-suite
+
+      - name: Checkout gh pages repo
+        uses: actions/checkout@v3
+        with:
+          repository: trezor/connect-explorer
+          path: connect-explorer-ghpages
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Build and deploy connect explorer
+        run: |
+          npm install -g yarn && yarn install
+          git config --global user.name "trezor-ci"
+          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+          yarn build:libs
+          TREZOR_CONNECT_SRC=https://connect.trezor.io/8/ yarn workspace @trezor/connect-explorer build
+          cd ../connect-explorer-ghpages
+          git checkout gh-pages
+          cp -r ../trezor-suite/packages/connect-explorer/build/* ./
+          git add .
+          git commit -m "new  build"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
