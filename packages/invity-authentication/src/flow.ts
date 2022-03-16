@@ -500,7 +500,7 @@ const onPasswordChange = event => {
     const emailErrorDiv = document.getElementById('error-email');
     const passwordErrorDiv = document.getElementById('error-password');
     passwordInput.classList.remove(...passwordInput.classList);
-    if (event.target.value.length > 6) {
+    if (event.target.value.length >= 8) {
         passwordInput.classList.add('valid');
         passwordErrorDiv.innerText = '';
         submit.disabled = false;
