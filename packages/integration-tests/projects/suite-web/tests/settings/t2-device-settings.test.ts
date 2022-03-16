@@ -12,22 +12,23 @@ describe('T2 - Device settings', () => {
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 
+        // firmware modal
         cy.log('open firmware modal and close it again');
         cy.getTestElement('@settings/device/update-button').click();
         cy.getTestElement('@modal/close-button').click();
 
+        // change label
         cy.log('change label');
         cy.getTestElement('@settings/device/label-input')
             .should('have.value', 'My Trevor')
             .clear()
             .type('My Tenzor');
-
         cy.getTestElement('@settings/device/label-submit').click();
         cy.getConfirmActionOnDeviceModal();
-
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
+        // passphrase protection
         cy.log('turn on passphrase protection');
         cy.getTestElement('@settings/device/passphrase-switch')
             .click({ force: true })
@@ -35,6 +36,7 @@ describe('T2 - Device settings', () => {
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
+        // background
         cy.log('change background');
         cy.getTestElement('@settings/device/select-from-gallery')
             .click()
@@ -44,6 +46,7 @@ describe('T2 - Device settings', () => {
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
+        // display rotation
         cy.log('change display rotation');
         cy.getTestElement('@settings/device/rotation-button/90')
             .click()

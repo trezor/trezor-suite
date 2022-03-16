@@ -10,6 +10,7 @@ describe('Settings changes persist when device disconnected', () => {
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
     });
 
     it('Settings navigation', () => {
@@ -18,9 +19,9 @@ describe('Settings changes persist when device disconnected', () => {
         cy.getTestElement('@wallet/menu/wallet-send').click();
 
         cy.task('stopEmu');
-        cy.getTestElement('@toast/auth-failed/close').click();
 
         // Open settings
+        cy.getTestElement('@connect-device-prompt');
         cy.getTestElement('@suite/menu/settings', { timeout: 30000 }).click();
         cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/disconnected-device-banner').should('exist');
@@ -34,9 +35,9 @@ describe('Settings changes persist when device disconnected', () => {
 
     it('Settings persistence', () => {
         cy.task('stopEmu');
-        cy.getTestElement('@toast/auth-failed/close').click();
 
         // Open settings, enable ETH
+        cy.getTestElement('@connect-device-prompt');
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/eth').click({ force: true });
