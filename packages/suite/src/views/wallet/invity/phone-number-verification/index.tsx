@@ -55,7 +55,7 @@ const InputErrorWrapper = styled.div`
 `;
 
 const StyledIcon = styled(Icon)`
-    cursor: help;
+    cursor: pointer;
     & div {
         width: 26px;
         height: 26px;
