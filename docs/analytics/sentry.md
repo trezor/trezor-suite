@@ -2,7 +2,9 @@
 
 Trezor Suite uses [Sentry.io](https://sentry.io/) to track errors and monitor app performance on the machines of users who have enabled anonymous data collection. This allows us to optimize Trezor Suite and fix compatibility issues across many different usage environments.
 
-**No data is shared with Sentry if users have disabled usage data tracking.**
+No data is shared with Sentry if users have disabled usage data tracking [^1].
+
+[^1]: In rare cases where an error would occur before Suite loading its internal storage an error to Sentry might be sent, because Suite is not yet informed whether analytics are enabled or not. As the storage is not yet loaded no private data can be sent.
 
 ## What is being tracked
 

@@ -2,6 +2,8 @@
 
 Anonymous[^1] data volunteered by Trezor users directly contributes to improved performance across all the platforms you use Trezor Suite on.
 
+[^1]: "Anonymous" means that we do not collect any sensitive personal information. AWS and Sentry are able to view IP addresses but they are not tracked or collected by Trezor and Trezor removes such information from the logs automatically. Enable Tor to mask your IP address from third parties when using Trezor Suite.
+
 Participation is easy and completely optional. Enable or disable usage data sharing with one click at any time in Trezor Suite Settings. With full control over what you contribute, you can safely take part in making Bitcoin more secure.
 
 **TL;DR**
@@ -25,8 +27,6 @@ Data are logged in the form of HTTPS requests to an AWS S3 bucket. Those data lo
 ## Error tracking using Sentry
 
 To catch errors quickly and deliver you the best experience with your Trezor, we use [Sentry.io](https://sentry.io/), a tool for error tracking and performance monitoring. Data is only available to Sentry when usage data tracking is enabled. See our page about [Sentry](sentry.md) for more information on how it works.
-
-[^1]: "Anonymous" means that we do not collect any sensitive personal information. AWS and Sentry are able to view IP addresses but they are not tracked or collected by Trezor and Trezor removes such information from the logs automatically. Enable Tor to mask your IP address from third parties when using Trezor Suite.
 
 ## Retention period
 
