@@ -21,7 +21,6 @@ cache
 solidity
 
 # folders
-packages/wallet
 ci
 
 # next js
@@ -31,3 +30,6 @@ next-env.d.ts
 # native
 android
 ios
+
+# submodules
+packages/transport/trezor-common/
