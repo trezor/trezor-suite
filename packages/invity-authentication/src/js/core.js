@@ -37,6 +37,24 @@ function ensureInputFocus() {
     }, 100);
 }
 
+let passwordIsVisible = false;
+
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('auth_password').getElementsByTagName('input')[0];
+    if (passwordIsVisible) {
+        passwordInput.type = 'password';
+    } else {
+        passwordInput.type = 'text';
+    }
+    passwordIsVisible = !passwordIsVisible;
+    document
+        .getElementById('eye')
+        .style.setProperty('display', passwordIsVisible ? 'none' : 'initial');
+    document
+        .getElementById('eye-off')
+        .style.setProperty('display', !passwordIsVisible ? 'none' : 'initial');
+}
+
 window.addEventListener('DOMContentLoaded', _ => {
     addCheckboxClickEventListeners();
     ensureTheme();

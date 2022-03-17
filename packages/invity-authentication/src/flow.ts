@@ -473,21 +473,22 @@ const checkFlowType = flowType => {
 
 const onEmailChange = event => {
     const submit = document.getElementById('submit') as HTMLButtonElement;
-    const emailInput = document.getElementById('email');
+    const emailWrapper = document.getElementById('email').parentElement;
     const emailErrorDiv = document.getElementById('error-email');
     const passwordErrorDiv = document.getElementById('error-password');
     const re =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    emailInput.classList.remove(...emailInput.classList);
     if (re.test(String(event.target.value).toLowerCase())) {
-        emailInput.classList.add('valid');
+        emailWrapper.classList.add('valid');
+        emailWrapper.classList.remove('invalid');
         emailErrorDiv.innerText = '';
         submit.disabled = false;
         if (passwordErrorDiv && passwordErrorDiv.textContent) {
             submit.disabled = true;
         }
     } else {
-        emailInput.classList.add('invalid');
+        emailWrapper.classList.add('invalid');
+        emailWrapper.classList.remove('valid');
         emailErrorDiv.innerText = 'Please, enter a valid email address';
         submit.disabled = true;
     }
@@ -496,19 +497,20 @@ const onEmailChange = event => {
 
 const onPasswordChange = event => {
     const submit = document.getElementById('submit') as HTMLButtonElement;
-    const passwordInput = document.getElementById('password');
+    const passwordWrapper = document.getElementById('password').parentElement;
     const emailErrorDiv = document.getElementById('error-email');
     const passwordErrorDiv = document.getElementById('error-password');
-    passwordInput.classList.remove(...passwordInput.classList);
     if (event.target.value.length >= 8) {
-        passwordInput.classList.add('valid');
+        passwordWrapper.classList.add('valid');
+        passwordWrapper.classList.remove('invalid');
         passwordErrorDiv.innerText = '';
         submit.disabled = false;
         if (emailErrorDiv && emailErrorDiv.textContent) {
             submit.disabled = true;
         }
     } else {
-        passwordInput.classList.add('invalid');
+        passwordWrapper.classList.add('invalid');
+        passwordWrapper.classList.remove('valid');
         passwordErrorDiv.innerText = 'Your password is too short!';
         submit.disabled = true;
     }
