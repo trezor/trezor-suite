@@ -1,6 +1,7 @@
-# 1.1.1 (not released)
+# 1.1.1
 
 -   Changed latest bridge url to https://connect.trezor.io/8/data/bridge/latest.txt'
+-   Added trezor-common submodule. Protobuf definitions (messages.json) and protobuf related typescript definitions.
 
 # 1.1.0
 

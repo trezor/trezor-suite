@@ -63,8 +63,8 @@
   allow_failure: true # most importantly - when a test in this category fails, it does not make entire pipeline fail
   parallel:
     matrix:
-      - TEST_GROUP: '@group:fragile'
-        CONTAINERS: 'trezor-user-env-unix'
+      - TEST_GROUP: "@group:fragile"
+        CONTAINERS: "trezor-user-env-unix"
 
 suite web:
   extends: .suite web base
@@ -173,6 +173,7 @@ rollout manual:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/utils build:lib
     - yarn workspace @trezor/transport build:lib
+    # run e2e tests
     - ./docker/docker-transport-test.sh
   after_script:
     - docker-compose down

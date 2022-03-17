@@ -3,7 +3,6 @@
         "source.fixAll.eslint": true
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
     "typescript.reportStyleChecksAsWarnings": false,
     "cSpell.words": ["blockbook", "webworkers"]
 }
