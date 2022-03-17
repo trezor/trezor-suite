@@ -1,6 +1,6 @@
 {
     "name": "@trezor/transport",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Low level library facilitating protocol buffers based communication with Trezor devices",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
@@ -17,7 +17,12 @@
     "main": "./lib/index.js",
     "files": [
         "lib/",
-        "!**/*.map"
+        "!**/*.map",
+        "scripts/protobuf-build.sh",
+        "scripts/protobuf-patches",
+        "scripts/protobuf-types.js",
+        "messages.json",
+        "protobuf.d.ts"
     ],
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
@@ -25,7 +30,9 @@
         "build:lib": "rimraf -rf lib && tsc --build ./tsconfig.lib.json",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
-        "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration"
+        "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
+        "update:submodules": "./scripts/update-submodules.sh",
+        "update:protobuf": "./scripts/protobuf-build.sh"
     },
     "devDependencies": {
         "@types/bytebuffer": "^5.0.42",

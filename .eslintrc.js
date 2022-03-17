@@ -30,6 +30,7 @@ module.exports = {
         '**/build-electron/*',
         '**/node_modules/*',
         'packages/suite-data/files/*',
+        'packages/transport/scripts/protobuf-patches/*',
     ],
     overrides: [
         {

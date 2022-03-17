@@ -35,6 +35,8 @@
         "**/build-electron",
         "**/dist",
         "**/coverage",
-        "**/public"
+        "**/public",
+        "**/protobuf-patches",
+        "**/trezor-common"
     ]
 }

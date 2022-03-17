@@ -5,6 +5,6 @@
         "esModuleInterop": false,
         "outDir": "./libDev"
     },
-    "include": ["."],
+    "include": ["src"],
     "references": [{ "path": "../utils" }]
 }

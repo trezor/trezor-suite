@@ -1,35 +1,59 @@
-# general
-node_modules
-generated
-old
-_old
-examples
-public
-static
+### custom prettier ignore config ###
 
-# libs and builds
-dist
-lib
-.rpt2_cache
+packages/transport/trezor-common
+
+### copy paste of .gitignore ###
+
+.next
+_old
 build
 build-electron
+.build-storybook
+*.cpuprofile
 
-# debug files
-yarn-error.log
-cache
-.build
-solidity
+# Dependency directory
+node_modules
+.yarn
 
-# folders
-ci
+# OSX
+.DS_Store
 
-# next js
-.next
-next-env.d.ts
+# Editors
+.idea
+*.sublime-project
+*.sublime-workspace
+.vscode/**/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
 
-# native
-android
-ios
+# Logs
+logs
+*.log
+.yarnclean
 
-# submodules
-packages/transport/trezor-common/
+
+.attic
+.env*
+!.env.dev
+
+# cache
+*.code-workspace
+__docker-snapshots__
+__pycache__/
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# model 1 emulation file
+docker/trezor-user-env/controller/emulator.img
+
+# Vagrant
+.vagrant
+
+# build outputs
+lib
+libDev
+dist
+public
+coverage

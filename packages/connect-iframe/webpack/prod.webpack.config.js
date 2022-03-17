@@ -8,6 +8,8 @@ const path = require('path');
 const SRC = '../../node_modules/trezor-connect';
 const CONNECT_DATA_SRC = `${SRC}/data`;
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
+const MESSAGES_SRC = '../../packages/transport/messages.json';
+
 const HTML_SRC = path.resolve(__dirname, '../src/static/iframe.html');
 const DIST = path.resolve(__dirname, '../build');
 
@@ -106,6 +108,8 @@ module.exports = {
                 { from: CONNECT_DATA_SRC, to: `${DIST}/data` },
                 // copy firmware releases, bridge releases from '@trezor/connect-common'
                 { from: COMMON_DATA_SRC, to: `${DIST}/data` },
+                // copy messages.json from '@trezor/transport'
+                { from: MESSAGES_SRC, to: `${DIST}/data/messages`, force: true },
             ],
         }),
         new HtmlWebpackPlugin({

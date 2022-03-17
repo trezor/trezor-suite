@@ -51,6 +51,9 @@ Run a dev build:
 
 Trezor Connect is a platform for easy integration of Trezor into 3rd party services. At the moment, trezor-connect has its [own repository](https://github.com/trezor/connect) but we expect it to be migrated into the trezor-suite monorepo in a very short time.
 
+When adding new features to [trezor-connect](https://github.com/trezor/connect) you need to work with both repositories.
+Please follow the readme in [@trezor/transport package](./packages/transport) on how protobuf definitions are updated.
+
 ## Contribute
 
 Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)

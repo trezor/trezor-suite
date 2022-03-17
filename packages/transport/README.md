@@ -15,6 +15,15 @@ _You probably don't want to use this package directly._ For communication with T
 -   exposing single API for various transport methods:
     -   Trezor Bridge
     -   Webusb
+-   Create and expose typescript definitions based on protobuf definitions.
+
+## Updating messages
+
+In order to be used new features of trezor-firmware you need to update protobuf definitions.
+
+1. `git submodule update --init --recursive` to initialize trezor-common submodule
+1. `yarn workspace @trezor/transport update:submodules` to update trezor-common submodule
+1. `yarn workspace @trezor/transport update:protobuf` to generate new `messages.json` and `protobuf.d.ts`
 
 ### Publishing
 
