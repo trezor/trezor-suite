@@ -8,7 +8,7 @@ import { InvityAuthenticationContext } from '@wallet-components/InvityAuthentica
 import { useInvityNavigation } from '@wallet-hooks/useInvityNavigation';
 import { Loader } from '@trezor/components';
 
-const DefaultIframeHeight = 232;
+const DefaultIframeHeight = 260;
 
 const Wrapper = styled.div`
     display: flex;

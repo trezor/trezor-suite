@@ -179,7 +179,7 @@ button {
     cursor: pointer;
     border-radius: 8px;
     outline: none;
-    padding: 9px 12px;
+    padding: 9px 56px;
     color: var(--TYPE_WHITE);
     font-weight: 600;
     font-size: 16px;
@@ -189,6 +189,10 @@ button {
 button:disabled {
     background: var(--BG_GREY);
     color: var(--TYPE_LIGHT_GREY);
+}
+
+button.registration {
+    margin-top: 32px;
 }
 
 .small-text {
