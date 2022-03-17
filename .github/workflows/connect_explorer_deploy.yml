@@ -33,7 +33,7 @@ jobs:
           git checkout gh-pages
           cp -r ../trezor-suite/packages/connect-explorer/build/* ./
           git add .
-          git commit -m "new  build"
+          git commit -m "new build"
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
