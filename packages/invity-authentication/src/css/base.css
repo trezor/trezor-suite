@@ -163,8 +163,8 @@ input.invalid {
     display: flex;
     font-size: 12px;
     color: var(--TYPE_RED);
-    padding: 10px 10px 0 10px;
-    min-height: 27px;
+    padding: 10px;
+    min-height: 35px;
 }
 button {
     margin: 0;
