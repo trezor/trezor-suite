@@ -29,10 +29,9 @@ unit tests:
 
 yaml lint:
   stage: validation
-  image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+  image: registry.gitlab.com/pipeline-components/yamllint:latest
   script:
-    - nix-shell --run "yamllint --version"
-    - nix-shell --run "yamllint . && echo 'Success!'"
+    - yamllint . && echo "Success!"
 
 msg-system config validation:
   stage: validation
