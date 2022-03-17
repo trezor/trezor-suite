@@ -39,7 +39,7 @@ const showMessage = (type: string, message: string, _disableForm = false) => {
         return;
     }
 
-    document.getElementById('error-password').innerText = message;
+    document.getElementById('error-message').innerText = message;
 };
 
 const getVerificationCookie = () => {
