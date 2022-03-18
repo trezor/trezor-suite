@@ -24,7 +24,7 @@ const init: Module = ({ mainWindow }) => {
                 app.relaunch();
             }
 
-            app.exit();
+            app.quit();
         }
     });
 };

@@ -70,6 +70,7 @@ const init: Module = ({ mainWindow, store }) => {
     let isManualCheck = false;
     let updateCancellationToken: CancellationToken;
     let shouldInstallUpdateOnQuit = false;
+    let errorHappened = false;
 
     // Prevent downloading an update unless user explicitly asks for it.
     autoUpdater.autoDownload = false;
@@ -85,12 +86,14 @@ const init: Module = ({ mainWindow, store }) => {
     autoUpdater.logger = null;
 
     const quitAndInstall = () => {
-        // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
-        app.removeAllListeners('window-all-closed');
-        mainWindow.removeAllListeners('close');
-        mainWindow.close();
+        setImmediate(() => {
+            // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
+            app.removeAllListeners('window-all-closed');
+            mainWindow.removeAllListeners('close');
+            mainWindow.close();
 
-        autoUpdater.quitAndInstall();
+            autoUpdater.quitAndInstall();
+        });
     };
 
     logger.info(
@@ -151,6 +154,7 @@ const init: Module = ({ mainWindow, store }) => {
     });
 
     autoUpdater.on('error', (err: Error) => {
+        errorHappened = true;
         logger.error('auto-updater', `An error happened: ${err.toString()}`);
         mainWindow.webContents.send('update/error', err);
     });
@@ -167,6 +171,11 @@ const init: Module = ({ mainWindow, store }) => {
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile } = info;
+
+        if (errorHappened) {
+            logger.info('auto-updater', 'An error happened. Stopping auto-update.');
+            return;
+        }
 
         logger.info('auto-updater', [
             'Update downloaded:',

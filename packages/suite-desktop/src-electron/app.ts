@@ -140,7 +140,7 @@ app.on('before-quit', () => {
 ipcMain.on('app/restart', () => {
     logger.info('main', 'App restart requested');
     app.relaunch();
-    app.exit();
+    app.quit();
 });
 
 const sentryConfig: ElectronOptions = {
