@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Input, KEYBOARD_CODE } from '@trezor/components';
 import { useSavingsPhoneNumberVerificationContext } from '@wallet-hooks/coinmarket/savings/useSavingsPhoneNumberVerification';
@@ -15,9 +15,10 @@ const getVerificationCodeInputSelector = (index: number) => `input[data-input-in
 
 interface VerificationCodeDigitInputProps {
     index: CodeDigitIndex;
+    onPaste: (clipboardContent: string) => void;
 }
 
-const VerificationCodeDigitInput = ({ index }: VerificationCodeDigitInputProps) => {
+const VerificationCodeDigitInput = ({ index, onPaste }: VerificationCodeDigitInputProps) => {
     const { register, error, formState, trigger } = useSavingsPhoneNumberVerificationContext();
     const { isSubmitSuccessful } = formState;
 
@@ -66,6 +67,25 @@ const VerificationCodeDigitInput = ({ index }: VerificationCodeDigitInputProps) 
     const label =
         index === 0 ? <Translation id="TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_LABEL" /> : '';
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    const handlePaste = useCallback(
+        (event: ClipboardEvent) => {
+            const clipboardContent = event.clipboardData?.getData('text');
+            if (clipboardContent) {
+                onPaste(clipboardContent);
+            }
+        },
+        [onPaste],
+    );
+
+    useEffect(() => {
+        inputRef.current?.addEventListener('paste', handlePaste);
+        return () => {
+            inputRef.current?.removeEventListener('paste', handlePaste);
+        };
+    }, [handlePaste]);
+
     const name = `codeDigitIndex${index}`;
     return (
         <StyledInput
@@ -78,13 +98,16 @@ const VerificationCodeDigitInput = ({ index }: VerificationCodeDigitInputProps) 
             name={name}
             data-input-index={index}
             maxLength={1}
-            innerRef={register({
-                required: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_REQUIRED',
-                pattern: {
-                    value: /[0-9]{1}/,
-                    message: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_MUST_BE_NUMBER',
-                },
-            })}
+            innerRef={ref => {
+                inputRef.current = ref;
+                register({
+                    required: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_IS_REQUIRED',
+                    pattern: {
+                        value: /[0-9]{1}/,
+                        message: 'TR_SAVINGS_PHONE_NUMBER_VERIFICATION_CODE_MUST_BE_NUMBER',
+                    },
+                })(ref);
+            }}
         />
     );
 };

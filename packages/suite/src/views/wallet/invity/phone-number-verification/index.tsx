@@ -8,6 +8,7 @@ import {
 import { InputError, withInvityLayout, WithInvityLayoutProps } from '@wallet-components';
 import { Translation } from '@suite-components';
 import VerificationCodeDigitInput from './components/VerificationCodeDigitInput';
+import type { CodeDigitIndex } from '@wallet-types/coinmarket/savings/phoneNumberVerification';
 
 const Header = styled.div`
     font-size: 24px;
@@ -66,9 +67,25 @@ const StyledIcon = styled(Icon)`
 
 const PhoneNumberVerification = (props: WithInvityLayoutProps) => {
     const contextValues = useSavingsPhoneNumberVerification(props);
-    const { error, onSubmit, handleSubmit, formState, phoneNumber, handlePhoneNumberChange } =
-        contextValues;
+    const {
+        error,
+        onSubmit,
+        handleSubmit,
+        formState,
+        phoneNumber,
+        handlePhoneNumberChange,
+        setValue,
+    } = contextValues;
     const { isSubmitting } = formState;
+
+    const handlePaste = (clipboardData: string) => {
+        if (clipboardData.length >= 6) {
+            const firstSixCharacters = clipboardData.substring(0, 6).split('');
+            firstSixCharacters.forEach((character, index) =>
+                setValue(`codeDigitIndex${index as CodeDigitIndex}`, character),
+            );
+        }
+    };
 
     return (
         <SavingsPhoneNumberVerificationContext.Provider value={contextValues}>
@@ -89,12 +106,12 @@ const PhoneNumberVerification = (props: WithInvityLayoutProps) => {
             </Description>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <VerificationCodeDigitInputsWrapper>
-                    <StyledVerificationCodeDigitInput index={0} />
-                    <StyledVerificationCodeDigitInput index={1} />
-                    <StyledVerificationCodeDigitInput index={2} />
-                    <StyledVerificationCodeDigitInput index={3} />
-                    <StyledVerificationCodeDigitInput index={4} />
-                    <StyledVerificationCodeDigitInput index={5} />
+                    <StyledVerificationCodeDigitInput index={0} onPaste={handlePaste} />
+                    <StyledVerificationCodeDigitInput index={1} onPaste={handlePaste} />
+                    <StyledVerificationCodeDigitInput index={2} onPaste={handlePaste} />
+                    <StyledVerificationCodeDigitInput index={3} onPaste={handlePaste} />
+                    <StyledVerificationCodeDigitInput index={4} onPaste={handlePaste} />
+                    <StyledVerificationCodeDigitInput index={5} onPaste={handlePaste} />
                 </VerificationCodeDigitInputsWrapper>
                 <InputErrorWrapper>
                     <InputError error={error} />
