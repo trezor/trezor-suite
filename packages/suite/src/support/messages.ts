@@ -978,6 +978,22 @@ export default defineMessages({
         defaultMessage: 'Log in.',
         id: 'TR_INVITY_REGISTRATION_FOOTER_ALREADY_HAVE_AN_ACCOUNT_LOGIN',
     },
+    TR_SAVINGS_INTRODUCTION_HEADER: {
+        defaultMessage: 'Start investing periodically',
+        id: 'TR_SAVINGS_INTRODUCTION_HEADER',
+    },
+    TR_SAVINGS_INTRODUCTION_DESCRIPTION: {
+        defaultMessage: 'Amet minim mollit non deserunt ullamco est sit aliqua dolor do.',
+        id: 'TR_SAVINGS_INTRODUCTION_DESCRIPTION',
+    },
+    TR_SAVINGS_INTRODUCTION_CREATE_ACCOUNT_BUTTON: {
+        defaultMessage: 'Create an Invity account',
+        id: 'TR_SAVINGS_INTRODUCTION_CREATE_ACCOUNT_BUTTON',
+    },
+    TR_SAVINGS_INTRODUCTION_LOG_IN_BUTTON: {
+        defaultMessage: 'Log in',
+        id: 'TR_SAVINGS_INTRODUCTION_LOG_IN_BUTTON',
+    },
     TR_SAVINGS_USERINFO_HEADER: {
         defaultMessage: 'Tell us about yourself',
         id: 'TR_SAVINGS_USERINFO_HEADER',
