@@ -35,11 +35,11 @@ const init: Module = ({ mainWindow }) => {
                 break;
             // Clear cache & restart
             case 2: {
-                const appFolder = PKG.NAME.replace('/', path.sep);
+                const appFolder = process.env.PKGNAME!.replace('/', path.sep);
                 const cachePath = path.join(app.getPath('appData'), appFolder, 'Cache');
 
                 logger.info('hang-detect', `Deleting cache at ${cachePath}`);
-                fs.rmdir(cachePath, { recursive: true }, err => {
+                fs.rm(cachePath, { recursive: true }, err => {
                     if (err) {
                         logger.error('hang-detect', `Couldn't clear cache: ${err.message}`);
                     }

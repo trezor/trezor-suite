@@ -10,12 +10,6 @@ declare namespace NodeJS {
     }
 }
 
-// Build time package info vars
-declare const PKG: {
-    NAME: string;
-    PROTOCOLS: string[];
-};
-
 declare interface ILogger {
     /**
      * Exit the Logger (will correctly end the log file)
