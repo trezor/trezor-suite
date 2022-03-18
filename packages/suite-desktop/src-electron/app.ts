@@ -1,6 +1,6 @@
 import path from 'path';
 import url from 'url';
-import { app, BrowserWindow, ipcMain, session } from 'electron';
+import { app, BrowserWindow, ipcMain, RelaunchOptions, session } from 'electron';
 import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
 
 import { SENTRY_CONFIG } from '@suite-config';
@@ -139,7 +139,14 @@ app.on('before-quit', () => {
 
 ipcMain.on('app/restart', () => {
     logger.info('main', 'App restart requested');
-    app.relaunch();
+    const options: RelaunchOptions = {};
+    options.args = process.argv.slice(1).concat(['--relaunch']);
+    options.execPath = process.execPath;
+    if (process.env.APPIMAGE) {
+        options.execPath = process.env.APPIMAGE;
+        options.args.unshift('--appimage-extract-and-run');
+    }
+    app.relaunch(options);
     app.quit();
 });
 
