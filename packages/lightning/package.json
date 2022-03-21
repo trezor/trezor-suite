@@ -1,0 +1,18 @@
+{
+    "name": "@trezor/lightning",
+    "version": "1.0.0",
+    "main": "src/index",
+    "license": "See LICENSE.md in repo root",
+    "private": true,
+    "sideEffects": false,
+    "type": "module",
+    "scripts": {
+        "type-check": "tsc --build",
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest"
+    },
+    "dependencies": {
+        "bech32": "^2.0.0",
+        "bignumber.js": "^9.0.2"
+    }
+}
