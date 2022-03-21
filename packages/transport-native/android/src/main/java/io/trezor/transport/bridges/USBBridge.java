@@ -83,7 +83,7 @@ public class USBBridge implements BridgeInterface {
       Log.d(TAG, "Device added");
     } else {
       Log.d(TAG, "No permission, requesting permissions for device...");
-      PendingIntent pi = PendingIntent.getBroadcast(context.getApplicationContext(), 0, new Intent(USBPermissionReceiver.USB_PERMISSION_GRANTED).setClass(context.getApplicationContext(), USBPermissionReceiver.class), 0);
+      PendingIntent pi = PendingIntent.getBroadcast(context.getApplicationContext(), 0, new Intent(USBPermissionReceiver.USB_PERMISSION_GRANTED).setClass(context.getApplicationContext(), USBPermissionReceiver.class), PendingIntent.FLAG_IMMUTABLE);
       usbManager.requestPermission(device, pi);
     }
   }
