@@ -5,6 +5,16 @@
     Use element.classList.add/remove instead.    
  */
 
+let webauthn_enabled = false;
+webauthn_enabled = true; // TODO: enable only for staff users?
+
+// This function is called from parent window to show webauthn inputs for staff users
+function enableWebauthn() {
+    if (!webauthn_enabled) {
+        webauthn_enabled = true;
+    }
+}
+
 const sendMessageToParent = data => {
     // Send a message to the parent window (ask for a redirect, or inform it whether the user is authorized)
     window.top.postMessage(
@@ -28,6 +38,12 @@ const disableForm = () => {
     const submitButton = document.getElementById('submit') as HTMLButtonElement;
     submitButton.disabled = true;
 };
+
+function hideForm() {
+    document.getElementById('auth_email').style.display = 'none';
+    document.getElementById('auth_password').style.display = 'none';
+    document.getElementById('submit').style.display = 'none';
+}
 
 const showMessage = (type: string, message: string, _disableForm = false) => {
     if (_disableForm) {
@@ -277,6 +293,13 @@ const parseFlowAttributes = (flowData, flowType) => {
         die(flowData.error);
     }
 
+    // if (flowData?.requested_aal === 'aal2') {
+    //     // TODO: hide registration & password recovery links (this happens when user is requested to confirm his login via security key)
+    //     sendMessageToParent({ action: { type: 'hideAuthLinks' }});
+    // }
+
+    const registered_security_keys = []; // an array of security keys' names to check when adding a new one
+
     for (let i = 0; i < flowData.ui.nodes.length; i++) {
         const node = flowData.ui.nodes[i];
         if (node.attributes.name === 'csrf_token') {
@@ -301,7 +324,58 @@ const parseFlowAttributes = (flowData, flowType) => {
                 // Settings flow has multiple submit buttons (for email & password), we need just the password submit
                 submitButton.value = node.attributes.value;
             }
+        } else if ((webauthn_enabled || flowType === 'login') && node.group === 'webauthn') {
+            document.getElementById('webauthn').style.display = 'block'; // Show the webauthn div
+
+            if (node.attributes.name === 'webauthn_register_trigger') {
+                const elem = document.getElementById('webauthn_trigger');
+                elem.onclick = () => {
+                    const label = document.getElementById('webauthn_display_name') as HTMLFormElement;
+                    label.required = true;
+                    if (label.reportValidity() === false) {
+                        // Will show an error if security key's label input is empty
+                        return;
+                    }
+                    if (registered_security_keys.includes(label.value)) {
+                        return showMessage('error', 'A security key with the same name is already registered, please choose a different name.');
+                    }
+                    new Function(node.attributes.onclick)(); // Kratos returns a stringified function, so eval is the only option so far :/
+                }
+            } else if (node.attributes.name === 'webauthn_login_trigger') {
+                document.getElementById('webauthn_logout').style.display = 'initial'; // Show the webauthn "Abort" button
+                const elem = document.getElementById('webauthn_trigger');
+                elem.style.display = 'initial';
+                elem.onclick = () => { new Function(node.attributes.onclick)(); };
+                hideForm();
+            } else if (node.attributes.name === 'webauthn_remove') {
+                // For each registered security key, create a button that allows to remove it
+                const remove_btn = document.createElement('button');
+                remove_btn.id = `webauthn_remove_${node.attributes.value.substring(0, 16)}`;
+                remove_btn.name = node.attributes.name;
+                remove_btn.type = node.attributes.type;
+                remove_btn.className = "btn btn-danger webauthn_remove";
+                remove_btn.value = node.attributes.value;
+                remove_btn.disabled = node.attributes.disabled;
+                remove_btn.innerText = node.meta.label.text;
+
+                // Add a security key's name to an array of registered keys to disallow registering a key with the same name
+                registered_security_keys.push(node.meta.label.context.display_name);
+
+                // When removing a security key, don't require password and key name to be filled
+                remove_btn.onclick = () => {
+                    (document.getElementById('webauthn_display_name') as HTMLFormElement).required = false;
+                    document.getElementById('auth_password').getElementsByTagName('input')[0].required = false;
+                }
+
+                const buttons = document.getElementById('webauthn_remove_buttons');
+                buttons.style.display = 'block';
+                buttons.appendChild(remove_btn);
+            } else if (node.attributes.name === 'webauthn_register') {
+                // Show the "Register a security key" button
+                document.getElementById('webauthn_trigger').style.display = 'initial';
+            }
         }
+        sendMessageToParent({ action: { type: 'resize' } });
         // Attribute-specific messages
         if (node.messages.length > 0) {
             const message = node.messages[0];
@@ -333,6 +407,12 @@ const parseFlowAttributes = (flowData, flowType) => {
             }
             showMessage(message.type, message.text);
         }
+    }
+
+    if (registered_security_keys.length === 1) {
+        const webauthn_remove_button = document.getElementsByClassName('webauthn_remove')[0] as HTMLButtonElement;
+        webauthn_remove_button.disabled = true;
+        webauthn_remove_button.title = 'Due to system limitations, you cannot currently remove your only security key as you will be unable to log in again. Register a second key and delete the old one, or contact devs to disable your security key.';
     }
 
     // General messages
@@ -384,6 +464,22 @@ const parseFlowAttributes = (flowData, flowType) => {
             case 1070001:
                 message.text =
                     'An email containing a recovery link has been sent to the email address you provided.';
+                break;
+
+            case 1010002:
+                // Could not find a strategy to log you in with. Did you fill out the form correctly?
+                message.text = message.text;
+                break;
+
+            case 1010003:
+                // Confirm action by entering the password
+                message.text = message.text;
+                break;
+
+            case 1010004:
+                // 2fa - use security key
+                console.log(message.text);
+                message.text = message.text;
                 break;
 
             default:

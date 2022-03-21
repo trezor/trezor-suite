@@ -5,6 +5,32 @@
         <meta charset="utf-8" />
         <title>Settings</title>
         <!-- StylePlaceholder -->
+        <style>
+            .form-control {
+                width: 100%;
+                height: calc(1.3em + 1.125rem + 2px);
+            }
+            .form-control:disabled, .form-control[readonly] {
+                background-color: #F1F4F8;
+                opacity: 1;
+            }
+            #webauthn {
+                margin-top: 20px;
+                display: none;
+            }
+            #webauthn_trigger {
+                margin-top: 15px;
+                display:none;
+            }
+            #webauthn_remove_buttons {
+                margin-top: 15px;
+                display:none;
+            }
+            .webauthn_remove {
+                margin-top: 10px;
+                display: block;
+            }
+        </style>
     </head>
 
     <body class="hidden">
@@ -29,7 +55,7 @@
                     type="password"
                     placeholder="Password"
                     autocomplete="current-password"
-                    required
+                    required=""
                     class="form-control"
                     class="password"
                 />
@@ -81,6 +107,26 @@
                 <input id="csrf_token" name="csrf_token" type="hidden" class="form-control" />
             </div>
             <button id="submit" name="method" type="submit" class="btn btn-primary">Submit</button>
+            <small id="info" class="text-primary form-text"></small>
+            <div id="webauthn" class="form-group">
+                <span class="h6 ms-2"><label class="auth_webauthn_label form-label">Name of the security key</label></span>
+                <input
+                    id="webauthn_display_name"
+                    type="text"
+                    name="webauthn_register_displayname"
+                    placeholder=""
+                    autocomplete="current-password"
+                    class="form-control"
+                >
+                <input
+                    id="webauthn_register_hidden"
+                    name="webauthn_register"
+                    type="hidden"
+                    class="input-wrapper"
+                >
+                <button id='webauthn_trigger' name="webauthn_register_trigger" type="button" class="btn btn-primary">Register a new security key</button>
+                <div id="webauthn_remove_buttons"></div>
+            </div>
         </form>
     </body>
     <!-- ScriptPlaceholder -->

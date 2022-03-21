@@ -5,6 +5,14 @@
         <meta charset="utf-8" />
         <title>Log in</title>
         <!-- StylePlaceholder -->
+        <style>
+            #webauthn_logout {
+                display:none;
+            }
+            #webauthn_trigger {
+                display:none;
+            }
+        </style>
     </head>
 
     <body>
@@ -83,14 +91,24 @@
                 <input id="csrf_token" name="csrf_token" type="hidden" class="form-control" />
             </div>
 
-            <!-- <div class="form-group">
             <small id="info" class="text-primary form-text"></small>
+            <!-- <div class="form-group">
             <div id='popup' class="popup">
                 <span class="popup-close" onclick="onErrorClick()">×</span>
                 <div id="popup-text" class="popup-text"></div>
             </div>
         </div> -->
             <button id="submit" name="method" type="submit">Log in</button>
+            <div id="webauthn" class="form-group">
+                <input
+                    id="webauthn_login_hidden"
+                    name="webauthn_login"
+                    type="hidden"
+                    class="form-control"
+                >
+                <button id='webauthn_trigger' name="webauthn_login_trigger" type="button" class="btn btn-primary">Use security key</button>
+                <button id='webauthn_logout' onClick='sendMessageToParent({ redirectTo: "logout" })' name="webauthn_logout_trigger" type="button" class="btn btn-danger">Abort</button>
+            </div>
         </form>
     </body>
     <!-- ScriptPlaceholder -->
