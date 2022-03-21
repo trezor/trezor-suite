@@ -49,13 +49,6 @@ const getTestFiles = () => {
         .filter(f => f.includes('.test.'));
 };
 
-const wait = timeout =>
-    new Promise(resolve => {
-        setTimeout(() => {
-            resolve();
-        }, timeout);
-    });
-
 const runTests = async () => {
     const {
         BROWSER = 'chrome',

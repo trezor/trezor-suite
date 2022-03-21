@@ -46,6 +46,9 @@
       - trezor-user-env-debugging.log
       - tenv-emulator-bridge-debugging.log
       - trezor-user-env-version.txt
+
+.suite web base:
+  extends: .e2e web
   parallel:
     matrix:
       - TEST_GROUP: ['@group:suite', '@group:onboarding', '@group:device-management', '@group:settings', '@group:metadata']
@@ -53,11 +56,31 @@
       - TEST_GROUP: '@group:wallet'
         CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
 
-suite web:
+# fragile group is dependent on external powers which means it might fail when some external resource
+# is modified. We still believe it might be worth having to fix such broken test time to time.
+.suite web fragile base:
   extends: .e2e web
+  allow_failure: true # most importantly - when a test in this category fails, it does not make entire pipeline fail
+  parallel:
+    matrix:
+      - TEST_GROUP: '@group:fragile'
+        CONTAINERS: 'trezor-user-env-unix'
+
+suite web:
+  extends: .suite web base
 
 suite web snapshots:
-  extends: .e2e web
+  extends: .suite web base
+  when: manual
+  variables:
+    CYPRESS_SNAPSHOT: 1
+    CYPRESS_updateSnapshots: 1
+
+suite web fragile:
+  extends: .suite web fragile base
+
+suite web fragile snapshots:
+  extends: .suite web fragile base
   when: manual
   variables:
     CYPRESS_SNAPSHOT: 1
@@ -65,14 +88,14 @@ suite web snapshots:
 
 # Tests against latest trezor-firmware master
 suite web 2-master:
-  extends: .e2e web
+  extends: .suite web base
   only:
     <<: *run_everything_rules
   variables:
     FIRMWARE: 2-master
 
 suite web 2-master manual:
-  extends: .e2e web
+  extends: .suite web base
   except:
     <<: *run_everything_rules
   when: manual
