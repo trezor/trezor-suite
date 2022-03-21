@@ -1,6 +1,6 @@
 {
     "name": "@trezor/transport-native",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Trezor device transport layer for React Native",
     "main": "lib/commonjs/index",
     "module": "lib/module/index",
