@@ -1,3 +1,7 @@
+# 1.3.2
+
+-   fixed to work with node 12
+
 # 1.3.1
 
 -   updated cross-fetch lib to 3.1.5
