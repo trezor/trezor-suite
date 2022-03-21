@@ -132,19 +132,25 @@ const ConfirmOnDevice = ({
     animated,
     animation = 'SLIDE_UP',
 }: Props) => (
-    <Wrapper animated={animated} animation={animation}>
+    <Wrapper animated={animated} animation={animation} data-test="@prompts/confirm-on-device">
         <Left>
             <DeviceImage height="34px" trezorModel={trezorModel} />
         </Left>
         <Middle>
             <Title>{title}</Title>
             {successText && typeof steps === 'number' && activeStep && activeStep > steps ? (
-                <Success>{successText}</Success>
+                <Success data-test="@prompts/confirm-on-device/success">{successText}</Success>
             ) : undefined}
             {typeof steps === 'number' && activeStep && activeStep <= steps ? (
                 <Steps>
                     {Array.from(Array(steps).keys()).map((s, i) => (
-                        <Step key={s} isActive={isStepActive(i, activeStep)} />
+                        <Step
+                            key={s}
+                            isActive={isStepActive(i, activeStep)}
+                            data-test={`@prompts/confirm-on-device/step/${i}${
+                                isStepActive(i, activeStep) ? '/active' : ''
+                            }`}
+                        />
                     ))}
                 </Steps>
             ) : undefined}
