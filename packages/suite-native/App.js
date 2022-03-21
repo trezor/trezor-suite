@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,7 +17,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import {enumerate} from '@trezor/transport-native';
+import TrezorConnect from 'trezor-connect';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -44,27 +45,47 @@ const Section = ({children, title}) => {
   );
 };
 
+const connectOptions = {
+  transportReconnect: true,
+  debug: true,
+  manifest: {
+    email: 'info@trezor.io',
+    appUrl: '@trezor/suite',
+  },
+};
+
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  const [devicesInfo, setDevicesInfo] = useState('');
+  const [connectStatus, setConnectStatus] = useState('');
+  const [deviceState, setDeviceState] = useState('');
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const getFeatures = useCallback(() => {
+    console.log('getting features');
+    TrezorConnect.getDeviceState()
+      .then(state => {
+        setDeviceState(state);
+        console.log(state);
+      })
+      .catch(error => {
+        console.log('get device state failed ' + JSON.stringify(error));
+      });
+  }, []);
+
   useEffect(() => {
-    setInterval(() => {
-      enumerate()
-        .then(result => {
-          console.log(result);
-          setDevicesInfo(JSON.stringify(result));
-        })
-        .catch(error => {
-          console.log(error);
-          setDevicesInfo('Devices enumerate failed ' + JSON.stringify(error));
-        });
-    }, 3000);
-  }, [setDevicesInfo]);
+    TrezorConnect.init(connectOptions)
+      .then(result => {
+        setConnectStatus('Init OK');
+        console.log(result);
+        getFeatures();
+      })
+      .catch(error => {
+        setConnectStatus('Init failed ' + JSON.stringify(error.code));
+      });
+  }, [getFeatures]);
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -77,7 +98,11 @@ const App = () => {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Devices info">{devicesInfo}</Section>
+          <Section title="Connect status">{connectStatus}</Section>
+          <Section title="Device features">
+            <Button title="get device state" onPress={getFeatures} />
+            {deviceState}
+          </Section>
         </View>
       </ScrollView>
     </SafeAreaView>
