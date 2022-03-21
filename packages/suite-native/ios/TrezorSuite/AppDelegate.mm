@@ -60,7 +60,7 @@
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"packages/suite-native/index"];
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
