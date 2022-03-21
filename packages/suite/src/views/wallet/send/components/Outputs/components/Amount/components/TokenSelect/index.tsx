@@ -172,6 +172,7 @@ const TokenSelect = ({ output, outputId }: Props) => {
                         // compose (could be prevented because of Amount error from re-validation above)
                         composeTransaction(amountInputName);
                     }}
+                    data-test="@amount-select"
                 />
             )}
         />
