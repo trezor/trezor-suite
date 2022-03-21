@@ -1,8 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
 import { Input, useTheme, Icon, Button, Tooltip } from '@trezor/components';
 import { AddressLabeling, Translation, ReadMoreLink, MetadataLabeling } from '@suite-components';
+import { decodePaymentRequest } from '@trezor/lightning';
+
 import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions, useDevice } from '@suite-hooks';
@@ -20,6 +22,7 @@ import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 import { ConvertAddress } from './components/ConvertAddress';
 import type { Account } from '@wallet-types';
 import type { Output } from '@wallet-types/sendForm';
+import { Dispatch } from 'redux';
 
 const Text = styled.span`
     display: flex;
@@ -38,6 +41,7 @@ interface AddressProps {
     outputId: number;
     outputsCount: number;
     output: Partial<Output>;
+    setBolt11PayRequest: Dispatch<SetStateAction<any>>;
 }
 
 const parseQrData = (uri: string, symbol: Account['symbol']) => {
@@ -54,7 +58,7 @@ const parseQrData = (uri: string, symbol: Account['symbol']) => {
     return {};
 };
 
-export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
+export const Address = ({ output, outputId, outputsCount, setBolt11PayRequest }: AddressProps) => {
     const theme = useTheme();
     const { device } = useDevice();
     const {
@@ -110,6 +114,26 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     }, [composeTransaction, inputName, openQrModal, outputId, setValue, symbol]);
 
     const validateAddress = (value: string) => {
+        let bolt11Decode;
+        try {
+            bolt11Decode = decodePaymentRequest(value);
+        } catch (e) {
+            // Ignore it.
+        }
+        if (networkType === 'bitcoin' && bolt11Decode) {
+            setBolt11PayRequest(bolt11Decode);
+        } else if (!isAddressValid(value, symbol)) {
+            const addressDeprecatedUrl = isAddressDeprecated(value, symbol);
+            if (addressDeprecatedUrl) {
+                return (
+                    <ReadMoreLink
+                        message="RECIPIENT_FORMAT_DEPRECATED"
+                        url={addressDeprecatedUrl}
+                    />
+                );
+            }
+            return 'RECIPIENT_IS_NOT_VALID';
+        }
         if (!isAddressValid(value, symbol)) {
             const addressDeprecatedUrl = isAddressDeprecated(value, symbol);
 
@@ -234,7 +258,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             name={inputName}
             data-test={inputName}
             defaultValue={addressValue}
-            maxLength={MAX_LENGTH.ADDRESS}
+            maxLength={MAX_LENGTH.ADDRESS_OR_PAYMENT_REQUEST}
             innerRef={register({
                 required: 'RECIPIENT_IS_NOT_SET',
                 validate: validateAddress,

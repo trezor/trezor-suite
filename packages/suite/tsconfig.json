@@ -13,6 +13,7 @@
     "references": [
         { "path": "../suite-analytics" },
         { "path": "../components" },
+        { "path": "../lightning" },
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
         { "path": "../suite-storage" },

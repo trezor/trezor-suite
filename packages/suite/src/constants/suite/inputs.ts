@@ -6,7 +6,8 @@ export enum MAX_LENGTH {
     ETH_MESSAGE = 255,
 
     // send form
-    ADDRESS = 150,
+    // TODO: find out what is the max possibe length for bolt11
+    ADDRESS_OR_PAYMENT_REQUEST = 600,
     LABEL = 16,
     AMOUNT = 255,
     FIAT = 255,
