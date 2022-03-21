@@ -19,4 +19,5 @@ build & push image:
 install:
   stage: setup environment
   script:
+    - ci/scripts/check_branch_name.sh $CI_COMMIT_BRANCH
     - ci/scripts/check_lockfile.sh
