@@ -25,10 +25,28 @@ describe('Review transaction modal', () => {
             confirmationSteps: [
                 {
                     element: '@prompts/confirm-on-device/step/0/active',
-                    screenshot: true,
+                    snapshot: {
+                        name: 'test-confirm-address',
+                    },
                 },
             ],
         },
+        // ethereum testnet
+        {
+            network: 'trop',
+            address: '0x7de62F23453E9230cC038390901A9A0130105A3c',
+            fee: '1',
+            amount: '1',
+            confirmationSteps: [
+                {
+                    element: '@prompts/confirm-on-device/step/0/active',
+                    snapshot: {
+                        name: 'trop-confirm-address',
+                    },
+                },
+            ],
+        },
+        // ethereum testnet with token
         {
             network: 'trop',
             address: '0x7de62F23453E9230cC038390901A9A0130105A3c',
@@ -38,10 +56,30 @@ describe('Review transaction modal', () => {
             confirmationSteps: [
                 {
                     element: '@prompts/confirm-on-device/step/0/active',
-                    screenshot: true,
+                    snapshot: {
+                        name: 'trop-token-confirm-address',
+                    },
                 },
             ],
         },
+        // cardano testnet
+        {
+            network: 'tada',
+            address:
+                'addr_test1qp4jwf78hftza48x8ajc74ygn47lr0w0hfmsnvzx66sehssj922xhxkn6twlq2wn4q50q352annk3903tj00h45mgfmssfrxrt',
+            fee: '44',
+            amount: '1',
+            confirmationSteps: [
+                {
+                    element: '@prompts/confirm-on-device',
+                    // cardano random fees https://cips.cardano.org/cips/cip2/#randomimprove
+                    screenshot: {
+                        name: 'tada-confirm-address',
+                    },
+                },
+            ],
+        },
+        // cardano testnet token
         {
             network: 'tada',
             address:
@@ -52,7 +90,10 @@ describe('Review transaction modal', () => {
             confirmationSteps: [
                 {
                     element: '@prompts/confirm-on-device',
-                    screenshot: true,
+                    // cardano random fees https://cips.cardano.org/cips/cip2/#randomimprove
+                    screenshot: {
+                        name: 'tada-token-confirm-address',
+                    },
                 },
             ],
         },
@@ -93,8 +134,11 @@ describe('Review transaction modal', () => {
             cy.getTestElement('@send/review-button').click();
             f.confirmationSteps.forEach(step => {
                 cy.getTestElement(step.element);
+                // some of the fixtures have changing content so use only screenshot for reference
                 if (step.screenshot) {
-                    cy.getTestElement('@modal').matchImageSnapshot(`${f.network}-confirm-address`);
+                    cy.getTestElement('@modal').screenshot(step.screenshot.name);
+                } else if (step.snapshot) {
+                    cy.getTestElement('@modal').matchImageSnapshot(step.snapshot.name);
                 }
             });
 
