@@ -7,9 +7,6 @@ with import
 { };
 
 let
-  SuitePython = python3.withPackages(ps: [
-    ps.yamllint
-  ]);
   electron = electron_15;  # use the same version as defined in packages/suite-desktop/package.json
 in
   stdenv.mkDerivation {
@@ -24,7 +21,6 @@ in
       docker-compose # for e2e tests running on localhost
       nodejs
       yarn
-      SuitePython
       jre
       p7zip
       electron

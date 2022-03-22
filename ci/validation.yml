@@ -27,12 +27,6 @@ unit tests:
     - yarn build:libs
     - lerna run --stream test:unit -- --passWithNoTests
 
-yaml lint:
-  stage: validation
-  image: registry.gitlab.com/pipeline-components/yamllint:latest
-  script:
-    - yamllint . && echo "Success!"
-
 msg-system config validation:
   stage: validation
   script:
