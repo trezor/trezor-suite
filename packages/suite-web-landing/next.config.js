@@ -13,6 +13,11 @@ const withTranspileModules = require('next-transpile-modules')(localPackages);
 
 module.exports = withTranspileModules(
     withOptimizedImages({
+        // Currently, no optimization package is used because of NixOS glibc error,
+        // but withOptimizedImages still sets loaders for images.
+        // In the future, we could a) solve the glibc error or b) set the loaders
+        // for png/svg manually and remove the withOptimizedImages completely.
+        optimizeImages: false,
         images: {
             disableStaticImages: true, // https://exerror.com/nextjs-typeerror-unsupported-file-type-undefined-after-update-to-v-11/
         },
