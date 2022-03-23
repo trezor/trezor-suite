@@ -14,6 +14,7 @@ export const parseQuery = (uri: string) => {
     return params;
 };
 
+// todo: remove
 export const parseUri = (uri: string) => {
     try {
         return new URL(uri);

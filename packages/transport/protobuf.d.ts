@@ -274,39 +274,43 @@ export type TxRequest = {
     serialized?: TxRequestSerializedType;
 };
 
+
 // TxInputType replacement
 // TxInputType needs more exact types
 // differences: external input (no address_n + required script_pubkey)
 
-export type InternalInputScriptType = Exclude<InputScriptType, 'EXTERNAL'>;
+
+
+
+ export type InternalInputScriptType = Exclude<InputScriptType, 'EXTERNAL'>;
 
 type CommonTxInputType = {
-    prev_hash: string; // required: previous transaction hash (reversed)
-    prev_index: number; // required: previous transaction index
-    amount: UintType; // required
-    sequence?: number;
-    multisig?: MultisigRedeemScriptType;
-    decred_tree?: number;
-    orig_hash?: string; // RBF
-    orig_index?: number; // RBF
-    decred_staking_spend?: DecredStakingSpendType;
-    script_pubkey?: string; // required if script_type=EXTERNAL
-    script_sig?: string; // used by EXTERNAL, depending on script_pubkey
-    witness?: string; // used by EXTERNAL, depending on script_pubkey
-    ownership_proof?: string; // used by EXTERNAL, depending on script_pubkey
-    commitment_data?: string; // used by EXTERNAL, depending on ownership_proof
+    prev_hash: string, // required: previous transaction hash (reversed)
+    prev_index: number, // required: previous transaction index
+    amount: UintType, // required
+    sequence?: number,
+    multisig?: MultisigRedeemScriptType,
+    decred_tree?: number,
+    orig_hash?: string, // RBF
+    orig_index?: number, // RBF
+    decred_staking_spend?: DecredStakingSpendType,
+    script_pubkey?: string, // required if script_type=EXTERNAL
+    script_sig?: string, // used by EXTERNAL, depending on script_pubkey
+    witness?: string, // used by EXTERNAL, depending on script_pubkey
+    ownership_proof?: string, // used by EXTERNAL, depending on script_pubkey
+    commitment_data?: string, // used by EXTERNAL, depending on ownership_proof
 };
 
 export type TxInputType =
-    | (CommonTxInputType & {
-          address_n: number[];
-          script_type?: InternalInputScriptType;
-      })
-    | (CommonTxInputType & {
-          address_n?: typeof undefined;
-          script_type: 'EXTERNAL';
-          script_pubkey: string;
-      });
+    | CommonTxInputType & {
+          address_n: number[],
+          script_type?: InternalInputScriptType,
+      }
+    | CommonTxInputType & {
+          address_n?: typeof undefined,
+          script_type: 'EXTERNAL',
+          script_pubkey: string,
+      };
 
 export type TxInput = TxInputType;
 
@@ -318,42 +322,46 @@ export type TxOutputBinType = {
     decred_script_version?: number;
 };
 
+
 // TxOutputType replacement
 // TxOutputType needs more exact types
 // differences: external output (no address_n), opreturn output (no address_n, no address)
 
-export type ChangeOutputScriptType = Exclude<OutputScriptType, 'PAYTOOPRETURN'>;
+
+
+ export type ChangeOutputScriptType = Exclude<OutputScriptType, 'PAYTOOPRETURN'>;
+
 
 export type TxOutputType =
     | {
-          address: string;
-          address_n?: typeof undefined;
-          script_type: 'PAYTOADDRESS';
-          amount: UintType;
-          multisig?: MultisigRedeemScriptType;
-          orig_hash?: string;
-          orig_index?: number;
-          payment_req_index?: number;
+          address: string,
+          address_n?: typeof undefined,
+          script_type: 'PAYTOADDRESS',
+          amount: UintType,
+          multisig?: MultisigRedeemScriptType,
+          orig_hash?: string,
+          orig_index?: number,
+          payment_req_index?: number,
       }
     | {
-          address?: typeof undefined;
-          address_n: number[];
-          script_type: ChangeOutputScriptType;
-          amount: UintType;
-          multisig?: MultisigRedeemScriptType;
-          orig_hash?: string;
-          orig_index?: number;
-          payment_req_index?: number;
+          address?: typeof undefined,
+          address_n: number[],
+          script_type: ChangeOutputScriptType,
+          amount: UintType,
+          multisig?: MultisigRedeemScriptType,
+          orig_hash?: string,
+          orig_index?: number,
+          payment_req_index?: number,
       }
     | {
-          address?: typeof undefined;
-          address_n?: typeof undefined;
-          amount: '0';
-          op_return_data: string;
-          script_type: 'PAYTOOPRETURN';
-          orig_hash?: string;
-          orig_index?: number;
-          payment_req_index?: number;
+          address?: typeof undefined,
+          address_n?: typeof undefined,
+          amount: '0',
+          op_return_data: string,
+          script_type: 'PAYTOOPRETURN',
+          orig_hash?: string,
+          orig_index?: number,
+          payment_req_index?: number,
       };
 
 export type TxOutput = TxOutputType;
@@ -422,39 +430,42 @@ export type TxAckPaymentRequest = {
 
 // TxAck
 
+
 // TxAck replacement
 // TxAck needs more exact types
 // PrevInput and TxInputType requires exact responses in TxAckResponse
 // main difference: PrevInput should not contain address_n (unexpected field by protobuf)
 
+
+
 export type TxAckResponse =
     | {
-          inputs: Array<TxInputType | PrevInput>;
+          inputs: Array<TxInputType | PrevInput>,
       }
     | {
-          bin_outputs: TxOutputBinType[];
+          bin_outputs: TxOutputBinType[],
       }
     | {
-          outputs: TxOutputType[];
+          outputs: TxOutputType[],
       }
     | {
-          extra_data: string;
+          extra_data: string,
       }
     | {
-          version?: number;
-          lock_time?: number;
-          inputs_cnt: number;
-          outputs_cnt: number;
-          extra_data?: string;
-          extra_data_len?: number;
-          timestamp?: number;
-          version_group_id?: number;
-          expiry?: number;
-          branch_id?: number;
+          version?: number,
+          lock_time?: number,
+          inputs_cnt: number,
+          outputs_cnt: number,
+          extra_data?: string,
+          extra_data_len?: number,
+          timestamp?: number,
+          version_group_id?: number,
+          expiry?: number,
+          branch_id?: number,
       };
 
 export type TxAck = {
-    tx: TxAckResponse;
+    tx: TxAckResponse,
 };
 // - TxAck replacement end
 

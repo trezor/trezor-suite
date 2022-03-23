@@ -3,7 +3,11 @@
     "compilerOptions": {
         "target": "es5",
         "outDir": "./lib",
-        "esModuleInterop": false
+        "esModuleInterop": false,
+        "skipLibCheck": true
     },
-    "include": ["./src"]
+    "references": [
+        { "path": "../utils" }
+    ],
+    "include": ["./src/**/*.ts", "./src/**/*.json"]
 }

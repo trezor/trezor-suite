@@ -13,7 +13,6 @@
 | [@trezor/connect-iframe](./packages/connect-iframe)       | connect-iframe build from monorepo          |
 | [@trezor/integration-tests](./packages/integration-tests) | cross-packages e2e tests                    |
 | [@trezor/news-api](./packages/news-api)                   | medium proxy providing allow-origin headers |
-| [@trezor/rollout](./packages/rollout)                     | firmware updated utilities                  |
 | [@trezor/suite-build](./packages/suite-build)             | build utilities                             |
 | [@trezor/suite-data](./packages/suite-data)               | suite static data                           |
 | [@trezor/suite-desktop-api](./packages/suite-desktop-api) | API for suite - suite-desktop communication |

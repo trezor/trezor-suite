@@ -17,3 +17,4 @@ export * from './isNotUndefined';
 export * as versionUtils from './versionUtils';
 export * from './objectPartition';
 export * from './throwError';
+export * from './parseUri';

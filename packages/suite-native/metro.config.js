@@ -45,7 +45,6 @@ module.exports = (async () => {
                     __dirname,
                     '../../packages/blockchain-link',
                 ),
-                '@trezor/rollout': path.resolve(__dirname, '../../packages/rollout'),
                 '@trezor/transport': path.resolve(__dirname, '../../packages/transport'),
                 '@trezor/utxo-lib': path.resolve(__dirname, '../../packages/utxo-lib'),
             },

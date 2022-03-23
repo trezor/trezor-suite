@@ -24,6 +24,7 @@
         "messages.json",
         "protobuf.d.ts"
     ],
+    "types": "protobuf.d.ts",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",

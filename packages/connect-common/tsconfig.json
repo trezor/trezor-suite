@@ -1,6 +1,17 @@
 {
     "extends": "../../tsconfig.json",
-    "compilerOptions": { "outDir": "./libDev" },
-    "include": ["."],
-    "references": []
+    "compilerOptions": {
+        "outDir": "./libDev",
+        "skipLibCheck": true
+    },
+    "references": [
+        { "path": "../utils" },
+        { "path": "../connect-core" }
+    ],
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.json",
+        "./tests/**/*.ts"
+    ],
+    "exclude": ["node_modules/**"]
 }

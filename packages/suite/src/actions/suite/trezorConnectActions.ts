@@ -120,13 +120,16 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     try {
         const connectSrc = resolveStaticPath('connect/');
+
+        // const connectSrc = 'https://localhost:8088/';
         // 'https://localhost:8088/';
         // 'https://connect.corp.sldev.cz/develop/';
 
+        console.log('connect init');
         await TrezorConnect.init({
             connectSrc,
             transportReconnect: true,
-            debug: false,
+            debug: true,
             popup: false,
             webusb: isWeb(),
             pendingTransportEvent: getState().devices.length < 1,
@@ -135,6 +138,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 appUrl: '@trezor/suite',
             },
         });
+        console.log('connect init done xxxx');
 
         dispatch({
             type: SUITE.CONNECT_INITIALIZED,

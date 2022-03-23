@@ -43,6 +43,7 @@ const firmware =
                 }
 
                 // this if section takes care of incremental update, how does it work:
+                // todo:
                 // 1. I realize that I can't update to the latest firmware (see @trezor/rollout)
                 // 2. I use special intermediary firmware instead of using normal one (see @trezor/rollout and trezor-connect)
                 // 3. Intermediary firmware updates bootloader to the latest and keeps device in bootloader mode after reconnect

@@ -19,7 +19,6 @@
     "devDependencies": {
         "@trezor/blockchain-link": "^2.1.1",
         "@trezor/connect-common": "^0.0.4",
-        "@trezor/rollout": "^1.3.0",
         "@trezor/transport": "^1.1.2",
         "@trezor/utxo-lib": "^1.0.0",
         "copy-webpack-plugin": "^10.2.4",

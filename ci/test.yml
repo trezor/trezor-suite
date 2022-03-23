@@ -175,6 +175,10 @@ rollout manual:
     - yarn workspace @trezor/transport build:lib
     # run e2e tests
     - ./docker/docker-transport-test.sh
+    # test protobuf update script
+    - yarn workspace @trezor/transport update:protobuf
+    # todo: not sure if it should go here.
+    - yarn workspace @trezor/transport type-check
   after_script:
     - docker-compose down
     - docker network prune -f

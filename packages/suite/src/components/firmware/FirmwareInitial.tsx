@@ -126,6 +126,7 @@ const FirmwareInitial = ({
                          *  available values: 'valid' | 'outdated' | 'required' | 'unknown' | 'none'
                          *
                          *  `device.firmwareRelease` on the other hand contains latest available firmware to update to
+                        //  * todo:
                          *   (it is whatever returns getInfo() method from trezor-rollout)
                          *   so it should not be used here.
                          */

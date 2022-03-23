@@ -1,0 +1,19 @@
+{
+    "name": "@trezor/connect-core",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "types": "types",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@trezor/transport": "1.1.1",
+        "@trezor/blockchain-link": "2.1.1"
+    }
+}
