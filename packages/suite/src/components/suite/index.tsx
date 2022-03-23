@@ -1,4 +1,3 @@
-import Backdrop from './Backdrop';
 import DeviceIcon from './images/DeviceIcon';
 import Image, { Props as ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
@@ -55,7 +54,6 @@ import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
 
 export {
-    Backdrop,
     DeviceIcon,
     CheckItem,
     DeviceInvalidModeLayout,
