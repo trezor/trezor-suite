@@ -1,5 +1,3 @@
-## @trezor/suite
-
-Web + next.js + redux
+# @trezor/suite
 
 [Documentation](./docs/README.md)
