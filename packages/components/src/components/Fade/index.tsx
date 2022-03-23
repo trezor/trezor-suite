@@ -27,7 +27,7 @@ export const Fade: React.FC<FadeProps> = ({
 
     useEffect(() => {
         if (!div) return;
-        if (typeof IntersectionObserver === undefined) {
+        if (!('IntersectionObserver' in window)) {
             div.classList?.add(VISIBLE_CLASS);
             return;
         }

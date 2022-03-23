@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const withOptimizedImages = require('next-optimized-images');
 // Get Suite App version from the Suite package.json
@@ -9,7 +11,17 @@ const { dependencies } = require('./package.json');
 const localPackages = Object.keys(dependencies).filter(packageName =>
     packageName.match(/^@trezor/),
 );
-const withTranspileModules = require('next-transpile-modules')(localPackages);
+// react-spring library is not transpiled to ES5 by default
+const reactSpringPath = path.join(__dirname, '..', '..', 'node_modules', '@react-spring');
+const reactSpringPackages = fs
+    .readdirSync(reactSpringPath, { withFileTypes: true })
+    .filter(package => package.isDirectory())
+    .map(package => `@react-spring/${package.name}`);
+
+const withTranspileModules = require('next-transpile-modules')([
+    ...reactSpringPackages,
+    ...localPackages,
+]);
 
 module.exports = withTranspileModules(
     withOptimizedImages({
