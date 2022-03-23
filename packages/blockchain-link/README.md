@@ -1,5 +1,7 @@
 # @trezor/blockchain-link
 
+[![NPM](https://img.shields.io/npm/v/@trezor/blockchain-link.svg)](https://www.npmjs.org/package/@trezor/blockchain-link)
+
 blockchain-link is a client and unified interface for several backends (_BE_ further on) of various blockchain networks. Currently, there are implementations for
 
 -   [blockbook](https://github.com/trezor/blockbook): BE developed and deployed by SatoshiLabs. Provides access to Bitcoin(like) and Ethereum(like) networks.
@@ -53,7 +55,7 @@ Run UI with webworkers support
 yarn workspace @trezor/blockchain-link dev
 ```
 
-or without webworkes support (workers are compiled into a bundle)
+or without webworkers support (workers are compiled into a bundle)
 
 ```shell
 yarn workspace @trezor/blockchain-link dev:module

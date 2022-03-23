@@ -1,4 +1,4 @@
-# Trezor UTXO library (@trezor/utxo-lib)
+# @trezor/utxo-lib
 
 [![NPM](https://img.shields.io/npm/v/@trezor/utxo-lib.svg)](https://www.npmjs.org/package/@trezor/utxo-lib)
 

@@ -1,5 +1,7 @@
 # @trezor/transport
 
+[![NPM](https://img.shields.io/npm/v/@trezor/transport.svg)](https://www.npmjs.org/package/@trezor/transport)
+
 Library for low-level communication with Trezor.
 
 Intended as a "building block" for other packages - it is used in ~~trezor.js~~ (deprecated) and trezor-connect.
