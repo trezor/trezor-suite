@@ -14,7 +14,7 @@
     "dependencies": {
         "@trezor/components": "1.0.0",
         "@trezor/suite": "1.0.0",
-        "next": "^12.1.0",
+        "next": "^12.1.1",
         "react": "17.0.2",
         "react-dom": "17.0.2",
         "react-intl": "^5.23.0"

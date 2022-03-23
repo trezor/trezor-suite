@@ -8,6 +8,7 @@ import { normalizeVersion } from '@suite-utils/build';
 import { SL_SIGNING_KEY, WIKI_HOW_TO_RUN } from '@suite-constants/urls';
 
 const StyledDropdown = styled(Dropdown)`
+    height: 100%;
     & ul {
         padding-top: 6px;
         padding-bottom: 6px;
@@ -26,13 +27,15 @@ const StyledDropdownButton = styled(Button)`
 
 const StyledDownloadButton = styled(Button)`
     && {
-        padding: 0;
+        height: 100%;
+        padding: 9px 15px;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
-    & > a {
-        padding: 9px 15px;
-    }
+`;
+
+const StyledDownloadLink = styled(Link)`
+    height: 100%;
 `;
 
 const DropdownItem = styled.div`
@@ -177,14 +180,14 @@ const Index = ({ pathToApp }: { pathToApp: string }) => {
                                 <Icon icon="ARROW_DOWN" color={colors.BG_WHITE} size={15} />
                             </StyledDropdownButton>
                         </StyledDropdown>
-                        <StyledDownloadButton>
-                            <Link
-                                variant="nostyle"
-                                href={getInstallerURI({ platform, version, pathToApp })}
-                            >
+                        <StyledDownloadLink
+                            variant="nostyle"
+                            href={getInstallerURI({ platform, version, pathToApp })}
+                        >
+                            <StyledDownloadButton>
                                 <Translation id="TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP" />
-                            </Link>
-                        </StyledDownloadButton>
+                            </StyledDownloadButton>
+                        </StyledDownloadLink>
                     </>
                 )}
             </ButtonWrapper>

@@ -112,16 +112,16 @@ const Index = ({ children, pathToApp }: Props) => (
     <Layout>
         <Header>
             <TrezorLogo type="suite" width={185} />
-            <Button
-                variant="tertiary"
-                icon="EXTERNAL_LINK"
-                alignIcon="right"
-                color={colors.TYPE_DARK_GREY}
-            >
-                <Link variant="nostyle" href={`${pathToApp}/`}>
+            <Link variant="nostyle" href={`${pathToApp}/`}>
+                <Button
+                    variant="tertiary"
+                    icon="EXTERNAL_LINK"
+                    alignIcon="right"
+                    color={colors.TYPE_DARK_GREY}
+                >
                     <Translation id="TR_SUITE_WEB_LANDING_SUITE_ON_WEB" />
-                </Link>
-            </Button>
+                </Button>
+            </Link>
         </Header>
         <Content>{children}</Content>
         <Footer>
