@@ -4,15 +4,31 @@
 
 ## Packages
 
-| Name              | Packages                                                                                                                                                                                          |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| suite             | [core](./packages/suite), [web](./packages/suite-web), [desktop](./packages/suite-desktop), [native](./packages/suite-native), [data](./packages/suite-data), [storage](./packages/suite-storage) |
-| components        | [components](./packages/components), [storybook native](./packages/components-storybook-native)                                                                                                   |
-| rollout           | [rollout](./packages/rollout)                                                                                                                                                                     |
-| blockchain-link   | [blockchain-link](./packages/blockchain-link)                                                                                                                                                     |
-| integration-tests | [integration-tests](./packages/integration-tests)                                                                                                                                                 |
+| package                                                   | description                                 |
+| --------------------------------------------------------- | ------------------------------------------- |
+| [@trezor/blockchain-link](./packages/blockchain-link)     | lib for connecting to blockchains           |
+| [@trezor/components](./packages/components)               | frontend react components                   |
+| [@trezor/connect-common](./packages/connect-common)       | static files and commons for trezor-connect |
+| [@trezor/connect-explorer](./packages/connect-explorer)   | interactive demo for trezor-connect         |
+| [@trezor/connect-iframe](./packages/connect-iframe)       | connect-iframe build from monorepo          |
+| [@trezor/integration-tests](./packages/integration-tests) | cross-packages e2e tests                    |
+| [@trezor/news-api](./packages/news-api)                   | medium proxy providing allow-origin headers |
+| [@trezor/rollout](./packages/rollout)                     | firmware updated utilities                  |
+| [@trezor/suite-build](./packages/suite-build)             | build utilities                             |
+| [@trezor/suite-data](./packages/suite-data)               | suite static data                           |
+| [@trezor/suite-desktop-api](./packages/suite-desktop-api) | API for suite - suite-desktop communication |
+| [@trezor/suite-desktop](./packages/suite-desktop)         | suite build target for Mac, Win, Linux      |
+| [@trezor/suite-native](./packages/suite-native)           | suite build target for react-native         |
+| [@trezor/suite-storage](./packages/suite-storage)         | abstract database definition for suite      |
+| [@trezor/suite-web-landing](./packages/suite-web-landing) | https://suite.trezor.io/                    |
+| [@trezor/suite-web](./packages/suite-web)                 | suite build target for web                  |
+| [@trezor/suite](./packages/suite)                         | trezor suite common code                    |
+| [@trezor/transport-native](./packages/transport-native)   | communication lib for react-native          |
+| [@trezor/transport](./packages/transport)                 | communication lib for javascript            |
+| [@trezor/utils](./packages/utils)                         | shared utility functions                    |
+| [@trezor/utxo-lib](./packages/utxo-lib)                   | btc-like coins lib                          |
 
-## Development
+## @trezor/suite development
 
 Before you start make sure you have downloaded and installed [NVM](https://github.com/nvm-sh/nvm), [Yarn](https://yarnpkg.com/lang/en/docs/install/) and git with [git lfs](https://git-lfs.github.com/).
 
@@ -30,6 +46,10 @@ Run a dev build:
 -   `yarn suite:dev:desktop` (electron app)
 -   `yarn suite:dev:android` (react-native Android)
 -   `yarn suite:dev:ios` (react-native iOS)
+
+## trezor-connect development
+
+Trezor Connect is a platform for easy integration of Trezor into 3rd party services. At the moment, trezor-connect has its [own repository](https://github.com/trezor/connect) but we expect it to be migrated into the trezor-suite monorepo in a very short time.
 
 ## Contribute
 
