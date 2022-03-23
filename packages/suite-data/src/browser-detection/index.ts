@@ -18,14 +18,15 @@ type MainHtmlProps = {
     supportedBrowsers?: SupportedBrowser[];
 };
 
-const getButtonPartial = (props: MainHtmlProps) =>
-    props.button && props.url
-        ? `<a href="${props.url}" target="_blank" class="${style.button}" rel="noopener noreferrer">${props.button}</a>`
-        : ``;
+window.addEventListener('load', () => {
+    const getButtonPartial = (props: MainHtmlProps) =>
+        props.button && props.url
+            ? `<a href="${props.url}" target="_blank" class="${style.button}" rel="noopener noreferrer">${props.button}</a>`
+            : ``;
 
-const getSupportedBrowsersPartial = (supportedBrowsers?: SupportedBrowser[]) =>
-    supportedBrowsers
-        ? `<div class="${style.browsers}">
+    const getSupportedBrowsersPartial = (supportedBrowsers?: SupportedBrowser[]) =>
+        supportedBrowsers
+            ? `<div class="${style.browsers}">
             ${supportedBrowsers
                 .map(
                     (item: SupportedBrowser) => `
@@ -40,18 +41,17 @@ const getSupportedBrowsersPartial = (supportedBrowsers?: SupportedBrowser[]) =>
                 )
                 .join('')}
         </div>`
-        : ``;
+            : ``;
 
-const getMainHtml = (props: MainHtmlProps) => `
-<div class="${style.container}" data-test="@browser-detect">
-    <h1 class="${style.title}">${props.title}</h1>
-    <p class="${style.subtitle}">${props.subtitle}</p>
-    ${getButtonPartial(props)}
-    ${getSupportedBrowsersPartial(props.supportedBrowsers)}
-</div>
-`;
+    const getMainHtml = (props: MainHtmlProps) => `
+    <div class="${style.container}" data-test="@browser-detect">
+        <h1 class="${style.title}">${props.title}</h1>
+        <p class="${style.subtitle}">${props.subtitle}</p>
+        ${getButtonPartial(props)}
+        ${getSupportedBrowsersPartial(props.supportedBrowsers)}
+    </div>
+    `;
 
-window.addEventListener('load', () => {
     const unsupportedBrowser = getMainHtml({
         title: 'Your browser is not supported',
         subtitle: 'Please choose one of the supported browsers',
@@ -118,9 +118,9 @@ window.addEventListener('load', () => {
     const result = parser.getResult();
 
     const isMobile = result.device.type === 'mobile';
-    const supportedBrowser = supportedBrowsers.find(
+    const supportedBrowser = supportedBrowsers.filter(
         browser => browser.name === result.browser.name,
-    );
+    )[0];
     const updateRequired =
         supportedBrowser && result.browser.version
             ? supportedBrowser.version > parseInt(result.browser.version, 10)
@@ -138,11 +138,12 @@ window.addEventListener('load', () => {
         // Unsupported mobile browser: get Chrome for Android
         setBody(getChromeAndroid);
     } else if (updateRequired) {
-        if (supportedBrowser?.name === 'Chrome' || supportedBrowser?.name === 'Chromium') {
+        if (!supportedBrowser) return;
+        if (supportedBrowser.name === 'Chrome' || supportedBrowser.name === 'Chromium') {
             // Outdated browser: update Chrome
             setBody(updateChrome);
         }
-        if (supportedBrowser?.name === 'Firefox') {
+        if (supportedBrowser.name === 'Firefox') {
             // Outdated browser: update Firefox
             setBody(updateFirefox);
         }
