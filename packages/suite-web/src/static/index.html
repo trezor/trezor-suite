@@ -35,37 +35,48 @@
                 document.head.prepend(script);
             }
 
-            // switch favicon if dark mode
-            var icon = document.querySelector('link[rel=icon]');
-            var appleIcon = document.querySelector('link[rel=apple-touch-icon]');
             function switchIcons(event) {
-                var isDarkMode = event
-                    ? event.matches
-                    : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var isDarkMode = event.matches;
+                var icon = document.querySelector('link[rel=icon]');
+                var appleIcon = document.querySelector('link[rel=apple-touch-icon]');
+
                 if (isDarkMode) {
+                    // prettier-ignore
                     icon.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png',
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png'
                     );
+                    // prettier-ignore
                     appleIcon.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png',
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png'
                     );
                 } else {
+                    // prettier-ignore
                     icon.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png',
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png'
                     );
+                    // prettier-ignore
                     appleIcon.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png',
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png'
                     );
                 }
             }
-            window
-                .matchMedia('(prefers-color-scheme: dark)')
-                .addEventListener('change', switchIcons);
-            switchIcons();
+
+            if (window.matchMedia) {
+                var windowMatchMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+                // not supported in IE
+                if (windowMatchMedia.addEventListener) {
+                    windowMatchMedia.addEventListener('change', function (e) {
+                        return switchIcons(e);
+                    });
+                }
+
+                switchIcons(matchMediaIndex);
+            }
         </script>
         <script src="<%= assetPrefix %>/static/browser-detection/index.js"></script>
     </head>

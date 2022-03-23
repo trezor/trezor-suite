@@ -1,27 +1,25 @@
-const path = require('path');
+import path from 'path';
 
 module.exports = {
-    target: 'web',
+    target: 'browserslist',
     mode: 'production',
     entry: path.resolve(__dirname, './src/browser-detection/index.ts'),
     output: {
         path: path.resolve(__dirname, 'files/browser-detection'),
         filename: 'index.js',
     },
-    devtool: 'source-map',
+    devtool: 'nosources-source-map',
     module: {
         rules: [
             {
                 test: /\.ts$/,
                 exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'ts-loader',
-                        options: {
-                            transpileOnly: true,
-                        },
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-typescript'],
                     },
-                ],
+                },
             },
             {
                 test: /\.css$/,
@@ -36,11 +34,12 @@ module.exports = {
                             },
                         },
                     },
+                    'postcss-loader',
                 ],
             },
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
-                use: 'url-loader',
+                type: 'asset/resource',
             },
         ],
     },
