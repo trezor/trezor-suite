@@ -241,6 +241,18 @@ const AppNavigation = ({ items, primaryContent, maxWidth, inView }: Props) => {
         }
     }, [wrapper, primary, secondary, screenWidth]);
 
+    // Move staking tab from primary location to secondary if condensed dropdown menu is visible.
+    // It is ugly, byt it will save precious space and prevent menu overflow on smaller screens
+    const stakingIndex = items.findIndex(i => i.id === 'wallet-staking' && !i.isHidden);
+    const itemsToHideToDropdown = items[stakingIndex];
+    if (itemsToHideToDropdown) {
+        if (condensedSecondaryMenuVisible) {
+            itemsToHideToDropdown.position = 'secondary';
+        } else {
+            itemsToHideToDropdown.position = 'primary';
+        }
+    }
+
     const visibleItems = items.filter(item => !item.isHidden);
 
     const itemsPrimary = visibleItems.filter(item => item.position === 'primary');
