@@ -59,7 +59,21 @@ export const groupTransactionsByDate = (
 export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
-        if (tx.type === 'sent' || tx.type === 'self') {
+        if (tx.type === 'self') {
+            // in sent to self tx all we spent is just a fee
+            // (tx.amount is set to the fee in blockchain-link)
+            totalAmount = totalAmount.minus(tx.fee);
+
+            if (tx.cardanoSpecific?.withdrawal) {
+                totalAmount = totalAmount.plus(tx.cardanoSpecific?.withdrawal);
+            }
+
+            if (tx.cardanoSpecific?.deposit) {
+                totalAmount = totalAmount.minus(tx.cardanoSpecific?.deposit);
+            }
+        }
+
+        if (tx.type === 'sent') {
             totalAmount = totalAmount.minus(tx.amount);
             totalAmount = totalAmount.minus(tx.fee);
         }
@@ -79,7 +93,26 @@ export const sumTransactionsFiat = (
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
-        if (tx.type === 'sent' || tx.type === 'self') {
+        if (tx.type === 'self') {
+            // in sent to self tx all we spent is just a fee
+            // (tx.amount is set to the fee in blockchain-link)
+            totalAmount = totalAmount.minus(
+                toFiatCurrency(tx.fee, fiatCurrency, tx.rates, -1) ?? 0,
+            );
+
+            if (tx.cardanoSpecific?.withdrawal) {
+                totalAmount = totalAmount.plus(
+                    toFiatCurrency(tx.cardanoSpecific.withdrawal, fiatCurrency, tx.rates, -1) ?? 0,
+                );
+            }
+
+            if (tx.cardanoSpecific?.deposit) {
+                totalAmount = totalAmount.minus(
+                    toFiatCurrency(tx.cardanoSpecific.deposit, fiatCurrency, tx.rates, -1) ?? 0,
+                );
+            }
+        }
+        if (tx.type === 'sent') {
             totalAmount = totalAmount.minus(
                 toFiatCurrency(tx.amount, fiatCurrency, tx.rates, -1) ?? 0,
             );
@@ -543,6 +576,17 @@ export const enhanceTransaction = (
             ? {
                   ...tx.ethereumSpecific,
                   gasPrice: fromWei(tx.ethereumSpecific.gasPrice, 'gwei'),
+              }
+            : undefined,
+        cardanoSpecific: tx.cardanoSpecific
+            ? {
+                  ...tx.cardanoSpecific,
+                  withdrawal: tx.cardanoSpecific.withdrawal
+                      ? formatNetworkAmount(tx.cardanoSpecific.withdrawal, account.symbol)
+                      : undefined,
+                  deposit: tx.cardanoSpecific.deposit
+                      ? formatNetworkAmount(tx.cardanoSpecific.deposit, account.symbol)
+                      : undefined,
               }
             : undefined,
     };
