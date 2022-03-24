@@ -13,6 +13,7 @@ import TargetAddressLabel from '../TargetAddressLabel';
 import BaseTargetLayout from '../BaseTargetLayout';
 import { copyToClipboard } from '@suite-utils/dom';
 import { AccountMetadata } from '@suite-types/metadata';
+import { ExtendedMessageDescriptor } from '@suite-types';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     /* padding: 8px 0px; row padding */
@@ -144,6 +145,45 @@ export const Target = ({
     );
 };
 
+export const CustomRow = ({
+    transaction,
+    title,
+    amount,
+    sign,
+    useFiatValues,
+    ...baseLayoutProps
+}: {
+    amount: string;
+    sign: 'pos' | 'neg';
+    title: ExtendedMessageDescriptor['id'];
+    transaction: WalletAccountTransaction;
+    useFiatValues?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
+    className?: string;
+}) => (
+    <BaseTargetLayout
+        {...baseLayoutProps}
+        addressLabel={<Translation id={title} />}
+        amount={
+            <StyledHiddenPlaceholder>
+                <Sign value={sign} />
+                {amount} {transaction.symbol}
+            </StyledHiddenPlaceholder>
+        }
+        fiatAmount={
+            useFiatValues ? (
+                <FiatValue
+                    amount={amount}
+                    symbol={transaction.symbol}
+                    source={transaction.rates}
+                    useCustomSource
+                />
+            ) : undefined
+        }
+    />
+);
+
 export const FeeRow = ({
     transaction,
     useFiatValues,
@@ -155,24 +195,54 @@ export const FeeRow = ({
     isLast?: boolean;
     className?: string;
 }) => (
-    <BaseTargetLayout
+    <CustomRow
         {...baseLayoutProps}
-        addressLabel={<Translation id="FEE" />}
-        amount={
-            <StyledHiddenPlaceholder>
-                <Sign value="neg" />
-                {transaction.fee} {transaction.symbol}
-            </StyledHiddenPlaceholder>
-        }
-        fiatAmount={
-            useFiatValues ? (
-                <FiatValue
-                    amount={transaction.fee}
-                    symbol={transaction.symbol}
-                    source={transaction.rates}
-                    useCustomSource
-                />
-            ) : undefined
-        }
+        title="FEE"
+        sign="neg"
+        amount={transaction.fee}
+        transaction={transaction}
+        useFiatValues={useFiatValues}
+    />
+);
+
+export const WithdrawalRow = ({
+    transaction,
+    useFiatValues,
+    ...baseLayoutProps
+}: {
+    transaction: WalletAccountTransaction;
+    useFiatValues?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
+    className?: string;
+}) => (
+    <CustomRow
+        {...baseLayoutProps}
+        title="TR_TX_WITHDRAWAL"
+        sign="pos"
+        amount={transaction.cardanoSpecific?.withdrawal ?? '0'}
+        transaction={transaction}
+        useFiatValues={useFiatValues}
+    />
+);
+
+export const DepositRow = ({
+    transaction,
+    useFiatValues,
+    ...baseLayoutProps
+}: {
+    transaction: WalletAccountTransaction;
+    useFiatValues?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
+    className?: string;
+}) => (
+    <CustomRow
+        {...baseLayoutProps}
+        title="TR_TX_DEPOSIT"
+        sign="neg"
+        amount={transaction.cardanoSpecific?.deposit ?? '0'}
+        transaction={transaction}
+        useFiatValues={useFiatValues}
     />
 );

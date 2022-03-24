@@ -203,6 +203,63 @@ const AmountDetails = ({ tx, isTestnet }: Props) => {
                         color="light"
                     />
                 )}
+                {tx.cardanoSpecific?.withdrawal && (
+                    <AmountRow
+                        firstColumn={<Translation id="TR_TX_WITHDRAWAL" />}
+                        secondColumn={
+                            <FormattedCryptoAmount
+                                value={tx.cardanoSpecific.withdrawal}
+                                symbol={tx.symbol}
+                            />
+                        }
+                        thirdColumn={
+                            showHistoricalRates && (
+                                <FiatValue
+                                    amount={tx.cardanoSpecific.withdrawal}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                />
+                            )
+                        }
+                        fourthColumn={
+                            showFiat && (
+                                <FiatValue
+                                    amount={tx.cardanoSpecific.withdrawal}
+                                    symbol={tx.symbol}
+                                />
+                            )
+                        }
+                        color="light"
+                    />
+                )}
+                {tx.cardanoSpecific?.deposit && (
+                    <AmountRow
+                        firstColumn={<Translation id="TR_TX_DEPOSIT" />}
+                        secondColumn={
+                            <FormattedCryptoAmount
+                                value={tx.cardanoSpecific.deposit}
+                                symbol={tx.symbol}
+                            />
+                        }
+                        thirdColumn={
+                            showHistoricalRates && (
+                                <FiatValue
+                                    amount={tx.cardanoSpecific.deposit}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                />
+                            )
+                        }
+                        fourthColumn={
+                            showFiat && (
+                                <FiatValue amount={tx.cardanoSpecific.deposit} symbol={tx.symbol} />
+                            )
+                        }
+                        color="light"
+                    />
+                )}
                 {tx.tokens.map((t, i) => (
                     <AmountRow
                         // eslint-disable-next-line react/no-array-index-key

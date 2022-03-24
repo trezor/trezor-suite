@@ -1,0 +1,13 @@
+diff --git a/node_modules/trezor-connect/lib/typescript/account.d.ts b/node_modules/trezor-connect/lib/typescript/account.d.ts
+index 16c8728..1704f0e 100644
+--- a/node_modules/trezor-connect/lib/typescript/account.d.ts
++++ b/node_modules/trezor-connect/lib/typescript/account.d.ts
+@@ -110,6 +110,8 @@ export interface AccountTransaction {
+             | 'stake_registration'
+             | 'stake_deregistration'
+             | null;
++        withdrawal?: string;
++        deposit?: string;
+     };
+     details: {
+         vin: VinVout[];
