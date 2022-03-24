@@ -6303,6 +6303,16 @@ export default defineMessages({
         id: 'TR_STAKING_WITHDRAW',
         defaultMessage: 'Withdraw',
     },
+    TR_TX_WITHDRAWAL: {
+        id: 'TR_TX_WITHDRAWAL',
+        defaultMessage: 'Withdrawal',
+        description: 'Label for withdrawal amount in transaction detail',
+    },
+    TR_TX_DEPOSIT: {
+        id: 'TR_TX_DEPOSIT',
+        defaultMessage: 'Deposit',
+        description: 'Label for a deposit amount in transaction detail',
+    },
     TR_STAKING_DEPOSIT: {
         id: 'TR_STAKING_DEPOSIT',
         defaultMessage: 'Refundable Deposit',
@@ -6405,11 +6415,11 @@ export default defineMessages({
     },
     TR_STAKE_REGISTERED: {
         id: 'TR_STAKE_REGISTERED',
-        defaultMessage: 'Registration of a stake address',
+        defaultMessage: 'Stake address registration',
     },
     TR_STAKE_DEREGISTERED: {
         id: 'TR_STAKE_DEREGISTERED',
-        defaultMessage: 'Deregistration of a stake address',
+        defaultMessage: 'Stake address deregistration',
     },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',

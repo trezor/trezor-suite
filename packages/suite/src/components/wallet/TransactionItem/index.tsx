@@ -13,7 +13,7 @@ import { WalletAccountTransaction } from '@wallet-types';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import TransactionHeading from './components/TransactionHeading';
 import { MIN_ROW_HEIGHT } from './components/BaseTargetLayout';
-import { Target, TokenTransfer, FeeRow } from './components/Target';
+import { Target, TokenTransfer, FeeRow, WithdrawalRow, DepositRow } from './components/Target';
 import TransactionTimestamp from './components/TransactionTimestamp';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
@@ -176,7 +176,10 @@ const TransactionItem = React.memo(
         const isUnknown = isTxUnknown(transaction);
         const useFiatValues = !isTestnet(transaction.symbol);
         const useSingleRowLayout =
-            !isUnknown && (targets.length + tokens.length === 1 || transaction.type === 'self');
+            !isUnknown &&
+            (targets.length + tokens.length === 1 || transaction.type === 'self') &&
+            transaction.cardanoSpecific?.subtype !== 'withdrawal' &&
+            transaction.cardanoSpecific?.subtype !== 'stake_registration';
 
         const showFeeRow = !isUnknown && type !== 'recv' && transaction.fee !== '0';
 
@@ -341,6 +344,24 @@ const TransactionItem = React.memo(
                                         </AnimatePresence>
                                     </>
                                 ) : null}
+
+                                {transaction.cardanoSpecific?.withdrawal && (
+                                    <WithdrawalRow
+                                        transaction={transaction}
+                                        useFiatValues={useFiatValues}
+                                        isFirst
+                                        isLast
+                                    />
+                                )}
+
+                                {transaction.cardanoSpecific?.deposit && (
+                                    <DepositRow
+                                        transaction={transaction}
+                                        useFiatValues={useFiatValues}
+                                        isFirst
+                                        isLast
+                                    />
+                                )}
 
                                 {showFeeRow && (
                                     <StyledFeeRow
