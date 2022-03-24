@@ -1,3 +1,7 @@
+# 1.1.2
+
+-   Added CardanoTxRequiredSigner.key_path': 'optional in protobuf patches
+
 # 1.1.1
 
 -   Changed latest bridge url to https://connect.trezor.io/8/data/bridge/latest.txt'
