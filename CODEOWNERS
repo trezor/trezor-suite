@@ -4,17 +4,19 @@
 
 /packages/blockchain-link @mroz22 @marekrjpolak
 
-/packages/components @pingpwned @marekrjpolak @matejkriz
+/packages/components @dahaca @matejkriz
 
-/packages/connect-common @mroz22 @szymonlesisz
+/packages/connect-common @mroz22 @szymonlesisz @sime
 
-/packages/connect-iframe @mroz22 @szymonlesisz
+/packages/connect-iframe @mroz22 @szymonlesisz @sime
 
-/packages/integration-tests @vdovhanych @mroz22
+/packages/integration-tests @mroz22 @ondracja
 
-/packages/rollout @mroz22 @matejkriz
+/packages/news-api @matejkriz
 
-/packages/suite @tomasklim @mroz22
+/packages/rollout @mroz22
+
+/packages/suite @tomasklim @matejkriz
 
 /packages/suite-build @matejkriz @tomasklim
 
@@ -22,10 +24,24 @@
 
 /packages/suite-desktop @tomasklim @marekrjpolak
 
-/packages/suite-native @matejkriz
+/packages/suite-desktop-api @szymonlesisz @marekrjpolak
 
-/packages/suite-storage @mroz22 @matejkriz
+/packages/suite-native @matejkriz @Nodonisko
+
+/packages/suite-storage @matejkriz
 
 /packages/suite-web @marekrjpolak @tomasklim
 
-/packages/suite-web-landing @matejkriz @pingpwned
+/packages/suite-web-landing @matejkriz
+
+/packages/transport @mroz22
+
+/packages/transport-native @Nodonisko
+
+/packages/utils @karliatto
+
+/packages/utxo-lib @szymonlesisz
+
+/translations @alex-jerechinsky
+
+/packages/suite/src/support/messages.ts @alex-jerechinsky
