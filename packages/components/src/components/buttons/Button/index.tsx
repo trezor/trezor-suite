@@ -15,7 +15,7 @@ const getPadding = (variant: ButtonVariant, hasLabel: boolean) => {
     return hasLabel ? '9px 12px' : '8px';
 };
 
-const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: SuiteThemeColors) => {
+const getColor = (variant: ButtonVariant, isDisabled: boolean, theme: SuiteThemeColors) => {
     if (isDisabled) return theme.TYPE_LIGHT_GREY;
 
     switch (variant) {
@@ -25,7 +25,7 @@ const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: SuiteT
         case 'tertiary':
             return theme.TYPE_DARK_GREY;
         case 'secondary':
-            return theme.TYPE_GREEN;
+            return theme.TYPE_SECONDARY_TEXT;
         // no default
     }
 };
@@ -71,13 +71,12 @@ const Wrapper = styled.button<WrapperProps>`
     padding: ${props => getPadding(props.variant, props.hasLabel)};
     transition: ${props =>
         `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+    color: ${({ variant, isDisabled, theme }) => getColor(variant, isDisabled, theme)};
 
     ${props =>
         props.variant === 'primary' &&
         css`
-            color: ${props => props.theme.TYPE_WHITE};
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-            font-size: ${variables.FONT_SIZE.NORMAL};
             background: ${props => props.theme.BG_GREEN};
 
             &:hover,
@@ -92,8 +91,6 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'secondary' &&
         css`
             background: ${props => props.theme.BG_SECONDARY};
-            font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-            color: ${props => props.theme.TYPE_SECONDARY_TEXT};
 
             &:hover,
             &:focus,
@@ -106,13 +103,11 @@ const Wrapper = styled.button<WrapperProps>`
     ${props =>
         props.variant === 'tertiary' &&
         css`
-            color: ${props => props.theme.TYPE_DARK_GREY};
             background: ${props => props.theme.BG_GREY_ALT};
 
             &:hover,
             &:active,
             &:focus {
-                color: ${props => props.theme.TYPE_DARK_GREY};
                 background: ${props =>
                     darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_GREY_ALT)};
             }
@@ -128,7 +123,6 @@ const Wrapper = styled.button<WrapperProps>`
     ${props =>
         props.variant === 'danger' &&
         css`
-            color: ${props => props.theme.TYPE_WHITE};
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
             background: ${props => props.theme.BUTTON_RED};
 
@@ -143,13 +137,11 @@ const Wrapper = styled.button<WrapperProps>`
         props.isDisabled &&
         css`
             background: ${props => props.theme.BG_GREY};
-            color: ${props => props.theme.TYPE_LIGHT_GREY};
 
             &:hover,
             &:active,
             &:focus {
                 background: ${props => props.theme.BG_GREY};
-                color: ${props => props.theme.TYPE_LIGHT_GREY};
             }
         `}
 
@@ -238,7 +230,7 @@ const Button = React.forwardRef(
                 <Icon
                     icon={icon}
                     size={size || getIconSize(variant, hasLabel)}
-                    color={color || getIconColor(variant, isDisabled, theme)}
+                    color={color || getColor(variant, isDisabled, theme)}
                 />
             </IconWrapper>
         ) : null;
