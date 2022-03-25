@@ -173,7 +173,7 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                             }
                             placement="top"
                         >
-                            <Version new>
+                            <Version new data-test="@firmware/offer-version/new">
                                 {newVersion}
                                 {bitcoinOnlyVersion}
                             </Version>
