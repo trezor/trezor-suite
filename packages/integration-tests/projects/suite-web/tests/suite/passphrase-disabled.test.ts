@@ -1,4 +1,4 @@
-// @group:suite
+// @group:passphrase
 // @retry=2
 
 const DEFAULT_STANDARD_WALLET_LABEL = 'Standard wallet';
