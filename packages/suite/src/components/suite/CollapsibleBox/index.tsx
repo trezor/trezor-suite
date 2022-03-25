@@ -183,7 +183,10 @@ const CollapsibleBox = ({
                     </IconWrapper>
                 )}
             </Header>
-            <animated.div style={{ ...slideInStyles, overflow: 'hidden' }}>
+            <animated.div
+                style={{ ...slideInStyles, overflow: 'hidden' }}
+                data-test="@collapsible-box/body"
+            >
                 {/* This div is here because of the ref, ref on styled-component (Content) will result with unnecessary re-render */}
                 <div ref={heightRef} style={{ overflow: 'hidden' }}>
                     <Content variant={variant} $noContentPadding={noContentPadding}>
