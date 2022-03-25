@@ -47,11 +47,8 @@ describe('prerequisites = test various types of devices connecting to the applic
         it(f.desc, () => {
             f.mockDevice();
             cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+            cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
             // todo: match snapshot
-            // cy.getTestElement('@component/collapsible-box/body')
-            //     .should('have.css', 'opacity')
-            //     .and('equal', '1');
-            cy.wait(100);
             cy.screenshot(f.desc);
         });
     });
