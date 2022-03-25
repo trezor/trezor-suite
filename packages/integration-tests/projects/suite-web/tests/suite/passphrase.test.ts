@@ -1,4 +1,4 @@
-// @group:suite
+// @group:passphrase
 // @retry=2
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';

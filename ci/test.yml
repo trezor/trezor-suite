@@ -51,10 +51,18 @@
   extends: .e2e web
   parallel:
     matrix:
-      - TEST_GROUP: ['@group:suite', '@group:onboarding', '@group:device-management', '@group:settings', '@group:metadata']
-        CONTAINERS: 'trezor-user-env-unix'
-      - TEST_GROUP: '@group:wallet'
-        CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
+      - TEST_GROUP:
+          [
+            "@group:suite",
+            "@group:onboarding",
+            "@group:device-management",
+            "@group:settings",
+            "@group:metadata",
+            "@group:passphrase",
+          ]
+        CONTAINERS: "trezor-user-env-unix"
+      - TEST_GROUP: "@group:wallet"
+        CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
 
 # fragile group is dependent on external powers which means it might fail when some external resource
 # is modified. We still believe it might be worth having to fix such broken test time to time.
@@ -90,14 +98,16 @@ suite web fragile snapshots:
 suite web 2-master:
   extends: .suite web base
   only:
-    <<: *run_everything_rules
+    refs:
+      - schedules
   variables:
     FIRMWARE: 2-master
 
 suite web 2-master manual:
   extends: .suite web base
   except:
-    <<: *run_everything_rules
+    refs:
+      - schedules
   when: manual
   variables:
     FIRMWARE: 2-master
