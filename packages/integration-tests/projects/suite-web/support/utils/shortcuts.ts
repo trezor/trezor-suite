@@ -101,11 +101,6 @@ export const enableRegtestAndGetCoins = ({ payments = [] }) => {
 
     cy.getTestElement('@settings/wallet/network/regtest').click({ force: true });
 
-    cy.getTestElement('@settings/wallet/network/regtest/advance').click();
-
-    cy.getTestElement('@settings/advance/url').type('http://localhost:19121');
-    cy.getTestElement('@settings/advance/button/save').click({ force: true });
-
     // send 1 regtest bitcoin to first address in the derivation path
     payments.forEach(payment => {
         cy.task('sendToAddressAndMineBlock', {

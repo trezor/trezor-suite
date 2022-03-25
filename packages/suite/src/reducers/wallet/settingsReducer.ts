@@ -32,7 +32,12 @@ export const initialState: State = {
     discreetMode: false,
     enabledNetworks: ['btc'],
     lastUsedFeeLevel: {},
-    backends: {},
+    backends: {
+        regtest: {
+            type: 'blockbook',
+            urls: ['http://localhost:19121'],
+        },
+    },
 };
 
 const settingsReducer = (state: State = initialState, action: Action): State =>
