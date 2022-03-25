@@ -1,4 +1,4 @@
-// @group:suite
+// @group:passphrase
 // @retry=2
 
 describe('Passphrase', () => {
