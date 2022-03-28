@@ -1428,46 +1428,43 @@
           "type": "string",
           "id": 1
         },
-        "max_rounds": {
+        "max_total_fee": {
           "rule": "required",
           "type": "uint64",
           "id": 2
         },
-        "max_coordinator_fee_rate": {
-          "rule": "required",
+        "fee_per_anonymity": {
           "type": "uint32",
-          "id": 3
-        },
-        "max_fee_per_kvbyte": {
-          "rule": "required",
-          "type": "uint32",
-          "id": 4
+          "id": 3,
+          "options": {
+            "default": 0
+          }
         },
         "address_n": {
           "rule": "repeated",
           "type": "uint32",
-          "id": 5,
+          "id": 4,
           "options": {
             "packed": false
           }
         },
         "coin_name": {
           "type": "string",
-          "id": 6,
+          "id": 5,
           "options": {
             "default": "Bitcoin"
           }
         },
         "script_type": {
           "type": "InputScriptType",
-          "id": 7,
+          "id": 6,
           "options": {
             "default": "SPENDADDRESS"
           }
         },
         "amount_unit": {
           "type": "AmountUnit",
-          "id": 8,
+          "id": 11,
           "options": {
             "default": "BITCOIN"
           }
@@ -1579,8 +1576,7 @@
       "values": {
         "ORDINARY_TRANSACTION": 0,
         "POOL_REGISTRATION_AS_OWNER": 1,
-        "MULTISIG_TRANSACTION": 2,
-        "PLUTUS_TRANSACTION": 3
+        "MULTISIG_TRANSACTION": 2
       }
     },
     "CardanoTxWitnessType": {
@@ -1859,27 +1855,6 @@
           "rule": "required",
           "type": "CardanoDerivationType",
           "id": 14
-        },
-        "include_network_id": {
-          "type": "bool",
-          "id": 15,
-          "options": {
-            "default": false
-          }
-        },
-        "script_data_hash": {
-          "type": "bytes",
-          "id": 16
-        },
-        "collateral_inputs_count": {
-          "rule": "required",
-          "type": "uint32",
-          "id": 17
-        },
-        "required_signers_count": {
-          "rule": "required",
-          "type": "uint32",
-          "id": 18
         }
       }
     },
@@ -1916,10 +1891,6 @@
           "rule": "required",
           "type": "uint32",
           "id": 4
-        },
-        "datum_hash": {
-          "type": "bytes",
-          "id": 5
         }
       }
     },
@@ -2104,10 +2075,6 @@
         "script_hash": {
           "type": "bytes",
           "id": 5
-        },
-        "key_hash": {
-          "type": "bytes",
-          "id": 6
         }
       }
     },
@@ -2129,10 +2096,6 @@
         "script_hash": {
           "type": "bytes",
           "id": 3
-        },
-        "key_hash": {
-          "type": "bytes",
-          "id": 4
         }
       }
     },
@@ -2181,36 +2144,6 @@
           "rule": "required",
           "type": "uint32",
           "id": 1
-        }
-      }
-    },
-    "CardanoTxCollateralInput": {
-      "fields": {
-        "prev_hash": {
-          "rule": "required",
-          "type": "bytes",
-          "id": 1
-        },
-        "prev_index": {
-          "rule": "required",
-          "type": "uint32",
-          "id": 2
-        }
-      }
-    },
-    "CardanoTxRequiredSigner": {
-      "fields": {
-        "key_hash": {
-          "type": "bytes",
-          "id": 1
-        },
-        "key_path": {
-          "rule": "repeated",
-          "type": "uint32",
-          "id": 2,
-          "options": {
-            "packed": false
-          }
         }
       }
     },
@@ -6361,8 +6294,6 @@
         "MessageType_CardanoGetNativeScriptHash": 330,
         "MessageType_CardanoNativeScriptHash": 331,
         "MessageType_CardanoTxMint": 332,
-        "MessageType_CardanoTxCollateralInput": 333,
-        "MessageType_CardanoTxRequiredSigner": 334,
         "MessageType_RippleGetAddress": 400,
         "MessageType_RippleAddress": 401,
         "MessageType_RippleSignTx": 402,

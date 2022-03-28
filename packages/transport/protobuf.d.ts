@@ -539,9 +539,8 @@ export type OwnershipProof = {
 // AuthorizeCoinJoin
 export type AuthorizeCoinJoin = {
     coordinator: string;
-    max_rounds: number;
-    max_coordinator_fee_rate: number;
-    max_fee_per_kvbyte: number;
+    max_total_fee: number;
+    fee_per_anonymity?: number;
     address_n: number[];
     coin_name?: string;
     script_type?: InputScriptType;
@@ -627,7 +626,6 @@ export enum CardanoTxSigningMode {
     ORDINARY_TRANSACTION = 0,
     POOL_REGISTRATION_AS_OWNER = 1,
     MULTISIG_TRANSACTION = 2,
-    PLUTUS_TRANSACTION = 3,
 }
 
 export enum CardanoTxWitnessType {
@@ -719,10 +717,6 @@ export type CardanoSignTxInit = {
     witness_requests_count: number;
     minting_asset_groups_count: number;
     derivation_type: CardanoDerivationType;
-    include_network_id?: boolean;
-    script_data_hash?: string;
-    collateral_inputs_count: number;
-    required_signers_count: number;
 };
 
 // CardanoTxInput
@@ -737,7 +731,6 @@ export type CardanoTxOutput = {
     address_parameters?: CardanoAddressParametersType;
     amount: UintType;
     asset_groups_count: number;
-    datum_hash?: string;
 };
 
 // CardanoAssetGroup
@@ -797,7 +790,6 @@ export type CardanoTxCertificate = {
     pool?: string;
     pool_parameters?: CardanoPoolParametersType;
     script_hash?: string;
-    key_hash?: string;
 };
 
 // CardanoTxWithdrawal
@@ -805,7 +797,6 @@ export type CardanoTxWithdrawal = {
     path?: number[];
     amount: UintType;
     script_hash?: string;
-    key_hash?: string;
 };
 
 // CardanoCatalystRegistrationParametersType
@@ -825,18 +816,6 @@ export type CardanoTxAuxiliaryData = {
 // CardanoTxMint
 export type CardanoTxMint = {
     asset_groups_count: number;
-};
-
-// CardanoTxCollateralInput
-export type CardanoTxCollateralInput = {
-    prev_hash: string;
-    prev_index: number;
-};
-
-// CardanoTxRequiredSigner
-export type CardanoTxRequiredSigner = {
-    key_hash?: string;
-    key_path?: number[];
 };
 
 // CardanoTxItemAck
