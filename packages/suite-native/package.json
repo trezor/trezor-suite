@@ -8,7 +8,8 @@
         "start": "react-native start",
         "test": "jest",
         "lint": "eslint .",
-        "type-check": "tsc -b"
+        "type-check": "tsc -b",
+        "build:android": "cd android && ./gradlew build"
     },
     "dependencies": {
         "react": "17.0.2",
