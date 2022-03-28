@@ -56,15 +56,16 @@ export const getSubtype = (tx: BlockfrostTransaction) => {
     const delegations = tx.txData.delegation_count;
     if (registrations === 0 && delegations === 0) return null;
 
-    if (delegations > 0) {
-        // transaction could both register staking address and delegate stake at once. In that case we treat it as "delegation"
-        return 'stake_delegation';
-    }
     if (registrations > 0) {
         if (new BigNumber(tx.txData.deposit).gt(0)) {
+            // transaction could both register staking address and delegate stake at the same time. In that case we treat it as "stake registration"
             return 'stake_registration';
         }
         return 'stake_deregistration';
+    }
+
+    if (delegations > 0) {
+        return 'stake_delegation';
     }
     return null;
 };
@@ -185,6 +186,13 @@ export const transformTransaction = (
         blockfrostTxData.txData.output_amount.find(b => b.unit === 'lovelace')?.quantity || '0';
     const fee = blockfrostTxData.txData.fees;
     let totalSpent = amount;
+
+    // total withdrawal amount for withdrawal transaction (sent to self tx)
+    let withdrawal: string | undefined;
+
+    // refundable fee for registering staking address (sent to self tx with stake registration cert)
+    let deposit: string | undefined;
+
     const inputs = transformInputOutput(blockfrostTxData.txUtxos.inputs);
     const outputs = transformInputOutput(blockfrostTxData.txUtxos.outputs);
     const vinLength = Array.isArray(inputs) ? inputs.length : 0;
@@ -209,6 +217,20 @@ export const transformTransaction = (
         // recalculate amount, amount spent is just a fee
         amount = blockfrostTxData.txData.fees;
         totalSpent = amount;
+
+        if (blockfrostTxData.txData.withdrawal_count > 0) {
+            // output including fee is larger than the sum of all inputs,
+            // so there must be more coin somewhere and that's the withdrawal amount
+            withdrawal = new BigNumber(totalOutput)
+                .plus(blockfrostTxData.txData.fees)
+                .minus(totalInput)
+                .toString();
+        }
+
+        if (new BigNumber(blockfrostTxData.txData.deposit).gt(0)) {
+            // deposit paid for stake address registration
+            deposit = blockfrostTxData.txData.deposit;
+        }
     } else if (outgoing.length === 0 && incoming.length > 0) {
         // none of the input is mine but and output or token transfer is mine
         type = 'recv';
@@ -250,6 +272,8 @@ export const transformTransaction = (
         tokens,
         cardanoSpecific: {
             subtype: getSubtype(blockfrostTxData),
+            withdrawal,
+            deposit,
         },
         details: {
             vin: inputs,
