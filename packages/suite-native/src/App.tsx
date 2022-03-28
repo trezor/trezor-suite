@@ -6,12 +6,31 @@ import {
     StatusBar,
     StyleSheet,
     Text,
-    useColorScheme,
     View,
+    useColorScheme,
 } from 'react-native';
 
 import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 import TrezorConnect from 'trezor-connect';
+
+const styles = StyleSheet.create({
+    sectionContainer: {
+        marginTop: 32,
+        paddingHorizontal: 24,
+    },
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: '600',
+    },
+    sectionDescription: {
+        marginTop: 8,
+        fontSize: 18,
+        fontWeight: '400',
+    },
+    highlight: {
+        fontWeight: '700',
+    },
+});
 
 const Section = ({ children, title }: any) => {
     const isDarkMode = useColorScheme() === 'dark';
@@ -67,7 +86,7 @@ export const App = () => {
                 console.log(state);
             })
             .catch(error => {
-                console.log('get device state failed ' + JSON.stringify(error));
+                console.log(`get device state failed ${JSON.stringify(error)}`);
             });
     }, []);
 
@@ -79,7 +98,7 @@ export const App = () => {
                 getFeatures();
             })
             .catch(error => {
-                setConnectStatus('Init failed ' + JSON.stringify(error.code));
+                setConnectStatus(`Init failed ${JSON.stringify(error.code)}`);
             });
     }, [getFeatures]);
 
@@ -103,22 +122,3 @@ export const App = () => {
         </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    sectionContainer: {
-        marginTop: 32,
-        paddingHorizontal: 24,
-    },
-    sectionTitle: {
-        fontSize: 24,
-        fontWeight: '600',
-    },
-    sectionDescription: {
-        marginTop: 8,
-        fontSize: 18,
-        fontWeight: '400',
-    },
-    highlight: {
-        fontWeight: '700',
-    },
-});
