@@ -229,6 +229,161 @@ blockchain-link manual:
     <<: *run_everything_rules
   when: manual
 
+# Connect tests
+# Test
+
+.jobs-connect:
+  parallel:
+    matrix:
+      - TESTS_INCLUDED_METHODS: "applySettings,applyFlags,getFeatures"
+      - TESTS_INCLUDED_METHODS: "signTransaction"
+      - TESTS_INCLUDED_METHODS: "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction"
+      - TESTS_INCLUDED_METHODS: "stellarGetAddress,stellarSignTransaction"
+      - TESTS_INCLUDED_METHODS: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
+      - TESTS_INCLUDED_METHODS: "eosGetPublicKey,eosSignTransaction"
+      - TESTS_INCLUDED_METHODS: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
+      - TESTS_INCLUDED_METHODS: "nemGetAddress,nemSignTransaction"
+      - TESTS_INCLUDED_METHODS: "rippleGetAddress,rippleSignTransaction"
+      - TESTS_INCLUDED_METHODS: "tezosGetAddress,tezosGetPublicKey"
+      - TESTS_INCLUDED_METHODS: "binanceSignTransaction"
+
+.jobs-t1:
+  parallel:
+    matrix:
+      - TESTS_INCLUDED_METHODS: "applySettings,applyFlags,getFeatures"
+      - TESTS_INCLUDED_METHODS: "signTransaction"
+      - TESTS_INCLUDED_METHODS: "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction"
+      - TESTS_INCLUDED_METHODS: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
+
+.jobs-api:
+  parallel:
+    matrix:
+      - TEST_PATTERN: "init"
+
+.test-connect:
+  extends: .jobs-connect
+  image: ghcr.io/trezor/trezor-user-env
+  only:
+    changes:
+      - "packages/connect*/*"
+  needs:
+    - "connect-build"
+  variables:
+    SDL_VIDEODRIVER: "dummy"
+    TESTS_USE_TX_CACHE: "false"
+    TESTS_USE_WS_CACHE: "false"
+  before_script:
+    - nix-shell --run "yarn"
+  script:
+    - "echo Firmware version: $TESTS_FIRMWARE"
+    - /trezor-user-env/run-nix.sh &
+    - nix-shell --run "yarn test:integration ${TEST_PATTERN} --coverage true"
+  after_script:
+    - cp /trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
+    - cp /trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log
+  artifacts:
+    paths:
+      - trezor-user-env-debugging.log
+      - tenv-emulator-bridge-debugging.log
+    expire_in: 1 week
+    when: always
+
+TT latest:
+  extends: .test-connect
+  stage: integration testing
+
+API:
+  extends: .test-connect
+  stage: integration testing
+  parallel: !reference [.jobs-api,parallel]
+
+.test-nightly:
+  extends: .test-connect
+  stage: integration testing
+  only:
+    - schedules
+  variables:
+    TESTS_USE_TX_CACHE: "true"
+    TESTS_USE_WS_CACHE: "true"
+  # todo: resolve tests flakiness and remove retry option
+  retry: 2
+
+.test-manual:
+  extends: .test-connect
+  stage: integration testing
+  when: manual
+  # out of stages order, needs makes jobs available along with "base tests"
+  needs: ["build"]
+
+TT master:
+  extends: .test-nightly
+  variables:
+    TESTS_FIRMWARE: "2-master"
+
+TT master:
+  extends: .test-manual
+  variables:
+    TESTS_FIRMWARE: "2-master"
+
+TT 2.2.0:
+  extends: .test-nightly
+  # todo: remove delay. according to my observation, the higher number of jobs running concurrently, the higher chance of test failing. are we sure jobs are isolated from each other
+  when: delayed
+  start_in: 5 minutes
+  variables:
+    TESTS_FIRMWARE: "2.2.0"
+
+TT 2.2.0:
+  extends: .test-manual
+  variables:
+    TESTS_FIRMWARE: "2.2.0"
+
+T1 latest:
+  extends: .test-nightly
+  # todo: remove delay. according to my observation, the higher number of jobs running concurrently, the higher chance of test failing. are we sure jobs are isolated from each other
+  when: delayed
+  start_in: 10 minutes
+  variables:
+    TESTS_FIRMWARE: "1-latest"
+  parallel: !reference [.jobs-t1,parallel]
+
+T1 latest:
+  extends: .test-manual
+  variables:
+    TESTS_FIRMWARE: "1-latest"
+  parallel: !reference [.jobs-t1,parallel]
+
+T1 master:
+  extends: .test-nightly
+    # todo: remove delay. according to my observation, the higher number of jobs running concurrently, the higher chance of test failing. are we sure jobs are isolated from each other
+  when: delayed
+  start_in: 15 minutes
+  variables:
+    TESTS_FIRMWARE: "1-master"
+  parallel: !reference [.jobs-t1,parallel]
+
+T1 master:
+  extends: .test-manual
+  variables:
+    TESTS_FIRMWARE: "1-master"
+  parallel: !reference [.jobs-t1,parallel]
+
+# Examples
+node:
+  image: ghcr.io/trezor/trezor-user-env
+  stage: examples
+  dependencies:
+    - "setup environment"
+  variables:
+    SDL_VIDEODRIVER: "dummy"
+  before_script:
+    - nix-shell --run "yarn"
+    - nix-shell --run "yarn build:npm-extended"
+  script:
+    - /trezor-user-env/run-nix.sh &
+    - sleep 10
+    - nix-shell --run "yarn babel-node ./examples/node/index.js"
+
 # @trezor/connect-explorer
 .e2e connect-explorer:
   stage: integration testing

@@ -296,8 +296,33 @@ suite-desktop build windows codesign:
 #     paths:
 #       - app-release.apk
 
+# connect build
+connect-build:
+  stage: build
+  only:
+    changes:
+      - "packages/connect*/*"
+  variables:
+    GIT_STRATEGY: clone
+    GIT_SUBMODULE_STRATEGY: recursive
+  script:
+    - git submodule update --init --recursive
+    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:connect
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build
+  # will be like this once the new runner is assigned to suite for connect only
+  # tags:
+  #   - connect
+
+# connect explorer build
 .connect-explorer build base:
   stage: build
+  only:
+    changes:
+      - "packages/connect*/*"
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
@@ -317,3 +342,6 @@ connect-explorer build manual:
   except:
     <<: *run_everything_rules
   when: manual
+  # will be like this once the new runner is assigned to suite for connect only
+  # tags:
+  #   - connect

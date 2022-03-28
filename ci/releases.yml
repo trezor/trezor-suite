@@ -79,3 +79,37 @@ msg-system codesign deploy:
     - source ${MSG_SYSTEM_DATA_DEPLOY_KEYFILE}
     - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws
     - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/stable/*'
+
+# connect deploy to production
+
+## Create rollback copy of connect.trezo.io
+rollback production copy:
+  stage: deploy
+  only:
+    refs:
+      - v8
+  when: manual
+  variables:
+    GIT_STRATEGY: none
+  before_script: []
+  script:
+    - aws s3 sync s3://connect.trezor.io s3://rollback-connect.trezor.io
+  tags:
+    - connect_deploy
+
+## Deploy release to connect.trezor.io
+deploy production:
+  stage: deploy
+  only:
+    refs:
+      - v8
+  when: manual
+  dependencies:
+    - build
+  variables:
+    GIT_STRATEGY: none
+  before_script: []
+  script:
+    - ./ci/scripts/connect-s3sync.sh 8
+  tags:
+    - connect_deploy
