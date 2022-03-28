@@ -119,7 +119,7 @@ suite-web-landing build stable:
     expire_in: 1 days
 
 .build_nix: &build_nix
-  script:  # override build script to use nix-shell instead
+  script: # override build script to use nix-shell instead
     - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
     - nix-shell --option system x86_64-darwin --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
@@ -296,7 +296,7 @@ suite-desktop build windows codesign:
 #     paths:
 #       - app-release.apk
 
-connect-explorer build:
+.connect-explorer build base:
   stage: build
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
@@ -306,3 +306,14 @@ connect-explorer build:
     expire_in: 7 days
     paths:
       - packages/connect-explorer/build
+
+connect-explorer build:
+  extends: .connect-explorer build base
+  only:
+    <<: *run_everything_rules
+
+connect-explorer build manual:
+  extends: .connect-explorer build base
+  except:
+    <<: *run_everything_rules
+  when: manual
