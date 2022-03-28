@@ -32,7 +32,6 @@
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
-        "update:submodules": "./scripts/update-submodules.sh",
         "update:protobuf": "./scripts/protobuf-build.sh"
     },
     "devDependencies": {
