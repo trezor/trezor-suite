@@ -1,0 +1,19 @@
+version: "3"
+services:
+  trezor-user-env-unix:
+    image: ghcr.io/trezor/trezor-user-env
+    environment:
+      - SDL_VIDEODRIVER=dummy
+      - XDG_RUNTIME_DIR=/var/tmp
+
+  test-run:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
+    container_name: iframe-test-runner
+    depends_on:
+      - trezor-user-env-unix
+    network_mode: service:trezor-user-env-unix
+    working_dir: /trezor-suite
+    command: bash -c "docker/wait-for-env.sh &&  yarn workspace @trezor/integration-tests test:connect-iframe"
+    volumes:
+      - ../:/trezor-suite
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw # needed on localhost

@@ -6,264 +6,278 @@
     - /^release\//
 
 # @trezor/suite-web
-.e2e web:
-  stage: integration testing
-  variables:
-    COMPOSE_PROJECT_NAME: $CI_JOB_ID
-    COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
-    ## Tells Cypress where is the index of application
-    CYPRESS_ASSET_PREFIX: /web
-    CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-    ## should tests do snapshot testing
-    CYPRESS_SNAPSHOT: 1
-    ## reporter url
-    TRACK_SUITE_URL: https://track-suite.herokuapp.com
-    ## when debugging or developing tests it does not make sense to have retries,
-    ## in other cases retries are useful to avoid occasional failures due to flaky tests
-    ALLOW_RETRY: 1
-  before_script:
-    - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
-  script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/utils build:lib
-    - docker-compose pull
-    - docker-compose up -d ${CONTAINERS}
-    - docker-compose run test-run
-  after_script:
-    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
-    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log
-    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt
-    - docker-compose down
-    - docker network prune -f
-  artifacts:
-    expire_in: 7 days
-    when: always
-    paths:
-      - ./packages/integration-tests/projects/suite-web/snapshots
-      - ./packages/integration-tests/projects/suite-web/screenshots
-      - ./packages/integration-tests/projects/suite-web/videos
-      - download-snapshots.sh
-      - trezor-user-env-debugging.log
-      - tenv-emulator-bridge-debugging.log
-      - trezor-user-env-version.txt
+# .e2e web:
+#   stage: integration testing
+#   variables:
+#     COMPOSE_PROJECT_NAME: $CI_JOB_ID
+#     COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+#     ## Tells Cypress where is the index of application
+#     CYPRESS_ASSET_PREFIX: /web
+#     CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+#     ## should tests do snapshot testing
+#     CYPRESS_SNAPSHOT: 1
+#     ## reporter url
+#     TRACK_SUITE_URL: https://track-suite.herokuapp.com
+#     ## when debugging or developing tests it does not make sense to have retries,
+#     ## in other cases retries are useful to avoid occasional failures due to flaky tests
+#     ALLOW_RETRY: 1
+#   before_script:
+#     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
+#   script:
+#     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+#     - yarn workspace @trezor/utils build:lib
+#     - docker-compose pull
+#     - docker-compose up -d ${CONTAINERS}
+#     - docker-compose run test-run
+#   after_script:
+#     - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log
+#     - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log
+#     - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt
+#     - docker-compose down
+#     - docker network prune -f
+#   artifacts:
+#     expire_in: 7 days
+#     when: always
+#     paths:
+#       - ./packages/integration-tests/projects/suite-web/snapshots
+#       - ./packages/integration-tests/projects/suite-web/screenshots
+#       - ./packages/integration-tests/projects/suite-web/videos
+#       - download-snapshots.sh
+#       - trezor-user-env-debugging.log
+#       - tenv-emulator-bridge-debugging.log
+#       - trezor-user-env-version.txt
 
-.suite web base:
-  extends: .e2e web
-  parallel:
-    matrix:
-      - TEST_GROUP:
-          [
-            "@group:suite",
-            "@group:onboarding",
-            "@group:device-management",
-            "@group:settings",
-            "@group:metadata",
-            "@group:passphrase",
-          ]
-        CONTAINERS: "trezor-user-env-unix"
-      - TEST_GROUP: "@group:wallet"
-        CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+# .suite web base:
+#   extends: .e2e web
+#   parallel:
+#     matrix:
+#       - TEST_GROUP:
+#           [
+#             "@group:suite",
+#             "@group:onboarding",
+#             "@group:device-management",
+#             "@group:settings",
+#             "@group:metadata",
+#             "@group:passphrase",
+#           ]
+#         CONTAINERS: "trezor-user-env-unix"
+#       - TEST_GROUP: "@group:wallet"
+#         CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
 
-# fragile group is dependent on external powers which means it might fail when some external resource
-# is modified. We still believe it might be worth having to fix such broken test time to time.
-.suite web fragile base:
-  extends: .e2e web
-  allow_failure: true # most importantly - when a test in this category fails, it does not make entire pipeline fail
-  parallel:
-    matrix:
-      - TEST_GROUP: "@group:fragile"
-        CONTAINERS: "trezor-user-env-unix"
+# # fragile group is dependent on external powers which means it might fail when some external resource
+# # is modified. We still believe it might be worth having to fix such broken test time to time.
+# .suite web fragile base:
+#   extends: .e2e web
+#   allow_failure: true # most importantly - when a test in this category fails, it does not make entire pipeline fail
+#   parallel:
+#     matrix:
+#       - TEST_GROUP: "@group:fragile"
+#         CONTAINERS: "trezor-user-env-unix"
 
-suite web:
-  extends: .suite web base
+# suite web:
+#   extends: .suite web base
 
-suite web snapshots:
-  extends: .suite web base
-  when: manual
-  variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
+# suite web snapshots:
+#   extends: .suite web base
+#   when: manual
+#   variables:
+#     CYPRESS_SNAPSHOT: 1
+#     CYPRESS_updateSnapshots: 1
 
-suite web fragile:
-  extends: .suite web fragile base
+# suite web fragile:
+#   extends: .suite web fragile base
 
-suite web fragile snapshots:
-  extends: .suite web fragile base
-  when: manual
-  variables:
-    CYPRESS_SNAPSHOT: 1
-    CYPRESS_updateSnapshots: 1
+# suite web fragile snapshots:
+#   extends: .suite web fragile base
+#   when: manual
+#   variables:
+#     CYPRESS_SNAPSHOT: 1
+#     CYPRESS_updateSnapshots: 1
 
-# Tests against latest trezor-firmware master
-suite web 2-master:
-  extends: .suite web base
-  only:
-    refs:
-      - schedules
-  variables:
-    FIRMWARE: 2-master
+# # Tests against latest trezor-firmware master
+# suite web 2-master:
+#   extends: .suite web base
+#   only:
+#     refs:
+#       - schedules
+#   variables:
+#     FIRMWARE: 2-master
 
-suite web 2-master manual:
-  extends: .suite web base
-  except:
-    refs:
-      - schedules
-  when: manual
-  variables:
-    FIRMWARE: 2-master
+# suite web 2-master manual:
+#   extends: .suite web base
+#   except:
+#     refs:
+#       - schedules
+#   when: manual
+#   variables:
+#     FIRMWARE: 2-master
 
-# TODO scheduled jobs against beta chrome channel
-# TODO scheduled jobs against suite.trezor.io
+# # TODO scheduled jobs against beta chrome channel
+# # TODO scheduled jobs against suite.trezor.io
 
-# @trezor/suite-desktop
-.e2e desktop:
-  stage: integration testing
-  variables:
-    COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
-  before_script:
-    - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
-  script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    # 3 next steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
-    # but since this is run only in nightly builds it can be probably built inside the job for now..
-    - yarn build:libs
-    - yarn workspace @trezor/suite-data msg-system-sign-config
-    - yarn workspace @trezor/suite-desktop build:linux
-    - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix
-    - docker-compose run test-run
-  after_script:
-    - docker-compose down
-    - docker network prune -f
-  artifacts:
-    expire_in: 7 days
-    when: always
-    paths:
-      - ./packages/integration-tests/projects/suite-desktop/screenshots
+# # @trezor/suite-desktop
+# .e2e desktop:
+#   stage: integration testing
+#   variables:
+#     COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
+#   before_script:
+#     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
+#   script:
+#     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+#     # 3 next steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
+#     # but since this is run only in nightly builds it can be probably built inside the job for now..
+#     - yarn build:libs
+#     - yarn workspace @trezor/suite-data msg-system-sign-config
+#     - yarn workspace @trezor/suite-desktop build:linux
+#     - docker-compose pull
+#     - docker-compose up -d trezor-user-env-unix
+#     - docker-compose run test-run
+#   after_script:
+#     - docker-compose down
+#     - docker network prune -f
+#   artifacts:
+#     expire_in: 7 days
+#     when: always
+#     paths:
+#       - ./packages/integration-tests/projects/suite-desktop/screenshots
 
-suite desktop:
-  extends: .e2e desktop
-  only:
-    <<: *run_everything_rules
+# suite desktop:
+#   extends: .e2e desktop
+#   only:
+#     <<: *run_everything_rules
 
-suite desktop manual:
-  extends: .e2e desktop
-  except:
-    <<: *run_everything_rules
-  when: manual
+# suite desktop manual:
+#   extends: .e2e desktop
+#   except:
+#     <<: *run_everything_rules
+#   when: manual
 
-# @trezor/rollout
+# # @trezor/rollout
 
-# This test should exist only until trezor-connect is in monorepo.
-# It checks whether rollout works with currently released webwallet data
-.rollout-e2e:
-  stage: integration testing
-  script:
-    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/utils build:lib
-    - yarn workspace @trezor/rollout test:integration
+# # This test should exist only until trezor-connect is in monorepo.
+# # It checks whether rollout works with currently released webwallet data
+# .rollout-e2e:
+#   stage: integration testing
+#   script:
+#     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+#     - yarn workspace @trezor/utils build:lib
+#     - yarn workspace @trezor/rollout test:integration
 
-rollout:
-  extends: .rollout-e2e
-  only:
-    <<: *run_everything_rules
+# rollout:
+#   extends: .rollout-e2e
+#   only:
+#     <<: *run_everything_rules
 
-rollout manual:
-  extends: .rollout-e2e
-  except:
-    <<: *run_everything_rules
-  when: manual
+# rollout manual:
+#   extends: .rollout-e2e
+#   except:
+#     <<: *run_everything_rules
+#   when: manual
 
 # @trezor/transport
-.e2e transport:
+# .e2e transport:
+#   stage: integration testing
+#   variables:
+#     COMPOSE_FILE: ./docker/docker-compose.transport-test.yml
+#   script:
+#     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+#     - yarn workspace @trezor/utils build:lib
+#     - yarn workspace @trezor/transport build:lib
+#     # run e2e tests
+#     - ./docker/docker-transport-test.sh
+#   after_script:
+#     - docker-compose down
+#     - docker network prune -f
+
+# transport:
+#   extends: .e2e transport
+#   only:
+#     <<: *run_everything_rules
+
+# transport manual:
+#   extends: .e2e transport
+#   except:
+#     <<: *run_everything_rules
+#   when: manual
+
+# # @trezor/blockchain-link
+# .e2e blockchain-link:
+#   stage: integration testing
+#   variables:
+#     COMPOSE_FILE: ./docker/docker-compose.blockchain-link-ci.yml
+#   script:
+#     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+#     - yarn workspace @trezor/utils build:lib
+#     - yarn workspace @trezor/utxo-lib build:lib
+#     - yarn workspace @trezor/blockchain-link build:lib
+#     - yarn workspace @trezor/blockchain-link build:workers
+#     - docker-compose pull
+#     - docker-compose up -d trezor-user-env-unix electrum-regtest
+#     - docker-compose run test-run
+#   after_script:
+#     - docker-compose down
+#     - docker network prune -f
+
+# blockchain-link:
+#   extends: .e2e blockchain-link
+#   only:
+#     <<: *run_everything_rules
+
+# blockchain-link manual:
+#   extends: .e2e blockchain-link
+#   except:
+#     <<: *run_everything_rules
+#   when: manual
+
+# # @trezor/connect-explorer
+# .e2e connect-explorer:
+#   stage: integration testing
+#   variables:
+#     COMPOSE_PROJECT_NAME: $CI_JOB_ID
+#     COMPOSE_FILE: ./docker/docker-compose.connect-explorer-ci.yml
+#     URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}/
+#   script:
+#     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+#     - yarn workspace @trezor/utils build:lib
+#     - docker-compose pull
+#     - docker-compose up -d trezor-user-env-unix
+#     - docker-compose run test-run
+#   after_script:
+#     - docker-compose down
+#     - docker network prune -f
+#   artifacts:
+#     expire_in: 7 days
+#     when: always
+#     paths:
+#       - ./packages/integration-tests/projects/connect-explorer/screenshots
+#       - ./packages/integration-tests/connect-popup-overview.html
+#       - ./packages/integration-tests/test-results
+
+# connect-explorer:
+#   extends: .e2e connect-explorer
+#   only:
+#     <<: *run_everything_rules
+
+# connect-explorer manual:
+#   extends: .e2e connect-explorer
+#   except:
+#     <<: *run_everything_rules
+#   when: manual
+
+e2e connect-iframe:
   stage: integration testing
   variables:
-    COMPOSE_FILE: ./docker/docker-compose.transport-test.yml
-  script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/utils build:lib
-    - yarn workspace @trezor/transport build:lib
-    # run e2e tests
-    - ./docker/docker-transport-test.sh
-    # test protobuf update script
-    - yarn workspace @trezor/transport update:protobuf
-    # todo: not sure if it should go here.
-    - yarn workspace @trezor/transport type-check
-  after_script:
-    - docker-compose down
-    - docker network prune -f
-
-transport:
-  extends: .e2e transport
-  only:
-    <<: *run_everything_rules
-
-transport manual:
-  extends: .e2e transport
-  except:
-    <<: *run_everything_rules
-  when: manual
-
-# @trezor/blockchain-link
-.e2e blockchain-link:
-  stage: integration testing
-  variables:
-    COMPOSE_FILE: ./docker/docker-compose.blockchain-link-ci.yml
-  script:
-    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/utils build:lib
-    - yarn workspace @trezor/utxo-lib build:lib
-    - yarn workspace @trezor/blockchain-link build:lib
-    - yarn workspace @trezor/blockchain-link build:workers
-    - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix electrum-regtest
-    - docker-compose run test-run
-  after_script:
-    - docker-compose down
-    - docker network prune -f
-
-blockchain-link:
-  extends: .e2e blockchain-link
-  only:
-    <<: *run_everything_rules
-
-blockchain-link manual:
-  extends: .e2e blockchain-link
-  except:
-    <<: *run_everything_rules
-  when: manual
-
-# @trezor/connect-explorer
-.e2e connect-explorer:
-  stage: integration testing
-  variables:
+    # todo: is COMPOSE_PROJECT_NAME needed?
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
-    COMPOSE_FILE: ./docker/docker-compose.connect-explorer-ci.yml
-    URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}/
+    COMPOSE_FILE: ./docker/docker-compose.connect-iframe-test.yml
   script:
+    - git submodule update --init --recursive
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/utils build:lib
+    - yarn build:libs
+    - cp -r ./packages/connect-iframe/build ./packages/integration-tests/projects/connect-iframe
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
   after_script:
     - docker-compose down
     - docker network prune -f
-  artifacts:
-    expire_in: 7 days
-    when: always
-    paths:
-      - ./packages/integration-tests/projects/connect-explorer/screenshots
-      - ./packages/integration-tests/connect-popup-overview.html
-      - ./packages/integration-tests/test-results
-
-connect-explorer:
-  extends: .e2e connect-explorer
-  only:
-    <<: *run_everything_rules
-
-connect-explorer manual:
-  extends: .e2e connect-explorer
-  except:
-    <<: *run_everything_rules
-  when: manual

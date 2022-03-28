@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../transport" },
         { "path": "../blockchain-link" }
     ]
 }

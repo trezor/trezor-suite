@@ -35,7 +35,7 @@
         "redux-thunk": "^2.3.0",
         "stringify-object": "^3.3.0",
         "styled-components": "^5.3.3",
-        "trezor-connect": "../connect/npm-extended"
+        "trezor-connect": "8.2.8-beta.3"
     },
     "devDependencies": {
         "@types/markdown-it": "12.2.3",
