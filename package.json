@@ -47,6 +47,7 @@
         "format": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "format:verify": "yarn prettier --check \"**/*.{js,ts,tsx,mdx,md,html,json}\"",
         "update-submodules": "./update-submodules.sh",
+        "update-coins": "./scripts/coins-build.sh",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
         "refs": "yarn update-project-references",
         "types": "yarn type-check",

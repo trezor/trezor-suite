@@ -2,13 +2,13 @@
 
 set -euxo pipefail
 
-SRC='../../submodules/trezor-common/tools'
-DIST='./files/data'
+SRC='./submodules/trezor-common/tools'
+DIST='./packages/connect-common/files'
 
-if [ $# -ge 1 ] && [ "$1" == "local" ]
-    then
-        SRC='../trezor-firmware/common/tools'
-fi
+# if [ $# -ge 1 ] && [ "$1" == "local" ]
+#     then
+#         SRC='../trezor-firmware/common/tools'
+# fi
 
 # BUID coins.json using tezor-common cointool
 # exlude unused fields
