@@ -108,6 +108,8 @@ export interface Transaction {
             | 'stake_registration'
             | 'stake_deregistration'
             | null;
+        withdrawal?: string;
+        deposit?: string;
     };
     details: TransactionDetail;
 }
