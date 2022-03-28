@@ -1,0 +1,24 @@
+{
+    "version": 327683,
+    "hash": "adb43bcd8fc99d6ed353c30ca8e5bd5996cd7bcf719bd4253f103dfb7227f6ed",
+    "inputs": [
+        {
+            "prev_index": 4294967295,
+            "sequence": 4294967295,
+            "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+            "script_sig": "0347be0f1291af3c09542b3848fc01000000002f4e614e"
+        }
+    ],
+    "bin_outputs": [
+        {
+            "amount": 167280961,
+            "script_pubkey": "76a9146a341485a9444b35dc9cb90d24e7483de7d37e0088ac"
+        },
+        {
+            "amount": 167280960,
+            "script_pubkey": "76a9145a5a16aabf8af9f154acef6005e0a72161a05dde88ac"
+        }
+    ],
+    "extra_data": "26010047be0f00f74f485a24638ea3a98033cf5fa068e5b61fd8b4e6755b63942c8d579426af59",
+    "lock_time": 0
+}

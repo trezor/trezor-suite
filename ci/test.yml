@@ -263,3 +263,21 @@ connect-explorer manual:
   except:
     <<: *run_everything_rules
   when: manual
+
+e2e connect-iframe:
+  stage: integration testing
+  variables:
+    # todo: is COMPOSE_PROJECT_NAME needed?
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-iframe-test.yml
+  script:
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/utils build:lib
+    - yarn workspace @trezor/connect-iframe build:lib
+    - cp -r ./packages/connect-iframe/build ./packages/integration-tests/projects/connect-iframe
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix
+    - docker-compose run test-run
+  after_script:
+    - docker-compose down
+    - docker network prune -f
