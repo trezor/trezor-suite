@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { AppState } from '@suite/types/suite';
 import { H1, P, Button, variables } from '@trezor/components';
 import { db } from '@suite/storage';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -70,17 +69,11 @@ interface StateProps {
     error: Error | null | undefined;
 }
 
-const mapStateToProps = (state: AppState) => ({
-    log: state.log,
-    analytics: state.analytics,
-});
-
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({ reportToSentry }, dispatch);
 
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> & {
-        children: JSX.Element[];
-    };
+type Props = ReturnType<typeof mapDispatchToProps> & {
+    children: JSX.Element[];
+};
 
 /**
  * Swallow render errors
@@ -145,4 +138,4 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ErrorBoundary);
+export default connect(null, mapDispatchToProps)(ErrorBoundary);
