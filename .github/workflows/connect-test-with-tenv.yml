@@ -1,0 +1,80 @@
+name: connect tests with trezor-user-env
+on:
+  workflow_call:
+    inputs:
+      methods:
+        description: "List of methods to include in tests (example applySettings,applyFlags,getFeatures)"
+        type: "string"
+        required: false
+      test-pattern:
+        description: "Test pattern to use (e.g. `init` or `methods`)"
+        type: "string"
+        required: true
+
+jobs:
+  connect-test-nodejs:
+    name: Test NodeJS (${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    services:
+      trezor-user-env:
+        image: "ghcr.io/trezor/trezor-user-env:latest"
+        ports:
+          - 9001:9001
+          - 21326:21326
+          - 21325:21326
+        env:
+          SDL_VIDEODRIVER: "dummy"
+          USE_TX_CACHE: true
+          USE_WS_CACHE: true
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: yarn install
+      # Use `-d` to disable Docker, since it's started under `trezor-user-env`
+      - run: ./tests/run.sh -d -s 'yarn test:integration ${{ inputs.test-pattern }}' -i '${{ inputs.methods }}'
+
+  connect-test-karma:
+    name: connect test karma
+    runs-on: ubuntu-latest
+    services:
+      trezor-user-env:
+        image: "ghcr.io/trezor/trezor-user-env:latest"
+        ports:
+          - 9001:9001
+          - 21326:21326
+          - 21325:21326
+        env:
+          SDL_VIDEODRIVER: "dummy"
+          USE_TX_CACHE: true
+          USE_WS_CACHE: true
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v2
+        with:
+          # karma tests are run in browser, so node version doesn't matter too much
+          node-version: 12.x
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: yarn install
+      - name: Retrieve build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+          path: build
+      # xvfb is required to run karma
+      - run: sudo apt-get install xvfb
+      # Use `-d` to disable Docker, since it's started under `trezor-user-env`
+      - run: xvfb-run --auto-servernum  ./tests/run.sh -d -s 'yarn test:karma:production ${{ inputs.test-pattern }}' -i '${{ inputs.methods }}'

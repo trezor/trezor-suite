@@ -1,0 +1,135 @@
+name: connect tests
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  connect-check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: yarn install
+      - run: yarn test:health
+      - run: yarn flow
+      - run: yarn typescript
+      - run: yarn lint
+      - run: yarn test:unit
+
+  connect-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: yarn install
+      - run: yarn build
+      - run: yarn build:inline
+      - name: Save artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: build
+          if-no-files-found: error
+          retention-days: 1
+
+  api:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: init
+
+  management:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: "applySettings,applyFlags,getFeatures"
+
+  btc-sign:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: signTransaction
+
+  btc-others:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction
+
+  stellar:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: stellarGetAddress,stellarSignTransaction
+
+  cardano:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction
+
+  eos:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: eosGetPublicKey,eosSignTransaction
+
+  eth:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData
+
+  nem:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: nemGetAddress,nemSignTransaction
+
+  ripple:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: rippleGetAddress,rippleSignTransaction
+
+  tezos:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: tezosGetAddress,tezosGetPublicKey
+
+  binance:
+    needs: [build, check]
+    uses: ./.github/workflows/connect-test-with-tenv.yml
+    with:
+      test-pattern: methods
+      methods: binanceSignTransaction
