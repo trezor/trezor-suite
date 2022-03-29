@@ -1,0 +1,1 @@
+export * from 'trezor-connect';
