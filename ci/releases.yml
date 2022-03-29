@@ -84,7 +84,7 @@ msg-system codesign deploy:
 
 ## Create rollback copy of connect.trezo.io
 rollback production copy:
-  stage: deploy
+  stage: deploy to production
   only:
     refs:
       - v8
@@ -99,7 +99,7 @@ rollback production copy:
 
 ## Deploy release to connect.trezor.io
 deploy production:
-  stage: deploy
+  stage: deploy to production
   only:
     refs:
       - v8
