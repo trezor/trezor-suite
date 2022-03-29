@@ -313,7 +313,7 @@ API:
   stage: integration testing
   when: manual
   # out of stages order, needs makes jobs available along with "base tests"
-  needs: ["build"]
+  needs: ["connect-build"]
 
 TT master:
   extends: .test-nightly
