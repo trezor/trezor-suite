@@ -1,3 +1,11 @@
+# Config
+.run_everything_rules: &run_everything_rules
+  refs:
+    - develop
+    - releases
+    - schedules
+    - /^release\//
+
 # npm packages deploy to npm registry
 .npm_deploy_rules: &npm_deploy_rules
   stage: deploy to npm
