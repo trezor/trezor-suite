@@ -1,0 +1,135 @@
+# npm packages deploy to npm registry
+.npm_deploy_rules: &npm_deploy_rules
+  stage: deploy to npm
+  when: manual
+  tags:
+    - deploy
+  before_script:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+  after_script:
+    - rm ~/.npmrc
+
+beta blockchain-link deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/blockchain-link && npm publish --tag beta"
+
+beta components deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/components && npm publish --tag beta"
+
+beta connect-common deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/connect-common && npm publish --tag beta"
+
+beta rollout deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/rollout && npm publish --tag beta"
+
+beta transport deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/transport && npm publish --tag beta"
+
+beta utils deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/utils && npm publish --tag beta"
+
+beta utxo-lib deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/utxo-lib && npm publish --tag beta"
+
+blockchain-link deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/blockchain-link && npm publish"
+
+components deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/components && npm publish"
+
+connect-common deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/connect-common && npm publish"
+
+rollout deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/rollout && npm publish"
+
+transport deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/transport && npm publish"
+
+utils deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/utils && npm publish"
+
+utxo-lib deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && yarn build:libs && cd ./packages/utxo-lib && npm publish"
+
+# connect npm deploy
+
+publish release to npm:
+  stage: deploy to npm
+  only:
+    refs:
+      - v8
+  when: manual
+  dependencies:
+    - connect-build
+  before_script:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    - nix-shell --run "yarn"
+  script:
+    - nix-shell --run "yarn build:npm && cd ./npm && npm publish"
+    - nix-shell --run "yarn build:npm-extended && cd ./npm-extended && npm publish --tag extended"
+  after_script:
+    - rm ~/.npmrc
+  tags:
+    - connect_deploy
+
+# Publish beta release to npm registry
+
+publish beta release to npm:
+  stage: deploy to npm
+  except:
+    - v8
+  when: manual
+  dependencies:
+    - connect-build
+  before_script:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+    - nix-shell --run "yarn"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show trezor-connect version --tag beta) && node ./scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+  script:
+    - nix-shell --run "yarn build:npm-extended && cd ./npm-extended && npm publish --tag beta"
+  after_script:
+    - rm ~/.npmrc
+  tags:
+    - connect_deploy

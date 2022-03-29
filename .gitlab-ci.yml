@@ -19,6 +19,7 @@ stages:
   - utils
   - deploy to staging
   - deploy to production
+  - deploy to npm
 
 include:
   - ci/environment.yml
@@ -27,6 +28,7 @@ include:
   - ci/components.yml
   - ci/build.yml
   - ci/deploy.yml
+  - ci/npm-deploy.yml
   - ci/test.yml
   - ci/releases.yml
   # to be run only on scheduled pipelines
