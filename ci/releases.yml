@@ -104,8 +104,8 @@ deploy production:
     refs:
       - v8
   when: manual
-  dependencies:
-    - build
+  needs:
+    - "connect-build"
   variables:
     GIT_STRATEGY: none
   before_script: []
