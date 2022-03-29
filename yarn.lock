@@ -5095,6 +5095,11 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
+"@types/parse-uri@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/parse-uri/-/parse-uri-1.0.0.tgz#afb76c3ee2f03e01da612a463ce4bdb4fb13e139"
+  integrity sha512-JX89Mjz9InFw+YKJYj9nRFxUwx+OUvrK6hkMDLoTwUsQ2DD+OmD05hK0bR1/dEfVqui/EJ3SPEuAq+xWB4LHwA==
+
 "@types/parse5@^5.0.0":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@types/parse5/-/parse5-5.0.3.tgz#e7b5aebbac150f8b5fdd4a46e7f0bd8e65e19109"
@@ -18285,10 +18290,10 @@ parse-path@^4.0.0:
     qs "^6.9.4"
     query-string "^6.13.8"
 
-parse-uri@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/parse-uri/-/parse-uri-1.0.5.tgz#41954321ef7a9623182b7c44cc6bba3257b45d4d"
-  integrity sha512-v0TPDnYmnDu1w19tAkX8XI+5zO8qjUH8Htdh0YkZsMSp7iYkNPSgMOih0qRjJNSgvM1GI7arNXwSASGna/jB1w==
+parse-uri@1.0.7, parse-uri@^1.0.5:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/parse-uri/-/parse-uri-1.0.7.tgz#287629a09328a97e398468f21b8a00c4a2d9cc73"
+  integrity sha512-eWuZCMKNlVkXrEoANdXxbmqhu2SQO9jUMCSpdbJDObin0JxISn6e400EWsSRbr/czdKvWKkhZnMKEGUwf/Plmg==
 
 parse-url@^6.0.0:
   version "6.0.0"
