@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../blockchain-link" },
+        { "path": "../rollout" },
+        { "path": "../transport" },
+        { "path": "../utils" },
+        { "path": "../utxo-lib" }
+    ]
+}
