@@ -371,7 +371,7 @@ T1 master:
 # Examples
 node:
   image: ghcr.io/trezor/trezor-user-env
-  stage: examples
+  stage: integration testing
   dependencies:
     - "setup environment"
   variables:
