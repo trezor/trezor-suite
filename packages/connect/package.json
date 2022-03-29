@@ -1,0 +1,63 @@
+{
+    "name": "@trezor/connect",
+    "version": "9.0.0-beta.1",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/connect",
+    "description": "High-level javascript interface for Trezor hardware wallet.",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "trezor-connect",
+        "javascript"
+    ],
+    "sideEffects": false,
+    "main": "lib/index",
+    "browser": {
+        "./lib/index": "./lib/index-browser",
+        "./lib/workers/workers": "./lib/workers/workers-browser",
+        "./lib/utils/assets": "./lib/utils/assets-browser"
+    },
+    "react-native": {
+        "./lib/workers/workers": "./lib/workers/workers-react-native"
+    },
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build",
+        "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json",
+        "version:beta": "yarn bump prerelease ./package.json ./README.md ./src/data/ConnectSettings.ts ../connect-web/package.json ../connect-web/src/webextension/trezor-usb-permissions.ts",
+        "version:patch": "yarn bump patch ./package.json ./README.md ./src/data/ConnectSettings.ts ../connect-web/package.json ../connect-web/src/webextension/trezor-usb-permissions.ts",
+        "version:minor": "yarn bump minor ./package.json ./README.md ./src/data/ConnectSettings.ts ../connect-web/package.json ../connect-web/src/webextension/trezor-usb-permissions.ts",
+        "version:major": "yarn bump major ./package.json ./README.md ./src/data/ConnectSettings.ts ../connect-web/package.json ../connect-web/src/webextension/trezor-usb-permissions.ts"
+    },
+    "dependencies": {
+        "@trezor/blockchain-link": "^2.1.3",
+        "@trezor/rollout": "^1.3.2",
+        "@trezor/transport": "^1.1.2",
+        "@trezor/utils": "^1.0.1",
+        "@trezor/utxo-lib": "^1.0.0",
+        "bignumber.js": "^9.0.2",
+        "bowser": "^2.11.0",
+        "cbor-web": "^7.0.6",
+        "events": "^3.3.0",
+        "parse-uri": "1.0.7",
+        "randombytes": "2.1.0",
+        "tslib": "^2.3.1"
+    },
+    "devDependencies": {
+        "@types/parse-uri": "^1.0.0",
+        "@types/randombytes": "^2.0.0",
+        "version-bump-prompt": "^6.1.0"
+    }
+}
