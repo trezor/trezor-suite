@@ -115,6 +115,32 @@ connect-explorer deploy dev manual:
     <<: *run_everything_rules
   when: manual
 
+# connect deploy to dev
+connect deploy to dev:
+  stage: deploy to dev
+  except:
+    - v8
+  variables:
+    GIT_STRATEGY: none
+  when: manual
+  dependencies:
+    - connect-build
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+  before_script: []
+  script:
+    - echo "Deploy a review app"
+    - '[ -z "${CONNECT_DEPLOY_BASE_DIR}" ] && echo "Deploy base dir cannot be empty" && exit 255'
+    - env
+    - mkdir -p "${CONNECT_DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}"
+    - echo "Copy dev build to web server ${CONNECT_DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}..."
+    - rsync --delete -va build/ "${CONNECT_DEPLOY_BASE_DIR}/${CI_BUILD_REF_NAME}/"
+  only:
+    - branches
+  tags:
+    - connect_deploy
+
 # npm packages deploy to npm registry
 .npm_deploy_rules: &npm_deploy_rules
   stage: deploy to dev

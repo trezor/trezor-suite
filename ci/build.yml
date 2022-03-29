@@ -317,3 +317,18 @@ connect-explorer build manual:
   except:
     <<: *run_everything_rules
   when: manual
+
+# connect build
+connect-build:
+  stage: build
+  variables:
+    GIT_STRATEGY: clone
+    GIT_SUBMODULE_STRATEGY: recursive
+  script:
+    - git submodule update --init --recursive
+    - yarn
+    - yarn build:connect
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build
