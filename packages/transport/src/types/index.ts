@@ -1,3 +1,5 @@
+export * as Messages from './messages';
+
 // does not have session
 export type TrezorDeviceInfo = {
     path: string;

@@ -253,7 +253,7 @@ export type TypedCall = <T: MessageKey, R: MessageKey>(
 
 // save to file
 const filePath = isTypescript
-    ? path.join(__dirname, '../protobuf.d.ts')
+    ? path.join(__dirname, '../src/types/messages.ts')
     : path.join(__dirname, '../protobuf.js');
 fs.writeFile(filePath, lines.join('\n'), err => {
     if (err) return console.log(err);
