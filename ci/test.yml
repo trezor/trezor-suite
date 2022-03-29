@@ -369,11 +369,11 @@ T1 master:
   parallel: !reference [.jobs-t1,parallel]
 
 # Examples
-node:
+connect node:
   image: ghcr.io/trezor/trezor-user-env
   stage: integration testing
-  dependencies:
-    - "setup environment"
+  needs:
+    - "connect-build"
   variables:
     SDL_VIDEODRIVER: "dummy"
   before_script:
