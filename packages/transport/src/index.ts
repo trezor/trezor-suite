@@ -19,6 +19,7 @@ export type {
     AcquireInput,
     TrezorDeviceInfoWithSession,
     MessageFromTrezor,
+    Messages,
 } from './types';
 
 export default {

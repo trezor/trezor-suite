@@ -1,3 +1,3 @@
-[submodule "packages/transport/trezor-common"]
-	path = packages/transport/trezor-common
-	url = https://github.com/trezor/trezor-common.git
+[submodule "submodules/trezor-common"]
+	path = submodules/trezor-common
+	url = https://github.com/trezor/trezor-common

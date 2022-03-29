@@ -1,6 +1,6 @@
 ### custom prettier ignore config ###
 
-packages/transport/trezor-common
+submodules
 
 ### copy paste of .gitignore ###
 
