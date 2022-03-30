@@ -2,6 +2,7 @@ import path from 'path';
 import webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 import routes from '../../suite/src/config/suite/routes';
 import { FLAGS } from '../../suite/src/config/suite/features';
@@ -37,7 +38,18 @@ const config: webpack.Configuration = {
         ...routes.map(
             route =>
                 new HtmlWebpackPlugin({
-                    minify: !isDev,
+                    minify: isDev
+                        ? false
+                        : {
+                              collapseWhitespace: true,
+                              keepClosingSlash: true,
+                              removeComments: true,
+                              removeRedundantAttributes: true,
+                              removeScriptTypeAttributes: true,
+                              removeStyleLinkTypeAttributes: true,
+                              useShortDoctype: true,
+                              minifyJS: true,
+                          },
                     templateParameters: {
                         assetPrefix,
                         isOnionLocation: FLAGS.ONION_LOCATION_META,
@@ -48,6 +60,7 @@ const config: webpack.Configuration = {
                     filename: path.join(baseDir, 'build', route.pattern, 'index.html'),
                 }),
         ),
+        ...(!isDev ? [new CssMinimizerPlugin()] : []),
     ],
 };
 
