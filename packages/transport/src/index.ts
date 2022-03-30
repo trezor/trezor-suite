@@ -19,8 +19,9 @@ export type {
     AcquireInput,
     TrezorDeviceInfoWithSession,
     MessageFromTrezor,
-    Messages,
 } from './types';
+
+export { Messages } from './types';
 
 export default {
     BridgeV2: BridgeTransportV2,
