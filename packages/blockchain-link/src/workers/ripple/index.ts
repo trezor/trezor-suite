@@ -411,28 +411,45 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         super.cleanup();
     }
 
-    protected isConnected(api: RippleAPI | undefined): api is RippleAPI {
-        return api?.isConnected() ?? false;
-    }
+    async connect(): Promise<RippleAPI> {
+        if (this.api && this.api.isConnected()) return this.api;
 
-    async tryConnect(url: string): Promise<RippleAPI> {
-        const options: APIOptions = {
-            server: url,
-            connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT,
-        };
-        // proxy agent is available only in suite because of the patch.
-        // it will fail in standalone trezor-connect implementation where this patch is not present.
-        // TODO: https://github.com/trezor/trezor-suite/issues/4942
-        if (RippleAPI._ALLOW_AGENT) {
-            options.agent = this.proxyAgent;
+        this.validateEndpoints();
+
+        this.debug('Connecting to', this.endpoints[0]);
+
+        let api: RippleAPI;
+
+        try {
+            const options: APIOptions = {
+                server: this.endpoints[0],
+                connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT,
+            };
+            // proxy agent is available only in suite because of the patch.
+            // it will fail in standalone trezor-connect implementation where this patch is not present.
+            // TODO: https://github.com/trezor/trezor-suite/issues/4942
+            if (RippleAPI._ALLOW_AGENT) {
+                options.agent = this.proxyAgent;
+            }
+            api = new RippleAPI(options);
+            // disable websocket auto reconnecting
+            // workaround for RippleApi which doesn't have possibility to disable reconnection
+            // issue: https://github.com/ripple/ripple-lib/issues/1068
+            // override Api (connection) private methods and return never ending promises to prevent this behavior
+            api.connection.reconnect = () => new Promise(() => {});
+            await api.connect();
+            this.api = api;
+        } catch (error) {
+            this.debug('Websocket connection failed', error);
+            this.api = undefined;
+            // connection error. remove endpoint
+            this.endpoints.splice(0, 1);
+            // and try another one or throw error
+            if (this.endpoints.length < 1) {
+                throw new CustomError('connect', 'All backends are down');
+            }
+            return this.connect();
         }
-        const api = new RippleAPI(options);
-        // disable websocket auto reconnecting
-        // workaround for RippleApi which doesn't have possibility to disable reconnection
-        // issue: https://github.com/ripple/ripple-lib/issues/1068
-        // override Api (connection) private methods and return never ending promises to prevent this behavior
-        api.connection.reconnect = () => new Promise(() => {});
-        await api.connect();
 
         // Ripple api does set ledger listener automatically
         api.on('ledger', ledger => {

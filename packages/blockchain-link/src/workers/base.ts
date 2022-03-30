@@ -35,10 +35,11 @@ const shuffleEndpoints = (a: string[]) => {
     return a;
 };
 
-export abstract class BaseWorker<API> {
+export class BaseWorker<API> {
     api: API | undefined;
     proxyAgent: ReturnType<typeof SocksProxyAgent> | undefined;
     settings: Partial<BlockchainSettings> = {};
+    endpoints: string[] = [];
     state: WorkerState;
     post: (data: Response) => void;
 
@@ -75,52 +76,30 @@ export abstract class BaseWorker<API> {
 
     cleanup() {
         this.api = undefined;
+        this.endpoints = [];
 
         this.state.cleanup();
     }
 
-    protected abstract isConnected(api: API | undefined): api is API;
+    connect(): Promise<API> {
+        // override by src/workers/*/index
+        return Promise.reject();
+    }
 
-    protected abstract tryConnect(url: string): Promise<API>;
-
-    async connect(): Promise<API> {
-        if (this.isConnected(this.api)) return this.api;
-
+    validateEndpoints() {
         const { server } = this.settings;
         if (!server || !Array.isArray(server) || server.length < 1) {
             throw new CustomError('connect', 'Endpoint not set');
         }
-
-        const endpoints = shuffleEndpoints(server.slice(0));
-        for (let i = 0; i < endpoints.length; ++i) {
-            const url = endpoints[i];
-
-            // @sentry/node (used in suite-desktop) is wrapping each outgoing request
-            // and requires protocol to be explicitly set to https while using TOR + https/wss address combination
-            if (this.proxyAgent) {
-                this.proxyAgent.protocol = /^(https|wss):/.test(url) ? 'https:' : 'http:';
-            }
-
-            this.debug('Connecting to', url);
-
-            // eslint-disable-next-line no-await-in-loop
-            const api = await this.tryConnect(url)
-                .then(api => {
-                    this.debug('Connected');
-                    return api;
-                })
-                .catch(error => {
-                    this.debug('Connection failed', error);
-                    return undefined;
-                });
-
-            if (api) {
-                this.api = api;
-                return api;
-            }
+        if (this.endpoints.length < 1) {
+            this.endpoints = shuffleEndpoints(server.slice(0));
         }
 
-        throw new CustomError('connect', 'All backends are down');
+        // @sentry/node (used in suite-desktop) is wrapping each outgoing request
+        // and requires protocol to be explicitly set to https while using TOR + https/wss address combination
+        if (this.proxyAgent) {
+            this.proxyAgent.protocol = /^(https|wss):/.test(this.endpoints[0]) ? 'https:' : 'http:';
+        }
     }
 
     disconnect() {
