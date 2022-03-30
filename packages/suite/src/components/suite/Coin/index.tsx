@@ -6,7 +6,10 @@ import { Translation } from '@suite-components';
 import type { ExtendedMessageDescriptor } from '@suite-types';
 import type { Network } from '@wallet-types';
 
-const SettingsWrapper = styled.div<{ onClick: ((e: React.MouseEvent) => void) | undefined }>`
+const SettingsWrapper = styled.div<{
+    toggled: boolean;
+    onClick: ((e: React.MouseEvent) => void) | undefined;
+}>`
     display: flex;
     align-self: stretch;
     align-items: center;
@@ -26,6 +29,12 @@ const SettingsWrapper = styled.div<{ onClick: ((e: React.MouseEvent) => void) | 
                     props.theme.HOVER_PRIMER_COLOR,
                 )};
             }
+        `}
+
+    ${props =>
+        !props.toggled &&
+        css`
+            pointer-events: none;
         `}
 `;
 
@@ -192,6 +201,7 @@ const Coin = ({
             )}
             <SettingsWrapper
                 onClick={onSettingsClick}
+                toggled={toggled}
                 data-test={`@settings/wallet/network/${symbol}/advance`}
             >
                 <Icon icon="SETTINGS" />
