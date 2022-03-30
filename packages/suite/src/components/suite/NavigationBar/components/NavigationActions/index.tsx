@@ -54,14 +54,17 @@ const NavigationActions: React.FC<NavigationActionsProps> = ({
     isMobileLayout,
 }) => {
     const analytics = useAnalytics();
-    const { activeApp, notifications, discreetMode, tor, allowPrerelease } = useSelector(state => ({
-        activeApp: state.router.app,
-        notifications: state.notifications,
-        discreetMode: state.wallet.settings.discreetMode,
-        tor: state.suite.tor,
-        theme: state.suite.settings.theme,
-        allowPrerelease: state.desktopUpdate.allowPrerelease,
-    }));
+    const { activeApp, notifications, discreetMode, tor, allowPrerelease, enabledNetworks } =
+        useSelector(state => ({
+            activeApp: state.router.app,
+            notifications: state.notifications,
+            discreetMode: state.wallet.settings.discreetMode,
+            tor: state.suite.tor,
+            theme: state.suite.settings.theme,
+            allowPrerelease: state.desktopUpdate.allowPrerelease,
+            enabledNetworks: state.wallet.settings.enabledNetworks,
+        }));
+
     const { goto, setDiscreetMode, toggleTor } = useActions({
         goto: routerActions.goto,
         setDiscreetMode: walletSettingsActions.setDiscreetMode,
@@ -99,7 +102,9 @@ const NavigationActions: React.FC<NavigationActionsProps> = ({
 
     const unseenNotifications = useMemo(() => notifications.some(n => !n.seen), [notifications]);
 
-    const customBackends = useCustomBackends();
+    const customBackends = useCustomBackends().filter(backend =>
+        enabledNetworks.includes(backend.coin),
+    );
 
     return (
         <WrapperComponent>
