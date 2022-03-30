@@ -35,52 +35,47 @@
                 document.head.prepend(script);
             }
 
-            function switchIcons(event) {
-                var isDarkMode = event.matches;
-                var icon = document.querySelector('link[rel=icon]');
-                var appleIcon = document.querySelector('link[rel=apple-touch-icon]');
+            // set favicon according to current system theme
+            function si(event) {
+                var isDM = event.matches; // isDarkMode
+                var i = document.querySelector('link[rel=icon]');
+                var ai = document.querySelector('link[rel=apple-touch-icon]');
 
-                if (isDarkMode) {
-                    // prettier-ignore
-                    icon.setAttribute(
+                if (isDM) {
+                    i.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png'
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png',
                     );
-                    // prettier-ignore
-                    appleIcon.setAttribute(
+                    ai.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png'
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon_dm.png',
                     );
                 } else {
-                    // prettier-ignore
-                    icon.setAttribute(
+                    i.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png'
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png',
                     );
-                    // prettier-ignore
-                    appleIcon.setAttribute(
+                    ai.setAttribute(
                         'href',
-                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png'
+                        '<%= assetPrefix %>/static/images/icons/favicon/favicon.png',
                     );
                 }
             }
 
             if (window.matchMedia) {
-                var windowMatchMedia = window.matchMedia('(prefers-color-scheme: dark)');
+                var _mm = window.matchMedia('(prefers-color-scheme: dark)');
 
                 // not supported in IE
-                if (windowMatchMedia.addEventListener) {
-                    windowMatchMedia.addEventListener('change', function (e) {
+                if (_mm.addEventListener) {
+                    _mm.addEventListener('change', function (e) {
                         return switchIcons(e);
                     });
                 }
 
-                switchIcons(matchMediaIndex);
+                si(_mm);
             }
         </script>
         <script src="<%= assetPrefix %>/static/browser-detection/index.js"></script>
     </head>
-    <body>
-        <noscript>This website requires JavaScript to run.</noscript>
-    </body>
+    <body></body>
 </html>
