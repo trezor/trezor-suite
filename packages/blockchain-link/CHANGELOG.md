@@ -1,3 +1,9 @@
+# 2.1.3
+
+### changes
+
+-   revert part of backend selection refactoring (298e56ca992508ba0d5e1c0586d60d7a232eaa6a)
+
 # 2.1.2
 
 #### changes
