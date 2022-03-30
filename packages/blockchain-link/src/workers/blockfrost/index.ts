@@ -279,21 +279,36 @@ class BlockfrostWorker extends BaseWorker<BlockfrostAPI> {
         super.cleanup();
     }
 
-    protected isConnected(api: BlockfrostAPI | undefined): api is BlockfrostAPI {
-        return api?.isConnected() ?? false;
-    }
+    async connect(): Promise<BlockfrostAPI> {
+        if (this.api && this.api.isConnected()) return this.api;
 
-    async tryConnect(url: string): Promise<BlockfrostAPI> {
         const { timeout, pingTimeout, keepAlive } = this.settings;
+        this.validateEndpoints();
+
+        this.debug('Connecting to', this.endpoints[0]);
 
         const api = new BlockfrostAPI({
-            url,
+            url: this.endpoints[0],
             timeout,
             pingTimeout,
             keepAlive,
             agent: this.proxyAgent,
         });
-        await api.connect();
+
+        try {
+            await api.connect();
+            this.api = api;
+        } catch (error) {
+            this.debug('Websocket connection failed', error);
+            this.api = undefined;
+            // connection error. remove endpoint
+            this.endpoints.splice(0, 1);
+            // and try another one or throw error
+            if (this.endpoints.length < 1) {
+                throw new CustomError('connect', 'All backends are down');
+            }
+            return this.connect();
+        }
 
         api.on('disconnected', () => {
             this.post({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
@@ -305,6 +320,7 @@ class BlockfrostWorker extends BaseWorker<BlockfrostAPI> {
             type: RESPONSES.CONNECTED,
         });
 
+        this.debug('Connected');
         return api;
     }
 
