@@ -1,3 +1,5 @@
+/* eslint-disable require-await */
+
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
 const { createDeferred } = require('@trezor/utils');

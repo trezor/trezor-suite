@@ -1,0 +1,18 @@
+{
+    "version": 1,
+    "inputs": [
+        {
+            "prev_index": 0,
+            "sequence": 4294967295,
+            "prev_hash": "4f7ad10322f7d1be86ac03997cb6bcad852b8937e504de5779dfcf313edf300e",
+            "script_sig": ""
+        }
+    ],
+    "bin_outputs": [
+        {
+            "amount": "6800",
+            "script_pubkey": "512083860592dcc9c672acbca8c23941e85d402b353ce0e099b01dec52a203eff0b6"
+        }
+    ],
+    "lock_time": 0
+}

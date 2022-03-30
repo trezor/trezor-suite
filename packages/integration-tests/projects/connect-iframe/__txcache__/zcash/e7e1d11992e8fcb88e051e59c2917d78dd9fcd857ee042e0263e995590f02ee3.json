@@ -1,0 +1,34 @@
+{
+    "version": 3,
+    "hash": "e7e1d11992e8fcb88e051e59c2917d78dd9fcd857ee042e0263e995590f02ee3",
+    "inputs": [
+        {
+            "prev_index": 0,
+            "sequence": 4294967295,
+            "prev_hash": "0bc5672d0ffab46cb4d017d74f825f4a903c671b92984d4c8bf86237368f395f",
+            "script_sig": "4730440220474ca69398f734ca271797a95fe81e91c639cdf6992f952611d8bdd0ec66aca20220522320430e1a59ba8796c04162c8a8c26a696056fe369fef8d649d8bcc9bf966012103959be0d008ccb0e6990d0929b3c7b3178de28daeca2d8adaeb2530aa407cab81"
+        },
+        {
+            "prev_index": 1,
+            "sequence": 4294967295,
+            "prev_hash": "9ea562a4f9ffcf189f09e10c86dccefb059a1d72f6533a9c7eab9ac984fc42b0",
+            "script_sig": "4730440220305f56e604b4c0a68918ff4840f1fbb3639d723d1ff948199e674946636c735502206d6b2758f653153a3a2535f8a4d8021082d54fdfb96d2e308dbd26c80c5a6dad012102444e6054e107e4323330131dd9678d911e276a4212d807dd04d58497cd382047"
+        },
+        {
+            "prev_index": 0,
+            "sequence": 4294967295,
+            "prev_hash": "f9fd5c990eb4167d203c7f259eaf79b3cf5c6f954e66703b067ab2c7cc45c1ed",
+            "script_sig": "47304402207679e06e80c4756a227185579c0412d9381cbb2df812c949c64bb6a722e71e8302202aa0730a79deb44efe0fbc58bc01c24216bf0c3b0df5e7d6a6dad397ade477f60121032e9ffd890b7a49e1b594c02f48108cf34b1041169a6de0fe6d1d116394fee192"
+        }
+    ],
+    "bin_outputs": [
+        {
+            "amount": 4154801,
+            "script_pubkey": "76a91411a3b86f2b79f2badaf0eb7ae3a5c4f64142f97688ac"
+        }
+    ],
+    "extra_data": "00",
+    "lock_time": 0,
+    "version_group_id": 63210096,
+    "expiry": 0
+}
