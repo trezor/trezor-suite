@@ -67,7 +67,9 @@ const CoinsList = ({
                 // When in bootloader mode we cannot check version of firmware so we do not know if coin is available.
                 // In order to achieve consistency between devices we do not use it when in bootloader mode.
                 const disabled =
-                    (!!unavailable && !isBootloaderMode) || locked || !supportedBySuite;
+                    (!settingsMode && !!unavailable && !isBootloaderMode) ||
+                    locked ||
+                    !supportedBySuite;
                 const unavailabilityTooltip =
                     !!unavailable &&
                     !isBootloaderMode &&
