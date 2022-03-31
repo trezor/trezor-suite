@@ -1,23 +1,19 @@
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+import path from 'path';
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
-const path = require('path');
-
-const SRC = '../../node_modules/trezor-connect';
-const CONNECT_DATA_SRC = `${SRC}/data`;
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
 const MESSAGES_SRC = '../../packages/transport/messages.json';
 
-const HTML_SRC = path.resolve(__dirname, '../src/static/iframe.html');
 const DIST = path.resolve(__dirname, '../build');
 
-module.exports = {
+export default {
     target: 'web',
     mode: 'production',
     entry: {
-        iframe: `${SRC}/lib/iframe/iframe.js`,
+        iframe: path.resolve(__dirname, '../src/index.ts'),
     },
     output: {
         filename: 'js/[name].[contenthash].js',
@@ -39,7 +35,9 @@ module.exports = {
             {
                 test: /sharedConnectionWorker/i,
                 loader: 'worker-loader',
-                issuer: /browser\/workers/i, // replace import ONLY in src/env/browser/workers
+                // REF-TODO:
+                issuer: /workers\/workers-*/i, // replace import ONLY in src/env/browser/workers
+                // issuer: /browser\/workers/i, // replace import ONLY in src/env/browser/workers
                 options: {
                     worker: 'SharedWorker',
                     filename: './workers/shared-connection-worker.[contenthash].js',
@@ -69,18 +67,22 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.json'],
-        modules: [SRC, 'node_modules'],
+        extensions: ['.ts', '.js'],
+        modules: ['node_modules'],
         mainFields: ['browser', 'module', 'main'],
+
         fallback: {
             fs: false, // ignore "fs" import in fastxpub (hd-wallet)
-            path: false, // ignore "path" import in protobufjs-old-fixed-webpack (dependency of trezor-link)
+            // REF-TODO
+            // path: false, // ignore "path" import in protobufjs-old-fixed-webpack (dependency of trezor-link)
             https: false, // ignore "https" import in "ripple-lib"
             vm: false, // ignore "vm" imports in "asn1.js@4.10.1" > crypto-browserify"
+            // REF-TODO
             // util: require.resolve('util'), // required by "ripple-lib"
             assert: require.resolve('assert'), // required by multiple dependencies
             crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
             stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
+            events: require.resolve('events'),
         },
     },
     performance: {
@@ -95,17 +97,13 @@ module.exports = {
             process: 'process/browser',
         }),
         // resolve trezor-connect modules as "browser"
-        new webpack.NormalModuleReplacementPlugin(/env\/node$/, './env/browser'),
-        new webpack.NormalModuleReplacementPlugin(/env\/node\/workers$/, '../env/browser/workers'),
         new webpack.NormalModuleReplacementPlugin(
-            /env\/node\/networkUtils$/,
-            '../env/browser/networkUtils',
+            /\/workers\/workers$/,
+            '../workers/workers-browser',
         ),
         // copy public files
         new CopyWebpackPlugin({
             patterns: [
-                // copy messages, coins, config from 'trezor-connect'
-                { from: CONNECT_DATA_SRC, to: `${DIST}/data` },
                 // copy firmware releases, bridge releases from '@trezor/connect-common'
                 { from: COMMON_DATA_SRC, to: `${DIST}/data` },
                 // copy messages.json from '@trezor/transport'
@@ -115,7 +113,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             chunks: ['iframe'],
             filename: 'iframe.html',
-            template: HTML_SRC,
+            template: path.resolve(__dirname, '../src/static/iframe.html'),
             minify: false,
             inject: false,
         }),
@@ -133,7 +131,9 @@ module.exports = {
                 parallel: true,
                 extractComments: false,
                 terserOptions: {
-                    ecma: 6,
+                    // REF-TODO:
+                    // ecma: 6 (previous setup) was no longer available in types
+                    ecma: undefined,
                     mangle: {
                         reserved: [
                             'Array',
@@ -145,6 +145,7 @@ module.exports = {
                             'Number',
                             'Point',
                             'Script',
+                            'events',
                         ],
                     },
                 },

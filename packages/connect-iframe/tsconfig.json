@@ -4,9 +4,15 @@
     "include": ["."],
     "references": [
         { "path": "../blockchain-link" },
+        { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../rollout" },
         { "path": "../transport" },
         { "path": "../utxo-lib" }
-    ]
+    ],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    }
 }

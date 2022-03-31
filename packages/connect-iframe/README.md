@@ -1,11 +1,13 @@
-# @trezor/connect-common
+# @trezor/connect-iframe
 
-Bundle and build `trezor-connect` iframe.
+Bundle and build `@trezor/connect` iframe.
 
 ### Usage
 
 This build will be used by `suite-web` and `suite-desktop` packages.
 Build files are copied into `suite-*/build/static` directory.
+
+<!-- docs-todo: almost there-->
 
 In the future, after moving `trezor-connect` to this monorepo it will be hosted on `connect.trezor.io/*/iframe.html`
 
@@ -15,11 +17,9 @@ In the future, after moving `trezor-connect` to this monorepo it will be hosted 
 
 ### Motivation
 
-`suite-*` builds requires self-hosted `trezor-connect` build to communicate with instead of official `connect.trezor.io`.
+<!-- docs-todo: expand on why iframe exists -->
 
-`trezor-connect` project needs to be moved to monorepo. This project should eventually replace `trezor-connect` [iframe entry point](https://github.com/trezor/connect/blob/develop/src/js/iframe/iframe.js)
-
-`firmware releases` should be provided by suite monorepo `@trezor/connect-common` package.
+`suite-*` builds requires self-hosted `@trezor/connect` build to communicate with instead of official `connect.trezor.io`.
 
 ### Notes
 
