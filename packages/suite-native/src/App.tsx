@@ -82,7 +82,7 @@ export const App = () => {
         console.log('getting features');
         TrezorConnect.getDeviceState()
             .then(state => {
-                setDeviceState(state);
+                setDeviceState(JSON.stringify(state));
                 console.log(state);
             })
             .catch(error => {
