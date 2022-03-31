@@ -16,7 +16,7 @@
         "@trezor/transport-native": "*",
         "node-libs-browser": "^2.2.1",
         "react": "17.0.2",
-        "react-native": "0.68.0-rc.3",
+        "react-native": "0.68.0",
         "trezor-connect": "8.2.8-beta.3"
     },
     "devDependencies": {
