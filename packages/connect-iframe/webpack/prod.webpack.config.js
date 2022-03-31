@@ -5,8 +5,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 const path = require('path');
 
-const SRC = '../../node_modules/trezor-connect';
-const CONNECT_DATA_SRC = `${SRC}/data`;
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
 const MESSAGES_SRC = '../../packages/transport/messages.json';
 
@@ -17,10 +15,10 @@ module.exports = {
     target: 'web',
     mode: 'production',
     entry: {
-        iframe: `${SRC}/lib/iframe/iframe.js`,
+        iframe: `./src/index.ts`,
     },
     output: {
-        filename: 'js/[name].[contenthash].js',
+        filename: '[name].[contenthash].js',
         path: DIST,
         publicPath: './',
     },
@@ -39,7 +37,9 @@ module.exports = {
             {
                 test: /sharedConnectionWorker/i,
                 loader: 'worker-loader',
-                issuer: /browser\/workers/i, // replace import ONLY in src/env/browser/workers
+                // REF-TODO:
+                issuer: /workers\/workers-*/i, // replace import ONLY in src/env/browser/workers
+                // issuer: /browser\/workers/i, // replace import ONLY in src/env/browser/workers
                 options: {
                     worker: 'SharedWorker',
                     filename: './workers/shared-connection-worker.[contenthash].js',
@@ -70,8 +70,9 @@ module.exports = {
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.json'],
-        modules: [SRC, 'node_modules'],
+        modules: ['node_modules'],
         mainFields: ['browser', 'module', 'main'],
+
         fallback: {
             fs: false, // ignore "fs" import in fastxpub (hd-wallet)
             path: false, // ignore "path" import in protobufjs-old-fixed-webpack (dependency of trezor-link)
@@ -81,6 +82,7 @@ module.exports = {
             assert: require.resolve('assert'), // required by multiple dependencies
             crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
             stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
+            events: require.resolve('events'),
         },
     },
     performance: {
@@ -95,17 +97,13 @@ module.exports = {
             process: 'process/browser',
         }),
         // resolve trezor-connect modules as "browser"
-        new webpack.NormalModuleReplacementPlugin(/env\/node$/, './env/browser'),
-        new webpack.NormalModuleReplacementPlugin(/env\/node\/workers$/, '../env/browser/workers'),
         new webpack.NormalModuleReplacementPlugin(
-            /env\/node\/networkUtils$/,
-            '../env/browser/networkUtils',
+            /\/workers\/workers$/,
+            '../workers/workers-browser',
         ),
         // copy public files
         new CopyWebpackPlugin({
             patterns: [
-                // copy messages, coins, config from 'trezor-connect'
-                { from: CONNECT_DATA_SRC, to: `${DIST}/data` },
                 // copy firmware releases, bridge releases from '@trezor/connect-common'
                 { from: COMMON_DATA_SRC, to: `${DIST}/data` },
                 // copy messages.json from '@trezor/transport'
@@ -125,30 +123,31 @@ module.exports = {
     // When uglifying the javascript, you must exclude the following variable names from being mangled:
     // Array, BigInteger, Boolean, Buffer, ECPair, Function, Number, Point and Script.
     // This is because of the function-name-duck-typing used in typeforce.
-    optimization: {
-        emitOnErrors: true,
-        moduleIds: 'named',
-        minimizer: [
-            new TerserPlugin({
-                parallel: true,
-                extractComments: false,
-                terserOptions: {
-                    ecma: 6,
-                    mangle: {
-                        reserved: [
-                            'Array',
-                            'BigInteger',
-                            'Boolean',
-                            'Buffer',
-                            'ECPair',
-                            'Function',
-                            'Number',
-                            'Point',
-                            'Script',
-                        ],
-                    },
-                },
-            }),
-        ],
-    },
+    // optimization: {
+    //     emitOnErrors: true,
+    //     moduleIds: 'named',
+    //     minimizer: [
+    //         new TerserPlugin({
+    //             parallel: true,
+    //             extractComments: false,
+    //             terserOptions: {
+    //                 ecma: 6,
+    //                 mangle: {
+    //                     reserved: [
+    //                         'Array',
+    //                         'BigInteger',
+    //                         'Boolean',
+    //                         'Buffer',
+    //                         'ECPair',
+    //                         'Function',
+    //                         'Number',
+    //                         'Point',
+    //                         'Script',
+    //                         'events',
+    //                     ],
+    //                 },
+    //             },
+    //         }),
+    //     ],
+    // },
 };

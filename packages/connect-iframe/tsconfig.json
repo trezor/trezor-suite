@@ -4,6 +4,7 @@
     "include": ["."],
     "references": [
         { "path": "../blockchain-link" },
+        { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../rollout" },
         { "path": "../transport" },
