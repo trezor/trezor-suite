@@ -36,6 +36,10 @@ const SettingsWrapper = styled.div<{
         css`
             pointer-events: none;
         `}
+
+    @media (hover: none) {
+        pointer-events: none;
+    }
 `;
 
 const ImageWrapper = styled.div`
