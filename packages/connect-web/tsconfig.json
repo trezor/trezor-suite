@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": [
+            "chrome",
+            "web",
+            "w3c-web-usb",
+            "jest"
+        ]
+        // "module": "CommonJS"
+    },
+    // "ts-node": {
+    //     "compilerOptions": {
+    //         "module": "CommonJS"
+    //     }
+    // },
+    "references": [
+        { "path": "../connect" },
+        { "path": "../utils" }
+    ]
+}

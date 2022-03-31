@@ -35,6 +35,7 @@ module.exports = {
         '**/node_modules/*',
         'packages/suite-data/files/*',
         'packages/transport/scripts/protobuf-patches/*',
+        '**/vendor*/',
     ],
     overrides: [
         {
