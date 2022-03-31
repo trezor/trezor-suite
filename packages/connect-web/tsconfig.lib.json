@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "outDir": "lib",
+        "target": "es2017",
+        "types": ["chrome", "w3c-web-usb"],
+        "importHelpers": true,
+        "strictPropertyInitialization": false
+    },
+    "include": ["./src"]
+}
