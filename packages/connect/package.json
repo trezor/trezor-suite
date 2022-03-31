@@ -19,6 +19,9 @@
     ],
     "sideEffects": false,
     "main": "lib/index",
+    "browser": {
+        "./lib/index": "./lib/index-browser"
+    },
     "files": [
         "lib/",
         "!**/*.map"
