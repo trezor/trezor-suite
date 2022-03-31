@@ -17,7 +17,7 @@ module.exports = {
     target: 'web',
     mode: 'production',
     entry: {
-        iframe: `${SRC}/lib/iframe/iframe.js`,
+        iframe: `./src/iframe.ts`,
     },
     output: {
         filename: 'js/[name].[contenthash].js',
