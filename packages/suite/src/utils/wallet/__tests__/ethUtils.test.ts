@@ -36,13 +36,6 @@ describe('eth utils', () => {
         expect(utils.strip('2540be3ff')).toBe('02540be3ff');
     });
 
-    it('isHex', () => {
-        expect(utils.isHex('0x2540be3ff')).toBe(true);
-        expect(utils.isHex('0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e6')).toBe(true);
-        expect(utils.isHex('89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e6')).toBe(true);
-        expect(utils.isHex('bla')).toBe(false);
-    });
-
     it('validate address', () => {
         // TODO: add more tests
         expect(utils.validateAddress('')).toBe('Address is not set');
