@@ -1,0 +1,44 @@
+{
+    "name": "@trezor/connect-web",
+    "version": "9.0.0-beta.1",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/connect",
+    "description": "High-level javascript interface for Trezor hardware wallet.",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "trezor-connect",
+        "javascript"
+    ],
+    "sideEffects": false,
+    "main": "lib/index",
+    "files": [
+        "lib/",
+        "!**/*.map"
+    ],
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build",
+        "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json",
+        "build": "rimraf build && webpack --config ./webpack/inline.webpack.config.js"
+    },
+    "dependencies": {
+        "@trezor/connect": "9.0.0-beta.1",
+        "@trezor/utils": "^1.0.1",
+        "events": "^3.3.0",
+        "tslib": "^2.3.1"
+    },
+    "devDependencies": {
+        "@types/chrome": "^0.0.180",
+        "webpack": "^5.70.0",
+        "webpack-cli": "4.9.2"
+    }
+}

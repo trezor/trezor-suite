@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["chrome", "web", "jest"]
+    },
+    "references": [
+        { "path": "../connect" },
+        { "path": "../utils" }
+    ]
+}
