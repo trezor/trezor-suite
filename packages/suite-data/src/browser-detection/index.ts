@@ -1,98 +1,154 @@
 import UAParser from 'ua-parser-js';
 
 import style from './styles.css';
-import iconChrome from './images/browser-chrome.png';
-import iconFirefox from './images/browser-firefox.png';
+import iconChrome from '../../files/images/browsers/chrome.svg';
+import iconFirefox from '../../files/images/browsers/firefox.svg';
+import iconDesktop from '../../files/images/browsers/desktop.svg';
 
 type SupportedBrowser = {
     name: string;
-    url: string;
+    urlDownload: string;
+    urlUpdate?: string;
     icon: string;
+    isPreferred: boolean;
 };
 
 type MainHtmlProps = {
     title: string;
     subtitle: string;
-    button?: string;
-    url?: string;
+    continueToSuite?: boolean;
+    supportedDevicesList?: boolean;
     supportedBrowsers?: SupportedBrowser[];
+    shouldUpdate?: boolean;
 };
 
 window.addEventListener('load', () => {
-    const getButtonPartial = (props: MainHtmlProps) =>
-        props.button && props.url
-            ? `<a href="${props.url}" target="_blank" class="${style.button}" rel="noopener noreferrer">${props.button}</a>`
-            : ``;
-
-    const getSupportedBrowsersPartial = (supportedBrowsers?: SupportedBrowser[]) =>
+    const getSupportedBrowsersPartial = ({ supportedBrowsers, shouldUpdate }: MainHtmlProps) =>
         supportedBrowsers
             ? `<div class="${style.browsers}">
             ${supportedBrowsers
                 .map(
                     (item: SupportedBrowser) => `
-                <div class="${style.browser}">
-                    <img src="${item.icon}" height="56px" />
-                    <div class="${style.download}">
-                        <a href="${item.url}" target="_blank" class="${style.button}" rel="noopener noreferrer">
-                            Get ${item.name}
-                        </a>
+                <a href="${shouldUpdate && item.urlUpdate ? item.urlUpdate : item.urlDownload}
+                " target="_blank" rel="noopener noreferrer" class="${style.browser}">
+                    <img src="${item.icon}" class="${style.image}"/>
+                    <p class="${style.name}">${item.name}</p>
+                    <div class="${style.button} ${
+                        item.isPreferred ? style.buttonPrimary : style.buttonSecondary
+                    }">
+                        ${shouldUpdate && item.urlUpdate ? 'Update' : 'Download'}
                     </div>
-                </div>`,
+                </a>`,
                 )
                 .join('')}
         </div>`
-            : ``;
+            : '';
+
+    const getSupportedDevicesList = (props: MainHtmlProps) =>
+        props.supportedDevicesList
+            ? `<ul class=${style.list}>
+                <li>Trezor Suite desktop app</li>
+                <li>Trezor Suite for web </li>
+                <li>Mobile web app for Chrome on Android</li>
+            </ul>`
+            : '';
+
+    const getContinueToSuiteInfo = (props: MainHtmlProps) =>
+        props.continueToSuite
+            ? `<div class=${style.hr}></div>
+                <p class=${style.continueInfo}>
+                Using outdated or unsupported browsers can expose you to security risks.
+                <br>
+                To keep your funds safe, we recommend using the latest version of a supported browser.
+                </p>
+                <p class=${style.continueButton} id="continue-to-suite">Continue at my own risk</p>`
+            : '';
 
     const getMainHtml = (props: MainHtmlProps) => `
-    <div class="${style.container}" data-test="@browser-detect">
+    <div id="unsupported-browser" class="${style.container}" data-test="@browser-detect">
         <h1 class="${style.title}">${props.title}</h1>
         <p class="${style.subtitle}">${props.subtitle}</p>
-        ${getButtonPartial(props)}
-        ${getSupportedBrowsersPartial(props.supportedBrowsers)}
+        ${getSupportedDevicesList(props)}
+        ${getSupportedBrowsersPartial(props)}
+        ${getContinueToSuiteInfo(props)}
     </div>
     `;
 
+    const desktop = {
+        name: 'Desktop App',
+        urlDownload: 'https://suite.trezor.io/',
+        icon: iconDesktop,
+        isPreferred: true,
+    };
+
+    const chrome = {
+        name: 'Chrome 84+',
+        urlDownload: 'https://www.google.com/chrome/',
+        urlUpdate: 'https://support.google.com/chrome/answer/95414',
+        icon: iconChrome,
+        isPreferred: false,
+    };
+
+    const firefox = {
+        name: 'Firefox 78+',
+        urlDownload: 'https://www.mozilla.org/firefox/new/',
+        urlUpdate: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-release',
+        icon: iconFirefox,
+        isPreferred: false,
+    };
+
+    const chromeMobile = {
+        name: 'Chrome for Android',
+        urlDownload: 'https://play.google.com/store/apps/details?id=com.android.chrome',
+        icon: iconChrome,
+        isPreferred: false,
+    };
+
+    const titleUnsupported = 'Your browser is not supported';
+    const titleOutdated = 'Your browser is outdated';
+
+    const primarySubtitle =
+        'We recommend using the Trezor Suite desktop app for the best experience.';
+    const secondarySubtitleDownload =
+        'Alternatively, download a supported browser to use the Trezor Suite web app.';
+    const secondarySubtitleUpdate =
+        'Alternatively, update your web browser to the latest version to use the Trezor Suite web app.';
+
     const unsupportedBrowser = getMainHtml({
-        title: 'Your browser is not supported',
-        subtitle: 'Please choose one of the supported browsers',
-        supportedBrowsers: [
-            {
-                name: 'Chrome',
-                url: 'https://www.google.com/chrome/',
-                icon: iconChrome,
-            },
-            {
-                name: 'Firefox',
-                url: 'https://www.mozilla.org/firefox/new/',
-                icon: iconFirefox,
-            },
-        ],
+        title: titleUnsupported,
+        subtitle: `${primarySubtitle}<br>${secondarySubtitleDownload}`,
+        supportedBrowsers: [desktop, chrome, firefox],
+        continueToSuite: true,
     });
 
     const updateChrome = getMainHtml({
-        title: 'Your browser is outdated',
-        subtitle: 'Please update your browser to the latest version.',
-        button: 'Update Chrome',
-        url: 'https://support.google.com/chrome/answer/95414',
+        title: titleOutdated,
+        subtitle: `${primarySubtitle}<br>${secondarySubtitleUpdate}`,
+        supportedBrowsers: [desktop, chrome],
+        continueToSuite: true,
+        shouldUpdate: true,
     });
 
     const updateFirefox = getMainHtml({
-        title: 'Your browser is outdated',
-        subtitle: 'Please update your browser to the latest version.',
-        button: 'Update Firefox',
-        url: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-release',
+        title: titleOutdated,
+        subtitle: `${primarySubtitle}<br>${secondarySubtitleUpdate}`,
+        supportedBrowsers: [desktop, firefox],
+        continueToSuite: true,
+        shouldUpdate: true,
     });
 
     const getChromeAndroid = getMainHtml({
-        title: 'Get Chrome for Android',
-        subtitle: 'WebUSB is only supported on Chrome for Android.',
-        button: 'Get Chrome for Android',
-        url: 'https://play.google.com/store/apps/details?id=com.android.chrome',
+        title: titleUnsupported,
+        subtitle: 'The Trezor Suite mobile web app is only supported in Chrome for Android.',
+        supportedBrowsers: [chromeMobile],
+        continueToSuite: true,
     });
 
-    const noWebUSB = getMainHtml({
-        title: 'No WebUSB support',
-        subtitle: 'WebUSB is only supported on Chrome for Android.',
+    const iOS = getMainHtml({
+        title: 'Suite doesn’t work on iOS yet',
+        subtitle:
+            'We’re working hard to bring the Trezor Suite mobile web app to iOS. In the meantime, you can use Trezor Suite on the following platforms:',
+        supportedDevicesList: true,
     });
 
     // this should match browserslist config (packages/suite-build/browserslist)
@@ -126,19 +182,32 @@ window.addEventListener('load', () => {
             ? supportedBrowser.version > parseInt(result.browser.version, 10)
             : false;
 
+    const goToSuite = () => {
+        const child = document.getElementById('unsupported-browser');
+        child?.parentNode?.removeChild(child);
+
+        const appDiv = document.createElement('div');
+        appDiv.id = 'app';
+        document.body.appendChild(appDiv);
+    };
+
     const setBody = (content: string) => {
         document.body.innerHTML = '';
         document.body.insertAdjacentHTML('afterbegin', content);
+
+        document.getElementById('continue-to-suite')?.addEventListener('click', goToSuite);
     };
 
     if (result.os.name === 'iOS') {
         // Any iOS device: no WebUSB support (suggest to download iOS app?)
-        setBody(noWebUSB);
+        setBody(iOS);
     } else if (isMobile && (!supportedBrowser || (supportedBrowser && !supportedBrowser.mobile))) {
         // Unsupported mobile browser: get Chrome for Android
         setBody(getChromeAndroid);
+    } else if (!supportedBrowser) {
+        // Unsupported browser
+        setBody(unsupportedBrowser);
     } else if (updateRequired) {
-        if (!supportedBrowser) return;
         if (supportedBrowser.name === 'Chrome' || supportedBrowser.name === 'Chromium') {
             // Outdated browser: update Chrome
             setBody(updateChrome);
@@ -147,13 +216,8 @@ window.addEventListener('load', () => {
             // Outdated browser: update Firefox
             setBody(updateFirefox);
         }
-    } else if (!supportedBrowser) {
-        // Unsupported browser
-        setBody(unsupportedBrowser);
     } else {
         // Inject app div
-        const appDiv = document.createElement('div');
-        appDiv.id = 'app';
-        document.body.appendChild(appDiv);
+        goToSuite();
     }
 });
