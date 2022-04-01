@@ -4,11 +4,15 @@
         "isolatedModules": false,
         "types": [
             "trezor-connect",
+            "jest",
             "cypress",
             "cypress-wait-until"
-        ]
+        ],
+        "noEmit": true
     },
-    "include": ["**/*.ts"],
-    "exclude": [],
-    "references": []
+    "include": ["**/*.ts", "**/*.js"],
+    "references": [
+        { "path": "../transport" },
+        { "path": "../utils" }
+    ]
 }
