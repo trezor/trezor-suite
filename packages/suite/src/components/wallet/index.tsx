@@ -1,8 +1,8 @@
 import AccountsMenu from './AccountsMenu';
 import DiscoveryProgress from './DiscoveryProgress';
 import Title from './Title';
-import WalletLayout from './WalletLayout';
-import WalletLayoutHeader from './WalletLayout/components/WalletLayoutHeader';
+import { WalletLayout } from './WalletLayout';
+import { WalletLayoutHeader } from './WalletLayout/components/WalletLayoutHeader';
 import {
     WalletLayoutNavigation,
     WalletLayoutNavLink,

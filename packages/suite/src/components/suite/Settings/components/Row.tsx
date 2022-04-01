@@ -16,14 +16,10 @@ const Wrapper = styled.div`
     }
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    children: React.ReactNode;
-}
+type RowProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Row = ({ children, ...rest }: Props) => (
+export const Row: React.FC<RowProps> = ({ children, ...rest }) => (
     <Wrapper>
         <Content {...rest}>{children}</Content>
     </Wrapper>
 );
-
-export default Row;

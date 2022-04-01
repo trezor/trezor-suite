@@ -9,7 +9,7 @@ const HeaderWrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-top: 8px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 `;
 
 const HeaderLeft = styled.div`
@@ -34,11 +34,11 @@ const StyledTitle = styled(H2)`
     padding-top: 10px;
 `;
 
-type Props = {
+type WalletLayoutHeaderProps = {
     title: ExtendedMessageDescriptor['id'];
 };
 
-const WalletLayoutHeader: React.FC<Props> = ({ title, children }) => (
+export const WalletLayoutHeader: React.FC<WalletLayoutHeaderProps> = ({ title, children }) => (
     <HeaderWrapper>
         <HeaderLeft>
             <StyledTitle>
@@ -51,5 +51,3 @@ const WalletLayoutHeader: React.FC<Props> = ({ title, children }) => (
         </HeaderRight>
     </HeaderWrapper>
 );
-
-export default WalletLayoutHeader;

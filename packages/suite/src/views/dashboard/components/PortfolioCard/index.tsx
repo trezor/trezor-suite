@@ -10,10 +10,10 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
 
-import Header from './components/Header';
-import Exception from './components/Exception';
-import EmptyWallet from './components/EmptyWallet';
-import DashboardGraph from './components/DashboardGraph';
+import { Header } from './components/Header';
+import { Exception } from './components/Exception';
+import { EmptyWallet } from './components/EmptyWallet';
+import { DashboardGraph } from './components/DashboardGraph';
 import GraphScaleDropdownItem from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
 
 const StyledCard = styled(Card)`

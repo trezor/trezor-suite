@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 const UdevRules = (props: InjectedModalApplicationProps) => (
     <Modal
         data-test="@modal/udev"
-        cancelable
+        isCancelable
         onCancel={props.onCancel}
         heading={<Translation id="TR_UDEV_DOWNLOAD_TITLE" />}
         description={<Translation id="TR_UDEV_DOWNLOAD_DESC" />}

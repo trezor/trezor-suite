@@ -12,7 +12,7 @@ import {
 import { Stack, SkeletonCircle, SkeletonRectangle } from '@suite-components/Skeleton';
 import { useSelector } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
-import AccountNavigation from './components/AccountNavigation';
+import { AccountNavigation } from './components/AccountNavigation';
 
 const BalanceWrapper = styled.div`
     display: flex;
@@ -45,7 +45,7 @@ const AccountTopPanelSkeleton = (props: { animate?: boolean }) => (
     </AppNavigationPanel>
 );
 
-const AccountTopPanel = () => {
+export const AccountTopPanel = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     if (selectedAccount.status !== 'loaded')
         return <AccountTopPanelSkeleton animate={selectedAccount.loader === 'account-loading'} />;
@@ -90,5 +90,3 @@ const AccountTopPanel = () => {
         </AppNavigationPanel>
     );
 };
-
-export default AccountTopPanel;

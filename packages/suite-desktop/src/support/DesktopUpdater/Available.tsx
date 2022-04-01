@@ -115,7 +115,7 @@ const Available = ({ hideWindow, latest }: AvailableProps) => {
     return (
         <StyledModal
             heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
-            cancelable
+            isCancelable
             onCancel={hideWindow}
             bottomBar={
                 <>

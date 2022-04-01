@@ -4,10 +4,10 @@ import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import Clear from './components/Clear';
+import { Clear } from './components/Clear';
 import { WalletLayoutHeader } from '@wallet-components';
 
-const Header = () => {
+export const Header = () => {
     const {
         outputs,
         account: { networkType },
@@ -64,5 +64,3 @@ const Header = () => {
         </WalletLayoutHeader>
     );
 };
-
-export default Header;

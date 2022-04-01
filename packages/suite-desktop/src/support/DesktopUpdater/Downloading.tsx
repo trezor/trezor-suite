@@ -59,7 +59,7 @@ const Downloading = ({ hideWindow, progress }: Props) => {
             }
             currentProgressBarStep={progress?.percent || 0}
             totalProgressBarSteps={100}
-            cancelable
+            isCancelable
             onCancel={hideWindow}
         >
             <DownloadWrapper>

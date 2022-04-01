@@ -17,7 +17,7 @@ import { Target, TokenTransfer, FeeRow, WithdrawalRow, DepositRow } from './comp
 import TransactionTimestamp from './components/TransactionTimestamp';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
-import { SECONDARY_PANEL_HEIGHT } from '@suite/components/suite/AppNavigation';
+import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
 import { anchorOutlineStyles } from '@suite-utils/anchor';
 
 const Wrapper = styled.div<{

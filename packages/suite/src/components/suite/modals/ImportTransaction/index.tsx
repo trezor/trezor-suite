@@ -40,7 +40,7 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
 
     return (
         <Modal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_IMPORT_CSV_MODAL_TITLE" />}
         >

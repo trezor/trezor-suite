@@ -41,7 +41,7 @@ const SafetyChecks = ({ onCancel }: ModalProps) => {
 
     return (
         <Modal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_SAFETY_CHECKS_MODAL_TITLE" />}
             bottomBar={

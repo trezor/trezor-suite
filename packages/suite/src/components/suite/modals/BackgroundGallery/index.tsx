@@ -14,7 +14,7 @@ type BackgroundGalleryProps = {
 
 const BackgroundGallery = ({ device, onCancel }: BackgroundGalleryProps) => (
     <StyledModal
-        cancelable
+        isCancelable
         onCancel={onCancel}
         heading={<Translation id="TR_BACKGROUND_GALLERY" />}
     >

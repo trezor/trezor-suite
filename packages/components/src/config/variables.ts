@@ -209,4 +209,12 @@ export const ICONS: IconType[] = [
     'PENCIL',
     'PENCIL_LINE',
     'KEY',
+    'TAG_MINIMAL',
+    'TOR_MINIMAL',
+    'FLAG',
+    'GHOST',
+    'NEWSPAPER',
+    'PALETTE',
+    'SHIELD_CHECK',
+    'SPARKLE',
 ];

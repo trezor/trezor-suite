@@ -146,7 +146,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
 
     return (
         <StyledModal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
             bottomBar={

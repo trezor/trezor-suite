@@ -16,7 +16,7 @@ type TorModalProps = {
 
 export const TorModal = ({ onResult }: TorModalProps) => (
     <Modal
-        cancelable
+        isCancelable
         heading={<Translation id="TR_TOR_ENABLE" />}
         onCancel={() => onResult('cancel')}
         bottomBar={

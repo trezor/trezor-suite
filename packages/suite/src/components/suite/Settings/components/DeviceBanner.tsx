@@ -28,12 +28,12 @@ const Column = styled.div`
     justify-content: center;
 `;
 
-interface Props {
+interface DeviceBannerProps {
     title: React.ReactNode;
     description?: React.ReactNode;
 }
 
-const DeviceBanner = ({ title, description }: Props) => {
+export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const { device } = useDevice();
     return (
         <Wrapper data-test="@settings/device/disconnected-device-banner">
@@ -45,5 +45,3 @@ const DeviceBanner = ({ title, description }: Props) => {
         </Wrapper>
     );
 };
-
-export default DeviceBanner;

@@ -27,7 +27,7 @@ const CoinmarketLeaveSpend = ({ onCancel }: Props) => {
 
     return (
         <Modal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             bottomBar={
                 <>

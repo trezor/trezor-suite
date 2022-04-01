@@ -31,7 +31,7 @@ export const RawRenderer = ({
 }: ModalProps) => (
     <Wrapper className={className} data-test={dataTest}>
         {heading && (
-            <Heading showBottomBorder={false}>
+            <Heading isBottomBorderShown={false}>
                 <H1>{heading}</H1>
             </Heading>
         )}

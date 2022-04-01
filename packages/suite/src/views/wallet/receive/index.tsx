@@ -2,8 +2,8 @@ import React from 'react';
 import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 import * as receiveActions from '@wallet-actions/receiveActions';
-import FreshAddress from './components/FreshAddress';
-import UsedAddresses from './components/UsedAddresses';
+import { FreshAddress } from './components/FreshAddress';
+import { UsedAddresses } from './components/UsedAddresses';
 import { isPending } from '@wallet-utils/transactionUtils';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
 

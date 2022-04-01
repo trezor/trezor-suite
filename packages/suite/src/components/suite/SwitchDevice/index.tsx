@@ -64,7 +64,7 @@ const SwitchDevice = (props: InjectedModalApplicationProps) => {
 
     return (
         <Modal
-            cancelable={props.cancelable}
+            isCancelable={props.cancelable}
             onCancel={props.onCancel}
             heading={
                 <>

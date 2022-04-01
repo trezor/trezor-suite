@@ -27,7 +27,7 @@ export type ModalProps = TrezorModalProps & {
 
 const DefaultRenderer = ({
     headerComponents = [],
-    cancelable,
+    isCancelable,
     onCancel,
     ...rest
 }: TrezorModalProps) => {
@@ -39,7 +39,7 @@ const DefaultRenderer = ({
             <Icon
                 key="guide-button"
                 icon="LIGHTBULB"
-                size={24}
+                size={20}
                 hoverColor={colors.TYPE_ORANGE}
                 onClick={openGuide}
             />
@@ -51,13 +51,13 @@ const DefaultRenderer = ({
         <GuideBackdrop
             guideOpen={isGuideOpen && isModalOpen && !isGuideOnTop}
             onClick={() => {
-                if (cancelable) {
+                if (isCancelable) {
                     onCancel?.();
                 }
             }}
         >
             <TrezorModal
-                cancelable={cancelable}
+                isCancelable={isCancelable}
                 onCancel={onCancel}
                 headerComponents={[...(isMobileLayout ? [GuideButton] : []), ...headerComponents]}
                 {...rest}

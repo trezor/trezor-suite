@@ -145,7 +145,7 @@ const QrScanner = ({ onCancel, decision, allowPaste }: Props) => {
 
     return (
         <StyledModal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={<Translation id={isPasteMode ? 'TR_PASTE_URI' : 'TR_SCAN_QR_CODE'} />}
             description={

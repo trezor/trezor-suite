@@ -2,7 +2,7 @@ import { Translation, Notifications } from '@suite-components';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import React, { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import ActionItem from './ActionItem';
+import { ActionItem } from './ActionItem';
 import { useActions, useAnalytics } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 

@@ -134,7 +134,7 @@ const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
         return (
             <TinyModal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
-                cancelable
+                isCancelable
                 onCancel={closeModalApp}
                 data-test="@recovery/no-device"
                 bottomBar={<CloseButton onClick={() => closeModalApp()} variant="TR_CLOSE" />}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { variables, DeviceImage } from '@trezor/components';
+import { variables, DeviceImage, Icon } from '@trezor/components';
 import { SHAKE } from '@suite-support/styles/animations';
 import { WalletLabeling } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
@@ -8,25 +8,36 @@ import * as routerActions from '@suite-actions/routerActions';
 import { useAnalytics, useSelector, useActions } from '@suite-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
-import DeviceStatus from './components/DeviceStatus';
+import { DeviceStatus } from './DeviceStatus';
+import { transparentize } from 'polished';
 
-const Wrapper = styled.div<{ triggerAnim?: boolean }>`
+const ArrowDown = styled(Icon)`
+    margin-left: 4px;
+`;
+
+const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
     display: flex;
     position: relative;
-    width: 288px;
-    padding: 12px;
+    width: 200px;
+    padding: 6px 12px;
     align-items: center;
-    background-color: ${props => props.theme.BG_LIGHT_GREY};
-    cursor: pointer;
     margin-right: 24px;
+    cursor: pointer;
 
-    &:hover {
-        border-radius: 4px;
-        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    :hover {
+        border-radius: 8px;
+        background-color: ${({ theme }) =>
+            transparentize(theme.HOVER_TRANSPARENTIZE_FILTER, theme.HOVER_PRIMER_COLOR)};
+
+        ${ArrowDown} {
+            path {
+                fill: ${({ theme }) => theme.TYPE_DARK_GREY};
+            }
+        }
     }
 
-    ${props =>
-        props.triggerAnim &&
+    ${({ isAnimationTriggered }) =>
+        isAnimationTriggered &&
         css`
             animation: ${SHAKE} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
             transform: translate3d(0, 0, 0);
@@ -36,32 +47,34 @@ const Wrapper = styled.div<{ triggerAnim?: boolean }>`
 `;
 
 const DeviceLabel = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    display: flex;
+    min-width: 0;
+    font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     overflow: hidden;
     text-overflow: ellipsis;
-    min-width: 0;
+
+    > :first-child {
+        margin-right: 6px;
+    }
 `;
 
-const DeviceImageWrapper = styled.div<{ lowerOpacity: boolean }>`
-    margin-right: 12px;
+const StyledDeviceImage = styled(DeviceImage)<{ isLowerOpacity: boolean }>`
+    margin-right: 14px;
     flex: 0;
-    ${props =>
-        props.lowerOpacity &&
-        css`
-            opacity: 0.4;
-        `}
+    opacity: ${({ isLowerOpacity }) => isLowerOpacity && 0.4};
 `;
 
 const WalletNameWrapper = styled.div`
+    display: flex;
+    min-width: 0;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-width: 0;
 `;
 
 const DeviceDetail = styled.div`
@@ -80,21 +93,23 @@ const needsRefresh = (device?: TrezorDevice) => {
         device.type === 'unacquired' ||
         deviceStatus === 'used-in-other-window' ||
         deviceStatus === 'was-used-in-other-window';
+
     return needsAcquire;
 };
 
-const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
+export const DeviceSelector = () => {
     const { selectedDevice, deviceCount } = useSelector(state => ({
         selectedDevice: state.suite.device,
         deviceCount: state.devices.length,
     }));
+
     const { goto, acquireDevice } = useActions({
         goto: routerActions.goto,
         acquireDevice: suiteActions.acquireDevice,
     });
 
     const [localCount, setLocalCount] = useState<number | null>(null);
-    const [triggerAnim, setTriggerAnim] = useState(false);
+    const [isAnimationTriggered, setIsAnimationTriggered] = useState(false);
     const [showTextStatus, setShowTextStatus] = useState(false);
 
     const countChanged = localCount && localCount !== deviceCount;
@@ -125,11 +140,11 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
     useEffect(() => {
         if (countChanged) {
             // different count triggers anim
-            setTriggerAnim(true);
+            setIsAnimationTriggered(true);
             // after 1s removes anim, allowing it to restart later
             shakeAnimationTimerRef.current = setTimeout(() => {
                 // makes sure component is still mounted
-                setTriggerAnim(false);
+                setIsAnimationTriggered(false);
             }, 1000);
         }
     }, [countChanged]);
@@ -151,25 +166,36 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
         analytics.report({ type: 'menu/goto/switch-device' });
     }, [goto, analytics]);
 
+    const handleRefreshClick = useCallback(() => {
+        if (deviceNeedsRefresh) {
+            acquireDevice(selectedDevice);
+        }
+    }, [deviceNeedsRefresh, selectedDevice, acquireDevice]);
+
     return (
         <Wrapper
-            onMouseEnter={() => setShowTextStatus(true)}
-            onMouseLeave={() => setShowTextStatus(false)}
             data-test="@menu/switch-device"
             onClick={switchDevice}
-            triggerAnim={triggerAnim}
-            {...props}
+            isAnimationTriggered={isAnimationTriggered}
         >
             {selectedDevice && (
                 <>
-                    <DeviceImageWrapper lowerOpacity={deviceNeedsRefresh}>
-                        <DeviceImage
-                            height={36}
-                            trezorModel={selectedDevice.features?.major_version === 1 ? 1 : 2}
-                        />
-                    </DeviceImageWrapper>
+                    <StyledDeviceImage
+                        height={34}
+                        trezorModel={selectedDevice.features?.major_version === 1 ? 1 : 2}
+                        isLowerOpacity={deviceNeedsRefresh}
+                    />
+
                     <DeviceDetail>
-                        <DeviceLabel>{selectedDevice.label}</DeviceLabel>
+                        <DeviceLabel>
+                            <span>{selectedDevice.label}</span>
+                            <DeviceStatus
+                                showTextStatus={showTextStatus}
+                                device={selectedDevice}
+                                onRefreshClick={handleRefreshClick}
+                            />
+                        </DeviceLabel>
+
                         <WalletNameWrapper>
                             {selectedDevice.metadata.status === 'enabled' &&
                             selectedDevice.metadata.walletLabel ? (
@@ -177,24 +203,12 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                             ) : (
                                 <WalletLabeling device={selectedDevice} />
                             )}
+
+                            <ArrowDown icon="ARROW_DOWN" size={16} />
                         </WalletNameWrapper>
                     </DeviceDetail>
-                    <DeviceStatus
-                        showTextStatus={showTextStatus}
-                        showIconStatus={!showTextStatus}
-                        device={selectedDevice}
-                        onRefreshClick={
-                            deviceNeedsRefresh
-                                ? () => {
-                                      acquireDevice(selectedDevice);
-                                  }
-                                : undefined
-                        }
-                    />
                 </>
             )}
         </Wrapper>
     );
 };
-
-export default DeviceSelector;

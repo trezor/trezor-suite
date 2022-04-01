@@ -83,7 +83,7 @@ const FirmwareCustom = () => {
     if (liveDevice && !liveDevice.features) return <DeviceUnknown />;
     return (
         <StyledModal
-            cancelable={isCancelable}
+            isCancelable={isCancelable}
             onCancel={onClose}
             heading={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
             header={

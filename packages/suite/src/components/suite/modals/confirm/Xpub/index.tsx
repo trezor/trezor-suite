@@ -64,7 +64,7 @@ const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: XpubProps)
 
     return (
         <StyledModal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={
                 accountLabel ? (

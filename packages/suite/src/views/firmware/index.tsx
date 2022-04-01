@@ -157,7 +157,7 @@ const Firmware = () => {
 
     return (
         <StyledModal
-            cancelable={isCancelable}
+            isCancelable={isCancelable}
             header={
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice

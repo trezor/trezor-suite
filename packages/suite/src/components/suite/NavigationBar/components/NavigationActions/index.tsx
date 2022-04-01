@@ -7,7 +7,7 @@ import { Translation } from '@suite-components';
 import { findRouteByName } from '@suite-utils/router';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import { useCustomBackends } from '@settings-hooks/backends';
-import ActionItem from './components/ActionItem';
+import { ActionItem } from './components/ActionItem';
 import { isDesktop } from '@suite-utils/env';
 import { NavTor } from './components/NavTor';
 import { NavEarlyAccess } from './components/NavEarlyAccess';
@@ -49,7 +49,7 @@ interface NavigationActionsProps {
     isMobileLayout?: boolean;
 }
 
-const NavigationActions: React.FC<NavigationActionsProps> = ({
+export const NavigationActions: React.FC<NavigationActionsProps> = ({
     closeMainNavigation,
     isMobileLayout,
 }) => {
@@ -212,5 +212,3 @@ const NavigationActions: React.FC<NavigationActionsProps> = ({
         </WrapperComponent>
     );
 };
-
-export default NavigationActions;

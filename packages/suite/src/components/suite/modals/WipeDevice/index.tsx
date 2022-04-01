@@ -43,7 +43,7 @@ const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
 
     return (
         <StyledModal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_WIPE_DEVICE_HEADING" />}
             description={<Translation id="TR_WIPE_DEVICE_TEXT" />}
