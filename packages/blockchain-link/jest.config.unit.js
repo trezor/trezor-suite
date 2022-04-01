@@ -16,7 +16,6 @@ module.exports = {
     collectCoverageFrom: ['**/src/**/*.ts'],
     modulePathIgnorePatterns: [
         'node_modules',
-        '_old',
         'src/types',
         'src/ui',
         'src/utils/ws.ts',
