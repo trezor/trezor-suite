@@ -24,7 +24,6 @@
         "**/lib",
         "**/build",
         "**/api/generated/**/*.*",
-        "**/_old/**/*.*",
         ".next"
     ],
     "references": []
