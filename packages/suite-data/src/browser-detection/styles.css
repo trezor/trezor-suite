@@ -1,65 +1,162 @@
+html,
+body {
+    height: 100%;
+}
+
 .container {
     font-family: 'TT Hoves';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: #fff;
-    z-index: 99999;
+    font-weight: 500;
     text-align: center;
-    padding-top: 150px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
 }
 
 .title {
     text-rendering: optimizeLegibility;
-    color: #494949;
-    font-weight: bold;
+    color: #000000;
+    letter-spacing: -1px;
     margin: 0;
     padding: 0;
-    font-size: 2rem;
-    padding-bottom: 10px;
+    font-size: 48px;
+    font-weight: 500;
+    width: 90%;
 }
 
 .subtitle {
     font-size: 1rem;
-    line-height: 1.8;
-    color: #757575;
-    padding: 0;
-    margin: 0;
+    color: #000000;
+    opacity: 0.5;
+    margin-bottom: 75px;
+    margin-top: 15px;
+    width: 90%;
 }
 
 .button {
-    display: inline-block;
-    margin-top: 10px;
-    position: relative;
-    align-items: center;
-    padding: 11px 24px;
-    text-align: center;
-    border-radius: 3px;
-    font-size: 1rem;
-    font-weight: 300;
-    cursor: pointer;
-    outline: none;
-    background: #01B757;
-    color: #FFFFFF;
-    border: 1px solid #01B757;
+    display: inline-flex;
     justify-content: center;
-    text-decoration: none;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 16px;
+    height: 58px;
+    width: 248px;
+    margin: 8px;
+}
+
+.buttonPrimary {
+    background: #0f6148;
+    color: #ffffff;
+    border: 1px solid #0f6148;
+}
+
+.buttonSecondary {
+    background: #ffffff;
+    color: #0f6148;
+    border: 1px solid #e0e0e0;
 }
 
 /* Browser list */
 .browsers {
-    width: 300px;
-    margin: 15px auto;
+    display: inline-flex;
 }
 
 .browser {
-    float: left;
-    width: 50%;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 266px;
+    height: 249px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin: 12px;
+    text-decoration: none;
+    align-items: center;
 }
 
-.download {
-    display: block;
+.image {
+    height: 68px;
+    margin-top: 29px;
+}
+
+.browser:hover {
+    border: 1px solid #ffffff;
+    box-shadow: 0px 2px 2px #e0e0e0, 0px 4px 28px #e0e0e0;
+}
+
+.name {
+    font-size: 24px;
+    margin-top: 7px;
+    margin-bottom: 0px;
+    color: #000000;
+}
+
+.hr {
+    border-top: 1px solid #e0e0e0;
+    width: 876px;
+    margin-top: 154px;
+}
+
+.continueInfo {
+    color: #000000;
+    opacity: 0.5;
+    font-size: 12px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+
+.continueButton {
+    color: #000000;
+    opacity: 0.5;
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.list {
+    margin-top: -45px;
+    padding: 0;
+    list-style-type: none;
+}
+
+@media (max-width: 900px) {
+    .title {
+        font-size: 40px;
+        width: 95%;
+    }
+
+    .subtitle {
+        width: 95%;
+    }
+
+    .browsers {
+        display: inline-block;
+    }
+
+    .browser {
+        width: 356px;
+    }
+
+    .hr {
+        width: 95%;
+        margin-top: 122px;
+    }
+
+    .list {
+        margin: 0;
+    }
+
+    .continueInfo {
+        width: 80%;
+    }
+
+    .button {
+        width: 340px;
+    }
+
+    .subtitle {
+        margin-bottom: 30px;
+    }
 }
