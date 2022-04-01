@@ -1,0 +1,24 @@
+{
+    "descriptor": "5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1f123474e140a2c360b01f0fa66f2f22e2e965a5b07a80358cf75f77abbd66088",
+    "empty": true,
+    "balance": "0",
+    "availableBalance": "0",
+    "tokens": [],
+    "history": {
+        "total": 0,
+        "unconfirmed": 0
+    },
+    "page": {
+        "index": 1,
+        "size": 25,
+        "total": 0
+    },
+    "misc": {
+        "staking": {
+            "address": "stake1ux32jdf5aqj763wrlpuv6sjrngt0987ggtz8x86kc8p432s09jcqh",
+            "rewards": "0",
+            "isActive": false,
+            "poolId": null
+        }
+    }
+}

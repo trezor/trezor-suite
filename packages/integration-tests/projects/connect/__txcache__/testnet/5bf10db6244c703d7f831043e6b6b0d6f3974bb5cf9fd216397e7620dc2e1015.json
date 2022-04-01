@@ -1,0 +1,23 @@
+{
+    "inputs": [
+        {
+            "prev_hash": "2d5dfc5068b81e25185a655d2dcd10833b2f4e6a3d029c0d40b2fd3b63f09b48",
+            "prev_index": 0,
+            "address_n": [2147483732, 2147483649, 2147483648, 0, 65],
+            "amount": 10000,
+            "script_type": "SPENDWITNESS",
+            "script_sig": "",
+            "witness": "02473044022036da008ada0085a14a6fa04a17cf44925613c7857757bf2d488d646d841491240220341032fd972e92ec88550d4b8b2ebbd45e0a0eb53ce2b8bfbfdf300373bdf070012102377521551fc6c84312a60519bc50b3a761836d184e02b5908289362ff3fd193a",
+            "sequence": 4294967293
+        }
+    ],
+    "outputs": [
+        {
+            "address": "tb1qj79vy45wcvfctwejz05qgyltql3qgyz6fwhn5m",
+            "amount": 9890,
+            "script_type": "PAYTOADDRESS"
+        }
+    ],
+    "lock_time": 1904477,
+    "version": 2
+}

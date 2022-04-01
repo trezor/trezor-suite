@@ -1,0 +1,19 @@
+{
+    "status": "success",
+    "type": "response",
+    "result": {
+        "account_data": {
+            "Account": "rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj",
+            "Balance": "10000000",
+            "Flags": 0,
+            "LedgerEntryType": "AccountRoot",
+            "OwnerCount": 0,
+            "PreviousTxnID": "1D73CC86D89BF736D6E0CF2B69BB352C931F0971F21CC052147E3C6F6D78D683",
+            "PreviousTxnLgrSeq": 66949474,
+            "Sequence": 3,
+            "index": "DA88187347B6A203ED9314A5BDFDB73D7C8DFC07CB42FC08B5D7A73B4E2F6E39"
+        },
+        "ledger_hash": "8F6CED94442B2E37DB6759868F31C1BDA3514946BCDCF1F43A67354882E811CA",
+        "ledger_index": 69113681
+    }
+}

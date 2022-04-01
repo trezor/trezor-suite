@@ -263,3 +263,37 @@ connect-explorer manual:
   except:
     <<: *run_everything_rules
   when: manual
+
+connect jest manual:
+  stage: integration testing
+  when: manual
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-test.yml
+  script:
+    - git submodule update --init --recursive
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix
+    - docker-compose run test-run
+  after_script:
+    - docker-compose down
+    - docker network prune -f
+
+connect karma manual:
+  stage: integration testing
+  when: manual
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-karma-test.yml
+  script:
+    - git submodule update --init --recursive
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix
+    - docker-compose run test-run
+  after_script:
+    - docker-compose down
+    - docker network prune -f

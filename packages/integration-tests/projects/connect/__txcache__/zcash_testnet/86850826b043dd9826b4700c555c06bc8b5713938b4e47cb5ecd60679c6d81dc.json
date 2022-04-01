@@ -1,0 +1,32 @@
+{
+    "inputs": [
+        {
+            "prev_hash": "11c140a0228e7b0acc6a64b05fccc45e35baacd95987b5a2bd22224abc6be1f6",
+            "prev_index": 1,
+            "script_sig": "4730440220376326ae123d6ebec7f3c9e2b5ae209f44bebc66f9d17abde9eed4b7f529ccd20220151d679a1ea5de66442639472c92c0b7c838549404744b62b1eca3ffaa3c2ef20121022f16499c44a27f263c33741368222828c730fd1062215ba8481b15331f428fe3",
+            "sequence": 4294967295
+        },
+        {
+            "prev_hash": "56f4846719dd83a51d170f6f970b1341508d5579163f636547debce2774f2d24",
+            "prev_index": 1,
+            "script_sig": "48304502210084714bd8b6063a74e8eb5116385ea590389400fc79a9ec8df2b0fee833b7f4d002204883986f8853a1aabb6ead9d8fc4d171bcf1fe42702f08c285f00bb3bffbdeae0121020d70ec7da45380b4d521aa887b6cbaac3aa8857ec475dfddc221d21f908b40e7",
+            "sequence": 4294967295
+        }
+    ],
+    "bin_outputs": [
+        {
+            "amount": 49996210,
+            "script_pubkey": "76a9145887384835b98c089f51e1f6bcaf228ffa486fd788ac"
+        },
+        {
+            "amount": 50000000,
+            "script_pubkey": "76a914548cb80e45b1d36312fe0cb075e5e337e3c54cef88ac"
+        }
+    ],
+    "version": 4,
+    "version_group_id": 2301567109,
+    "branch_id": 0,
+    "expiry": 0,
+    "lock_time": 0,
+    "extra_data": "0000000000000000000000"
+}
