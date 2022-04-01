@@ -11,12 +11,18 @@ const Header = styled.div`
     margin-bottom: 25px;
 `;
 
-const HeaderBar = styled.div<{ showBottomBorder: boolean }>`
+const HeaderBar = styled.div<{ alignLeft?: boolean; showBottomBorder: boolean }>`
     display: flex;
     align-items: flex-start;
     justify-content: center;
     word-break: break-word;
     padding: 24px;
+
+    ${({ alignLeft }) =>
+        alignLeft &&
+        css`
+            text-align: left;
+        `}
 
     ${H1} {
         font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -132,6 +138,8 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
     const showProgressBar =
         totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined;
 
+    const showHeaderActions = !!headerComponents?.length || cancelable;
+
     if (cancelable && escPressed) {
         onCancel?.();
     }
@@ -148,9 +156,9 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
                 }}
             >
                 {heading && (
-                    <HeaderBar showBottomBorder={!showProgressBar}>
+                    <HeaderBar alignLeft={showHeaderActions} showBottomBorder={!showProgressBar}>
                         <H1 noMargin>{heading}</H1>
-                        {(headerComponents?.length || cancelable) && (
+                        {showHeaderActions && (
                             <HeaderComponentsContainer>
                                 {headerComponents}
                                 {cancelable && (
