@@ -1,5 +1,6 @@
 import React, { useMemo, ComponentType } from 'react';
 import styled from 'styled-components';
+import FocusLock from 'react-focus-lock';
 import {
     Modal as TrezorModal,
     ModalProps as TrezorModalProps,
@@ -14,6 +15,7 @@ import { useLayoutSize } from '@suite-hooks/useLayoutSize';
 const GuideBackdrop = styled(Backdrop)<{ guideOpen: boolean }>`
     transition: all 0.3s;
     right: ${({ guideOpen }) => (guideOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : '0')};
+
     & & {
         right: 0;
     }
@@ -64,9 +66,15 @@ const DefaultRenderer = ({
     );
 };
 
-export const Modal = ({ render: View = DefaultRenderer, ...props }: ModalProps) => (
-    <View {...props} />
-);
+export const Modal = ({ render: View = DefaultRenderer, ...props }: ModalProps) => {
+    const { isGuideOpen, isGuideOnTop } = useGuide();
+
+    return (
+        <FocusLock disabled={isGuideOpen && isGuideOnTop} group="overlay" autoFocus={false}>
+            <View {...props} />
+        </FocusLock>
+    );
+};
 
 Modal.HeaderBar = TrezorModal.HeaderBar;
 Modal.Body = TrezorModal.Body;

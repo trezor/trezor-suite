@@ -83,7 +83,7 @@ export const GuidePanel: React.FC = () => {
     }, []);
 
     return (
-        <FocusLock disabled={!isGuideOpen} autoFocus={false}>
+        <FocusLock disabled={!isGuideOpen} group="overlay" autoFocus={false}>
             {isGuideOpen && <BackDrop onClick={closeGuide} />}
 
             <GuideWrapper isModalOpen={isModalOpen}>
