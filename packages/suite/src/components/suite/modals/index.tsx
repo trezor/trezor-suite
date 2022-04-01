@@ -1,5 +1,4 @@
 import * as React from 'react';
-import FocusLock from 'react-focus-lock';
 import { UI } from 'trezor-connect';
 
 import * as allModalActions from '@suite-actions/modalActions';
@@ -40,29 +39,28 @@ import AdvancedCoinSettings from './AdvancedCoinSettings';
 import AddToken from './AddToken';
 import SafetyChecks from './SafetyChecks';
 import { DisableTor } from './DisableTor';
-import { useGuide } from '@guide-hooks';
 import { RawRenderer } from '../Modal/RawRenderer';
 
 import type { AcquiredDevice } from '@suite-types';
 
 const useSharedProps = () => {
-    const { isGuideOpen } = useGuide();
     const props = useSelector(state => ({
         modal: state.modal,
         device: state.suite.device,
         devices: state.devices,
         router: state.router,
     }));
+
     const actions = useActions({
         onCancel: allModalActions.onCancel,
         onPinCancel: allModalActions.onPinCancel,
         onReceiveConfirmation: allModalActions.onReceiveConfirmation,
         goto: routerActions.goto,
     });
+
     return {
         ...props,
         ...actions,
-        isGuideOpen,
     };
 };
 
@@ -262,24 +260,22 @@ const getModal = (props: SharedProps) => {
 
 // Action modal container component
 export const Modals = () => {
-    const props = useSharedProps();
+    const props: SharedProps = useSharedProps();
+
     const modalComponent = getModal(props);
-    if (!modalComponent) {
-        return null;
-    }
-    return (
-        <FocusLock disabled={props.isGuideOpen} autoFocus={false}>
-            {modalComponent}
-        </FocusLock>
-    );
+
+    return modalComponent;
 };
 
 export const RawModals = () => {
-    const props = useSharedProps();
+    const props: SharedProps = useSharedProps();
+
     const modalComponent = getModal(props);
+
     if (!modalComponent) {
         return null;
     }
+
     return React.cloneElement(modalComponent, {
         render: RawRenderer,
     });
