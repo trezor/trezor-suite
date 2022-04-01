@@ -5,7 +5,6 @@ submodules
 ### copy paste of .gitignore ###
 
 .next
-_old
 build
 build-electron
 .build-storybook
