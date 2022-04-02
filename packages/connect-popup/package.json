@@ -1,0 +1,29 @@
+{
+    "name": "@trezor/connect-popup",
+    "version": "1.0.0",
+    "private": true,
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/connect",
+    "description": "Bundle and build trezor-connect popup",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "trezor-connect"
+    ],
+    "sideEffects": false,
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build",
+        "build": "rimraf build && webpack --config ./webpack/prod.webpack.config.js"
+    },
+    "dependencies": {
+        "@trezor/connect": "9.0.0-beta.1"
+    }
+}
