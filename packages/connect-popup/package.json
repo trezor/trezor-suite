@@ -1,0 +1,15 @@
+{
+    "name": "@trezor/connect-popup",
+    "version": "9.0.0",
+    "private": true,
+    "sideEffects": false,
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build",
+        "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack/dev.webpack.config.ts",
+        "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack/prod.webpack.config.ts"
+    },
+    "dependencies": {
+        "@trezor/connect": "9.0.0-beta.1"
+    }
+}
