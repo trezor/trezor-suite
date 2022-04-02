@@ -1,0 +1,1 @@
+# @trezor/connect-popup
