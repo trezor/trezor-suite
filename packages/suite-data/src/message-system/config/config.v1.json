@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2022-02-17T00:00:00+00:00",
-    "sequence": 8,
+    "timestamp": "2022-04-03T00:00:00+00:00",
+    "sequence": 9,
     "actions": [
         {
             "conditions": [
@@ -80,6 +80,23 @@
                         "cs": "Přejít na suite.trezor.io",
                         "ru": "Перейти на suite.trezor.io"
                     }
+                }
+            }
+        },
+        {
+            "conditions": [],
+            "message": {
+                "id": "86c136a9-7fae-6933-03ca-30cc5fcc3d04",
+                "priority": 98,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Beware of phishing! Trezor users are being targeted by recent phishing attacks. Never enter your recovery seeds anywhere unless the physical Trezor device instructs you to do so, and you confirm your choice on your Trezor.",
+                    "en": "Beware of phishing! Trezor users are being targeted by recent phishing attacks. Never enter your recovery seeds anywhere unless the physical Trezor device instructs you to do so, and you confirm your choice on your Trezor.",
+                    "es": "¡Cuidado con el phishing! Los usuarios de Trezor están siendo blanco de recientes ataques de phishing. NO proporcione sus palabras de recuperación a nadie.",
+                    "cs": "Pozor na phishing! Uživatelé Trezoru se v poslední době stávají terčem phishingových útoků. Nikdy nikde nezadávejte obnovovací seed, pokud vás k tomu fyzické zařízení Trezor nevyzve a pokud svou volbu nepotvrdíte přímo na Trezoru.",
+                    "ru": "Пользователи Trezor подвергаются недавним фишинговым атакам. НЕ сообщайте никому свои слова для восстановления."
                 }
             }
         }
