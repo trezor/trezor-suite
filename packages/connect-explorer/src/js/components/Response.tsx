@@ -188,7 +188,6 @@ const Response: React.FC<Props> = props => {
                                 {json}
                             </Container>
                         );
-                        break;
                     }
 
                     case 'code':
@@ -198,7 +197,6 @@ const Response: React.FC<Props> = props => {
                                 {props.code}
                             </CodeContainer>
                         );
-                        break;
 
                     case 'docs':
                         return (
@@ -211,7 +209,6 @@ const Response: React.FC<Props> = props => {
                                 ;
                             </div>
                         );
-                        break;
 
                     // case 'tests':
                     //     currentTab = <div className="tests-container">TODO</div>;
