@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import fixtures from '../../__fixtures__';
 
 const { getController, setup, skipTest, conditionalTest, initTrezorConnect } = global.Trezor;
@@ -61,7 +61,6 @@ describe(`TrezorConnect methods`, () => {
                 done();
             });
 
-            // REF-TODO
             testCase.tests.forEach(t => {
                 // check if test should be skipped on current configuration
                 conditionalTest(

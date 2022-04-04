@@ -7,8 +7,9 @@
         "test:transport": "jest --verbose -c ./projects/transport/jest.config.js --runInBand",
         "test:desktop": "xvfb-maybe -- playwright test --config=./projects/suite-desktop/playwright.config.ts",
         "test:connect-explorer": "xvfb-maybe -- playwright test --config=./projects/connect-explorer/playwright.config.ts",
-        "test:connect": "jest --runInBand --verbose -c projects/connect/jest.config.js",
-        "test:connect:karma": "./node_modules/.bin/karma start projects/connect/karma.config.js"
+        "test:connect:node": "jest --runInBand --verbose -c projects/connect/jest.config.js",
+        "test:connect:web": "karma start projects/connect/karma.config.js",
+        "test:connect:webextension": "node ./projects/connect-webextension/test.js"
     },
     "dependencies": {
         "cypress": "9.5.1",

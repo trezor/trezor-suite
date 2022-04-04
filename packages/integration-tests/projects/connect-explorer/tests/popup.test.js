@@ -8,7 +8,7 @@ const { Controller } = require('../../../websocket-client');
 const fixtures = require('./fixtures');
 const buildOverview = require('../support/buildOverview');
 
-const url = process.env.URL || 'http://localhost:8082/';
+const url = process.env.URL || 'http://localhost:8088/';
 const SCREENSHOTS_DIR = './projects/connect-explorer/screenshots';
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 const emuScreenshots = {};

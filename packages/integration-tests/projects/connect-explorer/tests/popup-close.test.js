@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 const { Controller } = require('../../../websocket-client');
 const { createDeferred } = require('@trezor/utils');
 
-const url = process.env.URL || 'http://localhost:8082/';
+const url = process.env.URL || 'http://localhost:8088/';
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests

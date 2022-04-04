@@ -1,8 +1,8 @@
-# trezor-connect tests
+# @trezor/connect tests
 
 ## jest test
 
-Testing `trezor-connect` npm package in nodejs environment.
+Testing `@trezor/connect` npm package in nodejs environment.
 
 ```
 ./docker/docker-connect-test.sh
