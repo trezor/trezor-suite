@@ -1,3 +1,5 @@
+import { NEM } from '@trezor/connect';
+
 export default {
     method: 'nemGetAddress',
     setup: {
@@ -8,7 +10,7 @@ export default {
             description: "mainnet m/44'/1'/0'/0'/0'",
             params: {
                 path: "m/44'/1'/0'/0'/0'",
-                network: 104,
+                network: NEM.Networks.mainnet,
             },
             result: {
                 address: 'NB3JCHVARQNGDS3UVGAJPTFE22UQFGMCQGHUBWQN',
@@ -18,7 +20,7 @@ export default {
             description: "testnet m/44'/1'/0'/0'/0'",
             params: {
                 path: "m/44'/1'/0'/0'/0'",
-                network: 152,
+                network: NEM.Networks.testnet,
             },
             result: {
                 address: 'TB3JCHVARQNGDS3UVGAJPTFE22UQFGMCQHSBNBMF',

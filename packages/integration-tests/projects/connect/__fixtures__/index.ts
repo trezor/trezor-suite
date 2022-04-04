@@ -73,8 +73,7 @@ let fixtures = [
     cardanoGetAddress,
     cardanoGetNativeScriptHash,
     cardanoGetPublicKey,
-    // todo: this needs connect 8.2.8-beta.4
-    // cardanoSignTransaction,
+    cardanoSignTransaction,
     composeTransaction,
     eosGetPublicKey,
     eosSignTransaction,

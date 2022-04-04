@@ -1,4 +1,5 @@
 /* eslint-disable no-bitwise */
+import { NEM } from '@trezor/connect';
 
 export default {
     method: 'nemSignTransaction',
@@ -13,7 +14,7 @@ export default {
                 transaction: {
                     timeStamp: 74649215,
                     fee: 2000000,
-                    type: 0x4002,
+                    type: NEM.TxType.SUPPLY_CHANGE,
                     deadline: 74735615,
                     message: {},
                     mosaicId: {
@@ -22,7 +23,7 @@ export default {
                     },
                     supplyType: 1,
                     delta: 1,
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                     creationFeeSink: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
                     creationFee: 1500,
                 },
@@ -40,7 +41,7 @@ export default {
                 transaction: {
                     timeStamp: 74649215,
                     fee: 2000000,
-                    type: 0x4001,
+                    type: NEM.TxType.MOSAIC_CREATION,
                     deadline: 74735615,
                     message: {},
                     mosaicDefinition: {
@@ -52,7 +53,7 @@ export default {
                         properties: [],
                         description: 'lorem',
                     },
-                    version: 0x98 << 24, // testnet // 2550136832
+                    version: NEM.TxVersion.testnet,
                     creationFeeSink: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
                     creationFee: 1500,
                 },
@@ -70,7 +71,7 @@ export default {
                 transaction: {
                     timeStamp: 74649215,
                     fee: 2000000,
-                    type: 0x4001,
+                    type: NEM.TxType.MOSAIC_CREATION,
                     deadline: 74735615,
                     message: {},
                     mosaicDefinition: {
@@ -99,7 +100,7 @@ export default {
                         ],
                         description: 'lorem',
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                     creationFeeSink: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
                     creationFee: 1500,
                 },
@@ -117,7 +118,7 @@ export default {
                 transaction: {
                     timeStamp: 74649215,
                     fee: 2000000,
-                    type: 0x4001,
+                    type: NEM.TxType.MOSAIC_CREATION,
                     deadline: 74735615,
                     message: {},
                     mosaicDefinition: {
@@ -154,7 +155,7 @@ export default {
                         ],
                         description: 'lorem',
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                     creationFeeSink: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
                     creationFee: 1500,
                 },

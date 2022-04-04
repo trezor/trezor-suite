@@ -292,6 +292,7 @@ connect karma manual:
     - git submodule update --init --recursive
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
+    - yarn workspace @trezor/connect-web build # build inline script
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run

@@ -1,3 +1,5 @@
+import { NEM } from '@trezor/connect';
+
 export default {
     method: 'nemSignTransaction',
     setup: {
@@ -11,7 +13,7 @@ export default {
                 transaction: {
                     timeStamp: 12349215,
                     fee: 9900,
-                    type: 0x0801,
+                    type: NEM.TxType.IMPORTANCE_TRANSFER,
                     deadline: 99,
                     message: {},
                     importanceTransfer: {
@@ -19,7 +21,7 @@ export default {
                         publicKey:
                             'c5f54ba980fcbb657dbaaa42700539b207873e134d2375efeab5f1ab52f87844',
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
@@ -35,13 +37,13 @@ export default {
                 transaction: {
                     timeStamp: 74649215,
                     fee: 2000000,
-                    type: 0x2001,
+                    type: NEM.TxType.PROVISION_NAMESPACE,
                     deadline: 74735615,
                     message: {},
                     newPart: 'ABCDE',
                     rentalFeeSink: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
                     rentalFee: 1500,
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {

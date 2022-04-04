@@ -1,3 +1,5 @@
+import { NEM } from '@trezor/connect';
+
 export default {
     method: 'nemSignTransaction',
     setup: {
@@ -13,13 +15,13 @@ export default {
                     amount: '2000000',
                     fee: 2000000,
                     recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
-                    type: 0x0101,
+                    type: NEM.TxType.TRANSFER,
                     deadline: 74735615,
                     message: {
                         payload: '746573745f6e656d5f7472616e73616374696f6e5f7472616e73666572',
                         type: 1,
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
@@ -37,7 +39,7 @@ export default {
                     amount: '5000000',
                     fee: 1000000,
                     recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
-                    type: 0x0101,
+                    type: NEM.TxType.TRANSFER,
                     deadline: 76895615,
                     message: {},
                     mosaics: [
@@ -49,7 +51,7 @@ export default {
                             quantity: 9000000,
                         },
                     ],
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
@@ -67,7 +69,7 @@ export default {
                     amount: '2000000',
                     fee: 1000000,
                     recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
-                    type: 0x0101,
+                    type: NEM.TxType.TRANSFER,
                     deadline: 76895615,
                     message: {},
                     mosaics: [
@@ -79,7 +81,7 @@ export default {
                             quantity: 3500000,
                         },
                     ],
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
@@ -97,7 +99,7 @@ export default {
                     amount: '3000000',
                     fee: 1000000,
                     recipient: 'NDMYSLXI4L3FYUQWO4MJOVL6BSTJJXKDSZRMT4LT',
-                    type: 0x0101,
+                    type: NEM.TxType.TRANSFER,
                     deadline: 76895615,
                     message: {},
                     mosaics: [
@@ -127,7 +129,7 @@ export default {
                     amount: '2000000',
                     fee: 1000000,
                     recipient: 'NDMYSLXI4L3FYUQWO4MJOVL6BSTJJXKDSZRMT4LT',
-                    type: 0x0101,
+                    type: NEM.TxType.TRANSFER,
                     deadline: 76895615,
                     message: {},
                     mosaics: [
@@ -157,7 +159,7 @@ export default {
                     amount: '2000000',
                     fee: 1000000,
                     recipient: 'NDMYSLXI4L3FYUQWO4MJOVL6BSTJJXKDSZRMT4LT',
-                    type: 0x0101,
+                    type: NEM.TxType.TRANSFER,
                     deadline: 76895615,
                     message: {},
                     mosaics: [

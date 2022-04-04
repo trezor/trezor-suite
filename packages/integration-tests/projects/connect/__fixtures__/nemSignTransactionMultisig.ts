@@ -1,3 +1,5 @@
+import { NEM } from '@trezor/connect';
+
 export default {
     method: 'nemSignTransaction',
     setup: {
@@ -11,7 +13,7 @@ export default {
                 transaction: {
                     timeStamp: 74649215,
                     fee: 2000000,
-                    type: 0x1001,
+                    type: NEM.TxType.AGGREGATE_MODIFICATION,
                     deadline: 74735615,
                     message: {},
                     modifications: [
@@ -24,7 +26,7 @@ export default {
                     minCosignatories: {
                         relativeChange: 3,
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
@@ -40,23 +42,23 @@ export default {
                 transaction: {
                     timeStamp: 1,
                     fee: 10000,
-                    type: 0x1004,
+                    type: NEM.TxType.MULTISIG,
                     deadline: 74735615,
                     otherTrans: {
                         timeStamp: 2,
                         amount: '2000000',
                         fee: 15000,
                         recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
-                        type: 0x0101,
+                        type: NEM.TxType.TRANSFER,
                         deadline: 67890,
                         message: {
                             payload: '746573745f6e656d5f7472616e73616374696f6e5f7472616e73666572',
                             type: 1,
                         },
-                        version: -1744830464,
+                        version: NEM.TxVersion.testnet,
                         signer: 'c5f54ba980fcbb657dbaaa42700539b207873e134d2375efeab5f1ab52f87844',
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
@@ -72,22 +74,22 @@ export default {
                 transaction: {
                     timeStamp: 74649215,
                     fee: 150,
-                    type: 0x1004,
+                    type: NEM.TxType.MULTISIG,
                     deadline: 789,
                     otherTrans: {
                         timeStamp: 123456,
                         fee: 2000,
                         recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
-                        type: 0x2001,
+                        type: NEM.TxType.PROVISION_NAMESPACE,
                         deadline: 100,
                         message: {},
                         newPart: 'ABCDE',
                         rentalFeeSink: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
                         rentalFee: 1500,
-                        version: -1744830464,
+                        version: NEM.TxVersion.testnet,
                         signer: 'c5f54ba980fcbb657dbaaa42700539b207873e134d2375efeab5f1ab52f87844',
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
@@ -103,23 +105,23 @@ export default {
                 transaction: {
                     timeStamp: 333,
                     fee: 200,
-                    type: 0x1002,
+                    type: NEM.TxType.COSIGNING,
                     deadline: 444,
                     otherTrans: {
                         timeStamp: 555,
                         amount: 2000000,
                         fee: 2000000,
                         recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
-                        type: 0x0101,
+                        type: NEM.TxType.TRANSFER,
                         deadline: 666,
                         message: {
                             payload: '746573745f6e656d5f7472616e73616374696f6e5f7472616e73666572',
                             type: 1,
                         },
-                        version: -1744830464,
+                        version: NEM.TxVersion.testnet,
                         signer: 'c5f54ba980fcbb657dbaaa42700539b207873e134d2375efeab5f1ab52f87844',
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
@@ -136,13 +138,13 @@ export default {
                 transaction: {
                     timeStamp: 900000,
                     fee: 200000,
-                    type: 0x1002,
+                    type: NEM.TxType.COSIGNING,
                     deadline: 100,
                     otherTrans: {
                         timeStamp: 101111,
                         fee: 1000,
                         recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
-                        type: 0x4002,
+                        type: NEM.TxType.SUPPLY_CHANGE,
                         deadline: 13123,
                         // message: { },
                         mosaicId: {
@@ -151,12 +153,12 @@ export default {
                         },
                         supplyType: 1,
                         delta: 1,
-                        version: -1744830464,
+                        version: NEM.TxVersion.testnet,
                         creationFeeSink: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
                         creationFee: 1500,
                         signer: 'c5f54ba980fcbb657dbaaa42700539b207873e134d2375efeab5f1ab52f87844',
                     },
-                    version: -1744830464,
+                    version: NEM.TxVersion.testnet,
                 },
             },
             result: {
