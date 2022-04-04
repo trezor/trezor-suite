@@ -3,7 +3,7 @@
 
 describe('Language and theme detection', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
     });
 
     it('Light English', () => {

@@ -14,6 +14,6 @@ describe('iPhone with chrome browser ', () => {
         cy.prefixedVisit('/');
         cy.getTestElement('@browser-detect').get('h1').should('contain', 'No WebUSB support');
         cy.wait(500); // wait for text rendering to finish before taking a screenshot
-        cy.matchImageSnapshot('no webusb support');
+        cy.matchImageSnapshot('no-webusb-support');
     });
 });

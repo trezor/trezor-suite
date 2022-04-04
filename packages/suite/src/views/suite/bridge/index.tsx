@@ -132,7 +132,7 @@ const InstallBridge = () => {
         <Modal
             heading={<Translation id="TR_TREZOR_BRIDGE_DOWNLOAD" />}
             description={<Translation id="TR_NEW_COMMUNICATION_TOOL" />}
-            data-test="@bridge"
+            data-test="@modal/bridge"
         >
             <Metadata title="Download Bridge | Trezor Suite" />
             <Content>

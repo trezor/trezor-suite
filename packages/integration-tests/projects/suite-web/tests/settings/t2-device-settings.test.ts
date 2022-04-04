@@ -8,7 +8,7 @@ describe('T2 - Device settings', () => {
         cy.task('startBridge');
 
         // navigate to device settings page
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 
@@ -59,7 +59,7 @@ describe('T2 - Device settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: true });
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 
@@ -73,7 +73,7 @@ describe('T2 - Device settings', () => {
         cy.task('startEmu', { wipe: true, version: '2.3.4' });
         cy.task('setupEmu');
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 
@@ -86,7 +86,7 @@ describe('T2 - Device settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
 

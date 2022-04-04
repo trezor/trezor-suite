@@ -5,7 +5,7 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
 describe('Dropbox api errors', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
     });
 
     it('Malformed token', () => {

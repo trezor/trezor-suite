@@ -8,15 +8,19 @@ describe('Firmware', () => {
     });
 
     ['1.9.4', '2.3.0'].forEach(fw => {
-        it(`Firmware ${fw} outdated notification banner should open firmware update modal`, () => {
+        // cypress open todo: notification is not present when there is messaging system banner
+        it.skip(`Firmware ${fw} outdated notification banner should open firmware update modal`, () => {
             cy.task('startEmu', { wipe: true, version: fw });
             cy.task('setupEmu');
             cy.task('startBridge');
             cy.prefixedVisit('/');
             cy.passThroughInitialRun();
-            cy.matchImageSnapshot('outdated notification banner', {
-                clip: { x: 0, y: 0, height: 100, width: 1080 },
-            });
+            cy.getTestElement('@suite-layout/body').matchImageSnapshot(
+                'outdated-notification-banner',
+                {
+                    clip: { x: 0, y: 0, height: 100, width: 1080 },
+                },
+            );
             cy.getTestElement('@notification/update-firmware/button').click();
 
             // // initial screen

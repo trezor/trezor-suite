@@ -10,7 +10,7 @@ type Fixture = {
 
 describe('prerequisites = test various types of devices connecting to the application', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.getTestElement('@connect-device-prompt');
     });
@@ -49,7 +49,7 @@ describe('prerequisites = test various types of devices connecting to the applic
             cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
             cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
             // todo: match snapshot
-            cy.screenshot(f.desc);
+            cy.getTestElement('@welcome-layout/body').screenshot(f.desc);
         });
     });
 

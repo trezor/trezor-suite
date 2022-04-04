@@ -12,7 +12,7 @@ describe('Cardano', () => {
         });
         cy.task('startBridge');
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });

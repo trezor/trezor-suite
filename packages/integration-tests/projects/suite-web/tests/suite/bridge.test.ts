@@ -12,7 +12,7 @@ const systems = [
 
 describe('Bridge page', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
     });
 
     it('/bridge', () => {
@@ -24,14 +24,14 @@ describe('Bridge page', () => {
         // there is a dropdown with installers
         cy.getTestElement('@bridge/installers/input').click();
         systems.forEach(system => {
-            cy.getTestElement('@bridge').should('contain', system);
+            cy.getTestElement('@modal/bridge').should('contain', system);
         });
 
         // select listens to keyboard events
         cy.get('body').type('{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{enter}');
         cy.getTestElement('@bridge/installers/input').should('contain', 'Windows');
 
-        cy.getTestElement('@bridge').matchImageSnapshot('bridge modal', {
+        cy.getTestElement('@modal/bridge').matchImageSnapshot('bridge-modal', {
             blackout: ['[data-test="@bridge/download-button"]'],
         });
 
@@ -45,7 +45,7 @@ describe('Bridge page', () => {
         // todo: rename @onboarding/expand-troubleshooting-tips as it is in suite now
         cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
         cy.getTestElement('@goto/udev').click();
-        cy.getTestElement('@modal/udev').matchImageSnapshot('udev rules modal');
+        cy.getTestElement('@modal/udev').matchImageSnapshot('udev-modal');
 
         // udev rules modal is closable via close button
         cy.getTestElement('@modal/close-button').click();

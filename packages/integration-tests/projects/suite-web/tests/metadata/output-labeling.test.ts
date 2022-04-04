@@ -8,7 +8,7 @@ const providers = ['google'] as const;
 
 describe('Metadata - Output labeling', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
     });
 
     providers.forEach(provider => {

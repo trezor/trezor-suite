@@ -11,7 +11,7 @@ describe('Export transactions', () => {
             mnemonic: 'all all all all all all all all all all all all',
         });
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

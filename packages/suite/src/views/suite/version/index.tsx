@@ -14,7 +14,7 @@ const Line = styled.div`
 `;
 
 const Version = () => (
-    <Modal data-test="@version">
+    <Modal data-test="@modal/version">
         <Wrapper>
             <P size="small" weight="bold">
                 APPLICATION VERSION

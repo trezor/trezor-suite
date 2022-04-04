@@ -6,12 +6,13 @@ describe('Backup', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: true });
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
 
-    it('Backup failed - device disconnected during action', () => {
+    // cypress open todo: notification is not present when there is messaging system banner
+    it.skip('Backup failed - device disconnected during action', () => {
         cy.getTestElement('@notification/no-backup/button').click();
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();

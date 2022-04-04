@@ -26,7 +26,7 @@ let startEmuParams;
 describe(`Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
 Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow`, () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
     });
 
     fixtures.forEach(f => {

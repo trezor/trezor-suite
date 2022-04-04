@@ -6,7 +6,7 @@ describe('T1 - Device settings', () => {
         cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
@@ -27,7 +27,7 @@ describe('T1 - Device settings', () => {
         cy.getTestElement('@pin/input/1').click();
 
         cy.getTestElement('@pin/submit-button').click();
-        cy.getTestElement('@pin-mismatch').matchImageSnapshot();
+        cy.getTestElement('@pin-mismatch').matchImageSnapshot('pin-mismatch');
         cy.getTestElement('@pin-mismatch/try-again-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
@@ -37,7 +37,7 @@ describe('T1 - Device settings', () => {
         cy.task('startEmu', { version: '1.9.3', wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

@@ -9,7 +9,7 @@ describe('Test tooltip links', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         cy.task('applySettings', { passphrase_always_on_device: false });
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
@@ -29,7 +29,7 @@ describe('Test tooltip conditional rendering', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { mnemonic: 'all all all all all all all all all all all all' });
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();

@@ -145,7 +145,7 @@ export const OnboardingLayout: React.FC = ({ children }) => {
         <Wrapper>
             {banner && <MessageSystemBanner message={banner} />}
 
-            <Body>
+            <Body data-test="@onboarding-layout/body">
                 <ContentWrapper>
                     <Header>
                         <LogoHeaderRow>
