@@ -9,12 +9,13 @@ describe('Backup', () => {
         });
         cy.task('startBridge');
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
 
-    it('Successful backup happy path', () => {
+    // cypress open todo: notification is not present when there is messaging system banner
+    it.skip('Successful backup happy path', () => {
         // access from notification
         cy.getTestElement('@notification/no-backup/button').click();
 

@@ -4,7 +4,7 @@
 describe('Onboarding - packaging security', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
     });
 
@@ -13,6 +13,6 @@ describe('Onboarding - packaging security', () => {
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/exit-app-button').should('be.visible');
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
-        cy.matchImageSnapshot('security-check');
+        cy.getTestElement('@welcome-layout/body').matchImageSnapshot('security-check');
     });
 });

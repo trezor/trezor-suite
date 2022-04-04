@@ -122,7 +122,7 @@ const WelcomeLayout: React.FC = ({ children }) => {
     return (
         <Wrapper>
             {banner && <MessageSystemBanner message={banner} />}
-            <Body>
+            <Body data-test="@welcome-layout/body">
                 <WelcomeWrapper>
                     <AnimatePresence>
                         {((isGuideOpen && isGuideOnTop) || !isGuideOpen) && (

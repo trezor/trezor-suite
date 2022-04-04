@@ -22,7 +22,7 @@ const fixtures = [
 
 describe('Metadata - suite is watching cloud provider and syncs periodically', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
     });
     fixtures.forEach(f => {
         it(`${f.provider}-${f.desc}`, () => {

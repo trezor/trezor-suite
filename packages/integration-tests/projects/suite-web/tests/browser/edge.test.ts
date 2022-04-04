@@ -6,7 +6,7 @@
 
 describe('Windows 10 with edge browser ', () => {
     before(() => {
-        cy.viewport(1024, 768);
+        cy.viewport(1080, 1440);
         cy.resetDb();
     });
 
@@ -22,6 +22,6 @@ describe('Windows 10 with edge browser ', () => {
                 expect($img[1].naturalWidth).to.be.greaterThan(0);
             });
         cy.wait(500); // wait for text rendering to finish before taking a screenshot
-        cy.matchImageSnapshot('browser is not supported at all');
+        cy.matchImageSnapshot('browser-not-supported');
     });
 });

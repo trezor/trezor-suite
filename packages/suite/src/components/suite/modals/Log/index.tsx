@@ -63,7 +63,7 @@ const Log = ({ onCancel }: Props) => {
             onCancel={onCancel}
             heading={<Translation id="TR_LOG" />}
             description={<Translation id="LOG_DESCRIPTION" />}
-            data-test="@log"
+            data-test="@modal/log"
             bottomBar={
                 <>
                     <Button variant="secondary" onClick={() => copy()} data-test="@log/copy-button">

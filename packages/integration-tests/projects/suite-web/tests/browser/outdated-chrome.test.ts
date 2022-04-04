@@ -6,7 +6,7 @@
 
 describe('Windows 7 with outdated chrome ', () => {
     before(() => {
-        cy.viewport(1024, 768);
+        cy.viewport(1080, 1440);
         cy.resetDb();
     });
 
@@ -15,6 +15,6 @@ describe('Windows 7 with outdated chrome ', () => {
         cy.document().its('fonts.status').should('equal', 'loaded');
         cy.get('html').should('contain.text', 'Your browser is outdated');
         cy.wait(500); // wait for text rendering to finish before taking a screenshot
-        cy.matchImageSnapshot('chrome is supported but outdated');
+        cy.matchImageSnapshot('chrome-supported-outdated');
     });
 });

@@ -10,7 +10,7 @@ describe.skip('Discovery', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/coins');
         cy.passThroughInitialRun();
     });

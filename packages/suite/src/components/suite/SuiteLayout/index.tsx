@@ -153,7 +153,7 @@ const BodyNormal: React.FC<NormalBodyProps> = ({
     isModalOpen,
     isModalOpenLastChange,
 }) => (
-    <Body>
+    <Body data-test="@suite-layout/body">
         <Columns
             isModalOpen={isModalOpen}
             isModalOpenLastChange={isModalOpenLastChange}
@@ -174,7 +174,7 @@ const BodyNormal: React.FC<NormalBodyProps> = ({
 );
 
 const BodyMobile: React.FC<MobileBodyProps> = ({ url, menu, appMenu, children }) => (
-    <Body>
+    <Body data-test="@suite-layout/body">
         <Columns>
             <ScrollAppWrapper url={url}>
                 {menu}

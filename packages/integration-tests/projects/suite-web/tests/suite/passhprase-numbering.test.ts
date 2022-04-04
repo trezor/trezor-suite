@@ -9,7 +9,7 @@ describe('Passphrase', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         cy.task('applySettings', { passphrase_always_on_device: false });
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });

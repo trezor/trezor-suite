@@ -53,7 +53,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.task('startBridge');
         cy.task('startEmu', { wipe: true });
         cy.resetDb();
-        cy.viewport(1024, 768);
+        cy.viewport(1080, 1440);
         cy.prefixedVisit('/');
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();

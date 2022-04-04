@@ -9,7 +9,7 @@ describe.skip('Onboarding - recover wallet T1', () => {
         cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
         cy.task('startBridge');
 
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad();

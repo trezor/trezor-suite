@@ -6,7 +6,7 @@
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
     });
 
@@ -14,47 +14,60 @@ describe('Onboarding - create wallet', () => {
         cy.task('startEmu', { wipe: true, version: '2.1.1' });
 
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
-        cy.get('body').matchImageSnapshot('1-onboarding-create-wallet');
+        cy.getTestElement('@welcome-layout/body').matchImageSnapshot('1-onboarding-create-wallet');
         cy.getTestElement('@onboarding/continue-button').click();
 
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
-        cy.get('body').matchImageSnapshot('2-onboarding-create-wallet');
+        cy.getTestElement('@welcome-layout/body').matchImageSnapshot('2-onboarding-create-wallet');
         cy.getTestElement('@onboarding/continue-button').click();
 
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
 
-        cy.get('body').matchImageSnapshot('3-onboarding-create-wallet', {
-            blackout: ['[data-test="@firmware/offer-version/new"]'],
-        });
+        cy.getTestElement('@onboarding-layout/body').matchImageSnapshot(
+            '3-onboarding-create-wallet',
+            {
+                blackout: ['[data-test="@firmware/offer-version/new"]'],
+            },
+        );
         // todo: hover and make screenshot of "firmware tooltip"
         // for some reason hoverTestElement does not work here
         // cy.hoverTestElement('@firmware/offer-version/new');
         cy.getTestElement('@firmware/skip-button').click();
 
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
-        cy.get('body').matchImageSnapshot('4-onboarding-create-wallet');
+        cy.getTestElement('@onboarding-layout/body').matchImageSnapshot(
+            '4-onboarding-create-wallet',
+        );
         cy.getTestElement('@onboarding/path-create-button').click();
 
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
-        cy.get('body').matchImageSnapshot('5-onboarding-create-wallet');
+        cy.getTestElement('@onboarding-layout/body').matchImageSnapshot(
+            '5-onboarding-create-wallet',
+        );
         cy.log('Performing standard backup');
         cy.getTestElement('@onboarding/only-backup-option-button').click();
 
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
         cy.getTestElement('@prompts/confirm-on-device');
         cy.getTestElement('@onboarding/confirm-on-device').should('be.visible');
-        cy.get('body').matchImageSnapshot('6-onboarding-create-wallet');
+        cy.getTestElement('@onboarding-layout/body').matchImageSnapshot(
+            '6-onboarding-create-wallet',
+        );
         cy.task('pressYes');
         cy.getTestElement('@onboarding/create-backup-button').click();
 
         cy.passThroughBackup();
 
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
-        cy.get('body').matchImageSnapshot('7-onboarding-create-wallet');
+        cy.getTestElement('@onboarding-layout/body').matchImageSnapshot(
+            '7-onboarding-create-wallet',
+        );
         cy.getTestElement('@onboarding/set-pin-button').click();
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
         cy.getTestElement('@prompts/confirm-on-device');
-        cy.get('body').matchImageSnapshot('8-onboarding-create-wallet');
+        cy.getTestElement('@onboarding-layout/body').matchImageSnapshot(
+            '8-onboarding-create-wallet',
+        );
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
         cy.task('pressYes');

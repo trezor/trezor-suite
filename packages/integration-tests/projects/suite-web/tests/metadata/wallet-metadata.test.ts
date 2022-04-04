@@ -14,7 +14,7 @@ const firstHiddenWalletState = 'myBrmyzvN5Wa4oeYrL7t8EYU1Ch5Q6vp47@355C817510C0E
 
 describe('Metadata - wallet labeling', () => {
     beforeEach(() => {
-        cy.viewport(1024, 768).resetDb();
+        cy.viewport(1080, 1440).resetDb();
     });
 
     firmwares.forEach(firmware => {
