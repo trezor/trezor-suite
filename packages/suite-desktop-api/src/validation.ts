@@ -14,7 +14,7 @@ export const isPrimitive = (type: OptionalPrimitive, value: any) => {
 export const isObject = (shape: { [key: string]: OptionalPrimitive }, value: any) => {
     if (value == null || typeof value !== 'object') return false;
     const keys = Object.keys(shape).map(key => {
-        const type = shape[key];
+        const type = shape[key]!;
         return isPrimitive(type, value[key]);
     });
     return !keys.includes(false);

@@ -73,7 +73,7 @@ export class Parser {
         try {
             return doc
                 .toString()
-                .match(/^# (.+$)/m)![1]
+                .match(/^# (.+$)/m)![1]!
                 .replace(/[\\]/g, '')
                 .trim();
         } catch (e) {
