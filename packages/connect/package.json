@@ -19,6 +19,13 @@
     ],
     "sideEffects": false,
     "main": "lib/index",
+    "browser": {
+        "./lib/index": "./lib/index-browser",
+        "./lib/workers/workers": "./lib/workers/workers-browser"
+    },
+    "react-native": {
+        "./lib/workers/workers": "./lib/workers/workers-react-native"
+    },
     "files": [
         "lib/",
         "!**/*.map"
