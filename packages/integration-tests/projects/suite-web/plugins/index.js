@@ -33,7 +33,7 @@ const ensureRdpPort = args => {
 let port = 0;
 let client = null;
 
-const controller = new Controller({ url: 'ws://localhost:9001/' });
+const controller = new Controller();
 
 module.exports = on => {
     // make ts possible start

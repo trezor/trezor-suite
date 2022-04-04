@@ -6,8 +6,8 @@ const outputs = [];
 const total = 255;
 for (let i = 0; i < total; i++) {
     const output = {
-        address: '1NwN6UduuVkJi6sw3gSiKZaCY5rHgVXC2h',
-        amount: Math.floor((100000 + 2540000 - 39000) / total).toString(),
+        address: 'momtnzR3XqXgDSsFmd8gkGxUiHZLde3RmA',
+        amount: 7129,
         script_type: 'PAYTOADDRESS',
     };
 
@@ -15,8 +15,8 @@ for (let i = 0; i < total; i++) {
 }
 
 let serializedTx =
-    '0100000002fb792f470a58993e14964c9bd46cdf37cb4bbc3f61540cb651580c82ed243ec6010000006b483045022100f7b7eed8b39ef3859615b8d191053b202da022839500bf4227a292f62ea553860220590e82e847c6d161195a1e95af70270d9a42cc6e808960f13879e584759167830121034fd90850dfab2ae698c9cf58ce3182d4d06676e1abf012331659c9434098100affffffffe56582d2119100cb1d3da8232291e053f71e25fb669c87b32a667749959ea239010000006b483045022100e6d0c72941ece2756f5bb3bbcc3e93f7dc1c8a600800dcc7208c323781bfd1c102205ddc3c397f52924d3d5f1fdef7264504db3b9120af362c137b0093dc5a5607e80121039649f4e976edf6daced9d8e9c747d60059d12d6665ef7cc5abd3a833eeffdc67fffffffffdff00';
-serializedTx += 'd8270000000000001976a914f0a2b64e56ee2ff57126232f84af6e3a41d4055088ac'.repeat(
+    '01000000018eacb9dc2bfa59e34b57ed9c49a14b4e783ad77fc8e43e5483cf25135d6ad558010000006a47304402203a0a7d9ab337770aa4f4f55834cfb6bb001be5574c88227e66f95d9867c7df11022029a84f1a03e6762649b07d5df1ae77b9f816a39927ae7844e4517916a424ac190121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0fffffffffdff00';
+serializedTx += 'd91b0000000000001976a9145a9452b8db22e7fb606adafc731f5d4b482f9e8d88ac'.repeat(
     total,
 );
 serializedTx += '00000000';
@@ -32,26 +32,26 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/0'/5'/0/9"),
                         prev_hash:
-                            'd5f65ee80147b4bcc70b75e4bbf2d7382021b871bd8867ef8fa525ef50864882',
+                            '0dac366fd8a67b2a89fbb0d31086e7acded7a5bbf9ef9daa935bc873229ef5b5',
                         prev_index: 0,
-                        amount: '390000',
+                        amount: 63988,
                     },
                 ],
                 outputs: [
                     {
-                        address: '1MJ2tj2ThBE62zXbBYA5ZaN3fdve5CPAz1',
-                        amount: '380000',
+                        address: '13Hbso8zgV5Wmqn3uA7h3QVtmPzs47wcJ7',
+                        amount: 50248,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['d5f65e']),
+                refTxs: TX_CACHE(['0dac36']),
                 coin: 'btc',
             },
             result: {
                 serializedTx:
-                    '010000000182488650ef25a58fef6788bd71b8212038d7f2bbe4750bc7bcb44701e85ef6d5000000006a47304402205711944d5ae2ec3acb9e4d6b4615ba197276424bc2ec2dc7da9ab7ecb6b9119302200bad5c4ee3495c36394c056931ae2c49f4f13ff045bfb4112d80fbcf65e8f4a1012103c6d9cc725bb7e19c026df03bf693ee1171371a8eaf25f04b7a58f6befabcd38cffffffff0160cc0500000000001976a914de9b2a8da088824e8fe51debea566617d851537888ac00000000',
+                    '0100000001b5f59e2273c85b93aa9deff9bba5d7deace78610d3b0fb892a7ba6d86f36ac0d000000006b483045022100dd4dd136a70371bc9884c3c51fd52f4aed9ab8ee98f3ac7367bb19e6538096e702200c56be09c4359fc7eb494b4bdf8f2b72706b0575c4021373345b593e9661c7b6012103d7f3a07085bee09697cf03125d5c8760dfed65403dba787f1d1d8b1251af2cbeffffffff0148c40000000000001976a91419140511436e947448be994ab7fda9f98623e68e88ac00000000',
             },
         },
         {
@@ -91,31 +91,26 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/1'/0'/0/7"),
                         prev_hash:
-                            '6f90f3c7cbec2258b0971056ef3fe34128dbde30daa9c0639a898f9977299d54',
-                        prev_index: 1,
-                        amount: '1000000000',
+                            '25fee583181847cbe9d9fd9a483a8b8626c99854a72d01de848ef40508d0f3bc',
+                        prev_index: 0,
+                        amount: 129999808,
                     },
                 ],
                 outputs: [
                     {
-                        address: 'mfiGQVPcRcaEvQPYDErR34DcCovtxYvUUV',
-                        amount: '492000000', // 1000000000 - 500000000 - 8000000
-                        script_type: 'PAYTOADDRESS',
-                    },
-                    {
-                        address_n: ADDRESS_N("m/44'/1'/0'/1/0"),
-                        amount: '500000000',
+                        address: 'mnY26FLTzfC94mDoUcyDJh1GVE3LuAUMbs',
+                        amount: 129999808 - 2500000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['6f90f3']),
+                refTxs: TX_CACHE(['25fee5']),
                 coin: 'Testnet',
             },
             result: {
                 serializedTx:
-                    '0100000001549d2977998f899a63c0a9da30dedb2841e33fef561097b05822eccbc7f3906f010000006b483045022100ed44faf22e1041b082bb3e38583dea9ef9ae377fe1e91efeca0775c931730b8a02204848fbfcd94f1d16d131dd7bc34477ed0330ca1deedf1f2b6aa997ea7e7ea6b40121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff020053531d000000001976a9140223b1a09138753c9cb0baf95a0a62c82711567a88ac0065cd1d000000001976a9143d3cca567e00a04819742b21a696a67da796498b88ac00000000',
+                    '0100000001bcf3d00805f48e84de012da75498c926868b3a489afdd9e9cb47181883e5fe25000000006a47304402201602fd17c6e1d8c785ce150d6c0ec97f8a93fb71f6294f3a1de7dd52a52e27fe022079c05bc14f7b94771d195cb330a4dd7c0765290c6e183ae6aa169e4d5ccf2a3a0121035169c4d6a36b6c4f3e210f46d329efa1cb7a67ffce7d62062d4a8a17c23756e1ffffffff01207e9907000000001976a9144cfc772f24b600762f905a1ee799ce0e9c26831f88ac00000000',
             },
         },
         {
@@ -151,40 +146,40 @@ export default {
             },
         },
         {
-            description: 'Bitcoin (P2PKH): 1 input, 3 outputs',
+            description: 'Testnet (P2PKH): 1 input, 3 outputs',
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/1'/1'/0/21"),
                         prev_hash:
-                            'd5f65ee80147b4bcc70b75e4bbf2d7382021b871bd8867ef8fa525ef50864882',
+                            'bb5169091f09e833e155b291b662019df56870effe388c626221c5ea84274bc4',
                         prev_index: 0,
-                        amount: '390000',
+                        amount: 1183825,
                     },
                 ],
                 outputs: [
                     {
-                        address: '1MJ2tj2ThBE62zXbBYA5ZaN3fdve5CPAz1',
-                        amount: '288000',
+                        address: 'mgCyjvJaTgVwKoxEaFaDLeFQpZc7qdKXpZ',
+                        amount: 100100,
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address: '13uaUYn6XAooo88QvAqAVsiVvr2mAXutqP',
-                        amount: '12000',
+                        address: 'n4qJziM7S8ydGbXKKRJADHuSeAjbx5c1Dp',
+                        amount: 100100,
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/1/0"),
-                        amount: '80000',
+                        address_n: ADDRESS_N("m/44'/1'/1'/1/21"),
+                        amount: 1183825 - 100100 - 100100 - 10000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['d5f65e']),
-                coin: 'btc',
+                refTxs: TX_CACHE(['bb5169']),
+                coin: 'testnet',
             },
             result: {
                 serializedTx:
-                    '010000000182488650ef25a58fef6788bd71b8212038d7f2bbe4750bc7bcb44701e85ef6d5000000006a473044022016b4372cb011c5c5643ff00345b76d82c1b24a09fe45608fa27233f70215a7fb02204356d16c1103c473200b291822a94a3e1e00b6705b55210fd6ec3149e2f2f194012103c6d9cc725bb7e19c026df03bf693ee1171371a8eaf25f04b7a58f6befabcd38cffffffff0300650400000000001976a914de9b2a8da088824e8fe51debea566617d851537888ace02e0000000000001976a9141fe1d337fb81afca42818051e12fd18245d1b17288ac80380100000000001976a9148e46fd00f541077d9c1f6a87cb0427d38a4f09c388ac00000000',
+                    '0100000001c44b2784eac52162628c38feef7068f59d0162b691b255e133e8091f096951bb000000006b483045022100d9d870e818bf892b76bcb0e68368ce2a1854526e02b8f8b9a480a2bd6f30c6c302204f771373744d00bd7320237878446e5567cb2359db5fbd6a46d35e37a98b16c0012102eee6b3ec6435f42ca071707eb1b14647d2121e0f8a53fa7fa9f92a691227a3d9ffffffff0304870100000000001976a9140791d872b21bf1ae4d7bda4a5c16edefa0b5754488ac04870100000000001976a914ffc3a922d44ced4fcf40df09479e36ee136ec44a88ac39db0e00000000001976a914d7d945b35976a9dbf3f16f2243b5d3da1965538988ac00000000',
             },
         },
         {
@@ -192,66 +187,59 @@ export default {
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/0'/0'/0/55"),
                         prev_hash:
-                            'c6be22d34946593bcad1d2b013e12f74159e69574ffea21581dad115572e031c',
+                            'ac4ca0e7827a1228f44449cb57b4b9a809a667ca044dc43bb124627fed4bc10a',
                         prev_index: 1,
-                        amount: '100000',
+                        amount: 10000,
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/1"),
+                        address_n: ADDRESS_N("m/44'/0'/0'/1/7"),
                         prev_hash:
-                            '58497a7757224d1ff1941488d23087071103e5bf855f4c1c44e5c8d9d82ca46e',
-                        prev_index: 1,
-                        amount: '110000',
+                            'ac4ca0e7827a1228f44449cb57b4b9a809a667ca044dc43bb124627fed4bc10a',
+                        prev_index: 0,
+                        amount: 83130,
                     },
                 ],
                 outputs: [
                     {
-                        address: '15Jvu3nZNP7u2ipw2533Q9VVgEu2Lu9F2B',
-                        amount: '100000',
+                        address_n: ADDRESS_N("m/44'/0'/0'/1/8"),
+                        amount: 71790,
                         script_type: 'PAYTOADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/1/0"),
-                        amount: '100000',
+                        address: '1ByqmhXkC6U5GuUNnAhJsuEVjHt5GhEuJL',
+                        amount: 10000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['c6be22', '58497a']),
+                refTxs: TX_CACHE(['ac4ca0']),
                 coin: 'btc',
             },
             result: {
                 serializedTx:
-                    '01000000021c032e5715d1da8115a2fe4f57699e15742fe113b0d2d1ca3b594649d322bec6010000006a473044022075e05682b9e99086b213aa2d82003894ff1d5d91224285730ac888feab7fd8c102203219877ecbbb0412e34999924469947a03786d441532e4743a46f5e0c1a43750012103c6d9cc725bb7e19c026df03bf693ee1171371a8eaf25f04b7a58f6befabcd38cffffffff6ea42cd8d9c8e5441c4c5f85bfe50311078730d2881494f11f4d2257777a4958010000006a47304402207ad2d3f565a68b3ec27b14b0b952811b935152ac5b574d2049b1e2ced83af72b02207fa9677b7ac8a8ed50bfc2b91b83f8cc8b1df980f5be14f6cca54099a400d2da012102c651a011009e2c7e7b3ed2068857ca0a47cba35b73e06c32e3c06ef3aa67621dffffffff02a0860100000000001976a9142f4490d5263906e4887ca2996b9e207af3e7824088aca0860100000000001976a9148e46fd00f541077d9c1f6a87cb0427d38a4f09c388ac00000000',
+                    '01000000020ac14bed7f6224b13bc44d04ca67a609a8b9b457cb4944f428127a82e7a04cac010000006b483045022100c6dea23b4f43b7aa9ee1b1bb73da8b5e0f16a1160bf0ff1b0493fc7f5d52d79702202dd70a38530ba8ac16f8f5fceab593574241593c8368c27e63325c77417f4a5b01210352b08794e4ac7c33ffa00772e6d1ac6495ec1ffec6f94e76810d6d758749cb0dffffffff0ac14bed7f6224b13bc44d04ca67a609a8b9b457cb4944f428127a82e7a04cac000000006a4730440220050a20fb7d2d5ab57b730fe9f39c3dfe56bd368e38309a41aeb739831dd75e1e02205cfc7608b08dd7236641851a648573623e53b4cbcdbc2a7fbcb0e1f5d067a6e3012102f4c0b068cb14b4d8264097c9ebf262cee4b3e70cf078b49fb29b37cd1d90e6bbffffffff026e180100000000001976a9147c108a5a090dcf88c0df6a6fe1a846ee3193972d88ac10270000000000001976a9147871436e524916ac9faed014a181b20d74723bb588ac00000000',
             },
         },
         {
             // Tests if device implements serialization of len(outputs) correctly
             // See tx c63e24ed820c5851b60c54613fbc4bcb37df6cd49b4c96143e99580a472f79fb
             // See tx 39a29e954977662ab3879c66fb251ef753e0912223a83d1dcb009111d28265e5
-            description: 'Bitcoin (P2PKH): 2 inputs, 255 outputs',
+            description: 'Testnet (P2PKH): 1 input, 255 outputs',
             customTimeout: 1000000,
             params: {
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/1'/0/0"),
+                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
                         prev_hash:
-                            'c63e24ed820c5851b60c54613fbc4bcb37df6cd49b4c96143e99580a472f79fb',
+                            '58d56a5d1325cf83543ee4c87fd73a784e4ba1499ced574be359fa2bdcb9ac8e',
                         prev_index: 1,
-                        amount: '100000',
-                    },
-                    {
-                        address_n: ADDRESS_N("m/44'/0'/1'/0/1"),
-                        prev_hash:
-                            '39a29e954977662ab3879c66fb251ef753e0912223a83d1dcb009111d28265e5',
-                        prev_index: 1,
-                        amount: '2540000',
+                        amount: 1827955,
                     },
                 ],
                 outputs,
-                refTxs: TX_CACHE(['c63e24', '39a29e']),
-                coin: 'btc',
+                refTxs: TX_CACHE(['58d56a']),
+                coin: 'testnet',
             },
             result: {
                 serializedTx,
@@ -260,42 +248,40 @@ export default {
         // TODO: lots of inputs,
         // TODO: lots of change,
         {
-            // See tx 1570416eb4302cf52979afd5e6909e37d8fdd874301f7cc87e547e509cb1caa6
             description: 'Bitcoin (P2PKH): fee too high',
             params: {
                 coin: 'Bitcoin',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/0'/0'/0/10"),
                         prev_hash:
-                            '1570416eb4302cf52979afd5e6909e37d8fdd874301f7cc87e547e509cb1caa6',
+                            '1f326f65768d55ef146efbb345bd87abe84ac7185726d0457a026fc347a26ef3',
                         prev_index: 0,
-                        amount: '100000000',
+                        amount: 3801747,
                     },
                 ],
                 outputs: [
                     {
-                        address: '1MJ2tj2ThBE62zXbBYA5ZaN3fdve5CPAz1',
-                        amount: '99490000',
+                        address: '1DXKPgQU6ACQiww48chz7iPJhoV5L5bjRC',
+                        amount: 3801747 - 510000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['157041']),
+                refTxs: TX_CACHE(['1f326f']),
             },
             result: {
                 serializedTx:
-                    '0100000001a6cab19c507e547ec87c1f3074d8fdd8379e90e6d5af7929f52c30b46e417015000000006a47304402207055e55cca6cb638de36942b2031c46803a28e0d7a9c8bc31632e8117141962202202e40c412c2c5be6ff9fdc0b767203f171970cf960293fa3b7dbd9da31d9ce7bf012103c6d9cc725bb7e19c026df03bf693ee1171371a8eaf25f04b7a58f6befabcd38cffffffff01d018ee05000000001976a914de9b2a8da088824e8fe51debea566617d851537888ac00000000',
+                    '0100000001f36ea247c36f027a45d0265718c74ae8ab87bd45b3fb6e14ef558d76656f321f000000006a4730440220342860add2f161c74a67462cd209783557ab5affafe12fa53436a924eb2b2bcb022032be926c63df8532464e9e4adf0cf8f4609f959e230c58fdf306302f3b7fa60a0121038bac33bcdaeec5626e2f2c5680a9fdc5e551d4e1167f272825bea98e6158d4c8ffffffff01633a3200000000001976a914895d571ebb79808367bfd2a70742ac08f519cb6088ac00000000',
             },
         },
         // TODO hardfail, skip T1
         {
-            // See tx d5f65ee80147b4bcc70b75e4bbf2d7382021b871bd8867ef8fa525ef50864882
             description: 'Bitcoin (P2PKH): not enough funds',
             params: {
                 coin: 'Bitcoin',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/0'/0'/0/0"),
                         prev_hash:
                             'd5f65ee80147b4bcc70b75e4bbf2d7382021b871bd8867ef8fa525ef50864882',
                         prev_index: 0,
@@ -314,8 +300,6 @@ export default {
             result: false,
         },
         {
-            // 25 TEST generated to m/1 (mfiGQVPcRcaEvQPYDErR34DcCovtxYvUUV)
-            // See tx d6da21677d7cca5f42fbc7631d062c9ae918a0254f7c6c22de8e8cb7fd5b8236
             description: 'Testnet (P2PKH): spend coinbase',
             params: {
                 coin: 'Testnet',
@@ -323,23 +307,23 @@ export default {
                     {
                         address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
                         prev_hash:
-                            'd6da21677d7cca5f42fbc7631d062c9ae918a0254f7c6c22de8e8cb7fd5b8236',
+                            '005f6f7ff4b70aa09a15b3bc36607d378fad104c4efa4f0a1c8e970538622b3e',
                         prev_index: 0,
-                        amount: '2500278230',
+                        amount: 2500278230,
                     },
                 ],
                 outputs: [
                     {
                         address: 'mm6FM31rM5Vc3sw5D7kztiBg3jHUzyqF1g',
-                        amount: '2500268230',
+                        amount: 2500278230 - 10000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['d6da21']),
+                refTxs: TX_CACHE(['005f6f'], true), // Fake tx
             },
             result: {
                 serializedTx:
-                    '010000000136825bfdb78c8ede226c7c4f25a018e99a2c061d63c7fb425fca7c7d6721dad6000000006b483045022100b880610d115e4e17f6638f0e3a6d285d8f6b81119bf663db6392bf5a1c5312b70220214b5de941c3576c85c4c217672f861c89fb966d9dff3302682a8862e920d3810121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff01c6100795000000001976a9143d2496e67f5f57a924353da42d4725b318e7a8ea88ac00000000',
+                    '01000000013e2b623805978e1c0a4ffa4e4c10ad8f377d6036bcb3159aa00ab7f47f6f5f00000000006b483045022100a9a3e743017256fa7da39f73e7fd477edd9ba173055b32c99c99da59c23f2cde022023e4d28392f8a11967eaf8548883f9ffbb08dc7722937eb91db732fa1bef4b5b0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff01c6100795000000001976a9143d2496e67f5f57a924353da42d4725b318e7a8ea88ac00000000',
             },
         },
         {
@@ -383,30 +367,30 @@ export default {
             },
         },
         {
-            description: 'Bitcoin (P2PKH): p2pkh input, p2sh output',
+            description: 'Testnet (P2PKH): p2pkh input, p2sh output',
             params: {
-                coin: 'Bitcoin',
+                coin: 'testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/0'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/1'/0'/0/2"),
                         prev_hash:
-                            '54aa5680dea781f45ebb536e53dffc526d68c0eb5c00547e323b2c32382dfba3',
-                        prev_index: 1,
-                        amount: '400000',
+                            '58d56a5d1325cf83543ee4c87fd73a784e4ba1499ced574be359fa2bdcb9ac8e',
+                        prev_index: 0,
+                        amount: 50000,
                     },
                 ],
                 outputs: [
                     {
-                        address: '3DKGE1pvPpBAgZj94MbCinwmksewUNNYVR',
-                        amount: '390000',
+                        address: '2N4sUHkkx1GgWtMMgjVD5Ljw2yDs7GumT2S',
+                        amount: 50000 - 10000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['54aa56']),
+                refTxs: TX_CACHE(['58d56a']),
             },
             result: {
                 serializedTx:
-                    '0100000001a3fb2d38322c3b327e54005cebc0686d52fcdf536e53bb5ef481a7de8056aa54010000006b483045022100b417a8c4cc46e4bfe29b5f09e3a6d6f3b3262f6f3f315886a66ae060c057758e022019e2336d52a5691f4f335f5793b7ab742b29abdaebc32f053c68791ba9bd18e8012103c6d9cc725bb7e19c026df03bf693ee1171371a8eaf25f04b7a58f6befabcd38cffffffff0170f305000000000017a9147f844bdb0b8fd54b64e3d16c85dc1170f1ff97c18700000000',
+                    '01000000018eacb9dc2bfa59e34b57ed9c49a14b4e783ad77fc8e43e5483cf25135d6ad558000000006a473044022029b7d07f068501dc7a5dcf5148167a286a949483cac88b6f85b3ae92baa3346902203488709587453467248d52d0f18fa36d43909854ee1958feef5c9b78c509d15d012103f5008445568548bd745a3dedccc6048969436bf1a49411f60938ff1938941f14ffffffff01409c00000000000017a9147f844bdb0b8fd54b64e3d16c85dc1170f1ff97c18700000000',
             },
         },
         {
@@ -415,25 +399,25 @@ export default {
                 coin: 'testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/1'/0'/0/6"),
                         prev_hash:
-                            '2bac7ad1dec654579a71ea9555463f63ac7b7df9d8ba67b4682bba4e514d0f0c',
+                            '074b0070939db4c2635c1bef0c8e68412ccc8d3c8782137547c7a2bbde073fc0',
                         prev_index: 1,
-                        amount: '411102528330',
+                        amount: 4500000000,
                     },
                 ],
                 outputs: [
                     {
-                        address: 'mopZWqZZyQc3F2Sy33cvDtJchSAMsnLi7b',
-                        amount: '411102528330',
+                        address: '2N5daLhptwpXPBY84TQ2AjeLLkL8ru7n6ai',
+                        amount: 4500000000 - 10000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['2bac7a']),
+                refTxs: TX_CACHE(['074b00']),
             },
             result: {
                 serializedTx:
-                    '01000000010c0f4d514eba2b68b467bad8f97d7bac633f465595ea719a5754c6ded17aac2b010000006b4830450221008e3b926f04d8830bd5b67698af25c9e00c9db1b1ef3e5d69af794446753da94a02202d4a7509f26bba29ff643a7ac0d43fb128c1a632cc502b8f44eada8930fb9c9b0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff014ac39eb75f0000001976a9145b157a678a10021243307e4bb58f36375aa80e1088ac00000000',
+                    '0100000001c03f07debba2c747751382873c8dcc2c41688e0cef1b5c63c2b49d9370004b07010000006b483045022100a2c79eaed632746fd514aa09eae51c0294bdf66c74619306e0273cd1a470c9e7022050c78dec6acd65b42150dba70e2b546dfd737d77f46975a97427999cb2b8280401210344e14b3da8f5fe77a5465d0f8fe089d64ed5517d1f1f989edd00f530938a2c22ffffffff01f065380c0100000017a91487dba64df7e9386d0b0f3ef557269833e12d1b7a8700000000',
             },
         },
         {

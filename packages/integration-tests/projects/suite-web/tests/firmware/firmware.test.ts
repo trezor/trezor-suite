@@ -44,8 +44,7 @@ describe('Firmware', () => {
         });
     });
 
-    // todo: temp, non-latest fw
-    it.skip(`For the latest firmware, update button in device settings should display "Up to date" but still be clickable`, () => {
+    it(`For the latest firmware, update button in device settings should display "Up to date" but still be clickable`, () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');

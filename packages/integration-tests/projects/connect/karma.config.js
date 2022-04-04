@@ -8,12 +8,13 @@ const getTestPattern = () => {
     const root = path.resolve(__dirname, './tests');
     const basename = __filename.split('/').reverse()[0];
     // yarn test:karma:production ...pattern => argv: [node, karma, start, config-file, ...pattern]
-    // ref-todo: this is stupid
-    const pos = process.argv.indexOf(`projects/connect-iframe/${basename}`);
-    if (pos > 0) {
+    const pos = process.argv.indexOf(`projects/connect/${basename}`);
+    // is there some argument (test file name) after the test command?
+    if (process.argv[pos + 1]) {
+        // if yes add full path
         return process.argv.slice(pos + 1).map(f => `${root}/**/${f}.test.ts`);
     }
-
+    // else return all glob patter for all tests
     return [`${root}/**/*.test.ts`];
 };
 
@@ -30,12 +31,25 @@ module.exports = config => {
             clearContext: true,
             useIframe: false,
             runInParent: true,
+            mocha: {
+                bail: true,
+            },
         },
-        // browsers: ['Chrome'],
-        browsers: ['ChromeHeadlessNoSandbox'],
+        browserConsoleLogOptions: {
+            terminal: true,
+            level: '',
+        },
+        browsers: [
+            // 'Chrome',
+            'ChromeHeadlessNoSandbox',
+        ],
         customLaunchers: {
             ChromeHeadlessNoSandbox: {
                 base: 'ChromeHeadless',
+                flags: ['--no-sandbox'],
+            },
+            Chrome: {
+                base: 'Chrome',
                 flags: ['--no-sandbox'],
             },
         },
@@ -100,8 +114,8 @@ module.exports = config => {
                 }),
                 // replace TrezorConnect module used in ./tests/common.setup.js
                 new webpack.NormalModuleReplacementPlugin(
-                    /src\/js\/index$/,
-                    path.join(__dirname, 'build/trezor-connect'),
+                    /^@trezor\/connect$/,
+                    path.join(__dirname, '../../../connect-web/build/trezor-connect.js'),
                 ),
                 // replace ws module used in ./tests/websocket-client.js
                 new webpack.NormalModuleReplacementPlugin(

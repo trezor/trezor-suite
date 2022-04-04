@@ -8,9 +8,7 @@ const { Controller } = global.Trezor;
 
 const { BridgeV2 } = TrezorLink;
 
-const controller = new Controller({
-    url: 'ws://localhost:9001/',
-});
+const controller = new Controller();
 
 jest.setTimeout(30000);
 

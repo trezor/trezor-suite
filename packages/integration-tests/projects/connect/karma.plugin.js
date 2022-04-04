@@ -8,7 +8,7 @@ function CustomReporter(rootConfig, logger) {
 
     return {
         onRunStart: () => {
-            log.info('Running trezor-connect tests...');
+            log.info('Running @trezor/connect tests...');
             log.info('FW:', process.env.TESTS_FIRMWARE);
             log.info('Methods:', process.env.TESTS_INCLUDED_METHODS || 'All');
         },
@@ -19,6 +19,9 @@ function CustomReporter(rootConfig, logger) {
 
         onSpecComplete: (_browser, spec) => {
             log.info(spec.success ? '✓' : '✖', spec.fullName);
+            if (!spec.success) {
+                log.info(spec);
+            }
         },
 
         onRunComplete: () => {

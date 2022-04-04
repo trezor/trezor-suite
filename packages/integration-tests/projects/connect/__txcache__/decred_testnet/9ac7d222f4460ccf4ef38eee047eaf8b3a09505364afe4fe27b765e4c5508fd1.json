@@ -8,7 +8,7 @@
         {
             "amount": 200000000,
             "decred_script_version": 0,
-            "script_pubkey": "a914711ca153e46a64e78ff51220bc27c88b159072d387"
+            "script_pubkey": "a914c1672f865eeee9cf9db4803467175cb403e4812d87"
         }
     ],
     "expiry": 0,

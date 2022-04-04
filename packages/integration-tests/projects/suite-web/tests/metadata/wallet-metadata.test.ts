@@ -8,7 +8,7 @@ const provider = 'dropbox';
 
 const mnemonic = 'all all all all all all all all all all all all';
 // state corresponding to all seed
-const standardWalletState = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@355C817510C0EABF2F147145:undefined';
+const standardWalletState = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@355C817510C0EABF2F147145:0';
 // state corresponding to "wallet for drugs"
 const firstHiddenWalletState = 'myBrmyzvN5Wa4oeYrL7t8EYU1Ch5Q6vp47@355C817510C0EABF2F147145:1';
 

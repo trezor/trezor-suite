@@ -30,7 +30,7 @@ test('The first test', async () => {
     const title = await window.title();
     expect(title).toBe('Trezor Suite');
 
-    const controller = new Controller({ url: 'ws://localhost:9001/' });
+    const controller = new Controller();
     await controller.connect();
     // todo: this shouldn't be needed. desktop should run its own bridge on localhost?
     await controller.send({ type: 'bridge-start' });
