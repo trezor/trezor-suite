@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2022-04-03T00:00:00+00:00",
-    "sequence": 9,
+    "timestamp": "2022-04-04T00:00:00+00:00",
+    "sequence": 10,
     "actions": [
         {
             "conditions": [
@@ -86,7 +86,7 @@
         {
             "conditions": [],
             "message": {
-                "id": "86c136a9-7fae-6933-03ca-30cc5fcc3d04",
+                "id": "0210ea5c-63f2-4962-af13-7cc99aae959d",
                 "priority": 98,
                 "dismissible": true,
                 "variant": "warning",
@@ -97,6 +97,42 @@
                     "es": "¡Cuidado con el phishing! Los usuarios de Trezor están siendo blanco de recientes ataques de phishing. NO proporcione sus palabras de recuperación a nadie.",
                     "cs": "Pozor na phishing! Uživatelé Trezoru se v poslední době stávají terčem phishingových útoků. Nikdy nikde nezadávejte obnovovací seed, pokud vás k tomu fyzické zařízení Trezor nevyzve a pokud svou volbu nepotvrdíte přímo na Trezoru.",
                     "ru": "Пользователи Trezor подвергаются недавним фишинговым атакам. НЕ сообщайте никому свои слова для восстановления."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://blog.trezor.io/ongoing-phishing-attacks-on-trezor-users-edd840b17304",
+                    "label": {
+                        "en-GB": "More information",
+                        "en": "More information",
+                        "es": "Más información",
+                        "cs": "Více informací",
+                        "ru": "Больше информации"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "22.4.0",
+                        "mobile": "!",
+                        "web": "22.4.0"
+                    }
+                }
+            ],
+            "message": {
+                "id": "c3196201-b796-4c47-abdb-ac68c15ae371",
+                "priority": 99,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
+                    "en": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
+                    "es": "ADVERTENCIA: Está utilizando una versión falsa de Trezor Suite. ¡SALGA DE ESTE PROGRAMA INMEDIATAMENTE!",
+                    "cs": "VAROVÁNÍ: Momentálně používáte falešnou verzi Trezor Suite. OKAMŽITĚ UKONČETE TENTO PROGRAM!",
+                    "ru": "ПРЕДУПРЕЖДЕНИЕ: В настоящее время вы используете поддельную версию Trezor Suite. НЕМЕДЛЕННО ВЫЙДИТЕ ИЗ ЭТОЙ ПРОГРАММЫ!"
                 }
             }
         }
