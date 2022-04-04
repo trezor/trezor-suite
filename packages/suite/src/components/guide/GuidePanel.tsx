@@ -73,7 +73,7 @@ export const GuidePanel: React.FC = () => {
         activeView: state.guide.view,
     }));
 
-    const { isGuideOpen, isModalOpen, closeGuide } = useGuide();
+    const { isGuideOpen, isModalOpen, closeGuide, isGuideOnTop } = useGuide();
 
     // if guide is open, do not animate guide opening if transitioning between onboarding, welcome and suite layout
     const [guideAlreadyOpen, setGuideAlreadyOpen] = useState(isGuideOpen);
@@ -83,7 +83,11 @@ export const GuidePanel: React.FC = () => {
     }, []);
 
     return (
-        <FocusLock disabled={!isGuideOpen} group="overlay" autoFocus={false}>
+        <FocusLock
+            disabled={!isGuideOpen || (!isGuideOnTop && !isModalOpen)}
+            group="overlay"
+            autoFocus={false}
+        >
             {isGuideOpen && <BackDrop onClick={closeGuide} />}
 
             <GuideWrapper isModalOpen={isModalOpen}>
