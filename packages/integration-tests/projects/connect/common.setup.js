@@ -1,10 +1,9 @@
 /* eslint-disable camelcase, no-bitwise */
 
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import * as versionUtils from '@trezor/utils/src/versionUtils'; // NOTE: only this module is required
-import * as UI from 'trezor-connect/lib/constants/ui'; // NOTE: import UI constants directly from source
-import releases1 from '@trezor/connect-common/files/firmware/1/releases.json';
-import releases2 from '@trezor/connect-common/files/firmware/2/releases.json';
+import { UI } from '@trezor/connect/src/events'; // NOTE: import UI constants directly from source
+import { toHardened, getHDPath } from '@trezor/connect/src/utils/pathUtils'; // NOTE: import utils directly from source
 import { Controller } from '../../websocket-client';
 
 const MNEMONICS = {
@@ -14,18 +13,9 @@ const MNEMONICS = {
         'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
 };
 
-let firmware = process.env.TESTS_FIRMWARE;
-
-if (firmware === '1-latest') {
-    firmware = releases1[0].version.join('.');
-}
-if (firmware === '2-latest') {
-    firmware = releases2[0].version.join('.');
-}
-
+const firmware = process.env.TESTS_FIRMWARE;
 if (!firmware) {
-    // fallback to the latest officially release model T firmware
-    firmware = releases2[0].version.join('.');
+    throw new Error('TEST_FIRMWARE not set');
 }
 
 const wait = ms =>
@@ -35,7 +25,6 @@ const wait = ms =>
 
 const getController = name => {
     const controller = new Controller({
-        url: 'ws://localhost:9001/',
         name: name || 'unnamed controller',
     });
     controller.on('error', error => {
@@ -102,8 +91,6 @@ const setup = async (controller, options) => {
 
         // after all is done, start bridge again
         await controller.send({ type: 'bridge-start' });
-        // Wait to prevent Transport is missing error from TrezorConnect
-        await wait(2000);
     } catch (err) {
         // this means that something in trezor-user-env got wrong.
         console.log(err);
@@ -220,34 +207,7 @@ global.Trezor = {
     initTrezorConnect,
 };
 
-// picked from utils/pathUtils
-const HD_HARDENED = 0x80000000;
-const toHardened = n => (n | HD_HARDENED) >>> 0;
-
-const ADDRESS_N = path => {
-    const parts = path.toLowerCase().split('/');
-    if (parts[0] !== 'm') throw new Error(`PATH_NOT_VALID: ${path}`);
-    return parts
-        .filter(p => p !== 'm' && p !== '')
-        .map(p => {
-            let hardened = false;
-            if (p.endsWith("'")) {
-                hardened = true;
-                p = p.substr(0, p.length - 1);
-            }
-            let n = parseInt(p, 10);
-            if (Number.isNaN(n)) {
-                throw new Error(`PATH_NOT_VALID: ${path}`);
-            } else if (n < 0) {
-                throw new Error(`PATH_NEGATIVE_VALUES: ${path}`);
-            }
-            if (hardened) {
-                // hardened index
-                n = toHardened(n);
-            }
-            return n;
-        });
-};
+const ADDRESS_N = getHDPath;
 
 global.TestUtils = {
     ...global.TestUtils,

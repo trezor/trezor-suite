@@ -2,14 +2,6 @@
 
 const { ADDRESS_N, TX_CACHE } = global.TestUtils;
 
-const legacyResults = [
-    {
-        // pretaproot firmwares - EXTERNAL and PAYTOTAPROOT script types not supported
-        rules: ['<2.4.3', '<1.10.5'],
-        success: false,
-    },
-];
-
 export default {
     method: 'signTransaction',
     setup: {
@@ -21,7 +13,7 @@ export default {
             // todo: T1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
-            skip: ['1'],
+            skip: ['1', '<2.3.2'],
             params: {
                 coin: 'Testnet',
                 inputs: [
@@ -79,34 +71,33 @@ export default {
                 serializedTx:
                     '0100000002cd3b93f5b24ae190ce5141235091cd93fbb2908e24e5b9ff6776aec11b0e04e5000000006a473044022054fa66bfe1de1c850d59840f165143a66075bae78be3a6bc2809d1ac09431d380220019ecb086e16384f18cbae09b02bd2dce18763cd06454d33d93630561250965e0121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff747b11157ff1d871f6d2efa282c21aa06d295a8288be680a7a23d9c377b830d80100000069463043021f3a0a7fdf27b340358ddf8b4e6e3e6cc0be728d6f1d9d3413ae59741f57599002204809d59a9432a2c7fcb10639c5efa82935d8c3cc21b185ff5e44f0e1a80e635401210294e3e5e77e22eea0e4c0d30d89beb4db7f69b4bf1ae709e411d6a06618b8f852ffffffff020073f424000000001600149c02608d469160a92f40fdf8c6ccced029493088b0b1a700000000001976a9143d3cca567e00a04819742b21a696a67da796498b88ac00000000',
             },
-            legacyResults,
         },
         {
             description: 'Testnet (P2SH): presigned',
             // todo: T1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
-            skip: ['1'],
+            skip: ['1', '<2.3.2'],
             params: {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        amount: '111145789',
+                        amount: '123456789',
                         prev_hash:
-                            '09144602765ce3dd8f4329445b20e3684e948709c5cdcaf12da3bb079c99448a',
-                        prev_index: 1,
+                            '20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337',
+                        prev_index: 0,
                         script_type: 'EXTERNAL',
                         script_pubkey: 'a91458b53ea7f832e8f096e896b8713a8c6df0e892ca87',
                         script_sig: '160014d16b8c0680c61fc6ed2e407455715055e41052f5',
                         witness:
-                            '02483045022100ead79ee134f25bb585b48aee6284a4bb14e07f03cc130253e83450d095515e5202201e161e9402c8b26b666f2b67e5b668a404ef7e57858ae9a6a68c3837e65fdc69012103e7bfe10708f715e8538c92d46ca50db6f657bbc455b7494e6a0303ccdb868b79',
+                            '024830450221009962940c7524c8dee6807d76e0ce1ba4a943604db0bce61357dabe5a4ce2d93a022014fa33769e33eb7e6051d9db28f06cff7ead6c7013839cc26c43f887736a9af1012103e7bfe10708f715e8538c92d46ca50db6f657bbc455b7494e6a0303ccdb868b79',
                     },
                     {
-                        address_n: ADDRESS_N("m/84'/1'/0'/1/0"),
-                        amount: '7289000',
+                        address_n: ADDRESS_N("m/84'/1'/0'/0/0"),
+                        amount: '10000',
                         prev_hash:
-                            '65b811d3eca0fe6915d9f2d77c86c5a7f19bf66b1b1253c2c51cb4ae5f0c017b',
-                        prev_index: 1,
+                            'ec16dc5a539c5d60001a7471c37dbb0b5294c289c77df8bd07870b30d73e2231',
+                        prev_index: 0,
                         script_type: 'SPENDWITNESS',
                     },
                 ],
@@ -123,24 +114,23 @@ export default {
                     },
                     {
                         address: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q',
-                        amount: '60523789', // 111145789 + 7289000 - 11000 - 12300000 - 45600000
+                        amount: 123456789 + 10000 - 11000 - 12300000 - 45600000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['091446', '65b811']),
+                refTxs: TX_CACHE(['20912f', 'ec16dc']),
             },
             result: {
                 serializedTx:
-                    '010000000001028a44999c07bba32df1cacdc50987944e68e3205b4429438fdde35c76024614090100000017160014d16b8c0680c61fc6ed2e407455715055e41052f5ffffffff7b010c5faeb41cc5c253121b6bf69bf1a7c5867cd7f2d91569fea0ecd311b8650100000000ffffffff03e0aebb0000000000160014a579388225827d9f2fe9014add644487808c695d00cdb7020000000017a91491233e24a9bf8dbb19c1187ad876a9380c12e787870d859b03000000001976a914a579388225827d9f2fe9014add644487808c695d88ac02483045022100ead79ee134f25bb585b48aee6284a4bb14e07f03cc130253e83450d095515e5202201e161e9402c8b26b666f2b67e5b668a404ef7e57858ae9a6a68c3837e65fdc69012103e7bfe10708f715e8538c92d46ca50db6f657bbc455b7494e6a0303ccdb868b7902463043021f585c54a84dc7326fa60e22729accd41153c7dd4725bd4c8f751aa3a8cd8d6a0220631bfd83fc312cc6d5d129572a25178696d81eaf50c8c3f16c6121be4f4c029d012103505647c017ff2156eb6da20fae72173d3b681a1d0a629f95f49e884db300689f00000000',
+                    '0100000000010237c361fb8f2d9056ba8c98c5611930fcb48cacfdd0fe2e0449d83eea982f91200000000017160014d16b8c0680c61fc6ed2e407455715055e41052f5ffffffff31223ed7300b8707bdf87dc789c294520bbb7dc371741a00605d9c535adc16ec0000000000ffffffff03e0aebb0000000000160014a579388225827d9f2fe9014add644487808c695d00cdb7020000000017a91491233e24a9bf8dbb19c1187ad876a9380c12e787874d4de803000000001976a914a579388225827d9f2fe9014add644487808c695d88ac024830450221009962940c7524c8dee6807d76e0ce1ba4a943604db0bce61357dabe5a4ce2d93a022014fa33769e33eb7e6051d9db28f06cff7ead6c7013839cc26c43f887736a9af1012103e7bfe10708f715e8538c92d46ca50db6f657bbc455b7494e6a0303ccdb868b7902473044022009b2654cd576227c781b14b775df4749d0bcc5661cc39a08b5c42b8ffbc33c5d02203893cc57c46811ec2fb2d27764f3a3b3406040a24d1373cc7f38f79d80dfef1f012103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f86200000000',
             },
-            legacyResults,
         },
         {
             description: 'Testnet (P2WPKH): presigned',
             // todo: T1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
-            skip: ['1'],
+            skip: ['1', '<2.3.2'],
             params: {
                 coin: 'Testnet',
                 inputs: [
@@ -182,107 +172,116 @@ export default {
                 serializedTx:
                     '010000000001029e506939e23ad82a559f2c5e812d13788644e1e0017afd5c40383ab01e87f9700000000000ffffffffd9375b60919f9d5e1db4d7c6aba3d61d4fa080fba195bdee09b2cfccda68b7650000000000ffffffff0250c30000000000001600149c02608d469160a92f40fdf8c6ccced02949308878e6000000000000160014cc8067093f6f843d6d3e22004a4290cd0c0f336b0247304402207be75627767e59046da2699328ca1c27b60cfb34bb257a9d90442e496b5f936202201f43e2b55e1b2acf5677d3e29b9c5a78e2a4ae03a01be5c50a17cf4b88a3b278012103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f862024730440220432ac60461de52713ad543cbb1484f7eca1a72c615d539b3f42f5668da4501d2022063786a6d6940a5c1ed9c2d2fd02cef90b6c01ddd84829c946561e15be6c0aae1012103dcf3bc936ecb2ec57b8f468050abce8c8756e75fd74273c9977744b1a0be7d0300000000',
             },
-            legacyResults,
         },
         {
             description: 'Testnet (P2WSH): presigned',
             // todo: T1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "messages.c:231:bytes overflow",
-            skip: ['1'],
+            skip: ['1', '<2.3.2'],
             params: {
                 coin: 'Testnet',
                 inputs: [
                     {
                         address_n: ADDRESS_N("m/84'/1'/0'/0/0"),
-                        amount: '12300000',
+                        amount: '10000',
                         prev_hash:
-                            '09144602765ce3dd8f4329445b20e3684e948709c5cdcaf12da3bb079c99448a',
+                            'ec16dc5a539c5d60001a7471c37dbb0b5294c289c77df8bd07870b30d73e2231',
                         prev_index: 0,
                         script_type: 'SPENDWITNESS',
                     },
                     {
-                        amount: '100',
+                        amount: '100000',
                         prev_hash:
-                            'a345b85759b385c6446055e4c3baa77e8161a65009dc009489b48aa6587ce348',
-                        prev_index: 0,
+                            '1c022d9da3aa8bc8cf2a617c42c8f2c343e810af76b3ab9770c5ab6ca54ddab5',
+                        prev_index: 2,
                         script_type: 'EXTERNAL',
                         script_pubkey:
                             '002008b681071cd896cd879102bce735080758ad48ad45a05505939e55f115391991',
                         witness:
-                            '030047304402206b570b99c22c841548a35a9b9c673fa3b87a9563ed64ad7d979aa3e01b2e303802201d0bebf58b7243e09798e734fc32892936c4d0c4984bec755dc951ef646e4a9a0147512103505f0d82bbdd251511591b34f36ad5eea37d3220c2b81a1189084431ddb3aa3d2103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f86252ae',
+                            '03004830450221009c74f5b89440665857f2c775f7c63eb208456aeda12ef9f4ba2c739474f3436202205a069c3bcb31a9fe751818920ae94db4087d432ebd2762741922281d205ac3620147512103505f0d82bbdd251511591b34f36ad5eea37d3220c2b81a1189084431ddb3aa3d2103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f86252ae',
                     },
                 ],
                 outputs: [
                     {
                         address: '2N4Q5FhU2497BryFfUgbqkAJE87aKHUhXMp',
-                        amount: '12290100', // 12300000 + 100 - 10000
+                        amount: 10000 + 100000 - 1000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['091446', 'a345b8']),
+                refTxs: TX_CACHE(['ec16dc', '1c022d']),
             },
             result: {
                 serializedTx:
-                    '010000000001028a44999c07bba32df1cacdc50987944e68e3205b4429438fdde35c76024614090000000000ffffffff48e37c58a68ab4899400dc0950a661817ea7bac3e4556044c685b35957b845a30000000000ffffffff013488bb000000000017a9147a55d61848e77ca266e79a39bfc85c580a6426c9870247304402204270cf602ec151e72b99c5048755379c368c6c7cd722e4234ad4bb7b1b87d09d02207fa59b1c2926ea6b4f0094ab77c08e50b089a199a5bc8419e1ee6674809c4fb4012103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f862030047304402206b570b99c22c841548a35a9b9c673fa3b87a9563ed64ad7d979aa3e01b2e303802201d0bebf58b7243e09798e734fc32892936c4d0c4984bec755dc951ef646e4a9a0147512103505f0d82bbdd251511591b34f36ad5eea37d3220c2b81a1189084431ddb3aa3d2103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f86252ae00000000',
+                    '0100000000010231223ed7300b8707bdf87dc789c294520bbb7dc371741a00605d9c535adc16ec0000000000ffffffffb5da4da56cabc57097abb376af10e843c3f2c8427c612acfc88baaa39d2d021c0200000000ffffffff01c8a901000000000017a9147a55d61848e77ca266e79a39bfc85c580a6426c9870247304402207ec2960e148af81ac1bf570e59a9e17566c9db539826fe6edec622e4378da203022051e4c877ef6ef67700cc9038b9969355f104b608f7b4ed4ee573f3608cc40b69012103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f86203004830450221009c74f5b89440665857f2c775f7c63eb208456aeda12ef9f4ba2c739474f3436202205a069c3bcb31a9fe751818920ae94db4087d432ebd2762741922281d205ac3620147512103505f0d82bbdd251511591b34f36ad5eea37d3220c2b81a1189084431ddb3aa3d2103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f86252ae00000000',
             },
-            legacyResults,
         },
         {
             description: 'Testnet (P2TR): external presigned',
             // todo: T1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
-            skip: ['1'],
+            skip: ['1', '<2.4.3'],
             params: {
                 coin: 'Testnet',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/86'/1'/0'/0/0"),
-                        amount: '6800',
+                        address_n: ADDRESS_N("m/86'/1'/0'/0/1"),
+                        amount: 13000,
                         prev_hash:
-                            'df862e31da31ff84addd392f6aa89af18978a398ea258e4901ae72894b66679f',
-                        prev_index: 0,
+                            '1010b25957a30110377a33bd3b0bd39045b3cc488d0e534d1ea5ec238812c0fc',
+                        prev_index: 1,
                         script_type: 'SPENDTAPROOT',
                     },
                     {
-                        amount: '13000',
+                        amount: 6800,
                         prev_hash:
-                            '3ac32e90831d79385eee49d6030a2123cd9d009fe8ffc3d470af9a6a777a119b',
-                        prev_index: 1,
+                            '1010b25957a30110377a33bd3b0bd39045b3cc488d0e534d1ea5ec238812c0fc',
+                        prev_index: 0,
                         script_type: 'EXTERNAL',
+
                         script_pubkey:
-                            '51203ad9b641978673e88ee4d9f4e5d63400c1b2a8304c09726bb19d10ead2829cc2',
+                            '512083860592dcc9c672acbca8c23941e85d402b353ce0e099b01dec52a203eff0b6',
                         witness:
-                            '01409956e47403278bf76eecbbbc3af0c2731d8347763825248a2e0f39aca5a684a7d5054e7222a1033fb5864a886180f1a8c64adab12433c78298d1f83e4c8f46e1',
+                            '0140e241b85650814f35a6a8fe277d8cd784e897b7f032b73cc2f5326dac5991e8f43d54861d624cc119f5409c7d0def65a613691dc17a3700bbc8639a1c8a3184f0',
                     },
                 ],
                 outputs: [
                     {
-                        address: 'tb1q7r9yvcdgcl6wmtta58yxf29a8kc96jkyxl7y88',
-                        amount: '15000',
+                        address: 'tb1qq0rurzt04d76hk7pjxhqggk7ad4zj7c9u369kt',
+                        amount: 15000,
                         script_type: 'PAYTOADDRESS',
                     },
                     {
                         address_n: ADDRESS_N("m/86'/1'/0'/1/0"),
-                        amount: '4600', // 6800 + 13000 - 200 - 15000
+                        amount: 4600,
                         script_type: 'PAYTOTAPROOT',
                     },
                 ],
-                refTxs: TX_CACHE(['df862e', '3ac32e']),
+                refTxs: TX_CACHE(['1010b2']),
             },
             result: {
                 serializedTx:
-                    '010000000001029f67664b8972ae01498e25ea98a37889f19aa86a2f39ddad84ff31da312e86df0000000000ffffffff9b117a776a9aaf70d4c3ffe89f009dcd23210a03d649ee5e38791d83902ec33a0100000000ffffffff02983a000000000000160014f0ca4661a8c7f4edad7da1c864a8bd3db05d4ac4f8110000000000002251209a9af24b396f593b34e23fefba6b417a55c5ee3f430c3837379fcb5246ab36d70140b51992353d2f99b7b620c0882cb06694996f1b6c7e62a3c1d3036e0f896fbf0b92f3d9aeab94f2454809a501715667345f702c8214693f469225de5f6636b86b01409956e47403278bf76eecbbbc3af0c2731d8347763825248a2e0f39aca5a684a7d5054e7222a1033fb5864a886180f1a8c64adab12433c78298d1f83e4c8f46e100000000',
+                    '01000000000102fcc0128823eca51e4d530e8d48ccb34590d30b3bbd337a371001a35759b210100100000000fffffffffcc0128823eca51e4d530e8d48ccb34590d30b3bbd337a371001a35759b210100000000000ffffffff02983a00000000000016001403c7c1896fab7dabdbc191ae0422deeb6a297b05f8110000000000002251209a9af24b396f593b34e23fefba6b417a55c5ee3f430c3837379fcb5246ab36d701405c014bd3cdc94fb1a2d4ead3509fbed1ad3065ad931ea1e998ed29f73212a2506f2ac39a526c237bbf22af75afec64bb9b484b040c72016e30b1337a6274a9ae0140e241b85650814f35a6a8fe277d8cd784e897b7f032b73cc2f5326dac5991e8f43d54861d624cc119f5409c7d0def65a613691dc17a3700bbc8639a1c8a3184f000000000',
             },
-            legacyResults,
+            legacyResults: [
+                {
+                    // bug in prev implementation https://github.com/trezor/trezor-firmware/pull/2034
+                    rules: ['<2.4.4'],
+                    success: true,
+                    payload: {
+                        serializedTx:
+                            '01000000000102fcc0128823eca51e4d530e8d48ccb34590d30b3bbd337a371001a35759b210100100000000fffffffffcc0128823eca51e4d530e8d48ccb34590d30b3bbd337a371001a35759b210100000000000ffffffff02983a00000000000016001403c7c1896fab7dabdbc191ae0422deeb6a297b05f8110000000000002251209a9af24b396f593b34e23fefba6b417a55c5ee3f430c3837379fcb5246ab36d70140ff5f52196789bc8b8d1940a71d18eee3587eaa5f654e40d899aadb6245e1d462827dc3d7ee92d481e69f91932fe851cff702ab0d6d1582cd19b0358cff76559e0140e241b85650814f35a6a8fe277d8cd784e897b7f032b73cc2f5326dac5991e8f43d54861d624cc119f5409c7d0def65a613691dc17a3700bbc8639a1c8a3184f000000000',
+                    },
+                },
+            ],
         },
         {
             description: 'Testnet (P2WPKH): with proof',
             // todo: T1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
-            skip: ['1'],
+            skip: ['1', '<2.4.4'], // bug in prev implementation https://github.com/trezor/trezor-firmware/pull/2034
             params: {
                 coin: 'Testnet',
                 inputs: [
@@ -297,46 +296,39 @@ export default {
                             '534c001900016b2055d8190244b2ed2d46513c40658a574d3bc2deb6969c0535bb818b44d2c4000247304402201b0a2cd9398f5f3b63e624bb960436a45bdacbd5174b29a47ed3f659b2d4137b022007f8981f476216e012a04956ce77a483cdbff2905227b103a48a15e61379c43d012103505f0d82bbdd251511591b34f36ad5eea37d3220c2b81a1189084431ddb3aa3d',
                     },
                     {
-                        address_n: ADDRESS_N("m/84'/1'/0'/1/0"),
-                        amount: '7289000',
+                        address_n: ADDRESS_N("m/84'/1'/0'/0/0"),
+                        amount: '10000',
                         prev_hash:
-                            '65b811d3eca0fe6915d9f2d77c86c5a7f19bf66b1b1253c2c51cb4ae5f0c017b',
-                        prev_index: 1,
+                            'ec16dc5a539c5d60001a7471c37dbb0b5294c289c77df8bd07870b30d73e2231',
+                        prev_index: 0,
                         script_type: 'SPENDWITNESS',
                     },
                 ],
                 outputs: [
                     {
                         address: 'tb1q54un3q39sf7e7tlfq99d6ezys7qgc62a6rxllc',
-                        amount: '1230000',
+                        amount: '55555',
                         script_type: 'PAYTOADDRESS',
                     },
                     {
                         address: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q',
-                        amount: '6148000', // 100000 + 7289000 - 11000 - 1230000
+                        amount: 100000 + 10000 - 11000 - 55555,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['e5b7e2', '65b811']),
+                refTxs: TX_CACHE(['e5b7e2', 'ec16dc']),
             },
             result: {
                 serializedTx:
-                    '010000000001028abbd1cf69e00fbf60fa3ba475dccdbdba4a859ffa6bfd1ee820a75b1be2b7e50000000000ffffffff7b010c5faeb41cc5c253121b6bf69bf1a7c5867cd7f2d91569fea0ecd311b8650100000000ffffffff02b0c4120000000000160014a579388225827d9f2fe9014add644487808c695da0cf5d00000000001976a914a579388225827d9f2fe9014add644487808c695d88ac0002483045022100b17fe0eb21da96bdf9640bbe94f6198ff2ced183765753ee3d5119e661977cb20220121dfdc7a121afdcc08fae1389c7147a10bc58b2daea46799c6e6547c648ba1d012103505647c017ff2156eb6da20fae72173d3b681a1d0a629f95f49e884db300689f00000000',
+                    '010000000001028abbd1cf69e00fbf60fa3ba475dccdbdba4a859ffa6bfd1ee820a75b1be2b7e50000000000ffffffff31223ed7300b8707bdf87dc789c294520bbb7dc371741a00605d9c535adc16ec0000000000ffffffff0203d9000000000000160014a579388225827d9f2fe9014add644487808c695db5a90000000000001976a914a579388225827d9f2fe9014add644487808c695d88ac000247304402204ab2dfe9eb1268c1cea7d997ae10070c67a26d1c52eb8af06d2e8a4f8befeee30220445294f1568782879c84bf216c80c0f01dc332569c2afd1be5381b0d5a8d6d69012103adc58245cf28406af0ef5cc24b8afba7f1be6c72f279b642d85c48798685f86200000000',
             },
-            legacyResults: [
-                {
-                    // bug in prev implementation https://github.com/trezor/trezor-firmware/pull/2034
-                    rules: ['<2.4.4', '1.10.5'],
-                    success: false,
-                },
-            ],
         },
         {
             // todo: T1 error, tested with 1.10.6:
             // "code": "Failure_DataError",
             // "error": "signing.c:1021:Unsupported script type.",
             description: 'Testnet (P2TR): with proof',
-            skip: ['1'],
+            skip: ['1', '<2.4.4'], // bug in prev implementation https://github.com/trezor/trezor-firmware/pull/2034
             setup: {
                 mnemonic: 'mnemonic_abandon', // <- important, external input is from all-all (previous case)
             },
@@ -374,15 +366,8 @@ export default {
             },
             result: {
                 serializedTx:
-                    '01000000000102ae4d6d8f642d1e5c8608e5b8430dd89432da2c7425081522e9482970412ddeaf0200000000ffffffffbf1cff9e0fc816acdc2753af9a45c1a6e92c04d0cff2b858372475b6abd912400000000000ffffffff0128a2010000000000225120e120bd124f345d412a91b50cb7e07650a448e90f48afd861b575a664b985b97f000140af196d0b64cfe8b5e7a2074b43ec1f11bfdea1df3ecb3b9d6c17e7542d7ca43b698237b5b9788cb49fa758f787311bc79bcbfa4e6046271c682927d7a9c2480900000000',
+                    '01000000000102ae4d6d8f642d1e5c8608e5b8430dd89432da2c7425081522e9482970412ddeaf0200000000ffffffffbf1cff9e0fc816acdc2753af9a45c1a6e92c04d0cff2b858372475b6abd912400000000000ffffffff0128a2010000000000225120e120bd124f345d412a91b50cb7e07650a448e90f48afd861b575a664b985b97f000140b524eaf406d413e19d7d32f7133273728f35b28509ac58dfd817f6dfbbac9901db21cd1ba4c2323c64bede38a7512647369d4767c645a915482bcf5167dcd77100000000',
             },
-            legacyResults: [
-                {
-                    // bug in prev implementation https://github.com/trezor/trezor-firmware/pull/2034
-                    rules: ['<2.4.4', '1.10.5'],
-                    success: false,
-                },
-            ],
         },
     ],
 };

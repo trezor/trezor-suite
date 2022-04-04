@@ -3,7 +3,7 @@ const { ADDRESS_N, TX_CACHE } = global.TestUtils;
 export default {
     method: 'signTransaction',
     setup: {
-        mnemonic: 'mnemonic_12',
+        mnemonic: 'mnemonic_all',
         settings: {
             safety_checks: 2,
         },
@@ -18,7 +18,7 @@ export default {
                         address_n: ADDRESS_N("m/44'/156'/0'/0/0"),
                         amount: '1252382934',
                         prev_hash:
-                            '25526bf06c76ad3082bba930cf627cdd5f1b3cd0b9907dd7ff1a07e14addc985',
+                            '6f0398f8bac639312afc2e40210ce5253535f92326167f40e1f38dd7047b00ec',
                         prev_index: 0,
                         script_type: 'SPENDADDRESS',
                     },
@@ -35,11 +35,11 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['25526b']),
+                refTxs: TX_CACHE(['6f0398'], true), // Fake tx
             },
             result: {
                 serializedTx:
-                    '010000000185c9dd4ae1071affd77d90b9d03c1b5fdd7c62cf30a9bb8230ad766cf06b5225000000006a4730440220199a1d14abaf2cc756ec0edfd1e59399225b181aa869a9fc6777f74ffad6744f0220560e79fddd50d3d3a6ad5ad4d079d052345b6c0452124864286a72e88810fc044121021659b2309dcfb7ff4b88e2dc1a18471fca2aa3da64d1c85515fabcc82904d476ffffffff0272ee1c00000000001976a9143f0cf98e116e3a4049c7e78f05f1e935802df01088ac7ce6884a000000001976a914ea5f904d195079a350b534db4446433b3cec222e88ac00000000',
+                    '0100000001ec007b04d78df3e1407f162623f9353525e50c21402efc2a3139c6baf898036f000000006a473044022009721c9ca2c3d17e2df61c3940f2934b4fb42a7f68dbdbbbb0900f85d13ad2800220710bcdca9a562d436547a51b018c7d97f0ae918c0df4fc423cb02e05b224fda24121023bd0ec4022d12d0106c5b7308a25572953ba1951f576f691354a7b147ee0cc1fffffffff0272ee1c00000000001976a9141c82b9c11f193ad82413caadc0955730572b50ae88ac7ce6884a000000001976a914ea5f904d195079a350b534db4446433b3cec222e88ac00000000',
             },
         },
         {
@@ -48,18 +48,18 @@ export default {
                 coin: 'Bgold',
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/156'/0'/1/0"),
+                        address_n: ADDRESS_N("m/44'/156'/0'/0/0"),
                         amount: '1252382934',
                         prev_hash:
-                            '25526bf06c76ad3082bba930cf627cdd5f1b3cd0b9907dd7ff1a07e14addc985',
+                            '6f0398f8bac639312afc2e40210ce5253535f92326167f40e1f38dd7047b00ec',
                         prev_index: 0,
                         script_type: 'SPENDADDRESS',
                     },
                     {
-                        address_n: ADDRESS_N("m/44'/156'/0'/1/1"),
+                        address_n: ADDRESS_N("m/44'/156'/0'/0/1"),
                         amount: '38448607',
                         prev_hash:
-                            'db77c2461b840e6edbe7f9280043184a98e020d9795c1b65cb7cef2551a8fb18',
+                            'aae50f8dc1c19c35517e5bbc2214d38e1ce4b4ff7cb3151b5b31bf0f723f8e06',
                         prev_index: 0,
                         script_type: 'SPENDADDRESS',
                     },
@@ -71,11 +71,11 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['25526b', 'db77c2']),
+                refTxs: TX_CACHE(['6f0398', 'aae50f'], true), // Fake tx
             },
             result: {
                 serializedTx:
-                    '010000000285c9dd4ae1071affd77d90b9d03c1b5fdd7c62cf30a9bb8230ad766cf06b5225000000006a47304402203ae0f1c4188035a26507833679208f7ad577c4812bbba2ed50c54666ac386bfc022059be1525cd142dc709d5f7a1577e90b243e712460374b524d979b200422eef67412102cf2b28fa22872ab35cb6e0728b51fb4c5d18e99284d030bc64b890859c645d5dffffffff18fba85125ef7ccb651b5c79d920e0984a18430028f9e7db6e0e841b46c277db000000006b4830450221009c85769f815dd4c0fdeb6c7c6a2ec0a20b5aaf2be1e67e06ee0ff31bf9b8847202204fba481222bbbc70a4d1412bdfa2acc4e215a63080b0ee16bd163d79f99be8f94121025a639d0293154eecd7afc45dce239f2bc387c3c45b3844ee98eda272fd32d7aeffffffff01cd55bf4b000000001976a914ea5f904d195079a350b534db4446433b3cec222e88ac00000000',
+                    '0100000002ec007b04d78df3e1407f162623f9353525e50c21402efc2a3139c6baf898036f000000006b483045022100dda4e32fb43cd2217e48df892b38c98acc5a4815c11ff232e327c0cb0f133d3d022041351c3f929a6011d442c500c45348f977cacb234a2999ca3b3b9922c0830fd44121023bd0ec4022d12d0106c5b7308a25572953ba1951f576f691354a7b147ee0cc1fffffffff068e3f720fbf315b1b15b37cffb4e41c8ed31422bc5b7e51359cc1c18d0fe5aa000000006a473044022024db731f390b48b8e346c2d519eea569042b6db7d15a1f0159e682eed3ff94a10220531c0673845e7cce81dd37953b70e4eceee0dcb5d0ab4d8b9a7de4d7e83ed727412102d54a7e5733b1635e5e9442943f48179b1700206b2d1925250ba10f1c86878be8ffffffff01cd55bf4b000000001976a914ea5f904d195079a350b534db4446433b3cec222e88ac00000000',
             },
         },
         {
@@ -87,7 +87,7 @@ export default {
                         address_n: ADDRESS_N("m/49'/156'/0'/1/0"),
                         amount: '1252382934',
                         prev_hash:
-                            '25526bf06c76ad3082bba930cf627cdd5f1b3cd0b9907dd7ff1a07e14addc985',
+                            'db7239c358352c10996115b3de9e3f37ea0a97be4ea8c4b9e08996e257a21d0e',
                         prev_index: 0,
                         script_type: 'SPENDP2SHWITNESS',
                     },
@@ -104,11 +104,11 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['25526b']),
+                refTxs: TX_CACHE(['db7239'], true), // Fake tx
             },
             result: {
                 serializedTx:
-                    '0100000000010185c9dd4ae1071affd77d90b9d03c1b5fdd7c62cf30a9bb8230ad766cf06b52250000000017160014bcf764faafca9982aba3612eb91370d091cddb4affffffff02e0aebb00000000001976a914ea5f904d195079a350b534db4446433b3cec222e88acfefee949000000001976a914a8f757819ec6779409f45788f7b4a0e8f51ec50488ac024730440220666b06c1bd8d3cc899ef95dccebeab394833c52bc13cb94074926e88e879936202201d0d0abda057f2e4244b1de913cb771d0e77f612aa305e73933e3c5d402fbb91412103e4c2e99d4d9a36f949e947d94391d01bd016826afd87132b3257a660139b3b8a00000000',
+                    '010000000001010e1da257e29689e0b9c4a84ebe970aea373f9edeb3156199102c3558c33972db0000000017160014b5355d001e720d8f4513da00ff2bba4dcf9d39fcffffffff02e0aebb00000000001976a914ea5f904d195079a350b534db4446433b3cec222e88acfefee949000000001976a914a8f757819ec6779409f45788f7b4a0e8f51ec50488ac024730440220297dd984a414b5105911b6b171f92a889a732f5fb0ee7c8804d5187edb76808a02201c97b6b5cdeb8ba483c6bb5085f1cceed2dbe61faa09db57e9116abc88184653412102ecea08b559fc5abd009acf77cfae13fa8a3b1933e3e031956c65c12cec8ca3e300000000',
             },
         },
         {
@@ -120,7 +120,7 @@ export default {
                         address_n: ADDRESS_N("m/49'/156'/0'/1/0"),
                         amount: '1252382934',
                         prev_hash:
-                            '25526bf06c76ad3082bba930cf627cdd5f1b3cd0b9907dd7ff1a07e14addc985',
+                            'db7239c358352c10996115b3de9e3f37ea0a97be4ea8c4b9e08996e257a21d0e',
                         prev_index: 0,
                         script_type: 'SPENDP2SHWITNESS',
                     },
@@ -137,11 +137,11 @@ export default {
                         script_type: 'PAYTOP2SHWITNESS',
                     },
                 ],
-                refTxs: TX_CACHE(['25526b']),
+                refTxs: TX_CACHE(['db7239'], true), // Fake tx
             },
             result: {
                 serializedTx:
-                    '0100000000010185c9dd4ae1071affd77d90b9d03c1b5fdd7c62cf30a9bb8230ad766cf06b52250000000017160014bcf764faafca9982aba3612eb91370d091cddb4affffffff02e0aebb00000000001976a914ea5f904d195079a350b534db4446433b3cec222e88acfefee9490000000017a914fea1579ecdf0e50674819c9924fcc0007e7ec12b8702483045022100b494a98cf4f715432ae007b1bf43a6c918dfaf7a13257e8513422a4559451da9022036490ed9cd6f1aa418739a4c1df9b4b034287046456715daa74cd7c67c5c1fd0412103e4c2e99d4d9a36f949e947d94391d01bd016826afd87132b3257a660139b3b8a00000000',
+                    '010000000001010e1da257e29689e0b9c4a84ebe970aea373f9edeb3156199102c3558c33972db0000000017160014b5355d001e720d8f4513da00ff2bba4dcf9d39fcffffffff02e0aebb00000000001976a914ea5f904d195079a350b534db4446433b3cec222e88acfefee9490000000017a9140cd03822b799a452c106d1b3771844a067b17f118702463043021f718c7fcc27516eddb647f6cbafe310d98ccd1e43fe0d3ca2ee944e16b9dab90220359abfc5b144e7b7e54bfbfc2ce5962f5ad2e70985e77b34fb7bc104fefbe795412102ecea08b559fc5abd009acf77cfae13fa8a3b1933e3e031956c65c12cec8ca3e300000000',
             },
         },
         {
@@ -152,22 +152,25 @@ export default {
                     {
                         address_n: ADDRESS_N("m/49'/156'/1'/1/0"),
                         prev_hash:
-                            '25526bf06c76ad3082bba930cf627cdd5f1b3cd0b9907dd7ff1a07e14addc985',
+                            '7f1f6bfe8d5a23e038c58bdcf47e6eb3b5ddb93300176b273564951105206b39',
                         prev_index: 0,
                         script_type: 'SPENDP2SHWITNESS',
                         amount: '1252382934',
                         multisig: {
                             pubkeys: [
                                 {
-                                    node: 'xpub6BiJ9mt9dwmdCmLgwJBZgkBTacEkXiRE1LqiCLQZ98bp4nYsascxnmqKaXZZngo8cS9xxi4HJ4JQ9a6bHqaD3dA8BJ4afh4Ser75abaip3x',
+                                    // m/49'/156'/1'
+                                    node: 'xpub6BezrjBueDupZvwM1PGcPS5fFTQ7ZNQahTzQ7St8qMjXcRBraEZLbwYe38vQ1qxZckd3CHQio3pzSDPXX8wsf5Abxha11aYssjA48SHd85J',
                                     address_n: [1, 0],
                                 },
                                 {
-                                    node: 'xpub6BiJ9mt9dwmdEeh7XMzJrgNGrxopkeaqAYeeohsAstAxowpNRPcRsL4G4bxMoU7v7u8XySLDMc7bugTja9aMQv7MkqmnAyvRi8VCcUDq9yt',
+                                    // m/49'/156'/2'
+                                    node: 'xpub6BezrjBueDupd7ws7566VRFUcT2GL82n25h9rLUgHD4Q6wQdRuNBkwxKQcHBJo1x8AbqgsUXFdCBU7vyq9UfLgFBBx3SvNkK9coaThW6AAn',
                                     address_n: [1, 0],
                                 },
                                 {
-                                    node: 'xpub6BiJ9mt9dwmdHaW7EvKzmmgVogWw3FaEaMqVXPmSqNSxkCeJXsbt9vMcxv6KFme9nXkSo9fTmqHMHNKGJUbgG7csXcWtoQr9yHmbFqxF9qQ',
+                                    // m/49'/156'/3'
+                                    node: 'xpub6BezrjBueDupfod6cp2aBD6vnB4fzMt21aB2qHVhN9CdPWmfcSrytVtsL9T5Qgp96NdPTXdwKgWsFZ4JCnUTQXNM636pCi7ZkoHmoHY1ruW',
                                     address_n: [1, 0],
                                 },
                             ],
@@ -183,14 +186,11 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['25526b']),
+                refTxs: TX_CACHE(['7f1f6b'], true), // Fake tx
             },
             result: {
-                signatures: [
-                    '304402205c00ecc582981e3cb638fe65c937e30b9d1a01444e638ad41d197de4d274d30f02205bd2e2ab81840b1aef71d317c4b978cf2c1136e1c11dcfd0ce56eccbb7109657',
-                ],
                 serializedTx:
-                    '0100000000010185c9dd4ae1071affd77d90b9d03c1b5fdd7c62cf30a9bb8230ad766cf06b52250000000023220020198a360103afea9552366b867e1f73767f4dd685208a4409613209a40f275ca6ffffffff01eed4a54a000000001976a914ea5f904d195079a350b534db4446433b3cec222e88ac030047304402205c00ecc582981e3cb638fe65c937e30b9d1a01444e638ad41d197de4d274d30f02205bd2e2ab81840b1aef71d317c4b978cf2c1136e1c11dcfd0ce56eccbb71096574169522103416827b81cd4f7d29c630aab60e8a70e600c515c2b6c897832547f40bbf91a6a2103bcaa12ef301c4d8289eda14dbb79f4d0a21933208c164afc90d8a287757a18b9210253c598baf64b3f0dad28d545c2169d6fdec59f870305aff6fd57818b1c86eee353ae00000000',
+                    '01000000000101396b200511956435276b170033b9ddb5b36e7ef4dc8bc538e0235a8dfe6b1f7f0000000023220020ea9ec48498c451286c2ebaf9e19255e2873b0fb517d67b2f2005298c7e437829ffffffff01eed4a54a000000001976a914ea5f904d195079a350b534db4446433b3cec222e88ac030047304402207aae5d1f29a6e7a816bfa5c4fcce451f9a03727028a298daa98e9893ee9eec1702206ad96571ec48f99e4529257091274503585f690efa4095e554db9fcec0fa147b4169522103279aea0b253b144d1b2bb8532280001a996dcddd04f86e5e13df1355032cbc1321032c6465c956c0879663fa8be974c912d229c179a5cdedeb29611a1bec1f951eb22103494480a4b72101cbd2eadac8e18c7a3a7589a7f576bf46b8971c38c51e5eceeb53ae00000000',
             },
         },
     ],

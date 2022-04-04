@@ -10,7 +10,7 @@ const DEFAULT_RESPONSES = {
 };
 
 const createServer = () => {
-    const server = new WebSocket.Server({ port: 18088, noServer: true });
+    const server = new WebSocket.Server({ port: 18088 });
 
     const processRequest = (ws, params, message) => {
         const request = JSON.parse(message);

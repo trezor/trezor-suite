@@ -1,15 +1,9 @@
 import applyFlags from './applyFlags';
 import applySettings from './applySettings';
-import getAddress from './getAddress';
-import getAddressMultisig from './getAddressMultisig';
-import getAddressSegwit from './getAddressSegwit';
-import getPublicKey from './getPublicKey';
-import rippleGetAddress from './rippleGetAddress';
-import rippleSignTransaction from './rippleSignTransaction';
 import binanceSignTransaction from './binanceSignTransaction';
 import cardanoGetAddress from './cardanoGetAddress';
-import cardanoGetPublicKey from './cardanoGetPublicKey';
 import cardanoGetNativeScriptHash from './cardanoGetNativeScriptHash';
+import cardanoGetPublicKey from './cardanoGetPublicKey';
 import cardanoSignTransaction from './cardanoSignTransaction';
 import composeTransaction from './composeTransaction';
 import eosGetPublicKey from './eosGetPublicKey';
@@ -23,12 +17,18 @@ import ethereumSignTransactionEip1559 from './ethereumSignTransactionEip1559';
 import ethereumSignTypedData from './ethereumSignTypedData';
 import ethereumVerifyMessage from './ethereumVerifyMessage';
 import getAccountInfo from './getAccountInfo';
+import getAddress from './getAddress';
+import getAddressMultisig from './getAddressMultisig';
+import getAddressSegwit from './getAddressSegwit';
 import getFeatures from './getFeatures';
+import getPublicKey from './getPublicKey';
 import nemGetAddress from './nemGetAddress';
 import nemSignTransactionMosaic from './nemSignTransactionMosaic';
 import nemSignTransactionMultisig from './nemSignTransactionMultisig';
 import nemSignTransactionOthers from './nemSignTransactionOthers';
 import nemSignTransactionTransfer from './nemSignTransactionTransfer';
+import rippleGetAddress from './rippleGetAddress';
+import rippleSignTransaction from './rippleSignTransaction';
 import signMessage from './signMessage';
 import signTransaction from './signTransaction';
 import signTransactionBcash from './signTransactionBcash';
@@ -53,18 +53,34 @@ import verifyMessage from './verifyMessage';
 import verifyMessageSegwit from './verifyMessageSegwit';
 import verifyMessageSegwitNative from './verifyMessageSegwitNative';
 
-// todo: missing fixtures: BinanceGetPublicKey.js
-// todo: missing fixtures: ChangePin.js
-// todo: missing fixtures: CipherKeyValue.js
-// todo: missing fixtures: CustomMessage.js
-// todo: missing fixtures: GetDeviceState.js
-// todo: missing fixtures: GetSettings.js
-// todo: missing fixtures: PushTransaction.js
-// todo: missing fixtures: RecoveryDevice.js
-// todo: missing fixtures: RequestLogin.js
-// todo: missing fixtures: ResetDevice.js
-// todo: wipeDevice,
-// todo: resetDevice,
+// TODO: add fixtures for missing dependencies https://github.com/trezor/trezor-suite/issues/5353
+// backupDevice
+// binanceGetAddress
+// binanceGetPublicKey
+// blockchainDisconnect
+// blockchainEstimateFee
+// blockchainGetAccountBalanceHistory
+// blockchainGetFiatRates
+// blockchainGetTransactions
+// blockchainSetCustomBackend
+// blockchainSubscribe
+// blockchainSubscribeFiatRates
+// blockchainUnsubscribe
+// blockchainUnsubscribeFiatRates
+// changePin
+// cipherKeyValue
+// firmwareUpdate
+// getCoinInfo
+// getDeviceState
+// getSettings
+// pushTransaction
+// rebootToBootloader
+// recoveryDevice
+// requestLogin
+// resetDevice
+// setProxy
+// tezosSignTransaction
+// wipeDevice
 
 let fixtures = [
     applyFlags,
@@ -73,8 +89,7 @@ let fixtures = [
     cardanoGetAddress,
     cardanoGetNativeScriptHash,
     cardanoGetPublicKey,
-    // todo: this needs connect 8.2.8-beta.4
-    // cardanoSignTransaction,
+    cardanoSignTransaction,
     composeTransaction,
     eosGetPublicKey,
     eosSignTransaction,
@@ -116,7 +131,7 @@ let fixtures = [
     signTransactionSegwit,
     signTransactionZcash,
     stellarGetAddress,
-    // stellarSignTransaction,
+    stellarSignTransaction,
     tezosGetAddress,
     tezosGetPublicKey,
     verifyMessage,

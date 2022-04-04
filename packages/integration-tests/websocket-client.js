@@ -11,13 +11,16 @@ const DEFAULT_TIMEOUT = 5 * 60 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
 class Controller extends EventEmitter {
-    constructor(options) {
+    constructor(options = {}) {
         super();
         this.messageID = 0;
         this.messages = [];
         this.subscriptions = [];
         this.setMaxListeners(Infinity);
-        this.options = options;
+        this.options = {
+            ...options,
+            url: options.url || 'ws://localhost:9001/',
+        };
     }
 
     setConnectionTimeout() {
@@ -106,6 +109,11 @@ class Controller extends EventEmitter {
             const resp = JSON.parse(message);
             const { id, success } = resp;
             const dfd = this.messages.find(m => m.id === id);
+
+            if (resp.type === 'client') {
+                this.emit('firmwares', resp.firmwares);
+            }
+
             if (dfd) {
                 if (!success) {
                     dfd.reject(

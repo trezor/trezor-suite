@@ -3,7 +3,7 @@
         {
             "amount": 200000000,
             "decred_script_version": 0,
-            "script_pubkey": "76a914d9dabd8d92a93da3244096f6fea327ba441fe6d088ac"
+            "script_pubkey": "76a914d1f3241c3cf479ae670ab43a6d3162010252aa6488ac"
         },
         {
             "amount": 418687331,

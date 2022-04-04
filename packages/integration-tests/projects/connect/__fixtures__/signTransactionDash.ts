@@ -8,8 +8,8 @@ export default {
         mnemonic: 'mnemonic_all',
     },
     tests: [
+        // https://dash1.trezor.io/tx/be1af4a0e1eaccf86767836b42ee0938cceba16d0dd6c283f476db692c961f41
         {
-            // See https://dash1.trezor.io/tx/be1af4a0e1eaccf86767836b42ee0938cceba16d0dd6c283f476db692c961f41
             description: 'Dash: 1 input, 1 output, no change',
             params: {
                 coin: 'Dash',
@@ -71,6 +71,7 @@ export default {
         {
             // NOTE: this is not a valid transaction
             // Input from https://dash1.trezor.io/tx/adb43bcd8fc99d6ed353c30ca8e5bd5996cd7bcf719bd4253f103dfb7227f6ed
+            skip: ['>1.11.0', '>2.5.0'], // test works only in FW lower than 1.11.1 and 2.5.1
             description: 'Dash: special input',
             params: {
                 coin: 'Dash',

@@ -3,7 +3,6 @@
     "compilerOptions": {
         "isolatedModules": false,
         "types": [
-            "trezor-connect",
             "jest",
             "cypress",
             "cypress-wait-until"

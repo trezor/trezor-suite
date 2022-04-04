@@ -14,35 +14,6 @@ export default {
     },
     tests: [
         {
-            // See https://zec1.trezor.io/tx/0f762a2da5252d684fb3510a3104bcfb556fab34583b3b0e1994d0f7409cc075
-            description: 'Zcash: input v2, no change',
-            skip: ['>1.8.3', '>2.1.8'], // test works only in FW range [1.8.1 - 1.8.3] and [2.1.1 - 2.1.8]
-            params: {
-                coin: 'Zcash',
-                inputs: [
-                    {
-                        address_n: ADDRESS_N("m/44'/133'/0'/0/0"),
-                        prev_hash:
-                            '29d25589db4623d1a33c58745b8f95b131f49841c79dcd171847d0d7e9e2dc3a',
-                        prev_index: 0,
-                    },
-                ],
-                outputs: [
-                    {
-                        address: 't1N5zTV5PjJqRgSPmszHopk88Nc6mvMBSD7',
-                        amount: '72200',
-                        script_type: 'PAYTOADDRESS',
-                    },
-                ],
-                refTxs: TX_CACHE(['29d255']),
-            },
-            result: {
-                serializedTx:
-                    '01000000013adce2e9d7d0471817cd9dc74198f431b1958f5b74583ca3d12346db8955d229000000006b483045022100f36da2fba65831c24bae2264892d914abdf65ee747ba9e8deeaeb13d1c72b03102200b8ecb59698dbe90f8cfe529a6d05c8b7fa2f31a2f5a7a1b993700a20d04d63a0121022f5c53b6d2e1b64c37d85716dbef318bd398ad7d2a03d94960af060402380658ffffffff01081a0100000000001976a9142e383c56fe3df202792e6f4460c8056b6a4d5b3488ac00000000',
-            },
-            legacyResults,
-        },
-        {
             // See https://zec1.trezor.io/tx/e5229ae8c02f74af5e0c2100371710424fa85902c29752498c39921de2246824
             description: 'Zcash: inputs v1, no change',
             skip: ['>1.8.3', '>2.1.8'], // test works only in FW range [1.8.1 - 1.8.3] and [2.1.1 - 2.1.8]
@@ -74,6 +45,35 @@ export default {
             result: {
                 serializedTx:
                     '01000000022adff4e740f4db482e8e83ced93fed3828504fdc51d84080e6ce4b24a63a5384000000006a473044022066a25c3b0fe18b17327f6080d9e5a26a880cf6ae6c47ff9b7bf9f8a59ab36814022065e4abcdff6f84311ac120b689e5a69db80312446731ab8fe1b3026e29c11ede0121032fd3a554fc321693de4b7cf66649da7726c4d0d3849a7b947774e04d54e38f91ffffffff2adff4e740f4db482e8e83ced93fed3828504fdc51d84080e6ce4b24a63a5384010000006a473044022009fb8f5c4a3ad7960f64a573084b7dec2b73bbe7044328ff05cb6106153014ef022035ab922f75a7c0ff07acd7e99b2469551ce7ff5b830c102d38d175bf3fa8ab74012102a1eb5e72ebdf2a6650593167a4c8391d9a37c2df19e1034fd0e4dc5b525696e9ffffffff01e4270000000000001976a91497e66840d01e615bdcea4a39a1b3afd0a27e6b0188ac00000000',
+            },
+            legacyResults,
+        },
+        {
+            // See https://zec1.trezor.io/tx/0f762a2da5252d684fb3510a3104bcfb556fab34583b3b0e1994d0f7409cc075
+            description: 'Zcash: input v2, no change',
+            skip: ['>1.8.3', '>2.1.8'], // test works only in FW range [1.8.1 - 1.8.3] and [2.1.1 - 2.1.8]
+            params: {
+                coin: 'Zcash',
+                inputs: [
+                    {
+                        address_n: ADDRESS_N("m/44'/133'/0'/0/0"),
+                        prev_hash:
+                            '29d25589db4623d1a33c58745b8f95b131f49841c79dcd171847d0d7e9e2dc3a',
+                        prev_index: 0,
+                    },
+                ],
+                outputs: [
+                    {
+                        address: 't1N5zTV5PjJqRgSPmszHopk88Nc6mvMBSD7',
+                        amount: '72200',
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+                refTxs: TX_CACHE(['29d255']),
+            },
+            result: {
+                serializedTx:
+                    '01000000013adce2e9d7d0471817cd9dc74198f431b1958f5b74583ca3d12346db8955d229000000006b483045022100f36da2fba65831c24bae2264892d914abdf65ee747ba9e8deeaeb13d1c72b03102200b8ecb59698dbe90f8cfe529a6d05c8b7fa2f31a2f5a7a1b993700a20d04d63a0121022f5c53b6d2e1b64c37d85716dbef318bd398ad7d2a03d94960af060402380658ffffffff01081a0100000000001976a9142e383c56fe3df202792e6f4460c8056b6a4d5b3488ac00000000',
             },
             legacyResults,
         },
@@ -133,7 +133,7 @@ export default {
             // NOTE: this is not a valid transaction
             // Inputs from https://zec1.trezor.io/tx/234b2cf6cb2a50be29f45efae27fe717e3bb31967a72927d122cac1f50988cab
             description: 'Zcash: input v4',
-            skip: ['<1.9.0', '<2.2.0'],
+            skip: ['<1.9.0', '<2.2.0', '>1.11.0', '>2.5.0'],
             params: {
                 coin: 'Zcash',
                 version: 4,
@@ -164,8 +164,8 @@ export default {
             },
         },
         {
-            // https://tzec1.trezor.io/tx/0cef132c1d6d67f11cfa48f7fca3209da29cf872ac782354bedb686e61a17a78
-            // https://explorer.testnet.z.cash/api/tx/0cef132c1d6d67f11cfa48f7fca3209da29cf872ac782354bedb686e61a17a78
+            // https://tzec1.trezor.io/tx/b29b1f27763e8caf9fe51f33a6a7daf138438b5278efcd60941782244e35b19e
+            // https://explorer.testnet.z.cash/api/tx/b29b1f27763e8caf9fe51f33a6a7daf138438b5278efcd60941782244e35b19e
             description: 'Zcash testnet: v4',
             skip: ['<1.9.0', '<2.2.0'],
             params: {
@@ -176,25 +176,25 @@ export default {
                 branchId: 0x76b809bb,
                 inputs: [
                     {
-                        address_n: ADDRESS_N("m/44'/1'/0'/0/0"),
+                        address_n: ADDRESS_N("m/44'/1'/0'/0/7"),
                         prev_hash:
-                            'e3820602226974b1dd87b7113cc8aea8c63e5ae29293991e7bfa80c126930368',
+                            '4b6cecb81c825180786ebe07b65bcc76078afc5be0f1c64e08d764005012380d',
                         prev_index: 0,
-                        amount: '300000000',
+                        amount: 989680,
                     },
                 ],
                 outputs: [
                     {
-                        address: 'tmJ1xYxP8XNTtCoDgvdmQPSrxh5qZJgy65Z',
-                        amount: '299998060',
+                        address: 'tmBMyeJebzkP5naji8XUKqLyL1NDwNkgJFt',
+                        amount: 989680 - 10000,
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['e38206'], true),
+                refTxs: TX_CACHE(['4b6cec'], true),
             },
             result: {
                 serializedTx:
-                    '0400008085202f890168039326c180fa7b1e999392e25a3ec6a8aec83c11b787ddb1746922020682e3000000006b483045022100f28298891f48706697a6f898ac18e39ce2c7cebe547b585d51cc22d80b1b21a602201a807b8a18544832d95d1e3ada82c0617bc6d97d3f24d1fb4801ac396647aa880121030e669acac1f280d1ddf441cd2ba5e97417bf2689e4bbec86df4f831bf9f7ffd0ffffffff016c9be111000000001976a9145b157a678a10021243307e4bb58f36375aa80e1088ac00000000000000000000000000000000000000',
+                    '0400008085202f89010d3812500064d7084ec6f1e05bfc8a0776cc5bb607be6e788051821cb8ec6c4b000000006a473044022067dbf2fddca8efc33da004f91d8e8ace286c4cd4763203a9aac220b011b97cda022005a40a99268ee55ece911d622f3ba0b25aabab9472366018d83712c1484ce8240121035169c4d6a36b6c4f3e210f46d329efa1cb7a67ffce7d62062d4a8a17c23756e1ffffffff01e0f20e00000000001976a9141215d421cb8cec1dea62cbd9e4e07c01520d873f88ac00000000000000000000000000000000000000',
             },
         },
         {

@@ -43,7 +43,7 @@ export default {
                 fw_major: null,
                 fw_minor: null,
                 fw_patch: null,
-                fw_vendor: null,
+                // fw_vendor: null, // "EMULATOR" since 2.5.1
                 unfinished_backup: expect.any(Boolean),
                 no_backup: expect.any(Boolean),
                 recovery_mode: false,
@@ -202,7 +202,7 @@ export default {
                 fw_major: null,
                 fw_minor: null,
                 fw_patch: null,
-                fw_vendor: null,
+                // fw_vendor: null, // "EMULATOR" since 1.11.1
                 unfinished_backup: expect.any(Boolean),
                 no_backup: expect.any(Boolean),
                 recovery_mode: null, // difference between TT

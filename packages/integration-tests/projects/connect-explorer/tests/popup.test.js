@@ -8,9 +8,9 @@ const { Controller } = require('../../../websocket-client');
 const fixtures = require('./fixtures');
 const buildOverview = require('../support/buildOverview');
 
-const url = process.env.URL || 'http://localhost:8082/';
+const url = process.env.URL || 'http://localhost:8088/';
 const SCREENSHOTS_DIR = './projects/connect-explorer/screenshots';
-const controller = new Controller({ url: 'ws://localhost:9001/' });
+const controller = new Controller();
 const emuScreenshots = {};
 
 const log = (...val) => {
@@ -86,7 +86,7 @@ fixtures.forEach(f => {
         await page.goto(`${url}#/method/${f.url}`);
 
         // screenshot request
-        log(f.url, 'screenshot trezor-connect call params');
+        log(f.url, 'screenshot @trezor/connect call params');
 
         const code = page.locator('[data-test="@code"]');
         await code.screenshot({ path: `${screenshotsPath}/1-request.png` });

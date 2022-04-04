@@ -510,7 +510,7 @@ const fixtures = [
     ...getPublicKey,
     ...getAddress,
     ...getAccountInfo,
-    // REF-TODO: waiting for selector "text=Not enough funds >> visible=true" to be visible
+    // todo: waiting for selector "text=Not enough funds >> visible=true" to be visible
     // maybe somebody sent money there?
     // ...composeTransaction,
     ...signTransaction,

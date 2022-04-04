@@ -1,4 +1,6 @@
-import TrezorConnect from 'trezor-connect';
+/* eslint-disable no-underscore-dangle */
+
+import TrezorConnect from '@trezor/connect';
 
 // error thrown by .init()
 const INIT_ERROR = { code: 'Init_ManifestMissing' };
@@ -6,6 +8,12 @@ const INIT_ERROR = { code: 'Init_ManifestMissing' };
 describe('TrezorConnect.init', () => {
     afterEach(() => {
         TrezorConnect.dispose();
+    });
+
+    beforeAll(() => {
+        // use local build, not trezor connect version hosted on trezor.connect.io
+        // @ts-ignore
+        global.__TREZOR_CONNECT_SRC = process.env.TREZOR_CONNECT_SRC;
     });
 
     it('calling method before .init() and/or .manifest()', async () => {

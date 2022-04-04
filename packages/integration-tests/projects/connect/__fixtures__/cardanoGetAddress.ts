@@ -1,4 +1,4 @@
-import { NETWORK_IDS, PROTOCOL_MAGICS } from 'trezor-connect/lib/constants/cardano';
+import { NETWORK_IDS, PROTOCOL_MAGICS } from '@trezor/connect/lib/constants/cardano';
 import { CardanoAddressType } from '@trezor/transport/lib/types/messages';
 
 const legacyResults = [
