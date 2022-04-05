@@ -10,12 +10,12 @@ yup.setLocale({
     },
 });
 
-yup.addMethod<yup.StringSchema>(yup.string, 'isAscii', () =>
-    yup.string().test('isAscii', 'TR_ASCII_ONLY', value => isAscii(value)),
-);
+yup.addMethod<yup.StringSchema>(yup.string, 'isAscii', function () {
+    return this.test('isAscii', 'TR_ASCII_ONLY', value => isAscii(value));
+});
 
-yup.addMethod<yup.StringSchema>(yup.string, 'isHex', () =>
-    yup.string().test('isHex', 'DATA_NOT_VALID_HEX', value => isHex(value as string)),
-);
+yup.addMethod<yup.StringSchema>(yup.string, 'isHex', function () {
+    return this.test('isHex', 'DATA_NOT_VALID_HEX', value => isHex(value as string));
+});
 
 export { yup };
