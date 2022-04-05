@@ -3449,7 +3449,7 @@ export default defineMessages({
     },
     MODAL_ADD_ACCOUNT_TITLE: {
         id: 'MODAL_ADD_ACCOUNT_TITLE',
-        defaultMessage: 'New Account',
+        defaultMessage: 'New account',
     },
     MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
         id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
@@ -6182,7 +6182,7 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION',
-        defaultMessage: 'Connect it directly to computer, no hubs.',
+        defaultMessage: 'Connect it directly to your computer (without a USB hub).',
     },
     TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE',
@@ -6318,7 +6318,7 @@ export default defineMessages({
     TR_STAKING_REWARDS_DESCRIPTION: {
         id: 'TR_STAKING_REWARDS_DESCRIPTION',
         defaultMessage:
-            'Please note that it can take up to 20 days until you start receiving your rewards after initial stake registration and delegation. After this period is completed you will receive you reward every 5 days.',
+            'Please note that it can take up to 20 days until you start receiving your rewards after initial stake registration and delegation. After this period is completed you will receive your reward every 5 days.',
     },
     TR_STAKING_STAKE_DESCRIPTION: {
         id: 'TR_STAKING_STAKE_DESCRIPTION',
