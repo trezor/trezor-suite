@@ -4,7 +4,8 @@ export * as variables from './config/variables';
 
 export * as types from './support/types';
 
-export * from './utils';
+export * from './utils/colors';
+export * from './utils/hooks';
 
 export * from './components/buttons/Button';
 export * from './components/Flag';
