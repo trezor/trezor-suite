@@ -20,8 +20,7 @@
 //     });
 // })
 
-// cypress open todo: messaging system + unify date-test attr @banner/safety-checks/button vs @notification/...
-describe.skip('safety_checks Warning For PromptTemporarily', () => {
+describe('safety_checks Warning For PromptTemporarily', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');

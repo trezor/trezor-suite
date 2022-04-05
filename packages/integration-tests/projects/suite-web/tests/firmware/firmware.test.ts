@@ -8,8 +8,7 @@ describe('Firmware', () => {
     });
 
     ['1.9.4', '2.3.0'].forEach(fw => {
-        // cypress open todo: notification is not present when there is messaging system banner
-        it.skip(`Firmware ${fw} outdated notification banner should open firmware update modal`, () => {
+        it(`Firmware ${fw} outdated notification banner should open firmware update modal`, () => {
             cy.task('startEmu', { wipe: true, version: fw });
             cy.task('setupEmu');
             cy.task('startBridge');

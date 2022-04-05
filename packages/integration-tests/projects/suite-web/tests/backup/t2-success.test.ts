@@ -14,8 +14,7 @@ describe('Backup', () => {
         cy.passThroughInitialRun();
     });
 
-    // cypress open todo: notification is not present when there is messaging system banner
-    it.skip('Successful backup happy path', () => {
+    it('Successful backup happy path', () => {
         // access from notification
         cy.getTestElement('@notification/no-backup/button').click();
 

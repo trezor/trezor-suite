@@ -12,8 +12,7 @@ const ELECTRUM_SIGNATURE =
 
 describe('Sign and verify', () => {
     beforeEach(() => {
-        // todo: removed pinned version '2-master', once 2.4.4 is released
-        cy.task('startEmu', { wipe: true, version: '2-master' });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { mnemonic: SEED });
         cy.task('startBridge');
 
