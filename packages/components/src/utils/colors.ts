@@ -1,4 +1,4 @@
-import { InputState, SuiteThemeColors } from '../support/types';
+import type { InputState, SuiteThemeColors } from '../support/types';
 
 const getStateColor = (state: InputState | undefined, theme: SuiteThemeColors) => {
     switch (state) {

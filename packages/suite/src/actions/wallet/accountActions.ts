@@ -7,9 +7,9 @@ import * as tokenActions from '@wallet-actions/tokenActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { analyzeTransactions, isPending } from '@wallet-utils/transactionUtils';
 import { NETWORKS } from '@wallet-config';
-import { Account } from '@wallet-types';
-import { Dispatch, GetState } from '@suite-types';
 import { SETTINGS } from '@suite-config';
+import type { Account } from '@wallet-types';
+import type { Dispatch, GetState } from '@suite-types';
 
 export type AccountAction =
     | { type: typeof ACCOUNT.CREATE; payload: Account }

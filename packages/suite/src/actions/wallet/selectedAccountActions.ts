@@ -17,11 +17,6 @@ export const dispose = (): SelectedAccountAction => ({
     type: ACCOUNT.DISPOSE,
 });
 
-export const update = (payload: State): SelectedAccountAction => ({
-    type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
-    payload,
-});
-
 // Add notification to loaded SelectedAccountState
 const getAccountStateWithMode =
     (selectedAccount?: State) => (_dispatch: Dispatch, getState: GetState) => {
