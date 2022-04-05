@@ -10,7 +10,8 @@ describe('Onboarding - create wallet', () => {
         cy.prefixedVisit('/');
     });
 
-    it.only('Success (no shamir capability)', () => {
+    // cypress open todo
+    it('Success (no shamir capability)', () => {
         cy.task('startEmu', { wipe: true, version: '2.1.1' });
 
         cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
@@ -75,7 +76,8 @@ describe('Onboarding - create wallet', () => {
         cy.task('inputEmu', '1');
     });
 
-    it('Success (Shamir backup)', () => {
+    // cypress open todo: re-enable
+    it.skip('Success (Shamir backup)', () => {
         cy.task('startEmu', { wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();

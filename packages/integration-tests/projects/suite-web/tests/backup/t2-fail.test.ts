@@ -11,8 +11,7 @@ describe('Backup', () => {
         cy.passThroughInitialRun();
     });
 
-    // cypress open todo: notification is not present when there is messaging system banner
-    it.skip('Backup failed - device disconnected during action', () => {
+    it('Backup failed - device disconnected during action', () => {
         cy.getTestElement('@notification/no-backup/button').click();
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();

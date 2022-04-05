@@ -5,6 +5,7 @@ describe('Test Guide', () => {
     beforeEach(() => {
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
+        cy.task('startBridge');
     });
 
     it('Testing guide open / close', () => {
@@ -51,9 +52,8 @@ describe('Test Guide', () => {
         cy.getTestElement('@guide/search/no-results');
     });
 
-    it('in onboarding with device', () => {
+    it('In onboarding with device', () => {
         cy.task('startEmu', { wipe: true });
-        cy.task('startBridge');
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@guide/button-open').click();

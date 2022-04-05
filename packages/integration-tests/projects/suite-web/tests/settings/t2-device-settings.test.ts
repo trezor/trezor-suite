@@ -2,19 +2,24 @@
 // @retry=2
 
 describe('T2 - Device settings', () => {
+    beforeEach(() => {
+        cy.viewport(1080, 1440).resetDb();
+        cy.task('startBridge');
+    });
+    // cypress open todo: seems like entering urls (/settings/device) directly does not work anymore?
     it('change all possible device settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
-        cy.task('startBridge');
 
         // navigate to device settings page
-        cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         // firmware modal
         cy.log('open firmware modal and close it again');
-        cy.getTestElement('@settings/device/update-button').click();
+        cy.getTestElement('@settings/device/update-button').click({ scrollBehavior: false });
         cy.getTestElement('@modal/close-button').click();
 
         // change label
@@ -59,23 +64,27 @@ describe('T2 - Device settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: true });
 
-        cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/settings/device');
+        // navigate to device settings page
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
-        cy.getTestElement('@settings/device/create-backup-button').click();
+        cy.getTestElement('@settings/device/create-backup-button').click({ scrollBehavior: false });
         cy.getTestElement('@backup');
     });
 
-    it.only('does not show auto-lock select because it is not supported on fw <2.3.5 ', () => {
+    it('does not show auto-lock select because it is not supported on fw <2.3.5 ', () => {
         cy.task('startEmu', { wipe: true, version: '2.3.4' });
         cy.task('setupEmu');
 
-        cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/settings/device');
+        // navigate to device settings page
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         // TODO - add pin to verify it properly
 
@@ -86,9 +95,11 @@ describe('T2 - Device settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
 
-        cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/settings/device');
+        // navigate to device settings page
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/open-wipe-modal-button').click();
         cy.getTestElement('@wipe/checkbox-1').click();

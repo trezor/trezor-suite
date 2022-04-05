@@ -44,6 +44,25 @@ beforeEach(() => {
     cy.intercept('*', { hostname: '127.0.0.1' }, req => {
         req.url = req.url.replace('21325', '21326');
     });
+
+    // disable messaging system on develop
+    cy.intercept('https://data.trezor.io/config/develop/config.v1.jws', req => {
+        const mock =
+            'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIyLTA0LTA0VDAwOjAwOjAwKzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEwMCwKICAgICJhY3Rpb25zIjogW10KfQo.6LBUsZIxdDGLxVuHQNvFmphVdRwxMpmEHhRC-vU4horpzWwIlvex8R7w48YInk231OxxovrHX8pVvCDWPaoWRA';
+        req.continue(res => {
+            res.send(mock);
+        });
+    });
+
+    // disable messaging system in codesign build
+    cy.intercept('https://data.trezor.io/config/stable/config.v1.jws', req => {
+        const mock =
+            'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIyLTA0LTA0VDAwOjAwOjAwKzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEwMCwKICAgICJhY3Rpb25zIjogW10KfQo.rM_IWzbu3iRelYC9fB7YA3sHtCWXTJAKTgxJ5WszUj__BTEIvBbd5iBFSaDoNrY4CZejxNCbnzMTLnb5x6ZN2A';
+        req.continue(res => {
+            res.send(mock);
+        });
+    });
+
     cy.visit('/');
     cy.log('stop and start bridge before every test to make sure that there is no pending session');
     cy.task('stopBridge');
