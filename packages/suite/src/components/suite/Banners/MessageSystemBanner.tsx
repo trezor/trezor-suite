@@ -11,6 +11,7 @@ import { Banner } from './Banner';
 import type { Message } from '@suite-types/messageSystem';
 
 const BannerOnTop = styled(Banner)`
+    position: relative;
     z-index: ${variables.Z_INDEX.BANNER_ON_TOP};
 `;
 
