@@ -1,9 +1,14 @@
 {
+  "AMOUNT": "Amount",
+  "AMOUNT_IS_BELOW_DUST": "Amount is below the dust limit ({dust})",
+  "AMOUNT_IS_NOT_ENOUGH": "Not enough funds",
+  "AMOUNT_IS_NOT_INTEGER": "Amount is not an integer",
   "IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION": "Invalid image color. It must contain only black and white (not grayscale).",
   "IMAGE_VALIDATION_ERROR_INVALID_FORMAT": "Invalid file selected. Must be .jpg or .png",
   "IMAGE_VALIDATION_ERROR_INVALID_HEIGHT": "Invalid height.",
   "IMAGE_VALIDATION_ERROR_INVALID_WIDTH": "Invalid width.",
   "IMAGE_VALIDATION_ERROR_UNEXPECTED_ALPHA": "Invalid image format. It must not contain transparencies.",
+  "MODAL_ADD_ACCOUNT_TITLE": "New account",
   "RECIPIENT_REQUIRES_UPDATE": "Taproot is not supported by your firmware version. Please update your device firmware.",
   "SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION": "Trezor Suite uses Blockfrost websocket-link for the wallet backend.",
   "SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED": "Not connected to the backend. Try reconnecting the device. Also, check your internet connection or the URL of your custom backend.",
@@ -15,6 +20,7 @@
   "TR_COPY_AND_CLOSE": "Copy & Close",
   "TR_COPY_SIGNED_MESSAGE": "Copy signed message",
   "TR_CUSTOM_HOMESCREEN": "Custom homescreen uploaded",
+  "TR_DEVICE_IN_RECOVERY_MODE_DESC": "This device is in recovery mode. Click the button to continue.",
   "TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR": "Homescreen editor",
   "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1": "Supports PNG or JPG, 128 x 64 pixels, and using only black and white (not grayscale).",
   "TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_TT": "Supports PNG or JPG, 144 x 144 pixels",
@@ -47,7 +53,7 @@
   "TR_STAKING_POOL_OVERSATURATED_TITLE": "Stake pool is oversaturated",
   "TR_STAKING_REDELEGATE": "Redelegate",
   "TR_STAKING_REWARDS": "Available Rewards",
-  "TR_STAKING_REWARDS_DESCRIPTION": "Please note that it can take up to 20 days until you start receiving your rewards after initial stake registration and delegation. After this period is completed you will receive you reward every 5 days.",
+  "TR_STAKING_REWARDS_DESCRIPTION": "Please note that it can take up to 20 days until you start receiving your rewards after initial stake registration and delegation. After this period is completed you will receive your reward every 5 days.",
   "TR_STAKING_REWARDS_TITLE": "Cardano Staking is Active",
   "TR_STAKING_STAKE_ADDRESS": "Your stake address",
   "TR_STAKING_STAKE_DESCRIPTION": "Staking Cardano is a great way to earn ADA staking rewards as a form of passive income for holding Cardano.{br}By staking your ADA, you actively support the Cardano network and contribute to the stability of the network.",
@@ -68,5 +74,6 @@
   "TR_SUITE_WEB_LANDING_START_HEADLINE": "Congratulations on getting{lineBreak}<em>your new Trezor</em>",
   "TR_TRANSACTIONS_SEARCH_TIP_10": "Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example <strong>> 2020-01-01 & < 2020-01-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.",
   "TR_TRANSACTIONS_SEARCH_TIP_2": "Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 or higher.",
-  "TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE": "If you can’t see Trezor Bridge running, download and install it"
+  "TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE": "If you can’t see Trezor Bridge running, download and install it",
+  "TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION": "Connect it directly to your computer (without a USB hub)."
 }
