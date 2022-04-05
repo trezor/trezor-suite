@@ -36,12 +36,12 @@ const signVerifySchema = yup.object<ValidationSchema<Omit<SignVerifyFields, 'isE
     message: yup
         .string()
         .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG')
+        .required()
         .when('hex', {
             is: true,
             then: schema => schema.isHex(),
             otherwise: schema => schema.isAscii(),
-        })
-        .required(),
+        }),
     address: yup
         .string()
         .test(
