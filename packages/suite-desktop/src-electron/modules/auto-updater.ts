@@ -23,6 +23,7 @@ import { getReleaseNotes } from '@suite/services/github';
 const enableUpdater = app.commandLine.hasSwitch('enable-updater');
 const disableUpdater = app.commandLine.hasSwitch('disable-updater');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
+const feedURL = app.commandLine.getSwitchValue('updater-url');
 
 const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
@@ -84,6 +85,10 @@ const init: Module = ({ mainWindow, store }) => {
     mainWindow.webContents.send('update/allow-prerelease', autoUpdater.allowPrerelease);
 
     autoUpdater.logger = null;
+
+    if (feedURL) {
+        autoUpdater.setFeedURL(feedURL);
+    }
 
     const quitAndInstall = () => {
         setImmediate(() => {

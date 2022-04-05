@@ -66,6 +66,7 @@ Available flags:
 | `--log-path=PATHNAME` | Path for the output file (defaults to home or current working directory)                                                                                                               |
 | `--enable-updater`    | Enables the auto updater (if disabled in feature flags)                                                                                                                                |
 | `--disable-updater`   | Disables the auto updater (if enabled in feature flags)                                                                                                                                |
+| `--updater-url=URL`   | Set custom URL for auto-updater (default is github)                                                                                                                                    |
 
 ## Mock
 
