@@ -16,9 +16,7 @@ import SafetyChecksBanner from './SafetyChecks';
 import TranslationMode from './TranslationMode';
 import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.div<{ isOnTop?: boolean; isGuideOpen?: boolean; isModalOpen?: boolean }>`
-    z-index: ${props =>
-        props.isOnTop ? variables.Z_INDEX.BANNER_ON_TOP : variables.Z_INDEX.BANNER};
+const Wrapper = styled.div<{ isGuideOpen?: boolean; isModalOpen?: boolean }>`
     transition: all 0.3s;
     background: ${props => props.theme.BG_WHITE};
 
@@ -94,20 +92,13 @@ const Banners = () => {
     const useMessageSystemBanner = messageSystemBanner && messageSystemBanner.priority >= priority;
 
     return (
-        <>
-            {useMessageSystemBanner && (
-                <Wrapper isOnTop isGuideOpen={isGuideOpen} isModalOpen={isModalOpen}>
-                    {/* @ts-ignore - fix ts which thinks that "messageSystemBanner" can be null */}
-                    <MessageSystemBanner message={messageSystemBanner} />
-                </Wrapper>
-            )}
-            <Wrapper isGuideOpen={isGuideOpen} isModalOpen={isModalOpen}>
-                {isTranslationMode() && <TranslationMode />}
-                <OnlineStatus isOnline={online} />
-                {!useMessageSystemBanner && banner}
-                {/* TODO: add Pin not set */}
-            </Wrapper>
-        </>
+        <Wrapper isGuideOpen={isGuideOpen} isModalOpen={isModalOpen}>
+            {useMessageSystemBanner && <MessageSystemBanner message={messageSystemBanner} />}
+            {isTranslationMode() && <TranslationMode />}
+            <OnlineStatus isOnline={online} />
+            {!useMessageSystemBanner && banner}
+            {/* TODO: add Pin not set */}
+        </Wrapper>
     );
 };
 
