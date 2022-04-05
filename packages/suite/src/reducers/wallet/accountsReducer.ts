@@ -63,6 +63,9 @@ export type Account = {
 
 const initialState: Account[] = [];
 
+const accountEqualTo = (b: Account) => (a: Account) =>
+    a.deviceState === b.deviceState && a.descriptor === b.descriptor && a.symbol === b.symbol;
+
 const create = (draft: Account[], account: Account) => {
     // TODO: check if account already exist, for example 2 device instances with same passphrase
     // remove "transactions" field, they are stored in "transactionReducer"
@@ -74,23 +77,13 @@ const create = (draft: Account[], account: Account) => {
 
 const remove = (draft: Account[], accounts: Account[]) => {
     accounts.forEach(a => {
-        const index = draft.findIndex(
-            ac =>
-                ac.deviceState === a.deviceState &&
-                ac.descriptor === a.descriptor &&
-                ac.symbol === a.symbol,
-        );
+        const index = draft.findIndex(accountEqualTo(a));
         draft.splice(index, 1);
     });
 };
 
 const update = (draft: Account[], account: Account) => {
-    const accountIndex = draft.findIndex(
-        ac =>
-            ac.deviceState === account.deviceState &&
-            ac.descriptor === account.descriptor &&
-            ac.symbol === account.symbol,
-    );
+    const accountIndex = draft.findIndex(accountEqualTo(account));
 
     if (accountIndex !== -1) {
         draft[accountIndex] = account;

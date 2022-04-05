@@ -11,10 +11,10 @@ import { getNetwork } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { NETWORKS } from '@wallet-config';
-import { Dispatch, GetState } from '@suite-types';
-import { Account, Network } from '@wallet-types';
 import { BLOCKCHAIN } from './constants';
 import { getDefaultBackendType } from '@suite-utils/backend';
+import type { Dispatch, GetState } from '@suite-types';
+import type { Account, Network } from '@wallet-types';
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event

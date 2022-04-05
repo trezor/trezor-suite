@@ -163,8 +163,8 @@ export const fetchTransactions =
         });
 
         if (result && result.success) {
-            const updatedAccount = accountActions.update(account, result.payload)
-                .payload as Account;
+            const updateAction = accountActions.update(account, result.payload);
+            const updatedAccount = updateAction.payload as Account;
             const transactions = result.payload.history.transactions || [];
             const totalPages = result.payload.page?.total || 0;
 
@@ -173,7 +173,7 @@ export const fetchTransactions =
             });
             dispatch(add(transactions, updatedAccount, page));
             // updates the marker/page object for the account
-            dispatch(accountActions.update(account, result.payload));
+            dispatch(updateAction);
 
             // totalPages (blockbook + blockfrost), marker (ripple) if is undefined, no more pages are available
             if (recursive && (page < totalPages || (marker && updatedAccount.marker))) {
