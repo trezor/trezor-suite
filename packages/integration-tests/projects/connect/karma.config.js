@@ -100,8 +100,8 @@ module.exports = config => {
                 }),
                 // replace TrezorConnect module used in ./tests/common.setup.js
                 new webpack.NormalModuleReplacementPlugin(
-                    /^trezor-connect$/,
-                    path.join(__dirname, '../../../connect-web/build/trezor-connect'),
+                    /^@trezor\/connect$/,
+                    path.join(__dirname, '../../../connect-web/build/trezor-connect.js'),
                 ),
                 // replace ws module used in ./tests/websocket-client.js
                 new webpack.NormalModuleReplacementPlugin(

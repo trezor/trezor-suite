@@ -1,4 +1,4 @@
-import { NETWORK_IDS, PROTOCOL_MAGICS } from 'trezor-connect/lib/constants/cardano';
+import { NETWORK_IDS, PROTOCOL_MAGICS } from '@trezor/connect/lib/constants/cardano';
 import {
     CardanoAddressType,
     CardanoCertificateType,
@@ -328,7 +328,7 @@ const SAMPLE_MINTS = {
 const FEE = '42';
 const TTL = '10';
 const VALIDITY_INTERVAL_START = '47';
-const SCRIPT_DATA_HASH = 'd593fd793c377ac50a3169bb8378ffc257c944da31aa8f355dfa5a4f6ff89e02';
+// const SCRIPT_DATA_HASH = 'd593fd793c377ac50a3169bb8378ffc257c944da31aa8f355dfa5a4f6ff89e02';
 
 const legacyResults = {
     beforeSignTx: {

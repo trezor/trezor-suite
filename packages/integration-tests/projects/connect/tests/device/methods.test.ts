@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import fixtures from '../../__fixtures__';
 
 const { getController, setup, skipTest, conditionalTest, initTrezorConnect } = global.Trezor;

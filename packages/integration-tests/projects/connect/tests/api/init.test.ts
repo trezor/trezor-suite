@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 
 // error thrown by .init()
 const INIT_ERROR = { code: 'Init_ManifestMissing' };

@@ -8,7 +8,7 @@ function CustomReporter(rootConfig, logger) {
 
     return {
         onRunStart: () => {
-            log.info('Running trezor-connect tests...');
+            log.info('Running @trezor/connect tests...');
             log.info('FW:', process.env.TESTS_FIRMWARE);
             log.info('Methods:', process.env.TESTS_INCLUDED_METHODS || 'All');
         },

@@ -1,6 +1,6 @@
 /* eslint-disable camelcase, no-bitwise */
 
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import * as versionUtils from '@trezor/utils/src/versionUtils'; // NOTE: only this module is required
 import { UI } from '@trezor/connect/src/events'; // NOTE: import UI constants directly from source
 import { toHardened, getHDPath } from '@trezor/connect/src/utils/pathUtils'; // NOTE: import utils directly from source

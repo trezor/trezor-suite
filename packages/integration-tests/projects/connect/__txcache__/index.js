@@ -20,7 +20,7 @@ const cacheFiles = (dir, cache = {}) => {
                 const content = JSON.parse(rawJson);
                 cache[key] = {
                     ...content,
-                    hash: file.split('.')[0], // add hash into object, required by trezor-connect params
+                    hash: file.split('.')[0], // add hash into object, required by @trezor/connect params
                 };
             } catch (error) {
                 console.error(`TX_CACHE parsing error: ${file}`);
