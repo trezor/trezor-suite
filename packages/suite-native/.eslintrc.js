@@ -59,4 +59,7 @@ module.exports = {
         // Dependencies
         'import/no-extraneous-dependencies': 2, // all dependencies must be in corresponding package.json
     },
+    globals: {
+        __DEV__: 'readonly',
+    },
 };
