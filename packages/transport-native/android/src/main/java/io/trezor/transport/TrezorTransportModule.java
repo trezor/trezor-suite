@@ -47,6 +47,7 @@ public class TrezorTransportModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void enumerate(Promise promise) {
+    Log.d(TAG, "Enumerate start");
     try {
       List<TrezorInterface> trezorDeviceList = bridge.enumerate();
       Log.d(TAG, "Enumerate" + trezorDeviceList);
@@ -96,6 +97,7 @@ public class TrezorTransportModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void write(String path, Boolean debugLink, String data, Promise promise) {
+    Log.i(TAG, "write to device " + path + " ");
     try {
       TrezorInterface device = bridge.getDeviceByPath(path);
       byte[] bytes = Utils.hexStringToByteArray(data);
@@ -113,12 +115,22 @@ public class TrezorTransportModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void read(String path, Boolean debugLink, Promise promise) {
+    Log.i(TAG, "read from device " + path + " ");
     try {
+      Log.i(TAG, "read from device 1");
       TrezorInterface device = bridge.getDeviceByPath(path);
+            Log.i(TAG, "read from device 2");
+
       if (device != null) {
         byte[] bytes = device.rawRead();
+              Log.i(TAG, "read from device 3");
+
         WritableMap map = Arguments.createMap();
+              Log.i(TAG, "read from device 4");
+
         map.putString("data", Utils.byteArrayToHexString(bytes));
+              Log.i(TAG, "read from device 5");
+
         promise.resolve(map);
       } else {
         promise.reject("EUNSPECIFIED", "error device not found");

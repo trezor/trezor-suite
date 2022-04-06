@@ -10,6 +10,7 @@ import {
     useColorScheme,
 } from 'react-native';
 
+import { enumerate } from '@trezor/transport-native';
 import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 import TrezorConnect from 'trezor-connect';
 
@@ -60,23 +61,31 @@ const Section = ({ children, title }: any) => {
     );
 };
 
+const connectSrc = process.env.TREZOR_CONNECT_SRC || 'https://localhost:8088/';
+
 const connectOptions = {
+    connectSrc,
+    webusb: true,
     transportReconnect: true,
+    popup: true,
     debug: true,
+    lazyLoad: true,
     manifest: {
         email: 'info@trezor.io',
         appUrl: '@trezor/suite',
     },
 };
-
 export const App = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const [connectStatus, setConnectStatus] = useState<any>('');
     const [deviceState, setDeviceState] = useState<any>('');
+    const [transportDevices, setTransportDevices] = useState<any>('');
 
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
+
+    console.log(Buffer);
 
     const getFeatures = useCallback(() => {
         console.log('getting features');
@@ -90,17 +99,44 @@ export const App = () => {
             });
     }, []);
 
+    const resetDevice = useCallback(() => {
+        TrezorConnect.resetDevice({
+            label: 'Meow trezor',
+            skip_backup: true,
+        });
+    }, []);
+
+    const getDevices = useCallback(() => {
+        enumerate()
+            .then(result => {
+                console.log('transport-native', result);
+                setTransportDevices(JSON.stringify(result));
+            })
+            .catch(error => {
+                console.log('transport-native error', error);
+                setTransportDevices(JSON.stringify(error));
+            });
+    }, []);
+
     useEffect(() => {
         TrezorConnect.init(connectOptions)
             .then(result => {
                 setConnectStatus('Init OK');
                 console.log(result);
-                getFeatures();
             })
             .catch(error => {
                 setConnectStatus(`Init failed ${JSON.stringify(error.code)}`);
             });
     }, [getFeatures]);
+
+    useEffect(() => {
+        setInterval(() => {
+            console.log('tick', new Date().toLocaleTimeString());
+        }, 1000);
+        setInterval(() => {
+            // getDevices();
+        }, 3000);
+    }, []);
 
     return (
         <SafeAreaView style={backgroundStyle}>
@@ -112,10 +148,17 @@ export const App = () => {
                         backgroundColor: isDarkMode ? Colors.black : Colors.white,
                     }}
                 >
+                    <Section title="transport-native status">
+                        {transportDevices}
+                        <Button title="get devices" onPress={getDevices} />
+                    </Section>
                     <Section title="Connect status">{connectStatus}</Section>
                     <Section title="Device features">
                         <Button title="get device state" onPress={getFeatures} />
                         {deviceState}
+                    </Section>
+                    <Section title="Device management">
+                        <Button title="reset device" onPress={resetDevice} />
                     </Section>
                 </View>
             </ScrollView>
