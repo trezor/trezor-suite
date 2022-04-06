@@ -37,9 +37,11 @@
         "@trezor/utxo-lib": "^1.0.0",
         "events": "^3.3.0",
         "parse-uri": "1.0.7",
+        "randombytes": "2.1.0",
         "tslib": "^2.3.1"
     },
     "devDependencies": {
-        "@types/parse-uri": "^1.0.0"
+        "@types/parse-uri": "^1.0.0",
+        "@types/randombytes": "^2.0.0"
     }
 }
