@@ -27,7 +27,6 @@ describe.skip('Onboarding - recover wallet T1', () => {
         cy.getTestElement('@recover/select-type/basic').click();
 
         // trezord error, try wait
-        cy.pause();
         cy.wait(2000);
         cy.task('pressYes');
 
