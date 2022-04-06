@@ -249,6 +249,31 @@ export type TypedCall = <T: MessageKey, R: MessageKey>(
     message?: $ElementType<MessageType, T>
 ) => Promise<MessageResponse<R>>;
 `);
+} else {
+    lines.push('// custom connect definitions');
+    lines.push('export type MessageType = {');
+    types
+        .flatMap(t => (t && t.type === 'message' ? [t] : []))
+        .forEach(t => {
+            lines.push(`    ${t.name}: ${t.name};`);
+        });
+    lines.push('};');
+
+    // additional types utilities
+    lines.push(`
+export type MessageKey = keyof MessageType;
+
+export type MessageResponse<T extends MessageKey> = {
+    type: T;
+    message: MessageType[T];
+};
+
+export type TypedCall = <T extends MessageKey, R extends MessageKey>(
+    type: T,
+    resType: R,
+    message?: MessageType[T],
+) => Promise<MessageResponse<R>>;
+`);
 }
 
 // save to file
