@@ -9,7 +9,7 @@ module.exports = {
             jsx: true,
         },
     },
-    plugins: ['import', '@typescript-eslint', 'react-hooks', 'prettier'],
+    plugins: ['import', '@typescript-eslint', 'react-hooks', 'prettier', 'jest'],
     extends: [
         'airbnb',
         'plugin:@typescript-eslint/recommended',
@@ -20,6 +20,10 @@ module.exports = {
         react: {
             version: 'detect',
         },
+    },
+    env: {
+        jest: true,
+        'jest/globals': true,
     },
     ignorePatterns: [
         '**/lib/*',

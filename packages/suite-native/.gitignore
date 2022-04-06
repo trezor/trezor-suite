@@ -28,10 +28,7 @@ build/
 .gradle
 local.properties
 *.iml
-
-# Visual Studio Code
-#
-.vscode/
+*.hprof
 
 # node.js
 #
@@ -43,7 +40,6 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
-!develop.keystore
 !debug.keystore
 
 # fastlane
@@ -57,13 +53,9 @@ buck-out/
 */fastlane/Preview.html
 */fastlane/screenshots
 
-# CocoaPods
-/ios/Pods/
-
 # Bundle artifact
 *.jsbundle
-public
 
-# CocoaPods
+# Ruby / CocoaPods
 /ios/Pods/
-index.android.bundle
+/vendor/bundle/

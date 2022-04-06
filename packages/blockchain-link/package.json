@@ -30,6 +30,11 @@
         "ws": "./lib/utils/ws.js",
         "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js"
     },
+    "react-native": {
+        "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
+        "ws": "@trezor/blockchain-link/lib/utils/ws.js",
+        "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.js"
+    },
     "scripts": {
         "dev": "webpack serve --config ./webpack/dev.js",
         "dev:electrum": "ts-node ./src/workers/electrum/devrun.ts",
