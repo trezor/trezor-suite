@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
 import { Button, H2, variables, Link } from '@trezor/components';
-import { Translation, Modal, FormattedDate } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { getReleaseUrl } from '@suite/services/github';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
@@ -63,15 +63,8 @@ const ChangelogWrapper = styled.div`
     }
 `;
 
-const GithubWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const DateWrapper = styled.span`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+const StyledLink = styled(Link)`
+    align-self: start;
 `;
 
 const StyledModal = styled(Modal)`
@@ -154,17 +147,11 @@ const Available = ({ hideWindow, latest }: AvailableProps) => {
                     <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                 )}
             </ChangelogWrapper>
-
-            <GithubWrapper>
-                <Link variant="nostyle" href={getReleaseUrl(latest?.version ?? '')}>
-                    <Button variant="tertiary" icon="GITHUB">
-                        <Translation id="TR_CHANGELOG_ON_GITHUB" />
-                    </Button>
-                </Link>
-                <DateWrapper>
-                    <FormattedDate value={latest?.releaseDate} date />
-                </DateWrapper>
-            </GithubWrapper>
+            <StyledLink variant="nostyle" href={getReleaseUrl(latest?.version ?? '')}>
+                <Button variant="tertiary" icon="GITHUB">
+                    <Translation id="TR_CHANGELOG_ON_GITHUB" />
+                </Button>
+            </StyledLink>
         </StyledModal>
     );
 };
