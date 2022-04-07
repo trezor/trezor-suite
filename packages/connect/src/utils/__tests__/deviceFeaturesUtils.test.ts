@@ -1,6 +1,3 @@
-// REF-TODO: types
-// @ts-nocheck
-
 import coinsJSON from '@trezor/connect-common/files/coins.json';
 import { config } from '../../data/config';
 import { parseCoinsJson, getAllNetworks } from '../../data/CoinInfo';
@@ -24,6 +21,7 @@ describe('utils/deviceFeaturesUtils', () => {
             major_version: 2,
         };
         // default T1
+        // @ts-expect-error - incomplete features
         expect(parseCapabilities(feat1)).toEqual([
             'Capability_Bitcoin',
             'Capability_Bitcoin_like',
@@ -35,6 +33,7 @@ describe('utils/deviceFeaturesUtils', () => {
         ]);
 
         // default T2
+        // @ts-expect-error - incomplete features
         expect(parseCapabilities(feat2)).toEqual([
             'Capability_Bitcoin',
             'Capability_Bitcoin_like',
@@ -52,6 +51,7 @@ describe('utils/deviceFeaturesUtils', () => {
         ]);
 
         expect(
+            // @ts-expect-error - incomplete features
             parseCapabilities({
                 major_version: 2,
                 capabilities: [],
@@ -76,17 +76,20 @@ describe('utils/deviceFeaturesUtils', () => {
         expect(
             parseCapabilities({
                 major_version: 1,
+                // @ts-expect-error - wrong/legacy decoding of capabilities in @trezor/transport
                 capabilities: [1],
             }),
         ).toEqual(['Capability_Bitcoin']);
 
         // no features
+        // @ts-expect-error
         expect(parseCapabilities(null)).toEqual([]);
 
         // unknown
         expect(
             parseCapabilities({
                 major_version: 1,
+                // @ts-expect-error - wrong/legacy decoding of capabilities in @trezor/transport
                 capabilities: [1000],
             }),
         ).toEqual([]);
@@ -102,9 +105,11 @@ describe('utils/deviceFeaturesUtils', () => {
             patch_version: 3,
             capabilities: undefined,
         };
+        // @ts-expect-error - incomplete features
         feat1.capabilities = parseCapabilities(feat1);
 
         // default Capabilities T1
+        // @ts-expect-error - incomplete features
         expect(getUnavailableCapabilities(feat1, coins, support)).toEqual({
             ada: 'no-support',
             tada: 'no-support',
@@ -133,9 +138,11 @@ describe('utils/deviceFeaturesUtils', () => {
             patch_version: 3,
             capabilities: undefined,
         };
+        // @ts-expect-error - incomplete features
         feat2.capabilities = parseCapabilities(feat2);
 
         // default Capabilities T2
+        // @ts-expect-error - incomplete features
         expect(getUnavailableCapabilities(feat2, coins, support)).toEqual({
             replaceTransaction: 'update-required',
             decreaseOutput: 'update-required',
@@ -147,6 +154,7 @@ describe('utils/deviceFeaturesUtils', () => {
 
         // added new capability
         expect(
+            // @ts-expect-error - incomplete features
             getUnavailableCapabilities(feat2, coins, [
                 {
                     min: ['0', '2.99.99'],
@@ -158,6 +166,7 @@ describe('utils/deviceFeaturesUtils', () => {
         });
 
         expect(
+            // @ts-expect-error - incomplete features
             getUnavailableCapabilities(feat2, coins, [
                 {
                     min: ['0', '0'],
@@ -169,27 +178,32 @@ describe('utils/deviceFeaturesUtils', () => {
         });
 
         // without capabilities
+        // @ts-expect-error - incomplete features
         expect(getUnavailableCapabilities({}, coins, support)).toEqual({});
     });
 
     describe('parseRevision', () => {
         it('parses hexadecimal raw bytes to the standard hexadecimal notation', () => {
+            // @ts-expect-error - incomplete features
             expect(parseRevision({ revision: '6466303936336563' })).toEqual('df0963ec');
         });
 
         it('does nothing when standard hexadecimal notation is parsed', () => {
+            // @ts-expect-error - incomplete features
             expect(parseRevision({ revision: 'f4424ece1ccb7fc0d6cad00ff840fac287a34f07' })).toEqual(
                 'f4424ece1ccb7fc0d6cad00ff840fac287a34f07',
             );
         });
 
         it('does nothing when standard hexadecimal notation with only 0-9 symbols is parsed', () => {
+            // @ts-expect-error - incomplete features
             expect(parseRevision({ revision: '2442434213337100161230033840333287234307' })).toEqual(
                 '2442434213337100161230033840333287234307',
             );
         });
 
         it('passes null, caused by bootloader mode, through', () => {
+            // @ts-expect-error - incomplete features
             expect(parseRevision({ revision: null })).toEqual(null);
         });
     });

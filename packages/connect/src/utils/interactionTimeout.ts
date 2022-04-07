@@ -2,29 +2,17 @@ import { initLog } from './debug';
 
 const _log = initLog('InteractionTimeout');
 
-// REF-TODO: many weird problems here, see @ts-ignores
 type TimeoutID = any;
 
 export default class InteractionTimeout {
     timeout?: TimeoutID | null = null;
 
-    // @ts-ignore - duplicite identifier
     seconds = 0;
 
     constructor(seconds?: number) {
         if (seconds) {
             this.seconds = seconds;
         }
-    }
-
-    // @ts-ignore - duplicite identifier
-    get seconds() {
-        return this.seconds;
-    }
-
-    // @ts-ignore - duplicite identifier
-    set seconds(seconds: number) {
-        this.seconds = seconds;
     }
 
     /**

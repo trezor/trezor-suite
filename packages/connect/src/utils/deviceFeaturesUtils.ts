@@ -1,6 +1,7 @@
-import type { Messages } from '@trezor/transport';
+import { Messages } from '@trezor/transport';
 import { versionCompare } from './versionUtils';
 import type { Features, CoinInfo, UnavailableCapabilities } from '../types';
+import { Capability, Enum_Capability } from '@trezor/transport/lib/types/messages';
 
 type Support = {
     coin?: string[];
@@ -11,8 +12,17 @@ type Support = {
     max?: [string, string];
 };
 
-// From protobuf
-const CAPABILITIES: Messages.Capability[] = [
+const DEFAULT_CAPABILITIES_T1: Capability[] = [
+    'Capability_Bitcoin',
+    'Capability_Bitcoin_like',
+    'Capability_Crypto',
+    'Capability_Ethereum',
+    'Capability_NEM',
+    'Capability_Stellar',
+    'Capability_U2F',
+];
+
+const DEFAULT_CAPABILITIES_TT: Capability[] = [
     'Capability_Bitcoin',
     'Capability_Bitcoin_like',
     'Capability_Binance',
@@ -20,32 +30,29 @@ const CAPABILITIES: Messages.Capability[] = [
     'Capability_Crypto',
     'Capability_EOS',
     'Capability_Ethereum',
-    'Capability_Lisk', // 8, for historical reasons
     'Capability_Monero',
     'Capability_NEM',
     'Capability_Ripple',
     'Capability_Stellar',
     'Capability_Tezos',
     'Capability_U2F',
-    'Capability_Shamir',
-    'Capability_ShamirGroups',
-    'Capability_PassphraseEntry',
 ];
 
-const DEFAULT_CAPABILITIES_T1 = [1, 2, 5, 7, 10, 12, 14];
-const DEFAULT_CAPABILITIES_TT = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14];
-
+//  It should return [Capability_Bitcoin], instead it returns [1]
 export const parseCapabilities = (features?: Features): Messages.Capability[] => {
     if (!features || features.firmware_present === false) return []; // no features or no firmware - no capabilities
-    // needs to be "any" since Features.capabilities are declared as string[] but in fact it's a number[]
-    const filter = (c: any) => (CAPABILITIES[c - 1] ? [CAPABILITIES[c - 1]] : []);
-    // fallback for older firmware
-    if (!features.capabilities || !features.capabilities.length)
-        return features.major_version === 1
-            ? DEFAULT_CAPABILITIES_T1.flatMap(filter)
-            : DEFAULT_CAPABILITIES_TT.flatMap(filter);
+    // fallback for older firmware that does not report capabilities
+    if (!features.capabilities || !features.capabilities.length) {
+        return features.major_version === 1 ? DEFAULT_CAPABILITIES_T1 : DEFAULT_CAPABILITIES_TT;
+    }
+    // REF-TODO:
+    // @trezor/transport is not parsing enums in arrays correctly. this part of code can be removed
+    // once this is fixed in @trezor/transport
     // regular capabilities
-    return features.capabilities.flatMap(filter);
+    return features.capabilities.flatMap(c => {
+        const capabilityName = Object.values(Enum_Capability).find(capability => c === capability);
+        return capabilityName ? [Enum_Capability[capabilityName as Enum_Capability]] : [];
+    }) as Capability[];
 };
 
 // TODO: support type

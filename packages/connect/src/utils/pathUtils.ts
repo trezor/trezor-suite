@@ -119,8 +119,6 @@ export const validatePath = (path: string | number[], length = 0, base = false):
             return n;
         });
     }
-    // REF-TODO
-    // @ts-ignore
     if (!valid) throw PATH_NOT_VALID;
     if (length > 0 && valid.length < length) throw PATH_NOT_VALID;
     return base ? valid.splice(0, 3) : valid;
