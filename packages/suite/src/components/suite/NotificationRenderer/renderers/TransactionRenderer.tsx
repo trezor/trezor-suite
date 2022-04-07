@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { AccountLabeling } from '@suite-components';
+import { AccountLabeling, HiddenPlaceholder } from '@suite-components';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
@@ -10,7 +10,7 @@ import { getTxAnchor } from '@suite-utils/anchor';
 
 import type { NotificationRendererProps, NotificationViewProps } from '../types';
 
-const TabularNums = styled.span`
+const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     font-variant-numeric: tabular-nums;
 `;
 
@@ -49,7 +49,7 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
         <View
             {...props}
             messageValues={{
-                amount: <TabularNums>{formattedAmount}</TabularNums>,
+                amount: <StyledHiddenPlaceholder>{formattedAmount}</StyledHiddenPlaceholder>,
                 account: <AccountLabeling account={found} />,
                 confirmations,
             }}
