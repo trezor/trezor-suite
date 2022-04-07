@@ -5,9 +5,17 @@ import TrezorConnect, {
     BlockchainError,
     BlockchainEstimateFee,
 } from 'trezor-connect';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import { arrayDistinct } from '@trezor/utils';
 import * as accountActions from '@wallet-actions/accountActions';
-import { getNetwork } from '@wallet-utils/accountUtils';
+import {
+    getNetwork,
+    isNetworkSymbol,
+    findAccountsByDescriptor,
+    findAccountsByNetwork,
+    findAccountDevice,
+    formatAmount,
+    formatNetworkAmount,
+} from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { NETWORKS } from '@wallet-config';
@@ -15,6 +23,8 @@ import { BLOCKCHAIN } from './constants';
 import { getDefaultBackendType } from '@suite-utils/backend';
 import type { Dispatch, GetState } from '@suite-types';
 import type { Account, Network } from '@wallet-types';
+
+const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
@@ -41,6 +51,13 @@ export type BlockchainAction =
     | {
           type: typeof BLOCKCHAIN.UPDATE_FEE;
           payload: Partial<FeeState>;
+      }
+    | {
+          type: typeof BLOCKCHAIN.SYNCED;
+          payload: {
+              symbol: Network['symbol'];
+              timeout: ReturnType<typeof setTimeout>;
+          };
       };
 
 // sort FeeLevels in reversed order (Low > High)
@@ -227,9 +244,7 @@ export const subscribe =
 
         // do NOT subscribe if there are no accounts
         // it leads to websocket disconnection
-        const { accounts } = getState().wallet;
-        if (!accounts.length) return;
-        const accountsToSubscribe = accounts.filter(a => a.symbol === symbol);
+        const accountsToSubscribe = findAccountsByNetwork(symbol, getState().wallet.accounts);
         if (!accountsToSubscribe.length) return;
         return TrezorConnect.blockchainSubscribe({
             accounts: accountsToSubscribe,
@@ -240,14 +255,11 @@ export const subscribe =
 // called from WalletMiddleware after ACCOUNT.REMOVE action
 export const unsubscribe = (removedAccounts: Account[]) => (_: Dispatch, getState: GetState) => {
     // collect unique symbols
-    const symbols = removedAccounts.reduce((arr, account) => {
-        if (arr.indexOf(account.symbol) < 0) return arr.concat([account.symbol]);
-        return arr;
-    }, [] as string[]);
+    const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
 
     const { accounts } = getState().wallet;
     const promises = symbols.map(symbol => {
-        const accountsToSubscribe = accounts.filter(a => a.symbol === symbol);
+        const accountsToSubscribe = findAccountsByNetwork(symbol, accounts);
         if (accountsToSubscribe.length) {
             // there are some accounts left, update subscription
             return TrezorConnect.blockchainSubscribe({
@@ -262,55 +274,79 @@ export const unsubscribe = (removedAccounts: Account[]) => (_: Dispatch, getStat
     return Promise.all(promises as Promise<any>[]);
 };
 
+const tryClearTimeout = (timeout?: ReturnType<typeof setTimeout>) => {
+    if (timeout) clearTimeout(timeout);
+};
+
+export const syncAccounts =
+    (symbol: Network['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
+        const { accounts, blockchain } = getState().wallet;
+        // First clear, to cancel last planned sync
+        tryClearTimeout(blockchain[symbol].syncTimeout);
+
+        await Promise.all(
+            findAccountsByNetwork(symbol, accounts).map(a =>
+                dispatch(accountActions.fetchAndUpdateAccount(a)),
+            ),
+        );
+
+        // Second clear, just to be sure that no other sync was planned while executing this one
+        tryClearTimeout(getState().wallet.blockchain[symbol].syncTimeout);
+        const timeout = setTimeout(() => dispatch(syncAccounts(symbol)), ACCOUNTS_SYNC_INTERVAL);
+
+        dispatch({
+            type: BLOCKCHAIN.SYNCED,
+            payload: {
+                symbol,
+                timeout,
+            },
+        });
+    };
+
 export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState: GetState) => {
     const network = getNetwork(symbol.toLowerCase());
     if (!network) return;
     const blockchain = getState().wallet.blockchain[network.symbol];
-    if (blockchain.reconnection) {
-        // reset previous timeout
-        clearTimeout(blockchain.reconnection.id);
-    }
+    // reset previous timeout
+    tryClearTimeout(blockchain.reconnection?.id);
     await dispatch(subscribe(network.symbol, true));
     await dispatch(updateFeeInfo(network.symbol));
     // update accounts for connected network
-    const accounts = getState().wallet.accounts.filter(a => a.symbol === network.symbol);
-    if (accounts.length) {
-        const promises = accounts.map(a => dispatch(accountActions.fetchAndUpdateAccount(a)));
-        await Promise.all(promises);
-    }
+    await dispatch(syncAccounts(network.symbol));
     dispatch({ type: BLOCKCHAIN.CONNECTED, payload: symbol });
 };
 
-export const onBlockMined =
-    (block: BlockchainBlock) => (dispatch: Dispatch, getState: GetState) => {
-        const symbol = block.coin.shortcut.toLowerCase();
-        const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-        const promises = networkAccounts.map(account =>
-            dispatch(accountActions.fetchAndUpdateAccount(account)),
-        );
-        return Promise.all(promises);
-    };
+export const onBlockMined = (block: BlockchainBlock) => (dispatch: Dispatch) => {
+    const symbol = block.coin.shortcut.toLowerCase();
+    if (isNetworkSymbol(symbol)) {
+        return dispatch(syncAccounts(symbol));
+    }
+};
 
 export const onNotification =
     (payload: BlockchainNotification) => (dispatch: Dispatch, getState: GetState) => {
         const { descriptor, tx } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();
-        const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-        const accounts = accountUtils.findAccountsByDescriptor(descriptor, networkAccounts);
-        if (!accounts.length) return;
+        if (!isNetworkSymbol(symbol)) {
+            return;
+        }
+
+        const networkAccounts = findAccountsByNetwork(symbol, getState().wallet.accounts);
+        const accounts = findAccountsByDescriptor(descriptor, networkAccounts);
+        if (!accounts.length) {
+            return;
+        }
+
         const account = accounts[0];
 
         // ripple worker sends two notifications for the same tx (pending + confirmed/rejected)
         // dispatch only recv notifications
         if (tx.type === 'recv' && !tx.blockHeight) {
-            const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
+            const accountDevice = findAccountDevice(account, getState().devices);
             const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
             const formattedAmount = token
-                ? `${accountUtils.formatAmount(
-                      token.amount,
-                      token.decimals,
-                  )} ${token.symbol.toUpperCase()}`
-                : accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
+                ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
+                : formatNetworkAmount(tx.amount, account.symbol, true);
 
             dispatch(
                 notificationActions.addEvent({
@@ -328,14 +364,7 @@ export const onNotification =
         // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
         // ripple-lib doesn't send "pending" txs in history
         if (account.networkType !== 'ripple') {
-            // tmp workaround for BB not sending multiple notifications, fix in progress
-            if (account.networkType === 'bitcoin') {
-                networkAccounts.forEach(a => {
-                    dispatch(accountActions.fetchAndUpdateAccount(a));
-                });
-            } else {
-                dispatch(accountActions.fetchAndUpdateAccount(account));
-            }
+            dispatch(syncAccounts(symbol));
         }
     };
 
@@ -345,14 +374,13 @@ export const onDisconnect =
         if (!network) return;
 
         const { blockchain, accounts } = getState().wallet;
-        const { reconnection } = blockchain[network.symbol];
-        if (reconnection) {
-            // reset previous timeout
-            clearTimeout(reconnection.id);
-        }
+        const { reconnection, syncTimeout } = blockchain[network.symbol];
+        // reset previous timeout
+        tryClearTimeout(reconnection?.id);
+        tryClearTimeout(syncTimeout);
 
         // there is no need to reconnect since there are no accounts for this network
-        const a = accounts.filter(a => a.symbol === network.symbol);
+        const a = findAccountsByNetwork(network.symbol, accounts);
         if (!a.length) return;
 
         const count = reconnection ? reconnection.count : 0;

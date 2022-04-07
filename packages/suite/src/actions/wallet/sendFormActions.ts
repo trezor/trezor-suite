@@ -1,6 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as accountActions from '@wallet-actions/accountActions';
+import * as blockchainActions from '@wallet-actions/blockchainActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -189,7 +190,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         if (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
-            dispatch(accountActions.fetchAndUpdateAccount(account));
+            dispatch(blockchainActions.syncAccounts(account.symbol));
         }
 
         // handle metadata (labeling) from send form
@@ -358,7 +359,7 @@ export const sendRaw = (payload?: boolean): SendFormAction => ({
 });
 
 export const pushRawTransaction =
-    (tx: string, coin: Account['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
+    (tx: string, coin: Account['symbol']) => async (dispatch: Dispatch) => {
         const sentTx = await TrezorConnect.pushTransaction({
             tx,
             coin,
@@ -371,12 +372,7 @@ export const pushRawTransaction =
                     txid: sentTx.payload.txid,
                 }),
             );
-            // raw tx doesn't have to be related to currently selected account
-            // but try to update selectedAccount just to be sure
-            const { account } = getState().wallet.selectedAccount;
-            if (account) {
-                dispatch(accountActions.fetchAndUpdateAccount(account));
-            }
+            dispatch(blockchainActions.syncAccounts(coin));
         } else {
             console.warn(sentTx.payload.error);
             dispatch(
