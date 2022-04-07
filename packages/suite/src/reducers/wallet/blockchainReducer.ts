@@ -6,8 +6,10 @@ import { NETWORKS } from '@wallet-config';
 import { Network } from '@wallet-types';
 import { Action } from '@suite-types';
 
+type Timeout = ReturnType<typeof setTimeout>;
+
 interface BlockchainReconnection {
-    id: ReturnType<typeof setTimeout>; // setTimeout id
+    id: Timeout; // setTimeout id
     time: number; // timestamp when it will be resolved
     count: number; // number of tries
 }
@@ -25,6 +27,7 @@ export interface Blockchain {
     blockHeight: number;
     version: string;
     reconnection?: BlockchainReconnection;
+    syncTimeout?: Timeout;
 }
 
 export type BlockchainState = {
@@ -130,6 +133,9 @@ const blockchainReducer = (state: BlockchainState = initialState, action: Action
                         count: action.payload.count,
                     },
                 };
+                break;
+            case BLOCKCHAIN.SYNCED:
+                draft[action.payload.symbol].syncTimeout = action.payload.timeout;
                 break;
             // no default
         }

@@ -123,6 +123,8 @@ export const changeAccountVisibility = (payload: Account, visible = true): Accou
     },
 });
 
+// Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
+// as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
         // first basic check, traffic optimization

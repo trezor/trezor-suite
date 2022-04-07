@@ -33,7 +33,7 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
         blockchain: state.wallet.blockchain,
     }));
 
-    const networkAccounts = accounts.filter(a => a.symbol === symbol);
+    const networkAccounts = accountUtils.findAccountsByNetwork(symbol, accounts);
     const found = accountUtils.findAccountsByDescriptor(descriptor, networkAccounts);
     // fallback: account not found, it should never happen tho
     if (!found.length) return <View {...props} />;

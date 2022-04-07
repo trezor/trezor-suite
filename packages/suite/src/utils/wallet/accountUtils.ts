@@ -211,6 +211,9 @@ export const sortByCoin = (accounts: Account[]) =>
         return aIndex - bIndex;
     });
 
+export const findAccountsByNetwork = (symbol: Network['symbol'], accounts: Account[]) =>
+    accounts.filter(a => a.symbol === symbol);
+
 export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
     accounts.filter(a => a.descriptor === descriptor);
 
