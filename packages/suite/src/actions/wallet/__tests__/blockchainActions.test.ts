@@ -130,7 +130,7 @@ describe('Blockchain Actions', () => {
     });
 
     fixtures.onNotification.forEach(f => {
-        it(`onConnect: ${f.description}`, async () => {
+        it(`onNotification: ${f.description}`, async () => {
             // TrezorConnect.setTestFixtures(f.connect);
             const store = initStore(getInitialState(f.initialState as Args));
             await store.dispatch(blockchainActions.onNotification(f.params as any));
