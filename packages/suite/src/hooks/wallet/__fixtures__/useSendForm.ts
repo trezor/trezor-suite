@@ -90,6 +90,11 @@ export const DEFAULT_STORE = {
             lastUsedFeeLevel: {},
             debug: {},
         },
+        blockchain: {
+            btc: {},
+            eth: {},
+            xrp: {},
+        },
         fees: {
             btc: {
                 minFee: 1,
