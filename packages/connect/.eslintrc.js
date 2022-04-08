@@ -4,5 +4,6 @@ module.exports = {
         'no-underscore-dangle': 'off', // underscore is used
         camelcase: 'off', // camelcase is used
         'no-console': 'warn',
+        'no-await-in-loop': 'off', // used in legacy trezor-connect codebase
     },
 };

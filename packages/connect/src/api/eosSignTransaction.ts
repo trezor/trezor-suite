@@ -1,0 +1,56 @@
+// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EosSignTransaction.js
+
+import { AbstractMethod } from '../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getMiscNetwork } from '../data/CoinInfo';
+import { validatePath } from '../utils/pathUtils';
+import * as helper from './eos/eosSignTx';
+import type { PROTO } from '../constants';
+
+type Params = {
+    path: number[];
+    chain_id: string;
+    header: PROTO.EosTxHeader;
+    ack: PROTO.EosTxActionAck[];
+};
+
+export default class EosSignTransaction extends AbstractMethod<'eosSignTransaction'> {
+    params: Params;
+
+    init() {
+        this.requiredPermissions = ['read', 'write'];
+        this.firmwareRange = getFirmwareRange(this.name, getMiscNetwork('EOS'), this.firmwareRange);
+        this.info = 'Sign EOS transaction';
+
+        const { payload } = this;
+        // validate incoming parameters
+        validateParams(payload, [
+            { name: 'path', required: true },
+            { name: 'transaction', required: true },
+        ]);
+
+        const path = validatePath(payload.path, 3);
+        const { chain_id, header, ack } = helper.validate(payload.transaction);
+
+        this.params = {
+            path,
+            chain_id,
+            header,
+            ack,
+        };
+    }
+
+    async run() {
+        const response = await helper.signTx(
+            this.device.getCommands().typedCall.bind(this.device.getCommands()),
+            this.params.path,
+            this.params.chain_id,
+            this.params.header,
+            this.params.ack,
+        );
+
+        return {
+            signature: response.signature,
+        };
+    }
+}

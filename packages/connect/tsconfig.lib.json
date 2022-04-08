@@ -3,7 +3,9 @@
     "compilerOptions": {
         "outDir": "lib",
         "target": "es2019",
-        "importHelpers": true
+        "importHelpers": true,
+        // REF-TODO: we need this to avoid runtime changes. could be refactored.
+        "strictPropertyInitialization": false
     },
     "include": ["./src"]
 }

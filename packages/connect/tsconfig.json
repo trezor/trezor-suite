@@ -1,6 +1,9 @@
 {
     "extends": "../../tsconfig.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev",
+        "strictPropertyInitialization": false
+    },
     "references": [
         { "path": "../blockchain-link" },
         { "path": "../rollout" },
