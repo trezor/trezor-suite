@@ -57,7 +57,7 @@ interface PreviewProps {
 const Preview: React.FC<PreviewProps> = ({ content, from, length }) => (
     <PreviewContent>
         {content.substring(0, from)}
-        <em>{content.substring(from, length)}</em>
+        <em>{content.substring(from, from + length)}</em>
         {content.substring(from + length)}
     </PreviewContent>
 );
