@@ -108,8 +108,8 @@ const Body = styled.div`
 const Description = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
-    margin-bottom: 10px;
-    text-align: center;
+    margin: 0 auto 10px auto;
+    max-width: fit-content; /* makes sure the description does not widen the modal beyond content width when the modal's width is "unset" */
 `;
 
 const Content = styled.div`
@@ -136,6 +136,7 @@ const ModalWindow = styled.div`
     text-align: center;
     transition: all 0.3s;
     max-width: 95%;
+    min-width: 305px;
     width: 720px;
 
     ${({ theme }) =>

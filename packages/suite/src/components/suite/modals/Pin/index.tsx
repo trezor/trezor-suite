@@ -1,10 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, Modal, ModalProps, PinMatrix } from '@suite-components';
+import { Translation, Modal, ModalProps } from '@suite-components';
+import { PinMatrix, PIN_MATRIX_MAX_WIDTH } from '@suite-components/PinMatrix';
 import { TrezorDevice } from '@suite-types';
 
-const StyledModal = styled(Modal)`
+const StyledModal = styled(Modal)<{ $isExtended: boolean }>`
     width: unset;
+
+    ${Modal.Description} {
+        max-width: ${({ $isExtended }) =>
+            $isExtended
+                ? 'fit-content'
+                : PIN_MATRIX_MAX_WIDTH}; /* limit width to prevent extending the modal past the width of the pin matrix */
+    }
 `;
 
 interface PinProps extends ModalProps {
@@ -34,6 +42,7 @@ const Pin = ({ device, ...rest }: PinProps) => {
             description={<Translation id="TR_THE_PIN_LAYOUT_IS_DISPLAYED" />}
             {...rest}
             data-test="@modal/pin"
+            $isExtended={isExtended}
         >
             <PinMatrix device={device} hideExplanation={!isExtended} invalid={invalidCounter > 0} />
         </StyledModal>
