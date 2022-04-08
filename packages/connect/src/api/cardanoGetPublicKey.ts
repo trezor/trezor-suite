@@ -1,0 +1,115 @@
+// origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoGetPublicKey.js
+
+import { PROTO } from '../constants';
+import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import { validateParams, getFirmwareRange } from './common/paramsValidator';
+import { getMiscNetwork } from '../data/CoinInfo';
+import { validatePath, fromHardened, getSerializedPath } from '../utils/pathUtils';
+import { UI, UiMessage } from '../events';
+
+export default class CardanoGetPublicKey extends AbstractMethod<
+    'cardanoGetPublicKey',
+    PROTO.CardanoGetPublicKey[]
+> {
+    hasBundle?: boolean;
+    confirmed?: boolean;
+
+    init() {
+        this.requiredPermissions = ['read'];
+        this.firmwareRange = getFirmwareRange(
+            this.name,
+            getMiscNetwork('Cardano'),
+            this.firmwareRange,
+        );
+        this.info = 'Export Cardano public key';
+
+        // create a bundle with only one batch if bundle doesn't exists
+        this.hasBundle = !!this.payload.bundle;
+        const payload = !this.payload.bundle
+            ? { ...this.payload, bundle: [this.payload] }
+            : this.payload;
+
+        // validate bundle type
+        validateParams(payload, [{ name: 'bundle', type: 'array' }]);
+
+        this.params = payload.bundle.map(batch => {
+            // validate incoming parameters for each batch
+            validateParams(batch, [
+                { name: 'path', required: true },
+                { name: 'derivationType', type: 'number' },
+                { name: 'showOnTrezor', type: 'boolean' },
+            ]);
+
+            const path = validatePath(batch.path, 3);
+            return {
+                address_n: path,
+                derivation_type:
+                    typeof batch.derivationType !== 'undefined'
+                        ? batch.derivationType
+                        : PROTO.CardanoDerivationType.ICARUS_TREZOR,
+                show_display: typeof batch.showOnTrezor === 'boolean' ? batch.showOnTrezor : false,
+            };
+        });
+    }
+
+    async confirmation() {
+        if (this.confirmed) return true;
+        // wait for popup window
+        await this.getPopupPromise().promise;
+        // initialize user response promise
+        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION, this.device);
+
+        let label: string;
+        if (this.params.length > 1) {
+            label = 'Export multiple Cardano public keys';
+        } else {
+            label = `Export Cardano public key for account #${
+                fromHardened(this.params[0].address_n[2]) + 1
+            }`;
+        }
+
+        // request confirmation view
+        this.postMessage(
+            UiMessage(UI.REQUEST_CONFIRMATION, {
+                view: 'export-xpub',
+                label,
+            }),
+        );
+
+        // wait for user action
+        const uiResp = await uiPromise.promise;
+
+        this.confirmed = uiResp.payload;
+        return this.confirmed;
+    }
+
+    async run() {
+        const responses: MethodReturnType<typeof this.name> = [];
+        const cmd = this.device.getCommands();
+        for (let i = 0; i < this.params.length; i++) {
+            const batch = this.params[i];
+            const { message } = await cmd.typedCall(
+                'CardanoGetPublicKey',
+                'CardanoPublicKey',
+                batch,
+            );
+            responses.push({
+                path: batch.address_n,
+                serializedPath: getSerializedPath(batch.address_n),
+                publicKey: message.xpub,
+                node: message.node,
+            });
+
+            if (this.hasBundle) {
+                // send progress
+                this.postMessage(
+                    UiMessage(UI.BUNDLE_PROGRESS, {
+                        progress: i,
+                        response: message,
+                    }),
+                );
+            }
+        }
+        return this.hasBundle ? responses : responses[0];
+    }
+}
