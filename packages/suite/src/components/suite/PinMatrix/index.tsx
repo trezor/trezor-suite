@@ -7,6 +7,8 @@ import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
 import { useActions } from '@suite-hooks';
 
+export const PIN_MATRIX_MAX_WIDTH = '316px';
+
 const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -27,7 +29,7 @@ const Col = styled.div`
     align-items: center;
     border-radius: 5px;
     width: 100%;
-    max-width: 340px;
+    max-width: ${PIN_MATRIX_MAX_WIDTH};
 `;
 interface Props {
     device: TrezorDevice;
