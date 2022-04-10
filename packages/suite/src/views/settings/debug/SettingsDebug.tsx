@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { SettingsLayout } from '@settings-components';
-import { Section } from '@suite-components/Settings';
+import { SettingsSection } from '@suite-components/Settings';
 import { isWeb } from '@suite-utils/env';
 
 import { TranslationMode } from './TranslationMode';
@@ -9,21 +9,19 @@ import { GithubIssue } from './GithubIssue';
 import { WipeData } from './WipeData';
 import { InvityApi } from './InvityApi';
 
-const SettingsDebug = () => (
+export const SettingsDebug = () => (
     <SettingsLayout>
         {isWeb() && (
-            <Section title="Localization">
+            <SettingsSection title="Localization">
                 <TranslationMode />
-            </Section>
+            </SettingsSection>
         )}
-        <Section title="Debug">
+        <SettingsSection title="Debug">
             <GithubIssue />
             {!isWeb() && <WipeData />}
-        </Section>
-        <Section title="Invity">
+        </SettingsSection>
+        <SettingsSection title="Invity">
             <InvityApi />
-        </Section>
+        </SettingsSection>
     </SettingsLayout>
 );
-
-export default SettingsDebug;

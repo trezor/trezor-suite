@@ -29,7 +29,7 @@ const Ready = ({ hideWindow }: Props) => {
     return (
         <StyledModal
             heading={<Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />}
-            cancelable
+            isCancelable
             onCancel={hideWindow}
             bottomBar={
                 <>

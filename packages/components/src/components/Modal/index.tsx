@@ -1,41 +1,88 @@
 /* stylelint-disable indentation */
-import * as React from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useKeyPress, useTheme } from '../../utils/hooks';
 import { Icon } from '../Icon';
 import { H1 } from '../typography/Heading';
 import { variables } from '../../config';
 import { ProgressBar } from './ProgressBar';
+import { IconType } from '../../support/types';
 
 const Header = styled.div`
     margin-bottom: 25px;
 `;
 
-const HeaderBar = styled.div<{ alignLeft?: boolean; showBottomBorder: boolean }>`
+const HeaderBar = styled.div<{
+    isBottomBorderShown: boolean;
+}>`
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     word-break: break-word;
-    padding: 24px;
+    padding: 24px 32px;
+    border-bottom: ${({ isBottomBorderShown, theme }) =>
+        isBottomBorderShown ? `1px solid ${theme.STROKE_GREY}` : 'none'};
+`;
 
-    ${({ alignLeft }) =>
-        alignLeft &&
-        css`
-            text-align: left;
-        `}
-
-    ${H1} {
-        font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+const BackIcon = styled(Icon)`
+    svg {
+        width: 27px;
+        height: 27px;
     }
+`;
 
-    border-bottom: ${({ showBottomBorder, theme }) =>
-        showBottomBorder ? `1px solid ${theme.STROKE_GREY}` : 'none'};
+const HeadingContainer = styled.div<{
+    isHeadingCentered?: boolean;
+    isWithBackButton?: boolean;
+    componentsWidth?: number;
+}>`
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    text-align: left;
+
+    ${({ isHeadingCentered, componentsWidth, isWithBackButton }) =>
+        isHeadingCentered &&
+        css`
+            flex-grow: 1;
+            margin-right: -${componentsWidth}px;
+            margin-left: ${isWithBackButton && '-24px'};
+            padding: 0 28px;
+            align-items: center;
+            text-align: center;
+        `}
+`;
+
+const StyledH1 = styled(H1)<{ isWithIcon?: boolean }>`
+    display: flex;
+    align-items: baseline;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    line-height: 32px;
+
+    ${({ isWithIcon }) =>
+        isWithIcon &&
+        css`
+            padding-right: 14px;
+
+            > :first-child {
+                margin-right: 8px;
+            }
+        `}
+`;
+
+const Subheading = styled.span`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const HeaderComponentsContainer = styled.div`
     display: flex;
+    align-items: center;
+    height: 100%;
     padding-left: 30px;
     margin-left: auto;
+
     > * + * {
         margin-left: 16px;
     }
@@ -45,7 +92,7 @@ const Body = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 35px 40px;
+    padding: 32px;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: 16px;
@@ -95,10 +142,14 @@ const ModalWindow = styled.div`
 interface ModalProps {
     children?: React.ReactNode;
     heading?: React.ReactNode;
+    subheading?: React.ReactNode;
     header?: React.ReactNode;
+    headerIcon?: IconType;
+    isHeadingCentered?: boolean;
     description?: React.ReactNode;
     bottomBar?: React.ReactNode;
-    cancelable?: boolean;
+    isCancelable?: boolean;
+    onBackClick?: () => void;
     onCancel?: () => void;
     onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
     totalProgressBarSteps?: number;
@@ -119,11 +170,15 @@ type ModalSubcomponents = {
 const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
     children,
     heading,
+    subheading,
     header,
+    headerIcon,
+    isHeadingCentered = true,
     description,
     bottomBar,
-    cancelable = false,
+    isCancelable,
     onClick,
+    onBackClick,
     onCancel,
     totalProgressBarSteps,
     currentProgressBarStep,
@@ -131,22 +186,36 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
     className,
     'data-test': dataTest = '@modal',
 }) => {
+    const [componentsWidth, setComponentsWidth] = useState<number>();
     const escPressed = useKeyPress('Escape');
     const theme = useTheme();
+
+    const measureComponentsRef = useCallback((element: HTMLDivElement | null) => {
+        if (element) {
+            setComponentsWidth(element?.offsetWidth);
+        }
+    }, []);
 
     // check if progress bar placeholder should be rendered
     const showProgressBar =
         totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined;
 
-    const showHeaderActions = !!headerComponents?.length || cancelable;
+    const showHeaderActions = !!headerComponents?.length || isCancelable;
 
-    if (cancelable && escPressed) {
+    if (isCancelable && escPressed) {
         onCancel?.();
     }
+
+    useEffect(() => {
+        if (isCancelable && escPressed) {
+            onCancel?.();
+        }
+    }, [isCancelable, onCancel, escPressed]);
 
     return (
         <>
             {header && <Header>{header}</Header>}
+
             <ModalWindow
                 data-test={dataTest}
                 className={className}
@@ -156,14 +225,43 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
                 }}
             >
                 {heading && (
-                    <HeaderBar alignLeft={showHeaderActions} showBottomBorder={!showProgressBar}>
-                        <H1 noMargin>{heading}</H1>
-                        {showHeaderActions && (
-                            <HeaderComponentsContainer>
-                                {headerComponents}
-                                {cancelable && (
+                    <HeaderBar isBottomBorderShown={!showProgressBar}>
+                        {onBackClick && (
+                            <BackIcon
+                                icon="ARROW_LEFT"
+                                size={24}
+                                color={theme.TYPE_DARK_GREY}
+                                hoverColor={theme.TYPE_LIGHT_GREY}
+                                onClick={onBackClick}
+                            />
+                        )}
+
+                        <HeadingContainer
+                            componentsWidth={componentsWidth}
+                            isHeadingCentered={isHeadingCentered}
+                            isWithBackButton={!!onBackClick}
+                        >
+                            <StyledH1 noMargin isWithIcon={!!headerIcon}>
+                                {headerIcon && (
                                     <Icon
-                                        size={24}
+                                        icon={headerIcon}
+                                        size={20}
+                                        color={theme.TYPE_DARK_GREY}
+                                    />
+                                )}
+                                {heading}
+                            </StyledH1>
+
+                            {subheading && <Subheading>{subheading}</Subheading>}
+                        </HeadingContainer>
+
+                        {showHeaderActions && (
+                            <HeaderComponentsContainer ref={measureComponentsRef}>
+                                {headerComponents}
+
+                                {isCancelable && (
+                                    <Icon
+                                        size={20}
                                         color={theme.TYPE_DARK_GREY}
                                         hoverColor={theme.TYPE_LIGHT_GREY}
                                         icon="CROSS"

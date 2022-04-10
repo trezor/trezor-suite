@@ -5,7 +5,7 @@ import { AccountsMenu } from '@wallet-components';
 import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
-import AccountTopPanel from '@wallet-components/AccountTopPanel';
+import { AccountTopPanel } from '@wallet-components/AccountTopPanel';
 import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
 import { useTranslation } from '@suite-hooks/useTranslation';
@@ -28,14 +28,19 @@ const EmptyHeaderPlaceholder = styled.div`
     height: 44px;
 `;
 
-type Props = {
+type WalletLayoutProps = {
     title: ExtendedMessageDescriptor['id'];
-    children?: React.ReactNode;
     account: AppState['wallet']['selectedAccount'];
     showEmptyHeaderPlaceholder?: boolean;
+    children?: React.ReactNode;
 };
 
-const WalletLayout = ({ showEmptyHeaderPlaceholder = false, title, children, account }: Props) => {
+export const WalletLayout = ({
+    showEmptyHeaderPlaceholder = false,
+    title,
+    children,
+    account,
+}: WalletLayoutProps) => {
     const { setLayout } = React.useContext(LayoutContext);
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
@@ -81,5 +86,3 @@ const WalletLayout = ({ showEmptyHeaderPlaceholder = false, title, children, acc
         </Wrapper>
     );
 };
-
-export default WalletLayout;

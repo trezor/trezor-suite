@@ -89,7 +89,7 @@ const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailProps) =>
 
     return (
         <StyledModal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >

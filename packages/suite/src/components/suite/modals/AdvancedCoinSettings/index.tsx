@@ -41,7 +41,7 @@ const AdvancedCoinSettings = ({ coin, onCancel }: Props) => {
 
     return network ? (
         <Modal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={
                 <Heading>

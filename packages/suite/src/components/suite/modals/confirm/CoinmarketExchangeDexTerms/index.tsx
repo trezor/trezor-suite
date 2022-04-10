@@ -63,7 +63,7 @@ const CoinmarketExchangeDexTerms = ({ decision, onCancel, provider }: Props) => 
 
     return (
         <Modal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={
                 <Header>

@@ -108,7 +108,7 @@ const Backup = ({ closeModalApp, modal, cancelable, onCancel }: InjectedModalApp
     if (modal) {
         // modal is shown as standalone not inner modal as expected
         return (
-            <NestedModal cancelable={cancelable} onCancel={onCancel}>
+            <NestedModal isCancelable={cancelable} onCancel={onCancel}>
                 {modal}
             </NestedModal>
         );
@@ -118,7 +118,7 @@ const Backup = ({ closeModalApp, modal, cancelable, onCancel }: InjectedModalApp
         return (
             <SmallModal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
-                cancelable={cancelable}
+                isCancelable={cancelable}
                 onCancel={onCancel}
                 data-test="@backup/no-device"
                 bottomBar={<CloseButton onClick={onClose} variant="TR_CLOSE" />}
@@ -140,7 +140,7 @@ const Backup = ({ closeModalApp, modal, cancelable, onCancel }: InjectedModalApp
     ) {
         return (
             <FinishedModal
-                cancelable
+                isCancelable
                 onCancel={onCancel}
                 heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
                 bottomBar={<CloseButton onClick={onClose} variant="TR_CLOSE" />}
@@ -169,7 +169,7 @@ const Backup = ({ closeModalApp, modal, cancelable, onCancel }: InjectedModalApp
 
     return (
         <StyledModal
-            cancelable={cancelable}
+            isCancelable={cancelable}
             onCancel={onCancel}
             data-test="@backup"
             heading={getModalHeading(backup.status)}

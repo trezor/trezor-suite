@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { SettingsLayout } from '@settings-components';
 import { CoinsGroup, Translation } from '@suite-components';
-import { Section, SectionItem, DeviceBanner } from '@suite-components/Settings';
+import { SettingsSection, SectionItem, DeviceBanner } from '@suite-components/Settings';
 import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { useDevice } from '@suite-hooks';
@@ -14,7 +14,7 @@ const StyledSettingsLayout = styled(SettingsLayout)`
     }
 `;
 
-const SettingsCoins = () => {
+export const SettingsCoins = () => {
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
 
     const { anchorRef: anchorRefCrypto, shouldHighlight: shouldHighlightCrypto } = useAnchor(
@@ -37,7 +37,7 @@ const SettingsCoins = () => {
                     }
                 />
             )}
-            <Section title={<Translation id="TR_COINS" />}>
+            <SettingsSection title={<Translation id="TR_COINS" />}>
                 <SectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
                     <CoinsGroup
                         networks={mainnets}
@@ -45,8 +45,8 @@ const SettingsCoins = () => {
                         selectedNetworks={enabledNetworks}
                     />
                 </SectionItem>
-            </Section>
-            <Section title={<Translation id="TR_TESTNET_COINS" />}>
+            </SettingsSection>
+            <SettingsSection title={<Translation id="TR_TESTNET_COINS" />}>
                 <SectionItem
                     ref={anchorRefTestnetCrypto}
                     shouldHighlight={shouldHighlightTestnetCrypto}
@@ -58,9 +58,7 @@ const SettingsCoins = () => {
                         testnet
                     />
                 </SectionItem>
-            </Section>
+            </SettingsSection>
         </StyledSettingsLayout>
     );
 };
-
-export default SettingsCoins;

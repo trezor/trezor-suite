@@ -7,7 +7,7 @@ import { Translation } from '@suite-components';
 
 const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
-    margin: 0 4px;
+    margin-left: 10px;
 `;
 
 const VersionButton = styled(Button)<{ isDev?: boolean }>`
@@ -32,7 +32,10 @@ const GithubWrapper = styled.div`
 
 type VersionWithGithubTooltipProps = { appVersion: string; isDev?: boolean };
 
-export const VersionWithGithubTooltip = ({ appVersion, isDev }: VersionWithGithubTooltipProps) => (
+export const VersionWithGithubTooltip: React.FC<VersionWithGithubTooltipProps> = ({
+    appVersion,
+    isDev,
+}) => (
     <VersionTooltip
         content={
             <GithubWrapper>

@@ -5,19 +5,19 @@ import { WalletLayout } from '@wallet-components';
 import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 import { useSelector } from '@suite-hooks';
 
-import Header from './components/Header';
+import { Header } from './components/Header';
 import Outputs from './components/Outputs';
 import Options from './components/Options';
-import Fees from './components/Fees';
-import TotalSent from './components/TotalSent';
-import ReviewButton from './components/ReviewButton';
+import { SendFees } from './components/Fees';
+import { TotalSent } from './components/TotalSent';
+import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
 import { UseSendFormProps } from '@wallet-types/sendForm';
 
 const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
-    margin-bottom: 25px;
+    margin-bottom: 8px;
     padding: 0;
 `;
 
@@ -37,7 +37,7 @@ const SendLoaded: React.FC<UseSendFormProps> = ({ children, ...props }) => {
                             <Outputs disableAnim={!!children} />
                             <Options />
                         </StyledCard>
-                        <Fees />
+                        <SendFees />
                         <TotalSent />
                         <ReviewButton />
                         {children}

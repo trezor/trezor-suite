@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import DeviceSelector from './components/DeviceSelector';
-import MainNavigation from './components/MainNavigation';
-import NavigationActions from './components/NavigationActions';
 import styled from 'styled-components';
-import { Icon, useTheme, variables } from '@trezor/components';
-import { useLayoutSize } from '@suite-hooks';
 
-const StyledDeviceSelector = styled(DeviceSelector)``;
+import { useLayoutSize } from '@suite-hooks';
+import { Icon, useTheme, variables } from '@trezor/components';
+import { DeviceSelector } from './components/DeviceSelector';
+import { MainNavigation } from './components/MainNavigation';
+import { NavigationActions } from './components/NavigationActions';
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    min-height: 80px;
+    height: 64px;
     flex: 0;
     z-index: ${variables.Z_INDEX.NAVIGATION_BAR};
     padding: 6px 8px;
@@ -19,14 +18,8 @@ const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
-    &${StyledDeviceSelector}:hover {
-        /* apply same device selector's hover styles on hover anywhere in navigation panel */
-        border-radius: 4px;
-        box-shadow: 0 1px 2px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
-    }
-
     @media screen and (min-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 6px 32px 6px 8px;
+        padding: 10px 16px;
     }
 `;
 
@@ -47,7 +40,7 @@ const ExpandedMobileNavigation = styled.div`
     display: flex;
     position: absolute;
     flex-direction: column;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     z-index: 3;
     width: 100%;
     height: 100%;
@@ -55,6 +48,7 @@ const ExpandedMobileNavigation = styled.div`
 
 export const NavigationBar: React.FC = () => {
     const [opened, setOpened] = useState(false);
+
     const { isMobileLayout } = useLayoutSize();
     const theme = useTheme();
 
@@ -66,7 +60,7 @@ export const NavigationBar: React.FC = () => {
         return (
             <>
                 <Wrapper>
-                    <StyledDeviceSelector />
+                    <DeviceSelector />
                     <HamburgerWrapper>
                         <Icon
                             onClick={() => setOpened(!opened)}
@@ -97,7 +91,7 @@ export const NavigationBar: React.FC = () => {
 
     return (
         <Wrapper>
-            <StyledDeviceSelector />
+            <DeviceSelector />
             <MainNavigation />
             <NavigationActions />
         </Wrapper>

@@ -58,6 +58,11 @@ const SvgWrapper = styled.div<WrapperProps>`
         justify-content: center;
     }
 
+    path {
+        stroke: ${({ color, isHollow }) => isHollow && color};
+        fill: ${({ color, isHollow }) => !isHollow && color};
+    }
+
     :hover {
         path {
             fill: ${props => props.hoverColor};
@@ -77,6 +82,7 @@ export interface IconProps extends React.SVGAttributes<HTMLDivElement> {
     icon: IconType;
     size?: number;
     color?: string;
+    isHollow?: boolean;
     isActive?: boolean;
     canAnimate?: boolean;
     hoverColor?: string;
@@ -89,6 +95,7 @@ const Icon = React.forwardRef(
             icon,
             size = 24,
             color,
+            isHollow,
             isActive,
             canAnimate,
             hoverColor,
@@ -115,6 +122,7 @@ const Icon = React.forwardRef(
                 onFocus={onFocus}
                 isActive={isActive}
                 size={size}
+                isHollow={isHollow}
                 ref={ref}
                 useCursorPointer={onClick !== undefined || useCursorPointer}
                 color={defaultColor}
@@ -125,7 +133,7 @@ const Icon = React.forwardRef(
                     beforeInjection={svg => {
                         svg.setAttribute('width', `${size}px`);
                         svg.setAttribute('height', `${size}px`);
-                        svg.setAttribute('fill', defaultColor);
+                        // svg.setAttribute('fill', defaultColor);
                     }}
                     loading={() => <span className="loading" />}
                 />

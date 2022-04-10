@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Dropdown, DropdownRef, CoinLogo, variables } from '@trezor/components';
 import { Translation, StatusLight } from '@suite-components';
-import ActionItem from './ActionItem';
+import { ActionItem } from './ActionItem';
 import { useActions, useSelector } from '@suite-hooks';
 import { goto as gotoAction } from '@suite-actions/routerActions';
 import { openModal as openModalAction } from '@suite-actions/modalActions';

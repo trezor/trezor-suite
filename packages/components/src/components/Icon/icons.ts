@@ -115,4 +115,12 @@ export const ICONS = {
     PENCIL: require('../../images/icons/pencil.svg'),
     PENCIL_LINE: require('../../images/icons/pencil-line.svg'),
     KEY: require('../../images/icons/key.svg'),
+    TAG_MINIMAL: require('../../images/icons/tag_minimal.svg'),
+    TOR_MINIMAL: require('../../images/icons/tor_minimal.svg'),
+    FLAG: require('../../images/icons/flag.svg'),
+    GHOST: require('../../images/icons/ghost.svg'),
+    NEWSPAPER: require('../../images/icons/newspaper.svg'),
+    PALETTE: require('../../images/icons/palette.svg'),
+    SHIELD_CHECK: require('../../images/icons/shield_check.svg'),
+    SPARKLE: require('../../images/icons/sparkle.svg'),
 };

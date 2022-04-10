@@ -101,7 +101,7 @@ export const DisableTor = ({ onCancel, decision }: DisableTorProps) => {
     return (
         <>
             <Modal
-                cancelable
+                isCancelable
                 onCancel={onCancel}
                 heading={
                     onionBackends.length ? (

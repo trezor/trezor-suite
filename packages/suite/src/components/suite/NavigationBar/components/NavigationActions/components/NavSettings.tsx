@@ -1,7 +1,8 @@
-import { Translation } from '@suite-components';
 import React from 'react';
 import styled from 'styled-components';
-import ActionItem from './ActionItem';
+
+import { Translation } from '@suite-components';
+import { ActionItem } from './ActionItem';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 

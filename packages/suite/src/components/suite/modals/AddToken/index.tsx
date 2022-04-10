@@ -103,7 +103,7 @@ const AddToken = ({ onCancel }: AddTokenProps) => {
 
     return (
         <Modal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_ADD_TOKEN_TITLE" />}
             bottomBar={

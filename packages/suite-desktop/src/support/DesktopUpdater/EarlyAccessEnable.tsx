@@ -100,7 +100,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
     ) : (
         <Modal
             heading={<Translation id="TR_EARLY_ACCESS" />}
-            cancelable
+            isCancelable
             onCancel={hideWindow}
             bottomBar={
                 <Tooltip

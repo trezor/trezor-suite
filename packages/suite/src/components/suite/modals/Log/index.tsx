@@ -59,7 +59,7 @@ const Log = ({ onCancel }: Props) => {
 
     return (
         <Modal
-            cancelable
+            isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_LOG" />}
             description={<Translation id="LOG_DESCRIPTION" />}

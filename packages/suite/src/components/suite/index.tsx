@@ -6,7 +6,7 @@ import FormattedNumber from './FormattedNumber';
 import { SuiteLayout, LayoutContext } from './SuiteLayout';
 import WelcomeLayout from './WelcomeLayout';
 
-import Card from './Card';
+import { CardWithHeader } from './CardWithHeader';
 import NotificationCard from './NotificationCard';
 import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
@@ -22,8 +22,8 @@ import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
 
 import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
-import AppNavigationPanel from './AppNavigationPanel';
-import AppNavigation from './AppNavigation';
+import { AppNavigationPanel } from './AppNavigationPanel';
+import { AppNavigation } from './AppNavigation';
 import Ticker from './Ticker';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './Labeling';
@@ -62,7 +62,7 @@ export {
     WelcomeLayout,
     SuiteLayout,
     LayoutContext,
-    Card,
+    CardWithHeader as Card,
     NotificationCard,
     PinInput,
     FiatValue,

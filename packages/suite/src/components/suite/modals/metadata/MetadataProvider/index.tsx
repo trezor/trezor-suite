@@ -81,7 +81,7 @@ const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) => {
 
     return (
         <StyledModal
-            cancelable
+            isCancelable
             onCancel={onModalCancel}
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             data-test="@modal/metadata-provider"

@@ -61,17 +61,25 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     ),
 
     // settings
-    'settings-index': lazy(
-        () => import(/* webpackChunkName: "settings" */ '@settings-views/general/SettingsGeneral'),
+    'settings-index': lazy(() =>
+        import(/* webpackChunkName: "settings" */ '@settings-views/general/SettingsGeneral').then(
+            ({ SettingsGeneral }) => ({ default: SettingsGeneral }),
+        ),
     ),
-    'settings-coins': lazy(
-        () => import(/* webpackChunkName: "settings" */ '@settings-views/coins/SettingsCoins'),
+    'settings-coins': lazy(() =>
+        import(/* webpackChunkName: "settings" */ '@settings-views/coins/SettingsCoins').then(
+            ({ SettingsCoins }) => ({ default: SettingsCoins }),
+        ),
     ),
-    'settings-debug': lazy(
-        () => import(/* webpackChunkName: "settings" */ '@settings-views/debug/SettingsDebug'),
+    'settings-debug': lazy(() =>
+        import(/* webpackChunkName: "settings" */ '@settings-views/debug/SettingsDebug').then(
+            ({ SettingsDebug }) => ({ default: SettingsDebug }),
+        ),
     ),
-    'settings-device': lazy(
-        () => import(/* webpackChunkName: "settings" */ '@settings-views/device/SettingsDevice'),
+    'settings-device': lazy(() =>
+        import(/* webpackChunkName: "settings" */ '@settings-views/device/SettingsDevice').then(
+            ({ SettingsDevice }) => ({ default: SettingsDevice }),
+        ),
     ),
 };
 

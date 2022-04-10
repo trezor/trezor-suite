@@ -1,14 +1,14 @@
 import React from 'react';
 import { Account } from '@wallet-types';
-import AppNavigation, { AppNavigationItem } from '@suite-components/AppNavigation';
+import { AppNavigation, AppNavigationItem } from '@suite-components/AppNavigation';
 import { Translation } from '@suite-components/Translation';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { hasSignVerify } from '@wallet-utils/accountUtils';
-import Dot from './components/Dot';
+import { Dot } from './components/Dot';
 
-interface Props {
+interface AccountNavigationProps {
     account?: Account;
     filterPosition?: 'primary' | 'secondary';
     dataTestSuffix?: string;
@@ -16,8 +16,13 @@ interface Props {
     inView?: boolean;
 }
 
-const AccountNavigation = (props: Props) => {
-    const { account } = props;
+export const AccountNavigation = ({
+    account,
+    filterPosition,
+    dataTestSuffix,
+    primaryContent,
+    inView,
+}: AccountNavigationProps) => {
     const { goto, openModal } = useActions({
         goto: routerActions.goto,
         openModal: modalActions.openModal,
@@ -119,18 +124,12 @@ const AccountNavigation = (props: Props) => {
     // collect all items suitable for current networkType
     let items = ITEMS.filter(item => !item.isHidden).map(item => ({
         ...item,
-        'data-test': `@wallet/menu/${item.id}${
-            props.dataTestSuffix ? `-${props.dataTestSuffix}` : ''
-        }`,
+        'data-test': `@wallet/menu/${item.id}${dataTestSuffix ? `-${dataTestSuffix}` : ''}`,
     }));
 
-    if (props.filterPosition) {
-        items = items.filter(item => item.position === props.filterPosition);
+    if (filterPosition) {
+        items = items.filter(item => item.position === filterPosition);
     }
 
-    return (
-        <AppNavigation items={items} primaryContent={props.primaryContent} inView={props.inView} />
-    );
+    return <AppNavigation items={items} primaryContent={primaryContent} inView={inView} />;
 };
-
-export default AccountNavigation;

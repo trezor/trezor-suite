@@ -50,7 +50,7 @@ const SkipStepConfirmation = ({ variant, onCancel }: SkipStepConfirmationProps) 
 
     return (
         <StyledModal
-            cancelable
+            isCancelable
             heading={heading}
             onCancel={() => onCancel()}
             bottomBar={

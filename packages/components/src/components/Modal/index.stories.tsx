@@ -55,7 +55,7 @@ storiesOf('Modals', module)
                     data-test="modal"
                     heading={heading === '' ? undefined : heading}
                     description={description === '' ? undefined : description}
-                    cancelable={cancelable}
+                    isCancelable={cancelable}
                     bottomBar={
                         bottomBarButtonCount ? (
                             <Buttons
@@ -104,7 +104,7 @@ storiesOf('Modals', module)
                             data-test="modal"
                             heading={heading === '' ? undefined : heading}
                             description={description === '' ? undefined : description}
-                            cancelable={cancelable}
+                            isCancelable={cancelable}
                         >
                             {children}
                         </Modal>

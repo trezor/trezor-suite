@@ -94,7 +94,7 @@ const ConfirmAddress = ({
                     />
                 ) : undefined
             }
-            cancelable={cancelable}
+            isCancelable={cancelable}
             onCancel={onCancel}
         >
             <Wrapper>

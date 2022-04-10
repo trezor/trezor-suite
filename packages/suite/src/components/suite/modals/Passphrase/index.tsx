@@ -132,7 +132,7 @@ const Passphrase = ({ device }: Props) => {
 
     // show 2-column modal for selecting between standard and hidden wallets
     return (
-        <SmallModal cancelable={false} heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}>
+        <SmallModal isCancelable={false} heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}>
             <Wrapper>
                 <WalletsWrapper>
                     <PassphraseTypeCard
