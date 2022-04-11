@@ -36,12 +36,12 @@ const MessageSystemBanner = ({ message }: Props) => {
     const actionConfig = useMemo(() => {
         if (!cta) return undefined;
 
-        const { action, label, link } = cta;
+        const { action, label, link, anchor } = cta;
 
         let onClick: () => Window | Promise<void> | null;
         if (action === 'internal-link') {
             // @ts-ignore: impossible to add all href options to the message system config json schema
-            onClick = () => goto(link);
+            onClick = () => goto(link, { anchor });
         } else if (action === 'external-link') {
             onClick = () =>
                 window.open(tor && torOnionLinks ? getTorUrlIfAvailable(link) : link, '_blank');
