@@ -244,6 +244,9 @@
                                     "link": {
                                         "type": "string"
                                     },
+                                    "anchor": {
+                                        "type": "string"
+                                    },
                                     "label": {
                                         "$ref": "#/definitions/localization"
                                     }
