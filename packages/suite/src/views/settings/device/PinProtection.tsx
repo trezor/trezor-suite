@@ -32,7 +32,7 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
             />
             <ActionColumn>
                 <Switch
-                    checked={!!pinProtection}
+                    isChecked={!!pinProtection}
                     onChange={() => {
                         changePin({ remove: !!pinProtection });
                         analytics.report({
@@ -43,7 +43,7 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
                         });
                     }}
                     isDisabled={isDeviceLocked}
-                    data-test="@settings/device/pin-switch"
+                    dataTest="@settings/device/pin-switch"
                 />
             </ActionColumn>
         </SectionItem>

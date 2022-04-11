@@ -40,7 +40,7 @@ export const DelimiterForm = ({ value, onChange }: Props) => {
                     }
                     setCustom(!custom);
                 }}
-                checked={!custom}
+                isChecked={!custom}
             />
             <Label>
                 <Translation
@@ -56,9 +56,8 @@ export const DelimiterForm = ({ value, onChange }: Props) => {
                     noTopLabel
                     noError
                     variant="small"
-                    monospace
+                    isMonospace
                     width={120}
-                    wrapperProps={{ width: 120 }}
                     onChange={({ target }) => onChange(target.value)}
                     defaultValue={value}
                     innerRef={inputRef}

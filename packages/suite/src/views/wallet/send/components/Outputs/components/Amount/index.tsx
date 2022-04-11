@@ -59,7 +59,7 @@ const StyledTransferIcon = styled(Icon)`
     }
 `;
 const TransferIconWrapper = styled.div`
-    margin: 50px 20px 0px 20px;
+    margin: 45px 20px 0px 20px;
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         /* transform: rotate(90deg); */
@@ -123,8 +123,8 @@ const Amount = ({ output, outputId }: Props) => {
         <Wrapper>
             <Left>
                 <StyledInput
-                    state={getInputState(error, amountValue)}
-                    monospace
+                    inputState={getInputState(error, amountValue)}
+                    isMonospace
                     labelAddonIsVisible={isSetMaxActive}
                     labelAddon={
                         isSetMaxVisible ? (

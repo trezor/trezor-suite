@@ -12,7 +12,7 @@ import {
 import { AccountFormCloseButton } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import { Route } from '@suite-types';
-import AccountStickyContent from './AccountStickyContent';
+import { AccountStickyContent } from './AccountStickyContent';
 import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
@@ -62,14 +62,12 @@ const MenuHolder = styled.div<{
     justify-content: space-between;
     width: 100%;
     max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
-    height: 68px;
     scrollbar-width: none; /* Firefox */
     position: relative;
     border-top: none;
     transition: all 0.3s ease;
 
-    &::-webkit-scrollbar {
-        /* WebKit */
+    ::-webkit-scrollbar {
         width: 0;
         height: 0;
     }
@@ -99,6 +97,7 @@ const SecondaryMenu = styled.div<{ visible: boolean }>`
     display: flex;
     align-items: center;
     ${props => !props.visible && `display: none;`}
+
     & > * + * {
         margin-left: ${SECONDARY_MENU_BUTTON_MARGIN};
     }

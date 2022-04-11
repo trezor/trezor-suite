@@ -57,7 +57,7 @@ export const THEME = {
 
         HOVER_PRIMER_COLOR: '#000',
         HOVER_TRANSPARENTIZE_FILTER: 0.96,
-        HOVER_DARKEN_FILTER: 0.04,
+        HOVER_DARKEN_FILTER: 0.06,
         HOVER_TRANSITION_TIME: '150ms',
         HOVER_TRANSITION_EFFECT: 'ease-out',
     },

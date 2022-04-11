@@ -34,8 +34,8 @@ export const TorOnionLinks = () => {
             />
             <ActionColumn>
                 <Switch
-                    data-test="@settings/general/onion-links-switch"
-                    checked={torOnionLinks}
+                    dataTest="@settings/general/onion-links-switch"
+                    isChecked={torOnionLinks}
                     onChange={() => {
                         analytics.report({
                             type: 'menu/toggle-onion-links',

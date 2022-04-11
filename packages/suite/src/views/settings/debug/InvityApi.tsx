@@ -52,7 +52,6 @@ export const InvityApi = () => {
             />
             <ActionColumn>
                 <StyledActionSelect
-                    noTopLabel
                     onChange={(item: { value: string; label: string }) => {
                         setDebugMode({
                             invityAPIUrl: item.value,

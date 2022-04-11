@@ -1,12 +1,13 @@
 import React, { useState, useEffect, ReactNode, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { variables } from '../../../config';
+import { SCREEN_SIZE, FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
+import { INPUT_BORDER_RADIUS, Label, LabelLeft } from '../InputStyles';
 
 const Wrapper = styled.div<{ isInLine: boolean }>`
     display: flex;
-    height: 32px;
+    height: 40px;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (max-width: ${SCREEN_SIZE.SM}) {
         height: auto;
         width: 100%;
     }
@@ -22,30 +23,19 @@ const Wrapper = styled.div<{ isInLine: boolean }>`
         `};
 `;
 
-const Label = styled.div<{ isInLine: boolean }>`
-    display: flex;
-    align-items: ${({ isInLine }) => isInLine && 'center'};
-    min-height: ${({ isInLine }) => !isInLine && '32px'};
-    padding-right: 20px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    text-transform: capitalize;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-`;
-
 const Options = styled.div<{ isInLine: boolean }>`
     display: flex;
     flex: ${({ isInLine }) => isInLine && '1'};
-    padding: 0 2px;
-    border-radius: 4px;
+    padding: 0 4px;
+    border-radius: ${INPUT_BORDER_RADIUS}px;
     background: ${({ theme }) => theme.BG_GREY};
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (max-width: ${SCREEN_SIZE.SM}) {
         flex-direction: column;
         width: 100%;
     }
 
-    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (min-width: ${SCREEN_SIZE.SM}) {
         height: ${({ isInLine }) => !isInLine && '48px'};
     }
 `;
@@ -55,15 +45,15 @@ const Option = styled.div<{ isSelected: boolean; isInLine: boolean }>`
     flex: 1;
     justify-content: ${({ isInLine }) => !isInLine && 'center'};
     align-items: center;
-    margin: 2px 0;
+    margin: 4px 0;
     padding: 0 14px;
     padding-top: 1px;
-    border-radius: 4px;
+    border-radius: 8px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    font-size: ${FONT_SIZE.SMALL};
     text-transform: capitalize;
     white-space: nowrap;
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     cursor: pointer;
 
     ${({ isSelected }) =>
@@ -72,10 +62,10 @@ const Option = styled.div<{ isSelected: boolean; isInLine: boolean }>`
             background: ${({ theme }) => theme.BG_WHITE};
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
             color: ${({ theme }) => theme.TYPE_DARK_GREY};
-            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+            font-weight: ${FONT_WEIGHT.DEMI_BOLD};
         `}
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media (max-width: ${SCREEN_SIZE.SM}) {
         flex: auto;
         justify-content: center;
         width: 100%;
@@ -90,7 +80,7 @@ interface Option<V extends ValueTypes> {
     value: V;
 }
 
-interface SelectBarProps<V extends ValueTypes> {
+export interface SelectBarProps<V extends ValueTypes> {
     label?: ReactNode;
     options: Option<V>[];
     selectedOption?: V;
@@ -101,7 +91,7 @@ interface SelectBarProps<V extends ValueTypes> {
 }
 
 // Generic type V is determined by selectedOption/options values
-const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.Element = ({
+export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.Element = ({
     label,
     options,
     selectedOption,
@@ -134,7 +124,11 @@ const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.Element
 
     return (
         <Wrapper className={className} isInLine={isInLine} {...rest}>
-            {label && <Label isInLine={isInLine}>{label}</Label>}
+            {label && (
+                <Label>
+                    <LabelLeft>{label}</LabelLeft>
+                </Label>
+            )}
 
             <Options isInLine={isInLine}>
                 {options.map(option => (
@@ -156,6 +150,3 @@ const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.Element
         </Wrapper>
     );
 };
-
-export type { SelectBarProps };
-export { SelectBar };

@@ -44,8 +44,8 @@ const Tor = ({ tor }: Props) => {
             </Label>
             <SwitchWrapper>
                 <Switch
-                    data-test="@onboarding/tor-switch"
-                    checked={tor}
+                    dataTest="@onboarding/tor-switch"
+                    isChecked={tor}
                     onChange={() => {
                         toggleTor(!tor);
                     }}

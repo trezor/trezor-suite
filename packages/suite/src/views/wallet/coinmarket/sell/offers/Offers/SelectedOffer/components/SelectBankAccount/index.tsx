@@ -146,7 +146,6 @@ const SelectBankAccount = () => {
                         onChange={(selected: BankAccount) => {
                             setBankAccount(selected);
                         }}
-                        noTopLabel
                         value={bankAccount}
                         isClearable={false}
                         options={bankAccounts}

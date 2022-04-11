@@ -1,86 +1,106 @@
-import React from 'react';
-import ReactSwitch, { ReactSwitchProps } from 'react-switch';
+import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { useTheme } from '../../../utils';
 
-const StyledReactSwitch = styled(({ isSmall, ...rest }) => <ReactSwitch {...rest} />)<
-    Pick<SwitchProps, 'isSmall'>
->`
-    .react-switch-handle {
-        top: ${props => (props.isSmall ? 2 : 3)}px !important;
-        border: solid 1px ${props => props.theme.TYPE_WHITE} !important;
-        background: ${props => props.theme.TYPE_WHITE} !important;
+const Container = styled.div<{ isChecked: boolean; isDisabled?: boolean; isSmall?: boolean }>`
+    display: flex;
+    align-items: center;
+    height: ${({ isSmall }) => (isSmall ? '18px' : '24px')};
+    width: ${({ isSmall }) => (isSmall ? '32px' : '42px')};
+    margin: 0px;
+    padding: 3px;
+    position: relative;
+    background: ${({ theme, isChecked }) => (isChecked ? theme.BG_GREEN : theme.STROKE_GREY)};
+    border-radius: 12px;
+    transition: background 0.25s ease 0s;
+    cursor: pointer;
 
-        ${props =>
-            props.checked &&
-            css`
-                transform: ${props.isSmall
-                    ? 'translateX(16px) !important'
-                    : 'translateX(21px) !important'};
-            `}
-
-        ${props =>
-            !props.checked &&
-            css`
-                transform: ${props.isSmall
-                    ? 'translateX(2px) !important'
-                    : 'translateX(3px) !important'};
-            `}
+    :hover,
+    :focus-within {
+        button {
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 1);
+        }
     }
 
-    ${props =>
-        // react-switch set cursor as inline style, so this will apply custom cursor for disabled state
-        props.disabled &&
+    :active {
+        button {
+            box-shadow: none;
+        }
+    }
+
+    ${({ isDisabled }) =>
+        isDisabled &&
         css`
-            &:before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                cursor: not-allowed;
-                z-index: 2;
+            pointer-events: none;
+
+            div {
+                background: ${({ theme }) => theme.STROKE_GREY};
             }
         `}
 `;
 
-const Wrapper = styled.div`
-    display: flex;
-    position: relative;
+const Handle = styled.button<{ isSmall?: boolean; isChecked?: boolean }>`
+    position: absolute;
+    display: inline-block;
+    height: ${({ isSmall }) => (isSmall ? '14px' : '18px')};
+    width: ${({ isSmall }) => (isSmall ? '14px' : '18px')};
+    border: none;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.TYPE_WHITE};
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    transform: ${({ isChecked, isSmall }) =>
+        isChecked && `translateX(${isSmall ? '12px' : '18px'})`};
+    transition: transform 0.25s ease 0s, box-shadow 0.15s ease 0s;
+    cursor: pointer;
+
+    :active {
+        box-shadow: none;
+    }
 `;
 
-export interface SwitchProps extends ReactSwitchProps {
-    onChange: (checked: boolean) => any;
+const CheckboxInput = styled.input`
+    border: 0px;
+    clip: rect(0px, 0px, 0px, 0px);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0px;
+    position: absolute;
+    width: 1px;
+`;
+
+export interface SwitchProps {
+    isChecked: boolean;
+    onChange: (isChecked?: boolean) => void;
     isDisabled?: boolean;
     isSmall?: boolean;
+    className?: string;
     dataTest?: string;
 }
 
-const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: SwitchProps) => {
-    const theme = useTheme();
-
-    return (
-        <Wrapper data-test={dataTest}>
-            <StyledReactSwitch
-                checked={checked}
-                disabled={isDisabled}
-                onChange={onChange}
-                onColor={theme.BG_GREEN}
-                checkedIcon={false}
-                uncheckedIcon={false}
-                offColor={theme.STROKE_GREY}
-                color={theme.BG_GREEN}
-                isSmall={isSmall}
-                width={isSmall ? 32 : 42}
-                height={isSmall ? 18 : 24}
-                handleDiameter={isSmall ? 14 : 18}
-                boxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.5)"
-                activeBoxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.8)"
-                {...rest}
-            />
-        </Wrapper>
-    );
-};
-
-export { Switch };
+export const Switch = ({
+    onChange,
+    isDisabled,
+    isSmall,
+    dataTest,
+    isChecked,
+    className,
+}: SwitchProps) => (
+    <Container
+        isChecked={isChecked}
+        isDisabled={isDisabled}
+        isSmall={isSmall}
+        onClick={() => onChange(isChecked)}
+        className={className}
+        data-test={dataTest}
+    >
+        <Handle isSmall={isSmall} isChecked={isChecked} />
+        <CheckboxInput
+            type="checkbox"
+            role="switch"
+            checked={isChecked}
+            disabled={isDisabled}
+            onChange={() => onChange(isChecked)}
+            aria-checked={isChecked}
+        />
+    </Container>
+);

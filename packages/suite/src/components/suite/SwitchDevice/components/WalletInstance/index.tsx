@@ -14,18 +14,6 @@ import {
 import { useAnalytics, useSelector, useActions } from '@suite-hooks';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
-const Wrapper = styled(Box)`
-    display: flex;
-    width: 100%;
-    align-items: center;
-    background: ${props => props.theme.BG_WHITE};
-    cursor: pointer;
-
-    & + & {
-        margin-top: 10px;
-    }
-`;
-
 const InstanceType = styled.div`
     display: flex;
     color: ${props => props.theme.TYPE_DARK_GREY};
@@ -38,6 +26,29 @@ const InstanceType = styled.div`
     white-space: nowrap;
     overflow: hidden;
     max-width: 300px;
+`;
+
+const Wrapper = styled(Box)`
+    display: flex;
+    width: 100%;
+    align-items: center;
+    background: ${props => props.theme.BG_WHITE};
+
+    & + & {
+        margin-top: 10px;
+    }
+
+    :hover {
+        background: ${({ theme }) => theme.BG_WHITE_ALT_HOVER};
+
+        ${InstanceType} > span {
+            text-decoration: underline;
+        }
+
+        ${InstanceType} div > span {
+            text-decoration: underline;
+        }
+    }
 `;
 
 const InstanceTitle = styled.div`
@@ -53,6 +64,10 @@ const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
     flex-grow: ${props => props.grow || 0};
     flex-direction: column;
     align-items: ${props => (props.centerItems ? 'center' : 'flex-start')};
+
+    :first-child {
+        cursor: pointer;
+    }
 `;
 
 const ColEject = styled(Col)`
@@ -67,7 +82,6 @@ const SwitchCol = styled.div`
 const LockIcon = styled(Icon)`
     margin-right: 4px;
 `;
-
 interface Props {
     instance: AcquiredDevice;
     enabled: boolean;
@@ -168,7 +182,7 @@ const WalletInstance = ({
                 <>
                     <SwitchCol>
                         <Switch
-                            checked={!!instance.remember}
+                            isChecked={!!instance.remember}
                             onChange={() => {
                                 toggleRememberDevice(instance);
                                 analytics.report({
@@ -177,7 +191,7 @@ const WalletInstance = ({
                                         : 'switch-device/remember',
                                 });
                             }}
-                            data-test={`${dataTestBase}/toggle-remember-switch`}
+                            dataTest={`${dataTestBase}/toggle-remember-switch`}
                         />
                     </SwitchCol>
                     <ColEject centerItems>
@@ -186,6 +200,7 @@ const WalletInstance = ({
                             icon="EJECT"
                             size={22}
                             color={theme.TYPE_LIGHT_GREY}
+                            hoverColor={theme.TYPE_DARK_GREY}
                             onClick={() => {
                                 forgetDevice(instance);
                                 analytics.report({

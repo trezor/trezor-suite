@@ -18,6 +18,7 @@ const ExpandWrapper = styled(motion.div)`
     background: ${props => props.theme.BG_GREY};
     border-radius: 8px;
     overflow: auto;
+    margin-top: 8px;
     padding: 12px;
     text-align: left;
 `;
@@ -42,6 +43,7 @@ export const ExampleCSV = () => {
         account.descriptor,
         account.descriptor,
     ];
+
     return (
         <Wrapper>
             <ExpandButton
@@ -60,6 +62,7 @@ export const ExampleCSV = () => {
                 />
                 <Icon size={16} icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'} />
             </ExpandButton>
+
             <AnimatePresence initial={false}>
                 {isExpanded && (
                     <ExpandWrapper {...ANIMATION.EXPAND}>

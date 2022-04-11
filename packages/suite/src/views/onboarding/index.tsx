@@ -10,7 +10,7 @@ import BackupStep from '@onboarding-views/steps/Backup';
 import SecurityStep from '@onboarding-views/steps/Security';
 import SetPinStep from '@onboarding-views/steps/Pin';
 import BasicSettingsStep from '@onboarding-views/steps/BasicSettings';
-import FinalStep from '@onboarding-views/steps/Final';
+import { FinalStep } from '@onboarding-views/steps/Final';
 import UnexpectedState from '@onboarding-views/unexpected-states';
 import { useOnboarding, useSelector } from '@suite-hooks';
 import { MODAL } from '@suite-actions/constants';
@@ -26,7 +26,7 @@ const useIsModalAllowed = () => {
     return modal.context === MODAL.CONTEXT_USER && allowedModals.includes(modal.payload.type);
 };
 
-const Onboarding = ({ prerequisite, modal }: InjectedModalApplicationProps) => {
+export const Onboarding = ({ prerequisite, modal }: InjectedModalApplicationProps) => {
     const { activeStepId } = useOnboarding();
 
     const [StepComponent, LayoutComponent, prerequisitesGuidePadded] = useMemo(() => {
@@ -78,5 +78,3 @@ const Onboarding = ({ prerequisite, modal }: InjectedModalApplicationProps) => {
         </LayoutComponent>
     );
 };
-
-export default Onboarding;

@@ -136,7 +136,7 @@ const Inputs = () => {
                         setValue(cryptoInput, '');
                         clearErrors(cryptoInput);
                     }}
-                    state={getInputState(errors.fiatInput, fiatInputValue)}
+                    inputState={getInputState(errors.fiatInput, fiatInputValue)}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}
                     bottomText={<InputError error={errors[fiatInput]} />}
@@ -179,7 +179,7 @@ const Inputs = () => {
                         setValue(fiatInput, '');
                         clearErrors(fiatInput);
                     }}
-                    state={getInputState(errors.cryptoInput, cryptoInputValue)}
+                    inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
                     name={cryptoInput}
                     noTopLabel
                     maxLength={MAX_LENGTH.AMOUNT}

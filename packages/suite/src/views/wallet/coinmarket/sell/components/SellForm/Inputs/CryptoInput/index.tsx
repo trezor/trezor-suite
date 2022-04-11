@@ -77,7 +77,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                 onCryptoAmountChange(event.target.value);
             }}
             defaultValue=""
-            state={getInputState(errors.cryptoInput, cryptoInputValue)}
+            inputState={getInputState(errors.cryptoInput, cryptoInputValue)}
             name={CRYPTO_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}

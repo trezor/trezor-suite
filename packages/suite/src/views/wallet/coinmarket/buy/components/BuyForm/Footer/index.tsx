@@ -74,7 +74,6 @@ const Footer = () => {
                     name={countrySelect}
                     render={({ onChange, value }) => (
                         <StyledSelect
-                            noTopLabel
                             isDropdownVisible
                             isHovered
                             options={regional.countriesOptions}

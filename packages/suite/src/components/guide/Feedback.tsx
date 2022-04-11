@@ -258,15 +258,12 @@ export const Feedback = ({ type }: FeedbackProps) => {
                                 options={Object.keys(feedbackCategories).map(category =>
                                     categoryToOption(category as FeedbackCategory),
                                 )}
-                                borderWidth={1}
-                                borderRadius={8}
                                 onChange={(option: FeedbackCategoryOption) =>
                                     setCategory(option.value)
                                 }
                                 placeholder={
                                     <Translation id="TR_FEEDBACK_CATEGORY_SELECT_PLACEHOLDER" />
                                 }
-                                noTopLabel
                             />
                         </SelectWrapper>
                     </>
@@ -307,8 +304,6 @@ export const Feedback = ({ type }: FeedbackProps) => {
 
                 <Textarea
                     rows={8}
-                    borderWidth={1}
-                    borderRadius={8}
                     value={description}
                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                         setDescription(e.target.value)

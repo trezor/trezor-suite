@@ -35,7 +35,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
             />
             <ActionColumn>
                 <Switch
-                    checked={passphraseProtection}
+                    isChecked={passphraseProtection}
                     onChange={() => {
                         applySettings({
                             use_passphrase: !passphraseProtection,
@@ -47,7 +47,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
                             },
                         });
                     }}
-                    data-test="@settings/device/passphrase-switch"
+                    dataTest="@settings/device/passphrase-switch"
                     isDisabled={isDeviceLocked}
                 />
             </ActionColumn>

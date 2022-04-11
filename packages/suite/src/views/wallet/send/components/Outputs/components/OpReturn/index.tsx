@@ -51,8 +51,8 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
     return (
         <Wrapper>
             <Textarea
-                state={getInputState(asciiError, asciiValue)}
-                monospace
+                inputState={getInputState(asciiError, asciiValue)}
+                isMonospace
                 name={inputAsciiName}
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
@@ -88,8 +88,8 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
             />
             <Space> = </Space>
             <Textarea
-                state={getInputState(hexError, hexValue)}
-                monospace
+                inputState={getInputState(hexError, hexValue)}
+                isMonospace
                 name={inputHexName}
                 data-test={inputHexName}
                 defaultValue={hexValue}

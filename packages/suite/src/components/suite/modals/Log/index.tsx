@@ -89,7 +89,7 @@ const Log = ({ onCancel }: Props) => {
                 />
                 <ActionColumn>
                     <Switch
-                        checked={!excludeBalanceRelated}
+                        isChecked={!excludeBalanceRelated}
                         onChange={actions.toggleExcludeBalanceRelated}
                     />
                 </ActionColumn>

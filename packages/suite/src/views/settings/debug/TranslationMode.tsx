@@ -21,7 +21,7 @@ export const TranslationMode = () => {
             />
             <ActionColumn>
                 <Switch
-                    checked={isTranslationMode()}
+                    isChecked={isTranslationMode()}
                     onChange={() => setTranslationMode(!isTranslationMode())}
                 />
             </ActionColumn>

@@ -10,9 +10,9 @@ export default {
         label: 'Label',
         bottomText: '',
         placeholder: '',
-        disabled: false,
-        monospace: false,
-        state: null,
+        isDisabled: false,
+        isMonospace: false,
+        inputState: null,
         variant: null,
     },
     argTypes: {
@@ -44,13 +44,13 @@ export const Basic = ({ ...args }) => {
 
     return (
         <Input
-            disabled={args.disabled}
-            state={args.state}
+            isDisabled={args.isDisabled}
+            inputState={args.state}
             variant={args.variant}
             label={args.label}
             bottomText={args.bottomText}
             placeholder={args.placeholder}
-            monospace={args.monospace}
+            isMonospace={args.isMonospace}
             value={value}
             onChange={handleValue}
         />

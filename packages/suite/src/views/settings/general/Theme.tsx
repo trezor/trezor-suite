@@ -93,7 +93,6 @@ export const Theme = () => {
                 <ActionSelect
                     hideTextCursor
                     useKeyPressScroll
-                    noTopLabel
                     value={selectedValue}
                     options={options}
                     onChange={onChange}

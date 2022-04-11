@@ -22,8 +22,8 @@ const DestinationTag = ({ close }: Props) => {
 
     return (
         <Input
-            state={getInputState(error, inputValue)}
-            monospace
+            inputState={getInputState(error, inputValue)}
+            isMonospace
             name={inputName}
             data-test={inputName}
             defaultValue={inputValue}

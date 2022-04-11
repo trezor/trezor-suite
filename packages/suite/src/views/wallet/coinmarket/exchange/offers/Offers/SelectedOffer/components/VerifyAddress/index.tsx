@@ -196,7 +196,7 @@ const VerifyAddressComponent = () => {
                                 },
                             })}
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
-                            state={errors.address ? 'error' : undefined}
+                            inputState={errors.address ? 'error' : undefined}
                             bottomText={<InputError error={errors.address} />}
                         />
                     )}
@@ -262,7 +262,7 @@ const VerifyAddressComponent = () => {
                                     }
                                 },
                             })}
-                            state={errors.extraField ? 'error' : undefined}
+                            inputState={errors.extraField ? 'error' : undefined}
                             bottomText={<InputError error={errors.extraField} />}
                         />
                     </Row>

@@ -27,9 +27,9 @@ describe('Analytics', () => {
         cy.prefixedVisit('/');
 
         // pass through onboarding with disabled analytics
-        cy.getTestElement('@analytics/toggle-switch').should('be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
-        cy.getTestElement('@analytics/toggle-switch').should('not.be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('not.be.checked');
         cy.getTestElement('@onboarding/continue-button').click();
 
         // assert that only "analytics/dispose" event was fired
@@ -54,12 +54,12 @@ describe('Analytics', () => {
 
         // go to settings, analytics should not enabled and no additional analytics requests should be fired
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@analytics/toggle-switch').should('not.be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('not.be.checked');
         cy.wrap(requests).should('have.length', 1);
 
         // enable analytics and check "analytics/enable" event was fired
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
-        cy.getTestElement('@analytics/toggle-switch').should('be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.wait('@data-fetch');
         cy.wrap(requests).its(1).should('have.property', 'c_type', 'analytics/enable');
         cy.wrap(requests).its(1).its('c_session_id').as('request1');
@@ -117,7 +117,7 @@ describe('Analytics', () => {
         cy.prefixedVisit('/');
 
         // pass through onboarding with enabled analytics
-        cy.getTestElement('@analytics/toggle-switch').should('be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.getTestElement('@onboarding/continue-button').click();
 
         // assert that more than 1 event was fired and it was "suite/ready" and "analytics/enable" for sure
@@ -135,11 +135,11 @@ describe('Analytics', () => {
 
         // go to settings, analytics should be enabled
         cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@analytics/toggle-switch').should('be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
 
         // disable analytics
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
-        cy.getTestElement('@analytics/toggle-switch').should('not.be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('not.be.checked');
 
         // change fiat
         cy.getTestElement('@settings/fiat-select/input').click({ force: true });

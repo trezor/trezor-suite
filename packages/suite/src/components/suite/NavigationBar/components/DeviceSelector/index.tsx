@@ -19,7 +19,8 @@ const ArrowDown = styled(Icon)`
 const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
     display: flex;
     position: relative;
-    width: 200px;
+    min-width: 200px;
+    height: 48px;
     padding: 6px 12px;
     align-items: center;
     margin-right: 24px;
@@ -197,16 +198,18 @@ export const DeviceSelector = () => {
                             />
                         </DeviceLabel>
 
-                        <WalletNameWrapper>
-                            {selectedDevice.metadata.status === 'enabled' &&
-                            selectedDevice.metadata.walletLabel ? (
-                                selectedDevice.metadata.walletLabel
-                            ) : (
-                                <WalletLabeling device={selectedDevice} />
-                            )}
+                        {selectedDevice.state && (
+                            <WalletNameWrapper>
+                                {selectedDevice.metadata.status === 'enabled' &&
+                                selectedDevice.metadata.walletLabel ? (
+                                    selectedDevice.metadata.walletLabel
+                                ) : (
+                                    <WalletLabeling device={selectedDevice} />
+                                )}
 
-                            <ArrowDown icon="ARROW_DOWN" size={16} />
-                        </WalletNameWrapper>
+                                <ArrowDown icon="ARROW_DOWN" size={16} />
+                            </WalletNameWrapper>
+                        )}
                     </DeviceDetail>
                 </>
             )}

@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     z-index: 4;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 24px 16px 0px 16px;
+        padding: 24px 16px 20px 16px;
     }
 `;
 

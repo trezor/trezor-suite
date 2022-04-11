@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
-import { variables } from '../../config';
+import { FONT_WEIGHT, Z_INDEX, FONT_SIZE } from '../../config/variables';
 import { useOnClickOutside, useTheme } from '../../utils/hooks';
 import { Icon, IconProps } from '../Icon';
 
@@ -28,7 +28,7 @@ const MasterLinkComponent = styled.button<{
     font-size: 11px;
     letter-spacing: 0.4px;
     color: ${props => props.theme.TYPE_GREEN};
-    font-weight: ${variables.FONT_WEIGHT.BOLD};
+    font-weight: ${FONT_WEIGHT.BOLD};
     text-transform: uppercase;
     display: flex;
     cursor: pointer;
@@ -65,7 +65,7 @@ const Menu = styled.ul<MenuProps>`
     min-width: ${props => props.minWidth}px;
     box-shadow: 0 2px 7px 0 ${props => props.theme.BOX_SHADOW_BLACK_15},
         0 2px 3px 0 ${props => props.theme.BOX_SHADOW_BLACK_5};
-    z-index: ${variables.Z_INDEX.DROPDOWN_MENU};
+    z-index: ${Z_INDEX.DROPDOWN_MENU};
     padding: ${props => props.topPadding}px ${props => props.horizontalPadding}px
         ${props => props.bottomPadding}px;
     border-radius: 10px;
@@ -129,9 +129,9 @@ const Menu = styled.ul<MenuProps>`
 
 const Group = styled.li`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 16px 16px 10px 16px;
+    font-size: ${FONT_SIZE.TINY};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    padding: 10px 16px 10px 16px;
     cursor: default;
 `;
 
@@ -143,8 +143,8 @@ const MenuItem = styled.li<MenuItemProps>`
     cursor: ${props => (!props.item.isDisabled ? 'pointer' : 'default')};
     color: ${props =>
         !props.item.isDisabled ? props.theme.TYPE_DARK_GREY : props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${FONT_SIZE.SMALL};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
     position: relative;
     transition: all 0.2s ease;
 

@@ -90,7 +90,6 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 addonAlign="left"
                 clearButton
                 onClear={() => setQuery('')}
-                textIndent={[16, 12]}
                 innerAddon={loading ? <Loader size={16} /> : <Icon icon="SEARCH" size={16} />}
                 data-test="@guide/search"
             />

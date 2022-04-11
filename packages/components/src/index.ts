@@ -4,7 +4,6 @@ export * as variables from './config/variables';
 
 export * as types from './support/types';
 
-export * from './utils/colors';
 export * from './utils/hooks';
 
 export * from './components/buttons/Button';
@@ -18,6 +17,7 @@ export * from './components/form/Select';
 export * from './components/form/Checkbox';
 export * from './components/form/RadioButton';
 export * from './components/form/Switch';
+export * from './components/form/InputStyles';
 export * from './components/Icon';
 export * from './components/typography/Heading';
 export * from './components/typography/Paragraph';

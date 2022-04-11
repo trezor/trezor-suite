@@ -41,8 +41,8 @@ const Data = ({ close }: Props) => {
     return (
         <Wrapper>
             <Textarea
-                state={getInputState(asciiError, asciiValue)}
-                monospace
+                inputState={getInputState(asciiError, asciiValue)}
+                isMonospace
                 name={inputAsciiName}
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
@@ -69,8 +69,8 @@ const Data = ({ close }: Props) => {
             />
             <Space> = </Space>
             <Textarea
-                state={getInputState(hexError, hexValue)}
-                monospace
+                inputState={getInputState(hexError, hexValue)}
+                isMonospace
                 name={inputHexName}
                 data-test={inputHexName}
                 defaultValue={hexValue}

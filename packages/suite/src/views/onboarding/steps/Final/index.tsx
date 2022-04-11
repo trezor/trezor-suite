@@ -16,8 +16,8 @@ const Wrapper = styled.div<{ isGuideOpen?: boolean }>`
     width: 100%;
     align-items: center;
 
-    @media (max-width: ${props =>
-            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+    @media (max-width: ${({ isGuideOpen }) =>
+            isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         padding: 0;
         margin: 0;
         flex-direction: column;
@@ -28,7 +28,7 @@ const Option = styled.div`
     display: flex;
     padding: 10px 16px;
     height: 42px;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     border-radius: 4px;
     align-items: center;
     cursor: pointer;
@@ -53,7 +53,7 @@ const OptionIconWrapper = styled.div`
 const OptionText = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Content = styled.div`
@@ -67,7 +67,7 @@ const GalleryWrapper = styled.div`
     padding: 8px 0px;
     height: 200px;
     overflow-y: auto;
-    border: 1px solid ${props => props.theme.STROKE_GREY};
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const DeviceImageWrapper = styled.div<{ isGuideOpen?: boolean }>`
@@ -78,8 +78,8 @@ const DeviceImageWrapper = styled.div<{ isGuideOpen?: boolean }>`
     height: 400px;
     margin: 0 20px 0 -60px;
 
-    @media (max-width: ${props =>
-            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+    @media (max-width: ${({ isGuideOpen }) =>
+            isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         margin: 0 0 20px 0;
     }
 
@@ -95,8 +95,8 @@ const Heading = styled.div<{ isGuideOpen?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.BOLD};
     margin-bottom: 32px;
 
-    @media (max-width: ${props =>
-            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+    @media (max-width: ${({ isGuideOpen }) =>
+            isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         text-align: center;
     }
 
@@ -112,8 +112,8 @@ const SetupActions = styled.div<{ isGuideOpen?: boolean }>`
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     width: fit-content;
 
-    @media (max-width: ${props =>
-            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+    @media (max-width: ${({ isGuideOpen }) =>
+            isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         justify-content: center;
         width: auto;
     }
@@ -124,8 +124,8 @@ const SetupActions = styled.div<{ isGuideOpen?: boolean }>`
 `;
 
 const RenameDevice = styled(SetupActions)<{ isGuideOpen?: boolean }>`
-    @media (max-width: ${props =>
-            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+    @media (max-width: ${({ isGuideOpen }) =>
+            isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         justify-content: center;
     }
 `;
@@ -139,8 +139,8 @@ const EnterSuiteButton = styled(Button)<{ isGuideOpen?: boolean }>`
     padding-left: 26px;
     padding-right: 26px;
 
-    @media (max-width: ${props =>
-            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+    @media (max-width: ${({ isGuideOpen }) =>
+            isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         width: 100%;
     }
 `;
@@ -149,7 +149,7 @@ const DeviceLabelInput = styled(Input)`
     margin-right: 12px;
 `;
 
-const FinalStep = () => {
+export const FinalStep = () => {
     const dropdownRef = useRef<DropdownRef>();
     const analytics = useAnalytics();
     const { applySettings, goto } = useActions({
@@ -246,10 +246,9 @@ const FinalStep = () => {
                             <DeviceLabelInput
                                 noTopLabel
                                 noError
-                                variant="medium"
                                 value={label}
                                 placeholder={DEFAULT_LABEL}
-                                state={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
+                                inputState={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
                                 onChange={(event: React.FormEvent<HTMLInputElement>) =>
                                     setLabel(event.currentTarget.value)
                                 }
@@ -298,5 +297,3 @@ const FinalStep = () => {
         </OnboardingStepBox>
     );
 };
-
-export default FinalStep;

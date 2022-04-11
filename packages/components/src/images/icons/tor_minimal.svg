@@ -1,5 +1,5 @@
-<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15Z" stroke="black" stroke-width="1.5" stroke-miterlimit="10"/>
-<path d="M8.0026 11.6575C10.0276 11.6575 11.6693 10.0159 11.6693 7.99088C11.6693 5.96584 10.0276 4.32422 8.0026 4.32422C5.97756 4.32422 4.33594 5.96584 4.33594 7.99088C4.33594 10.0159 5.97756 11.6575 8.0026 11.6575Z" stroke="black" stroke-width="1.5" stroke-miterlimit="10"/>
-<path d="M8 15V8V1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15Z" fill="white" stroke="black" stroke-width="1.5" stroke-miterlimit="10"/>
+<svg width="100%" height="100%" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">
+    <path d="M8,15C11.866,15 15,11.866 15,8C15,4.134 11.866,1 8,1C4.134,1 1,4.134 1,8C1,11.866 4.134,15 8,15Z" style="fill:none;fill-rule:nonzero;stroke-width:1.5px;"/>
+    <path d="M8.003,11.658C10.028,11.658 11.669,10.016 11.669,7.991C11.669,5.966 10.028,4.324 8.003,4.324" style="fill:none;fill-rule:nonzero;stroke-width:1.5px;"/>
+    <path d="M8,14.658L8.003,1.324" style="fill:none;fill-rule:nonzero;stroke-width:1.5px;"/>
 </svg>

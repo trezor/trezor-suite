@@ -115,8 +115,8 @@ const FeeCustom = ({
                         <StyledInput
                             label={<Translation id="TR_GAS_LIMIT" />}
                             disabled={feeLimitDisabled}
-                            monospace
-                            state={getInputState(feeLimitError, feeLimitValue)}
+                            isMonospace
+                            inputState={getInputState(feeLimitError, feeLimitValue)}
                             name={FEE_LIMIT}
                             data-test={FEE_LIMIT}
                             onChange={changeFeeLimit}
@@ -155,8 +155,8 @@ const FeeCustom = ({
                 <StyledInput
                     noTopLabel={!useFeeLimit}
                     label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
-                    monospace
-                    state={getInputState(feePerUnitError, feePerUnitValue)}
+                    isMonospace
+                    inputState={getInputState(feePerUnitError, feePerUnitValue)}
                     innerAddon={<Units>{getFeeUnits(networkType)}</Units>}
                     name={FEE_PER_UNIT}
                     data-test={FEE_PER_UNIT}

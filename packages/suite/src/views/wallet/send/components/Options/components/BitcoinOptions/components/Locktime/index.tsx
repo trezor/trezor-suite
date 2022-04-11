@@ -82,8 +82,8 @@ const Locktime = ({ close }: Props) => {
     return (
         <Wrapper>
             <Input
-                state={getInputState(error, inputValue)}
-                monospace
+                inputState={getInputState(error, inputValue)}
+                isMonospace
                 name={inputName}
                 defaultValue={inputValue}
                 maxLength={MAX_LENGTH.BTC_LOCKTIME}
@@ -140,7 +140,7 @@ const Locktime = ({ close }: Props) => {
                     </Center>
                     <Right>
                         <Switch
-                            checked={rbfEnabled}
+                            isChecked={rbfEnabled}
                             onChange={() => {
                                 if (inputValue.length > 0) {
                                     setValue(inputName, '');

@@ -15,7 +15,7 @@ export const Basic = ({ ...args }) => {
     return (
         <Switch
             onChange={handleIsChecked}
-            checked={isChecked}
+            isChecked={isChecked}
             isSmall={args.isSmall}
             isDisabled={args.isDisabled}
         />

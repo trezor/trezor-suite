@@ -1,9 +1,17 @@
 import styled, { css } from 'styled-components';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { getStateColor } from '../../../utils';
-import { variables } from '../../../config';
+import { FONT_SIZE } from '../../../config/variables';
 import { InputState } from '../../../support/types';
+import {
+    Label,
+    LabelLeft,
+    LabelRight,
+    RightLabel,
+    baseInputStyle,
+    getInputStateTextColor,
+} from '../InputStyles';
+import { darken } from 'polished';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -13,156 +21,60 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-interface StyledTextareaProps extends BaseTextareaProps {
-    tooltipAction?: React.ReactNode;
-    width?: any;
-    state?: InputState;
-    monospace?: boolean;
-    borderWidth?: number;
-    borderRadius?: number;
-}
+const StyledTextarea = styled.textarea<Pick<TextareaProps, 'inputState' | 'width' | 'isMonospace'>>`
+    ${baseInputStyle}
 
-const StyledTextarea = styled.textarea<StyledTextareaProps>`
-    width: ${props => (props.width ? `${props.width}px` : '100%')};
+    width: ${({ width }) => (width ? `${width}px` : '100%')};
     padding: 14px 16px;
-    box-sizing: border-box;
-    border: solid ${props => props.borderWidth}px
-        ${props =>
-            props.state ? getStateColor(props.state, props.theme) : props.theme.STROKE_GREY};
-    border-radius: ${props => props.borderRadius}px;
     resize: none;
-    outline: none;
-    font-family: ${variables.FONT_FAMILY.TTHOVES};
-    color: ${props => getStateColor(props.state, props.theme)};
-    background: ${props => props.theme.BG_WHITE};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    white-space: pre-wrap; /* css-3 */
-    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-    white-space: -pre-wrap; /* Opera 4-6 */
-    white-space: -o-pre-wrap; /* Opera 7 */
-    word-wrap: break-word; /* Internet Explorer 5.5+ */
-
-    &:read-only {
-        background: ${props => props.theme.BG_GREY};
-        color: ${props => props.theme.TYPE_DARK_GREY};
-    }
-
-    ${props =>
-        props.disabled &&
-        css`
-            background: ${props => props.theme.BG_GREY};
-            box-shadow: none;
-            color: ${props => props.theme.TYPE_DARK_GREY};
-            cursor: not-allowed;
-        `}
-
-    ${props =>
-        props.monospace &&
-        css`
-            font-variant-numeric: slashed-zero tabular-nums;
-        `}
+    white-space: pre-wrap;
 `;
 
-const BottomText = styled.span<StyledTextareaProps>`
+const BottomText = styled.span<Pick<TextareaProps, 'inputState'>>`
     padding: 10px 10px 0 10px;
     min-height: 27px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => getStateColor(props.state, props.theme)};
-`;
-
-const TooltipAction = styled.div<{ action: React.ReactNode }>`
-    display: ${props => (props.action ? 'flex' : 'none')};
-    align-items: center;
-    margin: 0px 10px;
-    padding: 0 14px;
-    position: absolute;
-    background: black;
-    bottom: -25px;
-    color: ${props => props.theme.BG_WHITE};
-    border-radius: 5px;
-    z-index: 10002;
-    transform: translate(-1px, -1px);
-`;
-
-const ArrowUp = styled.div`
-    position: absolute;
-    top: -9px;
-    left: 12px;
-    width: 0;
-    height: 0;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 9px solid black;
-    z-index: 10001;
-`;
-
-const Label = styled.div`
-    display: flex;
-    min-height: 32px;
-    justify-content: space-between;
-`;
-
-const Left = styled.label`
-    display: block;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 0 0 12px 0;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-`;
-
-const Right = styled.div`
-    display: flex;
-`;
-
-const VisibleRightLabel = styled.div`
-    padding-left: 5px;
+    font-size: ${FONT_SIZE.TINY};
+    color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
 `;
 
 const LabelAddon = styled.div``;
 
-type BaseTextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
-
-// TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
-export interface TextareaProps extends StyledTextareaProps {
+export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
     isDisabled?: boolean;
     label?: React.ReactNode;
     labelAddon?: React.ReactNode;
     labelRight?: React.ReactNode;
     innerRef?: React.Ref<HTMLTextAreaElement>;
     bottomText?: React.ReactNode;
+    width?: number;
+    inputState?: InputState;
+    isMonospace?: boolean;
     maxRows?: number;
-    wrapperProps?: Record<string, any>;
-    monospace?: boolean;
+    wrapperProps?: React.HTMLAttributes<HTMLDivElement> & { 'data-test'?: string };
     noTopLabel?: boolean;
     noError?: boolean;
-    borderWidth?: number;
-    borderRadius?: number;
 }
 
-const Textarea: React.FC<TextareaProps> = ({
+export const Textarea = ({
     className,
     maxLength,
     labelAddon,
     isDisabled,
     innerRef,
     label,
-    state,
+    inputState,
     bottomText,
-    tooltipAction,
     wrapperProps,
     width,
     rows = 5,
-    monospace,
+    isMonospace,
     noTopLabel,
     labelRight,
     noError,
-    borderWidth = 2,
-    borderRadius = 4,
     children,
     ...rest
-}) => {
-    const [isHovered, setIsHovered] = React.useState(false);
+}: TextareaProps) => {
+    const [isHovered, setIsHovered] = useState(false);
 
     return (
         <Wrapper
@@ -173,13 +85,14 @@ const Textarea: React.FC<TextareaProps> = ({
         >
             {!noTopLabel && (
                 <Label>
-                    <Left>{label}</Left>
-                    <Right>
+                    <LabelLeft>{label}</LabelLeft>
+                    <LabelRight>
                         {isHovered && <LabelAddon>{labelAddon}</LabelAddon>}
-                        {labelRight && <VisibleRightLabel>{labelRight}</VisibleRightLabel>}
-                    </Right>
+                        {labelRight && <RightLabel>{labelRight}</RightLabel>}
+                    </LabelRight>
                 </Label>
             )}
+
             <StyledTextarea
                 spellCheck={false}
                 autoCorrect="off"
@@ -187,22 +100,16 @@ const Textarea: React.FC<TextareaProps> = ({
                 maxLength={maxLength}
                 disabled={isDisabled}
                 width={width}
-                state={state}
+                inputState={inputState}
                 rows={rows}
                 ref={innerRef}
-                monospace={monospace}
-                borderWidth={borderWidth}
-                borderRadius={borderRadius}
+                isMonospace={isMonospace}
                 {...rest}
             />
-            <TooltipAction action={tooltipAction}>
-                <ArrowUp />
-                {tooltipAction}
-            </TooltipAction>
+
             {children}
-            {!noError && <BottomText state={state}>{bottomText}</BottomText>}
+
+            {!noError && <BottomText inputState={inputState}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };
-
-export { Textarea };

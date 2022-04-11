@@ -68,7 +68,6 @@ const UdevDownload = () => {
                 {target ? (
                     <>
                         <Select
-                            noTopLabel
                             isSearchable={false}
                             isClearable={false}
                             value={target}

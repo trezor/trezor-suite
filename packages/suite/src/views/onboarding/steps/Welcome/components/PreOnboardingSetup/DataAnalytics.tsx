@@ -153,9 +153,9 @@ const DataAnalytics = () => {
 
                 <SwitchWrapper>
                     <Switch
-                        data-test="@analytics/toggle-switch"
-                        checked={analyticsEnabled}
+                        isChecked={analyticsEnabled}
                         onChange={() => setAnalytics(!analyticsEnabled)}
+                        dataTest="@analytics/toggle-switch"
                     />
                     <Label>
                         <Translation id="TR_ONBOARDING_ALLOW_ANALYTICS" />

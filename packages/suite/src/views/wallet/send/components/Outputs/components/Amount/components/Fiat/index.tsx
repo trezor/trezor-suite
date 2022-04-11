@@ -74,8 +74,8 @@ const Fiat = ({ output, outputId }: Props) => {
     return (
         <Wrapper>
             <Input
-                state={getInputState(errorToDisplay, fiatValue)}
-                monospace
+                inputState={getInputState(errorToDisplay, fiatValue)}
+                isMonospace
                 onChange={event => {
                     if (isSetMaxActive) {
                         setValue('setMaxOutputId', undefined);

@@ -1,10 +1,9 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { darken } from 'polished';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { FONT_SIZE } from '../../../config/variables';
 import { useTheme } from '../../../utils';
-
 import { Icon } from '../../Icon';
 
 const Wrapper = styled.div`
@@ -12,13 +11,13 @@ const Wrapper = styled.div`
     cursor: pointer;
     align-items: center;
 
-    &:hover,
-    &:focus {
+    :hover,
+    :focus {
         outline: none;
     }
 `;
 
-const IconWrapper = styled.div<IconWrapperProps>`
+const IconWrapper = styled.div<Pick<CheckboxProps, 'isChecked'>>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,42 +30,41 @@ const IconWrapper = styled.div<IconWrapperProps>`
     border: 2px solid
         ${({ theme, isChecked }) => (isChecked ? theme.TYPE_GREEN : theme.STROKE_GREY)};
 
-    &:hover,
-    &:focus {
-        ${({ theme, isChecked }) =>
-            !isChecked &&
-            css`
-                border: 2px solid ${darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
-            `}
+    :hover,
+    :focus {
+        border: ${({ theme, isChecked }) =>
+            !isChecked && `2px solid ${darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)}`};
     }
 `;
 
-const Label = styled.div<IconWrapperProps>`
+const Label = styled.div`
     display: flex;
     padding-left: 12px;
     justify-content: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${FONT_SIZE.SMALL};
     line-height: 24px;
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+const handleKeyboard = (
+    event: React.KeyboardEvent<HTMLElement>,
+    onClick: CheckboxProps['onClick'],
+) => {
+    if (event.code === KEYBOARD_CODE.SPACE) {
+        onClick(event);
+    }
+};
+
+export interface CheckboxProps extends React.HTMLAttributes<HTMLDivElement> {
     onClick: (
         event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
     ) => any;
     isChecked?: boolean;
 }
 
-type IconWrapperProps = Omit<Props, 'onClick'>;
-
-const handleKeyboard = (event: React.KeyboardEvent<HTMLElement>, onClick: Props['onClick']) => {
-    if (event.code === KEYBOARD_CODE.SPACE) {
-        onClick(event);
-    }
-};
-
-const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => {
+export const Checkbox = ({ isChecked, children, onClick, ...rest }: CheckboxProps) => {
     const theme = useTheme();
+
     return (
         <Wrapper
             onClick={onClick}
@@ -77,10 +75,8 @@ const Checkbox = ({ isChecked, children, onClick, ...rest }: Props) => {
             <IconWrapper isChecked={isChecked}>
                 {isChecked && <Icon size={24} color={theme.TYPE_WHITE} icon="CHECK" />}
             </IconWrapper>
-            <Label isChecked={isChecked}>{children}</Label>
+
+            <Label>{children}</Label>
         </Wrapper>
     );
 };
-
-export type { Props as CheckboxProps };
-export { Checkbox };

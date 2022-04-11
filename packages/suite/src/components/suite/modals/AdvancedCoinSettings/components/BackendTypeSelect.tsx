@@ -62,7 +62,6 @@ export const BackendTypeSelect = ({ network, value, onChange }: BackendTypeSelec
             value={backendOptions.find(option => option.value === value)}
             onChange={changeType}
             options={backendOptions}
-            noTopLabel
             data-test="@settings/advance/select-type"
         />
     ) : null;
