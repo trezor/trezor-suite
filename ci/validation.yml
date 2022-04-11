@@ -32,3 +32,16 @@ msg-system config validation:
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/suite-data msg-system-validate-config
+
+connect-plugins-ethereum unit tests:
+  stage: validation
+  # todo: uncomment
+  # only:
+  #   refs:
+  #     - develop
+  #   changes:
+  #     - packages/connect-plugins-ethereum
+  script:
+    - cd packages/connect-plugin-ethereum
+    - yarn
+    - yarn test:unit
