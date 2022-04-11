@@ -26,7 +26,7 @@
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/utils build:lib
+    - yarn build:libs
     - docker-compose pull
     - docker-compose up -d ${CONTAINERS}
     - docker-compose run test-run
@@ -230,8 +230,8 @@ blockchain-link manual:
     <<: *run_everything_rules
   when: manual
 
-# @trezor/connect-explorer
-.e2e connect-explorer:
+# @trezor/connect-popup (via @trezor/connect-explorer)
+.e2e connect-popup:
   stage: integration testing
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
@@ -239,7 +239,10 @@ blockchain-link manual:
     URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}/
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/utils build:lib
+    - yarn build:libs
+    - yarn workspace @trezor/connect-web build # should not be needed
+    - yarn workspace @trezor/connect-iframe build # should not be needed
+    - yarn workspace @trezor/connect-popup build # should not be needed
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
@@ -254,48 +257,49 @@ blockchain-link manual:
       - ./packages/integration-tests/connect-popup-overview.html
       - ./packages/integration-tests/test-results
 
-connect-explorer:
-  extends: .e2e connect-explorer
-  only:
-    <<: *run_everything_rules
+connect-popup:
+  extends: .e2e connect-popup
+  # only:
+  #   <<: *run_everything_rules
 
-connect-explorer manual:
-  extends: .e2e connect-explorer
-  except:
-    <<: *run_everything_rules
-  when: manual
+# connect-popup manual:
+#   extends: .e2e connect-popup
+#   except:
+#     <<: *run_everything_rules
+#   when: manual
 
-connect jest manual:
+.e2e connect:
   stage: integration testing
-  when: manual
+  # when: manual
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
+  before_script:
+    - docker-compose down
+    - docker network prune -f
+  script:
+    - git submodule update --init --recursive
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
+    - yarn workspace @trezor/connect-web build # should not be needed
+    - yarn workspace @trezor/connect-iframe build # should not be needed
+    - yarn workspace @trezor/connect-popup build # should not be needed
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix
+    - docker-compose run test-run
+  after_script:
+    - docker-compose down
+    - docker network prune -f
+
+connect-node:
+  extends: .e2e connect
+  # when: manual
+  variables:
     COMPOSE_FILE: ./docker/docker-compose.connect-test.yml
-  script:
-    - git submodule update --init --recursive
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
-    - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix
-    - docker-compose run test-run
-  after_script:
-    - docker-compose down
-    - docker network prune -f
 
-connect karma manual:
-  stage: integration testing
-  when: manual
+connect-web:
+  extends: .e2e connect
+  # dependencies:
+  #   - connect-web build
+  # when: manual
   variables:
-    COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-karma-test.yml
-  script:
-    - git submodule update --init --recursive
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
-    - yarn workspace @trezor/connect-web build # build inline script
-    - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix
-    - docker-compose run test-run
-  after_script:
-    - docker-compose down
-    - docker network prune -f

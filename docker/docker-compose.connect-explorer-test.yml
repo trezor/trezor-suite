@@ -1,4 +1,4 @@
-version: '2'
+version: "3"
 services:
   trezor-user-env-unix:
     image: ghcr.io/trezor/trezor-user-env
@@ -22,12 +22,9 @@ services:
     extends:
       service: suite-base
       file: docker-compose.suite-base.yml
-      # this container expectes that there is "trezor-connect" in ../connect path relative to suite repo folder
-      # this will change once trezor-connect is in monorepo
-    command: bash -c "cd ../connect && yarn dev"
+    command: bash -c "yarn workspace @trezor/connect-iframe dev"
     volumes:
       - ..:/usr/src/service
-      - ../../connect:/usr/src/connect
       - ../node_modules:/usr/src/service/node_modules
     network_mode: service:trezor-user-env-unix
 
