@@ -1,8 +1,8 @@
 import { getFwVersion, isBitcoinOnly, getDeviceModel } from '@suite-utils/device';
 import { isDesktop, getUserAgent, getScreenWidth, getScreenHeight } from '@suite-utils/env';
-
 import type { ReleaseInfo } from '@suite-types/github';
 import type { TrezorDevice } from '@suite-types';
+import { TransportInfo } from 'trezor-connect';
 
 const REPO_INFO = {
     owner: 'trezor',
@@ -10,6 +10,11 @@ const REPO_INFO = {
 };
 
 const RELEASE_URL = `https://github.com/${REPO_INFO.owner}/${REPO_INFO.repo}`;
+
+type DebugInfo = {
+    device?: TrezorDevice;
+    transport?: Partial<TransportInfo>;
+};
 
 export const getReleaseNotes = async (version?: string) => {
     if (!version) {
@@ -29,13 +34,20 @@ const getDeviceInfo = (device?: TrezorDevice) => {
     }
     return `model ${getDeviceModel(device)} ${getFwVersion(device)} ${
         isBitcoinOnly(device) ? 'Bitcoin only' : 'regular'
-    }`;
+    } (revision ${device.features.revision})`;
 };
 
 const getSuiteInfo = () =>
     `${isDesktop() ? 'desktop' : 'web'} ${process.env.VERSION} (${process.env.COMMITHASH})`;
 
-export const openGithubIssue = (device?: TrezorDevice) => {
+const getTransportInfo = (transport?: Partial<TransportInfo>) => {
+    if (!transport?.type) {
+        return 'N/A';
+    }
+    return transport?.type === 'bridge' ? `${transport.type} ${transport.version}` : transport.type;
+};
+
+export const openGithubIssue = ({ device, transport }: DebugInfo) => {
     const url = new URL(`${RELEASE_URL}/issues/new`);
 
     const body = `
@@ -53,6 +65,7 @@ A clear and concise description of what the bug is.
  - OS: ${navigator.platform}
  - Screen: ${getScreenWidth()}x${getScreenHeight()}
  - Device: ${getDeviceInfo(device)}
+ - Transport: ${getTransportInfo(transport)}
 
 **Expected result:**
 A clear and concise description of what you expected to happen.
