@@ -9,29 +9,20 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
 
-  connect-explorer-dev:
-    container_name: connect-explorer-dev
-    extends:
-      service: suite-base
-      file: docker-compose.suite-base.yml
-    command: bash -c "yarn workspace @trezor/connect-explorer dev"
-    network_mode: service:trezor-user-env-unix
-
   test-run:
     image: mcr.microsoft.com/playwright:focal
     container_name: explorer-test-runner
     depends_on:
       - trezor-user-env-unix
-      - connect-explorer-dev
     network_mode: service:trezor-user-env-unix
     environment:
       - LOCAL_USER_ID=$LOCAL_USER_ID
       - DISPLAY=$DISPLAY
       - HEADLESS=false
-      # useful for debugging tests
-      - PWDEBUG=console
+    # useful for debugging tests
+    # - PWDEBUG=console
     working_dir: /trezor-suite
-    command: bash -c "npx playwright install && docker/wait-for-env.sh && docker/wait-for-200.sh http://localhost:8088/index.html && yarn workspace @trezor/integration-tests test:connect-explorer"
+    command: bash -c "npx playwright install && docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:connect-webextension"
     volumes:
       - ../:/trezor-suite
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

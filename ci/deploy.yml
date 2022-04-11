@@ -209,3 +209,32 @@ utxo-lib deploy npm:
   <<: *npm_deploy_rules
   script:
     - nix-shell --run "yarn && yarn build:libs && cd ./packages/utxo-lib && npm publish"
+
+# connect deploy to dev
+connect deploy to dev:
+  stage: deploy to dev
+  needs:
+    - connect-web build
+  except:
+    - v8
+  variables:
+    GIT_STRATEGY: none
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect/${CI_BUILD_REF_NAME}
+  when: manual
+  dependencies:
+    - connect-web build
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - ls -la packages/connect-iframe/build
+    - rsync -aviuzP packages/connect-iframe/build/ "${DEPLOY_DIRECTORY}/"
+    - ls -la packages/connect-popup/build
+    - rsync -aviuzP packages/connect-popup/build/ "${DEPLOY_DIRECTORY}/"
+    - ls -la packages/connect-web/build
+    - rsync -aviuzP packages/connect-web/build/ "${DEPLOY_DIRECTORY}/"
+    - ls -la ${DEPLOY_DIRECTORY}
+  tags:
+    - connect_deploy
