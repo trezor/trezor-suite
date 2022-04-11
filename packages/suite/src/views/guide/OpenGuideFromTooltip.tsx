@@ -33,10 +33,11 @@ const StyledIconWrap = styled.span`
 
 type OpenGuideFromTooltipProps = {
     id: string;
+    instance: { hide: () => void };
     dataTest?: string;
 };
 
-const OpenGuideFromTooltip = ({ id, dataTest }: OpenGuideFromTooltipProps) => {
+const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTooltipProps) => {
     const { openNodeById } = useGuideOpenNode();
 
     return (
@@ -44,6 +45,7 @@ const OpenGuideFromTooltip = ({ id, dataTest }: OpenGuideFromTooltipProps) => {
             data-test={dataTest}
             onClick={(e: React.MouseEvent<any>) => {
                 e.stopPropagation();
+                instance.hide();
                 openNodeById(id);
             }}
             variant="nostyle"

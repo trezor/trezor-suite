@@ -72,9 +72,12 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 label={
                     <Label>
                         <Tooltip
-                            openGuide={{
-                                node: <OpenGuideFromTooltip id="/suite-basics/send/op_return.md" />,
-                            }}
+                            guideAnchor={instance => (
+                                <OpenGuideFromTooltip
+                                    id="/suite-basics/send/op_return.md"
+                                    instance={instance}
+                                />
+                            )}
                             content={<Translation id="OP_RETURN_TOOLTIP" />}
                             dashed
                         >

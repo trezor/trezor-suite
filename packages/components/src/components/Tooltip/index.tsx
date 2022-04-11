@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useRef, useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance, Props as TProps } from 'tippy.js';
@@ -97,14 +97,14 @@ const StyledContent = styled.div`
     text-align: left;
 `;
 
-type Props = Omit<TippyProps, 'offset'> & {
+export type TooltipProps = Omit<TippyProps, 'offset'> & {
     children: ReactNode | JSX.Element | JSX.Element[] | string;
     readMore?: { link: string; text: ReactNode } | null;
     rich?: boolean;
     dashed?: boolean;
     offset?: number;
     cursor?: Cursor;
-    openGuide?: { node: React.ReactElement };
+    guideAnchor?: (instance: Instance) => React.ReactElement;
     title?: React.ReactElement;
 };
 
@@ -123,10 +123,12 @@ const Tooltip = ({
     offset = 10,
     cursor = 'help',
     content,
-    openGuide,
+    guideAnchor,
     title,
     ...rest
-}: Props) => {
+}: TooltipProps) => {
+    const [isShown, setIsShown] = useState(false);
+
     const config = { tension: 400, friction: 26, mass: 1 };
     const animationStartOffset = 20;
     const getTranslateStyle = () => {
@@ -138,6 +140,7 @@ const Tooltip = ({
     };
     const initialStyles = { opacity: 0, transform: `scale(0.8) ${getTranslateStyle()}` };
     const [spring, setSpring] = useSpring(() => initialStyles);
+    const tooltipRef = useRef<Element>(null);
 
     const onMount = () => {
         setSpring({
@@ -149,6 +152,7 @@ const Tooltip = ({
     };
 
     const onHide = ({ unmount }: Instance<TProps>) => {
+        setIsShown(false);
         setSpring({
             ...initialStyles,
             onRest: unmount,
@@ -165,10 +169,11 @@ const Tooltip = ({
     return content && children ? (
         <Wrapper className={className}>
             <Tippy
-                zIndex={10070}
+                zIndex={variables.Z_INDEX.TOOLTIP}
                 placement={placement}
-                animation={animation}
+                animation={!(guideAnchor && isShown) && animation}
                 onMount={onMount}
+                onShow={() => setIsShown(true)}
                 onHide={onHide}
                 duration={duration}
                 delay={delay}
@@ -176,8 +181,9 @@ const Tooltip = ({
                 interactive={interactive}
                 appendTo={() => document.body}
                 onCreate={onCreate}
+                reference={tooltipRef}
                 {...rest}
-                render={attrs =>
+                render={(attrs, _content, instance) =>
                     rich ? (
                         <BoxRich $maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
                             {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
@@ -186,7 +192,9 @@ const Tooltip = ({
                     ) : (
                         <BoxDefault $maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
                             {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
-                            {openGuide && <OpenGuideInner>{openGuide.node}</OpenGuideInner>}
+                            {guideAnchor && instance && (
+                                <OpenGuideInner>{guideAnchor(instance)}</OpenGuideInner>
+                            )}
                             <StyledContent>{content}</StyledContent>
                             {readMore && (
                                 <ReadMoreLink
@@ -210,5 +218,5 @@ const Tooltip = ({
         <>{children}</>
     );
 };
-export type TooltipProps = TippyProps;
+
 export { Tooltip };

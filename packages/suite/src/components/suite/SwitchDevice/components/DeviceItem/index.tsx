@@ -255,11 +255,12 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
                                             />
                                         </WalletsCount>
                                         <ColRememberHeader
-                                            tooltipOpenGuide={{
-                                                node: (
-                                                    <OpenGuideFromTooltip id="/privacy/remember-and-eject.md" />
-                                                ),
-                                            }}
+                                            tooltipOpenGuide={instance => (
+                                                <OpenGuideFromTooltip
+                                                    id="/privacy/remember-and-eject.md"
+                                                    instance={instance}
+                                                />
+                                            )}
                                             tooltipContent={
                                                 <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
                                             }
@@ -267,11 +268,12 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
                                             <Translation id="TR_REMEMBER_HEADING" />
                                         </ColRememberHeader>
                                         <ColEjectHeader
-                                            tooltipOpenGuide={{
-                                                node: (
-                                                    <OpenGuideFromTooltip id="/privacy/remember-and-eject.md" />
-                                                ),
-                                            }}
+                                            tooltipOpenGuide={instance => (
+                                                <OpenGuideFromTooltip
+                                                    id="/privacy/remember-and-eject.md"
+                                                    instance={instance}
+                                                />
+                                            )}
                                             tooltipContent={
                                                 <Translation id="TR_EJECT_WALLET_EXPLANATION" />
                                             }

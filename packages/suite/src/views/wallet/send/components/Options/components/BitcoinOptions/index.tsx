@@ -74,9 +74,12 @@ const BitcoinOptions = () => {
                 <Left>
                     {!locktimeEnabled && (
                         <Tooltip
-                            openGuide={{
-                                node: <OpenGuideFromTooltip id="/suite-basics/send/locktime.md" />,
-                            }}
+                            guideAnchor={instance => (
+                                <OpenGuideFromTooltip
+                                    id="/suite-basics/send/locktime.md"
+                                    instance={instance}
+                                />
+                            )}
                             content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
                             cursor="pointer"
                         >
@@ -98,11 +101,12 @@ const BitcoinOptions = () => {
                         network.features?.includes('rbf') &&
                         !locktimeEnabled && (
                             <Tooltip
-                                openGuide={{
-                                    node: (
-                                        <OpenGuideFromTooltip id="/suite-basics/send/rbf-replace-by-fee.md" />
-                                    ),
-                                }}
+                                guideAnchor={instance => (
+                                    <OpenGuideFromTooltip
+                                        id="/suite-basics/send/rbf-replace-by-fee.md"
+                                        instance={instance}
+                                    />
+                                )}
                                 content={<Translation id="RBF_TOOLTIP" />}
                                 cursor="pointer"
                             >
