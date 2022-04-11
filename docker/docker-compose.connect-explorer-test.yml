@@ -1,4 +1,4 @@
-version: '2'
+version: "3"
 services:
   trezor-user-env-unix:
     image: ghcr.io/trezor/trezor-user-env
@@ -14,21 +14,7 @@ services:
     extends:
       service: suite-base
       file: docker-compose.suite-base.yml
-    command: bash -c "TREZOR_CONNECT_SRC=https://localhost:8088/ yarn workspace @trezor/connect-explorer dev"
-    network_mode: service:trezor-user-env-unix
-
-  connect-dev:
-    container_name: connect-dev
-    extends:
-      service: suite-base
-      file: docker-compose.suite-base.yml
-      # this container expectes that there is "trezor-connect" in ../connect path relative to suite repo folder
-      # this will change once trezor-connect is in monorepo
-    command: bash -c "cd ../connect && yarn dev"
-    volumes:
-      - ..:/usr/src/service
-      - ../../connect:/usr/src/connect
-      - ../node_modules:/usr/src/service/node_modules
+    command: bash -c "yarn workspace @trezor/connect-explorer dev"
     network_mode: service:trezor-user-env-unix
 
   test-run:
@@ -37,7 +23,6 @@ services:
     depends_on:
       - trezor-user-env-unix
       - connect-explorer-dev
-      - connect-dev
     network_mode: service:trezor-user-env-unix
     environment:
       - LOCAL_USER_ID=$LOCAL_USER_ID
@@ -46,7 +31,7 @@ services:
       # useful for debugging tests
       - PWDEBUG=console
     working_dir: /trezor-suite
-    command: bash -c "npx playwright install && docker/wait-for-env.sh && docker/wait-for-200.sh https://localhost:8088/popup.html &&  yarn workspace @trezor/integration-tests test:connect-explorer"
+    command: bash -c "npx playwright install && docker/wait-for-env.sh && docker/wait-for-200.sh http://localhost:8088/index.html && yarn workspace @trezor/integration-tests test:connect-explorer"
     volumes:
       - ../:/trezor-suite
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

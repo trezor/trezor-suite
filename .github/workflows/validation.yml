@@ -21,9 +21,12 @@ jobs:
         run: yarn format:verify
       - name: verify TS project references
         run: yarn verify-project-references
+      - run: git status
       - name: build libs
         run: yarn build:libs
+      - run: git status
       - name: type check
         run: yarn type-check
+      - run: git status
       - name: lint
         run: yarn lint

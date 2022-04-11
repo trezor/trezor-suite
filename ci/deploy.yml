@@ -6,6 +6,19 @@
     - schedules
     - /^release\//
 
+# todo: it should be possible to share between files using
+# https://docs.gitlab.com/ee/ci/yaml/yaml_optimization.html#reference-tags
+.run_connect_rules: &run_connect_rules
+  refs:
+    - schedules
+    - develop
+  changes:
+    - "packages/blockchain-link"
+    - "packages/connect*/**"
+    - "packages/transport"
+    - "packages/utxo-lib"
+    - "packages/utils"
+
 # Suite web deploy to dev
 suite-web deploy dev:
   stage: deploy to dev
@@ -105,12 +118,12 @@ connect-explorer deploy dev:
   needs:
     - connect-explorer build
   only:
-    <<: *run_everything_rules
+    <<: *run_connect_rules
 
 connect-explorer deploy dev manual:
   extends: .connect-explorer deploy dev base
   needs:
-    - connect-explorer build manual
+    - connect-explorer build
   except:
     <<: *run_everything_rules
   when: manual
@@ -209,3 +222,41 @@ utxo-lib deploy npm:
   <<: *npm_deploy_rules
   script:
     - nix-shell --run "yarn && yarn build:libs && cd ./packages/utxo-lib && npm publish"
+
+# connect deploy to dev
+connect deploy to dev:
+  stage: deploy to dev
+  # only:
+  #   <<: *run_connect_rules
+  needs:
+    - connect-web build
+    - connect-explorer build
+  except:
+    - v8
+  variables:
+    GIT_STRATEGY: none
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/connect/${CI_BUILD_REF_NAME}
+  # when: manual
+  dependencies:
+    - connect-web build
+    - connect-explorer build
+  environment:
+    name: $CI_BUILD_REF_NAME
+    url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
+  before_script: []
+  script:
+    - rm -rv ${DEPLOY_DIRECTORY}
+    - mkdir -pv ${DEPLOY_DIRECTORY}
+    - rsync -aviuzP packages/connect-iframe/build/ "${DEPLOY_DIRECTORY}/"
+    - rsync -aviuzP packages/connect-popup/build/ "${DEPLOY_DIRECTORY}/"
+    - rsync -aviuzP packages/connect-web/build/ "${DEPLOY_DIRECTORY}/"
+    - rsync -aviuzP packages/connect-explorer/build/ "${DEPLOY_DIRECTORY}/"
+    - ls -la ${DEPLOY_DIRECTORY}
+    - ls -la ${DEPLOY_DIRECTORY}/data
+    - ls -la ${DEPLOY_DIRECTORY}/fonts
+    - ls -la ${DEPLOY_DIRECTORY}/images
+    - ls -la ${DEPLOY_DIRECTORY}/js
+  tags:
+    - deploy
+    # todo: use connect_deploy?
+    # - connect_deploy
