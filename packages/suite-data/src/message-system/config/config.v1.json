@@ -32,7 +32,8 @@
                     "en": "We’re sorry, the auto-update feature is broken. Please install the latest version of Trezor Suite.",
                     "es": "Lo sentimos, la función de actualización automática no funciona. Por favor, instale la última versión de Trezor Suite.",
                     "cs": "Je nám líto, ale automatická aktualizace je nefunkční. Nainstalujte si prosím nejnovější verzi Trezor Suite.",
-                    "ru": " К сожалению, функция авто-обновления сломалась. Пожалуйста, установите последнюю версию Trezor Suite вручную."
+                    "ru": "К сожалению, функция авто-обновления сломалась. Пожалуйста, установите последнюю версию Trezor Suite вручную.",
+                    "ja": "申し訳ございませんが、自動更新機能が壊れています。最新版のTrezor Suiteをインストールしてください。"
                 },
                 "cta": {
                     "action": "external-link",
@@ -42,7 +43,8 @@
                         "en": "Go to suite.trezor.io",
                         "es": "Vaya a suite.trezor.io",
                         "cs": "Přejít na suite.trezor.io",
-                        "ru": "Перейти на suite.trezor.io"
+                        "ru": "Перейти на suite.trezor.io",
+                        "ja": "suite.trezor.ioに移動"
                     }
                 }
             }
@@ -68,7 +70,8 @@
                     "en": "Update Trezor Suite for enhanced security, all the latest features, and to keep everything running as smoothly as possible.",
                     "es": "Actualice Trezor Suite para obtener una mayor seguridad, las últimas funciones y para que todo funcione lo mejor posible.",
                     "cs": "Aktualizujte Trezor Suite, abyste získali lepší zabezpečení a nejnovější funkce.",
-                    "ru": "Обновите Trezor Suite, чтобы улучшить безопасность, использовать все новейшие функции и обеспечить максимально эффективную работу."
+                    "ru": "Обновите Trezor Suite, чтобы улучшить безопасность, использовать все новейшие функции и обеспечить максимально эффективную работу.",
+                    "ja": "Trezor Suiteをアップデートすることで、セキュリティの強化、最新機能の搭載、スムーズな動作が可能になります。"
                 },
                 "cta": {
                     "action": "external-link",
@@ -78,7 +81,8 @@
                         "en": "Go to suite.trezor.io",
                         "es": "Ir a suite.trezor.io",
                         "cs": "Přejít na suite.trezor.io",
-                        "ru": "Перейти на suite.trezor.io"
+                        "ru": "Перейти на suite.trezor.io",
+                        "ja": "suite.trezor.ioに移動"
                     }
                 }
             }
@@ -96,7 +100,8 @@
                     "en": "Beware of phishing! Trezor users are being targeted by recent phishing attacks. Never enter your recovery seeds anywhere unless the physical Trezor device instructs you to do so, and you confirm your choice on your Trezor.",
                     "es": "¡Cuidado con el phishing! Los usuarios de Trezor están siendo blanco de recientes ataques de phishing. NO proporcione sus palabras de recuperación a nadie.",
                     "cs": "Pozor na phishing! Uživatelé Trezoru se v poslední době stávají terčem phishingových útoků. Nikdy nikde nezadávejte obnovovací seed, pokud vás k tomu fyzické zařízení Trezor nevyzve a pokud svou volbu nepotvrdíte přímo na Trezoru.",
-                    "ru": "Пользователи Trezor подвергаются недавним фишинговым атакам. НЕ сообщайте никому свои слова для восстановления."
+                    "ru": "Остерегайтесь фишинга! Пользователи Trezor в последнее время являются целями фишинговых атак. Никогда и нигде не вводите слова своей резервной копии для восстановления, пока вас об этом не попросит Ваш Trezor, после чего вы подтвердите свой выбор на экране этого Trezor.",
+                    "ja": "フィッシング詐欺にご注意ください！ 最近Trezorユーザーがフィッシング詐欺のターゲットにされました。Trezorデバイスから指示され、Trezor上で確認した場合を除き、他の場所では絶対にリカバリーシードを入力しないでください。"
                 },
                 "cta": {
                     "action": "external-link",
@@ -106,7 +111,8 @@
                         "en": "More information",
                         "es": "Más información",
                         "cs": "Více informací",
-                        "ru": "Больше информации"
+                        "ru": "Дополнительная информация",
+                        "ja": "詳細はこちら"
                     }
                 }
             }
@@ -132,7 +138,8 @@
                     "en": "WARNING: You are currently using a fake version of Trezor Suite. EXIT THIS PROGRAM IMMEDIATELY!",
                     "es": "ADVERTENCIA: Está utilizando una versión falsa de Trezor Suite. ¡SALGA DE ESTE PROGRAMA INMEDIATAMENTE!",
                     "cs": "VAROVÁNÍ: Momentálně používáte falešnou verzi Trezor Suite. OKAMŽITĚ UKONČETE TENTO PROGRAM!",
-                    "ru": "ПРЕДУПРЕЖДЕНИЕ: В настоящее время вы используете поддельную версию Trezor Suite. НЕМЕДЛЕННО ВЫЙДИТЕ ИЗ ЭТОЙ ПРОГРАММЫ!"
+                    "ru": "ВНИМАНИЕ: Вы сейчас используете поддельную версию Trezor Suite. НЕМЕДЛЕННО ВЫЙДИТЕ ИЗ ЭТОЙ ПРОГРАММЫ!",
+                    "ja": "警告：あなたは現在、Trezor Suiteの偽バージョンを使用しています。このプログラムを直ちに終了してください。"
                 }
             }
         }

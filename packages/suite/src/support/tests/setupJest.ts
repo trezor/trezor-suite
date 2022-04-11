@@ -451,6 +451,7 @@ const getMessageSystemConfig = (
                     es: 'El nuevo firmware de Trezor está disponible!',
                     cs: 'Nová verze Trezor firmware je k dispozici',
                     ru: 'Доступна новая прошивка Trezor!',
+                    ja: '新しいTrezorファームウェアが利用可能です！',
                 },
                 cta: {
                     action: 'internal-link',
@@ -461,6 +462,7 @@ const getMessageSystemConfig = (
                         es: 'Actualizar ahora',
                         cs: 'Aktualizovat',
                         ru: 'Обновить сейчас',
+                        ja: '今すぐアップデート',
                     },
                 },
             },
@@ -480,6 +482,7 @@ const getMessageSystemConfig = (
                     es: 'La nueva aplicación Trezor está disponible!',
                     cs: 'Nová Trezor aplikace je k dispozici!',
                     ru: 'Доступно новое приложение Trezor!',
+                    ja: '新しいTrezorアプリが利用可能になりました！',
                 },
                 cta: {
                     action: 'external-link',
@@ -490,6 +493,7 @@ const getMessageSystemConfig = (
                         es: 'Descargar ahora',
                         cs: 'Stáhnout nyní',
                         ru: 'Скачать сейчас',
+                        ja: '今すぐダウンロードする',
                     },
                 },
                 modal: {
@@ -499,6 +503,7 @@ const getMessageSystemConfig = (
                         es: 'Actualizar ahora',
                         cs: 'Aktualizovat',
                         ru: 'Обновить сейчас',
+                        ja: '今すぐアップデートする',
                     },
                     image: 'https://example.com/example.png',
                 },

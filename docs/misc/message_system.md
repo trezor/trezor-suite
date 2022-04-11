@@ -194,7 +194,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                 "category": "banner",
                 /*
                 - Message in language of Suite app is shown to a user.
-                - Currently 'en', 'es' and 'cs' are supported.
+                - Currently 'en', 'es', 'cs', 'ru', 'ja' are supported.
                 - 'en-GB' is used for backward compatibility and should match value of 'en'.
                 */
                 "content": {
