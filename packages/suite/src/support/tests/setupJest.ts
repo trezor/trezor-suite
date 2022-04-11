@@ -455,7 +455,8 @@ const getMessageSystemConfig = (
                 },
                 cta: {
                     action: 'internal-link',
-                    link: 'firmware-index',
+                    link: 'settings-device',
+                    anchor: '@device-settings/firmware-version',
                     label: {
                         'en-GB': 'Update now',
                         en: 'Update now',

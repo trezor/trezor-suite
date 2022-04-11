@@ -207,11 +207,13 @@ Structure of config, types and optionality of specific keys can be found in the 
                     /*
                     Options: "internal-link" or "external-link"
                     - internal-link is route name, see routes.ts file
+                        - anchor property can be used, see anchors.ts file
                     - external-link is url address
                     */
                     "action": "internal-link",
                     // Route name or url address according to action.
-                    "link": "firmware-index",
+                    "link": "settings-device",
+                    "anchor": "@device-settings/firmware-version",
                     /*
                     - Label of call to action button shown to a user.
                     */
