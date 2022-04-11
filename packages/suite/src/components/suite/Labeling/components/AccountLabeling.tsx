@@ -5,7 +5,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { Translation } from '@suite-components';
 import { Account as WalletAccount } from '@wallet-types';
 import { useSelector } from '@suite-hooks';
-import WalletLabeling from '../Wallet';
+import { WalletLabeling } from './WalletLabeling';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
@@ -13,11 +13,11 @@ const TabularNums = styled.span`
     overflow: hidden;
 `;
 
-interface Props {
+interface AccountProps {
     account: WalletAccount | WalletAccount[];
 }
 
-const Account = ({ account }: Props) => {
+export const AccountLabeling = ({ account }: AccountProps) => {
     const { device, devices } = useSelector(state => ({
         device: state.suite.device,
         devices: state.devices,
@@ -65,7 +65,7 @@ const Account = ({ account }: Props) => {
                 <span>
                     <WalletLabeling
                         device={accountDevice}
-                        useDeviceLabel={!deviceUtils.isSelectedDevice(device, accountDevice)}
+                        shouldUseDeviceLabel={!deviceUtils.isSelectedDevice(device, accountDevice)}
                     />{' '}
                     <TabularNums>{accountLabel}</TabularNums>
                 </span>
@@ -75,5 +75,3 @@ const Account = ({ account }: Props) => {
 
     return <TabularNums>{accountLabel}</TabularNums>;
 };
-
-export default Account;

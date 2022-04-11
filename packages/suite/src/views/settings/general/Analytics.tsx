@@ -29,8 +29,8 @@ export const Analytics = () => {
             <ActionColumn>
                 <PositionedSwitch>
                     <Switch
-                        data-test="@analytics/toggle-switch"
-                        checked={!!enabled}
+                        dataTest="@analytics/toggle-switch"
+                        isChecked={!!enabled}
                         onChange={() => {
                             if (enabled) {
                                 return dispose();

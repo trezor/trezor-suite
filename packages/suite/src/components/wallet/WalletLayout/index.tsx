@@ -18,6 +18,7 @@ const Wrapper = styled.div`
     max-width: ${MAX_WIDTH_WALLET_CONTENT};
     width: 100%;
     height: 100%;
+    margin-top: 8px;
 `;
 
 // This placeholder makes the "Receive" and "Trade" tabs look aligned with other tabs in "Accounts" view,

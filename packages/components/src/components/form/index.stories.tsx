@@ -54,9 +54,17 @@ export const Basic = ({ ...args }) => (
                 }
             />
             <Input variant="small" value="Small input" dataTest="input-default-small" />
-            <Input state="error" value="Input with error" dataTest="input-default-error" />
-            <Input state="warning" value="Input with warning" dataTest="input-default-warning" />
-            <Input state="success" value="Input with success" dataTest="input-default-success" />
+            <Input inputState="error" value="Input with error" dataTest="input-default-error" />
+            <Input
+                inputState="warning"
+                value="Input with warning"
+                dataTest="input-default-warning"
+            />
+            <Input
+                inputState="success"
+                value="Input with success"
+                dataTest="input-default-success"
+            />
             <Input disabled value="Disabled input" dataTest="input-default-disabled" />
             <SubHeading>Monospace with button</SubHeading>
             <Input
@@ -78,13 +86,13 @@ export const Basic = ({ ...args }) => (
                 bottomText="bottom text"
             />
             <Input
-                state="error"
+                inputState="error"
                 value="Input label with error"
                 dataTest="input-error-label"
                 bottomText="bottom text"
             />
             <Input
-                state="warning"
+                inputState="warning"
                 value="Input label with warning"
                 dataTest="input-warning-label"
                 bottomText="bottom text"
@@ -95,7 +103,7 @@ export const Basic = ({ ...args }) => (
                 }
             />
             <Input
-                state="success"
+                inputState="success"
                 value="Input label with success"
                 dataTest="input-success-label"
                 bottomText="bottom text"
@@ -128,21 +136,21 @@ export const Basic = ({ ...args }) => (
             <Textarea value="test value" wrapperProps={{ 'data-test': 'textarea-default' }} />
             <Textarea
                 value="test value"
-                state="success"
+                inputState="success"
                 wrapperProps={{ 'data-test': 'textarea-success' }}
                 label="Top label"
                 bottomText="bottom text"
             />
             <Textarea
                 value="test value"
-                state="warning"
+                inputState="warning"
                 wrapperProps={{ 'data-test': 'textarea-warning' }}
                 label="Top label"
                 bottomText="bottom text"
             />
             <Textarea
                 value="test value"
-                state="error"
+                inputState="error"
                 wrapperProps={{ 'data-test': 'textarea-error' }}
                 label="Top label"
                 bottomText="bottom text"
@@ -162,37 +170,42 @@ export const Basic = ({ ...args }) => (
             <Heading>Switch</Heading>
 
             <SubHeading>Off</SubHeading>
-            <Switch dataTest="switch-off" onChange={() => {}} checked={false} />
+            <Switch dataTest="switch-off" onChange={() => {}} isChecked={false} />
 
             <SubHeading>Off disabled</SubHeading>
-            <Switch dataTest="switch-off-disabled" disabled onChange={() => {}} checked={false} />
+            <Switch
+                dataTest="switch-off-disabled"
+                isDisabled
+                onChange={() => {}}
+                isChecked={false}
+            />
 
             <SubHeading>On</SubHeading>
-            <Switch onChange={() => {}} checked dataTest="switch-on" />
+            <Switch isChecked onChange={() => {}} isDisabled dataTest="switch-on" />
 
             <SubHeading>On disabled</SubHeading>
-            <Switch dataTest="switch-on-disabled" disabled onChange={() => {}} checked />
+            <Switch dataTest="switch-on-disabled" isDisabled onChange={() => {}} isChecked />
 
             <SubHeading>Off small</SubHeading>
-            <Switch onChange={() => {}} checked={false} isSmall dataTest="switch-off-small" />
+            <Switch onChange={() => {}} isChecked={false} isSmall dataTest="switch-off-small" />
 
             <SubHeading>Off small disabled</SubHeading>
             <Switch
-                disabled
+                isDisabled
                 onChange={() => {}}
-                checked={false}
+                isChecked={false}
                 isSmall
                 dataTest="switch-off-small-disabled"
             />
 
             <SubHeading>On small</SubHeading>
-            <Switch onChange={() => {}} checked isSmall dataTest="switch-on-small" />
+            <Switch onChange={() => {}} isChecked isSmall dataTest="switch-on-small" />
 
             <SubHeading>On small disabled</SubHeading>
             <Switch
-                disabled
+                isDisabled
                 onChange={() => {}}
-                checked
+                isChecked
                 isSmall
                 dataTest="switch-on-small-disabled"
             />

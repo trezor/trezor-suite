@@ -13,7 +13,7 @@ import Firmware from '@firmware-views';
 import FirmwareCustom from '@firmware-views/FirmwareCustom';
 import Recovery from '@recovery-views';
 import Backup from '@backup-views';
-import Onboarding from '@onboarding-views';
+import { Onboarding } from '@onboarding-views';
 import { getPrerequisites } from '@suite-utils/prerequisites';
 import ErrorPage from '@suite-views/error';
 import { Bridge, Udev, SwitchDevice, Version } from '@suite-views';

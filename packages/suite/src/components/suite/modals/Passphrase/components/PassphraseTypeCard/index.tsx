@@ -325,7 +325,7 @@ const PassphraseTypeCard = (props: Props) => {
                                 bottomText={
                                     isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
                                 }
-                                state={isTooLong ? 'error' : undefined}
+                                inputState={isTooLong ? 'error' : undefined}
                                 noTopLabel
                                 noError
                                 autoFocus={!isAndroid()}

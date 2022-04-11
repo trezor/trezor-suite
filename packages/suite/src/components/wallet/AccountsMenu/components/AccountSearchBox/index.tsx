@@ -98,7 +98,6 @@ const AccountSearchBox = (props: Props) => {
                         </SearchIconWrapper>
                     }
                     addonAlign="left"
-                    textIndent={[16, 12]}
                     variant="small"
                     placeholder={translationString('TR_SEARCH')}
                     noTopLabel

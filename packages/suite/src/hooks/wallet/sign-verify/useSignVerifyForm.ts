@@ -148,7 +148,7 @@ export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
         messageRef,
         signatureRef,
         hexField: {
-            checked: hexField.value,
+            isChecked: hexField.value,
             onChange: hexField.onChange,
         },
         addressField: {

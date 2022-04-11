@@ -2,13 +2,12 @@ import React from 'react';
 import { TrezorDevice } from '@suite-types';
 import { useTranslation } from '@suite-hooks/useTranslation';
 
-interface Props {
+interface WalletLabellingProps {
     device: TrezorDevice;
-    useDeviceLabel?: boolean;
+    shouldUseDeviceLabel?: boolean;
 }
 
-const WalletLabelling = (props: Props) => {
-    const { device } = props;
+export const WalletLabeling = ({ device, shouldUseDeviceLabel }: WalletLabellingProps) => {
     const { translationString } = useTranslation();
 
     let label: string | null = null;
@@ -18,11 +17,9 @@ const WalletLabelling = (props: Props) => {
             : translationString('TR_PASSPHRASE_WALLET', { id: device.walletNumber });
     }
 
-    if (props.useDeviceLabel) {
+    if (shouldUseDeviceLabel) {
         return <>{`${device.label} ${label}`}</>;
     }
 
     return <>{label}</>;
 };
-
-export default WalletLabelling;

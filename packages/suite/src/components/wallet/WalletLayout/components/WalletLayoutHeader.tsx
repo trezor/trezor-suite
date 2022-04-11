@@ -8,7 +8,6 @@ const HeaderWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 8px;
     margin-bottom: 24px;
 `;
 
@@ -23,6 +22,7 @@ const HeaderRight = styled.div`
     align-items: center;
     justify-content: flex-end;
     flex: 1;
+
     & > * + * {
         margin-left: 5px;
     }
@@ -31,7 +31,6 @@ const HeaderRight = styled.div`
 const StyledTitle = styled(H2)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${props => props.theme.TYPE_DARK_GREY};
-    padding-top: 10px;
 `;
 
 type WalletLayoutHeaderProps = {

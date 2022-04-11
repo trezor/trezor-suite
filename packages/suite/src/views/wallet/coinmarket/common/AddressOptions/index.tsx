@@ -97,7 +97,6 @@ const AddressOptions = (props: Props) => {
                         onChange={(accountAddress: AccountAddress) =>
                             setValue('address', accountAddress.address)
                         }
-                        noTopLabel
                         isClearable={false}
                         value={addressDictionary && address && addressDictionary[address]}
                         options={buildOptions(addresses)}

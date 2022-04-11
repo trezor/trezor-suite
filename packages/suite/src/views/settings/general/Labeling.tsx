@@ -52,8 +52,8 @@ export const Labeling = () => {
                 >
                     <Switch
                         isDisabled={isDisabled}
-                        data-test="@settings/metadata-switch"
-                        checked={metadata.enabled}
+                        dataTest="@settings/metadata-switch"
+                        isChecked={metadata.enabled}
                         onChange={() => (metadata.enabled ? disableMetadata() : initMetadata(true))}
                     />
                 </Tooltip>

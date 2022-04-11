@@ -87,8 +87,8 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
 
     return (
         <Input
-            state={getInputState(addressError, addressValue)}
-            monospace
+            inputState={getInputState(addressError, addressValue)}
+            isMonospace
             innerAddon={
                 metadataEnabled && broadcastEnabled ? (
                     <MetadataLabeling

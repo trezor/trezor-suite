@@ -8,13 +8,13 @@ const Wrapper = styled.div`
     cursor: pointer;
     align-items: flex-start;
 
-    &:hover,
-    &:focus {
+    :hover,
+    :focus {
         outline: none;
     }
 `;
 
-const RadioIcon = styled.div<{ isChecked?: boolean }>`
+const RadioIcon = styled.div<Pick<RadioButtonProps, 'isChecked'>>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,10 +25,10 @@ const RadioIcon = styled.div<{ isChecked?: boolean }>`
     border-radius: 50%;
     position: relative;
     border: 2px solid
-        ${props => (props.isChecked ? props.theme.TYPE_GREEN : props.theme.STROKE_GREY)};
+        ${({ theme, isChecked }) => (isChecked ? theme.TYPE_GREEN : theme.STROKE_GREY)};
 
-    &:after {
-        display: ${props => (props.isChecked ? 'block' : 'none')};
+    :after {
+        display: ${({ isChecked }) => (isChecked ? 'block' : 'none')};
         content: '';
         position: absolute;
         top: 4px;
@@ -36,7 +36,7 @@ const RadioIcon = styled.div<{ isChecked?: boolean }>`
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        background: ${props => props.theme.BG_GREEN};
+        background: ${({ theme }) => theme.BG_GREEN};
     }
 `;
 
@@ -67,7 +67,7 @@ const handleKeyboard = (
     }
 };
 
-const RadioButton = ({ isChecked, children, onClick, ...rest }: RadioButtonProps) => (
+export const RadioButton = ({ isChecked, children, onClick, ...rest }: RadioButtonProps) => (
     <Wrapper
         onClick={onClick}
         onKeyUp={event => handleKeyboard(event, onClick)}
@@ -79,5 +79,3 @@ const RadioButton = ({ isChecked, children, onClick, ...rest }: RadioButtonProps
         <Label>{children}</Label>
     </Wrapper>
 );
-
-export { RadioButton };

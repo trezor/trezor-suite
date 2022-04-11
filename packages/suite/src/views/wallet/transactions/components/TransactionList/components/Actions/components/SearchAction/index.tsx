@@ -158,7 +158,6 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
                     onKeyDown={onKeyDown}
                     value={search}
                     addonAlign="left"
-                    textIndent={[16, 14]}
                     maxLength={512}
                     noError
                     noTopLabel

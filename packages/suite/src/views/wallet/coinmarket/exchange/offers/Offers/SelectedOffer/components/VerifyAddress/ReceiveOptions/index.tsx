@@ -128,7 +128,6 @@ const ReceiveOptions = (props: Props) => {
             onChange={(selected: any) => {
                 onChangeAccount(selected);
             }}
-            noTopLabel
             value={selectedAccountOption}
             isClearable={false}
             options={selectAccountOptions}

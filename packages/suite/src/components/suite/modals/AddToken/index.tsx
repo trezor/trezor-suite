@@ -140,7 +140,7 @@ const AddToken = ({ onCancel }: AddTokenProps) => {
                     placeholder={translationString('TR_ADD_TOKEN_PLACEHOLDER')}
                     value={contractAddress}
                     bottomText={error}
-                    state={getInputState()}
+                    inputState={getInputState()}
                     onChange={onChange}
                 />
             </Wrapper>

@@ -53,7 +53,7 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                     noTopLabel
                     noError
                     value={label}
-                    state={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
+                    inputState={label.length > MAX_LABEL_LENGTH ? 'error' : undefined}
                     onChange={(event: React.FormEvent<HTMLInputElement>) =>
                         setLabel(event.currentTarget.value)
                     }

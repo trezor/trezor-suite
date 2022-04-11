@@ -48,7 +48,7 @@ const FiatInput = () => {
                     clearErrors(FIAT_INPUT);
                 }
             }}
-            state={getInputState(fiatError || amountError, fiat)}
+            inputState={getInputState(fiatError || amountError, fiat)}
             name={FIAT_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}

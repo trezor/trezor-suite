@@ -23,7 +23,7 @@ const Balance = styled.div`
 `;
 
 const FiatBalanceWrapper = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-left: 0.5ch;
 `;
 
@@ -52,23 +52,25 @@ const StyledFiatValue = styled.div`
 
 const StyledFormTitle = styled.h3`
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledSeparator = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: 31px;
     font-family: initial;
     display: inline-block;
-    line-height: 1;
+    margin: -5px 0;
     padding: 0 8px;
+    line-height: 1;
 `;
 
 interface AccountStickyContentProps {
     account?: Account;
     routeName: Route['name'];
 }
-const AccountStickyContent = ({ account, routeName }: AccountStickyContentProps) => {
+
+export const AccountStickyContent = ({ account, routeName }: AccountStickyContentProps) => {
     if (!account) return null;
 
     const { symbol, formattedBalance } = account;
@@ -119,5 +121,3 @@ const AccountStickyContent = ({ account, routeName }: AccountStickyContentProps)
         </Main>
     );
 };
-
-export default AccountStickyContent;

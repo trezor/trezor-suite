@@ -62,8 +62,8 @@ const Raw = ({ network }: { network: Network }) => {
         <Wrapper>
             <StyledCard>
                 <Textarea
-                    state={inputState}
-                    monospace
+                    inputState={inputState}
+                    isMonospace
                     name={inputName}
                     data-test={inputName}
                     defaultValue={inputValue}

@@ -110,7 +110,7 @@ const ReceiveCryptoSelect = () => {
                 name="receiveCryptoSelect"
                 render={({ onChange, value }) => (
                     <Select
-                        state={getInputState(
+                        inputState={getInputState(
                             errors.receiveCryptoSelect,
                             receiveCryptoSelect?.value,
                         )}
@@ -128,7 +128,6 @@ const ReceiveCryptoSelect = () => {
                             tokenData?.symbol,
                         )}
                         minWidth="70px"
-                        noTopLabel
                         formatOptionLabel={(option: any) => (
                             <Option>
                                 <CoinLogo

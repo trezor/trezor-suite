@@ -37,7 +37,8 @@ export const SettingsCoins = () => {
                     }
                 />
             )}
-            <SettingsSection title={<Translation id="TR_COINS" />}>
+
+            <SettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
                 <SectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
                     <CoinsGroup
                         networks={mainnets}
@@ -46,7 +47,8 @@ export const SettingsCoins = () => {
                     />
                 </SectionItem>
             </SettingsSection>
-            <SettingsSection title={<Translation id="TR_TESTNET_COINS" />}>
+
+            <SettingsSection title={<Translation id="TR_TESTNET_COINS" />} icon="COIN">
                 <SectionItem
                     ref={anchorRefTestnetCrypto}
                     shouldHighlight={shouldHighlightTestnetCrypto}

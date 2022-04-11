@@ -11,7 +11,7 @@ export default {
         bottomText: '',
         placeholder: '',
         disabled: false,
-        monospace: false,
+        isMonospace: false,
         state: null,
         rows: 5,
     },
@@ -47,11 +47,11 @@ export const Basic = ({ ...args }) => {
     return (
         <Textarea
             disabled={args.disabled}
-            state={args.state}
+            inputState={args.state}
             label={args.label}
             bottomText={args.bottomText}
             placeholder={args.placeholder}
-            monospace={args.monospace}
+            isMonospace={args.isMonospace}
             rows={args.rows}
             value={value}
             onChange={handleValue}

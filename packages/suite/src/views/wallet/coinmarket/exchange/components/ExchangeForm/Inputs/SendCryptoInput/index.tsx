@@ -77,7 +77,7 @@ const SendCryptoInput = () => {
                 setValue('setMaxOutputId', undefined, { shouldDirty: true });
                 composeRequest();
             }}
-            state={getInputState(amountError || fiatError, amount)}
+            inputState={getInputState(amountError || fiatError, amount)}
             name={CRYPTO_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}

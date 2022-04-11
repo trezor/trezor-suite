@@ -42,9 +42,9 @@ describe('General settings', () => {
         cy.getTestElement('@theme/color-scheme-select/input').should('contain', 'Dark');
 
         // toggle analytics
-        cy.getTestElement('@analytics/toggle-switch').should('be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
-        cy.getTestElement('@analytics/toggle-switch').should('not.be.checked');
+        cy.getTestElement('@analytics/toggle-switch').find('input').should('not.be.checked');
 
         // there is suite version also listed
         cy.contains('Suite version');

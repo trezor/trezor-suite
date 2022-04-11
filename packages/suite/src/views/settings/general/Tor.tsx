@@ -32,8 +32,8 @@ export const Tor = () => {
             />
             <ActionColumn>
                 <Switch
-                    data-test="@settings/general/tor-switch"
-                    checked={tor}
+                    dataTest="@settings/general/tor-switch"
+                    isChecked={tor}
                     onChange={() => {
                         toggleTor(!tor);
                     }}

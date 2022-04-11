@@ -110,7 +110,7 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
                 onFiatAmountChange(event.target.value);
             }}
             isDisabled={tokenData !== undefined}
-            state={getInputState(errors.fiatInput, fiatInputValue)}
+            inputState={getInputState(errors.fiatInput, fiatInputValue)}
             name={FIAT_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
             bottomText={<InputError error={errors[FIAT_INPUT]} />}

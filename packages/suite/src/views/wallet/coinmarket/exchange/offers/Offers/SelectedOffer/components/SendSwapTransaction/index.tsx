@@ -293,11 +293,11 @@ const SendSwapTransactionComponent = () => {
                         {slippage === 'CUSTOM' && (
                             <RightColumn>
                                 <StyledInput
-                                    monospace
+                                    isMonospace
                                     noTopLabel
                                     value={customSlippage}
                                     variant="small"
-                                    state={customSlippageError ? 'error' : 'success'}
+                                    inputState={customSlippageError ? 'error' : 'success'}
                                     name="CustomSlippage"
                                     data-test="CustomSlippage"
                                     onChange={changeCustomSlippage}
