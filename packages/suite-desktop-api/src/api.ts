@@ -90,7 +90,7 @@ export interface DesktopApi {
     // HttpReceiver
     getHttpReceiverAddress: DesktopApiInvoke<'server/request-address'>;
     // Tor
-    getStatus: DesktopApiSend<'tor/get-status'>;
+    getTorStatus: DesktopApiSend<'tor/get-status'>;
     toggleTor: DesktopApiSend<'tor/toggle'>;
     getTorAddress: DesktopApiInvoke<'tor/get-address'>;
     setTorAddress: DesktopApiSend<'tor/set-address'>;

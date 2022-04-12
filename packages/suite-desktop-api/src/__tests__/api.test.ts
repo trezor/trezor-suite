@@ -201,13 +201,13 @@ describe('DesktopApi', () => {
             expect(spy).toBeCalledTimes(1); // invalid param not processed
         });
 
-        it('DesktopApi.getStatus', () => {
+        it('DesktopApi.getTorStatus', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
-            api.getStatus();
+            api.getTorStatus();
             expect(spy).toBeCalledWith('tor/get-status');
 
             // @ts-expect-error no expected params
-            api.getStatus(true);
+            api.getTorStatus(true);
         });
 
         it('DesktopApi.toggleTor', () => {
