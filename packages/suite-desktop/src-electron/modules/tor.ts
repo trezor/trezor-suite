@@ -2,14 +2,20 @@
  * Tor feature (toggle, configure)
  */
 import { session } from 'electron';
-import TorProcess, { DEFAULT_ADDRESS } from '../libs/processes/TorProcess';
+import TorProcess from '../libs/processes/TorProcess';
 import { onionDomain } from '../config';
 import { app, ipcMain } from '../typed-electron';
 import { Module } from './index';
+import { getFreePort } from '../libs/getFreePort';
+import TrezorConnect from 'trezor-connect';
 
 const init: Module = async ({ mainWindow, store, interceptor }) => {
     const { logger } = global;
-    const tor = new TorProcess();
+    const host = '127.0.0.1';
+    const port = await getFreePort();
+    const address = `${host}:${port}`;
+    const controlPort = await getFreePort();
+    const authFilePath = app.getPath('userData');
 
     /**
      * Merges given TorSettings with settings already present in the store,
@@ -21,6 +27,9 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
         return newSettings;
     };
 
+    persistSettings({ address });
+    const tor = new TorProcess({ host, port, controlPort, authFilePath });
+
     const setProxy = (rule: string) => {
         logger.info('tor', `Setting proxy rules to "${rule}"`);
         session.defaultSession.setProxy({
@@ -29,10 +38,8 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
     };
 
     const setupTor = async (settings: TorSettings) => {
-        // Start (or stop) the bundled tor only if address is the default one.
-        // Otherwise the user must run the process themselves.
-        const shouldRunBundledTor = settings.running && settings.address === DEFAULT_ADDRESS;
-        if (shouldRunBundledTor !== (await tor.status()).process) {
+        const shouldRunBundledTor = settings.running;
+        if (settings.running !== (await tor.status()).process) {
             if (shouldRunBundledTor === true) {
                 await tor.start();
             } else {
@@ -42,7 +49,7 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
 
         // Start (or stop) routing all communication through tor.
         if (settings.running) {
-            setProxy(`socks5://${settings.address}`);
+            setProxy(`socks5://${host}:${port}`);
         } else {
             setProxy('');
         }
@@ -51,13 +58,25 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
         mainWindow.webContents.send('tor/status', settings.running);
     };
 
-    ipcMain.on('tor/toggle', async (_, start) => {
+    ipcMain.on('tor/toggle', async (_: unknown, start: boolean) => {
         logger.info('tor', `Toggling ${start ? 'ON' : 'OFF'}`);
         const settings = persistSettings({ running: start });
         await setupTor(settings);
+        // After setupTor we can assume TOR is available so we set the proxy in TrezorConnect
+        // This is only required when 'toggle' because when app starts with TOR enable TrezorConnect is
+        // correctly set in module trezor-connect-ipc.
+        const payload = start
+            ? {
+                  proxy: `socks://${address}`,
+                  useOnionLinks: true,
+              }
+            : { proxy: '', useOnionLinks: false };
+
+        logger.info('tor', `${start ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
+        await TrezorConnect.setProxy(payload);
     });
 
-    ipcMain.on('tor/set-address', async (_, address) => {
+    ipcMain.on('tor/set-address', async (_: unknown, address: string) => {
         if (store.getTorSettings().address !== address) {
             logger.debug('tor', `Changed address to ${address}`);
             const settings = persistSettings({ address });

@@ -1,20 +1,42 @@
-import fetch from 'node-fetch';
-
+import path from 'path';
 import BaseProcess, { Status } from './BaseProcess';
 
-// 9050 is the default port of the tor process.
-export const DEFAULT_ADDRESS = '127.0.0.1:9050';
+import { TorController } from '@trezor/request-manager';
+
+interface TorConnectionOptions {
+    host: string;
+    port: number;
+    controlPort: number;
+    authFilePath: string;
+}
 
 class TorProcess extends BaseProcess {
-    constructor() {
+    torController: TorController;
+    port: number;
+    controlPort: number;
+    torHost: string;
+    authFilePath: string;
+
+    constructor(options: TorConnectionOptions) {
         super('tor', 'tor');
+
+        this.port = options.port;
+        this.controlPort = options.controlPort;
+        this.torHost = options.host;
+        this.authFilePath = options.authFilePath;
+
+        this.torController = new TorController({
+            host: this.torHost,
+            port: this.port,
+            controlPort: this.controlPort,
+            authFilePath: this.authFilePath,
+        });
     }
 
     async status(): Promise<Status> {
-        // service
         try {
-            const resp = await fetch(`http://${DEFAULT_ADDRESS}/`);
-            if (resp.status === 501 && resp.statusText.startsWith('Tor')) {
+            const isAlive = await this.torController.status();
+            if (isAlive) {
                 return {
                     service: true,
                     process: true,
@@ -32,7 +54,37 @@ class TorProcess extends BaseProcess {
     }
 
     async start(): Promise<void> {
-        await super.start(['-f', 'torrc']);
+        const controlAuthCookiePath = path.join(this.authFilePath, 'control_auth_cookie');
+        await super.start([
+            // Try to write to disk less frequently than we would otherwise.
+            '--AvoidDiskWrites',
+            '1',
+            // Send all messages between minSeverity and maxSeverity to the standard output stream.
+            'Log',
+            'notice stdout',
+            // It should treat a startup event as cancelling any previous dormant state.
+            // use this option with caution: it should only be used if Tor is being started because
+            // of something that the user did, and not if Tor is being automatically started in the background.
+            '--DormantCanceledByStartup',
+            '1',
+            // Open this port to listen for connections from SOCKS-speaking applications.
+            '--SocksPort',
+            `${this.port}`,
+            // The port on which Tor will listen for local connections from Tor controller applications.
+            '--ControlPort',
+            `${this.controlPort}`,
+            // Setting CookieAuthentication will make Tor write an authentication cookie.
+            '--CookieAuthentication',
+            '1',
+            // If the 'CookieAuthentication' option is true, Tor writes a "magic
+            // cookie" file named "control_auth_cookie" into its data directory (or
+            // to another file specified in the 'CookieAuthFile' option)
+            // To authenticate, the controller must demonstrate that it can read the
+            // contents of the cookie file:
+            '--CookieAuthFile',
+            `${controlAuthCookiePath}`,
+        ]);
+        return this.torController.waitUntilAlive();
     }
 }
 

@@ -8,6 +8,7 @@
     "references": [
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../request-manager" }
     ]
 }
