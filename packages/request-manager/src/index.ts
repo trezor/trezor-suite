@@ -1,1 +1,1 @@
-export { logHello } from './logHello';
+export { TorController } from './controller';
