@@ -6,7 +6,6 @@ import * as routerActions from '@suite-actions/routerActions';
 import { MODAL } from '@suite-actions/constants';
 import { useSelector, useActions } from '@suite-hooks';
 
-import Pin from './Pin';
 import PinInvalid from './PinInvalid';
 import PinMismatch from './PinMismatch';
 import Passphrase from './Passphrase';
@@ -39,6 +38,7 @@ import AdvancedCoinSettings from './AdvancedCoinSettings';
 import AddToken from './AddToken';
 import SafetyChecks from './SafetyChecks';
 import { DisableTor } from './DisableTor';
+import { Pin } from './Pin';
 import { RawRenderer } from '../Modal/RawRenderer';
 
 import type { AcquiredDevice } from '@suite-types';

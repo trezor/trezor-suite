@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { Translation, PinMatrix, PrerequisitesGuide } from '@suite-components';
+import { Translation, PrerequisitesGuide } from '@suite-components';
+import { PinMatrix } from '@suite-components/PinMatrix';
 import { PrerequisiteType } from '@suite-types';
 import { useOnboarding, useSelector } from '@suite-hooks';
 import { OnboardingStepBox } from '@onboarding-components';
