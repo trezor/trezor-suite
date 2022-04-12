@@ -1347,8 +1347,6 @@
   "TR_TOR_DISABLE_ONIONS_ONLY_TITLE": "Vypnutím Toru se všechny Onion Backendy přenastaví na výchozí servery Trezoru.",
   "TR_TOR_ENABLE": "Zapnout Tor",
   "TR_TOR_ENABLE_AND_CONFIRM": "Zapnout Tor a potvrdit",
-  "TR_TOR_PARAM_DESCRIPTION": "Adresu můžete nakonfigurovat tak, aby ukazovala na jinou instanci sítě Tor. Výchozí hodnota: 127.0.0.1:9050.",
-  "TR_TOR_PARAM_TITLE": "Adresa a port Tor",
   "TR_TOR_REMOVE_ONION_AND_DISABLE": "Vypnout Tor a přepnout na výchozí backendy",
   "TR_TOR_TITLE": "Tor",
   "TR_TOTAL": "Celkem",

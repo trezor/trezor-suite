@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { variables, Input, Switch } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { variables, Switch } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
@@ -23,10 +22,6 @@ const Label = styled.div`
     padding-top: 11px;
 `;
 
-const InputWrapper = styled.div`
-    display: flex;
-`;
-
 const SwitchWrapper = styled.div`
     display: flex;
     align-items: center;
@@ -41,33 +36,12 @@ const Tor = ({ tor }: Props) => {
     const { toggleTor } = useActions({
         toggleTor: toggleTorAction,
     });
-    const [torAddress, setTorAddress] = useState('');
-    useEffect(() => {
-        desktopApi.getTorAddress().then(setTorAddress);
-    }, [setTorAddress]);
-
-    const saveTorAddress = useCallback(() => {
-        desktopApi.setTorAddress(torAddress);
-    }, [torAddress]);
 
     return (
         <TorWrapper>
             <Label>
-                <Translation id="TR_TOR_PARAM_TITLE" />
+                <Translation id="TR_TOR_ENABLE_TITLE" />
             </Label>
-            <InputWrapper>
-                <Input
-                    noTopLabel
-                    noError
-                    value={torAddress}
-                    onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                        setTorAddress(event.currentTarget.value)
-                    }
-                    onBlur={saveTorAddress}
-                    data-test="@onboarding/tor-address"
-                    placeholder="127.0.0.1:9050"
-                />
-            </InputWrapper>
             <SwitchWrapper>
                 <Switch
                     data-test="@onboarding/tor-switch"

@@ -1302,8 +1302,6 @@
   "TR_TOR": "Tor",
   "TR_TOR_BRIDGE": "Nem működik a Bridge a Tor böngészőben?",
   "TR_TOR_DESCRIPTION": "Ha ezt bekapcsolod, a Suite teljes adatforgalma a Tor hálózaton keresztül fog futni.{lineBreak}Minden, a Trezor infrastruktúrája felé irányított kérés a Tor szolgáltatásainkhoz lesz irányítva, ezzel növelve a személyes adataid védelmét és a biztonságodat.",
-  "TR_TOR_PARAM_DESCRIPTION": "Beállíthatod a címet, hogy egy másik Tor példány felé mutasson. Alapértelmezett: 127.0.0.1:9050.",
-  "TR_TOR_PARAM_TITLE": "Tor cím és port",
   "TR_TOR_TITLE": "Tor",
   "TR_TOTAL": "Összesen",
   "TR_TOTAL_INPUT": "Teljes bemenet",

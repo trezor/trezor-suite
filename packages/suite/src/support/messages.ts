@@ -3225,19 +3225,14 @@ export default defineMessages({
         id: 'TR_ONION_LINKS_TITLE',
         defaultMessage: 'Open trezor.io links as .onion links',
     },
+    TR_TOR_ENABLE_TITLE: {
+        id: 'TR_TOR_ENABLE_TITLE',
+        defaultMessage: 'Tor enable',
+    },
     TR_ONION_LINKS_DESCRIPTION: {
         id: 'TR_ONION_LINKS_DESCRIPTION',
         defaultMessage:
             'With this setting enabled, all trezor.io links will be opened as .onion links.',
-    },
-    TR_TOR_PARAM_TITLE: {
-        id: 'TR_TOR_PARAM_TITLE',
-        defaultMessage: 'Tor address and port',
-    },
-    TR_TOR_PARAM_DESCRIPTION: {
-        id: 'TR_TOR_PARAM_DESCRIPTION',
-        defaultMessage:
-            'You can configure the address to point to a different Tor instance. Default: 127.0.0.1:9050.',
     },
     TR_TOR_BRIDGE: {
         id: 'TR_TOR_BRIDGE',

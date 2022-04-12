@@ -5,7 +5,6 @@ export const enum SettingsAnchor {
     LabelingDisconnect = '@general-settings/labeling-disconnect',
     LabelingConnect = '@general-settings/labeling-connect',
     Tor = '@general-settings/tor',
-    TorAddress = '@general-settings/tor-address',
     TorOnionLinks = '@general-settings/tor-onion-links',
     Theme = '@general-settings/theme',
     Analytics = '@general-settings/analytics',

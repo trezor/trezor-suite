@@ -1013,8 +1013,6 @@
   "TR_TOKENS_EMPTY": "Aucun jeton... pour l'instant.",
   "TR_TOR_BRIDGE": "Bridge ne fonctionne pas dans le navigateur Tor ?",
   "TR_TOR_DESCRIPTION": "L'activation de cette option acheminera tout le trafic de Suite via le réseau Tor.{lineBreak}Toutes les demandes adressées à l'infrastructure Trezor seront dirigées vers nos services Tor, augmentant ainsi votre confidentialité et votre sécurité.",
-  "TR_TOR_PARAM_DESCRIPTION": "Vous pouvez configurer l'adresse pour la diriger vers une autre instance de Tor. Par défaut : 127.0.0.1:9050.",
-  "TR_TOR_PARAM_TITLE": "Adresse et port Tor",
   "TR_TOTAL_INPUT": "Entrée totale",
   "TR_TOTAL_OUTPUT": "Sortie totale",
   "TR_TO_ACCESS_OTHER_WALLETS": "Pour accéder à d'autres portefeuilles, veuillez connecter votre appareil.",

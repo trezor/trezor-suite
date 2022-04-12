@@ -63,7 +63,6 @@ const init: Module = ({ mainWindow, store }) => {
     };
 
     ipcMain.on('tor/toggle', () => setProxy());
-    ipcMain.on('tor/set-address', () => setProxy(true));
 
     ipcMain.on(
         'trezor-connect-call',
