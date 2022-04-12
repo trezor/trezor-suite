@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { PinMatrix, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
+import { PinMatrix } from '@suite-components/PinMatrix';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,

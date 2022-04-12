@@ -19,7 +19,7 @@ interface PinProps extends ModalProps {
     device: TrezorDevice;
 }
 
-const Pin = ({ device, ...rest }: PinProps) => {
+export const Pin = ({ device, ...rest }: PinProps) => {
     const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
     const invalidCounter =
         device.buttonRequests.filter(r => r.code === 'ui-invalid_pin').length || 0;
@@ -48,5 +48,3 @@ const Pin = ({ device, ...rest }: PinProps) => {
         </StyledModal>
     );
 };
-
-export default Pin;

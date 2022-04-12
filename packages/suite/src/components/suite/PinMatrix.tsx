@@ -37,7 +37,7 @@ interface Props {
     invalid?: boolean;
 }
 
-const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
+export const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
     const theme = useTheme();
     const [submitted, setSubmitted] = useState(false);
     const { onPinSubmit } = useActions({ onPinSubmit: modalActions.onPinSubmit });
@@ -105,5 +105,3 @@ const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
         </Wrapper>
     );
 };
-
-export default PinMatrix;
