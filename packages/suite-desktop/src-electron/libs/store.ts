@@ -32,7 +32,7 @@ export const setThemeSettings = (themeSettings: SuiteThemeVariant) =>
 export const getTorSettings = () =>
     store.get('torSettings', {
         running: false,
-        address: '127.0.0.1:9050',
+        address: '',
     });
 
 export const setTorSettings = (torSettings: TorSettings) => store.set('torSettings', torSettings);
