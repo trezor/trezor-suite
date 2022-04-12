@@ -1347,8 +1347,6 @@
   "TR_TOR_DISABLE_ONIONS_ONLY_TITLE": "禁用Tor 现在将会将所有Onion 后端重置为默认的 Trezor 服务器。",
   "TR_TOR_ENABLE": "启用Tor",
   "TR_TOR_ENABLE_AND_CONFIRM": "启用Tor并确认",
-  "TR_TOR_PARAM_DESCRIPTION": "您可以配置该地址以指向一个不同的 Tor 实例。默认：127.0.0.1:9050。",
-  "TR_TOR_PARAM_TITLE": "Tor 地址和端口",
   "TR_TOR_REMOVE_ONION_AND_DISABLE": "禁用Tor并切换到默认后端",
   "TR_TOR_TITLE": "Tor",
   "TR_TOTAL": "总计",

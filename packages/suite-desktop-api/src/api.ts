@@ -12,7 +12,6 @@ export interface MainChannels {
     'theme/change': SuiteThemeVariant;
     'tor/get-status': void;
     'tor/toggle': boolean;
-    'tor/set-address': string;
     'update/allow-prerelease': boolean;
     'update/cancel': void;
     'update/check': boolean | undefined;
@@ -92,8 +91,6 @@ export interface DesktopApi {
     // Tor
     getTorStatus: DesktopApiSend<'tor/get-status'>;
     toggleTor: DesktopApiSend<'tor/toggle'>;
-    getTorAddress: DesktopApiInvoke<'tor/get-address'>;
-    setTorAddress: DesktopApiSend<'tor/set-address'>;
     // Store
     clearStore: DesktopApiSend<'store/clear'>;
     clearUserData: DesktopApiInvoke<'user-data/clear'>;

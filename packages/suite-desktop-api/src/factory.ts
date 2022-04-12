@@ -90,11 +90,6 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
         toggleTor: start => {
             if (validation.isPrimitive('boolean', start)) ipcRenderer.send('tor/toggle', start);
         },
-        getTorAddress: () => ipcRenderer.invoke('tor/get-address'),
-        setTorAddress: address => {
-            if (validation.isPrimitive('string', address))
-                ipcRenderer.send('tor/set-address', address);
-        },
 
         // Store
         clearStore: () => ipcRenderer.send('store/clear'),

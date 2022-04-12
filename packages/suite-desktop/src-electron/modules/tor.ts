@@ -76,14 +76,6 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
         await TrezorConnect.setProxy(payload);
     });
 
-    ipcMain.on('tor/set-address', async (_: unknown, address: string) => {
-        if (store.getTorSettings().address !== address) {
-            logger.debug('tor', `Changed address to ${address}`);
-            const settings = persistSettings({ address });
-            await setupTor(settings);
-        }
-    });
-
     ipcMain.on('tor/get-status', () => {
         logger.debug('tor', `Getting status (${store.getTorSettings().running ? 'ON' : 'OFF'})`);
         mainWindow.webContents.send('tor/status', store.getTorSettings().running);

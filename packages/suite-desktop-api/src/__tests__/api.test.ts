@@ -220,28 +220,6 @@ describe('DesktopApi', () => {
             expect(spy).toBeCalledTimes(1); // invalid param not processed
         });
 
-        it('DesktopApi.getTorAddress', async () => {
-            const spy = jest
-                .spyOn(ipcRenderer, 'invoke')
-                .mockImplementation(() => Promise.resolve('0.0.0.0'));
-            const result = await api.getTorAddress();
-            expect(spy).toBeCalledWith('tor/get-address');
-            expect(result).toEqual('0.0.0.0');
-
-            // @ts-expect-error no expected params
-            const fail = await api.getTorAddress(true);
-        });
-
-        it('DesktopApi.setTorAddress', () => {
-            const spy = jest.spyOn(ipcRenderer, 'send');
-            api.setTorAddress('0.0.0.0');
-            expect(spy).toBeCalledWith('tor/set-address', '0.0.0.0');
-
-            // @ts-expect-error invalid params
-            api.getTorAddress(true);
-            expect(spy).toBeCalledTimes(1); // invalid param not processed
-        });
-
         it('DesktopApi.clearStore', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
             api.clearStore();

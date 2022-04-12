@@ -12,7 +12,6 @@ import { Labeling } from './Labeling';
 import { LabelingDisconnect } from './LabelingDisconnect';
 import { LabelingConnect } from './LabelingConnect';
 import { Tor } from './Tor';
-import { TorAddress } from './TorAddress';
 import { TorOnionLinks } from './TorOnionLinks';
 import { Theme } from './Theme';
 import { Analytics } from './Analytics';
@@ -43,7 +42,6 @@ export const SettingsGeneral = () => {
             {(isDesktop() || (isWeb() && tor)) && (
                 <SettingsSection title={<Translation id="TR_TOR" />} icon="TOR_MINIMAL">
                     {isDesktop() && <Tor />}
-                    {isDesktop() && <TorAddress />}
                     {tor && <TorOnionLinks />}
                 </SettingsSection>
             )}

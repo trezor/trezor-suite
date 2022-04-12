@@ -1347,8 +1347,6 @@
   "TR_TOR_DISABLE_ONIONS_ONLY_TITLE": "Torを無効にすると、全てのオニオンバックエンドがデフォルトのTrezorサーバーにリセットされます。",
   "TR_TOR_ENABLE": "Torの有効化",
   "TR_TOR_ENABLE_AND_CONFIRM": "Torを有効にする",
-  "TR_TOR_PARAM_DESCRIPTION": "異なるTorインスタンスをポイントするようにアドレスを設定できます。デフォルト： 127.0.0.1:9050。",
-  "TR_TOR_PARAM_TITLE": "Torアドレスとポート",
   "TR_TOR_REMOVE_ONION_AND_DISABLE": "Torを無効にしてデフォルトバックエンドに切替",
   "TR_TOR_TITLE": "Tor",
   "TR_TOTAL": "合計",
