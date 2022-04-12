@@ -29,7 +29,7 @@ const Tor = () => {
         }
 
         if (isDesktop()) {
-            desktopApi.getStatus();
+            desktopApi.getTorStatus();
             desktopApi.on('tor/status', updateTorStatus);
         }
     }, [updateTorStatus]);
