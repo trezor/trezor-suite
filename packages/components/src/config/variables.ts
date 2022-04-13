@@ -44,6 +44,7 @@ export const Z_INDEX = {
     GUIDE_BUTTON: 10,
     GUIDE_BUTTON_BESIDE_MODAL: 10001,
     DROPDOWN_MENU: 10003, // should lay above GUIDE_PANEL
+    TOOLTIP: 10003, // should lay above GUIDE_PANEL
     TOAST_CONTAINER: 10003, // should lay above GUIDE_PANEL
 } as const;
 

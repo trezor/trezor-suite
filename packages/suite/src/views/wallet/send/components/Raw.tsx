@@ -82,9 +82,12 @@ const Raw = ({ network }: { network: Network }) => {
                     bottomText={<InputError error={error} />}
                     label={
                         <Tooltip
-                            openGuide={{
-                                node: <OpenGuideFromTooltip id="/suite-basics/send/send-raw.md" />,
-                            }}
+                            guideAnchor={instance => (
+                                <OpenGuideFromTooltip
+                                    id="/suite-basics/send/send-raw.md"
+                                    instance={instance}
+                                />
+                            )}
                             content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
                             dashed
                         >
