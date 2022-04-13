@@ -3,6 +3,12 @@ body {
     height: 100%;
 }
 
+body {
+    width: 100%;
+    display: table;
+    margin: 0;
+}
+
 .container {
     font-family: 'TT Hoves';
     font-weight: 500;
