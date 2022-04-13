@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect, useCallback } from 'react';
+import React, { useState, createContext, useEffect, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -9,8 +9,9 @@ import { GuidePanel, GuideButton } from '@guide-components';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import { NavigationBar } from '../NavigationBar';
-import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
+import { useLayoutSize, useSelector, useDevice, useActions } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
+import * as routerActions from '@suite-actions/routerActions';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -127,6 +128,7 @@ export const LayoutContext = createContext<LayoutContextI>({
 
 type ScrollAppWrapperProps = Pick<MobileBodyProps, 'url'>;
 // ScrollAppWrapper is mandatory to reset AppWrapper scroll position on url change, fix: issue #1658
+// note: if you want to remove anchor highlight on scroll. It has to be added here
 const ScrollAppWrapper: React.FC<ScrollAppWrapperProps> = ({ url, children }) => {
     const ref = React.useRef<HTMLDivElement>(null);
     React.useEffect(() => {
@@ -188,9 +190,14 @@ const BodyMobile: React.FC<MobileBodyProps> = ({ url, menu, appMenu, children })
 );
 
 export const SuiteLayout: React.FC = ({ children }) => {
-    const { router } = useSelector(state => ({
+    const { router, anchor } = useSelector(state => ({
         router: state.router,
+        anchor: state.router.anchor,
     }));
+
+    const { onAnchorChange } = useActions({
+        onAnchorChange: routerActions.onAnchorChange,
+    });
 
     const [isModalOpenLastChange, setIsModalOpenLastChange] = useState<boolean>(false);
     const [title, setTitle] = useState<string | undefined>(undefined);
@@ -204,6 +211,22 @@ export const SuiteLayout: React.FC = ({ children }) => {
     // fixes problem of animated layout movement when guide was open and user opened a modal
     useEffect(() => setIsModalOpenLastChange(true), [isModalOpen]);
     useEffect(() => setIsModalOpenLastChange(false), [isGuideOpen]);
+
+    const pageWrapper = useRef<HTMLDivElement>(null);
+
+    const removeAnchor = useCallback(() => anchor && onAnchorChange(), [anchor, onAnchorChange]);
+
+    useEffect(() => {
+        // to assure propagation of click, which removes anchor highlight, work reliably
+        // click listener has to be added on react container
+        const pageWrapperParent = pageWrapper.current?.parentElement;
+
+        if (pageWrapperParent && anchor) {
+            pageWrapperParent.addEventListener('click', removeAnchor);
+
+            return () => pageWrapperParent.removeEventListener('click', removeAnchor);
+        }
+    }, [anchor, removeAnchor, pageWrapper]);
 
     const setLayout = useCallback<NonNullable<LayoutContextI['setLayout']>>(
         (newTitle, newMenu, newAppMenu) => {
@@ -228,7 +251,7 @@ export const SuiteLayout: React.FC = ({ children }) => {
     const isNavigationBarVisible = device?.mode === 'normal';
 
     return (
-        <PageWrapper>
+        <PageWrapper ref={pageWrapper}>
             <Metadata title={title} />
             <SuiteBanners />
 

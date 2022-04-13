@@ -73,11 +73,13 @@ export const onLocationChange =
         });
     };
 
-export const onAnchorChange = (anchor: AnchorType) => (dispatch: Dispatch, _getState: GetState) =>
+// if anchor param is not set, it works as reset
+export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _getState: GetState) =>
     dispatch({
         type: ROUTER.ANCHOR_CHANGE,
         payload: anchor,
     });
+
 /**
  * Dispatch initial url
  * Called from `@suite-middlewares/suiteMiddleware`
@@ -115,7 +117,11 @@ export const goto =
         const urlBase = getPrefixedURL(getRoute(routeName, params));
 
         if (urlBase === router.url) {
-            if (anchor && anchor !== router.anchor) dispatch(onAnchorChange(anchor));
+            // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
+            if (anchor) {
+                // postpone propagation to allow clearing anchor in redux state by click listener
+                setTimeout(() => dispatch(onAnchorChange(anchor)), 0);
+            }
             return;
         }
 

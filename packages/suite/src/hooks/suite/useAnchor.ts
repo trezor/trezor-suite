@@ -1,23 +1,23 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 
-import { useSelector } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
+import * as routerActions from '@suite-actions/routerActions';
 
 export const useAnchor = (anchorId: string) => {
+    const anchorRef = useRef<HTMLDivElement>(null);
+
     const { anchor } = useSelector(state => ({
         anchor: state.router.anchor,
     }));
 
-    const anchorRef = useRef<HTMLDivElement>(null);
-    const [isActive, setIsActive] = useState<boolean>(true);
-
-    /* Removes highlight on user's click
-     * Note:
-     * There was an idea to do not remove it when user clicks on the specific item. However, there is a problem with modals.
-     */
-    const listener = () => setIsActive(false);
+    const { onAnchorChange } = useActions({
+        onAnchorChange: routerActions.onAnchorChange,
+    });
 
     useEffect(() => {
-        if (anchorId === anchor && isActive && anchorRef.current) {
+        if (anchorId === anchor && anchorRef.current) {
+            // scroll to anchor, has to be delayed to allow proper render of components
+            // note: we cannot easily remove highlight on manual scroll because scroll listener is also activated by "scrollIntoView"
             const scrollTimeout = setTimeout(
                 () =>
                     anchorRef?.current?.scrollIntoView({
@@ -27,24 +27,12 @@ export const useAnchor = (anchorId: string) => {
                 0,
             );
 
-            document.addEventListener('click', listener, {
-                capture: true,
-            });
-
-            return () => {
-                clearTimeout(scrollTimeout);
-                document.removeEventListener('click', listener, {
-                    capture: true,
-                });
-            };
+            return () => clearTimeout(scrollTimeout);
         }
-        if (!isActive && anchor !== anchorId) {
-            setIsActive(true);
-        }
-    }, [anchorRef, anchor, anchorId, isActive]);
+    }, [anchorRef, anchor, anchorId, onAnchorChange]);
 
     return {
         anchorRef,
-        shouldHighlight: anchorId === anchor && isActive,
+        shouldHighlight: anchorId === anchor,
     };
 };
