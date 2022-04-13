@@ -12,10 +12,10 @@ import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
 import { Translation, Modal } from '@suite-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { useActions, useFirmware, useSelector } from '@suite-hooks';
-import { ConfirmOnDevice, Icon, useTheme } from '@trezor/components';
+import { ConfirmOnDevice, variables } from '@trezor/components';
 import * as suiteActions from '@suite-actions/suiteActions';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
     display: flex;
     width: 100%;
     height: 100%;
@@ -23,16 +23,10 @@ const Wrapper = styled.div`
     align-items: center;
     text-align: left;
     position: relative;
-    padding: 40px 0px 20px 0px;
-`;
 
-const CancelIconWrapper = styled.div`
-    display: inline-block;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    align-items: center;
-    cursor: pointer;
+    ${variables.SCREEN_QUERY.ABOVE_TABLET} {
+        padding-top: ${({ isWithTopPadding }) => isWithTopPadding && '40px'};
+    }
 `;
 
 const StyledModal = styled(Modal)`
@@ -53,7 +47,6 @@ const StyledModal = styled(Modal)`
 `;
 
 const Firmware = () => {
-    const theme = useTheme();
     const { resetReducer, status, setStatus, error, firmwareUpdate } = useFirmware();
     const { device } = useSelector(state => ({
         device: state.suite.device,
@@ -158,7 +151,7 @@ const Firmware = () => {
     return (
         <StyledModal
             isCancelable={isCancelable}
-            header={
+            devicePrompt={
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -170,15 +163,7 @@ const Firmware = () => {
             onCancel={onClose}
             data-test="@firmware"
         >
-            <Wrapper>
-                {isCancelable && (
-                    // we need to provide custom close button as we don't use default one included in Modal's heading component
-                    <CancelIconWrapper data-test="@modal/close-button" onClick={onClose}>
-                        <Icon size={24} color={theme.TYPE_DARK_GREY} icon="CROSS" />
-                    </CancelIconWrapper>
-                )}
-                {Component}
-            </Wrapper>
+            <Wrapper isWithTopPadding={!isCancelable}>{Component}</Wrapper>
         </StyledModal>
     );
 };

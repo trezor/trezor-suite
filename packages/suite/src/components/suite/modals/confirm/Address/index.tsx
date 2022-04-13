@@ -83,7 +83,7 @@ const ConfirmAddress = ({
                     values={{ networkName: symbol.toUpperCase() }}
                 />
             }
-            header={
+            devicePrompt={
                 device.connected ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}

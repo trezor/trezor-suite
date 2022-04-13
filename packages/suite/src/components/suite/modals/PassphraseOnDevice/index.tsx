@@ -47,7 +47,7 @@ const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
                     }
                 />
             }
-            header={
+            devicePrompt={
                 !authConfirmation ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
