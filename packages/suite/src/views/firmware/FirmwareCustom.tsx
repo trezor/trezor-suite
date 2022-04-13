@@ -86,7 +86,7 @@ const FirmwareCustom = () => {
             isCancelable={isCancelable}
             onCancel={onClose}
             heading={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
-            header={
+            devicePrompt={
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}

@@ -1,5 +1,5 @@
 /* stylelint-disable indentation */
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useKeyPress, useTheme } from '../../utils/hooks';
 import { Icon } from '../Icon';
@@ -8,18 +8,22 @@ import { variables } from '../../config';
 import { ProgressBar } from './ProgressBar';
 import { IconType } from '../../support/types';
 
-const Header = styled.div`
+const DevicePromptContainer = styled.div`
     margin-bottom: 25px;
 `;
 
-const HeaderBar = styled.div<{
+export interface HeaderProps {
     isBottomBorderShown: boolean;
-}>`
+    hasBottomPadding?: boolean;
+}
+
+const Header = styled.div<HeaderProps>`
     display: flex;
     align-items: center;
     justify-content: center;
     word-break: break-word;
     padding: 24px 32px;
+    padding-bottom: ${({ hasBottomPadding }) => !hasBottomPadding && 0};
     border-bottom: ${({ isBottomBorderShown, theme }) =>
         isBottomBorderShown ? `1px solid ${theme.STROKE_GREY}` : 'none'};
 `;
@@ -31,11 +35,13 @@ const BackIcon = styled(Icon)`
     }
 `;
 
-const HeadingContainer = styled.div<{
+interface HeadingContainerProps {
     isHeadingCentered?: boolean;
     isWithBackButton?: boolean;
     componentsWidth?: number;
-}>`
+}
+
+const HeadingContainer = styled.div<HeadingContainerProps>`
     display: flex;
     flex-direction: column;
     align-items: start;
@@ -143,7 +149,7 @@ interface ModalProps {
     children?: React.ReactNode;
     heading?: React.ReactNode;
     subheading?: React.ReactNode;
-    header?: React.ReactNode;
+    devicePrompt?: React.ReactNode;
     headerIcon?: IconType;
     isHeadingCentered?: boolean;
     description?: React.ReactNode;
@@ -160,7 +166,7 @@ interface ModalProps {
 }
 
 type ModalSubcomponents = {
-    HeaderBar: typeof HeaderBar;
+    Header: typeof Header;
     Body: typeof Body;
     Description: typeof Description;
     Content: typeof Content;
@@ -171,7 +177,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
     children,
     heading,
     subheading,
-    header,
+    devicePrompt,
     headerIcon,
     isHeadingCentered = true,
     description,
@@ -214,7 +220,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
 
     return (
         <>
-            {header && <Header>{header}</Header>}
+            {devicePrompt && <DevicePromptContainer>{devicePrompt}</DevicePromptContainer>}
 
             <ModalWindow
                 data-test={dataTest}
@@ -224,8 +230,11 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
                     e.stopPropagation();
                 }}
             >
-                {heading && (
-                    <HeaderBar isBottomBorderShown={!showProgressBar}>
+                {(!!onBackClick || !!heading || showHeaderActions) && (
+                    <Header
+                        isBottomBorderShown={!showProgressBar && !!heading}
+                        hasBottomPadding={!!heading}
+                    >
                         {onBackClick && (
                             <BackIcon
                                 icon="ARROW_LEFT"
@@ -236,24 +245,26 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
                             />
                         )}
 
-                        <HeadingContainer
-                            componentsWidth={componentsWidth}
-                            isHeadingCentered={isHeadingCentered}
-                            isWithBackButton={!!onBackClick}
-                        >
-                            <StyledH1 noMargin isWithIcon={!!headerIcon}>
-                                {headerIcon && (
-                                    <Icon
-                                        icon={headerIcon}
-                                        size={20}
-                                        color={theme.TYPE_DARK_GREY}
-                                    />
-                                )}
-                                {heading}
-                            </StyledH1>
+                        {heading && (
+                            <HeadingContainer
+                                componentsWidth={componentsWidth}
+                                isHeadingCentered={isHeadingCentered}
+                                isWithBackButton={!!onBackClick}
+                            >
+                                <StyledH1 noMargin isWithIcon={!!headerIcon}>
+                                    {headerIcon && (
+                                        <Icon
+                                            icon={headerIcon}
+                                            size={20}
+                                            color={theme.TYPE_DARK_GREY}
+                                        />
+                                    )}
+                                    {heading}
+                                </StyledH1>
 
-                            {subheading && <Subheading>{subheading}</Subheading>}
-                        </HeadingContainer>
+                                {subheading && <Subheading>{subheading}</Subheading>}
+                            </HeadingContainer>
+                        )}
 
                         {showHeaderActions && (
                             <HeaderComponentsContainer ref={measureComponentsRef}>
@@ -271,7 +282,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
                                 )}
                             </HeaderComponentsContainer>
                         )}
-                    </HeaderBar>
+                    </Header>
                 )}
 
                 {heading && showProgressBar && (
@@ -289,7 +300,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
     );
 };
 
-Modal.HeaderBar = HeaderBar;
+Modal.Header = Header;
 Modal.Body = Body;
 Modal.Description = Description;
 Modal.Content = Content;

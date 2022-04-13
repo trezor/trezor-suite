@@ -38,7 +38,7 @@ const PassphraseSource = ({ device }: PassphraseSourceProps) => {
                     values={{ deviceLabel: device.label }}
                 />
             }
-            header={
+            devicePrompt={
                 !authConfirmation ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}

@@ -200,7 +200,7 @@ const ReviewTransaction = ({ decision }: Props) => {
 
     return (
         <StyledModal
-            header={
+            devicePrompt={
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     steps={outputs.length}

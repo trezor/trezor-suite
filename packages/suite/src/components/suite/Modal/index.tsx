@@ -76,7 +76,7 @@ export const Modal = ({ render: View = DefaultRenderer, ...props }: ModalProps) 
     );
 };
 
-Modal.HeaderBar = TrezorModal.HeaderBar;
+Modal.Header = TrezorModal.Header;
 Modal.Body = TrezorModal.Body;
 Modal.Description = TrezorModal.Description;
 Modal.Content = TrezorModal.Content;

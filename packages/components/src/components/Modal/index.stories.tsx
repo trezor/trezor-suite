@@ -91,7 +91,7 @@ storiesOf('Modals', module)
                 <ThemeProvider theme={theme === 'dark' ? THEME.dark : THEME.light}>
                     <Backdrop>
                         <Modal
-                            header={
+                            devicePrompt={
                                 <ConfirmOnDevice
                                     successText="confirmed"
                                     title="Confirm on trezor"

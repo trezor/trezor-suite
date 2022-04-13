@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     max-width: 95vw;
 `;
 
-const Heading = styled(Modal.HeaderBar)`
+const Header = styled(Modal.Header)`
     margin-bottom: 20px;
 `;
 
@@ -31,9 +31,9 @@ export const RawRenderer = ({
 }: ModalProps) => (
     <Wrapper className={className} data-test={dataTest}>
         {heading && (
-            <Heading isBottomBorderShown={false}>
+            <Header isBottomBorderShown={false}>
                 <H1>{heading}</H1>
-            </Heading>
+            </Header>
         )}
 
         {description && <Modal.Description>{description}</Modal.Description>}
