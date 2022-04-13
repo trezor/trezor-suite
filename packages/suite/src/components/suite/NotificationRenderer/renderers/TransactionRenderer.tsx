@@ -25,8 +25,9 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
         goto: routerActions.goto,
     });
 
-    const { accounts, transactions, devices, blockchain } = useSelector(state => ({
+    const { accounts, transactions, devices, blockchain, currentDevice } = useSelector(state => ({
         devices: state.devices,
+        currentDevice: state.suite.device,
         accounts: state.wallet.accounts,
         transactions: state.wallet.transactions,
         blockchain: state.wallet.blockchain,
@@ -55,7 +56,10 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
             }}
             action={{
                 onClick: () => {
-                    selectDevice(accountDevice || device);
+                    const deviceToSelect = accountDevice || device;
+                    if (deviceToSelect?.id !== currentDevice?.id) {
+                        selectDevice(deviceToSelect);
+                    }
                     const txAnchor = getTxAnchor(tx?.txid);
                     goto('wallet-index', {
                         params: {
