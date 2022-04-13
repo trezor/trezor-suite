@@ -19,19 +19,19 @@ const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) => {
         case DEVICE.CONNECT:
             action = {
                 label: 'TR_SELECT_DEVICE',
-                onClick: () => (!seen ? selectDevice(device) : undefined),
+                onClick: () => selectDevice(device),
             };
             break;
         case DEVICE.CONNECT_UNACQUIRED:
             action = {
                 label: 'TR_SOLVE_ISSUE',
-                onClick: () => (!seen ? acquireDevice(device) : undefined),
+                onClick: () => acquireDevice(device),
             };
             break;
         // no default
     }
 
-    return <View {...props} action={action} />;
+    return <View {...props} action={!seen ? action : undefined} />;
 };
 
 export default ActionRenderer;
