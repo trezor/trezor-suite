@@ -1,6 +1,6 @@
 import React from 'react';
 import { TrezorDevice } from '@suite-types';
-import { resolveStaticPath } from '@suite-utils/build';
+import { resolveStaticPath } from '@trezor/utils';
 import styled, { css } from 'styled-components';
 
 const Image = styled.img`

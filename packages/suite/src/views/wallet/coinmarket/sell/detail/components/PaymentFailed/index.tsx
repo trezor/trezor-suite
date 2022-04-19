@@ -1,7 +1,7 @@
 import * as routerActions from '@suite-actions/routerActions';
 import React from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/build';
+import { resolveStaticPath } from '@trezor/utils';
 import { Button, variables, Link } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
 import { useActions } from '@suite-hooks/useActions';

@@ -12,6 +12,7 @@
     ],
     "references": [
         { "path": "../components" },
-        { "path": "../suite" }
+        { "path": "../suite" },
+        { "path": "../utils" }
     ]
 }

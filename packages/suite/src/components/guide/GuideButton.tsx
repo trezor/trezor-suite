@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/build';
+import { resolveStaticPath } from '@trezor/utils';
 import { useAnalytics } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
 

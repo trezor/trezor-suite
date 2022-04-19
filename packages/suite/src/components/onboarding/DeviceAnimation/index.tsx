@@ -4,7 +4,7 @@ import Lottie, { LottieOptions } from 'lottie-react';
 import * as semver from 'semver';
 import { useTheme } from '@trezor/components';
 
-import { resolveStaticPath } from '@suite-utils/build';
+import { resolveStaticPath } from '@trezor/utils';
 
 import { getDeviceModel, getFwVersion } from '@suite-utils/device';
 
