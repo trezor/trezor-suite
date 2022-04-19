@@ -81,10 +81,6 @@ type RatingItem = {
     value: React.ReactNode;
 };
 
-interface Props {
-    type: FeedbackType;
-}
-
 const MESSAGE_CHARACTER_LIMIT = 1000;
 const ratingOptions: RatingItem[] = [
     {
@@ -115,7 +111,11 @@ type FeedbackCategoryOption = {
     value: FeedbackCategory;
 };
 
-const Feedback = ({ type }: Props) => {
+type FeedbackProps = {
+    type: FeedbackType;
+};
+
+export const Feedback = ({ type }: FeedbackProps) => {
     const analytics = useAnalytics();
 
     const { device } = useDevice();
@@ -355,5 +355,3 @@ const Feedback = ({ type }: Props) => {
         </ViewWrapper>
     );
 };
-
-export default Feedback;

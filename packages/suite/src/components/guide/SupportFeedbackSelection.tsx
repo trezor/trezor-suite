@@ -99,7 +99,7 @@ const LabelSubheadline = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const SupportFeedbackSelection = () => {
+export const SupportFeedbackSelection = () => {
     const analytics = useAnalytics();
     const { setView } = useActions({
         setView: guideActions.setView,
@@ -249,5 +249,3 @@ const SupportFeedbackSelection = () => {
         </ViewWrapper>
     );
 };
-
-export default SupportFeedbackSelection;

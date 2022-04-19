@@ -64,11 +64,11 @@ const StyledMarkdown = styled.div`
     }
 `;
 
-interface Props {
+interface GuideMarkdownProps {
     markdown: any;
 }
 
-const GuideMarkdown = ({ markdown }: Props) => {
+export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
     const { openNodeById } = useGuideOpenNode();
     const ref = React.createRef<HTMLDivElement>();
     useEffect(() => {
@@ -104,4 +104,3 @@ const GuideMarkdown = ({ markdown }: Props) => {
         </StyledMarkdown>
     );
 };
-export default GuideMarkdown;

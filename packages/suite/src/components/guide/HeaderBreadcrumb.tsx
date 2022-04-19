@@ -41,7 +41,7 @@ const CategoryLink = styled(TrezorLink)`
     }
 `;
 
-export const HeaderBreadcrumb: React.FC = () => {
+export const HeaderBreadcrumb = () => {
     const { language, indexNode, currentNode } = useSelector(state => ({
         language: state.suite.settings.language,
         indexNode: state.guide.indexNode,

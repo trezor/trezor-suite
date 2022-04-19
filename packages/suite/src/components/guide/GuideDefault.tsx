@@ -49,7 +49,7 @@ const FeedbackButtonRightIcon = styled(Icon)`
     margin-top: -1px;
 `;
 
-const GuideDefault = (props: any) => {
+export const GuideDefault = () => {
     const analytics = useAnalytics();
     const theme = useTheme();
     const [searchActive, setSearchActive] = useState(false);
@@ -62,7 +62,7 @@ const GuideDefault = (props: any) => {
     }));
 
     return (
-        <ViewWrapper {...props}>
+        <ViewWrapper>
             <Header label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
             <Content>
                 <GuideSearch pageRoot={indexNode} setSearchActive={setSearchActive} />
@@ -97,5 +97,3 @@ const GuideDefault = (props: any) => {
         </ViewWrapper>
     );
 };
-
-export default GuideDefault;

@@ -27,7 +27,7 @@ type GuideCategoriesProps = {
     label: string | ReactNode;
 };
 
-export const GuideCategories: React.FC<GuideCategoriesProps> = ({ node, label }) => {
+export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
     if (!node || node.type !== 'category') {
         return null;
     }

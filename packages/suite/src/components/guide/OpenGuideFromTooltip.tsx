@@ -37,7 +37,7 @@ type OpenGuideFromTooltipProps = {
     dataTest?: string;
 };
 
-const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTooltipProps) => {
+export const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTooltipProps) => {
     const { openNodeById } = useGuideOpenNode();
 
     return (
@@ -59,4 +59,3 @@ const OpenGuideFromTooltip = ({ id, instance, dataTest }: OpenGuideFromTooltipPr
         </OpenGuideLink>
     );
 };
-export default OpenGuideFromTooltip;

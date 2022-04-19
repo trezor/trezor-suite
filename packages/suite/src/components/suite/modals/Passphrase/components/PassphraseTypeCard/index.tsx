@@ -7,7 +7,7 @@ import { Button, useTheme, variables, Input, Tooltip, Checkbox, Icon } from '@tr
 import { Translation } from '@suite-components/Translation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@trezor/utils';
-import { OpenGuideFromTooltip } from '@guide-views';
+import { OpenGuideFromTooltip } from '@guide-components';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 import { useTranslation } from '@suite-hooks';
 import { isAndroid } from '@suite-utils/env';

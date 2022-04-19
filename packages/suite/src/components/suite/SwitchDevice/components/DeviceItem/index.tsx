@@ -9,7 +9,7 @@ import { TrezorDevice, AcquiredDevice, InjectedModalApplicationProps } from '@su
 import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { OpenGuideFromTooltip } from '@guide-views';
+import { OpenGuideFromTooltip } from '@guide-components';
 
 import WalletInstance from '../WalletInstance';
 import ColHeader from './components/ColHeader';
