@@ -1,4 +1,5 @@
-import { resolveStaticPath } from '@suite-utils/build';
+import { resolveStaticPath } from '@trezor/utils/lib/resolveStaticPath';
+
 // switch favicon if dark mode
 export const switchFavicon = () => {
     const icon = document.querySelector('link[rel=icon]');

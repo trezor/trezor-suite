@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/build';
+import { resolveStaticPath } from '@trezor/utils';
 import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { BuyTrade, BuyTradeStatus } from 'invity-api';

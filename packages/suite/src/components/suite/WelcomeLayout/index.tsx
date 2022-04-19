@@ -9,7 +9,7 @@ import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';
 import { isWeb } from '@suite-utils/env';
 import { TREZOR_URL, SUITE_URL } from '@suite-constants/urls';
-import { resolveStaticPath } from '@suite-utils/build';
+import { resolveStaticPath } from '@trezor/utils';
 import { useSelector } from '@suite-hooks';
 import { GuideButton, GuidePanel } from '@guide-components';
 import { useGuide } from '@guide-hooks';

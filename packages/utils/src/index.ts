@@ -18,3 +18,4 @@ export * as versionUtils from './versionUtils';
 export * from './objectPartition';
 export * from './throwError';
 export * from './isHex';
+export * from './resolveStaticPath';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { resolveStaticPath } from '@suite-utils/build';
+import { resolveStaticPath } from '@trezor/utils';
 import { URLS } from '@suite-constants';
 import Helmet from 'react-helmet';
 import { useIntl } from 'react-intl';

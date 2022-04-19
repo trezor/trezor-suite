@@ -1,5 +1,6 @@
 /* eslint-disable global-require, @typescript-eslint/no-var-requires */
-import { normalizeVersion, resolveStaticPath } from '../build';
+import { normalizeVersion } from '../build';
+import { resolveStaticPath } from '@trezor/utils';
 
 const OLD_ENV = { ...process.env };
 
