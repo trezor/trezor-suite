@@ -67,7 +67,7 @@ type GuideSearchProps = {
     setSearchActive: (active: boolean) => void;
 };
 
-export const GuideSearch: React.FC<GuideSearchProps> = ({ pageRoot, setSearchActive }) => {
+export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => {
     const [query, setQuery] = useState('');
 
     const { translationString } = useTranslation();

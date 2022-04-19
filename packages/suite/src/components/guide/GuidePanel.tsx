@@ -11,7 +11,7 @@ import {
     GuidePage,
     GuideCategory,
     Feedback,
-} from '@guide-views';
+} from '@guide-components';
 import { useGuide, GUIDE_ANIMATION_DURATION_MS } from '@guide-hooks';
 
 const fullHeightStyle = css`
@@ -68,7 +68,7 @@ const MotionGuide = styled(motion.div)`
     display: flex;
 `;
 
-export const GuidePanel: React.FC = () => {
+export const GuidePanel = () => {
     const { activeView } = useSelector(state => ({
         activeView: state.guide.view,
     }));

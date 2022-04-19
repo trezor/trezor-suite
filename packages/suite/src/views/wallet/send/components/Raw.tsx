@@ -9,7 +9,7 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
 import { Network } from '@wallet-types';
-import { OpenGuideFromTooltip } from '@guide-views';
+import { OpenGuideFromTooltip } from '@guide-components';
 
 const Wrapper = styled.div`
     /* display: flex;

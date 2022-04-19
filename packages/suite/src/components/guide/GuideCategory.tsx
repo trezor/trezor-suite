@@ -29,7 +29,7 @@ const Nodes = styled.div`
     justify-content: space-between;
 `;
 
-const GuideCategory = () => {
+export const GuideCategory = () => {
     const { currentNode, language } = useSelector(state => ({
         currentNode: state.guide.currentNode,
         language: state.suite.settings.language,
@@ -81,5 +81,3 @@ const GuideCategory = () => {
         </ViewWrapper>
     );
 };
-
-export default GuideCategory;

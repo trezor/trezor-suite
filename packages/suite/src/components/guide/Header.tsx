@@ -74,13 +74,13 @@ const StyledIcon = styled(Icon)`
     margin: -8px;
 `;
 
-interface Props {
+interface HeaderProps {
     back?: () => void;
     label?: string | JSX.Element;
     useBreadcrumb?: boolean;
 }
 
-export const Header = ({ back, label, useBreadcrumb }: Props) => {
+export const Header = ({ back, label, useBreadcrumb }: HeaderProps) => {
     const theme = useTheme();
     const analytics = useAnalytics();
 

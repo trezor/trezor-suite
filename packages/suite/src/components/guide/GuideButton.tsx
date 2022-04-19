@@ -31,7 +31,7 @@ const Wrapper = styled.button<{ isGuideOpen?: boolean; isModalOpen?: boolean }>`
     }
 `;
 
-export const GuideButton: React.FC = () => {
+export const GuideButton = () => {
     const { openGuide, isGuideOpen, isModalOpen } = useGuide();
     const analytics = useAnalytics();
 

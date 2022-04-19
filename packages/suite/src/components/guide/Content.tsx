@@ -12,8 +12,12 @@ const WrapperWidth = styled.div`
     width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_CONTENT_WIDTH};
 `;
 
-export const Content: React.FC = ({ ...props }) => (
+type ContentProps = {
+    children: React.ReactNode;
+};
+
+export const Content = ({ children }: ContentProps) => (
     <Wrapper>
-        <WrapperWidth {...props} />
+        <WrapperWidth>{children}</WrapperWidth>
     </Wrapper>
 );

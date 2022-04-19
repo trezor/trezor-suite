@@ -6,7 +6,7 @@ import { InputError } from '@wallet-components';
 import { Textarea, Icon, Tooltip } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
-import { OpenGuideFromTooltip } from '@guide-views';
+import { OpenGuideFromTooltip } from '@guide-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`

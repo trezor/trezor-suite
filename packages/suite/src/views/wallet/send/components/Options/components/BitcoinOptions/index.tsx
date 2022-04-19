@@ -5,7 +5,7 @@ import { OnOffSwitcher } from '@wallet-components';
 import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
-import { OpenGuideFromTooltip } from '@guide-views';
+import { OpenGuideFromTooltip } from '@guide-components';
 import Locktime from './components/Locktime';
 
 const Wrapper = styled.div`

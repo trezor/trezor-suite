@@ -11,7 +11,11 @@ const Wrapper = styled.div`
 
 export const ContentScrolledContext = createContext<boolean>(false);
 
-export const ViewWrapper: React.FC = ({ children, ...rest }) => {
+type ViewWrapperProps = {
+    children: React.ReactNode;
+};
+
+export const ViewWrapper = ({ children }: ViewWrapperProps) => {
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
     const onScroll = useCallback((e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -23,7 +27,7 @@ export const ViewWrapper: React.FC = ({ children, ...rest }) => {
     }, []);
 
     return (
-        <Wrapper onScroll={onScroll} {...rest}>
+        <Wrapper onScroll={onScroll}>
             <ContentScrolledContext.Provider value={isScrolled}>
                 {children}
             </ContentScrolledContext.Provider>

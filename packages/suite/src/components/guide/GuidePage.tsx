@@ -1,11 +1,10 @@
 import React from 'react';
 import { useSelector } from '@suite-hooks';
-import { Header, Content, ViewWrapper } from '@guide-components';
-import { GuideMarkdown } from '@guide-views';
+import { Header, Content, ViewWrapper, GuideMarkdown } from '@guide-components';
 import { Translation } from '@suite-components';
 import { useGuideLoadPage } from '@guide-hooks';
 
-const GuidePage = () => {
+export const GuidePage = () => {
     const { currentNode, language } = useSelector(state => ({
         currentNode: state.guide.currentNode,
         language: state.suite.settings.language,
@@ -23,5 +22,3 @@ const GuidePage = () => {
         </ViewWrapper>
     );
 };
-
-export default GuidePage;

@@ -99,7 +99,6 @@
             "@firmware-hooks": ["./packages/suite/src/hooks/firmware/index"],
 
             "@guide-components": ["./packages/suite/src/components/guide/index"],
-            "@guide-views": ["./packages/suite/src/views/guide/index"],
             "@guide-hooks/*": ["./packages/suite/src/hooks/guide/*"],
             "@guide-hooks": ["./packages/suite/src/hooks/guide/index"],
 

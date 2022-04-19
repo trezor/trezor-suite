@@ -30,7 +30,6 @@ const NodeButton = styled.button`
 const PageNodeButton = styled(NodeButton)`
     text-align: left;
     margin-bottom: 10px;
-    align-items: flex-start;
 `;
 
 const PageNodeButtonIcon = styled(Icon)`
@@ -67,7 +66,7 @@ type GuideNodeProps = {
     description?: React.ReactNode;
 };
 
-export const GuideNode: React.FC<GuideNodeProps> = ({ node, description }) => {
+export const GuideNode = ({ node, description }: GuideNodeProps) => {
     const { language } = useSelector(state => ({
         language: state.suite.settings.language,
     }));
