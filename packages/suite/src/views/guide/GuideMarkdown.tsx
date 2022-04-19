@@ -59,6 +59,9 @@ const StyledMarkdown = styled.div`
             text-decoration: underline;
         }
     }
+    img {
+        max-width: 100%;
+    }
 `;
 
 interface Props {

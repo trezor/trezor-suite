@@ -1,6 +1,9 @@
 import { join } from 'path';
 import * as fs from 'fs-extra';
 
+import { resolveStaticPath } from '@trezor/utils';
+import { GITBOOK_ASSETS_DIR_PREFIX } from './constants';
+
 /**
  * A group of Guide content.
  * Can contain other Pages or Categories.
@@ -16,6 +19,7 @@ export interface Category {
     title: {
         [key: string]: string;
     };
+    image?: string;
     /** Sub-categories and sub-pages. */
     children: Node[];
 }
@@ -46,12 +50,18 @@ export class Parser {
         this.source = source;
     }
 
-    /** Returns a title of given directory. */
-    private parseDirTitle(path: string): string {
+    /** Returns if given path is a root Node. */
+    // eslint-disable-next-line arrow-body-style
+    private isRootNode = (path: string): boolean => {
         // Handle the special case of the root of a locale
         // which doesn't contain a README.md.
         // Strip last 3 chars because locale (always two letters) and separator.
-        if (path.slice(0, -3) === this.source) {
+        return path.slice(0, -3) === this.source;
+    };
+
+    /** Returns a title of given directory. */
+    private parseDirTitle(path: string): string {
+        if (this.isRootNode(path)) {
             // A sensible fallback for title of the root Node.
             // Won't be shown in the UI anyway.
             return 'Suite Guide';
@@ -60,6 +70,24 @@ export class Parser {
         // GitBook creates a directory with README.md.
         // Parse the title from there.
         return this.parsePageTitle(join(path, 'README.md'));
+    }
+
+    /** Returns a path to category image. */
+    private parseCategoryImage(path: string): string | undefined {
+        // No image for root node as it is not shown in the UI anyway
+        if (this.isRootNode(path)) return;
+
+        const doc = fs.readFileSync(join(path, 'README.md'));
+
+        // Match image file name from markdown image syntax
+        const image = doc
+            .toString()
+            .match(new RegExp(`(?<=${GITBOOK_ASSETS_DIR_PREFIX}/)(.*?)(?=\\))`))?.[0]
+            // even non-special characters are escaped in markdown, they are escaped again if used in JSON
+            // which creates unnecessary backslash which is then converted to slash in browser and breaks the image url
+            ?.replace(/\\/g, '');
+
+        return image ? resolveStaticPath(`/guide/${image}`) : undefined;
     }
 
     /** Returns a title of given page. */
@@ -122,6 +150,7 @@ export class Parser {
                 title: {
                     [locale]: this.parseDirTitle(path),
                 },
+                image: this.parseCategoryImage(path),
                 children,
             };
         }

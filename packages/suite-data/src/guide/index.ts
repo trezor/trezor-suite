@@ -1,7 +1,15 @@
 import { join } from 'path';
 import * as fs from 'fs-extra';
 import simpleGit from 'simple-git';
-import { TMP, GITBOOK_SOURCE, GITBOOK_REVISION, DESTINATION, ASSETS_DIR } from './constants';
+
+import {
+    TMP,
+    GITBOOK_SOURCE,
+    GITBOOK_REVISION,
+    DESTINATION,
+    ASSETS_DIR_SOURCE,
+    ASSETS_DIR_DESTINATION,
+} from './constants';
 import { Parser } from './parser';
 import { transform } from './transformer';
 
@@ -37,7 +45,7 @@ const main = async () => {
     transform(index, TMP, DESTINATION);
 
     fs.writeJSONSync(join(DESTINATION, 'index.json'), index);
-    fs.copySync(join(TMP, ASSETS_DIR), join(DESTINATION, ASSETS_DIR));
+    fs.copySync(join(TMP, ASSETS_DIR_SOURCE), join(DESTINATION, ASSETS_DIR_DESTINATION));
 };
 
 main();

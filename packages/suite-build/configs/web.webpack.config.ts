@@ -19,7 +19,15 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new CopyPlugin({
-            patterns: ['browser-detection', 'fonts', 'images', 'message-system', 'oauth', 'videos']
+            patterns: [
+                'browser-detection',
+                'fonts',
+                'images',
+                'message-system',
+                'oauth',
+                'videos',
+                'guide/assets',
+            ]
                 .map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),
