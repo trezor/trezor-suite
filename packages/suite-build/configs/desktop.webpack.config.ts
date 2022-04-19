@@ -26,7 +26,7 @@ const config: webpack.Configuration = {
             path.join(baseDir, 'src/support/trezor-connect-ipc-wrapper'),
         ),
         new CopyPlugin({
-            patterns: ['bin', 'fonts', 'images', 'message-system', 'videos']
+            patterns: ['bin', 'fonts', 'images', 'message-system', 'videos', 'guide/assets']
                 .map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),

@@ -1,9 +1,19 @@
 import { join } from 'path';
 import * as fs from 'fs-extra';
+
+import { resolveStaticPath } from '@trezor/utils';
 import { Node } from './parser';
 
 /** Removes the front-matter from beginning of a string. */
 const clean = (md: string): string => md.replace(/^---\n.*?\n---\n/s, '');
+
+/**
+ * Transforms GitBook images path to Suite images path.
+ *
+ * ![](../../.gitbook/assets/example.png) to ![](static/guide/assets/example.png)
+ */
+const transformImagesPath = (md: string): string =>
+    md.replace(/(?<=\]\()(.*?)(?=\/assets)/g, resolveStaticPath('/guide'));
 
 /**
  * Given index of GitBook content transforms the content
@@ -23,8 +33,10 @@ export const transform = (node: Node, source: string, destination: string) => {
         node.children.forEach(child => transform(child, source, destination));
     } else {
         node.locales.forEach(locale => {
-            const markdown = clean(fs.readFileSync(join(source, locale, node.id)).toString());
-            fs.writeFileSync(join(destination, locale, node.id), markdown);
+            const markdown = fs.readFileSync(join(source, locale, node.id)).toString();
+            const transformedMarkdown = transformImagesPath(clean(markdown));
+
+            fs.writeFileSync(join(destination, locale, node.id), transformedMarkdown);
         });
     }
 };

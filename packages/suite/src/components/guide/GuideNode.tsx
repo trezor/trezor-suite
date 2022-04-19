@@ -15,7 +15,7 @@ const NodeButton = styled.button`
     border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     width: 100%;
     background: none;
-    padding: 13px 17px;
+    padding: 10px;
     cursor: pointer;
     line-height: 1.57;
     transition: ${({ theme }) =>
@@ -48,10 +48,18 @@ const Label = styled.div<{ isBold: boolean }>`
 `;
 
 const CategoryNodeButton = styled(NodeButton)`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     width: 142px;
-    height: 70px;
     text-align: center;
     margin-bottom: 21px;
+    height: 120px;
+`;
+
+const Image = styled.img`
+    width: 64px;
+    margin-bottom: 8px;
 `;
 
 type GuideNodeProps = {
@@ -102,6 +110,7 @@ export const GuideNode: React.FC<GuideNodeProps> = ({ node, description }) => {
     if (node.type === 'category') {
         return (
             <CategoryNodeButton data-test={`@guide/category${node.id}`} onClick={navigateToNode}>
+                {node.image && <Image src={node.image} />}
                 {label}
             </CategoryNodeButton>
         );
