@@ -22,9 +22,15 @@ module.exports = {
                 },
             },
             {
-                test: /\.css$/,
+                // target css file to ensure unique id for <style> tag
+                include: path.resolve(__dirname, 'src', 'browser-detection', 'styles.css'),
                 use: [
-                    'style-loader',
+                    {
+                        loader: 'style-loader',
+                        options: {
+                            attributes: { id: 'browser-detection-style' },
+                        },
+                    },
                     {
                         loader: 'css-loader',
                         options: {
