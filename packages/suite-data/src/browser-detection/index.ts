@@ -186,6 +186,11 @@ window.addEventListener('load', () => {
         const child = document.getElementById('unsupported-browser');
         child?.parentNode?.removeChild(child);
 
+        // browser-detection styles are removed because they should not be available and used in app
+        // styles.css gets id="browser-detection-style" on its <style> tag due to "style-loader" configuration in webpack
+        const style = document.getElementById('browser-detection-style');
+        style?.parentNode?.removeChild(style);
+
         const appDiv = document.createElement('div');
         appDiv.id = 'app';
         document.body.appendChild(appDiv);
