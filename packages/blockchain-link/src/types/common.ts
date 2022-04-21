@@ -179,6 +179,13 @@ export interface AccountInfo {
         reserve?: string;
         // blockfrost
         rewards?: string;
+        // ADA
+        staking?: {
+            address: string;
+            isActive: boolean;
+            rewards: string;
+            poolId: string | null;
+        };
     };
     page?: {
         // blockbook and blockfrost
