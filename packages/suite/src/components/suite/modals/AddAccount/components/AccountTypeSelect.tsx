@@ -4,7 +4,7 @@ import { P, Select, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { getAccountTypeName, getAccountTypeTech } from '@wallet-utils/accountUtils';
 import { AccountTypeDescription } from './AccountTypeDescription';
-import type { UnavailableCapabilities } from 'trezor-connect';
+import type { UnavailableCapabilities } from '@trezor/connect';
 import type { Network } from '@wallet-types';
 
 const LabelWrapper = styled.div`

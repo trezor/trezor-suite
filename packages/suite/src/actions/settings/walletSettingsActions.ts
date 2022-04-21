@@ -2,7 +2,7 @@ import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@wallet-types';
-import type { FeeLevel } from 'trezor-connect';
+import type { FeeLevel } from '@trezor/connect';
 import type { BackendSettings } from '@wallet-reducers/settingsReducer';
 
 export type WalletSettingsAction =

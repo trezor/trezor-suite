@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { BLOCKCHAIN } from 'trezor-connect';
+import { BLOCKCHAIN } from '@trezor/connect';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { validatePendingTxOnBlock } from '@wallet-actions/cardanoStakingActions';
 import { AppState, Action, Dispatch } from '@suite-types';

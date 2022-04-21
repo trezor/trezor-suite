@@ -76,6 +76,7 @@ describe('Account Actions', () => {
                     history: {
                         total: 0,
                         transactions: [],
+                        unconfirmed: 0,
                     },
                 },
             ),

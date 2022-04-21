@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import type { BlockchainAccountBalanceHistory } from 'trezor-connect';
+import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
 import { startOfMonth, getUnixTime, fromUnixTime, differenceInMonths } from 'date-fns';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { CoinFiatRates, Account } from '@wallet-types';

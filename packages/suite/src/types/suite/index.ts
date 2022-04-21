@@ -5,12 +5,12 @@ import type {
     DeviceEvent,
     TransportEvent,
     BlockchainEvent,
-    ButtonRequestMessage,
-    DeviceMessage,
     KnownDevice,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
-} from 'trezor-connect';
+    PROTO,
+    DeviceButtonRequest,
+} from '@trezor/connect';
 import type { RouterAction } from '@suite-actions/routerActions';
 import type { Route } from '@suite-constants/routes';
 import type { AppState } from '@suite/reducers/store';
@@ -87,12 +87,14 @@ export type GetState = () => AppState;
 // - code field (ButtonRequestType) is extended/combined with PinMatrixRequestType and WordRequestType (from DeviceMessage)
 // - code field also uses two custom ButtonRequests - 'ui-request_pin' and 'ui-invalid_pin' (TODO: it shouldn't)
 
-export type ButtonRequest = Omit<ButtonRequestMessage['payload'], 'device' | 'code'> & {
+// REF-TODO: Suite should not define its own type for ButtonRequest. There should be
+// sufficient type exported from @trezor/connect ;
+export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
     code?:
         | 'ui-request_pin'
         | 'ui-invalid_pin'
-        | NonNullable<ButtonRequestMessage['payload']['code']>
-        | NonNullable<DeviceMessage['payload']['type']>;
+        | DeviceButtonRequest['payload']['code']
+        | NonNullable<PROTO.PinMatrixRequest>['type'];
 };
 
 export interface ExtendedDevice {

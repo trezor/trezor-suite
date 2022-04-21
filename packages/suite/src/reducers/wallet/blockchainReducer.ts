@@ -1,5 +1,5 @@
 import produce, { Draft } from 'immer';
-import { BlockchainInfo, BlockchainBlock } from 'trezor-connect';
+import { BlockchainInfo, BlockchainBlock } from '@trezor/connect';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { getNetwork } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';

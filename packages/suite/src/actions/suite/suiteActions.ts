@@ -1,4 +1,4 @@
-import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
+import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';

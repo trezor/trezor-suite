@@ -1,7 +1,7 @@
 import * as modalActions from '../modalActions';
 import { MODAL } from '../constants';
 
-jest.mock('trezor-connect', () => ({
+jest.mock('@trezor/connect', () => ({
     __esModule: true, // this property makes it work
     default: {
         blockchainSetCustomBackend: () => {},

@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { UI, Device } from 'trezor-connect';
+import { UI, Device } from '@trezor/connect';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';

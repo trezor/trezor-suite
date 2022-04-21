@@ -1,5 +1,5 @@
 import { UseFormMethods } from 'react-hook-form';
-import { FeeLevel } from 'trezor-connect';
+import { FeeLevel } from '@trezor/connect';
 import { Account } from '@wallet-types';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@wallet-types/sendForm';

@@ -3,7 +3,7 @@ import { createDeferred } from '@trezor/utils';
 import type { Timeout } from '@suite/types/utils';
 
 // composeTransaction should be debounced from both sides
-// `timeout` prevents from calling 'trezor-connect' method to many times (inputs mad-clicking)
+// `timeout` prevents from calling '@trezor/connect' method to many times (inputs mad-clicking)
 // TODO: maybe it should be converted to regular module, could be useful elsewhere
 export const useAsyncDebounce = () => {
     const timeout = useRef<Timeout | null>(null);

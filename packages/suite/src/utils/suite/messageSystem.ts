@@ -9,7 +9,7 @@ import {
 } from '@suite-utils/env';
 import { getDeviceModel, getFwVersion, isBitcoinOnly } from './device';
 
-import type { TransportInfo } from 'trezor-connect';
+import type { TransportInfo } from '@trezor/connect';
 
 import type { Network } from '@wallet-types';
 import type { TrezorDevice, EnvironmentType } from '@suite-types';

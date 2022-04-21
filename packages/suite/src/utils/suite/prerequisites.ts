@@ -1,4 +1,4 @@
-import type { TransportInfo } from 'trezor-connect';
+import type { TransportInfo } from '@trezor/connect';
 import type { TrezorDevice, AppState } from '@suite-types';
 
 interface PrerequisitesInput {

@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { SUITE, ROUTER, MODAL } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';

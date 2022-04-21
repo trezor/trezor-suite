@@ -1,4 +1,4 @@
-import TrezorConnect, { AccountInfo } from 'trezor-connect';
+import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import * as notificationActions from '@suite-actions/notificationActions';

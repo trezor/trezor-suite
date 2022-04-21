@@ -1,6 +1,6 @@
 import { Account, Network } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import { TrezorDevice } from '@suite-types';
 
 const suiteToInvitySymbols = [

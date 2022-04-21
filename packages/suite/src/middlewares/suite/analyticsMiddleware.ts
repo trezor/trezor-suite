@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { MiddlewareAPI } from 'redux';
-import { TRANSPORT, DEVICE } from 'trezor-connect';
+import { TRANSPORT, DEVICE } from '@trezor/connect';
 
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
