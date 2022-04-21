@@ -1,4 +1,4 @@
-import TrezorConnect, { Device } from 'trezor-connect';
+import TrezorConnect, { Device } from '@trezor/connect';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import { report, AnalyticsEvent } from '@suite-actions/analyticsActions';

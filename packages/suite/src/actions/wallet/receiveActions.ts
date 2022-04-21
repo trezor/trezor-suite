@@ -1,4 +1,4 @@
-import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
+import TrezorConnect, { UI, UiRequestButton } from '@trezor/connect';
 import { RECEIVE } from '@wallet-actions/constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -70,7 +70,7 @@ export const showAddress =
         }
 
         // catch button request and open modal
-        const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
+        const buttonRequestHandler = (event: UiRequestButton['payload']) => {
             if (!event || event.code !== 'ButtonRequest_Address') return;
             // Receive modal has 2 steps, 1. step: we are waiting till an user confirms the address on a device
             // 2. step: we show the copy button and hide confirm-on-device bubble.

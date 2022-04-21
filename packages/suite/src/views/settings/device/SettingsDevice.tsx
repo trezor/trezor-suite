@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { TransportInfo } from 'trezor-connect';
+import type { TransportInfo } from '@trezor/connect';
 
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { AccountAddress } from 'trezor-connect';
+import { AccountAddress } from '@trezor/connect';
 import { variables, Button } from '@trezor/components';
 import { Card, Translation, HiddenPlaceholder, MetadataLabeling } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';

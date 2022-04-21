@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import { isWithinInterval, fromUnixTime } from 'date-fns';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -81,6 +81,8 @@ export const fetchAccountGraphData =
             },
         });
 
+        // REF-TODO: missing from and to?
+        // @ts-ignore
         const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin: account.symbol,
             descriptor: account.descriptor,

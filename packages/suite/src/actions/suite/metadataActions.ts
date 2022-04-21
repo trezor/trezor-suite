@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import { createDeferred } from '@trezor/utils';
 import { METADATA } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';

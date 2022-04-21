@@ -1,4 +1,4 @@
-import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
+import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from '@trezor/connect';
 import { getUnixTime, subWeeks, differenceInMilliseconds } from 'date-fns';
 import {
     fetchCurrentFiatRates,
@@ -254,7 +254,7 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
                 ? response.payload
                 : await fetchLastWeekRates(ticker, localCurrency);
 
-            if (results?.tickers) {
+            if (results && 'tickers' in results) {
                 dispatch({
                     type: LAST_WEEK_RATES_UPDATE,
                     payload: {
@@ -292,7 +292,7 @@ export const updateTxsRates =
                 ? response.payload
                 : await getFiatRatesForTimestamps({ symbol: account.symbol }, timestamps);
 
-            if (results?.tickers) {
+            if (results && 'tickers' in results) {
                 dispatch({
                     type: TX_FIAT_RATE_UPDATE,
                     payload: txs.map((tx, i) => ({

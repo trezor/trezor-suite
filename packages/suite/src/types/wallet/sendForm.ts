@@ -6,7 +6,7 @@ import {
     PrecomposedTransaction as PrecomposedTransactionBase,
     CardanoInput,
     CardanoOutput,
-} from 'trezor-connect';
+} from '@trezor/connect';
 
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
 import { Account, Network, CoinFiatRates, RbfTransactionParams } from '@wallet-types';

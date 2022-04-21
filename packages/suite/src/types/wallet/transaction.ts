@@ -1,4 +1,4 @@
-import { FeeLevel } from 'trezor-connect';
+import { FeeLevel } from '@trezor/connect';
 import { FeeInfo, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { Network, Account } from '@wallet-types';
 

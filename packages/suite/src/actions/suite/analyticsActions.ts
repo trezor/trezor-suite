@@ -10,7 +10,7 @@ import { AppUpdateEvent, encodeDataToQueryString } from '@suite-utils/analytics'
 import { setOnBeforeUnloadListener, getEnvironment } from '@suite-utils/env';
 import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
-import { DeviceMode } from 'trezor-connect';
+import { DeviceMode } from '@trezor/connect';
 
 import type { Dispatch, GetState, AppState } from '@suite-types';
 import type { Account } from '@wallet-types';

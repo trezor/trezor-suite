@@ -1,5 +1,5 @@
 import * as cardanoUtils from '../cardanoUtils';
-import { CARDANO } from 'trezor-connect';
+import { CARDANO, PROTO } from '@trezor/connect';
 import * as fixtures from '../__fixtures__/cardanoUtils';
 
 describe('cardano utils', () => {
@@ -9,8 +9,8 @@ describe('cardano utils', () => {
     expect(cardanoUtils.getNetworkId('ada')).toEqual(CARDANO.NETWORK_IDS.mainnet);
     expect(cardanoUtils.getNetworkId('tada')).toEqual(CARDANO.NETWORK_IDS.testnet);
 
-    expect(cardanoUtils.getAddressType('normal')).toEqual(CARDANO.ADDRESS_TYPE.Base);
-    expect(cardanoUtils.getAddressType('legacy')).toEqual(CARDANO.ADDRESS_TYPE.Base);
+    expect(cardanoUtils.getAddressType('normal')).toEqual(PROTO.CardanoAddressType.BASE);
+    expect(cardanoUtils.getAddressType('legacy')).toEqual(PROTO.CardanoAddressType.BASE);
 
     // @ts-ignore
     expect(cardanoUtils.getStakingPath({ index: 1, symbol: 'ada' })).toEqual(

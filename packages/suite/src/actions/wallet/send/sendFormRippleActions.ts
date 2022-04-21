@@ -1,4 +1,4 @@
-import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
 import {

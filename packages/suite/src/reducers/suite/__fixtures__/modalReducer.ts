@@ -1,4 +1,4 @@
-import { DEVICE, UI } from 'trezor-connect';
+import { DEVICE, UI } from '@trezor/connect';
 import { MODAL } from '@suite-actions/constants';
 
 const { getConnectDevice, getSuiteDevice } = global.JestMocks;

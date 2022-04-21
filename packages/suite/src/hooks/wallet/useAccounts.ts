@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from '@suite-hooks';
-import type { AccountAddress } from 'trezor-connect';
+import type { AccountAddress } from '@trezor/connect';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import type { Account, Discovery } from '@wallet-types';
 

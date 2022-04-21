@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { AccountTransaction, AccountAddress } from 'trezor-connect';
+import { AccountTransaction, AccountAddress } from '@trezor/connect';
 import { fromWei } from 'web3-utils';
 import { Account, WalletAccountTransaction, RbfTransactionParams } from '@wallet-types';
 import { AccountMetadata } from '@suite-types/metadata';

@@ -1,4 +1,4 @@
-import { AccountTransaction, TransactionTarget } from 'trezor-connect';
+import { AccountTransaction, TransactionTarget } from '@trezor/connect';
 import { Network } from '@wallet-types';
 import { trezorLogo } from '@suite-constants/b64images';
 

@@ -1,4 +1,4 @@
-import TrezorConnect, { FeeLevel, TokenInfo } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
 import * as notificationActions from '@suite-actions/notificationActions';

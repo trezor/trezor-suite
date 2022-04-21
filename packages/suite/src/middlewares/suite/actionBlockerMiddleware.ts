@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { UI } from 'trezor-connect';
+import { UI } from '@trezor/connect';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 // actionBlockerMiddleware serves one purpose only, to block certain actions based on activated device's processMode.
@@ -21,6 +21,8 @@ const actionBlocker =
 
         // block actions restricted by device's process mode
         const processMode = prevState.suite.device?.processMode;
+        // REF-TODO: ?
+        // @ts-ignore
         if (processMode && PROCESS_MODE[processMode].blockedActions.includes(action.type)) {
             return action;
         }

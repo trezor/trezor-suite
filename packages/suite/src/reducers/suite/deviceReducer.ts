@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { Device, DEVICE, Features } from 'trezor-connect';
+import { Device, DEVICE, Features } from '@trezor/connect';
 import { SUITE, STORAGE, METADATA } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from '@suite-types';

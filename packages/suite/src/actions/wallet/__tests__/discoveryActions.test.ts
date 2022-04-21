@@ -27,7 +27,7 @@ const { getSuiteDevice } = global.JestMocks;
 type Fixture = ArrayElement<typeof fixtures>;
 type Bundle = { path: string; coin: string }[];
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     let progressCallback = (_e: any): any => {};
     // eslint-disable-next-line @typescript-eslint/ban-types
     let fixture: Fixture | Promise<Fixture> | Function | typeof undefined;
@@ -205,7 +205,7 @@ describe('Discovery Actions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
             // set fixtures in trezor-connect
-            require('trezor-connect').setTestFixtures(f);
+            require('@trezor/connect').setTestFixtures(f);
             const store = initStore(getInitialState(f.device));
             if (f.enabledNetworks) {
                 store.dispatch({
@@ -233,7 +233,7 @@ describe('Discovery Actions', () => {
     // Detailed info about this test could be found in fixtures
     interruptionFixtures.forEach(f => {
         it(`Start/stop/change networks/start: ${f.description}`, async done => {
-            require('trezor-connect').setTestFixtures(f);
+            require('@trezor/connect').setTestFixtures(f);
             const store = initStore();
             // additional action listener for triggering "discovery.stop" action
             store.subscribe(() => {
@@ -277,7 +277,7 @@ describe('Discovery Actions', () => {
 
     changeNetworksFixtures.forEach(f => {
         it(`Change network: ${f.description}`, async done => {
-            require('trezor-connect').setTestFixtures(f);
+            require('@trezor/connect').setTestFixtures(f);
             const state = getInitialState();
             const store = initStore(state);
             // additional action listener for triggering "discovery.updateNetworkSettings" action
@@ -394,7 +394,7 @@ describe('Discovery Actions', () => {
             setTimeout(() => resolve(paramsError('discovery_interrupted')), 100);
         });
         // set fixtures in trezor-connect
-        require('trezor-connect').setTestFixtures(f);
+        require('@trezor/connect').setTestFixtures(f);
         const store = initStore();
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         store.dispatch(discoveryActions.start()).then(() => {
@@ -420,7 +420,7 @@ describe('Discovery Actions', () => {
 
     it('Restart discovery (clear failed fields)', async () => {
         // fail on first account
-        require('trezor-connect').setTestFixtures({
+        require('@trezor/connect').setTestFixtures({
             connect: { success: true, failedAccounts: ["m/84'/0'/0'"] },
         });
         const state = getInitialState();
@@ -432,7 +432,7 @@ describe('Discovery Actions', () => {
         expect(store.getState().wallet.discovery[0].failed.length).toBeGreaterThan(0);
 
         // change fixtures, this time no fail
-        require('trezor-connect').setTestFixtures({
+        require('@trezor/connect').setTestFixtures({
             connect: { success: true },
         });
         // restart
@@ -451,7 +451,7 @@ describe('Discovery Actions', () => {
             setTimeout(() => resolve({ success: true }), 100);
         });
         // set fixtures in trezor-connect
-        require('trezor-connect').setTestFixtures(f);
+        require('@trezor/connect').setTestFixtures(f);
 
         const store = initStore();
         store.subscribe(() => {
@@ -473,7 +473,7 @@ describe('Discovery Actions', () => {
             setTimeout(() => resolve({ success: true }), 100);
         });
         // set fixtures in trezor-connect
-        require('trezor-connect').setTestFixtures(f);
+        require('@trezor/connect').setTestFixtures(f);
 
         const store = initStore();
         store.subscribe(() => {
@@ -496,10 +496,10 @@ describe('Discovery Actions', () => {
     });
 
     it('Discovery completed but device is not connected anymore', async () => {
-        require('trezor-connect').setTestFixtures({
+        require('@trezor/connect').setTestFixtures({
             connect: { success: true },
         });
-        const mockedGetFeatures = jest.spyOn(require('trezor-connect').default, 'getFeatures');
+        const mockedGetFeatures = jest.spyOn(require('@trezor/connect').default, 'getFeatures');
         const store = initStore();
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         // "disconnect" device
@@ -519,7 +519,7 @@ describe('Discovery Actions', () => {
             );
         });
         // set fixtures in trezor-connect
-        require('trezor-connect').setTestFixtures(f);
+        require('@trezor/connect').setTestFixtures(f);
 
         const store = initStore();
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
@@ -533,7 +533,7 @@ describe('Discovery Actions', () => {
             setTimeout(() => resolve(paramsError('{}', 'Method_Discovery_BundleException')), 100);
         });
         // set fixtures in trezor-connect
-        require('trezor-connect').setTestFixtures(f);
+        require('@trezor/connect').setTestFixtures(f);
 
         const store = initStore();
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
@@ -544,9 +544,9 @@ describe('Discovery Actions', () => {
 
     it('TrezorConnect did not emit any progress event', async () => {
         // store original mocked function
-        const originalFn = require('trezor-connect').default.getAccountInfo;
+        const originalFn = require('@trezor/connect').default.getAccountInfo;
         // set fixtures in trezor-connect
-        require('trezor-connect').default.getAccountInfo = () => ({
+        require('@trezor/connect').default.getAccountInfo = () => ({
             success: true,
         });
         const store = initStore();
@@ -554,7 +554,7 @@ describe('Discovery Actions', () => {
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
         // restore original mocked fn
-        require('trezor-connect').default.getAccountInfo = originalFn;
+        require('@trezor/connect').default.getAccountInfo = originalFn;
         const result = store.getState().wallet.discovery[0];
         expect(action.type).toEqual(DISCOVERY.COMPLETE);
         expect(result.loaded).toEqual(0);
@@ -562,15 +562,15 @@ describe('Discovery Actions', () => {
 
     it('All accounts failed in runtime', async () => {
         // store original mocked function
-        const originalFn = require('trezor-connect').default.getAccountInfo;
+        const originalFn = require('@trezor/connect').default.getAccountInfo;
         // override mocked function
-        require('trezor-connect').default.getAccountInfo = (params: { bundle: Bundle }) => {
+        require('@trezor/connect').default.getAccountInfo = (params: { bundle: Bundle }) => {
             // prepare response (all failed)
             const failedAccounts: string[] = [];
             for (let i = 0; i < params.bundle.length; i++) {
                 failedAccounts.push(params.bundle[i].path);
             }
-            require('trezor-connect').setTestFixtures({
+            require('@trezor/connect').setTestFixtures({
                 connect: {
                     success: true,
                     failedAccounts,
@@ -584,7 +584,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         // restore original mocked fn
-        require('trezor-connect').default.getAccountInfo = originalFn;
+        require('@trezor/connect').default.getAccountInfo = originalFn;
         const action = store.getActions().pop();
         const result = store.getState().wallet.discovery[0];
         expect(action.type).toEqual(DISCOVERY.COMPLETE);
@@ -594,9 +594,9 @@ describe('Discovery Actions', () => {
 
     it('All accounts failed in first iteration', async () => {
         // store original mocked function
-        const originalFn = require('trezor-connect').default.getAccountInfo;
+        const originalFn = require('@trezor/connect').default.getAccountInfo;
         // override mocked function
-        require('trezor-connect').default.getAccountInfo = (params: { bundle: Bundle }) => {
+        require('@trezor/connect').default.getAccountInfo = (params: { bundle: Bundle }) => {
             // prepare json response
             const failedAccounts: any[] = [];
             for (let i = 0; i < params.bundle.length; i++) {
@@ -614,7 +614,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         await store.dispatch(discoveryActions.start());
         // restore original mocked fn
-        require('trezor-connect').default.getAccountInfo = originalFn;
+        require('@trezor/connect').default.getAccountInfo = originalFn;
         const action = store.getActions().pop();
         const result = store.getState().wallet.discovery[0];
         expect(action.type).toEqual(DISCOVERY.COMPLETE);
@@ -623,7 +623,7 @@ describe('Discovery Actions', () => {
     });
 
     it('getDiscoveryAuthConfirmationStatus', async () => {
-        require('trezor-connect').setTestFixtures({
+        require('@trezor/connect').setTestFixtures({
             connect: { success: true },
         });
         const state = getInitialState();

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { ActionAvailability, CardanoStaking, PoolsResponse } from '@wallet-types/cardanoStaking';
 import { SUITE } from '@suite-actions/constants';
-import trezorConnect, { CardanoTxSigningMode } from 'trezor-connect';
+import trezorConnect, { PROTO } from '@trezor/connect';
 import { useActions, useSelector } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
@@ -203,7 +203,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             if (!txPlan || txPlan.type !== 'final') return;
 
             const res = await trezorConnect.cardanoSignTransaction({
-                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+                signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
                 device,
                 useEmptyPassphrase: device?.useEmptyPassphrase,
                 inputs: trezorUtils.transformToTrezorInputs(txPlan.inputs, account.utxo ?? []),

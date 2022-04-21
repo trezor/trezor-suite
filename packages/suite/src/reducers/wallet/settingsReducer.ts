@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { FeeLevel } from 'trezor-connect';
+import { FeeLevel } from '@trezor/connect';
 import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { Action } from '@suite-types';

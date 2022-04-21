@@ -1,5 +1,5 @@
 import { State as TransactionsState } from '@wallet-reducers/transactionReducer';
-import { AccountInfo, AccountAddresses, AccountAddress } from 'trezor-connect';
+import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
@@ -531,6 +531,7 @@ export const getFailedAccounts = (discovery: Discovery): Account[] =>
             utxo: undefined,
             history: {
                 total: 0,
+                unconfirmed: 0,
             },
             metadata: {
                 key: descriptor,

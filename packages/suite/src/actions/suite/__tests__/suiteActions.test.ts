@@ -6,7 +6,7 @@
 
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { DEVICE } from 'trezor-connect';
+import { DEVICE } from '@trezor/connect';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import routerReducer from '@suite-reducers/routerReducer';
@@ -19,7 +19,7 @@ import fixtures from '../__fixtures__/suiteActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     let fixture: any;
     return {
         __esModule: true, // this property makes it work
@@ -213,7 +213,7 @@ describe('Suite Actions', () => {
 
     fixtures.acquireDevice.forEach(f => {
         it(`acquireDevice: ${f.description}`, async () => {
-            require('trezor-connect').setTestFixtures(f.getFeatures);
+            require('@trezor/connect').setTestFixtures(f.getFeatures);
             const state = getInitialState(f.state);
             const store = initStore(state);
             store.dispatch(init()); // trezorConnectActions.init needs to be called in order to wrap "getFeatures" with lockUi action
@@ -229,7 +229,7 @@ describe('Suite Actions', () => {
 
     fixtures.authorizeDevice.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
-            require('trezor-connect').setTestFixtures(f.getDeviceState);
+            require('@trezor/connect').setTestFixtures(f.getDeviceState);
             const state = getInitialState(f.suiteState, f.devicesState);
             const store = initStore(state);
             await store.dispatch(suiteActions.authorizeDevice());
@@ -256,7 +256,7 @@ describe('Suite Actions', () => {
 
     fixtures.authConfirm.forEach(f => {
         it(`authConfirm: ${f.description}`, async () => {
-            require('trezor-connect').setTestFixtures(f.getDeviceState);
+            require('@trezor/connect').setTestFixtures(f.getDeviceState);
             const state = getInitialState(f.state);
             const store = initStore(state);
             await store.dispatch(suiteActions.authConfirm());
@@ -271,7 +271,7 @@ describe('Suite Actions', () => {
 
     fixtures.createDeviceInstance.forEach(f => {
         it(`createDeviceInstance: ${f.description}`, async () => {
-            require('trezor-connect').setTestFixtures(f.applySettings);
+            require('@trezor/connect').setTestFixtures(f.applySettings);
             const state = getInitialState(f.state);
             const store = initStore(state);
             await store.dispatch(suiteActions.createDeviceInstance(f.state.device));

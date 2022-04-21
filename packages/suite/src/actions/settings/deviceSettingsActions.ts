@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import { addToast } from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';

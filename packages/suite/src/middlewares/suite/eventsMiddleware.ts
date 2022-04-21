@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { DEVICE } from 'trezor-connect';
+import { DEVICE } from '@trezor/connect';
 import { SUITE } from '@suite-actions/constants';
 import { TRANSACTION, ACCOUNT } from '@wallet-actions/constants';
 import * as notificationActions from '@suite-actions/notificationActions';

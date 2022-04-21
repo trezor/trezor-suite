@@ -10,7 +10,7 @@ import { OutputProps } from './components/Output';
 import OutputList from './components/OutputList';
 import Summary from './components/Summary';
 import { isCardanoTx, getShortFingerprint } from '@wallet-utils/cardanoUtils';
-import { CardanoOutput } from 'trezor-connect';
+import { CardanoOutput } from '@trezor/connect';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {

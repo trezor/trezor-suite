@@ -1,4 +1,4 @@
-import TrezorConnect, { ButtonRequestMessage, UI, Unsuccessful, Success } from 'trezor-connect';
+import TrezorConnect, { UiRequestButton, UI, Unsuccessful, Success } from '@trezor/connect';
 import { SIGN_VERIFY } from './constants';
 import { addToast } from '@suite-actions/notificationActions';
 import { openModal } from '@suite-actions/modalActions';
@@ -37,7 +37,7 @@ const getStateParams = (getState: GetState): Promise<StateParams> => {
 const showAddressByNetwork =
     (dispatch: Dispatch, address: string, path: string) =>
     ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
-        const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
+        const buttonRequestHandler = (event: UiRequestButton['payload']) => {
             if (!event || event.code !== 'ButtonRequest_Address') return;
             dispatch(
                 openModal({

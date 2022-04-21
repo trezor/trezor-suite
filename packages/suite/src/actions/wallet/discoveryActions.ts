@@ -1,6 +1,6 @@
 import { versionUtils } from '@trezor/utils';
 import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
-import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
+import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
@@ -201,7 +201,7 @@ const getBundle =
         );
 
         // corner-case: discovery is running so it's at least second iteration
-        // progress event wasn't emitted from 'trezor-connect' so there are no accounts, neither loaded or failed
+        // progress event wasn't emitted from '@trezor/connect' so there are no accounts, neither loaded or failed
         // return empty bundle to complete discovery
         if (
             discovery.status === DISCOVERY.STATUS.RUNNING &&

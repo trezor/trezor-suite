@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { DEVICE } from 'trezor-connect';
+import { DEVICE } from '@trezor/connect';
 import { NOTIFICATION, SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 import { Network } from '@wallet-types';

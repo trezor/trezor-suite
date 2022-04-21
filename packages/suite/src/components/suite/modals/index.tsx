@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { UI } from 'trezor-connect';
+import { UI } from '@trezor/connect';
 
 import * as allModalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';

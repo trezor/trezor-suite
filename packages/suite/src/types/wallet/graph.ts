@@ -1,4 +1,4 @@
-import { BlockchainAccountBalanceHistory } from 'trezor-connect';
+import { BlockchainAccountBalanceHistory } from '@trezor/connect';
 import { Account } from '@wallet-types';
 
 export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHistory {
