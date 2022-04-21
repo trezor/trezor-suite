@@ -4,14 +4,16 @@
 // local imports and exports are intentionally set to /lib directory otherwise webpack NormalModuleReplacementPlugin would replace this line as well.
 
 // @ts-ignore /lib directory is not typed
-import TrezorConnect from 'trezor-connect/lib';
+import TrezorConnect from '@trezor/connect/lib/index-browser';
 
 // @ts-ignore /lib directory is not typed
-export * from 'trezor-connect/lib';
+export * from '@trezor/connect/lib/index-browser';
 
 // override each method of trezor-connect
 // use ipcRenderer message instead of iframe.postMessage (see ./src-electron/modules/trezor-connect-preloader)
 Object.keys(TrezorConnect).forEach(method => {
+    // REF-TODO
+    // @ts-ignore
     TrezorConnect[method] = (...params: any[]) =>
         window.TrezorConnectIpcChannel
             ? window.TrezorConnectIpcChannel(method, ...params)
