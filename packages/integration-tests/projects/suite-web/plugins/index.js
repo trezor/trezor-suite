@@ -238,7 +238,7 @@ module.exports = on => {
             return null;
         },
         selectNumOfWordsEmu: async num => {
-            await controller.send({ type: 'select-num-of-words', num });
+            await controller.send({ type: 'emulator-select-num-of-words', num });
             return null;
         },
         logTestDetails: async text => {
