@@ -1,6 +1,6 @@
-import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from 'trezor-connect';
+import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
 
-import { TrezorConnectDevice, Dispatch, GetState } from '../types';
+import { TrezorConnectDevice, Dispatch } from '../types';
 import * as ACTIONS from './index';
 
 type ConnectOptions = Parameters<typeof TrezorConnect['init']>[0];
