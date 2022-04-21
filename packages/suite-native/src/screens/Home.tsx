@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Platform, SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
 import { Text, Box, Button } from '@trezor/atoms';
+import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import TrezorConnect from 'trezor-connect';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
     ({ colors, spacings }, { isDarkMode }) => ({

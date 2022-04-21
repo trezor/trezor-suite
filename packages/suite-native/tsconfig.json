@@ -5,7 +5,8 @@
         { "path": "../atoms" },
         { "path": "../transport-native" },
         { "path": "../styles" },
-        { "path": "../theme" }
+        { "path": "../theme" },
+        { "path": "../connect" }
     ],
     "include": [".", "**.json"]
 }
