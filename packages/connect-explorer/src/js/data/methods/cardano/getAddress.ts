@@ -1,4 +1,4 @@
-import { CardanoAddressType } from 'trezor-connect';
+import { CardanoAddressType } from '@trezor/transport/lib/types/messages';
 
 import { cardanoDerivationType } from './common';
 

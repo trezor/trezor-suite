@@ -6,6 +6,18 @@
         "noUnusedLocals": false,
         "noUnusedParameters": false
     },
-    "include": ["."],
-    "references": [{ "path": "../components" }]
+    "include": [
+        ".",
+        "../connect-popup/webpack/prod.webpack.config",
+        "../connect-iframe/webpack/prod.webpack.config,"
+    ],
+    "references": [
+        { "path": "../components" },
+        { "path": "../connect-web" }
+    ],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    }
 }

@@ -1,19 +1,7 @@
-import TrezorConnect from 'trezor-connect';
 import type { ThunkDispatch } from 'redux-thunk';
-import type { Store as ReduxStore } from 'redux';
 import type { AppState as AppState$ } from '../reducers';
 
-import type {
-    UiEvent,
-    DeviceEvent,
-    TransportEvent,
-    BlockchainEvent,
-    ButtonRequestMessage,
-    DeviceMessage,
-    KnownDevice,
-    UnknownDevice,
-    UnreadableDevice,
-} from 'trezor-connect';
+import type { KnownDevice, UnknownDevice, UnreadableDevice } from '@trezor/connect-web';
 
 import type { DocsAction } from '../actions/docsActions';
 import type { DOMAction } from '../actions/DOMActions';
@@ -31,13 +19,6 @@ export interface Dispatch extends ThunkDispatch<AppState$, any, Action> {
 }
 
 export type TrezorConnectDevice = KnownDevice | UnknownDevice | UnreadableDevice;
-export type ButtonRequest = Omit<ButtonRequestMessage['payload'], 'device' | 'code'> & {
-    code?:
-        | 'ui-request_pin'
-        | 'ui-invalid_pin'
-        | NonNullable<ButtonRequestMessage['payload']['code']>
-        | NonNullable<DeviceMessage['payload']['type']>;
-};
 
 export interface FieldData {
     value: string;

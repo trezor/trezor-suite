@@ -1,6 +1,6 @@
-import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from 'trezor-connect';
+import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
 
-import { TrezorConnectDevice, Dispatch, GetState } from '../types';
+import { TrezorConnectDevice, Dispatch } from '../types';
 import * as ACTIONS from './index';
 
 type ConnectOptions = Parameters<typeof TrezorConnect['init']>[0];
@@ -34,7 +34,17 @@ export const init =
             // this type of event should not be emitted in "popup mode"
         });
 
-        const connectSrc = process.env.TREZOR_CONNECT_SRC || 'https://localhost:8088/';
+        const { origin } = window.location;
+        let connectSrc = '';
+        if (origin.indexOf('localhost') > -1) {
+            // use local connect for local development
+            connectSrc = `${window.location.origin}/`;
+        }
+        if (origin.indexOf('sldev.cz') > -1) {
+            // REF-TODO use sldev structure (current branch name)
+            console.warn(window.location);
+            connectSrc = `${window.location.origin}/`;
+        }
 
         const connectOptions = {
             connectSrc,
