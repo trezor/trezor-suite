@@ -3,10 +3,9 @@ import { BlockchainInfo, BlockchainBlock } from 'trezor-connect';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { getNetwork } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
-import { Network } from '@wallet-types';
-import { Action } from '@suite-types';
-
-type Timeout = ReturnType<typeof setTimeout>;
+import type { Network } from '@wallet-types';
+import type { Action } from '@suite-types';
+import type { Timeout } from '@suite/types/utils';
 
 interface BlockchainReconnection {
     id: Timeout; // setTimeout id

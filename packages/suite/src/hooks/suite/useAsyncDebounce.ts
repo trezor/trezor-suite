@@ -1,13 +1,12 @@
 import { useCallback, useRef } from 'react';
 import { createDeferred } from '@trezor/utils';
-
-type TimeoutType = ReturnType<typeof setTimeout>; // resolves to Timeout type in react-native, number otherwise
+import type { Timeout } from '@suite/types/utils';
 
 // composeTransaction should be debounced from both sides
 // `timeout` prevents from calling 'trezor-connect' method to many times (inputs mad-clicking)
 // TODO: maybe it should be converted to regular module, could be useful elsewhere
 export const useAsyncDebounce = () => {
-    const timeout = useRef<TimeoutType | null>(null);
+    const timeout = useRef<Timeout | null>(null);
 
     const debounce = useCallback(
         async <F extends (...args: any) => Promise<any>>(fn: F): Promise<ReturnType<F>> => {

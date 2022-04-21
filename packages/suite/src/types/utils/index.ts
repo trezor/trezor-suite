@@ -40,3 +40,5 @@ export type DeepPartial<T> = T extends () => any
     : T;
 
 export type PrimitiveType = string | number | boolean | Date | null | undefined;
+
+export type Timeout = ReturnType<typeof setTimeout>;
