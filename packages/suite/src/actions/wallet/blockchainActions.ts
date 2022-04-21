@@ -23,6 +23,7 @@ import { BLOCKCHAIN } from './constants';
 import { getDefaultBackendType } from '@suite-utils/backend';
 import type { Dispatch, GetState } from '@suite-types';
 import type { Account, Network } from '@wallet-types';
+import type { Timeout } from '@suite/types/utils';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 
@@ -43,7 +44,7 @@ export type BlockchainAction =
           type: typeof BLOCKCHAIN.RECONNECT_TIMEOUT_START;
           payload: {
               symbol: Network['symbol'];
-              id: ReturnType<typeof setTimeout>;
+              id: Timeout;
               time: number;
               count: number;
           };
@@ -56,7 +57,7 @@ export type BlockchainAction =
           type: typeof BLOCKCHAIN.SYNCED;
           payload: {
               symbol: Network['symbol'];
-              timeout: ReturnType<typeof setTimeout>;
+              timeout: Timeout;
           };
       };
 
@@ -274,7 +275,7 @@ export const unsubscribe = (removedAccounts: Account[]) => (_: Dispatch, getStat
     return Promise.all(promises as Promise<any>[]);
 };
 
-const tryClearTimeout = (timeout?: ReturnType<typeof setTimeout>) => {
+const tryClearTimeout = (timeout?: Timeout) => {
     if (timeout) clearTimeout(timeout);
 };
 

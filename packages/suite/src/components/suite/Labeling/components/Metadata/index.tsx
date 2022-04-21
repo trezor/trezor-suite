@@ -11,6 +11,8 @@ import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
 import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
 
+import type { Timeout } from '@suite/types/utils';
+
 const LabelDefaultValue = styled.div`
     width: 0;
     display: inline-block;
@@ -214,7 +216,7 @@ const MetadataLabeling = (props: Props) => {
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(props.payload.defaultValue);
-    let timeout: ReturnType<typeof setTimeout> | undefined;
+    let timeout: Timeout | undefined;
 
     useEffect(() => {
         setPending(false);

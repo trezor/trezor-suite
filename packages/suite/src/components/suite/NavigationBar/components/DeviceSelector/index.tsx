@@ -10,6 +10,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
 import { DeviceStatus } from './DeviceStatus';
 import { transparentize } from 'polished';
+import type { Timeout } from '@suite/types/utils';
 
 const ArrowDown = styled(Icon)`
     margin-left: 4px;
@@ -113,8 +114,8 @@ export const DeviceSelector = () => {
     const [showTextStatus, setShowTextStatus] = useState(false);
 
     const countChanged = localCount && localCount !== deviceCount;
-    const shakeAnimationTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-    const stateAnimationTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const shakeAnimationTimerRef = useRef<Timeout | undefined>(undefined);
+    const stateAnimationTimerRef = useRef<Timeout | undefined>(undefined);
 
     const analytics = useAnalytics();
 
