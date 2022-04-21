@@ -81,7 +81,6 @@ const prepareTypography = (): TypographyStyles =>
             line-height: ${value.lineHeight}px;
             font-weight: ${value.fontWeight};
             letter-spacing: ${value.letterSpacing}px;
-            font-family: ${fontFamilies.base}
             `,
         ]),
     ) as TypographyStyles;
