@@ -1,5 +1,3 @@
-import { CardanoTxSigningMode } from 'trezor-connect';
-
 import { cardanoDerivationType, cardanoTxSigningMode } from './common';
 
 const name = 'cardanoSignTransaction';

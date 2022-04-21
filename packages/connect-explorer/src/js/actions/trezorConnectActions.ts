@@ -1,6 +1,7 @@
-import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from 'trezor-connect';
+/* eslint-disable no-underscore-dangle */
+import TrezorConnect, { DEVICE, DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
 
-import { TrezorConnectDevice, Dispatch, GetState } from '../types';
+import { TrezorConnectDevice, Dispatch } from '../types';
 import * as ACTIONS from './index';
 
 type ConnectOptions = Parameters<typeof TrezorConnect['init']>[0];
@@ -18,6 +19,9 @@ export function onSelectDevice(path: string) {
     };
 }
 
+// eslint-disable-next-line no-unused-expressions
+window.__TREZOR_CONNECT_SRC;
+
 export const init =
     (options: Partial<Parameters<typeof TrezorConnect['init']>[0]> = {}) =>
     async (dispatch: Dispatch) => {
@@ -34,11 +38,25 @@ export const init =
             // this type of event should not be emitted in "popup mode"
         });
 
-        const connectSrc = process.env.TREZOR_CONNECT_SRC || 'https://localhost:8088/';
+        const { origin } = window.location;
+
+        if (process?.env?.__TREZOR_CONNECT_SRC) {
+            window.__TREZOR_CONNECT_SRC = process?.env?.__TREZOR_CONNECT_SRC;
+        }
+        // yarn workspace @trezor/connect-explorer dev starts @trezor/connect-web on localhost port
+        // so we may use it
+        if (!window.__TREZOR_CONNECT_SRC && origin.indexOf('localhost') > -1) {
+            // use local connect for local development
+            window.__TREZOR_CONNECT_SRC = `${window.location.origin}/`;
+        }
+
+        if (!window.__TREZOR_CONNECT_SRC) {
+            console.log('using production @trezor/connect');
+        } else {
+            console.log('using @trezor/connect hosted on: ', window.__TREZOR_CONNECT_SRC);
+        }
 
         const connectOptions = {
-            connectSrc,
-            webusb: true,
             transportReconnect: true,
             popup: true,
             debug: true,
