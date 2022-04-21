@@ -20,18 +20,19 @@ const config: webpack.Configuration = {
         path: path.join(baseDir, 'build'),
     },
     plugins: [
-        // wrap trezor-connect index
+        // wrap @trezor/connect index
         new webpack.NormalModuleReplacementPlugin(
-            /trezor-connect$/,
+            /@trezor\/connect$/,
             path.join(baseDir, 'src/support/trezor-connect-ipc-wrapper'),
         ),
+
         new CopyPlugin({
             patterns: ['bin', 'fonts', 'images', 'message-system', 'videos', 'guide/assets']
                 .map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),
                 }))
-                // include FW binaries from connect-iframe
+                // include FW binaries from @trezor/connect-iframe
                 .concat([
                     {
                         from: path.join(__dirname, '../../', 'connect-iframe/build/data/firmware'),
