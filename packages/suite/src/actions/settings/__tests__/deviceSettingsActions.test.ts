@@ -10,7 +10,7 @@ import deviceReducer from '@suite-reducers/deviceReducer';
 
 const { getSuiteDevice } = global.JestMocks;
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     let fixture: { success: boolean; payload: any };
     let deviceChangeEvent = () => {};
 
@@ -85,12 +85,12 @@ describe('DeviceSettings Actions', () => {
         it(f.description, async () => {
             const store = initStore(getInitialState(f.initialState));
             if (f.mocks) {
-                require('trezor-connect').setTestFixtures(f.mocks);
+                require('@trezor/connect').setTestFixtures(f.mocks);
             }
-            // wipe device tests require "device-change" event from "trezor-connect"
+            // wipe device tests require "device-change" event from "@trezor/connect"
             // this action have influence on reducers and forget device process
             if (f.deviceChange) {
-                require('trezor-connect').setDeviceChangeEvent(() => {
+                require('@trezor/connect').setDeviceChangeEvent(() => {
                     store.dispatch({ type: 'device-changed', payload: f.deviceChange });
                     store.dispatch({
                         type: '@suite/update-selected-device',

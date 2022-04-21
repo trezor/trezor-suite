@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { AccountTransaction, AccountAddress } from 'trezor-connect';
+import { AccountTransaction, AccountAddress } from '@trezor/connect';
 import { fromWei } from 'web3-utils';
 import { Account, WalletAccountTransaction, RbfTransactionParams } from '@wallet-types';
 import { AccountMetadata } from '@suite-types/metadata';
@@ -457,7 +457,7 @@ const getBitcoinRbfParams = (
     const outputs: RbfTransactionParams['outputs'] = [];
     vout.forEach(output => {
         if (!output.isAddress) {
-            // TODO: this should be done in trezor-connect, blockchain-link or even blockbook
+            // TODO: this should be done in @trezor/connect, blockchain-link or even blockbook
             // blockbook sends output.hex as scriptPubKey with additional prefix where: 6a - OP_RETURN and XX - data len. this field should be parsed by @trezor/utxo-lib
             // blockbook sends ascii data in output.address[0] field in format: "OP_RETURN (ASCII-VALUE)". as a workaround we are extracting ascii data from here
             const dataAscii = output.addresses![0].match(/^OP_RETURN \((.*)\)/)?.pop(); // strip ASCII data from brackets

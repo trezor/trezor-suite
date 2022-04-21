@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { DEVICE } from 'trezor-connect';
+import { DEVICE } from '@trezor/connect';
 import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
@@ -77,7 +77,7 @@ const suite =
                 break;
             }
             case SUITE.CONNECT_INITIALIZED:
-                // trezor-connect init successfully
+                // @trezor/connect init successfully
                 api.dispatch(blockchainActions.init());
                 break;
             case BLOCKCHAIN.READY: {

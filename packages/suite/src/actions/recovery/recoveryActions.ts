@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import TrezorConnect, { UI, RecoveryDevice } from 'trezor-connect';
+import TrezorConnect, { UI, RecoveryDevice } from '@trezor/connect';
 import { RECOVERY } from '@recovery-actions/constants';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';

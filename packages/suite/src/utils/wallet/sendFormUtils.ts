@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { FieldError, UseFormMethods } from 'react-hook-form';
-import { EthereumTransaction, TokenInfo, ComposeOutput, TxOutputType } from 'trezor-connect';
+import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
 import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
@@ -355,7 +355,7 @@ export const getExternalComposeOutput = (
 };
 
 export const restoreOrigOutputsOrder = (
-    outputs: TxOutputType[],
+    outputs: PROTO.TxOutputType[],
     origOutputs: RbfTransactionParams['outputs'],
     origTxid: string,
 ) => {

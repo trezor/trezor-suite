@@ -1,4 +1,4 @@
-import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
+import TrezorConnect, { UI, DeviceButtonRequest } from '@trezor/connect';
 import { GetState, Dispatch } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -78,7 +78,7 @@ export const verifyAddress =
         };
 
         // catch button request and open modal
-        const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
+        const buttonRequestHandler = (event: DeviceButtonRequest['payload']) => {
             if (!event || event.code !== 'ButtonRequest_Address') return;
             dispatch(
                 modalActions.openModal({

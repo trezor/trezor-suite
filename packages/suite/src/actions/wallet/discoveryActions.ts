@@ -1,6 +1,6 @@
 import { versionUtils } from '@trezor/utils';
 import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
-import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
+import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
@@ -28,7 +28,7 @@ type UpdateActionType =
     | typeof DISCOVERY.COMPLETE;
 
 export interface DiscoveryItem {
-    // trezor-connect
+    // @trezor/connect
     path: string;
     coin: Account['symbol'];
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
@@ -40,7 +40,7 @@ export interface DiscoveryItem {
     derivationType?: 0 | 1 | 2;
 }
 
-type ProgressEvent = BundleProgress<AccountInfo>['payload'];
+type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
 const LIMIT = 10;
 
@@ -129,13 +129,13 @@ const handleProgress =
         // process event
         const { response, error } = event;
         let { failed } = discovery;
-        if (error) {
+        if (error || !response) {
             failed = failed.concat([
                 {
                     index: item.index,
                     symbol: item.coin,
                     accountType: item.accountType,
-                    error,
+                    error: error || 'discoveryActions: handle progress error', // unknown error, should not happen
                 },
             ]);
         } else {
@@ -201,7 +201,7 @@ const getBundle =
         );
 
         // corner-case: discovery is running so it's at least second iteration
-        // progress event wasn't emitted from 'trezor-connect' so there are no accounts, neither loaded or failed
+        // progress event wasn't emitted from '@trezor/connect' so there are no accounts, neither loaded or failed
         // return empty bundle to complete discovery
         if (
             discovery.status === DISCOVERY.STATUS.RUNNING &&
@@ -494,14 +494,14 @@ export const start =
             update({ deviceState, bundleSize: bundle.length, status: DISCOVERY.STATUS.RUNNING }),
         );
 
-        // handle trezor-connect event
+        // handle @trezor/connect event
         const onBundleProgress = (event: ProgressEvent) => {
             const { progress } = event;
             // pass more parameters to handler
             dispatch(handleProgress(event, deviceState, bundle[progress], metadataEnabled));
         };
 
-        TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on<AccountInfo | null>(UI.BUNDLE_PROGRESS, onBundleProgress);
         const result = await TrezorConnect.getAccountInfo({
             device,
             bundle,
@@ -525,7 +525,7 @@ export const start =
                 metadataEnabled &&
                 authConfirm &&
                 currentDiscovery.authConfirm &&
-                result.payload.find(a => !a.empty)
+                result.payload.find(a => a && !a.empty)
             ) {
                 dispatch(
                     update({

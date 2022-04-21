@@ -4,7 +4,7 @@ import { Translation, TrezorLink } from '@suite-components';
 import CollapsibleBox from '@suite-components/CollapsibleBox'; // build fails due if imported from suite-components
 import { variables, Button } from '@trezor/components';
 import { SUPPORT_URL } from '@suite-constants/urls';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@suite-utils/env';
 
 const WhiteCollapsibleBox = styled(CollapsibleBox)`

@@ -3,8 +3,7 @@ import TrezorConnect, {
     BlockchainBlock,
     BlockchainNotification,
     BlockchainError,
-    BlockchainEstimateFee,
-} from 'trezor-connect';
+} from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
 import * as accountActions from '@wallet-actions/accountActions';
 import {
@@ -71,7 +70,7 @@ export type BlockchainAction =
       };
 
 // sort FeeLevels in reversed order (Low > High)
-// TODO: consider to use same order in trezor-connect to avoid double sorting
+// TODO: consider to use same order in @trezor/connect to avoid double sorting
 const order: FeeLevel['label'][] = ['low', 'economy', 'normal', 'high'];
 const sortLevels = (levels: FeeLevel[]) =>
     levels.sort((levelA, levelB) => order.indexOf(levelA.label) - order.indexOf(levelB.label));
@@ -119,10 +118,11 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
 
     if (feeInfo.blockHeight > 0 && blockchainInfo.blockHeight - feeInfo.blockHeight < 10) return;
 
-    let payload: BlockchainEstimateFee;
-
+    let newFeeInfo;
     if (network.networkType === 'ethereum') {
-        payload = {
+        // NOTE: ethereum smart fees are not implemented properly in @trezor/connect Issue: https://github.com/trezor/trezor-suite/issues/5340
+        // create raw call to @trezor/blockchain-link, receive data and create FeeLevel.normal from it
+        const result = await TrezorConnect.blockchainEstimateFee({
             coin: network.symbol,
             request: {
                 blocks: [2],
@@ -131,28 +131,37 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
                     to: '0x0000000000000000000000000000000000000000',
                 },
             },
-        };
+        });
+        if (result.success) {
+            newFeeInfo = {
+                ...result.payload,
+                levels: result.payload.levels.map(l => ({
+                    ...l,
+                    blocks: -1, // NOTE: @trezor/connect returns -1 for ethereum default
+                    label: 'normal' as const,
+                })),
+            };
+        }
     } else {
-        payload = {
+        const result = await TrezorConnect.blockchainEstimateFee({
             coin: network.symbol,
             request: {
                 feeLevels: 'smart',
             },
-        };
+        });
+        if (result.success) {
+            newFeeInfo = {
+                ...result.payload,
+                levels: sortLevels(result.payload.levels),
+            };
+        }
     }
 
-    const result = await TrezorConnect.blockchainEstimateFee(payload);
-
-    if (result.success) {
-        const { payload } = result;
+    if (newFeeInfo) {
         const partial: Partial<FeeState> = {};
         partial[network.symbol] = {
             blockHeight: blockchainInfo.blockHeight,
-            ...payload,
-            levels: sortLevels(payload.levels).map(l => ({
-                ...l,
-                label: l.label || 'normal',
-            })),
+            ...newFeeInfo,
         };
 
         dispatch({

@@ -1,10 +1,4 @@
-import {
-    CARDANO,
-    CardanoAddressType,
-    CardanoCertificate,
-    CardanoCertificateType,
-    CardanoOutput,
-} from 'trezor-connect';
+import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
 import type { types } from '@fivebinaries/coin-selection';
 import {
     amountToSatoshi,
@@ -49,7 +43,8 @@ export const getDerivationType = (accountType: Network['accountType']) => {
     }
 };
 
-export const getAddressType = (_accountType: Account['accountType']) => CardanoAddressType.BASE;
+export const getAddressType = (_accountType: Account['accountType']) =>
+    PROTO.CardanoAddressType.BASE;
 
 export const getStakingPath = (account: Account) => `m/1852'/1815'/${account.index}'/2/0`;
 
@@ -132,18 +127,18 @@ export const transformUtxos = (utxos: Account['utxo']): types.Utxo[] => {
 };
 
 export const prepareCertificates = (certs: CardanoCertificate[]) => {
-    // convert trezor-connect certificate format to cardano coin-selection lib format
+    // convert @trezor/connect certificate format to cardano coin-selection lib format
     const convertedCerts: types.Certificate[] = [];
     certs.forEach(cert => {
         switch (cert.type) {
-            case CardanoCertificateType.STAKE_DELEGATION:
+            case PROTO.CardanoCertificateType.STAKE_DELEGATION:
                 convertedCerts.push({
                     type: cert.type,
                     pool: cert.pool!,
                 });
                 break;
-            case CardanoCertificateType.STAKE_REGISTRATION:
-            case CardanoCertificateType.STAKE_DEREGISTRATION:
+            case PROTO.CardanoCertificateType.STAKE_REGISTRATION:
+            case PROTO.CardanoCertificateType.STAKE_DEREGISTRATION:
                 convertedCerts.push({
                     type: cert.type,
                 });
@@ -176,7 +171,7 @@ export const getDelegationCertificates = (
 ) => {
     const result: CardanoCertificate[] = [
         {
-            type: CardanoCertificateType.STAKE_DELEGATION,
+            type: PROTO.CardanoCertificateType.STAKE_DELEGATION,
             path: stakingPath,
             pool: poolHex,
         },
@@ -184,7 +179,7 @@ export const getDelegationCertificates = (
 
     if (shouldRegister) {
         result.unshift({
-            type: CardanoCertificateType.STAKE_REGISTRATION,
+            type: PROTO.CardanoCertificateType.STAKE_REGISTRATION,
             path: stakingPath,
         });
     }
@@ -214,7 +209,7 @@ export const composeTxPlan = async (
         address: string;
         addressParameters: {
             path: string;
-            addressType: CardanoAddressType;
+            addressType: PROTO.CardanoAddressType;
             stakingPath: string;
         };
     },

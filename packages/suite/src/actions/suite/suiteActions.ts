@@ -1,4 +1,4 @@
-import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
+import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
@@ -229,7 +229,7 @@ export const lockRouter = (payload: boolean): SuiteAction => ({
 
 /**
  * Called from:
- * - `trezor-connect` events handler `handleDeviceConnect`, `handleDeviceDisconnect`
+ * - `@trezor/connect` events handler `handleDeviceConnect`, `handleDeviceDisconnect`
  * - from user action in `@suite-components/DeviceMenu`
  * @param {(Device | TrezorDevice | undefined)} device
  */
@@ -243,7 +243,7 @@ export const selectDevice =
                 // requested device is a @suite TrezorDevice type. get exact instance from reducer
                 payload = deviceUtils.getSelectedDevice(device as TrezorDevice, getState().devices);
             } else {
-                // requested device is a trezor-connect Device type
+                // requested device is a @trezor/connect Device type
                 // find all instances and select recently used
                 const instances = getState().devices.filter(d => d.path === device.path);
                 // eslint-disable-next-line prefer-destructuring
@@ -279,7 +279,7 @@ export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
 });
 
 /**
- * Triggered by `trezor-connect DEVICE_EVENT`
+ * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  * @param {boolean} [useEmptyPassphrase=false]
  */
@@ -313,7 +313,7 @@ export const createDeviceInstance =
     };
 
 /**
- * Triggered by `trezor-connect DEVICE_EVENT`
+ * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  */
 export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getState: GetState) => {
@@ -336,7 +336,7 @@ export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getS
 };
 
 /**
- * Triggered by `trezor-connect DEVICE_EVENT`
+ * Triggered by `@trezor/connect DEVICE_EVENT`
  * @param {Device} device
  */
 export const handleDeviceDisconnect =
@@ -378,7 +378,7 @@ export const handleDeviceDisconnect =
     };
 
 /**
- * Triggered by `trezor-connect DEVICE_EVENT` via suiteMiddleware
+ * Triggered by `@trezor/connect DEVICE_EVENT` via suiteMiddleware
  * Remove all data related to all instances of disconnected device if they are not remembered
  * @param {Device} device
  */

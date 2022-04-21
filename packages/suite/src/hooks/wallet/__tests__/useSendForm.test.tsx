@@ -26,9 +26,9 @@ jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 // render only Translation['id']
 jest.mock('@suite-components/Translation', () => ({ Translation: ({ id }: any) => id }));
 
-jest.mock('trezor-connect', () => global.JestMocks.getTrezorConnect({}));
+jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const TrezorConnect = require('trezor-connect').default;
+const TrezorConnect = require('@trezor/connect').default;
 
 type SendState = ReturnType<typeof sendFormReducer>;
 interface Args {
@@ -88,11 +88,11 @@ const Component = ({ callback }: { callback: TestCallback }) => {
 
 interface Result {
     composeTransactionCalls?: number;
-    composeTransactionParams?: any; // partial trezor-connect params
+    composeTransactionParams?: any; // partial @trezor/connect params
     estimateFeeCalls?: number; // used in ETH
-    estimateFeeParams?: any; // partial trezor-connect params
+    estimateFeeParams?: any; // partial @trezor/connect params
     getAccountInfoCalls?: number; // used in XRP
-    getAccountInfoParams?: any; // partial trezor-connect params
+    getAccountInfoParams?: any; // partial @trezor/connect params
     composedLevels?: any; // partial PrecomposedLevel
     formValues?: DeepPartial<ReturnType<SendContextValues['getValues']>>;
     errors?: any; // partial SendContextValues['errors']
@@ -106,7 +106,7 @@ const actionCallback = (
 ) => {
     if (!result || !getContextValues) return;
 
-    // validate number of calls to 'trezor-connect'
+    // validate number of calls to '@trezor/connect'
     if (typeof result.composeTransactionCalls === 'number') {
         expect(TrezorConnect.composeTransaction).toBeCalledTimes(result.composeTransactionCalls);
     }
@@ -117,7 +117,7 @@ const actionCallback = (
         expect(TrezorConnect.getAccountInfo).toBeCalledTimes(result.getAccountInfoCalls);
     }
 
-    // validate 'trezor-connect' params
+    // validate '@trezor/connect' params
     if (result.composeTransactionParams) {
         expect(TrezorConnect.composeTransaction).toHaveBeenLastCalledWith(
             expect.objectContaining(result.composeTransactionParams),

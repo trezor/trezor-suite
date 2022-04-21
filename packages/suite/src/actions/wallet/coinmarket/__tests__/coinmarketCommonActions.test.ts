@@ -33,7 +33,7 @@ const initStore = (state: State) => {
     return store;
 };
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     let fixture: any;
     let buttonRequest: ((e?: any) => any) | undefined;
     let fixtureIndex = 0;

@@ -3,7 +3,7 @@
 
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { UI_EVENT, UI } from 'trezor-connect';
+import { UI_EVENT, UI } from '@trezor/connect';
 
 import { SUITE } from '@suite-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
@@ -25,7 +25,7 @@ jest.mock('@wallet-actions/blockchainActions', () => ({
     init: () => ({ type: 'mocked' }),
 }));
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     const callbacks: { [key: string]: (e: string) => any } = {};
     return {
         __esModule: true, // this property makes it work
@@ -88,7 +88,7 @@ const initStore = (state: State) => {
 
 describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
-        require('trezor-connect');
+        require('@trezor/connect');
         require('@wallet-actions/blockchainActions');
         const store = initStore(getInitialState());
         // @ts-ignore
@@ -96,7 +96,7 @@ describe('buttonRequest middleware', () => {
         // @ts-ignore
         const call = store.dispatch(deviceSettingsActions.changePin({ remove: false }));
         // fake few ui events, just like when user is changing PIN
-        const { emit } = require('trezor-connect');
+        const { emit } = require('@trezor/connect');
         emit(UI_EVENT, { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } });
         emit(UI_EVENT, {
             type: UI.REQUEST_PIN,

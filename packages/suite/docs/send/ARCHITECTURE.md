@@ -18,7 +18,7 @@ The whole logic of send form pre/post validation, working with field (recalculat
 
 ## @wallet-actions/sendFormActions
 
-Called from `useSendForm` hook. A set of operations with `trezor-connect` and post validation (see: [Transaction signing](#L42))
+Called from `useSendForm` hook. A set of operations with `@trezor/connect` and post validation (see: [Transaction signing](#L42))
 
 ## @wallet-reducers/sendFormReducer
 
@@ -32,7 +32,7 @@ In order to work with properly validated state `useSendFormCompose.composeReques
 
 Every `networkType` has own `sendFormActions.composeTransaction` method
 
--   `sendFormActionsBitcoin` does calculation using `trezor-connect`
+-   `sendFormActionsBitcoin` does calculation using `@trezor/connect`
 -   `sendFormActionsEthereum` does calculation locally, custom `feePerUnit` is calculated if `ethereumData` is used
 -   `sendFormActionsRipple` does calculation locally, additional `account.reserve` check on recipient address
 

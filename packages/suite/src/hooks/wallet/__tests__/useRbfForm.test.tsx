@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';

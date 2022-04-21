@@ -3,7 +3,7 @@ import TrezorConnect, {
     UI_EVENT,
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
-} from 'trezor-connect';
+} from '@trezor/connect';
 import { SUITE } from '@suite-actions/constants';
 import { lockDevice } from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';

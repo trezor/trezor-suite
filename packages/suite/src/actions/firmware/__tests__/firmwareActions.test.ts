@@ -20,7 +20,7 @@ interface InitialState {
     devices?: TrezorDevice[];
 }
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     let fixture: Fixture;
 
     // mocked function
@@ -107,7 +107,7 @@ describe('Firmware Actions', () => {
     actions.forEach(f => {
         it(f.description, async () => {
             // set fixtures
-            require('trezor-connect').setTestFixtures(f);
+            require('@trezor/connect').setTestFixtures(f);
 
             const state = getInitialState(f.initialState);
             const store = mockStore(state);

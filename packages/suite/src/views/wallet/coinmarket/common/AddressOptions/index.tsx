@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import type { AccountAddress } from 'trezor-connect';
+import type { AccountAddress } from '@trezor/connect';
 import { Translation, HiddenPlaceholder, FiatValue } from '@suite-components';
 import { variables, Select } from '@trezor/components';
 import { UseFormMethods, Control, Controller } from 'react-hook-form';

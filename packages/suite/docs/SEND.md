@@ -88,7 +88,7 @@
 -   CUSTOM_FEE_IS_NOT_NUMBER
 -   CUSTOM_FEE_IS_NOT_INTEGER (BTC and XRP: decimals not allowed)
 -   AMOUNT_IS_NOT_IN_RANGE_DECIMALS (ETH only: decimals are allowed but with max. 9 decimals - GWEI is not satoshi)
--   CUSTOM_FEE_NOT_IN_RANGE (must be between minFee and maxFee specified in coins.json, in trezor-connect)
+-   CUSTOM_FEE_NOT_IN_RANGE (must be between minFee and maxFee specified in coins.json, in @trezor/connect)
 
 ---
 

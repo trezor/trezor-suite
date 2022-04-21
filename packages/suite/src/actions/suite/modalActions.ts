@@ -1,4 +1,4 @@
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { createDeferred, Deferred, DeferredResponse } from '@trezor/utils';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Route, Dispatch, GetState, TrezorDevice } from '@suite-types';
@@ -135,7 +135,7 @@ export const onCancel = (): ModalAction => ({
 
 /**
  * Called from <PinModal /> component
- * Sends pin to `trezor-connect`
+ * Sends pin to `@trezor/connect`
  * @param {string} payload
  * @returns
  */
@@ -149,7 +149,7 @@ export const onPinCancel = () => () => {
 
 /**
  * Called from <PassphraseModal /> component
- * Sends passphrase to `trezor-connect`
+ * Sends passphrase to `@trezor/connect`
  * @param {string} value
  * @param {boolean} passphraseOnDevice
  * @param {boolean} hasEmptyPassphraseWallet

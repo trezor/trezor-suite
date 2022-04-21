@@ -29,6 +29,7 @@ export const BTC_ACCOUNT: Account = {
     utxo: [],
     history: {
         total: 0,
+        unconfirmed: 0,
     },
     metadata: {
         key: 'C5B245DD2B69C7291',
@@ -65,6 +66,7 @@ export const ETH_ACCOUNT: Account = {
     utxo: [],
     history: {
         total: 0,
+        unconfirmed: 0,
     },
     metadata: {
         key: 'C5B245DD2B69C7291',
@@ -101,6 +103,7 @@ export const XRP_ACCOUNT: Account = {
     utxo: [],
     history: {
         total: 0,
+        unconfirmed: 0,
     },
     metadata: {
         key: 'C5B245DD2B69C7291',

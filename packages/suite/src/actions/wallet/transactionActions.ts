@@ -1,4 +1,4 @@
-import TrezorConnect, { AccountTransaction } from 'trezor-connect';
+import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { saveAs } from 'file-saver';
 import { getAccountTransactions, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { enhanceTransaction, findTransactions } from '@wallet-utils/transactionUtils';
