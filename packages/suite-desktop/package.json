@@ -174,17 +174,18 @@
     },
     "dependencies": {
         "@sentry/electron": "3.0.0",
+        "@trezor/connect": "9.0.0-beta.1",
         "@trezor/suite-desktop-api": "1.0.0",
         "@trezor/utils": "*",
         "@trezor/request-manager": "*",
+        "@trezor/connect-common": "*",
         "chalk": "^4.1.2",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^8.0.1",
         "electron-updater": "4.6.5",
         "node-fetch": "^2.6.7",
         "openpgp": "^5.0.0",
-        "systeminformation": "^5.9.9",
-        "trezor-connect": "8.2.8-beta.4"
+        "systeminformation": "^5.9.9"
     },
     "devDependencies": {
         "@types/electron-localshortcut": "^3.1.0",

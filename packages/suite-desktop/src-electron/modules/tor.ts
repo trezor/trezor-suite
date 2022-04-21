@@ -7,7 +7,7 @@ import { onionDomain } from '../config';
 import { app, ipcMain } from '../typed-electron';
 import { Module } from './index';
 import { getFreePort } from '../libs/getFreePort';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 
 const init: Module = async ({ mainWindow, store, interceptor }) => {
     const { logger } = global;
