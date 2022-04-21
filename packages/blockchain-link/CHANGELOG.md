@@ -1,3 +1,7 @@
+# 2.1.4 (not released)
+
+-   add missing ADA types
+
 # 2.1.3
 
 ### changes
