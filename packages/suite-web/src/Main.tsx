@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import { init as initSentry } from '@sentry/browser';
 
 import { store } from '@suite/reducers/store';
