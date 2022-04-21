@@ -2,7 +2,8 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../transport-native" }
+        { "path": "../transport-native" },
+        { "path": "../connect" }
     ],
     "include": [".", "**.json"]
 }

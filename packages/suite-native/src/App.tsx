@@ -10,8 +10,8 @@ import {
     useColorScheme,
 } from 'react-native';
 
+import TrezorConnect from '@trezor/connect';
 import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
-import TrezorConnect from 'trezor-connect';
 
 const styles = StyleSheet.create({
     sectionContainer: {
