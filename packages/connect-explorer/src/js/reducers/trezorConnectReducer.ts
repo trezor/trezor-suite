@@ -1,4 +1,4 @@
-import TrezorConnect, { DEVICE } from 'trezor-connect';
+import TrezorConnect, { DEVICE } from '@trezor/connect-web';
 import * as ACTIONS from '../actions/index';
 import { TrezorConnectDevice, Action } from '../types';
 

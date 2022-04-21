@@ -1,4 +1,4 @@
-import { CardanoNativeScriptType } from 'trezor-connect';
+import { CardanoNativeScriptType } from '@trezor/transport/lib/types/messages';
 
 import { cardanoDerivationType, cardanoNativeScriptHashDisplayFormat } from './common';
 

@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect-web';
 import { loadDocs } from './docsActions';
 
 import { GetState, Dispatch, Field } from '../types';

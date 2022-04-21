@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useHistory } from 'react-router';
@@ -70,20 +72,24 @@ const About = () => {
                 Each method contains subsections as well as examples of how to use them.
             </StyledP>
 
-            <StyledH2>Config</StyledH2>
-
-            <Code>{JSON.stringify(connect.options, null, 2)}</Code>
-
-            <InputWrapper>
-                <Input
-                    label="Change connect src"
-                    type="text"
-                    placeholder={connect.options?.connectSrc}
-                    value={src}
-                    onChange={e => setSrc(e.target.value)}
-                />
-            </InputWrapper>
-            <Button onClick={() => reload()}>Submit</Button>
+            {/* I am not sure if this part is very useful, so I am showing it only on localhost right now,
+            the original idea was to add an option to switch connectSrc between sldev, localhost and production connect builds */}
+            {window?.__TREZOR_CONNECT_SRC?.includes('localhost') && (
+                <>
+                    <StyledH2>Config</StyledH2>
+                    <Code>{JSON.stringify(connect.options, null, 2)}</Code>
+                    <InputWrapper>
+                        <Input
+                            label="Change connect src"
+                            type="text"
+                            placeholder={connect.options?.connectSrc}
+                            value={src}
+                            onChange={e => setSrc(e.target.value)}
+                        />
+                    </InputWrapper>
+                    <Button onClick={() => reload()}>Submit</Button>
+                </>
+            )}
         </section>
     );
 };

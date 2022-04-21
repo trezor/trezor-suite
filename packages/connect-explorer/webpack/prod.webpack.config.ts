@@ -1,16 +1,18 @@
-const { SRC, BUILD, PORT } = require('./constants');
+/* eslint-disable no-underscore-dangle */
 
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import webpack from 'webpack';
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+const config: webpack.Configuration = {
     mode: 'production',
     entry: {
-        index: [`${SRC}js/index.tsx`],
+        index: path.resolve(__dirname, '../src/js/index.tsx'),
     },
     output: {
         filename: '[name].[hash].js',
-        path: BUILD,
+        publicPath: './',
+        path: path.resolve(__dirname, '../build'),
     },
     module: {
         rules: [
@@ -37,12 +39,16 @@ module.exports = {
             {
                 test: /\.(gif|jpe?g|png|svg)$/,
                 type: 'asset/resource',
+                generator: {
+                    filename: './images/[name][contenthash][ext]',
+                },
             },
         ],
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        modules: [SRC, 'node_modules'],
+        modules: ['node_modules'],
+        mainFields: ['browser', 'module', 'main'],
     },
     performance: {
         hints: false,
@@ -50,12 +56,14 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             chunks: ['index'],
-            template: `${SRC}index.html`,
+            template: path.resolve(__dirname, '../src/index.html'),
             filename: 'index.html',
             inject: true,
         }),
         new webpack.DefinePlugin({
-            'process.env.TREZOR_CONNECT_SRC': JSON.stringify(process.env.TREZOR_CONNECT_SRC),
+            'process.env.__TREZOR_CONNECT_SRC': JSON.stringify(process.env.__TREZOR_CONNECT_SRC),
         }),
     ],
 };
+
+export default config;
