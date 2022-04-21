@@ -1,4 +1,4 @@
-import { UI } from 'trezor-connect';
+import { UI } from '@trezor/connect';
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as recoveryActions from '@recovery-actions/recoveryActions';

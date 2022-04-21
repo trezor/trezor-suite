@@ -15,7 +15,7 @@ import DropboxProvider from '@suite-services/metadata/DropboxProvider';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 import accountsReducer from '@wallet-reducers/accountsReducer';
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     let fixture: any;
     return {
         __esModule: true, // this property makes it work
@@ -111,8 +111,8 @@ const initStore = (state: State) => {
 describe('Metadata Actions', () => {
     fixtures.setDeviceMetadataKey.forEach(f => {
         it(`setDeviceMetadataKey - ${f.description}`, async () => {
-            // set fixtures in trezor-connect
-            require('trezor-connect').setTestFixtures(f.connect);
+            // set fixtures in @trezor/connect
+            require('@trezor/connect').setTestFixtures(f.connect);
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.setDeviceMetadataKey());

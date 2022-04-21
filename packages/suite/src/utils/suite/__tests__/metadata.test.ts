@@ -40,7 +40,7 @@ const originalJson = {
 
 describe('metadata', () => {
     it('decrypt real file data from dropbox', async () => {
-        // require('trezor-connect');
+        // require('@trezor/connect');
 
         const file = fs.readFileSync(`./src/utils/suite/__fixtures__/${filename}.mtdt`);
 

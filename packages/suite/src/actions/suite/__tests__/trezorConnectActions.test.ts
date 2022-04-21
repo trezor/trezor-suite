@@ -2,13 +2,13 @@
 /* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from 'trezor-connect';
+import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import { SUITE } from '@suite-actions/constants';
 import { init } from '../trezorConnectActions';
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     let fixture: any;
     const callbacks: { [key: string]: (e: any) => any } = {};
     return {
@@ -87,11 +87,11 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Error', async () => {
-        require('trezor-connect').setTestFixtures(() => new Error('Iframe error'));
+        require('@trezor/connect').setTestFixtures(() => new Error('Iframe error'));
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(init());
-        require('trezor-connect').setTestFixtures(undefined);
+        require('@trezor/connect').setTestFixtures(undefined);
         const action = store.getActions().pop();
         expect(action).toEqual({
             type: SUITE.ERROR,
@@ -100,14 +100,14 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('TypedError', async () => {
-        require('trezor-connect').setTestFixtures(() => ({
+        require('@trezor/connect').setTestFixtures(() => ({
             message: 'Iframe error',
             code: 'SomeCode',
         }));
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(init());
-        require('trezor-connect').setTestFixtures(undefined);
+        require('@trezor/connect').setTestFixtures(undefined);
         const action = store.getActions().pop();
         expect(action).toEqual({
             type: SUITE.ERROR,
@@ -116,11 +116,11 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Error as string', async () => {
-        require('trezor-connect').setTestFixtures(() => 'Iframe error');
+        require('@trezor/connect').setTestFixtures(() => 'Iframe error');
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(init());
-        require('trezor-connect').setTestFixtures(undefined);
+        require('@trezor/connect').setTestFixtures(undefined);
         const action = store.getActions().pop();
         expect(action).toEqual({
             type: SUITE.ERROR,
@@ -137,7 +137,7 @@ describe('TrezorConnect Actions', () => {
         const actions = store.getActions();
         expect(actions.pop().type).toEqual(SUITE.CONNECT_INITIALIZED);
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const { emit } = require('trezor-connect');
+        const { emit } = require('@trezor/connect');
 
         emit(DEVICE_EVENT, { type: DEVICE_EVENT });
         expect(actions.pop()).toEqual({ type: DEVICE_EVENT });
@@ -155,7 +155,7 @@ describe('TrezorConnect Actions', () => {
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(init());
-        await require('trezor-connect').default.getFeatures();
+        await require('@trezor/connect').default.getFeatures();
         const actions = store.getActions();
         // check actions in reversed order
         expect(actions.pop()).toEqual({

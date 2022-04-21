@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { Translation, WordInput, Modal, ModalProps } from '@suite-components';
 
 const StyledModal = styled(Modal)`

@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { DEVICE } from 'trezor-connect';
+import { DEVICE } from '@trezor/connect';
 import { SUITE } from '@suite-actions/constants';
 import { TRANSACTION, ACCOUNT } from '@wallet-actions/constants';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -25,7 +25,7 @@ const eventsMiddleware =
         }
 
         if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
-            // get TrezorDevice from trezor-connect:Device object
+            // get TrezorDevice from @trezor/connect:Device object
             const device = api.getState().devices.find(d => d.path === action.payload.path);
             if (!device) return action; // this shouldn't happen
             const seen = deviceUtils.isSelectedDevice(action.payload, api.getState().suite.device);

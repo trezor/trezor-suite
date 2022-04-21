@@ -1,4 +1,4 @@
-import { UI } from 'trezor-connect';
+import { UI } from '@trezor/connect';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as recoveryActions from '@recovery-actions/recoveryActions';

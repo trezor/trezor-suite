@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FeeLevel } from 'trezor-connect';
+import { FeeLevel } from '@trezor/connect';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';

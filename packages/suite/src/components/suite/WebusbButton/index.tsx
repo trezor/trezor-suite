@@ -1,13 +1,7 @@
 import React from 'react';
 import { Button, ButtonProps } from '@trezor/components';
 import { Translation } from '@suite-components';
-
-// TODO: those constants should be exposed by connect
-const filters = [
-    { vendorId: 0x534c, productId: 0x0001 },
-    { vendorId: 0x1209, productId: 0x53c0 },
-    { vendorId: 0x1209, productId: 0x53c1 },
-];
+import { config } from '@trezor/connect/lib/data/config';
 
 const WebusbButton = (props: ButtonProps) => (
     <Button
@@ -17,7 +11,7 @@ const WebusbButton = (props: ButtonProps) => (
             e.stopPropagation();
             try {
                 // @ts-ignore navigator.usb not found
-                await navigator.usb.requestDevice({ filters });
+                await navigator.usb.requestDevice({ filters: config.webusb });
             } catch (error) {
                 // empty
             }

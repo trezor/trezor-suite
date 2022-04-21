@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import TrezorConnect, { TokenInfo } from 'trezor-connect';
+import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { Input, Button, Tooltip } from '@trezor/components';
 import * as tokenActions from '@wallet-actions/tokenActions';
 import { Modal } from '@suite-components';

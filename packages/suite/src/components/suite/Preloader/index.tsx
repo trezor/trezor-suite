@@ -54,7 +54,7 @@ const Preloader = ({ children }: PreloaderProps) => {
     useGuideKeyboard();
 
     if (error) {
-        // trezor-connect initialization failed
+        // @trezor/connect initialization failed
         // throw error to <ErrorBoundary /> in _app.tsx
         throw new Error(error);
     } else if (dbError) {
@@ -73,7 +73,7 @@ const Preloader = ({ children }: PreloaderProps) => {
         return <SuiteLayout>{children}</SuiteLayout>;
     }
 
-    // trezor-connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
+    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     // display Loader as full page view
     if (!router.loaded || !loaded || !transport) {
         return <InitialLoading />;

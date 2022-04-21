@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
@@ -44,11 +44,11 @@ const firmware =
 
                 // this if section takes care of incremental update, how does it work:
                 // 1. I realize that I can't update to the latest firmware (see @trezor/rollout)
-                // 2. I use special intermediary firmware instead of using normal one (see @trezor/rollout and trezor-connect)
+                // 2. I use special intermediary firmware instead of using normal one (see @trezor/rollout and @trezor/connect)
                 // 3. Intermediary firmware updates bootloader to the latest and keeps device in bootloader mode after reconnect
                 // 4. This point happens here. After I reconnect the device, firmware middleware finds that the newly connected
                 // 4. device does not have the latest firmware, proceed with subsequent updated automatically
-                // todo: this is a 'client side' implementation. It would be nicer to have it in trezor-connect
+                // todo: this is a 'client side' implementation. It would be nicer to have it in @trezor/connect
                 // todo: but this would require reworking the entire TRAKTOR
 
                 if (
@@ -77,7 +77,7 @@ const firmware =
                 ) {
                     // TLDR: if you don't reload features, after updating model T from non-shamir firmware to shamir firmware, you
                     // won't see shamir vs. standard wallet selection.
-                    // firmwareActions.firmwareUpdate method sends skipFinalReload parameter into trezor-connect, which results
+                    // firmwareActions.firmwareUpdate method sends skipFinalReload parameter into @trezor/connect, which results
                     // in capabilities not being reloaded properly even after device reconnect. this is because messages definitions
                     // which are required to parse incoming message from trezor are reloaded only before call to device starts and
                     // after it ends (if there is no skipFinalReload flag). This does not apply for our case here, so we must

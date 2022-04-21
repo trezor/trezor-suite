@@ -1,4 +1,4 @@
-import { Device, KnownDevice, UnavailableCapability } from 'trezor-connect';
+import { Device, KnownDevice, UnavailableCapability } from '@trezor/connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 /**

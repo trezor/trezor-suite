@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { addButtonRequest, removeButtonRequests } from '@suite-actions/suiteActions';
 import { ONBOARDING } from '@onboarding-actions/constants';
 
@@ -36,6 +36,8 @@ const buttonRequest =
         next(action);
 
         switch (action.type) {
+            // old device might not be sending (action.payload.type) matrix thingy. In that case, we use only 'ui-request_pin' I am not sure
+            // anyway, remove this entire roundtrip through buttonRequests and save pin related data directly in modalReducer
             case UI.REQUEST_PIN:
             case UI.INVALID_PIN:
                 api.dispatch(

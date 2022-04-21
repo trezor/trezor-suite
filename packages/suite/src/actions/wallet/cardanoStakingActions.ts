@@ -1,4 +1,4 @@
-import { BlockchainBlock } from 'trezor-connect';
+import { BlockchainBlock } from '@trezor/connect';
 import { CARDANO_STAKING } from '@wallet-actions/constants';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account, WalletAccountTransaction } from '@wallet-types';

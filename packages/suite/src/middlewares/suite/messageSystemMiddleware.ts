@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { DEVICE, TRANSPORT } from 'trezor-connect';
+import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import { MESSAGE_SYSTEM, STORAGE, SUITE } from '@suite-actions/constants';
 import { getValidMessages } from '@suite-utils/messageSystem';

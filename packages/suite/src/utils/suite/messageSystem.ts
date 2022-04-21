@@ -15,7 +15,7 @@ import {
     isBitcoinOnly,
 } from './device';
 
-import type { TransportInfo } from 'trezor-connect';
+import type { TransportInfo } from '@trezor/connect';
 
 import type { Network } from '@wallet-types';
 import type { EnvironmentType, TrezorDevice } from '@suite-types';

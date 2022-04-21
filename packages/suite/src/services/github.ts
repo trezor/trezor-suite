@@ -2,7 +2,7 @@ import { getFwVersion, isBitcoinOnly, getDeviceModel } from '@suite-utils/device
 import { isDesktop, getUserAgent, getScreenWidth, getScreenHeight } from '@suite-utils/env';
 import type { ReleaseInfo } from '@suite-types/github';
 import type { TrezorDevice } from '@suite-types';
-import { TransportInfo } from 'trezor-connect';
+import type { TransportInfo } from '@trezor/connect';
 
 const REPO_INFO = {
     owner: 'trezor',

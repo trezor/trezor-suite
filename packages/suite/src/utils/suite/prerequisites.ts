@@ -1,4 +1,4 @@
-import type { TransportInfo } from 'trezor-connect';
+import type { TransportInfo } from '@trezor/connect';
 import type { TrezorDevice, AppState } from '@suite-types';
 
 interface PrerequisitesInput {
@@ -35,7 +35,7 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
 
     // similar to initialize, there is no seed in device
     // difference is it is in recovery mode.
-    // todo: this could be added to trezor-connect to device.mode I think.
+    // todo: this could be added to @trezor/connect to device.mode I think.
     if (device.features.recovery_mode) return 'device-recovery-mode';
 
     // device is not initialized

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FeeLevel } from 'trezor-connect';
+import { FeeLevel } from '@trezor/connect';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SelectBar, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';

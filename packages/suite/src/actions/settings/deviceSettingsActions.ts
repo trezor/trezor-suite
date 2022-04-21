@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import { addToast } from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
@@ -68,7 +68,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     });
 
     if (result.success) {
-        // Wiping a device triggers device.id change and this change is propagated to device reducer via trezor-connect DEVICE.CHANGE event.
+        // Wiping a device triggers device.id change and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
         // Accounts data are related to the old device.id in order to properly clear reducers and indexed db
         // we need to retrieve device objects BEFORE and AFTER the wipe process.
         // and call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)

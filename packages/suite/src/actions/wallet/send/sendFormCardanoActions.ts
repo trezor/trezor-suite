@@ -1,4 +1,4 @@
-import TrezorConnect, { CardanoTxSigningMode } from 'trezor-connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import {
     getChangeAddressParameters,
     getTtl,
@@ -167,7 +167,7 @@ export const signTransaction =
         const { transaction } = transactionInfo;
 
         const res = await TrezorConnect.cardanoSignTransaction({
-            signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
             device: {
                 path: device.path,
                 instance: device.instance,

@@ -124,7 +124,7 @@ export default [
         },
     },
     {
-        description: 'Show address failed, trezor-connect method not specified',
+        description: 'Show address failed, @trezor/connect method not specified',
         initialState: {
             wallet: {
                 selectedAccount: {
@@ -184,7 +184,7 @@ export default [
         },
     },
     {
-        description: 'Show address, trezor-connect error',
+        description: 'Show address, @trezor/connect error',
         initialState: {
             wallet: {
                 selectedAccount: {
@@ -214,7 +214,7 @@ export default [
         },
     },
     {
-        description: 'Show address, trezor-connect permissions not granted',
+        description: 'Show address, @trezor/connect permissions not granted',
         initialState: undefined,
         mocks: {
             getAddress: {

@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { TRANSPORT, TransportInfo } from 'trezor-connect';
+import { TRANSPORT, TransportInfo } from '@trezor/connect';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import TrezorConnect, { BlockchainLink } from 'trezor-connect';
+import TrezorConnect, { BlockchainLink } from '@trezor/connect';
 import type { Network } from '@wallet-types';
 
 export const useDefaultUrls = (coin: Network['symbol']): string[] => {

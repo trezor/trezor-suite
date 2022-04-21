@@ -1,4 +1,4 @@
-import TrezorConnect, { CommonParams } from 'trezor-connect';
+import TrezorConnect, { CommonParams } from '@trezor/connect';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { BACKUP } from '@backup-actions/constants';
 

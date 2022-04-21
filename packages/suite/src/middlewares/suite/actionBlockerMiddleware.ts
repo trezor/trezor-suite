@@ -1,17 +1,19 @@
 import { MiddlewareAPI } from 'redux';
-import { UI } from 'trezor-connect';
+import { UI } from '@trezor/connect';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 // actionBlockerMiddleware serves one purpose only, to block certain actions based on activated device's processMode.
 // processMode is set via suiteActions.setProcessMode func
 
+const blockedActions: Action['type'][] = [UI.CLOSE_UI_WINDOW];
+
 // definition of blocked actions for each process mode
 export const PROCESS_MODE = {
     'confirm-addr': {
-        blockedActions: [UI.CLOSE_UI_WINDOW], // prevents closing the modal after user confirms the address on a device (Receive tab)
+        blockedActions, // prevents closing the modal after user confirms the address on a device (Receive tab)
     },
     'sign-tx': {
-        blockedActions: [UI.CLOSE_UI_WINDOW], // prevents closing the modal between sign and push process
+        blockedActions, // prevents closing the modal between sign and push process
     },
 };
 

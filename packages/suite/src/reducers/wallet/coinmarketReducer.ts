@@ -22,7 +22,7 @@ import {
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 import { SellInfo } from '@wallet-actions/coinmarketSellActions';
-import { FeeLevel } from 'trezor-connect';
+import { FeeLevel } from '@trezor/connect';
 import { Trade } from '@wallet-types/coinmarketCommonTypes';
 
 export interface ComposedTransactionInfo {

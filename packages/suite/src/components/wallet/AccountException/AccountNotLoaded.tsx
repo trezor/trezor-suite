@@ -8,7 +8,7 @@ import { AccountExceptionLayout } from '@wallet-components';
  * Handler for 'bundle-exception' in discovery
  * Account couldn't be loaded for multiple reasons:
  * - Discovery throws bundle-exception with code or runtime error
- * - Other trezor-connect runtime error
+ * - Other @trezor/connect runtime error
  */
 const AccountNotLoaded = () => {
     const { isLocked } = useDevice();

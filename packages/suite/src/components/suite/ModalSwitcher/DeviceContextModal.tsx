@@ -1,5 +1,5 @@
 import React from 'react';
-import { UI } from 'trezor-connect';
+import { UI } from '@trezor/connect';
 import { onPinCancel } from '@suite-actions/modalActions';
 import { MODAL } from '@suite-actions/constants';
 import { useSelector, useActions } from '@suite-hooks';

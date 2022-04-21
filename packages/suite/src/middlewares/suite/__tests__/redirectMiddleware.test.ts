@@ -1,4 +1,4 @@
-import { DEVICE } from 'trezor-connect';
+import { DEVICE } from '@trezor/connect';
 import configureStore from 'redux-mock-store';
 import { Middleware } from 'redux';
 import thunk from 'redux-thunk';

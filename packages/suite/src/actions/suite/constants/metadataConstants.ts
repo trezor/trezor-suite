@@ -14,7 +14,7 @@ export const SET_INITIATING = '@metadata/set-initiating';
 // todo: use in metadataActions, currently migration is not implemented yet
 export const METADATA_VERSION = '2.0.0';
 
-// trezor-connect params
+// @trezor/connect params
 export const ENABLE_LABELING_PATH = "m/10015'/0'";
 export const ENABLE_LABELING_KEY = 'Enable labeling?';
 export const ENABLE_LABELING_VALUE =

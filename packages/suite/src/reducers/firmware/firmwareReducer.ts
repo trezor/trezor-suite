@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { UI, Device } from 'trezor-connect';
+import { UI, Device } from '@trezor/connect';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';
@@ -22,7 +22,7 @@ export type FirmwareUpdateState =
               | 'initial' // initial state
               | 'check-seed' // ask user, if has seed properly backed up
               | 'waiting-for-bootloader' // navigate user into bootloader mode
-              | 'started' // progress - firmware update has started, waiting for events from trezor-connect
+              | 'started' // progress - firmware update has started, waiting for events from @trezor/connect
               | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
               | 'installing' // progress - firmware is being installed
               | 'partially-done' // progress - some old t1 firmwares can't update to the latest version. This should be handled by intermediary fw now and it shouldn't even be triggered in real world, but just to be safe let's keep it.

@@ -1,4 +1,4 @@
-import TrezorConnect, { FeeLevel, TokenInfo } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -83,7 +83,7 @@ const calculate = (
         return {
             ...payloadData,
             type: 'final',
-            // compatibility with BTC PrecomposedTransaction from trezor-connect
+            // compatibility with BTC PrecomposedTransaction from @trezor/connect
             transaction: {
                 inputs: [],
                 outputsPermutation: [0],
@@ -178,7 +178,7 @@ export const composeTransaction =
             const { minFee } = feeInfo;
             const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
             let maxFee = new BigNumber(lastKnownFee).minus(1);
-            // generate custom levels in range from lastKnownFee - 1 to feeInfo.minFee (coinInfo in trezor-connect)
+            // generate custom levels in range from lastKnownFee - 1 to feeInfo.minFee (coinInfo in @trezor/connect)
             const customLevels: FeeLevel[] = [];
             while (maxFee.gte(minFee)) {
                 customLevels.push({

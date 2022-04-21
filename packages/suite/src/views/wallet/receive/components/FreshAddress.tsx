@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { AccountAddress } from 'trezor-connect';
+import { AccountAddress } from '@trezor/connect';
 import { Button, Card, variables, H2 } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import { AppState } from '@suite-types';

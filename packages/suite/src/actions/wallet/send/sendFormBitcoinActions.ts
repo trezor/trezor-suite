@@ -1,4 +1,4 @@
-import TrezorConnect, { FeeLevel, SignTransaction } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, SignTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -74,7 +74,7 @@ export const composeTransaction =
 
         const response = await TrezorConnect.composeTransaction({
             ...params,
-            account: params.account, // needs to be present in order to correct resolve of trezor-connect params overload
+            account: params.account, // needs to be present in order to correct resolve of @trezor/connect params overload
         });
 
         if (!response.success) {
@@ -105,7 +105,7 @@ export const composeTransaction =
             const range = new BigNumber(lastKnownFee).minus(minFee);
             const rangeGap = range.gt(1000) ? 1000 : 1;
             let maxFee = new BigNumber(lastKnownFee).minus(rangeGap);
-            // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in trezor-connect)
+            // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in @trezor/connect)
             const customLevels: FeeLevel[] = [];
             while (maxFee.gte(minFee)) {
                 customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
@@ -117,7 +117,7 @@ export const composeTransaction =
                 customLevels.length > 0
                     ? await TrezorConnect.composeTransaction({
                           ...params,
-                          account: params.account, // needs to be present in order to correct resolve type of trezor-connect params overload
+                          account: params.account, // needs to be present in order to correct resolve type of @trezor/connect params overload
                           feeLevels: customLevels,
                       })
                     : ({ success: false } as const);
@@ -132,7 +132,7 @@ export const composeTransaction =
             }
         }
 
-        // format max (trezor-connect sends it as satoshi)
+        // format max (@trezor/connect sends it as satoshi)
         // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
         Object.keys(wrappedResponse).forEach(key => {
             const tx = wrappedResponse[key];
@@ -143,7 +143,7 @@ export const composeTransaction =
                     // override calculated value
                     tx.feePerByte = formValues.feePerUnit;
                 } else {
-                    // make sure that feePerByte is an integer (trezor-connect may return float)
+                    // make sure that feePerByte is an integer (@trezor/connect may return float)
                     tx.feePerByte = new BigNumber(tx.feePerByte)
                         .integerValue(BigNumber.ROUND_FLOOR)
                         .toString();
@@ -211,7 +211,7 @@ export const signTransaction =
             });
             // NOTE: Rearranging of original outputs is not supported by the FW. Restoring original order.
             // edge-case: original tx have change-output on index 0 while new tx doesn't have change-output at all
-            // or it's moved to the last position by trezor-connect composeTransaction process.
+            // or it's moved to the last position by @trezor/connect composeTransaction process.
             signEnhancement.outputs = restoreOrigOutputsOrder(transaction.outputs, outputs, txid);
         }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DEVICE } from 'trezor-connect';
+import { DEVICE } from '@trezor/connect';
 import { SUITE } from '@suite-actions/constants';
 import ActionRenderer from './renderers/ActionRenderer';
 import TransactionRenderer from './renderers/TransactionRenderer';

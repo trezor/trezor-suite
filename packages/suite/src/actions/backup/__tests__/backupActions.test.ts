@@ -10,7 +10,7 @@ import { SUITE } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
 import * as backupActions from '@backup-actions/backupActions';
 
-jest.mock('trezor-connect', () => {
+jest.mock('@trezor/connect', () => {
     let fixture: any;
 
     const backupDevice = () => fixture;
@@ -66,7 +66,7 @@ const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk
 
 describe('Backup Actions', () => {
     it('backup success', async () => {
-        require('trezor-connect').setTestFixtures({ success: true });
+        require('@trezor/connect').setTestFixtures({ success: true });
 
         const state = getInitialState({});
         const store = mockStore(state);
@@ -89,7 +89,7 @@ describe('Backup Actions', () => {
     });
 
     it('backup error', async () => {
-        require('trezor-connect').setTestFixtures({
+        require('@trezor/connect').setTestFixtures({
             success: false,
             payload: { error: 'avadakedavra' },
         });

@@ -5,7 +5,7 @@ import recoveryReducer from '@recovery-reducers/recoveryReducer';
 import { Action } from '@suite-types';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 
-jest.mock('trezor-connect', () => ({
+jest.mock('@trezor/connect', () => ({
     __esModule: true, // this property makes it work
     default: {
         recoveryDevice: () => ({ success: true }),

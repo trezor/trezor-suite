@@ -1,7 +1,7 @@
 import { AppState } from '@suite-types';
 import { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
-import { FeeLevel } from 'trezor-connect';
+import { FeeLevel } from '@trezor/connect';
 import { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
 import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import { TypedValidationRules } from './form';

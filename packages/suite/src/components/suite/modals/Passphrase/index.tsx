@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect from '@trezor/connect';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';

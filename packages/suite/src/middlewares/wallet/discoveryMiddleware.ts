@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI } from '@trezor/connect';
 import { SUITE, ROUTER, MODAL } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
@@ -24,8 +24,8 @@ const discoveryMiddleware =
             api.dispatch(discoveryActions.remove(action.payload.state));
         }
 
-        // temporary workaround, needs to be changed in trezor-connect
-        // BLOCK action propagation (via next() function) and respond to trezor-connect
+        // temporary workaround, needs to be changed in @trezor/connect
+        // BLOCK action propagation (via next() function) and respond to @trezor/connect
         // otherwise devices without backup will receive several "confirmation" modals during discovery process
         const isCoinmarketExchange = prevState.router.route?.name === 'wallet-coinmarket-exchange';
 
