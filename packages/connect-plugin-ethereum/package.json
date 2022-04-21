@@ -1,0 +1,17 @@
+{
+    "name": "@trezor/connect-plugin-ethereum",
+    "version": "9.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor-suite",
+    "description": "Trezor 3rd party plugins",
+    "main": "index.js",
+    "peerDependencies": {
+        "@metamask/eth-sig-util": "^4.0.0"
+    },
+    "devDependencies": {
+        "@metamask/eth-sig-util": "^4.0.0"
+    },
+    "scripts": {
+        "test:unit": "jest"
+    }
+}
