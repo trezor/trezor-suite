@@ -1,0 +1,20 @@
+{
+    "name": "@trezor/connect-plugin-stellar",
+    "version": "9.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor-suite",
+    "description": "Trezor 3rd party plugins",
+    "main": "index.js",
+    "REF-TODO": "Set proper version of sdk and bignumber, ideally updated to latest major",
+    "peerDependencies": {
+        "bignumber.js": "^8.1.1",
+        "stellar-sdk": "^3.0.0"
+    },
+    "devDependencies": {
+        "bignumber.js": "^8.1.1",
+        "stellar-sdk": "^3.0.0"
+    },
+    "scripts": {
+        "test:unit": "jest"
+    }
+}
