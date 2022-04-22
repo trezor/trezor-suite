@@ -3,7 +3,7 @@
 Install library as npm module:
 
 ```javascript
-npm install trezor-connect
+npm install @trezor-connect
 ```
 
 or
