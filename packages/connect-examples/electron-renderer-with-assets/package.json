@@ -1,0 +1,77 @@
+{
+    "name": "connect-example-electron-renderer-with-assets",
+    "version": "1.0.0",
+    "description": "Example of electron app with @trezor/connect",
+    "main": "src/electron.js",
+    "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
+    "license": "MIT",
+    "scripts": {
+        "dev": "concurrently --kill-others --names \"webpack,electron\" \"yarn dev:renderer\" \"wait-on http://localhost:8080 && yarn dev:main\"",
+        "dev:main": "electron .",
+        "dev:renderer": "webpack --config ./webpack/config.dev.js",
+        "build:connect": "cd ../../connect-iframe && yarn build",
+        "build:renderer": "webpack --config ./webpack/config.prod.js",
+        "build:mac": "yarn build && electron-builder --mac",
+        "build:linux": "yarn build:connect && electron-builder --linux",
+        "build:win": "yarn build:connect && electron-builder --win"
+    },
+    "build": {
+        "appId": "${name}",
+        "productName": "TrezorConnectExample",
+        "copyright": "Copyright © year ${author}",
+        "asar": false,
+        "electronVersion": "8.2.5",
+        "directories": {
+            "output": "build-electron"
+        },
+        "files": [
+            "src/electron.js",
+            "build/**/*",
+            "package.json"
+        ],
+        "dmg": {
+            "contents": [
+                {
+                    "x": 410,
+                    "y": 150,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 130,
+                    "y": 150,
+                    "type": "file"
+                }
+            ]
+        },
+        "mac": {
+            "target": "zip"
+        },
+        "linux": {
+            "executableName": "TrezorConnectExample",
+            "artifactName": "TrezorConnectExample.${ext}",
+            "target": "AppImage"
+        },
+        "win": {
+            "target": "portable"
+        }
+    },
+    "dependencies": {
+        "electron-is-dev": "^1.1.0"
+    },
+    "devDependencies": {
+        "@trezor/connect": "../../connect",
+        "babel-loader": "^8.2.2",
+        "concurrently": "^5.1.0",
+        "copy-webpack-plugin": "^10.2.4",
+        "electron": "^9.0.2",
+        "electron-builder": "^23.0.3",
+        "html-webpack-plugin": "^5.3.2",
+        "terser-webpack-plugin": "5.3.1",
+        "wait-on": "^5.0.1",
+        "webpack": "^5.7.0",
+        "webpack-cli": "^4.9.2",
+        "webpack-dev-server": "^4.7.4",
+        "worker-loader": "^3.0.8"
+    }
+}
