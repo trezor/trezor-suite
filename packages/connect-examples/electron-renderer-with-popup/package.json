@@ -1,0 +1,59 @@
+{
+    "name": "connect-example-electron-renderer-popup",
+    "version": "1.0.0",
+    "description": "Example of electron app with @trezor/connect",
+    "main": "src/electron.js",
+    "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
+    "license": "MIT",
+    "scripts": {
+        "dev": "electron .",
+        "build:mac": "electron-builder --mac",
+        "build:linux": "electron-builder --linux",
+        "build:win": "electron-builder --win"
+    },
+    "build": {
+        "appId": "${name}",
+        "productName": "TrezorConnectExample",
+        "copyright": "Copyright © year ${author}",
+        "asar": false,
+        "electronVersion": "8.2.5",
+        "directories": {
+            "output": "build"
+        },
+        "files": [
+            "src/*.js",
+            "src/index.html",
+            "package.json"
+        ],
+        "dmg": {
+            "contents": [
+                {
+                    "x": 410,
+                    "y": 150,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 130,
+                    "y": 150,
+                    "type": "file"
+                }
+            ]
+        },
+        "mac": {
+            "target": "zip"
+        },
+        "linux": {
+            "executableName": "TrezorConnectExample",
+            "artifactName": "TrezorConnectExample.${ext}",
+            "target": "AppImage"
+        },
+        "win": {
+            "target": "portable"
+        }
+    },
+    "devDependencies": {
+        "electron": "^9.0.2",
+        "electron-builder": "^22.7.0"
+    }
+}
