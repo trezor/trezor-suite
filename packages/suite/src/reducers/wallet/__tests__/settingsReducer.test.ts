@@ -1,7 +1,6 @@
 import reducer, { initialState } from '@wallet-reducers/settingsReducer';
 import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import fixtures from '../__fixtures__/settingsReducer';
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -60,35 +59,5 @@ describe('settings reducer', () => {
             ...initialState,
             enabledNetworks: ['eth'],
         });
-    });
-
-    it('REMOVE_BACKEND - valid', () => {
-        expect(
-            reducer(fixtures, {
-                type: WALLET_SETTINGS.REMOVE_BACKEND,
-                payload: {
-                    coin: 'btc',
-                },
-            }),
-        ).toEqual({
-            ...fixtures,
-            backends: {
-                ltc: {
-                    type: 'blockbook',
-                    urls: ['https://ltc1.com', 'https://ltc2.com'],
-                },
-            },
-        });
-    });
-
-    it('REMOVE_BACKEND - invalid', () => {
-        expect(
-            reducer(fixtures, {
-                type: WALLET_SETTINGS.REMOVE_BACKEND,
-                payload: {
-                    coin: 'eth',
-                },
-            }),
-        ).toEqual(fixtures);
     });
 });
