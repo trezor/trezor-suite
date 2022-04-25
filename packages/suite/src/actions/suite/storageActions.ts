@@ -1,3 +1,4 @@
+import { mergeObject } from '@trezor/utils';
 import { db } from '@suite/storage';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -9,7 +10,7 @@ import { FormDraftPrefixKeyValues } from '@wallet-constants/formDraft';
 import { STORAGE } from './constants';
 
 import type { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
-import type { Account } from '@wallet-types';
+import type { Account, Network } from '@wallet-types';
 import type { GraphData } from '@wallet-types/graph';
 import type { Discovery } from '@wallet-reducers/discoveryReducer';
 import type { FormState } from '@wallet-types/sendForm';
@@ -252,6 +253,17 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
     );
 };
 
+export const saveBackend =
+    (coin: Network['symbol']) => async (_dispatch: Dispatch, getState: GetState) => {
+        if (!(await isDBAccessible())) return;
+        await db.addItem(
+            'backendSettings',
+            getState().wallet.blockchain[coin].backends,
+            coin,
+            true,
+        );
+    };
+
 export const removeFiatRate =
     (symbol: string, tokenAddress?: string) => async (_dispatch: Dispatch, _getState: GetState) => {
         if (!(await isDBAccessible())) return;
@@ -387,6 +399,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const txs = await db.getItemsExtended('txs', 'order');
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
         const messageSystem = await db.getItemByPK('messageSystem', 'suite');
+        const backendSettings = await db.getItemsWithKeys('backendSettings');
 
         txs.forEach(item => {
             const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
@@ -434,6 +447,13 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                 devices,
                 wallet: {
                     ...initialState.wallet,
+                    blockchain: mergeObject(
+                        initialState.wallet.blockchain,
+                        backendSettings.reduce(
+                            (prev, { key, value }) => ({ ...prev, [key]: { backends: value } }),
+                            {},
+                        ),
+                    ),
                     settings: {
                         ...initialState.wallet.settings,
                         ...walletSettings,

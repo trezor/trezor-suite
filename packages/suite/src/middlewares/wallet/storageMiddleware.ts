@@ -10,6 +10,7 @@ import {
     SEND,
     COINMARKET_COMMON,
     FORM_DRAFT,
+    BLOCKCHAIN,
 } from '@wallet-actions/constants';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
@@ -119,9 +120,11 @@ const storageMiddleware =
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
             case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
             case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
-            case WALLET_SETTINGS.SET_BACKEND:
-            case WALLET_SETTINGS.REMOVE_BACKEND:
                 api.dispatch(storageActions.saveWalletSettings());
+                break;
+
+            case BLOCKCHAIN.SET_BACKEND:
+                api.dispatch(storageActions.saveBackend(action.payload.coin));
                 break;
 
             case SUITE.SET_LANGUAGE:
