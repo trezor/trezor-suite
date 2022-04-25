@@ -240,8 +240,9 @@ export const Feedback = ({ type }: FeedbackProps) => {
                         <Headline>
                             <Translation id="TR_GUIDE_FEEDBACK_CATEGORY_HEADLINE" />
                         </Headline>
-                        <SelectWrapper>
+                        <SelectWrapper data-test="@guide/feedback/suggestion-dropdown">
                             <Select
+                                data-test="@guide/feedback/suggestion-dropdown/select"
                                 isSearchable={false}
                                 defaultValue={category && categoryToOption(category)}
                                 options={Object.keys(feedbackCategories).map(category =>
