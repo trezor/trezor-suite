@@ -278,19 +278,36 @@ export const onBlock = analyzeTransactions
         },
     ] as any);
 
+const seedBackends = (coins: string[]) =>
+    coins.reduce(
+        (prev, cur) => ({
+            ...prev,
+            [cur]: {
+                backends: { selected: 'blockbook' as const, urls: { blockbook: ['http://url'] } },
+            },
+        }),
+        { regtest: { backends: {} } },
+    );
+
 export const init = [
     {
         description: 'no accounts',
+        initialState: {
+            blockchain: seedBackends([]),
+        },
         actions: [{ type: BLOCKCHAIN.UPDATE_FEE }, { type: BLOCKCHAIN.READY }],
         blockchainUnsubscribeFiatRates: 0,
+        blockchainSetCustomBackend: 0,
     },
     {
-        description: 'one coin is present',
+        description: 'one coin and custom backend is present',
         initialState: {
             accounts: [{ symbol: 'btc' }],
+            blockchain: seedBackends(['btc']),
         },
         actions: [{ type: BLOCKCHAIN.UPDATE_FEE }, { type: BLOCKCHAIN.READY }],
         blockchainUnsubscribeFiatRates: 1,
+        blockchainSetCustomBackend: 1,
     },
     {
         description: 'multiple coins and custom backends are present',
@@ -302,9 +319,11 @@ export const init = [
                 { symbol: 'ltc' },
                 { symbol: 'eth' },
             ],
+            blockchain: seedBackends(['btc', 'ltc', 'eth']),
         },
         actions: [{ type: BLOCKCHAIN.UPDATE_FEE }, { type: BLOCKCHAIN.READY }],
         blockchainUnsubscribeFiatRates: 3,
+        blockchainSetCustomBackend: 3,
     },
 ];
 
@@ -528,34 +547,19 @@ export const onNotification = [
     },
 ];
 
-export const customBacked = [
+export const customBackend = [
     {
-        description: 'no backends',
-        initialState: {},
-        blockchainSetCustomBackend: 0,
-    },
-    {
-        description: 'with one backend',
+        description: 'enable coin with custom backend',
         initialState: {
-            btc: { type: 'blockbook' as const, urls: [] },
+            blockchain: seedBackends(['btc', 'eth']),
         },
+        symbol: 'btc' as const,
         blockchainSetCustomBackend: 1,
     },
     {
-        description: 'with multiple backends',
+        description: 'enable coin without custom backend',
         initialState: {
-            btc: { type: 'blockbook' as const, urls: [] },
-            ltc: { type: 'blockbook' as const, urls: [] },
-            eth: { type: 'blockbook' as const, urls: [] },
-        },
-        blockchainSetCustomBackend: 3,
-    },
-    {
-        description: 'enable one, with multiple backends',
-        initialState: {
-            btc: { type: 'blockbook' as const, urls: [] },
-            ltc: { type: 'blockbook' as const, urls: [] },
-            eth: { type: 'blockbook' as const, urls: [] },
+            blockchain: seedBackends([]),
         },
         symbol: 'btc' as const,
         blockchainSetCustomBackend: 1,

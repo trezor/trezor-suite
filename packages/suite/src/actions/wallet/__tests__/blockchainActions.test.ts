@@ -9,7 +9,6 @@ import feesReducer from '@wallet-reducers/feesReducer';
 import notificationsReducer from '@suite-reducers/notificationReducer';
 import * as blockchainActions from '../blockchainActions';
 import * as fixtures from '../__fixtures__/blockchainActions';
-import type { State as SettingsState } from '@wallet-reducers/settingsReducer';
 
 jest.mock('trezor-connect', () => global.JestMocks.getTrezorConnect({}));
 const TrezorConnect = require('trezor-connect').default;
@@ -23,11 +22,10 @@ interface Args {
     blockchain?: Partial<BlockchainState>;
     fees?: Partial<FeesState>;
     transactions?: TransactionsState['transactions'];
-    backends?: SettingsState['backends'];
 }
 
 export const getInitialState = (
-    { accounts, transactions, blockchain, fees, backends }: Args = {},
+    { accounts, transactions, blockchain, fees }: Args = {},
     action: any = { type: 'initial' },
 ) => ({
     wallet: {
@@ -47,9 +45,6 @@ export const getInitialState = (
         fees: {
             ...feesReducer(undefined, action),
             ...fees,
-        },
-        settings: {
-            backends: backends || {},
         },
     },
     notifications: notificationsReducer([], action),
@@ -93,6 +88,9 @@ describe('Blockchain Actions', () => {
             expect(store.getActions()).toMatchObject(f.actions);
             expect(TrezorConnect.blockchainUnsubscribeFiatRates).toBeCalledTimes(
                 f.blockchainUnsubscribeFiatRates,
+            );
+            expect(TrezorConnect.blockchainSetCustomBackend).toBeCalledTimes(
+                f.blockchainSetCustomBackend,
             );
         });
     });
@@ -174,13 +172,9 @@ describe('Blockchain Actions', () => {
         });
     });
 
-    fixtures.customBacked.forEach(f => {
-        it(`customBacked: ${f.description}`, async () => {
-            const store = initStore(
-                getInitialState({
-                    backends: f.initialState,
-                }),
-            );
+    fixtures.customBackend.forEach(f => {
+        it(`customBackend: ${f.description}`, async () => {
+            const store = initStore(getInitialState(f.initialState as any));
             await store.dispatch(blockchainActions.setCustomBackend(f.symbol));
             expect(TrezorConnect.blockchainSetCustomBackend).toBeCalledTimes(
                 f.blockchainSetCustomBackend,
