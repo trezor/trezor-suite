@@ -97,10 +97,10 @@
                                         },
                                         "web": {
                                             "$ref": "#/definitions/version"
+                                        },
+                                        "revision": {
+                                            "type": "string"
                                         }
-                                    },
-                                    "additionalProperties": {
-                                        "$ref": "#/definitions/version"
                                     }
                                 },
                                 "browser": {

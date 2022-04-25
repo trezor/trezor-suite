@@ -12,16 +12,14 @@ import { getDeviceModel, getFwVersion, isBitcoinOnly } from './device';
 import type { TransportInfo } from 'trezor-connect';
 
 import type { Network } from '@wallet-types';
-import type { TrezorDevice, EnvironmentType } from '@suite-types';
+import type { EnvironmentType, TrezorDevice } from '@suite-types';
 import type {
     Duration,
     MessageSystem,
     Message,
     Version,
-    OperatingSystem,
     Settings,
     Transport,
-    Browser,
     Device,
     Environment,
 } from '@suite-types/messageSystem';
@@ -69,8 +67,8 @@ export const validateDurationCompatibility = (durationCondition: Duration): bool
 };
 
 export const validateVersionCompatibility = (
-    condition: Browser | OperatingSystem | Environment | Transport,
-    type: string | EnvironmentType,
+    condition: { [key: string]: Version | undefined },
+    type: string,
     version: string,
 ): boolean => {
     const conditionVersion = createVersionRange(condition[type]);
@@ -130,15 +128,25 @@ export const validateDeviceCompatibility = (
     const deviceFwVariant = isBitcoinOnly(device) ? 'bitcoin-only' : 'regular';
     const model = getDeviceModel(device);
     const { vendor } = device.features;
+export const validateEnvironmentCompatibility = (
+    environmentCondition: Environment,
+    environment: EnvironmentType,
+    suiteVersion: string,
+    commitHash: string | undefined,
+) => {
+    const { revision, desktop, web, mobile } = environmentCondition;
 
-    return deviceConditions.some(
-        deviceCondition =>
-            deviceCondition.model.toLowerCase() === model.toLowerCase() &&
-            (deviceCondition.vendor.toLowerCase() === vendor.toLowerCase() ||
-                deviceCondition.vendor === '*') &&
-            semver.satisfies(deviceFwVersion, createVersionRange(deviceCondition.firmware)!) &&
-            (deviceCondition.variant.toLowerCase() === deviceFwVariant ||
-                deviceCondition.variant === '*'),
+    return (
+        validateVersionCompatibility(
+            {
+                desktop,
+                web,
+                mobile,
+            },
+            environment,
+            suiteVersion,
+        ) &&
+        (revision === commitHash || revision === '*' || revision === undefined)
     );
 };
 
@@ -157,6 +165,7 @@ export const getValidMessages = (config: MessageSystem | null, options: Options)
 
     const environment = getEnvironment();
     const suiteVersion = transformVersionToSemverFormat(process.env.VERSION);
+    const commitHash = process.env.COMMITHASH;
 
     return config.actions
         .filter(
@@ -179,10 +188,11 @@ export const getValidMessages = (config: MessageSystem | null, options: Options)
 
                     if (
                         environmentCondition &&
-                        !validateVersionCompatibility(
+                        !validateEnvironmentCompatibility(
                             environmentCondition,
                             environment,
                             suiteVersion,
+                            commitHash,
                         )
                     ) {
                         return false;
