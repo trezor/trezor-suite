@@ -1,5 +1,11 @@
 # Storage changelog
 
+## 27
+
+-   removed walletSettings.backends
+-   added wallet.blockchain[coin].backends
+-   backend address remembering is now supported
+
 ## 26
 
 -   added VTC bech32 accounts

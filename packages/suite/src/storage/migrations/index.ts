@@ -1,15 +1,23 @@
-import { enhanceTransactionDetails } from '@suite/utils/wallet/transactionUtils';
-import { OnUpgradeFunc } from '@trezor/suite-storage';
 import BigNumber from 'bignumber.js';
-import { SuiteDBSchema } from '../definitions';
+import { enhanceTransactionDetails } from '@suite/utils/wallet/transactionUtils';
+import type { OnUpgradeFunc } from '@trezor/suite-storage';
+import type { SuiteDBSchema } from '../definitions';
 import type { State } from '@wallet-reducers/settingsReducer';
-import type { BlockbookUrl } from '@wallet-types/blockbook';
+import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
+import type { Network } from '@wallet-types';
+import type { BackendSettings } from '@wallet-reducers/blockchainReducer';
 
-export const migrate = async (
-    db: Parameters<OnUpgradeFunc<SuiteDBSchema>>['0'],
-    oldVersion: Parameters<OnUpgradeFunc<SuiteDBSchema>>['1'],
-    newVersion: Parameters<OnUpgradeFunc<SuiteDBSchema>>['2'],
-    transaction: Parameters<OnUpgradeFunc<SuiteDBSchema>>['3'],
+type WalletWithBackends = {
+    backends?: Partial<{
+        [coin in Network['symbol']]: Omit<CustomBackend, 'coin'>;
+    }>;
+};
+
+export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
+    db,
+    oldVersion,
+    newVersion,
+    transaction,
 ) => {
     console.log(`Migrating database from version ${oldVersion} to ${newVersion}`);
 
@@ -230,7 +238,8 @@ export const migrate = async (
     if (oldVersion < 25) {
         let cursor = await transaction.objectStore('walletSettings').openCursor();
         while (cursor) {
-            const settings: State & { blockbookUrls?: BlockbookUrl[] } = cursor.value;
+            const settings: State & { blockbookUrls?: BlockbookUrl[] } & WalletWithBackends =
+                cursor.value;
             if (!settings.backends && settings.blockbookUrls) {
                 settings.backends = settings.blockbookUrls.reduce<{ [key: string]: any }>(
                     (backends, { coin, url, tor }) =>
@@ -278,6 +287,28 @@ export const migrate = async (
             }
             // eslint-disable-next-line no-await-in-loop
             discovery = await discovery.continue();
+        }
+    }
+
+    if (oldVersion < 27) {
+        const backendSettings = db.createObjectStore('backendSettings');
+        let cursor = await transaction.objectStore('walletSettings').openCursor();
+        while (cursor) {
+            const settings: State & WalletWithBackends = cursor.value;
+            const { backends = {}, ...rest } = settings;
+            Object.entries(backends).forEach(([coin, { type, urls }]) => {
+                const settings: BackendSettings = {
+                    selected: type,
+                    urls: {
+                        [type]: urls,
+                    },
+                };
+                backendSettings.add(settings, coin as Network['symbol']);
+            });
+
+            cursor.update(rest);
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
         }
     }
 };

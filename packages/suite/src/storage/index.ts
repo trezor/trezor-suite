@@ -4,7 +4,7 @@ import { migrate } from './migrations';
 
 import type { SuiteDBSchema } from './definitions';
 
-const VERSION = 26; // don't forget to add migration and CHANGELOG when changing versions!
+const VERSION = 27; // don't forget to add migration and CHANGELOG when changing versions!
 
 /**
  *  If the object stores don't already exist then creates them.
@@ -77,6 +77,8 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 
         db.createObjectStore('messageSystem');
         db.createObjectStore('formDrafts');
+
+        db.createObjectStore('backendSettings');
     } else {
         // migrate functions
         await migrate(db, oldVersion, newVersion, transaction);
