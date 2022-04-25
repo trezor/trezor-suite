@@ -12,7 +12,17 @@ module.exports = {
     target: 'web',
     mode: 'production',
     entry: {
-        'trezor-connect': path.resolve(__dirname, '../../connect-web/src/index.ts'),
+        // inline script
+        'trezor-connect': path.resolve(__dirname, '../src/index.ts'),
+        // webextension
+        'trezor-usb-permissions': path.resolve(
+            __dirname,
+            '../src/webextension/trezor-usb-permissions.ts',
+        ),
+        'trezor-content-script': path.resolve(
+            __dirname,
+            '../src/webextension/trezor-content-script.ts',
+        ),
     },
     output: {
         path: DIST,
@@ -68,6 +78,13 @@ module.exports = {
         //         .replace('@trezor/connect/lib', TREZOR_CONNECT_SRC)
         //         .replace('@trezor/connect', `${TREZOR_CONNECT_SRC}/index-browser.ts`);
         // }),
+        new HtmlWebpackPlugin({
+            chunks: ['trezor-usb-permissions'],
+            filename: 'trezor-usb-permissions.html',
+            template: path.join(__dirname, '../src/webextension/trezor-usb-permissions.html'),
+            minify: false,
+            inject: false,
+        }),
     ],
     optimization: {
         emitOnErrors: true,

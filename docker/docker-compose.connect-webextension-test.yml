@@ -1,0 +1,28 @@
+version: "3"
+services:
+  trezor-user-env-unix:
+    image: ghcr.io/trezor/trezor-user-env
+    environment:
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+  test-run:
+    image: mcr.microsoft.com/playwright:focal
+    container_name: explorer-test-runner
+    depends_on:
+      - trezor-user-env-unix
+    network_mode: service:trezor-user-env-unix
+    environment:
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+      - DISPLAY=$DISPLAY
+      - HEADLESS=false
+    # useful for debugging tests
+    # - PWDEBUG=console
+    working_dir: /trezor-suite
+    command: bash -c "npx playwright install && docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:connect-webextension"
+    volumes:
+      - ../:/trezor-suite
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
