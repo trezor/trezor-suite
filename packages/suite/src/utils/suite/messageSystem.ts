@@ -134,7 +134,8 @@ export const validateDeviceCompatibility = (
     return deviceConditions.some(
         deviceCondition =>
             deviceCondition.model.toLowerCase() === model.toLowerCase() &&
-            deviceCondition.vendor.toLowerCase() === vendor.toLowerCase() &&
+            (deviceCondition.vendor.toLowerCase() === vendor.toLowerCase() ||
+                deviceCondition.vendor === '*') &&
             semver.satisfies(deviceFwVersion, createVersionRange(deviceCondition.firmware)!) &&
             (deviceCondition.variant.toLowerCase() === deviceFwVariant ||
                 deviceCondition.variant === '*'),

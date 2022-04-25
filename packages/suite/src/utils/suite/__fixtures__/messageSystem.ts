@@ -759,6 +759,54 @@ export const validateDeviceCompatibility = [
         },
         result: false,
     },
+    {
+        description: 'validateDeviceCompatibility case 12',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trevor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 0,
+                    patch_version: 2,
+                    capabilities: ['Capability_Bitcoin_like'],
+                }),
+            },
+        },
+        result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 13',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                variant: '*',
+                vendor: 'trezor.io',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trevor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 0,
+                    patch_version: 2,
+                    capabilities: ['Capability_Bitcoin_like'],
+                }),
+            },
+        },
+        result: false,
+    },
 ];
 
 export const getValidMessages = [
