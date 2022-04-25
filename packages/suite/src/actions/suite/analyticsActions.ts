@@ -13,10 +13,9 @@ import { State } from '@suite-reducers/analyticsReducer';
 import { DeviceMode } from 'trezor-connect';
 
 import type { Dispatch, GetState, AppState } from '@suite-types';
-import type { Account } from '@wallet-types';
+import type { Account, Network } from '@wallet-types';
 import type { OnboardingAnalytics } from '@onboarding-types';
 import type { BackendOption } from '@settings-hooks/backends';
-import type { BackendSettings } from '@wallet-reducers/settingsReducer';
 
 export type AnalyticsAction =
     | { type: typeof ANALYTICS.ENABLE }
@@ -47,7 +46,7 @@ export type AnalyticsEvent =
           payload: {
               language: AppState['suite']['settings']['language'];
               enabledNetworks: AppState['wallet']['settings']['enabledNetworks'];
-              customBackends: BackendSettings['coin'][];
+              customBackends: Network['symbol'][];
               localCurrency: AppState['wallet']['settings']['localCurrency'];
               discreetMode: AppState['wallet']['settings']['discreetMode'];
               screenWidth: number;

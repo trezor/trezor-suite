@@ -8,9 +8,8 @@ import { useActions, useSelector } from '@suite-hooks';
 import { goto as gotoAction } from '@suite-actions/routerActions';
 import { openModal as openModalAction } from '@suite-actions/modalActions';
 
-import type { BackendType, BackendSettings } from '@wallet-reducers/settingsReducer';
 import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
-import type { Network } from '@wallet-types';
+import type { CustomBackend } from '@wallet-types';
 
 const Wrapper = styled.div`
     margin-left: 8px;
@@ -46,12 +45,10 @@ const RowWrapper = styled.div`
 `;
 
 const BackendRow = ({
-    coin,
-    type,
+    backend: { coin, type },
     blockchain,
 }: {
-    coin: Network['symbol'];
-    type: BackendType;
+    backend: CustomBackend;
     blockchain: BlockchainState;
 }) => {
     const chain = blockchain[coin];
@@ -72,7 +69,7 @@ const BackendRow = ({
 };
 
 type NavBackendsProps = {
-    customBackends: BackendSettings[];
+    customBackends: CustomBackend[];
 };
 
 export const NavBackends = ({ customBackends }: NavBackendsProps) => {
@@ -104,13 +101,13 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
                     {
                         key: 'backends',
                         label: <Translation id="TR_BACKENDS" />,
-                        options: customBackends.map(({ coin, type }) => ({
-                            key: coin,
-                            label: <BackendRow coin={coin} type={type} blockchain={blockchain} />,
+                        options: customBackends.map(backend => ({
+                            key: backend.coin,
+                            label: <BackendRow backend={backend} blockchain={blockchain} />,
                             callback: () =>
                                 openModal({
                                     type: 'advanced-coin-settings',
-                                    coin,
+                                    coin: backend.coin,
                                 }),
                         })),
                     },

@@ -6,7 +6,7 @@ import { useActions } from '@suite-hooks';
 import { isOnionUrl } from '@suite-utils/tor';
 import { useCustomBackends } from '@settings-hooks/backends';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
-import { setBackend as setBackendAction } from '@settings-actions/walletSettingsActions';
+import { setBackend } from '@wallet-actions/blockchainActions';
 import AdvancedCoinSettings from './AdvancedCoinSettings';
 import type { Network } from '@wallet-types';
 import type { UserContextPayload } from '@suite-actions/modalActions';
@@ -84,15 +84,19 @@ type DisableTorProps = Omit<Extract<UserContextPayload, { type: 'disable-tor' }>
 };
 
 export const DisableTor = ({ onCancel, decision }: DisableTorProps) => {
-    const { setBackend } = useActions({
-        setBackend: setBackendAction,
+    const actions = useActions({
+        setBackend,
     });
     const [coin, setCoin] = React.useState<Network['symbol']>();
     const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {
         onionBackends.forEach(({ coin, type, urls }) =>
-            setBackend({ coin, type, urls: urls.filter(url => !isOnionUrl(url)) }),
+            actions.setBackend(
+                coin,
+                type,
+                urls.filter(url => !isOnionUrl(url)),
+            ),
         );
         decision.resolve(true);
         onCancel();
