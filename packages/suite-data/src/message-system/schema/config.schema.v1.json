@@ -158,14 +158,28 @@
                                     "items": {
                                         "title": "Device",
                                         "type": "object",
-                                        "required": ["model", "firmware", "variant", "vendor"],
+                                        "required": [
+                                            "model",
+                                            "firmwareRevision",
+                                            "firmware",
+                                            "bootloader",
+                                            "variant",
+                                            "vendor"
+                                        ],
                                         "properties": {
                                             "model": {
                                                 "title": "Model",
                                                 "type": "string",
                                                 "enum": ["T", "1"]
                                             },
+                                            "firmwareRevision": {
+                                                "title": "Firmware Revision",
+                                                "type": "string"
+                                            },
                                             "firmware": {
+                                                "$ref": "#/definitions/version"
+                                            },
+                                            "bootloader": {
                                                 "$ref": "#/definitions/version"
                                             },
                                             "variant": {
