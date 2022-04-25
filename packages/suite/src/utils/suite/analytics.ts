@@ -11,10 +11,10 @@ import {
     getWindowHeight,
     getPlatformLanguages,
 } from '@suite-utils/env';
+import { getCustomBackends } from '@suite-utils/backend';
 
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
 import type { AnalyticsEvent } from '@suite-actions/analyticsActions';
-import type { BackendSettings } from '@wallet-reducers/settingsReducer';
 
 type Common = Pick<AppState['analytics'], 'instanceId' | 'sessionId'> & { version: string };
 
@@ -52,9 +52,7 @@ export const reportSuiteReadyAction = (state: AppState) =>
         payload: {
             language: state.suite.settings.language,
             enabledNetworks: state.wallet.settings.enabledNetworks,
-            customBackends: Object.keys(
-                state.wallet.settings.backends,
-            ) as BackendSettings['coin'][],
+            customBackends: getCustomBackends(state.wallet.blockchain).map(({ coin }) => coin),
             localCurrency: state.wallet.settings.localCurrency,
             discreetMode: state.wallet.settings.discreetMode,
             screenWidth: getScreenWidth(),

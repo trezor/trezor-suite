@@ -1,15 +1,7 @@
 import { useSelector } from '@suite-hooks';
-import type { Network } from '@wallet-types';
-import type { BackendSettings } from '@wallet-reducers/settingsReducer';
+import { getCustomBackends } from '@suite-utils/backend';
 
-export const useCustomBackends = (): BackendSettings[] => {
-    const { backends } = useSelector(state => ({
-        backends: state.wallet.settings.backends,
-    }));
-
-    return (
-        Object.entries(backends) as Array<
-            [Network['symbol'], NonNullable<typeof backends[Network['symbol']]>]
-        >
-    ).map(([coin, settings]) => ({ coin, ...settings }));
+export const useCustomBackends = () => {
+    const blockchains = useSelector(state => state.wallet.blockchain);
+    return getCustomBackends(blockchains);
 };

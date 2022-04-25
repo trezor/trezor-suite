@@ -3,6 +3,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { isOnionUrl } from '@suite-utils/tor';
+import { getCustomBackends } from '@suite-utils/backend';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SUITE, METADATA } from './constants';
@@ -154,10 +155,10 @@ export const updateTorStatus = (payload: boolean): SuiteAction => ({
 });
 
 export const toggleTor = (enable: boolean) => async (dispatch: Dispatch, getState: GetState) => {
-    const { backends } = getState().wallet.settings;
-    const hasOnlyOnionBackends = Object.values(backends).some(
+    const backends = getCustomBackends(getState().wallet.blockchain);
+    const hasOnlyOnionBackends = backends.some(
         // Is there any network with only onion custom backends?
-        backend => backend.urls.length && backend.urls.every(isOnionUrl),
+        ({ urls }) => urls.length && urls.every(isOnionUrl),
     );
 
     if (!enable && hasOnlyOnionBackends) {

@@ -28,9 +28,7 @@ const CoinsList = ({
     onSettings,
     onToggle,
 }: CoinsListProps) => {
-    const { backends } = useSelector(state => ({
-        backends: state.wallet.settings.backends,
-    }));
+    const blockchain = useSelector(state => state.wallet.blockchain);
 
     const { device, isLocked } = useDevice();
     const locked = !!device && isLocked();
@@ -44,7 +42,7 @@ const CoinsList = ({
 
                 const lockedTooltip = locked && 'TR_DISABLED_SWITCH_TOOLTIP';
 
-                const backend = backends[symbol];
+                const backend = blockchain[symbol].backends.selected;
                 const note = backend ? 'TR_CUSTOM_BACKEND' : label;
 
                 const features = device?.features;
