@@ -9,15 +9,17 @@
    
 describe('early-access', function () {
     beforeEach(function() {
-        cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', { passphrase_protection: true });
         cy.task('startBridge');
+        cy.task('startEmu', { wipe: true, version: '2.4.3' });
+        cy.task('setupEmu', { passphrase_protection: true, mnemonic: 'all all all all all all all all all all all all'  });
+        
 
     
         cy.task('applySettings', { passphrase_always_on_device: false });
 
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
+        cy.wait( 6000 );
         cy.passThroughInitialRun();
     });
 
@@ -25,12 +27,12 @@ describe('early-access', function () {
         const passphraseToType = 'taxation is theft{enter}';
 
 
-        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphraseToType);
+        cy.getTestElement('@passphrase/input', { timeout: 60000 }).type(passphraseToType);
 
         cy.task('pressYes');
         cy.task('pressYes');
 
-        cy.getTestElement('@passphrase/input', { timeout: 12000 }).type(passphraseToType);
+        cy.getTestElement('@passphrase/input', { timeout: 60000 }).type(passphraseToType);
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
 
@@ -49,6 +51,7 @@ describe('early-access', function () {
         .invoke('text')
         .then( function (readText) {
             cy.log(readText)
+              .invoke('log');
         })
     });
 });
