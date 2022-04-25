@@ -1,9 +1,8 @@
 import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
-import { Network } from '@wallet-types';
+import type { Network } from '@wallet-types';
 import type { FeeLevel } from 'trezor-connect';
-import type { BackendSettings } from '@wallet-reducers/settingsReducer';
 
 export type WalletSettingsAction =
     | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
@@ -13,16 +12,6 @@ export type WalletSettingsAction =
           type: typeof WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL;
           symbol: Network['symbol'];
           feeLevel?: FeeLevel;
-      }
-    | {
-          type: typeof WALLET_SETTINGS.SET_BACKEND;
-          payload: BackendSettings;
-      }
-    | {
-          type: typeof WALLET_SETTINGS.REMOVE_BACKEND;
-          payload: {
-              coin: Network['symbol'];
-          };
       };
 
 export const setLocalCurrency = (localCurrency: string): WalletSettingsAction => ({
@@ -78,13 +67,3 @@ export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     if (selectedAccount.status !== 'loaded') return;
     return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
 };
-
-export const setBackend = (payload: BackendSettings): WalletSettingsAction => ({
-    type: WALLET_SETTINGS.SET_BACKEND,
-    payload,
-});
-
-export const removeBackend = (coin: Network['symbol']): WalletSettingsAction => ({
-    type: WALLET_SETTINGS.REMOVE_BACKEND,
-    payload: { coin },
-});

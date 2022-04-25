@@ -20,9 +20,9 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { NETWORKS } from '@wallet-config';
 import { BLOCKCHAIN } from './constants';
-import { getDefaultBackendType } from '@suite-utils/backend';
+import { getCustomBackends, getBackendFromSettings } from '@suite-utils/backend';
 import type { Dispatch, GetState } from '@suite-types';
-import type { Account, Network } from '@wallet-types';
+import type { Account, Network, CustomBackend, BackendType } from '@wallet-types';
 import type { Timeout } from '@suite/types/utils';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
@@ -59,6 +59,15 @@ export type BlockchainAction =
               symbol: Network['symbol'];
               timeout: Timeout;
           };
+      }
+    | {
+          type: typeof BLOCKCHAIN.SET_BACKEND;
+          payload:
+              | CustomBackend
+              | {
+                    coin: Network['symbol'];
+                    type: 'default';
+                };
       };
 
 // sort FeeLevels in reversed order (Low > High)
@@ -157,39 +166,53 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
 export const reconnect = (coin: Network['symbol']) => (_dispatch: Dispatch) =>
     TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
 
-// called from WalletMiddleware after ADD/REMOVE_BLOCKBOOK_URL action
-// or from blockchainActions.init
-export const setCustomBackend = (coin?: Network['symbol']) => (_: Dispatch, getState: GetState) => {
-    const { backends } = getState().wallet.settings;
+const setBackendsToConnect = (backends: CustomBackend[]) =>
+    Promise.all(
+        backends.map(({ coin, type, urls }) =>
+            TrezorConnect.blockchainSetCustomBackend({
+                coin,
+                blockchainLink: {
+                    type,
+                    url: urls,
+                },
+            }),
+        ),
+    );
 
-    // collect unique coins
-    const coins = coin ? [coin] : (Object.keys(backends) as Network['symbol'][]);
-
-    // no custom backends
-    if (!coins.length) return;
-
-    const promises = coins.map(coin => {
-        const { type, urls } = backends[coin] ?? {
-            type: getDefaultBackendType(coin),
-            urls: [],
-        };
-        return TrezorConnect.blockchainSetCustomBackend({
-            coin,
-            blockchainLink: {
-                type,
-                url: urls,
-            },
-        });
-    });
-
-    return Promise.all(promises);
+export const setCustomBackend = (coin: Network['symbol']) => (_: Dispatch, getState: GetState) => {
+    const { blockchain } = getState().wallet;
+    const backends = [getBackendFromSettings(coin, blockchain[coin].backends)];
+    return setBackendsToConnect(backends);
 };
+
+export const resetBackend = (coin: Network['symbol']): BlockchainAction => ({
+    type: BLOCKCHAIN.SET_BACKEND,
+    payload: {
+        coin,
+        type: 'default',
+    },
+});
+
+export const setBackend = (
+    coin: Network['symbol'],
+    type: BackendType,
+    urls: string[],
+): BlockchainAction => ({
+    type: BLOCKCHAIN.SET_BACKEND,
+    payload: {
+        coin,
+        type,
+        urls,
+    },
+});
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(preloadFeeInfo());
 
     // Load custom blockbook backend
-    await dispatch(setCustomBackend());
+    const { blockchain } = getState().wallet;
+    const backends = getCustomBackends(blockchain);
+    await setBackendsToConnect(backends);
 
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) {
