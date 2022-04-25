@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // Generate inline script hosted on https://connect.trezor.io/X/trezor-connect.js
 // This is compiled and polyfilled npm package without Core logic
@@ -14,6 +15,9 @@ module.exports = {
     entry: {
         // inline script
         'trezor-connect': path.resolve(__dirname, '../src/index.ts'),
+        // webusb
+        webusb: path.resolve(__dirname, '../src/webusb/index.ts'),
+        extensionPermissions: path.resolve(__dirname, '../src/webusb/extensionPermissions.ts'),
         // webextension
         'trezor-usb-permissions': path.resolve(
             __dirname,
@@ -48,17 +52,6 @@ module.exports = {
                     },
                 ],
             },
-            // REF-TODO: this doesn't work
-            // {
-            //     test: /\.(js|ts)$/,
-            //     exclude: /node_modules/,
-            //     use: {
-            //         loader: 'babel-loader',
-            //         options: {
-            //             presets: ['@babel/preset-typescript'],
-            //         },
-            //     },
-            // },
         ],
     },
     resolve: {
