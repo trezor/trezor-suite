@@ -177,7 +177,7 @@
                                                 "title": "Vendor",
                                                 "description": "Eligible authorized vendors.",
                                                 "type": "string",
-                                                "enum": ["trezor.io"]
+                                                "enum": ["*", "trezor.io"]
                                             }
                                         },
                                         "additionalProperties": false
