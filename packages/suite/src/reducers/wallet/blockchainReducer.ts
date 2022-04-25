@@ -1,11 +1,19 @@
 import produce, { Draft } from 'immer';
-import { BlockchainInfo, BlockchainBlock } from 'trezor-connect';
+import type { BlockchainInfo, BlockchainBlock } from 'trezor-connect';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
+import { STORAGE } from '@suite-actions/constants';
 import { getNetwork } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
-import type { Network } from '@wallet-types';
+import type { Network, BackendType } from '@wallet-types';
 import type { Action } from '@suite-types';
 import type { Timeout } from '@suite/types/utils';
+
+export type BackendSettings = Partial<{
+    selected: BackendType;
+    urls: Partial<{
+        [type in BackendType]: string[];
+    }>;
+}>;
 
 interface BlockchainReconnection {
     id: Timeout; // setTimeout id
@@ -27,6 +35,7 @@ export interface Blockchain {
     version: string;
     reconnection?: BlockchainReconnection;
     syncTimeout?: Timeout;
+    backends: BackendSettings;
 }
 
 export type BlockchainState = {
@@ -53,6 +62,15 @@ export const initialState = NETWORKS.reduce((state, network) => {
         blockHash: '0',
         blockHeight: 0,
         version: '0',
+        backends:
+            network.symbol === 'regtest'
+                ? {
+                      selected: 'blockbook',
+                      urls: {
+                          blockbook: ['http://localhost:19121'],
+                      },
+                  }
+                : {},
     };
     return state;
 }, initialStatePredefined as BlockchainState);
@@ -81,6 +99,7 @@ const connect = (draft: Draft<BlockchainState>, info: BlockchainInfo) => {
         blockHash: info.blockHash,
         blockHeight: info.blockHeight,
         version: info.version,
+        backends: draft[network.symbol].backends,
     };
 
     delete draft[network.symbol].error;
@@ -111,9 +130,14 @@ const update = (draft: Draft<BlockchainState>, block: BlockchainBlock) => {
     };
 };
 
-const blockchainReducer = (state: BlockchainState = initialState, action: Action) =>
+const blockchainReducer = (
+    state: BlockchainState = initialState,
+    action: Action,
+): BlockchainState =>
     produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOADED:
+                return action.payload.wallet.blockchain;
             case BLOCKCHAIN.CONNECT:
                 connect(draft, action.payload);
                 break;
@@ -136,6 +160,22 @@ const blockchainReducer = (state: BlockchainState = initialState, action: Action
             case BLOCKCHAIN.SYNCED:
                 draft[action.payload.symbol].syncTimeout = action.payload.timeout;
                 break;
+            case BLOCKCHAIN.SET_BACKEND: {
+                const { coin, type } = action.payload;
+                if (type === 'default') {
+                    delete draft[coin].backends.selected;
+                } else if (!action.payload.urls.length) {
+                    delete draft[coin].backends.selected;
+                    delete draft[coin].backends.urls?.[type];
+                } else {
+                    draft[coin].backends.selected = type;
+                    draft[coin].backends.urls = {
+                        ...draft[coin].backends.urls,
+                        [type]: action.payload.urls,
+                    };
+                }
+                break;
+            }
             // no default
         }
     });

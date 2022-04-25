@@ -5,6 +5,7 @@ export const RECONNECT_TIMEOUT_START = '@blockchain/reconnect-timeout-start';
 export const CONNECTED = '@blockchain/connected';
 export const UPDATE_FEE = '@blockchain/update-fee';
 export const SYNCED = '@blockchain/synced';
+export const SET_BACKEND = '@blockchain/set-backend';
 
 // reexport from trezor-connect
 export const { CONNECT } = BLOCKCHAIN;
