@@ -433,6 +433,8 @@ const getMessageSystemConfig = (
                         {
                             model: 'T',
                             firmware: '2.1.1',
+                            bootloader: '*',
+                            firmwareRevision: '*',
                             variant: 'regular',
                             vendor: 'trezor.io',
                         },

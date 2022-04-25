@@ -7,7 +7,13 @@ import {
     getOsName,
     getOsVersion,
 } from '@suite-utils/env';
-import { getDeviceModel, getFwVersion, isBitcoinOnly } from './device';
+import {
+    getBootloaderVersion,
+    getDeviceModel,
+    getFwRevision,
+    getFwVersion,
+    isBitcoinOnly,
+} from './device';
 
 import type { TransportInfo } from 'trezor-connect';
 
@@ -125,9 +131,36 @@ export const validateDeviceCompatibility = (
     }
 
     const deviceFwVersion = getFwVersion(device);
+    const deviceBootloaderVersion = getBootloaderVersion(device);
+    const deviceFwRevision = getFwRevision(device);
     const deviceFwVariant = isBitcoinOnly(device) ? 'bitcoin-only' : 'regular';
-    const model = getDeviceModel(device);
-    const { vendor } = device.features;
+    const deviceModel = getDeviceModel(device).toLowerCase();
+    const deviceVendor = device.features.vendor.toLowerCase();
+
+    return deviceConditions.some(deviceCondition => {
+        const {
+            model: modelCondition,
+            vendor: vendorCondition,
+            firmwareRevision: firmwareRevisionCondition,
+            firmware: firmwareCondition,
+            bootloader: bootloaderCondition,
+            variant: variantCondition,
+        } = deviceCondition;
+
+        return (
+            modelCondition.toLowerCase() === deviceModel &&
+            (vendorCondition.toLowerCase() === deviceVendor || vendorCondition === '*') &&
+            (variantCondition.toLowerCase() === deviceFwVariant || variantCondition === '*') &&
+            (firmwareRevisionCondition.toLowerCase() === deviceFwRevision.toLowerCase() ||
+                firmwareRevisionCondition === '*') &&
+            (semver.satisfies(deviceFwVersion, createVersionRange(firmwareCondition)!) ||
+                firmwareCondition === '*') &&
+            (semver.satisfies(deviceBootloaderVersion, createVersionRange(bootloaderCondition)!) ||
+                bootloaderCondition === '*')
+        );
+    });
+};
+
 export const validateEnvironmentCompatibility = (
     environmentCondition: Environment,
     environment: EnvironmentType,

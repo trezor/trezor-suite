@@ -130,9 +130,26 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     return selected.id === device.id;
 };
 
+export const isDeviceInBootloader = (device?: KnownDevice) => !!device?.features.bootloader_mode;
+
 export const getDeviceModel = (device: TrezorDevice): 'T' | '1' => {
     const { features } = device;
     return features && features.major_version > 1 ? 'T' : '1';
+};
+
+export const getFwRevision = (device?: KnownDevice) => device?.features.revision || '';
+
+export const getBootloaderVersion = (device?: KnownDevice) => {
+    if (!device?.features) {
+        return '';
+    }
+    const { features } = device;
+
+    if (isDeviceInBootloader(device) && features.major_version) {
+        return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
+    }
+
+    return '';
 };
 
 export const getFwVersion = (device?: KnownDevice) => {
@@ -141,7 +158,7 @@ export const getFwVersion = (device?: KnownDevice) => {
     }
     const { features } = device;
 
-    if (features.bootloader_mode) {
+    if (isDeviceInBootloader(device)) {
         return features.fw_major
             ? `${features.fw_major}.${features.fw_minor}.${features.fw_patch}`
             : '';
