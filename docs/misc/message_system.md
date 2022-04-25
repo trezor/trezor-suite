@@ -167,9 +167,16 @@ Structure of config, types and optionality of specific keys can be found in the 
                         {
                             // Possible values: "1" or "T"
                             "model": "1",
-                            "firmware": "1.9.4",
+                            /*
+                            Beware
+                            - firmware version in bootloader mode is unavailable on model 1
+                            - bootloader version is available only in bootloader mode
+                            */
+                            "firmware": "2.4.1",
+                            "bootloader": "2.0.4",
                             // Possible values: "*", "bitcoin-only", and "regular"
                             "variant": "bitcoin-only",
+                            "firmwareRevision": "*",
                             "vendor": "trezor.io"
                         }
                     ]

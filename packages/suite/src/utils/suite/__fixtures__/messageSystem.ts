@@ -575,6 +575,8 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '2.1.3',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: '*',
                 vendor: 'trezor.io',
             },
@@ -599,12 +601,16 @@ export const validateDeviceCompatibility = [
             {
                 model: '1',
                 firmware: ['1', '2'],
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: 'bitcoin-only',
                 vendor: 'trezor.io',
             },
             {
                 model: 'T',
                 firmware: ['3.0'],
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: 'regular',
                 vendor: 'trezor.io',
             },
@@ -629,6 +635,8 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: '*',
                 vendor: 'trezor.io',
             },
@@ -653,6 +661,8 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: 'regular',
                 vendor: 'trezor.io',
             },
@@ -677,6 +687,8 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '2',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: 'regular',
                 vendor: 'trezor.io',
             },
@@ -717,6 +729,8 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '2',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: 'regular',
                 vendor: 'trezor.io',
             },
@@ -736,6 +750,8 @@ export const validateDeviceCompatibility = [
             {
                 model: '1',
                 firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: '*',
                 vendor: 'trezor.io',
             },
@@ -760,6 +776,8 @@ export const validateDeviceCompatibility = [
             {
                 model: '1',
                 firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: 'regular',
                 vendor: 'trezor.io',
             },
@@ -784,6 +802,8 @@ export const validateDeviceCompatibility = [
             {
                 model: '1',
                 firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: 'bitcoin-only',
                 vendor: 'trezor.io',
             },
@@ -808,6 +828,8 @@ export const validateDeviceCompatibility = [
             {
                 model: '1',
                 firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: '*',
                 vendor: '*',
             },
@@ -832,6 +854,8 @@ export const validateDeviceCompatibility = [
             {
                 model: '1',
                 firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '*',
                 variant: '*',
                 vendor: 'trezor.io',
             },
@@ -845,6 +869,276 @@ export const validateDeviceCompatibility = [
                     minor_version: 0,
                     patch_version: 2,
                     capabilities: ['Capability_Bitcoin_like'],
+                }),
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'validateDeviceCompatibility case 14',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                bootloader: '*',
+                firmwareRevision: '*',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trevor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 0,
+                    patch_version: 2,
+                    revision: 'fa8eha',
+                }),
+            },
+        },
+        result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 15',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                bootloader: '*',
+                firmwareRevision: 'fa8eha',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trevor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 0,
+                    patch_version: 2,
+                    revision: 'fa8eha',
+                }),
+            },
+        },
+        result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 16',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                bootloader: '*',
+                firmwareRevision: 'abcdef',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trevor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 0,
+                    patch_version: 2,
+                    revision: 'fa8eha',
+                }),
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'validateDeviceCompatibility case 17',
+        deviceConditions: [
+            {
+                model: 'T',
+                firmware: '*',
+                bootloader: '2.0.4',
+                firmwareRevision: '*',
+                variant: '*',
+                vendor: 'trezor.io',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trezor.io',
+                    model: 'T',
+                    major_version: 2,
+                    minor_version: 0,
+                    patch_version: 4,
+                    bootloader_mode: true,
+                }),
+            },
+        },
+        result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 18',
+        deviceConditions: [
+            {
+                model: 'T',
+                firmware: '*',
+                bootloader: '2.0.4',
+                firmwareRevision: '*',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: '*',
+                    model: 'T',
+                    major_version: 2,
+                    minor_version: 0,
+                    patch_version: 3,
+                    bootloader_mode: true,
+                }),
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'validateDeviceCompatibility case 19',
+        deviceConditions: [
+            {
+                model: 'T',
+                firmware: '*',
+                bootloader: '2.0.4',
+                firmwareRevision: '*',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: '*',
+                    model: 'T',
+                    major_version: 2,
+                    minor_version: 0,
+                    patch_version: 4,
+                    bootloader_mode: false,
+                }),
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'validateDeviceCompatibility case 20',
+        deviceConditions: [
+            {
+                model: 'T',
+                firmware: '*',
+                bootloader: '2.0.4',
+                firmwareRevision: 'fa8e42',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: '*',
+                    model: 'T',
+                    major_version: 2,
+                    minor_version: 0,
+                    patch_version: 4,
+                    revision: null,
+                    bootloader_mode: false,
+                }),
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'validateDeviceCompatibility case 21',
+        deviceConditions: [
+            {
+                model: 'T',
+                firmware: '2.4.5',
+                bootloader: '2.0.4',
+                firmwareRevision: '*',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: '*',
+                    model: 'T',
+                    major_version: 2,
+                    minor_version: 0,
+                    patch_version: 4,
+                    fw_major: 2,
+                    fw_minor: 4,
+                    fw_patch: 5,
+                    bootloader_mode: true,
+                }),
+            },
+        },
+        result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 22',
+        deviceConditions: [
+            {
+                model: 'T',
+                firmware: '2.4.5',
+                bootloader: '2.0.4',
+                firmwareRevision: '*',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: '*',
+                    model: 'T',
+                    major_version: 2,
+                    minor_version: 0,
+                    patch_version: 4,
+                    fw_major: 2,
+                    fw_minor: 4,
+                    fw_patch: 4,
+                    bootloader_mode: true,
+                }),
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'validateDeviceCompatibility case 23',
+        deviceConditions: [
+            {
+                model: 'T',
+                firmware: '2.4.5',
+                bootloader: '2.0.3',
+                firmwareRevision: '*',
+                variant: '*',
+                vendor: '*',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: '*',
+                    model: 'T',
+                    major_version: 2,
+                    minor_version: 0,
+                    patch_version: 4,
+                    fw_major: 2,
+                    fw_minor: 4,
+                    fw_patch: 5,
+                    bootloader_mode: true,
                 }),
             },
         },
@@ -1182,8 +1476,22 @@ export const getValidMessages = [
             conditions: [
                 {
                     devices: [
-                        { model: '1', firmware: '1.0.2', variant: '*', vendor: 'trezor.io' },
-                        { model: 'T', firmware: '2.1.1', variant: '*', vendor: 'trezor.io' },
+                        {
+                            model: '1',
+                            firmware: '1.0.2',
+                            firmwareRevision: '*',
+                            bootloader: '*',
+                            variant: '*',
+                            vendor: 'trezor.io',
+                        },
+                        {
+                            model: 'T',
+                            firmware: '2.1.1',
+                            firmwareRevision: '*',
+                            bootloader: '*',
+                            variant: '*',
+                            vendor: 'trezor.io',
+                        },
                     ],
                 },
             ],
@@ -1209,6 +1517,8 @@ export const getValidMessages = [
                         {
                             model: 'T',
                             firmware: '2.2.1',
+                            firmwareRevision: '*',
+                            bootloader: '*',
                             variant: '*',
                             vendor: 'trezor.io',
                         },
@@ -1237,6 +1547,8 @@ export const getValidMessages = [
                         {
                             model: 'T',
                             firmware: '2.1.1',
+                            firmwareRevision: '*',
+                            bootloader: '*',
                             variant: 'bitcoin-only',
                             vendor: 'trezor.io',
                         },
@@ -1269,6 +1581,8 @@ export const getValidMessages = [
                         {
                             model: 'T',
                             firmware: '2.1.1',
+                            firmwareRevision: '*',
+                            bootloader: '*',
                             variant: 'regular',
                             vendor: 'trezor.io',
                         },
@@ -1301,5 +1615,44 @@ export const getValidMessages = [
             device: global.JestMocks.getConnectDevice(),
         },
         result: global.JestMocks.getMessageSystemConfig().actions.map(action => action.message),
+    },
+    {
+        description: 'getValidMessages case 20',
+        currentDate: '',
+        userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osName: 'macos',
+        environment: '',
+        suiteVersion: '',
+        config: global.JestMocks.getMessageSystemConfig(undefined, undefined, {
+            conditions: [
+                {
+                    devices: [
+                        {
+                            model: 'T',
+                            firmware: '*',
+                            firmwareRevision: 'fae8ac',
+                            bootloader: '2.0.4',
+                            variant: 'bitcoin-only',
+                            vendor: 'trezor.io',
+                        },
+                    ],
+                },
+            ],
+        }),
+        options: {
+            settings: { tor: false, enabledNetworks: [] },
+            device: {
+                ...global.JestMocks.getConnectDevice(undefined, {
+                    capabilities: ['Capability_Bitcoin'],
+                    revision: 'fae8ac',
+                    bootloader_mode: true,
+                    major_version: 2,
+                    minor_version: 0,
+                    patch_version: 4,
+                }),
+            },
+        },
+        result: [global.JestMocks.getMessageSystemConfig().actions[1].message],
     },
 ];
