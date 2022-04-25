@@ -1,7 +1,6 @@
 import type { MiddlewareAPI } from 'redux';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
+import { ACCOUNT, TRANSACTION, BLOCKCHAIN } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -56,12 +55,7 @@ const walletMiddleware =
         }
 
         // Update custom backends
-        if (
-            // action.type === WALLET_SETTINGS.ADD_BLOCKBOOK_URL ||
-            // action.type === WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL ||
-            action.type === WALLET_SETTINGS.SET_BACKEND ||
-            action.type === WALLET_SETTINGS.REMOVE_BACKEND
-        ) {
+        if (action.type === BLOCKCHAIN.SET_BACKEND) {
             api.dispatch(blockchainActions.setCustomBackend(action.payload.coin));
         }
 
