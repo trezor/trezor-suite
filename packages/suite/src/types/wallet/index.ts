@@ -23,6 +23,7 @@ export type Network = ArrayElement<typeof NETWORKS>;
 // reexport
 export type { NetworkToken, Token } from './tokenTypes';
 export type { Icon } from './iconTypes';
+export type { BackendType, CustomBackend } from './backend';
 export type { Account } from '@wallet-reducers/accountsReducer';
 export type { CoinFiatRates, TickerId } from '@wallet-types/fiatRates';
 export type { Discovery } from '@wallet-reducers/discoveryReducer';
