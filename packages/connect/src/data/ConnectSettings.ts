@@ -10,7 +10,7 @@ import type { Manifest, ConnectSettings } from '../types';
 // REF-TODO: move chrome checks to connect-web
 declare const chrome: any;
 
-const VERSION = '8.2.8-beta.3'; // REF-TODO: dynamic from package.json (same as suite)
+const VERSION = '9.0.0-beta.1'; // REF-TODO: dynamic from package.json (same as suite)
 const versionN = VERSION.split('.').map(s => parseInt(s, 10));
 // const DIRECTORY = `${ versionN[0] }${ (versionN[1] > 0 ? `.${versionN[1]}` : '') }/`;
 const DIRECTORY = `${versionN[0]}/`;
