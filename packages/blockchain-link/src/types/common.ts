@@ -31,7 +31,7 @@ export interface ServerInfo {
 /* Transaction */
 
 export interface TokenTransfer {
-    type: 'sent' | 'recv' | 'self' | 'unknown';
+    type: 'sent' | 'recv' | 'self' | 'failed' | 'unknown';
     name: string;
     symbol: string;
     address: string;
@@ -86,7 +86,7 @@ export interface AccountBalanceHistory {
 }
 
 export interface Transaction {
-    type: 'sent' | 'recv' | 'self' | 'unknown';
+    type: 'sent' | 'recv' | 'self' | 'failed' | 'unknown';
     txid: string;
     blockTime?: number;
     blockHeight?: number;
@@ -205,4 +205,4 @@ export interface SubscriptionAccountInfo {
     addresses?: AccountAddresses; // bitcoin addresses
 }
 
-export type ChanellMessage<T> = T & { id: number };
+export type ChannelMessage<T> = T & { id: number };

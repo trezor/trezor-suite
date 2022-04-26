@@ -1,5 +1,5 @@
 import * as MESSAGES from '../constants/messages';
-import type { SubscriptionAccountInfo, BlockchainSettings, ChanellMessage } from './common';
+import type { SubscriptionAccountInfo, BlockchainSettings, ChannelMessage } from './common';
 import type {
     AccountBalanceHistoryParams,
     GetCurrentFiatRatesParams,
@@ -112,20 +112,20 @@ export interface PushTransaction {
 }
 
 export type Message =
-    | ChanellMessage<{ type: typeof MESSAGES.TERMINATE; payload?: typeof undefined }>
-    | ChanellMessage<{ type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }>
-    | ChanellMessage<Connect>
-    | ChanellMessage<Disconnect>
-    | ChanellMessage<GetInfo>
-    | ChanellMessage<GetBlockHash>
-    | ChanellMessage<GetAccountInfo>
-    | ChanellMessage<GetAccountUtxo>
-    | ChanellMessage<GetTransaction>
-    | ChanellMessage<GetCurrentFiatRates>
-    | ChanellMessage<GetFiatRatesForTimestamps>
-    | ChanellMessage<GetAccountBalanceHistory>
-    | ChanellMessage<GetFiatRatesTickersList>
-    | ChanellMessage<EstimateFee>
-    | ChanellMessage<Subscribe>
-    | ChanellMessage<Unsubscribe>
-    | ChanellMessage<PushTransaction>;
+    | ChannelMessage<{ type: typeof MESSAGES.TERMINATE; payload?: typeof undefined }>
+    | ChannelMessage<{ type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }>
+    | ChannelMessage<Connect>
+    | ChannelMessage<Disconnect>
+    | ChannelMessage<GetInfo>
+    | ChannelMessage<GetBlockHash>
+    | ChannelMessage<GetAccountInfo>
+    | ChannelMessage<GetAccountUtxo>
+    | ChannelMessage<GetTransaction>
+    | ChannelMessage<GetCurrentFiatRates>
+    | ChannelMessage<GetFiatRatesForTimestamps>
+    | ChannelMessage<GetAccountBalanceHistory>
+    | ChannelMessage<GetFiatRatesTickersList>
+    | ChannelMessage<EstimateFee>
+    | ChannelMessage<Subscribe>
+    | ChannelMessage<Unsubscribe>
+    | ChannelMessage<PushTransaction>;

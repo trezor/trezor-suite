@@ -1,7 +1,7 @@
 export interface AccountBalanceHistoryParams {
     descriptor: string;
-    from: number;
-    to: number;
+    from?: number;
+    to?: number;
     currencies?: string[];
     groupBy?: number;
 }
