@@ -4,7 +4,7 @@ In case we are about to release both Suite and firmwares we want to add the sign
 
 Binaries and release definitions are stored in `packages/connect-common/files/firmware/*` in the same data structure as they were in the past (data.trezor.io). They are used by `suite-web` and `suite-desktop` builds.
 
-Package `@trezor/connect-common` is a public NPM package used as dependency of `trezor-connect`.
+Package `@trezor/connect-common` is a public NPM package used as dependency of `@trezor/connect`.
 
 ## Add firmwares
 
@@ -21,14 +21,12 @@ Package `@trezor/connect-common` is a public NPM package used as dependency of `
 
     See [#4262](https://github.com/trezor/trezor-suite/issues/4262) for explanation.
 
-1. Release new version of `connect-common` package.
-
-    - [follow instructions](./npm-packages.md) how to publish @trezor package to npm registry.
-
-1. Release new Connect with updated `connect-common` package.
-
-    - [follow instructions](./npm-packages.md) how to release and implement new version of `trezor-connect` in Suite.
-
 1. Test it locally (at least by running `yarn build:libs` to rebuild connect files and `yarn suite:dev` to use/copy them).
 
 1. Freeze Suite. At this moment you are all good to _Freeze_ and forward to QA. They should be able to test Suite in its wholeness along with the new firmwares.
+
+## Release for 3rd party users of @trezor/connect
+
+After Suite is released distribute new firmware by releasing new `@trezor/connect` with updated `@trezor/connect-common` package.
+
+[Follow instructions](./npm-packages.md) how to release new version of `@trezor/connect`.

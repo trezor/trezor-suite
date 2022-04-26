@@ -4,29 +4,34 @@
 
 ## Packages
 
-| package                                                   | description                                 |
-| --------------------------------------------------------- | ------------------------------------------- |
-| [@trezor/blockchain-link](./packages/blockchain-link)     | lib for connecting to blockchains           |
-| [@trezor/components](./packages/components)               | frontend react components                   |
-| [@trezor/connect-common](./packages/connect-common)       | static files and commons for trezor-connect |
-| [@trezor/connect-explorer](./packages/connect-explorer)   | interactive demo for trezor-connect         |
-| [@trezor/connect-iframe](./packages/connect-iframe)       | connect-iframe build from monorepo          |
-| [@trezor/integration-tests](./packages/integration-tests) | cross-packages e2e tests                    |
-| [@trezor/news-api](./packages/news-api)                   | medium proxy providing allow-origin headers |
-| [@trezor/rollout](./packages/rollout)                     | firmware updated utilities                  |
-| [@trezor/suite-build](./packages/suite-build)             | build utilities                             |
-| [@trezor/suite-data](./packages/suite-data)               | suite static data                           |
-| [@trezor/suite-desktop-api](./packages/suite-desktop-api) | API for suite - suite-desktop communication |
-| [@trezor/suite-desktop](./packages/suite-desktop)         | suite build target for Mac, Win, Linux      |
-| [@trezor/suite-native](./packages/suite-native)           | suite build target for react-native         |
-| [@trezor/suite-storage](./packages/suite-storage)         | abstract database definition for suite      |
-| [@trezor/suite-web-landing](./packages/suite-web-landing) | https://suite.trezor.io/                    |
-| [@trezor/suite-web](./packages/suite-web)                 | suite build target for web                  |
-| [@trezor/suite](./packages/suite)                         | trezor suite common code                    |
-| [@trezor/transport-native](./packages/transport-native)   | communication lib for react-native          |
-| [@trezor/transport](./packages/transport)                 | communication lib for javascript            |
-| [@trezor/utils](./packages/utils)                         | shared utility functions                    |
-| [@trezor/utxo-lib](./packages/utxo-lib)                   | btc-like coins lib                          |
+| package                                                               | description                                  |
+| --------------------------------------------------------------------- | -------------------------------------------- |
+| [@trezor/blockchain-link](./packages/blockchain-link)                 | lib for connecting to blockchains            |
+| [@trezor/components](./packages/components)                           | frontend react components                    |
+| [@trezor/connect](./packages/connect)                                 | 3rd party interface entrypoint for nodejs    |
+| [@trezor/connect-examples](./packages/connect-examples)               | example implementations of @trezor/connect   |
+| [@trezor/connect-common](./packages/connect-common)                   | static files and commons for @trezor/connect |
+| [@trezor/connect-explorer](./packages/connect-explorer)               | interactive demo for @trezor/connect         |
+| [@trezor/connect-iframe](./packages/connect-iframe)                   | connect-iframe build from monorepo           |
+| [@trezor/connect-plugin-ethereum](./packages/connect-plugin-ethereum) | plugin for 3rd party ethereum wallets        |
+| [@trezor/connect-popup](./packages/connect-popup)                     | UI for 3rd party implementations             |
+| [@trezor/connect-web](./packages/connect-web)                         | 3rd party interface entrypoint for browser   |
+| [@trezor/integration-tests](./packages/integration-tests)             | cross-packages e2e tests                     |
+| [@trezor/news-api](./packages/news-api)                               | medium proxy providing allow-origin headers  |
+| [@trezor/rollout](./packages/rollout)                                 | firmware updated utilities                   |
+| [@trezor/suite-build](./packages/suite-build)                         | build utilities                              |
+| [@trezor/suite-data](./packages/suite-data)                           | suite static data                            |
+| [@trezor/suite-desktop-api](./packages/suite-desktop-api)             | API for suite - suite-desktop communication  |
+| [@trezor/suite-desktop](./packages/suite-desktop)                     | suite build target for Mac, Win, Linux       |
+| [@trezor/suite-native](./packages/suite-native)                       | suite build target for react-native          |
+| [@trezor/suite-storage](./packages/suite-storage)                     | abstract database definition for suite       |
+| [@trezor/suite-web-landing](./packages/suite-web-landing)             | https://suite.trezor.io/                     |
+| [@trezor/suite-web](./packages/suite-web)                             | suite build target for web                   |
+| [@trezor/suite](./packages/suite)                                     | trezor suite common code                     |
+| [@trezor/transport-native](./packages/transport-native)               | communication lib for react-native           |
+| [@trezor/transport](./packages/transport)                             | communication lib for javascript             |
+| [@trezor/utils](./packages/utils)                                     | shared utility functions                     |
+| [@trezor/utxo-lib](./packages/utxo-lib)                               | btc-like coins lib                           |
 
 ## @trezor/suite development
 
@@ -47,12 +52,12 @@ Run a dev build:
 -   `yarn suite:dev:android` (react-native Android)
 -   `yarn suite:dev:ios` (react-native iOS)
 
-## trezor-connect development
+## @trezor/connect development
 
-Trezor Connect is a platform for easy integration of Trezor into 3rd party services. At the moment, trezor-connect has its [own repository](https://github.com/trezor/connect) but we expect it to be migrated into the trezor-suite monorepo in a very short time.
+Trezor Connect is a platform for easy integration of Trezor into 3rd party services.
+Historically, trezor-connect had its [own repository](https://github.com/trezor/connect). This repository is still active and accepts hotfixes for trezor-connect version 8.
 
-When adding new features to [trezor-connect](https://github.com/trezor/connect) you need to work with both repositories.
-Please follow the readme in [@trezor/transport package](./packages/transport) on how protobuf definitions are updated.
+@trezor/connect version 9 is developed in this repository only.
 
 ## Contribute
 
