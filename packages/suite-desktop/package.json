@@ -183,7 +183,7 @@
         "node-fetch": "^2.6.7",
         "openpgp": "^5.0.0",
         "systeminformation": "^5.9.9",
-        "trezor-connect": "8.2.9-beta.1"
+        "trezor-connect": "8.2.8-beta.4"
     },
     "devDependencies": {
         "@types/electron-localshortcut": "^3.1.0",
