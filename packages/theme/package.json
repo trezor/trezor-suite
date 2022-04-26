@@ -1,0 +1,16 @@
+{
+    "name": "@trezor/theme",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "csstype": "^3.0.11"
+    }
+}

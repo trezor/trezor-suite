@@ -66,6 +66,7 @@
     },
     "resolutions": {
         "**/@types/react": "17.0.0",
+        "@types/react-native": "0.67.6",
         "typescript": "4.5.5",
         "react-native": "0.68.0",
         "prettier": "2.5.1"

@@ -19,6 +19,7 @@ node_modules
 !.vscode/launch.json
 !.vscode/tasks.json
 !.vscode/settings.json
+!.vscode/*.code-snippets
 
 # Logs
 logs
