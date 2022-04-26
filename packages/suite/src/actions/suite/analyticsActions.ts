@@ -34,7 +34,7 @@ export type AnalyticsAction =
 
 // Don't forget to update docs with changelog!
 // <breaking-change>.<analytics-extended>
-export const version = '1.17';
+export const version = '1.18';
 
 export type AnalyticsEvent =
     | {
@@ -99,12 +99,20 @@ export type AnalyticsEvent =
               // added in 1.9
               language: string | null;
               model: string;
+              // added in 1.18
+              firmwareRevision: string;
+              bootloaderHash: string;
           };
       }
     | {
           /** if device is in bootloader, only this event is logged */
           type: 'device-connect';
-          payload: { mode: 'bootloader' };
+          payload: {
+              mode: 'bootloader';
+              // added in 1.18
+              firmware: string;
+              bootloader: string;
+          };
       }
     | {
           /**

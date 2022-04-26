@@ -2,6 +2,17 @@
 
 This changelog lists all events that Suite tracks.
 
+### 1.18
+
+Added:
+
+-   device-connect (mode !== bootloader)
+    -   firmwareRevision: string
+    -   bootloaderHash: string
+-   device-connect (mode === bootloader)
+    -   firmware: string
+    -   bootloader: string
+
 ### 1.17
 
 Added:
