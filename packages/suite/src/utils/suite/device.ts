@@ -139,6 +139,8 @@ export const getDeviceModel = (device: TrezorDevice): 'T' | '1' => {
 
 export const getFwRevision = (device?: KnownDevice) => device?.features.revision || '';
 
+export const getBootloaderHash = (device?: KnownDevice) => device?.features.bootloader_hash || '';
+
 export const getBootloaderVersion = (device?: KnownDevice) => {
     if (!device?.features) {
         return '';

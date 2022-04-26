@@ -7,7 +7,15 @@ import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import { isBitcoinOnly, getPhysicalDeviceCount } from '@suite-utils/device';
+import {
+    isBitcoinOnly,
+    getPhysicalDeviceCount,
+    getFwVersion,
+    isDeviceInBootloader,
+    getBootloaderVersion,
+    getFwRevision,
+    getBootloaderHash,
+} from '@suite-utils/device';
 import { allowSentryReport } from '@suite-utils/sentry';
 import { reportSuiteReadyAction } from '@suite-utils/analytics';
 
@@ -16,7 +24,7 @@ import type { AppState, Action, Dispatch } from '@suite-types';
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
     - trezor model
-    - firmware version
+    - firmware version 
     - transport (webusb/bridge) and its version
     - backup type (shamir/bip39)
 */
@@ -58,19 +66,23 @@ const analytics =
                 break;
             case DEVICE.CONNECT: {
                 const { features, mode } = action.payload;
-                const isBtcOnly = isBitcoinOnly(action.payload);
-                if (features && mode !== 'bootloader') {
+
+                if (!features) return;
+
+                if (!isDeviceInBootloader(action.payload)) {
                     api.dispatch(
                         analyticsActions.report({
                             type: 'device-connect',
                             payload: {
                                 mode,
-                                firmware: `${features.major_version}.${features.minor_version}.${features.patch_version}`,
+                                firmware: getFwVersion(action.payload),
+                                firmwareRevision: getFwRevision(action.payload),
+                                bootloaderHash: getBootloaderHash(action.payload),
                                 backup_type: features.backup_type || 'Bip39',
                                 pin_protection: features.pin_protection,
                                 passphrase_protection: features.passphrase_protection,
                                 totalInstances: state.devices.length,
-                                isBitcoinOnly: isBtcOnly,
+                                isBitcoinOnly: isBitcoinOnly(action.payload),
                                 totalDevices: getPhysicalDeviceCount(state.devices),
                                 language: features.language,
                                 model: features.model,
@@ -83,6 +95,8 @@ const analytics =
                             type: 'device-connect',
                             payload: {
                                 mode: 'bootloader',
+                                firmware: getFwVersion(action.payload),
+                                bootloader: getBootloaderVersion(action.payload),
                             },
                         }),
                     );
