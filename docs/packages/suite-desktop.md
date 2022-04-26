@@ -2,19 +2,23 @@
 
 ## Main differences between suite-web and suite-desktop builds
 
-### trezor-connect API
+### @trezor/connect API
 
 -   suite-web
 
-    `trezor-connect` is hosted at `[url]/build/static/connect` and injected as an iframe into DOM.
+    `@trezor/connect` is hosted at `[url]/build/static/connect` and injected as an iframe into DOM.
+
+    `@trezor/connect` imports from `@trezor/suite` are replaced to `@trezor/connect-web` see [webpack config](../../packages/suite-build/configs/web.webpack.config.ts)
 
     `iframe.postMessage/iframe.onmessage` interface is used as communication channel between suite and connect API.
 
 -   suite-desktop
 
-    `trezor-connect` is installed as regular node_module in electron main process and works in nodejs environment.
+    `@trezor/connect` is installed as regular node_module in electron main process and works in nodejs environment.
 
-    `trezor-connect` files are **not** hosted on the electron renderer side, there is no iframe or /build/static/connect dir.
+    `@trezor/connect` files are **not** hosted on the electron renderer side, there is no iframe or /build/static/connect dir.
+
+    on the renderer side `@trezor/connect` imports from `@trezor/suite` are replaced to custom module `packages/suite-desktop/src/support/trezor-connect-ipc-wrapper` (future @trezor/connect-electron package) see [webpack config](../../packages/suite-build/configs/desktop.webpack.config.ts)
 
     `Electron.IpcRenderer.send/Electron.IpcRenderer.on` interface is used as communication channel between suite (electron renderer) and connect API (electron main). see @trezor/suite-desktop/src-electron/trezor-connect-preload.ts
 

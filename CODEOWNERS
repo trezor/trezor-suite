@@ -6,9 +6,23 @@
 
 /packages/components @dahaca @matejkriz
 
+/packages/connect @mroz22 @szymonlesisz @sime
+
 /packages/connect-common @mroz22 @szymonlesisz @sime
 
+/packages/connect-examples @mroz22 @szymonlesisz @sime
+
+/packages/connect-explorer @mroz22 @szymonlesisz @sime
+
 /packages/connect-iframe @mroz22 @szymonlesisz @sime
+
+/packages/connect-plugin-ethereum @mroz22 @szymonlesisz @sime
+
+/packages/connect-plugin-stellar @mroz22 @szymonlesisz @sime
+
+/packages/connect-popup @mroz22 @szymonlesisz @sime
+
+/packages/connect-web @mroz22 @szymonlesisz @sime
 
 /packages/integration-tests @mroz22 @ondracja
 
