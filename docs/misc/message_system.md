@@ -108,7 +108,7 @@ Structure of config, types and optionality of specific keys can be found in the 
                     },
                     /*
                     For os, environment, browser and transport.
-                    - All values (except for revision in environment) are version definitions
+                    - All values are version definitions
                     - Semver npm library is used for working with versions https://www.npmjs.com/package/semver.
                     - "*" = all versions; "!" = not for this type of browser/os/...
                     - Options: gte, lt, ranges, tildes, carets,... are supported, see semver lib for more info.
@@ -125,12 +125,10 @@ Structure of config, types and optionality of specific keys can be found in the 
                         "ios": "13",
                         "chromeos": "*"
                     },
-                    // revision is optional
                     "environment": {
                         "desktop": "<21.5",
                         "mobile": "!",
-                        "web": "<22",
-                        "revision": "7281ac61483e38d974625c2505bfe5efd519aacb"
+                        "web": "<22"
                     },
                     "browser": {
                         "firefox": [

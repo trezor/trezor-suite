@@ -48,32 +48,6 @@ describe('Message system utils', () => {
         });
     });
 
-    describe('validateEnvironmentCompatibility', () => {
-        const OLD_ENV = { ...process.env };
-
-        afterEach(() => {
-            jest.resetModules();
-            process.env = OLD_ENV;
-        });
-
-        fixtures.validateEnvironmentCompatibility.forEach(f => {
-            it(f.description, () => {
-                process.env.COMMITHASH = f.commitHash;
-
-                expect(
-                    // @ts-ignore
-                    messageSystem.validateEnvironmentCompatibility(
-                        f.condition,
-                        // @ts-ignore
-                        f.type,
-                        f.version,
-                        f.commitHash,
-                    ),
-                ).toEqual(f.result);
-            });
-        });
-    });
-
     describe('validateTransportCompatibility', () => {
         fixtures.validateTransportCompatibility.forEach(f => {
             it(f.description, () => {

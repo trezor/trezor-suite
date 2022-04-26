@@ -373,11 +373,8 @@ export const validateVersionCompatibility = [
         version: '34.0.2',
         result: true,
     },
-];
-
-export const validateEnvironmentCompatibility = [
     {
-        description: 'validateEnvironmentCompatibility case 1',
+        description: 'environment validateVersionCompatibility case 1',
         condition: {
             web: '',
             desktop: '0',
@@ -388,7 +385,7 @@ export const validateEnvironmentCompatibility = [
         result: true,
     },
     {
-        description: 'validateEnvironmentCompatibility case 2',
+        description: 'environment validateVersionCompatibility case 2',
         condition: {
             web: '',
             desktop: '0',
@@ -399,19 +396,18 @@ export const validateEnvironmentCompatibility = [
         result: false,
     },
     {
-        description: 'validateEnvironmentCompatibility case 3',
+        description: 'environment validateVersionCompatibility case 3',
         condition: {
             web: '',
             desktop: '0',
             mobile: '!',
         },
-        commitHash: 'fa8eab',
         type: 'desktop',
         version: '0.0.1',
         result: true,
     },
     {
-        description: 'validateEnvironmentCompatibility case 4',
+        description: 'environment validateVersionCompatibility case 4',
         condition: {
             web: '',
             desktop: '0',
@@ -419,45 +415,6 @@ export const validateEnvironmentCompatibility = [
         },
         type: 'mobile',
         version: '0.0.1',
-        result: false,
-    },
-    {
-        description: 'validateEnvironmentCompatibility case 5',
-        condition: {
-            web: '*',
-            desktop: '!',
-            mobile: '!',
-            revision: 'fa8eab',
-        },
-        commitHash: 'fa8eab',
-        type: 'web',
-        version: '22.2.2',
-        result: true,
-    },
-    {
-        description: 'validateEnvironmentCompatibility case 6',
-        condition: {
-            web: '*',
-            desktop: '!',
-            mobile: '!',
-            revision: 'fa8eab',
-        },
-        commitHash: 'hahhah',
-        type: 'web',
-        version: '22.2.2',
-        result: false,
-    },
-    {
-        description: 'validateEnvironmentCompatibility case 7',
-        condition: {
-            web: '*',
-            desktop: '!',
-            mobile: '!',
-            revision: 'fa8eab',
-        },
-        commitHash: undefined,
-        type: 'web',
-        version: '22.2.2',
         result: false,
     },
 ];
