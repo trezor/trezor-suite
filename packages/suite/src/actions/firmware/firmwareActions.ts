@@ -2,7 +2,7 @@ import TrezorConnect, { Device } from 'trezor-connect';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import { report, AnalyticsEvent } from '@suite-actions/analyticsActions';
-import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { getBootloaderVersion, getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { resolveStaticPath } from '@suite-utils/build';
 import { addToast } from '@suite-actions/notificationActions';
 
@@ -67,9 +67,7 @@ const firmwareInstall =
             prevDevice && prevDevice.features && prevDevice.firmware !== 'none'
                 ? getFwVersion(prevDevice)
                 : 'none';
-
-        // device in bootloader mode have bootloader version in attributes used for fw version in non-bootloader mode
-        const fromBlVersion = getFwVersion(device);
+        const fromBlVersion = getBootloaderVersion(device);
 
         let updateResponse: Await<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
         let analyticsPayload: Partial<
