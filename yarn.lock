@@ -5196,17 +5196,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-native@*":
-  version "0.67.4"
-  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.67.4.tgz#97a8d3cff2a7606f247008e93d9fe2a3879bc84e"
-  integrity sha512-L81CB6W1m0s7d+TH/loP318+VKPwwjWQBUTVYQ1+lQTWiE5jHxyihgCmd7JbwLICo708FRSDwJW7pJoiZHy6yg==
-  dependencies:
-    "@types/react" "*"
-
-"@types/react-native@0.66.12":
-  version "0.66.12"
-  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.66.12.tgz#3afc5ad3a03601666a2c5893af6f2652bfaec651"
-  integrity sha512-4qQwvfXzVtik/cN/13wwH0cIMHYLzQ40iRazVdEEhjzz8YpNrkESSUUMsSE683YSse4zLShHQYWeI1x2/zB1BA==
+"@types/react-native@*", "@types/react-native@0.66.12", "@types/react-native@0.67.6":
+  version "0.67.6"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.67.6.tgz#9a7de5feba6065aec9f44f9a1e8f6e55ee5d015c"
+  integrity sha512-NM6atxrefIXMLE/PyQ1bIQjQ/lWLdls3uVxItzKvNUUVZlGqgn/uGN4MarM9quSf90uSqJYPIAeAgTtBTUjhgg==
   dependencies:
     "@types/react" "*"
 
