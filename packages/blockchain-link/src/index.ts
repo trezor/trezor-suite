@@ -325,6 +325,20 @@ class BlockchainLink extends EventEmitter {
 
 export default BlockchainLink;
 
+export type BlockchainLinkInterface = typeof BlockchainLink['prototype'];
+
+export type BlockchainLinkParams<T extends keyof BlockchainLinkInterface> =
+    BlockchainLinkInterface[T] extends (...args: any[]) => any
+        ? Parameters<BlockchainLinkInterface[T]>[number]
+        : never;
+
+export type BlockchainLinkResponse<T extends keyof BlockchainLinkInterface> =
+    BlockchainLinkInterface[T] extends (...args: any[]) => any
+        ? ReturnType<BlockchainLinkInterface[T]> extends Promise<infer R>
+            ? R
+            : never
+        : never;
+
 // reexport types
 export type { Message } from './types/messages';
 export type { Response, BlockEvent, NotificationEvent, FiatRatesEvent } from './types/responses';
@@ -332,6 +346,7 @@ export type {
     Address,
     AccountAddresses,
     AccountInfo,
+    AccountBalanceHistory,
     BlockchainSettings,
     FiatRates,
     ServerInfo,
