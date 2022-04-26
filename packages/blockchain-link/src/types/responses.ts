@@ -8,7 +8,7 @@ import type {
     Transaction,
     TypedRawTransaction,
     AccountBalanceHistory,
-    ChanellMessage,
+    ChannelMessage,
 } from './common';
 
 // messages sent from worker to blockchain.js
@@ -142,21 +142,21 @@ interface WithoutPayload {
 
 // extended
 export type Response =
-    | ChanellMessage<WithoutPayload>
-    | ChanellMessage<{ type: typeof RESPONSES.DISCONNECTED; payload: boolean }>
-    | ChanellMessage<Error>
-    | ChanellMessage<Connect>
-    | ChanellMessage<GetInfo>
-    | ChanellMessage<GetBlockHash>
-    | ChanellMessage<GetAccountInfo>
-    | ChanellMessage<GetAccountUtxo>
-    | ChanellMessage<GetTransaction>
-    | ChanellMessage<GetAccountBalanceHistory>
-    | ChanellMessage<GetCurrentFiatRates>
-    | ChanellMessage<GetFiatRatesForTimestamps>
-    | ChanellMessage<GetFiatRatesTickersList>
-    | ChanellMessage<EstimateFee>
-    | ChanellMessage<Subscribe>
-    | ChanellMessage<Unsubscribe>
-    | ChanellMessage<Notification>
-    | ChanellMessage<PushTransaction>;
+    | ChannelMessage<WithoutPayload>
+    | ChannelMessage<{ type: typeof RESPONSES.DISCONNECTED; payload: boolean }>
+    | ChannelMessage<Error>
+    | ChannelMessage<Connect>
+    | ChannelMessage<GetInfo>
+    | ChannelMessage<GetBlockHash>
+    | ChannelMessage<GetAccountInfo>
+    | ChannelMessage<GetAccountUtxo>
+    | ChannelMessage<GetTransaction>
+    | ChannelMessage<GetAccountBalanceHistory>
+    | ChannelMessage<GetCurrentFiatRates>
+    | ChannelMessage<GetFiatRatesForTimestamps>
+    | ChannelMessage<GetFiatRatesTickersList>
+    | ChannelMessage<EstimateFee>
+    | ChannelMessage<Subscribe>
+    | ChannelMessage<Unsubscribe>
+    | ChannelMessage<Notification>
+    | ChannelMessage<PushTransaction>;
