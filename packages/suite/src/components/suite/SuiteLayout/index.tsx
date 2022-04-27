@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect, useCallback, useRef } from 'react';
+import React, { useState, createContext, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -9,9 +9,10 @@ import { GuidePanel, GuideButton } from '@guide-components';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import { NavigationBar } from '../NavigationBar';
-import { useLayoutSize, useSelector, useDevice, useActions } from '@suite-hooks';
+import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { useResetScroll } from './useResetScroll';
+import { useAnchorRemoving } from './useAnchorRemoving';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -126,25 +127,6 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
-type ScrollAppWrapperProps = Pick<MobileBodyProps, 'url'>;
-// ScrollAppWrapper is mandatory to reset AppWrapper scroll position on url change, fix: issue #1658
-// note: if you want to remove anchor highlight on scroll. It has to be added here
-const ScrollAppWrapper: React.FC<ScrollAppWrapperProps> = ({ url, children }) => {
-    const ref = React.useRef<HTMLDivElement>(null);
-    React.useEffect(() => {
-        const { current } = ref;
-
-        if (!current) return;
-
-        current.scrollTop = 0; // reset scroll position on url change
-    }, [ref, url]);
-    return (
-        <AppWrapper ref={ref} data-test="@app">
-            {children}
-        </AppWrapper>
-    );
-};
-
 const BodyNormal: React.FC<NormalBodyProps> = ({
     url,
     menu,
@@ -162,13 +144,13 @@ const BodyNormal: React.FC<NormalBodyProps> = ({
             isNarrow={isNarrow}
         >
             {!isMenuInline && menu && <MenuSecondary>{menu}</MenuSecondary>}
-            <ScrollAppWrapper url={url}>
+            <AppWrapper ref={useResetScroll(url)} data-test="@app">
                 {isMenuInline && menu}
                 {appMenu}
                 <DefaultPaddings>
                     <MaxWidthWrapper>{children}</MaxWidthWrapper>
                 </DefaultPaddings>
-            </ScrollAppWrapper>
+            </AppWrapper>
 
             <GuidePanel />
         </Columns>
@@ -178,11 +160,11 @@ const BodyNormal: React.FC<NormalBodyProps> = ({
 const BodyMobile: React.FC<MobileBodyProps> = ({ url, menu, appMenu, children }) => (
     <Body data-test="@suite-layout/body">
         <Columns>
-            <ScrollAppWrapper url={url}>
+            <AppWrapper ref={useResetScroll(url)} data-test="@app">
                 {menu}
                 {appMenu}
                 <DefaultPaddings>{children}</DefaultPaddings>
-            </ScrollAppWrapper>
+            </AppWrapper>
 
             <GuidePanel />
         </Columns>
@@ -190,14 +172,10 @@ const BodyMobile: React.FC<MobileBodyProps> = ({ url, menu, appMenu, children })
 );
 
 export const SuiteLayout: React.FC = ({ children }) => {
-    const { router, anchor } = useSelector(state => ({
-        router: state.router,
+    const { url, anchor } = useSelector(state => ({
+        url: state.router.url,
         anchor: state.router.anchor,
     }));
-
-    const { onAnchorChange } = useActions({
-        onAnchorChange: routerActions.onAnchorChange,
-    });
 
     const [isModalOpenLastChange, setIsModalOpenLastChange] = useState<boolean>(false);
     const [title, setTitle] = useState<string | undefined>(undefined);
@@ -211,22 +189,6 @@ export const SuiteLayout: React.FC = ({ children }) => {
     // fixes problem of animated layout movement when guide was open and user opened a modal
     useEffect(() => setIsModalOpenLastChange(true), [isModalOpen]);
     useEffect(() => setIsModalOpenLastChange(false), [isGuideOpen]);
-
-    const pageWrapper = useRef<HTMLDivElement>(null);
-
-    const removeAnchor = useCallback(() => anchor && onAnchorChange(), [anchor, onAnchorChange]);
-
-    useEffect(() => {
-        // to assure propagation of click, which removes anchor highlight, work reliably
-        // click listener has to be added on react container
-        const pageWrapperParent = pageWrapper.current?.parentElement;
-
-        if (pageWrapperParent && anchor) {
-            pageWrapperParent.addEventListener('click', removeAnchor);
-
-            return () => pageWrapperParent.removeEventListener('click', removeAnchor);
-        }
-    }, [anchor, removeAnchor, pageWrapper]);
 
     const setLayout = useCallback<NonNullable<LayoutContextI['setLayout']>>(
         (newTitle, newMenu, newAppMenu) => {
@@ -250,8 +212,10 @@ export const SuiteLayout: React.FC = ({ children }) => {
     // but then we need to hide NavigationBar so user can't navigate to Dashboard and Accounts.
     const isNavigationBarVisible = device?.mode === 'normal';
 
+    const pageWrapperRef = useAnchorRemoving(anchor);
+
     return (
-        <PageWrapper ref={pageWrapper}>
+        <PageWrapper ref={pageWrapperRef}>
             <Metadata title={title} />
             <SuiteBanners />
 
@@ -261,7 +225,7 @@ export const SuiteLayout: React.FC = ({ children }) => {
 
             <LayoutContext.Provider value={{ title, menu, isMenuInline, setLayout }}>
                 {isMobileLayout ? (
-                    <BodyMobile menu={menu} appMenu={appMenu} url={router.url}>
+                    <BodyMobile menu={menu} appMenu={appMenu} url={url}>
                         {children}
                     </BodyMobile>
                 ) : (
@@ -270,7 +234,7 @@ export const SuiteLayout: React.FC = ({ children }) => {
                         isModalOpenLastChange={isModalOpenLastChange}
                         menu={menu}
                         appMenu={appMenu}
-                        url={router.url}
+                        url={url}
                         isMenuInline={isMenuInline}
                     >
                         {children}
