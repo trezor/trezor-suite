@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2022-04-04T00:00:00+00:00",
-    "sequence": 10,
+    "timestamp": "2022-04-27T00:00:00+00:00",
+    "sequence": 12,
     "actions": [
         {
             "conditions": [
@@ -53,14 +53,14 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "<22.0.0",
+                        "desktop": "<22.3.2",
                         "mobile": "!",
                         "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "53644716-b26b-4f62-808d-7ee0dfb23069",
+                "id": "a99d0ad4-3bab-4630-9352-fd17a518153d",
                 "priority": 91,
                 "dismissible": true,
                 "variant": "warning",
@@ -140,6 +140,59 @@
                     "cs": "VAROVÁNÍ: Momentálně používáte falešnou verzi Trezor Suite. OKAMŽITĚ UKONČETE TENTO PROGRAM!",
                     "ru": "ВНИМАНИЕ: Вы сейчас используете поддельную версию Trezor Suite. НЕМЕДЛЕННО ВЫЙДИТЕ ИЗ ЭТОЙ ПРОГРАММЫ!",
                     "ja": "警告：あなたは現在、Trezor Suiteの偽バージョンを使用しています。このプログラムを直ちに終了してください。"
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "22.4.3",
+                        "mobile": "!",
+                        "web": "22.4.3",
+                        "revision": "969161f41dcd889fa1fb0cf5e1d3437fddd8c26d"
+                    },
+                    "devices": [
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "2.0.4",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "5bc3e353e0b9fe977013005001f6e34e03ec6f08",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "b0a7e13c884b2fb4f06a45ba474dbb6f94da3357",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "e47cda88-3f39-455b-b4de-01c4270d16e5",
+                "priority": 99,
+                "dismissible": true,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Your Trezor is running unofficial firmware. Please contact help@trezor.io immediately.",
+                    "en": "Your Trezor is running unofficial firmware. Please contact help@trezor.io immediately.",
+                    "es": "Su Trezor está ejecutando un firmware no oficial. Póngase en contacto con el servicio de asistencia help@trezor.io inmediatamente.",
+                    "cs": "Váš Trezor používá neoficiální verzi firmwaru. Okamžitě kontaktujte help@trezor.io",
+                    "ru": "На вашем Trezor установлена неофициальная прошивка. Пожалуйста, немедленно напишите в поддержку help@trezor.io",
+                    "ja": "お使いのTrezorは非公式ファームウェアが動作しています。すぐにサポート（help@trezor.io）にご連絡ください。"
                 }
             }
         }
