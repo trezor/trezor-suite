@@ -57,7 +57,7 @@ suite-web build stable codesign:
     refs:
       - codesign
   tags:
-    - darwin_arm
+    - darwin
   variables:
     IS_CODESIGN_BUILD: "true"
     ASSET_PREFIX: /web
@@ -144,7 +144,7 @@ suite-desktop build mac:
   only:
     <<: *run_everything_rules
   tags:
-    - darwin_arm
+    - darwin
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: mac
@@ -157,7 +157,7 @@ suite-desktop build mac manual:
   except:
     <<: *run_everything_rules
   tags:
-    - darwin_arm
+    - darwin
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: mac
@@ -170,7 +170,7 @@ suite-desktop build mac codesign:
     refs:
       - codesign
   tags:
-    - darwin_arm
+    - darwin
   variables:
     IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
@@ -209,7 +209,7 @@ suite-desktop build linux codesign:
     refs:
       - codesign
   tags:
-    - darwin_arm
+    - darwin
   variables:
     IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
@@ -250,7 +250,7 @@ suite-desktop build windows codesign:
     refs:
       - codesign
   tags:
-    - darwin_arm
+    - darwin
   image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/vdovhanych/electron-builder:wine
   variables:
     IS_CODESIGN_BUILD: "true"
