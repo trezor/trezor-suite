@@ -3,7 +3,6 @@ import Image, { Props as ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
 import FormattedNumber from './FormattedNumber';
-import { SuiteLayout, LayoutContext } from './SuiteLayout';
 import WelcomeLayout from './WelcomeLayout';
 
 import { CardWithHeader } from './CardWithHeader';
@@ -52,6 +51,8 @@ import CloseButton from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
 
+import { SuiteLayout } from './SuiteLayout';
+
 export {
     DeviceIcon,
     CheckItem,
@@ -60,7 +61,6 @@ export {
     FormattedNumber,
     WelcomeLayout,
     SuiteLayout,
-    LayoutContext,
     CardWithHeader as Card,
     NotificationCard,
     PinInput,

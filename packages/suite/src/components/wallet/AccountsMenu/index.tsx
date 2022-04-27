@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { useDiscovery, useAccountSearch, useSelector } from '@suite-hooks';
 import { H2, variables, useTheme, Icon, LoadingContent } from '@trezor/components';
-import { Translation, AddAccountButton, LayoutContext } from '@suite-components';
+import { Translation, AddAccountButton } from '@suite-components';
 
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
 import { Account } from '@wallet-types';
@@ -121,7 +121,11 @@ const NoResults = styled.div`
     margin: 36px 0px;
 `;
 
-const AccountsMenu = () => {
+type AccountsMenuProps = {
+    isMenuInline?: boolean;
+};
+
+const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const theme = useTheme();
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const { device, accounts, selectedAccount } = useSelector(state => ({
@@ -130,7 +134,6 @@ const AccountsMenu = () => {
         selectedAccount: state.wallet.selectedAccount,
     }));
     const { params } = selectedAccount;
-    const { isMenuInline } = React.useContext(LayoutContext);
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
     const { coinFilter, searchString } = useAccountSearch();

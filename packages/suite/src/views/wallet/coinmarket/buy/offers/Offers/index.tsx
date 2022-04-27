@@ -1,8 +1,9 @@
-import React, { useEffect, useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { CoinmarketFooter, CoinmarketBuyTopPanel } from '@wallet-components';
 import { variables } from '@trezor/components';
-import { LayoutContext, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
+import { useLayout } from '@suite-hooks';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import NoOffers from '@wallet-views/coinmarket/common/no-offers';
@@ -60,12 +61,9 @@ const DividerMiddle = styled.div`
 const Offers = () => {
     const { account, quotes, alternativeQuotes, selectedQuote, timer, getQuotes } =
         useCoinmarketBuyOffersContext();
-    const { setLayout } = useContext(LayoutContext);
     const { navigateToBuyForm } = useCoinmarketNavigation(account);
 
-    useEffect(() => {
-        if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketBuyTopPanel />);
-    }, [setLayout]);
+    useLayout('Trezor Suite | Trade', CoinmarketBuyTopPanel);
 
     const hasLoadingFailed = !(quotes && alternativeQuotes);
     const noOffers = hasLoadingFailed || (quotes.length === 0 && alternativeQuotes.length === 0);

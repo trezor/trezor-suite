@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { LayoutContext } from '@suite-components';
+import { useLayout } from '@suite-hooks';
 import { SettingsMenu } from '@settings-components';
 import { variables } from '@trezor/components';
 
@@ -20,11 +20,7 @@ type SettingsLayoutProps = {
 };
 
 export const SettingsLayout = (props: SettingsLayoutProps) => {
-    const { setLayout } = React.useContext(LayoutContext);
-
-    useEffect(() => {
-        if (setLayout) setLayout(props.title || 'Settings', null, <SettingsMenu />);
-    }, [props.title, setLayout]);
+    useLayout(props.title || 'Settings', SettingsMenu);
 
     return (
         <Wrapper className={props.className} data-test={props['data-test']}>
