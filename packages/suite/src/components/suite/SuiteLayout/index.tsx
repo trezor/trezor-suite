@@ -1,4 +1,4 @@
-import React, { useState, createContext, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -13,6 +13,7 @@ import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 import { ModalSwitcher } from '../ModalSwitcher/ModalSwitcher';
+import { LayoutContext, LayoutContextPayload } from './LayoutContext';
 import { useResetScroll } from './useResetScroll';
 import { useAnchorRemoving } from './useAnchorRemoving';
 
@@ -82,22 +83,6 @@ const DefaultPaddings = styled.div`
     }
 `;
 
-interface LayoutContextI {
-    title?: string;
-    menu?: React.ReactNode;
-    isMenuInline?: boolean;
-    appMenu?: React.ReactNode;
-    setLayout?: (title?: string, menu?: React.ReactNode, appMenu?: React.ReactNode) => void;
-}
-
-export const LayoutContext = createContext<LayoutContextI>({
-    title: undefined,
-    menu: undefined,
-    isMenuInline: undefined,
-    appMenu: undefined,
-    setLayout: undefined,
-});
-
 type SuiteLayoutProps = {
     children: React.ReactNode;
 };
@@ -108,22 +93,11 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
         anchor: state.router.anchor,
     }));
 
-    const [title, setTitle] = useState<string | undefined>(undefined);
-    const [menu, setMenu] = useState<React.ReactNode>(undefined);
-    const [appMenu, setAppMenu] = useState<React.ReactNode>(undefined);
-
     const { isMobileLayout, layoutSize } = useLayoutSize();
     const { isGuideOpen, isModalOpen } = useGuide();
     const { device } = useDevice();
 
-    const setLayout = useCallback<NonNullable<LayoutContextI['setLayout']>>(
-        (newTitle, newMenu, newAppMenu) => {
-            setTitle(newTitle);
-            setMenu(newMenu);
-            setAppMenu(newAppMenu);
-        },
-        [],
-    );
+    const [{ title, SideMenu, TopMenu }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     // There are three layout configurations WRT the guide and menu:
     // - On XLARGE viewports menu, body and guide are displayed in three columns.
@@ -156,14 +130,18 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                     <DiscoveryProgress />
 
-                    <LayoutContext.Provider value={{ title, menu, isMenuInline, setLayout }}>
+                    <LayoutContext.Provider value={setLayoutPayload}>
                         <Body data-test="@suite-layout/body">
                             <Columns>
-                                {!isMenuInline && menu && <MenuSecondary>{menu}</MenuSecondary>}
+                                {!isMenuInline && SideMenu && (
+                                    <MenuSecondary>
+                                        <SideMenu />
+                                    </MenuSecondary>
+                                )}
 
                                 <AppWrapper data-test="@app" ref={appWrapperRef}>
-                                    {isMenuInline && menu}
-                                    {appMenu}
+                                    {isMenuInline && SideMenu && <SideMenu isMenuInline />}
+                                    {TopMenu && <TopMenu />}
                                     <DefaultPaddings>{children}</DefaultPaddings>
                                 </AppWrapper>
 

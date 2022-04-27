@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { LayoutContext } from '@suite-components';
 import { AccountsMenu } from '@wallet-components';
 import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
@@ -8,7 +7,7 @@ import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
 import { AccountTopPanel } from '@wallet-components/AccountTopPanel';
 import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
-import { useTranslation } from '@suite-hooks/useTranslation';
+import { useTranslation, useLayout } from '@suite-hooks';
 import { SkeletonRectangle } from '@suite-components/Skeleton';
 
 const Wrapper = styled.div`
@@ -42,13 +41,10 @@ export const WalletLayout = ({
     children,
     account,
 }: WalletLayoutProps) => {
-    const { setLayout } = React.useContext(LayoutContext);
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
-    React.useEffect(() => {
-        if (setLayout) setLayout(l10nTitle, <AccountsMenu />, <AccountTopPanel />);
-    }, [l10nTitle, setLayout]);
+    useLayout(l10nTitle, AccountTopPanel, AccountsMenu);
 
     if (account.status === 'loading') {
         return (

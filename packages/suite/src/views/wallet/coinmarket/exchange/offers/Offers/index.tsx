@@ -1,13 +1,14 @@
-import React, { useMemo, useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import invityAPI from '@suite-services/invityAPI';
-import { LayoutContext, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
 import {
     CoinmarketExchangeTopPanel,
     CoinmarketFooter,
     CoinmarketRefreshTime,
 } from '@wallet-components';
 import { variables, Icon, CoinLogo, H2 } from '@trezor/components';
+import { useLayout } from '@suite-hooks';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
@@ -97,12 +98,9 @@ const Offers = () => {
         account,
         getQuotes,
     } = useCoinmarketExchangeOffersContext();
-    const { setLayout } = useContext(LayoutContext);
     const { navigateToExchangeForm } = useCoinmarketNavigation(account);
 
-    useMemo(() => {
-        if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketExchangeTopPanel />);
-    }, [setLayout]);
+    useLayout('Trezor Suite | Trade', CoinmarketExchangeTopPanel);
 
     if (!quotesRequest) return null;
     const hasLoadingFailed = !(fixedQuotes && floatQuotes && dexQuotes);

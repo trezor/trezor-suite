@@ -1,11 +1,10 @@
-import React, { useEffect, useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { LayoutContext } from '@suite-components';
 import { Card, variables } from '@trezor/components';
 import { CoinmarketBuyOfferInfo, CoinmarketBuyTopPanel } from '@wallet-components';
 import { useCoinmarketBuyDetailContext } from '@wallet-hooks/useCoinmarketBuyDetail';
 import * as routerActions from '@suite-actions/routerActions';
-import { useActions } from '@suite-hooks';
+import { useActions, useLayout } from '@suite-hooks';
 
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentProcessing from '../components/PaymentProcessing';
@@ -27,11 +26,7 @@ const StyledCard = styled(Card)`
 `;
 
 const CoinmarketDetail = () => {
-    const { setLayout } = useContext(LayoutContext);
-
-    useEffect(() => {
-        if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketBuyTopPanel />);
-    }, [setLayout]);
+    useLayout('Trezor Suite | Trade', CoinmarketBuyTopPanel);
 
     const { account, trade, buyInfo } = useCoinmarketBuyDetailContext();
     const { goto } = useActions({ goto: routerActions.goto });
