@@ -15,7 +15,7 @@ msg-system config sign stable:
     refs:
       - codesign
   tags:
-    - darwin_arm
+    - darwin
   variables:
     IS_CODESIGN_BUILD: "true"
   script:
