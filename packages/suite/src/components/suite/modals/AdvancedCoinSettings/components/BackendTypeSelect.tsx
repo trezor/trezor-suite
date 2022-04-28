@@ -27,7 +27,8 @@ const useBackendOptions = (network: Network) => {
             backends.push('blockbook');
 
         // electrum backend only for bitcoin and regtest in desktop app
-        if (['btc', 'regtest'].includes(network.symbol) && isDesktop()) backends.push('electrum');
+        if (['btc', 'test', 'regtest'].includes(network.symbol) && isDesktop())
+            backends.push('electrum');
 
         return backends.map(backend => ({
             label:
