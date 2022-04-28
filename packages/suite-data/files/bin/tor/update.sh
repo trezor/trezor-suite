@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-CRX_VER=1_0_24
-TOR_VER=0.4.6.9
+CRX_VER=1_0_25
+TOR_VER=0.4.6.10
 
 curl https://tor.bravesoftware.com/release/biahpgbdmdkfgndcmfiipgcebobojjkp/extension_${CRX_VER}.crx -o brave-tor-lin.crx
 curl https://tor.bravesoftware.com/release/cldoidikboihgcjfkhdeidbpclkineef/extension_${CRX_VER}.crx -o brave-tor-mac.crx
