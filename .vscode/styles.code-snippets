@@ -29,14 +29,10 @@
     },
     "useStyles() for React Native": {
         "prefix": "@useStyles_native",
-        "body": "const { applyNativeStyle } = useStyles${0}();"
+        "body": "const { applyNativeStyle } = useNativeStyles${0}();"
     },
     "applyStyle()": {
         "prefix": "@applyStyle",
         "body": "className={applyStyle(${0})}"
-    },
-    "applyNativeStyle()": {
-        "prefix": "@applyNativeStyle",
-        "body": "style={applyNativeStyle(${0})}"
     }
 }
