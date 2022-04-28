@@ -12,40 +12,34 @@ const Capitalize = styled.span`
     text-transform: capitalize;
 `;
 
-const useBackendOptions = (network: Network) => {
-    const options = useMemo(() => {
-        const backends: BackendOption[] = [];
-
-        // default backend for all coins except regtest
-        if (network.symbol !== 'regtest') backends.push('default');
-
-        // blockfrost backend only for cardano
-        if (network.networkType === 'cardano') backends.push('blockfrost');
-
-        // blockbook backend for all coins except ripple and cardano
-        if (network.networkType !== 'ripple' && network.networkType !== 'cardano')
-            backends.push('blockbook');
-
-        // electrum backend only for bitcoin and regtest in desktop app
-        if (['btc', 'test', 'regtest'].includes(network.symbol) && isDesktop())
-            backends.push('electrum');
-
-        return backends.map(backend => ({
-            label:
-                backend === 'default' ? (
-                    <Translation id="TR_BACKEND_DEFAULT_SERVERS" />
-                ) : (
-                    <Translation
-                        id="TR_BACKEND_CUSTOM_SERVERS"
-                        values={{ type: <Capitalize>{backend}</Capitalize> }}
-                    />
-                ),
-            value: backend,
-        }));
-    }, [network]);
-
-    return options;
-};
+const useBackendOptions = (network: Network) =>
+    useMemo(
+        () =>
+            ['default', ...network.customBackends]
+                .filter(backend => {
+                    switch (backend) {
+                        case 'default':
+                            return network.symbol !== 'regtest';
+                        case 'electrum':
+                            return isDesktop();
+                        default:
+                            return true;
+                    }
+                })
+                .map(backend => ({
+                    label:
+                        backend === 'default' ? (
+                            <Translation id="TR_BACKEND_DEFAULT_SERVERS" />
+                        ) : (
+                            <Translation
+                                id="TR_BACKEND_CUSTOM_SERVERS"
+                                values={{ type: <Capitalize>{backend}</Capitalize> }}
+                            />
+                        ),
+                    value: backend,
+                })),
+        [network],
+    );
 
 type BackendTypeSelectProps = {
     network: Network;

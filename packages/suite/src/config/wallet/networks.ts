@@ -13,6 +13,7 @@ const networks = {
             account: 'https://btc1.trezor.io/xpub/',
         },
         features: ['rbf', 'sign-verify'],
+        customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             taproot: {
                 name: 'Bitcoin (Taproot)',
@@ -40,6 +41,7 @@ const networks = {
             account: 'https://ltc1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {
             segwit: {
                 name: 'Litecoin (segwit)',
@@ -65,6 +67,7 @@ const networks = {
         features: ['sign-verify'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
         tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     etc: {
@@ -78,6 +81,7 @@ const networks = {
             account: 'https://etc1.trezor.io/address/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     // Ripple
@@ -90,6 +94,7 @@ const networks = {
             tx: 'https://xrpscan.com/tx/',
             account: 'https://xrpscan.com/account/',
         },
+        customBackends: [],
         accountTypes: {},
     },
     bch: {
@@ -102,6 +107,7 @@ const networks = {
             account: 'https://bch1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     btg: {
@@ -114,6 +120,7 @@ const networks = {
             account: 'https://btg1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {
             legacy: {
                 name: 'Bitcoin Gold (legacy)',
@@ -131,6 +138,7 @@ const networks = {
             account: 'https://dash1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     dgb: {
@@ -143,6 +151,7 @@ const networks = {
             account: 'https://dgb1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {
             legacy: {
                 name: 'DigiByte (legacy)',
@@ -160,6 +169,7 @@ const networks = {
             account: 'https://doge1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     nmc: {
@@ -172,6 +182,7 @@ const networks = {
             account: 'https://nmc1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     vtc: {
@@ -184,6 +195,7 @@ const networks = {
             account: 'https://vtc1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {
             segwit: {
                 name: 'Vertcoin (segwit)',
@@ -205,6 +217,7 @@ const networks = {
             account: 'https://zec1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     // Bitcoin testnet
@@ -220,6 +233,7 @@ const networks = {
             account: 'https://tbtc1.trezor.io/xpub/',
         },
         features: ['rbf', 'sign-verify'],
+        customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             taproot: {
                 name: 'Bitcoin Testnet (taproot)',
@@ -248,6 +262,7 @@ const networks = {
             account: 'http://localhost:19121/xpub/',
         },
         features: ['rbf', 'sign-verify'],
+        customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             taproot: {
                 name: 'Bitcoin Regtest (taproot)',
@@ -277,6 +292,7 @@ const networks = {
             account: 'https://ropsten1.trezor.io/address/',
         },
         features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     txrp: {
@@ -290,6 +306,7 @@ const networks = {
             tx: 'https://test.bithomp.com/explorer/',
             account: 'https://test.bithomp.com/explorer/',
         },
+        customBackends: [],
         accountTypes: {},
     },
     ada: {
@@ -307,6 +324,7 @@ const networks = {
         support: {
             2: '2.4.3',
         },
+        customBackends: ['blockfrost'],
         accountTypes: {
             legacy: {
                 // icarus-trezor derivation
@@ -334,6 +352,7 @@ const networks = {
         support: {
             2: '2.4.3',
         },
+        customBackends: ['blockfrost'],
         accountTypes: {
             legacy: {
                 // icarus-trezor derivation
