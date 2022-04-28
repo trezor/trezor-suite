@@ -68,6 +68,10 @@ const BackendRow = ({
     );
 };
 
+const DefaultBackendsLabel = styled.div`
+    white-space: normal;
+`;
+
 type NavBackendsProps = {
     customBackends: CustomBackend[];
 };
@@ -116,7 +120,11 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
                         options: [
                             {
                                 key: '1',
-                                label: <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />,
+                                label: (
+                                    <DefaultBackendsLabel>
+                                        <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
+                                    </DefaultBackendsLabel>
+                                ),
                                 noHover: true,
                                 isDisabled: true,
                                 separatorBefore: true,
