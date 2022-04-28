@@ -1,12 +1,11 @@
-import { ExtendedMessageDescriptor } from '@suite-types';
-import { ArrayElement } from '@suite/types/utils';
+import type { ExtendedMessageDescriptor } from '@suite-types';
+import type { Keys, Without } from '@suite/types/utils';
 
-const networks = [
+const networks = {
     // Bitcoin
-    {
+    btc: {
         name: 'Bitcoin',
         networkType: 'bitcoin',
-        symbol: 'btc',
         bip43Path: "m/84'/0'/i'",
         decimals: 8,
         explorer: {
@@ -14,56 +13,26 @@ const networks = [
             account: 'https://btc1.trezor.io/xpub/',
         },
         features: ['rbf', 'sign-verify'],
-        // todo: to be used with cardano. leaving it here temporarily for review purposes
-        // support: {
-        //     1: '1.9.9',
-        //     2: '2.9.9',
-        // },
-    },
-    {
-        name: 'Bitcoin (Taproot)',
-        networkType: 'bitcoin',
-        accountType: 'taproot',
-        symbol: 'btc',
-        bip43Path: "m/86'/0'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://btc1.trezor.io/tx/',
-            account: 'https://btc1.trezor.io/xpub/',
+        accountTypes: {
+            taproot: {
+                name: 'Bitcoin (Taproot)',
+                bip43Path: "m/86'/0'/i'",
+                features: ['rbf'],
+            },
+            segwit: {
+                name: 'Bitcoin (Legacy Segwit)',
+                bip43Path: "m/49'/0'/i'",
+            },
+            legacy: {
+                name: 'Bitcoin (Legacy)',
+                bip43Path: "m/44'/0'/i'",
+            },
         },
-        features: ['rbf'],
-    },
-    {
-        name: 'Bitcoin (Legacy Segwit)',
-        networkType: 'bitcoin',
-        accountType: 'segwit',
-        symbol: 'btc',
-        bip43Path: "m/49'/0'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://btc1.trezor.io/tx/',
-            account: 'https://btc1.trezor.io/xpub/',
-        },
-        features: ['rbf', 'sign-verify'],
-    },
-    {
-        name: 'Bitcoin (Legacy)',
-        networkType: 'bitcoin',
-        accountType: 'legacy',
-        symbol: 'btc',
-        bip43Path: "m/44'/0'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://btc1.trezor.io/tx/',
-            account: 'https://btc1.trezor.io/xpub/',
-        },
-        features: ['rbf', 'sign-verify'],
     },
     // Litecoin
-    {
+    ltc: {
         name: 'Litecoin',
         networkType: 'bitcoin',
-        symbol: 'ltc',
         bip43Path: "m/84'/2'/i'",
         decimals: 8,
         explorer: {
@@ -71,38 +40,21 @@ const networks = [
             account: 'https://ltc1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
-    },
-    {
-        name: 'Litecoin (segwit)',
-        networkType: 'bitcoin',
-        accountType: 'segwit',
-        symbol: 'ltc',
-        bip43Path: "m/49'/2'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://ltc1.trezor.io/tx/',
-            account: 'https://ltc1.trezor.io/xpub/',
+        accountTypes: {
+            segwit: {
+                name: 'Litecoin (segwit)',
+                bip43Path: "m/49'/2'/i'",
+            },
+            legacy: {
+                name: 'Litecoin (legacy)',
+                bip43Path: "m/44'/2'/i'",
+            },
         },
-        features: ['sign-verify'],
-    },
-    {
-        name: 'Litecoin (legacy)',
-        networkType: 'bitcoin',
-        accountType: 'legacy',
-        symbol: 'ltc',
-        bip43Path: "m/44'/2'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://ltc1.trezor.io/tx/',
-            account: 'https://ltc1.trezor.io/xpub/',
-        },
-        features: ['sign-verify'],
     },
     // Ethereum
-    {
+    eth: {
         name: 'Ethereum',
         networkType: 'ethereum',
-        symbol: 'eth',
         chainId: 1,
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
@@ -113,11 +65,11 @@ const networks = [
         features: ['sign-verify'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
         tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
+        accountTypes: {},
     },
-    {
+    etc: {
         name: 'Ethereum Classic',
         networkType: 'ethereum',
-        symbol: 'etc',
         chainId: 61,
         bip43Path: "m/44'/61'/0'/0/i",
         decimals: 18,
@@ -126,23 +78,23 @@ const networks = [
             account: 'https://etc1.trezor.io/address/',
         },
         features: ['sign-verify'],
+        accountTypes: {},
     },
     // Ripple
-    {
+    xrp: {
         name: 'XRP',
         networkType: 'ripple',
-        symbol: 'xrp',
         bip43Path: "m/44'/144'/i'/0/0",
         decimals: 6,
         explorer: {
             tx: 'https://xrpscan.com/tx/',
             account: 'https://xrpscan.com/account/',
         },
+        accountTypes: {},
     },
-    {
+    bch: {
         name: 'Bitcoin Cash',
         networkType: 'bitcoin',
-        symbol: 'bch',
         bip43Path: "m/44'/145'/i'",
         decimals: 8,
         explorer: {
@@ -150,11 +102,11 @@ const networks = [
             account: 'https://bch1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        accountTypes: {},
     },
-    {
+    btg: {
         name: 'Bitcoin Gold',
         networkType: 'bitcoin',
-        symbol: 'btg',
         bip43Path: "m/49'/156'/i'",
         decimals: 8,
         explorer: {
@@ -162,24 +114,16 @@ const networks = [
             account: 'https://btg1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
-    },
-    {
-        name: 'Bitcoin Gold (legacy)',
-        networkType: 'bitcoin',
-        accountType: 'legacy',
-        symbol: 'btg',
-        bip43Path: "m/44'/156'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://btg1.trezor.io/tx/',
-            account: 'https://btg1.trezor.io/xpub/',
+        accountTypes: {
+            legacy: {
+                name: 'Bitcoin Gold (legacy)',
+                bip43Path: "m/44'/156'/i'",
+            },
         },
-        features: ['sign-verify'],
     },
-    {
+    dash: {
         name: 'Dash',
         networkType: 'bitcoin',
-        symbol: 'dash',
         bip43Path: "m/44'/5'/i'",
         decimals: 8,
         explorer: {
@@ -187,11 +131,11 @@ const networks = [
             account: 'https://dash1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        accountTypes: {},
     },
-    {
+    dgb: {
         name: 'DigiByte',
         networkType: 'bitcoin',
-        symbol: 'dgb',
         bip43Path: "m/49'/20'/i'",
         decimals: 8,
         explorer: {
@@ -199,24 +143,16 @@ const networks = [
             account: 'https://dgb1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
-    },
-    {
-        name: 'DigiByte (legacy)',
-        networkType: 'bitcoin',
-        accountType: 'legacy',
-        symbol: 'dgb',
-        bip43Path: "m/44'/20'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://dgb1.trezor.io/tx/',
-            account: 'https://dgb1.trezor.io/xpub/',
+        accountTypes: {
+            legacy: {
+                name: 'DigiByte (legacy)',
+                bip43Path: "m/44'/20'/i'",
+            },
         },
-        features: ['sign-verify'],
     },
-    {
+    doge: {
         name: 'Dogecoin',
         networkType: 'bitcoin',
-        symbol: 'doge',
         bip43Path: "m/44'/3'/i'",
         decimals: 8,
         explorer: {
@@ -224,11 +160,11 @@ const networks = [
             account: 'https://doge1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        accountTypes: {},
     },
-    {
+    nmc: {
         name: 'Namecoin',
         networkType: 'bitcoin',
-        symbol: 'nmc',
         bip43Path: "m/44'/7'/i'",
         decimals: 8,
         explorer: {
@@ -236,11 +172,11 @@ const networks = [
             account: 'https://nmc1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        accountTypes: {},
     },
-    {
+    vtc: {
         name: 'Vertcoin',
         networkType: 'bitcoin',
-        symbol: 'vtc',
         bip43Path: "m/84'/28'/i'",
         decimals: 8,
         explorer: {
@@ -248,37 +184,20 @@ const networks = [
             account: 'https://vtc1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
-    },
-    {
-        name: 'Vertcoin (segwit)',
-        networkType: 'bitcoin',
-        accountType: 'segwit',
-        symbol: 'vtc',
-        bip43Path: "m/49'/28'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://vtc1.trezor.io/tx/',
-            account: 'https://vtc1.trezor.io/xpub/',
+        accountTypes: {
+            segwit: {
+                name: 'Vertcoin (segwit)',
+                bip43Path: "m/49'/28'/i'",
+            },
+            legacy: {
+                name: 'Vertcoin (legacy)',
+                bip43Path: "m/44'/28'/i'",
+            },
         },
-        features: ['sign-verify'],
     },
-    {
-        name: 'Vertcoin (legacy)',
-        networkType: 'bitcoin',
-        accountType: 'legacy',
-        symbol: 'vtc',
-        bip43Path: "m/44'/28'/i'",
-        decimals: 8,
-        explorer: {
-            tx: 'https://vtc1.trezor.io/tx/',
-            account: 'https://vtc1.trezor.io/xpub/',
-        },
-        features: ['sign-verify'],
-    },
-    {
+    zec: {
         name: 'Zcash',
         networkType: 'bitcoin',
-        symbol: 'zec',
         bip43Path: "m/44'/133'/i'",
         decimals: 8,
         explorer: {
@@ -286,12 +205,12 @@ const networks = [
             account: 'https://zec1.trezor.io/xpub/',
         },
         features: ['sign-verify'],
+        accountTypes: {},
     },
     // Bitcoin testnet
-    {
+    test: {
         name: 'Bitcoin Testnet',
         networkType: 'bitcoin',
-        symbol: 'test',
         bip43Path: "m/84'/1'/i'",
         decimals: 8,
         testnet: true,
@@ -301,56 +220,25 @@ const networks = [
             account: 'https://tbtc1.trezor.io/xpub/',
         },
         features: ['rbf', 'sign-verify'],
-    },
-    {
-        name: 'Bitcoin Testnet (taproot)',
-        networkType: 'bitcoin',
-        accountType: 'taproot',
-        symbol: 'test',
-        bip43Path: "m/86'/1'/i'",
-        decimals: 8,
-        testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
-        explorer: {
-            tx: 'https://tbtc1.trezor.io/tx/',
-            account: 'https://tbtc1.trezor.io/xpub/',
+        accountTypes: {
+            taproot: {
+                name: 'Bitcoin Testnet (taproot)',
+                bip43Path: "m/86'/1'/i'",
+                features: ['rbf'],
+            },
+            segwit: {
+                name: 'Bitcoin Testnet (segwit)',
+                bip43Path: "m/49'/1'/i'",
+            },
+            legacy: {
+                name: 'Bitcoin Testnet (legacy)',
+                bip43Path: "m/44'/1'/i'",
+            },
         },
-        features: ['rbf'],
     },
-    {
-        name: 'Bitcoin Testnet (segwit)',
-        networkType: 'bitcoin',
-        accountType: 'segwit',
-        symbol: 'test',
-        bip43Path: "m/49'/1'/i'",
-        decimals: 8,
-        testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
-        explorer: {
-            tx: 'https://tbtc1.trezor.io/tx/',
-            account: 'https://tbtc1.trezor.io/xpub/',
-        },
-        features: ['rbf', 'sign-verify'],
-    },
-    {
-        name: 'Bitcoin Testnet (legacy)',
-        networkType: 'bitcoin',
-        accountType: 'legacy',
-        symbol: 'test',
-        bip43Path: "m/44'/1'/i'",
-        decimals: 8,
-        testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
-        explorer: {
-            tx: 'https://tbtc1.trezor.io/tx/',
-            account: 'https://tbtc1.trezor.io/xpub/',
-        },
-        features: ['rbf', 'sign-verify'],
-    },
-    {
+    regtest: {
         name: 'Bitcoin Regtest',
         networkType: 'bitcoin',
-        symbol: 'regtest',
         bip43Path: "m/84'/1'/i'",
         decimals: 8,
         testnet: true,
@@ -360,56 +248,25 @@ const networks = [
             account: 'http://localhost:19121/xpub/',
         },
         features: ['rbf', 'sign-verify'],
-    },
-    {
-        name: 'Bitcoin Regtest (taproot)',
-        networkType: 'bitcoin',
-        accountType: 'taproot',
-        symbol: 'regtest',
-        bip43Path: "m/86'/1'/i'",
-        decimals: 8,
-        testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
-        explorer: {
-            tx: 'http://localhost:19121/tx/',
-            account: 'http://localhost:19121/xpub/',
+        accountTypes: {
+            taproot: {
+                name: 'Bitcoin Regtest (taproot)',
+                bip43Path: "m/86'/1'/i'",
+                features: ['rbf'],
+            },
+            segwit: {
+                name: 'Bitcoin Regtest (segwit)',
+                bip43Path: "m/49'/1'/i'",
+            },
+            legacy: {
+                name: 'Bitcoin Regtest (legacy)',
+                bip43Path: "m/44'/1'/i'",
+            },
         },
-        features: ['rbf'],
     },
-    {
-        name: 'Bitcoin Regtest (segwit)',
-        networkType: 'bitcoin',
-        accountType: 'segwit',
-        symbol: 'regtest',
-        bip43Path: "m/49'/1'/i'",
-        decimals: 8,
-        testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
-        explorer: {
-            tx: 'http://localhost:19121/tx/',
-            account: 'http://localhost:19121/xpub/',
-        },
-        features: ['rbf', 'sign-verify'],
-    },
-    {
-        name: 'Bitcoin Regtest (legacy)',
-        networkType: 'bitcoin',
-        accountType: 'legacy',
-        symbol: 'regtest',
-        bip43Path: "m/44'/1'/i'",
-        decimals: 8,
-        testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
-        explorer: {
-            tx: 'http://localhost:19121/tx/',
-            account: 'http://localhost:19121/xpub/',
-        },
-        features: ['rbf', 'sign-verify'],
-    },
-    {
+    trop: {
         name: 'Ethereum Ropsten',
         networkType: 'ethereum',
-        symbol: 'trop',
         bip43Path: "m/44'/1'/0'/0/i",
         chainId: 3,
         decimals: 18,
@@ -420,11 +277,11 @@ const networks = [
             account: 'https://ropsten1.trezor.io/address/',
         },
         features: ['sign-verify'],
+        accountTypes: {},
     },
-    {
+    txrp: {
         name: 'XRP Testnet',
         networkType: 'ripple',
-        symbol: 'txrp',
         bip43Path: "m/44'/144'/i'/0/0",
         decimals: 6,
         testnet: true,
@@ -433,12 +290,12 @@ const networks = [
             tx: 'https://test.bithomp.com/explorer/',
             account: 'https://test.bithomp.com/explorer/',
         },
+        accountTypes: {},
     },
-    {
+    ada: {
         // icarus derivation
         name: 'Cardano',
         networkType: 'cardano',
-        symbol: 'ada',
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
@@ -450,48 +307,21 @@ const networks = [
         support: {
             2: '2.4.3',
         },
-    },
-    {
-        // icarus-trezor derivation
-        name: 'Cardano',
-        networkType: 'cardano',
-        accountType: 'legacy',
-        symbol: 'ada',
-        bip43Path: "m/1852'/1815'/i'",
-        decimals: 6,
-        testnet: false,
-        explorer: {
-            tx: 'https://explorer.blockfrost.dev/transaction/',
-            account: 'https://explorer.blockfrost.dev/account/',
-            token: 'https://explorer.blockfrost.dev/token/',
-        },
-        support: {
-            2: '2.4.3',
+        accountTypes: {
+            legacy: {
+                // icarus-trezor derivation
+                bip43Path: "m/1852'/1815'/i'",
+            },
+            ledger: {
+                // ledger derivation
+                bip43Path: "m/1852'/1815'/i'",
+            },
         },
     },
-    {
-        // ledger derivation
-        name: 'Cardano',
-        networkType: 'cardano',
-        accountType: 'ledger',
-        symbol: 'ada',
-        bip43Path: "m/1852'/1815'/i'",
-        decimals: 6,
-        testnet: false,
-        explorer: {
-            tx: 'https://explorer.blockfrost.dev/transaction/',
-            account: 'https://explorer.blockfrost.dev/account/',
-            token: 'https://explorer.blockfrost.dev/token/',
-        },
-        support: {
-            2: '2.4.3',
-        },
-    },
-    {
+    tada: {
         // icarus derivation
         name: 'Cardano Testnet',
         networkType: 'cardano',
-        symbol: 'tada',
         bip43Path: "m/1852'/1815'/i'",
         label: 'TR_TESTNET_COINS_LABEL',
         decimals: 6,
@@ -504,49 +334,26 @@ const networks = [
         support: {
             2: '2.4.3',
         },
-    },
-    {
-        // icarus-trezor derivation
-        name: 'Cardano Testnet',
-        networkType: 'cardano',
-        accountType: 'legacy',
-        symbol: 'tada',
-        bip43Path: "m/1852'/1815'/i'",
-        label: 'TR_TESTNET_COINS_LABEL',
-        decimals: 6,
-        testnet: true,
-        explorer: {
-            tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
-            account: 'https://testnet-explorer.blockfrost.dev/account/',
-            token: 'https://testnet-explorer.blockfrost.dev/token/',
-        },
-        support: {
-            2: '2.4.3',
+        accountTypes: {
+            legacy: {
+                // icarus-trezor derivation
+                bip43Path: "m/1852'/1815'/i'",
+            },
+            ledger: {
+                // ledger derivation
+                bip43Path: "m/1852'/1815'/i'",
+            },
         },
     },
-    {
-        // ledger derivation
-        name: 'Cardano Testnet',
-        networkType: 'cardano',
-        symbol: 'tada',
-        accountType: 'ledger',
-        bip43Path: "m/1852'/1815'/i'",
-        label: 'TR_TESTNET_COINS_LABEL',
-        decimals: 6,
-        testnet: true,
-        explorer: {
-            tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
-            account: 'https://testnet-explorer.blockfrost.dev/account/',
-            token: 'https://testnet-explorer.blockfrost.dev/token/',
-        },
-        support: {
-            2: '2.4.3',
-        },
-    },
-] as const;
+} as const;
 
-type Network = {
-    accountType?: 'normal' | 'legacy' | 'segwit' | 'taproot' | 'ledger';
+type Networks = typeof networks;
+type NetworkKey = keyof Networks;
+type NetworkValue = Networks[NetworkKey];
+type AccountType = Keys<NetworkValue['accountTypes']>;
+type Network = Without<NetworkValue, 'accountTypes'> & {
+    symbol: NetworkKey;
+    accountType?: 'normal' | AccountType;
     testnet?: boolean;
     isHidden?: boolean;
     chainId?: number;
@@ -556,6 +363,19 @@ type Network = {
     support?: {
         [key: number]: string;
     };
-} & ArrayElement<typeof networks>;
+};
 
-export default [...networks] as Network[];
+// Transforms the network object into the previously used format so we don't have to change
+// every occurence. We could gradually start to use the network object directly and in the end
+// this could be removed.
+const compatibility = Object.entries(networks).flatMap(([symbol, { accountTypes, ...network }]) => [
+    { symbol, ...network },
+    ...Object.entries(accountTypes).map(([accountType, networkOverride]) => ({
+        symbol,
+        accountType,
+        ...network,
+        ...networkOverride,
+    })),
+]);
+
+export default compatibility as Network[];

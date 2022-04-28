@@ -4,6 +4,12 @@ export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>
 // object values types
 export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
 
+// all keys of types in an union
+export type Keys<T> = T extends any ? keyof T : never;
+
+// remove the keys while keeping the union
+export type Without<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+
 // array element type
 export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 
