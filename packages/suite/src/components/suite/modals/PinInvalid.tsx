@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import { Modal, ModalProps } from '@suite-components';
 import { P } from '@trezor/components';
-import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
+import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';
 
 const Divider = styled.div`

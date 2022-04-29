@@ -5,7 +5,7 @@ export { Passphrase } from './Passphrase';
 export { PassphraseSource } from './PassphraseSource';
 export { PassphraseOnDevice } from './PassphraseOnDevice';
 export { PassphraseDuplicate } from './PassphraseDuplicate';
-export { ConfirmAction } from './confirm/Action';
+export { ConfirmActionModal } from './confirm/ConfirmActionModal';
 export { ConfirmFingerprint } from './confirm/Fingerprint';
 export { CoinmarketBuyTerms } from './confirm/CoinmarketBuyTerms';
 export { CoinmarketSellTerms } from './confirm/CoinmarketSellTerms';

@@ -34,15 +34,18 @@ const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
 const StyledModal = styled(Modal)`
     width: 620px;
     min-height: 500px;
-    ${Modal.Body} {
+
+    > ${Modal.Body} {
         padding: 0;
         margin-top: 0;
         height: 100%;
+
         > * {
             height: 100%;
         }
     }
-    ${Modal.Content} {
+
+    > ${Modal.Content} {
         justify-content: center;
         align-items: center;
     }

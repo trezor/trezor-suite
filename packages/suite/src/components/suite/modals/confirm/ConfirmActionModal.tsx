@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
 import { Modal, ModalProps } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
-import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
+import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';
 
 const StyledModal = styled(Modal)`
@@ -14,7 +14,7 @@ interface ConfirmActionProps extends ModalProps {
     device: TrezorDevice;
 }
 
-export const ConfirmAction = ({ device, ...rest }: ConfirmActionProps) => (
+export const ConfirmActionModal = ({ device, ...rest }: ConfirmActionProps) => (
     <StyledModal
         devicePrompt={
             <ConfirmOnDevice

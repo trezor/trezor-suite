@@ -3,9 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Lottie, { LottieOptions } from 'lottie-react';
 import * as semver from 'semver';
 import { useTheme } from '@trezor/components';
-
 import { resolveStaticPath } from '@trezor/utils';
-
 import { getDeviceModel, getFwVersion } from '@suite-utils/device';
 
 import type { TrezorDevice } from '@suite/types/suite';
@@ -61,7 +59,7 @@ export type DeviceAnimationType =
 
 type Shape = 'CIRCLE' | 'ROUNDED' | 'ROUNDED-SMALL';
 
-type Props = {
+type DeviceAnimationProps = {
     size?: number;
     device?: TrezorDevice;
     type: DeviceAnimationType;
@@ -69,7 +67,14 @@ type Props = {
     shape?: Shape;
 };
 
-const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: Props) => {
+export const DeviceAnimation = ({
+    size,
+    type,
+    loop = false,
+    shape,
+    device,
+    ...props
+}: DeviceAnimationProps) => {
     const { THEME } = useTheme();
     const hologramRef = useRef<HTMLVideoElement>(null);
 
@@ -93,13 +98,16 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
 
     useEffect(() => {
         let mounted = true;
+
         const loadConnectAnimation = async () => {
             const connectAnimation = await import(`./lottie/t${deviceModel}_connect.json`);
             if (mounted) setConnectAnimationData(connectAnimation);
         };
+
         if (animationType === 'CONNECT') {
             loadConnectAnimation();
         }
+
         return () => {
             mounted = false;
         };
@@ -175,5 +183,3 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
         </Wrapper>
     );
 };
-
-export default DeviceAnimation;
