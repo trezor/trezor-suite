@@ -1,5 +1,5 @@
 import DeviceIcon from './images/DeviceIcon';
-import Image, { Props as ImageProps } from './images/Image';
+import { Image, ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
 import FormattedNumber from './FormattedNumber';

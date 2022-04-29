@@ -3,13 +3,11 @@ import styled, { css } from 'styled-components';
 import * as semver from 'semver';
 
 import { H1, Button, ConfirmOnDevice, variables } from '@trezor/components';
-import { Translation, WebusbButton } from '@suite-components';
-import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
-import DeviceAnimation from '@onboarding-components/DeviceAnimation';
+import { Modal, Translation, WebusbButton } from '@suite-components';
+import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
+import { DeviceAnimation } from '@onboarding-components/DeviceAnimation';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { getDeviceModel, getFwVersion } from '@suite/utils/suite/device';
-
-import type { TrezorDevice } from '@suite/types/suite';
 import {
     useRebootRequest,
     RebootRequestedMode,
@@ -17,33 +15,24 @@ import {
     RebootMethod,
 } from '@firmware-hooks/useRebootRequest';
 
-const Wrapper = styled.div`
-    display: flex;
-    padding: 24px;
-    box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
-    background: ${props => props.theme.BG_WHITE};
-    border-radius: 16px;
-    max-width: 560px;
+import type { TrezorDevice } from '@suite/types/suite';
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-        width: 95vw;
+const StyledModal = styled(Modal)`
+    width: 560px;
+
+    ${Modal.Body} {
+        padding: 22px;
     }
 `;
 
-const Overlay = styled.div`
-    position: fixed;
-    z-index: ${variables.Z_INDEX.MODAL};
-    width: 100%;
-    height: 100%;
-    top: 0px;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
+const Wrapper = styled.div`
     display: flex;
     align-items: center;
-    overflow: auto;
-    justify-content: center;
-    flex-direction: column;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        flex-direction: column;
+        width: 95vw;
+    }
 `;
 
 const Content = styled.div`
@@ -52,7 +41,7 @@ const Content = styled.div`
     padding: 10px 14px;
     margin-left: 24px;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         margin-left: 0px;
     }
 `;
@@ -84,27 +73,22 @@ const BulletPointNumber = styled.div<{ active?: boolean }>`
     margin-right: 14px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    background: ${props => props.theme.BG_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     font-variant-numeric: tabular-nums;
 
-    ${props =>
-        props.active &&
+    ${({ active, theme }) =>
+        active &&
         css`
-            color: ${props => props.theme.TYPE_GREEN};
-            background: ${props => props.theme.BG_LIGHT_GREEN};
+            color: ${theme.TYPE_GREEN};
+            background: ${theme.BG_LIGHT_GREEN};
         `}
 `;
 const BulletPointText = styled.span<{ active?: boolean }>`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme, active }) => (active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     text-align: left;
-    ${props =>
-        props.active &&
-        css`
-            color: ${props => props.theme.TYPE_GREEN};
-        `}
 `;
 
 const StyledDeviceAnimation = styled(DeviceAnimation)`
@@ -112,7 +96,7 @@ const StyledDeviceAnimation = styled(DeviceAnimation)`
     width: 200px;
     height: 200px;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         align-self: center;
     }
 `;
@@ -146,13 +130,17 @@ const HeadingText = ({
     method: RebootMethod;
 }) => {
     if (requestedMode === 'bootloader') {
-        if (phase === 'done') return <Translation id="TR_RECONNECT_IN_BOOTLOADER_SUCCESS" />;
+        if (phase === 'done') {
+            return <Translation id="TR_RECONNECT_IN_BOOTLOADER_SUCCESS" />;
+        }
+
         return method === 'automatic' ? (
             <Translation id="TR_REBOOT_INTO_BOOTLOADER" />
         ) : (
             <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
         );
     }
+
     return phase === 'done' ? (
         <Translation id="TR_RECONNECT_IN_NORMAL_SUCCESS" />
     ) : (
@@ -169,6 +157,7 @@ const ReconnectLabel = ({
 }) => {
     const deviceFwVersion = device?.features ? getFwVersion(device) : '';
     const deviceModel = device?.features ? getDeviceModel(device) : 'T';
+
     if (requestedMode === 'bootloader') {
         if (deviceModel === '1') {
             return semver.valid(deviceFwVersion) && semver.satisfies(deviceFwVersion, '<1.8.0') ? (
@@ -177,8 +166,10 @@ const ReconnectLabel = ({
                 <Translation id="TR_HOLD_LEFT_BUTTON" />
             );
         }
+
         return <Translation id="TR_SWIPE_YOUR_FINGERS" />;
     }
+
     return deviceModel === '1' ? (
         <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_1" />
     ) : (
@@ -208,24 +199,32 @@ const RebootDeviceGraphics = ({
     method: RebootMethod;
     requestedMode: RebootRequestedMode;
 }) => {
-    if (method === 'automatic') return device ? <StyledConfirmImage device={device} /> : null;
+    if (method === 'automatic') {
+        return device ? <StyledConfirmImage device={device} /> : null;
+    }
+
     const type = requestedMode === 'bootloader' ? 'BOOTLOADER' : 'NORMAL';
+
     return <StyledDeviceAnimation type={type} size={200} shape="ROUNDED" device={device} loop />;
 };
 
-interface Props {
+interface ReconnectDevicePromptProps {
     expectedDevice?: TrezorDevice;
     requestedMode: RebootRequestedMode;
     onSuccess?: () => void;
 }
 
-const ReconnectDevicePrompt = ({ expectedDevice, requestedMode, onSuccess }: Props) => {
+export const ReconnectDevicePrompt = ({
+    expectedDevice,
+    requestedMode,
+    onSuccess,
+}: ReconnectDevicePromptProps) => {
     const { device } = useDevice();
     const { isWebUSB } = useFirmware();
     const { rebootPhase, rebootMethod } = useRebootRequest(device, requestedMode);
 
     return (
-        <Overlay>
+        <StyledModal>
             {rebootMethod === 'automatic' && (
                 <ConfirmOnDeviceHeader>
                     <ConfirmOnDevice
@@ -295,8 +294,6 @@ const ReconnectDevicePrompt = ({ expectedDevice, requestedMode, onSuccess }: Pro
                     )}
                 </Content>
             </Wrapper>
-        </Overlay>
+        </StyledModal>
     );
 };
-
-export { ReconnectDevicePrompt };

@@ -4,7 +4,7 @@ import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
 import { variables, animations } from '../../../config';
 
-type WrapperProps = Pick<Props, 'animated' | 'animation'>;
+type WrapperProps = Pick<ConfirmOnDeviceProps, 'animated' | 'animation'>;
 const Wrapper = styled.div<WrapperProps>`
     display: flex;
     width: 300px;
@@ -111,7 +111,7 @@ const isStepActive = (index: number, activeStep?: number) => {
     return index < activeStep;
 };
 
-interface Props {
+export interface ConfirmOnDeviceProps {
     title: React.ReactNode;
     successText?: React.ReactNode;
     trezorModel: 1 | 2;
@@ -122,7 +122,7 @@ interface Props {
     onCancel?: () => void;
 }
 
-const ConfirmOnDevice = ({
+export const ConfirmOnDevice = ({
     title,
     steps,
     activeStep,
@@ -131,41 +131,46 @@ const ConfirmOnDevice = ({
     successText,
     animated,
     animation = 'SLIDE_UP',
-}: Props) => (
-    <Wrapper animated={animated} animation={animation} data-test="@prompts/confirm-on-device">
-        <Left>
-            <DeviceImage height="34px" trezorModel={trezorModel} />
-        </Left>
-        <Middle>
-            <Title>{title}</Title>
-            {successText && typeof steps === 'number' && activeStep && activeStep > steps ? (
-                <Success data-test="@prompts/confirm-on-device/success">{successText}</Success>
-            ) : undefined}
-            {typeof steps === 'number' && activeStep && activeStep <= steps ? (
-                <Steps>
-                    {Array.from(Array(steps).keys()).map((s, i) => (
-                        <Step
-                            key={s}
-                            isActive={isStepActive(i, activeStep)}
-                            data-test={`@prompts/confirm-on-device/step/${i}${
-                                isStepActive(i, activeStep) ? '/active' : ''
-                            }`}
-                        />
-                    ))}
-                </Steps>
-            ) : undefined}
-        </Middle>
-        <Right>
-            <CloseWrapper>
-                {onCancel && (
-                    <Close onClick={onCancel}>
-                        <Icon icon="CROSS" size={23} />
-                    </Close>
-                )}
-            </CloseWrapper>
-        </Right>
-    </Wrapper>
-);
+}: ConfirmOnDeviceProps) => {
+    const hasSteps = steps && activeStep;
 
-export type { Props as ConfirmOnDeviceProps };
-export { ConfirmOnDevice };
+    return (
+        <Wrapper animated={animated} animation={animation} data-test="@prompts/confirm-on-device">
+            <Left>
+                <DeviceImage height="34px" trezorModel={trezorModel} />
+            </Left>
+
+            <Middle>
+                <Title>{title}</Title>
+
+                {successText && hasSteps && activeStep > steps && (
+                    <Success data-test="@prompts/confirm-on-device/success">{successText}</Success>
+                )}
+
+                {hasSteps && activeStep <= steps && (
+                    <Steps>
+                        {Array.from(Array(steps).keys()).map((step, index) => (
+                            <Step
+                                key={step}
+                                isActive={isStepActive(index, activeStep)}
+                                data-test={`@prompts/confirm-on-device/step/${index}${
+                                    isStepActive(index, activeStep) ? '/active' : ''
+                                }`}
+                            />
+                        ))}
+                    </Steps>
+                )}
+            </Middle>
+
+            <Right>
+                <CloseWrapper>
+                    {onCancel && (
+                        <Close onClick={onCancel}>
+                            <Icon icon="CROSS" size={23} />
+                        </Close>
+                    )}
+                </CloseWrapper>
+            </Right>
+        </Wrapper>
+    );
+};
