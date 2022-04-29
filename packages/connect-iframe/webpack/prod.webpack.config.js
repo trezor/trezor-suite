@@ -37,9 +37,8 @@ module.exports = {
             {
                 test: /sharedConnectionWorker/i,
                 loader: 'worker-loader',
-                // REF-TODO:
-                issuer: /workers\/workers-*/i, // replace import ONLY in src/env/browser/workers
-                // issuer: /browser\/workers/i, // replace import ONLY in src/env/browser/workers
+                // REF-TODO: trezor transport has the same import and we don't want it to be loaded here. should be refactored in trezor/transport
+                issuer: /workers\/workers-*/i,
                 options: {
                     worker: 'SharedWorker',
                     filename: './workers/shared-connection-worker.[contenthash].js',

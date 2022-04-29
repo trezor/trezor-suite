@@ -259,20 +259,28 @@ blockchain-link manual:
 
 connect-popup:
   extends: .e2e connect-popup
-  # only:
-  #   <<: *run_everything_rules
+  only:
+    <<: *run_everything_rules
 
-# connect-popup manual:
-#   extends: .e2e connect-popup
-#   except:
-#     <<: *run_everything_rules
-#   when: manual
+connect-popup manual:
+  extends: .e2e connect-popup
+  except:
+    <<: *run_everything_rules
+  when: manual
 
-.e2e connect:
+connect:
   stage: integration testing
   # when: manual
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.connect-test.yml
+    TESTS_INCLUDED_METHODS: $TESTS_INCLUDED_METHODS
+    TESTS_EXCLUDED_METHODS: $TESTS_EXCLUDED_METHODS
+    TESTS_PATTERN: $TESTS_PATTERN
+    TESTS_SCRIPT: yarn workspace @trezor/integration-tests test:connect:${TESTS_ENVIRONMENT}
+    TESTS_FIRMWARE: $TESTS_FIRMWARE
+    TESTS_USE_TX_CACHE: $TESTS_MOCK_BACKENDS
+    TESTS_USE_WS_CACHE: $TESTS_MOCK_BACKENDS
   before_script:
     - docker-compose down
     - docker network prune -f
@@ -280,26 +288,45 @@ connect-popup:
     - git submodule update --init --recursive
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
-    - yarn workspace @trezor/connect-web build # should not be needed
-    - yarn workspace @trezor/connect-iframe build # should not be needed
-    - yarn workspace @trezor/connect-popup build # should not be needed
+    # should not be needed, rather hand over artifacts?
+    - if [ "$TESTS_ENVIRONMENT" == "web" ]; then yarn workspace @trezor/connect-iframe build; else echo "else"; fi
+    # should not be needed, rather hand over artifacts?
+    - if [ "$TESTS_ENVIRONMENT" == "web" ]; then yarn workspace @trezor/connect-web build; else echo "else"; fi
+
+    # switch node version for testing.
+    # todo: nvm is present in base image but not available here
+    # - sed -i "/\"node\"/d" package.json
+    # - nvm install ${TESTS_NODE_VERSION}
+
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
   after_script:
     - docker-compose down
     - docker network prune -f
-
-connect-node:
-  extends: .e2e connect
-  # when: manual
-  variables:
-    COMPOSE_FILE: ./docker/docker-compose.connect-test.yml
-
-connect-web:
-  extends: .e2e connect
-  # dependencies:
-  #   - connect-web build
-  # when: manual
-  variables:
-    COMPOSE_FILE: ./docker/docker-compose.connect-karma-test.yml
+  parallel:
+    matrix:
+      - TESTS_ENVIRONMENT: ["node", "web"]
+        TESTS_PATTERN: "init"
+        TESTS_FIRMWARE: ["2-latest", "2.2.0"]
+        # todo:
+        # TESTS_NODE_VERSION: ["12", "14", "16"]
+      - TESTS_ENVIRONMENT: ["node", "web"]
+        TESTS_PATTERN: "methods"
+        TESTS_FIRMWARE: ["2-latest", "2.2.0"]
+        # todo:
+        # TESTS_NODE_VERSION: ["12", "14", "16"]
+        TESTS_INCLUDED_METHODS: [
+            "applySettings,applyFlags,getFeatures",
+            "signTransaction",
+            "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction",
+            "stellarGetAddress,stellarSignTransaction",
+            "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
+            "eosGetPublicKey,eosSignTransaction",
+            "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
+            # "nemGetAddress,nemSignTransaction",
+            "rippleGetAddress,rippleSignTransaction",
+            "tezosGetAddress,tezosGetPublicKey",
+            "binanceSignTransaction",
+          ]
+        TESTS_MOCK_BACKENDS: "false"

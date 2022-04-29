@@ -103,8 +103,6 @@ const setup = async (controller, options) => {
 
         // after all is done, start bridge again
         await controller.send({ type: 'bridge-start' });
-        // Wait to prevent Transport is missing error from TrezorConnect
-        await wait(2000);
     } catch (err) {
         // this means that something in trezor-user-env got wrong.
         console.log(err);

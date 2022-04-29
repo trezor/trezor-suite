@@ -1,0 +1,57 @@
+name: Test with trezor-user-env
+on:
+  workflow_call:
+    inputs:
+      methods:
+        description: "List of methods to include in tests (example applySettings,applyFlags,getFeatures)"
+        type: "string"
+        required: false
+      test-pattern:
+        description: "Test pattern to use (e.g. `init` or `methods`)"
+        type: "string"
+        required: true
+
+jobs:
+  node:
+    name: node (${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # todo: how about other node versions support for trezor-connect? there is project wide node 14 requirement
+        node-version: [14.x]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: yarn install
+      - run: yarn build:libs
+      - run: "./docker/docker-connect-test.sh node -p ${{ inputs.test-pattern }} -i ${{ inputs.methods }}"
+
+  web:
+    name: web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          # karma tests are run in browser, so node version doesn't matter too much
+          node-version: 14.x
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: yarn install
+      - run: yarn build:libs
+      - name: Retrieve build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+          path: packages/connect-web/build
+      - run: "./docker/docker-connect-test.sh web -p ${{ inputs.test-pattern }} -i ${{ inputs.methods }}"

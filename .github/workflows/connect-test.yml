@@ -1,0 +1,119 @@
+name: "@trezor/connect"
+
+# run only if there are changes in connect or related libs paths
+on: push
+# on:
+#   push:
+#     paths:
+#       - "packages/blockchain-link"
+#       - "packages/connect*/**"
+#       - "packages/transport"
+#       - "packages/utxo-lib"
+#       - "packages/utils"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: yarn install
+      - run: yarn build:libs
+      - run: yarn workspace @trezor/connect-iframe build
+      - run: yarn workspace @trezor/connect-web build
+      # upload + download takes longer than doing yarn build:libs
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: packages/connect-web/build
+
+  api:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: init
+
+  management:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "applySettings,applyFlags,getFeatures"
+
+  btc-sign:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "signTransaction"
+
+  btc-others:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction"
+
+  stellar:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "stellarGetAddress,stellarSignTransaction"
+
+  cardano:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
+
+  eos:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "eosGetPublicKey,eosSignTransaction"
+
+  ethereum:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
+
+  # todo: skipped (some bug)
+  # nem:
+  #   needs: [build]
+  #   uses: ./.github/workflows/connect-test-params.yml
+  #   with:
+  #     test-pattern: methods
+  #     methods: "nemGetAddress,nemSignTransaction"
+
+  ripple:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "rippleGetAddress,rippleSignTransaction"
+
+  tezos:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "tezosGetAddress,tezosGetPublicKey"
+
+  binance:
+    needs: [build]
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "binanceSignTransaction"

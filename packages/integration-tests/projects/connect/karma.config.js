@@ -9,7 +9,6 @@ const getTestPattern = () => {
     const basename = __filename.split('/').reverse()[0];
     // yarn test:karma:production ...pattern => argv: [node, karma, start, config-file, ...pattern]
     const pos = process.argv.indexOf(`projects/connect/${basename}`);
-
     // is there some argument (test file name) after the test command?
     if (process.argv[pos + 1]) {
         // if yes add full path
