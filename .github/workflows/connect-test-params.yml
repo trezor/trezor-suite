@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         # todo: how about other node versions support for trezor-connect? there is project wide node 14 requirement
-        node-version: [14.x]
+        node-version: [14.x, 16.x]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,6 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: yarn
           cache-dependency-path: "**/yarn.lock"
+      - run: sed -i "/\"node\"/d" package.json
       - run: yarn install
       - run: yarn build:libs
       - run: "./docker/docker-connect-test.sh node -p ${{ inputs.test-pattern }} -i ${{ inputs.methods }}"
@@ -48,7 +49,7 @@ jobs:
           cache: yarn
           cache-dependency-path: "**/yarn.lock"
       - run: yarn install
-      - run: yarn build:libs
+      # - run: yarn build:libs
       - name: Retrieve build artifacts
         uses: actions/download-artifact@v2
         with:
