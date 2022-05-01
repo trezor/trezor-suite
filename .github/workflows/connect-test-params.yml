@@ -31,7 +31,7 @@ jobs:
           cache-dependency-path: "**/yarn.lock"
       - run: sed -i "/\"node\"/d" package.json
       - run: yarn install
-      - run: yarn build:libs
+      # - run: yarn build:libs
       - run: "./docker/docker-connect-test.sh node -p ${{ inputs.test-pattern }} -i ${{ inputs.methods }}"
 
   web:
@@ -49,10 +49,12 @@ jobs:
           cache: yarn
           cache-dependency-path: "**/yarn.lock"
       - run: yarn install
-      # - run: yarn build:libs
+      - run: yarn build:libs
       - name: Retrieve build artifacts
         uses: actions/download-artifact@v2
         with:
           name: build-artifact
           path: packages/connect-web/build
+      - name: "Echo download path"
+        run: echo ${{steps.download.outputs.download-path}}
       - run: "./docker/docker-connect-test.sh web -p ${{ inputs.test-pattern }} -i ${{ inputs.methods }}"

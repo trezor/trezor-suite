@@ -36,9 +36,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: build-artifact
-          path: |
-            packages/connect-web/build
-            packages/utils/build
+          path: packages/connect-web/build
 
   api:
     needs: [build]
