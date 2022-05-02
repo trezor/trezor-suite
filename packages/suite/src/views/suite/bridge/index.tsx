@@ -94,7 +94,7 @@ interface Installer {
     preferred?: boolean;
 }
 
-const InstallBridge = () => {
+export const InstallBridge = () => {
     const actions = useActions({
         goto: routerActions.goto,
     });
@@ -234,5 +234,3 @@ const InstallBridge = () => {
         </Modal>
     );
 };
-
-export default InstallBridge;

@@ -13,7 +13,7 @@ const Line = styled.div`
     padding: 20px;
 `;
 
-const Version = () => (
+export const Version = () => (
     <Modal data-test="@modal/version">
         <Wrapper>
             <P size="small" weight="bold">
@@ -33,5 +33,3 @@ const Version = () => (
         </Wrapper>
     </Modal>
 );
-
-export default Version;

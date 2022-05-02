@@ -8,6 +8,7 @@ import {
     getAppWithParams,
     getPrefixedURL,
     getRoute,
+    getBackgroundRoute,
     findRoute,
     findRouteByName,
     RouteParams,
@@ -139,13 +140,6 @@ export const goto =
 
 /**
  * Used only in application modal.
- * Returns Route of application beneath the application modal. (real Router value)
- */
-export const getBackgroundRoute = () => () =>
-    findRoute(history.location.pathname + history.location.hash);
-
-/**
- * Used only in application modal.
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
@@ -154,7 +148,7 @@ export const closeModalApp =
     (dispatch: Dispatch) => {
         dispatch(suiteActions.lockRouter(false));
 
-        const route = dispatch(getBackgroundRoute());
+        const route = getBackgroundRoute();
 
         // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
         // so we need a fallback to suite-index

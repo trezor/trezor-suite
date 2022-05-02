@@ -85,6 +85,7 @@ export const DEFAULT_STORE = {
     wallet: {
         accounts: [BTC_ACCOUNT.account, ETH_ACCOUNT.account, XRP_ACCOUNT.account],
         selectedAccount: BTC_ACCOUNT,
+        discovery: [],
         settings: {
             localCurrency: 'usd',
             lastUsedFeeLevel: {},

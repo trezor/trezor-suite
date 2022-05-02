@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
 import UdevDownload from '@suite-components/UdevDownload';
-import { InjectedModalApplicationProps } from '@suite-types';
+import type { ForegroundAppProps } from '@suite-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -11,11 +11,11 @@ const Wrapper = styled.div`
     margin: 24px 0;
 `;
 
-const UdevRules = (props: InjectedModalApplicationProps) => (
+export const UdevRules = ({ onCancel }: ForegroundAppProps) => (
     <Modal
         data-test="@modal/udev"
         isCancelable
-        onCancel={props.onCancel}
+        onCancel={onCancel}
         heading={<Translation id="TR_UDEV_DOWNLOAD_TITLE" />}
         description={<Translation id="TR_UDEV_DOWNLOAD_DESC" />}
     >
@@ -24,5 +24,3 @@ const UdevRules = (props: InjectedModalApplicationProps) => (
         </Wrapper>
     </Modal>
 );
-
-export default UdevRules;

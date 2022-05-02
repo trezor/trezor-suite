@@ -12,7 +12,7 @@ import { NavigationBar } from '../NavigationBar';
 import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
 import { ModalContextProvider } from '@suite-support/ModalContext';
-import { Modals } from '@suite-components/modals';
+import { ModalSwitcher } from '../ModalSwitcher/ModalSwitcher';
 import { useResetScroll } from './useResetScroll';
 import { useAnchorRemoving } from './useAnchorRemoving';
 
@@ -150,7 +150,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                     <Metadata title={title} />
                     <SuiteBanners />
 
-                    <Modals />
+                    <ModalSwitcher />
 
                     {isNavigationBarVisible && <NavigationBar />}
 

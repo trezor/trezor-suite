@@ -3,10 +3,12 @@ import styled from 'styled-components';
 import { Button, H2, P, variables } from '@trezor/components';
 import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
 import { Loading, Translation, CheckItem, TrezorLink, Image, Modal } from '@suite-components';
+import { RawRenderer } from '@suite-components/Modal/RawRenderer';
+import { ReduxModal } from '@suite-components/ModalSwitcher/ReduxModal';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 import { URLS } from '@suite-constants';
-import type { InjectedModalApplicationProps } from '@suite-types';
+import type { ForegroundAppProps } from '@suite-types';
 import type { WordCount } from '@recovery-types';
 
 const Wrapper = styled.div`
@@ -101,9 +103,10 @@ const CloseButton = ({ onClick, variant }: CloseButtonProps) => (
 const getModel = (majorVersion?: number) =>
     majorVersion !== 1 && majorVersion !== 2 ? undefined : majorVersion;
 
-const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
-    const { recovery } = useSelector(state => ({
+export const Recovery = ({ onCancel }: ForegroundAppProps) => {
+    const { recovery, modal } = useSelector(state => ({
         recovery: state.recovery,
+        modal: state.modal,
     }));
     const actions = useActions({
         checkSeed: recoveryActions.checkSeed,
@@ -135,9 +138,9 @@ const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
             <TinyModal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 isCancelable
-                onCancel={closeModalApp}
+                onCancel={onCancel}
                 data-test="@recovery/no-device"
-                bottomBar={<CloseButton onClick={() => closeModalApp()} variant="TR_CLOSE" />}
+                bottomBar={<CloseButton onClick={() => onCancel()} variant="TR_CLOSE" />}
             >
                 <Image image="CONNECT_DEVICE" />
             </TinyModal>
@@ -150,7 +153,7 @@ const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
                 recovery.status,
             ) && (
                 <CloseButton
-                    onClick={() => closeModalApp()}
+                    onClick={() => onCancel()}
                     variant={recovery.status === 'finished' ? 'TR_CLOSE' : 'TR_CANCEL'}
                 />
             )}
@@ -242,14 +245,14 @@ const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
                 );
             case 'in-progress':
             case 'waiting-for-confirmation':
-                return modal ? (
+                return modal.context !== '@modal/context-none' ? (
                     <>
                         {model === 2 && (
                             <StyledP>
                                 <Translation id="TR_ALL_THE_WORDS" />
                             </StyledP>
                         )}
-                        {modal}
+                        <ReduxModal {...modal} renderer={RawRenderer} />
                     </>
                 ) : (
                     <Loading />
@@ -294,5 +297,3 @@ const Recovery = ({ modal, closeModalApp }: InjectedModalApplicationProps) => {
         </StyledModal>
     );
 };
-
-export default Recovery;

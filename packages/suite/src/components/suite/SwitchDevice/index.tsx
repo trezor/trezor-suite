@@ -4,8 +4,9 @@ import { Translation } from '@suite-components/Translation';
 import { Modal } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { isWebUSB } from '@suite-utils/transport';
+import { getBackgroundRoute } from '@suite-utils/router';
 import DeviceItem from './components/DeviceItem';
-import { InjectedModalApplicationProps } from '@suite-types';
+import { ForegroundAppProps } from '@suite-types';
 import { useSelector } from '@suite-hooks';
 
 import WebusbButton from '../WebusbButton';
@@ -29,11 +30,7 @@ const DeviceItemsWrapper = styled.div`
     flex: 1;
 `;
 
-const WrapperModal = styled(Modal)`
-    width: unset;
-`;
-
-const SwitchDevice = (props: InjectedModalApplicationProps) => {
+export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const { selectedDevice, devices, transport } = useSelector(state => ({
         router: state.router,
         selectedDevice: state.suite.device,
@@ -41,14 +38,8 @@ const SwitchDevice = (props: InjectedModalApplicationProps) => {
         transport: state.suite.transport,
     }));
 
-    const { modal } = props;
     const showWebUsb = isWebUSB(transport);
-    // return action modal, it could be requested by Trezor while enabling passphrase encryption
-    if (modal)
-        return (
-            // Wrap modal in Modal component because modal passed to ApplicationModal has no background (overlay)
-            <WrapperModal>{modal}</WrapperModal>
-        );
+
     // exclude selectedDevice from list, because other devices could have a higher priority
     // and we want to have selectedDevice on top
     const sortedDevices = deviceUtils
@@ -60,12 +51,12 @@ const SwitchDevice = (props: InjectedModalApplicationProps) => {
         sortedDevices.unshift(selectedDevice);
     }
 
-    const backgroundRoute = props.getBackgroundRoute();
+    const backgroundRoute = getBackgroundRoute();
 
     return (
         <Modal
-            isCancelable={props.cancelable}
-            onCancel={props.onCancel}
+            isCancelable={cancelable}
+            onCancel={onCancel}
             heading={
                 <>
                     <Translation id="TR_CHOOSE_WALLET" />
@@ -86,12 +77,10 @@ const SwitchDevice = (props: InjectedModalApplicationProps) => {
                         device={device}
                         instances={deviceUtils.getDeviceInstances(device, devices)}
                         backgroundRoute={backgroundRoute}
-                        closeModalApp={props.closeModalApp}
+                        onCancel={onCancel}
                     />
                 ))}
             </DeviceItemsWrapper>
         </Modal>
     );
 };
-
-export default SwitchDevice;

@@ -9,7 +9,7 @@ import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { FAILED_BACKUP_URL } from '@suite-constants/urls';
 
-import type { InjectedModalApplicationProps } from '@suite-types';
+import type { ForegroundAppProps } from '@suite-types';
 import type { BackupStatus } from '@backup-actions/backupActions';
 
 const StyledButton = styled(Button)`
@@ -28,14 +28,6 @@ const StyledImage = styled(Image)`
 const VerticalCenter = styled.div`
     margin-top: auto;
     margin-bottom: auto;
-`;
-
-const NestedModal = styled(Modal)`
-    height: 620px;
-    ${Modal.Content} {
-        justify-content: center;
-        align-items: center;
-    }
 `;
 
 const FinishedModal = styled(Modal)`
@@ -90,7 +82,7 @@ const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
     return <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_HEADING" />;
 };
 
-const Backup = ({ closeModalApp, modal, cancelable, onCancel }: InjectedModalApplicationProps) => {
+export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const { device, backup, locks } = useSelector(state => ({
         device: state.suite.device,
         backup: state.backup,
@@ -101,18 +93,9 @@ const Backup = ({ closeModalApp, modal, cancelable, onCancel }: InjectedModalApp
         changePin: deviceSettingsActions.changePin,
     });
 
-    const onClose = () => closeModalApp();
+    const onClose = () => onCancel();
 
     const nonErrorBackupStatuses = ['initial', 'in-progress', 'finished'] as const;
-
-    if (modal) {
-        // modal is shown as standalone not inner modal as expected
-        return (
-            <NestedModal isCancelable={cancelable} onCancel={onCancel}>
-                {modal}
-            </NestedModal>
-        );
-    }
 
     if (!device || !device.features || !device.connected) {
         return (
@@ -249,5 +232,3 @@ const Backup = ({ closeModalApp, modal, cancelable, onCancel }: InjectedModalApp
         </StyledModal>
     );
 };
-
-export default Backup;
