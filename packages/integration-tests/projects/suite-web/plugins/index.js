@@ -181,7 +181,8 @@ module.exports = on => {
         startEmu: async arg => {
             const params = {
                 type: 'emulator-start',
-                version: process.env.FIRMWARE || releasesT2[0].version.join('.'),
+                // version: process.env.FIRMWARE || releasesT2[0].version.join('.'),
+                version: process.env.FIRMWARE || '2.4.3',
                 ...arg,
             };
             await controller.send(params);

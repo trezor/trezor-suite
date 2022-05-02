@@ -12,7 +12,11 @@ describe('Onboarding - recover wallet T2', () => {
 
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@firmware/continue-button').click();
+
+        // todo: temp, non-latest fw
+        // cy.getTestElement('@firmware/continue-button').click();
+        cy.getTestElement('@firmware/skip-button').click();
+
         cy.getTestElement('@onboarding/path-recovery-button').click();
     });
 
