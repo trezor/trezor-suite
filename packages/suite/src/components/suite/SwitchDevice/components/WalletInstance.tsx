@@ -17,7 +17,7 @@ import { TrezorDevice, AcquiredDevice } from '@suite-types';
 const InstanceType = styled.div`
     display: flex;
     color: ${props => props.theme.TYPE_DARK_GREY};
-    font-weight: 500;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     line-height: 1.5;
     align-items: center;
@@ -38,7 +38,8 @@ const Wrapper = styled(Box)`
         margin-top: 10px;
     }
 
-    :hover {
+    :hover,
+    :focus-within {
         background: ${({ theme }) => theme.BG_WHITE_ALT_HOVER};
 
         ${InstanceType} > span {
@@ -82,7 +83,7 @@ const SwitchCol = styled.div`
 const LockIcon = styled(Icon)`
     margin-right: 4px;
 `;
-interface Props {
+interface WalletInstanceProps {
     instance: AcquiredDevice;
     enabled: boolean;
     selected: boolean;
@@ -90,14 +91,14 @@ interface Props {
     index: number; // used only in data-test
 }
 
-const WalletInstance = ({
+export const WalletInstance = ({
     instance,
     enabled,
     selected,
     selectDeviceInstance,
     index,
     ...rest
-}: Props) => {
+}: WalletInstanceProps) => {
     const { toggleRememberDevice, forgetDevice, getDiscovery } = useActions({
         toggleRememberDevice: suiteActions.toggleRememberDevice,
         forgetDevice: suiteActions.forgetDevice,
@@ -132,7 +133,7 @@ const WalletInstance = ({
             state={isSelected ? 'success' : undefined}
             {...rest}
         >
-            <Col grow={1} onClick={() => !editing && selectDeviceInstance(instance)}>
+            <Col grow={1} onClick={() => !editing && selectDeviceInstance(instance)} tabIndex={0}>
                 {discoveryProcess && (
                     <InstanceType>
                         {!instance.useEmptyPassphrase && (
@@ -140,7 +141,11 @@ const WalletInstance = ({
                         )}
                         {instance.state ? (
                             <MetadataLabeling
-                                defaultVisibleValue={<WalletLabeling device={instance} />}
+                                defaultVisibleValue={
+                                    <span>
+                                        <WalletLabeling device={instance} />
+                                    </span>
+                                }
                                 payload={{
                                     type: 'walletLabel',
                                     deviceState: instance.state,
@@ -152,15 +157,19 @@ const WalletInstance = ({
                                 }}
                             />
                         ) : (
-                            <WalletLabeling device={instance} />
+                            <span>
+                                <WalletLabeling device={instance} />
+                            </span>
                         )}
                     </InstanceType>
                 )}
+
                 {!discoveryProcess && (
                     <InstanceType>
                         <Translation id="TR_UNDISCOVERED_WALLET" />
                     </InstanceType>
                 )}
+
                 <InstanceTitle>
                     <Translation
                         id="TR_NUM_ACCOUNTS_FIAT_VALUE"
@@ -178,6 +187,7 @@ const WalletInstance = ({
                     />
                 </InstanceTitle>
             </Col>
+
             {enabled && discoveryProcess && (
                 <>
                     <SwitchCol>
@@ -194,6 +204,7 @@ const WalletInstance = ({
                             dataTest={`${dataTestBase}/toggle-remember-switch`}
                         />
                     </SwitchCol>
+
                     <ColEject centerItems>
                         <Icon
                             data-test={`${dataTestBase}/eject-button`}
@@ -214,5 +225,3 @@ const WalletInstance = ({
         </Wrapper>
     );
 };
-
-export default WalletInstance;

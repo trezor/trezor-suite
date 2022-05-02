@@ -20,7 +20,7 @@ const IconsWrapper = styled.div`
 `;
 
 const Placeholder = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const Editable = styled.div<{ value?: string; isButton?: boolean; touched: boolean }>`
@@ -29,24 +29,24 @@ const Editable = styled.div<{ value?: string; isButton?: boolean; touched: boole
     text-align: left;
     cursor: text;
 
-    ${props =>
-        props.value &&
+    ${({ value }) =>
+        value &&
         css`
             position: unset;
         `}
 
-    ${props =>
-        !props.value &&
+    ${({ value, isButton }) =>
+        !value &&
         css`
-           left: ${props.isButton ? '22px;' : '0px;'}
+           left: ${isButton ? '22px;' : '0px;'}
            right: 0;
            position: absolute;
          `}
 
-    color: ${props => (!props.touched ? props.theme.TYPE_LIGHT_GREY : 'inherit')};
+    color: ${({ touched, theme }) => (!touched ? theme.TYPE_LIGHT_GREY : 'inherit')};
 `;
 
-interface Props {
+interface WithEditableProps {
     originalValue?: string;
     defaultVisibleValue: React.ReactNode;
     onSubmit: (value: string | undefined) => void;
@@ -60,11 +60,12 @@ interface Props {
  */
 export const withEditable =
     (WrappedComponent: React.FC) =>
-    ({ onSubmit, onBlur, ...props }: Props) => {
-        const theme = useTheme();
+    ({ onSubmit, onBlur, ...props }: WithEditableProps) => {
         const [touched, setTouched] = useState(false);
         // value is used to mirror divRef.current.textContent so that its changes force react to render
         const [value, setValue] = useState('');
+
+        const theme = useTheme();
         const divRef = useRef<HTMLDivElement>(null);
 
         const submit = useCallback(
@@ -72,6 +73,7 @@ export const withEditable =
                 if (props.originalValue && value === props.originalValue) {
                     return onBlur();
                 }
+
                 onSubmit(value);
                 onBlur();
             },
@@ -83,16 +85,19 @@ export const withEditable =
             if (!divRef?.current || touched) {
                 return;
             }
+
             if (props.originalValue) {
                 divRef.current.textContent = props.originalValue;
                 setValue(props.originalValue);
             }
+
             divRef.current.focus();
         }, [props.originalValue, divRef, touched, setValue]);
 
         useEffect(() => {
             const keyboardHandler = (event: KeyboardEvent) => {
                 event.stopPropagation();
+
                 switch (event.code) {
                     case KEYBOARD_CODE.BACK_SPACE:
                         if (!touched && divRef?.current) {
@@ -144,6 +149,7 @@ export const withEditable =
                                 setValue('');
                             }
                         }}
+                        onBlur={() => !value && onBlur()}
                         onPaste={e => setValue(e.clipboardData.getData('text/plain'))}
                         ref={divRef}
                         data-test="@metadata/input"
@@ -154,6 +160,7 @@ export const withEditable =
                     {/* show default placeholder */}
                     {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
                 </WrappedComponent>
+
                 <IconsWrapper>
                     <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
                         <Icon
@@ -168,6 +175,7 @@ export const withEditable =
                             color={theme.TYPE_GREEN}
                         />
                     </IconWrapper>
+
                     <IconWrapper bgColor={theme.BG_GREY}>
                         <Icon
                             useCursorPointer

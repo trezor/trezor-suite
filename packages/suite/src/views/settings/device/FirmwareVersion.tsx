@@ -16,16 +16,15 @@ const Version = styled.div`
     span {
         display: flex;
         align-items: center;
-    }
-`;
 
-const VersionButton = styled(Button)`
-    padding-left: 1ch;
+        > :last-child {
+            margin-left: 6px;
+        }
+    }
 `;
 
 const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
-    margin: 0 4px;
 `;
 
 const getButtonLabelId = ({
@@ -92,7 +91,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                                                 href={FIRMWARE_COMMIT_URL + revision}
                                                 variant="nostyle"
                                             >
-                                                <VersionButton
+                                                <Button
                                                     variant="tertiary"
                                                     icon={revision ? 'EXTERNAL_LINK' : undefined}
                                                     alignIcon="right"
@@ -100,7 +99,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                                                 >
                                                     {currentFwVersion}
                                                     {isBitcoinOnly(device) && ' (bitcoin-only)'}
-                                                </VersionButton>
+                                                </Button>
                                             </TrezorLink>
                                         </VersionTooltip>
                                     ),

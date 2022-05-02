@@ -12,14 +12,16 @@ const VersionTooltip = styled(Tooltip)`
 
 const VersionButton = styled(Button)<{ isDev?: boolean }>`
     padding-left: 1ch;
-    ${props =>
-        props.isDev &&
+
+    ${({ isDev }) =>
+        isDev &&
         css`
             color: ${props => props.theme.TYPE_WHITE};
             background: ${props => props.theme.BUTTON_RED};
-            &:hover,
-            &:active,
-            &:focus {
+
+            :hover,
+            :active,
+            :focus {
                 background: ${props => props.theme.BUTTON_RED_HOVER};
             }
         `};

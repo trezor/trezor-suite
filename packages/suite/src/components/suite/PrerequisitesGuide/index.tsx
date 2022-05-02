@@ -24,33 +24,41 @@ const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 700px;
 
-    ${props =>
-        props.padded &&
+    ${({ padded }) =>
+        padded &&
         css`
             margin-top: 20vh;
+
             @media all and (max-height: ${variables.SCREEN_SIZE.MD}) {
                 margin-top: 5vh;
             }
+
             @media all and (max-height: ${variables.SCREEN_SIZE.SM}) {
                 margin-top: 0vh;
             }
         `}
 `;
 
-interface Props {
+interface PrerequisitesGuideProps {
     prerequisite: PrerequisiteType;
     padded?: boolean;
     allowSwitchDevice?: boolean;
 }
 
 // PrerequisitesGuide is a shared component used in Preloader and Onboarding
-const PrerequisitesGuide = ({ prerequisite, padded, allowSwitchDevice }: Props) => {
+export const PrerequisitesGuide = ({
+    prerequisite,
+    padded,
+    allowSwitchDevice,
+}: PrerequisitesGuideProps) => {
     const { device, transport, devices } = useSelector(state => ({
         device: state.suite.device,
         devices: state.devices.length,
         transport: state.suite.transport,
     }));
+
     const webusb = isWebUSB(transport);
 
     return (
@@ -95,5 +103,3 @@ const PrerequisitesGuide = ({ prerequisite, padded, allowSwitchDevice }: Props) 
         </Wrapper>
     );
 };
-
-export default PrerequisitesGuide;

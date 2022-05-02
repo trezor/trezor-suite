@@ -11,7 +11,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { OpenGuideFromTooltip } from '@guide-components';
 
-import WalletInstance from '../WalletInstance';
+import { WalletInstance } from '../WalletInstance';
 import ColHeader from './components/ColHeader';
 import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
