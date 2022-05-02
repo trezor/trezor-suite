@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { variables } from '../../config';
 
 const Wrapper = styled.div`
-    position: fixed;
+    position: absolute;
     z-index: ${variables.Z_INDEX.MODAL};
     top: 0;
     left: 0;

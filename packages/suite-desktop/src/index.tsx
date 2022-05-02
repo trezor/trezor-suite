@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { render } from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
@@ -23,10 +23,9 @@ import history from '@suite/support/history';
 import AppRouter from './support/Router';
 import DesktopUpdater from './support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite/config/suite';
+import { ModalContextProvider } from '@suite-support/ModalContext';
 
 const Index = () => {
-    const [isUpdateVisible, setIsUpdateVisible] = useState(false);
-
     useEffect(() => {
         initSentry(SENTRY_CONFIG);
 
@@ -37,22 +36,25 @@ const Index = () => {
         <ReduxProvider store={store}>
             <ThemeProvider>
                 <RouterProvider history={history}>
-                    <ErrorBoundary>
-                        <Autodetect />
-                        <Resize />
-                        <Tor />
-                        <Protocol />
-                        <OnlineStatus />
-                        <RouterHandler />
-                        <IntlProvider>
-                            <DesktopUpdater setIsUpdateVisible={setIsUpdateVisible} />
-                            <Metadata />
-                            <ToastContainer />
-                            <Preloader hideModals={isUpdateVisible}>
-                                <AppRouter />
-                            </Preloader>
-                        </IntlProvider>
-                    </ErrorBoundary>
+                    <ModalContextProvider>
+                        <ErrorBoundary>
+                            <Autodetect />
+                            <Resize />
+                            <Tor />
+                            <Protocol />
+                            <OnlineStatus />
+                            <RouterHandler />
+                            <IntlProvider>
+                                <DesktopUpdater>
+                                    <Metadata />
+                                    <ToastContainer />
+                                    <Preloader>
+                                        <AppRouter />
+                                    </Preloader>
+                                </DesktopUpdater>
+                            </IntlProvider>
+                        </ErrorBoundary>
+                    </ModalContextProvider>
                 </RouterProvider>
             </ThemeProvider>
         </ReduxProvider>
