@@ -4,6 +4,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { useActions, useSelector, useAnalytics } from '@suite-hooks';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
+import { ModalContextProvider } from '@suite-support/ModalContext';
 import Available from './DesktopUpdater/Available';
 import Downloading from './DesktopUpdater/Downloading';
 import Ready from './DesktopUpdater/Ready';
@@ -12,10 +13,10 @@ import EarlyAccessDisable from './DesktopUpdater/EarlyAccessDisable';
 import { AppUpdateEventStatus, getAppUpdatePayload } from '@suite-utils/analytics';
 
 interface DesktopUpdaterProps {
-    setIsUpdateVisible: (isVisible: boolean) => void;
+    children: React.ReactNode;
 }
 
-const DesktopUpdater = ({ setIsUpdateVisible }: DesktopUpdaterProps) => {
+const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     const analytics = useAnalytics();
 
     const {
@@ -117,26 +118,29 @@ const DesktopUpdater = ({ setIsUpdateVisible }: DesktopUpdaterProps) => {
         return true;
     }, [desktopUpdate.window, desktopUpdate.state, desktopUpdate.latest]);
 
-    useEffect(() => setIsUpdateVisible(isVisible), [setIsUpdateVisible, isVisible]);
+    const getUpdateModal = () => {
+        switch (desktopUpdate.state) {
+            case UpdateState.EarlyAccessEnable:
+                return <EarlyAccessEnable hideWindow={hideWindow} />;
+            case UpdateState.EarlyAccessDisable:
+                return <EarlyAccessDisable hideWindow={hideWindow} />;
+            case UpdateState.Available:
+                return <Available hideWindow={hideWindow} latest={desktopUpdate.latest} />;
+            case UpdateState.Downloading:
+                return <Downloading hideWindow={hideWindow} progress={desktopUpdate.progress} />;
+            case UpdateState.Ready:
+                return <Ready hideWindow={hideWindow} />;
+            default:
+                return null;
+        }
+    };
 
-    if (!isVisible) {
-        return null;
-    }
-
-    switch (desktopUpdate.state) {
-        case UpdateState.EarlyAccessEnable:
-            return <EarlyAccessEnable hideWindow={hideWindow} />;
-        case UpdateState.EarlyAccessDisable:
-            return <EarlyAccessDisable hideWindow={hideWindow} />;
-        case UpdateState.Available:
-            return <Available hideWindow={hideWindow} latest={desktopUpdate.latest} />;
-        case UpdateState.Downloading:
-            return <Downloading hideWindow={hideWindow} progress={desktopUpdate.progress} />;
-        case UpdateState.Ready:
-            return <Ready hideWindow={hideWindow} />;
-        default:
-            return null;
-    }
+    return (
+        <>
+            {isVisible && getUpdateModal()}
+            <ModalContextProvider isDisabled={isVisible}>{children}</ModalContextProvider>
+        </>
+    );
 };
 
 export default DesktopUpdater;

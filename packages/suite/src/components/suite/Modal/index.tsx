@@ -1,5 +1,5 @@
 import React, { useMemo, ComponentType } from 'react';
-import styled from 'styled-components';
+import ReactDOM from 'react-dom';
 import FocusLock from 'react-focus-lock';
 import {
     Modal as TrezorModal,
@@ -7,19 +7,10 @@ import {
     Icon,
     Backdrop,
     colors,
-    variables,
 } from '@trezor/components';
 import { useGuide } from '@guide-hooks';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
-
-const GuideBackdrop = styled(Backdrop)<{ guideOpen: boolean }>`
-    transition: all 0.3s;
-    right: ${({ guideOpen }) => (guideOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : '0')};
-
-    & & {
-        right: 0;
-    }
-`;
+import { useModalTarget } from '@suite-support/ModalContext';
 
 export type ModalProps = TrezorModalProps & {
     render?: ComponentType<TrezorModalProps>;
@@ -31,8 +22,9 @@ const DefaultRenderer = ({
     onCancel,
     ...rest
 }: TrezorModalProps) => {
-    const { isGuideOpen, isModalOpen, isGuideOnTop, openGuide } = useGuide();
+    const { isGuideOpen, isGuideOnTop, openGuide } = useGuide();
     const { isMobileLayout } = useLayoutSize();
+    const modalTarget = useModalTarget();
 
     const GuideButton = useMemo(
         () => (
@@ -47,34 +39,36 @@ const DefaultRenderer = ({
         [openGuide],
     );
 
-    return (
-        <GuideBackdrop
-            guideOpen={isGuideOpen && isModalOpen && !isGuideOnTop}
-            onClick={() => {
-                if (isCancelable) {
-                    onCancel?.();
-                }
-            }}
-        >
-            <TrezorModal
-                isCancelable={isCancelable}
-                onCancel={onCancel}
-                headerComponents={[...(isMobileLayout ? [GuideButton] : []), ...headerComponents]}
-                {...rest}
-            />
-        </GuideBackdrop>
-    );
-};
+    if (!modalTarget) return null;
 
-export const Modal = ({ render: View = DefaultRenderer, ...props }: ModalProps) => {
-    const { isGuideOpen, isGuideOnTop } = useGuide();
-
-    return (
+    const modal = (
         <FocusLock disabled={isGuideOpen && isGuideOnTop} group="overlay" autoFocus={false}>
-            <View {...props} />
+            <Backdrop
+                onClick={() => {
+                    if (isCancelable) {
+                        onCancel?.();
+                    }
+                }}
+            >
+                <TrezorModal
+                    isCancelable={isCancelable}
+                    onCancel={onCancel}
+                    headerComponents={[
+                        ...(isMobileLayout ? [GuideButton] : []),
+                        ...headerComponents,
+                    ]}
+                    {...rest}
+                />
+            </Backdrop>
         </FocusLock>
     );
+
+    return ReactDOM.createPortal(modal, modalTarget);
 };
+
+export const Modal = ({ render: View = DefaultRenderer, ...props }: ModalProps) => (
+    <View {...props} />
+);
 
 Modal.Header = TrezorModal.Header;
 Modal.Body = TrezorModal.Body;

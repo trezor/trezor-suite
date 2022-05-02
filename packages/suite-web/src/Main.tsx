@@ -21,6 +21,7 @@ import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from '@suite-support/Router';
 import ThemeProvider from '@suite-support/ThemeProvider';
 import history from '@suite/support/history';
+import { ModalContextProvider } from '@suite-support/ModalContext';
 
 import AppRouter from './support/Router';
 import { CypressExportStore } from './support/CypressExportStore';
@@ -42,21 +43,23 @@ const Main = () => {
             <ReduxProvider store={store}>
                 <ThemeProvider>
                     <RouterProvider history={history}>
-                        <ErrorBoundary>
-                            <Autodetect />
-                            <Resize />
-                            <Tor />
-                            <Protocol />
-                            <OnlineStatus />
-                            <RouterHandler />
-                            <IntlProvider>
-                                <Metadata />
-                                <ToastContainer />
-                                <Preloader>
-                                    <AppRouter />
-                                </Preloader>
-                            </IntlProvider>
-                        </ErrorBoundary>
+                        <ModalContextProvider>
+                            <ErrorBoundary>
+                                <Autodetect />
+                                <Resize />
+                                <Tor />
+                                <Protocol />
+                                <OnlineStatus />
+                                <RouterHandler />
+                                <IntlProvider>
+                                    <Metadata />
+                                    <ToastContainer />
+                                    <Preloader>
+                                        <AppRouter />
+                                    </Preloader>
+                                </IntlProvider>
+                            </ErrorBoundary>
+                        </ModalContextProvider>
                     </RouterProvider>
                 </ThemeProvider>
             </ReduxProvider>
