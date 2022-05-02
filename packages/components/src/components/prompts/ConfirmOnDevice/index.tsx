@@ -4,25 +4,29 @@ import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
 import { variables, animations } from '../../../config';
 
-type WrapperProps = Pick<ConfirmOnDeviceProps, 'animated' | 'animation'>;
-const Wrapper = styled.div<WrapperProps>`
+enum AnimationDirection {
+    Up,
+    Down,
+}
+
+const Wrapper = styled.div<{ animation?: AnimationDirection }>`
     display: flex;
     width: 300px;
     height: 62px;
     padding: 0 10px 0 30px;
     border-radius: 100px;
-    background: ${props => props.theme.BG_WHITE};
-    box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    background: ${({ theme }) => theme.BG_WHITE};
+    box-shadow: 0 2px 5px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     align-items: center;
-    ${props =>
-        props.animated &&
-        props.animation === 'SLIDE_UP' &&
+
+    ${({ animation }) =>
+        animation === AnimationDirection.Up &&
         css`
             animation: ${animations.SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         `}
-    ${props =>
-        props.animated &&
-        props.animation === 'SLIDE_DOWN' &&
+
+    ${({ animation }) =>
+        animation === AnimationDirection.Down &&
         css`
             animation: ${animations.SLIDE_DOWN} 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         `}
@@ -38,7 +42,7 @@ const Title = styled.div`
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.BIG};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Left = styled(Column)``;
@@ -69,7 +73,7 @@ const CloseWrapper = styled.div`
 const Close = styled.div`
     border-radius: 100%;
     cursor: pointer;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
     width: 35px;
     height: 35px;
     display: flex;
@@ -82,7 +86,7 @@ const Success = styled.div`
     display: flex;
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_GREEN};
+    color: ${({ theme }) => theme.TYPE_GREEN};
     text-align: center;
     justify-content: center;
 `;
@@ -92,17 +96,19 @@ const Step = styled.div<{ isActive: boolean }>`
     height: 4px;
     border-radius: 2px;
     margin-right: 6px;
-    background: ${props => props.theme.STROKE_GREY};
+    background: ${({ theme }) => theme.STROKE_GREY};
 
-    ${props =>
-        props.isActive &&
+    ${({ isActive }) =>
+        isActive &&
         css`
-            background: ${props => props.theme.BG_GREEN};
+            background: ${({ theme }) => theme.BG_GREEN};
         `}
 `;
 
 const isStepActive = (index: number, activeStep?: number) => {
-    if (!activeStep) return false;
+    if (!activeStep) {
+        return false;
+    }
 
     if (!activeStep && index === 0) {
         return true;
@@ -117,8 +123,7 @@ export interface ConfirmOnDeviceProps {
     trezorModel: 1 | 2;
     steps?: number;
     activeStep?: number;
-    animated?: boolean;
-    animation?: 'SLIDE_UP' | 'SLIDE_DOWN';
+    isConfirmed?: boolean;
     onCancel?: () => void;
 }
 
@@ -129,13 +134,15 @@ export const ConfirmOnDevice = ({
     onCancel,
     trezorModel,
     successText,
-    animated,
-    animation = 'SLIDE_UP',
+    isConfirmed,
 }: ConfirmOnDeviceProps) => {
-    const hasSteps = steps && activeStep;
+    const hasSteps = steps && activeStep !== undefined;
 
     return (
-        <Wrapper animated={animated} animation={animation} data-test="@prompts/confirm-on-device">
+        <Wrapper
+            animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
+            data-test="@prompts/confirm-on-device"
+        >
             <Left>
                 <DeviceImage height="34px" trezorModel={trezorModel} />
             </Left>

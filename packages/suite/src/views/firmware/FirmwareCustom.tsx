@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
 import { useActions, useDevice, useFirmware } from '@suite-hooks';
@@ -31,42 +31,46 @@ const ModalContent = styled.div`
 `;
 
 export const FirmwareCustom = () => {
-    const { setStatus, firmwareCustom, resetReducer, status, error } = useFirmware();
-    const { device: liveDevice } = useDevice();
-    const cachedDevice = useCachedDevice(liveDevice);
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
     const { closeModalApp, acquireDevice } = useActions({
         closeModalApp: routerActions.closeModalApp,
         acquireDevice: suiteActions.acquireDevice,
     });
 
-    const onFirmwareSelected = (fw: ArrayBuffer) => {
-        setFirmwareBinary(fw);
-        // if there is no firmware installed, check-seed and waiting-for-bootloader steps could be skipped
-        if (liveDevice?.firmware === 'none') {
-            firmwareCustom(fw);
-        } else {
-            setStatus('check-seed');
-        }
-    };
+    const { setStatus, firmwareCustom, resetReducer, status, error } = useFirmware();
+    const { device: liveDevice } = useDevice();
+    const cachedDevice = useCachedDevice(liveDevice);
 
-    const onSeedChecked = () => {
+    const onFirmwareSelected = useCallback(
+        (fw: ArrayBuffer) => {
+            setFirmwareBinary(fw);
+            // if there is no firmware installed, check-seed and waiting-for-bootloader steps could be skipped
+            if (liveDevice?.firmware === 'none') {
+                firmwareCustom(fw);
+            } else {
+                setStatus('check-seed');
+            }
+        },
+        [liveDevice?.firmware, setStatus, firmwareCustom],
+    );
+
+    const onSeedChecked = useCallback(() => {
         setStatus('waiting-for-bootloader');
-    };
+    }, [setStatus]);
 
-    const onInstall = () => {
+    const onInstall = useCallback(() => {
         if (firmwareBinary) {
             firmwareCustom(firmwareBinary);
         }
-    };
+    }, [firmwareBinary, firmwareCustom]);
 
-    const onClose = () => {
+    const onClose = useCallback(() => {
         if (liveDevice?.status !== 'available') {
             acquireDevice(liveDevice);
         }
         closeModalApp();
         resetReducer();
-    };
+    }, [liveDevice, acquireDevice, closeModalApp, resetReducer]);
 
     const shouldDisplayConnectPrompt = (device?: TrezorDevice) =>
         !device?.connected || !device?.features;
@@ -80,87 +84,97 @@ export const FirmwareCustom = () => {
         'error',
     ].includes(status);
 
+    const Step = useMemo(
+        () => () => {
+            if (error) {
+                return (
+                    <OnboardingStepBox
+                        image="FIRMWARE"
+                        heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
+                        description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
+                        innerActions={
+                            <CloseButton onClick={onClose}>
+                                <Translation id="TR_BACK" />
+                            </CloseButton>
+                        }
+                        nested
+                    />
+                );
+            }
+
+            switch (status) {
+                case 'initial':
+                    return shouldDisplayConnectPrompt(liveDevice) ? (
+                        <ConnectDevicePromptManager device={liveDevice} />
+                    ) : (
+                        <SelectCustomFirmware device={liveDevice} onSuccess={onFirmwareSelected} />
+                    );
+                case 'check-seed':
+                    return <CheckSeedStep onSuccess={onSeedChecked} />;
+                case 'waiting-for-bootloader':
+                    return shouldDisplayConnectPrompt(cachedDevice) ? (
+                        <ConnectDevicePromptManager device={cachedDevice} />
+                    ) : (
+                        <ReconnectDevicePrompt
+                            expectedDevice={cachedDevice}
+                            requestedMode="bootloader"
+                            onSuccess={onInstall}
+                        />
+                    );
+                case 'waiting-for-confirmation': // waiting for confirming installation on a device
+                case 'started': // called from firmwareUpdate()
+                case 'installing':
+                case 'wait-for-reboot':
+                case 'unplug': // only relevant for T1, TT auto restarts itself
+                case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
+                case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
+                case 'done':
+                    return (
+                        <FirmwareInstallation
+                            cachedDevice={cachedDevice}
+                            standaloneFwUpdate
+                            customFirmware
+                            onSuccess={onClose}
+                        />
+                    );
+                default:
+                    // 'ensure' type completeness
+                    throw new Error(`state "${status}" is not handled here`);
+            }
+        },
+        [
+            cachedDevice,
+            error,
+            liveDevice,
+            status,
+            onClose,
+            onFirmwareSelected,
+            onInstall,
+            onSeedChecked,
+        ],
+    );
+
     if (liveDevice?.type === 'unacquired') return <DeviceAcquire />;
     if (liveDevice?.type === 'unreadable') return <DeviceUnreadable />;
     if (liveDevice && !liveDevice.features) return <DeviceUnknown />;
+
     return (
         <StyledModal
             isCancelable={isCancelable}
             onCancel={onClose}
             heading={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
-            devicePrompt={
+            modalPrompt={
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={liveDevice?.features?.major_version === 1 ? 1 : 2}
-                        animated
                     />
                 )
             }
             data-test="@firmware-custom"
         >
             <ModalContent>
-                {(() => {
-                    if (error) {
-                        return (
-                            <OnboardingStepBox
-                                image="FIRMWARE"
-                                heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
-                                description={
-                                    <Translation id="TOAST_GENERIC_ERROR" values={{ error }} />
-                                }
-                                innerActions={
-                                    <CloseButton onClick={onClose}>
-                                        <Translation id="TR_BACK" />
-                                    </CloseButton>
-                                }
-                                nested
-                            />
-                        );
-                    }
-                    switch (status) {
-                        case 'initial':
-                            return shouldDisplayConnectPrompt(liveDevice) ? (
-                                <ConnectDevicePromptManager device={liveDevice} />
-                            ) : (
-                                <SelectCustomFirmware
-                                    device={liveDevice}
-                                    onSuccess={onFirmwareSelected}
-                                />
-                            );
-                        case 'check-seed':
-                            return <CheckSeedStep onSuccess={onSeedChecked} />;
-                        case 'waiting-for-bootloader':
-                            return shouldDisplayConnectPrompt(cachedDevice) ? (
-                                <ConnectDevicePromptManager device={cachedDevice} />
-                            ) : (
-                                <ReconnectDevicePrompt
-                                    expectedDevice={cachedDevice}
-                                    requestedMode="bootloader"
-                                    onSuccess={onInstall}
-                                />
-                            );
-                        case 'waiting-for-confirmation': // waiting for confirming installation on a device
-                        case 'started': // called from firmwareUpdate()
-                        case 'installing':
-                        case 'wait-for-reboot':
-                        case 'unplug': // only relevant for T1, TT auto restarts itself
-                        case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
-                        case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
-                        case 'done':
-                            return (
-                                <FirmwareInstallation
-                                    cachedDevice={cachedDevice}
-                                    standaloneFwUpdate
-                                    customFirmware
-                                    onSuccess={onClose}
-                                />
-                            );
-                        default:
-                            // 'ensure' type completeness
-                            throw new Error(`state "${status}" is not handled here`);
-                    }
-                })()}
+                <Step />
             </ModalContent>
         </StyledModal>
     );

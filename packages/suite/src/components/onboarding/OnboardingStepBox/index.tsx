@@ -62,7 +62,6 @@ export const OnboardingStepBox = ({
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={confirmOnDevice === 1 ? 1 : 2}
-                        animated
                     />
                 )}
             </ConfirmWrapper>

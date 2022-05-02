@@ -48,7 +48,7 @@ export const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
                     }
                 />
             }
-            devicePrompt={
+            modalPrompt={
                 !authConfirmation ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}

@@ -2,12 +2,13 @@ import React from 'react';
 import { TrezorDevice } from '@suite-types';
 import { Image, ImageProps } from '..';
 import { ImageType } from './Image';
+import { getDeviceModel } from '@suite-utils/device';
 
-const getImage = (majorVersion: number): ImageType => {
+const getImage = (majorVersion: '1' | 'T'): ImageType => {
     switch (majorVersion) {
-        case 1:
+        case '1':
             return 'ONE_DEVICE_CONFIRM';
-        case 2:
+        case 'T':
             return 'T_DEVICE_CONFIRM';
         default:
             return 'T_DEVICE_CONFIRM';
@@ -19,7 +20,7 @@ interface DeviceConfirmImageProps extends Omit<ImageProps, 'image'> {
 }
 
 export const DeviceConfirmImage = ({ device, ...rest }: DeviceConfirmImageProps) => {
-    const majorVersion = device.features ? device.features.major_version : 2;
+    const majorVersion = getDeviceModel(device);
 
     const imgName = getImage(majorVersion);
 

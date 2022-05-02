@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import TrezorConnect from '@trezor/connect';
 import * as STEP from '@onboarding-constants/steps';
 import {
     OnboardingButtonBack,
@@ -7,12 +8,13 @@ import {
     OptionWrapper,
     OptionsDivider,
     OnboardingStepBox,
+    OnboardingButtonCta,
 } from '@onboarding-components';
 import { Translation } from '@suite-components';
 import { useActions, useSelector, useOnboarding } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
-const ResetDeviceStep = () => {
+export const ResetDeviceStep = () => {
     const [submitted, setSubmitted] = useState(false);
     const { resetDevice } = useActions({
         resetDevice: deviceSettingsActions.resetDevice,
@@ -35,11 +37,33 @@ const ResetDeviceStep = () => {
     // eslint-disable-next-line camelcase
     const onResetDevice = async (params?: { backup_type?: 0 | 1 | undefined }) => {
         setSubmitted(false);
+
         const result = await resetDevice(params);
+
         setSubmitted(true);
+
         if (result?.success) {
             goToNextStep(STEP.ID_SECURITY_STEP);
         }
+    };
+
+    const handleSingleseedReset = async () => {
+        if (isShamirBackupAvailable) {
+            await onResetDevice({ backup_type: 0 });
+        } else {
+            await onResetDevice();
+        }
+
+        updateAnalytics({ recoveryType: undefined, seedType: 'standard' });
+    };
+
+    const handleShamirReset = async () => {
+        await onResetDevice({ backup_type: 1 });
+
+        updateAnalytics({
+            recoveryType: undefined,
+            seedType: 'shamir',
+        });
     };
 
     return (
@@ -48,6 +72,17 @@ const ResetDeviceStep = () => {
             heading={<Translation id="TR_ONBOARDING_GENERATE_SEED" />}
             description={<Translation id="TR_ONBOARDING_GENERATE_SEED_DESCRIPTION" />}
             confirmOnDevice={isWaitingForConfirmation ? device?.features?.major_version : undefined}
+            innerActions={
+                isWaitingForConfirmation && (
+                    <OnboardingButtonCta
+                        onClick={() => TrezorConnect.cancel()}
+                        icon="CANCEL"
+                        variant="danger"
+                    >
+                        <Translation id="TR_ABORT" />
+                    </OnboardingButtonCta>
+                )
+            }
             outerActions={
                 !isWaitingForConfirmation ? (
                     // There is no point to show back button if user can't click it because confirmOnDevice bubble is active
@@ -68,18 +103,12 @@ const ResetDeviceStep = () => {
                                     ? '@onboarding/button-standard-backup'
                                     : '@onboarding/only-backup-option-button'
                             }
-                            onClick={async () => {
-                                if (isShamirBackupAvailable) {
-                                    await onResetDevice({ backup_type: 0 });
-                                } else {
-                                    await onResetDevice();
-                                }
-                                updateAnalytics({ recoveryType: undefined, seedType: 'standard' });
-                            }}
+                            onClick={handleSingleseedReset}
                             heading={<Translation id="SINGLE_SEED" />}
                             description={<Translation id="SINGLE_SEED_DESCRIPTION" />}
                         />
                     </OptionWrapper>
+
                     {isShamirBackupAvailable && (
                         <>
                             <OptionsDivider />
@@ -87,13 +116,7 @@ const ResetDeviceStep = () => {
                                 <Option
                                     icon="SEED_SHAMIR"
                                     data-test="@onboarding/shamir-backup-option-button"
-                                    onClick={async () => {
-                                        await onResetDevice({ backup_type: 1 });
-                                        updateAnalytics({
-                                            recoveryType: undefined,
-                                            seedType: 'shamir',
-                                        });
-                                    }}
+                                    onClick={handleShamirReset}
                                     heading={<Translation id="SHAMIR_SEED" />}
                                     description={<Translation id="SHAMIR_SEED_DESCRIPTION" />}
                                 />
@@ -105,5 +128,3 @@ const ResetDeviceStep = () => {
         </OnboardingStepBox>
     );
 };
-
-export default ResetDeviceStep;

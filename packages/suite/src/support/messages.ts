@@ -6409,4 +6409,8 @@ export default defineMessages({
         id: 'TR_ADDRESS_FORMAT',
         defaultMessage: 'Correct address format',
     },
+    TR_ABORT: {
+        id: 'TR_ABORT',
+        defaultMessage: 'Abort',
+    },
 });

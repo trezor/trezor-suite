@@ -48,8 +48,8 @@ const InputAddon = styled.div<{ align: AddonAlignment }>`
     position: absolute;
     top: 1px;
     bottom: 1px;
-    right: ${({ align }) => align === 'right' && '16px'};
-    left: ${({ align }) => align === 'left' && '16px'};
+    right: ${({ align }) => align === 'right' && '10px'};
+    left: ${({ align }) => align === 'left' && '10px'};
     display: flex;
     align-items: center;
 `;

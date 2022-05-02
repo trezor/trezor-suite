@@ -27,6 +27,11 @@ export const SCREEN_QUERY = {
     ABOVE_DESKTOP: `@media (min-width: ${SCREEN_SIZE.XL})`,
 } as const;
 
+export const MEDIA_QUERY = {
+    TOUCH: '@media (hover: none)',
+    HOVER: '@media (hover: hover)',
+} as const;
+
 export const LAYOUT_SIZE = {
     MENU_SECONDARY_WIDTH: '300px',
     /** Guide width including border */

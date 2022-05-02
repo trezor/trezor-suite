@@ -9,8 +9,8 @@ import {
     Passphrase,
     PassphraseSource,
     PassphraseOnDevice,
-    ConfirmAction,
-    ConfirmFingerprint,
+    ConfirmActionModal,
+    ConfirmFingerprintModal,
     Word,
     WordAdvanced,
     ReviewTransaction,
@@ -62,10 +62,10 @@ export const DeviceContextModal = ({
             if (device.processMode === 'sign-tx') {
                 return <ReviewTransaction type="sign-transaction" />;
             }
-            return <ConfirmAction device={device} renderer={renderer} />;
+            return <ConfirmActionModal device={device} renderer={renderer} />;
         }
         case 'ButtonRequest_FirmwareCheck':
-            return <ConfirmFingerprint device={device} renderer={renderer} />;
+            return <ConfirmFingerprintModal device={device} renderer={renderer} />;
         // Generic Button requests
         // todo: consider fallback (if windowType.contains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Warning':
@@ -80,7 +80,7 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
-            return <ConfirmAction device={device} renderer={renderer} />;
+            return <ConfirmActionModal device={device} renderer={renderer} />;
         default:
             return null;
     }
