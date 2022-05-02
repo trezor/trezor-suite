@@ -5,6 +5,7 @@ const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
     overflow-y: scroll;
     width: 100%;
 `;

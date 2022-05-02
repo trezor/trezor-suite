@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { useOnce } from '@suite-hooks';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';
 import { isWeb } from '@suite-utils/env';
 import { TREZOR_URL, SUITE_URL } from '@suite-constants/urls';
 import { resolveStaticPath } from '@trezor/utils';
-import { useSelector } from '@suite-hooks';
 import { GuideButton, GuidePanel } from '@guide-components';
 import { useGuide } from '@guide-hooks';
 import { NavSettings } from '@suite-components/NavigationBar/components/NavigationActions/components/NavSettings';
@@ -50,6 +50,8 @@ const MotionWelcome = styled(motion.div)`
     display: flex;
     height: 100%;
     overflow: hidden;
+    min-width: 380px;
+    max-width: 660px;
 `;
 
 const WelcomeTitle = styled(H1)`
@@ -92,32 +94,14 @@ const SettingsWrapper = styled.div`
     align-self: flex-end;
 `;
 
-// welcome bar should take two-fifths of screen (minus padding) unless screen is too narrow/wide
-const getWelcomeBarWidth = (width: number | null) => {
-    if (width! * 0.4 < 380) return '380px';
-    if (width! * 0.4 > 660) return '660px';
-
-    return 'calc(40vw - 16px)';
-};
-
 // WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
 // used in Preloader and Onboarding
 const WelcomeLayout: React.FC = ({ children }) => {
     const { banner } = useMessageSystem();
-    const { screenWidth } = useSelector(state => ({
-        screenWidth: state.resize.screenWidth,
-    }));
     const { isGuideOpen, isGuideOnTop } = useGuide();
 
     // do not animate welcome bar on initial load
-    const [firstRenderDone, setFirstRenderDone] = useState(false);
-    useEffect(() => {
-        setFirstRenderDone(true);
-    }, []);
-    const [welcomeBarWidth, setWelcomeBarWidth] = useState(getWelcomeBarWidth(screenWidth));
-    useEffect(() => {
-        setWelcomeBarWidth(getWelcomeBarWidth(screenWidth));
-    }, [screenWidth]);
+    const isFirstRender = useOnce(true, false);
 
     return (
         <Wrapper>
@@ -125,21 +109,20 @@ const WelcomeLayout: React.FC = ({ children }) => {
             <Body data-test="@welcome-layout/body">
                 <WelcomeWrapper>
                     <AnimatePresence>
-                        {((isGuideOpen && isGuideOnTop) || !isGuideOpen) && (
+                        {(!isGuideOpen || isGuideOnTop) && (
                             <MotionWelcome
-                                initial={
-                                    !firstRenderDone
-                                        ? {
-                                              width: welcomeBarWidth,
-                                          }
-                                        : { width: 0 }
-                                }
+                                initial={{
+                                    width: isFirstRender ? '40vw' : 0,
+                                    minWidth: isFirstRender ? '380px' : 0,
+                                }}
                                 animate={{
-                                    width: welcomeBarWidth,
+                                    width: '40vw',
+                                    minWidth: '380px',
                                     transition: { duration: 0.3, bounce: 0 },
                                 }}
                                 exit={{
                                     width: 0,
+                                    minWidth: 0,
                                     transition: { duration: 0.3, bounce: 0 },
                                 }}
                             >

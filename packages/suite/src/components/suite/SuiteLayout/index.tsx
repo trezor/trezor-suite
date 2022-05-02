@@ -1,5 +1,5 @@
-import React, { useState, createContext, useEffect, useCallback } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useState, createContext, useCallback } from 'react';
+import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import SuiteBanners from '@suite-components/Banners';
@@ -11,10 +11,20 @@ import { DiscoveryProgress } from '@wallet-components';
 import { NavigationBar } from '../NavigationBar';
 import { useLayoutSize, useSelector, useDevice } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
+import { ModalContextProvider } from '@suite-support/ModalContext';
+import { Modals } from '@suite-components/modals';
 import { useResetScroll } from './useResetScroll';
 import { useAnchorRemoving } from './useAnchorRemoving';
 
+const Wrapper = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    overflow: auto;
+`;
+
 const PageWrapper = styled.div`
+    position: relative;
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -31,31 +41,12 @@ const Body = styled.div`
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
-const Columns = styled.div<{
-    isModalOpen?: boolean;
-    isGuideOpen?: boolean;
-    isModalOpenLastChange?: boolean;
-    isNarrow?: boolean;
-}>`
+const Columns = styled.div`
     display: flex;
     flex-direction: row;
     flex: 1 0 100%;
     overflow: auto;
     padding: 0;
-
-    ${({ isNarrow }) =>
-        isNarrow &&
-        css`
-            padding-right: ${variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH};
-            transition: all 0.3s;
-        `}
-
-    ${({ isModalOpenLastChange, isNarrow }) =>
-        isModalOpenLastChange &&
-        isNarrow &&
-        css`
-            transition: none;
-        `}
 `;
 
 const AppWrapper = styled.div`
@@ -75,18 +66,11 @@ const AppWrapper = styled.div`
     }
 `;
 
-const MaxWidthWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    max-width: ${MAX_WIDTH};
-`;
-
 const DefaultPaddings = styled.div`
     display: flex;
     justify-content: center;
     width: 100%;
+    max-width: ${MAX_WIDTH};
     padding: 24px 32px 90px 32px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -97,19 +81,6 @@ const DefaultPaddings = styled.div`
         padding-bottom: 50px;
     }
 `;
-
-interface MobileBodyProps {
-    url: string;
-    menu?: React.ReactNode;
-    appMenu?: React.ReactNode;
-}
-
-interface NormalBodyProps extends MobileBodyProps {
-    isMenuInline: boolean;
-    isModalOpen?: boolean;
-    isNarrow?: boolean;
-    isModalOpenLastChange?: boolean;
-}
 
 interface LayoutContextI {
     title?: string;
@@ -127,68 +98,23 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
-const BodyNormal: React.FC<NormalBodyProps> = ({
-    url,
-    menu,
-    appMenu,
-    children,
-    isNarrow,
-    isMenuInline,
-    isModalOpen,
-    isModalOpenLastChange,
-}) => (
-    <Body data-test="@suite-layout/body">
-        <Columns
-            isModalOpen={isModalOpen}
-            isModalOpenLastChange={isModalOpenLastChange}
-            isNarrow={isNarrow}
-        >
-            {!isMenuInline && menu && <MenuSecondary>{menu}</MenuSecondary>}
-            <AppWrapper ref={useResetScroll(url)} data-test="@app">
-                {isMenuInline && menu}
-                {appMenu}
-                <DefaultPaddings>
-                    <MaxWidthWrapper>{children}</MaxWidthWrapper>
-                </DefaultPaddings>
-            </AppWrapper>
+type SuiteLayoutProps = {
+    children: React.ReactNode;
+};
 
-            <GuidePanel />
-        </Columns>
-    </Body>
-);
-
-const BodyMobile: React.FC<MobileBodyProps> = ({ url, menu, appMenu, children }) => (
-    <Body data-test="@suite-layout/body">
-        <Columns>
-            <AppWrapper ref={useResetScroll(url)} data-test="@app">
-                {menu}
-                {appMenu}
-                <DefaultPaddings>{children}</DefaultPaddings>
-            </AppWrapper>
-
-            <GuidePanel />
-        </Columns>
-    </Body>
-);
-
-export const SuiteLayout: React.FC = ({ children }) => {
+export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const { url, anchor } = useSelector(state => ({
         url: state.router.url,
         anchor: state.router.anchor,
     }));
 
-    const [isModalOpenLastChange, setIsModalOpenLastChange] = useState<boolean>(false);
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<React.ReactNode>(undefined);
     const [appMenu, setAppMenu] = useState<React.ReactNode>(undefined);
 
     const { isMobileLayout, layoutSize } = useLayoutSize();
-    const { isGuideOpen, isModalOpen, isGuideOnTop } = useGuide();
+    const { isGuideOpen, isModalOpen } = useGuide();
     const { device } = useDevice();
-
-    // fixes problem of animated layout movement when guide was open and user opened a modal
-    useEffect(() => setIsModalOpenLastChange(true), [isModalOpen]);
-    useEffect(() => setIsModalOpenLastChange(false), [isGuideOpen]);
 
     const setLayout = useCallback<NonNullable<LayoutContextI['setLayout']>>(
         (newTitle, newMenu, newAppMenu) => {
@@ -212,37 +138,44 @@ export const SuiteLayout: React.FC = ({ children }) => {
     // but then we need to hide NavigationBar so user can't navigate to Dashboard and Accounts.
     const isNavigationBarVisible = device?.mode === 'normal';
 
+    const isGuideFullHeight = isMobileLayout || isModalOpen;
+
     const pageWrapperRef = useAnchorRemoving(anchor);
+    const appWrapperRef = useResetScroll(url);
 
     return (
-        <PageWrapper ref={pageWrapperRef}>
-            <Metadata title={title} />
-            <SuiteBanners />
+        <Wrapper>
+            <PageWrapper ref={pageWrapperRef}>
+                <ModalContextProvider>
+                    <Metadata title={title} />
+                    <SuiteBanners />
 
-            {isNavigationBarVisible && <NavigationBar />}
+                    <Modals />
 
-            <DiscoveryProgress />
+                    {isNavigationBarVisible && <NavigationBar />}
 
-            <LayoutContext.Provider value={{ title, menu, isMenuInline, setLayout }}>
-                {isMobileLayout ? (
-                    <BodyMobile menu={menu} appMenu={appMenu} url={url}>
-                        {children}
-                    </BodyMobile>
-                ) : (
-                    <BodyNormal
-                        isNarrow={isGuideOpen && isModalOpen && !isGuideOnTop}
-                        isModalOpenLastChange={isModalOpenLastChange}
-                        menu={menu}
-                        appMenu={appMenu}
-                        url={url}
-                        isMenuInline={isMenuInline}
-                    >
-                        {children}
-                    </BodyNormal>
-                )}
-            </LayoutContext.Provider>
+                    <DiscoveryProgress />
 
-            {!isMobileLayout && <GuideButton />}
-        </PageWrapper>
+                    <LayoutContext.Provider value={{ title, menu, isMenuInline, setLayout }}>
+                        <Body data-test="@suite-layout/body">
+                            <Columns>
+                                {!isMenuInline && menu && <MenuSecondary>{menu}</MenuSecondary>}
+
+                                <AppWrapper data-test="@app" ref={appWrapperRef}>
+                                    {isMenuInline && menu}
+                                    {appMenu}
+                                    <DefaultPaddings>{children}</DefaultPaddings>
+                                </AppWrapper>
+
+                                {!isGuideFullHeight && <GuidePanel />}
+                            </Columns>
+                        </Body>
+                    </LayoutContext.Provider>
+
+                    {!isMobileLayout && <GuideButton />}
+                </ModalContextProvider>
+            </PageWrapper>
+            {isGuideFullHeight && <GuidePanel />}
+        </Wrapper>
     );
 };

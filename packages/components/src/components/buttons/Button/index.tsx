@@ -159,7 +159,6 @@ interface IconWrapperProps {
 }
 
 const IconWrapper = styled.div<IconWrapperProps>`
-    position: relative;
     display: flex;
 
     ${props =>
