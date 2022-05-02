@@ -100,7 +100,7 @@ describe('Review transaction modal', () => {
     ];
 
     fixtures.forEach(f => {
-        it(`${f.network}: Review transaction modal`, () => {
+        it(`${f.network}${f.token ? `-${f.token}` : ''}: Review transaction modal`, () => {
             cy.discoveryShouldFinish(); // todo: this should't be needed here
 
             // go to coin settings and enable cardano
