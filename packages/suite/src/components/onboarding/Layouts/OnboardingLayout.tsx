@@ -11,7 +11,7 @@ import steps from '@onboarding-config/steps';
 import { GuideButton, GuidePanel } from '@guide-components';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
-import { useGuide } from '@guide-hooks/useGuide';
+import { ModalContextProvider } from '@suite-support/ModalContext';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,6 +26,12 @@ const Body = styled.div`
     display: flex;
     width: 100%;
     height: 100%;
+`;
+
+const ScrollingWrapper = styled.div`
+    position: relative;
+    display: flex;
+    width: 100%;
 `;
 
 const ContentWrapper = styled.div`
@@ -74,6 +80,7 @@ const LogoHeaderRow = styled.div`
 `;
 
 const ProgressBarRow = styled.div`
+    width: 100%;
     margin-bottom: 20px;
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -92,27 +99,9 @@ const Content = styled.div`
     padding-bottom: 48px;
 `;
 
-const StyledProgressBar = styled(ProgressBar)<{ isGuideOpen?: boolean }>`
-    transition: all 0.3s;
-    margin-right: ${props => (props.isGuideOpen ? '128px' : '224px')};
-
-    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
-        margin-right: ${props => (props.isGuideOpen ? '0px' : '192px')};
-    }
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        margin-right: ${props => (props.isGuideOpen ? '0px' : '64px')};
-    }
-
-    ${variables.SCREEN_QUERY.MOBILE} {
-        margin-right: 0px;
-    }
-`;
-
 export const OnboardingLayout: React.FC = ({ children }) => {
     const { banner } = useMessageSystem();
     const { activeStepId } = useOnboarding();
-    const { isGuideOpen } = useGuide();
 
     const activeStep = useMemo(() => steps.find(step => step.id === activeStepId)!, [activeStepId]);
 
@@ -146,29 +135,36 @@ export const OnboardingLayout: React.FC = ({ children }) => {
             {banner && <MessageSystemBanner message={banner} />}
 
             <Body data-test="@onboarding-layout/body">
-                <ContentWrapper>
-                    <Header>
-                        <LogoHeaderRow>
-                            <TrezorLogo type="suite" width="128px" />
+                <ScrollingWrapper>
+                    <ModalContextProvider>
+                        <ContentWrapper>
+                            <Header>
+                                <LogoHeaderRow>
+                                    <TrezorLogo type="suite" width="128px" />
 
-                            <TrezorLink size="small" variant="nostyle" href={SUPPORT_URL}>
-                                <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                                    <Translation id="TR_HELP" />
-                                </Button>
-                            </TrezorLink>
-                        </LogoHeaderRow>
+                                    <TrezorLink size="small" variant="nostyle" href={SUPPORT_URL}>
+                                        <Button
+                                            variant="tertiary"
+                                            icon="EXTERNAL_LINK"
+                                            alignIcon="right"
+                                        >
+                                            <Translation id="TR_HELP" />
+                                        </Button>
+                                    </TrezorLink>
+                                </LogoHeaderRow>
 
-                        <ProgressBarRow>
-                            <StyledProgressBar
-                                isGuideOpen={isGuideOpen}
-                                steps={progressBarSteps}
-                                activeStep={activeStep.stepGroup}
-                            />
-                        </ProgressBarRow>
-                    </Header>
+                                <ProgressBarRow>
+                                    <ProgressBar
+                                        steps={progressBarSteps}
+                                        activeStep={activeStep.stepGroup}
+                                    />
+                                </ProgressBarRow>
+                            </Header>
 
-                    <Content>{children}</Content>
-                </ContentWrapper>
+                            <Content>{children}</Content>
+                        </ContentWrapper>
+                    </ModalContextProvider>
+                </ScrollingWrapper>
 
                 <GuideButton />
                 <GuidePanel />

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
 import { isDesktop } from '@suite-utils/env';
 import { isTranslationMode } from '@suite-utils/l10n';
 import { useSelector } from '@suite-hooks';
@@ -14,21 +13,12 @@ import FailedBackup from './FailedBackup';
 import MessageSystemBanner from './MessageSystemBanner';
 import SafetyChecksBanner from './SafetyChecks';
 import TranslationMode from './TranslationMode';
-import { useGuide } from '@guide-hooks';
 
-const Wrapper = styled.div<{ isGuideOpen?: boolean; isModalOpen?: boolean }>`
-    transition: all 0.3s;
+const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
-
-    ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
-        margin-right: ${props =>
-            props.isGuideOpen && props.isModalOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0};
-    }
 `;
 
 const Banners = () => {
-    const { isGuideOpen, isModalOpen } = useGuide();
-
     const { transport, device, online } = useSelector(state => ({
         transport: state.suite.transport,
         device: state.suite.device,
@@ -92,7 +82,7 @@ const Banners = () => {
     const useMessageSystemBanner = messageSystemBanner && messageSystemBanner.priority >= priority;
 
     return (
-        <Wrapper isGuideOpen={isGuideOpen} isModalOpen={isModalOpen}>
+        <Wrapper>
             {useMessageSystemBanner && <MessageSystemBanner message={messageSystemBanner} />}
             {isTranslationMode() && <TranslationMode />}
             <OnlineStatus isOnline={online} />

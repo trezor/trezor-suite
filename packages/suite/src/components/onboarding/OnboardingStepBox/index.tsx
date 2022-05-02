@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice, Backdrop, variables } from '@trezor/components';
+import { ConfirmOnDevice, Backdrop } from '@trezor/components';
 import { Box, BoxProps } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { useGuide } from '@guide-hooks';
 
 const OuterActions = styled.div<{ smallMargin?: boolean }>`
     display: flex;
@@ -25,8 +24,7 @@ const ConfirmWrapper = styled.div`
     height: 62px;
 `;
 
-const StyledBackdrop = styled(Backdrop)<{ guideOpen: boolean; show: boolean }>`
-    right: ${({ guideOpen }) => (guideOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : '0')};
+const StyledBackdrop = styled(Backdrop)<{ show: boolean }>`
     transition: all 0.3s;
     z-index: 0;
     opacity: ${({ show }) => (show ? '1' : '0')};
@@ -55,10 +53,7 @@ const OnboardingStepBox = ({
     ...rest
 }: Props) => (
     <>
-        <StyledBackdrop
-            guideOpen={useGuide().isGuideOpen}
-            show={!!confirmOnDevice && !disableConfirmWrapper}
-        />
+        <StyledBackdrop show={!!confirmOnDevice && !disableConfirmWrapper} />
         {!disableConfirmWrapper && (
             <ConfirmWrapper data-test="@onboarding/confirm-on-device">
                 {typeof confirmOnDevice === 'number' && (

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import FocusLock from 'react-focus-lock';
 
-import { variables } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
+import { variables, Backdrop } from '@trezor/components';
+import { useOnce, useSelector } from '@suite-hooks';
 import {
     SupportFeedbackSelection,
     GuideDefault,
@@ -31,13 +31,7 @@ const smoothBlur = keyframes`
     }
 `;
 
-const BackDrop = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.3);
+const StyledBackdrop = styled(Backdrop)`
     animation: ${smoothBlur} 0.3s ease-in forwards;
     z-index: ${variables.Z_INDEX.GUIDE_PANEL_BESIDE_MODAL};
     cursor: pointer;
@@ -47,17 +41,13 @@ const BackDrop = styled.div`
     }
 `;
 
-const GuideWrapper = styled.div<{ isModalOpen?: boolean }>`
+const GuideWrapper = styled.div`
     max-width: 100vw;
     height: 100%;
     z-index: ${variables.Z_INDEX.GUIDE_PANEL};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${fullHeightStyle}
-    }
-
-    ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
-        ${({ isModalOpen }) => isModalOpen && fullHeightStyle}
     }
 `;
 
@@ -73,14 +63,10 @@ export const GuidePanel = () => {
         activeView: state.guide.view,
     }));
 
-    const { isGuideOpen, isModalOpen, closeGuide, isGuideOnTop } = useGuide();
+    const { isGuideOpen, isGuideOnTop, isModalOpen, closeGuide } = useGuide();
 
     // if guide is open, do not animate guide opening if transitioning between onboarding, welcome and suite layout
-    const [guideAlreadyOpen, setGuideAlreadyOpen] = useState(isGuideOpen);
-
-    useEffect(() => {
-        setGuideAlreadyOpen(false);
-    }, []);
+    const isFirstRender = useOnce(isGuideOpen, false);
 
     return (
         <FocusLock
@@ -88,20 +74,16 @@ export const GuidePanel = () => {
             group="overlay"
             autoFocus={false}
         >
-            {isGuideOpen && <BackDrop onClick={closeGuide} />}
+            {isGuideOpen && <StyledBackdrop onClick={closeGuide} />}
 
-            <GuideWrapper isModalOpen={isModalOpen}>
+            <GuideWrapper>
                 <AnimatePresence>
                     {isGuideOpen && (
                         <MotionGuide
                             data-test="@guide/panel"
-                            initial={
-                                guideAlreadyOpen
-                                    ? {
-                                          width: variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH,
-                                      }
-                                    : { width: 0 }
-                            }
+                            initial={{
+                                width: isFirstRender ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0,
+                            }}
                             animate={{
                                 width: variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH,
                                 transition: {
