@@ -5,7 +5,6 @@ import { useTheme, variables, Icon, DeviceImage } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { ANIMATION } from '@suite-config';
-import { TrezorDevice, AcquiredDevice, InjectedModalApplicationProps } from '@suite-types';
 import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -15,6 +14,9 @@ import { WalletInstance } from '../WalletInstance';
 import ColHeader from './components/ColHeader';
 import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
+
+import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from '@suite-types';
+import type { getBackgroundRoute } from '@suite-utils/router';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -117,11 +119,11 @@ const ColEjectHeader = styled(ColHeader)`
 interface Props {
     device: TrezorDevice;
     instances: AcquiredDevice[];
-    closeModalApp: InjectedModalApplicationProps['closeModalApp'];
-    backgroundRoute: ReturnType<InjectedModalApplicationProps['getBackgroundRoute']>;
+    onCancel: ForegroundAppProps['onCancel'];
+    backgroundRoute: ReturnType<typeof getBackgroundRoute>;
 }
 
-const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props) => {
+const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => {
     const { goto, selectDevice, acquireDevice, createDeviceInstance } = useActions({
         goto: routerActions.goto,
         selectDevice: suiteActions.selectDevice,
@@ -156,7 +158,7 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
         }
 
         const preserveParams = false;
-        closeModalApp(preserveParams);
+        onCancel(preserveParams);
     };
 
     const selectDeviceInstance = (instance: Props['device']) => {

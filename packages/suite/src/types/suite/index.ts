@@ -12,7 +12,6 @@ import type {
     UnreadableDevice as UnreadableDeviceBase,
 } from 'trezor-connect';
 import type { RouterAction } from '@suite-actions/routerActions';
-import type { Route } from '@suite-constants/routes';
 import type { AppState } from '@suite/reducers/store';
 import type { StorageAction } from '@suite-actions/storageActions';
 import type { SuiteAction } from '@suite-actions/suiteActions';
@@ -36,14 +35,14 @@ import type { SUITE } from '@suite-actions/constants';
 import type { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
 import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
-import type { PrerequisiteType } from '@suite-utils/prerequisites';
+import type { Route } from '@suite-constants/routes';
 
 // reexport
 export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
 export type { AppState } from '@suite/reducers/store';
-export type { Route } from '@suite-constants/routes';
 export type { SuiteThemeColors } from '@trezor/components';
 export type { PrerequisiteType } from '@suite-utils/prerequisites';
+export type { Route };
 
 type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEvent;
 
@@ -125,13 +124,14 @@ export type Store = ReduxStore<AppState, Action>;
 
 export type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
 
-export type InjectedModalApplicationProps = {
-    modal: JSX.Element | null;
+export type ForegroundAppRoute = Extract<
+    Route,
+    { isForegroundApp: true; isFullscreenApp: false | undefined }
+>;
+
+export type ForegroundAppProps = {
     cancelable: boolean;
-    onCancel: () => void;
-    closeModalApp: (preserveParams?: boolean) => void;
-    getBackgroundRoute: () => Route | typeof undefined;
-    prerequisite?: PrerequisiteType;
+    onCancel: (preserveParams?: boolean) => void;
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';

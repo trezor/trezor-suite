@@ -8,7 +8,9 @@ import {
     FirmwareInitial,
     FirmwareInstallation,
 } from '@firmware-components';
-import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
+import DeviceAcquire from '@suite-views/device-acquire';
+import DeviceUnknown from '@suite-views/device-unknown';
+import DeviceUnreadable from '@suite-views/device-unreadable';
 import { Translation, Modal } from '@suite-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { useActions, useFirmware, useSelector } from '@suite-hooks';
@@ -46,7 +48,7 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-const Firmware = () => {
+export const Firmware = () => {
     const { resetReducer, status, setStatus, error, firmwareUpdate } = useFirmware();
     const { device } = useSelector(state => ({
         device: state.suite.device,
@@ -167,5 +169,3 @@ const Firmware = () => {
         </StyledModal>
     );
 };
-
-export default Firmware;

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { OnboardingLayout } from '@onboarding-components';
 import { WelcomeLayout } from '@suite-components';
+import { ReduxModal } from '@suite-components/ModalSwitcher/ReduxModal';
 import WelcomeStep from '@onboarding-views/steps/Welcome';
 import CreateOrRecover from '@onboarding-views/steps/CreateOrRecover';
 import FirmwareStep from '@onboarding-views/steps/Firmware';
@@ -12,21 +13,16 @@ import SetPinStep from '@onboarding-views/steps/Pin';
 import BasicSettingsStep from '@onboarding-views/steps/BasicSettings';
 import { FinalStep } from '@onboarding-views/steps/Final';
 import UnexpectedState from '@onboarding-views/unexpected-states';
-import { useOnboarding, useSelector } from '@suite-hooks';
+import { useOnboarding, useFilteredModal } from '@suite-hooks';
 import { MODAL } from '@suite-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
-import type { InjectedModalApplicationProps } from '@suite-types';
-import type { UserContextPayload } from '@suite-actions/modalActions';
+import type { PrerequisiteType } from '@suite-types';
 
-const useIsModalAllowed = () => {
-    const { modal } = useSelector(state => ({
-        modal: state.modal,
-    }));
-    const allowedModals: UserContextPayload['type'][] = ['advanced-coin-settings', 'disable-tor'];
-    return modal.context === MODAL.CONTEXT_USER && allowedModals.includes(modal.payload.type);
+type OnboardingProps = {
+    prerequisite?: PrerequisiteType;
 };
 
-export const Onboarding = ({ prerequisite, modal }: InjectedModalApplicationProps) => {
+export const Onboarding = ({ prerequisite }: OnboardingProps) => {
     const { activeStepId } = useOnboarding();
 
     const [StepComponent, LayoutComponent, prerequisitesGuidePadded] = useMemo(() => {
@@ -66,9 +62,14 @@ export const Onboarding = ({ prerequisite, modal }: InjectedModalApplicationProp
         }
     }, [activeStepId]);
 
+    const allowedModal = useFilteredModal(
+        [MODAL.CONTEXT_USER],
+        ['advanced-coin-settings', 'disable-tor'],
+    );
+
     return (
         <LayoutComponent>
-            {useIsModalAllowed() ? modal : null}
+            {allowedModal && <ReduxModal {...allowedModal} />}
             <UnexpectedState
                 prerequisite={prerequisite}
                 prerequisitesGuidePadded={prerequisitesGuidePadded}

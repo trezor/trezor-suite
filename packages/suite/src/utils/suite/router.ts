@@ -1,4 +1,5 @@
 import routes, { Route, RouterAppWithParams } from '@suite-constants/routes';
+import history from '@suite/support/history';
 import { NETWORKS } from '@wallet-config';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
@@ -140,3 +141,10 @@ export const getTopLevelRoute = (url: string) => {
         return getPrefixedURL(`/${split[0]}`);
     }
 };
+
+/**
+ * Used only in application modal.
+ * Returns Route of application beneath the application modal. (real Router value)
+ */
+export const getBackgroundRoute = () =>
+    findRoute(history.location.pathname + history.location.hash);

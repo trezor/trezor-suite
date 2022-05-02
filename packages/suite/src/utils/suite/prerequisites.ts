@@ -80,7 +80,7 @@ export const getPrerequisites = ({ router, device, transport }: PrerequisitesInp
     if (typeof prerequisite === 'undefined') return;
 
     if (excluded.includes(prerequisite)) {
-        return undefined;
+        return;
     }
 
     return prerequisite;

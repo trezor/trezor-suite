@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { ConfirmOnDevice } from '@trezor/components';
 import { useActions, useDevice, useFirmware } from '@suite-hooks';
 import { Translation, Modal } from '@suite-components';
-import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
+import DeviceAcquire from '@suite-views/device-acquire';
+import DeviceUnknown from '@suite-views/device-unknown';
+import DeviceUnreadable from '@suite-views/device-unreadable';
 import * as routerActions from '@suite-actions/routerActions';
 import type { TrezorDevice } from '@suite-types';
 import { ConnectDevicePromptManager, OnboardingStepBox } from '@onboarding-components';
@@ -28,7 +30,7 @@ const ModalContent = styled.div`
     align-items: center;
 `;
 
-const FirmwareCustom = () => {
+export const FirmwareCustom = () => {
     const { setStatus, firmwareCustom, resetReducer, status, error } = useFirmware();
     const { device: liveDevice } = useDevice();
     const cachedDevice = useCachedDevice(liveDevice);
@@ -163,5 +165,3 @@ const FirmwareCustom = () => {
         </StyledModal>
     );
 };
-
-export default FirmwareCustom;
