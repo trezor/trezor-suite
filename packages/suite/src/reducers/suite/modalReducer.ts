@@ -1,7 +1,7 @@
 import { UI, DEVICE, Device } from 'trezor-connect';
 import { MODAL } from '@suite-actions/constants';
-import { UserContextPayload } from '@suite-actions/modalActions';
-import { Action, TrezorDevice } from '@suite-types';
+import type { UserContextPayload } from '@suite-actions/modalActions';
+import type { Action, TrezorDevice } from '@suite-types';
 
 export type State =
     | { context: typeof MODAL.CONTEXT_NONE }

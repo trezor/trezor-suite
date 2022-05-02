@@ -1,6 +1,6 @@
 import { ACCOUNT } from '@wallet-actions/constants';
-import { Action } from '@suite-types';
-import { Network, Account, Discovery, WalletParams } from '@wallet-types';
+import type { Action } from '@suite-types';
+import type { Network, Account, Discovery, WalletParams } from '@wallet-types';
 
 // Context notifications view
 // Account is in "watch only" mode
