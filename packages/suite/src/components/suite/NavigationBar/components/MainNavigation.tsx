@@ -31,8 +31,10 @@ const MobileWrapper = styled.div`
 `;
 
 const StyledHoverAnimation = styled(HoverAnimation)`
-    & + & {
-        margin-left: 12px;
+    ${variables.SCREEN_QUERY.ABOVE_TABLET} {
+        & + & {
+            margin-left: 12px;
+        }
     }
 `;
 

@@ -31,7 +31,6 @@ const Wrapper = styled.div`
 
     ${variables.SCREEN_QUERY.MOBILE} {
         flex-direction: column;
-        width: 95vw;
     }
 `;
 
@@ -44,13 +43,6 @@ const Content = styled.div`
     ${variables.SCREEN_QUERY.MOBILE} {
         margin-left: 0px;
     }
-`;
-
-const Bottom = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: flex-end;
-    justify-content: center;
 `;
 
 const BulletPointWrapper = styled.div`
@@ -84,11 +76,16 @@ const BulletPointNumber = styled.div<{ active?: boolean }>`
             background: ${theme.BG_LIGHT_GREEN};
         `}
 `;
+
 const BulletPointText = styled.span<{ active?: boolean }>`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme, active }) => (active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     text-align: left;
+`;
+
+const CenteredPointText = styled(BulletPointText)`
+    text-align: center;
 `;
 
 const StyledDeviceAnimation = styled(DeviceAnimation)`
@@ -114,10 +111,6 @@ const Heading = styled(H1)`
 
 const StyledWebusbButton = styled(WebusbButton)`
     margin-top: 24px;
-`;
-
-const ConfirmOnDeviceHeader = styled.div`
-    margin-bottom: 25px;
 `;
 
 const HeadingText = ({
@@ -184,6 +177,7 @@ const ReconnectStep: React.FC<{
 }> = ({ order, active, dataTest, children }) => (
     <BulletPointWrapper>
         {order && <BulletPointNumber active={active}>{order}</BulletPointNumber>}
+
         <BulletPointText active={active} data-test={active ? dataTest : undefined}>
             {children}
         </BulletPointText>
@@ -223,24 +217,27 @@ export const ReconnectDevicePrompt = ({
     const { isWebUSB } = useFirmware();
     const { rebootPhase, rebootMethod } = useRebootRequest(device, requestedMode);
 
+    const isRebootAutomatic = rebootMethod === 'automatic';
+
     return (
-        <StyledModal>
-            {rebootMethod === 'automatic' && (
-                <ConfirmOnDeviceHeader>
+        <StyledModal
+            modalPrompt={
+                isRebootAutomatic && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={device?.features?.major_version === 1 ? 1 : 2}
-                        animated
-                        animation={rebootPhase !== 'wait-for-confirm' ? 'SLIDE_DOWN' : 'SLIDE_UP'}
+                        isConfirmed={rebootPhase !== 'wait-for-confirm'}
                     />
-                </ConfirmOnDeviceHeader>
-            )}
+                )
+            }
+        >
             <Wrapper data-test={`@firmware/reconnect-device/${requestedMode}`}>
                 <RebootDeviceGraphics
                     device={expectedDevice}
                     method={rebootMethod}
                     requestedMode={requestedMode}
                 />
+
                 <Content>
                     <Heading>
                         <HeadingText
@@ -249,15 +246,16 @@ export const ReconnectDevicePrompt = ({
                             method={rebootMethod}
                         />
                     </Heading>
+
                     {rebootPhase !== 'done' ? (
                         <>
-                            {rebootMethod === 'automatic' ? (
-                                <ReconnectStep active dataTest="@firmware/confirm-reboot-message">
+                            {isRebootAutomatic ? (
+                                <CenteredPointText>
                                     <Translation
                                         id="TR_CONFIRM_ACTION_ON_YOUR"
                                         values={{ deviceLabel: expectedDevice?.label }}
                                     />
-                                </ReconnectStep>
+                                </CenteredPointText>
                             ) : (
                                 <>
                                     {/* First step asks for disconnecting a device */}
@@ -268,6 +266,7 @@ export const ReconnectDevicePrompt = ({
                                     >
                                         <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
                                     </ReconnectStep>
+
                                     {/* Second step reconnect in normal mode or bootloader */}
                                     <ReconnectStep
                                         order={2}
@@ -284,13 +283,13 @@ export const ReconnectDevicePrompt = ({
                             {rebootPhase === 'disconnected' && isWebUSB && <StyledWebusbButton />}
                         </>
                     ) : (
-                        <Bottom>
+                        <>
                             {requestedMode === 'bootloader' && (
                                 <Button onClick={onSuccess} data-test="@firmware/install-button">
                                     <Translation id="TR_INSTALL" />
                                 </Button>
                             )}
-                        </Bottom>
+                        </>
                     )}
                 </Content>
             </Wrapper>

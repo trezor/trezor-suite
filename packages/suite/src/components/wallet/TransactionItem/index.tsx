@@ -65,11 +65,13 @@ const Wrapper = styled.div<{
         `}
 
     &:first-of-type {
+        padding-top: 12px;
         border-top-left-radius: 12px;
         border-top-right-radius: 12px;
     }
 
     &:last-of-type {
+        padding-bottom: 12px;
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
     }

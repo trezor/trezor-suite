@@ -22,7 +22,7 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const BackupStep = () => {
+export const BackupStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
     const { goToNextStep, backupDevice, goto, updateAnalytics } = useActions({
         goToNextStep: onboardingActions.goToNextStep,
@@ -154,5 +154,3 @@ const BackupStep = () => {
         </>
     );
 };
-
-export default BackupStep;

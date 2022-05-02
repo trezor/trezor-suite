@@ -9,7 +9,7 @@ import { variables } from '../../config';
 import { Progress } from '@trezor/components';
 import { IconType } from '../../support/types';
 
-const DevicePromptContainer = styled.div`
+const ModalPromptContainer = styled.div`
     margin-bottom: 25px;
 `;
 
@@ -151,7 +151,7 @@ interface ModalProps {
     children?: React.ReactNode;
     heading?: React.ReactNode;
     subheading?: React.ReactNode;
-    devicePrompt?: React.ReactNode;
+    modalPrompt?: React.ReactNode;
     headerIcon?: IconType;
     isHeadingCentered?: boolean;
     description?: React.ReactNode;
@@ -179,7 +179,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
     children,
     heading,
     subheading,
-    devicePrompt,
+    modalPrompt,
     headerIcon,
     isHeadingCentered = true,
     description,
@@ -222,7 +222,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
 
     return (
         <>
-            {devicePrompt && <DevicePromptContainer>{devicePrompt}</DevicePromptContainer>}
+            {modalPrompt && <ModalPromptContainer>{modalPrompt}</ModalPromptContainer>}
 
             <ModalWindow
                 data-test={dataTest}

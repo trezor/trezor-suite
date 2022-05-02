@@ -1,4 +1,5 @@
 import React from 'react';
+import TrezorConnect from '@trezor/connect';
 import { OnboardingButtonCta } from '@onboarding-components';
 import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from '@recovery-components';
 import { Translation } from '@suite-components';
@@ -6,7 +7,7 @@ import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { useActions, useRecovery, useSelector } from '@suite-hooks';
 import RecoveryStepBox from './RecoveryStepBox';
 
-const RecoveryStep = () => {
+export const RecoveryStep = () => {
     const { goToNextStep, updateAnalytics } = useActions({
         goToNextStep: onboardingActions.goToNextStep,
         updateAnalytics: onboardingActions.updateAnalytics,
@@ -61,9 +62,7 @@ const RecoveryStep = () => {
                 innerActions={
                     <OnboardingButtonCta
                         data-test="@onboarding/recovery/start-button"
-                        onClick={() => {
-                            recoverDevice();
-                        }}
+                        onClick={recoverDevice}
                     >
                         <Translation id="TR_START_RECOVERY" />
                     </OnboardingButtonCta>
@@ -113,13 +112,25 @@ const RecoveryStep = () => {
                     </>
                 );
             }
+
             if (wordRequestInputType === 6 || wordRequestInputType === 9) {
                 return <Translation id="TR_ADVANCED_RECOVERY_TEXT" />;
             }
         };
+
         return (
             <RecoveryStepBox
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                confirmOnDevice={model}
+                innerActions={
+                    <OnboardingButtonCta
+                        onClick={() => TrezorConnect.cancel()}
+                        icon="CANCEL"
+                        variant="danger"
+                    >
+                        <Translation id="TR_ABORT" />
+                    </OnboardingButtonCta>
+                }
                 description={
                     model === 1 ? (
                         getModel1Description()
@@ -127,7 +138,6 @@ const RecoveryStep = () => {
                         <Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />
                     )
                 }
-                confirmOnDevice={model}
             >
                 <SelectRecoveryWord />
             </RecoveryStepBox>
@@ -171,5 +181,3 @@ const RecoveryStep = () => {
     // We shouldn't get there, but to keep typescript sane let's return null
     return null;
 };
-
-export default RecoveryStep;

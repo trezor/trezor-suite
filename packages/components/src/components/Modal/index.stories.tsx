@@ -84,21 +84,19 @@ storiesOf('Modals', module)
                 'Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus.',
             );
             const cancelable = boolean('cancelable', true);
-            const animated = boolean('animated', false);
             const theme = select('Theme', ['light', 'dark'], 'light');
 
             return (
                 <ThemeProvider theme={theme === 'dark' ? THEME.dark : THEME.light}>
                     <Backdrop>
                         <Modal
-                            devicePrompt={
+                            modalPrompt={
                                 <ConfirmOnDevice
                                     successText="confirmed"
                                     title="Confirm on trezor"
                                     trezorModel={2}
                                     steps={3}
                                     activeStep={2}
-                                    animated={animated}
                                 />
                             }
                             data-test="modal"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
@@ -61,25 +61,29 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
-type Props =
+type ReviewTransactionProps =
     | Extract<UserContextPayload, { type: 'review-transaction' }>
     | { type: 'sign-transaction'; decision?: undefined };
 
-export const ReviewTransaction = ({ decision }: Props) => {
-    const { device } = useDevice();
-    const [detailsOpen, setDetailsOpen] = React.useState(false);
-    const { cancelSignTx } = useActions({
-        cancelSignTx: sendFormActions.cancelSignTx,
-    });
+export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
     const { selectedAccount, send, fees } = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         send: state.wallet.send,
         fees: state.wallet.fees,
     }));
+    const { cancelSignTx } = useActions({
+        cancelSignTx: sendFormActions.cancelSignTx,
+    });
+
+    const [detailsOpen, setDetailsOpen] = useState(false);
+
+    const { device } = useDevice();
 
     const { precomposedTx, precomposedForm, signedTx } = send;
-    if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm)
+
+    if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm) {
         return null;
+    }
 
     const { account } = selectedAccount;
     const { networkType } = account;
@@ -194,23 +198,23 @@ export const ReviewTransaction = ({ decision }: Props) => {
     const matchedFeeLevel = selected.levels.find(
         item => item.feePerUnit === precomposedTx.feePerByte,
     );
+
     if (networkType === 'bitcoin' && matchedFeeLevel) {
         estimateTime = selected.blockTime * matchedFeeLevel.blocks * 60;
     }
 
     return (
         <StyledModal
-            devicePrompt={
+            modalPrompt={
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     steps={outputs.length}
                     activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
                     trezorModel={device.features?.major_version === 1 ? 1 : 2}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
-                    animated
                     onCancel={() => {
                         cancelSignTx();
-                        if (decision) decision.resolve(false);
+                        decision?.resolve(false);
                     }}
                 />
             }

@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { P } from '@firmware-components';
 
-const StyledChechbox = styled(Checkbox)`
+const StyledCheckbox = styled(Checkbox)`
     margin: 16px 0;
 `;
 
@@ -58,13 +58,13 @@ export const CheckSeedStep = ({ onSuccess }: CheckSeedStepProps) => {
             disableConfirmWrapper
             nested
         >
-            <StyledChechbox
+            <StyledCheckbox
                 isChecked={hasSeed}
                 onClick={toggleHasSeed}
                 data-test="@firmware/confirm-seed-checkbox"
             >
                 <P>{checkbox}</P>
-            </StyledChechbox>
+            </StyledCheckbox>
         </OnboardingStepBox>
     );
 };

@@ -44,11 +44,6 @@ const StyledModal = styled(Modal)`
             height: 100%;
         }
     }
-
-    > ${Modal.Content} {
-        justify-content: center;
-        align-items: center;
-    }
 `;
 
 export const Firmware = () => {
@@ -156,12 +151,11 @@ export const Firmware = () => {
     return (
         <StyledModal
             isCancelable={isCancelable}
-            devicePrompt={
+            modalPrompt={
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={device?.features?.major_version === 1 ? 1 : 2}
-                        animated
                     />
                 )
             }

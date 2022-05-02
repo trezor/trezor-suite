@@ -40,22 +40,25 @@ export type ImageProps = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> 
     image: ImageType;
 };
 
+const isPNG = (image: ImageType): image is PngImage => image in PNG_IMAGES;
+const isSVG = (image: ImageType): image is SvgImage => image in SVG_IMAGES;
+
 export const Image = ({ image, ...props }: ImageProps) => {
-    if (image in PNG_IMAGES) {
+    if (isPNG(image)) {
         return (
             <StyledImage
-                src={resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES[image as PngImage]}`)}
-                srcSet={buildSrcSet(PNG_PATH, PNG_IMAGES, image as PngImage)}
+                src={resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES[image]}`)}
+                srcSet={buildSrcSet(PNG_PATH, PNG_IMAGES, image)}
                 {...props}
             />
         );
     }
 
-    if (image in SVG_IMAGES) {
+    if (isSVG(image)) {
         return (
             <StyledImage
-                src={resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES[image as SvgImage]}`)}
-                srcSet={buildSrcSet(SVG_PATH, SVG_IMAGES, image as SvgImage)}
+                src={resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES[image]}`)}
+                srcSet={buildSrcSet(SVG_PATH, SVG_IMAGES, image)}
                 {...props}
             />
         );

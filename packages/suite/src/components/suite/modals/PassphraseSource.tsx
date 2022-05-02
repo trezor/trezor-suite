@@ -1,15 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice } from '@trezor/components';
-import { Modal } from '@suite-components';
+import { H1, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
 import { useActions } from '@suite-hooks';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import type { TrezorDevice } from '@suite-types';
+import { DevicePromptModal } from '@suite-components/Modal/DevicePromptModal';
 
-const StyledModal = styled(Modal)`
+const StyledDevicePromptModal = styled(DevicePromptModal)`
     width: 360px;
+`;
+
+const StyledH1 = styled(H1)`
+    margin-top: 12px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface PassphraseSourceProps {
@@ -28,8 +33,15 @@ export const PassphraseSource = ({ device }: PassphraseSourceProps) => {
     const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
 
     return (
-        <StyledModal
-            heading={
+        <StyledDevicePromptModal
+            isPillShown={!authConfirmation}
+            data-test={
+                authConfirmation ? '@modal/confirm-empty-hidden-wallet' : '@modal/passphrase-source'
+            }
+        >
+            <DeviceConfirmImage device={device} />
+
+            <StyledH1>
                 <Translation
                     id={
                         authConfirmation
@@ -38,21 +50,7 @@ export const PassphraseSource = ({ device }: PassphraseSourceProps) => {
                     }
                     values={{ deviceLabel: device.label }}
                 />
-            }
-            devicePrompt={
-                !authConfirmation ? (
-                    <ConfirmOnDevice
-                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        trezorModel={device.features?.major_version === 1 ? 1 : 2}
-                        animated
-                    />
-                ) : null
-            }
-            data-test={
-                authConfirmation ? '@modal/confirm-empty-hidden-wallet' : '@modal/passphrase-source'
-            }
-        >
-            <DeviceConfirmImage device={device} />
-        </StyledModal>
+            </StyledH1>
+        </StyledDevicePromptModal>
     );
 };
