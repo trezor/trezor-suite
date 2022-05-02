@@ -1,7 +1,7 @@
 import DeviceIcon from './images/DeviceIcon';
 import Image, { Props as ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
-import PrerequisitesGuide from './PrerequisitesGuide';
+import { PrerequisitesGuide } from './PrerequisitesGuide';
 import FormattedNumber from './FormattedNumber';
 import { SuiteLayout, LayoutContext } from './SuiteLayout';
 import WelcomeLayout from './WelcomeLayout';
