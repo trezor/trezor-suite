@@ -1,0 +1,31 @@
+{
+    "name": "@trezor/connect-plugin-ethereum",
+    "version": "9.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/connect-plugin-ethereum",
+    "description": "@trezor/connect plugin for Ethereum",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "trezor-connect",
+        "Ethereum"
+    ],
+    "sideEffects": false,
+    "main": "index.js",
+    "peerDependencies": {
+        "@metamask/eth-sig-util": "^4.0.1"
+    },
+    "devDependencies": {
+        "@metamask/eth-sig-util": "^4.0.1"
+    },
+    "scripts": {
+        "test:unit": "jest"
+    }
+}
