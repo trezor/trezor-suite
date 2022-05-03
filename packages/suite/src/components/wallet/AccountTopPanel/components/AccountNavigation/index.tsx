@@ -2,7 +2,7 @@ import React from 'react';
 import { Account } from '@wallet-types';
 import { AppNavigation, AppNavigationItem } from '@suite-components/AppNavigation';
 import { Translation } from '@suite-components/Translation';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { hasSignVerify } from '@wallet-utils/accountUtils';
@@ -23,14 +23,23 @@ export const AccountNavigation = ({
     primaryContent,
     inView,
 }: AccountNavigationProps) => {
+    let showStakingStatus;
     const { goto, openModal } = useActions({
         goto: routerActions.goto,
         openModal: modalActions.openModal,
     });
+    const { trezorPools, isFetchLoading } = useSelector(state => ({
+        trezorPools: state.wallet.cardanoStaking.trezorPools,
+        isFetchLoading: state.wallet.cardanoStaking.isFetchLoading,
+    }));
 
-    let showStakingStatus = false;
     if (account && account.networkType === 'cardano') {
-        showStakingStatus = !account.misc.staking.isActive;
+        const { poolId } = account.misc.staking;
+        const currentPool =
+            poolId && trezorPools ? trezorPools?.pools.find(p => p.bech32 === poolId) : null;
+        const isStakingOnTrezorPool = !isFetchLoading ? !!currentPool : true;
+
+        showStakingStatus = !account.misc.staking.isActive || !isStakingOnTrezorPool;
     }
 
     const ITEMS: AppNavigationItem[] = [

@@ -37,6 +37,11 @@ describe('tor', () => {
                 in: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin/history?date=13-1-2021',
                 out: `http://cdn.${TOR_URLS['trezor.io']}/dynamic/coingecko/api/v3/coins/bitcoin/history?date=13-1-2021`,
             },
+            {
+                desc: 'not valid domain',
+                in: 'aaaa',
+                out: undefined,
+            },
         ];
 
         fixtures.forEach(f => {
