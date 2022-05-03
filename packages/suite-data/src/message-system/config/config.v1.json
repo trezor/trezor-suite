@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2022-04-27T00:00:00+00:00",
-    "sequence": 12,
+    "timestamp": "2022-05-03T00:00:00+00:00",
+    "sequence": 13,
     "actions": [
         {
             "conditions": [
@@ -175,6 +175,22 @@
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "b0a7e13c884b2fb4f06a45ba474dbb6f94da3357",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "2.4.4",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
                             "vendor": "*"
                         }
                     ]
