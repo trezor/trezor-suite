@@ -1,17 +1,21 @@
 import { BlockchainBlock } from '@trezor/connect';
 import { CARDANO_STAKING } from '@wallet-actions/constants';
+import { PendingStakeTx, PoolsResponse } from '@wallet-types/cardanoStaking';
+import { CARDANO_STAKE_POOL_TESTNET, CARDANO_STAKE_POOL_MAINNET } from '@suite-constants/urls';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import { PendingStakeTx } from '@wallet-types/cardanoStaking';
 import { getUnixTime } from 'date-fns';
 import { isPending } from '@wallet-utils/transactionUtils';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@wallet-constants/sendForm';
 
 export type CardanoStakingAction =
     | { type: typeof CARDANO_STAKING.ADD_PENDING_STAKE_TX; pendingStakeTx: PendingStakeTx }
-    | { type: typeof CARDANO_STAKING.REMOVE_PENDING_STAKE_TX; accountKey: string };
+    | { type: typeof CARDANO_STAKING.REMOVE_PENDING_STAKE_TX; accountKey: string }
+    | { type: typeof CARDANO_STAKING.SET_TREZOR_POOLS; trezorPools: PoolsResponse }
+    | { type: typeof CARDANO_STAKING.SET_FETCH_ERROR; error: boolean }
+    | { type: typeof CARDANO_STAKING.SET_FETCH_LOADING; loading: boolean };
 
 export const getPendingStakeTx =
     (account: Account) => (_dispatch: Dispatch, getState: GetState) => {
@@ -93,3 +97,37 @@ export const validatePendingStakeTxOnTx =
             dispatch(setPendingStakeTx(account, null));
         }
     };
+
+export const fetchTrezorPools = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { network } = getState().wallet.selectedAccount;
+
+    dispatch({
+        type: CARDANO_STAKING.SET_FETCH_LOADING,
+        loading: true,
+    });
+    // Fetch ID of Trezor stake pool that will be used in delegation transaction
+    const url = network?.testnet ? CARDANO_STAKE_POOL_TESTNET : CARDANO_STAKE_POOL_MAINNET;
+
+    try {
+        const response = await fetch(url, { credentials: 'same-origin' });
+        const responseJson = (await response.json()) as PoolsResponse;
+
+        if (!responseJson || !('next' in responseJson) || !('pools' in responseJson)) {
+            console.error('Invalid data format');
+        }
+
+        dispatch({
+            type: CARDANO_STAKING.SET_TREZOR_POOLS,
+            trezorPools: responseJson,
+        });
+    } catch (err) {
+        dispatch({
+            type: CARDANO_STAKING.SET_FETCH_ERROR,
+            error: true,
+        });
+    }
+    dispatch({
+        type: CARDANO_STAKING.SET_FETCH_LOADING,
+        loading: false,
+    });
+};

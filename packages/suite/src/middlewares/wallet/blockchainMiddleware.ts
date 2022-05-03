@@ -1,9 +1,18 @@
 import { MiddlewareAPI } from 'redux';
 import { BLOCKCHAIN } from '@trezor/connect';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
+import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import { validatePendingTxOnBlock } from '@wallet-actions/cardanoStakingActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { getUnixTime } from 'date-fns';
+
+const fetchTrezorPools = (api: MiddlewareAPI<Dispatch, AppState>) => {
+    const networkType = api.getState().wallet.selectedAccount.network?.networkType;
+
+    if (networkType === 'cardano') {
+        api.dispatch(cardanoStakingActions.fetchTrezorPools());
+    }
+};
 
 const blockchainMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -15,6 +24,7 @@ const blockchainMiddleware =
         switch (action.type) {
             case BLOCKCHAIN.CONNECT:
                 api.dispatch(blockchainActions.onConnect(action.payload.coin.shortcut));
+                fetchTrezorPools(api);
                 break;
             case BLOCKCHAIN.BLOCK:
                 api.dispatch(blockchainActions.updateFeeInfo(action.payload.coin.shortcut));

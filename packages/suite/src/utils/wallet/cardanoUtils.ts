@@ -240,8 +240,6 @@ export const getStakePoolForDelegation = (
     trezorPools: NonNullable<PoolsResponse>,
     accountBalance: string,
 ) => {
-    // sorted from least saturated to most
-    trezorPools.pools.sort((a, b) => new BigNumber(a.live_stake).comparedTo(b.live_stake));
     let pool = trezorPools.next;
     if (isPoolOverSaturated(pool, accountBalance)) {
         // eslint-disable-next-line prefer-destructuring

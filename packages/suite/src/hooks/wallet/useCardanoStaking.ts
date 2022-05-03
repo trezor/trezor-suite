@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
-import { ActionAvailability, CardanoStaking, PoolsResponse } from '@wallet-types/cardanoStaking';
+import { useState, useCallback, useMemo } from 'react';
+import { ActionAvailability, CardanoStaking } from '@wallet-types/cardanoStaking';
 import { SUITE } from '@suite-actions/constants';
 import trezorConnect, { PROTO } from '@trezor/connect';
 import { useActions, useSelector } from '@suite-hooks';
@@ -19,9 +19,8 @@ import {
     loadCardanoLib,
     getDerivationType,
 } from '@wallet-utils/cardanoUtils';
-import { getNetwork, isTestnet } from '@wallet-utils/accountUtils';
+import { isTestnet } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
-import { CARDANO_STAKE_POOL_TESTNET, CARDANO_STAKE_POOL_MAINNET } from '@suite-constants/urls';
 
 const getDeviceAvailability = (
     device: AppState['suite']['device'],
@@ -63,21 +62,23 @@ export const useCardanoStaking = (): CardanoStaking => {
         throw Error('useCardanoStaking used for other network');
     }
 
-    const { device, locks, pendingStakeTxs } = useSelector(state => ({
-        device: state.suite.device,
-        locks: state.suite.locks,
-        pendingStakeTxs: state.wallet.cardanoStaking.pendingTx,
-    }));
+    const { device, locks, pendingStakeTxs, trezorPools, isFetchLoading, isFetchError } =
+        useSelector(state => ({
+            device: state.suite.device,
+            locks: state.suite.locks,
+            pendingStakeTxs: state.wallet.cardanoStaking.pendingTx,
+            trezorPools: state.wallet.cardanoStaking.trezorPools,
+            isFetchLoading: state.wallet.cardanoStaking.isFetchLoading,
+            isFetchError: state.wallet.cardanoStaking.isFetchError,
+        }));
     const { addToast, setPendingStakeTx, addFakePendingTx } = useActions({
         addToast: notificationActions.addToast,
         setPendingStakeTx: cardanoStakingActions.setPendingStakeTx,
         addFakePendingTx: transactionActions.addFakePendingTx,
     });
-    const [trezorPools, setTrezorPools] = useState<PoolsResponse>(undefined);
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
     const [fee, setFee] = useState<undefined | string>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
-    const [isFetching, setIsFetching] = useState<boolean>(false);
     const [delegatingAvailable, setDelegatingAvailable] = useState<
         CardanoStaking['delegatingAvailable']
     >({
@@ -89,10 +90,15 @@ export const useCardanoStaking = (): CardanoStaking => {
         status: false,
     });
     const [error, setError] = useState<string | undefined>(undefined);
-
-    const network = getNetwork(account.symbol);
     const stakingPath = getStakingPath(account);
     const pendingStakeTx = pendingStakeTxs.find(tx => tx.accountKey === account.key);
+
+    if (isFetchError) {
+        setDelegatingAvailable({
+            status: false,
+            reason: 'POOL_ID_FETCH_FAIL',
+        });
+    }
 
     const {
         rewards: rewardsAmount,
@@ -105,11 +111,9 @@ export const useCardanoStaking = (): CardanoStaking => {
         registeredPoolId && trezorPools
             ? trezorPools?.pools.find(p => p.bech32 === registeredPoolId)
             : null;
-    const isStakingOnTrezorPool = !isFetching ? !!currentPool : true; // fallback to true to prevent flickering in UI while we fetch the data
+    const isStakingOnTrezorPool = !isFetchLoading ? !!currentPool : true; // fallback to true to prevent flickering in UI while we fetch the data
     const isCurrentPoolOversaturated = currentPool ? isPoolOverSaturated(currentPool) : false;
-
     const changeAddress = useMemo(() => getChangeAddressParameters(account), [account]);
-
     const prepareTxPlan = useCallback(
         (action: 'delegate' | 'withdrawal') => {
             if (!changeAddress) return null;
@@ -144,7 +148,6 @@ export const useCardanoStaking = (): CardanoStaking => {
         },
         [
             changeAddress,
-            trezorPools,
             account.balance,
             account.descriptor,
             account.utxo,
@@ -153,6 +156,7 @@ export const useCardanoStaking = (): CardanoStaking => {
             isStakingActive,
             rewardsAmount,
             stakeAddress,
+            trezorPools,
         ],
     );
 
@@ -197,7 +201,6 @@ export const useCardanoStaking = (): CardanoStaking => {
             if (!composeRes) return;
 
             const { trezorUtils } = await loadCardanoLib();
-
             const { txPlan, certificates, withdrawals, changeAddress } = composeRes;
 
             if (!txPlan || txPlan.type !== 'final') return;
@@ -294,36 +297,6 @@ export const useCardanoStaking = (): CardanoStaking => {
     const delegate = useCallback(() => action('delegate'), [action]);
     const withdraw = useCallback(() => action('withdrawal'), [action]);
 
-    useEffect(() => {
-        // Fetch ID of Trezor stake pool that will be used in delegation transaction
-        const fetchTrezorPoolId = async () => {
-            setLoading(true);
-            setIsFetching(true);
-            const url = network?.testnet ? CARDANO_STAKE_POOL_TESTNET : CARDANO_STAKE_POOL_MAINNET;
-            try {
-                const response = await fetch(url, { credentials: 'same-origin' });
-                const responseJson = (await response.json()) as PoolsResponse;
-
-                if (!responseJson || !('next' in responseJson) || !('pools' in responseJson)) {
-                    throw Error('Invalid data format');
-                }
-                setTrezorPools(responseJson);
-                setLoading(false);
-            } catch (err) {
-                setDelegatingAvailable({
-                    status: false,
-                    reason: 'POOL_ID_FETCH_FAIL',
-                });
-            }
-            setLoading(false);
-            setIsFetching(false);
-        };
-
-        if (!trezorPools) {
-            fetchTrezorPoolId();
-        }
-    }, [setTrezorPools, network, trezorPools]);
-
     return {
         deposit,
         fee,
@@ -338,10 +311,10 @@ export const useCardanoStaking = (): CardanoStaking => {
         address: stakeAddress,
         isStakingOnTrezorPool,
         isCurrentPoolOversaturated,
-        trezorPools,
         delegate,
         withdraw,
         calculateFeeAndDeposit,
+        trezorPools,
         error,
     };
 };

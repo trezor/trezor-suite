@@ -3,8 +3,22 @@ import { CARDANO, PROTO } from '@trezor/connect';
 import * as fixtures from '../__fixtures__/cardanoUtils';
 
 describe('cardano utils', () => {
+    let dateSpy: any;
+    beforeAll(() => {
+        dateSpy = jest.spyOn(Date.prototype, 'getTime').mockReturnValue(1653394389512);
+    });
+
+    afterAll(() => {
+        dateSpy.mockRestore();
+    });
+
     expect(cardanoUtils.getProtocolMagic('ada')).toEqual(CARDANO.PROTOCOL_MAGICS.mainnet);
     expect(cardanoUtils.getProtocolMagic('tada')).toEqual(1097911063);
+
+    expect(cardanoUtils.getDerivationType('normal')).toEqual(1);
+    expect(cardanoUtils.getDerivationType('legacy')).toEqual(2);
+    expect(cardanoUtils.getDerivationType('ledger')).toEqual(0);
+    expect(cardanoUtils.getDerivationType(undefined)).toEqual(1);
 
     expect(cardanoUtils.getNetworkId('ada')).toEqual(CARDANO.NETWORK_IDS.mainnet);
     expect(cardanoUtils.getNetworkId('tada')).toEqual(CARDANO.NETWORK_IDS.testnet);
@@ -143,5 +157,9 @@ describe('cardano utils', () => {
                 cardanoUtils.getDelegationCertificates(f.stakingPath, f.poolHex, f.shouldRegister),
             ).toMatchObject(f.result);
         });
+    });
+
+    it(`getTTL`, () => {
+        expect(cardanoUtils.getTtl(true)).toBe(59032373);
     });
 });
