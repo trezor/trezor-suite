@@ -1,12 +1,13 @@
 {
     "extends": "../../tsconfig.json",
-    "compilerOptions": { "outDir": "./libDev" },
-    "include": ["."],
-    "references": [
-        { "path": "../blockchain-link" },
-        { "path": "../connect-common" },
-        { "path": "../rollout" },
-        { "path": "../transport" },
-        { "path": "../utxo-lib" }
-    ]
+    "compilerOptions": {
+        "outDir": "./libDev",
+        "types": ["web"]
+    },
+    "references": [{ "path": "../connect" }],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    }
 }
