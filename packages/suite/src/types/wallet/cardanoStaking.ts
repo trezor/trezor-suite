@@ -12,12 +12,10 @@ export interface StakePool {
     saturation: string;
 }
 
-export type PoolsResponse =
-    | {
-          next: StakePool;
-          pools: StakePool[];
-      }
-    | undefined;
+export type PoolsResponse = {
+    next: StakePool;
+    pools: StakePool[];
+};
 
 export type ActionAvailability =
     | {
@@ -48,7 +46,7 @@ export type CardanoStaking = {
     registeredPoolId: string | null;
     isStakingOnTrezorPool: boolean | null;
     isCurrentPoolOversaturated: boolean;
-    trezorPools: PoolsResponse;
+    trezorPools: PoolsResponse | undefined;
     isActive: boolean;
     rewards: string;
     delegate(): void;

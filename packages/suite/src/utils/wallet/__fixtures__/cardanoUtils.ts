@@ -551,7 +551,7 @@ export const getStakePoolForDelegation = [
         },
     },
     {
-        description: 'should pick pool abc',
+        description: 'should pick pool a',
         trezorPools: {
             next: {
                 hex: 'a',
@@ -582,9 +582,9 @@ export const getStakePoolForDelegation = [
         },
         accountBalance: '10000000',
         result: {
-            hex: 'abc',
-            bech32: 'pool1abc',
-            live_stake: '10000000',
+            hex: 'a',
+            bech32: 'pool1a',
+            live_stake: '40000000',
             saturation: '60000000',
         },
     },
