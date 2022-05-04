@@ -15,6 +15,7 @@ export { useThemeContext } from './useThemeContext';
 export { useOnboarding } from './useOnboarding';
 export { useRecovery } from './useRecovery';
 export { useExternalLink } from './useExternalLink';
+export { useFilteredModal } from './useFilteredModal';
 
 // replaced in suite-native
 export { useLocales } from '@suite-hooks/useLocales';
