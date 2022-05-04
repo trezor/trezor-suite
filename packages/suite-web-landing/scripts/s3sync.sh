@@ -1,5 +1,4 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -i bash -p awscli2
+#!/usr/bin/env bash
 
 # Before first use:
 # Install awscli (pip install awscli)
