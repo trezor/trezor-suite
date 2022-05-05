@@ -8,7 +8,7 @@ export const spacings = {
 export type Spacings = typeof spacings;
 export type Spacing = keyof typeof spacings;
 
-export const nativeSpacings: Record<Spacing, number> = {
+export const nativeSpacings = {
     sm: 8,
     md: 16,
     lg: 24,

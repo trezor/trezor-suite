@@ -36,3 +36,8 @@ Best way how to debug app is download [Flipper](https://fbflipper.com).
 ## Dependencies, version locks
 
 1. `simple-plist` - some internal dependency of RN want to use version `1.3.0`, but in this version is some error that dependabot doesn't like. Error is not valid for us, but adding `1.3.1` to dev dependencies will fix this warning.
+
+## Updating fonts
+
+1. Place updated fonts to `packages/theme/fonts`
+2. Run `yarn react-native link`
