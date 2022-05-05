@@ -14,6 +14,7 @@
         "pods": "npx pod-install"
     },
     "dependencies": {
+        "@trezor/atoms": "*",
         "@trezor/transport-native": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",

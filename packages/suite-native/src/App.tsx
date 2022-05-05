@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
