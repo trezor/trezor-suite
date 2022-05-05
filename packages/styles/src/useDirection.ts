@@ -1,6 +1,7 @@
 import { useContext, useMemo } from 'react';
-import { DirectionUtils } from './types';
+
 import { DirectionContext } from './contexts';
+import { DirectionUtils } from './types';
 
 export const useDirection = (): DirectionUtils => {
     const direction = useContext(DirectionContext);

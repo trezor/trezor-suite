@@ -1,7 +1,8 @@
-import { assignStyle } from 'css-in-js-utils';
 import { A, G, D } from '@mobily/ts-belt';
-import { StyleObject } from '../types';
+import { assignStyle } from 'css-in-js-utils';
+
 import { breakpointMediaQueries, breakpoints } from '../breakpoints';
+import { StyleObject } from '../types';
 
 const intersection = (list1: readonly any[], list2: readonly any[]) => {
     const toKeep = new Set();

@@ -1,9 +1,11 @@
 import React, { ReactNode } from 'react';
+
+import { NativeTheme, Theme } from '@trezor/theme';
 import { IRenderer } from 'fela';
 import { RendererProvider, ThemeProvider } from 'react-fela';
-import { NativeTheme, Theme } from '@trezor/theme';
-import { Direction } from './types';
+
 import { DirectionContext } from './contexts';
+import { Direction } from './types';
 
 export interface StylesProviderProps {
     children: ReactNode;

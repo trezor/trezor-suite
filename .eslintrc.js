@@ -36,15 +36,6 @@ module.exports = {
         'packages/suite-data/files/*',
         'packages/transport/scripts/protobuf-patches/*',
     ],
-    overrides: [
-        {
-            files: ['**/*.js'],
-            rules: {
-                // JS files are usually configs or scripts where require is OK
-                '@typescript-eslint/no-var-requires': 'off',
-            },
-        },
-    ],
     rules: {
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
@@ -64,13 +55,10 @@ module.exports = {
             },
         ],
         'react/jsx-indent': [2, 4],
-        // I believe shadowing is a nice language feature.
-        'no-shadow': 'off',
-        'import/order': 'off',
-        // Does not work with TypeScript export type.
-        'import/prefer-default-export': 'off',
-        // Does not work with Babel react-native to react-native-web
-        'import/no-unresolved': 'off',
+        'sort-imports': 'off', // disabled import/order rule in favor of import/order rule
+        'import/prefer-default-export': 'off', // Does not work with TypeScript export type.
+        'import/default': 'error',
+        'import/export': 'error',
         'import/extensions': [
             'error',
             'never',
@@ -82,7 +70,14 @@ module.exports = {
                 },
             },
         ],
-        'import/no-extraneous-dependencies': 'off',
+        // all dependencies must be in corresponding package.json except test files
+        'import/no-extraneous-dependencies': [
+            'error',
+            {
+                // add scripts/ folder
+                devDependencies: ['**/*.test.{tsx,ts,js}'],
+            },
+        ],
         'import/no-cycle': 'error',
         'import/no-anonymous-default-export': [
             'error',
@@ -92,6 +87,41 @@ module.exports = {
                 allowObject: true,
             },
         ],
+        'import/namespace': 'off',
+        'import/newline-after-import': 'error',
+        'import/no-absolute-path': 'error',
+        'import/no-amd': 'error',
+        'import/no-duplicates': 'error',
+        'import/no-mutable-exports': 'error',
+        'import/no-named-as-default-member': 'error',
+        'import/no-named-default': 'error',
+        'import/no-self-import': 'error',
+        'import/no-unresolved': 'off', // TS will check this
+        'import/order': [
+            'error',
+            {
+                groups: ['builtin', 'external', 'internal'],
+                pathGroups: [
+                    {
+                        pattern: 'react?(-native)',
+                        group: 'external',
+                        position: 'before',
+                    },
+                    {
+                        pattern: '@trezor/.*',
+                        group: 'external',
+                        position: 'before',
+                    },
+                ],
+                pathGroupsExcludedImportTypes: ['react', '@trezor.*'],
+                'newlines-between': 'always',
+                alphabetize: {
+                    order: 'asc',
+                    caseInsensitive: true,
+                },
+            },
+        ],
+        'import/no-webpack-loader-syntax': 'error',
         // We have types.
         'react/prop-types': 'off',
         // It's fine.
@@ -106,7 +136,7 @@ module.exports = {
         'no-plusplus': 'off',
         'no-return-assign': 'off',
         'consistent-return': 'off',
-        'no-console': 'off',
+        'no-console': ['error', { allow: ['warn', 'error'] }],
         // TSC checks it.
         '@typescript-eslint/no-unused-vars': 'off',
         'no-undef': 'off',
@@ -140,5 +170,87 @@ module.exports = {
         'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': ['error'],
         'require-await': ['error'],
+        'no-nested-ternary': 'error', // disallow nested ternary expressions
+        'eol-last': 'error',
+        // add new line before return
     },
+    overrides: [
+        {
+            files: ['**/*.js'],
+            rules: {
+                // JS files are usually configs or scripts where require is OK
+                '@typescript-eslint/no-var-requires': 'off',
+                'import/no-unresolved': 'error',
+            },
+        },
+        {
+            // we are using explicit blacklist because this will enforce new rules in newly created packages
+            files: [
+                'packages/blockchain-link/**/*',
+                'packages/components/**/*',
+                'packages/connect-common/**/*',
+                'packages/connect-explorer/**/*',
+                'packages/connect-iframe/**/*',
+                'packages/integration-tests/**/*',
+                'packages/news-api/**/*',
+                'packages/request-manager/**/*',
+                'packages/rollout/**/*',
+                'packages/suite/**/*',
+                'packages/suite-build/**/*',
+                'packages/suite-data/**/*',
+                'packages/suite-desktop/**/*',
+                'packages/suite-desktop-api/**/*',
+                'packages/suite-storage/**/*',
+                'packages/suite-web-landing/**/*',
+                'packages/suite-web/**/*',
+                'packages/transport/**/*',
+                'packages/utxo-lib/**/*',
+            ],
+            rules: {
+                'no-shadow': 'off',
+                'import/order': 'off',
+                'import/no-extraneous-dependencies': 'off',
+                // TSC checks it.
+                '@typescript-eslint/no-unused-vars': 'off',
+                'no-undef': 'off',
+                'react/jsx-no-undef': 'off',
+            },
+        },
+        // {
+        //     files: ['*.test.*'],
+        //     rules: {
+        //         'jest/expect-expect': 'error',
+        //         'jest/prefer-lowercase-title': ['error', { ignore: ['describe'] }],
+        //         'jest/no-alias-methods': 'error',
+        //         'jest/no-commented-out-tests': 'error',
+        //         'jest/no-conditional-expect': 'error',
+        //         'jest/no-deprecated-functions': 'error',
+        //         'jest/no-disabled-tests': 'error',
+        //         'jest/no-done-callback': 'error',
+        //         'jest/no-duplicate-hooks': 'error',
+        //         'jest/no-export': 'error',
+        //         'jest/no-focused-tests': 'error',
+        //         'jest/no-identical-title': 'error',
+        //         'jest/no-if': 'error',
+        //         'jest/no-interpolation-in-snapshots': 'error',
+        //         'jest/no-jasmine-globals': 'error',
+        //         'jest/no-jest-import': 'error',
+        //         'jest/no-mocks-import': 'error',
+        //         'jest/no-standalone-expect': 'error',
+        //         'jest/no-test-prefixes': 'error',
+        //         'jest/no-test-return-statement': 'error',
+        //         'jest/prefer-hooks-on-top': 'error',
+        //         'jest/prefer-spy-on': 'error',
+        //         'jest/prefer-to-be-null': 'error',
+        //         'jest/prefer-to-be-undefined': 'error',
+        //         'jest/prefer-to-contain': 'error',
+        //         'jest/prefer-to-have-length': 'error',
+        //         'jest/prefer-todo': 'error',
+        //         'jest/valid-describe': 'error',
+        //         'jest/valid-expect-in-promise': 'error',
+        //         'jest/valid-expect': 'error',
+        //         'jest/valid-title': 'error',
+        //     },
+        // },
+    ],
 };

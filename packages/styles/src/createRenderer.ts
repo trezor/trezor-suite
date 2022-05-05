@@ -1,10 +1,10 @@
 import { createRenderer as createFelaRenderer, TPlugin } from 'fela';
-import felaPluginUnit from 'fela-plugin-unit';
+import felaEnforceLonghands from 'fela-enforce-longhands';
 import felaPluginEmbedded from 'fela-plugin-embedded';
 import felaPluginMultipleSelectors from 'fela-plugin-multiple-selectors';
-import felaSortMediaQueryMobileFirst from 'fela-sort-media-query-mobile-first';
 import felaPluginPlaceholderPrefixer from 'fela-plugin-placeholder-prefixer';
-import felaEnforceLonghands from 'fela-enforce-longhands';
+import felaPluginUnit from 'fela-plugin-unit';
+import felaSortMediaQueryMobileFirst from 'fela-sort-media-query-mobile-first';
 
 import { makeResponsiveValuePlugin } from './plugins/responsiveValues';
 import { makeTypedSelectorsPlugin } from './plugins/typedSelectors';

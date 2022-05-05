@@ -1,12 +1,14 @@
-import fsExtra from 'fs-extra';
-import fs from 'fs';
 import { execSync } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import sortPackageJson from 'sort-package-json';
-import templatePackageJson from './package-template/package.json';
-import prettier from 'prettier';
+
 import chalk from 'chalk';
+import fsExtra from 'fs-extra';
+import prettier from 'prettier';
+import sortPackageJson from 'sort-package-json';
+
+import templatePackageJson from './package-template/package.json';
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

@@ -21,43 +21,6 @@ module.exports = {
         'no-process-exit': 0, // disallow process.exit() (on by default in the node environment)
         'no-restricted-modules': 2, // restrict usage of specified node modules (off by default)
         'no-sync': 0, // disallow use of synchronous methods (off by default)
-
-        // React-Hooks Plugin
-        // The following rules are made available via `eslint-plugin-react-hooks`
-        'react-hooks/rules-of-hooks': 2,
-        'react-hooks/exhaustive-deps': 2,
-        'eol-last': 2,
-
-        // Code style
-        'import/order': [
-            'error',
-            {
-                groups: ['builtin', 'external', 'internal'],
-                pathGroups: [
-                    {
-                        pattern: 'react?(-native)',
-                        group: 'external',
-                        position: 'before',
-                    },
-                    {
-                        pattern: '@trezor/.*',
-                        group: 'external',
-                        position: 'before',
-                    },
-                ],
-                pathGroupsExcludedImportTypes: ['react', '@trezor.*'],
-                'newlines-between': 'always',
-                alphabetize: {
-                    order: 'asc',
-                    caseInsensitive: true,
-                },
-            },
-        ],
-        'sort-imports': 0, // disabled import/order rule in favor of import/order rule
-        'no-nested-ternary': 2, // disallow nested ternary expressions
-
-        // Dependencies
-        'import/no-extraneous-dependencies': 2, // all dependencies must be in corresponding package.json
     },
     globals: {
         __DEV__: 'readonly',

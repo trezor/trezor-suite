@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
+// eslint-disable-next-line import/no-unresolved
 import { collectImportsSync } from 'babel-collect-imports';
 import packageJSON from '../package.json';
 

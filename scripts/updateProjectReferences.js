@@ -1,11 +1,12 @@
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
-import prettier from 'prettier';
+
+import chalk from 'chalk';
 import minimatch from 'minimatch';
+import prettier from 'prettier';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import chalk from 'chalk';
 
 (async () => {
     const { argv } = yargs(hideBin(process.argv))
@@ -41,7 +42,7 @@ import chalk from 'chalk';
         .forEach(workspaceName => {
             const workspace = workspaces[workspaceName];
 
-            if (ignoreGlobs.some(path => minimatch(workspace.location, path))) {
+            if (ignoreGlobs.some(ignorePath => minimatch(workspace.location, ignorePath))) {
                 return;
             }
 
@@ -110,7 +111,7 @@ import chalk from 'chalk';
 
             workspaceConfig.references = nextWorkspaceReferences;
 
-            if (!readOnlyGlobs.some(path => minimatch(workspace.location, path))) {
+            if (!readOnlyGlobs.some(readOnlyPath => minimatch(workspace.location, readOnlyPath))) {
                 fs.writeFileSync(workspaceConfigPath, serializeConfig(workspaceConfig));
             }
         });

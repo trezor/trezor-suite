@@ -1,7 +1,12 @@
 import { useCallback, useContext, useMemo } from 'react';
-import { RendererContext, ThemeContext } from 'react-fela';
+
+import { Theme, NativeTheme } from '@trezor/theme';
 import { darken, lighten, transparentize } from 'polished';
+import { RendererContext, ThemeContext } from 'react-fela';
+
 import { breakpointMediaQueries } from './breakpoints';
+import { mediaQueries } from './mediaQueries';
+import { processStyles, processNativeStyles } from './processStyles';
 import {
     NativeStyle,
     NativeStyleObject,
@@ -11,11 +16,8 @@ import {
     StyleOrStylesParam,
     StyleUtils,
 } from './types';
-import { Theme, NativeTheme } from '@trezor/theme';
-import { multiply, getValueAndUnit, sum } from './utils';
-import { processStyles, processNativeStyles } from './processStyles';
-import { mediaQueries } from './mediaQueries';
 import { useDirection } from './useDirection';
+import { multiply, getValueAndUnit, sum } from './utils';
 
 const sharedUtils = {
     darken,
