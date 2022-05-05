@@ -89,17 +89,20 @@ export const Switch = ({
         isChecked={isChecked}
         isDisabled={isDisabled}
         isSmall={isSmall}
-        onClick={() => onChange(isChecked)}
+        onClick={e => {
+            e.preventDefault();
+            onChange(!isChecked);
+        }}
         className={className}
         data-test={dataTest}
     >
-        <Handle isSmall={isSmall} isChecked={isChecked} />
+        <Handle isSmall={isSmall} isChecked={isChecked} type="button" />
         <CheckboxInput
             type="checkbox"
             role="switch"
             checked={isChecked}
             disabled={isDisabled}
-            onChange={() => onChange(isChecked)}
+            onChange={() => onChange(!isChecked)}
             aria-checked={isChecked}
         />
     </Container>
