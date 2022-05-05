@@ -35,7 +35,7 @@ export default class WebUsbPlugin {
     usb?: USB;
     version = '';
 
-    init(debug?: boolean) {
+    async init(debug?: boolean) {
         this.debug = !!debug;
         const { usb } = navigator;
         if (!usb) {
