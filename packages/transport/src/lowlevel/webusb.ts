@@ -1,6 +1,7 @@
 /// <reference types="w3c-web-usb" />
 
 import { EventEmitter } from 'events';
+import { LowlevelTransportSharedPlugin } from './sharedPlugin';
 
 const T1HID_VENDOR = 0x534c;
 
@@ -20,7 +21,7 @@ const ENDPOINT_ID = 1;
 const DEBUG_INTERFACE_ID = 1;
 const DEBUG_ENDPOINT_ID = 2;
 
-export default class WebUsbPlugin {
+export default class WebUsbPlugin implements LowlevelTransportSharedPlugin {
     allowsWriteAndEnumerate = true;
     configurationId = CONFIGURATION_ID;
     debug = false;
@@ -35,6 +36,7 @@ export default class WebUsbPlugin {
     usb?: USB;
     version = '';
 
+    // eslint-disable-next-line require-await
     async init(debug?: boolean) {
         this.debug = !!debug;
         const { usb } = navigator;
