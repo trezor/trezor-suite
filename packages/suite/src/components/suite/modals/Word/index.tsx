@@ -8,7 +8,7 @@ const StyledModal = styled(Modal)`
     height: 100%;
 `;
 
-const Word = (props: ModalProps) => (
+export const Word = (props: ModalProps) => (
     <StyledModal
         data-test="@recovery/word"
         heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
@@ -27,5 +27,3 @@ const Word = (props: ModalProps) => (
         />
     </StyledModal>
 );
-
-export default Word;

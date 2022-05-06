@@ -12,7 +12,7 @@ type Props = {
     decision: Extract<UserContextPayload, { type: 'import-transaction' }>['decision'];
 };
 
-const ImportTransaction = ({ onCancel, decision }: Props) => {
+export const ImportTransaction = ({ onCancel, decision }: Props) => {
     // const [mode, setMode] = useState<'upload' | 'form'>('upload'); // TODO: upload or textarea form? (fallback for upload)
     const [delimiter, setDelimiter] = useState<string | undefined>(undefined);
 
@@ -50,5 +50,3 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
         </Modal>
     );
 };
-
-export default ImportTransaction;

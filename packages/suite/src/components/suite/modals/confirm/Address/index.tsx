@@ -54,7 +54,7 @@ type ConfirmAddressProps = {
     onCancel?: () => void;
 };
 
-const ConfirmAddress = ({
+export const ConfirmAddress = ({
     device,
     address,
     symbol,
@@ -119,5 +119,3 @@ const ConfirmAddress = ({
         </StyledModal>
     );
 };
-
-export default ConfirmAddress;

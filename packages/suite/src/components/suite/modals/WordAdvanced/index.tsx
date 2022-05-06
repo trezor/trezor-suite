@@ -24,7 +24,7 @@ interface Props extends ModalProps {
     count: 6 | 9;
 }
 
-const WordAdvanced = ({ count, ...rest }: Props) => (
+export const WordAdvanced = ({ count, ...rest }: Props) => (
     <StyledModal
         heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
         description={<Translation id="TR_ADVANCED_RECOVERY_TEXT" />}
@@ -48,5 +48,3 @@ const WordAdvanced = ({ count, ...rest }: Props) => (
         </ContentWrapper>
     </StyledModal>
 );
-
-export default WordAdvanced;

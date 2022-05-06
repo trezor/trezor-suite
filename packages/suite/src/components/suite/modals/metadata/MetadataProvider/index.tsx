@@ -49,7 +49,7 @@ type MetadataProviderProps = {
     decision: Deferred<boolean>;
 };
 
-const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) => {
+export const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) => {
     const [isLoading, setIsLoading] = useState('');
     // error from authorization popup
     const [error, setError] = useState('');
@@ -133,5 +133,3 @@ const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) => {
         </StyledModal>
     );
 };
-
-export default MetadataProvider;

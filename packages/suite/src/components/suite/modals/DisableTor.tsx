@@ -7,7 +7,7 @@ import { isOnionUrl } from '@suite-utils/tor';
 import { useCustomBackends } from '@settings-hooks/backends';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { setBackend } from '@wallet-actions/blockchainActions';
-import AdvancedCoinSettings from './AdvancedCoinSettings';
+import { AdvancedCoinSettings } from './AdvancedCoinSettings';
 import type { Network } from '@wallet-types';
 import type { UserContextPayload } from '@suite-actions/modalActions';
 

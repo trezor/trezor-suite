@@ -49,7 +49,7 @@ export type Props = {
     provider?: string;
 };
 
-const CoinmarketBuyTerms = ({ decision, onCancel, provider }: Props) => {
+export const CoinmarketBuyTerms = ({ decision, onCancel, provider }: Props) => {
     const [isChecked, setIsChecked] = useState<boolean>(false);
     const providerName = provider || 'unknown provider';
 
@@ -102,5 +102,3 @@ const CoinmarketBuyTerms = ({ decision, onCancel, provider }: Props) => {
         </Modal>
     );
 };
-
-export default CoinmarketBuyTerms;

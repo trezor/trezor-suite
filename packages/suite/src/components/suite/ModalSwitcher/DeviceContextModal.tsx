@@ -10,7 +10,7 @@ import {
     PassphraseSource,
     PassphraseOnDevice,
     ConfirmAction,
-    ConfirmFingerPrint,
+    ConfirmFingerprint,
     Word,
     WordAdvanced,
     ReviewTransaction,
@@ -65,7 +65,7 @@ export const DeviceContextModal = ({
             return <ConfirmAction device={device} renderer={renderer} />;
         }
         case 'ButtonRequest_FirmwareCheck':
-            return <ConfirmFingerPrint device={device} renderer={renderer} />;
+            return <ConfirmFingerprint device={device} renderer={renderer} />;
         // Generic Button requests
         // todo: consider fallback (if windowType.contains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Warning':

@@ -28,7 +28,7 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-const PassphraseDuplicate = ({ device, duplicate }: Props) => {
+export const PassphraseDuplicate = ({ device, duplicate }: Props) => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const { switchDuplicatedDevice, authorizeDevice } = useActions({
@@ -63,5 +63,3 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
         </StyledModal>
     );
 };
-
-export default PassphraseDuplicate;

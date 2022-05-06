@@ -13,7 +13,7 @@ const StyledModal = styled(Modal)`
     width: 360px;
 `;
 
-const PinMismatch = (props: ModalProps) => {
+export const PinMismatch = (props: ModalProps) => {
     const { changePin } = useActions({ changePin: deviceSettingsActions.changePin });
     const onTryAgain = () => {
         changePin({});
@@ -34,5 +34,3 @@ const PinMismatch = (props: ModalProps) => {
         </StyledModal>
     );
 };
-
-export default PinMismatch;

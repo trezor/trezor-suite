@@ -36,7 +36,7 @@ interface Props {
     onCancel: () => void;
 }
 
-const AdvancedCoinSettings = ({ coin, onCancel }: Props) => {
+export const AdvancedCoinSettings = ({ coin, onCancel }: Props) => {
     const network = NETWORKS.find(n => n.symbol === coin);
 
     return network ? (
@@ -66,5 +66,3 @@ const AdvancedCoinSettings = ({ coin, onCancel }: Props) => {
         </Modal>
     ) : null;
 };
-
-export default AdvancedCoinSettings;

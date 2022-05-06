@@ -19,7 +19,7 @@ interface AddTokenProps {
     onCancel: () => void;
 }
 
-const AddToken = ({ onCancel }: AddTokenProps) => {
+export const AddToken = ({ onCancel }: AddTokenProps) => {
     const [contractAddress, setContractAddress] = useState<string>('');
     const [tokenInfo, setTokenInfo] = useState<TokenInfo[] | undefined>(undefined);
     const [isFetching, setIsFetching] = useState(false);
@@ -147,5 +147,3 @@ const AddToken = ({ onCancel }: AddTokenProps) => {
         </Modal>
     );
 };
-
-export default AddToken;

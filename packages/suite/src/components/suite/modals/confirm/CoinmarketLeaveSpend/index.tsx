@@ -19,7 +19,7 @@ export type Props = {
     onCancel: () => void;
 };
 
-const CoinmarketLeaveSpend = ({ onCancel }: Props) => {
+export const CoinmarketLeaveSpend = ({ onCancel }: Props) => {
     const { goto, setShowLeaveModal } = useActions({
         goto: routerActions.goto,
         setShowLeaveModal: coinmarketSellActions.setShowLeaveModal,
@@ -56,5 +56,3 @@ const CoinmarketLeaveSpend = ({ onCancel }: Props) => {
         </Modal>
     );
 };
-
-export default CoinmarketLeaveSpend;

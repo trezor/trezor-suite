@@ -46,7 +46,7 @@ interface XpubProps {
     onCancel: () => void;
 }
 
-const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: XpubProps) => {
+export const ConfirmXpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: XpubProps) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
     const { addNotification } = useActions({
@@ -92,5 +92,3 @@ const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: XpubProps)
         </StyledModal>
     );
 };
-
-export default Xpub;

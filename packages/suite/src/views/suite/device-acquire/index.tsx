@@ -6,7 +6,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { Button } from '@trezor/components';
 import { Translation, DeviceInvalidModeLayout } from '@suite-components';
 
-const Acquire = () => {
+export const DeviceAcquire = () => {
     const { device, isLocked } = useDevice();
     const { acquireDevice } = useActions({
         acquireDevice: suiteActions.acquireDevice,
@@ -26,5 +26,3 @@ const Acquire = () => {
         />
     );
 };
-
-export default Acquire;

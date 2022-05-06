@@ -60,7 +60,7 @@ type TransactionDetailProps = {
     onCancel: () => void;
 };
 
-const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailProps) => {
+export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailProps) => {
     const { blockchain, transactions } = useSelector(state => ({
         blockchain: state.wallet.blockchain[tx.symbol],
         transactions: state.wallet.transactions.transactions,
@@ -185,5 +185,3 @@ const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailProps) =>
         </StyledModal>
     );
 };
-
-export default TransactionDetail;

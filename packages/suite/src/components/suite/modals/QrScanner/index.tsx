@@ -104,7 +104,7 @@ export interface State {
     error: JSX.Element | null;
 }
 
-const QrScanner = ({ onCancel, decision, allowPaste }: Props) => {
+export const QrScanner = ({ onCancel, decision, allowPaste }: Props) => {
     const [readerLoaded, setReaderLoaded] = useState<State['readerLoaded']>(false);
     const [error, setError] = useState<State['error']>(null);
     const [isPasteMode, setPasteMode] = useState(false);
@@ -229,5 +229,3 @@ const QrScanner = ({ onCancel, decision, allowPaste }: Props) => {
         </StyledModal>
     );
 };
-
-export default QrScanner;
