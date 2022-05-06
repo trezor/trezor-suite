@@ -1,14 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice, Backdrop } from '@trezor/components';
+import { ConfirmOnDevice, Backdrop, variables } from '@trezor/components';
 import { Box, BoxProps } from '@onboarding-components';
 import { Translation } from '@suite-components';
 
-const OuterActions = styled.div<{ smallMargin?: boolean }>`
-    display: flex;
-    margin-top: ${props => (props.smallMargin ? '0px' : '40px')};
-    width: 100%;
-    justify-content: center;
+const ConfirmWrapper = styled.div`
+    margin-bottom: 20px;
+    height: 62px;
+    z-index: 1;
 `;
 
 const InnerActions = styled.div`
@@ -18,20 +17,23 @@ const InnerActions = styled.div`
     margin-top: 32px;
 `;
 
-const ConfirmWrapper = styled.div`
-    margin-bottom: 20px;
+const OuterActions = styled.div<{ smallMargin?: boolean }>`
+    display: flex;
+    margin-top: ${({ smallMargin }) => (smallMargin ? '0px' : '20px')};
+    width: 100%;
+    justify-content: center;
     z-index: 1;
     height: 62px;
 `;
 
 const StyledBackdrop = styled(Backdrop)<{ show: boolean }>`
     transition: all 0.3s;
-    z-index: 0;
     opacity: ${({ show }) => (show ? '1' : '0')};
     pointer-events: ${({ show }) => (show ? 'initial' : 'none')};
+    z-index: ${variables.Z_INDEX.BASE};
 `;
 
-interface Props extends BoxProps {
+export interface OnboardingStepBoxProps extends BoxProps {
     innerActions?: React.ReactNode;
     outerActions?: React.ReactNode;
     confirmOnDevice?: number;
@@ -39,7 +41,7 @@ interface Props extends BoxProps {
     nested?: boolean;
 }
 
-const OnboardingStepBox = ({
+export const OnboardingStepBox = ({
     heading,
     description,
     image,
@@ -51,12 +53,12 @@ const OnboardingStepBox = ({
     className,
     children,
     ...rest
-}: Props) => (
+}: OnboardingStepBoxProps) => (
     <>
         <StyledBackdrop show={!!confirmOnDevice && !disableConfirmWrapper} />
         {!disableConfirmWrapper && (
             <ConfirmWrapper data-test="@onboarding/confirm-on-device">
-                {typeof confirmOnDevice === 'number' && (
+                {confirmOnDevice && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={confirmOnDevice === 1 ? 1 : 2}
@@ -65,6 +67,7 @@ const OnboardingStepBox = ({
                 )}
             </ConfirmWrapper>
         )}
+
         <Box image={image} heading={heading} description={description} nested={nested} {...rest}>
             {(children || innerActions) && (
                 <>
@@ -73,9 +76,7 @@ const OnboardingStepBox = ({
                 </>
             )}
         </Box>
+
         {outerActions && <OuterActions smallMargin={nested}>{outerActions}</OuterActions>}
     </>
 );
-
-export default OnboardingStepBox;
-export type { Props as OnboardingStepBoxProps };
