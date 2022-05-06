@@ -65,7 +65,7 @@ type Props =
     | Extract<UserContextPayload, { type: 'review-transaction' }>
     | { type: 'sign-transaction'; decision?: undefined };
 
-const ReviewTransaction = ({ decision }: Props) => {
+export const ReviewTransaction = ({ decision }: Props) => {
     const { device } = useDevice();
     const [detailsOpen, setDetailsOpen] = React.useState(false);
     const { cancelSignTx } = useActions({
@@ -240,5 +240,3 @@ const ReviewTransaction = ({ decision }: Props) => {
         </StyledModal>
     );
 };
-
-export default ReviewTransaction;

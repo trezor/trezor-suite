@@ -34,7 +34,7 @@ const WarningWrapper = styled.div`
  * The third value, `PromptAlways`, is considered an advanced feature that can be
  * set only via command line and trezor-lib.
  */
-const SafetyChecks = ({ onCancel }: ModalProps) => {
+export const SafetyChecks = ({ onCancel }: ModalProps) => {
     const { device, isLocked } = useDevice();
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
     const [level, setLevel] = useState(device?.features?.safety_checks || undefined);
@@ -96,5 +96,3 @@ const SafetyChecks = ({ onCancel }: ModalProps) => {
         </Modal>
     );
 };
-
-export default SafetyChecks;

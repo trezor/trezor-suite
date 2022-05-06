@@ -14,7 +14,7 @@ interface ConfirmActionProps extends ModalProps {
     device: TrezorDevice;
 }
 
-const ConfirmAction = ({ device, ...rest }: ConfirmActionProps) => (
+export const ConfirmAction = ({ device, ...rest }: ConfirmActionProps) => (
     <StyledModal
         devicePrompt={
             <ConfirmOnDevice
@@ -32,5 +32,3 @@ const ConfirmAction = ({ device, ...rest }: ConfirmActionProps) => (
         <DeviceConfirmImage device={device} />
     </StyledModal>
 );
-
-export default ConfirmAction;

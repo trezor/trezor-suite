@@ -45,7 +45,7 @@ type Props = {
     device: TrezorDevice;
 };
 
-const Passphrase = ({ device }: Props) => {
+export const Passphrase = ({ device }: Props) => {
     const [submitted, setSubmitted] = useState(false);
     const devices = useSelector(state => state.devices);
     const actions = useActions({
@@ -156,5 +156,3 @@ const Passphrase = ({ device }: Props) => {
         </SmallModal>
     );
 };
-
-export default Passphrase;

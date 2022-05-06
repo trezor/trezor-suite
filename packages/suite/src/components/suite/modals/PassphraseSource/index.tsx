@@ -20,7 +20,7 @@ interface PassphraseSourceProps {
  * Modal used with model T with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
  * @param {PassphraseSourceProps}
  */
-const PassphraseSource = ({ device }: PassphraseSourceProps) => {
+export const PassphraseSource = ({ device }: PassphraseSourceProps) => {
     const { getDiscoveryAuthConfirmationStatus } = useActions({
         getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
     });
@@ -55,5 +55,3 @@ const PassphraseSource = ({ device }: PassphraseSourceProps) => {
         </StyledModal>
     );
 };
-
-export default PassphraseSource;

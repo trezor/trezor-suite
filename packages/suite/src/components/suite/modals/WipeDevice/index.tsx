@@ -34,7 +34,7 @@ type WipeDeviceProps = {
     onCancel: () => void;
 };
 
-const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
+export const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
     const { wipeDevice } = useActions({ wipeDevice: deviceSettingsActions.wipeDevice });
@@ -80,5 +80,3 @@ const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
         </StyledModal>
     );
 };
-
-export default WipeDevice;

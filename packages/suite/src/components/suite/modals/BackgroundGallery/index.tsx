@@ -12,7 +12,7 @@ type BackgroundGalleryProps = {
     onCancel: () => void;
 };
 
-const BackgroundGallery = ({ device, onCancel }: BackgroundGalleryProps) => (
+export const BackgroundGallery = ({ device, onCancel }: BackgroundGalleryProps) => (
     <StyledModal
         isCancelable
         onCancel={onCancel}
@@ -21,5 +21,3 @@ const BackgroundGallery = ({ device, onCancel }: BackgroundGalleryProps) => (
         <HomescreenGallery device={device} />
     </StyledModal>
 );
-
-export default BackgroundGallery;

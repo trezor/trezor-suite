@@ -20,7 +20,7 @@ interface PassphraseOnDeviceProps {
  * Modal used with model T with legacy firmware as result of 'ButtonRequest_PassphraseType' where passphrase source is requested on device
  * @param {PassphraseOnDeviceProps}
  */
-const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
+export const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
     const { getDiscoveryAuthConfirmationStatus } = useActions({
         getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
     });
@@ -61,5 +61,3 @@ const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
         </StyledModal>
     );
 };
-
-export default PassphraseOnDevice;

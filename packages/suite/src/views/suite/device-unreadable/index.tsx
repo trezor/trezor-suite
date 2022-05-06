@@ -6,7 +6,7 @@ import { Button } from '@trezor/components';
 import { DeviceInvalidModeLayout, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 
-const Index = () => {
+export const DeviceUnreadable = () => {
     const { goto } = useActions({ goto: routerActions.goto });
     return (
         <DeviceInvalidModeLayout
@@ -22,5 +22,3 @@ const Index = () => {
         />
     );
 };
-
-export default Index;

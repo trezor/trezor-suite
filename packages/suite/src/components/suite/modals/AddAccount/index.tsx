@@ -32,7 +32,7 @@ interface Props {
     noRedirect?: boolean;
 }
 
-const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
+export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const { changeAccountVisibility, changeCoinVisibility, goto } = useActions({
         changeAccountVisibility: accountActions.changeAccountVisibility,
         changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
@@ -199,5 +199,3 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
         </StyledModal>
     );
 };
-
-export default AddAccountModal;

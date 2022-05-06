@@ -8,9 +8,9 @@ import {
     FirmwareInitial,
     FirmwareInstallation,
 } from '@firmware-components';
-import DeviceAcquire from '@suite-views/device-acquire';
-import DeviceUnknown from '@suite-views/device-unknown';
-import DeviceUnreadable from '@suite-views/device-unreadable';
+import { DeviceAcquire } from '@suite-views/device-acquire';
+import { DeviceUnknown } from '@suite-views/device-unknown';
+import { DeviceUnreadable } from '@suite-views/device-unreadable';
 import { Translation, Modal } from '@suite-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { useActions, useFirmware, useSelector } from '@suite-hooks';

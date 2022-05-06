@@ -21,7 +21,7 @@ type ConfirmUnverifiedAddressProps = {
     onCancel: () => void;
 };
 
-const ConfirmUnverifiedAddress = ({
+export const ConfirmUnverifiedAddress = ({
     address,
     addressPath,
     onCancel,
@@ -98,5 +98,3 @@ const ConfirmUnverifiedAddress = ({
         </StyledModal>
     );
 };
-
-export default ConfirmUnverifiedAddress;

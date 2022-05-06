@@ -25,7 +25,7 @@ type Props = {
     onCancel: () => void;
 };
 
-const Log = ({ onCancel }: Props) => {
+export const Log = ({ onCancel }: Props) => {
     const htmlElement = createRef<HTMLPreElement>();
 
     const { excludeBalanceRelated } = useSelector(state => state.log);
@@ -97,5 +97,3 @@ const Log = ({ onCancel }: Props) => {
         </Modal>
     );
 };
-
-export default Log;

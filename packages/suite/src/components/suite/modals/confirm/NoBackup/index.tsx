@@ -16,7 +16,7 @@ interface ConfirmNoBackupProps extends ModalProps {
     onCreateBackup: () => void;
 }
 
-const ConfirmNoBackup = ({
+export const ConfirmNoBackup = ({
     onReceiveConfirmation,
     onCreateBackup,
     ...rest
@@ -50,5 +50,3 @@ const ConfirmNoBackup = ({
         </ImageWrapper>
     </StyledModal>
 );
-
-export default ConfirmNoBackup;
