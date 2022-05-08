@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
-import { Input, useTheme, variables, Icon, Button } from '@trezor/components';
+import { Input, useTheme, Icon, Button, Tooltip } from '@trezor/components';
 import { AddressLabeling, Translation, ReadMoreLink, MetadataLabeling } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
@@ -17,35 +17,24 @@ import {
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
-import ConvertAddress from './components/Convert';
+import { ConvertAddress } from './components/ConvertAddress';
 import type { Account } from '@wallet-types';
 import type { Output } from '@wallet-types/sendForm';
 
-const Label = styled.div`
+const Text = styled.span`
     display: flex;
-    justify-content: space-between;
     align-items: center;
-`;
 
-const Left = styled.div`
-    display: flex;
-`;
-
-const Text = styled.div`
-    margin-right: 3px;
-`;
-
-const Remove = styled.div`
-    display: flex;
-    cursor: pointer;
-    font-size: ${variables.FONT_SIZE.TINY};
+    > div {
+        margin-left: 4px;
+    }
 `;
 
 const StyledIcon = styled(Icon)`
     display: flex;
 `;
 
-interface Props {
+interface AddressProps {
     outputId: number;
     outputsCount: number;
     output: Partial<Output>;
@@ -53,13 +42,19 @@ interface Props {
 
 const parseQrData = (uri: string, symbol: Account['symbol']) => {
     const protocol = getProtocolInfo(uri);
-    if (protocol?.scheme === PROTOCOL_SCHEME.BITCOIN)
+
+    if (protocol?.scheme === PROTOCOL_SCHEME.BITCOIN) {
         return { address: protocol.address, amount: protocol.amount };
-    if (isAddressValid(uri, symbol)) return { address: uri };
+    }
+
+    if (isAddressValid(uri, symbol)) {
+        return { address: uri };
+    }
+
     return {};
 };
 
-const Address = ({ output, outputId, outputsCount }: Props) => {
+export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const theme = useTheme();
     const { device } = useDevice();
     const {
@@ -75,6 +70,7 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
         setDraftSaveRequest,
     } = useSendFormContext();
     const { openQrModal } = useActions({ openQrModal: scanQrRequest });
+
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs[${outputId}].address`;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
@@ -84,10 +80,94 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
     const label = watch(`outputs[${outputId}].label`, '');
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
+    const inputState = getInputState(addressError, addressValue);
+
+    const handleQrClick = useCallback(async () => {
+        const uri = await openQrModal();
+
+        if (!uri) {
+            return;
+        }
+
+        const { address, amount } = parseQrData(uri, symbol);
+
+        if (!address) {
+            return;
+        }
+
+        setValue(inputName, address, { shouldValidate: true });
+
+        if (amount) {
+            setValue(`outputs[${outputId}].amount`, amount, {
+                shouldValidate: true,
+            });
+            // if amount is set compose by amount
+            composeTransaction(`outputs[${outputId}].amount`);
+        } else {
+            // otherwise compose by address
+            composeTransaction(inputName);
+        }
+    }, [composeTransaction, inputName, openQrModal, outputId, setValue, symbol]);
+
+    const validateAddress = (value: string) => {
+        if (!isAddressValid(value, symbol)) {
+            const addressDeprecatedUrl = isAddressDeprecated(value, symbol);
+
+            if (addressDeprecatedUrl) {
+                return (
+                    <ReadMoreLink
+                        message="RECIPIENT_FORMAT_DEPRECATED"
+                        url={addressDeprecatedUrl}
+                    />
+                );
+            }
+
+            return 'RECIPIENT_IS_NOT_VALID';
+        }
+        // bech32m/Taproot addresses are valid but may not be supported by older FW
+        if (
+            networkType === 'bitcoin' &&
+            isTaprootAddress(value, symbol) &&
+            device?.unavailableCapabilities?.taproot
+        ) {
+            return 'RECIPIENT_REQUIRES_UPDATE';
+        }
+
+        // bech32 addresses are valid as uppercase but are not accepted by Trezor
+        if (networkType === 'bitcoin' && isBech32AddressUppercase(value)) {
+            return (
+                <ConvertAddress
+                    label="RECIPIENT_FORMAT_UPPERCASE"
+                    onClick={() => {
+                        setValue(inputName, value.toLowerCase(), {
+                            shouldValidate: true,
+                        });
+                    }}
+                />
+            );
+        }
+        // eth addresses are valid without checksum but Trezor displays them as checksummed
+        if (networkType === 'ethereum' && !isValidChecksumAddress(value)) {
+            return (
+                <ConvertAddress
+                    label="RECIPIENT_FORMAT_CHECKSUM"
+                    onClick={() => {
+                        setValue(inputName, toChecksumAddress(value), {
+                            shouldValidate: true,
+                        });
+                    }}
+                />
+            );
+        }
+
+        if (networkType === 'ripple' && value === descriptor) {
+            return 'RECIPIENT_CANNOT_SEND_TO_MYSELF';
+        }
+    };
 
     return (
         <Input
-            inputState={getInputState(addressError, addressValue)}
+            inputState={inputState}
             isMonospace
             innerAddon={
                 metadataEnabled && broadcastEnabled ? (
@@ -112,63 +192,38 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                 ) : undefined
             }
             label={
-                <Label>
-                    <Left>
-                        <Text>
-                            {outputsCount > 1 && `${recipientId}. `}
-                            <Translation id="RECIPIENT_ADDRESS" />
-                        </Text>
-                    </Left>
-                </Label>
+                <Text>
+                    {outputsCount > 1 && `${recipientId}. `}
+                    <Translation id="RECIPIENT_ADDRESS" />
+                    {inputState === 'success' && (
+                        <Tooltip content={<Translation id="TR_ADDRESS_FORMAT" />}>
+                            <Icon icon="CHECK" size={18} color={theme.TYPE_GREEN} />
+                        </Tooltip>
+                    )}
+                </Text>
             }
             labelAddon={
-                <Button
-                    variant="tertiary"
-                    icon="QR"
-                    onClick={async () => {
-                        const uri = await openQrModal();
-                        if (!uri) return;
-                        const { address, amount } = parseQrData(uri, symbol);
-                        if (address) {
-                            setValue(inputName, address, { shouldValidate: true });
-                            if (amount) {
-                                setValue(`outputs[${outputId}].amount`, amount, {
-                                    shouldValidate: true,
-                                });
-                                // if amount is set compose by amount
-                                composeTransaction(`outputs[${outputId}].amount`);
-                            } else {
-                                // otherwise compose by address
-                                composeTransaction(inputName);
-                            }
-                        }
-                    }}
-                >
+                <Button variant="tertiary" icon="QR" onClick={handleQrClick}>
                     <Translation id="RECIPIENT_SCAN" />
                 </Button>
             }
             labelRight={
                 outputsCount > 1 ? (
-                    <Remove
+                    <StyledIcon
+                        size={16}
+                        color={theme.TYPE_LIGHT_GREY}
+                        icon="CROSS"
+                        useCursorPointer
                         data-test={`outputs[${outputId}].remove`}
                         onClick={() => {
                             removeOutput(outputId);
                             // compose by first Output
                             composeTransaction();
                         }}
-                    >
-                        <StyledIcon
-                            size={20}
-                            color={theme.TYPE_LIGHT_GREY}
-                            icon="CROSS"
-                            useCursorPointer
-                        />
-                    </Remove>
+                    />
                 ) : undefined
             }
-            onChange={() => {
-                composeTransaction(`outputs[${outputId}].amount`);
-            }}
+            onChange={() => composeTransaction(`outputs[${outputId}].amount`)}
             bottomText={
                 addressError ? (
                     <InputError error={addressError} />
@@ -182,62 +237,8 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
             maxLength={MAX_LENGTH.ADDRESS}
             innerRef={register({
                 required: 'RECIPIENT_IS_NOT_SET',
-                validate: value => {
-                    if (!isAddressValid(value, symbol)) {
-                        const addressDeprecatedUrl = isAddressDeprecated(value, symbol);
-                        if (addressDeprecatedUrl) {
-                            return (
-                                <ReadMoreLink
-                                    message="RECIPIENT_FORMAT_DEPRECATED"
-                                    url={addressDeprecatedUrl}
-                                />
-                            );
-                        }
-                        return 'RECIPIENT_IS_NOT_VALID';
-                    }
-                    // bech32m/Taproot addresses are valid but may not be supported by older FW
-                    if (
-                        networkType === 'bitcoin' &&
-                        isTaprootAddress(value, symbol) &&
-                        device?.unavailableCapabilities?.taproot
-                    ) {
-                        return 'RECIPIENT_REQUIRES_UPDATE';
-                    }
-
-                    // bech32 addresses are valid as uppercase but are not accepted by Trezor
-                    if (networkType === 'bitcoin' && isBech32AddressUppercase(value)) {
-                        return (
-                            <ConvertAddress
-                                label="RECIPIENT_FORMAT_UPPERCASE"
-                                onClick={() => {
-                                    setValue(inputName, value.toLowerCase(), {
-                                        shouldValidate: true,
-                                    });
-                                }}
-                            />
-                        );
-                    }
-                    // eth addresses are valid without checksum but Trezor displays them as checksummed
-                    if (networkType === 'ethereum' && !isValidChecksumAddress(value)) {
-                        return (
-                            <ConvertAddress
-                                label="RECIPIENT_FORMAT_CHECKSUM"
-                                onClick={() => {
-                                    setValue(inputName, toChecksumAddress(value), {
-                                        shouldValidate: true,
-                                    });
-                                }}
-                            />
-                        );
-                    }
-
-                    if (networkType === 'ripple' && value === descriptor) {
-                        return 'RECIPIENT_CANNOT_SEND_TO_MYSELF';
-                    }
-                },
+                validate: validateAddress,
             })}
         />
     );
 };
-
-export default Address;

@@ -6441,4 +6441,8 @@ export default defineMessages({
         id: 'TR_EXCEEDS_MAX',
         defaultMessage: 'Exceeds max length',
     },
+    TR_ADDRESS_FORMAT: {
+        id: 'TR_ADDRESS_FORMAT',
+        defaultMessage: 'Correct address format',
+    },
 });
