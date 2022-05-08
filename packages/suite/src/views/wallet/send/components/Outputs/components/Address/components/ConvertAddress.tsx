@@ -15,12 +15,12 @@ const StyledButton = styled(Button)`
     background: none;
 `;
 
-interface Props {
+interface ConvertAddressProps {
     label: ExtendedMessageDescriptor['id'];
     onClick: () => void;
 }
 
-const Convert = ({ label, onClick }: Props) => (
+export const ConvertAddress = ({ label, onClick }: ConvertAddressProps) => (
     <Wrapper>
         <Translation
             id={label}
@@ -35,5 +35,3 @@ const Convert = ({ label, onClick }: Props) => (
         />
     </Wrapper>
 );
-
-export default Convert;

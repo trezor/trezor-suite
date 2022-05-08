@@ -205,7 +205,7 @@ const SignVerify: React.FC = () => {
                                 </SwitchWrapper>
                             }
                             innerRef={messageRef}
-                            inputState={getInputState(formErrors.message)}
+                            inputState={getInputState(formErrors.message, formValues.message)}
                             bottomText={<InputError error={formErrors.message} />}
                             rows={4}
                             maxRows={4}
@@ -225,7 +225,7 @@ const SignVerify: React.FC = () => {
                                 label={<Translation id="TR_ADDRESS" />}
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
-                                inputState={getInputState(formErrors.address)}
+                                inputState={getInputState(formErrors.path, formValues.path)}
                                 bottomText={<InputError error={formErrors.path} />}
                                 data-test="@sign-verify/sign-address"
                                 {...pathField}
@@ -235,7 +235,7 @@ const SignVerify: React.FC = () => {
                                 name="address"
                                 label={<Translation id="TR_ADDRESS" />}
                                 type="text"
-                                inputState={getInputState(formErrors.address)}
+                                inputState={getInputState(formErrors.address, formValues.address)}
                                 bottomText={<InputError error={formErrors.address} />}
                                 data-test="@sign-verify/select-address"
                                 {...addressField}
@@ -281,7 +281,10 @@ const SignVerify: React.FC = () => {
                                     innerRef={signatureRef}
                                     readOnly={isSignPage}
                                     isDisabled={!formValues.signature?.length}
-                                    inputState={getInputState(formErrors.signature)}
+                                    inputState={getInputState(
+                                        formErrors.signature,
+                                        formValues.signature,
+                                    )}
                                     bottomText={<InputError error={formErrors.signature} />}
                                     placeholder={translationString(
                                         'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
@@ -295,7 +298,10 @@ const SignVerify: React.FC = () => {
                                 label={<Translation id="TR_SIGNATURE" />}
                                 maxLength={MAX_LENGTH_SIGNATURE}
                                 innerRef={signatureRef}
-                                inputState={getInputState(formErrors.signature)}
+                                inputState={getInputState(
+                                    formErrors.signature,
+                                    formValues.signature,
+                                )}
                                 bottomText={<InputError error={formErrors.signature} />}
                                 rows={4}
                                 maxRows={4}
