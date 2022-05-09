@@ -8,7 +8,7 @@ import { CollapsibleBox } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import TrezorLink from '@suite-components/TrezorLink'; // Separate import because of circular dep problem. Error: Cannot create styled-component for component: undefined
 import { Box, OnboardingButtonCta } from '@onboarding-components';
-import { TOS_URL } from '@suite-constants/urls';
+import { ANALYTICS_DOCS_URL, TOS_URL } from '@suite-constants/urls';
 
 const Wrapper = styled.div`
     display: flex;
@@ -87,7 +87,7 @@ const collectedData = [
     },
 ];
 
-const DataAnalytics = () => {
+export const DataAnalytics = () => {
     const { goToSubStep, rerun } = useOnboarding();
     const { recovery } = useSelector(state => ({
         recovery: state.recovery,
@@ -123,7 +123,12 @@ const DataAnalytics = () => {
                     <Translation
                         id="TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION"
                         values={{
-                            a: chunks => (
+                            analytics: chunks => (
+                                <StyledTrezorLink variant="underline" href={ANALYTICS_DOCS_URL}>
+                                    {chunks}
+                                </StyledTrezorLink>
+                            ),
+                            tos: chunks => (
                                 <StyledTrezorLink variant="underline" href={TOS_URL}>
                                     {chunks}
                                 </StyledTrezorLink>
@@ -175,5 +180,3 @@ const DataAnalytics = () => {
         </Box>
     );
 };
-
-export default DataAnalytics;
