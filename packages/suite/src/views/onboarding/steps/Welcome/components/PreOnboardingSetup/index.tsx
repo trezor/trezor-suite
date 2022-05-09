@@ -1,6 +1,6 @@
 import React from 'react';
 import { useOnboarding, useSelector } from '@suite-hooks';
-import DataAnalytics from './DataAnalytics';
+import { DataAnalytics } from './DataAnalytics';
 import SecurityCheck from './SecurityCheck';
 
 const PreOnboardingSetup = () => {
