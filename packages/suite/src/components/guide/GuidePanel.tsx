@@ -56,6 +56,7 @@ const MotionGuide = styled(motion.div)`
     height: 100%;
     border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
     display: flex;
+    overflow-x: hidden;
 `;
 
 export const GuidePanel = () => {

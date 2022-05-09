@@ -29,7 +29,6 @@ const NodeButton = styled.button`
 
 const PageNodeButton = styled(NodeButton)`
     text-align: left;
-    margin-bottom: 10px;
 `;
 
 const PageNodeButtonIcon = styled(Icon)`
@@ -43,22 +42,25 @@ const Label = styled.div<{ isBold: boolean }>`
         isBold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
     overflow: hidden;
-    line-height: 20px;
+    line-height: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `;
 
 const CategoryNodeButton = styled(NodeButton)`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 142px;
+    min-width: 140px;
     text-align: center;
-    margin-bottom: 21px;
     height: 120px;
+    flex: 1;
 `;
 
 const Image = styled.img`
     width: 64px;
-    margin-bottom: 8px;
 `;
 
 type GuideNodeProps = {
