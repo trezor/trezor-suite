@@ -15,8 +15,8 @@ import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import { FORUM_URL, SUPPORT_URL } from '@suite-constants/urls';
 
 const Section = styled.div`
-    :not(:last-of-type) {
-        margin-bottom: 50px;
+    & + & {
+        margin-top: 50px;
     }
 `;
 
@@ -51,7 +51,7 @@ const StyledLink = styled(Link)`
     width: 100%;
 `;
 
-const Details = styled.p`
+const Details = styled.div`
     padding: 10px 0 0 0;
     font-size: 10px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

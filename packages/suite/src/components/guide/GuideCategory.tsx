@@ -26,7 +26,7 @@ const SectionHeading = styled.h3`
 const Nodes = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    gap: 10px;
 `;
 
 export const GuideCategory = () => {

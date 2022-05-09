@@ -29,8 +29,10 @@ export const SCREEN_QUERY = {
 
 export const LAYOUT_SIZE = {
     MENU_SECONDARY_WIDTH: '300px',
+    /** Guide width including border */
     GUIDE_PANEL_WIDTH: '350px',
-    GUIDE_PANEL_CONTENT_WIDTH: '305px',
+    /** Guide width without border */
+    GUIDE_PANEL_CONTENT_WIDTH: '349px',
 } as const;
 
 export const Z_INDEX = {

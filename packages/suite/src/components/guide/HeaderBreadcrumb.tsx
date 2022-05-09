@@ -14,6 +14,7 @@ import type { Category } from '@suite-types/guide';
 const BreadcrumbWrapper = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    white-space: normal;
 `;
 
 const PreviousCategoryLink = styled(TrezorLink)`

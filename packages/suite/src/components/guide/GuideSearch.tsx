@@ -16,7 +16,7 @@ const PageFoundList = styled.div`
     margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    gap: 10px;
 `;
 
 const NoResults = styled.p`

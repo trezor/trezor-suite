@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     background: ${({ theme }) => theme.BG_WHITE};
@@ -7,7 +8,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: scroll;
-    width: 100%;
+    min-width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_CONTENT_WIDTH};
 `;
 
 export const ContentScrolledContext = createContext<boolean>(false);
