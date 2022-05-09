@@ -2,16 +2,10 @@ import React, { useEffect } from 'react';
 import { variables } from '@trezor/components';
 import { TrezorLink } from '@suite-components';
 import ReactMarkdown from 'react-markdown';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { useGuideOpenNode } from '@guide-hooks';
 
-const DISPLAY_SLOWLY = keyframes`
-    from { opacity: 0.0; }
-    to { opacity: 1.0; }
-`;
-
 const StyledMarkdown = styled.div`
-    animation: ${DISPLAY_SLOWLY} 0.5s ease;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -65,7 +59,7 @@ const StyledMarkdown = styled.div`
 `;
 
 interface GuideMarkdownProps {
-    markdown: any;
+    markdown: string | undefined;
 }
 
 export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
@@ -79,28 +73,30 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
 
     return (
         <StyledMarkdown ref={ref}>
-            <ReactMarkdown
-                components={{
-                    a: ({ children, href }) => {
-                        if (!href) {
-                            console.error(`Missing href in Suite Guide link!`);
-                            return null;
-                        }
+            {markdown && (
+                <ReactMarkdown
+                    components={{
+                        a: ({ children, href }) => {
+                            if (!href) {
+                                console.error(`Missing href in Suite Guide link!`);
+                                return null;
+                            }
 
-                        return href.startsWith('http') ? (
-                            <TrezorLink variant="default" href={href}>
-                                {children}
-                            </TrezorLink>
-                        ) : (
-                            <TrezorLink variant="default" onClick={() => openNodeById(href)}>
-                                {children}
-                            </TrezorLink>
-                        );
-                    },
-                }}
-            >
-                {markdown}
-            </ReactMarkdown>
+                            return href.startsWith('http') ? (
+                                <TrezorLink variant="default" href={href}>
+                                    {children}
+                                </TrezorLink>
+                            ) : (
+                                <TrezorLink variant="default" onClick={() => openNodeById(href)}>
+                                    {children}
+                                </TrezorLink>
+                            );
+                        },
+                    }}
+                >
+                    {markdown}
+                </ReactMarkdown>
+            )}
         </StyledMarkdown>
     );
 };
