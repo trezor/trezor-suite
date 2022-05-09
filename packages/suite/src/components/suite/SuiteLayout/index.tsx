@@ -114,12 +114,12 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
     const isGuideFullHeight = isMobileLayout || isModalOpen;
 
-    const pageWrapperRef = useAnchorRemoving(anchor);
+    const wrapperRef = useAnchorRemoving(anchor);
     const appWrapperRef = useResetScroll(url);
 
     return (
-        <Wrapper>
-            <PageWrapper ref={pageWrapperRef}>
+        <Wrapper ref={wrapperRef}>
+            <PageWrapper>
                 <ModalContextProvider>
                     <Metadata title={title} />
                     <SuiteBanners />
