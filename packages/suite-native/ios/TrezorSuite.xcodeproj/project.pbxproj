@@ -14,6 +14,10 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-TrezorSuite-TrezorSuiteTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-TrezorSuite-TrezorSuiteTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		E603FAB37886431ABE0590DC /* TTSatoshi-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */; };
+		AE19C8EA249F4BC29A82736A /* TTSatoshi-DemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */; };
+		5EA58567F7C34D4BB4135E94 /* TTSatoshi-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */; };
+		B4528AB09CC346C49EB6347E /* TTSatoshi-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +48,10 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TrezorSuite/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */ = {isa = PBXFileReference; name = "TTSatoshi-Bold.otf"; path = "../../theme/fonts/TTSatoshi-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */ = {isa = PBXFileReference; name = "TTSatoshi-DemiBold.otf"; path = "../../theme/fonts/TTSatoshi-DemiBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */ = {isa = PBXFileReference; name = "TTSatoshi-Medium.otf"; path = "../../theme/fonts/TTSatoshi-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */ = {isa = PBXFileReference; name = "TTSatoshi-Regular.otf"; path = "../../theme/fonts/TTSatoshi-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +130,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				80736439959D441D9BCFB197 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,6 +156,18 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		80736439959D441D9BCFB197 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */,
+				8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */,
+				A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */,
+				69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -244,6 +265,10 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				E603FAB37886431ABE0590DC /* TTSatoshi-Bold.otf in Resources */,
+				AE19C8EA249F4BC29A82736A /* TTSatoshi-DemiBold.otf in Resources */,
+				5EA58567F7C34D4BB4135E94 /* TTSatoshi-Medium.otf in Resources */,
+				B4528AB09CC346C49EB6347E /* TTSatoshi-Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

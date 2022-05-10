@@ -1,0 +1,21 @@
+{
+    "name": "@trezor/atoms",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@mobily/ts-belt": "^3.11.0",
+        "@trezor/styles": "*",
+        "@trezor/theme": "*",
+        "react-native": "*",
+        "type-fest": "^2.12.2"
+    }
+}

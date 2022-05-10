@@ -14,7 +14,10 @@
         "pods": "npx pod-install"
     },
     "dependencies": {
+        "@trezor/atoms": "*",
         "@trezor/transport-native": "*",
+        "@trezor/styles": "*",
+        "@trezor/theme": "*",
         "node-libs-browser": "^2.2.1",
         "react": "17.0.2",
         "react-native": "0.68.0",

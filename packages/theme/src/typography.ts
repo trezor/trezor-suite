@@ -1,29 +1,22 @@
 import { nativeFontFamilies } from './fontFamilies';
-
-export const fontWeights = {
-    medium: 400,
-    demi: 600,
-} as const;
-
-export type FontWeight = keyof typeof fontWeights;
-export type FontWeightValue = typeof fontWeights[FontWeight];
+import { fontWeights, FontWeightValue } from './fontWeights';
 
 // we need unit-less typography base because RN is unit-less, we can easily add units later
 // for web we need string instead of object because styled-components syntax
 export const typographyStylesBase = {
-    largeTitle: {
+    titleLarge: {
         fontSize: 48,
         lineHeight: 53,
         fontWeight: fontWeights.medium,
         letterSpacing: 0.4,
     },
-    mediumTitle: {
+    titleMedium: {
         fontSize: 34,
         lineHeight: 37,
         fontWeight: fontWeights.medium,
         letterSpacing: -1.4,
     },
-    smallTitle: {
+    titleSmall: {
         fontSize: 22,
         lineHeight: 26,
         fontWeight: fontWeights.medium,
@@ -32,7 +25,7 @@ export const typographyStylesBase = {
     highlight: {
         fontSize: 16,
         lineHeight: 24,
-        fontWeight: fontWeights.demi,
+        fontWeight: fontWeights.semiBold,
         letterSpacing: -0.4,
     },
     body: {
@@ -44,7 +37,7 @@ export const typographyStylesBase = {
     callout: {
         fontSize: 14,
         lineHeight: 21,
-        fontWeight: fontWeights.demi,
+        fontWeight: fontWeights.semiBold,
         letterSpacing: -0.3,
     },
     hint: {

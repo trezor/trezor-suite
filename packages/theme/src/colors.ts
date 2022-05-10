@@ -28,7 +28,7 @@ export type Color = keyof typeof defaultColorVariant;
 
 export type Colors = Record<Color, CSS.Property.Color>;
 
-export const colorVariants: Record<string, Colors> = {
+export const colorVariants = {
     standard: {
         ...defaultColorVariant,
     },

@@ -20,7 +20,8 @@ export const nativeBorders = {
         lg: 2,
     },
     radii: {
-        basic: 5,
+        basic: 8,
+        large: 16,
         round: '50%',
     },
 } as const;

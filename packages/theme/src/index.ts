@@ -2,6 +2,7 @@ export * from './borders';
 export * from './boxShadows';
 export * from './colors';
 export * from './fontFamilies';
+export * from './fontWeights';
 export * from './typography';
 export * from './sizes';
 export * from './spacings';

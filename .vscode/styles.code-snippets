@@ -10,7 +10,7 @@
     "prepareStyle() with Props": {
         "prefix": "@prepareStyle_props",
         "body": [
-            "interface ${1/(.)/${1:/upcase}/}StyleProps {${3}}",
+            "type ${1/(.)/${1:/upcase}/}StyleProps = {${3}}",
             "",
             "const ${1}Style = prepareStyle${2}<${1/(.)/${1:/upcase}/}StyleProps>((utils, {${4}}) => ({${0}}));"
         ]
@@ -18,7 +18,7 @@
     "prepareNativeStyle() with Props": {
         "prefix": "@prepareNativeStyle_props",
         "body": [
-            "interface ${1/(.)/${1:/upcase}/}StyleProps {${3}}",
+            "type ${1/(.)/${1:/upcase}/}StyleProps = {${3}}",
             "",
             "const ${1}Style = prepareNativeStyle${2}<${1/(.)/${1:/upcase}/}StyleProps>((utils, {${4}}) => ({${0}}));"
         ]
@@ -29,14 +29,14 @@
     },
     "useStyles() for React Native": {
         "prefix": "@useStyles_native",
-        "body": "const { applyNativeStyle } = useStyles${0}();"
+        "body": "const { applyStyle } = useNativeStyles${0}();"
     },
     "applyStyle()": {
         "prefix": "@applyStyle",
         "body": "className={applyStyle(${0})}"
     },
-    "applyNativeStyle()": {
-        "prefix": "@applyNativeStyle",
-        "body": "style={applyNativeStyle(${0})}"
+    "applyStyle()  for React Native": {
+        "prefix": "@applyStyle",
+        "body": "style={applyStyle(${0})}"
     }
 }
