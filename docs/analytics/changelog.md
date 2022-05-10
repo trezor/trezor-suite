@@ -2,6 +2,12 @@
 
 This changelog lists all events that Suite tracks.
 
+### 1.19
+
+Removed:
+
+-   session-end
+
 ### 1.18
 
 Added:
