@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
-import { Box, Button, Icon, Text } from '@trezor/atoms';
+import { Text, Box, Button, NumPadButton, Icon } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -52,11 +52,22 @@ export const Home = () => {
                         <Text>Icon:</Text>
                         <Icon type="warningCircle" size="big" color="black" />
                     </Box>
-                    <Box marginVertical="md">
-                        <Button onPress={() => {}} size="md" colorScheme="primary">
+                    <Box marginVertical="lg">
+                        <Button
+                            onPress={() => console.log('Get features')}
+                            size="md"
+                            colorScheme="primary"
+                        >
                             My Fancy Button
                         </Button>
                     </Box>
+
+                    <NumPadButton
+                        value={5}
+                        onPress={value =>
+                            console.log('Press num pad button. No implementation yet.', value)
+                        }
+                    />
                 </View>
             </ScrollView>
         </SafeAreaView>
