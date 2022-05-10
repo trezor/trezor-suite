@@ -1,7 +1,6 @@
 export { useOnce } from './useOnce';
 export { useDevice } from './useDevice';
 export { useDiscovery } from './useDiscovery';
-export { useAnalytics } from './useAnalytics';
 export { useActions } from './useActions';
 export { useLayout } from './useLayout';
 export { useLayoutSize } from './useLayoutSize';

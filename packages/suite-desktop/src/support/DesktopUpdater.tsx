@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
 
-import { useActions, useSelector, useAnalytics } from '@suite-hooks';
+import { desktopApi } from '@trezor/suite-desktop-api';
+import { useActions, useSelector } from '@suite-hooks';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import { ModalContextProvider } from '@suite-support/ModalContext';
@@ -10,15 +11,13 @@ import Downloading from './DesktopUpdater/Downloading';
 import Ready from './DesktopUpdater/Ready';
 import EarlyAccessEnable from './DesktopUpdater/EarlyAccessEnable';
 import EarlyAccessDisable from './DesktopUpdater/EarlyAccessDisable';
-import { AppUpdateEventStatus, getAppUpdatePayload } from '@suite-utils/analytics';
+import { getAppUpdatePayload } from '@suite-utils/analytics';
 
 interface DesktopUpdaterProps {
     children: React.ReactNode;
 }
 
 const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
-    const analytics = useAnalytics();
-
     const {
         enable,
         checking,
@@ -89,10 +88,10 @@ const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
             desktopUpdate.latest,
         );
         analytics.report({
-            type: 'app-update',
+            type: EventType.AppUpdate,
             payload,
         });
-    }, [setUpdateWindow, analytics, desktopUpdate.latest, desktopUpdate.allowPrerelease]);
+    }, [setUpdateWindow, desktopUpdate.latest, desktopUpdate.allowPrerelease]);
 
     const isVisible = useMemo(() => {
         // Not displayed as a modal

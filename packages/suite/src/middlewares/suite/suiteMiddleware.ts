@@ -60,9 +60,11 @@ const suite =
                     );
                 }
                 // right after storage is loaded, we might start:
-                // 1. fetching locales
-                // 2. fetch message system config
-                // 3. redirecting user into welcome screen (if needed)
+                // 1. init analytics
+                api.dispatch(analyticsActions.init(action.payload.analytics));
+                // 2. fetching locales
+                // 3. fetch message system config
+                // 4. redirecting user into welcome screen (if needed)
                 await Promise.all([
                     api.dispatch(
                         languageActions.setLanguage(action.payload.suite.settings.language),
@@ -70,10 +72,8 @@ const suite =
                     api.dispatch(messageSystemActions.init()),
                     api.dispatch(routerActions.initialRedirection()),
                 ]);
-                // 4. init connect;
+                // 5. init connect;
                 api.dispatch(trezorConnectActions.init());
-                // 5. init analytics
-                api.dispatch(analyticsActions.init(action.payload.analytics));
                 break;
             }
             case SUITE.CONNECT_INITIALIZED:

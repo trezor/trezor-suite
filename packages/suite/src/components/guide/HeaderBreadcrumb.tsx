@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { useActions, useSelector, useAnalytics } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
@@ -49,8 +50,6 @@ export const HeaderBreadcrumb = () => {
         currentNode: state.guide.currentNode,
     }));
 
-    const analytics = useAnalytics();
-
     const { setView, openNode } = useActions({
         setView: guideActions.setView,
         openNode: guideActions.openNode,
@@ -76,7 +75,7 @@ export const HeaderBreadcrumb = () => {
     const navigateToCategory = (node: Category) => {
         openNode(node);
         analytics.report({
-            type: 'guide/header/navigation',
+            type: EventType.GuideHeaderNavigation,
             payload: {
                 type: 'category',
                 id: node.id,
@@ -87,7 +86,7 @@ export const HeaderBreadcrumb = () => {
     const navigateToGuideDashboard = () => {
         setView('GUIDE_DEFAULT');
         analytics.report({
-            type: 'guide/header/navigation',
+            type: EventType.GuideHeaderNavigation,
             payload: {
                 type: 'category',
                 id: '/',

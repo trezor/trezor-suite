@@ -1,20 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { analytics } from '@trezor/suite-analytics';
 import { Switch } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
-import { useAnalytics } from '@suite-hooks';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { useSelector } from '@suite-hooks';
 
 const PositionedSwitch = styled.div`
     align-self: center;
 `;
 
 export const Analytics = () => {
-    const { enable, dispose, enabled } = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Analytics);
+
+    const { enabled } = useSelector(state => state.analytics);
 
     return (
         <SectionItem
@@ -33,9 +35,10 @@ export const Analytics = () => {
                         isChecked={!!enabled}
                         onChange={() => {
                             if (enabled) {
-                                return dispose();
+                                analytics.disable();
+                            } else {
+                                analytics.enable();
                             }
-                            enable();
                         }}
                     />
                 </PositionedSwitch>

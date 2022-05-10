@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button } from '@trezor/components';
 import { Translation, Modal, Image, TrezorLink } from '@suite-components';
-import { useAnalytics } from '@suite-hooks';
 import styled from 'styled-components';
 import { ImageWrapper, Description, Title } from './styles';
 import { SUITE_URL } from '@suite-constants/urls';
@@ -29,20 +29,18 @@ interface Props {
 }
 
 const EarlyAccessDisable = ({ hideWindow }: Props) => {
-    const analytics = useAnalytics();
-
     const [enabled, setEnabled] = useState(true);
 
     const allowPrerelease = useCallback(() => {
         analytics.report({
-            type: 'settings/general/early-access',
+            type: EventType.SettingsGeneralEarlyAccess,
             payload: {
                 allowPrerelease: false,
             },
         });
         desktopApi.allowPrerelease(false);
         setEnabled(false);
-    }, [analytics]);
+    }, []);
 
     return enabled ? (
         <StyledModal
@@ -79,7 +77,7 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
                         href={SUITE_URL}
                         onClick={() => {
                             analytics.report({
-                                type: 'settings/general/early-access/download-stable',
+                                type: EventType.SettingsGeneralEarlyAccessDownloadStable,
                             });
                         }}
                     >

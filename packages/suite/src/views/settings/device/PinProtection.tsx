@@ -1,8 +1,10 @@
 import React from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { Translation } from '@suite-components';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { Switch } from '@trezor/components';
-import { useDevice, useAnalytics, useActions } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -16,7 +18,6 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
     const { changePin } = useActions({
         changePin: deviceSettingsActions.changePin,
     });
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.PinProtection);
 
     const pinProtection = device?.features?.pin_protection ?? null;
@@ -36,7 +37,7 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
                     onChange={() => {
                         changePin({ remove: !!pinProtection });
                         analytics.report({
-                            type: 'settings/device/change-pin-protection',
+                            type: EventType.SettingsDeviceChangePinProtection,
                             payload: {
                                 remove: pinProtection,
                             },

@@ -1,8 +1,10 @@
 import TrezorConnect, { CommonParams } from '@trezor/connect';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import * as notificationActions from '@suite-actions/notificationActions';
 import { BACKUP } from '@backup-actions/constants';
 
-import { Dispatch, GetState } from '@suite-types';
+import type { Dispatch, GetState } from '@suite-types';
 
 export type ConfirmKey =
     | 'has-enough-time'
@@ -68,11 +70,25 @@ export const backupDevice =
                 type: BACKUP.SET_ERROR,
                 payload: result.payload.error,
             });
+            analytics.report({
+                type: EventType.CreateBackup,
+                payload: {
+                    status: 'error',
+                    error: result.payload.error,
+                },
+            });
         } else {
             dispatch(notificationActions.addToast({ type: 'backup-success' }));
             dispatch({
                 type: BACKUP.SET_STATUS,
                 payload: 'finished',
+            });
+            analytics.report({
+                type: EventType.CreateBackup,
+                payload: {
+                    status: 'finished',
+                    error: '',
+                },
             });
         }
     };

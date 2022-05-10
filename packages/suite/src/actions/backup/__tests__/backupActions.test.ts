@@ -65,6 +65,13 @@ export const getInitialState = (override: any) => {
 const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
 
 describe('Backup Actions', () => {
+    beforeAll(() => {
+        jest.spyOn(console, 'error').mockImplementation();
+    });
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
     it('backup success', async () => {
         require('@trezor/connect').setTestFixtures({ success: true });
 

@@ -11,6 +11,7 @@
     },
     "include": ["**/*.ts", "**/*.js"],
     "references": [
+        { "path": "../suite-analytics" },
         { "path": "../transport" },
         { "path": "../utils" }
     ]

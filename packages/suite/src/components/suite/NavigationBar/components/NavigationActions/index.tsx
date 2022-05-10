@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
 import { findRouteByName } from '@suite-utils/router';
-import { useActions, useAnalytics, useSelector } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { useCustomBackends } from '@settings-hooks/backends';
 import { ActionItem } from './components/ActionItem';
 import { isDesktop } from '@suite-utils/env';
@@ -53,7 +55,6 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
     closeMainNavigation,
     isMobileLayout,
 }) => {
-    const analytics = useAnalytics();
     const { activeApp, notifications, discreetMode, tor, allowPrerelease, enabledNetworks } =
         useSelector(state => ({
             activeApp: state.router.app,
@@ -78,9 +79,9 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
     // used only in mobile layout
     const gotoWithReport = (routeName: Route['name']) => {
         if (routeName === 'notifications-index') {
-            analytics.report({ type: 'menu/goto/notifications-index' });
+            analytics.report({ type: EventType.MenuGotoNotificationsIndex });
         } else if (routeName === 'settings-index') {
-            analytics.report({ type: 'menu/goto/settings-index' });
+            analytics.report({ type: EventType.MenuGotoSettingsIndex });
         }
         goto(routeName);
     };
@@ -111,7 +112,7 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
             <ActionItem
                 onClick={() => {
                     analytics.report({
-                        type: 'menu/toggle-discreet',
+                        type: EventType.MenuToggleDiscreet,
                         payload: {
                             value: !discreetMode,
                         },
@@ -157,7 +158,7 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
                 (isMobileLayout ? (
                     <ActionItem
                         onClick={() => {
-                            analytics.report({ type: 'menu/goto/early-access' });
+                            analytics.report({ type: EventType.MenuGotoEarlyAccess });
                             action('settings-index');
                         }}
                         label={<Translation id="TR_EARLY_ACCESS_MENU" />}

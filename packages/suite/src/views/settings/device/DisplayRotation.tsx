@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { variables } from '@trezor/components';
-import { useAnalytics, useActions } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -35,7 +36,6 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const { applySettings } = useActions({
         applySettings: deviceSettingsActions.applySettings,
     });
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.DisplayRotation);
 
     return (
@@ -55,7 +55,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                                 display_rotation: variant.value,
                             });
                             analytics.report({
-                                type: 'settings/device/change-orientation',
+                                type: EventType.SettingsDeviceChangeOrientation,
                                 payload: {
                                     value: variant.value,
                                 },

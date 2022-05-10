@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
-import { useAnalytics, useSelector } from '@suite-hooks';
+import { useSelector } from '@suite-hooks';
 import { SUITE } from '@suite-actions/constants';
 
 const AddWallet = styled.div`
@@ -52,8 +54,6 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
         locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
         locks.includes(SUITE.LOCK_TYPE.UI);
 
-    const analytics = useAnalytics();
-
     const onAddWallet = () => {
         if (hasAtLeastOneWallet) {
             addDeviceInstance(device);
@@ -62,8 +62,8 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
         }
         analytics.report({
             type: emptyPassphraseWalletExists
-                ? 'switch-device/add-hidden-wallet'
-                : 'switch-device/add-wallet',
+                ? EventType.SwitchDeviceAddHiddenWallet
+                : EventType.SwitchDeviceAddWallet,
         });
     };
 

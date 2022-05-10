@@ -1,8 +1,9 @@
 import React from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useAnalytics, useActions, useDevice, useLocales } from '@suite-hooks';
+import { useActions, useDevice, useLocales } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { formatDurationStrict } from '@suite-utils/date';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -33,7 +34,6 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Autolock);
 
     const { device } = useDevice();
-    const analytics = useAnalytics();
     const locale = useLocales();
 
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
@@ -70,7 +70,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
                             auto_lock_delay_ms: value,
                         });
                         analytics.report({
-                            type: 'settings/device/update-auto-lock',
+                            type: EventType.SettingsDeviceUpdateAutoLock,
                             payload: {
                                 value,
                             },

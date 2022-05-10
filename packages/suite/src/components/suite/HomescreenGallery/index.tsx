@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 import { resolveStaticPath } from '@trezor/utils';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { AcquiredDevice } from '@suite-types';
-import { useActions, useAnalytics } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import { getDeviceModel } from '@suite-utils/device';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
@@ -43,7 +45,6 @@ type Props = {
 
 const HomescreenGallery = ({ device, onConfirm }: Props) => {
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
-    const analytics = useAnalytics();
 
     const isModelT = getDeviceModel(device) === 'T';
     const trezorModel = isModelT ? 2 : 1;
@@ -72,7 +73,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                             onClick={() => {
                                 setHomescreen(image);
                                 analytics.report({
-                                    type: 'settings/device/background',
+                                    type: EventType.SettingsDeviceBackground,
                                     payload: {
                                         image,
                                     },
@@ -95,7 +96,7 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                             onClick={() => {
                                 setHomescreen(image);
                                 analytics.report({
-                                    type: 'settings/device/background',
+                                    type: EventType.SettingsDeviceBackground,
                                     payload: {
                                         image,
                                     },

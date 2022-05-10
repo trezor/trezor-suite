@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components/Translation';
 import { SectionItem, ActionColumn, ActionSelect, TextColumn } from '@suite-components/Settings';
-import { useActions, useSelector, useTranslation, useAnalytics } from '@suite-hooks';
+import { useActions, useSelector, useTranslation } from '@suite-hooks';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 import { getOsTheme } from '@suite-utils/env';
@@ -45,7 +46,6 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
-    const analytics = useAnalytics();
     const { theme, autodetectTheme } = useSelector(state => ({
         theme: state.suite.settings.theme,
         autodetectTheme: state.suite.settings.autodetect.theme,
@@ -63,7 +63,7 @@ export const Theme = () => {
     const onChange = ({ value }: { value: SuiteThemeVariant }) => {
         const platformTheme = getOsTheme();
         analytics.report({
-            type: 'settings/general/change-theme',
+            type: EventType.SettingsGeneralChangeTheme,
             payload: {
                 platformTheme,
                 previousTheme: theme.variant,

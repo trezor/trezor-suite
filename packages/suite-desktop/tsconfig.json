@@ -6,6 +6,7 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../suite-analytics" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
         { "path": "../utils" },

@@ -3,23 +3,21 @@ import { ANALYTICS } from '@suite-actions/constants';
 
 import { Action } from '@suite-types';
 
-export interface State {
+export interface AnalyticsState {
     sessionId?: string;
     instanceId?: string;
     enabled?: boolean;
-    sessionStart?: number;
     confirmed?: boolean; // Has the user confirmed the choice for analytics?
 }
 
-export const initialState: State = {
+export const initialState: AnalyticsState = {
     sessionId: undefined,
     instanceId: undefined,
     enabled: undefined,
-    sessionStart: undefined,
     confirmed: false,
 };
 
-const analyticsReducer = (state: State = initialState, action: Action): State =>
+const analyticsReducer = (state: AnalyticsState = initialState, action: Action): AnalyticsState =>
     produce(state, draft => {
         switch (action.type) {
             case ANALYTICS.INIT:
@@ -27,13 +25,12 @@ const analyticsReducer = (state: State = initialState, action: Action): State =>
                 draft.confirmed = action.payload.confirmed;
                 draft.instanceId = action.payload.instanceId;
                 draft.sessionId = action.payload.sessionId;
-                draft.sessionStart = action.payload.sessionStart;
                 break;
             case ANALYTICS.ENABLE:
                 draft.enabled = true;
                 draft.confirmed = true;
                 break;
-            case ANALYTICS.DISPOSE:
+            case ANALYTICS.DISABLE:
                 draft.enabled = false;
                 draft.confirmed = true;
                 break;

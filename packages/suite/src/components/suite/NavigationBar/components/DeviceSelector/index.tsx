@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { variables, DeviceImage, Icon } from '@trezor/components';
 import { SHAKE } from '@suite-support/styles/animations';
 import { WalletLabeling } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import * as routerActions from '@suite-actions/routerActions';
-import { useAnalytics, useSelector, useActions } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
 import { DeviceStatus } from './DeviceStatus';
@@ -118,8 +120,6 @@ export const DeviceSelector = () => {
     const shakeAnimationTimerRef = useRef<Timeout | undefined>(undefined);
     const stateAnimationTimerRef = useRef<Timeout | undefined>(undefined);
 
-    const analytics = useAnalytics();
-
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
 
     const connectState = selectedDevice?.connected;
@@ -165,8 +165,8 @@ export const DeviceSelector = () => {
                 cancelable: true,
             },
         });
-        analytics.report({ type: 'menu/goto/switch-device' });
-    }, [goto, analytics]);
+        analytics.report({ type: EventType.MenuGotoSwitchDevice });
+    }, [goto]);
 
     const handleRefreshClick = useCallback(() => {
         if (deviceNeedsRefresh) {

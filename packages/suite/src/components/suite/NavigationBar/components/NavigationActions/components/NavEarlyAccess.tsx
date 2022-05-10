@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionItem } from './ActionItem';
-import { useActions, useAnalytics } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
@@ -18,8 +19,6 @@ interface NavEarlyAccessProps {
 }
 
 export const NavEarlyAccess = (props: NavEarlyAccessProps) => {
-    const analytics = useAnalytics();
-
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -31,7 +30,7 @@ export const NavEarlyAccess = (props: NavEarlyAccessProps) => {
                 icon="EXPERIMENTAL_FEATURES"
                 onClick={() => {
                     goto('settings-index', { anchor: SettingsAnchor.EarlyAccess });
-                    analytics.report({ type: 'menu/goto/early-access' });
+                    analytics.report({ type: EventType.MenuGotoEarlyAccess });
                 }}
             />
         </Wrapper>

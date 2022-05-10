@@ -2,25 +2,31 @@ import { useEffect } from 'react';
 
 import { useLocation } from 'react-router-dom';
 import { useActions } from '@suite-hooks/useActions';
-import { onLocationChange, onBeforePopState } from '@suite-actions/routerActions';
+import * as routerActions from '@suite-actions/routerActions';
 import history from '@suite/support/history';
+import { useOnce } from '@suite-hooks';
 
 const RouterComponent = () => {
+    const isFirstRender = useOnce(true, false);
+
     const location = useLocation();
-    const actions = useActions({
-        onLocationChange,
-        onBeforePopState,
+    const { onLocationChange, onBeforePopState } = useActions({
+        onLocationChange: routerActions.onLocationChange,
+        onBeforePopState: routerActions.onBeforePopState,
     });
 
     useEffect(() => {
-        // Handle browser navigation (back button)
-        const url = location.pathname + location.hash;
-        actions.onLocationChange(url);
-    }, [location.pathname, location.hash, actions]);
+        // Let router to be initialized properly
+        if (!isFirstRender) {
+            // Handle browser navigation (back button)
+            const url = location.pathname + location.hash;
+            onLocationChange(url);
+        }
+    }, [location.pathname, location.hash, onLocationChange, isFirstRender]);
 
     useEffect(() => {
         const onPopState = () => {
-            const canGoBack = actions.onBeforePopState();
+            const canGoBack = onBeforePopState();
             if (!canGoBack) {
                 history.go(1);
             }
@@ -28,7 +34,7 @@ const RouterComponent = () => {
 
         window.addEventListener('popstate', onPopState);
         return () => window.removeEventListener('popstate', onPopState);
-    }, [actions]);
+    }, [onBeforePopState]);
 
     return null;
 };

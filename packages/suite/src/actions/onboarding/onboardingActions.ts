@@ -1,6 +1,8 @@
+import { OnboardingAnalytics } from '@trezor/suite-analytics';
+
 import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
-import { AnyStepId, AnyPath, OnboardingAnalytics } from '@onboarding-types';
+import { AnyStepId, AnyPath } from '@onboarding-types';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 

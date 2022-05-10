@@ -2,6 +2,7 @@
 // @retry=2
 
 import { urlSearchParams } from '../../../../../suite/src/utils/suite/metadata';
+import { EventType } from '@trezor/suite-analytics';
 
 type Requests = ReturnType<typeof urlSearchParams>[];
 let requests: Requests;
@@ -34,7 +35,7 @@ describe('Analytics', () => {
 
         // assert that only "analytics/dispose" event was fired
         cy.wait('@data-fetch');
-        cy.wrap(requests).its(0).should('have.property', 'c_type', 'analytics/dispose');
+        cy.wrap(requests).its(0).should('have.property', 'c_type', EventType.AnalyticsDispose);
         cy.wrap(requests).its(0).its('c_session_id').as('request0');
         cy.wrap(requests)
             .its(0)
@@ -61,7 +62,7 @@ describe('Analytics', () => {
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.wait('@data-fetch');
-        cy.wrap(requests).its(1).should('have.property', 'c_type', 'analytics/enable');
+        cy.wrap(requests).its(1).should('have.property', 'c_type', EventType.AnalyticsEnable);
         cy.wrap(requests).its(1).its('c_session_id').as('request1');
         cy.wrap(requests)
             .its(1)
@@ -88,7 +89,9 @@ describe('Analytics', () => {
         cy.getTestElement('@settings/fiat-select/input').click({ force: true });
         cy.getTestElement('@settings/fiat-select/option/huf').click({ force: true });
         cy.wait('@data-fetch');
-        cy.wrap(requests).its(2).should('have.property', 'c_type', 'settings/general/change-fiat');
+        cy.wrap(requests)
+            .its(2)
+            .should('have.property', 'c_type', EventType.SettingsGeneralChangeFiat);
         cy.wrap(requests).its(2).should('have.property', 'fiat', 'huf');
         cy.wrap(requests).its(2).should('have.property', 'c_instance_id').should('match', instance);
         cy.wrap(requests).should('have.length', 3);
@@ -96,8 +99,8 @@ describe('Analytics', () => {
         // open device modal and check that it was logged
         cy.getTestElement('@menu/switch-device').click();
         cy.wait('@data-fetch');
-        cy.wrap(requests).its(3).should('have.property', 'c_type', 'router/location-change');
-        cy.wrap(requests).its(4).should('have.property', 'c_type', 'menu/goto/switch-device');
+        cy.wrap(requests).its(3).should('have.property', 'c_type', EventType.RouterLocationChange);
+        cy.wrap(requests).its(4).should('have.property', 'c_type', EventType.MenuGotoSwitchDevice);
         cy.wrap(requests).should('have.length', 5);
 
         // add hidden wallet and check that it was logged
@@ -105,7 +108,7 @@ describe('Analytics', () => {
         cy.wait('@data-fetch');
         cy.wrap(requests)
             .its(5)
-            .should('have.property', 'c_type', 'switch-device/add-hidden-wallet');
+            .should('have.property', 'c_type', EventType.SwitchDeviceAddHiddenWallet);
     });
 
     it('should respect enabled analytics in onboarding with following disabling in settings', () => {
@@ -125,10 +128,10 @@ describe('Analytics', () => {
         cy.wrap(requests).its('length').should('be.gt', 1);
         cy.wrap(requests)
             .then(list => Cypress._.map(list, 'c_type'))
-            .should('include', 'suite-ready');
+            .should('include', EventType.SuiteReady);
         cy.wrap(requests)
             .then(list => Cypress._.map(list, 'c_type'))
-            .should('include', 'analytics/enable');
+            .should('include', EventType.AnalyticsEnable);
 
         // finish onboarding
         cy.getTestElement('@onboarding/exit-app-button').click();
@@ -150,7 +153,7 @@ describe('Analytics', () => {
         // check that analytics disable event was fired
         cy.wrap(requests)
             .then(list => Cypress._.map(list, 'c_type'))
-            .should('include', 'analytics/dispose');
+            .should('include', EventType.AnalyticsDispose);
         cy.wrap(requests).its('length').as('length0');
 
         // check that "settings/general/change-fiat" event was not fired

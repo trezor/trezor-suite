@@ -151,7 +151,7 @@ const storageMiddleware =
 
             case ANALYTICS.INIT:
             case ANALYTICS.ENABLE:
-            case ANALYTICS.DISPOSE:
+            case ANALYTICS.DISABLE:
                 api.dispatch(storageActions.saveAnalytics());
                 break;
 

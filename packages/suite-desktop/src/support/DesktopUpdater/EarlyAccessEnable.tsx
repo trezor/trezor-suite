@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, P, Tooltip } from '@trezor/components';
 import { CheckItem, Translation, Modal, Image } from '@suite-components';
-import { useAnalytics } from '@suite-hooks';
 import { ImageWrapper, Description, Divider, Title } from './styles';
 
 const DescriptionWrapper = styled.div`
@@ -38,30 +38,28 @@ interface Props {
 }
 
 const EarlyAccessEnable = ({ hideWindow }: Props) => {
-    const analytics = useAnalytics();
-
     const [understood, setUnderstood] = useState(false);
     const [enabled, setEnabled] = useState(false);
 
     const allowPrerelease = useCallback(() => {
         analytics.report({
-            type: 'settings/general/early-access',
+            type: EventType.SettingsGeneralEarlyAccess,
             payload: {
                 allowPrerelease: true,
             },
         });
         desktopApi.allowPrerelease(true);
         setEnabled(true);
-    }, [analytics]);
+    }, []);
     const checkForUpdates = useCallback(() => {
         analytics.report({
-            type: 'settings/general/early-access/check-for-updates',
+            type: EventType.SettingsGeneralEarlyAccessCheckForUpdates,
             payload: {
                 checkNow: true,
             },
         });
         desktopApi.checkForUpdates(true);
-    }, [analytics]);
+    }, []);
 
     return enabled ? (
         <StyledModal
@@ -70,7 +68,7 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
                     <Button
                         onClick={() => {
                             analytics.report({
-                                type: 'settings/general/early-access/check-for-updates',
+                                type: EventType.SettingsGeneralEarlyAccessCheckForUpdates,
                                 payload: {
                                     checkNow: false,
                                 },

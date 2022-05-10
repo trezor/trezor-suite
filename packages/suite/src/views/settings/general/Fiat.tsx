@@ -1,9 +1,10 @@
 import React from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIAT } from '@suite-config';
 import { Translation } from '@suite-components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useAnalytics, useSelector, useActions } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -14,7 +15,6 @@ const buildCurrencyOption = (currency: string) => ({
 });
 
 export const Fiat = () => {
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Fiat);
 
     const { localCurrency } = useSelector(state => ({
@@ -35,7 +35,7 @@ export const Fiat = () => {
                     onChange={(option: { value: string; label: string }) => {
                         setLocalCurrency(option.value);
                         analytics.report({
-                            type: 'settings/general/change-fiat',
+                            type: EventType.SettingsGeneralChangeFiat,
                             payload: {
                                 fiat: option.value,
                             },

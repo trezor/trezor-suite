@@ -1,9 +1,10 @@
 import React from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { DRY_RUN_URL } from '@suite-constants/urls';
-import { useDevice, useAnalytics, useActions } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -17,7 +18,6 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
     const { goto } = useActions({
         goto: routerActions.goto,
     });
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.CheckRecoverySeed);
 
     const needsBackup = !!device?.features?.needs_backup;
@@ -39,7 +39,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
                     onClick={() => {
                         goto('recovery-index', { params: { cancelable: true } });
                         analytics.report({
-                            type: 'settings/device/goto/recovery',
+                            type: EventType.SettingsDeviceGotoRecovery,
                         });
                     }}
                     isDisabled={isDeviceLocked || needsBackup}

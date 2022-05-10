@@ -1,9 +1,10 @@
 import React from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { Switch } from '@trezor/components';
-import { useDevice, useAnalytics, useActions } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { PASSPHRASE_URL } from '@suite-constants/urls';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -18,7 +19,6 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     const { applySettings } = useActions({
         applySettings: deviceSettingsActions.applySettings,
     });
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Passphrase);
 
     const passphraseProtection = !!device?.features?.passphrase_protection;
@@ -41,7 +41,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
                             use_passphrase: !passphraseProtection,
                         });
                         analytics.report({
-                            type: 'settings/device/change-passphrase-protection',
+                            type: EventType.SettingsDeviceChangePassphraseProtection,
                             payload: {
                                 use_passphrase: !passphraseProtection,
                             },

@@ -11,6 +11,7 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../suite-analytics" },
         { "path": "../components" },
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
