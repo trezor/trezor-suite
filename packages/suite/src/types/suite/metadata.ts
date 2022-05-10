@@ -62,6 +62,7 @@ enum ProviderErrorReason {
     PROVIDER_ERROR,
     // common error if none of the above
     OTHER_ERROR,
+    CONNECTIVITY_ERROR,
 }
 
 /**

@@ -155,7 +155,6 @@ const handleProviderError =
                 }),
             );
         }
-
         // handle nicely wrapped errors here
         switch (error.code) {
             // possibly programmer errors
@@ -172,6 +171,7 @@ const handleProviderError =
             case 'AUTH_ERROR':
                 dispatch(disconnectProvider());
                 break;
+            case 'CONNECTIVITY_ERROR':
             default:
                 break;
         }

@@ -132,6 +132,9 @@ class GoogleProvider extends AbstractMetadataProvider {
             return this.error('PROVIDER_ERROR', message);
         }
 
+        if (message.includes('Failed to fetch')) {
+            return this.error('CONNECTIVITY_ERROR', 'Internet connection problem');
+        }
         // todo: more fine grained errors for google drive
         // https://developers.google.com/drive/api/v3/handle-errors
         switch (err?.error?.code) {
