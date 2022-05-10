@@ -287,20 +287,23 @@ class Client {
         if (!forceReload && this.nameIdMap[name]) {
             return this.nameIdMap[name];
         }
-        // request to list files might have already been dispatched and exist as unresolved promise, so wait for it here in that case
-        if (this.listPromise) {
-            await this.listPromise;
-            this.listPromise = undefined; // unset
-            return this.nameIdMap[name];
-        }
-        // refresh nameIdMap
-        const promise = this.list({
-            query: { spaces: 'appDataFolder' },
-        });
 
-        this.listPromise = promise;
-        await this.listPromise;
-        this.listPromise = undefined; // unset
+        try {
+            // request to list files might have already been dispatched and exist as unresolved promise, so wait for it here in that case
+            if (this.listPromise) {
+                await this.listPromise;
+                this.listPromise = undefined; // unset
+                return this.nameIdMap[name];
+            }
+            // refresh nameIdMap
+            this.listPromise = this.list({
+                query: { spaces: 'appDataFolder' },
+            });
+            await this.listPromise;
+        } finally {
+            this.listPromise = undefined; // unset
+        }
+        // request to list files might have already been dispatched and exist as unresolved promise, so wait for it here in that case
 
         return this.nameIdMap[name];
     }

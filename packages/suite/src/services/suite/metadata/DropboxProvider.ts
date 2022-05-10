@@ -200,6 +200,11 @@ class DropboxProvider extends AbstractMetadataProvider {
             // this should never happen
             message = 'unknown error';
         }
+
+        if (message.includes('Failed to fetch')) {
+            return this.error('CONNECTIVITY_ERROR', 'Internet connection problem');
+        }
+
         // https://www.dropbox.com/developers/documentation/http/documentation#error-handling
         if (err?.status) {
             if (err.status >= 500) {
