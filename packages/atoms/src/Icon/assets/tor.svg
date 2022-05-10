@@ -1,0 +1,6 @@
+<svg viewBox="0 0 24 24" fill="none">
+  <circle cx="12" cy="12" r="9.25" stroke="#1B1A19" stroke-width="1.5"/>
+  <path d="M12 3v18" stroke="#1B1A19" stroke-width="1.5"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 16a4 4 0 0 0 0-8v1.5a2.5 2.5 0 0 1 0 5V16Z" fill="#1B1A19"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 19a7 7 0 1 0 0-14v1.5a5.5 5.5 0 1 1 0 11V19Z" fill="#1B1A19"/>
+</svg>
