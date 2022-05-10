@@ -1,0 +1,5 @@
+<svg viewBox="0 0 16 16" fill="none">
+  <path d="M8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12Z" stroke="#1B1A19" stroke-width="1.5" stroke-miterlimit="10"/>
+  <path d="M8 5v3.5" stroke="#1B1A19" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8 11.5A.75.75 0 1 0 8 10a.75.75 0 0 0 0 1.5Z" fill="#1B1A19"/>
+</svg>

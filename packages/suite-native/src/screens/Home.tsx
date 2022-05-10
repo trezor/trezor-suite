@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Platform, SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
-import { Text, Box, Button } from '@trezor/atoms';
-import TrezorConnect from '@trezor/connect';
+import { Text, Box, Button, Icon } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -88,7 +87,11 @@ export const Home = () => {
                     <Box>
                         <Text variant="label">Label</Text>
                     </Box>
-                    <Box marginVertical="lg">
+                    <Box marginVertical="md">
+                        <Text>Icon:</Text>
+                        <Icon type="warningCircle" size="big" color="black" />
+                    </Box>
+                    <Box marginVertical="md">
                         <Button onPress={getFeatures} size="md" colorScheme="primary">
                             My Fancy Button
                         </Button>

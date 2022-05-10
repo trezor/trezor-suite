@@ -12,12 +12,12 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		5EA58567F7C34D4BB4135E94 /* TTSatoshi-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */; };
 		7699B88040F8A987B510C191 /* libPods-TrezorSuite-TrezorSuiteTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-TrezorSuite-TrezorSuiteTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		E603FAB37886431ABE0590DC /* TTSatoshi-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */; };
 		AE19C8EA249F4BC29A82736A /* TTSatoshi-DemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */; };
-		5EA58567F7C34D4BB4135E94 /* TTSatoshi-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */; };
 		B4528AB09CC346C49EB6347E /* TTSatoshi-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */; };
+		E603FAB37886431ABE0590DC /* TTSatoshi-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,13 +45,13 @@
 		5709B34CF0A7D63546082F79 /* Pods-TrezorSuite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-TrezorSuite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrezorSuite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Regular.otf"; path = "../../theme/fonts/TTSatoshi-Regular.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TrezorSuite/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; sourceTree = "<group>"; };
+		8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-DemiBold.otf"; path = "../../theme/fonts/TTSatoshi-DemiBold.otf"; sourceTree = "<group>"; };
+		92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Bold.otf"; path = "../../theme/fonts/TTSatoshi-Bold.otf"; sourceTree = "<group>"; };
+		A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Medium.otf"; path = "../../theme/fonts/TTSatoshi-Medium.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */ = {isa = PBXFileReference; name = "TTSatoshi-Bold.otf"; path = "../../theme/fonts/TTSatoshi-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */ = {isa = PBXFileReference; name = "TTSatoshi-DemiBold.otf"; path = "../../theme/fonts/TTSatoshi-DemiBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */ = {isa = PBXFileReference; name = "TTSatoshi-Medium.otf"; path = "../../theme/fonts/TTSatoshi-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */ = {isa = PBXFileReference; name = "TTSatoshi-Regular.otf"; path = "../../theme/fonts/TTSatoshi-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +114,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		80736439959D441D9BCFB197 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */,
+				8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */,
+				A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */,
+				69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -156,18 +168,6 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
-		};
-		80736439959D441D9BCFB197 /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-				92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */,
-				8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */,
-				A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */,
-				69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
