@@ -2,6 +2,14 @@ import { TOR_URLS } from '@suite-constants';
 import { getTorUrlIfAvailable, isTorDomain, isOnionUrl, toTorUrl } from '@suite-utils/tor';
 
 describe('tor', () => {
+    beforeAll(() => {
+        jest.spyOn(console, 'warn').mockImplementation();
+        jest.spyOn(console, 'error').mockImplementation();
+    });
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
     describe('getTorUrlIfAvailable', () => {
         const fixtures = [
             {

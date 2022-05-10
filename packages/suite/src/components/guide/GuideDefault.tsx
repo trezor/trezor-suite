@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { darken } from 'polished';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
-import { useActions, useAnalytics, useSelector } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { Icon, variables, useTheme } from '@trezor/components';
 import { Header, Content, ViewWrapper, GuideCategories, GuideSearch } from '@guide-components';
 
@@ -50,7 +51,6 @@ const FeedbackButtonRightIcon = styled(Icon)`
 `;
 
 export const GuideDefault = () => {
-    const analytics = useAnalytics();
     const theme = useTheme();
     const [searchActive, setSearchActive] = useState(false);
 
@@ -77,7 +77,7 @@ export const GuideDefault = () => {
                 onClick={() => {
                     setView('SUPPORT_FEEDBACK_SELECTION');
                     analytics.report({
-                        type: 'guide/feedback/navigation',
+                        type: EventType.GuideFeedbackNavigation,
                         payload: { type: 'overview' },
                     });
                 }}

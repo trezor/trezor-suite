@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useAnalytics, useSelector, useActions } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -16,7 +18,6 @@ const Version = styled.div`
 `;
 
 export const EarlyAccess = () => {
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.EarlyAccess);
 
     const { desktopUpdate } = useSelector(state => ({
@@ -29,14 +30,14 @@ export const EarlyAccess = () => {
 
     const setupEarlyAccess = useCallback(() => {
         analytics.report({
-            type: 'settings/general/goto/early-access',
+            type: EventType.SettingsGeneralGotoEarlyAccess,
             payload: {
                 allowPrerelease: desktopUpdate.allowPrerelease,
             },
         });
         openEarlyAccessSetup(desktopUpdate.allowPrerelease);
         desktopApi.cancelUpdate(); // stop downloading the update if it is in progress to prevent confusing state switching
-    }, [analytics, openEarlyAccessSetup, desktopUpdate.allowPrerelease]);
+    }, [openEarlyAccessSetup, desktopUpdate.allowPrerelease]);
 
     return (
         <SectionItem

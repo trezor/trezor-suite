@@ -1,7 +1,9 @@
 import React from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useAnalytics, useActions } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -14,7 +16,6 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.WipeDevice);
 
     return (
@@ -34,7 +35,7 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
                             type: 'wipe-device',
                         });
                         analytics.report({
-                            type: 'settings/device/goto/wipe',
+                            type: EventType.SettingsDeviceGotoWipe,
                         });
                     }}
                     variant="danger"

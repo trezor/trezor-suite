@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import TrezorConnect, { UI, RecoveryDevice } from '@trezor/connect';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { RECOVERY } from '@recovery-actions/constants';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
-import * as analyticsActions from '@suite-actions/analyticsActions';
 import { Dispatch, GetState } from '@suite-types';
 import { WordCount } from '@recovery-types';
 import { DEVICE } from '@suite-constants';
@@ -76,11 +77,9 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (!response.success) {
         dispatch(setError(response.payload.error));
-        dispatch(
-            analyticsActions.report({ type: 'check-seed/error', error: response.payload.code }),
-        );
+        analytics.report({ type: EventType.CheckSeedError, error: response.payload.code });
     } else {
-        dispatch(analyticsActions.report({ type: 'check-seed/success' }));
+        analytics.report({ type: EventType.CheckSeedSuccess });
     }
 
     dispatch(setStatus('finished'));

@@ -1,9 +1,10 @@
+import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
+
 import { DESKTOP_UPDATE } from '@suite-actions/constants';
 import { addToast } from '@suite-actions/notificationActions';
 import { Dispatch, GetState } from '@suite-types';
 import { UpdateState, UpdateWindow } from '@suite-reducers/desktopUpdateReducer';
-import * as analyticsActions from '@suite-actions/analyticsActions';
-import { AppUpdateEventStatus, getAppUpdatePayload } from '@suite-utils/analytics';
+import { getAppUpdatePayload } from '@suite-utils/analytics';
 
 import type { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 
@@ -55,13 +56,10 @@ export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetSta
     // update can fail even if it was downloaded successfully
     // TODO: Update successful status from electron layer
     const payload = getAppUpdatePayload(AppUpdateEventStatus.Downloaded, allowPrerelease, latest);
-    dispatch(
-        analyticsActions.report({
-            type: 'app-update',
-            payload,
-        }),
-    );
-
+    analytics.report({
+        type: EventType.AppUpdate,
+        payload,
+    });
     dispatch({
         type: DESKTOP_UPDATE.READY,
         payload: info,
@@ -79,12 +77,10 @@ export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) =>
         dispatch(addToast({ type: 'auto-updater-error', state }));
 
         const payload = getAppUpdatePayload(AppUpdateEventStatus.Error, allowPrerelease, latest);
-        dispatch(
-            analyticsActions.report({
-                type: 'app-update',
-                payload,
-            }),
-        );
+        analytics.report({
+            type: EventType.AppUpdate,
+            payload,
+        });
     }
 
     dispatch({

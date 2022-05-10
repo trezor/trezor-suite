@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { variables } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/utils';
-import { useAnalytics } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
 import { FreeFocusInside } from 'react-focus-lock';
 
@@ -34,12 +34,11 @@ const Wrapper = styled.button<{ isGuideOpen?: boolean; isModalOpen?: boolean }>`
 
 export const GuideButton = () => {
     const { openGuide, isGuideOpen, isModalOpen } = useGuide();
-    const analytics = useAnalytics();
 
     const handleButtonClick = () => {
         openGuide();
         analytics.report({
-            type: 'menu/guide',
+            type: EventType.MenuGuide,
         });
     };
 

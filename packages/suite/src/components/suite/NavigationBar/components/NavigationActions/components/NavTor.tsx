@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionItem } from './ActionItem';
-import { useActions, useAnalytics } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
@@ -17,7 +18,6 @@ interface TorProps {
 }
 
 export const NavTor = ({ isActive }: TorProps) => {
-    const analytics = useAnalytics();
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -30,7 +30,7 @@ export const NavTor = ({ isActive }: TorProps) => {
                 indicator={isActive ? 'check' : undefined}
                 onClick={() => {
                     goto('settings-index', { anchor: SettingsAnchor.Tor });
-                    analytics.report({ type: 'menu/goto/tor' });
+                    analytics.report({ type: EventType.MenuGotoTor });
                 }}
             />
         </Wrapper>

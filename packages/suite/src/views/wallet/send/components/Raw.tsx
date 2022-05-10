@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { Card, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
-import { useActions, useAnalytics } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
@@ -40,7 +42,6 @@ const ButtonSend = styled(Button)`
 `;
 
 const Raw = ({ network }: { network: Network }) => {
-    const analytics = useAnalytics();
     const { register, getValues, setValue, errors } = useForm({
         mode: 'onChange',
         defaultValues: {
@@ -105,7 +106,7 @@ const Raw = ({ network }: { network: Network }) => {
                         if (result) {
                             setValue(inputName, '');
                             analytics.report({
-                                type: 'send-raw-transaction',
+                                type: EventType.SendRawTransaction,
                                 payload: {
                                     networkSymbol: network.symbol,
                                 },

@@ -1,10 +1,11 @@
 import React, { createRef, useState } from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { variables } from '@trezor/components';
-import { useDevice, useAnalytics, useActions } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { getDeviceModel } from '@suite-utils/device';
@@ -51,7 +52,6 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
         applySettings: deviceSettingsActions.applySettings,
         openModal: modalActions.openModal,
     });
-    const analytics = useAnalytics();
     const fileInputElement = createRef<HTMLInputElement>();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Homescreen);
 
@@ -77,7 +77,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
         const imageResolution = await getImageResolution(dataUrl);
         analytics.report({
-            type: 'settings/device/background',
+            type: EventType.SettingsDeviceBackground,
             payload: {
                 format: image.type,
                 size: image.size,
@@ -134,7 +134,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             if (fileInputElement.current) {
                                 fileInputElement.current.click();
                                 analytics.report({
-                                    type: 'settings/device/goto/background',
+                                    type: EventType.SettingsDeviceGotoBackground,
                                     payload: { custom: true },
                                 });
                             }
@@ -151,7 +151,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                 device,
                             });
                             analytics.report({
-                                type: 'settings/device/goto/background',
+                                type: EventType.SettingsDeviceGotoBackground,
                                 payload: { custom: false },
                             });
                         }}

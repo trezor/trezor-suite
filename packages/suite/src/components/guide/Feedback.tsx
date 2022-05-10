@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { CharacterCount, CollapsibleBox, Translation } from '@suite-components';
 import { Textarea, Select, variables, Button } from '@trezor/components';
-import { useActions, useAnalytics, useDevice, useSelector } from '@suite-hooks';
+import { useActions, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-types/guide';
@@ -116,8 +117,6 @@ type FeedbackProps = {
 };
 
 export const Feedback = ({ type }: FeedbackProps) => {
-    const analytics = useAnalytics();
-
     const { device } = useDevice();
     const { setView, sendFeedback } = useActions({
         setView: guideActions.setView,
@@ -218,20 +217,10 @@ export const Feedback = ({ type }: FeedbackProps) => {
         }
         setView('GUIDE_DEFAULT');
         analytics.report({
-            type: 'guide/feedback/submit',
+            type: EventType.GuideFeedbackSubmit,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
-    }, [
-        analytics,
-        device,
-        firmwareType,
-        type,
-        setView,
-        sendFeedback,
-        description,
-        category,
-        rating?.id,
-    ]);
+    }, [device, firmwareType, type, setView, sendFeedback, description, category, rating?.id]);
 
     return (
         <ViewWrapper>

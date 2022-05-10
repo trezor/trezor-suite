@@ -1,9 +1,11 @@
-import { Translation, Notifications } from '@suite-components';
-import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import React, { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
+import { Translation, Notifications } from '@suite-components';
+import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import { ActionItem } from './ActionItem';
-import { useActions, useAnalytics } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 
 const Wrapper = styled.div`
@@ -29,8 +31,6 @@ export const NavNotifications = ({
     indicator = false,
     isActive = false,
 }: NavNotificationsProps) => {
-    const analytics = useAnalytics();
-
     // use "opened" state to decide if "active" styles on ActionItem should be applied
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
@@ -50,13 +50,13 @@ export const NavNotifications = ({
             }
 
             analytics.report({
-                type: 'menu/notifications/toggle',
+                type: EventType.MenuNotificationsToggle,
                 payload: {
                     value: isToggled,
                 },
             });
         },
-        [resetUnseen, analytics],
+        [resetUnseen],
     );
 
     return (

@@ -141,14 +141,6 @@ export const submitRequestForm = async (
     }
 };
 
-/**
- * Use this function to add event listener that will be fired before application is closed
- * @param callback
- */
-export const setOnBeforeUnloadListener = (callback: () => void) => {
-    window.addEventListener('beforeunload', callback);
-};
-
 const getDarkThemeQuery = (): MediaQueryList | undefined => {
     const matchMedia = window?.matchMedia;
     return matchMedia && matchMedia('(prefers-color-scheme: dark)');

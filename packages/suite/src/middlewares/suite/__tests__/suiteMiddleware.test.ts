@@ -33,7 +33,6 @@ const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => (
             sessionId: '2',
             enabled: false,
             confirmed: false,
-            sessionStart: 1,
         },
     }),
     messageSystem: {

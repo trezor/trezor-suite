@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -11,7 +13,7 @@ import {
     MetadataLabeling,
     HiddenPlaceholder,
 } from '@suite-components';
-import { useAnalytics, useSelector, useActions } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 const InstanceType = styled.div`
@@ -121,7 +123,6 @@ export const WalletInstance = ({
         localCurrency,
         fiat.coins,
     );
-    const analytics = useAnalytics();
     const isSelected = enabled && selected && !!discoveryProcess;
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
@@ -197,8 +198,8 @@ export const WalletInstance = ({
                                 toggleRememberDevice(instance);
                                 analytics.report({
                                     type: instance.remember
-                                        ? 'switch-device/forget'
-                                        : 'switch-device/remember',
+                                        ? EventType.SwitchDeviceForget
+                                        : EventType.SwitchDeviceRemember,
                                 });
                             }}
                             dataTest={`${dataTestBase}/toggle-remember-switch`}
@@ -215,7 +216,7 @@ export const WalletInstance = ({
                             onClick={() => {
                                 forgetDevice(instance);
                                 analytics.report({
-                                    type: 'switch-device/eject',
+                                    type: EventType.SwitchDeviceEject,
                                 });
                             }}
                         />

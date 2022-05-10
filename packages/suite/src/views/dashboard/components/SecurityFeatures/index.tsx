@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { AcquiredDevice } from '@suite-types';
-import { useDevice, useDiscovery, useAnalytics, useActions, useSelector } from '@suite-hooks';
+import { useDevice, useDiscovery, useActions, useSelector } from '@suite-hooks';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
@@ -45,7 +47,6 @@ const SecurityFeatures = () => {
     const { getDiscoveryStatus } = useDiscovery();
     const discoveryStatus = getDiscoveryStatus();
     const isDisabledGlobal = discoveryStatus && discoveryStatus.status === 'loading';
-    const analytics = useAnalytics();
 
     const { discreetModeCompleted, securityStepsHidden } = flags;
     let needsBackup;
@@ -80,7 +81,7 @@ const SecurityFeatures = () => {
                   action: () => {
                       goto('backup-index');
                       analytics.report({
-                          type: 'dashboard/security-card/create-backup',
+                          type: EventType.DashboardSecurityCardCreateBackup,
                       });
                   },
                   isDisabled: !!backupFailed,
@@ -96,7 +97,7 @@ const SecurityFeatures = () => {
                   action: () => {
                       goto('settings-device', { anchor: SettingsAnchor.CheckRecoverySeed });
                       analytics.report({
-                          type: 'dashboard/security-card/seed-link',
+                          type: EventType.DashboardSecurityCardSeedLink,
                       });
                   },
               },
@@ -114,7 +115,7 @@ const SecurityFeatures = () => {
                   action: () => {
                       changePin({});
                       analytics.report({
-                          type: 'dashboard/security-card/set-pin',
+                          type: EventType.DashboardSecurityCardSetPin,
                       });
                   },
                   isDisabled: isDeviceLocked,
@@ -130,7 +131,7 @@ const SecurityFeatures = () => {
                   action: () => {
                       goto('settings-device', { anchor: SettingsAnchor.ChangePin });
                       analytics.report({
-                          type: 'dashboard/security-card/change-pin',
+                          type: EventType.DashboardSecurityCardChangePin,
                       });
                   },
               },
@@ -150,7 +151,7 @@ const SecurityFeatures = () => {
                           use_passphrase: true,
                       });
                       analytics.report({
-                          type: 'dashboard/security-card/enable-passphrase',
+                          type: EventType.DashboardSecurityCardEnablePassphrase,
                       });
                   },
                   dataTest: 'hidden-wallet',
@@ -166,7 +167,7 @@ const SecurityFeatures = () => {
                   action: () => {
                       createDeviceInstance(device as AcquiredDevice);
                       analytics.report({
-                          type: 'dashboard/security-card/create-hidden-wallet',
+                          type: EventType.DashboardSecurityCardCreateHiddenWallet,
                       });
                   },
                   dataTest: 'create-hidden-wallet',
@@ -185,7 +186,7 @@ const SecurityFeatures = () => {
                   action: () => {
                       setDiscreetMode(true);
                       analytics.report({
-                          type: 'dashboard/security-card/enable-discreet',
+                          type: EventType.DashboardSecurityCardEnableDiscreet,
                       });
                   },
                   dataTest: 'discreet',
@@ -204,7 +205,7 @@ const SecurityFeatures = () => {
                   action: () => {
                       setDiscreetMode(!discreetMode);
                       analytics.report({
-                          type: 'dashboard/security-card/toggle-discreet',
+                          type: EventType.DashboardSecurityCardToggleDiscreet,
                           payload: {
                               value: !discreetMode,
                           },

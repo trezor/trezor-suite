@@ -99,6 +99,7 @@ const updateStore = (store: ReturnType<typeof mockStore>) => {
 describe('Firmware Actions', () => {
     beforeAll(() => {
         jest.spyOn(console, 'warn').mockImplementation();
+        jest.spyOn(console, 'error').mockImplementation();
     });
     afterAll(() => {
         jest.clearAllMocks();

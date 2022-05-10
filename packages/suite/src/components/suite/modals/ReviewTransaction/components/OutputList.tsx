@@ -1,11 +1,13 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { formatNetworkAmount, isTestnet } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { copyToClipboard, download } from '@suite-utils/dom';
-import { useActions, useAnalytics } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import Detail from './Detail';
 import Indicator from './Indicator';
 import Output, { OutputProps } from './Output';
@@ -112,10 +114,9 @@ const OutputList = ({
     const { options, selectedFee } = precomposedForm;
     const broadcastEnabled = options.includes('broadcast');
 
-    const analytics = useAnalytics();
     const reportTransactionCreatedEvent = (action: 'sent' | 'copied' | 'downloaded' | 'replaced') =>
         analytics.report({
-            type: 'transaction-created',
+            type: EventType.TransactionCreated,
             payload: {
                 action,
                 symbol,

@@ -65,6 +65,13 @@ const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
 };
 
 describe('Recovery Actions', () => {
+    beforeAll(() => {
+        jest.spyOn(console, 'error').mockImplementation();
+    });
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
     it('setWordsCount', async () => {
         const store = mockStore(getInitialState());
 

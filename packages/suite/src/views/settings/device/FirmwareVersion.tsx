@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { FIRMWARE_COMMIT_URL } from '@suite-constants/urls';
-import { useDevice, useAnalytics, useActions } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { getFwVersion, isBitcoinOnly, getFwUpdateVersion } from '@suite-utils/device';
 import { Button, Tooltip } from '@trezor/components';
@@ -60,7 +61,6 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareVersion);
 
     if (!device?.features) {
@@ -117,7 +117,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                     onClick={() => {
                         goto('firmware-index', { params: { cancelable: true } });
                         analytics.report({
-                            type: 'settings/device/goto/firmware',
+                            type: EventType.SettingsDeviceGotoFirmware,
                         });
                     }}
                     data-test="@settings/device/update-button"

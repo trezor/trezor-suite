@@ -1,5 +1,7 @@
 import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
+
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { isOnionUrl } from '@suite-utils/tor';
@@ -166,6 +168,13 @@ export const toggleTor = (enable: boolean) => async (dispatch: Dispatch, getStat
         if (!res) return;
     }
     desktopApi.toggleTor(enable);
+
+    analytics.report({
+        type: EventType.MenuToggleTor,
+        payload: {
+            value: enable,
+        },
+    });
 };
 
 export const setOnionLinks = (payload: boolean): SuiteAction => ({

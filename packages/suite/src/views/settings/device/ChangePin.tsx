@@ -1,8 +1,9 @@
 import React from 'react';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { useAnalytics, useActions } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -12,7 +13,6 @@ interface ChangePinProps {
 }
 
 export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
-    const analytics = useAnalytics();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.ChangePin);
 
     const { changePin } = useActions({
@@ -34,7 +34,7 @@ export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
                     onClick={() => {
                         changePin({ remove: false });
                         analytics.report({
-                            type: 'settings/device/change-pin',
+                            type: EventType.SettingsDeviceChangePin,
                         });
                     }}
                     isDisabled={isDeviceLocked}

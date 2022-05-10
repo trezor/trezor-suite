@@ -1,10 +1,11 @@
-import { useActions, useSelector, useAnalytics } from '@suite-hooks';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
+import { useActions, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { getNodeById } from '@suite-utils/guide';
 import { useGuide } from '@guide-hooks';
 
 export const useGuideOpenNode = () => {
-    const analytics = useAnalytics();
     const { isGuideOpen, openGuide } = useGuide();
 
     const { openNode } = useActions({
@@ -33,7 +34,7 @@ export const useGuideOpenNode = () => {
         }
 
         analytics.report({
-            type: 'guide/tooltip-link/navigation',
+            type: EventType.GuideTooltipLinkNavigation,
             payload: {
                 id: node.id,
             },

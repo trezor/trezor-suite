@@ -1,7 +1,7 @@
 import TrezorConnect, { Device } from '@trezor/connect';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import { report, AnalyticsEvent } from '@suite-actions/analyticsActions';
 import { getBootloaderVersion, getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { resolveStaticPath } from '@trezor/utils';
 import { addToast } from '@suite-actions/notificationActions';
@@ -70,9 +70,7 @@ const firmwareInstall =
         const fromBlVersion = getBootloaderVersion(device);
 
         let updateResponse: Await<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
-        let analyticsPayload: Partial<
-            Extract<AnalyticsEvent, { type: 'device-update-firmware' }>['payload']
-        >;
+        let analyticsPayload;
 
         if (fwBinary) {
             console.warn(`Installing custom firmware`);
@@ -128,17 +126,15 @@ const firmwareInstall =
             }
         }
 
-        dispatch(
-            report({
-                type: 'device-update-firmware',
-                payload: {
-                    fromFwVersion,
-                    fromBlVersion,
-                    error: !updateResponse.success ? updateResponse.payload.error : '',
-                    ...analyticsPayload,
-                },
-            }),
-        );
+        analytics.report({
+            type: EventType.DeviceUpdateFirmware,
+            payload: {
+                fromFwVersion,
+                fromBlVersion,
+                error: !updateResponse.success ? updateResponse.payload.error : '',
+                ...analyticsPayload,
+            },
+        });
 
         if (!updateResponse.success) {
             return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });

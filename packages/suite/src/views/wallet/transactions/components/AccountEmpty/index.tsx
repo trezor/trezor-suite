@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { variables, H2, Button, Card } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
-import { useActions, useSelector, useAnalytics } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -75,7 +77,6 @@ const AccountEmpty = (props: Props) => {
     });
     const bip43 = getBip43Type(props.account.path);
     const networkSymbol = props.account.symbol.toUpperCase();
-    const analytics = useAnalytics();
 
     return (
         <Wrapper>
@@ -112,7 +113,7 @@ const AccountEmpty = (props: Props) => {
                         onClick={() => {
                             goto('wallet-receive', { preserveParams: true });
                             analytics.report({
-                                type: 'accounts/empty-account/receive',
+                                type: EventType.AccountsEmptyAccountReceive,
                                 payload: {
                                     symbol: networkSymbol.toLowerCase(),
                                 },
@@ -127,7 +128,7 @@ const AccountEmpty = (props: Props) => {
                         onClick={() => {
                             goto('wallet-coinmarket-buy', { preserveParams: true });
                             analytics.report({
-                                type: 'accounts/empty-account/buy',
+                                type: EventType.AccountsEmptyAccountBuy,
                                 payload: {
                                     symbol: networkSymbol.toLowerCase(),
                                 },

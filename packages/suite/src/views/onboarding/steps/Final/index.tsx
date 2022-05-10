@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Button, Icon, variables, Input, Dropdown, DropdownRef } from '@trezor/components';
 import { Translation, HomescreenGallery } from '@suite-components';
 import { DeviceAnimation, OnboardingStepBox } from '@onboarding-components';
-import { useActions, useDevice, useSelector, useAnalytics } from '@suite-hooks';
+import { useActions, useDevice, useSelector } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from '@suite-constants/device';
 import { getDeviceModel } from '@suite-utils/device';
@@ -125,7 +126,6 @@ const Wrapper = styled.div<{ shouldWrap?: boolean }>`
 
 export const FinalStep = () => {
     const dropdownRef = useRef<DropdownRef>();
-    const analytics = useAnalytics();
     const { applySettings, goto } = useActions({
         applySettings: deviceSettingsActions.applySettings,
         goto: routerActions.goto,
@@ -255,7 +255,7 @@ export const FinalStep = () => {
                             delete payload.startTime;
 
                             analytics.report({
-                                type: 'device-setup-completed',
+                                type: EventType.DeviceSetupCompleted,
                                 payload,
                             });
                         }}

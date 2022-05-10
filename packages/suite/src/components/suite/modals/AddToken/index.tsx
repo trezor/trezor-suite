@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { Input, Button, Tooltip } from '@trezor/components';
 import * as tokenActions from '@wallet-actions/tokenActions';
 import { Modal } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
-import { useActions, useSelector, useTranslation, useAnalytics } from '@suite-hooks';
+import { useActions, useSelector, useTranslation } from '@suite-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
 import { Account } from '@wallet-types';
 
@@ -30,7 +32,6 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
     });
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { account } = selectedAccount;
-    const analytics = useAnalytics();
 
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {
@@ -114,7 +115,7 @@ export const AddToken = ({ onCancel }: AddTokenProps) => {
                             onCancel();
 
                             analytics.report({
-                                type: 'add-token',
+                                type: EventType.AddToken,
                                 payload: {
                                     networkSymbol: account.symbol,
                                     addedNth: account.tokens ? account.tokens.length + 1 : 0,

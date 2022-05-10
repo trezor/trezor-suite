@@ -5,7 +5,7 @@ import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import type { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import type { BackendSettings } from '@wallet-reducers/blockchainReducer';
 import type { SuiteState } from '@suite-reducers/suiteReducer';
-import type { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
+import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { FormState } from '@wallet-types/sendForm';
 import type { AcquiredDevice } from '@suite-types';
 import type { MetadataState } from '@suite-types/metadata';
