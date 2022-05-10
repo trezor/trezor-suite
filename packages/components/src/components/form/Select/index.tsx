@@ -385,11 +385,11 @@ export const Select = ({
 
     const handleOnChange = useCallback<Required<NamedProps>['onChange']>(
         (value, { action }) => {
+            onChange?.(value);
+
             if (action === 'select-option') {
                 selectRef.current?.blur();
             }
-
-            onChange?.(value);
 
             return null;
         },
