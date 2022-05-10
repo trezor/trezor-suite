@@ -1,0 +1,17 @@
+{
+    "name": "@trezor/analytics",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@trezor/utils": "*"
+    }
+}
