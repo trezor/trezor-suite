@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import FocusLock from 'react-focus-lock';
+import { FreeFocusInside } from 'react-focus-lock';
 
 import { variables, Backdrop } from '@trezor/components';
 import { useOnce, useSelector } from '@suite-hooks';
@@ -64,17 +64,13 @@ export const GuidePanel = () => {
         activeView: state.guide.view,
     }));
 
-    const { isGuideOpen, isGuideOnTop, isModalOpen, closeGuide } = useGuide();
+    const { isGuideOpen, closeGuide } = useGuide();
 
     // if guide is open, do not animate guide opening if transitioning between onboarding, welcome and suite layout
     const isFirstRender = useOnce(isGuideOpen, false);
 
     return (
-        <FocusLock
-            disabled={!isGuideOpen || (!isGuideOnTop && !isModalOpen)}
-            group="overlay"
-            autoFocus={false}
-        >
+        <FreeFocusInside>
             {isGuideOpen && <StyledBackdrop onClick={closeGuide} />}
 
             <GuideWrapper>
@@ -112,6 +108,6 @@ export const GuidePanel = () => {
                     )}
                 </AnimatePresence>
             </GuideWrapper>
-        </FocusLock>
+        </FreeFocusInside>
     );
 };

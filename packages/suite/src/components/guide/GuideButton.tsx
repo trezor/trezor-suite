@@ -5,6 +5,7 @@ import { variables } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/utils';
 import { useAnalytics } from '@suite-hooks';
 import { useGuide } from '@guide-hooks';
+import { FreeFocusInside } from 'react-focus-lock';
 
 const Wrapper = styled.button<{ isGuideOpen?: boolean; isModalOpen?: boolean }>`
     display: flex;
@@ -43,18 +44,20 @@ export const GuideButton = () => {
     };
 
     return (
-        <Wrapper
-            isModalOpen={isModalOpen}
-            isGuideOpen={isGuideOpen}
-            data-test="@guide/button-open"
-            onClick={handleButtonClick}
-        >
-            <img
-                src={resolveStaticPath('/images/suite/lightbulb.svg')}
-                width="18"
-                height="18"
-                alt=""
-            />
-        </Wrapper>
+        <FreeFocusInside>
+            <Wrapper
+                isModalOpen={isModalOpen}
+                isGuideOpen={isGuideOpen}
+                data-test="@guide/button-open"
+                onClick={handleButtonClick}
+            >
+                <img
+                    src={resolveStaticPath('/images/suite/lightbulb.svg')}
+                    width="18"
+                    height="18"
+                    alt=""
+                />
+            </Wrapper>
+        </FreeFocusInside>
     );
 };
