@@ -1,5 +1,7 @@
 import { css } from 'styled-components';
 
+import { variables } from '@trezor/components';
+
 export const style = css`
     .rdrCalendarWrapper {
         box-sizing: border-box;
@@ -165,7 +167,7 @@ export const style = css`
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 1;
+        z-index: ${variables.Z_INDEX.BASE};
     }
 
     .rdrSelected,

@@ -42,7 +42,7 @@ const FooterBox = styled.div`
     min-width: 345px;
     bottom: 30px;
     box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
-    z-index: 1;
+    z-index: ${variables.Z_INDEX.TOOLTIP};
 
     background: ${props => props.theme.BG_WHITE};
     overflow: hidden;

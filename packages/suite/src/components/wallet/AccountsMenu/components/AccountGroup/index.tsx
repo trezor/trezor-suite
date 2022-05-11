@@ -12,7 +12,6 @@ const Wrapper = styled.div`
 const HeaderWrapper = styled.div`
     position: sticky;
     top: 0;
-    z-index: 1;
     background: ${props => props.theme.BG_WHITE};
 `;
 

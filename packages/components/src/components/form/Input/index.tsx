@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 
-import { FONT_SIZE } from '../../../config/variables';
+import { FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { InputState, InputVariant } from '../../../support/types';
 import { useTheme } from '../../../utils';
 import { Icon } from '../../Icon';
@@ -84,7 +84,7 @@ const Overlay = styled.div`
     border-radius: 3px;
     position: absolute;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
-    z-index: 1;
+    z-index: ${Z_INDEX.BASE};
 `;
 
 const Row = styled.div<Pick<InputProps, 'errorPosition'>>`

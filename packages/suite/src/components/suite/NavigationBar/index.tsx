@@ -41,7 +41,6 @@ const ExpandedMobileNavigation = styled.div`
     position: absolute;
     flex-direction: column;
     background: ${({ theme }) => theme.BG_WHITE};
-    z-index: 3;
     width: 100%;
     height: 100%;
 `;

@@ -22,7 +22,6 @@ const Overlay = styled.div<{ variant: OverlayVariant }>`
     margin: -8px;
     border-radius: 3px;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, ${getOverlayColor} 160px);
-    z-index: 1;
 `;
 
 const DerivationPathColumn = styled.div`

@@ -36,19 +36,17 @@ export const LAYOUT_SIZE = {
 } as const;
 
 export const Z_INDEX = {
-    BASE: 0,
-    BANNER: 3,
-    DISCOVERY_PROGRESS: 29, // should be below NAVIGATION_BAR
+    TOOLTIP: 60, // above all content to be always fully visible when toggled
+    GUIDE: 50, // above MODAL to stay accessible when modal is open
+    GUIDE_BUTTON: 49, // below GUIDE to get covered by the guide when it is opening
+    MODAL: 40, // above other suite content to disable interating with it
     NAVIGATION_BAR: 30,
-    GUIDE_PANEL: 11,
-    GUIDE_BUTTON: 10,
-    MODAL: 10000,
-    BANNER_ON_TOP: 10001,
-    GUIDE_BUTTON_BESIDE_MODAL: 10001,
-    GUIDE_PANEL_BESIDE_MODAL: 10002,
-    DROPDOWN_MENU: 10003, // should lay above GUIDE_PANEL
-    TOOLTIP: 10003, // should lay above GUIDE_PANEL
-    TOAST_CONTAINER: 10003, // should lay above GUIDE_PANEL
+    DISCOVERY_PROGRESS: 29, // below NAVIGATION_BAR to stay below notifications
+    EXPANDABLE_NAVIGATION_HEADER: 21, // above EXPANDABLE_NAVIGATION to cover its box-shadow
+    EXPANDABLE_NAVIGATION: 20, // above PAGE_HEADER to spread over it
+    PAGE_HEADER: 11, // above STICKY_BAR to hide it when the page is on top
+    STICKY_BAR: 10, // above page content to scroll over it
+    BASE: 1, // above static content to be fully visible
 } as const;
 
 export const FONT_SIZE = {

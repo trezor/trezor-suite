@@ -22,7 +22,7 @@ export const SECONDARY_PANEL_HEIGHT = '60px';
 
 const Wrapper = styled.div<{ subRoute: boolean | undefined; inView?: boolean }>`
     width: 100%;
-    z-index: 3;
+    z-index: ${variables.Z_INDEX.STICKY_BAR};
     display: flex;
     background: ${props => props.theme.BG_LIGHT_GREY};
     justify-content: center;

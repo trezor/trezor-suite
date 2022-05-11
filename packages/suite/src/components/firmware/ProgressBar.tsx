@@ -36,7 +36,6 @@ const Percentage = styled.div`
 const GreenLine = styled.div<{ width: number }>`
     background: ${props => props.theme.TYPE_GREEN};
     width: ${props => props.width}%;
-    z-index: 3;
     transition: all 0.8s;
 
     height: 3px;
