@@ -1,7 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { AnimatePresence } from 'framer-motion';
 import { variables, Button } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import { useActions } from '@suite-hooks';
@@ -299,49 +298,6 @@ const TransactionItem = React.memo(
                                                 )}
                                             </React.Fragment>
                                         ))}
-                                        <AnimatePresence initial={false}>
-                                            {limit > 0 &&
-                                                allOutputs
-                                                    .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                                    .map((t, i) => (
-                                                        <React.Fragment key={i}>
-                                                            {t.type === 'target' ? (
-                                                                <Target
-                                                                    target={t.payload}
-                                                                    transaction={transaction}
-                                                                    useAnimation
-                                                                    isLast={
-                                                                        // if list is not fully expanded, an index of last is limit (num of currently showed items) - 1,
-                                                                        // otherwise the index is calculated as num of all targets - num of targets that are always shown (DEFAULT_LIMIT) - 1
-                                                                        allOutputs.length >
-                                                                        limit + DEFAULT_LIMIT
-                                                                            ? i === limit - 1
-                                                                            : i ===
-                                                                              allOutputs.length -
-                                                                                  DEFAULT_LIMIT -
-                                                                                  1
-                                                                    }
-                                                                    accountMetadata={
-                                                                        accountMetadata
-                                                                    }
-                                                                    accountKey={accountKey}
-                                                                />
-                                                            ) : (
-                                                                <TokenTransfer
-                                                                    transfer={t.payload}
-                                                                    transaction={transaction}
-                                                                    useAnimation
-                                                                    isLast={
-                                                                        i ===
-                                                                        allOutputs.length -
-                                                                            DEFAULT_LIMIT -
-                                                                            1
-                                                                    }
-                                                                />
-                                                            )}
-                                                        </React.Fragment>
-                                                    ))}
-                                        </AnimatePresence>
                                     </>
                                 ) : null}
 

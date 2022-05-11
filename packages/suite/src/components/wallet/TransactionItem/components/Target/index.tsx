@@ -27,7 +27,6 @@ interface TokenTransferProps {
     transfer: ArrayElement<WalletAccountTransaction['tokens']>;
     transaction: WalletAccountTransaction;
     singleRowLayout?: boolean;
-    useAnimation?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
 }
@@ -59,7 +58,6 @@ interface TargetProps {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     transaction: WalletAccountTransaction;
     singleRowLayout?: boolean;
-    useAnimation?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
     accountKey: string;
