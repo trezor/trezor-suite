@@ -15,21 +15,23 @@ type FirmwareUpdateCommon = {
     subsequentInstalling: boolean; // Used to reset state of progress bar when installing subsequent update right after an intermediary one
 };
 
+export type FirmwareStatus =
+    | 'initial' // initial state
+    | 'check-seed' // ask user, if has seed properly backed up
+    | 'waiting-for-bootloader' // navigate user into bootloader mode
+    | 'started' // progress - firmware update has started, waiting for events from trezor-connect
+    | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
+    | 'installing' // progress - firmware is being installed
+    | 'partially-done' // progress - some old t1 firmwares can't update to the latest version. This should be handled by intermediary fw now and it shouldn't even be triggered in real world, but just to be safe let's keep it.
+    | 'wait-for-reboot' // progress - model t2 is restarting after firmware update
+    | 'unplug' // progress - user is asked to reconnect device (t1)
+    | 'reconnect-in-normal' // progress - after unplugging device from previous step, user is asked to connect it again
+    | 'done'; // firmware successfully installed
+
 export type FirmwareUpdateState =
     | (FirmwareUpdateCommon & {
           error: undefined;
-          status:
-              | 'initial' // initial state
-              | 'check-seed' // ask user, if has seed properly backed up
-              | 'waiting-for-bootloader' // navigate user into bootloader mode
-              | 'started' // progress - firmware update has started, waiting for events from @trezor/connect
-              | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
-              | 'installing' // progress - firmware is being installed
-              | 'partially-done' // progress - some old t1 firmwares can't update to the latest version. This should be handled by intermediary fw now and it shouldn't even be triggered in real world, but just to be safe let's keep it.
-              | 'wait-for-reboot' // progress - model t2 is restarting after firmware update
-              | 'unplug' // progress - user is asked to reconnect device (t1)
-              | 'reconnect-in-normal' // progress - after unplugging device from previous step, user is asked to connect it again
-              | 'done'; // firmware successfully installed
+          status: FirmwareStatus;
       })
     | (FirmwareUpdateCommon & {
           status: 'error';

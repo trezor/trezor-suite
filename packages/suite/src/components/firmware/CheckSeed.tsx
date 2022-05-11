@@ -6,17 +6,15 @@ import { Translation } from '@suite-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { P } from '@firmware-components';
 
-const CheckboxRow = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+const StyledChechbox = styled(Checkbox)`
+    margin: 16px 0;
 `;
 
-type Props = {
+type CheckSeedStepProps = {
     onSuccess: () => void;
 };
 
-const CheckSeedStep = ({ onSuccess }: Props) => {
+export const CheckSeedStep = ({ onSuccess }: CheckSeedStepProps) => {
     const { device } = useDevice();
     const { toggleHasSeed, hasSeed } = useFirmware();
 
@@ -48,7 +46,7 @@ const CheckSeedStep = ({ onSuccess }: Props) => {
             image="FIRMWARE"
             heading={heading}
             description={description}
-            outerActions={
+            innerActions={
                 <Button
                     onClick={onSuccess}
                     data-test="@firmware/confirm-seed-button"
@@ -60,17 +58,13 @@ const CheckSeedStep = ({ onSuccess }: Props) => {
             disableConfirmWrapper
             nested
         >
-            <CheckboxRow>
-                <Checkbox
-                    isChecked={hasSeed}
-                    onClick={toggleHasSeed}
-                    data-test="@firmware/confirm-seed-checkbox"
-                >
-                    <P>{checkbox}</P>
-                </Checkbox>
-            </CheckboxRow>
+            <StyledChechbox
+                isChecked={hasSeed}
+                onClick={toggleHasSeed}
+                data-test="@firmware/confirm-seed-checkbox"
+            >
+                <P>{checkbox}</P>
+            </StyledChechbox>
         </OnboardingStepBox>
     );
 };
-
-export { CheckSeedStep };
