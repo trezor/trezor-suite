@@ -51,20 +51,7 @@ const RightBottom = styled.div`
     margin-left: 50px;
     padding: 20px 0 0 0;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    position: relative;
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    &:after {
-        position: absolute;
-        content: '';
-        width: calc(100% + 60px);
-        left: -60px;
-        top: -21px;
-        height: 20px;
-        background: linear-gradient(transparent, ${props => props.theme.BG_WHITE});
-        z-index: 1;
-    }
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         margin-left: 0px;
