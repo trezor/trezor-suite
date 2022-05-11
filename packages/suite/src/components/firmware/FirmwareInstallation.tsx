@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Button } from '@trezor/components';
 import { getTextForStatus } from '@firmware-utils';
 import { Translation, WebusbButton } from '@suite-components';
@@ -8,7 +8,7 @@ import { OnboardingStepBox } from '@onboarding-components';
 import { TrezorDevice } from '@suite-types';
 import ProgressBar from './ProgressBar';
 
-interface Props {
+interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
@@ -17,12 +17,13 @@ interface Props {
     customFirmware?: boolean;
     onSuccess: () => void;
 }
-const FirmwareInstallation = ({
+
+export const FirmwareInstallation = ({
     cachedDevice,
     standaloneFwUpdate,
     customFirmware,
     onSuccess,
-}: Props) => {
+}: FirmwareInstallationProps) => {
     const { device } = useDevice();
     const { status, installingProgress, resetReducer, isWebUSB, subsequentInstalling } =
         useFirmware();
@@ -30,13 +31,13 @@ const FirmwareInstallation = ({
     const statusIntlId = getTextForStatus(status);
     const statusText = statusIntlId ? <Translation id={statusIntlId} /> : null;
 
-    const getContinueAction = () => {
+    const getContinueAction = useCallback(() => {
         if (status === 'done') {
             onSuccess();
         } else {
             resetReducer();
         }
-    };
+    }, [status, onSuccess, resetReducer]);
 
     const getFakeProgressDuration = () => {
         if (cachedDevice?.firmware === 'none') {
@@ -46,6 +47,31 @@ const FirmwareInstallation = ({
         // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
         return cachedDevice?.features?.major_version === 1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on T2
     };
+
+    const InnerActionComponent = useMemo(() => {
+        switch (status) {
+            case 'wait-for-reboot':
+                // Device needs to be paired twice when using web usb transport.
+                // Once in bootloader mode and once in normal mode. Without 2nd pairing step would get stuck at waiting for
+                // a reboot in case of fresh device which is, from the start, in bootloader mode (thus first time paired as a bootloader device).
+                // Suite won't detect such a restarted device, which will be now in normal mode, till it is paired again.
+                return isWebUSB && <WebusbButton icon="SEARCH" />;
+
+            case 'done':
+            case 'partially-done':
+                return (
+                    <Button
+                        variant="primary"
+                        onClick={getContinueAction}
+                        data-test="@firmware/continue-button"
+                    >
+                        <Translation id={standaloneFwUpdate ? 'TR_CLOSE' : 'TR_CONTINUE'} />
+                    </Button>
+                );
+            default:
+                return undefined;
+        }
+    }, [status, isWebUSB, getContinueAction, standaloneFwUpdate]);
 
     return (
         <>
@@ -67,27 +93,7 @@ const FirmwareInstallation = ({
                         ? device?.features?.major_version
                         : undefined
                 }
-                innerActions={
-                    status === 'wait-for-reboot' && isWebUSB ? (
-                        // Device needs to be paired twice when using web usb transport.
-                        // Once in bootloader mode and once in normal mode. Without 2nd pairing step would get stuck at waiting for
-                        // a reboot in case of fresh device which is, from the start, in bootloader mode (thus first time paired as a bootloader device).
-                        // Suite won't detect such a restarted device, which will be now in normal mode, till it is paired again.
-                        <WebusbButton icon="SEARCH" />
-                    ) : undefined
-                }
-                outerActions={
-                    // Show continue button after the installation is completed
-                    status === 'done' || status === 'partially-done' ? (
-                        <Button
-                            variant="primary"
-                            onClick={() => getContinueAction()}
-                            data-test="@firmware/continue-button"
-                        >
-                            <Translation id={standaloneFwUpdate ? 'TR_CLOSE' : 'TR_CONTINUE'} />
-                        </Button>
-                    ) : undefined
-                }
+                innerActions={InnerActionComponent}
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}
             >
@@ -112,5 +118,3 @@ const FirmwareInstallation = ({
         </>
     );
 };
-
-export { FirmwareInstallation };
