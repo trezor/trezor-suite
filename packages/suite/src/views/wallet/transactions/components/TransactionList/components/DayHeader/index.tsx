@@ -12,13 +12,13 @@ import {
 import { parseKey } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
+import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
 
 const Wrapper = styled.div`
     display: flex;
     position: sticky;
-    z-index: 1;
     background: ${props => props.theme.BG_GREY};
-    top: 0;
+    top: ${SECONDARY_PANEL_HEIGHT};
     align-items: center;
     justify-content: space-between;
     flex: 1;
