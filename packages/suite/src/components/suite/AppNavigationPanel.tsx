@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     justify-content: center;
     background: ${props => props.theme.BG_LIGHT_GREY};
     padding: 24px 32px 10px 32px;
-    z-index: 4;
+    z-index: ${variables.Z_INDEX.PAGE_HEADER};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 24px 16px 20px 16px;

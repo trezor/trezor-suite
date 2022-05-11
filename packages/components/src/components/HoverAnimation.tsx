@@ -2,6 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
 
+import { variables } from '@trezor/components';
+
 const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     position: relative;
     display: flex;
@@ -20,7 +22,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
 
         background-color: transparent;
         pointer-events: none;
-        z-index: 1;
+        z-index: ${variables.Z_INDEX.BASE};
     }
 
     ${props =>

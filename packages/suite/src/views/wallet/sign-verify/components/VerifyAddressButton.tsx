@@ -28,7 +28,6 @@ const ButtonWrapper = styled.button`
     background-color: transparent;
     transition: background-color 0.3s;
     pointer-events: all;
-    z-index: 1;
     cursor: pointer;
 
     :hover {

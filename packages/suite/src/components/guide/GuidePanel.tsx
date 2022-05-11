@@ -18,7 +18,6 @@ const fullHeightStyle = css`
     position: absolute;
     top: 0;
     right: 0;
-    z-index: ${variables.Z_INDEX.GUIDE_PANEL_BESIDE_MODAL};
 `;
 
 const smoothBlur = keyframes`
@@ -33,7 +32,7 @@ const smoothBlur = keyframes`
 
 const StyledBackdrop = styled(Backdrop)`
     animation: ${smoothBlur} 0.3s ease-in forwards;
-    z-index: ${variables.Z_INDEX.GUIDE_PANEL_BESIDE_MODAL};
+    z-index: ${variables.Z_INDEX.GUIDE};
     cursor: pointer;
 
     ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
@@ -42,9 +41,10 @@ const StyledBackdrop = styled(Backdrop)`
 `;
 
 const GuideWrapper = styled.div`
+    position: relative; /* non-static position enables covering the GuideButton by the GuidePanel */
     max-width: 100vw;
     height: 100%;
-    z-index: ${variables.Z_INDEX.GUIDE_PANEL};
+    z-index: ${variables.Z_INDEX.GUIDE};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         ${fullHeightStyle}

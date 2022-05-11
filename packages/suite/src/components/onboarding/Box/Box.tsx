@@ -21,6 +21,7 @@ const BoxWrapper = styled(
     width: ${props => (props.variant === 'large' ? '100%' : 'auto')};
     border-radius: 16px;
     background: ${props => props.theme.BG_WHITE};
+    z-index: ${variables.Z_INDEX.BASE};
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding-left: ${props => (props.variant === 'large' ? '40px' : '30px')};
@@ -77,7 +78,6 @@ const BoxImageWrapper = styled.div`
     width: 100px;
     height: 100px;
     position: absolute;
-    z-index: 1;
     margin-left: auto;
     margin-right: auto;
     top: -50px;

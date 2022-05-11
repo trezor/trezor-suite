@@ -6,6 +6,7 @@ import type { Locale } from 'date-fns';
 
 import { Button } from '../buttons/Button';
 import { style as datepickerStyle } from './index.style';
+import { variables } from '@trezor/components';
 
 type Selection = {
     key: string;
@@ -159,7 +160,7 @@ const Calendar = styled.div`
         color: ${props => props.theme.TYPE_WHITE};
         box-shadow: ${props => props.theme.BG_GREEN} 0px 0px 0px 2px;
         border-radius: 4px;
-        z-index: 1;
+        z-index: ${variables.Z_INDEX.BASE};
     }
 
     .rdrDayDisabled {

@@ -11,7 +11,7 @@ const StyledContainer = styled(BaseToastContainer)`
     & {
         min-width: 330px;
         max-width: 450px;
-        z-index: ${variables.Z_INDEX.TOAST_CONTAINER};
+        z-index: ${variables.Z_INDEX.TOOLTIP};
         position: fixed;
         padding: 4px;
         box-sizing: border-box;
