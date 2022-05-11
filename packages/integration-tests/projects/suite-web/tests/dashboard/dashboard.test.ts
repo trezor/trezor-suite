@@ -45,23 +45,6 @@ describe('Dashboard', () => {
         // QA todo: discreet @dashboard/security-card/toggle-discreet/button
     });
 
-    it('Trezor News', () => {
-        cy.getTestElement(`@dashboard/news/post/0`);
-        cy.getTestElement(`@dashboard/news/post/1`);
-        cy.getTestElement(`@dashboard/news/post/2`);
-        cy.getTestElement(`@dashboard/news/post/3`).should('not.exist');
-        cy.getTestElement('@dashboard/news/show-older-news-button').click();
-        cy.getTestElement(`@dashboard/news/post/3`);
-        cy.getTestElement(`@dashboard/news/post/4`);
-        cy.getTestElement(`@dashboard/news/post/5`);
-        cy.getTestElement(`@dashboard/news/post/6`).should('not.exist');
-        cy.getTestElement('@dashboard/news/show-older-news-button').click();
-        cy.getTestElement(`@dashboard/news/post/6`);
-        cy.getTestElement(`@dashboard/news/post/7`);
-        cy.getTestElement(`@dashboard/news/post/8`);
-        cy.getTestElement(`@dashboard/news/post/9`).should('not.exist');
-    });
-
     // QA todo: test for graph
     // QA todo: dashboard appearance for seed with tx history vs seed without tx history
 });
