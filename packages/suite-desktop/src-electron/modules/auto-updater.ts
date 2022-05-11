@@ -88,6 +88,7 @@ const init: Module = ({ mainWindow, store }) => {
 
     if (feedURL) {
         autoUpdater.setFeedURL(feedURL);
+        logger.warn('auto-updater', [`Feed url: ${feedURL}`]);
     }
 
     const quitAndInstall = () => {
@@ -111,34 +112,39 @@ const init: Module = ({ mainWindow, store }) => {
         mainWindow.webContents.send('update/checking');
     });
 
-    autoUpdater.on('update-available', async ({ version, releaseDate }: UpdateInfo) => {
-        let release;
-        try {
-            release = await getReleaseNotes(version);
-        } catch (error) {
-            logger.error('auto-updater', 'Fetching release notes failed!');
-        } finally {
-            logger.warn('auto-updater', [
-                'Update is available:',
-                `- Update version: ${version}`,
-                `- Prerelease: ${release?.prerelease}`,
-                `- Changelog: ${release?.body ? 'available' : 'unavailable'}`,
-                `- Release date: ${releaseDate}`,
-                `- Manual check: ${b2t(isManualCheck)}`,
-            ]);
+    autoUpdater.on(
+        'update-available',
+        async ({ version, releaseDate, releaseNotes }: UpdateInfo) => {
+            let release;
+            try {
+                release = feedURL
+                    ? { prerelease: false, body: releaseNotes?.toString() }
+                    : await getReleaseNotes(version);
+            } catch (error) {
+                logger.error('auto-updater', 'Fetching release notes failed!');
+            } finally {
+                logger.warn('auto-updater', [
+                    'Update is available:',
+                    `- Update version: ${version}`,
+                    `- Prerelease: ${release?.prerelease}`,
+                    `- Changelog: ${release?.body ? 'available' : 'unavailable'}`,
+                    `- Release date: ${releaseDate}`,
+                    `- Manual check: ${b2t(isManualCheck)}`,
+                ]);
 
-            mainWindow.webContents.send('update/available', {
-                version,
-                releaseDate,
-                isManualCheck,
-                prerelease: release?.prerelease,
-                changelog: release?.body,
-            });
+                mainWindow.webContents.send('update/available', {
+                    version,
+                    releaseDate,
+                    isManualCheck,
+                    prerelease: release?.prerelease,
+                    changelog: release?.body,
+                });
 
-            // Reset manual check flag
-            isManualCheck = false;
-        }
-    });
+                // Reset manual check flag
+                isManualCheck = false;
+            }
+        },
+    );
 
     autoUpdater.on('update-not-available', ({ version, releaseDate }: UpdateInfo) => {
         logger.info('auto-updater', [
@@ -175,7 +181,7 @@ const init: Module = ({ mainWindow, store }) => {
     });
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent) => {
-        const { version, releaseDate, downloadedFile } = info;
+        const { version, releaseDate, downloadedFile, releaseNotes } = info;
 
         if (errorHappened) {
             logger.info('auto-updater', 'An error happened. Stopping auto-update.');
@@ -187,11 +193,16 @@ const init: Module = ({ mainWindow, store }) => {
             `- Last version: ${version}`,
             `- Last release date: ${releaseDate}`,
             `- Downloaded file: ${downloadedFile}`,
+            `- Release notes: ${releaseNotes}`,
         ]);
 
         mainWindow.webContents.send('update/downloading', { verifying: true });
 
-        verifySignature(version, downloadedFile)
+        verifySignature({
+            version,
+            downloadedFile,
+            feedURL,
+        })
             .then(() => {
                 logger.info('auto-updater', 'Signature of update is valid');
 
