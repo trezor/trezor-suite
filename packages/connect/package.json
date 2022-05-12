@@ -22,8 +22,7 @@
     "browser": {
         "./lib/index": "./lib/index-browser",
         "./lib/workers/workers": "./lib/workers/workers-browser",
-        "./lib/utils/assets": "./lib/utils/assets-browser",
-        "./lib/rollout/utils/fetch": "./lib/rollout/utils/fetch-browser"
+        "./lib/utils/assets": "./lib/utils/assets-browser"
     },
     "react-native": {
         "./lib/workers/workers": "./lib/workers/workers-react-native"

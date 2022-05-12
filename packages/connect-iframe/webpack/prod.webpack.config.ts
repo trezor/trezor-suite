@@ -92,12 +92,12 @@ export default {
             process: 'process/browser',
         }),
         // resolve @trezor/connect modules as "browser"
-        new webpack.NormalModuleReplacementPlugin(
-            /\/workers\/workers$/,
-            '../workers/workers-browser',
-        ),
-        new webpack.NormalModuleReplacementPlugin(/utils\/assets$/, '../utils/assets-browser'),
-        new webpack.NormalModuleReplacementPlugin(/utils\/fetch$/, './utils/fetch-browser'),
+        new webpack.NormalModuleReplacementPlugin(/\/workers\/workers$/, resource => {
+            resource.request = resource.request.replace(/workers$/, 'workers-browser');
+        }),
+        new webpack.NormalModuleReplacementPlugin(/\/utils\/assets$/, resource => {
+            resource.request = resource.request.replace(/assets$/, 'assets-browser');
+        }),
         // copy public files
         new CopyWebpackPlugin({
             patterns: [
