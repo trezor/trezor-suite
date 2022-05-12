@@ -245,7 +245,7 @@ connect deploy to dev:
     url: $BASE_REVIEW_URL/$CI_BUILD_REF_NAME
   before_script: []
   script:
-    - rm -rv ${DEPLOY_DIRECTORY}
+    - rm -rfv ${DEPLOY_DIRECTORY}
     - mkdir -pv ${DEPLOY_DIRECTORY}
     - rsync -aviuzP packages/connect-iframe/build/ "${DEPLOY_DIRECTORY}/"
     - rsync -aviuzP packages/connect-popup/build/ "${DEPLOY_DIRECTORY}/"
