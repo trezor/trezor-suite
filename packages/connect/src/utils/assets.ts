@@ -3,6 +3,8 @@
 // https://github.com/trezor/connect/blob/develop/src/js/env/node/networkUtils.js
 
 import fetch from 'cross-fetch';
+import { promises as fs } from 'fs';
+import { httpRequest as browserHttpRequest } from './assets-browser';
 
 if (global && typeof global.fetch !== 'function') {
     global.fetch = fetch;
@@ -22,7 +24,8 @@ export const httpRequest = (url: string, _type: string): any => {
             return require('@trezor/connect-common/files/firmware/2/releases.json');
         case './data/messages/messages.json':
             return require('@trezor/transport/messages.json');
-        default:
-            return null;
+        // no default
     }
+
+    return /^https?/.test(url) ? browserHttpRequest(url) : fs.readFile(url);
 };

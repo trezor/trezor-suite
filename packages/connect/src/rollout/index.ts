@@ -2,7 +2,7 @@
 import { versionUtils } from '@trezor/utils';
 
 import { filterSafeListByFirmware, filterSafeListByBootloader } from './utils/releases';
-import { fetchFirmware } from './utils/fetch';
+import { httpRequest } from '../utils/assets';
 import { getScore } from './utils/score';
 import { isStrictFeatures, isValidReleases } from './utils/parse';
 
@@ -224,7 +224,7 @@ export const getBinary = async ({
     }
 
     if (intermediary && features.major_version !== 2) {
-        const fw = await fetchFirmware(`${baseUrl}/firmware/1/trezor-inter-1.10.0.bin`);
+        const fw = await httpRequest(`${baseUrl}/firmware/1/trezor-inter-1.10.0.bin`, 'binary');
         return { binary: modifyFirmware({ fw, features }) };
     }
 
@@ -252,8 +252,9 @@ export const getBinary = async ({
             'version provided as param does not match firmware version found by features in bootloader',
         );
     }
-    const fw = await fetchFirmware(
+    const fw = await httpRequest(
         `${baseUrl}/${btcOnly ? releaseByFirmware.url_bitcoinonly : releaseByFirmware.url}`,
+        'binary',
     );
     return {
         ...infoByBootloader,
