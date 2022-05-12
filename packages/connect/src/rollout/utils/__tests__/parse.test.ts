@@ -1,21 +1,21 @@
-import { parseFeatures, parseReleases } from '../parse';
+import { isStrictFeatures, isValidReleases } from '../parse';
 
 describe('parse', () => {
-    describe('parseFeatures()', () => {
+    describe('isStrictFeatures()', () => {
         it('fail on not matching pattern', () => {
-            expect(() => {
+            expect(
                 // @ts-ignore
-                parseFeatures({ foo: 'bar' });
-            }).toThrow('Features of unexpected shape provided to rollout');
+                isStrictFeatures({ foo: 'bar' }),
+            ).toEqual(false);
         });
     });
 
-    describe('parseReleases()', () => {
+    describe('isValidReleases()', () => {
         it('fail on not matching pattern', () => {
-            expect(() => {
+            expect(
                 // @ts-ignore
-                parseReleases({ foo: 'bar' });
-            }).toThrow();
+                isValidReleases({ foo: 'bar' }),
+            ).toEqual(false);
         });
     });
 });

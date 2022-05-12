@@ -23,7 +23,7 @@ import type {
     DeviceFirmwareStatus,
     DeviceStatus,
     Features,
-    FirmwareRelease,
+    ReleaseInfo,
     UnavailableCapabilities,
 } from '../types';
 
@@ -85,7 +85,7 @@ export class Device extends EventEmitter {
     // @ts-expect-error: strictPropertyInitialization
     firmwareStatus: DeviceFirmwareStatus;
 
-    firmwareRelease?: FirmwareRelease;
+    firmwareRelease?: ReleaseInfo | null;
 
     // @ts-expect-error: strictPropertyInitialization
     features: Features;
