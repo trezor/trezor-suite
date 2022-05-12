@@ -106,7 +106,7 @@ const isEqual = (release: Release, latest: Release) =>
 
 interface GetInfoProps {
     features: Features;
-    releases: Release[];
+    releases: any[]; // previously Release[]; TODO remove runtypes package
 }
 
 /**
@@ -196,7 +196,7 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
 interface GetBinaryProps extends GetInfoProps {
     baseUrl: string;
     btcOnly?: boolean;
-    version?: Release['version'];
+    version?: number[];
     intermediary?: boolean;
 }
 
@@ -223,7 +223,12 @@ export const getBinary = async ({
 
     // we get info here again, but only as a sanity check.
     const infoByBootloader = getInfo({ features, releases });
-    const releaseByFirmware = releases.find(r => versionUtils.isEqual(r.version, version!));
+    const releaseByFirmware = releases.find(
+        r =>
+            version &&
+            versionUtils.isVersionArray(version) &&
+            versionUtils.isEqual(r.version, version),
+    );
 
     if (!infoByBootloader || !releaseByFirmware) {
         throw new Error('no firmware found for this device');

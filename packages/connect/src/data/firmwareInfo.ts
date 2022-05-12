@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
-import { getInfo } from '@trezor/rollout';
+import { getInfo } from '../rollout';
 import type { FirmwareRelease, Features } from '../types';
 
 const releases: { [key: number]: FirmwareRelease[] } = {};
@@ -36,7 +36,7 @@ export const getFirmwareStatus = (features: Features) => {
     if (features.major_version === 1 && features.bootloader_mode) {
         return 'unknown';
     }
-    // @ts-expect-error TODO https://github.com/trezor/trezor-suite/issues/5320
+
     const info = getInfo({ features, releases: releases[features.major_version] });
 
     // should not happen, possibly if releases list contains inconsistent data or so
@@ -50,7 +50,6 @@ export const getFirmwareStatus = (features: Features) => {
 };
 
 export const getRelease = (features: Features) =>
-    // @ts-expect-error TODO https://github.com/trezor/trezor-suite/issues/5320
     getInfo({ features, releases: releases[features.major_version] });
 
 export const getReleases = (model: number) => releases[model];

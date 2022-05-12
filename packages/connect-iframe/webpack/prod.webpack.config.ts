@@ -97,6 +97,7 @@ export default {
             '../workers/workers-browser',
         ),
         new webpack.NormalModuleReplacementPlugin(/utils\/assets$/, '../utils/assets-browser'),
+        new webpack.NormalModuleReplacementPlugin(/utils\/fetch$/, './utils/fetch-browser'),
         // copy public files
         new CopyWebpackPlugin({
             patterns: [

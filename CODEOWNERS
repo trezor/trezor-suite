@@ -28,8 +28,6 @@
 
 /packages/news-api @matejkriz
 
-/packages/rollout @mroz22
-
 /packages/suite @tomasklim @matejkriz
 
 /packages/suite-build @matejkriz @tomasklim
