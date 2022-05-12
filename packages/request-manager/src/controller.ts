@@ -3,18 +3,27 @@ import { EventEmitter } from 'events';
 import { createTimeoutPromise } from '@trezor/utils';
 
 import { TorControlPort } from './torControlPort';
-import { TorConnectionOptions } from './types';
+import type { TorConnectionOptions, BootstrapEvent } from './types';
+import { BootstrapEventProgress, bootstrapParser } from './events/bootstrap';
 
 export class TorController extends EventEmitter {
     options: TorConnectionOptions;
     controlPort: TorControlPort;
     waitingTime = 1000;
     maxTriesWaiting = 60;
+    isCircuitEstablished = false;
 
     constructor(options: TorConnectionOptions) {
         super();
         this.options = options;
-        this.controlPort = new TorControlPort(options);
+        this.controlPort = new TorControlPort(options, this.onMessageReceived.bind(this));
+    }
+
+    onMessageReceived(message: string) {
+        const bootstrap: BootstrapEvent[] = bootstrapParser(message);
+        this.isCircuitEstablished = bootstrap.some(
+            (event: BootstrapEvent) => event.progress === BootstrapEventProgress.Done,
+        );
     }
 
     waitUntilAlive(): Promise<void> {
@@ -28,7 +37,7 @@ export class TorController extends EventEmitter {
             try {
                 const isConnected = await this.controlPort.connect();
                 const isAlive = this.controlPort.ping();
-                if (isConnected && isAlive) {
+                if (isConnected && isAlive && this.isCircuitEstablished) {
                     // It is running so let's not wait anymore.
                     return;
                 }

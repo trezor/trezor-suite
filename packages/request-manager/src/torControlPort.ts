@@ -19,11 +19,15 @@ export class TorControlPort {
     options: TorConnectionOptions;
     socket: Socket;
     isSocketConnected = false;
+    isCircuitDone = false;
     clientNonce = '';
 
-    constructor(options: TorConnectionOptions) {
+    onMessageReceived: (message: string) => void;
+
+    constructor(options: TorConnectionOptions, onMessageReceived: (message: string) => void) {
         this.options = options;
         this.socket = new net.Socket();
+        this.onMessageReceived = onMessageReceived;
     }
 
     connect() {
@@ -37,7 +41,7 @@ export class TorControlPort {
             this.socket.on('connect', async () => {
                 await (async () => {
                     this.clientNonce = await getClientNonce();
-                    this.socket.write(`AUTHCHALLENGE SAFECOOKIE ${this.clientNonce}\r\n`);
+                    this.write(`AUTHCHALLENGE SAFECOOKIE ${this.clientNonce}`);
                 })();
             });
 
@@ -53,6 +57,7 @@ export class TorControlPort {
 
             this.socket.on('data', async data => {
                 const message = data.toString();
+                this.onMessageReceived(message);
                 // Section 3.24. AUTHCHALLENGE in https://gitweb.torproject.org/torspec.git/tree/control-spec.txt
                 // https://stem.torproject.org/faq.html#i-m-using-safe-cookie-authentication
                 const authchallengeResponse = message
@@ -86,6 +91,7 @@ export class TorControlPort {
                     // will shut down when any of those connections closes.
                     this.socket.write('TAKEOWNERSHIP\r\n');
                     this.isSocketConnected = true;
+                    this.subscribeEvents();
                     resolve(true);
                 }
             });
@@ -106,9 +112,18 @@ export class TorControlPort {
             return false;
         }
         try {
-            return !!this.socket.write('GETINFO\r\n');
+            return !!this.write('GETINFO');
         } catch (error) {
             return false;
         }
+    }
+
+    write(command: string): boolean {
+        return this.socket.write(`${command}\r\n`);
+    }
+
+    subscribeEvents() {
+        const events = ['STATUS_CLIENT'];
+        this.write(`SETEVENTS ${events.join(' ')}`);
     }
 }

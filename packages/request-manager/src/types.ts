@@ -4,3 +4,7 @@ export interface TorConnectionOptions {
     controlPort: number;
     authFilePath: string;
 }
+
+export type BootstrapEvent = {
+    progress: string | undefined;
+};
