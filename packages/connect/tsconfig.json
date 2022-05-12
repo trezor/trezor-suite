@@ -5,7 +5,6 @@
     },
     "references": [
         { "path": "../blockchain-link" },
-        { "path": "../rollout" },
         { "path": "../transport" },
         { "path": "../utils" },
         { "path": "../utxo-lib" }

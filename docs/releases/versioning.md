@@ -8,7 +8,7 @@ That is, all packages that have `private: true` in their `package.json` and are 
 
 ## Public Packages
 
-That is, packages published to NPM consumed by third parties. At the moment of writing this there are 2 public packages: `rollout` and `blockchain-link`. They follow the [SemVer scheme](https://semver.org/) on irregular schedule.
+That is, packages published to NPM consumed by third parties. At the moment of writing this there is one public package: `blockchain-link`. They follow the [SemVer scheme](https://semver.org/) on irregular schedule.
 
 ## Suite App
 

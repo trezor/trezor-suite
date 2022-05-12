@@ -1,9 +1,7 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-/* eslint-disable @typescript-eslint/naming-convention */
-import type { Features } from '@trezor/connect';
-
-import { Release } from './src/utils/parse';
+import { Release } from './src/rollout/utils/parse';
+import type { Features } from './src/types';
 
 export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     vendor: 'trezor.io',

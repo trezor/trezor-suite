@@ -1,5 +1,5 @@
 import type { PROTO } from '../constants';
-import type { getInfo } from '@trezor/rollout'; // TODO: https://github.com/trezor/trezor-suite/issues/5320
+import type { getInfo } from '../rollout';
 
 export type DeviceStatus = 'available' | 'occupied' | 'used';
 

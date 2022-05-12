@@ -17,6 +17,8 @@ const split = (version: string) => {
 
 const toString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
 
+export const isVersionArray = (arr: number[]): arr is VersionArray => arr.length === 3;
+
 /**
  * Is versionX (first arg) newer than versionY (second arg)
  * accepts version in two formats:

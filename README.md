@@ -18,7 +18,6 @@
 | [@trezor/connect-web](./packages/connect-web)                         | 3rd party interface entrypoint for browser   |
 | [@trezor/integration-tests](./packages/integration-tests)             | cross-packages e2e tests                     |
 | [@trezor/news-api](./packages/news-api)                               | medium proxy providing allow-origin headers  |
-| [@trezor/rollout](./packages/rollout)                                 | firmware updated utilities                   |
 | [@trezor/suite-build](./packages/suite-build)                         | build utilities                              |
 | [@trezor/suite-data](./packages/suite-data)                           | suite static data                            |
 | [@trezor/suite-desktop-api](./packages/suite-desktop-api)             | API for suite - suite-desktop communication  |
