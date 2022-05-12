@@ -4,14 +4,14 @@ import { versionUtils } from '@trezor/utils';
 import { filterSafeListByFirmware, filterSafeListByBootloader } from './utils/releases';
 import { fetchFirmware } from './utils/fetch';
 import { getScore } from './utils/score';
-import { parseFeatures, parseReleases, Release, Features } from './utils/parse';
+import { isStrictFeatures, isValidReleases } from './utils/parse';
 
-type ParsedFeatures = ReturnType<typeof parseFeatures>;
+import type { Features, StrictFeatures, FirmwareRelease, ReleaseInfo } from '../types';
 
 /**
  * Returns firmware binary after necessary modifications. Should be ok to install.
  */
-export const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: ParsedFeatures }) => {
+export const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: StrictFeatures }) => {
     // ---------------------
     // Model T modifications
     // ---------------------
@@ -44,7 +44,7 @@ export const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: Pa
     return fw;
 };
 
-const getChangelog = (releases: Release[], features: ParsedFeatures) => {
+const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => {
     // releases are already filtered, so they can be considered "safe".
     // so lets build changelog! It should include only those firmwares, that are
     // newer than currently installed firmware.
@@ -85,7 +85,7 @@ const getChangelog = (releases: Release[], features: ParsedFeatures) => {
     );
 };
 
-const isNewer = (release: Release, features: ParsedFeatures) => {
+const isNewer = (release: FirmwareRelease, features: StrictFeatures) => {
     if (features.major_version === 1 && features.bootloader_mode) {
         return null;
     }
@@ -101,12 +101,12 @@ const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
     return changelog.some(item => item.required);
 };
 
-const isEqual = (release: Release, latest: Release) =>
+const isEqual = (release: FirmwareRelease, latest: FirmwareRelease) =>
     versionUtils.isEqual(release.version, latest.version);
 
 interface GetInfoProps {
     features: Features;
-    releases: any[]; // previously Release[]; TODO remove runtypes package
+    releases: FirmwareRelease[];
 }
 
 /**
@@ -114,9 +114,14 @@ interface GetInfoProps {
  * @param features
  * @param releases
  */
-export const getInfo = ({ features, releases }: GetInfoProps) => {
-    const parsedFeatures = parseFeatures(features);
-    let parsedReleases = parseReleases(releases);
+export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | null => {
+    if (!isStrictFeatures(features)) {
+        throw new Error('Features of unexpected shape provided to rollout.');
+    }
+    if (!isValidReleases(releases)) {
+        throw new Error(`Release object in unexpected shape.`);
+    }
+    let parsedReleases = releases;
 
     let score = 0; // just because of ts
 
@@ -132,7 +137,7 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
         fw_major,
         fw_minor,
         fw_patch,
-    } = parsedFeatures;
+    } = features;
 
     if (score) {
         parsedReleases = parsedReleases.filter(item => {
@@ -181,7 +186,7 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
     }
 
     const isLatest = isEqual(parsedReleases[0], latest);
-    const changelog = getChangelog(parsedReleases, parsedFeatures);
+    const changelog = getChangelog(parsedReleases, features);
 
     return {
         changelog,
@@ -189,7 +194,7 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
         isLatest,
         latest,
         isRequired: isRequired(changelog),
-        isNewer: isNewer(parsedReleases[0], parsedFeatures),
+        isNewer: isNewer(parsedReleases[0], features),
     };
 };
 
@@ -214,11 +219,13 @@ export const getBinary = async ({
     btcOnly,
     intermediary = false,
 }: GetBinaryProps) => {
-    const parsedFeatures = parseFeatures(features);
+    if (!isStrictFeatures(features)) {
+        throw new Error('Features of unexpected shape provided to rollout');
+    }
 
-    if (intermediary && parsedFeatures.major_version !== 2) {
+    if (intermediary && features.major_version !== 2) {
         const fw = await fetchFirmware(`${baseUrl}/firmware/1/trezor-inter-1.10.0.bin`);
-        return { binary: modifyFirmware({ fw, features: parsedFeatures }) };
+        return { binary: modifyFirmware({ fw, features }) };
     }
 
     // we get info here again, but only as a sanity check.
@@ -250,9 +257,6 @@ export const getBinary = async ({
     );
     return {
         ...infoByBootloader,
-        binary: modifyFirmware({ fw, features: parsedFeatures }),
+        binary: modifyFirmware({ fw, features }),
     };
 };
-
-export type FirmwareRelease = ReturnType<typeof getInfo>;
-export type FirmwareBinary = ReturnType<typeof getBinary>;

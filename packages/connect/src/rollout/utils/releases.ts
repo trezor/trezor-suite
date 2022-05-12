@@ -1,8 +1,8 @@
 import { versionUtils } from '@trezor/utils';
-import { Release, VersionArray } from './parse';
+import type { FirmwareRelease, VersionArray } from '../../types';
 
 export const filterSafeListByBootloader = (
-    releasesList: Release[],
+    releasesList: FirmwareRelease[],
     bootloaderVersion: VersionArray,
 ) =>
     releasesList.filter(
@@ -13,7 +13,10 @@ export const filterSafeListByBootloader = (
                 versionUtils.isNewerOrEqual(item.bootloader_version, bootloaderVersion)),
     );
 
-export const filterSafeListByFirmware = (releasesList: Release[], firmwareVersion: VersionArray) =>
+export const filterSafeListByFirmware = (
+    releasesList: FirmwareRelease[],
+    firmwareVersion: VersionArray,
+) =>
     releasesList.filter(item =>
         versionUtils.isNewerOrEqual(firmwareVersion, item.min_firmware_version),
     );

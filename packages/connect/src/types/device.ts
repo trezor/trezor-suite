@@ -1,5 +1,5 @@
 import type { PROTO } from '../constants';
-import type { getInfo } from '../rollout';
+import type { ReleaseInfo } from './firmware';
 
 export type DeviceStatus = 'available' | 'occupied' | 'used';
 
@@ -18,19 +18,6 @@ export type UnavailableCapability =
 // key = coin shortcut lowercase (ex: btc, eth, xrp) OR field declared in coins.json "supportedFirmware.capability"
 export type UnavailableCapabilities = { [key: string]: UnavailableCapability };
 
-export interface FirmwareRange {
-    '1': {
-        min: string;
-        max: string;
-    };
-    '2': {
-        min: string;
-        max: string;
-    };
-}
-
-export type FirmwareRelease = ReturnType<typeof getInfo>;
-
 export type KnownDevice = {
     type: 'acquired';
     id: string | null;
@@ -38,7 +25,7 @@ export type KnownDevice = {
     label: string;
     error?: typeof undefined;
     firmware: DeviceFirmwareStatus;
-    firmwareRelease?: FirmwareRelease;
+    firmwareRelease?: ReleaseInfo | null;
     status: DeviceStatus;
     mode: DeviceMode;
     state?: string;
@@ -78,3 +65,47 @@ export type UnreadableDevice = {
 
 export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
 export type Features = PROTO.Features;
+
+type FeaturesNarrowing =
+    | {
+          major_version: 2;
+          fw_major: null;
+          fw_minor: null;
+          fw_patch: null;
+          bootloader_mode: true;
+          firmware_present: false;
+      }
+    | {
+          major_version: 2;
+          fw_major: null;
+          fw_minor: null;
+          fw_patch: null;
+          bootloader_mode: null;
+          firmware_present: null;
+      }
+    | {
+          major_version: 2;
+          fw_major: 2;
+          fw_minor: number;
+          fw_patch: number;
+          bootloader_mode: true;
+          firmware_present: true;
+      }
+    | {
+          major_version: 1;
+          fw_major: null;
+          fw_minor: null;
+          fw_patch: null;
+          bootloader_mode: true;
+          firmware_present: false;
+      }
+    | {
+          major_version: 1;
+          fw_major: null;
+          fw_minor: null;
+          fw_patch: null;
+          bootloader_mode: true;
+          firmware_present: true;
+      };
+
+export type StrictFeatures = Features & FeaturesNarrowing;
