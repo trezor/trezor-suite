@@ -1,4 +1,4 @@
-import { getInfo } from '../index';
+import { getInfo } from '../firmwareInfo';
 
 const { getReleasesT2, getReleasesT1, getDeviceFeatures } = global.JestMocks;
 

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 /* eslint-disable camelcase */
-import { getInfo } from '../index';
+import { getInfo } from '../firmwareInfo';
 
 const { getReleasesT2, getDeviceFeatures } = global.JestMocks;
 
@@ -167,11 +167,13 @@ const fixtures = [
     },
 ];
 
-jest.mock('../utils/score', () => {
+jest.mock('../../utils/firmwareUtils', () => {
     let score: number | undefined = 0.5;
+    const original = jest.requireActual('../../utils/firmwareUtils');
 
     return {
         __esModule: true, // this property makes it work
+        ...original,
         getScore: () => score,
         _setScore: (newScore: number | undefined) => {
             score = newScore;
@@ -182,7 +184,7 @@ jest.mock('../utils/score', () => {
 describe('getInfo test rollout', () => {
     fixtures.forEach(f => {
         it(f.desc, () => {
-            require('../utils/score')._setScore(f.score);
+            require('../../utils/firmwareUtils')._setScore(f.score);
             const result = getInfo({ features: f.features, releases: f.releases });
             expect(result).toMatchObject(f.result);
         });

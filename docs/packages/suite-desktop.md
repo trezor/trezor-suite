@@ -30,7 +30,7 @@
 
 -   suite-desktop
 
-    firmware binaries are bundled as application resources in `bin` directory, full path depends on OS but it could be found on the as level as `app.asar` file, and they are downloaded using `fs.readFile` API. see @trezor/connect/src/rollout/utils/fetch
+    firmware binaries are bundled as application resources in `bin` directory, full path depends on OS but it could be found on the as level as `app.asar` file, and they are downloaded using `fs.readFile` API. see @trezor/connect/src/utils/assets
 
 ### Trezor Bridge (trezord)
 
