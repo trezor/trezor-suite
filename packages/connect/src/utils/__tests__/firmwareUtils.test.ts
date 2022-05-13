@@ -1,4 +1,4 @@
-import { getScore } from '../score';
+import { getScore, isStrictFeatures, isValidReleases } from '../firmwareUtils';
 
 describe('Score Utils', () => {
     describe('getScore()', () => {
@@ -22,6 +22,26 @@ describe('Score Utils', () => {
             const result = getScore(String(ts));
             expect(result).toBeLessThanOrEqual(1);
             expect(result).toBeGreaterThanOrEqual(0);
+        });
+    });
+});
+
+describe('parse', () => {
+    describe('isStrictFeatures()', () => {
+        it('fail on not matching pattern', () => {
+            expect(
+                // @ts-ignore
+                isStrictFeatures({ foo: 'bar' }),
+            ).toEqual(false);
+        });
+    });
+
+    describe('isValidReleases()', () => {
+        it('fail on not matching pattern', () => {
+            expect(
+                // @ts-ignore
+                isValidReleases({ foo: 'bar' }),
+            ).toEqual(false);
         });
     });
 });

@@ -1,13 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/FirmwareUpdate.js
 
-import { getBinary, modifyFirmware } from '../rollout';
+import { getBinary } from './firmware/getBinary';
+import { modifyFirmware } from './firmware/modifyFirmware';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import { uploadFirmware } from './management/uploadFirmware';
 import { validateParams } from './common/paramsValidator';
 import { getReleases } from '../data/firmwareInfo';
-import { isStrictFeatures } from '../rollout/utils/parse';
+import { isStrictFeatures } from '../utils/firmwareUtils';
 
 type Params = {
     binary?: ArrayBuffer;
@@ -91,7 +92,7 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
                 });
             } else {
                 const firmware = await getBinary({
-                    // features and releases are used for sanity checking inside rollout
+                    // features and releases are used for sanity checking
                     features: device.features,
                     releases: getReleases(device.features.major_version),
                     // version argument is used to find and fetch concrete release from releases list

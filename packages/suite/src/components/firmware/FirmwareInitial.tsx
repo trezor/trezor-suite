@@ -126,7 +126,7 @@ const FirmwareInitial = ({
                          *  available values: 'valid' | 'outdated' | 'required' | 'unknown' | 'none'
                          *
                          *  `device.firmwareRelease` on the other hand contains latest available firmware to update to
-                         *   (it is whatever returns getInfo() method from rollout)
+                         *   (it is whatever returns getInfo() method from connect)
                          *   so it should not be used here.
                          */
                         required: device.firmware === 'required',
