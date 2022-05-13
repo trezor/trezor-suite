@@ -141,53 +141,39 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
         this.txListener = L.txListener(this);
     }
 
-    async connect(): Promise<ElectrumClient> {
-        if (!this.api?.connected()) {
-            const { debug, timeout, keepAlive, name } = this.settings;
+    protected isConnected(api: ElectrumClient | undefined): api is ElectrumClient {
+        return api?.isConnected() ?? false;
+    }
 
-            this.validateEndpoints();
-            const url = this.endpoints[0];
-            this.debug('Connecting to', url);
+    async tryConnect(url: string): Promise<ElectrumClient> {
+        const { debug, timeout, keepAlive, name } = this.settings;
 
-            try {
-                const socket = createSocket(url, {
-                    timeout,
-                    keepAlive,
-                    proxyAgent: this.proxyAgent,
-                });
-                const api = new CachingElectrumClient();
-                await api.connect(socket, {
-                    url,
-                    coin: name ?? 'BTC',
-                    debug,
-                    client: {
-                        name: 'blockchain-link',
-                        protocolVersion: '1.4',
-                    },
-                });
-                this.api = api;
-            } catch (error) {
-                this.debug('Connection failed', error);
-                this.api = undefined;
-                // connection error, remove endpoint
-                this.endpoints.splice(0, 1);
-                // and try another one or throw error
-                if (this.endpoints.length < 1) {
-                    throw new CustomError('connect', 'All backends are down');
-                }
-                return this.connect();
-            }
+        const socket = createSocket(url, {
+            timeout,
+            keepAlive,
+            proxyAgent: this.proxyAgent,
+        });
+        const api = new CachingElectrumClient();
+        await api.connect(socket, {
+            url,
+            coin: name ?? 'BTC',
+            debug,
+            client: {
+                name: 'blockchain-link',
+                protocolVersion: '1.4',
+            },
+        });
 
-            this.post({
-                id: -1,
-                type: RESPONSES.CONNECTED,
-            });
-        }
-        return this.api;
+        this.post({
+            id: -1,
+            type: RESPONSES.CONNECTED,
+        });
+
+        return api;
     }
 
     disconnect() {
-        if (this.api?.connected()) {
+        if (this.api?.isConnected()) {
             this.api.close();
         }
     }
