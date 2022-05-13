@@ -109,7 +109,7 @@ const TYPE_PATCH = {
     'Features.display_rotation': 'number | null',
     'Features.experimental_features': 'boolean | null',
     'HDNodePathType.node': 'HDNodeType | string',
-    'FirmwareUpload.payload': 'Buffer',
+    'FirmwareUpload.payload': 'Buffer | ArrayBuffer',
     'CardanoCatalystRegistrationParametersType.nonce': UINT_TYPE,
     'CardanoPoolParametersType.pledge': UINT_TYPE,
     'CardanoPoolParametersType.cost': UINT_TYPE,
