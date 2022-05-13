@@ -8,9 +8,14 @@ import { TorConnectionOptions } from './types';
 const readFile = util.promisify(fs.readFile);
 const randomBytes = util.promisify(crypto.randomBytes);
 
-const getCookieString = async (authFilePath: string) => {
+export const getCookieString = async (authFilePath: string) => {
     const controlAuthCookiePath = path.join(authFilePath, 'control_auth_cookie');
     return (await readFile(controlAuthCookiePath)).toString('hex');
+};
+
+export const createHmacSignature = (authString: string, key: string) => {
+    const bufferToSign = Buffer.from(authString, 'hex');
+    return crypto.createHmac('sha256', key).update(bufferToSign).digest('hex').toUpperCase();
 };
 
 const getClientNonce = async () => (await randomBytes(32)).toString('hex');
@@ -75,21 +80,11 @@ export class TorControlPort {
                     const serverNonce = authchallengeResponse[2];
                     const authString = `${cookieString}${this.clientNonce}${serverNonce}`;
 
-                    const bufferToSign = Buffer.from(authString, 'hex');
                     // key is a hardcoded string provided by the TOR control-spec
                     const key = 'Tor safe cookie authentication controller-to-server hash';
-                    const authSignature = crypto
-                        .createHmac('sha256', key)
-                        .update(bufferToSign)
-                        .digest('hex')
-                        .toUpperCase();
-
-                    this.socket.write(`AUTHENTICATE ${authSignature}\r\n`);
-                    // Section 3.23. TAKEOWNERSHIP in https://gitweb.torproject.org/torspec.git/tree/control-spec.txt
-                    // This command instructs Tor to shut down when this control connection is closed.
-                    // If multiple control connections send the TAKEOWNERSHIP command to a Tor instance, Tor
-                    // will shut down when any of those connections closes.
-                    this.socket.write('TAKEOWNERSHIP\r\n');
+                    const authSignature = createHmacSignature(authString, key);
+                    this.write(`AUTHENTICATE ${authSignature}`);
+                    this.write('GETINFO circuit-status');
                     this.isSocketConnected = true;
                     this.subscribeEvents();
                     resolve(true);
