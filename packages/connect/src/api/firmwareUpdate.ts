@@ -49,7 +49,10 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
 
         if ('binary' in payload) {
             // or binary
-            this.params.binary = payload.binary;
+            this.params = {
+                ...this.params,
+                binary: payload.binary,
+            };
         }
     }
 
