@@ -550,7 +550,7 @@ export type FirmwareRequest = {
 
 // FirmwareUpload
 export type FirmwareUpload = {
-    payload: Buffer;
+    payload: Buffer | ArrayBuffer;
     hash?: string;
 };
 

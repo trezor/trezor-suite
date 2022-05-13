@@ -113,7 +113,6 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
             this.device.getCommands().typedCall.bind(this.device.getCommands()),
             this.postMessage,
             device,
-            // @ts-expect-error TODO fix
             { payload: binary },
         );
     }
