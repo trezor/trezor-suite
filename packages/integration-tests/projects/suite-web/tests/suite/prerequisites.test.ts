@@ -1,56 +1,56 @@
 // @group:suite
 // @retry=2
 
-import { PrerequisiteType } from '@suite/types/suite';
-
-type Fixture = {
-    desc: PrerequisiteType;
-    mockDevice: any;
-};
-
-describe('prerequisites = test various types of devices connecting to the application', () => {
+describe.skip('prerequisites = test various types of devices connecting to the application', () => {
+    before(() => {
+        cy.viewport(1080, 1440);
+    });
     beforeEach(() => {
-        cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/');
+        // cy.prefixedVisit('/');
         cy.getTestElement('@connect-device-prompt');
     });
 
-    // todo: add transport related prerequisites
-    const fixtures: Fixture[] = [
-        {
-            desc: 'device-seedless',
-            mockDevice: () => cy.connectDevice({ mode: 'seedless' }),
-        },
-        {
-            desc: 'device-unacquired',
-            mockDevice: () => cy.connectDevice({ type: 'unacquired' }),
-        },
-        {
-            desc: 'device-unreadable',
-            mockDevice: () => cy.connectDevice({ type: 'unreadable' }),
-        },
-        {
-            desc: 'device-unknown',
-            mockDevice: () => cy.connectDevice({ features: undefined }),
-        },
-        {
-            desc: 'device-disconnected',
-            mockDevice: () => {},
-        },
-        {
-            desc: 'device-bootloader',
-            mockDevice: () => cy.connectBootloaderDevice('1'),
-        },
-    ];
+    it('device-seedless', () => {
+        cy.connectDevice({ mode: 'seedless' });
+        cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+        cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
+        cy.getTestElement('@welcome-layout/body').screenshot('device-seedless');
+    });
 
-    fixtures.forEach(f => {
-        it(f.desc, () => {
-            f.mockDevice();
-            cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
-            cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
-            // todo: match snapshot
-            cy.getTestElement('@welcome-layout/body').screenshot(f.desc);
-        });
+    it('device-unacquired', () => {
+        cy.connectDevice({ mode: 'unacquired' });
+        cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+        cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
+        cy.getTestElement('@welcome-layout/body').screenshot('device-unacquired');
+    });
+
+    it('device-unreadable', () => {
+        cy.connectDevice({ mode: 'unreadable' });
+        cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+        cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
+        cy.getTestElement('@welcome-layout/body').screenshot('device-unreadable');
+    });
+
+    it('device-unknown', () => {
+        cy.connectDevice({ features: undefined });
+        cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+        cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
+        cy.getTestElement('@welcome-layout/body').screenshot('device-unknown');
+    });
+
+    it('device-disconnected', () => {
+        cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+        cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
+        cy.getTestElement('@welcome-layout/body').screenshot('device-disconnected');
+    });
+
+    it('device-bootloader', () => {
+        cy.connectBootloaderDevice('1');
+
+        // click is not required, tips are expanded automatically
+
+        cy.getTestElement('@collapsible-box/body').should('have.css', 'opacity', '1');
+        cy.getTestElement('@welcome-layout/body').screenshot('device-bootloader');
     });
 
     describe('should redirect to onboarding', () => {
