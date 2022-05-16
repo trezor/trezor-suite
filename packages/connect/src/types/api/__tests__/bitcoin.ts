@@ -228,6 +228,33 @@ export const signTransaction = async (api: TrezorConnect) => {
                 script_type: 'PAYTOOPRETURN',
             },
         ],
+        paymentRequests: [
+            {
+                recipient_name: 'trezor.io',
+                signature: '000000',
+                nonce: '1',
+                amount: 1,
+                memos: [
+                    {
+                        text_memo: { text: 'Invoice #87654321' },
+                    },
+                    {
+                        coin_purchase_memo: {
+                            coin_type: 1, // CoinInfo.slip44
+                            amount: 1,
+                            address: 'PROTO.Address.address',
+                            mac: 'PROTO.Address.mac',
+                        },
+                    },
+                    {
+                        refund_memo: {
+                            address: 'PROTO.Address.address',
+                            mac: 'PROTO.Address.mac',
+                        },
+                    },
+                ],
+            },
+        ],
         refTxs: [
             {
                 hash: 'txhash',
