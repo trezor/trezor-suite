@@ -284,15 +284,16 @@ connect-popup manual:
     matrix:
       - TESTS_ENVIRONMENT: ["node", "web"]
         TESTS_PATTERN: "init"
-        TESTS_FIRMWARE: ["2-latest", "2.2.0"]
+        TESTS_FIRMWARE: ["2-master", "2.2.0"]
         # todo:
         # TESTS_NODE_VERSION: ["12", "14", "16"]
       - TESTS_ENVIRONMENT: ["node", "web"]
         TESTS_PATTERN: "methods"
-        TESTS_FIRMWARE: ["2-latest", "2.2.0"]
+        TESTS_FIRMWARE: ["2-master", "2.2.0"]
         # todo:
         # TESTS_NODE_VERSION: ["12", "14", "16"]
-        TESTS_INCLUDED_METHODS: [
+        TESTS_INCLUDED_METHODS:
+          [
             "applySettings,applyFlags,getFeatures",
             "signTransaction",
             "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction",
@@ -300,7 +301,7 @@ connect-popup manual:
             "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
             "eosGetPublicKey,eosSignTransaction",
             "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
-            # "nemGetAddress,nemSignTransaction",
+            "nemGetAddress,nemSignTransaction",
             "rippleGetAddress,rippleSignTransaction",
             "tezosGetAddress,tezosGetPublicKey",
             "binanceSignTransaction",
