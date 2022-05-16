@@ -39,6 +39,7 @@ export interface TokenTransfer {
     amount: string;
     from?: string;
     to?: string;
+    transferId?: string;
 }
 
 export interface Target {

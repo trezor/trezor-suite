@@ -281,20 +281,48 @@ const TransactionItem = React.memo(
                                                         } // if list of targets is expanded we won't get last item here
                                                         accountMetadata={accountMetadata}
                                                         accountKey={accountKey}
-                                                        isActionDisabled={isActionDisabled}
+                                                        isMetadataDisabled={!!isActionDisabled}
+                                                        metadataPayload={{
+                                                            type: 'outputLabel',
+                                                            accountKey,
+                                                            txid: transaction.txid,
+                                                            outputIndex: t.payload.n,
+                                                            defaultValue: `${transaction.txid}-${t.payload.n}`,
+                                                            value: accountMetadata?.outputLabels?.[
+                                                                transaction.txid
+                                                            ]?.[t.payload.n],
+                                                        }}
                                                     />
                                                 ) : (
-                                                    <TokenTransfer
-                                                        transfer={t.payload}
-                                                        transaction={transaction}
-                                                        singleRowLayout={useSingleRowLayout}
-                                                        isFirst={i === 0}
-                                                        isLast={
-                                                            limit > 0
-                                                                ? false
-                                                                : i === previewTargets.length - 1
-                                                        }
-                                                    />
+                                                    <>
+                                                        <TokenTransfer
+                                                            transfer={t.payload}
+                                                            transaction={transaction}
+                                                            singleRowLayout={useSingleRowLayout}
+                                                            isFirst={i === 0}
+                                                            isLast={
+                                                                limit > 0
+                                                                    ? false
+                                                                    : i ===
+                                                                      previewTargets.length - 1
+                                                            }
+                                                            isMetadataDisabled={!!isActionDisabled}
+                                                            metadataPayload={{
+                                                                // todo: outputLabel or create a new category 'tokenLabel' ?
+                                                                type: 'outputLabel',
+                                                                accountKey,
+                                                                txid: transaction.txid,
+                                                                // or maybe compose transferId here? instead of polluting blockchain-link?
+                                                                // @ts-expect-error temp. remove
+                                                                outputIndex: t.payload.transferId,
+                                                                defaultValue: `${transaction.txid}-${t.payload.transferId}`,
+                                                                value: accountMetadata
+                                                                    ?.outputLabels?.[
+                                                                    transaction.txid
+                                                                ]?.[t.payload.transferId!],
+                                                            }}
+                                                        />
+                                                    </>
                                                 )}
                                             </React.Fragment>
                                         ))}
