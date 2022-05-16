@@ -1,11 +1,12 @@
 import { ElectrumClient } from './electrum';
+import { Status } from '../../../types/electrum';
 
 type Cache = {
-    [descriptor: string]: [string | null, any];
+    [descriptor: string]: [Status, any];
 };
 
 type Statuses = {
-    [scripthash: string]: string;
+    [scripthash: string]: Status;
 };
 
 export class CachingElectrumClient extends ElectrumClient {
@@ -19,10 +20,11 @@ export class CachingElectrumClient extends ElectrumClient {
         super();
         this.logTimer = setInterval(() => {
             this.log(`Caching effectiveness: ${this.cached}/${this.total}`);
+            this.log('Subscription count: ', Object.keys(this.statuses).length);
         }, 60000);
     }
 
-    private async cacheRequest(status: string | null, method: string, params: any[]) {
+    private async cacheRequest(status: Status, method: string, params: any[]) {
         const descriptor = [method, ...params].join(':');
         const cached = this.cache[descriptor];
         if (cached) {
@@ -37,6 +39,18 @@ export class CachingElectrumClient extends ElectrumClient {
         return response;
     }
 
+    private async trySubscribe(scripthash: string): Promise<Status> {
+        const status = this.statuses[scripthash];
+        if (status !== undefined) {
+            // Already subscribed, just return latest status
+            return status;
+        }
+        // Subscribe to the new scripthash and store the status
+        const newStatus = await super.request('blockchain.scripthash.subscribe', scripthash);
+        this.statuses[scripthash] = newStatus;
+        return newStatus;
+    }
+
     async request(method: string, ...params: any[]) {
         this.total++;
         switch (method) {
@@ -44,8 +58,7 @@ export class CachingElectrumClient extends ElectrumClient {
             case 'blockchain.scripthash.get_balance':
             case 'blockchain.scripthash.listunspent': {
                 const [scripthash] = params;
-                const status = this.statuses[scripthash];
-                if (status === undefined) break;
+                const status = await this.trySubscribe(scripthash);
                 return this.cacheRequest(status, method, params);
             }
             case 'blockchain.transaction.get': {
@@ -55,9 +68,12 @@ export class CachingElectrumClient extends ElectrumClient {
             }
             case 'blockchain.scripthash.subscribe': {
                 const [scripthash] = params;
-                const status = await super.request(method, ...params);
-                this.statuses[scripthash] = status;
-                return status;
+                return this.trySubscribe(scripthash);
+            }
+            case 'blockchain.scripthash.unsubscribe': {
+                const [scripthash] = params;
+                delete this.statuses[scripthash];
+                return super.request(method, ...params);
             }
             default:
                 break;
@@ -67,6 +83,7 @@ export class CachingElectrumClient extends ElectrumClient {
 
     protected response(response: any) {
         const { method, params } = response;
+        // presence of 'method' field implies that it's a notification
         switch (method) {
             case 'blockchain.scripthash.subscribe': {
                 const [scripthash, status] = params;

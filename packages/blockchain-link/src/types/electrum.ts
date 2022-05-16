@@ -83,7 +83,8 @@ export type BlockHeader = { height: number; hex: string };
 type BlockHeaders = { count: number; max: number; hex: string };
 type Listener<T> = (data: T) => void;
 export type Version = [string, string];
-export type StatusChange = [string, string | null];
+export type Status = string | null;
+export type StatusChange = [string, Status];
 
 export interface ElectrumAPI {
     getInfo(): Info | undefined;
@@ -117,7 +118,7 @@ export interface ElectrumAPI {
     request(method: 'blockchain.scripthash.get_history', scripthash: string): Promise<HistoryTx[]>;
     request(method: 'blockchain.scripthash.get_mempool', scripthash: string): Promise<MempoolTx[]>;
     request(method: 'blockchain.scripthash.listunspent', scripthash: string): Promise<Utxo[]>;
-    request(method: 'blockchain.scripthash.subscribe', scripthash: string): Promise<string | null>;
+    request(method: 'blockchain.scripthash.subscribe', scripthash: string): Promise<Status>;
     request(method: 'blockchain.scripthash.unsubscribe', scripthash: string): Promise<boolean>;
     request(method: 'blockchain.block.header', height: number, cp_height?: number): Promise<string>;
     request(
