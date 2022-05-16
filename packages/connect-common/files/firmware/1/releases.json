@@ -1,6 +1,20 @@
 [
     {
         "required": false,
+        "version": [1, 11, 1],
+        "bootloader_version": [1, 10, 0],
+        "min_bridge_version": [2, 0, 25],
+        "min_firmware_version": [1, 6, 2],
+        "min_bootloader_version": [1, 5, 0],
+        "url": "data/firmware/1/trezor-1.11.1.bin",
+        "url_bitcoinonly": "data/firmware/1/trezor-1.11.1-bitcoinonly.bin",
+        "fingerprint": "f7c60d0b8c2853afd576867c6562aba5ea52bdc2ce34d0dbb8751f52867c3665",
+        "fingerprint_bitcoinonly": "8e17b95b5d302f203de3a8fe27959efd25e3d5140ac9b5e60412f1b3f624995d",
+        "notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-may-2022-b1af60742291",
+        "changelog": "* Support Electrum signatures in VerifyMessage.\n* Trezor will refuse to sign UTXOs that do not match the provided derivation path (e.g., transactions belonging to a different wallet, or synthetic transaction inputs).\n* Zcash v5 transaction format."
+    },
+    {
+        "required": false,
         "version": [1, 10, 5],
         "bootloader_version": [1, 10, 0],
         "min_bridge_version": [2, 0, 25],
