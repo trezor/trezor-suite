@@ -34,6 +34,7 @@ let port = 0;
 let client = null;
 
 const controller = new Controller();
+let firmwares = {};
 
 module.exports = on => {
     // make ts possible start
@@ -181,10 +182,10 @@ module.exports = on => {
         startEmu: async arg => {
             const params = {
                 type: 'emulator-start',
-                // version: process.env.FIRMWARE || releasesT2[0].version.join('.'),
-                version: process.env.FIRMWARE || '2.4.3',
+                version: process.env.FIRMWARE || firmwares.TT[1],
                 ...arg,
             };
+            console.log('starting fw version: ', params.version);
             await controller.send(params);
             return params;
         },
@@ -290,6 +291,11 @@ module.exports = on => {
         },
         trezorUserEnvConnect: async () => {
             await controller.connect();
+
+            controller.on('firmwares', data => {
+                firmwares = data;
+            });
+
             return null;
         },
         trezorUserEnvDisconnect: async () => {
