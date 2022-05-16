@@ -13,12 +13,13 @@ const addressesFromAccounts = (array: (AccountAddresses | undefined)[]) =>
             change.concat(used, unused).map(({ address }) => address),
         );
 
-export const createAddressManager = (network?: Network) => {
+export const createAddressManager = (getNetwork: () => Network | undefined) => {
     let subscribedAddrs: AddressMap = {};
     let subscribedAccs: AccountMap = {};
 
     const addAddresses = (addresses: string[]) => {
         const toAdd = addresses.filter(arrayDistinct).filter(addr => !subscribedAddrs[addr]);
+        const network = getNetwork();
 
         subscribedAddrs = toAdd.reduce<AddressMap>(
             (dic, addr) => ({
