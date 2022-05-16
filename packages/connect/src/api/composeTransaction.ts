@@ -382,14 +382,14 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const signTxMethod = !this.device.unavailableCapabilities.replaceTransaction
             ? signTx
             : signTxLegacy;
-        const response = await signTxMethod(
-            this.device.getCommands().typedCall.bind(this.device.getCommands()),
+        const response = await signTxMethod({
+            typedCall: this.device.getCommands().typedCall.bind(this.device.getCommands()),
             inputs,
             outputs,
             refTxs,
             options,
             coinInfo,
-        );
+        });
 
         await verifyTx(
             this.device.getCommands().getHDNode.bind(this.device.getCommands()),

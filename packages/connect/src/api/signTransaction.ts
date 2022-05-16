@@ -27,6 +27,7 @@ import type { RefTransaction, TransactionOptions } from '../types/api/signTransa
 type Params = {
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
+    paymentRequests: PROTO.TxAckPaymentRequest[];
     refTxs?: RefTransaction[];
     addresses?: AccountAddresses;
     options: TransactionOptions;
@@ -46,6 +47,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'coin', type: 'string', required: true },
             { name: 'inputs', type: 'array', required: true },
             { name: 'outputs', type: 'array', required: true },
+            { name: 'paymentRequests', type: 'array', allowEmpty: true },
             { name: 'refTxs', type: 'array', allowEmpty: true },
             { name: 'account', type: 'object' },
             { name: 'locktime', type: 'number' },
@@ -92,6 +94,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         this.params = {
             inputs,
             outputs: payload.outputs,
+            paymentRequests: payload.paymentRequests || [],
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
             options: {
@@ -164,14 +167,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         const signTxMethod = !useLegacySignProcess ? signTx : signTxLegacy;
-        const response = await signTxMethod(
-            device.getCommands().typedCall.bind(device.getCommands()),
-            params.inputs,
-            params.outputs,
+        const response = await signTxMethod({
+            ...params,
             refTxs,
-            params.options,
-            params.coinInfo,
-        );
+            typedCall: device.getCommands().typedCall.bind(device.getCommands()),
+        });
 
         if (params.options.decred_staking_ticket) {
             await verifyTicketTx(

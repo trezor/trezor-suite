@@ -1,29 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtx-legacy.js
 
 import { PROTO, ERRORS } from '../../constants';
-import type { BitcoinNetworkInfo } from '../../types';
-import type { TypedCall } from '../../device/DeviceCommands';
-import type {
-    RefTransaction,
-    TransactionOptions,
-    SignedTransaction,
-} from '../../types/api/signTransaction';
-
-type RefTxs = { [hash: string]: RefTransaction };
-type Props = {
-    typedCall: TypedCall;
-    txRequest: PROTO.TxRequest;
-    refTxs: RefTxs;
-    inputs: PROTO.TxInputType[];
-    outputs: PROTO.TxOutputType[];
-    serializedTx: string[];
-    signatures: string[];
-};
+import type { SignedTransaction } from '../../types/api/signTransaction';
+import type { SignTxHelperParams, SignTxHelperProps } from './signtx';
 
 const requestPrevTxInfo = ({
     txRequest: { request_type, details },
     refTxs,
-}: Props): PROTO.TxAckResponse => {
+}: SignTxHelperProps): PROTO.TxAckResponse => {
     const { tx_hash } = details;
     if (!tx_hash) {
         throw ERRORS.TypedError('Runtime', 'requestPrevTxInfo: unknown details.tx_hash');
@@ -88,7 +72,7 @@ const requestSignedTxInfo = ({
     txRequest: { request_type, details },
     inputs,
     outputs,
-}: Props): PROTO.TxAckResponse => {
+}: SignTxHelperProps): PROTO.TxAckResponse => {
     if (request_type === 'TXINPUT') {
         return { inputs: [inputs[details.request_index]] };
     }
@@ -115,7 +99,7 @@ const requestSignedTxInfo = ({
 
 // requests information about a transaction
 // can be either signed transaction itself of prev transaction
-const requestTxAck = (props: Props) => {
+const requestTxAck = (props: SignTxHelperProps) => {
     const { tx_hash } = props.txRequest.details;
     if (tx_hash) {
         return requestPrevTxInfo(props);
@@ -144,10 +128,8 @@ const saveTxSignatures = (
     }
 };
 
-const processTxRequest = async (
-    props: Props,
-): Promise<{ signatures: string[]; serializedTx: string }> => {
-    const { typedCall, txRequest, refTxs, inputs, outputs, serializedTx, signatures } = props;
+const processTxRequest = async (props: SignTxHelperProps): Promise<SignedTransaction> => {
+    const { typedCall, txRequest, serializedTx, signatures } = props;
     if (txRequest.serialized) saveTxSignatures(txRequest.serialized, serializedTx, signatures);
     if (txRequest.request_type === 'TXFINISHED') {
         return Promise.resolve({
@@ -159,29 +141,19 @@ const processTxRequest = async (
     const txAck = requestTxAck(props);
     const { message } = await typedCall('TxAck', 'TxRequest', { tx: txAck });
     return processTxRequest({
-        typedCall,
+        ...props,
         txRequest: message,
-        refTxs,
-        inputs,
-        outputs,
-        serializedTx,
-        signatures,
     });
 };
 
-export const signTxLegacy = async (
-    typedCall: TypedCall,
-    inputs: PROTO.TxInputType[],
-    outputs: PROTO.TxOutputType[],
-    refTxsArray: RefTransaction[],
-    options: TransactionOptions,
-    coinInfo: BitcoinNetworkInfo,
-): Promise<SignedTransaction> => {
-    const refTxs: RefTxs = {};
-    refTxsArray.forEach(tx => {
-        refTxs[tx.hash.toLowerCase()] = tx;
-    });
-
+export const signTxLegacy = async ({
+    typedCall,
+    inputs,
+    outputs,
+    refTxs,
+    options,
+    coinInfo,
+}: SignTxHelperParams) => {
     const { message } = await typedCall('SignTx', 'TxRequest', {
         ...options,
         inputs_count: inputs.length,
@@ -192,9 +164,16 @@ export const signTxLegacy = async (
     return processTxRequest({
         typedCall,
         txRequest: message,
-        refTxs,
+        refTxs: refTxs.reduce(
+            (record, tx) => ({
+                ...record,
+                [tx.hash.toLowerCase()]: tx,
+            }),
+            {},
+        ),
         inputs,
         outputs,
+        paymentRequests: [], // not possible in legacy FW
         serializedTx: [],
         signatures: [],
     });

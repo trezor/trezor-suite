@@ -70,6 +70,7 @@ export interface SignTransaction {
     decredStakingTicket?: boolean;
     push?: boolean;
 }
+
 export type SignedTransaction = {
     signatures: string[];
     serializedTx: string;
