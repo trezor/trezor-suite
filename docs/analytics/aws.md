@@ -1,12 +1,12 @@
-# AWS Analytics: Info & Changelog
+# AWS Analytics: Info
 
-_For a deeper technical writeup of analytics processes intended for developers, please see [aws-technical](aws-technical.md)._
+_For a deeper technical writeup of analytics processes intended for developers, please see [README.md](../../packages/analytics/README.md)._
 
 Trezor Suite can be set to collect real-world data to improve the performance of both web and desktop apps. This anonymous data is only shared by users who have usage data tracking enabled.
 
 During the first run Trezor Suite prompts the user whether they wish to participate in the data collection and such setting can be changed later on in Settings at any time.
 
-## Anonymous data:
+## Anonymous data
 
 Collected data are anonymous. This means that **Suite does not track** personal information and can not be used to view particular users' balances.
 
@@ -23,6 +23,10 @@ When data tracking is enabled, Trezor Suite collects functional information that
 -   Hardware, operating system and setup of the connected device
 -   Errors encountered during a session
 
-## Changelog
+## Data process
 
-See [changelog.md](changelog.md).
+1. User with enabled analytics interacts with the application
+2. Events are sent to specific endpoints
+3. Collected data are parsed and analysed (can be seen in Keboola)
+4. Charts and metrics are created (in Tableau)
+5. We know how to improve the application

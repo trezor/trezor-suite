@@ -35,3 +35,11 @@ By principle, the logs collected are destroyed without delay once the purpose of
 ## Security of data
 
 Access to the data is limited strictly to the members of the development, security and IT team. All users are provided access on the need-to-know basis and the accesses are regularly reviewed. Users accessing the data log in using a strong combination of username and password and use two-factor authentication (where provided by a service provider).
+
+## Contents
+
+-   [AWS](./aws.md)
+-   [Sentry](./sentry.md)
+-   [Generic analytics package](../../packages/analytics/README.md)
+-   [Suite analytics package](../../packages/suite-analytics/README.md)
+    -   [Events changelog](../../packages/suite-analytics/CHANGELOG.md)
