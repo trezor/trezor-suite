@@ -7,10 +7,12 @@ import type { Message, Response } from '../../types';
 
 const TOR_ADDRESS = '127.0.0.1:9050';
 
+const LOCALHOST_CONFIG = 'localhost:50001:t';
 const TCP_CONFIG = 'electrum.corp.sldev.cz:50001:t';
 const TLS_CONFIG = 'bitcoin.aranguren.org:50002:s';
 const TOR_CONFIG = ''; // My personal Umbrel
 
+const ADDR_REGTEST = 'bcrt1qx4009e2mpuch20p3uwvwmplaxgnjqwjmenrcfu';
 const ADDR_LEGACY = '1BitcoinEaterAddressDontSendf59kuE'; // 393 transactions
 const ADDR_SEGWIT = '3AVjhFvVHKhPfFccdFnPTBaqRqWq4EWoU2'; // 2 transactions
 const ADDR_SEGWIT_MID = '33QJtiYPkQzYf5BNbCztHWowhco77sg18g'; // 44 transactions
@@ -42,7 +44,7 @@ const TX_HASH =
 
     worker.onmessage = ({ data }: { data: Response }) => {
         // eslint-disable-next-line no-console
-        console.log('ONMESSAGE', JSON.stringify(data, null, 4));
+        // console.log('ONMESSAGE', JSON.stringify(data, null, 4));
         if (resolvers[data.id]) resolvers[data.id](data);
     };
 
@@ -57,9 +59,9 @@ const TX_HASH =
         type: 'm_handshake',
         id: 0,
         settings: {
-            name: 'Electrum',
+            name: 'REGTEST',
             worker: 'unknown',
-            server: [TCP_CONFIG],
+            server: [LOCALHOST_CONFIG],
             debug: true,
         },
     });
@@ -107,17 +109,31 @@ const TX_HASH =
 
     return;
     */
+    /*
+    await sendAndWait({
+        id: ++id,
+        // @ts-ignore
+        type: 'raw',
+        // @ts-ignore
+        payload: {
+            method: 'blockchain.scripthash.subscribe',
+            params: ['ed11f638de44195276094b2f055628db95a1f726a65155debf45f54ffc799acb'],
+        },
+    });
+    */
+    /*
     await sendAndWait({
         id: ++id,
         type: 'm_get_account_info',
-        payload: { descriptor: ADDR_SEGWIT, details: 'txs' },
+        payload: { descriptor: ADDR_REGTEST, details: 'txs' },
     });
+    /*
     return;
     await sendAndWait({
         id: ++id,
         type: 'm_get_account_balance_history',
         payload: {
-            descriptor: ADDR_SEGWIT,
+            descriptor: ADDR_REGTEST,
             from: NaN,
             to: NaN,
             groupBy: 7200000,
@@ -126,4 +142,5 @@ const TX_HASH =
     });
     return;
     await sendAndWait({ id: ++id, type: 'm_estimate_fee', payload: { blocks: [1, 2, 10] } });
+    */
 })();

@@ -29,6 +29,10 @@ export const txListener = (worker: BaseWorker<ElectrumAPI>) => {
 
     const onTransaction = async ([scripthash, _status]: StatusChange) => {
         const { descriptor, addresses } = addressManager.getInfo(scripthash);
+        if (descriptor === scripthash) {
+            // scripthash was subscribed to only internally, not explicitly from Suite
+            return;
+        }
         const history = await api().request('blockchain.scripthash.get_history', scripthash);
         const recent = history.reduce<HistoryTx | undefined>(mostRecent, undefined);
         if (!recent) return;
