@@ -20,7 +20,7 @@
     - "packages/utils"
 
 # Suite web deploy to dev
-suite-web deploy dev:
+suite-web deploy sldev:
   stage: deploy to dev
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
@@ -39,7 +39,7 @@ suite-web deploy dev:
     - deploy
 
 # Suite web landing deploy to dev
-suite-web-landing deploy dev:
+suite-web-landing deploy sldev:
   stage: deploy to dev
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web-landing/${CI_BUILD_REF_NAME}
@@ -56,7 +56,7 @@ suite-web-landing deploy dev:
     - deploy
 
 # Suite desktop deploy to dev and production
-suite-desktop deploy dev:
+suite-desktop deploy sldev:
   stage: deploy to dev
   only:
     <<: *run_everything_rules
@@ -71,7 +71,7 @@ suite-desktop deploy dev:
     - deploy
 
 # # Suite native deploy to dev
-# suite-native deploy dev:
+# suite-native deploy sldev:
 #   stage: deploy to dev
 #   only:
 #     <<: *run_everything_rules
@@ -85,7 +85,7 @@ suite-desktop deploy dev:
 # TODO: Disabled until the new suite native build is introduced. Fix this deploy job after.
 
 # Messaging system deploy to dev
-msg-system deploy dev:
+msg-system deploy sldev:
   stage: deploy to dev
   needs:
     - "msg-system config sign dev"
@@ -113,7 +113,7 @@ msg-system deploy dev:
   tags:
     - deploy
 
-connect-explorer deploy dev:
+connect-explorer deploy sldev:
   extends: .connect-explorer deploy dev base
   needs:
     - connect-explorer build
@@ -132,6 +132,8 @@ connect-explorer deploy dev manual:
 .npm_deploy_rules: &npm_deploy_rules
   stage: deploy to dev
   when: manual
+  needs:
+    - install
   tags:
     - deploy
   before_script:
@@ -142,74 +144,74 @@ connect-explorer deploy dev manual:
 beta blockchain-link deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/blockchain-link && npm publish --tag beta"
+    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish --tag beta"
 
 beta components deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/components && npm publish --tag beta"
+    - nix-shell --run "yarn && cd ./packages/components && npm publish --tag beta"
 
 beta connect-common deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/connect-common && npm publish --tag beta"
+    - nix-shell --run "yarn && cd ./packages/connect-common && npm publish --tag beta"
 
 beta transport deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/transport && npm publish --tag beta"
+    - nix-shell --run "yarn && cd ./packages/transport && npm publish --tag beta"
 
 beta utils deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/utils && npm publish --tag beta"
+    - nix-shell --run "yarn && cd ./packages/utils && npm publish --tag beta"
 
 beta utxo-lib deploy npm:
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/utxo-lib && npm publish --tag beta"
+    - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish --tag beta"
 
 blockchain-link deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/blockchain-link && npm publish"
+    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish"
 
 components deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/components && npm publish"
+    - nix-shell --run "yarn && cd ./packages/components && npm publish"
 
 connect-common deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/connect-common && npm publish"
+    - nix-shell --run "yarn && cd ./packages/connect-common && npm publish"
 
 transport deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/transport && npm publish"
+    - nix-shell --run "yarn && cd ./packages/transport && npm publish"
 
 utils deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/utils && npm publish"
+    - nix-shell --run "yarn && cd ./packages/utils && npm publish"
 
 utxo-lib deploy npm:
   only:
     <<: *run_everything_rules
   <<: *npm_deploy_rules
   script:
-    - nix-shell --run "yarn && yarn build:libs && cd ./packages/utxo-lib && npm publish"
+    - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish"
 
 # connect deploy to dev
 connect deploy to dev:

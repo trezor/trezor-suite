@@ -5,7 +5,7 @@ build & push image:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   variables:
-    DOCKER_TLS_CERTDIR: ''
+    DOCKER_TLS_CERTDIR: ""
     CONTAINER_NAME: "$CI_REGISTRY/satoshilabs/trezor/trezor-suite/base"
   image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/docker
   services:
@@ -21,3 +21,13 @@ install:
   script:
     - ci/scripts/check_branch_name.sh $CI_COMMIT_BRANCH
     - ci/scripts/check_lockfile.sh
+    - yarn
+    - yarn build:libs
+  artifacts:
+    expire_in: 60 minutes
+    paths:
+      - "packages/*/lib/*"
+      - "packages/suite-data/files/browser-detection/*"
+      - "packages/suite-data/files/guide/*"
+      - "packages/connect-iframe/build/*"
+      - "packages/suite/src/types/suite/messageSystem.ts"

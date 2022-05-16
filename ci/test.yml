@@ -8,6 +8,8 @@
 # @trezor/suite-web
 .e2e web:
   stage: integration testing
+  dependencies:
+    - install
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
@@ -26,7 +28,6 @@
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - docker-compose pull
     - docker-compose up -d ${CONTAINERS}
     - docker-compose run test-run
@@ -119,6 +120,8 @@ suite web 2-master manual:
 # @trezor/suite-desktop
 .e2e desktop:
   stage: integration testing
+  dependencies:
+    - install
   variables:
     COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
   before_script:
@@ -127,7 +130,6 @@ suite web 2-master manual:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     # 3 next steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
     # but since this is run only in nightly builds it can be probably built inside the job for now..
-    - yarn build:libs
     - yarn workspace @trezor/suite-data msg-system-sign-config
     - yarn workspace @trezor/suite-desktop build:linux
     - docker-compose pull
@@ -211,13 +213,14 @@ blockchain-link manual:
 # @trezor/connect-popup (via @trezor/connect-explorer)
 .e2e connect-popup:
   stage: integration testing
+  dependencies:
+    - install
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-explorer-ci.yml
     URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}/
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - yarn workspace @trezor/connect-web build # should not be needed
     - yarn workspace @trezor/connect-iframe build # should not be needed
     - yarn workspace @trezor/connect-popup build # should not be needed
@@ -248,6 +251,8 @@ connect-popup manual:
 
 .connect:
   stage: integration testing
+  dependencies:
+    - install
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-test.yml
@@ -264,7 +269,6 @@ connect-popup manual:
   script:
     - git submodule update --init --recursive
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     # should not be needed, rather hand over artifacts?
     - if [ "$TESTS_ENVIRONMENT" == "web" ]; then yarn workspace @trezor/connect-iframe build; else echo "else"; fi
     # should not be needed, rather hand over artifacts?

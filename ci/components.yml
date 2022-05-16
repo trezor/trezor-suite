@@ -52,7 +52,7 @@ components build-storybook-manual:
 
 # Currently two jobs needed, it seems not to be possible to have a job depending on manual job
 # https://gitlab.com/gitlab-org/gitlab/-/issues/31264
-components storybook deploy dev:
+components storybook deploy sldev:
   <<: *deploy_common
   only:
     <<: *run_everything_rules
@@ -62,7 +62,6 @@ components storybook deploy dev manual:
   when: manual
   except:
     <<: *run_everything_rules
-
 # components-storybook test snapshots:
 #   stage: integration testing
 #   script:

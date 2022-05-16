@@ -1,10 +1,12 @@
 # Config
 .config_sign_stable: &config_sign_stable
-  needs:
+  dependencies:
+    - install
     - msg-system config sign stable
 
 .config_sign_dev: &config_sign_dev
-  needs:
+  dependencies:
+    - install
     - msg-system config sign dev
 
 .run_everything_rules: &run_everything_rules
@@ -34,7 +36,6 @@ suite-web build dev:
     ASSET_PREFIX: /suite-web/${CI_BUILD_REF_NAME}/web
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
@@ -54,7 +55,6 @@ suite-web build stable:
     ASSET_PREFIX: /web
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
@@ -94,7 +94,6 @@ suite-web-landing build dev:
     ASSET_PREFIX: /suite-web-landing/${CI_BUILD_REF_NAME}
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - yarn workspace @trezor/suite-web-landing build
   artifacts:
     expire_in: 7 days
@@ -112,7 +111,6 @@ suite-web-landing build stable:
       - codesign
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - yarn workspace @trezor/suite-web-landing build
   artifacts:
     expire_in: 7 days
@@ -125,7 +123,6 @@ suite-web-landing build stable:
   stage: build
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - yarn workspace @trezor/suite-data copy-static-files
     - yarn workspace @trezor/suite-desktop build:${platform}
     - ls -la packages/suite-desktop/build-electron
@@ -281,7 +278,6 @@ suite-native build android:
   stage: build
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - yarn workspace @trezor/suite-data copy-static-files
     - yarn workspace @trezor/suite-native build:android
     - mv packages/suite-native/android/app/build/outputs/apk/release/app-release.apk .
@@ -294,7 +290,6 @@ suite-native build android:
   stage: build
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
     - __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_BUILD_REF_NAME}/ yarn workspace @trezor/connect-explorer build
   artifacts:
     expire_in: 7 days
@@ -323,7 +318,6 @@ connect-web build:
   script:
     - git submodule update --init --recursive
     - yarn
-    - yarn build:libs
     - yarn workspace @trezor/connect-web build
     - yarn workspace @trezor/connect-iframe build
     - yarn workspace @trezor/connect-popup build
