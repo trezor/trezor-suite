@@ -116,6 +116,7 @@ run() {
 
   echo "Testing env: ${ENVIRONEMT}. Using: ${SCRIPT} ${PATTERN}"
   echo "  Firmware: ${FIRMWARE}"
+  echo "  Test pattern: $PATTERN"
   echo "  Included methods: ${INCLUDED_METHODS}"
   echo "  Excluded methods: ${EXCLUDED_METHODS}"
   echo "  TxCache: ${USE_TX_CACHE}"
@@ -125,7 +126,7 @@ run() {
     runDocker
   else
     getLatestFirmware
-    $SCRIPT
+    $SCRIPT $PATTERN
   fi
   
 }
