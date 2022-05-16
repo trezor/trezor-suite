@@ -1,6 +1,19 @@
 [
     {
         "required": false,
+        "version": [2, 5, 1],
+        "min_bridge_version": [2, 0, 7],
+        "min_firmware_version": [2, 0, 8],
+        "min_bootloader_version": [2, 0, 0],
+        "url": "data/firmware/2/trezor-2.5.1.bin",
+        "url_bitcoinonly": "data/firmware/2/trezor-2.5.1-bitcoinonly.bin",
+        "fingerprint": "782d4934897018cac779eebb0d7c66e21da7789b9cd35e1f99f097bdfd9b7d33",
+        "fingerprint_bitcoinonly": "db5d7b211532f717a32fe0b1bd3e3df6ad5464079a896a7f7492ab6e9e030bb5",
+        "notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-may-2022-b1af60742291",
+        "changelog": "* Support Electrum signatures in VerifyMessage.\n* Support Cardano Alonzo-era transactions (Plutus).\n* Bitcoin bech32 addresses QR codes have bigger pixels which are easier to scan.\n* EIP-1559 transaction correctly show final Hold to Confirm screen.\n* Trezor will refuse to sign UTXOs that do not match the provided derivation path (e.g., transactions belonging to a different wallet, or synthetic transaction inputs).\n* Zcash v5 transaction format."
+    },
+    {
+        "required": false,
         "version": [2, 4, 3],
         "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 0, 8],
