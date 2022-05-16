@@ -1,6 +1,6 @@
 # Analytics Changelog
 
-This changelog lists all events that Suite tracks.
+This changelog lists changes in suite events.
 
 ### 1.19
 
