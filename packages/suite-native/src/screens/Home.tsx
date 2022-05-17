@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
-import { Text, Box, Button, NumPadButton, Icon } from '@trezor/atoms';
+import { Text, Box, Button, NumPadButton, Icon, Hint } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -60,6 +60,17 @@ export const Home = () => {
                         >
                             My Fancy Button
                         </Button>
+                    </Box>
+                    <Box marginTop="lg">
+                        <Hint type="hint" message="Hint without children" />
+                    </Box>
+
+                    <Box marginTop="lg">
+                        <Hint type="error" message="Hint with children">
+                            <Button size="md" colorScheme="primary">
+                                Fancy Button with hint
+                            </Button>
+                        </Hint>
                     </Box>
 
                     <NumPadButton
