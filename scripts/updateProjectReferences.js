@@ -28,8 +28,14 @@ import chalk from 'chalk';
         printWidth: 50,
     };
 
-    const serializeConfig = config =>
-        prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);
+    const serializeConfig = config => {
+        try {
+            return prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);
+        } catch (error) {
+            console.error(error);
+            process.exit(1);
+        }
+    };
 
     const workspaces = JSON.parse(
         JSON.parse(execSync('yarn workspaces --json info').toString()).data,
@@ -92,7 +98,7 @@ import chalk from 'chalk';
 
             if (isTesting) {
                 if (
-                    serializeConfig(workspaceConfig.references) !==
+                    serializeConfig(workspaceConfig.references ?? []) !==
                     serializeConfig(nextWorkspaceReferences)
                 ) {
                     console.error(
