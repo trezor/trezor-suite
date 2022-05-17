@@ -1,0 +1,112 @@
+.npm_registry_beta_rules: &npm_registry_beta_rules
+  except:
+    - codesing
+    - /^npm-release\//
+    - releases
+    - schedules
+    - /^release\//
+
+# npm beta packages deploy to npm registry
+.npm_beta_deploy_rules: &npm_beta_deploy_rules
+  stage: deploy npm
+  when: manual
+  <<: *npm_registry_beta_rules
+  dependencies:
+    - install
+  tags:
+    - deploy
+  before_script:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+  after_script:
+    - rm ~/.npmrc
+
+beta blockchain-link deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish --tag beta"
+
+beta components deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/components && npm publish --tag beta"
+
+beta connect-common deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/connect-common && npm publish --tag beta"
+
+beta transport deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/transport && npm publish --tag beta"
+
+beta utils deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/utils && npm publish --tag beta"
+
+beta utxo-lib deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish --tag beta"
+
+# npm packages deploy to npm registry
+
+.npm_registry_release_rules: &npm_registry_release_rules
+  refs:
+    - codesing
+    - /^npm-release\//
+
+.npm_deploy_rules: &npm_deploy_rules
+  stage: deploy npm
+  when: manual
+  dependencies:
+    - install
+  tags:
+    - deploy
+  before_script:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+  after_script:
+    - rm ~/.npmrc
+
+blockchain-link deploy npm:
+  only:
+    <<: *npm_registry_release_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish"
+
+components deploy npm:
+  only:
+    <<: *npm_registry_release_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/components && npm publish"
+
+connect-common deploy npm:
+  only:
+    <<: *npm_registry_release_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/connect-common && npm publish"
+
+transport deploy npm:
+  only:
+    <<: *npm_registry_release_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/transport && npm publish"
+
+utils deploy npm:
+  only:
+    <<: *npm_registry_release_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/utils && npm publish"
+
+utxo-lib deploy npm:
+  only:
+    <<: *npm_registry_release_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish"
