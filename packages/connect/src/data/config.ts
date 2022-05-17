@@ -189,5 +189,9 @@ export const config = {
             min: ['1.10.6', '2.4.4'],
             comment: ['EIP-712 domain-only signing, when primaryType=EIP712Domain'],
         },
+        {
+            methods: ['getOwnershipId'],
+            min: ['0', '2.4.4'],
+        },
     ],
 };
