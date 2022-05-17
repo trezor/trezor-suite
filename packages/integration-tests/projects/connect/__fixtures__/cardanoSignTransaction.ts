@@ -331,20 +331,10 @@ const VALIDITY_INTERVAL_START = '47';
 const SCRIPT_DATA_HASH = 'd593fd793c377ac50a3169bb8378ffc257c944da31aa8f355dfa5a4f6ff89e02';
 
 const legacyResults = {
-    beforeSignTx: {
-        // cardanoSignTransaction not supported below this version
-        rules: ['<2.3.2', '1'],
+    beforeTransactionStreaming: {
+        // FW without transaction streaming is no longer supported by Connect
+        rules: ['<2.4.2', '1'],
         success: false,
-    },
-    beforeStakePoolRegistrationAsOwner: {
-        // older FW doesn't support stake pool registration as owner
-        rules: ['<2.3.5', '1'],
-        payload: false,
-    },
-    beforeAuxiliaryData: {
-        // older FW doesn't support auxiliary data
-        rules: ['<2.3.7', '1'],
-        payload: false,
     },
     beforeMultisig: {
         // older FW doesn't support multisig
@@ -390,7 +380,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeSignTx],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -418,7 +408,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeSignTx],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -448,7 +438,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeSignTx],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -478,7 +468,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeSignTx],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -508,7 +498,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeSignTx],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -538,7 +528,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeSignTx],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -566,7 +556,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeSignTx],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -594,13 +584,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support transactions with no outputs
-                    rules: ['<2.3.5', '1'],
-                    payload: false,
-                },
-            ],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -638,33 +622,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                legacyResults.beforeSignTx,
-                {
-                    // witness are ordered differently
-                    rules: ['2.3.2-2.3.6'],
-                    payload: {
-                        hash: '439764b5f7e08839881536a3191faeaf111e75d9f00f83b102c5c1c6fa9fcaf9',
-                        witnesses: [
-                            {
-                                type: 1,
-                                pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
-                                signature:
-                                    '0dbdf36f92bc5199526ffb8b83b33a9eeda0ed3e46fb4025a104346801afb9cf45fa1a5482e54c769f4102e67af46205457d7ae05a889fc342acb0cdc23ecd03',
-                                chainCode: null,
-                            },
-                            {
-                                type: 1,
-                                pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
-                                signature:
-                                    '5ebe8eff752f07e8448f55304fdf3665ac68162099dcacd81886b73affe67fb6df401f8a5fa60ddb6d5fb65b93235e6a234182a40c001e3cf7634f82afd5fe0a',
-                                chainCode: null,
-                            },
-                        ],
-                        auxiliaryDataSupplement: undefined,
-                    },
-                },
-            ],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -699,33 +657,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                legacyResults.beforeSignTx,
-                {
-                    // witness are ordered differently
-                    rules: ['2.3.2-2.3.6'],
-                    payload: {
-                        hash: '3aca1784d151dc75bdbb80fae71bda3f4b26af3f5fd71bd5e9e9bbcdd2b64ad1',
-                        witnesses: [
-                            {
-                                type: 1,
-                                pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
-                                signature:
-                                    '84f321d313da67f80f7fab2e4f3996d3dbe3186659e6f98315e372dbe88c55d56f637ccc7534890c3601ddd31ba885dc86ba0074c230869f20099b7dd5eeaf00',
-                                chainCode: null,
-                            },
-                            {
-                                type: 1,
-                                pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
-                                signature:
-                                    'e563a8012e16affd801564e8410ca7b2c96f76f8ecb878e35c098a823c40be7f59dc12cb44a9b678210d4e8f18ab215133eef7ca9ece94b4683d3db0fd37e105',
-                                chainCode: null,
-                            },
-                        ],
-                        auxiliaryDataSupplement: undefined,
-                    },
-                },
-            ],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -761,33 +693,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                legacyResults.beforeSignTx,
-                {
-                    // witness are ordered differently
-                    rules: ['2.3.2-2.3.6'],
-                    payload: {
-                        hash: '22c67f12e6f6aa0f2f09fd27d472b19c7208ccd7c3af4b09604fd5d462c1de2b',
-                        witnesses: [
-                            {
-                                type: 1,
-                                pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
-                                signature:
-                                    '0202826a8b9688cf978000e7d1591582c65b149bb9f55dc883ae1acf85432618ca32be8a06fef37e69df503a294e7093006f63ababf9fcea639390226934020a',
-                                chainCode: null,
-                            },
-                            {
-                                type: 1,
-                                pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
-                                signature:
-                                    '7efa634e42fa844cad5f60bf005d645817cc674f30eaab0da398b99034850780b40ab5a1028da033330a0f82b01648ec92cff8ca85a072594efb298016f38d0d',
-                                chainCode: null,
-                            },
-                        ],
-                        auxiliaryDataSupplement: undefined,
-                    },
-                },
-            ],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -851,13 +757,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support auxiliary data hash
-                    rules: ['<2.4.2', '1'],
-                    payload: false,
-                },
-            ],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -902,7 +802,7 @@ export default {
                         'ed3335aead65c665ceee21f2549c0ef4c9137b94c13fa642bea4a2c24e44e7f1ee06b47e14151efcf8d5569a404260c01f277b3ba516b5826a15c8ba2c97f70c',
                 },
             },
-            legacyResults: [legacyResults.beforeAuxiliaryData],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -947,7 +847,7 @@ export default {
                         'ed3335aead65c665ceee21f2549c0ef4c9137b94c13fa642bea4a2c24e44e7f1ee06b47e14151efcf8d5569a404260c01f277b3ba516b5826a15c8ba2c97f70c',
                 },
             },
-            legacyResults: [legacyResults.beforeAuxiliaryData],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1034,7 +934,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeSignTx],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1062,7 +962,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeStakePoolRegistrationAsOwner],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1090,7 +990,7 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeStakePoolRegistrationAsOwner],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1683,53 +1583,7 @@ export default {
                         '74f27d877bbb4a5fc4f7c56869905c11f70bad0af3de24b23afaa1d024e750930f434ecc4b73e5d1723c2cb8548e8bf6098ac876487b3a6ed0891cb76994d409',
                 },
             },
-            legacyResults: [
-                legacyResults.beforeAuxiliaryData,
-                {
-                    // witnesses are ordered differently since they are parsed from the tx body
-                    rules: ['2.3.7-2.4.1'],
-                    payload: {
-                        hash: 'ee0dfef8b97857ebe7aa8935af50e9f8f608ff4054c0c034600750d722d90631',
-                        witnesses: [
-                            {
-                                type: 1,
-                                pubKey: '36a8ef21d5b98fdf23a27325cf643deaac35e912c835e35037f23d1061ae5b16',
-                                signature:
-                                    'df62ec013a32d137c86931cec726d104cbc3193776026ec36d10450d9cbd289abc4c2d44311878b3aba035a8aec2c076522183027f9da046b586b5de5c460504',
-                                chainCode: null,
-                            },
-                            {
-                                type: 1,
-                                pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
-                                signature:
-                                    '7d17407e4e8f8b89f8794c022408a84e6f7ef163957d9d7e8ebee4cf9b5c87750c7c559f3a2663441535eec88ebce8540e7d7ea30897de984b1053b818374007',
-                                chainCode: null,
-                            },
-                            {
-                                type: 1,
-                                pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
-                                signature:
-                                    '0dfd139ce3e255664a77de7d199ce5e4f1a1238ec17a6acec4aaae79be2ccd9b1d21127164c059c8aea2c4b91292aaf352c824550db7594b59e4eca6455d3f03',
-                                chainCode: null,
-                            },
-                            {
-                                type: 1,
-                                pubKey: 'e90d7b0a6cf831b0042d37961dd528842860e77914e715bcece676c75353b812',
-                                signature:
-                                    'e249396d227f1d0540e58b64610bdb990eb1f1db9b3bae4a3d4a8088679af4a3bab464a5c912f7041a5fabc37e3009b3e1f4d76e2406429a0ebed85b880ecd0c',
-                                chainCode: null,
-                            },
-                        ],
-                        auxiliaryDataSupplement: {
-                            type: 1,
-                            auxiliaryDataHash:
-                                'a943e9166f1bb6d767b175384d3bd7d23645170df36fc1861fbf344135d8e120',
-                            catalystSignature:
-                                '74f27d877bbb4a5fc4f7c56869905c11f70bad0af3de24b23afaa1d024e750930f434ecc4b73e5d1723c2cb8548e8bf6098ac876487b3a6ed0891cb76994d409',
-                        },
-                    },
-                },
-            ],
+            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {

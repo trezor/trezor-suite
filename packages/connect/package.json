@@ -48,7 +48,6 @@
         "@trezor/utxo-lib": "^1.0.0",
         "bignumber.js": "^9.0.2",
         "bowser": "^2.11.0",
-        "cbor-web": "^7.0.6",
         "cross-fetch": "^3.1.5",
         "events": "^3.3.0",
         "parse-uri": "1.0.7",

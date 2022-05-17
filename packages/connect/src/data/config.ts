@@ -127,9 +127,14 @@ export const config = {
             ],
         },
         {
-            methods: ['cardanoGetAddress', 'cardanoGetPublicKey', 'cardanoSignTransaction'],
+            methods: ['cardanoGetAddress', 'cardanoGetPublicKey'],
             min: ['0', '2.3.2'],
             comment: ['Shelley fork support since firmware 2.3.2'],
+        },
+        {
+            methods: ['cardanoSignTransaction'],
+            min: ['0', '2.4.2'],
+            comment: ['Non-streamed signing no longer supported'],
         },
         {
             methods: ['cardanoGetNativeScriptHash'],
