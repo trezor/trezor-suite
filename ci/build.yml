@@ -327,3 +327,39 @@ connect-web build:
       - packages/connect-iframe/build
       - packages/connect-web/build
       - packages/connect-popup/build
+
+# Build components
+
+.run_components_rules: &run_components_rules
+  refs:
+    - develop
+    - releases
+    - schedules
+    - /^release\//
+    - /^run\//
+  changes:
+    - packages/components
+    - packages/components-storybook
+    - yarn.lock
+
+.build_common: &build_common
+  stage: build
+  script:
+    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn workspace @trezor/components storybook-build
+  artifacts:
+    name: components-build-storybook-files
+    expire_in: 7 days
+    paths:
+      - packages/components/.build-storybook
+
+components build-storybook:
+  <<: *build_common
+  only:
+    <<: *run_components_rules
+
+components build-storybook-manual:
+  <<: *build_common
+  when: manual
+  except:
+    <<: *run_components_rules
