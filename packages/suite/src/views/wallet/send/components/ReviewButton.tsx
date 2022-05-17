@@ -15,6 +15,10 @@ const Wrapper = styled.div`
 const ButtonReview = styled(Button)`
     min-width: 200px;
     margin-bottom: 5px;
+
+    :disabled {
+        background: ${({ theme }) => theme.STROKE_GREY};
+    }
 `;
 
 const Row = styled.div`
@@ -22,9 +26,9 @@ const Row = styled.div`
     justify-content: center;
     align-items: center;
     padding-bottom: 5px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 
-    &:last-child {
+    :last-child {
         padding-bottom: 0;
     }
 `;

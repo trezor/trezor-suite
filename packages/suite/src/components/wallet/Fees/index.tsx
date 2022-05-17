@@ -122,15 +122,21 @@ export interface FeesProps {
     rbfForm?: boolean;
 }
 
-export const Fees = (props: FeesProps) => {
-    const {
-        account: { symbol, networkType },
-        feeInfo,
-        getValues,
-        errors,
-        changeFeeLevel,
-        composedLevels,
-    } = props;
+export const Fees = ({
+    account: { symbol, networkType },
+    feeInfo,
+    register,
+    setValue,
+    getValues,
+    errors,
+    changeFeeLevel,
+    changeFeePerUnit,
+    changeFeeLimit,
+    composedLevels,
+    showLabel,
+    label,
+    rbfForm,
+}: FeesProps) => {
     const { layoutSize } = useLayoutSize();
     const isDesktopLayout = layoutSize === 'XLARGE'; // we use slightly different layout on big screens (Fee label, selector and amount in one row)
 
@@ -143,9 +149,9 @@ export const Fees = (props: FeesProps) => {
     const feeOptions = buildFeeOptions(feeInfo.levels);
 
     const labelComponent =
-        props.showLabel || props.label ? (
-            <Label rbfForm={props.rbfForm}>
-                <Translation id={props.label ?? 'FEE'} />
+        showLabel || label ? (
+            <Label rbfForm={rbfForm}>
+                <Translation id={label ?? 'FEE'} />
             </Label>
         ) : null;
 
@@ -201,7 +207,16 @@ export const Fees = (props: FeesProps) => {
                     <AnimatePresence initial={false}>
                         {isCustomLevel ? (
                             <motion.div style={{ width: '100%' }} {...ANIMATION.EXPAND}>
-                                <CustomFee {...props} />
+                                <CustomFee
+                                    networkType={networkType}
+                                    feeInfo={feeInfo}
+                                    errors={errors}
+                                    register={register}
+                                    getValues={getValues}
+                                    setValue={setValue}
+                                    changeFeePerUnit={changeFeePerUnit}
+                                    changeFeeLimit={changeFeeLimit}
+                                />
                             </motion.div>
                         ) : (
                             <FeeDetails

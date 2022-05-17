@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
 import { UseFormMethods } from 'react-hook-form';
 import { Input, Button, variables } from '@trezor/components';
+import { FeeLevel } from '@trezor/connect';
 import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
@@ -11,7 +12,6 @@ import { ETH_DEFAULT_GAS_LIMIT } from '@wallet-constants/sendForm';
 import { Account } from '@wallet-types';
 import { FeeInfo } from '@wallet-types/sendForm';
 import { TypedValidationRules } from '@wallet-types/form';
-import { FeeLevel } from 'packages/connect/lib';
 
 const Wrapper = styled.div`
     display: flex;
@@ -99,7 +99,7 @@ type FormMethods = UseFormMethods<{
 }>;
 
 interface CustomFeeProps {
-    account: Account;
+    networkType: Account['networkType'];
     feeInfo: FeeInfo;
     errors: FormMethods['errors'];
     register: (rules?: TypedValidationRules) => (ref: any) => void;
@@ -110,7 +110,7 @@ interface CustomFeeProps {
 }
 
 export const CustomFee = ({
-    account: { networkType },
+    networkType,
     feeInfo,
     errors,
     register,
@@ -138,7 +138,8 @@ export const CustomFee = ({
             return 'CUSTOM_FEE_IS_NOT_NUMBER';
         }
 
-        if (!isInteger(value)) {
+        // allow decimals in ETH since GWEI is not a satoshi
+        if (networkType !== 'ethereum' && networkType !== 'bitcoin' && !isInteger(value)) {
             return 'CUSTOM_FEE_IS_NOT_INTEGER';
         }
 
@@ -155,16 +156,28 @@ export const CustomFee = ({
         }
     };
 
-    const valiedateFee = (value: string) => {
+    const validateFee = (value: string) => {
         const feeBig = new BigNumber(value);
 
         if (feeBig.isNaN()) {
             return 'CUSTOM_FEE_IS_NOT_NUMBER';
         }
+
         // allow decimals in ETH since GWEI is not a satoshi
-        if (networkType !== 'ethereum' && !isInteger(value)) {
+        if (networkType !== 'ethereum' && networkType !== 'bitcoin' && !isInteger(value)) {
             return 'CUSTOM_FEE_IS_NOT_INTEGER';
         }
+
+        if (networkType === 'bitcoin' && !isDecimalsValid(value, 2)) {
+            return (
+                <Translation
+                    key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                    values={{ decimals: 2 }}
+                />
+            );
+        }
+
         // GWEI: 9 decimal places
         if (networkType === 'ethereum' && !isDecimalsValid(value, 9)) {
             return (
@@ -225,7 +238,7 @@ export const CustomFee = ({
                     onChange={changeFeePerUnit}
                     innerRef={register({
                         required: 'CUSTOM_FEE_IS_NOT_SET',
-                        validate: valiedateFee,
+                        validate: validateFee,
                     })}
                     bottomText={<InputError error={feePerUnitError} />}
                 />
