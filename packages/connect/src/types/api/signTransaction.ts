@@ -69,6 +69,7 @@ export interface SignTransaction {
     branchId?: number;
     decredStakingTicket?: boolean;
     push?: boolean;
+    preauthorized?: boolean;
 }
 
 export type SignedTransaction = {
