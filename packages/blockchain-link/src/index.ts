@@ -102,7 +102,7 @@ class BlockchainLink extends EventEmitter {
         return dfd.promise as Promise<R>;
     }
 
-    connect(): Promise<void> {
+    connect(): Promise<boolean> {
         return this.sendMessage({
             type: MESSAGES.CONNECT,
         });

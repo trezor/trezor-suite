@@ -8,6 +8,7 @@
 import * as SocksProxyAgent from 'socks-proxy-agent';
 import { CustomError } from '../constants/errors';
 import { WorkerState } from './state';
+import { prioritizeEndpoints } from './utils';
 import { MESSAGES, RESPONSES } from '../constants';
 import type { Message, Response, BlockchainSettings } from '../types';
 
@@ -25,14 +26,6 @@ export type ContextType<API> = {
     connect: () => Promise<API>;
     post: (r: Response) => void;
     state: WorkerState;
-};
-
-const shuffleEndpoints = (a: string[]) => {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
 };
 
 export abstract class BaseWorker<API> {
@@ -91,13 +84,15 @@ export abstract class BaseWorker<API> {
         }
 
         if (!this.connectPromise) {
-            const { server } = this.settings;
+            const urls = Array.isArray(this.settings.server)
+                ? this.settings.server.filter(url => typeof url === 'string')
+                : [];
 
-            if (!server || !Array.isArray(server) || server.length < 1) {
+            if (urls.length < 1) {
                 throw new CustomError('connect', 'Endpoint not set');
             }
 
-            const endpoints = shuffleEndpoints(server.slice(0));
+            const endpoints = prioritizeEndpoints(urls);
             this.connectPromise = this.connectRecursive(endpoints).then(api => {
                 this.debug('Connected');
                 this.api = api;

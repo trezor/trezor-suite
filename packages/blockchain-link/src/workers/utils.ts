@@ -45,3 +45,25 @@ export const transformTarget = (target: VinVout, incoming: VinVout[]) => ({
     coinbase: target.coinbase,
     isAccountTarget: incoming.includes(target) ? true : undefined,
 });
+
+const IS_ONION = /\.onion([/:].*)?$/i;
+const IS_LOCALHOST = /^(\w*:\/\/)?(localhost|127\.0\.0\.1)([/:].*)?$/i;
+
+/**
+ * Sorts array of backend urls so the localhost addresses are first,
+ * then onion addresses and then the rest. Apart from that it will
+ * be shuffled randomly.
+ */
+export const prioritizeEndpoints = (urls: string[]) =>
+    urls
+        .map((url): [string, number] => {
+            let prio = Math.random();
+            if (IS_LOCALHOST.test(url)) {
+                prio += 2;
+            } else if (IS_ONION.test(url)) {
+                prio += 1;
+            }
+            return [url, prio];
+        })
+        .sort(([, a], [, b]) => b - a)
+        .map(([url]) => url);
