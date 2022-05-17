@@ -21,3 +21,4 @@
 
 -   `getOwnershipId` method
 -   `getOwnershipProof` method
+-   `authorizeCoinJoin` method

@@ -1,5 +1,6 @@
 import { applyFlags } from './applyFlags';
 import { applySettings } from './applySettings';
+import { authorizeCoinJoin } from './authorizeCoinJoin';
 import { backupDevice } from './backupDevice';
 import { binanceGetAddress } from './binanceGetAddress';
 import { binanceGetPublicKey } from './binanceGetPublicKey';
@@ -77,6 +78,9 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/applySettings.md
     applySettings: typeof applySettings;
+
+    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/authorizeCoinJoin.md
+    authorizeCoinJoin: typeof authorizeCoinJoin;
 
     // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/backupDevice.md
     backupDevice: typeof backupDevice;

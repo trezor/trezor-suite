@@ -208,6 +208,8 @@ export const factory = ({
 
         applySettings: params => call({ ...params, method: 'applySettings' }),
 
+        authorizeCoinJoin: params => call({ ...params, method: 'authorizeCoinJoin' }),
+
         backupDevice: params => call({ ...params, method: 'backupDevice' }),
 
         changePin: params => call({ ...params, method: 'changePin' }),
