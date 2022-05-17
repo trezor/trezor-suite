@@ -6,6 +6,10 @@
 -   [storage utils](./src/storage) moved from standalone Connect repository
 -   [coins.json](./files/coins.json) moved from standalone Connect repository
 
+### Removed
+
+-   1.11.0 & 2.5.0 FW
+
 # 0.0.5
 
 ### Added
