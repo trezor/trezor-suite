@@ -29,25 +29,13 @@ const DEFAULT_CAPABILITIES_TT: PROTO.Capability[] = [
     'Capability_U2F',
 ];
 
-//  It should return [Capability_Bitcoin], instead it returns [1]
 export const parseCapabilities = (features?: Features): PROTO.Capability[] => {
     if (!features || features.firmware_present === false) return []; // no features or no firmware - no capabilities
     // fallback for older firmware that does not report capabilities
     if (!features.capabilities || !features.capabilities.length) {
         return features.major_version === 1 ? DEFAULT_CAPABILITIES_T1 : DEFAULT_CAPABILITIES_TT;
     }
-    // TODO: https://github.com/trezor/trezor-suite/issues/5299
-    // @trezor/transport is not parsing enums in arrays correctly. this part of code can be removed
-    // once this is fixed in @trezor/transport
-    // regular capabilities
-    return features.capabilities.flatMap(c => {
-        const capabilityName = Object.values(PROTO.Enum_Capability).find(
-            capability => c === capability,
-        );
-        return capabilityName
-            ? [PROTO.Enum_Capability[capabilityName as PROTO.Enum_Capability]]
-            : [];
-    }) as PROTO.Capability[];
+    return features.capabilities;
 };
 
 // TODO: support type

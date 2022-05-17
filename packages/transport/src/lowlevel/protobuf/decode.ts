@@ -3,29 +3,42 @@ import { Type, Message, Field } from 'protobufjs/light';
 import { isPrimitiveField } from '../../utils/protobuf';
 
 const transform = (field: Field, value: any) => {
-    // [compatibility]: optional undefined keys should be null. Example: Features.fw_major.
-    if (field.optional && typeof value === 'undefined') {
-        return null;
-    }
-
-    if (field.type === 'bytes') {
-        return ByteBuffer.wrap(value).toString('hex');
-        // return value.toString('hex');
-    }
-
-    // [compatibility]
-    // it is likely that we can remove this right away because trezor-connect tests don't ever trigger this condition
-    // we should probably make sure that trezor-connect treats following protobuf types as strings: int64, uint64, sint64, fixed64, sfixed64
-    if (field.long) {
-        if (Number.isSafeInteger(value.toNumber())) {
-            // old trezor-link behavior https://github.com/trezor/trezor-link/blob/9c200cc5608976cff0542484525e98c753ba1888/src/lowlevel/protobuf/message_decoder.js#L80
-            return value.toNumber();
+    if (isPrimitiveField(field.type)) {
+        // [compatibility]: optional undefined keys should be null. Example: Features.fw_major.
+        if (field.optional && typeof value === 'undefined') {
+            return null;
         }
-        // otherwise return as string
-        return value.toString();
+
+        if (field.type === 'bytes') {
+            return ByteBuffer.wrap(value).toString('hex');
+            // return value.toString('hex');
+        }
+
+        // [compatibility]
+        // it is likely that we can remove this right away because trezor-connect tests don't ever trigger this condition
+        // we should probably make sure that trezor-connect treats following protobuf types as strings: int64, uint64, sint64, fixed64, sfixed64
+        if (field.long) {
+            if (Number.isSafeInteger(value.toNumber())) {
+                // old trezor-link behavior https://github.com/trezor/trezor-link/blob/9c200cc5608976cff0542484525e98c753ba1888/src/lowlevel/protobuf/message_decoder.js#L80
+                return value.toNumber();
+            }
+            // otherwise return as string
+            return value.toString();
+        }
+        return value;
     }
 
-    return value;
+    // enum type
+    if ('valuesById' in field.resolvedType!) {
+        return field.resolvedType.valuesById[value];
+    }
+    // message type
+    if (field.resolvedType!.fields) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        return messageToJSON(value, field.resolvedType!.fields);
+    }
+    // should not happen
+    throw new Error(`transport: decode: case not handled: ${field}`);
 };
 
 function messageToJSON(Message: Message<Record<string, unknown>>, fields: Type['fields']) {
@@ -38,34 +51,10 @@ function messageToJSON(Message: Message<Record<string, unknown>>, fields: Type['
         // @ts-ignore
         const value = message[key];
 
-        /* istanbul ignore else  */
         if (field.repeated) {
-            /* istanbul ignore else  */
-            if (isPrimitiveField(field.type)) {
-                res[key] = value.map((v: any) => transform(field, v));
-            }
-            // [compatibility]: keep array enums as array of numbers.
-            else if ('valuesById' in field.resolvedType!) {
-                res[key] = value;
-            } else if ('fields' in field.resolvedType!) {
-                res[key] = value.map((v: any) =>
-                    messageToJSON(v, (field.resolvedType as Type).fields),
-                );
-            } else {
-                throw new Error(`case not handled for repeated key: ${key}`);
-            }
-        } else if (isPrimitiveField(field.type)) {
-            res[key] = transform(field, value);
-        }
-        // enum type
-        else if ('valuesById' in field.resolvedType!) {
-            res[key] = field.resolvedType.valuesById[value];
-        }
-        // message type
-        else if (field.resolvedType!.fields) {
-            res[key] = messageToJSON(value, field.resolvedType!.fields);
+            res[key] = value.map((v: any) => transform(field, v));
         } else {
-            throw new Error(`case not handled: ${key}`);
+            res[key] = transform(field, value);
         }
     });
 

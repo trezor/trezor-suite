@@ -446,8 +446,7 @@ const fixtures = [
         },
         in: { capabilities: ['Capability_Bitcoin'], safety_checks: 'Strict' },
         encoded: 'f00101a80200',
-        // [compatibility]: enums in arrays are not decoded
-        out: { capabilities: [1], safety_checks: 'Strict' },
+        out: { capabilities: ['Capability_Bitcoin'], safety_checks: 'Strict' },
     },
     {
         name: 'CardanoTxWitnessRequest',
