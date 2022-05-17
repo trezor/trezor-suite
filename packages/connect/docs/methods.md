@@ -20,6 +20,7 @@ Every method require an [`Object`](https://developer.mozilla.org/en-US/docs/Web/
 -   [TrezorConnect.getAddress](methods/getAddress.md)
 -   [TrezorConnect.getAccountInfo](methods/getAccountInfo.md)
 -   [TrezorConnect.getOwnershipId](methods/getOwnershipId.md)
+-   [TrezorConnect.getOwnershipProof](methods/getOwnershipProof.md)
 -   [TrezorConnect.composeTransaction](methods/composeTransaction.md)
 -   [TrezorConnect.signTransaction](methods/signTransaction.md)
 -   [TrezorConnect.pushTransaction](methods/pushTransaction.md)

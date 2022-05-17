@@ -41,6 +41,7 @@ import { getCoinInfo } from './getCoinInfo';
 import { getDeviceState } from './getDeviceState';
 import { getFeatures } from './getFeatures';
 import { getOwnershipId } from './getOwnershipId';
+import { getOwnershipProof } from './getOwnershipProof';
 import { getPublicKey } from './getPublicKey';
 import { getSettings } from './getSettings';
 import { init } from './init';
@@ -199,6 +200,9 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getOwnershipId.md
     getOwnershipId: typeof getOwnershipId;
+
+    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getOwnershipProof.md
+    getOwnershipProof: typeof getOwnershipProof;
 
     // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getPublicKey.md
     getPublicKey: typeof getPublicKey;

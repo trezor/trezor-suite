@@ -41,6 +41,7 @@ export { default as getCoinInfo } from './getCoinInfo';
 export { default as getDeviceState } from './getDeviceState';
 export { default as getFeatures } from './getFeatures';
 export { default as getOwnershipId } from './getOwnershipId';
+export { default as getOwnershipProof } from './getOwnershipProof';
 export { default as getPublicKey } from './getPublicKey';
 export { default as getSettings } from './getSettings';
 // export { default as init } from './init';

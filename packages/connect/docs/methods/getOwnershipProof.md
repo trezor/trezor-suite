@@ -1,9 +1,9 @@
-## Bitcoin: get Ownership identifier
+## Bitcoin: get Ownership proof
 
-Export SLIP-0019 ownership identifier. [Read more](https://github.com/satoshilabs/slips/blob/master/slip-0019.md#ownership-identifier)
+Export SLIP-0019 ownership proof. [Read more](https://github.com/satoshilabs/slips/blob/master/slip-0019.md#proof-usage)
 
 ```javascript
-const result = await TrezorConnect.getOwnershipId(params);
+const result = await TrezorConnect.getOwnershipProof(params);
 ```
 
 > :note: **Supported only by Trezor T with Firmware 2.4.4 or higher!**
@@ -12,33 +12,36 @@ const result = await TrezorConnect.getOwnershipId(params);
 
 [\***\*Optional common params\*\***](commonParams.md)
 
-#### Exporting single id
+#### Exporting single proof
 
 -   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](path.md)
 -   `coin` - _optional_ `string`
     > Determines network definition specified in [coins.json](../../../connect-common/files/coins.json) file.
     > Coin `shortcut`, `name` or `label` can be used.
 -   `scriptType` — _optional_ `InputScriptType`
+-   `userConfirmation` — _optional_ `boolean`
+-   `ownershipIds` — _optional_ `Array<string>`
+-   `commitmentData` — _optional_ `string`
 -   `multisig` — _optional_ `MultisigRedeemScriptType`
 
-#### Exporting bundle of ids
+#### Exporting bundle of proofs
 
 -   `bundle` - `Array` of Objects with fields listed above.
 
 ### Example
 
-Display id of the first bitcoin address:
+Display ownership proof of the first bitcoin address:
 
 ```javascript
-TrezorConnect.getOwnershipId({
+TrezorConnect.getOwnershipProof({
     path: "m/86'/0'/0'/0/0",
 });
 ```
 
-Return a bundle of ids:
+Return a bundle of ownership proofs:
 
 ```javascript
-TrezorConnect.getOwnershipId({
+TrezorConnect.getOwnershipProof({
     bundle: [
         { path: "m/86'/0'/0'/0/0" }, // taproot
         { path: "m/84'/0'/0'/0/0" }, // bech32
@@ -49,26 +52,27 @@ TrezorConnect.getOwnershipId({
 
 ### Result
 
-Result with single id:
+Result with single proof:
 
 ```javascript
 {
     success: true,
     payload: {
-        ownership_id: string,
+        ownership_proof: string,
+        signature: string
     }
 }
 ```
 
-Result with bundle of ids sorted by FIFO
+Result with bundle of proofs sorted by FIFO
 
 ```javascript
 {
     success: true,
     payload: [
-        { ownership_id: string }, // taproot
-        { ownership_id: string }, // bech32
-        { ownership_id: string }  // segwit
+        { ownership_proof: string, signature: string }, // taproot
+        { ownership_proof: string, signature: string }, // bech32
+        { ownership_proof: string, signature: string }  // segwit
     ]
 }
 ```
