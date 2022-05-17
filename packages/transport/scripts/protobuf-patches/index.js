@@ -64,6 +64,7 @@ const RULE_PATCH = {
     'Features.auto_lock_delay_ms': 'required',
     'Features.display_rotation': 'required',
     'Features.experimental_features': 'required',
+    'GetOwnershipProof.ownership_ids': 'optional', // protobuf repeated bytes are always optional (fallback to [])
     'NEMTransactionCommon.address_n': 'optional', // no address_n in multisig
     'NEMTransfer.mosaics': 'optional', // its valid to be undefined according to implementation/tests
     'NEMMosaicDefinition.networks': 'optional', // never used according to implementation/tests
