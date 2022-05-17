@@ -51,14 +51,14 @@ const shareTwoOfThree = [
 describe('Onboarding - T2 in recovery mode', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { wipe: true, version: '2.4.3' });
         cy.resetDb();
         cy.viewport(1080, 1440);
         cy.prefixedVisit('/');
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
 
-        cy.getTestElement('@firmware/continue-button').click();
+        cy.getTestElement('@firmware/skip-button').click();
 
         cy.getTestElement('@onboarding/path-recovery-button').click();
     });
@@ -78,7 +78,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.reload();
 
         // now suite has reloaded. database is wiped.
-        cy.task('startEmu', { wipe: false });
+        cy.task('startEmu', { wipe: false, version: '2.4.3' });
         // analytics opt-out again
         cy.getTestElement('@onboarding/continue-button').click();
         // recovery device persisted reload
@@ -114,7 +114,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.task('stopEmu');
         cy.wait(1000);
         cy.getTestElement('@connect-device-prompt', { timeout: 30000 });
-        cy.task('startEmu', { wipe: false });
+        cy.task('startEmu', { wipe: false, version: '2.4.3' });
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(1000);
         cy.task('pressYes');

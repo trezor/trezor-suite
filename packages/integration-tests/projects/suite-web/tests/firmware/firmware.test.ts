@@ -44,7 +44,8 @@ describe('Firmware', () => {
         });
     });
 
-    it(`For the latest firmware, update button in device settings should display "Up to date" but still be clickable`, () => {
+    // todo: this does not work when there is mismatch between latest fw in releases json and latest fw in trezor-user-env
+    it.skip(`For the latest firmware, update button in device settings should display "Up to date" but still be clickable`, () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
