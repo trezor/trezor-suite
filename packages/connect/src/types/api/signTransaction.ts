@@ -74,6 +74,7 @@ export interface SignTransaction {
 export type SignedTransaction = {
     signatures: string[];
     serializedTx: string;
+    witnesses?: (string | undefined)[];
     txid?: string;
 };
 

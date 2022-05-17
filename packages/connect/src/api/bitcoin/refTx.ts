@@ -44,25 +44,6 @@ export const getOrigTransactions = (inputs: PROTO.TxInputType[], outputs: PROTO.
     return result;
 };
 
-// BitcoinJsTransaction returns input.witness as Buffer[]
-// expected hex response format:
-// chunks size + (chunk[i].size + chunk[i])
-// TODO: this code should be implemented in BitcoinJsTransaction (@trezor/utxo-lib)
-const getWitness = (witness?: Buffer[]) => {
-    if (!Array.isArray(witness)) return;
-    const getChunkSize = (n: number) => {
-        const buf = Buffer.allocUnsafe(1);
-        buf.writeUInt8(n);
-        return buf;
-    };
-    const chunks = witness.reduce(
-        (arr, chunk) => arr.concat([getChunkSize(chunk.length), chunk]),
-        [getChunkSize(witness.length)],
-    );
-
-    return Buffer.concat(chunks).toString('hex');
-};
-
 // extend refTx object with optional data
 const enhanceTransaction = (refTx: RefTransaction, srcTx: BitcoinJsTransaction) => {
     const extraData = srcTx.getExtraData();
@@ -116,7 +97,7 @@ export const transformOrigTransactions = (
                 multisig: undefined, // TODO
                 amount: rawInput.value,
                 decred_tree: undefined, // TODO
-                witness: tx.hasWitnesses() ? getWitness(input.witness) : undefined,
+                witness: tx.getWitness(i)?.toString('hex'),
                 ownership_proof: undefined, // TODO
                 commitment_data: undefined, // TODO
             };

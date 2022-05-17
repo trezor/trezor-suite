@@ -129,6 +129,8 @@ export const verifyTx = async (
             throw ERRORS.TypedError('Runtime', `verifyTx: Output ${i} scripts differ`);
         }
     }
+
+    return bitcoinTx;
 };
 
 export const verifyTicketTx = async (
