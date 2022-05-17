@@ -21,6 +21,7 @@ import getAddress from './getAddress';
 import getAddressMultisig from './getAddressMultisig';
 import getAddressSegwit from './getAddressSegwit';
 import getFeatures from './getFeatures';
+import getOwnershipId from './getOwnershipId';
 import getPublicKey from './getPublicKey';
 import nemGetAddress from './nemGetAddress';
 import nemSignTransactionMosaic from './nemSignTransactionMosaic';
@@ -107,6 +108,7 @@ let fixtures = [
     getAddressMultisig,
     getAddressSegwit,
     getFeatures,
+    getOwnershipId,
     getPublicKey,
     nemGetAddress,
     nemSignTransactionMosaic,
@@ -153,6 +155,7 @@ if (includedMethods) {
 
 // sort by mnemonic to avoid emu re-loading
 const result = fixtures.sort((a, b) => {
+    if (!a.setup.mnemonic || !b.setup.mnemonic) return 0;
     if (a.setup.mnemonic > b.setup.mnemonic) return 1;
     if (b.setup.mnemonic > a.setup.mnemonic) return -1;
     return 0;
