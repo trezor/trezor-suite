@@ -22,6 +22,7 @@ import getAddressMultisig from './getAddressMultisig';
 import getAddressSegwit from './getAddressSegwit';
 import getFeatures from './getFeatures';
 import getOwnershipId from './getOwnershipId';
+import getOwnershipProof from './getOwnershipProof';
 import getPublicKey from './getPublicKey';
 import nemGetAddress from './nemGetAddress';
 import nemSignTransactionMosaic from './nemSignTransactionMosaic';
@@ -109,6 +110,7 @@ let fixtures = [
     getAddressSegwit,
     getFeatures,
     getOwnershipId,
+    getOwnershipProof,
     getPublicKey,
     nemGetAddress,
     nemSignTransactionMosaic,
