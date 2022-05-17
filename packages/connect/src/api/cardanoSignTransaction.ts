@@ -15,7 +15,6 @@ import type { Path, InputWithPath, CollateralInputWithPath } from './cardano/car
 import { transformInput, transformCollateralInput } from './cardano/cardanoInputs';
 import { transformOutput } from './cardano/cardanoOutputs';
 import type { OutputWithTokens } from './cardano/cardanoOutputs';
-import { legacySerializedTxToResult, toLegacyParams } from './cardano/cardanoSignTxLegacy';
 import { PROTO, ERRORS } from '../constants';
 import type {
     CardanoAuxiliaryDataSupplement,
@@ -28,14 +27,7 @@ import { tokenBundleToProto } from './cardano/cardanoTokenBundle';
 
 // todo: remove when listed firmwares become mandatory for cardanoSignTransaction
 const CardanoSignTransactionFeatures = Object.freeze({
-    SignStakePoolRegistrationAsOwner: ['0', '2.3.5'],
-    ValidityIntervalStart: ['0', '2.3.5'],
-    MultiassetOutputs: ['0', '2.3.5'],
-    AuxiliaryData: ['0', '2.3.7'],
-    ZeroTTL: ['0', '2.4.2'],
-    ZeroValidityIntervalStart: ['0', '2.4.2'],
     TransactionStreaming: ['0', '2.4.2'],
-    AuxiliaryDataHash: ['0', '2.4.2'],
     TokenMinting: ['0', '2.4.3'],
     Multisig: ['0', '2.4.3'],
     NetworkIdInTxBody: ['0', '2.4.4'],
@@ -230,25 +222,16 @@ export default class CardanoSignTransaction extends AbstractMethod<
     _ensureFirmwareSupportsParams() {
         const { params } = this;
 
-        params.certificatesWithPoolOwnersAndRelays.forEach(({ certificate }) => {
-            if (certificate.type === PROTO.CardanoCertificateType.STAKE_POOL_REGISTRATION) {
-                this._ensureFeatureIsSupported('SignStakePoolRegistrationAsOwner');
-            }
+        // we no longer support non-streamed signing
+        this._ensureFeatureIsSupported('TransactionStreaming');
 
+        params.certificatesWithPoolOwnersAndRelays.forEach(({ certificate }) => {
             if (certificate.key_hash) {
                 this._ensureFeatureIsSupported('KeyHashStakeCredential');
             }
         });
 
-        if (params.validityIntervalStart != null) {
-            this._ensureFeatureIsSupported('ValidityIntervalStart');
-        }
-
-        params.outputsWithTokens.forEach(({ output, tokenBundle }) => {
-            if (tokenBundle && tokenBundle.length > 0) {
-                this._ensureFeatureIsSupported('MultiassetOutputs');
-            }
-
+        params.outputsWithTokens.forEach(({ output }) => {
             if (output.datum_hash) {
                 this._ensureFeatureIsSupported('OutputDatumHash');
             }
@@ -259,22 +242,6 @@ export default class CardanoSignTransaction extends AbstractMethod<
                 this._ensureFeatureIsSupported('KeyHashStakeCredential');
             }
         });
-
-        if (params.auxiliaryData) {
-            this._ensureFeatureIsSupported('AuxiliaryData');
-        }
-
-        if (params.ttl === '0') {
-            this._ensureFeatureIsSupported('ZeroTTL');
-        }
-
-        if (params.validityIntervalStart === '0') {
-            this._ensureFeatureIsSupported('ZeroValidityIntervalStart');
-        }
-
-        if (params.auxiliaryData && params.auxiliaryData.hash) {
-            this._ensureFeatureIsSupported('AuxiliaryDataHash');
-        }
 
         if (params.mint.length > 0) {
             this._ensureFeatureIsSupported('TokenMinting');
@@ -439,43 +406,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
         return { hash: txBodyHashMessage.tx_hash, witnesses, auxiliaryDataSupplement };
     }
 
-    async _sign_tx_legacy(): Promise<CardanoSignedTxData> {
-        const typedCall = this.device.getCommands().typedCall.bind(this.device.getCommands());
-
-        const legacyParams = toLegacyParams(this.device, this.params);
-
-        let serializedTx = '';
-
-        let r = await typedCall(
-            'CardanoSignTx',
-            ['CardanoSignedTx', 'CardanoSignedTxChunk'],
-            legacyParams as any, // legacy params
-        );
-        while (r.type === 'CardanoSignedTxChunk') {
-            serializedTx += r.message.signed_tx_chunk;
-            r = await typedCall('CardanoSignedTxChunkAck', [
-                'CardanoSignedTx',
-                'CardanoSignedTxChunk',
-            ]);
-        }
-
-        // this is required for backwards compatibility for FW <= 2.3.6 when the tx was not sent in chunks yet
-        // @ts-expect-error legacy params
-        if (message.serialized_tx) {
-            // @ts-expect-error legacy params
-            serializedTx += message.serialized_tx;
-        }
-
-        // @ts-expect-error legacy params
-        return legacySerializedTxToResult(message.tx_hash, serializedTx);
-    }
-
     run() {
         this._ensureFirmwareSupportsParams();
-
-        if (!this._isFeatureSupported('TransactionStreaming')) {
-            return this._sign_tx_legacy();
-        }
 
         return this._sign_tx();
     }

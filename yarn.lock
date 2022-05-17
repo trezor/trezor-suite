@@ -8150,11 +8150,6 @@ cbor-js@^0.1.0:
   resolved "https://registry.yarnpkg.com/cbor-js/-/cbor-js-0.1.0.tgz#c80ce6120f387e8faa74370dfda21d965b8fc7f9"
   integrity sha1-yAzmEg84fo+qdDcN/aIdlluPx/k=
 
-cbor-web@^7.0.6:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/cbor-web/-/cbor-web-7.0.6.tgz#6e23a0c58db4c38e485e395de511b9e2f628961c"
-  integrity sha512-A6ZH12jcDJG9PS7StugO78G+ok23SAjxMugGInPBy4IItiH6hYzybi6HQkGjWw9jBEGQpIBkleB2mizxYZIpLw==
-
 ccount@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-1.1.0.tgz#246687debb6014735131be8abab2d93898f8d043"
