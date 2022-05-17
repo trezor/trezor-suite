@@ -9,13 +9,19 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest",
-        "type-check": "tsc --build"
+        "type-check": "tsc --build",
+        "generate-icons": "yarn run-script generateIcons.js",
+        "run-script": "babel-node --experimental-specifier-resolution=node --"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.11.0",
+        "@shopify/react-native-skia": "0.1.123",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react-native": "*",
         "type-fest": "^2.12.2"
+    },
+    "devDependencies": {
+        "svgo": "2.8.0"
     }
 }
