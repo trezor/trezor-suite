@@ -9,6 +9,7 @@ export interface GetOwnershipProof {
     userConfirmation?: boolean;
     ownershipIds?: string[];
     commitmentData?: string;
+    preauthorized?: boolean;
 }
 
 export interface OwnershipProof extends PROTO.OwnershipProof {

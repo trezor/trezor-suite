@@ -5,10 +5,11 @@ import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';
 import { UI, createUiMessage } from '../events';
 
-export default class GetOwnershipProof extends AbstractMethod<
-    'getOwnershipProof',
-    PROTO.GetOwnershipProof[]
-> {
+interface Params extends PROTO.GetOwnershipProof {
+    preauthorized?: boolean;
+}
+
+export default class GetOwnershipProof extends AbstractMethod<'getOwnershipProof', Params[]> {
     hasBundle?: boolean;
     confirmed?: boolean;
 
@@ -35,6 +36,7 @@ export default class GetOwnershipProof extends AbstractMethod<
                 { name: 'userConfirmation', type: 'boolean' },
                 { name: 'ownershipIds', type: 'array' },
                 { name: 'commitmentData', type: 'string' },
+                { name: 'preauthorized', type: 'boolean' },
             ]);
 
             const address_n = validatePath(batch.path, 1);
@@ -50,6 +52,7 @@ export default class GetOwnershipProof extends AbstractMethod<
                 user_confirmation: batch.userConfirmation,
                 ownership_ids: batch.ownershipIds,
                 commitment_data: batch.commitmentData,
+                preauthorized: batch.preauthorized,
             };
         });
     }
@@ -85,6 +88,9 @@ export default class GetOwnershipProof extends AbstractMethod<
         const cmd = this.device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
+            if (batch.preauthorized) {
+                await cmd.typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+            }
             const { message } = await cmd.typedCall('GetOwnershipProof', 'OwnershipProof', batch);
             responses.push({
                 ...message,
