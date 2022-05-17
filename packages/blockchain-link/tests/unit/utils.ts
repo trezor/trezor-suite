@@ -1,7 +1,7 @@
 import { filterTokenTransfers, transformTransaction } from '../../src/workers/blockbook/utils';
-import { filterTargets } from '../../src/workers/utils';
+import { filterTargets, prioritizeEndpoints } from '../../src/workers/utils';
 
-import fixtures from './fixtures/utils';
+import * as fixtures from './fixtures/utils';
 
 describe('blockbook/utils', () => {
     describe('filterTargets', () => {
@@ -32,6 +32,19 @@ describe('blockbook/utils', () => {
                 const tx = transformTransaction(f.descriptor, f.addresses, f.tx);
                 expect(tx).toMatchObject(f.parsed);
             });
+        });
+    });
+
+    describe('prioritizeEndpoints', () => {
+        it('prioritizeEndpoints', () => {
+            const { unsorted, sorted } = fixtures.endpoints;
+            const res = prioritizeEndpoints(unsorted);
+            const resFixed = [
+                ...res.slice(0, 3).sort(),
+                ...res.slice(3, 6).sort(),
+                ...res.slice(6, 9).sort(),
+            ];
+            expect(resFixed).toStrictEqual(sorted);
         });
     });
 });
