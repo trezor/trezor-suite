@@ -42,7 +42,7 @@ jobs:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
-      test-pattern: init
+      test-pattern: "init authorizeCoinJoin"
 
   management:
     needs: [build]
