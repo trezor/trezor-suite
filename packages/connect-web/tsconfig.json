@@ -9,18 +9,12 @@
             "jest"
         ],
         "rootDir": ".."
-        // "module": "CommonJS"
     },
     "include": [
         "./connect-web",
         "../connect-iframe/webpack/prod.webpack.config.ts",
         "../connect-popup/webpack/prod.webpack.config.ts"
     ],
-    // "ts-node": {
-    //     "compilerOptions": {
-    //         "module": "CommonJS"
-    //     }
-    // },
     "references": [
         { "path": "../connect" },
         { "path": "../utils" }
