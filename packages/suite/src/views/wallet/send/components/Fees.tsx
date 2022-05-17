@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 
 import { Card } from '@suite-components';
-import Fees from '@wallet-components/Fees';
+import { Fees } from '@wallet-components/Fees';
 import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
