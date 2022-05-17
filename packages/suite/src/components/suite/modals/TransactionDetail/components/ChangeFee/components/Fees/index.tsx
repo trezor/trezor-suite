@@ -1,5 +1,5 @@
 import React from 'react';
-import Fees from '@wallet-components/Fees';
+import { Fees } from '@wallet-components/Fees';
 import { useRbfContext } from '@wallet-hooks/useRbfForm';
 
 // wrapper for shareable Fees component

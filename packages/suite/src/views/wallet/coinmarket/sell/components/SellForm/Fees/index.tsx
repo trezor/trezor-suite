@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Fees from '@wallet-components/Fees';
+import { Fees } from '@wallet-components/Fees';
 import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
 
 const StyledCard = styled.div`

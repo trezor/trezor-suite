@@ -1,13 +1,17 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { css } from 'styled-components';
+import { UseFormMethods } from 'react-hook-form';
 import { Input, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
 import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 import { ETH_DEFAULT_GAS_LIMIT } from '@wallet-constants/sendForm';
-import { Props } from '../definitions';
+import { Account } from '@wallet-types';
+import { FeeInfo } from '@wallet-types/sendForm';
+import { TypedValidationRules } from '@wallet-types/form';
+import { FeeLevel } from 'packages/connect/lib';
 
 const Wrapper = styled.div`
     display: flex;
@@ -16,7 +20,7 @@ const Wrapper = styled.div`
     margin-top: 20px;
     padding-top: 20px;
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         flex-direction: column;
     }
 `;
@@ -25,12 +29,12 @@ const Col = styled.div<{ singleCol?: boolean }>`
     display: flex;
     flex: 1;
 
-    ${props =>
-        props.singleCol &&
+    ${({ singleCol }) =>
+        singleCol &&
         css`
             max-width: 314px;
 
-            @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+            ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
                 max-width: 100%;
             }
         `}
@@ -40,7 +44,7 @@ const Spacer = styled.div`
     display: flex;
     width: 56px;
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         display: none;
     }
 `;
@@ -53,7 +57,7 @@ const StyledInput = styled(Input)`
 
 const Units = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const ButtonWrapper = styled.div`
@@ -87,7 +91,25 @@ const SetDefaultLimit = ({ onClick }: { onClick: () => void }) => (
 const FEE_PER_UNIT = 'feePerUnit';
 const FEE_LIMIT = 'feeLimit';
 
-const FeeCustom = ({
+type FormMethods = UseFormMethods<{
+    selectedFee?: FeeLevel['label'];
+    feePerUnit?: string;
+    feeLimit?: string;
+    estimatedFeeLimit?: string;
+}>;
+
+interface CustomFeeProps {
+    account: Account;
+    feeInfo: FeeInfo;
+    errors: FormMethods['errors'];
+    register: (rules?: TypedValidationRules) => (ref: any) => void;
+    getValues: FormMethods['getValues'];
+    setValue: FormMethods['setValue'];
+    changeFeePerUnit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    changeFeeLimit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const CustomFee = ({
     account: { networkType },
     feeInfo,
     errors,
@@ -96,16 +118,74 @@ const FeeCustom = ({
     setValue,
     changeFeePerUnit,
     changeFeeLimit,
-}: Props) => {
+}: CustomFeeProps) => {
     const { maxFee, minFee } = feeInfo;
-    const feePerUnitValue = getValues(FEE_PER_UNIT);
-    const feePerUnitError = errors.feePerUnit;
 
-    const useFeeLimit = networkType === 'ethereum';
+    const feePerUnitValue = getValues(FEE_PER_UNIT);
     const feeLimitValue = getValues(FEE_LIMIT);
     const estimatedFeeLimit = getValues('estimatedFeeLimit') || ETH_DEFAULT_GAS_LIMIT;
+
+    const feePerUnitError = errors.feePerUnit;
     const feeLimitError = errors.feeLimit;
+
+    const useFeeLimit = networkType === 'ethereum';
     const feeLimitDisabled = false;
+
+    const validateFeeLimit = (value: string) => {
+        const feeBig = new BigNumber(value);
+
+        if (feeBig.isNaN()) {
+            return 'CUSTOM_FEE_IS_NOT_NUMBER';
+        }
+
+        if (!isInteger(value)) {
+            return 'CUSTOM_FEE_IS_NOT_INTEGER';
+        }
+
+        if (feeBig.lt(estimatedFeeLimit)) {
+            return (
+                <SetDefaultLimit
+                    onClick={() => {
+                        setValue(FEE_LIMIT, estimatedFeeLimit, {
+                            shouldValidate: true,
+                        });
+                    }}
+                />
+            );
+        }
+    };
+
+    const valiedateFee = (value: string) => {
+        const feeBig = new BigNumber(value);
+
+        if (feeBig.isNaN()) {
+            return 'CUSTOM_FEE_IS_NOT_NUMBER';
+        }
+        // allow decimals in ETH since GWEI is not a satoshi
+        if (networkType !== 'ethereum' && !isInteger(value)) {
+            return 'CUSTOM_FEE_IS_NOT_INTEGER';
+        }
+        // GWEI: 9 decimal places
+        if (networkType === 'ethereum' && !isDecimalsValid(value, 9)) {
+            return (
+                <Translation
+                    key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                    values={{ decimals: 9 }}
+                />
+            );
+        }
+
+        if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
+            return (
+                <Translation
+                    key="CUSTOM_FEE_NOT_IN_RANGE"
+                    id="CUSTOM_FEE_NOT_IN_RANGE"
+                    values={{ minFee, maxFee }}
+                />
+            );
+        }
+    };
 
     return (
         <Wrapper>
@@ -122,30 +202,12 @@ const FeeCustom = ({
                             onChange={changeFeeLimit}
                             innerRef={register({
                                 required: 'CUSTOM_FEE_IS_NOT_SET',
-                                validate: (value: string) => {
-                                    const feeBig = new BigNumber(value);
-                                    if (feeBig.isNaN()) {
-                                        return 'CUSTOM_FEE_IS_NOT_NUMBER';
-                                    }
-                                    if (!isInteger(value)) {
-                                        return 'CUSTOM_FEE_IS_NOT_INTEGER';
-                                    }
-                                    if (feeBig.lt(estimatedFeeLimit)) {
-                                        return (
-                                            <SetDefaultLimit
-                                                onClick={() => {
-                                                    setValue(FEE_LIMIT, estimatedFeeLimit, {
-                                                        shouldValidate: true,
-                                                    });
-                                                }}
-                                            />
-                                        );
-                                    }
-                                },
+                                validate: validateFeeLimit,
                             })}
                             bottomText={<InputError error={feeLimitError} />}
                         />
                     </Col>
+
                     <Spacer />
                 </>
             ) : (
@@ -163,36 +225,7 @@ const FeeCustom = ({
                     onChange={changeFeePerUnit}
                     innerRef={register({
                         required: 'CUSTOM_FEE_IS_NOT_SET',
-                        validate: (value: string) => {
-                            const feeBig = new BigNumber(value);
-                            if (feeBig.isNaN()) {
-                                return 'CUSTOM_FEE_IS_NOT_NUMBER';
-                            }
-                            // allow decimals in ETH since GWEI is not a satoshi
-                            if (networkType !== 'ethereum' && !isInteger(value)) {
-                                return 'CUSTOM_FEE_IS_NOT_INTEGER';
-                            }
-                            // GWEI: 9 decimal places
-                            if (networkType === 'ethereum' && !isDecimalsValid(value, 9)) {
-                                return (
-                                    <Translation
-                                        key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                        id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                        values={{ decimals: 9 }}
-                                    />
-                                );
-                            }
-
-                            if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
-                                return (
-                                    <Translation
-                                        key="CUSTOM_FEE_NOT_IN_RANGE"
-                                        id="CUSTOM_FEE_NOT_IN_RANGE"
-                                        values={{ minFee, maxFee }}
-                                    />
-                                );
-                            }
-                        },
+                        validate: valiedateFee,
                     })}
                     bottomText={<InputError error={feePerUnitError} />}
                 />
@@ -200,5 +233,3 @@ const FeeCustom = ({
         </Wrapper>
     );
 };
-
-export default FeeCustom;
