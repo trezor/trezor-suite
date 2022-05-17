@@ -195,6 +195,23 @@ describe('Transaction', () => {
         });
     });
 
+    describe('getWitness', () => {
+        fixturesBitcoin.valid.forEach(f => {
+            it(`get tx witnesses: ${f.whex ? 'true' : 'false'}`, () => {
+                const tx = Transaction.fromHex(f.whex || f.hex);
+                if (f.whex) {
+                    tx.ins.forEach((input, i) => {
+                        const witness = tx.getWitness(i);
+                        const length = input.witness.reduce((l, w) => l + w.length + 1, 1);
+                        expect(witness!.length).toBe(length);
+                    });
+                } else {
+                    tx.ins.forEach((_, i) => expect(tx.getWitness(i)).toBe(undefined));
+                }
+            });
+        });
+    });
+
     describe('weight/virtualSize', () => {
         [
             ...fixturesBitcoin.valid,

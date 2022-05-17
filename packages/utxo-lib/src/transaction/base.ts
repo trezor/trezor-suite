@@ -1,6 +1,6 @@
 import * as varuint from 'varuint-bitcoin';
 import * as typeforce from 'typeforce';
-import { reverseBuffer } from '../bufferutils';
+import { reverseBuffer, getChunkSize } from '../bufferutils';
 import * as bcrypto from '../crypto';
 import * as types from '../types';
 import { bitcoin as BITCOIN_NETWORK, Network } from '../networks';
@@ -111,6 +111,23 @@ export class TransactionBase<S = undefined> {
     getId(): string {
         // transaction hash's are displayed in reverse order
         return reverseBuffer(this.getHash(false)).toString('hex');
+    }
+
+    // bip-0141 format: chunks size + (chunk[i].size + chunk[i])
+    getWitness(index: number) {
+        if (
+            !this.hasWitnesses() ||
+            !this.ins[index] ||
+            !Array.isArray(this.ins[index].witness) ||
+            this.ins[index].witness.length < 1
+        )
+            return;
+        const { witness } = this.ins[index];
+        const chunks = witness.reduce(
+            (arr, chunk) => arr.concat([getChunkSize(chunk.length), chunk]),
+            [getChunkSize(witness.length)],
+        );
+        return Buffer.concat(chunks);
     }
 
     getExtraData(): Buffer | void {
