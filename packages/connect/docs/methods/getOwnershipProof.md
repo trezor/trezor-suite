@@ -23,6 +23,7 @@ const result = await TrezorConnect.getOwnershipProof(params);
 -   `ownershipIds` — _optional_ `Array<string>`
 -   `commitmentData` — _optional_ `string`
 -   `multisig` — _optional_ `MultisigRedeemScriptType`
+-   `preauthorized` — _optional_ `boolean` [read more](./authorizeCoinJoin.md)
 
 #### Exporting bundle of proofs
 
