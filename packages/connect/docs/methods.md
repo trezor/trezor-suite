@@ -26,6 +26,7 @@ Every method require an [`Object`](https://developer.mozilla.org/en-US/docs/Web/
 -   [TrezorConnect.pushTransaction](methods/pushTransaction.md)
 -   [TrezorConnect.signMessage](methods/signMessage.md)
 -   [TrezorConnect.verifyMessage](methods/verifyMessage.md)
+-   [TrezorConnect.authorizeCoinJoin](methods/authorizeCoinJoin.md)
 
 ### Ethereum
 
