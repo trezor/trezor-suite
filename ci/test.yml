@@ -296,7 +296,7 @@ connect-popup manual:
           [
             "applySettings,applyFlags,getFeatures",
             "signTransaction",
-            "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction",
+            "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId",
             "stellarGetAddress,stellarSignTransaction",
             "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
             "eosGetPublicKey,eosSignTransaction",
