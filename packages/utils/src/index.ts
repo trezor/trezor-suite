@@ -16,6 +16,7 @@ export * from './isAscii';
 export * from './isNotUndefined';
 export * as versionUtils from './versionUtils';
 export * from './objectPartition';
+export * from './parseHostname';
 export * from './throwError';
 export * from './isHex';
 export * from './resolveStaticPath';

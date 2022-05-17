@@ -1,6 +1,5 @@
+import { parseHostname } from '@trezor/utils';
 import { TOR_URLS } from '@suite-constants/tor';
-import { parseUri } from './parseUri';
-import { isElectrumUrl, getElectrumHost } from './backend';
 
 /**
  * returns tor url if tor url is request and tor url is available for given domain
@@ -34,6 +33,6 @@ export const toTorUrl = (url: string) => {
 export const isTorDomain = (domain: string) => domain.endsWith('.onion');
 
 export const isOnionUrl = (url: string) => {
-    const hostname = isElectrumUrl(url) ? getElectrumHost(url) : parseUri(url)?.hostname;
+    const hostname = parseHostname(url);
     return !!hostname && isTorDomain(hostname);
 };
