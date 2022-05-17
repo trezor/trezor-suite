@@ -20,3 +20,4 @@
 ## Added:
 
 -   `getOwnershipId` method
+-   `getOwnershipProof` method

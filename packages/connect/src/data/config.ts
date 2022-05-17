@@ -190,7 +190,7 @@ export const config = {
             comment: ['EIP-712 domain-only signing, when primaryType=EIP712Domain'],
         },
         {
-            methods: ['getOwnershipId'],
+            methods: ['getOwnershipId', 'getOwnershipProof'],
             min: ['0', '2.4.4'],
         },
     ],
