@@ -250,3 +250,57 @@ connect deploy to dev:
     - deploy
     # todo: use connect_deploy?
     # - connect_deploy
+
+# components deploy
+.run_components_rules: &run_components_rules
+  refs:
+    - develop
+    - releases
+    - schedules
+    - /^release\//
+    - /^run\//
+  changes:
+    - packages/components
+    - packages/components-storybook
+    - yarn.lock
+
+# Deploy
+
+.deploy_common: &deploy_common
+  stage: deploy to dev
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_BUILD_REF_NAME}
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va packages/components/.build-storybook/ "${DEPLOY_DIRECTORY}/"
+  tags:
+    - deploy
+
+# Currently two jobs needed, it seems not to be possible to have a job depending on manual job
+# https://gitlab.com/gitlab-org/gitlab/-/issues/31264
+components storybook deploy sldev:
+  <<: *deploy_common
+  only:
+    <<: *run_components_rules
+
+components storybook deploy dev manual:
+  <<: *deploy_common
+  when: manual
+  except:
+    <<: *run_components_rules
+# components-storybook test snapshots:
+#   stage: integration testing
+#   script:
+#     - npx cypress install
+#     - CYPRESS_baseUrl=${DEV_SERVER_URL}/components-storybook/${CI_BUILD_REF_NAME} yarn workspace @trezor/integration-tests test:components-storybook
+#   artifacts:
+#     expire_in: 7 days
+#     when: always
+#     paths:
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook/snapshots
+#       - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook/screenshots
+#   needs: []
