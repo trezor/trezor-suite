@@ -8,12 +8,12 @@ describe('Onboarding - recover wallet T2', () => {
         cy.task('startBridge');
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { wipe: true, version: '2.4.3' });
 
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
 
-        cy.getTestElement('@firmware/continue-button').click();
+        cy.getTestElement('@firmware/skip-button').click();
 
         cy.getTestElement('@onboarding/path-recovery-button').click();
     });
