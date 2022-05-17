@@ -182,13 +182,19 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 params.coinInfo,
             );
         } else {
-            await verifyTx(
+            const bitcoinTx = await verifyTx(
                 device.getCommands().getHDNode.bind(device.getCommands()),
                 params.inputs,
                 params.outputs,
                 response.serializedTx,
                 params.coinInfo,
             );
+
+            if (bitcoinTx.hasWitnesses()) {
+                response.witnesses = bitcoinTx.ins.map((_, i) =>
+                    bitcoinTx.getWitness(i)?.toString('hex'),
+                );
+            }
         }
 
         if (params.push) {
