@@ -646,7 +646,7 @@ export const getOwnershipId = async (api: TrezorConnect) => {
     }
 
     // @ts-expect-error missing path
-    TrezorConnect.getOwnershipId({ coin: 'btc' });
+    api.getOwnershipId({ coin: 'btc' });
 };
 
 export const getOwnershipProof = async (api: TrezorConnect) => {
@@ -684,5 +684,37 @@ export const getOwnershipProof = async (api: TrezorConnect) => {
     }
 
     // @ts-expect-error missing path
-    TrezorConnect.getOwnershipProof({ coin_name: 'btc' });
+    api.getOwnershipProof({ coin_name: 'btc' });
+};
+
+export const authorizeCoinJoin = async (api: TrezorConnect) => {
+    const result = await api.authorizeCoinJoin({
+        path: 'm/44',
+        coordinator: 'TrezorCoinjoinCoordinator',
+        maxRounds: 1,
+        maxCoordinatorFeeRate: 100,
+        maxFeePerKvbyte: 100,
+    });
+    if (result.success) {
+        const { payload } = result;
+        payload.message.toLowerCase();
+    }
+
+    api.authorizeCoinJoin({
+        path: 'm/44',
+        coordinator: 'TrezorCoinjoinCoordinator',
+        maxRounds: 1,
+        maxCoordinatorFeeRate: 100,
+        maxFeePerKvbyte: 100,
+        coin: 'btc',
+        scriptType: 'SPENDTAPROOT',
+        amountUnit: 1, // MILLIBITCOIN
+    });
+
+    // @ts-expect-error incomplete params
+    api.authorizeCoinJoin({ path: 'm/44', coordinator: '' });
+    // @ts-expect-error incomplete params
+    api.authorizeCoinJoin({ path: 'm/44', maxRounds: 1 });
+    // @ts-expect-error incomplete params
+    api.authorizeCoinJoin({ coordinator: '', maxCoordinatorFeeRate: 1 });
 };
