@@ -110,6 +110,12 @@ export function cloneBuffer(buffer: Buffer): Buffer {
     return clone;
 }
 
+export function getChunkSize(n: number) {
+    const buf = Buffer.allocUnsafe(1);
+    buf.writeUInt8(n);
+    return buf;
+}
+
 // These types need to be defined here, otherwise
 // importing @trezor/utxo-lib/lib from blockchain-link fails
 // because of missing pushdata-bitcoin types
