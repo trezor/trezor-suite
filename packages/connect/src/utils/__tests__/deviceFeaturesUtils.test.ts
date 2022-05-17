@@ -76,25 +76,16 @@ describe('utils/deviceFeaturesUtils', () => {
 
         // bitcoin only
         expect(
+            // @ts-expect-error incomplete features
             parseCapabilities({
                 major_version: 1,
-                // @ts-expect-error - wrong/legacy decoding of capabilities in @trezor/transport
-                capabilities: [1],
+                capabilities: ['Capability_Bitcoin'],
             }),
         ).toEqual(['Capability_Bitcoin']);
 
         // no features
         // @ts-expect-error
         expect(parseCapabilities(null)).toEqual([]);
-
-        // unknown
-        expect(
-            parseCapabilities({
-                major_version: 1,
-                // @ts-expect-error - wrong/legacy decoding of capabilities in @trezor/transport
-                capabilities: [1000],
-            }),
-        ).toEqual([]);
     });
 
     describe('getUnavailableCapabilities', () => {
