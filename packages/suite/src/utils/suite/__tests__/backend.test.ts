@@ -17,16 +17,4 @@ describe('backend utils', () => {
         expect(utils.isElectrumUrl('https://google.com')).toBe(false);
         expect(utils.isElectrumUrl('')).toBe(false);
     });
-
-    test('getElectrumHost', () => {
-        expect(utils.getElectrumHost('electrum.example.com:50001:t')).toBe('electrum.example.com');
-        expect(utils.getElectrumHost('electrum.example.com:50001:s')).toBe('electrum.example.com');
-        expect(utils.getElectrumHost('electrum.example.onion:50001:t')).toBe(
-            'electrum.example.onion',
-        );
-        expect(utils.getElectrumHost('electrum.example.com:50001:x')).toBe(undefined);
-        expect(utils.getElectrumHost('wss://blockfrost.io')).toBe(undefined);
-        expect(utils.getElectrumHost('https://google.com')).toBe(undefined);
-        expect(utils.getElectrumHost('')).toBe(undefined);
-    });
 });

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { parseHostname } from '@trezor/utils';
 import type { Address } from '../types';
 import type { VinVout } from '../types/blockbook';
 
@@ -46,9 +47,6 @@ export const transformTarget = (target: VinVout, incoming: VinVout[]) => ({
     isAccountTarget: incoming.includes(target) ? true : undefined,
 });
 
-const IS_ONION = /\.onion([/:].*)?$/i;
-const IS_LOCALHOST = /^(\w*:\/\/)?(localhost|127\.0\.0\.1)([/:].*)?$/i;
-
 /**
  * Sorts array of backend urls so the localhost addresses are first,
  * then onion addresses and then the rest. Apart from that it will
@@ -57,13 +55,14 @@ const IS_LOCALHOST = /^(\w*:\/\/)?(localhost|127\.0\.0\.1)([/:].*)?$/i;
 export const prioritizeEndpoints = (urls: string[]) =>
     urls
         .map((url): [string, number] => {
-            let prio = Math.random();
-            if (IS_LOCALHOST.test(url)) {
-                prio += 2;
-            } else if (IS_ONION.test(url)) {
-                prio += 1;
+            const hostname = parseHostname(url);
+            let priority = Math.random();
+            if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                priority += 2;
+            } else if (hostname?.endsWith('.onion')) {
+                priority += 1;
             }
-            return [url, prio];
+            return [url, priority];
         })
         .sort(([, a], [, b]) => b - a)
         .map(([url]) => url);
