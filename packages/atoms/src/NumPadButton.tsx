@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { TouchableHighlight } from 'react-native';
+import { Platform, TouchableHighlight } from 'react-native';
 
 import { Text } from './Text';
 import { useNativeStyles, NativeStyleObject, prepareNativeStyle } from '@trezor/styles';
@@ -23,10 +23,25 @@ export const numPadButtonStyle = prepareNativeStyle(utils => ({
 
 export const numPadButtonTextStyle = prepareNativeStyle(utils => ({
     ...utils.typography.titleMedium,
-    lineHeight: BUTTON_SIZE,
     color: utils.colors.gray700,
     textAlign: 'center',
-    textAlignVertical: 'center',
+
+    extend: [
+        {
+            condition: Platform.OS === 'android',
+            style: {
+                lineHeight: BUTTON_SIZE,
+                textAlignVertical: 'center',
+            },
+        },
+        {
+            condition: Platform.OS === 'ios',
+            style: {
+                // sadly there is no better way how to center it on iOS
+                height: 27,
+            },
+        },
+    ],
 }));
 
 export const NumPadButton = ({ value, onPress, style, ...props }: NumPadButtonProps) => {
