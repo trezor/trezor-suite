@@ -2334,10 +2334,6 @@ export default defineMessages({
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
     },
-    TR_READ_MORE: {
-        defaultMessage: 'Read more',
-        id: 'TR_READ_MORE',
-    },
     TR_RECEIVE: {
         defaultMessage: 'Receive',
         id: 'TR_RECEIVE',
@@ -2548,10 +2544,6 @@ export default defineMessages({
     TR_SHOW_DETAILS_IN_BLOCK_EXPLORER: {
         defaultMessage: 'Show details in Block Explorer',
         id: 'TR_SHOW_DETAILS_IN_BLOCK_EXPLORER',
-    },
-    TR_SHOW_OLDER_NEWS: {
-        defaultMessage: 'Show older news',
-        id: 'TR_SHOW_OLDER_NEWS',
     },
     TR_SHOW_ON_TREZOR: {
         defaultMessage: 'Show on Trezor',
@@ -2822,10 +2814,6 @@ export default defineMessages({
     TR_WHAT_IS_PASSPHRASE: {
         defaultMessage: 'Learn more about the difference',
         id: 'TR_WHAT_IS_PASSPHRASE',
-    },
-    TR_WHATS_NEW: {
-        defaultMessage: 'Trezor news',
-        id: 'TR_WHATS_NEW',
     },
     TR_WIPING_YOUR_DEVICE: {
         defaultMessage:
@@ -3324,6 +3312,7 @@ export default defineMessages({
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T1',
         defaultMessage:
             'Enter the words from your seed here in the order displayed on your device. You may be asked to type some words that are not part of your recovery seed as an additional security measure.',
+        dynamic: true,
     },
     TR_SELECT_NUMBER_OF_WORDS: {
         id: 'TR_SELECT_NUMBER_OF_WORDS',
@@ -3332,10 +3321,12 @@ export default defineMessages({
     TR_YOU_EITHER_HAVE_T1: {
         id: 'TR_YOU_EITHER_HAVE_T1',
         defaultMessage: 'Your seed may contain 12, 18, or 24 words.',
+        dynamic: true,
     },
     TR_YOU_EITHER_HAVE_T2: {
         id: 'TR_YOU_EITHER_HAVE_T2',
         defaultMessage: 'Your seed may contain 12, 18, 20, 24, or 33 words.',
+        dynamic: true,
     },
     TR_ENTER_ALL_WORDS_IN_CORRECT: {
         id: 'TR_ENTER_ALL_WORDS_IN_CORRECT',
@@ -3349,6 +3340,7 @@ export default defineMessages({
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T2',
         defaultMessage:
             'Your wallet backup, the recovery seed, is entered entirely on the Trezor Model T, through the device screen. We avoid passing any of your sensitive information to a potentially insecure computer or web browser.',
+        dynamic: true,
     },
     TR_USING_TOUCHSCREEN: {
         id: 'TR_USING_TOUCHSCREEN',
@@ -4014,10 +4006,6 @@ export default defineMessages({
         id: 'TR_GO_TO_ONBOARDING',
         defaultMessage: 'Begin setup',
     },
-    TR_GO_TO_FIRMWARE: {
-        id: 'TR_GO_TO_FIRMWARE',
-        defaultMessage: 'Check firmware',
-    },
     TR_GO_TO_SETTINGS: {
         id: 'TR_GO_TO_SETTINGS',
         defaultMessage: 'Go to settings',
@@ -4029,17 +4017,6 @@ export default defineMessages({
     TR_NO_FIRMWARE_EXPLAINED: {
         id: 'TR_NO_FIRMWARE_EXPLAINED',
         defaultMessage: 'You need to install firmware before using your device.',
-    },
-    TR_SEEDLESS_MODE: {
-        id: 'TR_SEEDLESS_MODE',
-        defaultMessage: 'Seedless mode',
-        description:
-            'Seedless is a term. It means that device has cryptographic secret inside but has never given out recovery seed',
-    },
-    TR_SEEDLESS_MODE_EXPLAINED: {
-        id: 'TR_SEEDLESS_MODE_EXPLAINED',
-        defaultMessage:
-            'Seedless mode means that device has cryptographic secret inside but no corresponding recovery seed exists. Such devices are not allowed to be used with this wallet.',
     },
     TR_UNKNOWN_DEVICE: {
         id: 'TR_UNKNOWN_DEVICE',
@@ -4062,11 +4039,6 @@ export default defineMessages({
     TR_DEVICE_IN_BOOTLOADER: {
         id: 'TR_DEVICE_IN_BOOTLOADER',
         defaultMessage: 'The device is in bootloader mode.',
-    },
-    TR_DEVICE_IN_BOOTLOADER_EXPLAINED: {
-        id: 'TR_DEVICE_IN_BOOTLOADER_EXPLAINED',
-        defaultMessage:
-            'In bootloader mode, device is ready to receive firmware updates but it also means that nothing else might be done with it. To get back into normal mode simply reconnect it.',
     },
     TR_LOCALIZATION: {
         id: 'TR_LOCALIZATION',
@@ -4399,10 +4371,6 @@ export default defineMessages({
         id: 'IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION',
         defaultMessage:
             'Invalid image color. It must contain only black and white (not grayscale).',
-    },
-    TR_OPEN_IN_MEDIUM: {
-        id: 'TR_OPEN_IN_MEDIUM',
-        defaultMessage: 'Open in Medium',
     },
     TR_CONFIRM_ON_TREZOR: {
         id: 'TR_CONFIRM_ON_TREZOR',
