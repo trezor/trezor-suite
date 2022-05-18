@@ -13,6 +13,7 @@ import { useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
 const iconSizes = {
+    tiny: 12,
     small: 16,
     big: 24,
 } as const;

@@ -61,16 +61,15 @@ export const Home = () => {
                             My Fancy Button
                         </Button>
                     </Box>
-                    <Box marginTop="lg">
-                        <Hint type="hint" message="Hint without children" />
+                    <Box marginVertical="md">
+                        <Text>Hints:</Text>
+                        <Hint type="hint">Hned to mažem</Hint>
+                        <Hint type="error">Please enter a valid address dumbo</Hint>
                     </Box>
-
-                    <Box marginTop="lg">
-                        <Hint type="error" message="Hint with children">
-                            <Button size="md" colorScheme="primary">
-                                Fancy Button with hint
-                            </Button>
-                        </Hint>
+                    <Box marginVertical="md">
+                        <Button onPress={() => {}} size="md" colorScheme="primary">
+                            My Fancy Button
+                        </Button>
                     </Box>
 
                     <NumPadButton

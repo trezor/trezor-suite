@@ -1,46 +1,61 @@
 import React from 'react';
-import { Text as RNText } from 'react-native';
-import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
-import { Button } from './Button';
-import { Box } from './Box';
+import { Text as RNText, View } from 'react-native';
+import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
+import { Icon } from './Icon/Icon';
+import { IconType } from './Icon/iconTypes';
+import { Color, colorVariants } from '@trezor/theme';
+import * as CSS from 'csstype';
 
 type HintType = 'hint' | 'error';
 
 type HintProps = {
     type: HintType;
-    message: string;
     children?: React.ReactNode;
 };
 
-const hintTypeStyle = prepareNativeStyle<{ type: HintType }>((utils, { type }) => {
-    const hintTypeStyles: Record<HintType, NativeStyleObject> = {
+const hintStyle = prepareNativeStyle(() => ({
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+}));
+
+const hintTypeStyle = prepareNativeStyle<{ color: CSS.Property.Color }>((utils, { color }) => ({
+    ...utils.typography.label,
+    color,
+    marginLeft: 6,
+}));
+
+export const Hint = ({ type, children }: HintProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    const hintTypeProps: Record<
+        HintType,
+        { iconType: IconType; color: CSS.Property.Color; colorVariant: Color }
+    > = {
         hint: {
-            color: utils.colors.gray600,
+            colorVariant: 'gray600',
+            color: colorVariants.standard.gray600,
+            iconType: 'question',
         },
         error: {
-            color: utils.colors.red,
+            colorVariant: 'red',
+            color: colorVariants.standard.red,
+            iconType: 'warningCircle',
         },
     };
-
-    return {
-        ...utils.typography.hint,
-        ...hintTypeStyles[type],
-        marginLeft: 6,
-    };
-});
-
-export const Hint = ({ type, message, children }: HintProps) => {
-    const { applyStyle } = useNativeStyles();
 
     return (
         <>
-            {children}
-            <Box flexDirection="row" alignItems="center">
-                <Button onPress={() => {}} size="md" colorScheme="primary">
-                    TODO icon by type
-                </Button>
-                <RNText style={[applyStyle(hintTypeStyle, { type })]}>{message}</RNText>
-            </Box>
+            <View style={[applyStyle(hintStyle)]}>
+                <Icon
+                    type={hintTypeProps[type].iconType}
+                    color={hintTypeProps[type].colorVariant}
+                    size="tiny"
+                />
+                <RNText style={[applyStyle(hintTypeStyle, { color: hintTypeProps[type].color })]}>
+                    {children}
+                </RNText>
+            </View>
         </>
     );
 };

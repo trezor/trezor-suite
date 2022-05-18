@@ -1,6 +1,6 @@
 // RN require font weight to be string
 export const fontWeights = {
-    medium: '500',
+    medium: '400',
     semiBold: '600',
 } as const;
 
