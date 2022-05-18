@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, PressableProps } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Text } from './Text';
 import { Color } from '@trezor/theme';
@@ -8,7 +8,7 @@ import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonColorScheme = 'primary' | 'gray';
 
-export interface ButtonProps extends Omit<PressableProps, 'style'> {
+export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
     size: ButtonSize;
     colorScheme: ButtonColorScheme;
     style?: NativeStyleObject;
@@ -66,14 +66,13 @@ export const Button = ({ size, style, colorScheme, children, ...props }: ButtonP
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable
+        <TouchableOpacity
             style={[applyStyle(buttonStyle, { size, colorScheme }), style]}
-            android_ripple={{}}
             {...props}
         >
             <Text variant="highlight" color={buttonColorSchemeFontColor[colorScheme]}>
                 {children}
             </Text>
-        </Pressable>
+        </TouchableOpacity>
     );
 };

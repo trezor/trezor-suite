@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
-import { Text, Box, Button, NumPadButton, Icon, Hint } from '@trezor/atoms';
+import { Text, Box, Button, NumPadButton, Icon, Hint, Radio } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -15,6 +15,11 @@ const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
 export const Home = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const { applyStyle } = useNativeStyles();
+    const [radioChecked, setRadioChecked] = useState('second');
+
+    const handleRadioPress = (value: string) => {
+        setRadioChecked(value);
+    };
 
     return (
         <SafeAreaView style={applyStyle(backgroundStyle, { isDarkMode })}>
@@ -62,7 +67,36 @@ export const Home = () => {
                             My Fancy Button
                         </Button>
                     </Box>
-
+                    <Box marginVertical="md">
+                        <Text>Radio:</Text>
+                        <Box flexDirection="row" justifyContent="space-between">
+                            <Radio
+                                key="first"
+                                value="first"
+                                onPress={handleRadioPress}
+                                isChecked={radioChecked === 'first'}
+                            />
+                            <Radio
+                                key="second"
+                                value="second"
+                                onPress={handleRadioPress}
+                                isChecked={radioChecked === 'second'}
+                            />
+                            <Radio
+                                key="third"
+                                value="third"
+                                onPress={handleRadioPress}
+                                isDisabled
+                            />
+                            <Radio
+                                key="fourth"
+                                value="fourth"
+                                onPress={handleRadioPress}
+                                isChecked
+                                isDisabled
+                            />
+                        </Box>
+                    </Box>
                     <NumPadButton
                         value={5}
                         onPress={value =>
