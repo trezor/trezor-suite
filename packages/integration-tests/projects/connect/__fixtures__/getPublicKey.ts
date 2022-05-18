@@ -5,6 +5,17 @@ export default {
     },
     tests: [
         {
+            description: 'Bitcoin p2tr first account',
+            params: {
+                path: "m/86'/0'/0'",
+                coin: 'bitcoin',
+            },
+            result: {
+                xpub: 'xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7',
+                xpubSegwit: `tr([5c9e228d/86'/0'/0']xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)`,
+            },
+        },
+        {
             description: 'Bitcoin bech32 first account',
             params: {
                 path: "m/84'/0'/0'",
