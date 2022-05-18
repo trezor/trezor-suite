@@ -18,7 +18,7 @@ for (const message in messages) {
         }
 
         // list of patterns to search
-        const path = '**/suite*/**';
+        const path = '**/(suite|validation)*/**';
         // possible paths:
         // suite, suite-desktop, suite-web
         // 'suite-web-landing/components',
