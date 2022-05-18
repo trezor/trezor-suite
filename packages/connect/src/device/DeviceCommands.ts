@@ -191,6 +191,13 @@ export class DeviceCommands {
             response.xpub = hdnodeUtils.convertXpub(publicKey.xpub, network, coinInfo.network);
         }
 
+        if (isTaprootPath(path)) {
+            // wrap regular xpub into bitcoind native descriptor
+            response.xpubSegwit = `tr([5c9e228d/86'/${fromHardened(path[1])}'/${fromHardened(
+                path[2],
+            )}']${response.xpub}/<0;1>/*)`;
+        }
+
         return response;
     }
 
@@ -614,12 +621,6 @@ export class DeviceCommands {
 
         if (coinInfo.type === 'bitcoin') {
             const resp = await this.getHDNode(address_n, coinInfo, false);
-            if (isTaprootPath(address_n)) {
-                // wrap regular xpub into bitcoind native descriptor
-                resp.xpubSegwit = `tr([5c9e228d/86'/${fromHardened(address_n[1])}'/${fromHardened(
-                    address_n[2],
-                )}']${resp.xpub}/<0;1>/*)`;
-            }
             return {
                 descriptor: resp.xpubSegwit || resp.xpub,
                 legacyXpub: resp.xpub,
