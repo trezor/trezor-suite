@@ -63,8 +63,8 @@ export const Home = () => {
                     </Box>
                     <Box marginVertical="md">
                         <Text>Hints:</Text>
-                        <Hint type="hint">Hned to mažem</Hint>
-                        <Hint type="error">Please enter a valid address dumbo</Hint>
+                        <Hint variant="hint">Hned to mažem</Hint>
+                        <Hint variant="error">Please enter a valid address dumbo</Hint>
                     </Box>
                     <Box marginVertical="md">
                         <Button onPress={() => {}} size="md" colorScheme="primary">

@@ -1,15 +1,16 @@
 import React from 'react';
-import { Text as RNText, View } from 'react-native';
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
+import { View } from 'react-native';
+import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
 import { Icon } from './Icon/Icon';
 import { IconType } from './Icon/iconTypes';
-import { Color, colorVariants } from '@trezor/theme';
-import * as CSS from 'csstype';
+import { Color } from '@trezor/theme';
+import { Text } from '@trezor/atoms';
 
 type HintType = 'hint' | 'error';
 
 type HintProps = {
-    type: HintType;
+    variant: HintType;
+    style?: NativeStyleObject;
     children?: React.ReactNode;
 };
 
@@ -19,43 +20,36 @@ const hintStyle = prepareNativeStyle(() => ({
     alignItems: 'center',
 }));
 
-const hintTypeStyle = prepareNativeStyle<{ color: CSS.Property.Color }>((utils, { color }) => ({
+const hintTypeStyle = prepareNativeStyle<{ color: Color }>((utils, { color }) => ({
     ...utils.typography.label,
-    color,
+    color: utils.colors[color],
     marginLeft: 6,
 }));
 
-export const Hint = ({ type, children }: HintProps) => {
+const hintVariants: Record<HintType, { iconType: IconType; color: Color }> = {
+    hint: {
+        color: 'gray600',
+        iconType: 'question',
+    },
+    error: {
+        color: 'red',
+        iconType: 'warningCircle',
+    },
+};
+
+export const Hint = ({ variant, style, children }: HintProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const hintTypeProps: Record<
-        HintType,
-        { iconType: IconType; color: CSS.Property.Color; colorVariant: Color }
-    > = {
-        hint: {
-            colorVariant: 'gray600',
-            color: colorVariants.standard.gray600,
-            iconType: 'question',
-        },
-        error: {
-            colorVariant: 'red',
-            color: colorVariants.standard.red,
-            iconType: 'warningCircle',
-        },
-    };
-
     return (
-        <>
-            <View style={[applyStyle(hintStyle)]}>
-                <Icon
-                    type={hintTypeProps[type].iconType}
-                    color={hintTypeProps[type].colorVariant}
-                    size="tiny"
-                />
-                <RNText style={[applyStyle(hintTypeStyle, { color: hintTypeProps[type].color })]}>
-                    {children}
-                </RNText>
-            </View>
-        </>
+        <View style={[applyStyle(hintStyle), style]}>
+            <Icon
+                type={hintVariants[variant].iconType}
+                color={hintVariants[variant].color}
+                size="tiny"
+            />
+            <Text style={applyStyle(hintTypeStyle, { color: hintVariants[variant].color })}>
+                {children}
+            </Text>
+        </View>
     );
 };
