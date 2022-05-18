@@ -1,8 +1,9 @@
 import React from 'react';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Pressable, PressableProps } from 'react-native';
+
 import { Text } from './Text';
 import { Color } from '@trezor/theme';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonColorScheme = 'primary' | 'gray';

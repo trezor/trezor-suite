@@ -2,6 +2,7 @@ import { Borders, borders, NativeBorders, nativeBorders } from './borders';
 import { BoxShadows, boxShadows, NativeBoxShadows, nativeBoxShadows } from './boxShadows';
 import { Colors, colorVariants, ThemeColorVariant } from './colors';
 import { FontFamilies, fontFamilies, NativeFontFamilies, nativeFontFamilies } from './fontFamilies';
+import { fontWeights, FontWeights } from './fontWeights';
 import { Sizes, sizes } from './sizes';
 import { NativeSpacings, nativeSpacings, Spacings, spacings } from './spacings';
 import {
@@ -50,6 +51,7 @@ export interface NativeTheme {
     fontFamilies: NativeFontFamilies;
     spacings: NativeSpacings;
     typography: NativeTypographyStyles;
+    fontWeights: FontWeights;
 }
 
 export const prepareNativeTheme = ({ colorVariant }: PrepareThemeOptions): NativeTheme => {
@@ -62,5 +64,6 @@ export const prepareNativeTheme = ({ colorVariant }: PrepareThemeOptions): Nativ
         fontFamilies: nativeFontFamilies,
         spacings: nativeSpacings,
         typography: nativeTypography,
+        fontWeights,
     };
 };

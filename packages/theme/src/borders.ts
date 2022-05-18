@@ -22,7 +22,7 @@ export const nativeBorders = {
     radii: {
         basic: 8,
         large: 16,
-        round: '50%',
+        round: 100, // Equivalent to 50% on the web
     },
 } as const;
 
