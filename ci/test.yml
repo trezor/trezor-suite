@@ -48,6 +48,7 @@
       - trezor-user-env-debugging.log
       - tenv-emulator-bridge-debugging.log
       - trezor-user-env-version.txt
+  interruptible: true
 
 .suite web base:
   extends: .e2e web
@@ -143,6 +144,7 @@ suite web 2-master manual:
     when: always
     paths:
       - ./packages/integration-tests/projects/suite-desktop/screenshots
+  interruptible: true
 
 suite desktop:
   extends: .e2e desktop
@@ -169,6 +171,7 @@ suite desktop manual:
   after_script:
     - docker-compose down
     - docker network prune -f
+  interruptible: true
 
 transport:
   extends: .e2e transport
@@ -198,6 +201,7 @@ transport manual:
   after_script:
     - docker-compose down
     - docker network prune -f
+  interruptible: true
 
 blockchain-link:
   extends: .e2e blockchain-link
@@ -237,6 +241,7 @@ blockchain-link manual:
       - ./packages/integration-tests/projects/connect-explorer/screenshots
       - ./packages/integration-tests/connect-popup-overview.html
       - ./packages/integration-tests/test-results
+  interruptible: true
 
 connect-popup:
   extends: .e2e connect-popup
@@ -311,6 +316,7 @@ connect-popup manual:
             "binanceSignTransaction",
           ]
         TESTS_MOCK_BACKENDS: "false"
+  interruptible: true
 
 connect:
   extends: .connect
