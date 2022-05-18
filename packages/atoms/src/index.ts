@@ -6,3 +6,4 @@ export * from './Radio';
 export * from './Icon/Icon';
 export * from './Icon/iconTypes';
 export * from './NumPadButton';
+export * from './Input';
