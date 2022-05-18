@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { TrezorLogo, Button, variables } from '@trezor/components';
 import { TrezorLink, Translation } from '@suite-components';
-import ProgressBar from '@onboarding-components/ProgressBar';
+import { ProgressBar } from '@onboarding-components';
 import { useOnboarding } from '@suite-hooks';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import { MAX_WIDTH } from '@suite-constants/layout';

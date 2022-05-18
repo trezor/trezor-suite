@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, variables, useTheme } from '@trezor/components';
+import { Icon, Progress, variables, useTheme } from '@trezor/components';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     border-radius: 8px;
     padding: 20px 24px;
     width: 100%;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     align-items: center;
 `;
 
@@ -18,13 +18,18 @@ const Label = styled.div`
     margin-right: 20px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
-const LineWrapper = styled.div`
+const StyledProgress = styled(Progress)`
     display: flex;
     margin-right: 20px;
     border-radius: 5px;
-    background: ${props => props.theme.STROKE_GREY_ALT};
+    background: ${({ theme }) => theme.STROKE_GREY_ALT};
     flex: 1;
-    height: 3px;
+
+    ${Progress.Value} {
+        height: 3px;
+        position: relative;
+        border-radius: 5px;
+    }
 `;
 const Percentage = styled.div`
     display: flex;
@@ -32,15 +37,6 @@ const Percentage = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-variant-numeric: tabular-nums;
     height: 24px;
-`;
-const GreenLine = styled.div<{ width: number }>`
-    background: ${props => props.theme.TYPE_GREEN};
-    width: ${props => props.width}%;
-    transition: all 0.8s;
-
-    height: 3px;
-    position: relative;
-    border-radius: 5px;
 `;
 
 interface Props {
@@ -52,7 +48,7 @@ interface Props {
     fakeProgressBarrier?: number; // Barrier where fake progress will wait for real `current` progress to catch up.
 }
 
-const ProgressBar = ({
+export const ProgressBar = ({
     label,
     total,
     current,
@@ -64,6 +60,8 @@ const ProgressBar = ({
     const [storedProgress, setStoreProgress] = useState(0);
     const progress = (100 / total) * current;
     const fakeIncrement = fakeProgressDuration ? total / fakeProgressDuration : 0;
+    const progressValue =
+        maintainCompletedState || fakeProgressDuration ? storedProgress : progress;
 
     useEffect(() => {
         // This hook is used only for calculating fake progress
@@ -93,13 +91,7 @@ const ProgressBar = ({
     return (
         <Wrapper>
             <Label>{label}</Label>
-            <LineWrapper>
-                <GreenLine
-                    width={
-                        maintainCompletedState || fakeProgressDuration ? storedProgress : progress
-                    }
-                />
-            </LineWrapper>
+            <StyledProgress value={progressValue} />
             <Percentage>
                 {progress < 100 ? (
                     `${fakeProgressDuration ? storedProgress : progress} %`
@@ -110,5 +102,3 @@ const ProgressBar = ({
         </Wrapper>
     );
 };
-
-export default ProgressBar;
