@@ -31,7 +31,7 @@ import * as popup from './popup';
 import webUSBButton from './webusb/button';
 
 const eventEmitter = new EventEmitter();
-const _log = initLog('[trezor-connect.js]');
+const _log = initLog('@trezor/connect');
 
 let _settings = parseConnectSettings();
 let _popupManager: popup.PopupManager | undefined;

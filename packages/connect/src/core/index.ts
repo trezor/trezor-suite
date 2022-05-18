@@ -27,7 +27,7 @@ import { getMethod } from './method';
 
 import { create as createDeferred, Deferred } from '../utils/deferred';
 import { resolveAfter } from '../utils/promiseUtils';
-import { initLog } from '../utils/debug';
+import { initLog, enableLog } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 
@@ -131,7 +131,7 @@ const removeUiPromise = (promise: Deferred<any>) => {
  * @memberof Core
  */
 export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => {
-    _log.log('handle message in core', isTrustedOrigin, message);
+    _log.debug('handleMessage', isTrustedOrigin, message);
 
     const safeMessages: CoreMessage['type'][] = [
         IFRAME.CALL,
@@ -188,7 +188,7 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
         case IFRAME.CALL:
             // eslint-disable-next-line no-use-before-define
             onCall(message).catch(error => {
-                _log.debug('onCall error', error);
+                _log.error('onCall', error);
             });
             break;
 
@@ -640,7 +640,6 @@ export const onCall = async (message: CoreMessage) => {
         // TODO: This requires a massive refactoring https://github.com/trezor/trezor-suite/issues/5323
         // @ts-expect-error TODO: messageResponse should be assigned from the response of "inner" function
         const response = messageResponse;
-        _log.log('onCall::finally', response);
 
         if (response) {
             if (method.name === 'rebootToBootloader' && response.success) {
@@ -684,7 +683,7 @@ const cleanup = () => {
     _popupPromise = undefined;
     _uiPromises = []; // TODO: remove only promises with params callId
     _interactionTimeout.stop();
-    _log.log('Cleanup...');
+    _log.debug('Cleanup...');
 };
 
 /**
@@ -937,7 +936,7 @@ const initDeviceList = async (settings: ConnectSettings) => {
         });
 
         _deviceList.on(TRANSPORT.ERROR, async error => {
-            _log.error('TRANSPORT ERROR', error);
+            _log.warn('TRANSPORT.ERROR', error);
             if (_deviceList) {
                 _deviceList.disconnectDevices();
                 _deviceList.dispose();
@@ -1027,20 +1026,10 @@ export const initCore = () => {
  * @returns {Promise<Core>}
  * @memberof Core
  */
-
-export const initData = async (settings: ConnectSettings) => {
-    try {
-        await DataManager.load(settings);
-    } catch (error) {
-        _log.log('init error', error);
-        throw error;
-    }
-};
-
 export const init = async (settings: ConnectSettings) => {
     try {
-        _log.enabled = !!settings.debug;
         await DataManager.load(settings);
+        enableLog(DataManager.getSettings('debug'));
         initCore();
 
         // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
@@ -1051,7 +1040,7 @@ export const init = async (settings: ConnectSettings) => {
         return _core;
     } catch (error) {
         // TODO: kill app
-        _log.log('init error', error);
+        _log.error('init', error);
         throw error;
     }
 };
@@ -1066,7 +1055,7 @@ export const initTransport = async (settings: ConnectSettings) => {
             initDeviceList(settings);
         }
     } catch (error) {
-        _log.log('initTransport', error);
+        _log.error('initTransport', error);
         throw error;
     }
 };

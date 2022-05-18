@@ -99,7 +99,6 @@ export class DescriptorStream extends EventEmitter {
     constructor(transport: Transport) {
         super();
         this.transport = transport;
-        logger.enabled = !!DataManager.getSettings('debug');
     }
 
     // emits changes
@@ -141,7 +140,7 @@ export class DescriptorStream extends EventEmitter {
                 await resolveAfter(1000, null);
                 if (this.listening) this.listen();
             } else {
-                logger.log('Transport error');
+                logger.warn('Transport error');
                 this.emit(TRANSPORT.ERROR, error);
             }
         }

@@ -86,8 +86,7 @@ export class DeviceList extends EventEmitter {
     constructor() {
         super();
 
-        const { debug, env, webusb } = DataManager.settings;
-        _log.enabled = !!debug;
+        const { env, webusb } = DataManager.settings;
 
         const transports: Transport[] = [];
 

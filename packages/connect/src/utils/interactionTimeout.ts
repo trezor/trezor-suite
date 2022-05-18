@@ -33,9 +33,9 @@ export class InteractionTimeout {
         // Clear any previous timeouts set (reset)
         this.stop();
 
-        _log.log(`starting interaction timeout for ${time} seconds`);
+        _log.debug(`starting interaction timeout for ${time} seconds`);
         this.timeout = setTimeout(() => {
-            _log.log('interaction timed out');
+            _log.debug('interaction timed out');
             cancelFn();
         }, 1000 * time);
     }
@@ -46,7 +46,7 @@ export class InteractionTimeout {
      */
     stop() {
         if (this.timeout) {
-            _log.log('clearing interaction timeout');
+            _log.debug('clearing interaction timeout');
             clearTimeout(this.timeout);
         }
     }
