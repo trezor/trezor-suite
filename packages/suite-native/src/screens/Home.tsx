@@ -52,15 +52,6 @@ export const Home = () => {
                         <Text>Icon:</Text>
                         <Icon type="warningCircle" size="big" color="black" />
                     </Box>
-                    <Box marginVertical="lg">
-                        <Button
-                            onPress={() => console.log('Get features')}
-                            size="md"
-                            colorScheme="primary"
-                        >
-                            My Fancy Button
-                        </Button>
-                    </Box>
                     <Box marginVertical="md">
                         <Text>Hints:</Text>
                         <Hint variant="hint">Hned to mažem</Hint>
