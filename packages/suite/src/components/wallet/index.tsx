@@ -1,5 +1,4 @@
 import AccountsMenu from './AccountsMenu';
-import DiscoveryProgress from './DiscoveryProgress';
 import Title from './Title';
 import { WalletLayout } from './WalletLayout';
 import { WalletLayoutHeader } from './WalletLayout/components/WalletLayoutHeader';
@@ -27,6 +26,7 @@ import CoinmarketExchangeOfferInfo from './CoinmarketExchangeOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketProviderInfo from './CoinmarketProviderInfo';
 import CoinmarketRefreshTime from './CoinmarketRefreshTime';
+import { DiscoveryProgress } from './DiscoveryProgress';
 
 export {
     Title,
@@ -35,7 +35,6 @@ export {
     WalletLayoutHeader,
     WalletLayoutNavigation,
     WalletLayoutNavLink,
-    DiscoveryProgress,
     CoinBalance,
     CoinmarketLayout,
     CoinmarketBuyTopPanel,
@@ -50,6 +49,7 @@ export {
     CoinmarketProvidedByInvity,
     CoinmarketPaymentType,
     CoinmarketRefreshTime,
+    DiscoveryProgress,
     OnOffSwitcher,
     InputError,
     AccountExceptionLayout,

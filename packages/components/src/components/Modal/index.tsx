@@ -1,11 +1,12 @@
 /* stylelint-disable indentation */
 import React, { useCallback, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+
 import { useKeyPress, useTheme } from '../../utils/hooks';
 import { Icon } from '../Icon';
 import { H1 } from '../typography/Heading';
 import { variables } from '../../config';
-import { ProgressBar } from './ProgressBar';
+import { Progress } from '@trezor/components';
 import { IconType } from '../../support/types';
 
 const DevicePromptContainer = styled.div`
@@ -287,7 +288,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
                 )}
 
                 {heading && showProgressBar && (
-                    <ProgressBar current={currentProgressBarStep} total={totalProgressBarSteps} />
+                    <Progress value={currentProgressBarStep} max={totalProgressBarSteps} />
                 )}
 
                 <Body>

@@ -9,11 +9,11 @@ import OnboardingButtonSkip from './Buttons/ButtonSkip';
 import Box, { BoxProps } from './Box/Box';
 import ConnectDevicePromptManager from './ConnectDevicePromptManager';
 import { OnboardingLayout } from './Layouts/OnboardingLayout';
-import ProgressBar from './ProgressBar';
 import Hologram from './Hologram';
 import DeviceAnimation, { type DeviceAnimationType } from './DeviceAnimation';
 import { OnboardingStepBox, type OnboardingStepBoxProps } from './OnboardingStepBox';
 import SkipStepConfirmation from './SkipStepConfirmation';
+import { ProgressBar } from './ProgressBar';
 
 export {
     OnboardingButtonAlt,
@@ -28,10 +28,10 @@ export {
     Box,
     ConnectDevicePromptManager,
     OnboardingLayout,
-    ProgressBar,
     Hologram,
     DeviceAnimation,
     OnboardingStepBox,
     SkipStepConfirmation,
+    ProgressBar,
 };
 export type { BoxProps, DeviceAnimationType, OnboardingStepBoxProps };

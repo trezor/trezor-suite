@@ -32,6 +32,7 @@ export * from './components/Modal/Backdrop';
 export * from './components/logos/CoinLogo';
 export * from './components/logos/TrezorLogo';
 export * from './components/loaders/Loader';
+export * from './components/loaders/Progress';
 export * from './components/loaders/LoadingContent';
 export * from './components/Tooltip';
 export * from './components/Timerange';

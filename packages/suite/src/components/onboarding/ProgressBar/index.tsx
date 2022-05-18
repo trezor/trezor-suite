@@ -94,7 +94,7 @@ interface Props {
     className?: string;
 }
 
-const ProgressBar = ({ steps, activeStep, className }: Props) => {
+export const ProgressBar = ({ steps, activeStep, className }: Props) => {
     const theme = useTheme();
     return (
         <ProgressBarWrapper className={className}>
@@ -121,5 +121,3 @@ const ProgressBar = ({ steps, activeStep, className }: Props) => {
         </ProgressBarWrapper>
     );
 };
-
-export default ProgressBar;
