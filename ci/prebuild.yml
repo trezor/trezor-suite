@@ -8,6 +8,7 @@ msg-system config sign dev:
     expire_in: 7 days
     paths:
       - packages/suite-data/files/message-system/config.v1.jws
+  interruptible: true
 
 msg-system config sign stable:
   stage: prebuild

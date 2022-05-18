@@ -1,10 +1,12 @@
 # Config
 .config_sign_stable: &config_sign_stable
+  interruptible: true
   dependencies:
     - install
     - msg-system config sign stable
 
 .config_sign_dev: &config_sign_dev
+  interruptible: true
   dependencies:
     - install
     - msg-system config sign dev
@@ -276,6 +278,7 @@ suite-desktop build windows codesign:
 suite-native build android:
   image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/reactnativecommunity/react-native-android
   stage: build
+  interruptible: true
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/suite-data copy-static-files
@@ -288,6 +291,7 @@ suite-native build android:
 
 .connect-explorer build base:
   stage: build
+  interruptible: true
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_BUILD_REF_NAME}/ yarn workspace @trezor/connect-explorer build
@@ -312,6 +316,7 @@ connect-web build:
   stage: build
   # only:
   #   <<: *run_connect_rules
+  interruptible: true
   variables:
     GIT_STRATEGY: clone
     GIT_SUBMODULE_STRATEGY: recursive
@@ -344,6 +349,7 @@ connect-web build:
 
 .build_common: &build_common
   stage: build
+  interruptible: true
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/components storybook-build
