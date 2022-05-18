@@ -18,6 +18,7 @@ import {
 import { getAccountAddressN } from '../utils/accountUtils';
 import { versionCompare } from '../utils/versionUtils';
 import { getSegwitNetwork, getBech32Network } from '../data/coinInfo';
+import { initLog } from '../utils/debug';
 
 import type { Device } from './Device';
 import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
@@ -39,6 +40,8 @@ export type PassphrasePromptResponse = {
     passphraseOnDevice?: boolean;
     cache?: boolean;
 };
+
+const logger = initLog('DeviceCommands');
 
 const assertType = (res: DefaultMessageResponse, resType: string | string[]) => {
     const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
@@ -95,8 +98,6 @@ export class DeviceCommands {
 
     sessionId: string;
 
-    debug: boolean;
-
     disposed: boolean;
 
     callPromise?: Promise<DefaultMessageResponse>;
@@ -108,7 +109,6 @@ export class DeviceCommands {
         this.device = device;
         this.transport = transport;
         this.sessionId = sessionId;
-        this.debug = false;
         this.disposed = false;
     }
 
@@ -332,27 +332,18 @@ export class DeviceCommands {
         type: MessageKey,
         msg: DefaultMessageResponse['message'] = {},
     ): Promise<DefaultMessageResponse> {
-        if (this.debug) {
-            const logMessage = filterForLog(type, msg);
-            // eslint-disable-next-line no-console
-            console.log('[DeviceCommands] [call] Sending', type, logMessage, this.transport);
-        }
+        const logMessage = filterForLog(type, msg);
+        logger.debug('Sending', type, logMessage);
 
         try {
             const promise = this.transport.call(this.sessionId, type, msg, false) as any; // TODO: https://github.com/trezor/trezor-suite/issues/5301
             this.callPromise = promise;
             const res = await promise;
             const logMessage = filterForLog(res.type, res.message);
-            if (this.debug) {
-                // eslint-disable-next-line no-console
-                console.log('[DeviceCommands] [call] Received', res.type, logMessage);
-            }
+            logger.debug('Received', res.type, logMessage);
             return res;
         } catch (error) {
-            if (this.debug) {
-                // eslint-disable-next-line no-console
-                console.warn('[DeviceCommands] [call] Received error', error);
-            }
+            logger.warn('Received error', error);
             // TODO: throw trezor error
             throw error;
         }

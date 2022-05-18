@@ -1,14 +1,16 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/debug.js
 /* eslint-disable no-console */
 
-const colors: { [k: string]: string } = {
-    // green
-    DescriptorStream: 'color: #77ab59',
-    DeviceList: 'color: #36802d',
-    Device: 'color: #bada55',
-    Core: 'color: #c9df8a',
-    IFrame: 'color: #FFFFFF; background: #f4a742;',
-    Popup: 'color: #f48a00',
+const colors: Record<string, string> = {
+    // orange, api related
+    '@trezor/connect': 'color: #f4a742; background: #000;',
+    IFrame: 'color: #f4a742; background: #000;',
+    Core: 'color: #f4a742; background: #000;',
+    // green, device related
+    DescriptorStream: 'color: #77ab59; background: #000;',
+    DeviceList: 'color: #77ab59; background: #000;',
+    Device: 'color: #bada55; background: #000;',
+    DeviceCommands: 'color: #bada55; background: #000;',
 };
 
 type LogMessage = {
@@ -22,18 +24,15 @@ const MAX_ENTRIES = 100;
 
 class Log {
     prefix: string;
-
     enabled: boolean;
-
     css: string;
-
     messages: LogMessage[];
 
     constructor(prefix: string, enabled: boolean) {
         this.prefix = prefix;
         this.enabled = enabled;
         this.messages = [];
-        this.css = colors[prefix] || 'color: #000000; background: #FFFFFF;';
+        this.css = typeof window !== 'undefined' && colors[prefix] ? colors[prefix] : '';
     }
 
     addMessage(level: string, prefix: string, ...args: any[]) {
@@ -72,7 +71,11 @@ class Log {
     debug(...args: any[]) {
         this.addMessage('debug', this.prefix, ...args);
         if (this.enabled) {
-            console.log(`%c${this.prefix}`, this.css, ...args);
+            if (this.css) {
+                console.log(`%c${this.prefix}`, this.css, ...args);
+            } else {
+                console.log(this.prefix, ...args);
+            }
         }
     }
 }
@@ -85,9 +88,9 @@ export const initLog = (prefix: string, enabled?: boolean) => {
     return instance;
 };
 
-export const enableLog = (enabled: boolean) => {
+export const enableLog = (enabled?: boolean) => {
     Object.keys(_logs).forEach(key => {
-        _logs[key].enabled = enabled;
+        _logs[key].enabled = !!enabled;
     });
 };
 

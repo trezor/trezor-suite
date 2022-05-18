@@ -1,12 +1,9 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 
-/* eslint-disable @typescript-eslint/ban-types */
-
 import EventEmitter from 'events';
 import { DeviceCommands } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
 import { DEVICE, DeviceButtonRequestPayload, UI } from '../events';
-import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
 import { getFirmwareStatus, getRelease } from '../data/firmwareInfo';
 import {
@@ -43,7 +40,7 @@ export type RunOptions = {
 
     // cancel popup request when we are sure that there is no need to authenticate
     // Method gets called after run() fetch new Features but before trezor-link dispatch "acquire" event
-    cancelPopupRequest?: Function;
+    cancelPopupRequest?: () => any;
 
     keepSession?: boolean;
     useEmptyPassphrase?: boolean;
@@ -122,8 +119,6 @@ export class Device extends EventEmitter {
     constructor(transport: Transport, descriptor: DeviceDescriptor) {
         super();
 
-        _log.enabled = !!DataManager.getSettings('debug');
-
         // === immutable properties
         this.transport = transport;
         this.originalDescriptor = descriptor;
@@ -166,7 +161,7 @@ export class Device extends EventEmitter {
                 },
                 false,
             );
-            _log.warn('Expected session id:', sessionID);
+            _log.debug('Expected session id:', sessionID);
             this.activitySessionID = sessionID;
             this.deferredActions[DEVICE.ACQUIRED].resolve();
             delete this.deferredActions[DEVICE.ACQUIRED];
@@ -221,7 +216,7 @@ export class Device extends EventEmitter {
 
     run(fn?: () => Promise<void>, options?: RunOptions) {
         if (this.runPromise) {
-            _log.debug('Previous call is still running');
+            _log.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
         }
 
@@ -247,7 +242,7 @@ export class Device extends EventEmitter {
     }
 
     async interruptionFromUser(error: Error) {
-        _log.debug('+++++interruptionFromUser');
+        _log.debug('interruptionFromUser');
         if (this.commands) {
             await this.commands.cancel();
             this.commands.dispose();
@@ -260,7 +255,7 @@ export class Device extends EventEmitter {
     }
 
     interruptionFromOutside() {
-        _log.debug('+++++interruptionFromOutside');
+        _log.debug('interruptionFromOutside');
         if (this.commands) {
             this.commands.dispose();
         }
@@ -528,7 +523,7 @@ export class Device extends EventEmitter {
             // released
             if (originalSession === this.activitySessionID) {
                 // by myself
-                _log.debug('RELEASED BY MYSELF');
+                _log.debug('Session released by this app');
                 if (this.deferredActions[DEVICE.RELEASE]) {
                     this.deferredActions[DEVICE.RELEASE].resolve();
                     delete this.deferredActions[DEVICE.RELEASE];
@@ -536,7 +531,7 @@ export class Device extends EventEmitter {
                 this.activitySessionID = null;
             } else {
                 // by other application
-                _log.debug('RELEASED BY OTHER APP');
+                _log.debug('Session released by other app');
                 this.featuresNeedsReload = true;
             }
             this.keepSession = false;
@@ -545,14 +540,14 @@ export class Device extends EventEmitter {
             // TODO: Case where listen event will dispatch before this.transport.acquire (this.acquire) return ID
 
             // by myself
-            _log.debug('ACQUIRED BY MYSELF');
+            _log.debug('Session acquired by this app');
             if (this.deferredActions[DEVICE.ACQUIRE]) {
                 this.deferredActions[DEVICE.ACQUIRE].resolve();
                 // delete this.deferred[ DEVICE.ACQUIRE ];
             }
         } else {
             // by other application
-            _log.debug('ACQUIRED BY OTHER');
+            _log.debug('Session acquired by other app');
             this.interruptionFromOutside();
         }
 
@@ -561,7 +556,7 @@ export class Device extends EventEmitter {
 
     disconnect() {
         // TODO: cleanup everything
-        _log.debug('DISCONNECT CLEANUP!');
+        _log.debug('Disconnect cleanup');
         // don't try to release
         if (this.deferredActions[DEVICE.RELEASE]) {
             this.deferredActions[DEVICE.RELEASE].resolve();

@@ -26,7 +26,7 @@ import { ERRORS } from './constants';
 import type { ConnectSettings, Manifest } from './types';
 
 export const eventEmitter = new EventEmitter();
-const _log = initLog('[@trezor/connect]');
+const _log = initLog('@trezor/connect');
 
 let _settings = parseConnectSettings();
 let _core: Core | null = null;
@@ -64,7 +64,7 @@ const handleMessage = (message: CoreMessage) => {
 
     if (type === POPUP.CANCEL_POPUP_REQUEST) return;
 
-    _log.log('handleMessage', message);
+    _log.debug('handleMessage', message);
 
     switch (event) {
         case RESPONSE_EVENT:
@@ -104,7 +104,7 @@ const handleMessage = (message: CoreMessage) => {
             break;
 
         default:
-            _log.log('Undefined message', event, message);
+            _log.warn('Undefined message', event, message);
     }
 };
 
@@ -146,8 +146,6 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
         return;
     }
 
-    _log.enabled = !!_settings.debug;
-
     _core = await initCore(_settings);
     _core.on(CORE_EVENT, handleMessage);
 
@@ -173,7 +171,7 @@ const call: CallMethod = async params => {
         }
         return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
     } catch (error) {
-        _log.error('__call error', error);
+        _log.error('call', error);
         return createErrorMessage(error);
     }
 };
