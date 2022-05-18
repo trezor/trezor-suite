@@ -6,11 +6,15 @@ jobs:
   type-check_and_lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v3
+        with:
+          submodules: "true"
       - name: Install node and yarn
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
+          cache: "yarn"
+
       - name: install yarn
         run: npm install -g yarn
       - name: deduplicate deps
@@ -30,3 +34,7 @@ jobs:
       - run: git status
       - name: lint
         run: yarn lint
+      - name: msg-system config validation
+        run: yarn workspace @trezor/suite-data msg-system-validate-config
+      - name: unit tests
+        run: lerna run --stream test:unit -- --passWithNoTests
