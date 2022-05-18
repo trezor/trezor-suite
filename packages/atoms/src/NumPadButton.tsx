@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Pressable } from 'react-native';
+import { TouchableHighlight } from 'react-native';
 
 import { Text } from './Text';
 import { useNativeStyles, NativeStyleObject, prepareNativeStyle } from '@trezor/styles';
@@ -35,17 +35,13 @@ export const NumPadButton = ({ value, onPress, style, ...props }: NumPadButtonPr
     const handlePress = useCallback(() => onPress(value), [onPress, value]);
 
     return (
-        <Pressable
+        <TouchableHighlight
             style={[applyStyle(numPadButtonStyle), style]}
             onPress={handlePress}
-            android_ripple={{
-                color: utils.colors.gray700,
-                radius: BUTTON_SIZE / 2,
-                borderless: true,
-            }}
+            underlayColor={utils.colors.gray200}
             {...props}
         >
             <Text style={applyStyle(numPadButtonTextStyle)}>{value}</Text>
-        </Pressable>
+        </TouchableHighlight>
     );
 };
