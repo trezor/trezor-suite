@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { WIKI_FW_DOWNGRADE } from '@suite-constants/urls';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -27,7 +26,6 @@ export const CustomFirmware = ({ isDeviceLocked }: CustomFirmwareProps) => {
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />}
-                buttonLink={WIKI_FW_DOWNGRADE}
             />
             <ActionColumn>
                 <ActionButton
