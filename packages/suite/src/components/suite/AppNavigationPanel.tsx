@@ -84,7 +84,7 @@ export const AppNavigationPanel: React.FC<AppNavigationPanelProps> = ({
                     setInView(entry.isIntersecting);
                 }
             },
-            { threshold: 0.2 },
+            { threshold: 0.1 },
         );
 
         if (current) {
