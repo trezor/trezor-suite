@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
-import { Text, Box, Button, NumPadButton, Icon, Hint, SearchInput, Radio } from '@trezor/atoms';
+import {
+    Text,
+    Box,
+    Button,
+    NumPadButton,
+    Icon,
+    Hint,
+    SearchInput,
+    Radio,
+    Chip,
+} from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -17,6 +27,7 @@ export const Home = () => {
     const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
     const [radioChecked, setRadioChecked] = useState('second');
+    const [isChipSelected, setIsChipSelected] = useState<boolean>(false);
 
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);
@@ -103,6 +114,20 @@ export const Home = () => {
                             />
                         </Box>
                     </Box>
+
+                    <Chip
+                        icon={<Icon type="search" size="big" />}
+                        title="Bitcoin"
+                        isSelected={isChipSelected}
+                        onSelect={() => setIsChipSelected(!isChipSelected)}
+                    />
+                    <Chip
+                        icon={<Icon type="search" size="big" />}
+                        title="Bitcoin"
+                        isSelected={isChipSelected}
+                        onSelect={() => setIsChipSelected(!isChipSelected)}
+                        // hint={<Hint />}
+                    />
                     <NumPadButton
                         value={5}
                         onPress={value =>
