@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
-import { Text, Box, Button, NumPadButton, Icon, Hint, Input, Radio } from '@trezor/atoms';
+import { Text, Box, Button, NumPadButton, Icon, Hint, SearchInput, Radio } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -30,6 +30,11 @@ export const Home = () => {
                 style={applyStyle(backgroundStyle, { isDarkMode })}
             >
                 <View>
+                    <SearchInput
+                        value={inputText}
+                        onChange={setInputText}
+                        placeholder="Type here.."
+                    />
                     <Box marginTop="lg">
                         <Text variant="titleLarge">Title Large</Text>
                     </Box>
@@ -111,14 +116,6 @@ export const Home = () => {
                     >
                         Get features
                     </Button>
-
-                    <Input
-                        value={inputText}
-                        onChange={setInputText}
-                        placeholder="Type here.."
-                        isClearable
-                        // isDisabled
-                    />
                 </View>
             </ScrollView>
         </SafeAreaView>

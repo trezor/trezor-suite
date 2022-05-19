@@ -9,7 +9,6 @@ const defaultColorVariant = {
     yellow: '#EFC941',
     blue: '#0078AC',
     red: '#CD4949',
-    red5: 'rgba(205, 73, 73, 0.05)',
 
     // standard theme is defined here, because this object is used as default type shape of colors
     black: '#141414',
