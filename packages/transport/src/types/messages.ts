@@ -118,6 +118,7 @@ export enum Enum_OutputScriptType {
     PAYTOWITNESS = 4,
     PAYTOP2SHWITNESS = 5,
     PAYTOTAPROOT = 6,
+    PAYTOLNSWAP = 7,
 }
 export type OutputScriptType = keyof typeof Enum_OutputScriptType;
 
@@ -155,6 +156,16 @@ export type MultisigRedeemScriptType = {
     m: number;
     nodes?: HDNodeType[];
     address_n?: number[];
+};
+
+// LightningNetworkSwapType
+export type LightningNetworkSwapType = {
+    invoice: string;
+    htlc: string;
+    cltv: number;
+    swap_script_type: InputScriptType;
+    refund_address_n: number[];
+    refund_script_type: InputScriptType;
 };
 
 // GetPublicKey
@@ -1510,27 +1521,6 @@ export type Entropy = {
     entropy: string;
 };
 
-// GetFirmwareHash
-export type GetFirmwareHash = {
-    challenge?: string;
-};
-
-// FirmwareHash
-export type FirmwareHash = {
-    hash: string;
-};
-
-// GetFirmware
-export type GetFirmware = {};
-
-// FirmwareChunk
-export type FirmwareChunk = {
-    chunk: string;
-};
-
-// FirmwareChunkAck
-export type FirmwareChunkAck = {};
-
 // WipeDevice
 export type WipeDevice = {};
 
@@ -2132,6 +2122,7 @@ export type MessageType = {
     HDNodeType: HDNodeType;
     HDNodePathType: HDNodePathType;
     MultisigRedeemScriptType: MultisigRedeemScriptType;
+    LightningNetworkSwapType: LightningNetworkSwapType;
     GetPublicKey: GetPublicKey;
     PublicKey: PublicKey;
     GetAddress: GetAddress;
@@ -2287,11 +2278,6 @@ export type MessageType = {
     Cancel: Cancel;
     GetEntropy: GetEntropy;
     Entropy: Entropy;
-    GetFirmwareHash: GetFirmwareHash;
-    FirmwareHash: FirmwareHash;
-    GetFirmware: GetFirmware;
-    FirmwareChunk: FirmwareChunk;
-    FirmwareChunkAck: FirmwareChunkAck;
     WipeDevice: WipeDevice;
     ResetDevice: ResetDevice;
     BackupDevice: BackupDevice;

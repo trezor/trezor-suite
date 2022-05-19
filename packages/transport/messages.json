@@ -251,7 +251,8 @@
                 "PAYTOOPRETURN": 3,
                 "PAYTOWITNESS": 4,
                 "PAYTOP2SHWITNESS": 5,
-                "PAYTOTAPROOT": 6
+                "PAYTOTAPROOT": 6,
+                "PAYTOLNSWAP": 7
             }
         },
         "DecredStakingSpendType": {
@@ -316,6 +317,43 @@
                             }
                         }
                     }
+                }
+            }
+        },
+        "LightningNetworkSwapType": {
+            "fields": {
+                "invoice": {
+                    "rule": "required",
+                    "type": "string",
+                    "id": 1
+                },
+                "htlc": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "cltv": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 3
+                },
+                "swap_script_type": {
+                    "rule": "required",
+                    "type": "InputScriptType",
+                    "id": 4
+                },
+                "refund_address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 5,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "refund_script_type": {
+                    "rule": "required",
+                    "type": "InputScriptType",
+                    "id": 6
                 }
             }
         },
@@ -901,6 +939,10 @@
                                     "options": {
                                         "(experimental)": true
                                     }
+                                },
+                                "lnswap": {
+                                    "type": "LightningNetworkSwapType",
+                                    "id": 13
                                 }
                             }
                         }
@@ -1037,6 +1079,10 @@
                     "options": {
                         "(experimental)": true
                     }
+                },
+                "lnswap": {
+                    "type": "LightningNetworkSwapType",
+                    "id": 13
                 }
             }
         },
@@ -4278,38 +4324,6 @@
                 }
             }
         },
-        "GetFirmwareHash": {
-            "fields": {
-                "challenge": {
-                    "type": "bytes",
-                    "id": 1
-                }
-            }
-        },
-        "FirmwareHash": {
-            "fields": {
-                "hash": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                }
-            }
-        },
-        "GetFirmware": {
-            "fields": {}
-        },
-        "FirmwareChunk": {
-            "fields": {
-                "chunk": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                }
-            }
-        },
-        "FirmwareChunkAck": {
-            "fields": {}
-        },
         "WipeDevice": {
             "fields": {}
         },
@@ -6023,11 +6037,6 @@
                 "MessageType_PreauthorizedRequest": 85,
                 "MessageType_CancelAuthorization": 86,
                 "MessageType_RebootToBootloader": 87,
-                "MessageType_GetFirmwareHash": 88,
-                "MessageType_FirmwareHash": 89,
-                "MessageType_GetFirmware": 90,
-                "MessageType_FirmwareChunk": 91,
-                "MessageType_FirmwareChunkAck": 92,
                 "MessageType_SetU2FCounter": 63,
                 "MessageType_GetNextU2FCounter": 80,
                 "MessageType_NextU2FCounter": 81,
