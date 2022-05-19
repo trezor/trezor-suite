@@ -2,6 +2,7 @@ import applyFlags from './applyFlags';
 import applySettings from './applySettings';
 import binanceSignTransaction from './binanceSignTransaction';
 import cardanoGetAddress from './cardanoGetAddress';
+import cardanoGetAddressDerivations from './cardanoGetAddressDerivations';
 import cardanoGetNativeScriptHash from './cardanoGetNativeScriptHash';
 import cardanoGetPublicKey from './cardanoGetPublicKey';
 import cardanoSignTransaction from './cardanoSignTransaction';
@@ -90,6 +91,7 @@ let fixtures = [
     applySettings,
     binanceSignTransaction,
     cardanoGetAddress,
+    cardanoGetAddressDerivations,
     cardanoGetNativeScriptHash,
     cardanoGetPublicKey,
     cardanoSignTransaction,
