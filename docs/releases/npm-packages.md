@@ -1,6 +1,6 @@
 # Publishing @trezor package to npm registry
 
-`npm publish` could be done manually on [gitlab CI](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/pipelines/) in `Deploy to dev` phase.
+`npm publish` could be done manually on [gitlab CI](https://gitlab.com/satoshilabs/trezor/trezor-suite/-/pipelines/) in `deploy npm` phase.
 
 ### Purpose
 
@@ -14,7 +14,7 @@ Publish is required to distribute changes to `@trezor/connect` and make them ava
 
 ### Production
 
-1. Create new branch with `release/` prefix.
+1. Create new branch with `npm-release/` prefix.
 1. Commit your changes as `release: @trezor/<PACKAGE-NAME> X.X.X`.
 1. Use `<PACKAGE-NAME> deploy npm` job.
 
