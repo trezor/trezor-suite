@@ -49,7 +49,7 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
                 name,
                 protocolVersion,
             );
-            (this as ElectrumAPI).on('blockchain.headers.subscribe', this.onBlock);
+            (this as ElectrumAPI).on('blockchain.headers.subscribe', this.onBlock.bind(this));
             this.lastBlock = await (this as ElectrumAPI).request('blockchain.headers.subscribe');
         } catch (err) {
             this.socket = undefined;
