@@ -15,6 +15,15 @@ type AddressInfo = Omit<AddressHistory, 'scripthash'> & {
     unconfirmed: number;
 };
 
+const isNonNegative = (n: number | undefined): n is number => (n ?? -1) >= 0;
+
+const sortTxsFromLatest = (
+    { blockHeight: a }: { blockHeight?: number },
+    { blockHeight: b }: { blockHeight?: number },
+) =>
+    (isNonNegative(b) ? b : Number.MAX_SAFE_INTEGER) -
+    (isNonNegative(a) ? a : Number.MAX_SAFE_INTEGER);
+
 const getBalances =
     (client: ElectrumAPI) =>
     (addresses: AddressHistory[]): Promise<AddressInfo[]> =>
@@ -56,7 +65,9 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         const transactions =
             details === 'txs'
                 ? await getTransactions(client, history).then(txs =>
-                      txs.map(tx => transformTransaction(descriptor, undefined, tx)),
+                      txs
+                          .map(tx => transformTransaction(descriptor, undefined, tx))
+                          .sort(sortTxsFromLatest),
                   )
                 : undefined;
 
@@ -112,7 +123,9 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
 
     const transactions = ['tokenBalances', 'txids', 'txs'].includes(details)
         ? await getTransactions(client, history).then(txs =>
-              txs.map(tx => transformTransaction(descriptor, addresses, tx)),
+              txs
+                  .map(tx => transformTransaction(descriptor, addresses, tx))
+                  .sort(sortTxsFromLatest),
           )
         : [];
 
