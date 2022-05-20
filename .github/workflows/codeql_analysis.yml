@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [develop]
   schedule:
-    - cron: '34 02 * * 2'
+    - cron: "34 02 * * 2"
 
 jobs:
   code-ql-analyze:
@@ -24,9 +24,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-    # Initializes the CodeQL tools for scanning.
+      # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
