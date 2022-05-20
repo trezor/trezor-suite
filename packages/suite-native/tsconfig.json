@@ -3,10 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../atoms" },
-        { "path": "../transport-native" },
+        {
+            "path": "../suite-native-navigation-root"
+        },
+        { "path": "../connect" },
         { "path": "../styles" },
         { "path": "../theme" },
-        { "path": "../connect" }
+        { "path": "../transport-native" }
     ],
     "include": [".", "**.json"]
 }
