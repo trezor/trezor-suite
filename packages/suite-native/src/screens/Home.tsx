@@ -27,7 +27,8 @@ export const Home = () => {
     const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
     const [radioChecked, setRadioChecked] = useState('second');
-    const [isChipSelected, setIsChipSelected] = useState<boolean>(false);
+    const [isChip1Selected, setIsChip1Selected] = useState<boolean>(false);
+    const [isChip2Selected, setIsChip2Selected] = useState<boolean>(false);
 
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);
@@ -118,15 +119,15 @@ export const Home = () => {
                     <Chip
                         icon={<Icon type="search" size="big" />}
                         title="Bitcoin"
-                        isSelected={isChipSelected}
-                        onSelect={() => setIsChipSelected(!isChipSelected)}
+                        isSelected={isChip1Selected}
+                        onSelect={() => setIsChip1Selected(!isChip1Selected)}
                     />
                     <Chip
                         icon={<Icon type="search" size="big" />}
                         title="Bitcoin"
-                        isSelected={isChipSelected}
-                        onSelect={() => setIsChipSelected(!isChipSelected)}
-                        // hint={<Hint />}
+                        isSelected={isChip2Selected}
+                        onSelect={() => setIsChip2Selected(!isChip2Selected)}
+                        description="inc Tokens"
                     />
                     <NumPadButton
                         value={5}
