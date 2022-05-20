@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import { createDeferred, Deferred } from '@trezor/utils/lib/createDeferred';
 import { CustomError } from './constants/errors';
 import { MESSAGES, RESPONSES } from './constants';
+import { Throttler } from './workers/throttler';
 import type { BlockchainSettings } from './types';
 import type * as ResponseTypes from './types/responses';
 import type * as MessageTypes from './types/messages';
@@ -73,14 +74,14 @@ class BlockchainLink extends EventEmitter {
 
     deferred: Deferred<any>[] = [];
 
-    private throttleBlockEvent: ReturnType<typeof setTimeout> | undefined;
-    private throttleBlockEventTimeout: number;
+    private throttler: Throttler;
 
     constructor(settings: BlockchainSettings) {
         super();
         this.settings = settings;
-        this.throttleBlockEventTimeout =
+        const throttleBlockEventTimeout =
             typeof settings.throttleBlockEvent === 'number' ? settings.throttleBlockEvent : 500;
+        this.throttler = new Throttler(throttleBlockEventTimeout);
     }
 
     async getWorker(): Promise<Worker> {
@@ -289,12 +290,14 @@ class BlockchainLink extends EventEmitter {
         if (data.type === RESPONSES.NOTIFICATION) {
             const notification = data.payload;
             if (notification.type === 'block') {
-                // throttle block events
-                if (this.throttleBlockEvent) clearTimeout(this.throttleBlockEvent);
-                this.throttleBlockEvent = setTimeout(() => {
+                this.throttler.throttle('block', () => {
                     this.emit(notification.type, notification.payload);
-                    this.throttleBlockEvent = undefined;
-                }, this.throttleBlockEventTimeout);
+                });
+            } else if (notification.type === 'notification') {
+                const txAccountId = `${notification.payload.descriptor}:${notification.payload.tx.txid}`;
+                this.throttler.throttle(txAccountId, () => {
+                    this.emit(notification.type, notification.payload);
+                });
             } else {
                 this.emit(notification.type, notification.payload);
             }
@@ -315,6 +318,7 @@ class BlockchainLink extends EventEmitter {
 
     dispose() {
         this.removeAllListeners();
+        this.throttler.dispose();
         const { worker } = this;
         if (worker) {
             worker.terminate();
