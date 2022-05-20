@@ -1,54 +1,8 @@
 {
     "version": 1,
-    "timestamp": "2022-05-03T00:00:00+00:00",
-    "sequence": 13,
+    "timestamp": "2022-05-20T00:00:00+00:00",
+    "sequence": 14,
     "actions": [
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": ["22.2.1", "22.2.2"],
-                        "mobile": "!",
-                        "web": "!"
-                    },
-                    "os": {
-                        "macos": "*",
-                        "linux": "!",
-                        "windows": "!",
-                        "android": "!",
-                        "ios": "!",
-                        "chromeos": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "13644716-b26b-4f62-808d-6ee0dfb23069",
-                "priority": 97,
-                "dismissible": true,
-                "variant": "critical",
-                "category": "banner",
-                "content": {
-                    "en-GB": "We’re sorry, the auto-update feature is broken. Please install the latest version of Trezor Suite.",
-                    "en": "We’re sorry, the auto-update feature is broken. Please install the latest version of Trezor Suite.",
-                    "es": "Lo sentimos, la función de actualización automática no funciona. Por favor, instale la última versión de Trezor Suite.",
-                    "cs": "Je nám líto, ale automatická aktualizace je nefunkční. Nainstalujte si prosím nejnovější verzi Trezor Suite.",
-                    "ru": "К сожалению, функция авто-обновления сломалась. Пожалуйста, установите последнюю версию Trezor Suite вручную.",
-                    "ja": "申し訳ございませんが、自動更新機能が壊れています。最新版のTrezor Suiteをインストールしてください。"
-                },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://suite.trezor.io/",
-                    "label": {
-                        "en-GB": "Go to suite.trezor.io",
-                        "en": "Go to suite.trezor.io",
-                        "es": "Vaya a suite.trezor.io",
-                        "cs": "Přejít na suite.trezor.io",
-                        "ru": "Перейти на suite.trezor.io",
-                        "ja": "suite.trezor.ioに移動"
-                    }
-                }
-            }
-        },
         {
             "conditions": [
                 {
@@ -88,36 +42,6 @@
             }
         },
         {
-            "conditions": [],
-            "message": {
-                "id": "0210ea5c-63f2-4962-af13-7cc99aae959d",
-                "priority": 98,
-                "dismissible": true,
-                "variant": "warning",
-                "category": "banner",
-                "content": {
-                    "en-GB": "Beware of phishing! Trezor users are being targeted by recent phishing attacks. Never enter your recovery seeds anywhere unless the physical Trezor device instructs you to do so, and you confirm your choice on your Trezor.",
-                    "en": "Beware of phishing! Trezor users are being targeted by recent phishing attacks. Never enter your recovery seeds anywhere unless the physical Trezor device instructs you to do so, and you confirm your choice on your Trezor.",
-                    "es": "¡Cuidado con el phishing! Los usuarios de Trezor están siendo blanco de recientes ataques de phishing. NO proporcione sus palabras de recuperación a nadie.",
-                    "cs": "Pozor na phishing! Uživatelé Trezoru se v poslední době stávají terčem phishingových útoků. Nikdy nikde nezadávejte obnovovací seed, pokud vás k tomu fyzické zařízení Trezor nevyzve a pokud svou volbu nepotvrdíte přímo na Trezoru.",
-                    "ru": "Остерегайтесь фишинга! Пользователи Trezor в последнее время являются целями фишинговых атак. Никогда и нигде не вводите слова своей резервной копии для восстановления, пока вас об этом не попросит Ваш Trezor, после чего вы подтвердите свой выбор на экране этого Trezor.",
-                    "ja": "フィッシング詐欺にご注意ください！ 最近Trezorユーザーがフィッシング詐欺のターゲットにされました。Trezorデバイスから指示され、Trezor上で確認した場合を除き、他の場所では絶対にリカバリーシードを入力しないでください。"
-                },
-                "cta": {
-                    "action": "external-link",
-                    "link": "https://blog.trezor.io/ongoing-phishing-attacks-on-trezor-users-edd840b17304",
-                    "label": {
-                        "en-GB": "More information",
-                        "en": "More information",
-                        "es": "Más información",
-                        "cs": "Více informací",
-                        "ru": "Дополнительная информация",
-                        "ja": "詳細はこちら"
-                    }
-                }
-            }
-        },
-        {
             "conditions": [
                 {
                     "environment": {
@@ -147,10 +71,10 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "22.4.3",
+                        "desktop": ">=22.4.3",
                         "mobile": "!",
-                        "web": "22.4.3",
-                        "revision": "969161f41dcd889fa1fb0cf5e1d3437fddd8c26d"
+                        "web": ">=22.4.3",
+                        "revision": "*"
                     },
                     "devices": [
                         {
@@ -182,6 +106,30 @@
                             "firmware": "*",
                             "bootloader": "*",
                             "variant": "*",
+                            "firmwareRevision": "e1c605ca90c6107befe11692b4675b7537f3a658",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "e1c605ca90c6107befe11692b4675b7537f3a658",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
                             "firmwareRevision": "1e62209d024b7e84a7368be8175735372b8080c9",
                             "vendor": "*"
                         },
@@ -197,7 +145,7 @@
                 }
             ],
             "message": {
-                "id": "e47cda88-3f39-455b-b4de-01c4270d16e5",
+                "id": "6f793f82-5e13-492f-803c-100c8dcc3cb6",
                 "priority": 99,
                 "dismissible": true,
                 "variant": "critical",
