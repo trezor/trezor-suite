@@ -59,7 +59,7 @@ export type TransactionVerbose = {
     vsize: number;
     weight: number;
     locktime: number;
-    confirmations: number;
+    confirmations?: number;
     time: number;
     blocktime: number;
     vin: (TxIn | TxCoinbase)[];
