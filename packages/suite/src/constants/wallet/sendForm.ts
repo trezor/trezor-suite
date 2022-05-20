@@ -10,8 +10,8 @@ export const ETH_DEFAULT_GAS_LIMIT = '21000';
 
 export const ZEC_SIGN_ENHANCEMENT = {
     overwintered: true,
-    version: 4,
-    versionGroupId: 0x892f2085,
+    version: 5,
+    versionGroupId: 0x26a7270a,
     branchId: 0xc2d6d0b4,
 };
 

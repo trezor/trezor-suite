@@ -358,8 +358,8 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         if (coinInfo.network.consensusBranchId) {
             // zcash, TODO: get constants from blockbook: https://github.com/trezor/trezor-suite/issues/3749
             options.overwintered = true;
-            options.version = 4;
-            options.version_group_id = 0x892f2085;
+            options.version = 5;
+            options.version_group_id = 0x26a7270a;
             options.branch_id = 0xc2d6d0b4;
         }
         if (coinInfo.hasTimestamp) {
