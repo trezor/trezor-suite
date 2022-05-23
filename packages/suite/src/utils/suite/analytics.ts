@@ -13,9 +13,18 @@ import {
     getPlatformLanguages,
 } from '@suite-utils/env';
 import { getCustomBackends } from '@suite-utils/backend';
+import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
 
+// redact transaction id from account transaction anchor
+export const redactTransactionIdFromAnchor = (anchor?: string) => {
+    if (!anchor) {
+        return undefined;
+    }
+
+    return anchor.startsWith(AccountTransactionBaseAnchor) ? AccountTransactionBaseAnchor : anchor;
+};
 export const getSuiteReadyPayload = (state: AppState) => ({
     language: state.suite.settings.language,
     enabledNetworks: state.wallet.settings.enabledNetworks,

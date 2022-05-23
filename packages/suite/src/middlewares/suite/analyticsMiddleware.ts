@@ -15,7 +15,7 @@ import {
     getFwRevision,
     getBootloaderHash,
 } from '@suite-utils/device';
-import { getSuiteReadyPayload } from '@suite-utils/analytics';
+import { getSuiteReadyPayload, redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 
 import type { AppState, Action, Dispatch } from '@suite-types';
 
@@ -119,8 +119,21 @@ const analyticsMiddleware =
                     payload: {
                         prevRouterUrl,
                         nextRouterUrl: action.payload.url,
+                        anchor: redactTransactionIdFromAnchor(action.payload.anchor),
                     },
                 });
+                break;
+            case ROUTER.ANCHOR_CHANGE:
+                if (action.payload) {
+                    analytics.report({
+                        type: EventType.RouterLocationChange,
+                        payload: {
+                            prevRouterUrl,
+                            nextRouterUrl: prevRouterUrl,
+                            anchor: redactTransactionIdFromAnchor(action.payload),
+                        },
+                    });
+                }
                 break;
             case SUITE.AUTH_DEVICE:
                 analytics.report({
