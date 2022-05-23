@@ -34,8 +34,6 @@ export enum EventType {
 
     MenuNotificationsToggle = 'menu/notifications/toggle',
     MenuToggleDiscreet = 'menu/toggle-discreet',
-    MenuToggleTor = 'menu/toggle-tor',
-    SettingsTorOnionLinks = 'settings/tor/onion-links',
 
     MenuGuide = 'menu/guide',
     GuideHeaderNavigation = 'guide/header/navigation',
@@ -62,6 +60,8 @@ export enum EventType {
     SettingsGeneralChangeFiat = 'settings/general/change-fiat',
     SettingsGeneralEarlyAccess = 'settings/general/early-access',
     SettingsCoinsBackend = 'settings/coins/backend',
+    SettingsTor = 'settings/tor',
+    SettingsTorOnionLinks = 'settings/tor/onion-links',
 
     AnalyticsEnable = 'analytics/enable',
     AnalyticsDispose = 'analytics/dispose',

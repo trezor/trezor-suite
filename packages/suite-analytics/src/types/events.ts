@@ -164,18 +164,6 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.MenuToggleTor;
-          payload: {
-              value: boolean;
-          };
-      }
-    | {
-          type: EventType.SettingsTorOnionLinks;
-          payload: {
-              value: boolean;
-          };
-      }
-    | {
           type: EventType.MenuGuide;
       }
     | {
@@ -290,6 +278,18 @@ export type SuiteAnalyticsEvent =
               type: 'blockbook' | 'electrum' | 'ripple' | 'blockfrost' | 'default';
               totalRegular: number;
               totalOnion: number;
+          };
+      }
+    | {
+          type: EventType.SettingsTor;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
+          type: EventType.SettingsTorOnionLinks;
+          payload: {
+              value: boolean;
           };
       }
     | {
