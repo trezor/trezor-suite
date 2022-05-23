@@ -11,6 +11,7 @@ Added:
 Renamed:
 
 -   wallet/add-account to accounts/new-account
+-   settings/coin-backend to settings/coins/backend
 
 Removed:
 

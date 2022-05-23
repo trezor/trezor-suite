@@ -284,7 +284,7 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.SettingsCoinBackend;
+          type: EventType.SettingsCoinsBackend;
           payload: {
               symbol: string;
               type: 'blockbook' | 'electrum' | 'ripple' | 'blockfrost' | 'default';
