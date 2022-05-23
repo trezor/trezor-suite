@@ -55,7 +55,7 @@ export enum EventType {
     SettingsDeviceUpdateAutoLock = 'settings/device/update-auto-lock',
     SettingsDeviceBackground = 'settings/device/background',
     SettingsDeviceChangeOrientation = 'settings/device/change-orientation',
-    SettingsDeviceGotoWipe = 'settings/device/goto/wipe',
+    SettingsDeviceWipe = 'settings/device/wipe',
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',
     SettingsGeneralChangeLanguage = 'settings/general/change-language',
     SettingsGeneralChangeTheme = 'settings/general/change-theme',

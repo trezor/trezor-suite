@@ -4,6 +4,10 @@ This changelog lists changes in suite events.
 
 ### 1.19
 
+Added:
+
+-   settings/device/wipe
+
 Removed:
 
 -   session-end
@@ -33,6 +37,7 @@ Removed:
 -   settings/device/goto/firmware
 -   switch-device/add-wallet
 -   switch-device/add-hidden-wallet
+-   settings/device/goto/wipe
 
 ### 1.18
 

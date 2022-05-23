@@ -50,7 +50,7 @@ export const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
             bottomBar={
                 <Button
                     variant="danger"
-                    onClick={() => wipeDevice()}
+                    onClick={wipeDevice}
                     isDisabled={isLocked() || !checkbox1 || !checkbox2}
                     data-test="@wipe/wipe-button"
                 >

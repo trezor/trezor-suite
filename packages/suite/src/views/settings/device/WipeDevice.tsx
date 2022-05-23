@@ -1,5 +1,4 @@
 import React from 'react';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
@@ -30,14 +29,11 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
             />
             <ActionColumn>
                 <ActionButton
-                    onClick={() => {
+                    onClick={() =>
                         openModal({
                             type: 'wipe-device',
-                        });
-                        analytics.report({
-                            type: EventType.SettingsDeviceGotoWipe,
-                        });
-                    }}
+                        })
+                    }
                     variant="danger"
                     isDisabled={isDeviceLocked}
                     data-test="@settings/device/open-wipe-modal-button"
