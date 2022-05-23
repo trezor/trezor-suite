@@ -9,24 +9,25 @@ type ChipProps = {
     onSelect: () => void;
     description?: string;
     icon: ReactNode;
-} & ChipStyleProps;
-
-const CHIP_HEIGHT = 44;
-type ChipStyleProps = {
     isSelected?: boolean;
 };
-const chipStyles = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
+
+type ChipStyleProps = {
+    isSelected: boolean;
+};
+const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    height: CHIP_HEIGHT,
+    height: 44,
     backgroundColor: utils.colors.gray100,
     borderWidth: utils.borders.widths.sm,
-    borderRadius: CHIP_HEIGHT / 2,
+    borderRadius: utils.borders.radii.round,
     borderColor: utils.colors.gray400,
+    paddingHorizontal: 10,
     extend: {
-        condition: !!isSelected,
+        condition: isSelected,
         style: {
             borderColor: utils.colors.forest,
             borderWidth: utils.borders.widths.md,
@@ -35,42 +36,33 @@ const chipStyles = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) =>
 }));
 
 const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
-    ...utils.typography.callout,
-    fontWeight: isSelected ? utils.fontWeights.semiBold : utils.fontWeights.normal,
+    ...utils.typography.hint,
     color: utils.colors.gray800,
     extend: {
-        condition: !!isSelected,
+        condition: isSelected,
         style: {
+            ...utils.typography.callout,
             color: utils.colors.forest,
-            fontWeight: utils.fontWeights.semiBold,
         },
     },
 }));
 
 const chipDescriptionStyle = prepareNativeStyle(utils => ({
     ...utils.typography.label,
-    // This is the only way to get texts closer together because in design the boxes with line height are overlapping
-    lineHeight: 12,
-    fontWeight: utils.fontWeights.normal,
-    display: 'flex',
-    alignSelf: 'flex-start',
+    lineHeight: 12, // Specific line height due to overlapping boxes in Figma design
 }));
 
 const textWrapperStyle = prepareNativeStyle(utils => ({
+    justifyContent: 'center',
     marginLeft: utils.spacings.sm,
-    marginRight: 10,
-}));
-
-const iconStyle = prepareNativeStyle(() => ({
-    marginLeft: 10,
 }));
 
 export const Chip = ({ title, onSelect, description, icon, isSelected = false }: ChipProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity onPress={onSelect} style={applyStyle(chipStyles, { isSelected })}>
-            <Box style={applyStyle(iconStyle)}>{icon}</Box>
+        <TouchableOpacity onPress={onSelect} style={applyStyle(chipStyle, { isSelected })}>
+            <Box>{icon}</Box>
             <Box style={applyStyle(textWrapperStyle)}>
                 <Text style={applyStyle(chipTitleStyle, { isSelected })}>{title}</Text>
                 {description && <Text style={applyStyle(chipDescriptionStyle)}>{description}</Text>}

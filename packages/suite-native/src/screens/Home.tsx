@@ -48,6 +48,21 @@ export const Home = () => {
                         placeholder="Type here.."
                     />
                     <Box marginTop="lg">
+                        <Chip
+                            icon={<Icon type="settings" />}
+                            title="Bitcoin"
+                            isSelected={isChip1Selected}
+                            onSelect={() => setIsChip1Selected(!isChip1Selected)}
+                        />
+                        <Chip
+                            icon={<Icon type="settings" />}
+                            title="Bitcoin"
+                            isSelected={isChip2Selected}
+                            onSelect={() => setIsChip2Selected(!isChip2Selected)}
+                            description="inc Tokens"
+                        />
+                    </Box>
+                    <Box marginTop="lg">
                         <Text variant="titleLarge">Title Large</Text>
                     </Box>
                     <Box>
@@ -116,22 +131,6 @@ export const Home = () => {
                         </Box>
                     </Box>
 
-                    <Chip
-                        icon={<Icon type="calendar" size="big" />}
-                        title="Bitcoin"
-                        isSelected={isChip1Selected}
-                        onSelect={() => setIsChip1Selected(!isChip1Selected)}
-                    />
-                    <Chip
-                        icon={<Icon type="calendar" size="big" />}
-                        title="Bitcoin"
-                        isSelected={isChip2Selected}
-                        onSelect={() => {
-                            setIsChip2Selected(!isChip2Selected);
-                            console.log('chip 2 selected');
-                        }}
-                        description="inc Tokens"
-                    />
                     <NumPadButton
                         value={5}
                         onPress={value =>
