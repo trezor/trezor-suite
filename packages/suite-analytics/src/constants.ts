@@ -35,7 +35,7 @@ export enum EventType {
     MenuNotificationsToggle = 'menu/notifications/toggle',
     MenuToggleDiscreet = 'menu/toggle-discreet',
     MenuToggleTor = 'menu/toggle-tor',
-    MenuToggleOnionLinks = 'menu/toggle-onion-links',
+    SettingsTorOnionLinks = 'settings/tor/onion-links',
 
     MenuGuide = 'menu/guide',
     GuideHeaderNavigation = 'guide/header/navigation',

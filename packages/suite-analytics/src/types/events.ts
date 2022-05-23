@@ -170,7 +170,7 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.MenuToggleOnionLinks;
+          type: EventType.SettingsTorOnionLinks;
           payload: {
               value: boolean;
           };

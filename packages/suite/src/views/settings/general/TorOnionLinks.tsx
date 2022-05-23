@@ -38,7 +38,7 @@ export const TorOnionLinks = () => {
                     isChecked={torOnionLinks}
                     onChange={() => {
                         analytics.report({
-                            type: EventType.MenuToggleOnionLinks,
+                            type: EventType.SettingsTorOnionLinks,
                             payload: {
                                 value: !torOnionLinks,
                             },
