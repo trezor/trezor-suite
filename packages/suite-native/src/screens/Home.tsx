@@ -117,16 +117,19 @@ export const Home = () => {
                     </Box>
 
                     <Chip
-                        icon={<Icon type="search" size="big" />}
+                        icon={<Icon type="calendar" size="big" />}
                         title="Bitcoin"
                         isSelected={isChip1Selected}
                         onSelect={() => setIsChip1Selected(!isChip1Selected)}
                     />
                     <Chip
-                        icon={<Icon type="search" size="big" />}
+                        icon={<Icon type="calendar" size="big" />}
                         title="Bitcoin"
                         isSelected={isChip2Selected}
-                        onSelect={() => setIsChip2Selected(!isChip2Selected)}
+                        onSelect={() => {
+                            setIsChip2Selected(!isChip2Selected);
+                            console.log('chip 2 selected');
+                        }}
                         description="inc Tokens"
                     />
                     <NumPadButton

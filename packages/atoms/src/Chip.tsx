@@ -20,10 +20,10 @@ const chipStyles = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) =>
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    borderWidth: utils.borders.widths.sm,
-    borderRadius: CHIP_HEIGHT / 2,
     height: CHIP_HEIGHT,
     backgroundColor: utils.colors.gray100,
+    borderWidth: utils.borders.widths.sm,
+    borderRadius: CHIP_HEIGHT / 2,
     borderColor: utils.colors.gray400,
     extend: {
         condition: !!isSelected,
@@ -34,11 +34,10 @@ const chipStyles = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) =>
     },
 }));
 
-const chipTextStyles = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
+const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
     ...utils.typography.callout,
+    fontWeight: isSelected ? utils.fontWeights.semiBold : utils.fontWeights.normal,
     color: utils.colors.gray800,
-    fontWeight: utils.fontWeights.normal,
-    marginBottom: utils.spacings.sm / 4,
     extend: {
         condition: !!isSelected,
         style: {
@@ -48,17 +47,18 @@ const chipTextStyles = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }
     },
 }));
 
-const textWrapperStyle = prepareNativeStyle(utils => ({
-    alignItems: 'flex-start',
-    justifyContent: 'space-around',
-    marginLeft: utils.spacings.sm,
-    marginRight: 10,
-    height: 30, // TODO Improve!!! For now this is only solution I found to squish those 2 text elements together
+const chipDescriptionStyle = prepareNativeStyle(utils => ({
+    ...utils.typography.label,
+    // This is the only way to get texts closer together because in design the boxes with line height are overlapping
+    lineHeight: 12,
+    fontWeight: utils.fontWeights.normal,
+    display: 'flex',
+    alignSelf: 'flex-start',
 }));
 
-const textStyle = prepareNativeStyle(utils => ({
-    ...utils.typography.label,
-    fontWeight: utils.fontWeights.normal,
+const textWrapperStyle = prepareNativeStyle(utils => ({
+    marginLeft: utils.spacings.sm,
+    marginRight: 10,
 }));
 
 const iconStyle = prepareNativeStyle(() => ({
@@ -72,8 +72,8 @@ export const Chip = ({ title, onSelect, description, icon, isSelected = false }:
         <TouchableOpacity onPress={onSelect} style={applyStyle(chipStyles, { isSelected })}>
             <Box style={applyStyle(iconStyle)}>{icon}</Box>
             <Box style={applyStyle(textWrapperStyle)}>
-                <Text style={applyStyle(chipTextStyles, { isSelected })}>{title}</Text>
-                {description && <Text style={applyStyle(textStyle)}>{description}</Text>}
+                <Text style={applyStyle(chipTitleStyle, { isSelected })}>{title}</Text>
+                {description && <Text style={applyStyle(chipDescriptionStyle)}>{description}</Text>}
             </Box>
         </TouchableOpacity>
     );
