@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Translation } from '@suite-components';
@@ -29,12 +28,6 @@ export const EarlyAccess = () => {
     });
 
     const setupEarlyAccess = useCallback(() => {
-        analytics.report({
-            type: EventType.SettingsGeneralGotoEarlyAccess,
-            payload: {
-                allowPrerelease: desktopUpdate.allowPrerelease,
-            },
-        });
         openEarlyAccessSetup(desktopUpdate.allowPrerelease);
         desktopApi.cancelUpdate(); // stop downloading the update if it is in progress to prevent confusing state switching
     }, [openEarlyAccessSetup, desktopUpdate.allowPrerelease]);

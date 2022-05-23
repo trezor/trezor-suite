@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
@@ -78,12 +77,7 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_BACKUP_NOW" />,
                   dataTest: 'backup',
-                  action: () => {
-                      goto('backup-index');
-                      analytics.report({
-                          type: EventType.DashboardSecurityCardCreateBackup,
-                      });
-                  },
+                  action: () => goto('backup-index'),
                   isDisabled: !!backupFailed,
               },
           }
@@ -94,12 +88,8 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_CHECK_SEED_IN_SETTINGS" />,
                   dataTest: 'seed-link',
-                  action: () => {
-                      goto('settings-device', { anchor: SettingsAnchor.CheckRecoverySeed });
-                      analytics.report({
-                          type: EventType.DashboardSecurityCardSeedLink,
-                      });
-                  },
+                  action: () =>
+                      goto('settings-device', { anchor: SettingsAnchor.CheckRecoverySeed }),
               },
           };
 
@@ -112,12 +102,7 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_ENABLE_PIN" />,
                   dataTest: 'pin',
-                  action: () => {
-                      changePin({});
-                      analytics.report({
-                          type: EventType.DashboardSecurityCardSetPin,
-                      });
-                  },
+                  action: () => changePin({}),
                   isDisabled: isDeviceLocked,
               },
           }
@@ -128,12 +113,7 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_CHANGE_PIN_IN_SETTINGS" />,
                   dataTest: 'pin-link',
-                  action: () => {
-                      goto('settings-device', { anchor: SettingsAnchor.ChangePin });
-                      analytics.report({
-                          type: EventType.DashboardSecurityCardChangePin,
-                      });
-                  },
+                  action: () => goto('settings-device', { anchor: SettingsAnchor.ChangePin }),
               },
           };
 
@@ -145,15 +125,10 @@ const SecurityFeatures = () => {
               description: <Translation id="TR_ENABLE_PASSPHRASE_DESCRIPTION" />,
               cta: {
                   label: <Translation id="TR_ENABLE_PASSPHRASE" />,
-                  action: () => {
+                  action: () =>
                       applySettings({
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           use_passphrase: true,
-                      });
-                      analytics.report({
-                          type: EventType.DashboardSecurityCardEnablePassphrase,
-                      });
-                  },
+                      }),
                   dataTest: 'hidden-wallet',
                   isDisabled: isDeviceLocked,
               },
@@ -164,12 +139,7 @@ const SecurityFeatures = () => {
               heading: <Translation id="TR_PASSPHRASE_PROTECTION_ENABLED" />,
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
-                  action: () => {
-                      createDeviceInstance(device as AcquiredDevice);
-                      analytics.report({
-                          type: EventType.DashboardSecurityCardCreateHiddenWallet,
-                      });
-                  },
+                  action: () => createDeviceInstance(device as AcquiredDevice),
                   dataTest: 'create-hidden-wallet',
                   isDisabled: isDeviceLocked,
               },
@@ -183,12 +153,7 @@ const SecurityFeatures = () => {
               description: <Translation id="TR_TRY_TO_TEMPORARILY_HIDE" />,
               cta: {
                   label: <Translation id="TR_TRY_DISCREET_MODE" />,
-                  action: () => {
-                      setDiscreetMode(true);
-                      analytics.report({
-                          type: EventType.DashboardSecurityCardEnableDiscreet,
-                      });
-                  },
+                  action: () => setDiscreetMode(true),
                   dataTest: 'discreet',
               },
           }
@@ -202,15 +167,7 @@ const SecurityFeatures = () => {
                   ) : (
                       <Translation id="TR_ENABLE_DISCREET_MODE" />
                   ),
-                  action: () => {
-                      setDiscreetMode(!discreetMode);
-                      analytics.report({
-                          type: EventType.DashboardSecurityCardToggleDiscreet,
-                          payload: {
-                              value: !discreetMode,
-                          },
-                      });
-                  },
+                  action: () => setDiscreetMode(!discreetMode),
                   dataTest: 'toggle-discreet',
               },
           };
@@ -229,9 +186,7 @@ const SecurityFeatures = () => {
                 <Button
                     variant="tertiary"
                     icon={securityStepsHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
-                    onClick={() => {
-                        setFlag('securityStepsHidden', !securityStepsHidden);
-                    }}
+                    onClick={() => setFlag('securityStepsHidden', !securityStepsHidden)}
                 >
                     {securityStepsHidden ? (
                         <Translation id="TR_SHOW_BUTTON" />

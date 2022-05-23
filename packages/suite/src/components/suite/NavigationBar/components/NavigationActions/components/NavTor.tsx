@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionItem } from './ActionItem';
@@ -28,10 +27,7 @@ export const NavTor = ({ isActive }: TorProps) => {
                 label={<Translation id="TR_TOR" />}
                 icon="TOR"
                 indicator={isActive ? 'check' : undefined}
-                onClick={() => {
-                    goto('settings-index', { anchor: SettingsAnchor.Tor });
-                    analytics.report({ type: EventType.MenuGotoTor });
-                }}
+                onClick={() => goto('settings-index', { anchor: SettingsAnchor.Tor })}
             />
         </Wrapper>
     );

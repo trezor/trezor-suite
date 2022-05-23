@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { variables, DeviceImage, Icon } from '@trezor/components';
 import { SHAKE } from '@suite-support/styles/animations';
@@ -159,15 +158,6 @@ export const DeviceSelector = () => {
         }, 2000);
     }, [connectState]);
 
-    const switchDevice = useCallback(() => {
-        goto('suite-switch-device', {
-            params: {
-                cancelable: true,
-            },
-        });
-        analytics.report({ type: EventType.MenuGotoSwitchDevice });
-    }, [goto]);
-
     const handleRefreshClick = useCallback(() => {
         if (deviceNeedsRefresh) {
             acquireDevice(selectedDevice);
@@ -177,7 +167,13 @@ export const DeviceSelector = () => {
     return (
         <Wrapper
             data-test="@menu/switch-device"
-            onClick={switchDevice}
+            onClick={() =>
+                goto('suite-switch-device', {
+                    params: {
+                        cancelable: true,
+                    },
+                })
+            }
             isAnimationTriggered={isAnimationTriggered}
         >
             {selectedDevice && (

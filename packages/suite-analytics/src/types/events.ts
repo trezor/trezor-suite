@@ -151,38 +151,17 @@ export type SuiteAnalyticsEvent =
               networkSymbol: string;
           };
       }
-    | { type: EventType.DashboardSecurityCardCreateBackup }
-    | { type: EventType.DashboardSecurityCardSeedLink }
-    | { type: EventType.DashboardSecurityCardSetPin }
-    | { type: EventType.DashboardSecurityCardChangePin }
-    | { type: EventType.DashboardSecurityCardEnablePassphrase }
-    | { type: EventType.DashboardSecurityCardCreateHiddenWallet }
-    | { type: EventType.DashboardSecurityCardEnableDiscreet }
-    | {
-          type: EventType.DashboardSecurityCardToggleDiscreet;
-          payload: {
-              value: boolean;
-          };
-      }
-    | { type: EventType.MenuGotoSwitchDevice }
-    | { type: EventType.MenuGotoSuiteIndex }
-    | { type: EventType.MenuGotoWalletIndex }
-    | { type: EventType.MenuGotoNotificationsIndex }
     | {
           type: EventType.MenuNotificationsToggle;
           payload: {
               value: boolean;
           };
       }
-    | { type: EventType.MenuGotoSettingsIndex }
     | {
           type: EventType.MenuToggleDiscreet;
           payload: {
               value: boolean;
           };
-      }
-    | {
-          type: EventType.MenuGotoTor;
       }
     | {
           type: EventType.MenuToggleTor;
@@ -195,9 +174,6 @@ export type SuiteAnalyticsEvent =
           payload: {
               value: boolean;
           };
-      }
-    | {
-          type: EventType.MenuGotoEarlyAccess;
       }
     | {
           type: EventType.MenuGuide;
@@ -234,14 +210,9 @@ export type SuiteAnalyticsEvent =
               id: string;
           };
       }
-    | { type: EventType.SwitchDeviceAddWallet }
-    | { type: EventType.SwitchDeviceAddHiddenWallet }
     | { type: EventType.SwitchDeviceForget }
     | { type: EventType.SwitchDeviceRemember }
     | { type: EventType.SwitchDeviceEject }
-    | { type: EventType.SettingsDeviceGotoBackup }
-    | { type: EventType.SettingsDeviceGotoRecovery }
-    | { type: EventType.SettingsDeviceGotoFirmware }
     | {
           type: EventType.SettingsDeviceChangePinProtection;
           payload: {
@@ -256,12 +227,6 @@ export type SuiteAnalyticsEvent =
           type: EventType.SettingsDeviceUpdateAutoLock;
           payload: {
               value: number;
-          };
-      }
-    | {
-          type: EventType.SettingsDeviceGotoBackground;
-          payload: {
-              custom: boolean;
           };
       }
     | {
@@ -315,21 +280,6 @@ export type SuiteAnalyticsEvent =
       }
     | {
           type: EventType.SettingsGeneralEarlyAccess;
-          payload: {
-              allowPrerelease: boolean;
-          };
-      }
-    | {
-          type: EventType.SettingsGeneralEarlyAccessCheckForUpdates;
-          payload: {
-              checkNow: boolean;
-          };
-      }
-    | {
-          type: EventType.SettingsGeneralEarlyAccessDownloadStable;
-      }
-    | {
-          type: EventType.SettingsGeneralGotoEarlyAccess;
           payload: {
               allowPrerelease: boolean;
           };

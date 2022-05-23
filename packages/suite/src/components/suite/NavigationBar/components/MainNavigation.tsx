@@ -1,7 +1,6 @@
 import React from 'react';
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { findRouteByName } from '@suite-utils/router';
 import { variables, HoverAnimation } from '@trezor/components';
@@ -115,22 +114,6 @@ export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavi
 
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
-    const gotoWithReport = (routeName: typeof MAIN_MENU_ITEMS[number]['route']) => {
-        switch (routeName) {
-            case 'suite-index':
-                analytics.report({ type: EventType.MenuGotoSuiteIndex });
-                break;
-            case 'wallet-index':
-                setCoinFilter(undefined);
-                setSearchString(undefined);
-                analytics.report({ type: EventType.MenuGotoWalletIndex });
-                break;
-            default:
-            // no default
-        }
-        goto(routeName);
-    };
-
     const WrapperComponent = isMobileLayout ? MobileWrapper : Wrapper;
     const MenuItemComponent = isMobileLayout ? MobileMenuItem : MenuItem;
 
@@ -146,7 +129,11 @@ export const MainNavigation = ({ isMobileLayout, closeMainNavigation }: MainNavi
                             data-test={`@suite/menu/${route}`}
                             onClick={() => {
                                 if (!isDisabled) {
-                                    gotoWithReport(route);
+                                    if (route === 'wallet-index') {
+                                        setCoinFilter(undefined);
+                                        setSearchString(undefined);
+                                    }
+                                    goto(route);
                                     closeMainNavigation?.();
                                 }
                             }}
