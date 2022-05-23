@@ -13,6 +13,7 @@ Renamed:
 -   wallet/add-account to accounts/new-account
 -   settings/coin-backend to settings/coins/backend
 -   menu/toggle-onion-links to settings/tor/onion-links
+-   menu/toggle-tor to settings/tor
 
 Removed:
 

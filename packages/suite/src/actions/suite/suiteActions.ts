@@ -170,7 +170,7 @@ export const toggleTor = (enable: boolean) => async (dispatch: Dispatch, getStat
     desktopApi.toggleTor(enable);
 
     analytics.report({
-        type: EventType.MenuToggleTor,
+        type: EventType.SettingsTor,
         payload: {
             value: enable,
         },
