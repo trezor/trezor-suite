@@ -35,6 +35,7 @@ export type SuiteAnalyticsEvent =
           payload: {
               prevRouterUrl: string;
               nextRouterUrl: string;
+              anchor?: string;
           };
       }
     | { type: EventType.TransportType; payload: { type: string; version: string } }
