@@ -1,6 +1,7 @@
 /**
  * Tor feature (toggle, configure)
  */
+import { captureException } from '@sentry/electron';
 import { session } from 'electron';
 import TorProcess from '../libs/processes/TorProcess';
 import { onionDomain } from '../config';
@@ -41,9 +42,19 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
         const shouldRunBundledTor = settings.running;
         if (settings.running !== (await tor.status()).process) {
             if (shouldRunBundledTor === true) {
-                await tor.start();
+                try {
+                    await tor.start();
+                } catch (error) {
+                    logger.error('tor', `Failed to start: ${error.message}`);
+                    captureException(error);
+                }
             } else {
-                await tor.stop();
+                try {
+                    await tor.stop();
+                } catch (error) {
+                    logger.error('tor', `Failed to stop: ${error.message}`);
+                    captureException(error);
+                }
             }
         }
 
