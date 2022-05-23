@@ -76,18 +76,8 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
 
     const WrapperComponent = isMobileLayout ? MobileWrapper : Wrapper;
 
-    // used only in mobile layout
-    const gotoWithReport = (routeName: Route['name']) => {
-        if (routeName === 'notifications-index') {
-            analytics.report({ type: EventType.MenuGotoNotificationsIndex });
-        } else if (routeName === 'settings-index') {
-            analytics.report({ type: EventType.MenuGotoSettingsIndex });
-        }
-        goto(routeName);
-    };
-
     const action = (route: Route['name']) => {
-        gotoWithReport(route);
+        goto(route);
         if (closeMainNavigation) closeMainNavigation();
     };
 
@@ -157,10 +147,7 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
             {allowPrerelease &&
                 (isMobileLayout ? (
                     <ActionItem
-                        onClick={() => {
-                            analytics.report({ type: EventType.MenuGotoEarlyAccess });
-                            action('settings-index');
-                        }}
+                        onClick={() => action('settings-index')}
                         label={<Translation id="TR_EARLY_ACCESS_MENU" />}
                         icon="EXPERIMENTAL_FEATURES"
                         isMobileLayout

@@ -1,5 +1,4 @@
 import React from 'react';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
@@ -36,12 +35,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
             <ActionColumn>
                 <ActionButton
                     data-test="@settings/device/check-seed-button"
-                    onClick={() => {
-                        goto('recovery-index', { params: { cancelable: true } });
-                        analytics.report({
-                            type: EventType.SettingsDeviceGotoRecovery,
-                        });
-                    }}
+                    onClick={() => goto('recovery-index', { params: { cancelable: true } })}
                     isDisabled={isDeviceLocked || needsBackup}
                     variant="secondary"
                 >

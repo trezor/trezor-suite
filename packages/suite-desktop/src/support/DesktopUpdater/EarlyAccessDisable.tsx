@@ -72,15 +72,7 @@ const EarlyAccessDisable = ({ hideWindow }: Props) => {
                     <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
                     </Button>
-                    <Link
-                        variant="nostyle"
-                        href={SUITE_URL}
-                        onClick={() => {
-                            analytics.report({
-                                type: EventType.SettingsGeneralEarlyAccessDownloadStable,
-                            });
-                        }}
-                    >
+                    <Link variant="nostyle" href={SUITE_URL}>
                         <LinkButton icon="EXTERNAL_LINK" alignIcon="right">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
                         </LinkButton>

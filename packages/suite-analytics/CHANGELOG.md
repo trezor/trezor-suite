@@ -7,6 +7,32 @@ This changelog lists changes in suite events.
 Removed:
 
 -   session-end
+-   menu/goto/early-access
+-   menu/goto/tor
+-   settings/general/goto/early-access
+-   settings/general/early-access/check-for-updates
+-   settings/general/early-access/download-stable
+-   menu/settings/dropdown
+-   menu/settings/toggle
+-   dashboard/security-card/create-backup
+-   dashboard/security-card/seed-link
+-   dashboard/security-card/set-pin
+-   dashboard/security-card/change-pin
+-   dashboard/security-card/enable-passphrase
+-   dashboard/security-card/create-hidden-wallet
+-   dashboard/security-card/enable-discreet
+-   dashboard/security-card/toggle-discreet
+-   menu/goto/switch-device
+-   menu/goto/suite-index
+-   menu/goto/wallet-index
+-   menu/goto/notifications-index
+-   menu/goto/settings-index
+-   settings/device/goto/background
+-   settings/device/goto/backup
+-   settings/device/goto/recovery
+-   settings/device/goto/firmware
+-   switch-device/add-wallet
+-   switch-device/add-hidden-wallet
 
 ### 1.18
 

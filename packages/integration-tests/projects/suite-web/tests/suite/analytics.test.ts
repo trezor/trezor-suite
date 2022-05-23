@@ -100,15 +100,7 @@ describe('Analytics', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.wait('@data-fetch');
         cy.wrap(requests).its(3).should('have.property', 'c_type', EventType.RouterLocationChange);
-        cy.wrap(requests).its(4).should('have.property', 'c_type', EventType.MenuGotoSwitchDevice);
         cy.wrap(requests).should('have.length', 5);
-
-        // add hidden wallet and check that it was logged
-        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
-        cy.wait('@data-fetch');
-        cy.wrap(requests)
-            .its(5)
-            .should('have.property', 'c_type', EventType.SwitchDeviceAddHiddenWallet);
     });
 
     it('should respect enabled analytics in onboarding with following disabling in settings', () => {

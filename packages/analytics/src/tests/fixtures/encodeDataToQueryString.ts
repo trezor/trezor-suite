@@ -23,9 +23,9 @@ export default [
         commitId: '123456',
         version: '1.0',
         data: {
-            type: 'switch-device/add-wallet',
+            type: 'menu/guide',
         },
-        encoded: `c_v=1.0&c_type=switch-device%2Fadd-wallet&c_commit=123456&c_instance_id=3&c_session_id=5&c_timestamp=${new Date(
+        encoded: `c_v=1.0&c_type=menu%2Fguide&c_commit=123456&c_instance_id=3&c_session_id=5&c_timestamp=${new Date(
             '2021-04-02T12:10:00.000Z',
         ).getTime()}`,
     },

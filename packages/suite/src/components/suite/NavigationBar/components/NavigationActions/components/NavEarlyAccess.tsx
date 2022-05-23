@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
 import { ActionItem } from './ActionItem';
@@ -28,10 +27,7 @@ export const NavEarlyAccess = (props: NavEarlyAccessProps) => {
             <ActionItem
                 label={<Translation id="TR_EARLY_ACCESS_MENU" />}
                 icon="EXPERIMENTAL_FEATURES"
-                onClick={() => {
-                    goto('settings-index', { anchor: SettingsAnchor.EarlyAccess });
-                    analytics.report({ type: EventType.MenuGotoEarlyAccess });
-                }}
+                onClick={() => goto('settings-index', { anchor: SettingsAnchor.EarlyAccess })}
             />
         </Wrapper>
     );

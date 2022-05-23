@@ -133,10 +133,6 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         onClick={() => {
                             if (fileInputElement.current) {
                                 fileInputElement.current.click();
-                                analytics.report({
-                                    type: EventType.SettingsDeviceGotoBackground,
-                                    payload: { custom: true },
-                                });
                             }
                         }}
                         isDisabled={isDeviceLocked}
@@ -145,16 +141,12 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
                     </StyledActionButton>
                     <StyledActionButton
-                        onClick={() => {
+                        onClick={() =>
                             openModal({
                                 type: 'device-background-gallery',
                                 device,
-                            });
-                            analytics.report({
-                                type: EventType.SettingsDeviceGotoBackground,
-                                payload: { custom: false },
-                            });
-                        }}
+                            })
+                        }
                         isDisabled={isDeviceLocked}
                         data-test="@settings/device/select-from-gallery"
                         variant="secondary"

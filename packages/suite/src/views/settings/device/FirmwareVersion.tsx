@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
@@ -114,12 +113,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
             <ActionColumn>
                 <ActionButton
                     variant="secondary"
-                    onClick={() => {
-                        goto('firmware-index', { params: { cancelable: true } });
-                        analytics.report({
-                            type: EventType.SettingsDeviceGotoFirmware,
-                        });
-                    }}
+                    onClick={() => goto('firmware-index', { params: { cancelable: true } })}
                     data-test="@settings/device/update-button"
                     isDisabled={isDeviceLocked}
                 >

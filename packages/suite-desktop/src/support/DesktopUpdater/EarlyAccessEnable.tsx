@@ -51,32 +51,14 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
         desktopApi.allowPrerelease(true);
         setEnabled(true);
     }, []);
-    const checkForUpdates = useCallback(() => {
-        analytics.report({
-            type: EventType.SettingsGeneralEarlyAccessCheckForUpdates,
-            payload: {
-                checkNow: true,
-            },
-        });
-        desktopApi.checkForUpdates(true);
-    }, []);
+
+    const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
 
     return enabled ? (
         <StyledModal
             bottomBar={
                 <>
-                    <Button
-                        onClick={() => {
-                            analytics.report({
-                                type: EventType.SettingsGeneralEarlyAccessCheckForUpdates,
-                                payload: {
-                                    checkNow: false,
-                                },
-                            });
-                            hideWindow();
-                        }}
-                        variant="secondary"
-                    >
+                    <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_CHECK" />
                     </Button>
                     <Button onClick={checkForUpdates}>

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
@@ -60,11 +59,6 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
         } else {
             selectDeviceInstance(instances[0]);
         }
-        analytics.report({
-            type: emptyPassphraseWalletExists
-                ? EventType.SwitchDeviceAddHiddenWallet
-                : EventType.SwitchDeviceAddWallet,
-        });
     };
 
     return (
