@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const SCREENSHOTS_DIR = './projects/connect-explorer/screenshots';
+const SCREENSHOTS_DIR = './projects/connect-popup/screenshots';
 
 const CI_JOB_URL = process.env.CI_JOB_URL || '.';
 
@@ -32,7 +32,7 @@ const buildOverview = ({ emuScreenshots }) => {
             <div id="${url}">
                 <h1>${url}</h1>
                 <div>
-                    <a href="https://github.com/trezor/connect/blob/develop/docs/methods/${methodName}.md">documentation</a>
+                    <a href="https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/${methodName}.md">documentation</a>
                     |
                     <a href="${process.env.URL}#/method/${url}">explorer</a>
                 </div>
@@ -44,8 +44,8 @@ const buildOverview = ({ emuScreenshots }) => {
                 <div>
                     <div>${methodName}/${screenshot}</div>
                     <img src="${screenshotPath.replace(
-                        '/projects/connect-explorer',
-                        '/artifacts/raw/packages/integration-tests/projects/connect-explorer',
+                        '/projects/connect-popup',
+                        '/artifacts/raw/packages/integration-tests/projects/connect-popup',
                     )}" />
                     ${renderEmuScreenshot(`./${urlPath}/${screenshot}`)}
                 </div>
@@ -61,6 +61,7 @@ const buildOverview = ({ emuScreenshots }) => {
                 <title>Connect popup</title>
             </head>
             <body>
+                <div>${process.env.CI_JOB_NAME} job in ${process.env.CI_COMMIT_BRANCH} branch</div>
                 <ul>${index}</ul>
                 ${html}
             </body>

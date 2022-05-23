@@ -41,7 +41,6 @@ const getPublicKey = [
     {
         device: initializedDevice,
         url: 'getPublicKey',
-        method: 'getPublicKey',
         view: 'export-xpub',
         views: [
             {
@@ -60,10 +59,35 @@ const getAddress = [
     {
         device: initializedDevice,
         url: 'getAddress',
-        method: 'getAddress',
         views: [
             confirmExportAddressScreen,
             getConfirmAddressOnDeviceScreen('3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX'),
+        ],
+    },
+    {
+        title: 'getAddress with passphrase',
+        device: { ...initializedDevice, passphrase_protection: true },
+        url: 'getAddress',
+        views: [
+            confirmExportAddressScreen,
+            {
+                selector: 'input.pass >> visible=true',
+                screenshot: {
+                    name: 'passhprase-screen',
+                },
+                next: 'button.cancel.passphraseOnDevice >> visible=true',
+            },
+            {
+                selector: '.passphrase-on-device >> visible=true',
+                screenshot: {
+                    name: 'passhprase-screen-enter-on-device',
+                },
+                nextEmu: {
+                    type: 'emulator-input',
+                    value: 'meow',
+                },
+            },
+            getConfirmAddressOnDeviceScreen('387JG5Bfs2unbUYEuya7t47dMNchWvKtoj'),
         ],
     },
 ];
@@ -72,7 +96,6 @@ const getAccountInfo = [
     {
         device: initializedDevice,
         url: 'getAccountInfo',
-        method: 'getAccountInfo',
         views: [
             {
                 selector: '.export-account-info >> visible=true',
@@ -86,7 +109,6 @@ const getAccountInfo = [
     {
         device: initializedDevice,
         url: 'getAccountInfo-xpub',
-        method: 'getAccountInfo',
         views: [
             {
                 selector: '.export-account-info >> visible=true',
@@ -108,14 +130,24 @@ const getAccountInfo = [
 
 const composeTransaction = [
     {
-        device: initializedDevice,
+        device: {
+            ...initializedDevice,
+            mnemonic:
+                'upgrade lesson quit mule level either mobile any evidence melody obvious ancient',
+        },
         url: 'composeTransaction',
-        method: 'composeTransaction',
         views: [
             {
-                selector: '.select-account.p2sh',
+                selector: '.tabs>.tab-selection.p2wpkh >> visible=true',
                 screenshot: {
-                    name: 'select-account',
+                    name: 'select-account-segwit',
+                },
+                next: '.tabs>.tab-selection.p2wpkh >> visible=true',
+            },
+            {
+                selector: '.select-account.p2wpkh >> visible=true',
+                screenshot: {
+                    name: 'select-account-segwit-native',
                 },
                 next: 'text=0 TEST >> visible=true',
             },
@@ -126,10 +158,42 @@ const composeTransaction = [
                 },
                 next: undefined,
             },
+            // not enough funds returns user to the default account which is segwit
+            // so we need to navigate to segwit-native again
             {
-                action: 'close',
+                selector: '.tabs>.tab-selection.p2wpkh >> visible=true',
+                next: '.tabs>.tab-selection.p2wpkh >> visible=true',
             },
-            // todo: fee list. requires actual coins
+            {
+                selector: '.select-account.p2wpkh >> visible=true',
+                // this account should have positive balance
+                next: 'text=Account #2 >> visible=true',
+            },
+            {
+                selector: 'text=Select fee >> visible=true',
+                screenshot: {
+                    name: 'select-fee-default-screen',
+                },
+                next: 'text=Custom >> visible=true',
+            },
+            {
+                selector: '.send-button >> visible=true',
+                screenshot: {
+                    name: 'select-fee-custom-fee-screen',
+                },
+                next: '.send-button >> visible=true',
+            },
+            {
+                selector:
+                    'text=Check recipient address on your device and follow further instructions. >> visible=true',
+                screenshot: {
+                    name: 'check-on-device',
+                },
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+            followDevice,
         ],
     },
 ];
@@ -138,7 +202,6 @@ const signTransaction = [
     {
         device: initializedDevice,
         url: 'signTransaction-paytoaddress',
-        method: 'signTransaction-paytoaddress',
         views: [
             {
                 selector: '.confirm-output >> visible=true',
@@ -150,14 +213,22 @@ const signTransaction = [
                 },
             },
             followDevice,
+            followDevice, // will end with Failure_DataError, inputs do not belong to this seed
         ],
+    },
+];
+
+const ethereumSignTransaction = [
+    {
+        device: initializedDevice,
+        url: 'ethereumSignTransaction',
+        views: [followDevice, followDevice],
     },
 ];
 
 const signMessage = [
     {
         url: 'signMessage',
-        method: 'signMessage',
         device: initializedDevice,
         views: [
             {
@@ -182,7 +253,6 @@ const signMessage = [
 const verifyMessage = [
     {
         url: 'verifyMessage',
-        method: 'verifyMessage',
         device: initializedDevice,
         views: [
             {
@@ -219,7 +289,6 @@ const verifyMessage = [
 const wipeDevice = [
     {
         url: 'wipeDevice',
-        method: 'wipeDevice',
         device: initializedDevice,
         views: [
             {
@@ -237,7 +306,6 @@ const wipeDevice = [
 const resetDevice = [
     {
         url: 'resetDevice',
-        method: 'resetDevice',
         device: {
             wiped: true,
         },
@@ -257,7 +325,6 @@ const resetDevice = [
 const recoverDevice = [
     {
         url: 'recoverDevice',
-        method: 'recoveryDevice',
         device: {
             wiped: true,
         },
@@ -351,7 +418,6 @@ const ethereumSignMessage = [
     {
         ...signMessage[0],
         url: 'ethereumSignMessage',
-        method: 'ethereumSignMessage',
     },
 ];
 
@@ -359,14 +425,12 @@ const ethereumVerifyMessage = [
     {
         ...verifyMessage[0],
         url: 'ethereumVerifyMessage',
-        method: 'ethereumVerifyMessage',
     },
 ];
 
 const ethereumSignTypedData = [
     {
         url: 'ethereumSignTypedData',
-        method: 'ethereumSignTypedData',
         device: initializedDevice,
         views: [
             {
@@ -417,6 +481,14 @@ const cardanoGetAddress = [
     },
 ];
 
+const cardanoSignTransaction = [
+    {
+        device: initializedDevice,
+        url: 'cardanoSignTransaction',
+        views: [followDevice, followDevice],
+    },
+];
+
 const cardanoGetNativeScriptHash = [
     {
         url: 'cardanoGetNativeScriptHash',
@@ -444,11 +516,27 @@ const tezosGetAddress = [
     },
 ];
 
+const tezosSignTransaction = [
+    {
+        device: initializedDevice,
+        url: 'tezosSignTransaction',
+        views: [followDevice, followDevice],
+    },
+];
+
 const eosGetPublicKey = [
     {
         ...getPublicKey[0],
         url: 'eosGetPublicKey',
         views: [confirmExportAddressScreen, followDevice],
+    },
+];
+
+const eosSignTransaction = [
+    {
+        device: initializedDevice,
+        url: 'eosSignTransaction',
+        views: [followDevice, followDevice],
     },
 ];
 
@@ -471,6 +559,36 @@ const binanceGetAddress = [
     },
 ];
 
+const binanceSignTransaction = [
+    {
+        device: initializedDevice,
+        url: 'binanceSignTransaction-transfer',
+        views: [
+            {
+                selector:
+                    'text=Check recipient address on your device and follow further instructions. >> visible=true',
+                screenshot: {
+                    name: 'check-on-device',
+                },
+                nextEmu: {
+                    type: 'emulator-swipe',
+                    direction: 'up',
+                },
+            },
+            {
+                selector:
+                    'text=Check recipient address on your device and follow further instructions. >> visible=true',
+                screenshot: {
+                    name: 'check-on-device-confirm',
+                },
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+        ],
+    },
+];
+
 const stellarGetAddress = [
     {
         ...getAddress[0],
@@ -484,6 +602,14 @@ const stellarGetAddress = [
     },
 ];
 
+const stellarSignTransaction = [
+    {
+        device: initializedDevice,
+        url: 'stellarSignTransaction',
+        views: [followDevice, followDevice],
+    },
+];
+
 const rippleGetAddress = [
     {
         ...getAddress[0],
@@ -491,6 +617,26 @@ const rippleGetAddress = [
         views: [
             confirmExportAddressScreen,
             getConfirmAddressOnDeviceScreen('rh5ZnEVySAy7oGd3nebT3wrohGDrsNS83E'),
+        ],
+    },
+];
+
+const rippleSignTransaction = [
+    {
+        device: initializedDevice,
+        url: 'rippleSignTransaction',
+        views: [
+            {
+                selector:
+                    'text=Check recipient address on your device and follow further instructions. >> visible=true',
+                screenshot: {
+                    name: 'check-on-device',
+                },
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+            followDevice,
         ],
     },
 ];
@@ -506,36 +652,90 @@ const nemGetAddress = [
     },
 ];
 
+const nemSignTransaction = [
+    {
+        device: initializedDevice,
+        url: 'nemSignTransaction',
+        views: [
+            {
+                selector:
+                    'text=Check recipient address on your device and follow further instructions. >> visible=true',
+                screenshot: {
+                    name: 'check-on-device-1',
+                },
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+            {
+                selector:
+                    'text=Check recipient address on your device and follow further instructions. >> visible=true',
+                screenshot: {
+                    name: 'check-on-device-2',
+                },
+                nextEmu: {
+                    type: 'emulator-press-yes',
+                },
+            },
+            followDevice,
+        ],
+    },
+];
+
+const cipherKeyValue = [
+    {
+        url: 'cipherKeyValue',
+        device: initializedDevice,
+        views: [followDevice],
+    },
+];
+
 const fixtures = [
     ...getPublicKey,
     ...getAddress,
     ...getAccountInfo,
-    // todo: waiting for selector "text=Not enough funds >> visible=true" to be visible
-    // maybe somebody sent money there?
-    // ...composeTransaction,
-    ...signTransaction,
     ...signMessage,
+    ...signTransaction,
     ...verifyMessage,
-    ...wipeDevice,
     ...recoverDevice,
-    // todo: resetDevice also breaks next test in queue and is flaky itself
-    // ...resetDevice,
     ...ethereumGetPublicKey,
     ...ethereumGetAddress,
+    ...ethereumSignTransaction,
     ...ethereumSignMessage,
     ...ethereumVerifyMessage,
     ...ethereumSignTypedData,
     ...cardanoGetPublicKey,
     ...cardanoGetAddress,
+    ...cardanoSignTransaction,
     ...cardanoGetNativeScriptHash,
     ...tezosGetPublicKey,
     ...tezosGetAddress,
+    ...tezosSignTransaction,
     ...eosGetPublicKey,
+    ...eosSignTransaction,
     ...binanceGetPublicKey,
     ...binanceGetAddress,
+    ...binanceSignTransaction,
     ...stellarGetAddress,
+    // todo: error in params. probably we should implement @trezor/connect-stellar-plugin
+    // ...stellarSignTransaction,
     ...rippleGetAddress,
+    ...rippleSignTransaction,
     ...nemGetAddress,
+    ...nemSignTransaction,
+    ...cipherKeyValue,
+    // balance dependent tests
+    // these are using masked seed in gitlab CI
+    ...composeTransaction,
+    // todo:
+    // management methods
+    // note that it is not so important to test these as they are not available to 3rd party
+    ...wipeDevice,
+    // todo: resetDevice also breaks next test in queue and is flaky itself
+    // ...resetDevice,
+    // todo: missing
+    // firmwareUpdate
+    // backupDevice
 ];
 
 module.exports = fixtures;

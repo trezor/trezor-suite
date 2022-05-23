@@ -5,11 +5,11 @@ const { test } = require('@playwright/test');
 const fs = require('fs');
 
 const { Controller } = require('../../../websocket-client');
-const fixtures = require('./fixtures');
+const fixtures = require('./__fixtures__/methods');
 const buildOverview = require('../support/buildOverview');
 
 const url = process.env.URL || 'http://localhost:8088/';
-const SCREENSHOTS_DIR = './projects/connect-explorer/screenshots';
+const SCREENSHOTS_DIR = './projects/connect-popup/screenshots';
 const controller = new Controller();
 const emuScreenshots = {};
 
@@ -46,7 +46,7 @@ test.afterAll(() => {
 let device = {};
 
 fixtures.forEach(f => {
-    test(f.url, async ({ page }, { retry }) => {
+    test(f.title || f.url, async ({ page }, { retry }) => {
         log(f.url, 'start');
 
         // do complete setup if:
@@ -139,12 +139,16 @@ fixtures.forEach(f => {
             if (v.next) {
                 const nextElement = popup.locator(v.next);
                 await nextElement.waitFor();
+                // useful for debugging tests
+                // await popup.pause();
                 await nextElement.click();
             }
 
             log(f.url, v.selector, 'view finished');
 
             if (v.nextEmu) {
+                // useful for debugging tests
+                // await popup.pause();
                 await controller.send(v.nextEmu);
             }
         }
