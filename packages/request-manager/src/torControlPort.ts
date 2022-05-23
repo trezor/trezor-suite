@@ -61,7 +61,12 @@ export class TorControlPort {
                         /^250 AUTHCHALLENGE SERVERHASH=([a-fA-F0-9]+) SERVERNONCE=([a-fA-F0-9]+)$/,
                     );
                 if (authchallengeResponse) {
-                    const cookieString = await getCookieString(this.options.authFilePath);
+                    let cookieString;
+                    try {
+                        cookieString = await getCookieString(this.options.authFilePath);
+                    } catch (error) {
+                        reject(new Error('TOR control port control_auth_cookie cannot be read'));
+                    }
                     const serverNonce = authchallengeResponse[2];
                     const authString = `${cookieString}${this.clientNonce}${serverNonce}`;
 
