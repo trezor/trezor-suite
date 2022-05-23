@@ -1,8 +1,8 @@
 # Suite Analytics
 
-This package is intended to be used only Suite in web (or in desktop app renderer) environment.
+This package is intended to be used only by Suite in web (or in desktop app renderer) environment.
 
-Specific events can be found in [src/types/events.ts](./src/types/events.ts) and also in [Company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb) where implemented events with expected attributes and other notes related to analytics can be found.
+Specific events can be found in [src/types/events.ts](./src/types/events.ts) and also in [company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb) where implemented events with expected attributes and other notes related to analytics can be found.
 
 ## Tracking
 
@@ -24,11 +24,11 @@ In case a new event has to be added or an old one has to be modified, please fol
 
 Navigation between pages is not required to be tracked as it is tracked automatically by `router/location-change` event. However, a case when it is good to track it is when a user can get to the same location using different methods (e.g. two different buttons on the same page). All other user actions without sensitive info can be tracked. If you are in doubt, please contact our analyst.
 
-### Type declaration
+## Type declaration
 
 All events and their properties should be declared in [src/types/events.ts](./src/types/events.ts).
 
-### Reporting in code
+## Reporting in code
 
 To report an event, import `analytics` from this package and initialize analytics (as soon as app starts).
 
@@ -63,19 +63,19 @@ analytics.report({
 
 ### Versioning
 
-Package version should be bumped if changes are made to `suite-analytics` (applies only if it has not yet been bumped in the current release). For analytics we use `<breaking-change>.<analytics-extended>`. `package.json` allows only semver versioning `<major>.<minor>.<patch>`. So we keep `major` version equal to `0` and we omit it when sending to analytics (`0.<breaking-change>.<analytics-extended>`).
-Breaking change should bump minor version. Any other change bumps patch version.
+Package version should be bumped if changes are made to `suite-analytics` (applies only if it has not yet been bumped in the current release). Package version is logged along with other analytics and might be necessary when processing the data.
+For analytics we use `<breaking-change>.<analytics-extended>`. Because `package.json` allows only semver versioning `<major>.<minor>.<patch>`, we keep `major` version equal to `0` and we omit it when sending to analytics (`0.<breaking-change>.<analytics-extended>`). Breaking change should bump minor version. Any other change bumps patch version.
 
-### Changelog
+## Changelog
 
-Add a record of change to [CHANGELOG.MD](./CHANGELOG.md). Please use a format of previous records.
+Add a record of change to [CHANGELOG.md](./CHANGELOG.md). Please use a format of previous records.
 
-### Company table
+## Company table
 
 Add event to the analytics overview in the [Company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb).
 
 ## How to check that events are tracked?
 
 1. **Option**: Open DevTools, navigate to **Network tab**, filter traffic by `.log` and check the **Query String Parameters** section
-2. **Option**: Get access to Keboola
+2. **Option**: Get access to Keboola via access form (link in [company Notion](https://www.notion.so/satoshilabs/Engineering-6d5f34c46db041318ceeecb65f973980))
 3. **Option**: Create a modified build of app with an analytics server URL pointing to your server
