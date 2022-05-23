@@ -46,7 +46,7 @@ const AddButton = ({ account, isDisabled, onEnableAccount }: ButtonProps) => {
         }
         // just to log that account was added manually.
         analytics.report({
-            type: EventType.WalletAddAccount,
+            type: EventType.AccountsNewAccount,
             payload: {
                 type,
                 path,

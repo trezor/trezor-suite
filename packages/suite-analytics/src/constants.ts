@@ -24,8 +24,8 @@ export enum EventType {
     CheckSeedError = 'check-seed/error',
     CheckSeedSuccess = 'check-seed/success',
 
-    AccountStatus = 'accounts/status',
-    WalletAddAccount = 'wallet/add-account',
+    AccountsStatus = 'accounts/status',
+    AccountsNewAccount = 'accounts/new-account',
     AddToken = 'add-token',
     AccountsEmptyAccountBuy = 'accounts/empty-account/buy',
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',

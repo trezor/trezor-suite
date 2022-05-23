@@ -8,6 +8,10 @@ Added:
 
 -   settings/device/wipe
 
+Renamed:
+
+-   wallet/add-account to accounts/new-account
+
 Removed:
 
 -   session-end
