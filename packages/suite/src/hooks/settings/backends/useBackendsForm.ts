@@ -141,7 +141,7 @@ export const useBackendsForm = (coin: Network['symbol']) => {
         const totalOnion = urls.filter(isOnionUrl).length;
 
         analytics.report({
-            type: EventType.SettingsCoinBackend,
+            type: EventType.SettingsCoinsBackend,
             payload: {
                 symbol: coin,
                 type,

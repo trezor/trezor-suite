@@ -61,7 +61,7 @@ export enum EventType {
     SettingsGeneralChangeTheme = 'settings/general/change-theme',
     SettingsGeneralChangeFiat = 'settings/general/change-fiat',
     SettingsGeneralEarlyAccess = 'settings/general/early-access',
-    SettingsCoinBackend = 'settings/coin-backend',
+    SettingsCoinsBackend = 'settings/coins/backend',
 
     AnalyticsEnable = 'analytics/enable',
     AnalyticsDispose = 'analytics/dispose',
