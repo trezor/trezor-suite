@@ -108,7 +108,7 @@ const analyticsMiddleware =
                     }, {});
 
                 analytics.report({
-                    type: EventType.AccountStatus,
+                    type: EventType.AccountsStatus,
                     payload: { ...accountsStatus },
                 });
                 break;

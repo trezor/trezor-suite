@@ -96,13 +96,13 @@ export type SuiteAnalyticsEvent =
           type: EventType.CheckSeedSuccess;
       }
     | {
-          type: EventType.AccountStatus;
+          type: EventType.AccountsStatus;
           payload: {
               [key: string]: number;
           };
       }
     | {
-          type: EventType.WalletAddAccount;
+          type: EventType.AccountsNewAccount;
           payload: {
               type: string;
               path: string;
@@ -245,7 +245,6 @@ export type SuiteAnalyticsEvent =
               value: 0 | 90 | 180 | 270;
           };
       }
-    | { type: EventType.SettingsDeviceGotoWipe }
     | {
           type: EventType.SettingsDeviceChangePassphraseProtection;
           payload: {
