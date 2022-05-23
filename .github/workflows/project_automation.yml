@@ -20,13 +20,6 @@ jobs:
           ISSUE: ${{github.event.issue.html_url}}
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
 
-      - name: Add new pull request to the Pull Requests project board
-        if: github.event_name == 'pull_request' && github.event.action == 'opened'
-        run: gh pr edit $PULL_REQUEST --add-project "Pull Requests"
-        env:
-          PULL_REQUEST: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
-
   add-to-beta-project:
     name: Add new issue to the beta Issues Suite project
     runs-on: ubuntu-latest
@@ -35,4 +28,14 @@ jobs:
         if: github.event_name == 'issues' && github.event.action == 'opened'
         with:
           project-url: https://github.com/orgs/trezor/projects/58
+          github-token: ${{ secrets.TREZOR_BOT_TOKEN }}
+
+  add-to-beta-project-suite-pull-requests:
+    name: Add new pull request to the Pull Requests project board
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@661f5254e8fcead08b054f5bc07b4d7f2af92c44
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        with:
+          project-url: https://github.com/orgs/trezor/projects/62
           github-token: ${{ secrets.TREZOR_BOT_TOKEN }}
