@@ -25,7 +25,6 @@ describe('T2 - Device settings', () => {
         //
         const newDeviceName = 'TREVOR!';
         const editNameBtn = '@settings/device/label-submit';
-        const confirmPopup = 'img[class*="DeviceConfirm"]';
 
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
@@ -51,9 +50,9 @@ describe('T2 - Device settings', () => {
         cy.getTestElement('@settings/device/label-input').clear().type(newDeviceName);
         cy.getTestElement(editNameBtn).should('be.enabled');
         cy.getTestElement(editNameBtn).click();
-        cy.get(confirmPopup).should('be.visible');
+        cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
-        cy.get(confirmPopup).should('not.exist');
+        cy.getConfirmActionOnDeviceModal().should('not.exist');
         cy.log('-> Done.');
 
         // verify the name change
