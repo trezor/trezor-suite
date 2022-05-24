@@ -4,15 +4,15 @@
 
 It's good to have some tools installed before you begin:
 
-1. Android Studio - Useful especially because built-in emulator. [Download here](https://developer.android.com/studio)
-2. `adb` - Android debug bridge, needed for communication with real device or emulator. [More info here](https://developer.android.com/studio/command-line/adb). Could be also installed using Android studio. After installation you should verify it is working by calling command `adb devices` that should list connected devices or emulators.
-3. `watchman` - [Tool for watching file changes in Metro Bundler](https://facebook.github.io/watchman/docs/install.html)
+1. Android Studio - Useful especially because of the built-in emulator. [Download here](https://developer.android.com/studio)
+1. `adb` - Android debug bridge, needed for communication with real device or emulator. [More info here](https://developer.android.com/studio/command-line/adb). Could be also installed using Android studio. After installation, you should verify that it is working by running command `adb devices`, which should list connected devices or emulators.
+1. `watchman` - [Tool for watching file changes in Metro Bundler](https://facebook.github.io/watchman/docs/install.html)
 
 ## Running app on Android
 
-1. Connect device or run emulator. For physical device it's recommended to use [adb over wifi](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+) because you will have free USB port to connect Trezor device.
-2. Run packager - `yarn start`
-3. Run native build - `yarn android`
+1. Connect device or run emulator. For a physical device, it's recommended to use [adb over wifi](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+) because you will have free up a USB port to connect Trezor device.
+1. Run packager - `yarn start`
+1. Run native build - `yarn android`
 
 ## Building Android
 
@@ -23,9 +23,9 @@ You can build release version of app using `yarn build:android`. Output apk will
 Transport layer not working for iOS but it's possible to run app. You will need Xcode and [xcode-select](https://www.freecodecamp.org/news/install-xcode-command-line-tools/).
 
 1. Install CocoaPods dependencies - `yarn pods`
-2. Connect device or emulator
-3. Run packager - `yarn start`
-4. Run iOS build - `yarn ios`
+1. Connect device or emulator
+1. Run packager - `yarn start`
+1. Run iOS build - `yarn ios`
 
 ## Debugging
 
@@ -40,4 +40,4 @@ Best way how to debug app is download [Flipper](https://fbflipper.com).
 ## Updating fonts
 
 1. Place updated fonts to `packages/theme/fonts`
-2. Run `yarn react-native link`
+1. Run `yarn react-native link`

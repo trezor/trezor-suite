@@ -9,10 +9,10 @@ Participation is easy and completely optional. Enable or disable usage data shar
 **TL;DR**
 
 1. Data is only collected with explicit permission.
-2. Your sensitive data is not collected.
-3. We use AWS logging for data analytics and Sentry for error tracking.
-4. We store the data concerning errors for the period of 90 days.
-5. Only limited amount of users is able to access the data.
+1. Your sensitive data is not collected.
+1. We use AWS logging for data analytics and Sentry for error tracking.
+1. We store the data concerning errors for the period of 90 days.
+1. Only limited amount of users is able to access the data.
 
 ## What data is collected?
 

@@ -110,8 +110,8 @@ The MD files fetched from GB mirror can't be directly displayed on the screen. F
 }
 ```
 
-2. **Cleaning:** GitBook sometimes adds a yaml front-matter to the MD files. Strip it away.
-3. **Bundling**: Take the JSON index, cleaned MD files and assets and expose them in the `/public` directory of the Suite app. From there it's easy to use them to render the UI.
+1. **Cleaning:** GitBook sometimes adds a yaml front-matter to the MD files. Strip it away.
+1. **Bundling**: Take the JSON index, cleaned MD files and assets and expose them in the `/public` directory of the Suite app. From there it's easy to use them to render the UI.
 
 #### Usage
 

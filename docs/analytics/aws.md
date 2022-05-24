@@ -26,7 +26,7 @@ When data tracking is enabled, Trezor Suite collects functional information that
 ## Data process
 
 1. User with enabled analytics interacts with the application
-2. Events are sent to specific endpoints
-3. Collected data are parsed and analysed (can be seen in Keboola)
-4. Charts and metrics are created (in Tableau)
-5. We know how to improve the application
+1. Events are sent to specific endpoints
+1. Collected data are parsed and analysed (can be seen in Keboola)
+1. Charts and metrics are created (in Tableau)
+1. We know how to improve the application

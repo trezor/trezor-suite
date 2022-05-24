@@ -96,9 +96,9 @@ The transaction
 Trezor supports signing of stake pool registration certificates as a pool owner. The transaction may contain external inputs (e.g. belonging to the pool operator) and Trezor is not able to verify whether they are actually external or not, so if we allowed signing the transaction with a spending key, there is the risk of losing funds from an input that the user did not intend to spend from. Moreover there is the risk of inadvertedly signing a withdrawal in the transaction if there's any. To mitigate those risks, we introduced special validation rules for stake pool registration transactions which are validated on Trezor as well. The validation rules are the following:
 
 1. The transaction must not contain any other certificates, not even another stake pool registration
-2. The transaction must not contain any withdrawals
-3. The transaction inputs must all be external, i.e. path must be either undefined or null
-4. Exactly one owner should be passed as a staking path and the rest of owners should be passed as bech32-encoded reward addresses
+1. The transaction must not contain any withdrawals
+1. The transaction inputs must all be external, i.e. path must be either undefined or null
+1. Exactly one owner should be passed as a staking path and the rest of owners should be passed as bech32-encoded reward addresses
 
 ### Example
 

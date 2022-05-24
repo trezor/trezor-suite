@@ -15,11 +15,11 @@ _Note: All paths below are relative to the root of trezor-suite repository._
 #### Steps
 
 1. Run `xhost +` to add yourself to the X access control list.
-2. Run `docker/docker-suite-install.sh`.
-3. Run `docker/docker-suite-test.sh`.
+1. Run `docker/docker-suite-install.sh`.
+1. Run `docker/docker-suite-test.sh`.
     - A Cypress window should open.
     - Wait until the project is built (a warning about "http://localhost:8000/ is not available", should disappear on the retry button click).
-4. Start a test by clicking its name in the Cypress window.
+1. Start a test by clicking its name in the Cypress window.
     - It should open a browser window.
     - If the Suite web app is not loading even after two retries. Stop tests, open a new tab, navigate to http://localhost:8000/, refresh the page until the app is loaded. Close the tab and run tests again.
 
@@ -44,19 +44,19 @@ As of now M1 Macs aren't supported. See [this issue](https://github.com/trezor/t
 #### Steps
 
 1. Run XQuartz. Wait till it is launched. Leave it running in the background.
-2. In XQuartz settings go to Preferences -> Security and enable "Allow connections from network clients".
-3. Open a new terminal window (not in XQuartz) and add yourself to the X access control list:
+1. In XQuartz settings go to Preferences -> Security and enable "Allow connections from network clients".
+1. Open a new terminal window (not in XQuartz) and add yourself to the X access control list:
     - `xhost +127.0.0.1`
     - You will probably need to logout/login after XQuartz installation to have `xhost` command available.
-4. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
-5. In terminal window run `docker/docker-suite-install.sh`
-6. In the terminal window, set two environment variables:
+1. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
+1. In terminal window run `docker/docker-suite-install.sh`
+1. In the terminal window, set two environment variables:
     - `` export HOSTNAME=`hostname` ``
     - `export DISPLAY=${HOSTNAME}:0`
-7. In terminal window run `docker/docker-suite-test.sh`
+1. In terminal window run `docker/docker-suite-test.sh`
     - A Cypress window should open.
     - Wait until the project is built (a warning about "http://localhost:8000/ is not available", should disappear on the retry button click).
-8. Start a test by clicking its name in the Cypress window.
+1. Start a test by clicking its name in the Cypress window.
     - It should open a browser window.
     - If the Suite web app is not loading even after two retries. Stop tests, open a new tab, navigate to http://localhost:8000/, refresh the page until the app is loaded. Close the tab and run tests again.
 
@@ -68,6 +68,41 @@ As of now M1 Macs aren't supported. See [this issue](https://github.com/trezor/t
         -   `echo $HOSTNAME # e.g. name.local`
         -   `echo $DISPLAY # e.g. name.local:0`
     -   Do not mix native terminal window with terminal window in your IDE (e.g. Visual Studio Code).
+
+### On MacOS (ARM)
+
+-   currently, it is not possible to run E2E tests only within a Docker container on ARM mac. With `Trezor-user-env` run in Docker, it is possible to run `Suite` and `Cypress` locally.
+
+#### Prerequisites
+
+-   [Docker](https://docs.docker.com/desktop/mac/install/)
+-   [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
+-   [Trezor user env](https://github.com/trezor/trezor-user-env)
+-   No other instance of `Suite` or `trezord` service is running
+
+Steps:
+
+1. Run XQuartz. Wait till it is launched. Leave it running in the background.
+1. In XQuartz settings go to Preferences -> Security and enable "Allow connections from network clients".
+1. Open a new terminal window (not in XQuartz) and add yourself to the X access control list:
+    - `xhost +127.0.0.1`
+    - You will probably need to logout/login after XQuartz installation to have `xhost` command available.
+1. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
+1. In the terminal window, set two environment variables:
+    - `` export HOSTNAME=`hostname`  ``
+    - `export DISPLAY=${HOSTNAME}:0`
+1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
+1. In another window, run web `Suite` with `yarn suite:dev`.
+1. In a third window, run `npx cypress open --project packages/integration-tests/projects/suite-web --config 'baseUrl=http://localhost:8000'`.
+
+#### Troubleshooting
+
+-   `Cypress could not verify that this server is running ...`
+    -   make sure that the localhost is actually running and is accessible via browser
+-   `tests fail at the very beginning on screen with "Use trezor here" button`
+    -   make sure that no other instance of `Suite` or `trezord` is running
+
+---
 
 ## Notes
 

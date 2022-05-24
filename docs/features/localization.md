@@ -105,11 +105,11 @@ _Section shamelessly stolen from [Crowdin contributions](https://www.notion.so/C
 There's a hidden feature in Suite, intended for translators, called Translation mode that redirects you into Crowdin upon clicking any particular string. This is immensely handy in comparison to blindly translating strings within Crowdin as it allows you to understand the context of a certain string before being taken to Crowdin to translate it.
 
 1.  Go to Settings in Suite
-2.  **Rapidly click** on the _"Settings"_ heading 5 times
-3.  Click the three dot context menu on the right
-4.  _"Debug Settings"_ should've appeared. Click it.
+1.  **Rapidly click** on the _"Settings"_ heading 5 times
+1.  Click the three dot context menu on the right
+1.  _"Debug Settings"_ should've appeared. Click it.
     If _"Debug Settings"_ hasn't appeared, repeat step 2.
-5.  Enable "_Translation mode_"
+1.  Enable "_Translation mode_"
 
 After enabling it each string, which is rendered via `Translation` component, is now underlined with red and shows a popup with the message's ID when you hover the mouse over it.
 

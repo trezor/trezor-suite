@@ -5,5 +5,5 @@
 ## How to use this new package?
 
 1. Place this package to dependency field to package.json in package where you want to use it.
-2. Run `yarn refs` to generate tsconfig refs.
-3. Run `yarn` to let yarn symlink this package.
+1. Run `yarn refs` to generate tsconfig refs.
+1. Run `yarn` to let yarn symlink this package.
