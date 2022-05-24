@@ -34,7 +34,6 @@ describe('T2 - Device settings', () => {
         cy.passThroughInitialRun();
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/device').click();
-        cy.contains('h1', 'Settings').should('be.visible');
 
         //
         // Test execution
@@ -42,7 +41,9 @@ describe('T2 - Device settings', () => {
 
         // verify firmware modal
         cy.log('open firmware modal and close it again');
-        cy.getTestElement('@settings/device/update-button').click({ scrollBehavior: false });
+        cy.getTestElement('@settings/device/update-button')
+            .should('be.visible')
+            .click({ scrollBehavior: false });
         cy.getTestElement('@modal/close-button').click();
 
         // change device's name
