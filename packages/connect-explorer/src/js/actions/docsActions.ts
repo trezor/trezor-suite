@@ -1,5 +1,4 @@
 import Markdown from 'markdown-it';
-// @ts-ignore
 import MarkdownReplaceLink from 'markdown-it-replace-link';
 import MarkdownReplaceLinkAttrs from 'markdown-it-link-attributes';
 
@@ -10,8 +9,8 @@ export const DOCS_LOADING = 'docs_loading';
 export const DOCS_LOADED = 'docs_loaded';
 export const DOCS_ERROR = 'docs_error';
 
-const CDN = 'https://raw.githubusercontent.com/trezor/connect/develop/docs/';
-const GITHUB = 'https://github.com/trezor/connect/blob/develop/docs/';
+const CDN = 'https://raw.githubusercontent.com/trezor/trezor-suite/develop/docs/packages/connect/';
+const GITHUB = 'https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect';
 
 export type DocsAction =
     | { type: typeof DOCS_LOADING; docs: Docs }
