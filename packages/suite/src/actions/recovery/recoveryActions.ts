@@ -77,9 +77,13 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (!response.success) {
         dispatch(setError(response.payload.error));
-        analytics.report({ type: EventType.CheckSeedError, error: response.payload.code });
+        analytics.report({
+            type: EventType.SettingsDeviceCheckSeed,
+            status: 'error',
+            error: response.payload.code,
+        });
     } else {
-        analytics.report({ type: EventType.CheckSeedSuccess });
+        analytics.report({ type: EventType.SettingsDeviceCheckSeed, status: 'finished' });
     }
 
     dispatch(setStatus('finished'));

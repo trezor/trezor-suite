@@ -20,6 +20,10 @@ Merged:
 
 -   analytics/enable, analytics/dispose to settings/analytics
     -   value: boolean
+-   check-seed/error, check-seed/success to settings/device/check-seed
+    -   error: string
+    -   status: 'finished' | 'error'
+
 Removed:
 
 -   session-end

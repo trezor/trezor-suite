@@ -89,13 +89,6 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.CheckSeedError;
-          error?: string;
-      }
-    | {
-          type: EventType.CheckSeedSuccess;
-      }
-    | {
           type: EventType.AccountsStatus;
           payload: {
               [key: string]: number;
@@ -208,6 +201,11 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SettingsDeviceCheckSeed;
+          status: 'finished' | 'error';
+          error?: string;
+      }
+    | {
           type: EventType.SettingsDeviceChangePin;
       }
     | { type: EventType.SettingsDeviceChangeLabel }
@@ -233,6 +231,7 @@ export type SuiteAnalyticsEvent =
               value: 0 | 90 | 180 | 270;
           };
       }
+    | { type: EventType.SettingsDeviceWipe }
     | {
           type: EventType.SettingsDeviceChangePassphraseProtection;
           payload: {
