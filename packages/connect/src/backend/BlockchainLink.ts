@@ -309,8 +309,13 @@ const setPreferredBacked = (coinInfo: CoinInfo, url?: string) => {
     if (!url) {
         delete preferredBackends[coinInfo.shortcut];
     } else if (coinInfo.blockchainLink) {
-        coinInfo.blockchainLink.url = [url];
-        preferredBackends[coinInfo.shortcut] = coinInfo;
+        preferredBackends[coinInfo.shortcut] = {
+            ...coinInfo,
+            blockchainLink: {
+                ...coinInfo.blockchainLink,
+                url: [url],
+            },
+        };
     }
 };
 
@@ -322,8 +327,10 @@ export const setCustomBackend = (
     if (!blockchainLink || blockchainLink.url.length === 0) {
         delete customBackends[coinInfo.shortcut];
     } else {
-        customBackends[coinInfo.shortcut] = coinInfo;
-        customBackends[coinInfo.shortcut].blockchainLink = blockchainLink;
+        customBackends[coinInfo.shortcut] = {
+            ...coinInfo,
+            blockchainLink,
+        };
     }
 };
 
