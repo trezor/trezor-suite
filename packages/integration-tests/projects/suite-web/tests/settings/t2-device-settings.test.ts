@@ -56,12 +56,7 @@ describe('T2 - Device settings', () => {
         cy.log('-> Done.');
 
         // verify the name change
-        cy.getTestElement('@menu/switch-device')
-            .find('[class*="DeviceLabel"] > span')
-            .invoke('text')
-            .then(deviceName => {
-                expect(deviceName).to.be.equal(newDeviceName);
-            });
+        cy.getTestElement('@menu/switch-device').contains(newDeviceName);
 
         // enable passphrase protection
         cy.log('turn on passphrase protection');
