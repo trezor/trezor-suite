@@ -60,6 +60,7 @@ export enum EventType {
     SettingsGeneralChangeFiat = 'settings/general/change-fiat',
     SettingsGeneralEarlyAccess = 'settings/general/early-access',
     SettingsCoinsBackend = 'settings/coins/backend',
+    SettingsCoins = 'settings/coins',
     SettingsTor = 'settings/tor',
     SettingsTorOnionLinks = 'settings/tor/onion-links',
 
