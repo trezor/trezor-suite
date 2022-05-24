@@ -29,7 +29,7 @@ export type AnalyticsAction =
       };
 
 export const enable = () => (dispatch: Dispatch) => {
-    analytics.report({ type: EventType.AnalyticsEnable });
+    analytics.report({ type: EventType.SettingsAnalytics, payload: { value: true } });
     allowSentryReport(true);
 
     dispatch({
@@ -38,7 +38,7 @@ export const enable = () => (dispatch: Dispatch) => {
 };
 
 export const disable = () => (dispatch: Dispatch) => {
-    analytics.report({ type: EventType.AnalyticsDispose }, true);
+    analytics.report({ type: EventType.SettingsAnalytics, payload: { value: false } }, true);
     allowSentryReport(false);
 
     dispatch({

@@ -300,10 +300,10 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.AnalyticsEnable;
-      }
-    | {
-          type: EventType.AnalyticsDispose;
+          type: EventType.SettingsAnalytics;
+          payload: {
+              value: boolean;
+          };
       }
     | {
           type: EventType.SelectWalletType;
