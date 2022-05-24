@@ -111,27 +111,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-version 4 and below:
-
-```javascript
-TrezorConnect.ethereumGetAddress("m/44'/60'/0'", function (result) {
-    result.address; // address without "0x" prefix and without checksum
-    result.path;
-});
-```
-
-version 5
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.ethereumGetAddress({
-    path: "m/44'/60'/0'",
-}).then(function (result) {
-    result.address; // address with "0x" prefix and checksum
-    result.path; // no change
-    result.serializedPath; // added
-});
-```

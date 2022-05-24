@@ -49,27 +49,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-version 4 and below
-
-```javascript
-TrezorConnect.ethereumSignMessage("m/44'/60'/0'", 'example message', function (result) {
-    result.address; // address without "0x" prefix
-    result.signature;
-});
-```
-
-version 5
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.ethereumSignMessage({
-    path: "m/44'/60'/0'",
-    message: 'example message',
-}).then(function (result) {
-    result.address; // address with "0x" prefix and checksum
-    result.signature; // no change
-});
-```

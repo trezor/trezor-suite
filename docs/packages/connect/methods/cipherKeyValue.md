@@ -100,38 +100,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-version 4 and below:
-
-```javascript
-TrezorConnect.cipherKeyValue(
-    "m/49'/0'/0'", // path
-    'This is displayed on Trezor during encrypt', // key
-    '1c0ffeec0ffeec0ffeec0ffeec0ffee1', // value
-    true, // encrypt
-    true, // ask on encrypt
-    true, // ask on decrypt
-    function (result) {
-        // callback
-        // result not changed
-    },
-);
-```
-
-version 5
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.cipherKeyValue({
-    path: "m/49'/0'/0'",
-    key: 'This is displayed on Trezor during encrypt',
-    value: '1c0ffeec0ffeec0ffeec0ffeec0ffee1',
-    encrypt: true,
-    askOnEncrypt: true,
-    askOnDecrypt: true,
-}).then(function (result) {
-    // result not changed
-});
-```

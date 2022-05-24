@@ -113,28 +113,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-version 4 and below
-
-```javascript
-TrezorConnect.nemGetAddress("m/44'/43'/0'", 0x68, function (result) {
-    result.address, result.path;
-});
-```
-
-version 5
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.nemGetAddress({
-    path: "m/44'/43'/0'",
-    network: 0x68,
-    showOnTrezor: true,
-}).then(function (result) {
-    result.address, // no change
-        result.path, // no change
-        result.serializedPath; // added
-});
-```
