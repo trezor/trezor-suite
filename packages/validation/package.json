@@ -6,7 +6,6 @@
     "sideEffects": [
         "src/config.ts"
     ],
-    "type": "module",
     "main": "src/index",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",

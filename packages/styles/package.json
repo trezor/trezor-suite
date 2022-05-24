@@ -4,7 +4,6 @@
     "private": true,
     "license": "SEE ROOT LICENSE.md",
     "main": "src/index",
-    "type": "module",
     "sideEffects": false,
     "scripts": {
         "type-check": "tsc --build",
