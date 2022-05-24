@@ -37,4 +37,4 @@ jobs:
       - name: msg-system config validation
         run: yarn workspace @trezor/suite-data msg-system-validate-config
       - name: unit tests
-        run: lerna run --stream test:unit -- --passWithNoTests
+        run: lerna run --stream test:unit

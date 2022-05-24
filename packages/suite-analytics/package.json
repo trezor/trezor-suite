@@ -4,11 +4,10 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "type": "module",
     "main": "src/index",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest",
+        "test:unit": "jest --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {

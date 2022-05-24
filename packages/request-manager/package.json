@@ -11,7 +11,7 @@
     ],
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest --verbose -c jest.config.js",
+        "test:unit": "jest --passWithNoTests",
         "type-check": "tsc --build tsconfig.json",
         "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json"
     },

@@ -4,7 +4,6 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "type": "module",
     "main": "src/index",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
