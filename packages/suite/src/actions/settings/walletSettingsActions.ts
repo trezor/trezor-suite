@@ -30,6 +30,13 @@ export const setDiscreetMode = (toggled: boolean) => (dispatch: Dispatch, getSta
     if (!getState().suite.flags.discreetModeCompleted) {
         dispatch(suiteActions.setFlag('discreetModeCompleted', true));
     }
+
+    analytics.report({
+        type: EventType.MenuToggleDiscreet,
+        payload: {
+            value: toggled,
+        },
+    });
 };
 
 export const changeCoinVisibility =

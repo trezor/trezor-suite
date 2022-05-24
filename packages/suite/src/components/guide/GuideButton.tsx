@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { variables } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/utils';
@@ -33,16 +32,9 @@ const Wrapper = styled.button`
 export const GuideButton = () => {
     const { openGuide } = useGuide();
 
-    const handleButtonClick = () => {
-        openGuide();
-        analytics.report({
-            type: EventType.MenuGuide,
-        });
-    };
-
     return (
         <FreeFocusInside>
-            <Wrapper data-test="@guide/button-open" onClick={handleButtonClick}>
+            <Wrapper data-test="@guide/button-open" onClick={openGuide}>
                 <img
                     src={resolveStaticPath('/images/suite/lightbulb.svg')}
                     width="18"

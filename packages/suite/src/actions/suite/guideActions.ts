@@ -1,3 +1,5 @@
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { GUIDE } from './constants';
 import { Dispatch } from '@suite-types';
 import { addToast } from '@suite-actions/notificationActions';
@@ -12,9 +14,15 @@ export type GuideAction =
     | { type: typeof GUIDE.UNSET_NODE }
     | { type: typeof GUIDE.OPEN_NODE; payload: Node };
 
-export const open = (): GuideAction => ({
-    type: GUIDE.OPEN,
-});
+export const open = (): GuideAction => {
+    analytics.report({
+        type: EventType.MenuGuide,
+    });
+
+    return {
+        type: GUIDE.OPEN,
+    };
+};
 
 export const close = (): GuideAction => ({
     type: GUIDE.CLOSE,

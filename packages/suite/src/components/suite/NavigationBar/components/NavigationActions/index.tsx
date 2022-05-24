@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -100,15 +99,7 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
     return (
         <WrapperComponent>
             <ActionItem
-                onClick={() => {
-                    analytics.report({
-                        type: EventType.MenuToggleDiscreet,
-                        payload: {
-                            value: !discreetMode,
-                        },
-                    });
-                    setDiscreetMode(!discreetMode);
-                }}
+                onClick={() => setDiscreetMode(!discreetMode)}
                 isActive={discreetMode}
                 label={<Translation id="TR_DISCREET" />}
                 icon={discreetMode ? 'HIDE' : 'SHOW'}
