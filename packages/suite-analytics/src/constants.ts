@@ -64,6 +64,5 @@ export enum EventType {
     SettingsTor = 'settings/tor',
     SettingsTorOnionLinks = 'settings/tor/onion-links',
 
-    AnalyticsEnable = 'analytics/enable',
-    AnalyticsDispose = 'analytics/dispose',
+    SettingsAnalytics = 'settings/analytics',
 }

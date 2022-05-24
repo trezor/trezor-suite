@@ -16,6 +16,10 @@ Renamed:
 -   menu/toggle-onion-links to settings/tor/onion-links
 -   menu/toggle-tor to settings/tor
 
+Merged:
+
+-   analytics/enable, analytics/dispose to settings/analytics
+    -   value: boolean
 Removed:
 
 -   session-end

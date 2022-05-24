@@ -35,7 +35,8 @@ describe('Analytics', () => {
 
         // assert that only "analytics/dispose" event was fired
         cy.wait('@data-fetch');
-        cy.wrap(requests).its(0).should('have.property', 'c_type', EventType.AnalyticsDispose);
+        cy.wrap(requests).its(0).should('have.property', 'c_type', EventType.SettingsAnalytics);
+        cy.wrap(requests).its(0).should('have.property', 'value', 'false');
         cy.wrap(requests).its(0).its('c_session_id').as('request0');
         cy.wrap(requests)
             .its(0)
@@ -62,7 +63,7 @@ describe('Analytics', () => {
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@analytics/toggle-switch').find('input').should('be.checked');
         cy.wait('@data-fetch');
-        cy.wrap(requests).its(1).should('have.property', 'c_type', EventType.AnalyticsEnable);
+        cy.wrap(requests).its(1).should('have.property', 'c_type', EventType.SettingsAnalytics);
         cy.wrap(requests).its(1).its('c_session_id').as('request1');
         cy.wrap(requests)
             .its(1)
@@ -100,7 +101,7 @@ describe('Analytics', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.wait('@data-fetch');
         cy.wrap(requests).its(3).should('have.property', 'c_type', EventType.RouterLocationChange);
-        cy.wrap(requests).should('have.length', 5);
+        cy.wrap(requests).should('have.length', 4);
     });
 
     it('should respect enabled analytics in onboarding with following disabling in settings', () => {
@@ -123,7 +124,7 @@ describe('Analytics', () => {
             .should('include', EventType.SuiteReady);
         cy.wrap(requests)
             .then(list => Cypress._.map(list, 'c_type'))
-            .should('include', EventType.AnalyticsEnable);
+            .should('include', EventType.SettingsAnalytics);
 
         // finish onboarding
         cy.getTestElement('@onboarding/exit-app-button').click();
@@ -145,7 +146,7 @@ describe('Analytics', () => {
         // check that analytics disable event was fired
         cy.wrap(requests)
             .then(list => Cypress._.map(list, 'c_type'))
-            .should('include', EventType.AnalyticsDispose);
+            .should('include', EventType.SettingsAnalytics);
         cy.wrap(requests).its('length').as('length0');
 
         // check that "settings/general/change-fiat" event was not fired
