@@ -2046,22 +2046,6 @@
                     "type": "string",
                     "id": 7
                 },
-                "owners": {
-                    "rule": "repeated",
-                    "type": "CardanoPoolOwner",
-                    "id": 8,
-                    "options": {
-                        "deprecated": true
-                    }
-                },
-                "relays": {
-                    "rule": "repeated",
-                    "type": "CardanoPoolRelayParameters",
-                    "id": 9,
-                    "options": {
-                        "deprecated": true
-                    }
-                },
                 "metadata": {
                     "type": "CardanoPoolMetadataType",
                     "id": 10
@@ -2283,263 +2267,6 @@
         },
         "CardanoSignTxFinished": {
             "fields": {}
-        },
-        "CardanoSignTx": {
-            "options": {
-                "deprecated": true
-            },
-            "fields": {
-                "inputs": {
-                    "rule": "repeated",
-                    "type": "CardanoTxInputType",
-                    "id": 1
-                },
-                "outputs": {
-                    "rule": "repeated",
-                    "type": "CardanoTxOutputType",
-                    "id": 2
-                },
-                "protocol_magic": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 5
-                },
-                "fee": {
-                    "rule": "required",
-                    "type": "uint64",
-                    "id": 6
-                },
-                "ttl": {
-                    "type": "uint64",
-                    "id": 7
-                },
-                "network_id": {
-                    "rule": "required",
-                    "type": "uint32",
-                    "id": 8
-                },
-                "certificates": {
-                    "rule": "repeated",
-                    "type": "CardanoTxCertificateType",
-                    "id": 9
-                },
-                "withdrawals": {
-                    "rule": "repeated",
-                    "type": "CardanoTxWithdrawalType",
-                    "id": 10
-                },
-                "validity_interval_start": {
-                    "type": "uint64",
-                    "id": 12
-                },
-                "auxiliary_data": {
-                    "type": "CardanoTxAuxiliaryDataType",
-                    "id": 13
-                }
-            },
-            "nested": {
-                "CardanoTxInputType": {
-                    "fields": {
-                        "address_n": {
-                            "rule": "repeated",
-                            "type": "uint32",
-                            "id": 1,
-                            "options": {
-                                "packed": false
-                            }
-                        },
-                        "prev_hash": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 2
-                        },
-                        "prev_index": {
-                            "rule": "required",
-                            "type": "uint32",
-                            "id": 3
-                        }
-                    }
-                },
-                "CardanoTxOutputType": {
-                    "fields": {
-                        "address": {
-                            "type": "string",
-                            "id": 1
-                        },
-                        "amount": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 3
-                        },
-                        "address_parameters": {
-                            "type": "CardanoAddressParametersType",
-                            "id": 4
-                        },
-                        "token_bundle": {
-                            "rule": "repeated",
-                            "type": "CardanoAssetGroupType",
-                            "id": 5
-                        }
-                    }
-                },
-                "CardanoAssetGroupType": {
-                    "fields": {
-                        "policy_id": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 1
-                        },
-                        "tokens": {
-                            "rule": "repeated",
-                            "type": "CardanoTokenType",
-                            "id": 2
-                        }
-                    }
-                },
-                "CardanoTokenType": {
-                    "fields": {
-                        "asset_name_bytes": {
-                            "rule": "required",
-                            "type": "bytes",
-                            "id": 1
-                        },
-                        "amount": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 2
-                        }
-                    }
-                },
-                "CardanoPoolOwnerType": {
-                    "fields": {
-                        "staking_key_path": {
-                            "rule": "repeated",
-                            "type": "uint32",
-                            "id": 1,
-                            "options": {
-                                "packed": false
-                            }
-                        },
-                        "staking_key_hash": {
-                            "type": "bytes",
-                            "id": 2
-                        }
-                    }
-                },
-                "CardanoPoolRelayParametersType": {
-                    "fields": {
-                        "type": {
-                            "rule": "required",
-                            "type": "CardanoPoolRelayType",
-                            "id": 1
-                        },
-                        "ipv4_address": {
-                            "type": "bytes",
-                            "id": 2
-                        },
-                        "ipv6_address": {
-                            "type": "bytes",
-                            "id": 3
-                        },
-                        "host_name": {
-                            "type": "string",
-                            "id": 4
-                        },
-                        "port": {
-                            "type": "uint32",
-                            "id": 5
-                        }
-                    }
-                },
-                "CardanoTxCertificateType": {
-                    "fields": {
-                        "type": {
-                            "rule": "required",
-                            "type": "CardanoCertificateType",
-                            "id": 1
-                        },
-                        "path": {
-                            "rule": "repeated",
-                            "type": "uint32",
-                            "id": 2,
-                            "options": {
-                                "packed": false
-                            }
-                        },
-                        "pool": {
-                            "type": "bytes",
-                            "id": 3
-                        },
-                        "pool_parameters": {
-                            "type": "CardanoPoolParametersType",
-                            "id": 4
-                        }
-                    }
-                },
-                "CardanoTxWithdrawalType": {
-                    "fields": {
-                        "path": {
-                            "rule": "repeated",
-                            "type": "uint32",
-                            "id": 1,
-                            "options": {
-                                "packed": false
-                            }
-                        },
-                        "amount": {
-                            "rule": "required",
-                            "type": "uint64",
-                            "id": 2
-                        }
-                    }
-                },
-                "CardanoTxAuxiliaryDataType": {
-                    "fields": {
-                        "blob": {
-                            "type": "bytes",
-                            "id": 1
-                        },
-                        "catalyst_registration_parameters": {
-                            "type": "CardanoCatalystRegistrationParametersType",
-                            "id": 2
-                        }
-                    }
-                }
-            }
-        },
-        "CardanoSignedTxChunk": {
-            "options": {
-                "deprecated": true
-            },
-            "fields": {
-                "signed_tx_chunk": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                }
-            }
-        },
-        "CardanoSignedTxChunkAck": {
-            "options": {
-                "deprecated": true
-            },
-            "fields": {}
-        },
-        "CardanoSignedTx": {
-            "options": {
-                "deprecated": true
-            },
-            "fields": {
-                "tx_hash": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 1
-                },
-                "serialized_tx": {
-                    "type": "bytes",
-                    "id": 2
-                }
-            }
         },
         "Success": {
             "fields": {
@@ -4824,6 +4551,14 @@
                 }
             }
         },
+        "MoneroNetworkType": {
+            "values": {
+                "MAINNET": 0,
+                "TESTNET": 1,
+                "STAGENET": 2,
+                "FAKECHAIN": 3
+            }
+        },
         "MoneroTransactionSourceEntry": {
             "fields": {
                 "outputs": {
@@ -4885,10 +4620,12 @@
                         "MoneroRctKeyPublic": {
                             "fields": {
                                 "dest": {
+                                    "rule": "required",
                                     "type": "bytes",
                                     "id": 1
                                 },
                                 "commitment": {
+                                    "rule": "required",
                                     "type": "bytes",
                                     "id": 2
                                 }
@@ -5008,8 +4745,11 @@
                     "id": 2
                 },
                 "network_type": {
-                    "type": "uint32",
-                    "id": 3
+                    "type": "MoneroNetworkType",
+                    "id": 3,
+                    "options": {
+                        "default": "MAINNET"
+                    }
                 },
                 "account": {
                     "type": "uint32",
@@ -5044,8 +4784,11 @@
                     }
                 },
                 "network_type": {
-                    "type": "uint32",
-                    "id": 2
+                    "type": "MoneroNetworkType",
+                    "id": 2,
+                    "options": {
+                        "default": "MAINNET"
+                    }
                 }
             }
         },
@@ -5076,8 +4819,11 @@
                     }
                 },
                 "network_type": {
-                    "type": "uint32",
-                    "id": 3
+                    "type": "MoneroNetworkType",
+                    "id": 3,
+                    "options": {
+                        "default": "MAINNET"
+                    }
                 },
                 "tsx_data": {
                     "type": "MoneroTransactionData",
@@ -5208,21 +4954,6 @@
                     "id": 6
                 }
             }
-        },
-        "MoneroTransactionInputsPermutationRequest": {
-            "fields": {
-                "perm": {
-                    "rule": "repeated",
-                    "type": "uint32",
-                    "id": 1,
-                    "options": {
-                        "packed": false
-                    }
-                }
-            }
-        },
-        "MoneroTransactionInputsPermutationAck": {
-            "fields": {}
         },
         "MoneroTransactionInputViniRequest": {
             "fields": {
@@ -5434,10 +5165,12 @@
         "MoneroKeyImageExportInitRequest": {
             "fields": {
                 "num": {
+                    "rule": "required",
                     "type": "uint64",
                     "id": 1
                 },
                 "hash": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 2
                 },
@@ -5450,8 +5183,11 @@
                     }
                 },
                 "network_type": {
-                    "type": "uint32",
-                    "id": 4
+                    "type": "MoneroNetworkType",
+                    "id": 4,
+                    "options": {
+                        "default": "MAINNET"
+                    }
                 },
                 "subs": {
                     "rule": "repeated",
@@ -5463,6 +5199,7 @@
                 "MoneroSubAddressIndicesList": {
                     "fields": {
                         "account": {
+                            "rule": "required",
                             "type": "uint32",
                             "id": 1
                         },
@@ -5493,10 +5230,12 @@
                 "MoneroTransferDetails": {
                     "fields": {
                         "out_key": {
+                            "rule": "required",
                             "type": "bytes",
                             "id": 1
                         },
                         "tx_pub_key": {
+                            "rule": "required",
                             "type": "bytes",
                             "id": 2
                         },
@@ -5506,6 +5245,7 @@
                             "id": 3
                         },
                         "internal_output_index": {
+                            "rule": "required",
                             "type": "uint64",
                             "id": 4
                         },
@@ -5566,22 +5306,29 @@
                     }
                 },
                 "network_type": {
-                    "type": "uint32",
-                    "id": 2
+                    "type": "MoneroNetworkType",
+                    "id": 2,
+                    "options": {
+                        "default": "MAINNET"
+                    }
                 },
                 "salt1": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 3
                 },
                 "salt2": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 4
                 },
                 "tx_enc_keys": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 5
                 },
                 "tx_prefix_hash": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 6
                 },
@@ -5622,8 +5369,11 @@
                     }
                 },
                 "network_type": {
-                    "type": "uint32",
-                    "id": 2
+                    "type": "MoneroNetworkType",
+                    "id": 2,
+                    "options": {
+                        "default": "MAINNET"
+                    }
                 }
             }
         },
@@ -5633,22 +5383,27 @@
         "MoneroLiveRefreshStepRequest": {
             "fields": {
                 "out_key": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 1
                 },
                 "recv_deriv": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 2
                 },
                 "real_out_idx": {
+                    "rule": "required",
                     "type": "uint64",
                     "id": 3
                 },
                 "sub_addr_major": {
+                    "rule": "required",
                     "type": "uint32",
                     "id": 4
                 },
                 "sub_addr_minor": {
+                    "rule": "required",
                     "type": "uint32",
                     "id": 5
                 }
@@ -6370,14 +6125,10 @@
                 "MessageType_StellarManageBuyOfferOp": 222,
                 "MessageType_StellarPathPaymentStrictSendOp": 223,
                 "MessageType_StellarSignedTx": 230,
-                "MessageType_CardanoSignTx": 303,
                 "MessageType_CardanoGetPublicKey": 305,
                 "MessageType_CardanoPublicKey": 306,
                 "MessageType_CardanoGetAddress": 307,
                 "MessageType_CardanoAddress": 308,
-                "MessageType_CardanoSignedTx": 310,
-                "MessageType_CardanoSignedTxChunk": 311,
-                "MessageType_CardanoSignedTxChunkAck": 312,
                 "MessageType_CardanoTxItemAck": 313,
                 "MessageType_CardanoTxAuxiliaryDataSupplement": 314,
                 "MessageType_CardanoTxWitnessRequest": 315,
@@ -6408,8 +6159,6 @@
                 "MessageType_MoneroTransactionInitAck": 502,
                 "MessageType_MoneroTransactionSetInputRequest": 503,
                 "MessageType_MoneroTransactionSetInputAck": 504,
-                "MessageType_MoneroTransactionInputsPermutationRequest": 505,
-                "MessageType_MoneroTransactionInputsPermutationAck": 506,
                 "MessageType_MoneroTransactionInputViniRequest": 507,
                 "MessageType_MoneroTransactionInputViniAck": 508,
                 "MessageType_MoneroTransactionAllInputsSetRequest": 509,

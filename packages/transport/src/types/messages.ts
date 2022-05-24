@@ -772,8 +772,6 @@ export type CardanoPoolParametersType = {
     margin_numerator: UintType;
     margin_denominator: UintType;
     reward_account: string;
-    owners: CardanoPoolOwner[];
-    relays: CardanoPoolRelayParameters[];
     metadata?: CardanoPoolMetadataType;
     owners_count: number;
     relays_count: number;
@@ -861,87 +859,6 @@ export type CardanoTxBodyHash = {
 
 // CardanoSignTxFinished
 export type CardanoSignTxFinished = {};
-
-export type CardanoTxInputType = {
-    address_n?: number[];
-    prev_hash: string;
-    prev_index: number;
-};
-
-export type CardanoTokenType = {
-    asset_name_bytes: string;
-    amount: UintType;
-};
-
-export type CardanoAssetGroupType = {
-    policy_id: string;
-    tokens: CardanoTokenType[];
-};
-
-export type CardanoTxOutputType = {
-    address?: string;
-    amount: UintType;
-    address_parameters?: CardanoAddressParametersType;
-    token_bundle: CardanoAssetGroupType[];
-};
-
-export type CardanoPoolOwnerType = {
-    staking_key_path?: number[];
-    staking_key_hash?: string;
-};
-
-export type CardanoPoolRelayParametersType = {
-    type: CardanoPoolRelayType;
-    ipv4_address?: string;
-    ipv6_address?: string;
-    host_name?: string;
-    port?: number;
-};
-
-export type CardanoTxCertificateType = {
-    type: CardanoCertificateType;
-    path?: number[];
-    pool?: string;
-    pool_parameters?: CardanoPoolParametersType;
-};
-
-export type CardanoTxWithdrawalType = {
-    path: number[];
-    amount: UintType;
-};
-
-export type CardanoTxAuxiliaryDataType = {
-    blob?: string;
-    catalyst_registration_parameters?: CardanoCatalystRegistrationParametersType;
-};
-
-// CardanoSignTx
-export type CardanoSignTx = {
-    inputs: CardanoTxInputType[];
-    outputs: CardanoTxOutputType[];
-    protocol_magic: number;
-    fee: UintType;
-    ttl?: UintType;
-    network_id: number;
-    certificates: CardanoTxCertificateType[];
-    withdrawals: CardanoTxWithdrawalType[];
-    validity_interval_start?: UintType;
-    auxiliary_data?: CardanoTxAuxiliaryDataType;
-};
-
-// CardanoSignedTxChunk
-export type CardanoSignedTxChunk = {
-    signed_tx_chunk: string;
-};
-
-// CardanoSignedTxChunkAck
-export type CardanoSignedTxChunkAck = {};
-
-// CardanoSignedTx
-export type CardanoSignedTx = {
-    tx_hash: string;
-    serialized_tx?: string;
-};
 
 // Success
 export type Success = {
@@ -1710,6 +1627,13 @@ export type Nonce = {
     nonce: string;
 };
 
+export enum MoneroNetworkType {
+    MAINNET = 0,
+    TESTNET = 1,
+    STAGENET = 2,
+    FAKECHAIN = 3,
+}
+
 // NEMGetAddress
 export type NEMGetAddress = {
     address_n: number[];
@@ -2283,19 +2207,6 @@ export type MessageType = {
     CardanoTxHostAck: CardanoTxHostAck;
     CardanoTxBodyHash: CardanoTxBodyHash;
     CardanoSignTxFinished: CardanoSignTxFinished;
-    CardanoTxInputType: CardanoTxInputType;
-    CardanoTokenType: CardanoTokenType;
-    CardanoAssetGroupType: CardanoAssetGroupType;
-    CardanoTxOutputType: CardanoTxOutputType;
-    CardanoPoolOwnerType: CardanoPoolOwnerType;
-    CardanoPoolRelayParametersType: CardanoPoolRelayParametersType;
-    CardanoTxCertificateType: CardanoTxCertificateType;
-    CardanoTxWithdrawalType: CardanoTxWithdrawalType;
-    CardanoTxAuxiliaryDataType: CardanoTxAuxiliaryDataType;
-    CardanoSignTx: CardanoSignTx;
-    CardanoSignedTxChunk: CardanoSignedTxChunk;
-    CardanoSignedTxChunkAck: CardanoSignedTxChunkAck;
-    CardanoSignedTx: CardanoSignedTx;
     Success: Success;
     Failure: Failure;
     ButtonRequest: ButtonRequest;
