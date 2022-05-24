@@ -272,6 +272,13 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.SettingsCoins;
+          payload: {
+              symbol: string;
+              value: boolean;
+          };
+      }
+    | {
           type: EventType.SettingsCoinsBackend;
           payload: {
               symbol: string;

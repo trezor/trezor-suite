@@ -7,6 +7,7 @@ This changelog lists changes in suite events.
 Added:
 
 -   settings/device/wipe
+-   settings/coins
 
 Renamed:
 

@@ -1,8 +1,11 @@
+import { analytics, EventType } from '@trezor/suite-analytics';
+
+import type { FeeLevel } from '@trezor/connect';
+
 import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import type { Network } from '@wallet-types';
-import type { FeeLevel } from '@trezor/connect';
 
 export type WalletSettingsAction =
     | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
@@ -39,10 +42,17 @@ export const changeCoinVisibility =
         } else if (!isAlreadyHidden) {
             enabledNetworks = [...enabledNetworks, symbol];
         }
-
         dispatch({
             type: WALLET_SETTINGS.CHANGE_NETWORKS,
             payload: enabledNetworks,
+        });
+
+        analytics.report({
+            type: EventType.SettingsCoins,
+            payload: {
+                symbol,
+                value: shouldBeVisible,
+            },
         });
     };
 
