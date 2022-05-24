@@ -50,25 +50,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-version 4 and below
-
-```javascript
-TrezorConnect.signMessage("m/44'/0'/0'", "example message", function(result) {
-    ...
-}, "bitcoin");
-```
-
-version 5
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.signMessage({
-    path: "m/44'/0'/0'",
-    message: "example message"
-}).then(function(result) {
-    ...
-})
-```

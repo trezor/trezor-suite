@@ -116,24 +116,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-v4 and below:
-
-```javascript
-TrezorConnect.getAddress("m/49'/0'/4'/0/0", function (result) {
-    // added "serializedPath" field
-});
-```
-
-should be
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.getAddress({
-    path: "m/49'/0'/4'/0/0"
-}).then(function(result) {
-    ...
-})
-```

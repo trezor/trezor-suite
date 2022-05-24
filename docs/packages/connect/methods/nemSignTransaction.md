@@ -102,38 +102,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-version 4 and below
-
-```javascript
-var tx = {
-    timeStamp: 74649215,
-    amount: 2000000,
-    fee: 2000000,
-    recipient: 'TALICE2GMA34CXHD7XLJQ536NM5UNKQHTORNNT2J',
-    type: 257,
-    deadline: 74735615,
-    version: 0x98 << 24,
-    message: {
-        payload: hexlify('test_nem_transaction_transfer'),
-        type: 1,
-    },
-};
-TrezorConnect.nemSignTx("m/44'/1'/0'/0'/0'", tx, function (result) {
-    // result not changed
-});
-```
-
-version 5
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.nemSignTransaction({
-    path: "m/44'/1'/0'/0'/0'",
-    transaction: tx,
-}).then(function (result) {
-    // result not changed
-});
-```

@@ -90,32 +90,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-version 4 and below:
-
-```javascript
-TrezorConnect.getXPubKey("m/49'/0'/0'", function (result) {
-    result.path; // not changed
-    result.serializedPath; // not changed
-    result.xpubkey; // renamed to "xpub"
-    // added "xpubSegwit" field for segwit accounts
-    result.chainCode; // not changed
-    result.publicKey; // not changed
-    // added "fingerprint" field
-    // added "childNum" field
-    // added "depth" field
-});
-```
-
-version 5
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.getPublicKey({
-    path: "m/49'/0'/0'"
-}).then(function(result) {
-    ...
-})
-```

@@ -54,33 +54,3 @@ Error
     }
 }
 ```
-
-### Migration from older version
-
-version 4 and below
-
-```javascript
-var address = "3BD8TL6iShVzizQzvo789SuynEKGpLTms9";
-var signature = "JO7vL3tOB1qQyfSeIVLvdEw9G1tCvL+lNj78XDAVM4t6UptADs3kXDTO2+2ZeEOLFL4/+wm+BBdSpo3kb3Cnsas=";
-TrezorConnect.verifyMessage(
-    address,
-    signature,
-    "example message",
-    function(result) {
-    ...
-}, "bitcoin");
-```
-
-version 5
-
-```javascript
-// params are key-value pairs inside Object
-TrezorConnect.verifyMessage({
-    address: "3BD8TL6iShVzizQzvo789SuynEKGpLTms9",
-    signature: "JO7vL3tOB1qQyfSeIVLvdEw9G1tCvL+lNj78XDAVM4t6UptADs3kXDTO2+2ZeEOLFL4/+wm+BBdSpo3kb3Cnsas=",
-    message: "example message",
-    coin: "btc"
-}).then(function(result) {
-    ...
-})
-```
