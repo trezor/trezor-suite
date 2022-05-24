@@ -8,3 +8,4 @@ export * from './Icon/iconTypes';
 export * from './NumPadButton';
 export * from './SearchInput';
 export * from './Chip';
+export * from './Switch';

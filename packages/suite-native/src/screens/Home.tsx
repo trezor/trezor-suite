@@ -11,6 +11,7 @@ import {
     SearchInput,
     Radio,
     Chip,
+    Switch,
 } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -29,7 +30,8 @@ export const Home = () => {
     const [radioChecked, setRadioChecked] = useState('second');
     const [isChip1Selected, setIsChip1Selected] = useState<boolean>(false);
     const [isChip2Selected, setIsChip2Selected] = useState<boolean>(false);
-
+    const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
+    const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);
     };
@@ -68,6 +70,15 @@ export const Home = () => {
                     <Box>
                         <Text variant="titleMedium">Title Medium</Text>
                     </Box>
+                    <Switch
+                        isChecked={isSwitchActive}
+                        onChange={() => setIsSwitchActive(!isSwitchActive)}
+                    />
+                    <Switch
+                        isChecked={isSwitch2Active}
+                        onChange={() => setIsSwitch2Active(!isSwitch2Active)}
+                        isDisabled
+                    />
                     <Box>
                         <Text variant="titleSmall">Title Small</Text>
                     </Box>
