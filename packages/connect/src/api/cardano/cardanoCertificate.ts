@@ -144,8 +144,6 @@ const transformPoolParameters = (
             margin_numerator: poolParameters.margin.numerator,
             margin_denominator: poolParameters.margin.denominator,
             reward_account: poolParameters.rewardAccount,
-            owners: [], // required for wire compatibility with legacy FW
-            relays: [], // required for wire compatibility with legacy FW
             metadata: poolParameters.metadata,
             owners_count: poolParameters.owners.length,
             relays_count: poolParameters.relays.length,
