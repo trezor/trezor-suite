@@ -9,7 +9,7 @@ You can find Figma files for this theme here:
 
 # Fonts for React Native app
 
-If you want to update fonts, place new fonts to `./fonts` folder in this package and then follow guide in [suite-native README](../suite-native/README.md).
+If you want to update fonts, place new fonts to `./fonts` folder in this package and then follow the guide in [suite-native README](../suite-native/README.md).
 
 ### Older themes
 

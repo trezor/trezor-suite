@@ -1,15 +1,15 @@
-# Styling lib
+# @trezor/styles
 
 Fully fledged library to provide best DX for writing styles. In core it uses library `fela` which seems like a good choice for quality, simplicity, performance. I strongly recommend reading [Fela docs](https://fela.js.org/docs/latest/intro/getting-started), especially sections [Motivation](https://fela.js.org/docs/latest/intro/motivation) and [Principles](https://fela.js.org/docs/latest/intro/principles). Big thanks to [wafflepie](https://github.com/wafflepie) for birth of this lib and inspiration.
 
 ## Motivation and benefits
 
-1. Platform and framework agnostic - This lib is platform agnostic it can be used with small effort nearly everywhere and with anything.
-2. Easy setup - There is no additional setup or plugin needed for your editor, compiler, linter...
-3. Strongly typed in TypeScript - Whole library + package `@trezor/theme` is strongly typed, so it will prevent most of mistakes that could results in bugs (forgetting units, invalid properties names...). Another benefit of strong types is perfectly working autocomplete and IntelliSense.
-4. Natural syntax - Based on standard JS object syntax, very similar to React Native. This allows library to use full potential of CSS-in-JS without compromises (like ugly mixins etc.).
-5. Fast and small - Minimal bundle size and very high performance.
-6. Great developer experience - Created with DX as main focus point. Perfectly working IntelliSense, every utils just one param away with minimum need of extra imports, clean declarative syntax for dynamic conditional styles, RTL support, code snippets...
+1. Platform and framework agnostic - This lib is platform agnostic and can be used with small effort nearly everywhere and with anything.
+1. Easy setup - There is no additional setup or plugin needed for your editor, compiler, linter...
+1. Strongly typed in TypeScript - Whole library + package `@trezor/theme` is strongly typed, so it will prevent many bugs (forgetting units, invalid property names...). Another benefit of strong types is perfectly working autocomplete and IntelliSense.
+1. Natural syntax - Based on standard JS object syntax, very similar to React Native. This allows library to use full potential of CSS-in-JS without compromises (like ugly mixins etc.).
+1. Fast and small - Minimal bundle size and very high performance.
+1. Great developer experience - Created with DX as main focus point. Perfectly working IntelliSense, every util just one param away with minimum need of extra imports, clean declarative syntax for dynamic conditional styles, RTL support, code snippets...
 
 ## Installation
 
@@ -100,7 +100,7 @@ const myButtonStyle = prepareStyle(utils => ({
 
 ### Media queries
 
-First approach is useful when you need to change only single value. Following code will set `color` to red, from `xs` to `md`. From `md` and higher color will be same.
+First approach is useful when you need to change only a single value. Following code will set `color` to red when going from `xs` to `md`. From `md` higher the color will stay the same.
 
 ```tsx
 const myButtonStyle = prepareStyle(utils => ({
@@ -128,7 +128,7 @@ const myButtonStyle = prepareStyle(utils => ({
 
 ### Dynamic conditional styles
 
-There is plenty of options how to conditional dynamic styling. First and simplest approach is to use plain inline condition, useful when you need to modify just one property.
+There is plenty of options for conditional dynamic styling. First and simplest approach is to use plain inline condition, useful when you need to modify just one property.
 
 ```tsx
 type MyButtonStyleProps = {
@@ -253,12 +253,12 @@ sum(['2rem', '3rem']); // => 5rem
 
 ## Utils from polished
 
-Some of utils like `darken`, `lighten`, `transparentize` are just reexported from [polished](https://github.com/styled-components/polished) for best experience a to have everything in one place like our custom utils mentioned before.
+Some of the utils like `darken`, `lighten`, `transparentize` are just reexported from [polished](https://github.com/styled-components/polished) for best experience a to have everything in one place like our custom utils mentioned before.
 
 ## Styling in React Native
 
 All examples here were for web usage, but there is only few differences:
 
-1. Use `prepareNativeStyle` instead of `prepareStyle` - this will provide you best TS experience because if will autocomplete only properties that are available for RN
-2. Use `applyNativeStyle` instead of `applyStyle`
-3. Do not use selectors or media queries - these are not supported in React Native and TS won't allow you to do that anyway
+1. Use `prepareNativeStyle` instead of `prepareStyle` - this will provide you with the best TS experience because it will autocomplete only properties that are available for RN
+1. Use `applyNativeStyle` instead of `applyStyle`
+1. Do not use selectors or media queries - these are not supported in React Native and TS won't allow you to do that anyway

@@ -13,10 +13,10 @@ At one side we have the Suite application that can send HTTP requests. On the ot
 ## Objectives
 
 1. Messages contain mostly structured textual data and sometimes can contain an image.
-2. Messages need to be consumed by Keboola.
-3. The submitted messages must be kept private as they might contain sensitive user information. Only after going thru a manual triage they might end up in a publicly accessible place like, for example, GitHub issues.
-4. The messages should be enriched with a timestamp on the server side for client's clock might be off.
-5. The BE code should be minimal. Most control should be kept in the reach of Suite developers.
+1. Messages need to be consumed by Keboola.
+1. The submitted messages must be kept private as they might contain sensitive user information. Only after going thru a manual triage they might end up in a publicly accessible place like, for example, GitHub issues.
+1. The messages should be enriched with a timestamp on the server side for client's clock might be off.
+1. The BE code should be minimal. Most control should be kept in the reach of Suite developers.
 
 ## Analytics already do this...
 

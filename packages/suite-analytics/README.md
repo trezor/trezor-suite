@@ -77,5 +77,5 @@ Add event to the analytics overview in the [Company Notion](https://www.notion.s
 ## How to check that events are tracked?
 
 1. **Option**: Open DevTools, navigate to **Network tab**, filter traffic by `.log` and check the **Query String Parameters** section
-2. **Option**: Get access to Keboola via access form (link in [company Notion](https://www.notion.so/satoshilabs/Engineering-6d5f34c46db041318ceeecb65f973980))
-3. **Option**: Create a modified build of app with an analytics server URL pointing to your server
+1. **Option**: Get access to Keboola via access form (link in [company Notion](https://www.notion.so/satoshilabs/Engineering-6d5f34c46db041318ceeecb65f973980))
+1. **Option**: Create a modified build of app with an analytics server URL pointing to your server

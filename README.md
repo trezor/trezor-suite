@@ -7,8 +7,9 @@
 | package                                                               | description                                  |
 | --------------------------------------------------------------------- | -------------------------------------------- |
 | [@trezor/analytics](./packages/analytics)                             | generic analytics implementation             |
+| [@trezor/atoms](./packages/atoms)                                     | front-end React Native components            |
 | [@trezor/blockchain-link](./packages/blockchain-link)                 | lib for connecting to blockchains            |
-| [@trezor/components](./packages/components)                           | frontend react components                    |
+| [@trezor/components](./packages/components)                           | front-end React components for web + desktop |
 | [@trezor/connect](./packages/connect)                                 | 3rd party interface entrypoint for nodejs    |
 | [@trezor/connect-examples](./packages/connect-examples)               | example implementations of @trezor/connect   |
 | [@trezor/connect-common](./packages/connect-common)                   | static files and commons for @trezor/connect |
