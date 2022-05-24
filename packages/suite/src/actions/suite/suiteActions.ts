@@ -517,9 +517,9 @@ export const authorizeDevice =
             const duplicate = getState().devices.find(
                 d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
             );
+            // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
+            const freshDeviceData = deviceUtils.getSelectedDevice(device, getState().devices);
             if (duplicate) {
-                // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
-                const freshDeviceData = deviceUtils.getSelectedDevice(device, getState().devices);
                 if (freshDeviceData!.useEmptyPassphrase) {
                     // if currently selected device uses empty passphrase
                     // make sure that founded duplicate will also use empty passphrase
@@ -535,7 +535,7 @@ export const authorizeDevice =
 
             dispatch({
                 type: SUITE.AUTH_DEVICE,
-                payload: device,
+                payload: freshDeviceData,
                 state,
             });
             return true;
