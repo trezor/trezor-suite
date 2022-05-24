@@ -21,8 +21,6 @@ export enum EventType {
     DeviceSetupCompleted = 'device-setup-completed',
 
     CreateBackup = 'create-backup',
-    CheckSeedError = 'check-seed/error',
-    CheckSeedSuccess = 'check-seed/success',
 
     AccountsStatus = 'accounts/status',
     AccountsNewAccount = 'accounts/new-account',
@@ -47,6 +45,7 @@ export enum EventType {
     SwitchDeviceRemember = 'switch-device/remember',
     SwitchDeviceEject = 'switch-device/eject',
 
+    SettingsDeviceCheckSeed = 'settings/device/check-seed',
     SettingsDeviceChangePinProtection = 'settings/device/change-pin-protection',
     SettingsDeviceChangePin = 'settings/device/change-pin',
     SettingsDeviceChangeLabel = 'settings/device/change-label',
