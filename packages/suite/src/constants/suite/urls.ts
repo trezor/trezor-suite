@@ -12,6 +12,7 @@ export const PIN_MANUAL_URL = 'https://wiki.trezor.io/User_manual:Entering_PIN';
 export const DRY_RUN_URL = 'https://wiki.trezor.io/User_manual:Dry-run_recovery';
 export const PASSPHRASE_URL = 'https://wiki.trezor.io/Passphrase';
 export const USER_MANUAL_URL = 'https://wiki.trezor.io/User_manual';
+export const ANALYTICS_DOCS_URL = 'https://docs.trezor.io/trezor-suite/analytics/';
 export const TOS_URL = 'https://data.trezor.io/legal/wallet-terms.pdf';
 export const TOS_INVITY_URL = 'https://data.trezor.io/legal/invity-terms-of-use.pdf';
 export const SEED_MANUAL_URL = 'https://wiki.trezor.io/Recovery_seed';

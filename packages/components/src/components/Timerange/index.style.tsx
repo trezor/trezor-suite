@@ -1,5 +1,7 @@
 import { css } from 'styled-components';
 
+import { variables } from '@trezor/components';
+
 export const style = css`
     .rdrCalendarWrapper {
         box-sizing: border-box;
@@ -165,7 +167,7 @@ export const style = css`
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 2;
+        z-index: ${variables.Z_INDEX.BASE};
     }
 
     .rdrSelected,
@@ -190,7 +192,6 @@ export const style = css`
         bottom: 3px;
         pointer-events: none;
         border: 0px solid currentColor;
-        z-index: 5;
     }
 
     .rdrDayStartPreview {
@@ -199,7 +200,7 @@ export const style = css`
         border-bottom-width: 1px;
         border-top-left-radius: 4px;
         border-bottom-left-radius: 4px;
-        left: 0px;
+        left: 1px;
     }
 
     .rdrDateRangePickerWrapper {
@@ -324,7 +325,6 @@ export const style = css`
         border-bottom-width: 1px;
         border-top-right-radius: 4px;
         border-bottom-right-radius: 4px;
-        right: 2px;
         right: 0px;
     }
 
@@ -335,7 +335,7 @@ export const style = css`
         border-top-left-radius: 4px;
         border-bottom-left-radius: 4px;
         border-left-width: 1px;
-        left: 0px;
+        left: 1px;
     }
 
     .rdrDayEndOfMonth .rdrDayInPreview,

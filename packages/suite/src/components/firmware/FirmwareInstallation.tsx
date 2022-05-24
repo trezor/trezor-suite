@@ -3,10 +3,9 @@ import { Button } from '@trezor/components';
 import { getTextForStatus } from '@firmware-utils';
 import { Translation, WebusbButton } from '@suite-components';
 import { useDevice, useFirmware } from '@suite-hooks';
-import { FirmwareOffer, ReconnectDevicePrompt } from '@firmware-components';
+import { FirmwareOffer, ProgressBar, ReconnectDevicePrompt } from '@firmware-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { TrezorDevice } from '@suite-types';
-import ProgressBar from './ProgressBar';
 
 interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;

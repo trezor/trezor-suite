@@ -11,7 +11,6 @@ import PinInput from './PinInput';
 import NoRatesTooltip from './NoRatesTooltip';
 import WordInput from './WordInput';
 import WordInputAdvanced from './WordInputAdvanced';
-import ProgressBar from './ProgressBar';
 import Loading from './Loading';
 import BundleLoader from './BundleLoader';
 import FiatValue from './FiatValue';
@@ -69,7 +68,6 @@ export {
     Translation,
     WordInput,
     WordInputAdvanced,
-    ProgressBar,
     Loading,
     BundleLoader,
     WebusbButton,

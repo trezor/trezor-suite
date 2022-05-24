@@ -65,10 +65,10 @@ const Menu = styled.ul<MenuProps>`
     min-width: ${props => props.minWidth}px;
     box-shadow: 0 2px 7px 0 ${props => props.theme.BOX_SHADOW_BLACK_15},
         0 2px 3px 0 ${props => props.theme.BOX_SHADOW_BLACK_5};
-    z-index: ${Z_INDEX.DROPDOWN_MENU};
     padding: ${props => props.topPadding}px ${props => props.horizontalPadding}px
         ${props => props.bottomPadding}px;
     border-radius: 10px;
+    z-index: ${Z_INDEX.NAVIGATION_BAR};
 
     ${props =>
         props.coords &&

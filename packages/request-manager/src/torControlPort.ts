@@ -75,7 +75,11 @@ export class TorControlPort {
                         .toUpperCase();
 
                     this.socket.write(`AUTHENTICATE ${authSignature}\r\n`);
-                    this.socket.write('GETINFO circuit-status\n');
+                    // Section 3.23. TAKEOWNERSHIP in https://gitweb.torproject.org/torspec.git/tree/control-spec.txt
+                    // This command instructs Tor to shut down when this control connection is closed.
+                    // If multiple control connections send the TAKEOWNERSHIP command to a Tor instance, Tor
+                    // will shut down when any of those connections closes.
+                    this.socket.write('TAKEOWNERSHIP\r\n');
                     this.isSocketConnected = true;
                     resolve(true);
                 }

@@ -10,7 +10,7 @@ import ReactSelect, {
     NamedProps,
 } from 'react-select';
 import styled, { css } from 'styled-components';
-import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
+import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { useTheme } from '../../../utils';
 import { InputVariant, InputState, SuiteThemeColors } from '../../../support/types';
 import { GroupHeadingProps } from 'react-select/src/components/Group';
@@ -122,7 +122,7 @@ const selectStyle = (
         background: theme.BG_WHITE_ALT,
         margin: '5px 0',
         boxShadow: `box-shadow: 0 4px 10px 0 ${theme.BOX_SHADOW_BLACK_20}`,
-        zIndex: 9,
+        zIndex: Z_INDEX.BASE,
     }),
     menuList: base => ({
         ...base,

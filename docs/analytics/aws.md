@@ -1,6 +1,6 @@
 # AWS Analytics: Info
 
-_For a deeper technical writeup of analytics processes intended for developers, please see [README.md](../../packages/analytics/README.md)._
+_For a deeper technical writeup of analytics processes intended for developers, please see [README.md](https://github.com/trezor/trezor-suite/blob/develop/packages/analytics/README.md)._
 
 Trezor Suite can be set to collect real-world data to improve the performance of both web and desktop apps. This anonymous data is only shared by users who have usage data tracking enabled.
 
@@ -12,10 +12,10 @@ Collected data are anonymous. This means that **Suite does not track** personal 
 
 Among the data **not collected** by analytics:
 
--   Device ids
+-   Device IDs
 -   Public keys
 -   Particular amounts
--   Transaction ids
+-   Transaction IDs
 
 When data tracking is enabled, Trezor Suite collects functional information that can be used to directly improve the app, such as:
 

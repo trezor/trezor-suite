@@ -14,7 +14,7 @@ import AccountItem, { SkeletonAccountItem } from './components/AccountItem';
 const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
-    z-index: 4; /*  higher than accounts list to prevent box-shadow overflow */
+    z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION_HEADER};
     width: 100%;
 
     ${props =>
@@ -81,7 +81,6 @@ const Heading = styled(H2)<{ isInline?: boolean }>`
 const MenuItemsWrapper = styled.div`
     position: relative;
     width: 100%;
-    height: 100vh;
 `;
 
 const ExpandedMobileWrapper = styled.div`
@@ -89,7 +88,7 @@ const ExpandedMobileWrapper = styled.div`
     position: absolute;
     flex-direction: column;
     background: ${props => props.theme.BG_WHITE};
-    z-index: 5;
+    z-index: ${variables.Z_INDEX.EXPANDABLE_NAVIGATION};
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;

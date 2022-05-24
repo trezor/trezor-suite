@@ -55,6 +55,7 @@ class TorProcess extends BaseProcess {
 
     async start(): Promise<void> {
         const controlAuthCookiePath = path.join(this.authFilePath, 'control_auth_cookie');
+        const electronProcessId = process.pid;
         await super.start([
             // Try to write to disk less frequently than we would otherwise.
             '--AvoidDiskWrites',
@@ -83,6 +84,13 @@ class TorProcess extends BaseProcess {
             // contents of the cookie file:
             '--CookieAuthFile',
             `${controlAuthCookiePath}`,
+            // Tor will periodically check whether a process with the specified PID exists, and exit if one does not.
+            // Once the controller has connected to Tor's control port, it should send the TAKEOWNERSHIP command along its control
+            // connection. At this point, *both* the TAKEOWNERSHIP command and the __OwningControllerProcess option are in effect:
+            // Tor will exit when the control connection ends *and* Tor will exit if it detects that there is no process with
+            // the PID specified in the __OwningControllerProcess option.
+            '__OwningControllerProcess',
+            `${electronProcessId}`,
         ]);
         return this.torController.waitUntilAlive();
     }

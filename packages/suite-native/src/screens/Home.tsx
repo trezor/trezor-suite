@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
-import { Text, Box, Button, NumPadButton, Icon, Hint, Radio } from '@trezor/atoms';
+import { Text, Box, Button, NumPadButton, Icon, Hint, SearchInput, Radio } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -14,6 +14,7 @@ const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
 
 export const Home = () => {
     const isDarkMode = useColorScheme() === 'dark';
+    const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
     const [radioChecked, setRadioChecked] = useState('second');
 
@@ -29,6 +30,11 @@ export const Home = () => {
                 style={applyStyle(backgroundStyle, { isDarkMode })}
             >
                 <View>
+                    <SearchInput
+                        value={inputText}
+                        onChange={setInputText}
+                        placeholder="Type here.."
+                    />
                     <Box marginTop="lg">
                         <Text variant="titleLarge">Title Large</Text>
                     </Box>
@@ -103,6 +109,13 @@ export const Home = () => {
                             console.log('Press num pad button. No implementation yet.', value)
                         }
                     />
+                    <Button
+                        onPress={() => console.log('Get features to be implemented')}
+                        size="md"
+                        colorScheme="primary"
+                    >
+                        Get features
+                    </Button>
                 </View>
             </ScrollView>
         </SafeAreaView>

@@ -16,7 +16,6 @@ const Wrapper = styled.div<{ size?: number; shape?: Shape }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1;
 
     ${props =>
         props.size &&

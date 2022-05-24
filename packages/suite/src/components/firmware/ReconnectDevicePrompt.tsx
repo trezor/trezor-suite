@@ -33,7 +33,7 @@ const Wrapper = styled.div`
 
 const Overlay = styled.div`
     position: fixed;
-    z-index: 10000;
+    z-index: ${variables.Z_INDEX.MODAL};
     width: 100%;
     height: 100%;
     top: 0px;

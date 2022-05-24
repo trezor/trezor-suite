@@ -1948,7 +1948,7 @@ export default defineMessages({
     TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION: {
         id: 'TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION',
         defaultMessage:
-            'All data is anonymous and is used only for product development purposes. Read more in <a>Terms & Conditions</a>.',
+            'All data is anonymous and is used only for product development purposes. Read more in our <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>.',
     },
     TR_EJECT_WALLET: {
         defaultMessage: 'Eject wallet',

@@ -40,6 +40,6 @@ Access to the data is limited strictly to the members of the development, securi
 
 -   [AWS](./aws.md)
 -   [Sentry](./sentry.md)
--   [Generic analytics package](../../packages/analytics/README.md)
--   [Suite analytics package](../../packages/suite-analytics/README.md)
-    -   [Events changelog](../../packages/suite-analytics/CHANGELOG.md)
+-   [Generic analytics package](https://github.com/trezor/trezor-suite/blob/develop/packages/analytics/README.md)
+-   [Suite analytics package](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-analytics/README.md)
+    -   [Events changelog](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-analytics/CHANGELOG.md)

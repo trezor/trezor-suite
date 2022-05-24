@@ -4,6 +4,7 @@ export { FirmwareOffer } from './FirmwareOffer';
 export { FirmwareInstallation } from './FirmwareInstallation';
 export { FirmwareInitial } from './FirmwareInitial';
 export { Fingerprint } from './Fingerprint';
+export { ProgressBar } from './ProgressBar';
 export { SelectCustomFirmware } from './SelectCustomFirmware';
 export { RetryButton, ContinueButton, InstallButton, CloseButton } from './Button';
 

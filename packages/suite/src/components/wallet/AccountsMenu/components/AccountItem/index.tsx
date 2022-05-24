@@ -36,7 +36,6 @@ const Wrapper = styled.div.attrs((props: WrapperProps) => ({
                 ? '50px'
                 : '0px'}; /* when scrolling keep some space above to fit account group (50px is the height of acc group container)  */
         bottom: 0px;
-        z-index: 1;
         padding: 0px;
     }
 `;
