@@ -186,6 +186,7 @@
         "@trezor/connect": "9.0.0-beta.1",
         "@trezor/suite-analytics": "*",
         "@trezor/suite-desktop-api": "*",
+        "@trezor/urls": "*",
         "@trezor/utils": "*",
         "@trezor/request-manager": "*",
         "@trezor/connect-common": "*",
