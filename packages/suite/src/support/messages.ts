@@ -3972,10 +3972,6 @@ export default defineMessages({
         id: 'TR_HEX_FORMAT',
         defaultMessage: 'Hex format',
     },
-    TR_BUY_TREZOR: {
-        id: 'TR_BUY_TREZOR',
-        defaultMessage: 'Buy Trezor',
-    },
     TR_DISABLE_WEBUSB_TRY_BRIDGE: {
         id: 'TR_DISABLE_WEBUSB_TRY_BRIDGE',
         defaultMessage: 'Disable WebUSB and use Bridge',
