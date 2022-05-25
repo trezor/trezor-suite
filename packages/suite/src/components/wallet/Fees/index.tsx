@@ -114,7 +114,6 @@ export interface FeesProps {
     getValues: FormMethods['getValues'];
     errors: FormMethods['errors'];
     changeFeeLevel: (level: FeeLevel['label']) => void;
-    changeFeePerUnit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     changeFeeLimit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     showLabel?: boolean;
@@ -130,7 +129,6 @@ export const Fees = ({
     getValues,
     errors,
     changeFeeLevel,
-    changeFeePerUnit,
     changeFeeLimit,
     composedLevels,
     showLabel,
@@ -145,7 +143,7 @@ export const Fees = ({
 
     const error = errors.selectedFee;
     const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption)!;
-    const transactionInfo = composedLevels ? composedLevels[selectedOption] : undefined;
+    const transactionInfo = composedLevels?.[selectedOption];
     const feeOptions = buildFeeOptions(feeInfo.levels);
 
     const labelComponent =
@@ -214,7 +212,6 @@ export const Fees = ({
                                     register={register}
                                     getValues={getValues}
                                     setValue={setValue}
-                                    changeFeePerUnit={changeFeePerUnit}
                                     changeFeeLimit={changeFeeLimit}
                                 />
                             </motion.div>
