@@ -183,7 +183,7 @@
                             <span class="device-name">#DEVICE NAME</span>
                         </div>
                         <div class="explain">
-                            Please install <a href="<%= htmlWebpackPlugin.options.urls.SUITE_BRIDGE %>">Bridge</a> to use Trezor
+                            Please install <a href="<%= htmlWebpackPlugin.options.urls.SUITE_BRIDGE_URL %>">Bridge</a> to use Trezor
                         </div>
                     </button> -->
                     </div>
@@ -1522,7 +1522,7 @@
 
                 <a
                     class="confirm button"
-                    href="<%= htmlWebpackPlugin.options.urls.TREZOR_START %>"
+                    href="<%= htmlWebpackPlugin.options.urls.TREZOR_START_URL %>"
                     target="_blank"
                     rel="noreferrer noopener"
                     onclick="window.closeWindow();"
@@ -1540,7 +1540,7 @@
                     <p>It is not suitable for this service.</p>
                     <p>
                         Please contact your Trezor provider or <br /><a
-                            href="<%= htmlWebpackPlugin.options.urls.TREZOR_SUPPORT %>"
+                            href="<%= htmlWebpackPlugin.options.urls.TREZOR_SUPPORT_URL %>"
                             target="_blank"
                             rel="noreferrer noopener"
                             onclick="window.closeWindow();"
@@ -1909,7 +1909,7 @@
 
                 <a
                     class="button confirm"
-                    href="<%= htmlWebpackPlugin.options.urls.SUITE_FIRMWARE %>"
+                    href="<%= htmlWebpackPlugin.options.urls.SUITE_FIRMWARE_URL %>"
                     target="_blank"
                     rel="noreferrer noopener"
                     onclick="window.closeWindow();"
@@ -2066,7 +2066,7 @@
 
                 <a
                     class="button confirm"
-                    href="<%= htmlWebpackPlugin.options.urls.SUITE_FIRMWARE %>"
+                    href="<%= htmlWebpackPlugin.options.urls.SUITE_FIRMWARE_URL %>"
                     target="_blank"
                     rel="noreferrer noopener"
                     onclick="window.closeWindow();"
@@ -2218,7 +2218,7 @@
                 </div>
                 <a
                     class="button confirm"
-                    href="<%= htmlWebpackPlugin.options.urls.TREZOR_COINS %>"
+                    href="<%= htmlWebpackPlugin.options.urls.TREZOR_COINS_URL %>"
                     target="_blank"
                     rel="noreferrer noopener"
                     onclick="window.closeWindow();"
@@ -2263,7 +2263,7 @@
 
                 <div class="wrapper">
                     <a
-                        href="<%= htmlWebpackPlugin.options.urls.GOOGLE_CHROME %>"
+                        href="<%= htmlWebpackPlugin.options.urls.CHROME_URL %>"
                         target="_blank"
                         rel="noreferrer noopener"
                         onclick="window.closeWindow();"
@@ -2374,7 +2374,7 @@
                     </a>
 
                     <a
-                        href="<%= htmlWebpackPlugin.options.urls.MOZILLA_FIREFOX %>"
+                        href="<%= htmlWebpackPlugin.options.urls.FIREFOX_URL %>"
                         target="_blank"
                         rel="noreferrer noopener"
                         onclick="window.closeWindow();"
@@ -2890,7 +2890,7 @@
 
                 <a
                     class="button confirm"
-                    href="<%= htmlWebpackPlugin.options.urls.SUITE_BRIDGE %>"
+                    href="<%= htmlWebpackPlugin.options.urls.SUITE_BRIDGE_URL %>"
                     target="_blank"
                     rel="noreferrer noopener"
                     onclick="window.closeWindow();"
@@ -3136,7 +3136,7 @@
                 <div class="buttons">
                     <a
                         class="button cancel"
-                        href="<%= htmlWebpackPlugin.options.urls.SUITE_BACKUP %>"
+                        href="<%= htmlWebpackPlugin.options.urls.SUITE_BACKUP_URL %>"
                         target="_blank"
                         rel="noreferrer noopener"
                     >
@@ -3540,7 +3540,7 @@
                 </p>
                 <a
                     class="button notification-button"
-                    href="<%= htmlWebpackPlugin.options.urls.SUITE_FIRMWARE %>"
+                    href="<%= htmlWebpackPlugin.options.urls.SUITE_FIRMWARE_URL %>"
                     target="_blank"
                     rel="noreferrer noopener"
                     onclick="window.closeWindow();"
@@ -3558,7 +3558,7 @@
                 </div>
                 <a
                     class="button notification-button"
-                    href="<%= htmlWebpackPlugin.options.urls.SUITE_BRIDGE %>"
+                    href="<%= htmlWebpackPlugin.options.urls.SUITE_BRIDGE_URL %>"
                     target="_blank"
                     rel="noreferrer noopener"
                     onclick="window.closeWindow();"
@@ -3576,7 +3576,7 @@
                 </div>
                 <a
                     class="button notification-button"
-                    href="<%= htmlWebpackPlugin.options.urls.SUITE_BACKUP %>"
+                    href="<%= htmlWebpackPlugin.options.urls.SUITE_BACKUP_URL %>"
                     target="_blank"
                     rel="noreferrer noopener"
                     onclick="window.closeWindow();"
@@ -3590,7 +3590,10 @@
                 <p>
                     The source website was not able to communicate with Trezor Connect. This can be
                     caused by pop-up or ad blockers. Please ensure all
-                    <a href="<%= htmlWebpackPlugin.options.urls.TREZOR %>" target="_blank" rel="noreferrer noopener"
+                    <a
+                        href="<%= htmlWebpackPlugin.options.urls.TREZOR_URL %>"
+                        target="_blank"
+                        rel="noreferrer noopener"
                         >trezor.io</a
                     >
                     domains are allowed.

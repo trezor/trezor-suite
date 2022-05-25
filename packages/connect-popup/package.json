@@ -10,6 +10,7 @@
         "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack/prod.webpack.config.ts"
     },
     "dependencies": {
-        "@trezor/connect": "9.0.0-beta.1"
+        "@trezor/connect": "9.0.0-beta.1",
+        "@trezor/urls": "*"
     }
 }
