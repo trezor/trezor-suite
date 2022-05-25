@@ -13,16 +13,12 @@ describe('Cardano', () => {
         cy.task('startBridge');
 
         cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/');
+        cy.prefixedVisit('/settings/coins');
         cy.passThroughInitialRun();
     });
 
     it('Basic cardano walkthrough', () => {
-        cy.discoveryShouldFinish();
-
         // go to coin settings and enable cardano
-        cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/tada').click();
 
         // open advanced coins settings
