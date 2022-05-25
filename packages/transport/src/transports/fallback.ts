@@ -1,6 +1,6 @@
-import type { Transport, AcquireInput, TrezorDeviceInfoWithSession } from './types';
+import type { Transport, AcquireInput, TrezorDeviceInfoWithSession } from '../types';
 
-export default class FallbackTransport {
+export class FallbackTransport {
     _availableTransports: Array<Transport> = [];
     activeName = '';
     // @ts-ignore

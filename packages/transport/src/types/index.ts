@@ -5,6 +5,11 @@ export type TrezorDeviceInfo = {
     path: string;
 };
 
+export type TrezorDeviceInfoDebug = {
+    path: string;
+    debug: boolean;
+};
+
 export type TrezorDeviceInfoWithSession = TrezorDeviceInfo & {
     session?: string | null;
     debugSession?: string | null;
@@ -18,6 +23,7 @@ export type AcquireInput = {
 
 export type MessageFromTrezor = { type: string; message: Record<string, unknown> };
 
+// todo: implement using abstract class
 export type Transport = {
     enumerate(): Promise<Array<TrezorDeviceInfoWithSession>>;
     listen(old?: Array<TrezorDeviceInfoWithSession>): Promise<Array<TrezorDeviceInfoWithSession>>;

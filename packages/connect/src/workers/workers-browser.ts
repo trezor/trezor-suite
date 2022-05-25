@@ -1,14 +1,14 @@
-import SharedConnectionWorker from '@trezor/transport/lib/lowlevel/sharedConnectionWorker';
+import SharedConnectionWorker from '@trezor/transport/lib/workers/sharedConnectionWorker';
 import BlockbookWorker from '@trezor/blockchain-link/lib/workers/blockbook';
 import RippleWorker from '@trezor/blockchain-link/lib/workers/ripple';
 import BlockfrostWorker from '@trezor/blockchain-link/lib/workers/blockfrost';
 
-import TrezorLink from '@trezor/transport';
+import { TransportWithSharedConnections, WebUsbTransport } from '@trezor/transport';
 
 const WebUsbPlugin = () =>
-    new TrezorLink.Lowlevel(
+    new TransportWithSharedConnections(
         // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
-        new TrezorLink.WebUsb(),
+        new WebUsbTransport(),
         // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
         typeof SharedWorker !== 'undefined' ? () => new SharedConnectionWorker() : null,
     );

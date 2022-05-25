@@ -3,12 +3,12 @@
 // and it refers enumerate to bridge
 import { versionUtils } from '@trezor/utils';
 
-import { request as http, setFetch as rSetFetch } from './http';
+import { request as http, setFetch as rSetFetch } from '../utils/http';
 import * as check from '../utils/highlevel-checks';
 import { buildOne } from '../lowlevel/send';
 import { parseConfigure } from '../lowlevel/protobuf/messages';
 import { receiveOne } from '../lowlevel/receive';
-import { DEFAULT_URL, DEFAULT_VERSION_URL } from '../config';
+import { DEFAULT_URL, DEFAULT_VERSION_URL } from '../constants';
 import type { INamespace } from 'protobufjs/light';
 import type { AcquireInput, TrezorDeviceInfoWithSession } from '../types';
 
@@ -17,7 +17,7 @@ type IncompleteRequestOptions = {
     url: string;
 };
 
-export default class BridgeTransport {
+export class BridgeTransport {
     _messages: ReturnType<typeof parseConfigure> | undefined;
     bridgeVersion?: string;
     configured = false;

@@ -3,7 +3,9 @@
 /* eslint-disable max-classes-per-file, @typescript-eslint/no-use-before-define */
 
 import EventEmitter from 'events';
-import TrezorLink, {
+import {
+    BridgeTransport,
+    FallbackTransport,
     Transport,
     TrezorDeviceInfoWithSession as DeviceDescriptor,
 } from '@trezor/transport';
@@ -21,8 +23,6 @@ import { resolveAfter } from '../utils/promiseUtils';
 import { WebUsbPlugin, ReactNativeUsbPlugin } from '../workers/workers';
 import { getAbortController } from './AbortController';
 import type { Controller } from './AbortController';
-
-const { BridgeV2, Fallback } = TrezorLink;
 
 // custom log
 const _log = initLog('DeviceList');
@@ -94,24 +94,25 @@ export class DeviceList extends EventEmitter {
             transports.push(ReactNativeUsbPlugin());
         } else {
             const bridgeLatestVersion = getBridgeInfo().version.join('.');
-            const bridge = new BridgeV2(undefined, undefined);
+            const bridge = new BridgeTransport(undefined, undefined);
             bridge.setBridgeLatestVersion(bridgeLatestVersion);
 
             this.fetchController = getAbortController();
             const { signal } = this.fetchController;
             // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
             const fetchWithSignal = (args, options = {}) => fetch(args, { ...options, signal });
-            BridgeV2.setFetch(fetchWithSignal, typeof window === 'undefined');
+            BridgeTransport.setFetch(fetchWithSignal, typeof window === 'undefined');
 
             // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
             transports.push(bridge);
         }
 
         if (webusb && typeof WebUsbPlugin !== 'undefined') {
+            console.log('webusb plugin push');
             transports.push(WebUsbPlugin());
         }
 
-        this.transport = new Fallback(transports);
+        this.transport = new FallbackTransport(transports);
         this.defaultMessages = DataManager.getProtobufMessages();
         this.currentMessages = this.defaultMessages;
     }

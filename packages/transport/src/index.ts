@@ -1,8 +1,3 @@
-import BridgeTransportV2 from './bridge/v2';
-import LowlevelTransportWithSharedConnections from './lowlevel/withSharedConnections';
-import FallbackTransport from './fallback';
-import WebUsbPlugin from './lowlevel/webusb';
-
 // Long.js needed to make protobuf encoding work with numbers over Number.MAX_SAFE_INTEGER
 // Docs claim that it should be enough to only install this dependency and it will be required automatically
 // see: https://github.com/protobufjs/protobuf.js/#compatibility
@@ -23,9 +18,7 @@ export type {
 
 export { Messages } from './types';
 
-export default {
-    BridgeV2: BridgeTransportV2,
-    Fallback: FallbackTransport,
-    Lowlevel: LowlevelTransportWithSharedConnections,
-    WebUsb: WebUsbPlugin,
-};
+export { BridgeTransport } from './transports/bridge';
+export { FallbackTransport } from './transports/fallback';
+export { TransportWithSharedConnections } from './transports/withSharedConnections';
+export { WebUsbTransport } from './transports/webusb';

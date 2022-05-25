@@ -20,7 +20,7 @@ const ENDPOINT_ID = 1;
 const DEBUG_INTERFACE_ID = 1;
 const DEBUG_ENDPOINT_ID = 2;
 
-export default class WebUsbPlugin {
+export class WebUsbTransport {
     allowsWriteAndEnumerate = true;
     configurationId = CONFIGURATION_ID;
     debug = false;
@@ -125,7 +125,6 @@ export default class WebUsbPlugin {
         }
 
         const endpoint = debug ? this.debugEndpointId : this.normalEndpointId;
-
         return device.transferOut(endpoint, newArray).then(() => {});
     }
 
@@ -137,7 +136,6 @@ export default class WebUsbPlugin {
             if (!device.opened) {
                 await this.connect(path, debug, false);
             }
-
             const res = await device.transferIn(endpoint, 64);
 
             if (!res.data) {
@@ -148,7 +146,6 @@ export default class WebUsbPlugin {
             }
             return res.data.buffer.slice(1);
         } catch (e) {
-            // @ts-ignore
             if (e.message === 'Device unavailable.') {
                 throw new Error('Action was interrupted.');
             } else {

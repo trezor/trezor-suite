@@ -1,12 +1,40 @@
 import { create as createDeferred, resolveTimeoutPromise } from '../utils/defered';
-import { parseConfigure } from './protobuf/messages';
-import { buildAndSend } from './send';
-import { receiveAndParse } from './receive';
-import type { Deferred } from '../utils/defered';
-import type { LowlevelTransportSharedPlugin, TrezorDeviceInfoDebug } from './sharedPlugin';
-import type { MessageFromTrezor, TrezorDeviceInfoWithSession, AcquireInput } from '../types';
+import { parseConfigure } from '../lowlevel/protobuf/messages';
+import { buildAndSend } from '../lowlevel/send';
+import { receiveAndParse } from '../lowlevel/receive';
+import { postModuleMessage } from '../workers/sharedConnectionWorker';
 
-import { postModuleMessage } from './sharedConnectionWorker';
+import type { Deferred } from '../utils/defered';
+import type {
+    MessageFromTrezor,
+    TrezorDeviceInfoWithSession,
+    AcquireInput,
+    TrezorDeviceInfoDebug,
+} from '../types';
+
+type LowlevelTransportSharedPlugin = {
+    enumerate: () => Promise<Array<TrezorDeviceInfoDebug>>;
+    send: (path: string, data: ArrayBuffer, debug: boolean) => Promise<void>;
+    receive: (path: string, debug: boolean) => Promise<ArrayBuffer>;
+    connect: (path: string, debug: boolean, first: boolean) => Promise<void>;
+    disconnect: (path: string, debug: boolean, last: boolean) => Promise<void>;
+
+    // webusb has a different model, where you have to
+    // request device connection
+    requestDevice: () => Promise<void>;
+    requestNeeded: boolean;
+
+    init: (debug?: boolean) => Promise<void>;
+    version: string;
+    name: string;
+
+    // in signal hid API, there is an issue that we cannot simultaneously
+    // write and list devices.
+    // HOWEVER, there is a separate (and maybe connected) issue in Chrome,
+    // where sometimes write doesn't fail on disconnect unless we enumerate
+    // so we need to have an "optional lock"
+    allowsWriteAndEnumerate: boolean;
+};
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const stringify = require('json-stable-stringify');
@@ -106,7 +134,7 @@ export type MessageFromSharedWorker =
           otherSession?: string;
       };
 
-export default class LowlevelTransportWithSharedConnections {
+export class TransportWithSharedConnections {
     _messages: undefined | any;
     _sharedWorkerFactory: undefined | (() => SharedWorker);
     // path => promise rejecting on release
@@ -143,6 +171,7 @@ export default class LowlevelTransportWithSharedConnections {
 
     async _silentEnumerate() {
         await this.sendToWorker({ type: 'enumerate-intent' });
+
         let devices: Array<TrezorDeviceInfoDebug> = [];
         try {
             devices = await this.plugin.enumerate();
@@ -301,6 +330,7 @@ export default class LowlevelTransportWithSharedConnections {
     }
 
     _sendLowlevel(path: string, debug: boolean): (data: ArrayBuffer) => Promise<void> {
+        console.log('sendT_sendLowlevel', this.plugin);
         return data => this.plugin.send(path, data, debug);
     }
 
@@ -387,7 +417,7 @@ export default class LowlevelTransportWithSharedConnections {
         this.requestNeeded = this.plugin.requestNeeded;
         await this.plugin.init(debug);
         // create the worker ONLY when the plugin is successfully inited
-        if (this._sharedWorkerFactory != null) {
+        if (this._sharedWorkerFactory) {
             this.sharedWorker = this._sharedWorkerFactory();
             if (this.sharedWorker != null) {
                 this.sharedWorker.port.onmessage = e => {

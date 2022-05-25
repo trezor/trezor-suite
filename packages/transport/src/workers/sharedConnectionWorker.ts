@@ -5,9 +5,13 @@
 // Other windows then can acquire/release
 
 import { create as createDeferred } from '../utils/defered';
+
 import type { Deferred } from '../utils/defered';
-import type { TrezorDeviceInfoDebug } from './sharedPlugin';
-import type { MessageFromSharedWorker, MessageToSharedWorker } from './withSharedConnections';
+import type {
+    MessageFromSharedWorker,
+    MessageToSharedWorker,
+} from '../transports/withSharedConnections';
+import type { TrezorDeviceInfoDebug } from '../types';
 
 interface LockResult {
     id: number;
