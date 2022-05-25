@@ -7,3 +7,4 @@ export * from './Icon/Icon';
 export * from './Icon/iconTypes';
 export * from './NumPadButton';
 export * from './SearchInput';
+export * from './Chip';

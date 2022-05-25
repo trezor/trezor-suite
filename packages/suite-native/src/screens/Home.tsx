@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
-import { Text, Box, Button, NumPadButton, Icon, Hint, SearchInput, Radio } from '@trezor/atoms';
+import {
+    Text,
+    Box,
+    Button,
+    NumPadButton,
+    Icon,
+    Hint,
+    SearchInput,
+    Radio,
+    Chip,
+} from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -17,6 +27,8 @@ export const Home = () => {
     const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
     const [radioChecked, setRadioChecked] = useState('second');
+    const [isChip1Selected, setIsChip1Selected] = useState<boolean>(false);
+    const [isChip2Selected, setIsChip2Selected] = useState<boolean>(false);
 
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);
@@ -35,6 +47,21 @@ export const Home = () => {
                         onChange={setInputText}
                         placeholder="Type here.."
                     />
+                    <Box marginTop="lg">
+                        <Chip
+                            icon={<Icon type="settings" />}
+                            title="Bitcoin"
+                            isSelected={isChip1Selected}
+                            onSelect={() => setIsChip1Selected(!isChip1Selected)}
+                        />
+                        <Chip
+                            icon={<Icon type="settings" />}
+                            title="Bitcoin"
+                            isSelected={isChip2Selected}
+                            onSelect={() => setIsChip2Selected(!isChip2Selected)}
+                            description="inc Tokens"
+                        />
+                    </Box>
                     <Box marginTop="lg">
                         <Text variant="titleLarge">Title Large</Text>
                     </Box>
@@ -103,6 +130,7 @@ export const Home = () => {
                             />
                         </Box>
                     </Box>
+
                     <NumPadButton
                         value={5}
                         onPress={value =>
