@@ -126,9 +126,9 @@ const Wrapper = styled.div<{ shouldWrap?: boolean }>`
 
 export const FinalStep = () => {
     const dropdownRef = useRef<DropdownRef>();
-    const { applySettings, goto } = useActions({
+    const { applySettings, goToSuite } = useActions({
         applySettings: deviceSettingsActions.applySettings,
-        goto: routerActions.goto,
+        goToSuite: routerActions.closeModalApp,
     });
 
     const { isLocked, device } = useDevice();
@@ -245,7 +245,7 @@ export const FinalStep = () => {
                         variant="secondary"
                         data-test="@onboarding/exit-app-button"
                         onClick={() => {
-                            goto('suite-index');
+                            goToSuite(true);
 
                             const payload = {
                                 ...onboardingAnalytics,
