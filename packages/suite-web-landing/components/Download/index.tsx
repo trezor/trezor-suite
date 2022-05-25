@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { TREZOR_SIGNING_KEY_URL, WIKI_HOW_TO_RUN_URL } from '@trezor/urls';
 import { Button, Dropdown, Icon, colors, variables, Link } from '@trezor/components';
 import { IconType } from '@trezor/components/src/support/types';
 import Translation from '../Translation';
 import { Platform, getPlatform } from '../../utils/navigator';
 import { normalizeVersion } from '@suite-utils/build';
-import { SL_SIGNING_KEY, WIKI_HOW_TO_RUN } from '@suite-constants/urls';
 
 const StyledDropdown = styled(Dropdown)`
     height: 100%;
@@ -214,7 +214,7 @@ const Index = ({ pathToApp }: { pathToApp: string }) => {
                                 </StyledLink>
                             </Item>
                             <Item>
-                                <StyledLink variant="nostyle" href={SL_SIGNING_KEY}>
+                                <StyledLink variant="nostyle" href={TREZOR_SIGNING_KEY_URL}>
                                     <Translation id="TR_SUITE_WEB_LANDING_SIGNING_KEY" />
                                 </StyledLink>
                             </Item>
@@ -222,7 +222,7 @@ const Index = ({ pathToApp }: { pathToApp: string }) => {
                         {platform.includes('linux') && (
                             <Row>
                                 <Item>
-                                    <StyledLink variant="nostyle" href={WIKI_HOW_TO_RUN}>
+                                    <StyledLink variant="nostyle" href={WIKI_HOW_TO_RUN_URL}>
                                         <Translation id="TR_SUITE_WEB_LANDING_HOW_TO_VERIFY" />
                                     </StyledLink>
                                 </Item>
