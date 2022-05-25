@@ -105,7 +105,6 @@ interface CustomFeeProps {
     register: (rules?: TypedValidationRules) => (ref: any) => void;
     getValues: FormMethods['getValues'];
     setValue: FormMethods['setValue'];
-    changeFeePerUnit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     changeFeeLimit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -116,7 +115,6 @@ export const CustomFee = ({
     register,
     getValues,
     setValue,
-    changeFeePerUnit,
     changeFeeLimit,
 }: CustomFeeProps) => {
     const { maxFee, minFee } = feeInfo;
@@ -235,7 +233,6 @@ export const CustomFee = ({
                     innerAddon={<Units>{getFeeUnits(networkType)}</Units>}
                     name={FEE_PER_UNIT}
                     data-test={FEE_PER_UNIT}
-                    onChange={changeFeePerUnit}
                     innerRef={register({
                         required: 'CUSTOM_FEE_IS_NOT_SET',
                         validate: validateFee,
