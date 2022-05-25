@@ -1,5 +1,6 @@
 import React, { createRef, useState } from 'react';
 import styled from 'styled-components';
+import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
@@ -16,7 +17,6 @@ import {
     ImageValidationError,
     validate,
 } from '@suite-utils/homescreen';
-import { HOMESCREEN_EDITOR } from '@suite-constants/urls';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
@@ -116,7 +116,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         description={
                             <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_T1" />
                         }
-                        buttonLink={HOMESCREEN_EDITOR}
+                        buttonLink={HOMESCREEN_EDITOR_URL}
                         buttonTitle={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR" />}
                     />
                 )}

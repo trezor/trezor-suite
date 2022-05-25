@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation, TrezorLink } from '@suite-components';
 import CollapsibleBox from '@suite-components/CollapsibleBox'; // build fails due if imported from suite-components
 import { variables, Button } from '@trezor/components';
-import { SUPPORT_URL } from '@suite-constants/urls';
+import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@suite-utils/env';
 
@@ -136,7 +136,7 @@ const TroubleshootingTips = ({ label, items, cta, offerWebUsb, opened }: Props) 
             <FooterText>
                 <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
             </FooterText>
-            <TrezorLink variant="nostyle" href={SUPPORT_URL}>
+            <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_URL}>
                 <Button variant="tertiary">
                     <Translation id="TR_CONTACT_SUPPORT" />
                 </Button>

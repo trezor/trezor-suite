@@ -1,6 +1,7 @@
 import React from 'react';
 import { darken } from 'polished';
 import styled from 'styled-components';
+import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
@@ -13,7 +14,6 @@ import { getFwVersion } from '@suite-utils/device';
 import { ViewWrapper, Header, Content } from '@guide-components';
 import { isDesktop } from '@suite-utils/env';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
-import { FORUM_URL, SUPPORT_URL } from '@suite-constants/urls';
 
 const Section = styled.div`
     & + & {
@@ -190,7 +190,7 @@ export const SupportFeedbackSelection = () => {
                         <Translation id="TR_GUIDE_VIEW_HEADLINE_NEED_HELP" />
                     </SectionHeader>
 
-                    <StyledLink href={FORUM_URL} variant="nostyle">
+                    <StyledLink href={TREZOR_FORUM_URL} variant="nostyle">
                         <SectionButton data-test="@guide/forum">
                             <Label>
                                 <LabelHeadline>
@@ -204,7 +204,7 @@ export const SupportFeedbackSelection = () => {
                         </SectionButton>
                     </StyledLink>
 
-                    <StyledLink href={SUPPORT_URL} variant="nostyle">
+                    <StyledLink href={TREZOR_SUPPORT_URL} variant="nostyle">
                         <SectionButton data-test="@guide/support">
                             <Label>
                                 <LabelHeadline>

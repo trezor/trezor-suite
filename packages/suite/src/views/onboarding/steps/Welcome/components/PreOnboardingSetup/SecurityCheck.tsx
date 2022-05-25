@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { Icon, Tooltip, variables, useTheme } from '@trezor/components';
 import { useOnboarding, useSelector } from '@suite-hooks';
 import { Translation, TrezorLink } from '@suite-components';
 import { Box, Hologram, OnboardingButtonCta, OnboardingButtonSkip } from '@onboarding-components';
-import { SUPPORT_URL } from '@suite-constants/urls';
 import { getConnectedDeviceStatus } from '@suite-utils/device';
 
 const Items = styled.div`
@@ -173,7 +173,7 @@ const SecurityCheck = () => {
                 </Buttons>
             </Box>
             <OuterActions>
-                <TrezorLink variant="underline" href={SUPPORT_URL}>
+                <TrezorLink variant="underline" href={TREZOR_SUPPORT_URL}>
                     <OnboardingButtonSkip>
                         <Translation id="TR_SECURITY_CHECK_CONTACT_SUPPORT" />
                     </OnboardingButtonSkip>

@@ -1,11 +1,11 @@
 import { variables, Icon, Button, Link } from '@trezor/components';
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
+import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { CoinmarketProvidedByInvity } from '@wallet-components';
 import { useOnClickOutside } from '@suite-utils/dom';
 import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@trezor/utils';
-import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`
     display: flex;
@@ -115,12 +115,12 @@ const CoinmarketFooter = () => {
                     <FooterBox ref={menuRef}>
                         <Header>
                             <BoxLeft>
-                                <StyledLink href="https://invity.io/">
+                                <StyledLink href={INVITY_URL}>
                                     <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
                                 </StyledLink>
                             </BoxLeft>
                             <BoxRight>
-                                <Link href="https://invity.io/">
+                                <Link href={INVITY_URL}>
                                     <Button variant="tertiary">invity.io</Button>
                                 </Link>
                                 <IconWrapper onClick={() => setToggled(false)}>
@@ -136,7 +136,7 @@ const CoinmarketFooter = () => {
                         </Text>
                     </FooterBox>
                 )}
-                <Link href={URLS.TOS_INVITY_URL} variant="nostyle">
+                <Link href={DATA_TOS_INVITY_URL} variant="nostyle">
                     <Translation id="TR_TERMS_OF_USE_INVITY" />
                 </Link>
                 <VerticalDivider />

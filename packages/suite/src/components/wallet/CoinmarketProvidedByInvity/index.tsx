@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
+import { INVITY_URL } from '@trezor/urls';
 import { resolveStaticPath } from '@trezor/utils';
 import { variables, Link } from '@trezor/components';
 
@@ -25,7 +26,7 @@ const StyledLink = styled(Link)`
 const CoinmarketProvidedByInvity = () => (
     <Wrapper>
         <Translation id="TR_BUY_PROVIDED_BY_INVITY" />
-        <StyledLink href="https://invity.io/" target="_blank">
+        <StyledLink href={INVITY_URL} target="_blank">
             <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
         </StyledLink>
     </Wrapper>

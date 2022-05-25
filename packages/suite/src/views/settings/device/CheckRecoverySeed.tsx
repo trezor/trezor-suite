@@ -1,8 +1,8 @@
 import React from 'react';
+import { WIKI_DRY_RUN_URL } from '@trezor/urls';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { DRY_RUN_URL } from '@suite-constants/urls';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -30,7 +30,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
             <TextColumn
                 title={<Translation id="TR_CHECK_RECOVERY_SEED" />}
                 description={<Translation id="TR_CHECK_RECOVERY_SEED_DESCRIPTION" />}
-                buttonLink={DRY_RUN_URL}
+                buttonLink={WIKI_DRY_RUN_URL}
             />
             <ActionColumn>
                 <ActionButton

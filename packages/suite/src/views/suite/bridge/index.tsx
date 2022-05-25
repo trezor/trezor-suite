@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { DATA_URL, WIKI_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, Image, TrezorLink, Modal, Metadata } from '@suite-components';
 import { Button, P, Link, Select, useTheme, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { URLS } from '@suite-constants';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import { useSelector, useActions } from '@suite-hooks';
 
@@ -121,7 +121,7 @@ export const InstallBridge = () => {
         latestVersion: transport?.bridge ? transport.bridge.version.join('.') : null,
         installers,
         target: preferredTarget || installers[0],
-        uri: URLS.TREZOR_DATA_URL,
+        uri: DATA_URL,
     };
 
     const target = selectedTarget || data.target;
@@ -179,7 +179,7 @@ export const InstallBridge = () => {
                 )}
                 {isWeb() && tor && (
                     <P>
-                        <TrezorLink href={URLS.WIKI_TOR}>
+                        <TrezorLink href={WIKI_TOR_URL}>
                             <Translation id="TR_TOR_BRIDGE" />
                         </TrezorLink>
                     </P>
@@ -203,7 +203,7 @@ export const InstallBridge = () => {
                 {!isLoading && (
                     <>
                         <Col justify="center">
-                            <Link variant="nostyle" href={URLS.BRIDGE_CHANGELOG_URL}>
+                            <Link variant="nostyle" href={GITHUB_BRIDGE_CHANGELOG_URL}>
                                 <Button
                                     icon="LOG"
                                     color={theme.TYPE_LIGHT_GREY}

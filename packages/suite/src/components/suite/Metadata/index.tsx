@@ -1,6 +1,6 @@
 import React from 'react';
 import { resolveStaticPath } from '@trezor/utils';
-import { URLS } from '@suite-constants';
+import { SUITE_URL } from '@trezor/urls';
 import Helmet from 'react-helmet';
 import { useIntl } from 'react-intl';
 import messages from '@suite/support/messages';
@@ -15,8 +15,8 @@ type Props = {
 const Metadata = ({
     title = 'Trezor Suite',
     description,
-    image = `${URLS.SUITE_URL}${resolveStaticPath('images/meta.png')}`,
-    url = URLS.SUITE_URL,
+    image = `${SUITE_URL}${resolveStaticPath('images/meta.png')}`,
+    url = SUITE_URL,
 }: Props) => {
     const intl = useIntl();
     description = description || intl.formatMessage(messages.TR_SUITE_META_DESCRIPTION);

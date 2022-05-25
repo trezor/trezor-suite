@@ -2,12 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { CoinLogo, Button } from '@trezor/components';
+import { WIKI_URL, WIKI_XRP_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
 import { AccountExceptionLayout } from '@wallet-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { Account } from '@wallet-types';
-
-import { URLS } from '@suite-constants';
 
 interface Props {
     symbol?: Account['symbol'];
@@ -18,9 +17,9 @@ interface Props {
 const getInfoUrl = (symbol?: Props['symbol']) => {
     let result;
     const urls = {
-        default: URLS.WIKI_URL,
-        xrp: URLS.XRP_MANUAL_URL,
-        txrp: URLS.XRP_MANUAL_URL,
+        default: WIKI_URL,
+        xrp: WIKI_XRP_URL,
+        txrp: WIKI_XRP_URL,
     };
 
     if (!symbol) {

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, Tooltip, variables } from '@trezor/components';
+import { GITHUB_FW_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
 import {
     getFwUpdateVersion,
@@ -9,7 +10,6 @@ import {
     parseFirmwareChangelog,
 } from '@suite-utils/device';
 import { AcquiredDevice } from '@suite-types';
-import { CHANGELOG_URL } from '@suite-constants/urls';
 
 const FwVersionWrapper = styled.div`
     display: flex;
@@ -148,7 +148,7 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                                                 href={
                                                     parsedChangelog.notes
                                                         ? parsedChangelog.notes
-                                                        : CHANGELOG_URL
+                                                        : GITHUB_FW_CHANGELOG_URL
                                                 }
                                             >
                                                 <Button

@@ -17,6 +17,7 @@
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
         { "path": "../suite-storage" },
+        { "path": "../urls" },
         { "path": "../utils" },
         { "path": "../validation" }
     ]

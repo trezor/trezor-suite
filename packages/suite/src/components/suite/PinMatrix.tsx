@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { WIKI_PIN_URL } from '@trezor/urls';
 import { variables, useTheme } from '@trezor/components';
 import { DeviceMatrixExplanation, PinInput, Translation, TrezorLink } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
-import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
 import { useActions } from '@suite-hooks';
 
@@ -90,7 +90,7 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
                         {
                             key: 'pin',
                             title: (
-                                <TrezorLink variant="underline" href={URLS.PIN_MANUAL_URL}>
+                                <TrezorLink variant="underline" href={WIKI_PIN_URL}>
                                     <Translation id="TR_HOW_PIN_WORKS" />
                                 </TrezorLink>
                             ),

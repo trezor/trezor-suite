@@ -1,7 +1,7 @@
 import { BlockchainBlock } from '@trezor/connect';
+import { CARDANO_STAKE_POOL_TESTNET_URL, CARDANO_STAKE_POOL_MAINNET_URL } from '@trezor/urls';
 import { CARDANO_STAKING } from '@wallet-actions/constants';
 import { PendingStakeTx, PoolsResponse } from '@wallet-types/cardanoStaking';
-import { CARDANO_STAKE_POOL_TESTNET, CARDANO_STAKE_POOL_MAINNET } from '@suite-constants/urls';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -105,7 +105,8 @@ export const fetchTrezorPools = (network: 'ADA' | 'TADA') => async (dispatch: Di
     });
 
     // Fetch ID of Trezor stake pool that will be used in delegation transaction
-    const url = network === 'TADA' ? CARDANO_STAKE_POOL_TESTNET : CARDANO_STAKE_POOL_MAINNET;
+    const url =
+        network === 'TADA' ? CARDANO_STAKE_POOL_TESTNET_URL : CARDANO_STAKE_POOL_MAINNET_URL;
 
     try {
         const response = await fetch(url, { credentials: 'same-origin' });
