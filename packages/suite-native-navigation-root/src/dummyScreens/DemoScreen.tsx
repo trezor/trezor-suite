@@ -10,6 +10,7 @@ import {
     Hint,
     SearchInput,
     Radio,
+    CheckBox,
     Chip,
     Switch,
 } from '@trezor/atoms';
@@ -28,10 +29,15 @@ export const DemoScreen = () => {
     const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
     const [radioChecked, setRadioChecked] = useState('second');
+    const [isCheckBox1Checked, setIsCheckBox1Checked] = useState(false);
+    const [isCheckBox2Checked, setIsCheckBox2Checked] = useState(true);
+    const [isCheckBox3Checked, setIsCheckBox3Checked] = useState(false);
+    const [isCheckBox4Checked, setIsCheckBox4Checked] = useState(true);
     const [isChip1Selected, setIsChip1Selected] = useState<boolean>(false);
     const [isChip2Selected, setIsChip2Selected] = useState<boolean>(false);
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
+
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);
     };
@@ -141,6 +147,29 @@ export const DemoScreen = () => {
                                 value="fourth"
                                 onPress={handleRadioPress}
                                 isChecked
+                                isDisabled
+                            />
+                        </Box>
+                    </Box>
+                    <Box marginVertical="md">
+                        <Text>Checkbox:</Text>
+                        <Box flexDirection="row" justifyContent="space-between">
+                            <CheckBox
+                                isChecked={isCheckBox1Checked}
+                                onChange={() => setIsCheckBox1Checked(!isCheckBox1Checked)}
+                            />
+                            <CheckBox
+                                isChecked={isCheckBox2Checked}
+                                onChange={() => setIsCheckBox2Checked(!isCheckBox2Checked)}
+                            />
+                            <CheckBox
+                                isChecked={isCheckBox3Checked}
+                                onChange={() => setIsCheckBox3Checked(!isCheckBox3Checked)}
+                                isDisabled
+                            />
+                            <CheckBox
+                                isChecked={isCheckBox4Checked}
+                                onChange={() => setIsCheckBox4Checked(!isCheckBox4Checked)}
                                 isDisabled
                             />
                         </Box>
