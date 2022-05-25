@@ -2,6 +2,7 @@ import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
+import * as urls from '../src/urls';
 
 const STATIC_SRC = path.join(__dirname, '../src/static');
 const DIST = path.resolve(__dirname, '../build');
@@ -43,6 +44,7 @@ export default {
             filename: 'popup.html',
             inject: false,
             minify: false,
+            urls,
         }),
         new CopyPlugin({
             patterns: [

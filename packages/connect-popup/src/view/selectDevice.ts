@@ -4,6 +4,7 @@ import { UI, POPUP, ERRORS, createUiResponse, UiRequestSelectDevice } from '@tre
 import { config } from '@trezor/connect/src/data/config';
 import { container, getState, showView, postMessage } from './common';
 import { getOS } from '@trezor/connect/lib/utils/browserUtils';
+import { SUITE_BRIDGE, SUITE_UDEV, TREZOR_SUPPORT } from '../urls';
 
 const initWebUsbButton = (webusb: boolean, showLoader: boolean) => {
     if (!webusb) return;
@@ -118,18 +119,15 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
             if (device.type === 'unreadable') {
                 const os = getOS();
                 // default explanation: contact support
-                // todo: https://github.com/trezor/trezor-suite/issues/5326
-                let explanationContent =
-                    'Please <a href="https://trezor.io/support/" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">contact support.</a>';
+
+                let explanationContent = `Please <a href="${TREZOR_SUPPORT}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">contact support.</a>`;
                 // linux + LIBUSB_ERROR handling
                 if (os === 'linux' && device.error.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
-                    explanationContent =
-                        'Please install <a href="https://suite.trezor.io/web/udev/" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Udev rules</a> to use Trezor device.';
+                    explanationContent = `Please install <a href="${SUITE_UDEV}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Udev rules</a> to use Trezor device.`;
                 }
                 // webusb error handling (top priority)
                 if (payload.webusb) {
-                    explanationContent =
-                        'Please install <a href="https://suite.trezor.io/web/bridge/" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Bridge</a> to use Trezor device.';
+                    explanationContent = `Please install <a href="${SUITE_BRIDGE}" target="_blank" rel="noreferrer noopener" onclick="window.closeWindow();">Bridge</a> to use Trezor device.`;
                 }
                 deviceButton.disabled = true;
                 deviceIcon.classList.add('unknown');
