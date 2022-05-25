@@ -35,6 +35,7 @@
 | [@trezor/suite](./packages/suite)                                     | Trezor Suite common code                     |
 | [@trezor/transport-native](./packages/transport-native)               | communication lib for React Native           |
 | [@trezor/transport](./packages/transport)                             | communication lib for JavaScript             |
+| [@trezor/urls](./packages/urls)                                       | shared urls plus health checking             |
 | [@trezor/utils](./packages/utils)                                     | shared utility functions                     |
 | [@trezor/utxo-lib](./packages/utxo-lib)                               | btc-like coins lib                           |
 
