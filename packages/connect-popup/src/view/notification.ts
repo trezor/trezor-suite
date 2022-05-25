@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/notification.js
 
 import { UiRequestUnexpectedDeviceMode } from '@trezor/connect';
+import { SUITE_FIRMWARE_URL } from '@trezor/urls';
 import { views } from './common';
-import { SUITE_FIRMWARE } from '../urls';
 
 export const showFirmwareUpdateNotification = (
     device: UiRequestUnexpectedDeviceMode['payload'],
@@ -26,7 +26,7 @@ export const showFirmwareUpdateNotification = (
 
     const button = notification.getElementsByClassName('notification-button')[0];
 
-    button.setAttribute('href', SUITE_FIRMWARE);
+    button.setAttribute('href', SUITE_FIRMWARE_URL);
 
     container.appendChild(notification);
 
