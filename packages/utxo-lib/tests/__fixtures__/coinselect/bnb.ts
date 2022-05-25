@@ -466,24 +466,6 @@ export default [
         factor: 0.5,
     },
     {
-        description: 'inputs and outputs, bad feeRate - number (NaN)',
-        feeRate: 1,
-        inputs: ['20000'],
-        outputs: ['10000'],
-        expected: { fee: 0 },
-        dustThreshold: 546,
-        factor: 0.5,
-    },
-    {
-        description: 'inputs and outputs, bad feeRate - decimal (NaN)',
-        feeRate: 1.5,
-        inputs: ['20000'],
-        outputs: ['10000'],
-        expected: { fee: 0 },
-        dustThreshold: 546,
-        factor: 0.5,
-    },
-    {
         description: 'exhausting BnB',
         feeRate: 10,
         inputs: [

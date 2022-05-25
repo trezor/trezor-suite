@@ -14,8 +14,6 @@ export function split(
     feeRate: number,
     options: CoinSelectOptions,
 ): CoinSelectResult {
-    if (typeof utils.uintOrNaN(feeRate) !== 'number') return { fee: 0 };
-
     const coinbase = options.coinbase || 100;
     const utxos = utils.filterCoinbase(utxosOrig, coinbase);
 

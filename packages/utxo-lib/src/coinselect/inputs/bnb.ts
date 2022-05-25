@@ -13,7 +13,7 @@ function calculateEffectiveValues(utxos: CoinSelectInput[], feeRate: number) {
                 effectiveValue: new BN(0),
             };
         }
-        const effectiveFee = utils.inputBytes(utxo) * feeRate;
+        const effectiveFee = utils.getFeeForBytes(feeRate, utils.inputBytes(utxo));
         const effectiveValue = value.sub(new BN(effectiveFee));
         return {
             utxo,
@@ -110,28 +110,31 @@ function search(
 // branchAndBound
 export function bnb(factor: number): CoinSelectAlgorithm {
     return (utxos, outputs, feeRate, options) => {
-        if (typeof utils.uintOrNaN(feeRate) !== 'number') return { fee: 0 };
         if (options.baseFee) return { fee: 0 }; // TEMP: disable bnb algorithm for DOGE
         if (utxos.find(u => u.required)) return { fee: 0 }; // TODO: enable bnb algorithm if required utxos are defined
 
-        const costPerChangeOutput =
+        const costPerChangeOutput = utils.getFeeForBytes(
+            feeRate,
             utils.outputBytes({
                 script: {
                     length: utils.OUTPUT_SCRIPT_LENGTH[options.txType],
                 },
-            }) * feeRate;
+            }),
+        );
 
-        const costPerInput =
+        const costPerInput = utils.getFeeForBytes(
+            feeRate,
             utils.inputBytes({
                 type: options.txType,
                 script: {
                     length: utils.INPUT_SCRIPT_LENGTH[options.txType],
                 },
-            }) * feeRate;
+            }),
+        );
 
         const costOfChange = Math.floor((costPerInput + costPerChangeOutput) * factor);
         const txBytes = utils.transactionBytes([], outputs);
-        const bytesAndFee = feeRate * txBytes;
+        const bytesAndFee = utils.getFeeForBytes(feeRate, txBytes);
 
         const outSum = utils.sumOrNaN(outputs);
         if (!outSum) return { fee: 0 };

@@ -58,6 +58,64 @@ export default [
         },
     },
     {
+        description: 'builds a simple tx without change and decimal fee',
+        request: {
+            basePath: [44, 1],
+            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            changeId: 0,
+            dustThreshold: 546,
+            feeRate: '10.33',
+            height: 100,
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'complete',
+                },
+            ],
+            utxos: [
+                {
+                    addressPath: [3, 4],
+                    coinbase: false,
+                    height: 100,
+                    index: 0,
+                    own: true,
+                    transactionHash: 'b4dc0ffeee',
+                    tsize: 0,
+                    value: '102001',
+                    vsize: 0,
+                },
+            ],
+        },
+        result: {
+            bytes: 192,
+            fee: '2001',
+            feePerByte: '10.421875', // feeRate is greater than requested because of dust limit
+            max: undefined,
+            totalSpent: '102001',
+            transaction: {
+                PERM_outputs: {
+                    permutation: [0],
+                    sorted: [
+                        {
+                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            value: '100000',
+                        },
+                    ],
+                },
+                inputs: [
+                    {
+                        REV_hash: 'b4dc0ffeee',
+                        index: 0,
+                        path: [44, 1, 3, 4],
+                        amount: '102001',
+                    },
+                ],
+            },
+            type: 'final',
+        },
+    },
+    {
         description: 'builds an incomplete tx without change',
         request: {
             basePath: [44, 1],
@@ -345,6 +403,76 @@ export default [
         },
     },
     {
+        description: 'fails on bad feeRate - zero',
+        request: {
+            basePath: [44, 1],
+            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            changeId: 0,
+            dustThreshold: 546,
+            feeRate: 0,
+            height: 100,
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'complete',
+                },
+            ],
+            utxos: [
+                {
+                    addressPath: [3, 4],
+                    coinbase: false,
+                    height: 100,
+                    index: 0,
+                    own: true,
+                    transactionHash: 'b4dc0ffeee',
+                    tsize: 0,
+                    value: '102001',
+                    vsize: 0,
+                },
+            ],
+        },
+        result: {
+            error: 'INCORRECT-FEE-RATE',
+            type: 'error',
+        },
+    },
+    {
+        description: 'fails on bad feeRate - NaN',
+        request: {
+            basePath: [44, 1],
+            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            changeId: 0,
+            dustThreshold: 546,
+            feeRate: NaN,
+            height: 100,
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '100000',
+                    type: 'complete',
+                },
+            ],
+            utxos: [
+                {
+                    addressPath: [3, 4],
+                    coinbase: false,
+                    height: 100,
+                    index: 0,
+                    own: true,
+                    transactionHash: 'b4dc0ffeee',
+                    tsize: 0,
+                    value: '102001',
+                    vsize: 0,
+                },
+            ],
+        },
+        result: {
+            error: 'INCORRECT-FEE-RATE',
+            type: 'error',
+        },
+    },
+    {
         description: 'builds a simple tx with two outputs and change',
         request: {
             basePath: [44, 1],
@@ -400,6 +528,77 @@ export default [
                         {
                             path: [44, 1, 1, 0],
                             value: '49401',
+                        },
+                    ],
+                },
+                inputs: [
+                    {
+                        REV_hash: 'b4dc0ffeee',
+                        index: 0,
+                        path: [44, 1, 3, 4],
+                        amount: '102001',
+                    },
+                ],
+            },
+            type: 'final',
+        },
+    },
+    {
+        description: 'builds a simple tx with two outputs and change (decimal feeRate)',
+        request: {
+            basePath: [44, 1],
+            changeAddress: '1CrwjoKxvdbAnPcGzYjpvZ4no4S71neKXT',
+            changeId: 0,
+            dustThreshold: 546,
+            feeRate: '10.71',
+            height: 100,
+            outputs: [
+                {
+                    address: '1BitcoinEaterAddressDontSendf59kuE',
+                    amount: '30000',
+                    type: 'complete',
+                },
+                {
+                    address: '1LetUsDestroyBitcoinTogether398Nrg',
+                    amount: '20000',
+                    type: 'complete',
+                },
+            ],
+            utxos: [
+                {
+                    addressPath: [3, 4],
+                    coinbase: false,
+                    height: 100,
+                    index: 0,
+                    own: true,
+                    transactionHash: 'b4dc0ffeee',
+                    tsize: 0,
+                    value: '102001',
+                    vsize: 0,
+                },
+            ],
+        },
+        result: {
+            bytes: 260,
+            fee: '2785', // 260 * 10.71
+            feePerByte: '10.711538461538462',
+            max: undefined,
+            totalSpent: '52785',
+            transaction: {
+                PERM_outputs: {
+                    permutation: [1, 0, 2],
+                    sorted: [
+                        {
+                            address: '1LetUsDestroyBitcoinTogether398Nrg',
+                            value: '20000',
+                        },
+                        {
+                            address: '1BitcoinEaterAddressDontSendf59kuE',
+                            value: '30000',
+                        },
+                        {
+                            path: [44, 1, 1, 0],
+                            value: '49216',
                         },
                     ],
                 },

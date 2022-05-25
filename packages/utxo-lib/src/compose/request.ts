@@ -54,7 +54,7 @@ export type ComposeRequest = {
     utxos: ComposeInput[]; // all inputs
     outputs: ComposeOutput[]; // all output "requests"
     height: number;
-    feeRate: string; // in sat/byte, virtual size
+    feeRate: string | number; // in sat/byte, virtual size
     basePath: number[]; // for trezor inputs
     network: Network;
     changeId: number;

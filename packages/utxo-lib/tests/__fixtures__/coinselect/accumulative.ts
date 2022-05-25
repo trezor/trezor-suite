@@ -856,26 +856,6 @@ export default [
         dustThreshold: 546,
     },
     {
-        description: 'inputs and outputs, bad feeRate - string (NaN)',
-        feeRate: '1',
-        inputs: ['20000'],
-        outputs: ['10000'],
-        expected: {
-            fee: 0,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: 'inputs and outputs, bad feeRate - decimal (NaN)',
-        feeRate: 1.5,
-        inputs: ['20000'],
-        outputs: ['10000'],
-        expected: {
-            fee: 0,
-        },
-        dustThreshold: 546,
-    },
-    {
         description: 'DOGE: 2 inputs, not enough to cover fee',
         feeRate: 100000,
         baseFee: 100000000,

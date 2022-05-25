@@ -1,20 +1,6 @@
-import { uintOrNaN, bignumberOrNaN, getFee } from '../../src/coinselect/utils';
+import { bignumberOrNaN, getFee } from '../../src/coinselect/utils';
 
 describe('coinselect utils', () => {
-    it('uintOrNaN', () => {
-        expect(uintOrNaN(1)).toEqual(1);
-        expect(uintOrNaN(Infinity)).toBeUndefined();
-        expect(uintOrNaN(NaN)).toBeUndefined();
-        expect(uintOrNaN(1.1)).toBeUndefined();
-        expect(uintOrNaN(-1)).toBeUndefined();
-        // @ts-expect-error invalid arg
-        expect(uintOrNaN('')).toBeUndefined();
-        // @ts-expect-error invalid arg
-        expect(uintOrNaN('1')).toBeUndefined();
-        // @ts-expect-error invalid arg
-        expect(uintOrNaN()).toBeUndefined();
-    });
-
     it('bignumberOrNaN', () => {
         expect(bignumberOrNaN('1')).not.toBeUndefined();
         expect(bignumberOrNaN('1.1')).toBeUndefined();
@@ -41,6 +27,7 @@ describe('coinselect utils', () => {
     });
 
     it('getBaseFee', () => {
+        expect(getFee(1.33, 56, {}, [])).toEqual(75);
         expect(getFee(1, 100, {}, [])).toEqual(100);
         expect(getFee(1, 200, {}, [])).toEqual(200);
         // without floor

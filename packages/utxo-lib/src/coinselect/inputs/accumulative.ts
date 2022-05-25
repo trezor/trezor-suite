@@ -15,8 +15,6 @@ export function accumulative(
     feeRate: number,
     options: CoinSelectOptions,
 ): CoinSelectResult {
-    if (typeof utils.uintOrNaN(feeRate) !== 'number') return { fee: 0 };
-
     let bytesAccum = utils.transactionBytes([], outputs);
     let inAccum = utils.ZERO;
     const inputs: CoinSelectInput[] = [];
@@ -50,7 +48,7 @@ export function accumulative(
     for (let i = 0; i < utxos.length; ++i) {
         const utxo = utxos[i];
         const utxoBytes = utils.inputBytes(utxo);
-        const utxoFee = feeRate * utxoBytes;
+        const utxoFee = utils.getFeeForBytes(feeRate, utxoBytes);
         const utxoValue = utils.bignumberOrNaN(utxo.value);
 
         // skip detrimental input
