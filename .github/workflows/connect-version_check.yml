@@ -1,0 +1,25 @@
+name: "Connect version check"
+
+on:
+  push:
+    branches: [release/connect-v9]
+
+jobs:
+  version_beta_check:
+    name: Check if connect version is beta
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          bash ./scripts/ci-check-beta-version.sh
+
+  version_bump_check:
+    name: Check connect version bump
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - run: |
+          yarn install
+          REMOTE_VERSION=$(npm show trezor-connect version)
+          node ci/scripts/ci-check-version.js $REMOTE_VERSION npm-release
