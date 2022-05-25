@@ -7,15 +7,11 @@ describe('Coin Settings', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/');
+        cy.prefixedVisit('/settings/coins');
         cy.passThroughInitialRun();
-        cy.discoveryShouldFinish();
     });
 
     it('go to wallet settings page, check BTC, activate all coins, deactivate all coins and check dashboard', () => {
-        cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@settings/menu/wallet').click();
-
         const defaultUnchecked = [
             'ltc',
             'eth',
@@ -29,9 +25,11 @@ describe('Coin Settings', () => {
             'nmc',
             'vtc',
             'zec',
+            'ada',
             'test',
             'trop',
             'txrp',
+            'tada',
         ];
 
         // only btc is selected by default;

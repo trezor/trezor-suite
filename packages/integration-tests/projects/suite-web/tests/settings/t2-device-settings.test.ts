@@ -29,10 +29,8 @@ describe('T2 - Device settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         // navigate to device settings page
-        cy.prefixedVisit('/');
+        cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@settings/menu/device').click();
 
         //
         // Test execution
@@ -93,10 +91,8 @@ describe('T2 - Device settings', () => {
         cy.task('setupEmu', { needs_backup: true });
 
         // navigate to device settings page
-        cy.prefixedVisit('/');
+        cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
@@ -109,10 +105,8 @@ describe('T2 - Device settings', () => {
         cy.task('setupEmu');
 
         // navigate to device settings page
-        cy.prefixedVisit('/');
+        cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@settings/menu/device').click();
 
         // TODO - add pin to verify it properly
 
@@ -124,10 +118,8 @@ describe('T2 - Device settings', () => {
         cy.task('setupEmu');
 
         // navigate to device settings page
-        cy.prefixedVisit('/');
+        cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
-        cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/open-wipe-modal-button').click();
         cy.getTestElement('@wipe/checkbox-1').click();
