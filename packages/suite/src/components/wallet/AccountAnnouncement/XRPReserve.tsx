@@ -10,7 +10,7 @@ const XRPReserve = ({ reserve }: Props) => (
     <NotificationCard
         variant="info"
         button={{
-            children: <ReadMoreLink url="XRP_MANUAL_URL" />,
+            children: <ReadMoreLink url="WIKI_XRP_URL" />,
         }}
     >
         <Translation

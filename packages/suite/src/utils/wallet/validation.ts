@@ -35,7 +35,7 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
     }
     // BCH starting with "1" and valid with a BTC format
     if (symbol === 'bch' && address.startsWith('1') && isAddressValid(address, 'btc')) {
-        return 'BCH_ADDRESS_INFO_URL';
+        return 'WIKI_CASHADDR_URL';
     }
 };
 

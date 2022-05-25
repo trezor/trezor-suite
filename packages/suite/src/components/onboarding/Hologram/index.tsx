@@ -2,13 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
+import { WIKI_PACKAGING_URL, TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
+
 import { DeviceAnimation } from '@onboarding-components';
 import { Translation, TrezorLink } from '@suite-components';
-import {
-    TREZOR_PACKAGING_URL,
-    TREZOR_RESELLERS_URL,
-    SUPPORT_URL,
-} from '@suite/constants/suite/urls';
 
 import type { TrezorDevice } from '@suite/types/suite';
 
@@ -67,7 +64,7 @@ const Hologram = ({ device }: HologramProps) => (
                 id="TR_DID_YOU_PURCHASE"
                 values={{
                     TR_PACKAGING_LINK: (
-                        <TrezorLink href={TREZOR_PACKAGING_URL} variant="underline">
+                        <TrezorLink href={WIKI_PACKAGING_URL} variant="underline">
                             <Translation id="TR_PACKAGING_LINK" />
                         </TrezorLink>
                     ),
@@ -77,7 +74,7 @@ const Hologram = ({ device }: HologramProps) => (
                         </TrezorLink>
                     ),
                     TR_CONTACT_OUR_SUPPORT_LINK: (
-                        <TrezorLink href={SUPPORT_URL} variant="underline">
+                        <TrezorLink href={TREZOR_SUPPORT_URL} variant="underline">
                             <Translation id="TR_CONTACT_OUR_SUPPORT_LINK" />
                         </TrezorLink>
                     ),

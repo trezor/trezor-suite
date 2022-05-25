@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { TrezorLogo, Button, variables } from '@trezor/components';
+import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { TrezorLink, Translation } from '@suite-components';
 import { ProgressBar } from '@onboarding-components';
 import { useOnboarding } from '@suite-hooks';
-import { SUPPORT_URL } from '@suite-constants/urls';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import steps from '@onboarding-config/steps';
 import { GuideButton, GuidePanel } from '@guide-components';
@@ -142,7 +142,11 @@ export const OnboardingLayout: React.FC = ({ children }) => {
                                 <LogoHeaderRow>
                                     <TrezorLogo type="suite" width="128px" />
 
-                                    <TrezorLink size="small" variant="nostyle" href={SUPPORT_URL}>
+                                    <TrezorLink
+                                        size="small"
+                                        variant="nostyle"
+                                        href={TREZOR_SUPPORT_URL}
+                                    >
                                         <Button
                                             variant="tertiary"
                                             icon="EXTERNAL_LINK"

@@ -1,4 +1,5 @@
 import React from 'react';
+import { WIKI_PASSPHRASE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
@@ -6,7 +7,6 @@ import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Setting
 import { Switch } from '@trezor/components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { PASSPHRASE_URL } from '@suite-constants/urls';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
@@ -31,7 +31,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
-                buttonLink={PASSPHRASE_URL}
+                buttonLink={WIKI_PASSPHRASE_URL}
             />
             <ActionColumn>
                 <Switch

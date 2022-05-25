@@ -2,9 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { P } from '@trezor/components';
+import { WIKI_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Translation, WordInputAdvanced, TrezorLink, Modal, ModalProps } from '@suite-components';
-
-import { URLS } from '@suite-constants';
 
 const ContentWrapper = styled.div`
     display: flex;
@@ -40,7 +39,7 @@ export const WordAdvanced = ({ count, ...rest }: Props) => (
             <BottomText>
                 <P size="tiny">
                     <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
-                    <TrezorLink size="tiny" href={URLS.WIKI_ADVANCED_RECOVERY}>
+                    <TrezorLink size="tiny" href={WIKI_ADVANCED_RECOVERY_URL}>
                         <Translation id="TR_LEARN_MORE" />
                     </TrezorLink>
                 </P>

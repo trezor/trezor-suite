@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch } from '@trezor/components';
+import { TOR_PROJECT_URL } from '@trezor/urls';
 import { useSelector, useActions } from '@suite-hooks';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
@@ -28,7 +29,7 @@ export const Tor = () => {
                         }}
                     />
                 }
-                buttonLink="https://www.torproject.org/"
+                buttonLink={TOR_PROJECT_URL}
             />
             <ActionColumn>
                 <Switch

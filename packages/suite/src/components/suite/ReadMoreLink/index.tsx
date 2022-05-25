@@ -1,6 +1,6 @@
 import React from 'react';
+import * as URLS from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
-import { URLS } from '@suite-constants';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
 interface Props {

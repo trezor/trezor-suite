@@ -1,5 +1,6 @@
 import { State as TransactionsState } from '@wallet-reducers/transactionReducer';
 import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
+import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
 import BigNumber from 'bignumber.js';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
@@ -11,12 +12,6 @@ import {
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 import { toFiatCurrency } from './fiatConverterUtils';
-import {
-    WIKI_ACCOUNT_BIP84_URL,
-    WIKI_ACCOUNT_BIP86_URL,
-    WIKI_ACCOUNT_BIP49_URL,
-    WIKI_ACCOUNT_BIP44_URL,
-} from '@suite-constants/urls';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
@@ -144,11 +139,11 @@ export const getAccountTypeDesc = (path: string) => {
 
 export const getAccountTypeUrl = (path: string) => {
     const bip43 = getBip43Type(path);
-    if (bip43 === 'bip86') return WIKI_ACCOUNT_BIP86_URL;
-    if (bip43 === 'bip84') return WIKI_ACCOUNT_BIP84_URL;
-    if (bip43 === 'bip49') return WIKI_ACCOUNT_BIP49_URL;
+    if (bip43 === 'bip86') return WIKI_BIP86_URL;
+    if (bip43 === 'bip84') return WIKI_BIP84_URL;
+    if (bip43 === 'bip49') return WIKI_BIP49_URL;
     if (bip43 === 'shelley') return undefined;
-    return WIKI_ACCOUNT_BIP44_URL;
+    return WIKI_BIP44_URL;
 };
 
 export const stripNetworkAmount = (amount: string, decimals: number) =>

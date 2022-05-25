@@ -1,8 +1,8 @@
 import React, { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { WIKI_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { Button, ButtonPin, KEYBOARD_CODE } from '@trezor/components';
 import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
-import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`
     display: flex;
@@ -109,7 +109,7 @@ const WordInputAdvanced = (props: Props) => {
                     {
                         key: '2',
                         title: (
-                            <TrezorLink variant="underline" href={URLS.WIKI_ADVANCED_RECOVERY}>
+                            <TrezorLink variant="underline" href={WIKI_ADVANCED_RECOVERY_URL}>
                                 <Translation id="TR_LEARN_ADVANCED_RECOVERY" />
                             </TrezorLink>
                         ),

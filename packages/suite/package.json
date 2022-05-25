@@ -17,8 +17,7 @@
         "type-check": "tsc --build tsconfig.json",
         "test": "run-s test:*",
         "test:unit": "jest",
-        "test-unit:watch": "jest -o --watch",
-        "test-health": "jest -c jest.config.health.js"
+        "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
         "@ethereumjs/common": "^2.6.4",
@@ -33,6 +32,7 @@
         "@trezor/suite-data": "*",
         "@trezor/suite-desktop-api": "*",
         "@trezor/suite-storage": "*",
+        "@trezor/urls": "*",
         "@trezor/utils": "*",
         "@trezor/validation": "*",
         "bignumber.js": "^9.0.2",

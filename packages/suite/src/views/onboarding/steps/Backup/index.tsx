@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { WIKI_RECOVERY_SEED_URL } from '@trezor/urls';
 
 import {
     OnboardingButtonCta,
@@ -12,7 +13,6 @@ import { Translation, Image, TrezorLink } from '@suite-components';
 import { BackupSeedCards } from '@backup-components';
 import { canContinue } from '@backup-utils';
 import { useSelector, useActions } from '@suite-hooks';
-import { SEED_MANUAL_URL } from '@suite-constants/urls';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as backupActions from '@backup-actions/backupActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -57,7 +57,7 @@ export const BackupStep = () => {
                             id="TR_BACKUP_SUBHEADING_1"
                             values={{
                                 TR_SEED_MANUAL_LINK: (
-                                    <TrezorLink href={SEED_MANUAL_URL}>
+                                    <TrezorLink href={WIKI_RECOVERY_SEED_URL}>
                                         <Translation id="TR_SEED_MANUAL_LINK" />
                                     </TrezorLink>
                                 ),
@@ -102,7 +102,7 @@ export const BackupStep = () => {
                             id="TR_BACKUP_SUBHEADING_1"
                             values={{
                                 TR_SEED_MANUAL_LINK: (
-                                    <TrezorLink href={SEED_MANUAL_URL}>
+                                    <TrezorLink href={WIKI_RECOVERY_SEED_URL}>
                                         <Translation id="TR_SEED_MANUAL_LINK" />
                                     </TrezorLink>
                                 ),

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { GITHUB_FW_COMMIT_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { FIRMWARE_COMMIT_URL } from '@suite-constants/urls';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { getFwVersion, isBitcoinOnly, getFwUpdateVersion } from '@suite-utils/device';
@@ -87,7 +87,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                                     version: (
                                         <VersionTooltip content={revision} disabled={!revision}>
                                             <TrezorLink
-                                                href={FIRMWARE_COMMIT_URL + revision}
+                                                href={GITHUB_FW_COMMIT_URL + revision}
                                                 variant="nostyle"
                                             >
                                                 <Button

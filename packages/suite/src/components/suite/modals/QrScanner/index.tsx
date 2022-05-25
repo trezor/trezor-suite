@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useState } from 'react';
 import styled from 'styled-components';
 
 import { TrezorLink, Translation, Modal, BundleLoader } from '@suite-components';
-import * as URLS from '@suite-constants/urls';
+import * as URLS from '@trezor/urls';
 import { Icon, colors, P, Button, Textarea, SelectBar } from '@trezor/components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { useTranslation } from '@suite-hooks';

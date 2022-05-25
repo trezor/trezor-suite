@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { DATA_URL, WIKI_UDEV_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
 import { variables, Button, Select, Link, Loader } from '@trezor/components';
-import { URLS } from '@suite-constants';
 import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
@@ -54,7 +54,7 @@ const UdevDownload = () => {
         transport && transport.udev
             ? transport.udev.packages.map(p => ({
                   label: p.name,
-                  value: URLS.TREZOR_DATA_URL + p.url.substring(1),
+                  value: DATA_URL + p.url.substring(1),
                   preferred: p.preferred,
               }))
             : [];
@@ -91,7 +91,7 @@ const UdevDownload = () => {
             </Download>
             <Manual>
                 <Translation id="TR_UDEV_DOWNLOAD_MANUAL" />
-                <TrezorLink variant="nostyle" href={URLS.WIKI_UDEV_RULES}>
+                <TrezorLink variant="nostyle" href={WIKI_UDEV_URL}>
                     <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                         <Translation id="TR_LEARN_MORE" />
                     </Button>

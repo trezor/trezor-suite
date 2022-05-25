@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, colors, variables, H3 } from '@trezor/components';
+import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
 import { DropZone } from '@suite-components/DropZone';
-import { FIRMWARE_BINARIES_URL } from '@suite-constants/urls';
 import type { TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
 import { validateFirmware } from '@firmware-utils';
 
@@ -91,7 +91,7 @@ export const SelectCustomFirmware = ({ device, onSuccess }: Props) => {
     return (
         <>
             <Step order="1" title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD" />}>
-                <TrezorLink variant="nostyle" href={FIRMWARE_BINARIES_URL}>
+                <TrezorLink variant="nostyle" href={GITHUB_FW_BINARIES_URL}>
                     <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                         <Translation id="TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD" />
                     </Button>

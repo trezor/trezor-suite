@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { WIKI_DRY_RUN_URL } from '@trezor/urls';
 import { Button, H2, P, variables } from '@trezor/components';
 import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
 import { Loading, Translation, CheckItem, TrezorLink, Image, Modal } from '@suite-components';
@@ -7,7 +8,6 @@ import { RawRenderer } from '@suite-components/Modal/RawRenderer';
 import { ReduxModal } from '@suite-components/ModalSwitcher/ReduxModal';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
-import { URLS } from '@suite-constants';
 import type { ForegroundAppProps } from '@suite-types';
 import type { WordCount } from '@recovery-types';
 
@@ -216,7 +216,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 <TrezorLink
                                     icon="EXTERNAL_LINK"
                                     size="tiny"
-                                    href={URLS.DRY_RUN_URL}
+                                    href={WIKI_DRY_RUN_URL}
                                 >
                                     <Translation id="TR_LEARN_MORE" />
                                 </TrezorLink>

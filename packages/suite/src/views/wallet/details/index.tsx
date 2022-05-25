@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { P } from '@trezor/components';
+import { WIKI_XPUB_URL } from '@trezor/urls';
 import { WalletLayout } from '@wallet-components';
 import { useDevice, useActions, useSelector } from '@suite-hooks';
 import { Translation, Card } from '@suite-components';
@@ -12,7 +13,6 @@ import {
     getAccountTypeDesc,
 } from '@wallet-utils/accountUtils';
 import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
-import { WIKI_XPUB_URL } from '@suite-constants/urls';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import { NETWORKS } from '@wallet-config';
 
