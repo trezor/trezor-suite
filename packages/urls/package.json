@@ -1,0 +1,16 @@
+{
+    "name": "@trezor/urls",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:integration": "jest --passWithNoTests",
+        "type-check": "tsc --build"
+    },
+    "devDependencies": {
+        "node-fetch": "^2.6.7"
+    }
+}

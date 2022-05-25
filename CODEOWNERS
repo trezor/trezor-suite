@@ -62,6 +62,8 @@
 
 /packages/theme @Nodonisko
 
+/packages/urls @marekrjpolak
+
 /packages/utils @karliatto
 
 /packages/utxo-lib @szymonlesisz
