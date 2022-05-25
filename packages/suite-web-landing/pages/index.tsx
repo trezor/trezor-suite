@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
+import { SUITE_URL } from '@trezor/urls';
 import Layout from '../components/Layout';
 import Translation, { TranslationModeContext } from '../components/Translation';
 import Download from '../components/Download';
 import Feature from '../components/Feature';
 import { resolveStaticPath } from '@trezor/utils/lib/resolveStaticPath';
 import Metadata from '@suite-components/Metadata';
-import { URLS } from '@suite-constants';
 import enLocale from '@trezor/suite-data/files/translations/en.json';
 import {
     Wrapper,
@@ -69,9 +69,7 @@ const Index = () => {
         <TranslationModeContext.Provider value={translationMode}>
             <IntlProvider locale="en" messages={enLocale}>
                 <Metadata
-                    image={`${URLS.SUITE_URL}${resolveStaticPath(
-                        'images/suite-web-landing/meta.png',
-                    )}`}
+                    image={`${SUITE_URL}${resolveStaticPath('images/suite-web-landing/meta.png')}`}
                 />
                 <Layout pathToApp={pathToApp}>
                     <Wrapper>

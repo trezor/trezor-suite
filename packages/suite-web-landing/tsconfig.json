@@ -13,6 +13,7 @@
     "references": [
         { "path": "../components" },
         { "path": "../suite" },
+        { "path": "../urls" },
         { "path": "../utils" }
     ]
 }

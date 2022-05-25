@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import Translation from '../Translation';
+import { TREZOR_BLOG_URL, GITHUB_ROADMAP_URL, TREZOR_URL } from '@trezor/urls';
 import { TrezorLogo, Button, colors, variables, Link } from '@trezor/components';
 
 const Layout = styled.div`
@@ -130,10 +131,10 @@ const Index = ({ children, pathToApp }: Props) => (
                     <FooterHeadline>
                         <Translation id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_2" />
                     </FooterHeadline>
-                    <FooterLink href="https://blog.trezor.io/">
+                    <FooterLink href={TREZOR_BLOG_URL}>
                         <Translation id="TR_SUITE_WEB_LANDING_FOOTER_BLOG" />
                     </FooterLink>
-                    <FooterLink href="https://github.com/orgs/trezor/projects/28?fullscreen=true">
+                    <FooterLink href={GITHUB_ROADMAP_URL}>
                         <Translation id="TR_SUITE_WEB_LANDING_FOOTER_ROADMAP" />
                     </FooterLink>
                 </FooterList>
@@ -144,7 +145,7 @@ const Index = ({ children, pathToApp }: Props) => (
                     <Translation
                         id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_PARAGRAPH"
                         values={{
-                            a: chunks => <Link href="https://trezor.io/">{chunks}</Link>,
+                            a: chunks => <Link href={TREZOR_URL}>{chunks}</Link>,
                         }}
                     />
                 </FooterParagraph>
