@@ -28,7 +28,7 @@ outdated:
   retry: 2
   script:
     - yarn install --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/suite test-health
+    - yarn workspace @trezor/urls test:integration
 
 urls health nightly:
   extends: .urls health
