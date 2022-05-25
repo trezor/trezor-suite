@@ -9,6 +9,7 @@
         { "path": "../suite-analytics" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
+        { "path": "../urls" },
         { "path": "../utils" },
         { "path": "../request-manager" }
     ]
