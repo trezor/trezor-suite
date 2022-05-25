@@ -1274,40 +1274,6 @@ export default [
         dustThreshold: 546,
     },
     {
-        description: 'inputs and outputs, bad feeRate - string (NaN)',
-        feeRate: '1',
-        inputs: [
-            {
-                value: '20000',
-                coinbase: false,
-                own: true,
-                confirmations: 100,
-            },
-        ],
-        outputs: ['10000'],
-        expected: {
-            fee: 0,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: 'inputs and outputs, bad feeRate - decimal (NaN)',
-        feeRate: 1.5,
-        inputs: [
-            {
-                value: '20000',
-                coinbase: false,
-                own: true,
-                confirmations: 100,
-            },
-        ],
-        outputs: ['10000'],
-        expected: {
-            fee: 0,
-        },
-        dustThreshold: 546,
-    },
-    {
         description: 'exhausting BnB',
         feeRate: 10,
         inputs: [

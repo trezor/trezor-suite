@@ -276,26 +276,6 @@ export default [
         dustThreshold: 546,
     },
     {
-        description: 'inputs and outputs, bad feeRate - string (NaN)',
-        feeRate: '1',
-        inputs: ['20000'],
-        outputs: [{}],
-        expected: {
-            fee: 0,
-        },
-        dustThreshold: 546,
-    },
-    {
-        description: 'inputs and outputs, bad feeRate - decimal (NaN)',
-        feeRate: 1.5,
-        inputs: ['20000'],
-        outputs: [{}],
-        expected: {
-            fee: 0,
-        },
-        dustThreshold: 546,
-    },
-    {
         description: '1 to 1, not enough funds',
         feeRate: 1000,
         inputs: ['5000'],

@@ -74,6 +74,10 @@ export function outputBytes(output: VinVout) {
     return Math.ceil(outputWeight(output) / 4);
 }
 
+export function getFeeForBytes(feeRate: number, bytes: number) {
+    return Math.ceil(feeRate * bytes);
+}
+
 export function transactionWeight(inputs: Vin[], outputs: VinVout[]) {
     const segwitInputs = inputs.reduce(
         (x, i) => x + (SEGWIT_INPUT_SCRIPT_TYPES.includes(i.type) ? 1 : 0),
@@ -112,14 +116,8 @@ export function dustThreshold(feeRate: number, options: CoinSelectOptions) {
             },
         ],
     );
-    const price = size * feeRate;
+    const price = getFeeForBytes(feeRate, size);
     return Math.max(options.dustThreshold, price);
-}
-
-export function uintOrNaN(v: number) {
-    if (typeof v !== 'number') return;
-    if (Number.isNaN(v) || !Number.isFinite(v) || !Number.isInteger(v) || v < 0) return;
-    return v;
 }
 
 export function bignumberOrNaN(v?: BN | string): BN | undefined;
@@ -161,7 +159,7 @@ export function getFee(
     options: Partial<CoinSelectOptions>,
     outputs: CoinSelectOutput[],
 ) {
-    const defaultFee = feeRate * bytes;
+    const defaultFee = getFeeForBytes(feeRate, bytes);
     let baseFee = options.baseFee || 0;
     if (baseFee && bytes) {
         if (options.floorBaseFee) {
@@ -249,7 +247,7 @@ export function anyOf(algorithms: CoinSelectAlgorithm[]): CoinSelectAlgorithm {
 }
 
 export function utxoScore(x: CoinSelectInput, feeRate: number) {
-    return new BN(x.value).sub(new BN(feeRate * inputBytes(x)));
+    return new BN(x.value).sub(new BN(getFeeForBytes(feeRate, inputBytes(x))));
 }
 
 export function sortByScore(feeRate: number) {

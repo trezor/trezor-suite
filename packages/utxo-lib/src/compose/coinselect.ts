@@ -20,7 +20,7 @@ export type CompleteResult = {
     };
 };
 
-export type Result =
+type Result =
     | CompleteResult
     | {
           type: 'false';

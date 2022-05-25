@@ -75,3 +75,16 @@ export function convertOutputs(
         })
         .map(output => Object.assign(output, { weight: outputWeight(output) }));
 }
+
+export function convertFeeRate(rate: string | number) {
+    const feeRate = typeof rate === 'string' ? Number(rate) : rate;
+    if (
+        Number.isNaN(feeRate) ||
+        !Number.isFinite(feeRate) ||
+        feeRate > Number.MAX_SAFE_INTEGER ||
+        feeRate <= 0
+    ) {
+        return;
+    }
+    return feeRate;
+}
