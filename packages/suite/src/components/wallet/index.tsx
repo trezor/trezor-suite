@@ -27,6 +27,11 @@ import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketProviderInfo from './CoinmarketProviderInfo';
 import CoinmarketRefreshTime from './CoinmarketRefreshTime';
 import { DiscoveryProgress } from './DiscoveryProgress';
+import KYCInProgress from './KYCInProgress';
+import KYCFailed from './KYCFailed';
+import KYCError from './KYCError';
+import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
+import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs';
 
 export {
     Title,
@@ -50,7 +55,13 @@ export {
     CoinmarketPaymentType,
     CoinmarketRefreshTime,
     DiscoveryProgress,
+    withCoinmarket,
+    withSelectedAccountLoaded,
     OnOffSwitcher,
     InputError,
     AccountExceptionLayout,
+    KYCInProgress,
+    KYCFailed,
+    KYCError,
 };
+export type { WithCoinmarketProps, WithSelectedAccountLoadedProps };

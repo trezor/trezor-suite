@@ -270,7 +270,9 @@ const Inputs = () => {
                                                 <CoinLogo size={18} symbol={account.symbol} />
                                             ) : (
                                                 <TokenLogo
-                                                    src={`${invityAPI.server}/images/coins/suite/${option.value}.svg`}
+                                                    src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${
+                                                        option.value
+                                                    }.svg`}
                                                 />
                                             )}
                                             <Label>{option.label}</Label>

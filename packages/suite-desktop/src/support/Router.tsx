@@ -24,6 +24,11 @@ import WalletCoinmarketExchange from '@wallet-views/coinmarket/exchange';
 import WalletCoinmarketExchangeDetail from '@wallet-views/coinmarket/exchange/detail';
 import WalletCoinmarketExchangeOffers from '@wallet-views/coinmarket/exchange/offers';
 import WalletCoinmarketSpend from '@wallet-views/coinmarket/spend';
+import WalletCoinmarketSavingsSetup from '@wallet-views/coinmarket/savings/setup';
+import WalletCoinmarketSavingsSetupContinue from '@wallet-views/coinmarket/savings/setup/continue';
+import WalletCoinmarketSavingsSetupWaiting from '@wallet-views/coinmarket/savings/setup/waiting';
+import WalletCoinmarketSavingsPaymentInfo from '@wallet-views/coinmarket/savings/payment-info';
+import WalletCoinmarketSavingsOverview from '@wallet-views/coinmarket/savings/overview';
 import WalletCoinmarketRedirect from '@wallet-views/coinmarket/redirect';
 
 import { SettingsGeneral } from '@settings-views/general/SettingsGeneral';
@@ -53,6 +58,11 @@ const components: { [key: string]: React.ComponentType<any> } = {
     'wallet-coinmarket-exchange-detail': WalletCoinmarketExchangeDetail,
     'wallet-coinmarket-exchange-offers': WalletCoinmarketExchangeOffers,
     'wallet-coinmarket-spend': WalletCoinmarketSpend,
+    'wallet-coinmarket-savings-setup': WalletCoinmarketSavingsSetup,
+    'wallet-coinmarket-savings-setup-continue': WalletCoinmarketSavingsSetupContinue,
+    'wallet-coinmarket-savings-setup-waiting': WalletCoinmarketSavingsSetupWaiting,
+    'wallet-coinmarket-savings-payment-info': WalletCoinmarketSavingsPaymentInfo,
+    'wallet-coinmarket-savings-overview': WalletCoinmarketSavingsOverview,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
 
     'settings-index': SettingsGeneral,

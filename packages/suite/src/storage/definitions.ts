@@ -21,6 +21,7 @@ import type {
     CoinFiatRates,
     WalletAccountTransaction,
 } from '@wallet-types';
+import type { SavingsTradeItem } from '@suite-services/invityAPI';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -95,7 +96,7 @@ export interface SuiteDBSchema extends DBSchema {
             key?: string;
             date: string;
             tradeType: TradeType;
-            data: BuyTrade | ExchangeTrade | SpendTrade;
+            data: BuyTrade | ExchangeTrade | SpendTrade | SavingsTradeItem;
             account: {
                 descriptor?: Account['descriptor'];
                 symbol: Account['symbol'];

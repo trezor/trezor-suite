@@ -9,6 +9,7 @@ export { ConfirmActionModal } from './confirm/ConfirmActionModal';
 export { ConfirmFingerprintModal } from './confirm/ConfirmFingerprintModal';
 export { CoinmarketBuyTerms } from './confirm/CoinmarketBuyTerms';
 export { CoinmarketSellTerms } from './confirm/CoinmarketSellTerms';
+export { CoinmarketSavingsTerms } from './confirm/CoinmarketSavingsTerms';
 export { CoinmarketExchangeTerms } from './confirm/CoinmarketExchangeTerms';
 export { CoinmarketExchangeDexTerms } from './confirm/CoinmarketExchangeDexTerms';
 export { CoinmarketLeaveSpend } from './confirm/CoinmarketLeaveSpend';

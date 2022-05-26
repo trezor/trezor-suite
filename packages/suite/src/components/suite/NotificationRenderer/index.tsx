@@ -175,6 +175,11 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
                     }}
                 />
             );
+        case 'savings-kyc-failed':
+            return error(render, notification, 'TR_SAVINGS_KYC_FAILED_NOTIFICATION');
+        case 'savings-kyc-success':
+            return success(render, notification, 'TR_SAVINGS_KYC_SUCCESS_NOTIFICATION');
+
         // Events:
         case SUITE.AUTH_DEVICE:
             return info(render, notification, 'EVENT_WALLET_CREATED');

@@ -51,7 +51,7 @@ const CoinmarketPaymentType = ({ children, method }: Props) => (
                     <Bg>
                         <Icon
                             width="24px"
-                            src={`${invityApi.server}/images/paymentMethods/suite/${method}.svg`}
+                            src={`${invityApi.getApiServerUrl()}/images/paymentMethods/suite/${method}.svg`}
                         />
                     </Bg>
                 </IconWrapper>

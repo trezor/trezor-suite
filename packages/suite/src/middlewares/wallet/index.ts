@@ -5,6 +5,8 @@ import storageMiddleware from './storageMiddleware';
 import walletMiddleware from './walletMiddleware';
 import graphMiddleware from './graphMiddleware';
 import coinmarketMiddleware from './coinmarketMiddleware';
+import coinmarketSavingsMiddleware from './coinmarketSavingsMiddleware';
+import pollingMiddleware from './pollingMiddleware';
 
 export default [
     blockchainMiddleware,
@@ -14,4 +16,6 @@ export default [
     storageMiddleware,
     graphMiddleware,
     coinmarketMiddleware,
+    coinmarketSavingsMiddleware,
+    pollingMiddleware,
 ];

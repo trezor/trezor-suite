@@ -1,16 +1,9 @@
-import { AppState } from '@suite-types';
-import { SellProviderInfo } from 'invity-api';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
+import type { SellProviderInfo } from 'invity-api';
 
-export interface ComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    device: AppState['suite']['device'];
-    language: AppState['suite']['settings']['language'];
-    fees: AppState['wallet']['fees'];
-}
+export type UseCoinmarketSpendProps = WithSelectedAccountLoadedProps;
 
-export interface Props extends ComponentProps {
-    selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
-}
+export type Props = WithSelectedAccountLoadedProps;
 
 export type SpendContextValues = {
     isLoading: boolean;

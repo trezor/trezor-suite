@@ -56,6 +56,33 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
     'wallet-coinmarket-spend': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/spend'),
     ),
+    'wallet-coinmarket-savings-setup': lazy(
+        () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/setup'),
+    ),
+    'wallet-coinmarket-savings-setup-continue': lazy(
+        () =>
+            import(
+                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/setup/continue'
+            ),
+    ),
+    'wallet-coinmarket-savings-setup-waiting': lazy(
+        () =>
+            import(
+                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/setup/waiting'
+            ),
+    ),
+    'wallet-coinmarket-savings-payment-info': lazy(
+        () =>
+            import(
+                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/payment-info'
+            ),
+    ),
+    'wallet-coinmarket-savings-overview': lazy(
+        () =>
+            import(
+                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/overview'
+            ),
+    ),
     'wallet-coinmarket-redirect': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/redirect'),
     ),

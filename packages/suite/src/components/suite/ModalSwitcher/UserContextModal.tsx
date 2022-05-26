@@ -6,6 +6,7 @@ import {
     PinMismatch,
     PassphraseDuplicate,
     CoinmarketBuyTerms,
+    CoinmarketSavingsTerms,
     CoinmarketSellTerms,
     CoinmarketExchangeTerms,
     CoinmarketExchangeDexTerms,
@@ -105,6 +106,14 @@ export const UserContextModal = ({
         case 'coinmarket-exchange-dex-terms':
             return (
                 <CoinmarketExchangeDexTerms
+                    provider={payload.provider}
+                    onCancel={onCancel}
+                    decision={payload.decision}
+                />
+            );
+        case 'coinmarket-savings-terms':
+            return (
+                <CoinmarketSavingsTerms
                     provider={payload.provider}
                     onCancel={onCancel}
                     decision={payload.decision}

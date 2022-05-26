@@ -171,7 +171,7 @@ const CoinmarketExchangeOfferInfo = ({
                     <RightColumn>
                         <Dark>
                             <InvityCoinLogo
-                                src={`${invityAPI.server}/images/coins/suite/${receive}.svg`}
+                                src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${receive}.svg`}
                             />
                             <Amount>
                                 {(!provider.isFixedRate || selectedQuote.isDex) && '≈ '}

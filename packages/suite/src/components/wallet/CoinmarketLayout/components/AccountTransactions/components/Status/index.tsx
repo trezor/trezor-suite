@@ -4,9 +4,11 @@ import { Translation } from '@suite-components';
 import { getStatusMessage as getBuyStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
 import { getStatusMessage as getExchangeStatusMessage } from '@wallet-utils/coinmarket/exchangeUtils';
 import { getStatusMessage as getSellStatusMessage } from '@wallet-utils/coinmarket/sellUtils';
+import { getStatusMessage as getSavingsStatusMessage } from '@wallet-utils/coinmarket/savingsUtils';
 import { variables, Icon, useTheme, SuiteThemeColors } from '@trezor/components';
 import { Trade } from '@wallet-types/coinmarketCommonTypes';
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+import type { SavingsTradeItemStatus } from '@suite-services/invityAPI';
 
 interface Props {
     trade: Trade['data'];
@@ -125,11 +127,37 @@ const getSpendTradeData = (theme: SuiteThemeColors) =>
         statusMessageId: 'TR_SPEND_STATUS_FINISHED',
     } as const);
 
+const getSavingsTradeData = (status: SavingsTradeItemStatus, theme: SuiteThemeColors) => {
+    const message = getSavingsStatusMessage(status);
+    switch (message) {
+        case 'TR_SAVINGS_STATUS_PENDING':
+            return {
+                icon: 'CLOCK',
+                color: theme.TYPE_ORANGE,
+                statusMessageId: message,
+            } as const;
+        case 'TR_SAVINGS_STATUS_ERROR':
+            return {
+                icon: 'CROSS',
+                color: theme.TYPE_RED,
+                statusMessageId: message,
+            } as const;
+        case 'TR_SAVINGS_STATUS_SUCCESS':
+            return {
+                icon: 'CHECK',
+                color: theme.TYPE_GREEN,
+                statusMessageId: message,
+            } as const;
+        // no default
+    }
+};
+
 type StatusData =
     | ReturnType<typeof getBuyTradeData>
     | ReturnType<typeof getSellTradeData>
     | ReturnType<typeof getExchangeTradeData>
-    | ReturnType<typeof getSpendTradeData>;
+    | ReturnType<typeof getSpendTradeData>
+    | ReturnType<typeof getSavingsTradeData>;
 
 const Status = ({ trade, className, tradeType }: Props) => {
     const theme = useTheme();
@@ -146,6 +174,9 @@ const Status = ({ trade, className, tradeType }: Props) => {
             break;
         case 'spend':
             data = getSpendTradeData(theme);
+            break;
+        case 'savings':
+            data = getSavingsTradeData(trade.status as SavingsTradeItemStatus, theme);
             break;
         // no default
     }

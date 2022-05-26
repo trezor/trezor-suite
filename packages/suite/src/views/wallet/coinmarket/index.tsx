@@ -1,5 +1,8 @@
+import React from 'react';
 import styled from 'styled-components';
-import { Icon, variables } from '@trezor/components';
+import { Icon, variables, SelectBar } from '@trezor/components';
+import { FormattedNumber } from '@suite-components';
+import { CardWithHeader } from '@suite-components/CardWithHeader';
 
 interface ResponsiveSize {
     responsiveSize: keyof typeof variables.SCREEN_SIZE;
@@ -70,3 +73,34 @@ export const FooterWrapper = styled.div`
         flex-direction: column;
     }
 `;
+
+export const StyledSelectBar = styled(SelectBar)`
+    width: 100%;
+    & div div {
+        justify-content: center;
+    }
+`;
+
+export const SavingsKYCCard = styled(CardWithHeader)`
+    border-radius: 6px;
+    display: flex;
+    margin-bottom: 12px;
+    align-items: center;
+    height: 104px;
+    width: 100%;
+`;
+
+export const getFiatAmountOptions = (amounts: string[], fiatCurrency?: string) =>
+    amounts.map(amount => ({
+        label: !Number.isNaN(Number(amount)) ? (
+            <FormattedNumber
+                value={amount}
+                currency={fiatCurrency}
+                minimumFractionDigits={0}
+                maximumFractionDigits={0}
+            />
+        ) : (
+            amount
+        ),
+        value: amount,
+    }));
