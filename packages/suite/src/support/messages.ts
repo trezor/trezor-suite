@@ -140,10 +140,6 @@ export default defineMessages({
         description: 'Used as label for receive/send address input',
         id: 'TR_ADDRESS',
     },
-    TR_ADDRESS_MODAL_CHECK_ON_TREZOR: {
-        defaultMessage: 'Review on your Trezor',
-        id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
-    },
     TR_ADDRESSES_FRESH: {
         id: 'TR_ADDRESSES_FRESH',
         defaultMessage: 'Fresh addresses',
@@ -1193,11 +1189,6 @@ export default defineMessages({
     TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON: {
         defaultMessage: 'Reload page',
         id: 'TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON',
-    },
-    TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC: {
-        defaultMessage:
-            'Make sure the address shown here checks with the address shown on your Trezor device.',
-        id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
