@@ -15,6 +15,7 @@ import {
 import { getCustomBackends } from '@suite-utils/backend';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 
+import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
 
 // redact transaction id from account transaction anchor
@@ -25,6 +26,18 @@ export const redactTransactionIdFromAnchor = (anchor?: string) => {
 
     return anchor.startsWith(AccountTransactionBaseAnchor) ? AccountTransactionBaseAnchor : anchor;
 };
+
+export const hasUserAllowedTracking = (
+    enabled: AnalyticsState['enabled'],
+    confirmed: AnalyticsState['confirmed'],
+) => {
+    const isConfirmed = !!confirmed;
+    const isEnabled = isConfirmed ? !!enabled : true;
+
+    // allow tracking only if user already confirmed data collection
+    return isConfirmed && isEnabled;
+};
+
 export const getSuiteReadyPayload = (state: AppState) => ({
     language: state.suite.settings.language,
     enabledNetworks: state.wallet.settings.enabledNetworks,

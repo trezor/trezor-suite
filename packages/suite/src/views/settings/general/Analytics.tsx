@@ -8,6 +8,7 @@ import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Setting
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 import { useSelector } from '@suite-hooks';
+import { hasUserAllowedTracking } from '@suite-utils/analytics';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -16,7 +17,9 @@ const PositionedSwitch = styled.div`
 export const Analytics = () => {
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Analytics);
 
-    const { enabled } = useSelector(state => state.analytics);
+    const { enabled, confirmed } = useSelector(state => state.analytics);
+
+    const userAllowedTracking = hasUserAllowedTracking(enabled, confirmed);
 
     return (
         <SectionItem
@@ -32,9 +35,9 @@ export const Analytics = () => {
                 <PositionedSwitch>
                     <Switch
                         dataTest="@analytics/toggle-switch"
-                        isChecked={!!enabled}
+                        isChecked={userAllowedTracking}
                         onChange={() => {
-                            if (enabled) {
+                            if (userAllowedTracking) {
                                 analytics.disable();
                             } else {
                                 analytics.enable();
