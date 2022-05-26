@@ -1,8 +1,6 @@
 import React from 'react';
-import { WalletLayout } from '@wallet-components';
-import { useSelector } from '@suite-hooks';
+import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from '@wallet-components';
 import styled from 'styled-components';
-import { Props } from '@wallet-types/coinmarketExchangeOffers';
 import {
     CoinmarketExchangeOffersContext,
     useOffers,
@@ -15,10 +13,8 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const OffersIndexLoaded = (props: Props) => {
-    const { selectedAccount } = props;
-    const coinmarketOffersValues = useOffers({ ...props, selectedAccount });
-
+const OffersIndex = (props: WithSelectedAccountLoadedProps) => {
+    const coinmarketOffersValues = useOffers(props);
     return (
         <CoinmarketExchangeOffersContext.Provider value={coinmarketOffersValues}>
             <Wrapper>
@@ -28,23 +24,6 @@ const OffersIndexLoaded = (props: Props) => {
     );
 };
 
-const OffersIndex = () => {
-    const props = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        device: state.suite.device,
-        fixedQuotes: state.wallet.coinmarket.exchange.fixedQuotes,
-        floatQuotes: state.wallet.coinmarket.exchange.floatQuotes,
-        dexQuotes: state.wallet.coinmarket.exchange.dexQuotes,
-        quotesRequest: state.wallet.coinmarket.exchange.quotesRequest,
-        addressVerified: state.wallet.coinmarket.exchange.addressVerified,
-        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
-    }));
-
-    const { selectedAccount } = props;
-    if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="TR_NAV_EXCHANGE" account={selectedAccount} />;
-    }
-    return <OffersIndexLoaded {...props} selectedAccount={selectedAccount} />;
-};
-
-export default OffersIndex;
+export default withSelectedAccountLoaded(OffersIndex, {
+    title: 'TR_NAV_EXCHANGE',
+});

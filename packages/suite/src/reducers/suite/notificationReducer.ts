@@ -99,6 +99,12 @@ export type ToastPayload = (
           type: 'cardano-withdrawal-error';
           error: string;
       }
+    | {
+          type: 'savings-kyc-failed';
+      }
+    | {
+          type: 'savings-kyc-success';
+      }
 ) &
     Options;
 

@@ -1,8 +1,8 @@
 import produce from 'immer';
-import { WalletAction, Account } from '@wallet-types';
-import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import type { WalletAction, Account } from '@wallet-types';
+import type { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 
-import {
+import type {
     BuyTrade,
     BuyTradeQuoteRequest,
     ExchangeTradeQuoteRequest,
@@ -11,19 +11,27 @@ import {
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
-import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import type { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
+import type { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import {
     COINMARKET_BUY,
     COINMARKET_EXCHANGE,
     COINMARKET_COMMON,
     COINMARKET_SELL,
+    COINMARKET_SAVINGS,
 } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
-import { Action as SuiteAction } from '@suite-types';
-import { SellInfo } from '@wallet-actions/coinmarketSellActions';
-import { FeeLevel } from '@trezor/connect';
-import { Trade } from '@wallet-types/coinmarketCommonTypes';
+import type { Action as SuiteAction } from '@suite-types';
+import type { SellInfo } from '@wallet-actions/coinmarketSellActions';
+import type { SavingsInfo } from '@wallet-actions/coinmarketSavingsActions';
+import type { FeeLevel } from '@trezor/connect';
+import type { Trade } from '@wallet-types/coinmarketCommonTypes';
+import type {
+    SavingsKYCStatus,
+    SavingsProviderInfo,
+    SavingsTrade,
+    SavingsTradePlannedPayment,
+} from '@suite-services/invityAPI';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<
@@ -70,10 +78,21 @@ interface Sell {
     isFromRedirect: boolean;
 }
 
+interface Savings {
+    selectedProvider?: SavingsProviderInfo;
+    savingsInfo?: SavingsInfo;
+    savingsTrade?: SavingsTrade;
+    savingsTradePayments: SavingsTradePlannedPayment[];
+    isSavingsTradeLoading: boolean;
+    kycFinalStatus?: SavingsKYCStatus;
+    isWatchingKYCStatus: boolean;
+}
+
 export interface State {
     buy: Buy;
     exchange: Exchange;
     sell: Sell;
+    savings: Savings;
     composedTransactionInfo: ComposedTransactionInfo;
     trades: Trade[];
     isLoading: boolean;
@@ -114,6 +133,15 @@ export const initialState = {
         alternativeQuotes: [],
         transactionId: undefined,
         isFromRedirect: false,
+    },
+    savings: {
+        selectedProvider: undefined,
+        savingsInfo: undefined,
+        savingsTrade: undefined,
+        savingsTradePayments: [],
+        isSavingsTradeLoading: false,
+        kycFinalStatus: undefined,
+        isWatchingKYCStatus: false,
     },
     composedTransactionInfo: {},
     trades: [],
@@ -221,9 +249,41 @@ const coinmarketReducer = (
             case COINMARKET_SELL.SAVE_TRANSACTION_ID:
                 draft.sell.transactionId = action.transactionId;
                 break;
+            case COINMARKET_SAVINGS.SAVE_SAVINGS_INFO:
+                draft.savings.savingsInfo = action.savingsInfo;
+                break;
+            case COINMARKET_SAVINGS.LOAD_SAVINGS_TRADE_RESPONSE:
+                draft.savings.isSavingsTradeLoading = true;
+                break;
+            case COINMARKET_SAVINGS.SAVE_SAVINGS_TRADE_RESPONSE:
+                draft.savings.isSavingsTradeLoading = false;
+                draft.savings.savingsTrade = action.response.trade;
+                draft.savings.kycFinalStatus = action.response.trade?.kycStatus;
+                draft.savings.savingsTradePayments = (action.response.payments ?? []).sort(
+                    (a, b) =>
+                        new Date(b.plannedPaymentAt).valueOf() -
+                        new Date(a.plannedPaymentAt).valueOf(),
+                );
+                break;
+            case COINMARKET_SAVINGS.CLEAR_SAVINGS_TRADE:
+                draft.savings.savingsTrade = undefined;
+                break;
+            case COINMARKET_SAVINGS.SET_SELECTED_PROVIDER:
+                draft.savings.selectedProvider = action.provider;
+                break;
+            case COINMARKET_SAVINGS.SET_SAVINGS_TRADE_RESPONSE_LOADING:
+                draft.savings.isSavingsTradeLoading = action.isSavingsTradeLoading;
+                break;
             case COINMARKET_COMMON.SET_LOADING:
                 draft.isLoading = action.isLoading;
                 draft.lastLoadedTimestamp = action.lastLoadedTimestamp;
+                break;
+            case COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS:
+                draft.savings.isWatchingKYCStatus = true;
+                break;
+            case COINMARKET_SAVINGS.STOP_WATCHING_KYC_STATUS:
+                draft.savings.kycFinalStatus = action.kycFinalStatus;
+                draft.savings.isWatchingKYCStatus = false;
                 break;
             // no default
         }

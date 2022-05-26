@@ -894,6 +894,239 @@ export default defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_SAVINGS_KYC_SUCCESS_NOTIFICATION: {
+        defaultMessage: 'KYC verification successfully passed.',
+        id: 'TR_SAVINGS_KYC_SUCCESS_NOTIFICATION',
+    },
+    TR_SAVINGS_KYC_FAILED_NOTIFICATION: {
+        defaultMessage: 'Sorry, KYC verification failed.',
+        id: 'TR_SAVINGS_KYC_FAILED_NOTIFICATION',
+    },
+    TR_SAVINGS_NO_PROVIDERS: {
+        defaultMessage: 'No providers',
+        id: 'TR_SAVINGS_NO_PROVIDERS',
+    },
+    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED: {
+        defaultMessage: 'Amount is required.',
+        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED',
+    },
+    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT: {
+        defaultMessage: 'Amount must be a number.',
+        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT',
+    },
+    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM: {
+        defaultMessage: 'Minimum amount is {amount}.',
+        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM',
+    },
+    TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM: {
+        defaultMessage: 'Maximum amount is {amount}.',
+        id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM',
+    },
+    TR_SAVINGS_SETUP_HEADER: {
+        defaultMessage: 'Your saving crypto account setup',
+        id: 'TR_SAVINGS_SETUP_HEADER',
+    },
+    TR_SAVINGS_SETUP_COUNTRY_LOCATION_DESCRIPTION: {
+        defaultMessage:
+            'Save into {cryptoCurrencyName} is location specific feature and we are unable to give you any offer unless you are from supported country.',
+        id: 'TR_SAVINGS_SETUP_COUNTRY_LOCATION_DESCRIPTION',
+    },
+    TR_SAVINGS_SETUP_COUNTRY_MISMATCH_DESCRIPTION: {
+        defaultMessage:
+            "If your country isn't listed above, you may always stack sats with {oneTimeBuyLink}.",
+        id: 'TR_SAVINGS_SETUP_COUNTRY_MISMATCH_DESCRIPTION',
+    },
+    TR_SAVINGS_SETUP_ONE_TIME_BUY_LINK: {
+        defaultMessage: 'one time buy',
+        id: 'TR_SAVINGS_SETUP_ONE_TIME_BUY_LINK',
+    },
+    TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_LABEL: {
+        defaultMessage: 'Frequency',
+        id: 'TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_LABEL',
+    },
+    TR_SAVINGS_SETUP_FIAT_AMOUNT_LABEL: {
+        defaultMessage: 'Amount',
+        id: 'TR_SAVINGS_SETUP_FIAT_AMOUNT_LABEL',
+    },
+    TR_SAVINGS_SETUP_RECEIVING_ADDRESS: {
+        defaultMessage: 'Receiving address',
+        id: 'TR_SAVINGS_SETUP_RECEIVING_ADDRESS',
+    },
+    TR_SAVINGS_SETUP_RECEIVING_ADDRESS_CHANGES_PAYMENT_INFO: {
+        defaultMessage:
+            'Change of receiving address changes payment information. If you change the address, please double check payment information on next page.',
+        id: 'TR_SAVINGS_SETUP_RECEIVING_ADDRESS_CHANGES_PAYMENT_INFO',
+    },
+    TR_SAVINGS_SETUP_SUMMARY_LABEL: {
+        defaultMessage: "In a Year you'll save",
+        id: 'TR_SAVINGS_SETUP_SUMMARY_LABEL',
+    },
+    TR_SAVINGS_SETUP_CONFIRM_BUTTON: {
+        defaultMessage: 'Confirm setup',
+        id: 'TR_SAVINGS_SETUP_CONFIRM_BUTTON',
+    },
+    TR_SAVINGS_SETUP_KYC_IN_PROGRESS_HEADER: {
+        defaultMessage: 'KYC verification in progress',
+        id: 'TR_SAVINGS_SETUP_KYC_IN_PROGRESS_HEADER',
+    },
+    TR_SAVINGS_SETUP_KYC_IN_PROGRESS_DESCRIPTION: {
+        defaultMessage: 'We will notify you about KYC verification progress.',
+        id: 'TR_SAVINGS_SETUP_KYC_IN_PROGRESS_DESCRIPTION',
+    },
+    TR_SAVINGS_SETUP_KYC_FAILED_HEADER: {
+        defaultMessage: 'KYC failed',
+        id: 'TR_SAVINGS_SETUP_KYC_FAILED_HEADER',
+    },
+    TR_SAVINGS_SETUP_KYC_FAILED_DESCRIPTION: {
+        defaultMessage: 'KYC verification failed. Please contact {providerName} support.',
+        id: 'TR_SAVINGS_SETUP_KYC_IN_PROGRESS_DESCRIPTION',
+    },
+    TR_SAVINGS_SETUP_KYC_ERROR_HEADER: {
+        defaultMessage: 'KYC error',
+        id: 'TR_SAVINGS_SETUP_KYC_ERROR_HEADER',
+    },
+    TR_SAVINGS_SETUP_KYC_ERROR_DESCRIPTION: {
+        defaultMessage: 'Something went wrong during KYC check. Please contact our support.',
+        id: 'TR_SAVINGS_SETUP_KYC_ERROR_DESCRIPTION',
+    },
+    TR_SAVINGS_PAYMENT_INFO_HEADER: {
+        defaultMessage: 'Standing order',
+        id: 'TR_SAVINGS_PAYMENT_INFO_HEADER',
+    },
+    TR_SAVINGS_PAYMENT_INFO_DESCRIPTION: {
+        defaultMessage: 'Setup a standing order to make your savings automatic.',
+        id: 'TR_SAVINGS_PAYMENT_INFO_DESCRIPTION',
+    },
+    TR_SAVINGS_PAYMENT_INFO_NAME_LABEL: {
+        defaultMessage: 'Name',
+        id: 'TR_SAVINGS_PAYMENT_INFO_NAME_LABEL',
+    },
+    TR_SAVINGS_PAYMENT_INFO_IBAN_LABEL: {
+        defaultMessage: 'IBAN',
+        id: 'TR_SAVINGS_PAYMENT_INFO_IBAN_LABEL',
+    },
+    TR_SAVINGS_PAYMENT_INFO_BIC_LABEL: {
+        defaultMessage: 'BIC',
+        id: 'TR_SAVINGS_PAYMENT_INFO_BIC_LABEL',
+    },
+    TR_SAVINGS_PAYMENT_INFO_DESCRIPTION_LABEL: {
+        defaultMessage: 'Description',
+        id: 'TR_SAVINGS_PAYMENT_INFO_DESCRIPTION_LABEL',
+    },
+    TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL: {
+        defaultMessage: 'Select your country',
+        id: 'TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL',
+    },
+    TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY: {
+        defaultMessage: 'each week',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY',
+    },
+    TR_SAVINGS_OVERVIEW_PERIOD_BIWEEKLY: {
+        defaultMessage: 'bi-weekly',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_BIWEEKLY',
+    },
+    TR_SAVINGS_OVERVIEW_PERIOD_MONTHLY: {
+        defaultMessage: 'each month',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_MONTHLY',
+    },
+    TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY: {
+        defaultMessage: 'each quarter',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT: {
+        defaultMessage: 'Current payment',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT_STATUS: {
+        defaultMessage: 'Next up',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT_STATUS',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT: {
+        defaultMessage: 'Next payment',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT_STATUS: {
+        defaultMessage: 'following',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_NEXT_PAYMENT_STATUS',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_VIEW_PAYMENT_DETAILS_BUTTON_LABEL: {
+        defaultMessage: 'View payment details',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_VIEW_PAYMENT_DETAILS_BUTTON_LABEL',
+    },
+    TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_HIDE_PAYMENT_DETAILS_BUTTON_LABEL: {
+        defaultMessage: 'Hide payment details',
+        id: 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_HIDE_PAYMENT_DETAILS_BUTTON_LABEL',
+    },
+    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER: {
+        defaultMessage: 'Waiting for your first payment.',
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_HEADER',
+    },
+    TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION: {
+        defaultMessage:
+            "Didn't make it yet? Check View payment details to know where to send the payment.",
+        id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION',
+    },
+    TR_SAVINGS_STATUS_PENDING: {
+        defaultMessage: 'Pending',
+        id: 'TR_SAVINGS_STATUS_PENDING',
+    },
+    TR_SAVINGS_STATUS_ERROR: {
+        defaultMessage: 'Error',
+        id: 'TR_SAVINGS_STATUS_ERROR',
+    },
+    TR_SAVINGS_STATUS_SUCCESS: {
+        defaultMessage: 'Success',
+        id: 'TR_SAVINGS_STATUS_SUCCESS',
+    },
+    TR_SAVINGS_TRANS_ID: {
+        defaultMessage: 'Transaction ID:',
+        id: 'TR_SAVINGS_TRANS_ID',
+    },
+    TR_SAVINGS_FOR_YOUR_SAFETY: {
+        defaultMessage: 'Keep your security in mind',
+        id: 'TR_BUY_FOR_YOUR_SAFETY',
+    },
+    TR_SAVINGS_TERMS_1: {
+        defaultMessage:
+            "You're here to buy cryptocurrency. If you were directed to this site for any other reason, please contact {provider} support before proceeding.",
+        id: 'TR_SAVINGS_TERMS_1',
+    },
+    TR_SAVINGS_TERMS_2: {
+        defaultMessage:
+            "You're using this feature to purchase funds that will be sent to an account under your direct personal control.",
+        id: 'TR_SAVINGS_TERMS_2',
+    },
+    TR_SAVINGS_TERMS_3: {
+        defaultMessage:
+            "You're not using this feature for gambling or any other violation of the provider's terms of service.",
+        id: 'TR_SAVINGS_TERMS_3',
+    },
+    TR_SAVINGS_TERMS_4: {
+        defaultMessage:
+            'You understand that cryptocurrencies are an emerging financial tool and that regulations may be limited in some areas. This may put you at a higher risk of fraud, theft, or market instability.',
+        id: 'TR_SAVINGS_TERMS_4',
+    },
+    TR_SAVINGS_TERMS_5: {
+        defaultMessage:
+            "You understand that cryptocurrency transactions are irreversible and you won't be able to receive a refund for your purchase.",
+        id: 'TR_SAVINGS_TERMS_5',
+    },
+    TR_SAVINGS_I_UNDERSTAND: {
+        defaultMessage: 'I understand and agree to all of the above',
+        id: 'TR_SAVINGS_I_UNDERSTAND',
+    },
+    TR_SAVINGS_CONFIRM: {
+        defaultMessage: 'Confirm',
+        id: 'TR_SAVINGS_CONFIRM',
+    },
+    TR_SAVINGS_SETUP_WAITING_MESSAGE: {
+        defaultMessage: 'Waiting for completion on Invity web page.',
+        id: 'TR_SAVINGS_SETUP_WAITING_MESSAGE',
+    },
+    TR_SAVINGS_SETUP_WAITING_BUTTON_LABEL: {
+        defaultMessage: 'Go to Invity',
+        id: 'TR_SAVINGS_SETUP_WAITING_BUTTON_LABEL',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',
@@ -1432,6 +1665,10 @@ export default defineMessages({
         defaultMessage: 'Crypto',
         id: 'TR_COINS',
     },
+    TR_CHANGE: {
+        defaultMessage: 'Change',
+        id: 'TR_CHANGE',
+    },
     TR_CONFIRM: {
         defaultMessage: 'Confirm',
         id: 'TR_CONFIRM',
@@ -1561,6 +1798,10 @@ export default defineMessages({
     TR_DEVICE_LABEL_IS_UNAVAILABLE: {
         defaultMessage: 'Device "{deviceLabel}" is unavailable',
         id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
+    },
+    TR_EDIT: {
+        defaultMessage: 'Edit',
+        id: 'TR_EDIT',
     },
     TR_NEEDS_ATTENTION_BOOTLOADER: {
         defaultMessage: 'Trezor is in Bootloader mode.',
@@ -3669,6 +3910,10 @@ export default defineMessages({
         id: 'TR_TRADE_SPENDS',
         defaultMessage: 'spends',
     },
+    TR_TRADE_SAVINGS: {
+        id: 'TR_TRADE_SAVINGS',
+        defaultMessage: 'savings',
+    },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',
         defaultMessage: 'Credit Card',
@@ -4407,6 +4652,14 @@ export default defineMessages({
     TR_NAV_SELL: {
         id: 'TR_NAV_SELL',
         defaultMessage: 'Sell',
+    },
+    TR_NAV_SAVINGS: {
+        id: 'TR_NAV_SAVINGS',
+        defaultMessage: 'Save into {cryptoCurrencyName}',
+    },
+    TR_NAV_INVITY: {
+        id: 'TR_NAV_INVITY',
+        defaultMessage: 'Invity',
     },
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',

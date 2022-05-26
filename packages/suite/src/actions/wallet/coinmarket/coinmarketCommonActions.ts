@@ -2,7 +2,12 @@ import TrezorConnect, { UI, DeviceButtonRequest } from '@trezor/connect';
 import { GetState, Dispatch } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '../constants';
+import {
+    COINMARKET_BUY,
+    COINMARKET_EXCHANGE,
+    COINMARKET_SAVINGS,
+    COINMARKET_COMMON,
+} from '../constants';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { Account } from '@wallet-types';
 import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
@@ -38,7 +43,8 @@ export const verifyAddress =
         path: string | undefined,
         coinmarketAction:
             | typeof COINMARKET_EXCHANGE.VERIFY_ADDRESS
-            | typeof COINMARKET_BUY.VERIFY_ADDRESS,
+            | typeof COINMARKET_BUY.VERIFY_ADDRESS
+            | typeof COINMARKET_SAVINGS.VERIFY_ADDRESS,
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
@@ -168,10 +174,13 @@ export const submitRequestForm =
         }
     };
 
-export const setLoading = (isLoading: boolean, lastLoadedTimestamp?: number) => ({
+export const setLoading = (
+    isLoading: boolean,
+    lastLoadedTimestamp = 0,
+): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.SET_LOADING,
     isLoading,
-    ...(lastLoadedTimestamp && { lastLoadedTimestamp }),
+    lastLoadedTimestamp,
 });
 
 export const loadInvityData = (): CoinmarketCommonAction => ({

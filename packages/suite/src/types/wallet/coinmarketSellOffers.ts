@@ -1,22 +1,12 @@
-import { AppState } from '@suite-types';
-import { Account } from '@wallet-types';
-import { BankAccount, SellFiatTrade } from 'invity-api';
-import { Timer } from '@suite-hooks/useTimeInterval';
-import { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellActions';
+import type { AppState } from '@suite-types';
+import type { Account } from '@wallet-types';
+import type { BankAccount, SellFiatTrade } from 'invity-api';
+import type { Timer } from '@suite-hooks/useTimeInterval';
+import type { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellActions';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 import { TradeSell } from './coinmarketCommonTypes';
 
-export interface ComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    device: AppState['suite']['device'];
-    quotes: AppState['wallet']['coinmarket']['sell']['quotes'];
-    alternativeQuotes: AppState['wallet']['coinmarket']['sell']['alternativeQuotes'];
-    quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
-    sellInfo?: SellInfo;
-}
-
-export interface Props extends ComponentProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
-}
+export type UseOffersProps = WithSelectedAccountLoadedProps;
 
 export type SellStep = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
 

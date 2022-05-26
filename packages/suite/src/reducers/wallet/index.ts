@@ -14,6 +14,7 @@ import sendFormReducer from './sendFormReducer';
 import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
+import pollingReducer from './pollingReducer';
 
 const WalletReducers = combineReducers({
     fiat: fiatRateReducer,
@@ -31,6 +32,7 @@ const WalletReducers = combineReducers({
     accountSearch: accountSearchReducer,
     formDrafts: formDraftReducer,
     cardanoStaking: cardanoStakingReducer,
+    pollings: pollingReducer,
 });
 
 export default WalletReducers;

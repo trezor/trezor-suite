@@ -33,16 +33,17 @@ const NavLinkText = styled.div`
 type WalletLayoutNavLinkProps = {
     active: boolean;
     title: ExtendedMessageDescriptor['id'];
+    values?: ExtendedMessageDescriptor['values'];
     onClick: () => void;
     'data-test'?: string;
 };
 
 export const WalletLayoutNavLink = (props: WalletLayoutNavLinkProps) => {
-    const { active, title, onClick } = props;
+    const { active, title, onClick, values } = props;
     return (
         <NavLink active={active} onClick={onClick} data-test={props['data-test']}>
             <NavLinkText>
-                <Translation id={title} />
+                <Translation id={title} values={values} />
             </NavLinkText>
         </NavLink>
     );

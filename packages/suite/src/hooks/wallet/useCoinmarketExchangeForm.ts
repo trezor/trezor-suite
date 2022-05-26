@@ -1,6 +1,6 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { ExchangeTradeQuoteRequest } from 'invity-api';
+import type { ExchangeTradeQuoteRequest } from 'invity-api';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
@@ -10,12 +10,12 @@ import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeAc
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import {
     ExchangeFormState,
-    Props,
     AmountLimits,
     ExchangeFormContextValues,
     CRYPTO_INPUT,
     FIAT_INPUT,
     FIAT_CURRENCY,
+    UseCoinmarketExchangeFormProps,
 } from '@wallet-types/coinmarketExchangeForm';
 import { getComposeAddressPlaceholder } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { getAmountLimits, splitToQuoteCategories } from '@wallet-utils/coinmarket/exchangeUtils';
@@ -25,12 +25,14 @@ import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import useDebounce from 'react-use/lib/useDebounce';
 import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import type { AppState } from '@suite-types';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
 
 const useExchangeState = (
-    { selectedAccount, fees }: Props,
+    selectedAccount: UseCoinmarketExchangeFormProps['selectedAccount'],
+    fees: AppState['wallet']['fees'],
     currentState: boolean,
     defaultFormValues?: ExchangeFormState,
 ) => {
@@ -50,7 +52,9 @@ const useExchangeState = (
     };
 };
 
-export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValues => {
+export const useCoinmarketExchangeForm = ({
+    selectedAccount,
+}: UseCoinmarketExchangeFormProps): ExchangeFormContextValues => {
     const {
         saveQuoteRequest,
         saveQuotes,
@@ -71,8 +75,28 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         loadInvityData();
     }, [loadInvityData]);
 
-    const { selectedAccount, quotesRequest, fees, fiat, localCurrency, exchangeCoinInfo, device } =
-        props;
+    const [state, setState] = useState<ReturnType<typeof useExchangeState>>(undefined);
+
+    const {
+        accounts,
+        exchangeInfo,
+        quotesRequest,
+        exchangeCoinInfo,
+        fiat,
+        device,
+        localCurrency,
+        fees,
+    } = useSelector(state => ({
+        accounts: state.wallet.accounts,
+        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
+        quotesRequest: state.wallet.coinmarket.exchange.quotesRequest,
+        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
+        fiat: state.wallet.fiat,
+        device: state.suite.device,
+        localCurrency: state.wallet.settings.localCurrency,
+        fees: state.wallet.fees,
+    }));
+
     const { account, network } = selectedAccount;
     const { navigateToExchangeOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
@@ -81,13 +105,6 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const fiatRates = fiat.coins.find(item => item.symbol === symbol);
-
-    const [state, setState] = useState<ReturnType<typeof useExchangeState>>(undefined);
-
-    const { accounts, exchangeInfo } = useSelector(state => ({
-        accounts: state.wallet.accounts,
-        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
-    }));
 
     const { getDraft, saveDraft, removeDraft } =
         useFormDraft<ExchangeFormState>('coinmarket-exchange');
@@ -102,7 +119,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     );
 
     // throttle initial state calculation
-    const initState = useExchangeState(props, !!state, defaultValues);
+    const initState = useExchangeState(selectedAccount, fees, !!state, defaultValues);
     useEffect(() => {
         const setStateAsync = async (initState: ReturnType<typeof useExchangeState>) => {
             const address = await getComposeAddressPlaceholder(account, network, device, accounts);

@@ -1,11 +1,11 @@
 import { WalletLayout, CoinmarketFooter, WalletLayoutHeader } from '@wallet-components';
 import { Card, Button, variables } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import Navigation from './components/Navigation';
 import AccountTransactions from './components/AccountTransactions';
 import { Translation } from '@suite-components';
+import type { AppState } from '@suite-types';
 
 const Content = styled.div`
     padding: 29px 41px;
@@ -19,30 +19,28 @@ const BottomContent = styled.div``;
 
 interface Props {
     children: ReactNode;
+    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
     onClearFormButtonClick?: () => void;
 }
 
-const CoinmarketLayout = ({ children, onClearFormButtonClick }: Props) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    return (
-        <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
-            <WalletLayoutHeader title="TR_NAV_TRADE">
-                {onClearFormButtonClick && (
-                    <Button type="button" variant="tertiary" onClick={onClearFormButtonClick}>
-                        <Translation id="TR_CLEAR_ALL" />
-                    </Button>
-                )}
-            </WalletLayoutHeader>
-            <Card noPadding>
-                <Navigation />
-                <Content>{children}</Content>
-            </Card>
-            <BottomContent>
-                <AccountTransactions />
-                <CoinmarketFooter />
-            </BottomContent>
-        </WalletLayout>
-    );
-};
+const CoinmarketLayout = ({ children, selectedAccount, onClearFormButtonClick }: Props) => (
+    <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
+        <WalletLayoutHeader title="TR_NAV_TRADE">
+            {onClearFormButtonClick && (
+                <Button type="button" variant="tertiary" onClick={onClearFormButtonClick}>
+                    <Translation id="TR_CLEAR_ALL" />
+                </Button>
+            )}
+        </WalletLayoutHeader>
+        <Card noPadding>
+            <Navigation />
+            <Content>{children}</Content>
+        </Card>
+        <BottomContent>
+            <AccountTransactions />
+            <CoinmarketFooter />
+        </BottomContent>
+    </WalletLayout>
+);
 
 export default CoinmarketLayout;

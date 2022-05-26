@@ -58,7 +58,7 @@ export class HttpReceiver extends EventEmitter {
             {
                 pathname: '/buy-redirect',
                 handler: this.buyHandler,
-                origins: [''], // No referer
+                origins: ['', 'localhost:3000', '*.invity.io', 'invity.io'],
             },
             {
                 pathname: '/buy-post',

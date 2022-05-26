@@ -71,6 +71,11 @@ export type UserContextPayload =
           decision: Deferred<boolean>;
       }
     | {
+          type: 'coinmarket-savings-terms';
+          provider?: string;
+          decision: Deferred<boolean>;
+      }
+    | {
           type: 'coinmarket-sell-terms';
           provider?: string;
           decision: Deferred<boolean>;
@@ -205,7 +210,8 @@ type DeferredModals = Extract<
             | 'coinmarket-buy-terms'
             | 'coinmarket-sell-terms'
             | 'coinmarket-exchange-dex-terms'
-            | 'coinmarket-exchange-terms';
+            | 'coinmarket-exchange-terms'
+            | 'coinmarket-savings-terms';
     }
 >;
 // extract single modal by `type` util

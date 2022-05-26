@@ -1,19 +1,14 @@
-import { AppState } from '@suite-types';
-import { Account, Network } from '@wallet-types';
-import { BuyInfo, saveQuotes, saveTrade } from '@wallet-actions/coinmarketBuyActions';
-import { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
-import { TypedValidationRules } from './form';
-import { DefaultCountryOption, Option } from './coinmarketCommonTypes';
-import { ExchangeCoinInfo } from 'invity-api';
+import type { Account, Network } from '@wallet-types';
+import type { BuyInfo, saveQuotes, saveTrade } from '@wallet-actions/coinmarketBuyActions';
+import type { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
+import type { TypedValidationRules } from './form';
+import type { DefaultCountryOption, Option } from './coinmarketCommonTypes';
+import type { ExchangeCoinInfo } from 'invity-api';
+import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 
-export interface ComponentProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    exchangeCoinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'];
-}
+export type UseCoinmarketBuyFormProps = WithSelectedAccountLoadedProps;
 
-export interface Props extends ComponentProps {
-    selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
-}
+export type Props = WithSelectedAccountLoadedProps;
 
 export type FormState = {
     fiatInput?: string;

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Props, SpendContextValues } from '@wallet-types/coinmarketSpend';
+import { UseCoinmarketSpendProps, SpendContextValues } from '@wallet-types/coinmarketSpend';
 import invityAPI from '@suite-services/invityAPI';
 import { SellVoucherTrade } from 'invity-api';
 import { getUnusedAddressFromAccount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
@@ -10,17 +10,22 @@ import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketSpendActions from '@wallet-actions/coinmarketSpendActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { FormState } from '@wallet-types/sendForm';
+import type { FormState } from '@wallet-types/sendForm';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { isDesktop } from '@suite-utils/env';
 import { useCompose } from './form/useCompose';
 import { useForm } from 'react-hook-form';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import type { AppState } from '@suite-types';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);
 SpendContext.displayName = 'CoinmarketSpendContext';
 
-const useSpendState = ({ selectedAccount, fees }: Props, currentState: boolean) => {
+const useSpendState = (
+    selectedAccount: UseCoinmarketSpendProps['selectedAccount'],
+    fees: AppState['wallet']['fees'],
+    currentState: boolean,
+) => {
     // do not calculate if currentState is already set (prevent re-renders)
     if (selectedAccount.status !== 'loaded' || currentState) return;
 
@@ -41,7 +46,9 @@ const useSpendState = ({ selectedAccount, fees }: Props, currentState: boolean) 
     };
 };
 
-export const useCoinmarketSpend = (props: Props): SpendContextValues => {
+export const useCoinmarketSpend = ({
+    selectedAccount,
+}: UseCoinmarketSpendProps): SpendContextValues => {
     const [voucherSiteUrl, setVoucherSiteUrl] = useState<string | undefined>('error');
 
     const { addNotification, setShowLeaveModal, saveTrade, loadInvityData } = useActions({
@@ -57,10 +64,11 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
 
     const { translationString } = useTranslation();
 
-    const { selectedAccount, language } = props;
     const { account } = selectedAccount;
-    const { sellInfo } = useSelector(state => ({
+    const { sellInfo, language, fees } = useSelector(state => ({
         sellInfo: state.wallet.coinmarket.sell.sellInfo,
+        language: state.suite.settings.language,
+        fees: state.wallet.fees,
     }));
     const country = sellInfo?.sellList?.country;
     const isLoading = !sellInfo || !voucherSiteUrl;
@@ -104,7 +112,7 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
     const [trade, setTrade] = useState<SellVoucherTrade | undefined>(undefined);
 
     // throttle initial state calculation
-    const initState = useSpendState(props, !!state);
+    const initState = useSpendState(selectedAccount, fees, !!state);
     useEffect(() => {
         if (!state && initState) {
             setState(initState);
