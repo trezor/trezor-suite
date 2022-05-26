@@ -21,6 +21,7 @@
         "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
+        "@trezor/urls": "*",
         "ua-parser-js": "^1.0.2"
     },
     "devDependencies": {
