@@ -3,4 +3,4 @@
 
 
 "@trezor/connect-webextension@../../connect-webextension":
-  version "9.0.0-beta.1"
+  version "9.0.0"

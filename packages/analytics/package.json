@@ -11,6 +11,6 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@trezor/utils": "*"
+        "@trezor/utils": "9.0.0"
     }
 }

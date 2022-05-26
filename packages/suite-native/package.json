@@ -22,7 +22,7 @@
         "node-libs-browser": "^2.2.1",
         "react": "17.0.2",
         "react-native": "0.68.2",
-        "@trezor/connect": "9.0.0-beta.1"
+        "@trezor/connect": "9.0.0"
     },
     "devDependencies": {
         "@babel/core": "^7.12.9",

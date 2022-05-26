@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link",
-    "version": "2.1.3",
+    "version": "9.0.0",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/packages/blockchain-link",
     "description": "High-level javascript interface for blockchain communication",
@@ -58,8 +58,8 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
-        "@trezor/utils": "^1.0.0",
-        "@trezor/utxo-lib": "^1.0.0",
+        "@trezor/utils": "9.0.0",
+        "@trezor/utxo-lib": "9.0.0",
         "@types/web": "^0.0.51",
         "bignumber.js": "^9.0.1",
         "events": "^3.3.0",
