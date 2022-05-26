@@ -2,6 +2,10 @@
 
 /docker @vdovhanych @mroz22
 
+/scripts @Nodonisko
+
+/packages/analytics @tomasklim
+
 /packages/blockchain-link @mroz22 @marekrjpolak
 
 /packages/components @dahaca @matejkriz
@@ -40,6 +44,8 @@
 
 /packages/suite-native @matejkriz @Nodonisko
 
+/packages/suite-native-* @Nodonisko @bouchja1 @juriczech
+
 /packages/suite-storage @matejkriz
 
 /packages/suite-web @marekrjpolak @tomasklim
@@ -50,9 +56,13 @@
 
 /packages/transport-native @Nodonisko
 
+/packages/theme @Nodonisko
+
 /packages/utils @karliatto
 
 /packages/utxo-lib @szymonlesisz
+
+/packages/styles @Nodonisko
 
 /translations @alex-jerechinsky
 
