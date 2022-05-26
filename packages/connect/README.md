@@ -1,17 +1,14 @@
-# Trezor Connect API version 9.0.0-beta.1
+# @trezor/connect API version 9.0.0-beta.1
 
 [![Build Status](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml/badge.svg)](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml)
 [![NPM](https://img.shields.io/npm/v/@trezor/connect.svg)](https://www.npmjs.org/package/@trezor/connect)
 [![Known Vulnerabilities](https://snyk.io/test/github/trezor/connect/badge.svg?targetFile=package.json)](https://snyk.io/test/github/trezor/trezor-suite?targetFile=packages/connect/package.json)
 
-Trezor Connect is a platform for easy integration of Trezor into 3rd party services. It provides API with functionality to access public keys, sign transactions and authenticate users. User interface is presented in a secure popup window served from `https://connect.trezor.io/9/popup.html`
+Trezor Connect is a platform for easy integration of Trezor into 3rd party services, as well as into Trezor Suite. It provides an API with functionality to access public keys, sign transactions and authenticate users.
 
--   [Integration](docs/index.md)
--   [Development](https://wiki.trezor.io/Developers_guide:Trezor_Connect_API)
+User interface is presented in a secure popup window served from `connect.trezor.io/<version>/popup.html`. To try it out, use [@trezor/connect-explorer](../connect-explorer) hosted [here](https://trezor.github.io/trezor-suite/connect-explorer).
 
-## Issues
-
-Please report any issues directly in our [Trezor Suite monorepo](https://github.com/trezor/trezor-suite/issues) and apply the `connect` label.
+-   [Integration](https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md)
 
 ## Versions
 
@@ -38,4 +35,4 @@ With regards to this repo - All updates should go to current version branch, the
 
 ## Tests
 
-For integration testing against trezord and emulator refer to [this document](./tests/README.md).
+For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/integration-tests/projects/connect/README.md).
