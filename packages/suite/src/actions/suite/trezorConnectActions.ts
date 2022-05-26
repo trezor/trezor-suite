@@ -3,11 +3,13 @@ import TrezorConnect, {
     UI_EVENT,
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
+    TRANSPORT,
 } from '@trezor/connect';
 import { lockDevice } from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import { isWeb } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
+import { setSentryTransport } from '@suite-utils/sentry';
 
 export const cardanoPatch = () => (_dispatch: Dispatch, getState: GetState) => {
     // Pass additional parameter `useCardanoDerivation` to Trezor Connect methods
@@ -79,6 +81,10 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     TrezorConnect.on(TRANSPORT_EVENT, ({ event: _, ...action }) => {
         // dispatch event as action
         dispatch(action);
+        if (action.payload && action.type === TRANSPORT.START) {
+            const { type, version } = action.payload;
+            setSentryTransport({ type, version });
+        }
     });
 
     TrezorConnect.on(BLOCKCHAIN_EVENT, ({ event: _, ...action }) => {
