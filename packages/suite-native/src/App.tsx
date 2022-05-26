@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { RootTabNavigator } from '@suite-native/navigation-root';
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
-
-import { Home } from './screens/Home';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const renderer = createRenderer();
 
@@ -11,8 +11,10 @@ export const App = () => {
     const theme = prepareNativeTheme({ colorVariant: 'standard' });
 
     return (
-        <StylesProvider theme={theme} renderer={renderer}>
-            <Home />
-        </StylesProvider>
+        <SafeAreaProvider>
+            <StylesProvider theme={theme} renderer={renderer}>
+                <RootTabNavigator />
+            </StylesProvider>
+        </SafeAreaProvider>
     );
 };

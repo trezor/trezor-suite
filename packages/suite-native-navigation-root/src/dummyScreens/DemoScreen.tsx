@@ -23,7 +23,7 @@ const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
     }),
 );
 
-export const Home = () => {
+export const DemoScreen = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
@@ -107,7 +107,11 @@ export const Home = () => {
                         <Hint variant="error">Please enter a valid address dumbo</Hint>
                     </Box>
                     <Box marginVertical="md">
-                        <Button onPress={() => {}} size="md" colorScheme="primary">
+                        <Button
+                            onPress={() => console.log('Get features')}
+                            size="md"
+                            colorScheme="primary"
+                        >
                             My Fancy Button
                         </Button>
                     </Box>
