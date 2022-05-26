@@ -52,7 +52,7 @@ export const DemoScreen = () => {
     const [isChip2Selected, setIsChip2Selected] = useState<boolean>(false);
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
-    const [isModalVisible, setIsModalVisible] = useState<boolean>(true);
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);

@@ -3,7 +3,7 @@ import { Modal as RNModal } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ModalBody } from './ModalBody';
-import { Box } from './Box';
+import { Box } from '../Box';
 
 type ModalProps = {
     children: ReactNode;
