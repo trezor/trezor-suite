@@ -1,0 +1,28 @@
+{
+    "name": "@trezor/coinjoin",
+    "version": "1.0.0",
+    "private": true,
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/coinjoin",
+    "description": "Coinjoin ",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build",
+        "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
+    },
+    "dependencies": {
+        "@trezor/utils": "*",
+        "@trezor/utxo-lib": "*"
+    }
+}
