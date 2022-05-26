@@ -1,4 +1,12 @@
 import UAParser from 'ua-parser-js';
+import {
+    SUITE_URL,
+    CHROME_URL,
+    FIREFOX_URL,
+    CHROME_UPDATE_URL,
+    FIREFOX_UPDATE_URL,
+    CHROME_ANDROID_URL,
+} from '@trezor/urls';
 
 import style from './styles.css';
 import iconChrome from '../../files/images/browsers/chrome.svg';
@@ -76,30 +84,30 @@ window.addEventListener('load', () => {
 
     const desktop = {
         name: 'Desktop App',
-        urlDownload: 'https://suite.trezor.io/',
+        urlDownload: SUITE_URL,
         icon: iconDesktop,
         isPreferred: true,
     };
 
     const chrome = {
         name: 'Chrome 84+',
-        urlDownload: 'https://www.google.com/chrome/',
-        urlUpdate: 'https://support.google.com/chrome/answer/95414',
+        urlDownload: CHROME_URL,
+        urlUpdate: CHROME_UPDATE_URL,
         icon: iconChrome,
         isPreferred: false,
     };
 
     const firefox = {
         name: 'Firefox 78+',
-        urlDownload: 'https://www.mozilla.org/firefox/new/',
-        urlUpdate: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-release',
+        urlDownload: FIREFOX_URL,
+        urlUpdate: FIREFOX_UPDATE_URL,
         icon: iconFirefox,
         isPreferred: false,
     };
 
     const chromeMobile = {
         name: 'Chrome for Android',
-        urlDownload: 'https://play.google.com/store/apps/details?id=com.android.chrome',
+        urlDownload: CHROME_ANDROID_URL,
         icon: iconChrome,
         isPreferred: false,
     };

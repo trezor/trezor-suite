@@ -6,5 +6,5 @@
         "outDir": "./libDev"
     },
     "include": ["./src"],
-    "references": []
+    "references": [{ "path": "../urls" }]
 }
