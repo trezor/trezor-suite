@@ -15,6 +15,7 @@ import {
     Switch,
     ListItem,
     SelectableListItem,
+    SlideDownModal,
 } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -40,6 +41,7 @@ export const DemoScreen = () => {
     const [isChip2Selected, setIsChip2Selected] = useState<boolean>(false);
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(true);
 
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);
@@ -89,24 +91,35 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <Box>
-                        <Text variant="titleSmall">Title Small</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="highlight">Highlight</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="body">Body</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="callout">Callout</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="hint">Hint</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="label">Label</Text>
-                    </Box>
+                    <SlideDownModal
+                        isModalVisible={isModalVisible}
+                        setIsModalVisible={setIsModalVisible}
+                    >
+                        <Box marginTop="lg">
+                            <Text variant="titleLarge">Title Large</Text>
+                        </Box>
+                        <Box>
+                            <Text variant="titleMedium">Title Medium</Text>
+                        </Box>
+                        <Box>
+                            <Text variant="titleSmall">Title Small</Text>
+                        </Box>
+                        <Box>
+                            <Text variant="highlight">Highlight</Text>
+                        </Box>
+                        <Box>
+                            <Text variant="body">Body</Text>
+                        </Box>
+                        <Box>
+                            <Text variant="callout">Callout</Text>
+                        </Box>
+                        <Box>
+                            <Text variant="hint">Hint</Text>
+                        </Box>
+                        <Box>
+                            <Text variant="label">Label</Text>
+                        </Box>
+                    </SlideDownModal>
                     <Box marginVertical="md">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" color="black" />
