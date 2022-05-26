@@ -2,18 +2,19 @@ import { TouchableOpacity } from 'react-native';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@trezor/icons';
 import React, { ReactNode } from 'react';
-import { Box } from './Box';
-import { Text } from './Text';
+import { Box } from '../Box';
+import { Text } from '../Text';
 
 type Props = {
     onClose: () => void;
     children: ReactNode;
+    title: string;
 };
 
 const modalWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.white,
-    borderTopLeftRadius: utils.borders.radii.large * 1.5,
-    borderTopRightRadius: utils.borders.radii.large * 1.5,
+    backgroundColor: utils.colors.gray100,
+    borderTopLeftRadius: utils.borders.radii.large,
+    borderTopRightRadius: utils.borders.radii.large,
 }));
 
 const CLOSE_BUTTON_SIZE = 40;
@@ -26,7 +27,7 @@ const closeButtonStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-export const ModalBody = ({ onClose, children }: Props) => {
+export const ModalBody = ({ onClose, title, children }: Props) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -38,7 +39,7 @@ export const ModalBody = ({ onClose, children }: Props) => {
                 paddingVertical="md"
                 paddingHorizontal="md"
             >
-                <Text variant="titleSmall">Heading</Text>
+                <Text variant="titleSmall">{title}</Text>
                 <TouchableOpacity onPress={onClose} style={applyStyle(closeButtonStyle)}>
                     <Icon name="close" />
                 </TouchableOpacity>

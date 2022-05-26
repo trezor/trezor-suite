@@ -105,6 +105,7 @@ export const DemoScreen = () => {
                     <SlideDownModal
                         isModalVisible={isModalVisible}
                         setIsModalVisible={setIsModalVisible}
+                        title="Typography Demo"
                         modalTrigger={
                             <Button
                                 onPress={() => setIsModalVisible(true)}

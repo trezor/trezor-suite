@@ -9,6 +9,7 @@ type ModalProps = {
     children: ReactNode;
     isModalVisible: boolean;
     handleCloseModal: () => void;
+    title: string;
 };
 
 const modalStyle = prepareNativeStyle(() => ({
@@ -17,17 +18,14 @@ const modalStyle = prepareNativeStyle(() => ({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
 }));
 
-export const Modal = ({ children, isModalVisible, handleCloseModal }: ModalProps) => {
+export const Modal = ({ children, isModalVisible, title, handleCloseModal }: ModalProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <RNModal
-            animationType="slide"
-            transparent
-            visible={isModalVisible}
-            onRequestClose={handleCloseModal}
-        >
+        <RNModal transparent visible={isModalVisible} onRequestClose={handleCloseModal}>
             <Box style={applyStyle(modalStyle)}>
-                <ModalBody onClose={handleCloseModal}>{children}</ModalBody>
+                <ModalBody onClose={handleCloseModal} title={title}>
+                    {children}
+                </ModalBody>
             </Box>
         </RNModal>
     );

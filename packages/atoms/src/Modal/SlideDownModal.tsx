@@ -7,12 +7,14 @@ type ModalProps = {
     setIsModalVisible: (isVisible: boolean) => void;
     children: ReactNode;
     modalTrigger: ReactNode;
+    title: string;
 };
 
 export const SlideDownModal = ({
     isModalVisible,
     setIsModalVisible,
     modalTrigger,
+    title,
     children,
 }: ModalProps) => {
     const handleCloseModal = () => {
@@ -21,7 +23,11 @@ export const SlideDownModal = ({
 
     return (
         <View>
-            <Modal isModalVisible={isModalVisible} handleCloseModal={handleCloseModal}>
+            <Modal
+                title={title}
+                isModalVisible={isModalVisible}
+                handleCloseModal={handleCloseModal}
+            >
                 {children}
             </Modal>
             {modalTrigger}
