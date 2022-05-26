@@ -1,24 +1,26 @@
-## Webextension with inline script
+# Webextension with inline script
 
 `@trezor/connect` running in background script and communicating through `chrome.runtime.postMessage`
 
 Tested in Chrome and Firefox
 
-### Install
+## Install
 
 -   `cd packages/connect-examples/webextension`
 -   `yarn`
 -   `yarn prepare`
 
-#### Chrome
+## Browsers
 
--   go to chrome://extensions
--   Load unpacked
+### Chrome
+
+-   Go to chrome://extensions
+-   Enable developer mode and load unpacked
 -   Choose `packages/connect-examples/webextension` directory
 
-#### Firefox
+### Firefox
 
--   go to settings (top right Menu) > Add-ons
+-   Go to settings (top right Menu) > Add-ons
 -   Manage Your Extensions > Debug Add-ons
 -   Load temporary Add-on
 -   Choose `packages/connect-examples/webextension/manifest-firefox.json` file

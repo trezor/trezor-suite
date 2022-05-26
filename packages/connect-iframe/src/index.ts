@@ -37,10 +37,10 @@ let _core: Core | undefined;
 const _log = initLog('IFrame');
 let _popupMessagePort: (MessagePort | BroadcastChannel) | undefined;
 
-// Wrapper which listen events from Core
+// Wrapper which listens to events from Core
 
 // since iframe.html needs to send message via window.postMessage
-// we need to listen events from Core and convert it to simple objects possible to send over window.postMessage
+// we need to listen to events from Core and convert it to simple objects possible to send over window.postMessage
 
 const handleMessage = (event: PostMessageEvent) => {
     // ignore messages from myself (chrome bug?)

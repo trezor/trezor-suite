@@ -1,18 +1,18 @@
-## Electron renderer process with popup (default)
+# Electron renderer process with popup (default)
 
 `@trezor/connect` files are hosted on `connect.trezor.io` domain and rendered inside `popup` (new window) element.
 
 This application can be also developed and published in browser since it doesn't require any electron specific behavior and it will act in the same way in both environments.
 
-### Install
+## Install
 
 `yarn`
 
-### Develop
+## Develop
 
 `yarn dev`
 
-### Build
+## Build
 
 `yarn build:mac`
 

@@ -1,6 +1,6 @@
 # @trezor/connect-examples
 
-Collection of example implementations of @trezor/connect in various environments:
+A collection of example implementations of @trezor/connect in various environments. See individual READMEs for instructions:
 
 | Environment                                                       | package                                       | Popup |
 | ----------------------------------------------------------------- | --------------------------------------------- | ----- |

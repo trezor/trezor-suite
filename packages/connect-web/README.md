@@ -9,8 +9,8 @@ This package is bundled into web implementations.
 Contains minimum of code required to:
 
 -   Define `TrezorConnect` API object
--   Create and handle communication between `@trezor/connect-iframe` hosted on `https://connect.trezor.io/*/iframe.html`
--   Create and handle communication and lifecycle of `@trezor/connect-popup` hosted on `https://connect.trezor.io/*/popup.html`
+-   Create and handle communication between `@trezor/connect-iframe` hosted on `https://connect.trezor.io/<version>/iframe.html`
+-   Create and handle communication and lifecycle of `@trezor/connect-popup` hosted on `https://connect.trezor.io/<version>/popup.html`
 
 ## Usage
 
@@ -35,19 +35,19 @@ function getAddress() {
 }
 ```
 
-For more examples see [TrezorConnect API documentation](../../packages/connect/docs/api.md)
+For more examples see [TrezorConnect API documentation](../../docs/packages/connect/methods.md)
 
 ## NPM publish:
 
 [Follow instructions](../../docs/releases/npm-packages.md) how to publish @trezor package to npm registry.
 
-### Dev
+## Dev
 
 It is possible to run local dev server with iframe and popup using:
 
 `yarn workspace @trezor/connect-web dev`
 
-Note: don't forget to visit `https://localhost:8088/` and allow self-signed certificate.
+Note: don't forget to visit `https://localhost:8088/` and allow self-signed certificate. No UI is displayed here.
 
 With dev server running, you may initialize TrezorConnect like this
 
