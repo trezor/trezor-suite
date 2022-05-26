@@ -13,7 +13,7 @@ const tabBarStyle = prepareNativeStyle(utils => ({
     height: 86,
     backgroundColor: utils.colors.gray100,
     borderTopColor: utils.colors.gray300,
-    borderTopWidth: utils.borders.widths.sm,
+    borderTopWidth: utils.borders.widths.small,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 20.5,

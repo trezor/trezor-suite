@@ -15,7 +15,7 @@ import {
     Switch,
     ListItem,
     SelectableListItem,
-    SlideDownModal,
+    BottomModal,
 } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
@@ -102,26 +102,22 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <SlideDownModal
-                        isModalVisible={isModalVisible}
-                        setIsModalVisible={setIsModalVisible}
+                    <Button onPress={() => setIsModalVisible(true)} colorScheme="primary" size="md">
+                        Show Typograhy
+                    </Button>
+                    <BottomModal
+                        isVisible={isModalVisible}
+                        onVisibilityChange={setIsModalVisible}
                         title="Typography Demo"
-                        modalTrigger={
-                            <Button
-                                onPress={() => setIsModalVisible(true)}
-                                colorScheme="primary"
-                                size="md"
-                            >
-                                Show Typograhy
-                            </Button>
-                        }
+                        hasBackArrow
+                        onBackArrowClick={() => setIsModalVisible(!isModalVisible)}
                     >
                         {typographyItems.map(item => (
                             <Box marginTop="sm" key={item}>
                                 <Text variant={item}>{item}</Text>
                             </Box>
                         ))}
-                    </SlideDownModal>
+                    </BottomModal>
                     <Box marginVertical="md">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" color="black" />

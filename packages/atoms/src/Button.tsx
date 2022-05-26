@@ -25,19 +25,19 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorSc
             height: 36,
             paddingVertical: utils.spacings.sm,
             paddingHorizontal: 12,
-            borderRadius: utils.borders.radii.basic,
+            borderRadius: utils.borders.radii.small,
         },
         md: {
             height: 44,
             paddingVertical: 10,
             paddingHorizontal: utils.spacings.md,
-            borderRadius: utils.borders.radii.basic,
+            borderRadius: utils.borders.radii.small,
         },
         lg: {
             height: 58,
             paddingVertical: 17,
             paddingHorizontal: utils.spacings.md,
-            borderRadius: utils.borders.radii.large,
+            borderRadius: utils.borders.radii.medium,
         },
     };
 

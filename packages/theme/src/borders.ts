@@ -1,8 +1,8 @@
 export const borders = {
     widths: {
-        sm: '1px',
-        md: '1.5px',
-        lg: '2px',
+        small: '1px',
+        medium: '1.5px',
+        large: '2px',
     },
     radii: {
         badge: '10px',
@@ -15,14 +15,14 @@ export type Borders = typeof borders;
 
 export const nativeBorders = {
     widths: {
-        sm: 1,
-        md: 1.5,
-        lg: 2,
+        small: 1,
+        medium: 1.5,
+        large: 2,
     },
     radii: {
-        basic: 8,
-        large: 16,
-        xLarge: 24,
+        small: 8,
+        medium: 16,
+        large: 24,
         round: 100, // Equivalent to 50% on the web
     },
 } as const;

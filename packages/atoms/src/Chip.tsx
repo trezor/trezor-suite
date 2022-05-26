@@ -22,7 +22,7 @@ const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => 
     alignSelf: 'flex-start',
     height: 44,
     backgroundColor: utils.colors.gray100,
-    borderWidth: utils.borders.widths.sm,
+    borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
     borderColor: utils.colors.gray400,
     paddingHorizontal: 10,
@@ -30,7 +30,7 @@ const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => 
         condition: isSelected,
         style: {
             borderColor: utils.colors.forest,
-            borderWidth: utils.borders.widths.md,
+            borderWidth: utils.borders.widths.medium,
         },
     },
 }));
