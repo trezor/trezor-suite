@@ -11,8 +11,7 @@ type Props = {
 };
 
 const modalWrapperStyle = prepareNativeStyle(utils => ({
-    // height: Dimensions.get('window').height / 2,
-    backgroundColor: utils.colors.gray300, // TODO change to white
+    backgroundColor: utils.colors.white,
     borderTopLeftRadius: utils.borders.radii.large * 1.5,
     borderTopRightRadius: utils.borders.radii.large * 1.5,
 }));
