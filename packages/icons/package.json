@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/atoms",
+    "name": "@trezor/icons",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -8,14 +8,18 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --passWithNoTests",
-        "type-check": "tsc --build"
+        "type-check": "tsc --build",
+        "generate-icons": "yarn run-script generateIcons.js",
+        "run-script": "babel-node --experimental-specifier-resolution=node --"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.11.0",
-        "@trezor/icons": "*",
+        "@shopify/react-native-skia": "0.1.123",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2"
+    },
+    "devDependencies": {
+        "svgo": "2.8.0"
     }
 }

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
+import { Icon, CryptoIcon, FlagIcon } from '@trezor/icons';
 import {
     Text,
     Box,
     Button,
     NumPadButton,
-    Icon,
     Hint,
     SearchInput,
     Radio,
@@ -59,14 +59,15 @@ export const DemoScreen = () => {
                         placeholder="Type here.."
                     />
                     <Box marginTop="lg">
+                        <FlagIcon name="cz" />
                         <Chip
-                            icon={<Icon type="settings" />}
+                            icon={<CryptoIcon name="btc" />}
                             title="Bitcoin"
                             isSelected={isChip1Selected}
                             onSelect={() => setIsChip1Selected(!isChip1Selected)}
                         />
                         <Chip
-                            icon={<Icon type="settings" />}
+                            icon={<Icon name="settings" />}
                             title="Bitcoin"
                             isSelected={isChip2Selected}
                             onSelect={() => setIsChip2Selected(!isChip2Selected)}
@@ -108,7 +109,7 @@ export const DemoScreen = () => {
                     </Box>
                     <Box marginVertical="md">
                         <Text>Icon:</Text>
-                        <Icon type="warningCircle" size="big" color="black" />
+                        <Icon name="warningCircle" size="large" color="black" />
                     </Box>
                     <Box marginVertical="md">
                         <Text>Hints:</Text>
@@ -193,7 +194,7 @@ export const DemoScreen = () => {
                     </Button>
                     <Box marginVertical="md">
                         <ListItem
-                            iconType="placeholder"
+                            iconName="placeholder"
                             title="Headline"
                             subtitle="Description of that headline"
                             hasRightArrow
@@ -202,7 +203,7 @@ export const DemoScreen = () => {
                     </Box>
                     <Box marginVertical="md">
                         <ListItem
-                            iconType="warningCircle"
+                            iconName="warningCircle"
                             title="Some Really and I mean really Long Headline without isTextWrapped"
                             hasRightArrow
                             isTextTruncated
@@ -217,7 +218,7 @@ export const DemoScreen = () => {
                     </Box>
                     <Box marginVertical="md">
                         <ListItem
-                            iconType="warningCircle"
+                            iconName="warningCircle"
                             title="Some Really and I mean really really Long Headline"
                             subtitle="Description of that headlineDescription of that headlineDescription of that headlineDescription of that headline"
                             hasRightArrow={false}
@@ -225,7 +226,7 @@ export const DemoScreen = () => {
                     </Box>
                     <Box marginVertical="md">
                         <ListItem
-                            iconType="placeholder"
+                            iconName="placeholder"
                             title="Not wrapped example with long and I mean really long Headline"
                             subtitle="Description of that not wrapped example with long and I mean really long Headline"
                             hasRightArrow
@@ -234,7 +235,7 @@ export const DemoScreen = () => {
                     </Box>
                     <Box marginVertical="md">
                         <SelectableListItem
-                            iconType="placeholder"
+                            iconName="placeholder"
                             title="Headline"
                             subtitle="Description of that headline"
                             onPress={handleRadioPress}

@@ -1,8 +1,8 @@
-import { IconType } from '../Icon/iconTypes';
+import { IconName } from '@trezor/icons';
 import { NativeStyleObject } from '@trezor/styles';
 
 export type BaseListItem = {
-    iconType?: IconType;
+    iconName?: IconName;
     title: string;
     subtitle?: string;
     onPress?: () => void;

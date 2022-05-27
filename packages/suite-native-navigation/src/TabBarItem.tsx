@@ -1,14 +1,14 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { Icon, IconType } from '@trezor/atoms';
+import { Icon, IconName } from '@trezor/icons';
 
 type TabBarItemProps = {
     isFocused: boolean;
     onPress: () => void;
-    icon: IconType;
+    iconName: IconName;
 };
 
-export const TabBarItem = ({ isFocused, onPress, icon }: TabBarItemProps) => (
+export const TabBarItem = ({ isFocused, onPress, iconName }: TabBarItemProps) => (
     <TouchableOpacity
         accessibilityRole="button"
         accessibilityState={isFocused ? { selected: true } : {}}
@@ -20,6 +20,6 @@ export const TabBarItem = ({ isFocused, onPress, icon }: TabBarItemProps) => (
             onPress();
         }}
     >
-        <Icon type={icon} size="big" color={isFocused ? 'black' : 'gray500'} />
+        <Icon name={iconName} size="large" color={isFocused ? 'black' : 'gray500'} />
     </TouchableOpacity>
 );
