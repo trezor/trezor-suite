@@ -7,5 +7,6 @@ export * from './Icon/Icon';
 export * from './Icon/iconTypes';
 export * from './NumPadButton';
 export * from './SearchInput';
+export * from './CheckBox';
 export * from './Chip';
 export * from './Switch';
