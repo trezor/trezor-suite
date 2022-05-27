@@ -72,7 +72,6 @@ const init = async () => {
         minHeight: MIN_HEIGHT,
         webPreferences: {
             webSecurity: !isDev,
-            nativeWindowOpen: true,
             allowRunningInsecureContent: isDev,
             nodeIntegration: false,
             contextIsolation: true,

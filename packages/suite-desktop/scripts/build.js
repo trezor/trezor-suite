@@ -62,7 +62,7 @@ build({
     entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(electronSource, f)),
     platform: 'node',
     bundle: true,
-    target: 'node16.5.0', // Electron 15
+    target: 'node16.13.2', // Electron 18
     external: Object.keys({
         // do we need all of these as external? isn't just electron enough?
         ...pkg.dependencies,

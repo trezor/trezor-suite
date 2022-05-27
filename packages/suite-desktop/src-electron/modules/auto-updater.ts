@@ -234,10 +234,6 @@ const init: Module = ({ mainWindow, store }) => {
             });
     });
 
-    autoUpdater.on('before-quit-for-update', () => {
-        logger.info('auto-updater', 'before-quit-for-update event');
-    });
-
     ipcMain.on('update/check', (_, isManual) => {
         if (isManual) {
             isManualCheck = true;
