@@ -1,6 +1,6 @@
 # Coin Protocol Handler
 
-Trezor Suite, both on web and desktop, can handle opening of coin URLs in `coin:address` and `coin:address?amount=` formats. Currently only `bitcoin:` scheme is supported, but for example `litecoin:` can be easily added.
+Trezor Suite, both on web and desktop, can handle opening of coin URLs in `coin:address` and `coin:address?amount=` formats. Currently all bitcoin-like coins schemes are supported (Applies for bitcoin-like coins supported by Trezor Suite). `bitcoin:` is supported in both web and desktop app environment. Other coins, such as `litecoin:`, `dogecoin:` are supported only in desktop app. [MDN docs](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler#permitted_schemes)
 
 ## Behavior
 
@@ -41,7 +41,9 @@ When an app is opened using `bitcoin:` protocol handler, it shows a notification
 
 [Notion](https://www.notion.so/satoshilabs/BTC-URL-handler-Choose-which-account-from-83d109699a6b45bd98bc4f2fcda73736)
 
-[GitHub](https://github.com/trezor/trezor-suite/issues/3294)
+[GitHub #3294](https://github.com/trezor/trezor-suite/issues/3294)
+[GitHub #5266](https://github.com/trezor/trezor-suite/issues/5266)
+[GitHub #5508](https://github.com/trezor/trezor-suite/issues/5508)
 
 ## Handlers manipulation
 
@@ -55,4 +57,4 @@ Navigate to `about:preferences#general` and scroll to `Applications`. Find handl
 
 ### Desktop app - macOS
 
-Delete desktop app and use terminal `open -a Xcode ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist`. Find and delete `bitcoin` handler. If it still wants to open a desktop app. Find all occurrences of `Trezor Suite.app` and delete them, even the `.dmg` files in `suite-desktop/build-electron`.
+Delete desktop app and use terminal `open -a Xcode ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist`. Find and delete `bitcoin` and other coin handlers. If it still wants to open a desktop app. Find all occurrences of `Trezor Suite.app` and delete them, even the `.dmg` files in `suite-desktop/build-electron`.

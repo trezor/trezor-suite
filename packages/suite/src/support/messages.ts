@@ -2972,6 +2972,14 @@ export default defineMessages({
         id: 'TR_ACCOUNT_TYPE_BIP44_TECH',
         defaultMessage: 'BIP44, P2PKH, Base58',
     },
+    TOAST_QR_INCORRECT_ADDRESS: {
+        id: 'TOAST_QR_INCORRECT_ADDRESS',
+        defaultMessage: 'QR code contains invalid address for this account',
+    },
+    TOAST_QR_INCORRECT_COIN_SCHEME_PROTOCOL: {
+        id: 'TOAST_QR_INCORRECT_COIN_SCHEME_PROTOCOL',
+        defaultMessage: 'QR code is defined for {coin} account',
+    },
     TOAST_COIN_SCHEME_PROTOCOL: {
         id: 'TOAST_COIN_SCHEME_PROTOCOL',
         describe: 'Required for current notifications. Do not change.',
