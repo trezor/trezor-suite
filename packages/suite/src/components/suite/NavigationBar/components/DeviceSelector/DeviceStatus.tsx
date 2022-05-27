@@ -35,9 +35,11 @@ const getStatusForDevice = (device: TrezorDevice) => {
     if (!device.connected) {
         return 'disconnected';
     }
+
     if (needsAttention) {
         return 'warning';
     }
+
     return 'connected';
 };
 
@@ -73,10 +75,12 @@ const StatusText = styled.div<{ isShown: boolean; status: Status }>`
     transition: opacity 0.5s ease, right 0.5s ease;
 `;
 
-const IconWrapper = styled.div`
-    display: flex;
-    align-self: flex-start;
-    margin-top: 4px;
+const RefreshIcon = styled(Icon)`
+    transition: transform 0.2s ease-out;
+
+    :hover {
+        transform: rotate(20deg);
+    }
 `;
 
 const StyledStatusLight = styled(StatusLight)<{ isShown: boolean }>`
@@ -109,17 +113,15 @@ export const DeviceStatus = ({
     // if device needs attention and CTA func was passed show refresh button
     if (status === 'warning' && onRefreshClick) {
         return (
-            <IconWrapper>
-                <Icon
-                    onClick={(e: any) => {
-                        e.stopPropagation();
-                        onRefreshClick();
-                    }}
-                    icon="REFRESH"
-                    size={16}
-                    color={getStatusColor(status, theme)}
-                />
-            </IconWrapper>
+            <RefreshIcon
+                onClick={(e: any) => {
+                    e.stopPropagation();
+                    onRefreshClick();
+                }}
+                icon="REFRESH"
+                size={16}
+                color={getStatusColor(status, theme)}
+            />
         );
     }
 
