@@ -75,7 +75,16 @@
         "protocols": {
             "name": "Trezor Suite",
             "schemes": [
-                "bitcoin"
+                "bitcoin",
+                "litecoin",
+                "bitcoincash",
+                "bitcoingold",
+                "dash",
+                "digibyte",
+                "dogecoin",
+                "namecoin",
+                "vertcoin",
+                "zcash"
             ]
         },
         "publish": {

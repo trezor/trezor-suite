@@ -1,13 +1,14 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util';
+import { capitalizeFirstLetter } from '@trezor/utils';
 import { Input, useTheme, Icon, Button, Tooltip } from '@trezor/components';
 import { AddressLabeling, Translation, ReadMoreLink, MetadataLabeling } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions, useDevice } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
-import { getProtocolInfo } from '@suite-utils/parseUri';
+import { getProtocolInfo } from '@suite-utils/protocol';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -16,9 +17,10 @@ import {
 } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 import { ConvertAddress } from './components/ConvertAddress';
-import type { Account } from '@wallet-types';
+import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
+import * as notificationActions from '@suite-actions/notificationActions';
+
 import type { Output } from '@wallet-types/sendForm';
 
 const Text = styled.span`
@@ -40,20 +42,6 @@ interface AddressProps {
     output: Partial<Output>;
 }
 
-const parseQrData = (uri: string, symbol: Account['symbol']) => {
-    const protocol = getProtocolInfo(uri);
-
-    if (protocol?.scheme === PROTOCOL_SCHEME.BITCOIN) {
-        return { address: protocol.address, amount: protocol.amount };
-    }
-
-    if (isAddressValid(uri, symbol)) {
-        return { address: uri };
-    }
-
-    return {};
-};
-
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const theme = useTheme();
     const { device } = useDevice();
@@ -69,7 +57,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         watch,
         setDraftSaveRequest,
     } = useSendFormContext();
-    const { openQrModal } = useActions({ openQrModal: scanQrRequest });
+    const { openQrModal, addToast } = useActions({
+        openQrModal: scanQrRequest,
+        addToast: notificationActions.addToast,
+    });
 
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs[${outputId}].address`;
@@ -85,29 +76,48 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const handleQrClick = useCallback(async () => {
         const uri = await openQrModal();
 
-        if (!uri) {
+        if (typeof uri !== 'string') {
             return;
         }
 
-        const { address, amount } = parseQrData(uri, symbol);
+        const protocol = getProtocolInfo(uri);
 
-        if (!address) {
+        if (protocol) {
+            const isSymbolValidProtocol = PROTOCOL_TO_NETWORK[protocol.scheme] === symbol;
+
+            if (!isSymbolValidProtocol) {
+                addToast({
+                    type: 'qr-incorrect-coin-scheme-protocol',
+                    coin: capitalizeFirstLetter(protocol.scheme),
+                });
+
+                return;
+            }
+
+            setValue(inputName, protocol.address, { shouldValidate: true });
+
+            if (protocol.amount) {
+                setValue(`outputs[${outputId}].amount`, protocol.amount, {
+                    shouldValidate: true,
+                });
+            }
+
+            // if amount is set compose by amount otherwise compose by address
+            composeTransaction(protocol.amount ? `outputs[${outputId}].amount` : inputName);
+
             return;
         }
 
-        setValue(inputName, address, { shouldValidate: true });
+        if (isAddressValid(uri, symbol)) {
+            setValue(inputName, uri, { shouldValidate: true });
 
-        if (amount) {
-            setValue(`outputs[${outputId}].amount`, amount, {
-                shouldValidate: true,
-            });
-            // if amount is set compose by amount
-            composeTransaction(`outputs[${outputId}].amount`);
-        } else {
-            // otherwise compose by address
             composeTransaction(inputName);
+        } else {
+            addToast({
+                type: 'qr-incorrect-address',
+            });
         }
-    }, [composeTransaction, inputName, openQrModal, outputId, setValue, symbol]);
+    }, [composeTransaction, inputName, openQrModal, outputId, setValue, symbol, addToast]);
 
     const validateAddress = (value: string) => {
         if (!isAddressValid(value, symbol)) {

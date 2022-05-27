@@ -1,4 +1,4 @@
-import { parseUri, parseQuery, getProtocolInfo } from '@suite-utils/parseUri';
+import { parseUri, parseQuery } from '@suite-utils/parseUri';
 import * as fixtures from '../__fixtures__/parseUri';
 
 describe('parseUri', () => {
@@ -24,14 +24,6 @@ describe('parseQuery', () => {
     fixtures.parseQuery.forEach(f => {
         it(f.description, () => {
             expect(parseQuery(f.uri as string)).toEqual(f.result);
-        });
-    });
-});
-
-describe('getProtocolInfo', () => {
-    fixtures.getProtocolInfo.forEach(f => {
-        it(f.description, () => {
-            expect(getProtocolInfo(f.uri as string)).toEqual(f.result);
         });
     });
 });
