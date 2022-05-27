@@ -20,6 +20,7 @@ import {
     BottomModal,
     TipToast,
     IconButton,
+    Select,
 } from '@suite-native/atoms';
 import { TypographyStyle } from '@trezor/theme';
 
@@ -42,6 +43,12 @@ const typographyItems: TypographyStyle[] = [
     'hint',
     'label',
 ];
+const SELECT_ITEMS = [
+    { label: 'first item', value: 1 },
+    { label: 'second item', value: 2 },
+    { label: 'third item', value: 3 },
+];
+
 export const DemoScreen = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const [inputText, setInputText] = useState<string>('');
@@ -70,6 +77,7 @@ export const DemoScreen = () => {
                 style={applyStyle(backgroundStyle, { isDarkMode })}
             >
                 <View>
+                    <Select items={SELECT_ITEMS} label="Open Select" />
                     <SearchInput
                         value={inputText}
                         onChange={setInputText}

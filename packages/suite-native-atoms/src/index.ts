@@ -13,3 +13,4 @@ export * from './Modal/BottomModal';
 export * from './TipToast';
 export * from './Button/Button';
 export * from './Button/IconButton';
+export * from './Select';
