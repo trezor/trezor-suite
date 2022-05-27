@@ -6,6 +6,7 @@
 
 | package                                                               | description                                  |
 | --------------------------------------------------------------------- | -------------------------------------------- |
+| [@trezor/analytics](./packages/analytics)                             | generic analytics implementation             |
 | [@trezor/blockchain-link](./packages/blockchain-link)                 | lib for connecting to blockchains            |
 | [@trezor/components](./packages/components)                           | frontend react components                    |
 | [@trezor/connect](./packages/connect)                                 | 3rd party interface entrypoint for nodejs    |
@@ -18,6 +19,8 @@
 | [@trezor/connect-web](./packages/connect-web)                         | 3rd party interface entrypoint for browser   |
 | [@trezor/integration-tests](./packages/integration-tests)             | cross-packages e2e tests                     |
 | [@trezor/news-api](./packages/news-api)                               | medium proxy providing allow-origin headers  |
+| [@trezor/suite](./packages/suite)                                     | trezor suite common code                     |
+| [@trezor/suite-analytics](./packages/suite-analytics)                 | analytics data for suite app                 |
 | [@trezor/suite-build](./packages/suite-build)                         | build utilities                              |
 | [@trezor/suite-data](./packages/suite-data)                           | suite static data                            |
 | [@trezor/suite-desktop-api](./packages/suite-desktop-api)             | API for suite - suite-desktop communication  |
@@ -26,7 +29,6 @@
 | [@trezor/suite-storage](./packages/suite-storage)                     | abstract database definition for suite       |
 | [@trezor/suite-web-landing](./packages/suite-web-landing)             | https://suite.trezor.io/                     |
 | [@trezor/suite-web](./packages/suite-web)                             | suite build target for web                   |
-| [@trezor/suite](./packages/suite)                                     | trezor suite common code                     |
 | [@trezor/transport-native](./packages/transport-native)               | communication lib for react-native           |
 | [@trezor/transport](./packages/transport)                             | communication lib for javascript             |
 | [@trezor/utils](./packages/utils)                                     | shared utility functions                     |
