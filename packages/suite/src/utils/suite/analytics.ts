@@ -27,16 +27,11 @@ export const redactTransactionIdFromAnchor = (anchor?: string) => {
     return anchor.startsWith(AccountTransactionBaseAnchor) ? AccountTransactionBaseAnchor : anchor;
 };
 
+// allow tracking only if user already confirmed data collection
 export const hasUserAllowedTracking = (
     enabled: AnalyticsState['enabled'],
     confirmed: AnalyticsState['confirmed'],
-) => {
-    const isConfirmed = !!confirmed;
-    const isEnabled = isConfirmed ? !!enabled : true;
-
-    // allow tracking only if user already confirmed data collection
-    return isConfirmed && isEnabled;
-};
+) => !!confirmed && !!enabled;
 
 export const getSuiteReadyPayload = (state: AppState) => ({
     language: state.suite.settings.language,
