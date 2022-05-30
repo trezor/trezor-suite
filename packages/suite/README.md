@@ -1,3 +1,5 @@
 # @trezor/suite
 
-[Documentation](./docs/README.md)
+Shared logic and components for browser and desktop versions of Suite.
+
+[Documentation](../../docs/packages/suite/index.md)

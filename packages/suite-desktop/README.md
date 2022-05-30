@@ -1,6 +1,8 @@
 # @trezor/suite-desktop
 
-Trezor Suite desktop application. [Wiki page](https://wiki.trezor.io/Apps:Trezor_Suite)
+Trezor Suite desktop application.
+
+[Official download page](https://suite.trezor.io/)
 
 ## Development
 
@@ -38,9 +40,9 @@ _Note: On Debian, CentOS and similar distributions you might need to add a `--no
 yarn workspace @trezor/suite-desktop build:mac
 ```
 
-Go to `./packages/suite-desktop/build-electron/mac` add open app from the right click
+Go to `./packages/suite-desktop/build-electron/mac` and open the app
 
-or open app from terminal:
+or start the app from terminal:
 
 ```
 ./packages/suite-desktop/build-electron/mac/Trezor\ Suite.app/Contents/MacOS/Trezor\ Suite
@@ -52,7 +54,7 @@ or open app from terminal:
 yarn workspace @trezor/suite-desktop build:win
 ```
 
-Go to `./packages/suite-desktop/build-electron` and install app
+Go to `./packages/suite-desktop/build-electron` and install the app
 
 ### NixOS
 
@@ -63,38 +65,38 @@ yarn workspace @trezor/suite-desktop build:linux
 appimage-run ./packages/suite-desktop/build-electron/Trezor-Suite[version].AppImage
 ```
 
-_Note: If build fail on missing cache file _(.cache/\*\*/mksquashfsthis)_ additionally run `./nixos-fix-binaries.sh` script and repeat build step._
+_Note: If build fails on a missing cache file _(.cache/\*\*/mksquashfsthis)_ additionally run `./nixos-fix-binaries.sh` script and repeat build step._
 
 ---
 
 ## Remove IndexedDB from local machine
 
-To remove a database remove following folder:
+To remove a database, delete following folder:
 
-#### Linux
+### Linux
 
 `/home/<user>/.config/@trezor/suite-desktop/IndexedDB`
 
-#### macOS
+### macOS
 
 `/Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB`
 
-#### Windows
+### Windows
 
 `C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\IndexedDB`
 
 ## Clearing Electron cache
 
-To clear electron cache delete following folder:
+To clear electron cache, delete following folder:
 
-#### Linux
+### Linux
 
 `/home/<user>/.config/@trezor/suite-desktop/Cache`
 
-#### macOS
+### macOS
 
 `/Users/<user>/Library/ApplicationSupport/@trezor/suite-desktop/Cache`
 
-#### Windows
+### Windows
 
 `C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\Cache`

@@ -1,4 +1,6 @@
-# Suite native app
+# @trezor/suite-native
+
+Trezor Suite native application.
 
 ## Prerequisites
 
@@ -16,7 +18,7 @@ It's good to have some tools installed before you begin:
 
 ## Building Android
 
-You can build release version of app using `yarn build:android`. Output apk will be located in here: `android/app/build/outputs/apk/release/app-release.apk`
+You can build a release version of app using `yarn build:android`. Output apk will be located in here: `android/app/build/outputs/apk/release/app-release.apk`
 
 ## Running app on iOS
 
@@ -29,13 +31,13 @@ Transport layer not working for iOS but it's possible to run app. You will need 
 
 ## Debugging
 
-Because of usage of new Fabric architecture, it's is not possible to use Chrome debugger anymore. We are compiling our own version of Hermes core with added functions.
+Because of usage of new Fabric architecture, it is not possible to use Chrome debugger anymore. We are compiling our own version of Hermes core with added functions.
 
 Best way how to debug app is download [Flipper](https://fbflipper.com).
 
 ## Dependencies, version locks
 
-1. `simple-plist` - some internal dependency of RN want to use version `1.3.0`, but in this version is some error that dependabot doesn't like. Error is not valid for us, but adding `1.3.1` to dev dependencies will fix this warning.
+1. `simple-plist` - some internal dependency of RN wants to use version `1.3.0`, but in this version there is some error that dependabot doesn't like. Error is not valid for us, but adding `1.3.1` to dev dependencies will fix this warning.
 
 ## Updating fonts
 

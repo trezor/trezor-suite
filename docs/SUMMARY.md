@@ -88,6 +88,5 @@
     -   [guide](./specs/guide.md)
 -   [Miscellaneous](./misc/index.md)
     -   [build](./misc/build.md)
-    -   [notes](./misc/notes.md)
     -   [review](./misc/review.md)
     -   [videos](./misc/videos.md)
