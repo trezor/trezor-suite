@@ -2,6 +2,10 @@
 
 This changelog lists changes in suite events.
 
+### 1.20
+
+-   analytics 1.19 was never released due to a bug
+
 ### 1.19
 
 Added:
