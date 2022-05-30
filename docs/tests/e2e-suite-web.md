@@ -32,9 +32,9 @@ _Note: All paths below are relative to the root of trezor-suite repository._
     -   Check the docker.sock permissions:\
         `sudo chmod 666 /var/run/docker.sock`
 
-### On MacOS
+---
 
-As of now M1 Macs aren't supported. See [this issue](https://github.com/trezor/trezor-suite/issues/3616) for detailed information.
+### On MacOS (Intel)
 
 #### Prerequisites
 

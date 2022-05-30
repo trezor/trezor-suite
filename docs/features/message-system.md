@@ -258,7 +258,7 @@ Structure of config, types and optionality of specific keys can be found in the 
 
 When updating message system config, sequence number must always be higher than the previous one. Once released config cannot be rolled back to the previous one with lower sequence number. A new one with higher sequence number has to be created.
 
-Updated config is automatically uploaded by CI job to the correspondent S3 bucket based on the current branch.
+Updated config is automatically uploaded by CI job to the corresponding S3 bucket based on the current branch.
 
 #### Priorities of messages
 
