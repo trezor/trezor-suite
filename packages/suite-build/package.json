@@ -20,11 +20,13 @@
         "build:desktop": "NODE_ENV=production yarn run desktop",
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
-        "type-check:watch": "yarn type-check -- --watch"
+        "type-check:watch": "yarn type-check -- --watch",
+        "test:unit": "jest --passWithNoTests"
     },
     "dependencies": {
         "@sentry/webpack-plugin": "^1.18.3",
         "@trezor/suite": "1.0.0",
+        "@mobily/ts-belt": "^3.11.0",
         "babel-loader": "^8.2.2",
         "babel-plugin-styled-components": "1.12.0",
         "copy-webpack-plugin": "^10.2.4",

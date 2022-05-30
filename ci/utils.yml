@@ -46,7 +46,7 @@ urls health:
   needs: []
   script:
     - yarn install --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/suite translations:list-duplicates
+    - yarn workspace @suite/messages translations:list-duplicates
 
 translations duplicates nightly:
   extends: .translations duplicates
@@ -64,7 +64,7 @@ translations duplicates:
   needs: []
   script:
     - yarn install --cache-folder .yarn --prefer-offline
-    - yarn workspace @trezor/suite translations:list-unused
+    - yarn workspace @suite/messages translations:list-unused
 
 translation unused nightly:
   extends: .translations unused
@@ -82,7 +82,7 @@ translation unused:
   needs: []
   parallel:
     matrix:
-      - EXT: ['.png', '.jpg', '.mp4', '.webm', '.svg']
+      - EXT: [".png", ".jpg", ".mp4", ".webm", ".svg"]
   script:
     - ./ci/scripts/find_duplicates.sh ./packages/suite-data/files ${EXT}
 

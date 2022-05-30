@@ -1,27 +1,33 @@
 import * as path from 'path';
+import { A, D, pipe, S } from '@mobily/ts-belt';
+// we should not import files outside rootDir in TS composite project
+// @ts-ignore
+import tsConfig from '../../../tsconfig.aliases.json';
 
-// we cannot import file outside root dir as module in TS composite project
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { compilerOptions } = require('../../../tsconfig.aliases.json');
+const {
+    compilerOptions: { paths },
+} = tsConfig;
 
-const { paths } = compilerOptions;
-type PathKey = keyof typeof paths;
+// Webpack resolve all aliases with wildcard automatically so we should remove /* and /index from end of paths
+const replacePathWildcard = S.replaceByRe(/(\/\*|\/index)$/, '');
+export const resolvePath = (relativePath: string) =>
+    path.resolve(__dirname, '..', '..', '..', relativePath);
 
-const getPath = (key: PathKey) => {
-    let p = paths[key][0];
-    if (p.endsWith('index')) {
-        p = p.slice(0, -5);
-    }
+export const prepareAliases = (aliasesPaths: Record<string, string[]>) =>
+    pipe(
+        aliasesPaths,
+        D.map(A.last),
+        D.toPairs,
+        A.map(value => {
+            const alias = replacePathWildcard(value[0]);
+            const aliasPath = pipe(value[1]!, replacePathWildcard, resolvePath);
 
-    return path.join(__dirname, '..', '..', '..', p);
-};
+            return [alias, aliasPath] as const;
+        }),
+        // removing wildcard could result to duplicate entries but that will be solved by converting from pairs to object
+        D.fromPairs,
+    );
 
-// Alias
-const alias: { [key: string]: string } = {};
-Object.keys(paths)
-    .filter(p => !p.includes('*'))
-    .forEach((key: string) => {
-        alias[key] = path.resolve(getPath(key as PathKey));
-    });
+const aliases = prepareAliases(paths);
 
-export default alias;
+export default aliases;

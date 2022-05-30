@@ -1,7 +1,7 @@
 # Localization
 
 Suite uses [react-intl](https://github.com/formatjs/formatjs) package for all in-app localization needs.
-Definitions of all messages are stored in [messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/support/messages.ts).
+Definitions of all messages are stored in [messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-messages/src/messages.ts).
 
 To allow non-developers to edit these messages through user-friendly interface, we upload them to [Crowdin](https://crowdin.com/project/trezor-suite) via their [CLI](https://github.com/crowdin/crowdin-cli).
 
@@ -10,7 +10,7 @@ To finish the process these files need to be commited to the repository.
 
 ## Message definitions
 
-[messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/support/messages.ts) is the place where you add new messages to be used in Suite. It's basically just a huge object where a key is an ID of the message and a value is the message definition.
+[messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-messages/src/messages.ts) is the place where you add new messages to be used in Suite. It's basically just a huge object where a key is an ID of the message and a value is the message definition.
 
 _Do not manually edit language json files in `suite-data/files/translations/` directory. These are auto-generated, changing them directly is plausible only for development purposes._
 
@@ -135,7 +135,7 @@ All work could be done with shortcuts defined in [package.json scripts](https://
 or, alternatively, add it as an option for each called script:
 
 ```
-yarn workspace @trezor/suite translations:download --token xxxx
+yarn workspace @suite/messages translations:download --token xxxx
 ```
 
 ### Extract
@@ -143,7 +143,7 @@ yarn workspace @trezor/suite translations:download --token xxxx
 To extract message definitions from Suite into `master.json` file run:
 
 ```bash
-yarn workspace @trezor/suite translations:extract
+yarn workspace @suite/messages translations:extract
 ```
 
 The newly created `master.json` file is generated from `messages.ts` and serves only as a base for translations in Crowdin, therefore it is not commited into Git repository.
@@ -153,7 +153,7 @@ The newly created `master.json` file is generated from `messages.ts` and serves 
 To upload extracted `master.json` file with updated message definitions from Suite to Crowdin run:
 
 ```bash
-yarn workspace @trezor/suite translations:upload
+yarn workspace @suite/messages translations:upload
 ```
 
 You can even do that from your branch with messages that are not yet merged in develop branch, just be sure you have rebased your branch on latest develop before doing so. This process replaces all definitions in Crowdin, meaning if your branch is missing some definitions, that are already in develop branch and uploaded in Crowdin, they will be removed.
@@ -163,7 +163,7 @@ You can even do that from your branch with messages that are not yet merged in d
 To download new translations from Crowdin run:
 
 ```bash
-yarn workspace @trezor/suite translations:download
+yarn workspace @suite/messages translations:download
 ```
 
 and then open a PR with updated language files.
@@ -178,11 +178,11 @@ git pull
 git checkout -b $BRANCH_NAME
 
 # Extract message definitions from Suite
-yarn workspace @trezor/suite translations:extract
+yarn workspace @suite/messages translations:extract
 # Upload to sync the key set.
-yarn workspace @trezor/suite translations:upload
+yarn workspace @suite/messages translations:upload
 # Download to fetch values for all keys.
-yarn workspace @trezor/suite translations:download
+yarn workspace @suite/messages translations:download
 
 git add packages/suite-data/files/translations
 git commit -m 'feat(translations): Sync with Crowdin'

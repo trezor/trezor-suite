@@ -3,7 +3,7 @@
 /* eslint-disable no-continue */
 
 import { spawnSync } from 'child_process';
-import messages from '../../suite/src/support/messages';
+import { messages } from '../src/messages';
 
 console.log('unused messages: ');
 
@@ -13,7 +13,7 @@ for (const message in messages) {
     if (Object.prototype.hasOwnProperty.call(messages, message)) {
         // some messages might be 'dynamic' which means they are not present
         // in the codebase but their identifiers are returned from some API server instead
-        if (messages[message].dynamic) {
+        if ((messages as any)[message].dynamic) {
             continue;
         }
 
@@ -26,10 +26,14 @@ for (const message in messages) {
         // 'suite-web-landing/scripts',
         // 'suite-web-landing/utils',
 
-        const { stdout } = spawnSync('bash', ['suite-data/scripts/find-unused.sh', path, message], {
-            encoding: 'utf-8',
-            cwd: '../',
-        });
+        const { stdout } = spawnSync(
+            'bash',
+            ['suite-messages/scripts/find-unused.sh', path, message],
+            {
+                encoding: 'utf-8',
+                cwd: '../',
+            },
+        );
 
         if (!stdout) {
             console.log(message);

@@ -14,9 +14,9 @@
 import fs from 'fs';
 import path from 'path';
 
-import messages from '../../suite/src/support/messages';
+import { messages } from '../src/messages';
 
-const targetPath = path.join(__dirname, '../../suite/src/support/messages.ts');
+const targetPath = path.join(__dirname, '../src/messages.ts');
 const sourcePath = path.join(__dirname, '../../suite-data/files/translations/en.json');
 
 const source: { [key in keyof typeof messages]: string } = JSON.parse(
@@ -38,8 +38,11 @@ fs.writeFileSync(
     `
 import { defineMessages } from 'react-intl';
 
-export default defineMessages(${JSON.stringify(messages, null, 2).replace(/"([^"]+)":/g, '$1:')})
-    
+export const messages = defineMessages(${JSON.stringify(messages, null, 2).replace(
+        /"([^"]+)":/g,
+        '$1:',
+    )})
+
 `,
 );
 

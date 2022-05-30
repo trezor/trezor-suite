@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage, MessageDescriptor } from 'react-intl';
-import messages from '@suite/support/messages';
+import { messages } from '@suite/messages';
 
 interface TooltipProps {
     isNested?: boolean;

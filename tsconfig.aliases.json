@@ -132,8 +132,21 @@
             "@desktop-electron/*": ["./packages/suite-desktop/src-electron/*"],
             "@trezor/utils": ["./packages/utils/src"],
 
-            "@suite/*": ["./packages/suite/src/*"],
-            "@suite": ["./packages/suite/src/index"]
+            "@suite/actions/*": ["./packages/suite/src/actions/*"],
+            "@suite/components/*": ["./packages/suite/src/components/*"],
+            "@suite/config/*": ["./packages/suite/src/config/*"],
+            "@suite/constants/*": ["./packages/suite/src/constants/*"],
+            "@suite/hooks/*": ["./packages/suite/src/hooks/*"],
+            "@suite/middlewares/*": ["./packages/suite/src/middlewares/*"],
+            "@suite/reducers/*": ["./packages/suite/src/reducers/*"],
+            "@suite/services/*": ["./packages/suite/src/services/*"],
+            "@suite/storage": ["./packages/suite/src/storage/index"],
+            "@suite/storage/*": ["./packages/suite/src/storage/*"],
+            "@suite/support/*": ["./packages/suite/src/support/*"],
+            "@suite/types/*": ["./packages/suite/src/types/*"],
+            "@suite/utils/*": ["./packages/suite/src/utils/*"],
+            "@suite/views/*": ["./packages/suite/src/views/*"],
+            "@suite/workers/*": ["./packages/suite/src/workers/*"]
         }
     }
 }

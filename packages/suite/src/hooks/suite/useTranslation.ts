@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import { messages } from '@suite/messages';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { PrimitiveType } from '@suite/types/utils';
 
