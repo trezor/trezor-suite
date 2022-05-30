@@ -17,7 +17,7 @@ describe('analytics', () => {
 
         const app = 'suite';
         const environment = 'desktop';
-        const isDev = false;
+        const isDev = true;
         const instanceId = getRandomId();
         const sessionId = getRandomId();
         const commitId = 'abc';
@@ -32,7 +32,7 @@ describe('analytics', () => {
 
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            `https://data.trezor.io/${app}/log/${environment}/stable.log?c_v=1.18&c_type=${actionType}&c_commit=${commitId}&c_instance_id=${instanceId}&c_session_id=${sessionId}&c_timestamp=${timestamp}`,
+            `https://data.trezor.io/${app}/log/${environment}/develop.log?c_v=1.18&c_type=${actionType}&c_commit=${commitId}&c_instance_id=${instanceId}&c_session_id=${sessionId}&c_timestamp=${timestamp}`,
             { method: 'GET' },
         );
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -53,7 +53,7 @@ describe('analytics', () => {
 
         const app = 'suite';
         const environment = 'desktop';
-        const isDev = false;
+        const isDev = true;
         const instanceId = getRandomId();
         const sessionId = getRandomId();
         const commitId = 'abc';

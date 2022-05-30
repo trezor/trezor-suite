@@ -10,7 +10,6 @@ import { ANALYTICS } from '@suite-actions/constants';
 import { getTrackingRandomId } from '@suite-utils/random';
 import { allowSentryReport, setSentryUser } from '@suite-utils/sentry';
 import { AnalyticsState } from '@suite-reducers/analyticsReducer';
-import { isDev } from '@suite-utils/build';
 import { getEnvironment } from '@suite-utils/env';
 import { hasUserAllowedTracking } from '@suite-utils/analytics';
 
@@ -64,7 +63,7 @@ export const init = (state: AnalyticsState) => (dispatch: Dispatch) => {
         sessionId,
         environment: getEnvironment(),
         commitId: process.env.COMMITHASH || '',
-        isDev,
+        isDev: !process.env.CODESIGN_BUILD,
         callbacks: {
             onEnable: () => dispatch(enable()),
             onDisable: () => dispatch(disable()),
