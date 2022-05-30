@@ -14,7 +14,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import messages from '../../suite/src/support/messages';
+import messages from '@trezor/suite/src/support/messages';
 
 const targetPath = path.join(__dirname, '../../suite/src/support/messages.ts');
 const sourcePath = path.join(__dirname, '../../suite-data/files/translations/en.json');

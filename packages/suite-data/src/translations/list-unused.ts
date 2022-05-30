@@ -3,7 +3,7 @@
 /* eslint-disable no-continue */
 
 import { spawnSync } from 'child_process';
-import messages from '../../suite/src/support/messages';
+import messages from '@trezor/suite/src/support/messages';
 
 console.log('unused messages: ');
 
@@ -26,10 +26,14 @@ for (const message in messages) {
         // 'suite-web-landing/scripts',
         // 'suite-web-landing/utils',
 
-        const { stdout } = spawnSync('bash', ['suite-data/scripts/find-unused.sh', path, message], {
-            encoding: 'utf-8',
-            cwd: '../',
-        });
+        const { stdout } = spawnSync(
+            'bash',
+            ['suite-data/src/translations/find-unused.sh', path, message],
+            {
+                encoding: 'utf-8',
+                cwd: '../',
+            },
+        );
 
         if (!stdout) {
             console.log(message);
