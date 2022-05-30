@@ -13,6 +13,10 @@
     },
     "dependencies": {
         "bech32": "^2.0.0",
-        "bignumber.js": "^9.0.2"
+        "bignumber.js": "^9.0.2",
+        "bip65": "^1.0.3",
+        "bitcoinjs-lib": "^6.0.1",
+        "ecpair": "^2.0.1",
+        "tiny-secp256k1": "^2.2.1"
     }
 }
