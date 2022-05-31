@@ -179,7 +179,10 @@
                 "AppImage"
             ]
         },
-        "afterSign": "scripts/notarize.js"
+        "afterSign": "scripts/notarize.js",
+        "releaseInfo": {
+            "releaseNotes": "### **🧪 TESTING ONLY**\n\n-  This version is created from 22.6.1 to test auto-update feature"
+        }
     },
     "dependencies": {
         "@sentry/electron": "3.0.0",
