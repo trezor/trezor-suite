@@ -12,8 +12,7 @@ describe('Custom-blockbook-discovery', () => {
 
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/coins');
-        cy.getTestElement('@suite/menu/settings').click();
-        cy.getTestElement('@settings/menu/wallet').click();
+        cy.passThroughInitialRun();
     });
 
     afterEach(() => {
@@ -22,7 +21,7 @@ describe('Custom-blockbook-discovery', () => {
 
     /* Test case
     1. Go to Crypto Settings
-    2. Change backend to custom blockbook 
+    2. Change BTC backend to custom blockbook
     3. Go to Dashboard
     4. Pass discovery
     5. Assert discovery is success (graph render)
@@ -51,6 +50,43 @@ describe('Custom-blockbook-discovery', () => {
         // Assert
         //
         // when graph becomes visible, discovery was finished
+        cy.discoveryShouldFinish();
         cy.getTestElement('@dashboard/graph', { timeout: 30000 }).should('exist');
+    });
+    /* Test case
+    1. Go to Crypto Settings
+    2. Change LTC backend to custom blockbook
+    3. Go to Dashboard
+    4. Pass discovery
+    5. Assert discovery is success (graph render)
+    */
+    it('LTC-custom-blockbook-discovery', () => {
+        //
+        // Test preparation
+        //
+        const customBTCblockbook = 'https://ltc1.trezor.io';
+
+        //
+        // Test execution
+        //
+        cy.getTestElement('@settings/wallet/network/btc').click();
+        cy.getTestElement('@settings/wallet/network/ltc', { timeout: 30000 })
+            .should('exist')
+            .click()
+            .trigger('mouseover');
+        cy.getTestElement('@settings/wallet/network/ltc/advance').click();
+        cy.getTestElement('@modal').should('exist');
+        cy.getTestElement('@settings/advance/select-type/input').click();
+        cy.getTestElement('@settings/advance/select-type/option/blockbook').click();
+        cy.getTestElement('@settings/advance/url').type(customBTCblockbook);
+        cy.getTestElement('@settings/advance/button/save').click();
+        cy.getTestElement('@settings/menu/close').click();
+
+        //
+        // Assert
+        //
+        // when graph becomes visible, discovery was finished
+        cy.discoveryShouldFinish();
+        cy.getTestElement('@dashboard/graph').should('exist');
     });
 });
