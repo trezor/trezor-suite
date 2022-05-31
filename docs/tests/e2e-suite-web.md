@@ -4,7 +4,7 @@
 
 ## Run it locally
 
-_Note: All paths below are relative to the root of trezor-suite repository._
+_Note: All paths below are relative to the root of trezor-suite repository, if not specified otherwise._
 
 ### On Linux
 
@@ -28,11 +28,8 @@ _Note: All paths below are relative to the root of trezor-suite repository._
 -   `Error while fetching server API version: ('Connection aborted.', FileNotFoundError(2, 'No such file or directory'))`
     -   On NixOS: Make sure that docker is enabled in your configuration.nix:\
         `virtualisation.docker.enable = true;`
--   `Error while fetching server API version: ('Connection aborted.', PermissionError(13, 'Permission denied'))`
-    -   Check the docker.sock permissions:\
-        `sudo chmod 666 /var/run/docker.sock`
-
----
+-   `Error while fetching server API version: ('Connection aborted.', PermissionError(13, 'Permission denied'))` - Check the docker.sock permissions:\
+     `sudo chmod 666 /var/run/docker.sock`
 
 ### On MacOS (Intel)
 
