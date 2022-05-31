@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
 import { Icon, CryptoIcon, FlagIcon } from '@trezor/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import {
     Text,
     Box,
@@ -16,8 +18,8 @@ import {
     ListItem,
     SelectableListItem,
     BottomModal,
+    TipToast,
 } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
@@ -53,6 +55,7 @@ export const DemoScreen = () => {
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    const [isTipToastVisible, setIsTipToastVisible] = useState<boolean>(true);
 
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);
@@ -86,6 +89,14 @@ export const DemoScreen = () => {
                             onSelect={() => setIsChip2Selected(!isChip2Selected)}
                             description="inc Tokens"
                         />
+                    </Box>
+                    <Box marginTop="lg">
+                        {isTipToastVisible && (
+                            <TipToast
+                                content="Tip toast"
+                                onClose={() => setIsTipToastVisible(false)}
+                            />
+                        )}
                     </Box>
                     <Box marginTop="lg">
                         <Text variant="titleLarge">Title Large</Text>
