@@ -117,7 +117,11 @@ const DevicePromptModalRenderer = ({
 
     const AbortButton = useMemo(
         () => (
-            <AbortContainer onClick={onAbort} data-test="@modal/close-button">
+            <AbortContainer
+                key="@modal/close-button" // passed in array
+                data-test="@modal/close-button"
+                onClick={onAbort}
+            >
                 <Translation id="TR_ABORT" />
                 <CloseIcon size={20} color={theme.TYPE_LIGHT_GREY} icon="CROSS" />
             </AbortContainer>
