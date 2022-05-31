@@ -16,6 +16,7 @@
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "^17.0.2",
-        "react-native": "0.68.2"
+        "react-native": "0.68.2",
+        "react-native-reanimated": "^2.8.0"
     }
 }
