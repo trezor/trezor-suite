@@ -2,6 +2,10 @@
 // @retry=2
 
 describe('T1 - Device settings', () => {
+    afterEach(() => {
+        cy.task('stopEmu');
+    });
+
     it('pin mismatch', () => {
         cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
         cy.task('setupEmu', { needs_backup: false });
@@ -29,7 +33,41 @@ describe('T1 - Device settings', () => {
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
     });
+    /*
+     * 1. navigate to settings/device screen and wait for it to load
+     * 2. Select & click Choose from gallery in Customization section
+     * 3. Select Doge homescreen
+     * 4. Confirm on device
+     * 5. Wait for success notification Settings applied
+     */
+    it('change homescreen', () => {
+        //
+        // Test preparation
+        //
 
+        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
+        cy.task('setupEmu', { needs_backup: false });
+        cy.task('startBridge');
+        cy.viewport(1080, 1440).resetDb();
+        cy.prefixedVisit('/settings/device');
+        cy.passThroughInitialRun();
+
+        //
+        // Test execution
+        //
+
+        cy.getTestElement('@settings/device/select-from-gallery').click();
+        cy.get('#doge').click();
+        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.wait(2000);
+        cy.task('pressYes');
+        cy.wait(2000);
+
+        //
+        // Assert
+        //
+        cy.getTestElement('@toast/settings-applied').should('be.visible');
+    });
     // TODO: pin success
     // TODO: pin caching immediately after it is set
     // TODO: keyboard handling
