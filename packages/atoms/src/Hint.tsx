@@ -2,9 +2,8 @@ import React from 'react';
 import { View } from 'react-native';
 import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
 import { Color } from '@trezor/theme';
-import { Icon } from './Icon/Icon';
+import { Icon, IconName } from '@trezor/icons';
 import { Text } from './Text';
-import { IconType } from './Icon/iconTypes';
 
 type HintVariant = 'hint' | 'error';
 
@@ -26,14 +25,14 @@ const hintTextStyle = prepareNativeStyle<{ color: Color }>((utils, { color }) =>
     marginLeft: 6,
 }));
 
-const hintVariants: Record<HintVariant, { iconType: IconType; color: Color }> = {
+const hintVariants: Record<HintVariant, { iconName: IconName; color: Color }> = {
     hint: {
         color: 'gray600',
-        iconType: 'question',
+        iconName: 'question',
     },
     error: {
         color: 'red',
-        iconType: 'warningCircle',
+        iconName: 'warningCircle',
     },
 };
 
@@ -43,9 +42,9 @@ export const Hint = ({ variant, style, children }: HintProps) => {
     return (
         <View style={[applyStyle(hintStyle), style]}>
             <Icon
-                type={hintVariants[variant].iconType}
+                name={hintVariants[variant].iconName}
                 color={hintVariants[variant].color}
-                size="tiny"
+                size="small"
             />
             <Text style={applyStyle(hintTextStyle, { color: hintVariants[variant].color })}>
                 {children}

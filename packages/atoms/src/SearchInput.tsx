@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
+import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { Icon } from './Icon/Icon';
 import { Box } from './Box';
 
 type InputProps = {
@@ -69,7 +69,7 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
         <TouchableWithoutFeedback onPress={handleInputFocus}>
             <Box style={applyStyle(inputWrapperStyle, { isFocused })}>
                 <Box>
-                    <Icon type="search" color="gray600" />
+                    <Icon name="search" color="gray600" />
                 </Box>
                 <TextInput
                     ref={searchInputRef}
@@ -83,7 +83,7 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
                 />
                 {isClearButtonVisible && (
                     <TouchableOpacity onPress={handleClear} style={applyStyle(clearIconStyle)}>
-                        <Icon type="close" size="small" color="white" />
+                        <Icon name="close" size="small" color="white" />
                     </TouchableOpacity>
                 )}
             </Box>

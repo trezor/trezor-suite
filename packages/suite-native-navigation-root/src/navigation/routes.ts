@@ -20,18 +20,18 @@ export type RootTabsParamList = {
 
 export const rootTabsOptions: TabsOption = {
     [RouteTabs.Home]: {
-        icon: 'home',
+        iconName: 'home',
     },
     [RouteTabs.Accounts]: {
-        icon: 'accounts',
+        iconName: 'accounts',
     },
     [RouteTabs.Action]: {
-        icon: 'action',
+        iconName: 'action',
     },
     [RouteTabs.Prices]: {
-        icon: 'prices',
+        iconName: 'prices',
     },
     [RouteTabs.SettingsStack]: {
-        icon: 'settings',
+        iconName: 'settings',
     },
 };

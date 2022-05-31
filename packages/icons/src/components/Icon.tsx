@@ -8,26 +8,26 @@ import {
     BlendColor,
     usePaintRef,
 } from '@shopify/react-native-skia';
-import { IconType, iconTypes } from './iconTypes';
+import { IconName, icons } from '../icons';
 import { useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-const iconSizes = {
-    tiny: 12,
-    small: 16,
-    big: 24,
-} as const;
-
-export type IconSize = keyof typeof iconSizes;
-
-export type IconProps = {
-    type: IconType;
+type IconProps = {
+    name: IconName;
     size?: IconSize;
     color?: Color;
 };
 
-export const Icon = ({ type, size = 'big', color = 'black' }: IconProps) => {
-    const svg = useSVG(iconTypes[type]);
+const iconSizes = {
+    small: 12,
+    medium: 16,
+    large: 24,
+} as const;
+
+type IconSize = keyof typeof iconSizes;
+
+export const Icon = ({ name, size = 'large', color = 'black' }: IconProps) => {
+    const svg = useSVG(icons[name]);
     const {
         utils: { colors },
     } = useNativeStyles();

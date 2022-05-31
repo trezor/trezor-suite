@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 import { BaseListItem } from './listItemTypes';
-import { Icon } from '../Icon/Icon';
+import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ListItemIcon } from './ListItemIcon';
 import { ListItemText } from './ListItemText';
@@ -18,7 +18,7 @@ const listItemRightArrowContainerStyle = prepareNativeStyle(utils => ({
 }));
 
 export const ListItem = ({
-    iconType,
+    iconName,
     title,
     subtitle,
     hasRightArrow,
@@ -32,11 +32,11 @@ export const ListItem = ({
     return (
         <TouchableOpacity disabled={!onPress} onPress={onPress} {...props}>
             <Box style={style} flexDirection="row">
-                {iconType && <ListItemIcon iconType={iconType} />}
+                {iconName && <ListItemIcon iconName={iconName} />}
                 <ListItemText title={title} subtitle={subtitle} isTextTruncated={isTextTruncated} />
                 {hasRightArrow && (
                     <View style={applyStyle(listItemRightArrowContainerStyle)}>
-                        <Icon type="chevronRight" />
+                        <Icon name="chevronRight" />
                     </View>
                 )}
             </Box>

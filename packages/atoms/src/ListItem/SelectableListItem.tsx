@@ -11,7 +11,7 @@ type SelectableListItemProps = RadioProps &
     Omit<TouchableOpacityProps, 'style' | 'onPress'>;
 
 export const SelectableListItem = ({
-    iconType,
+    iconName,
     title,
     subtitle,
     style,
@@ -35,7 +35,7 @@ export const SelectableListItem = ({
             {...props}
         >
             <Box style={style} flexDirection="row">
-                {iconType && <ListItemIcon iconType={iconType} />}
+                {iconName && <ListItemIcon iconName={iconName} />}
                 <ListItemText title={title} subtitle={subtitle} isTextTruncated={isTextTruncated} />
                 <Box justifyContent="center" alignItems="flex-end" flex={1}>
                     <Radio

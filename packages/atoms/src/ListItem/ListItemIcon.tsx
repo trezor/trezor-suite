@@ -1,11 +1,10 @@
-import { Icon } from '../Icon/Icon';
+import { Icon, IconName } from '@trezor/icons';
 import React from 'react';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { IconType } from '../Icon/iconTypes';
 import { Box } from '../Box';
 
 type ListItemIconProps = {
-    iconType: IconType;
+    iconName: IconName;
 };
 
 const listItemIconStyle = prepareNativeStyle(utils => ({
@@ -15,13 +14,13 @@ const listItemIconStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray200,
 }));
 
-export const ListItemIcon = ({ iconType }: ListItemIconProps) => {
+export const ListItemIcon = ({ iconName }: ListItemIconProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Box justifyContent="center" alignItems="center" marginRight="md">
             <Box justifyContent="center" alignItems="center" style={applyStyle(listItemIconStyle)}>
-                <Icon type={iconType} />
+                <Icon name={iconName} />
             </Box>
         </Box>
     );
