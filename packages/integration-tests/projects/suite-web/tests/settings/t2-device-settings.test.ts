@@ -100,19 +100,6 @@ describe('T2 - Device settings', () => {
         cy.getTestElement('@backup');
     });
 
-    it('does not show auto-lock select because it is not supported on fw <2.3.5 ', () => {
-        cy.task('startEmu', { wipe: true, version: '2.3.4' });
-        cy.task('setupEmu');
-
-        // navigate to device settings page
-        cy.prefixedVisit('/settings/device');
-        cy.passThroughInitialRun();
-
-        // TODO - add pin to verify it properly
-
-        cy.getTestElement('@settings/auto-lock-select/input').should('not.exist');
-    });
-
     it('wipe device', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
