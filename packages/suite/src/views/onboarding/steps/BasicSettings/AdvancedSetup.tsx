@@ -26,6 +26,7 @@ const Boxes = styled.div`
 const Buttons = styled.div`
     display: flex;
     justify-content: center;
+    padding-bottom: 36px;
 `;
 
 const IconWrapper = styled.div`
