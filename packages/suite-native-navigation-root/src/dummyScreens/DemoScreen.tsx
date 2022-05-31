@@ -44,9 +44,10 @@ const typographyItems: TypographyStyle[] = [
     'label',
 ];
 const SELECT_ITEMS = [
-    { label: 'first item', value: 1 },
-    { label: 'second item', value: 2 },
-    { label: 'third item', value: 3 },
+    { label: 'Czech Republic', value: 'cz' },
+    { label: 'Slovak Republic', value: 'sk' },
+    { label: 'Armenian Republic of Kongo', value: 'arm' },
+    { label: 'The United Kingdom of Great Britain and Northern Ireland', value: 'uk' },
 ];
 
 export const DemoScreen = () => {
@@ -77,7 +78,9 @@ export const DemoScreen = () => {
                 style={applyStyle(backgroundStyle, { isDarkMode })}
             >
                 <View>
-                    <Select items={SELECT_ITEMS} label="Open Select" />
+                    <Box marginBottom="md">
+                        <Select items={SELECT_ITEMS} label="Open Select" />
+                    </Box>
                     <SearchInput
                         value={inputText}
                         onChange={setInputText}

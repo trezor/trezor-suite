@@ -16,18 +16,39 @@ export type SelectItemProps = {
 
 type SelectItemStyleProps = {
     isLastChild: boolean;
+    isSelected: boolean;
 };
-const selectItemStyle = prepareNativeStyle<SelectItemStyleProps>((utils, { isLastChild }) => ({
-    borderBottomWidth: utils.borders.widths.sm,
+const selectItemStyle = prepareNativeStyle(() => ({
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    extend: {
-        condition: isLastChild,
-        style: {
-            borderBottomWidth: 0,
-        },
-    },
+    alignItems: 'center',
 }));
+
+const underlineSectionStyle = prepareNativeStyle<SelectItemStyleProps>(
+    (utils, { isLastChild, isSelected }) => ({
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        flex: 1,
+        color: utils.colors.gray700,
+        paddingVertical: 20,
+        marginLeft: 10,
+        borderBottomWidth: utils.borders.widths.sm,
+        borderColor: utils.colors.gray300,
+        extend: [
+            {
+                condition: isLastChild,
+                style: {
+                    borderBottomWidth: 0,
+                },
+            },
+            {
+                condition: isSelected,
+                style: {
+                    color: utils.colors.black,
+                },
+            },
+        ],
+    }),
+);
 
 export const SelectItem = ({
     label,
@@ -38,12 +59,12 @@ export const SelectItem = ({
 }: SelectItemProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <TouchableOpacity style={applyStyle(selectItemStyle, { isLastChild })} onPress={onSelect}>
-            <Box flexDirection="row">
-                <Icon type="closeCircle" />
-                <Text>{label}</Text>
+        <TouchableOpacity style={applyStyle(selectItemStyle)} onPress={onSelect}>
+            <Icon type="closeCircle" />
+            <Box style={applyStyle(underlineSectionStyle, { isLastChild, isSelected })}>
+                <Text numberOfLines={1}>{label}</Text>
+                <Radio value={String(value)} onPress={onSelect} isChecked={isSelected} />
             </Box>
-            <Radio value={String(value)} onPress={onSelect} isChecked={isSelected} />
         </TouchableOpacity>
     );
 };
