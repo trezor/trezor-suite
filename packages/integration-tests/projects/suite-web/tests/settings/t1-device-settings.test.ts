@@ -30,18 +30,6 @@ describe('T1 - Device settings', () => {
         cy.task('pressYes');
     });
 
-    it('does not show auto-lock select because it is not supported on fw <1.9.4', () => {
-        cy.task('startEmu', { version: '1.9.3', wipe: true });
-        cy.task('setupEmu', { needs_backup: false });
-        cy.task('startBridge');
-        cy.viewport(1080, 1440).resetDb();
-        cy.prefixedVisit('/settings/device');
-        cy.passThroughInitialRun();
-
-        // TODO - add pin to verify it properly
-        cy.getTestElement('@settings/auto-lock-select/input').should('not.exist');
-    });
-
     // TODO: pin success
     // TODO: pin caching immediately after it is set
     // TODO: keyboard handling
