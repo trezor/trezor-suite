@@ -146,7 +146,11 @@ const CustomTooltipBase = (props: Props) => {
                 : 'day';
 
         return (
-            <CustomTooltipWrapper positionX={props.coordinate!.x!} boxWidth={props.viewBox!.width!}>
+            <CustomTooltipWrapper
+                data-test="@dashboard/customtooltip"
+                positionX={props.coordinate!.x!}
+                boxWidth={props.viewBox!.width!}
+            >
                 <Row>
                     <Title>{date && formatDate(date, dateFormat)}</Title>
                 </Row>
