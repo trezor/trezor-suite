@@ -2,10 +2,10 @@ import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Icon } from '@trezor/icons';
 
 import { Box } from '../Box';
 import { Text } from '../Text';
-import { Icon } from '../Icon/Icon';
 import { BottomModalContainer } from './BottomModalContainer';
 
 type BottomModalProps = {
@@ -59,7 +59,7 @@ export const BottomModal = ({
                 <Box style={applyStyle(modalHeaderStyle)}>
                     {hasBackArrow && (
                         <TouchableOpacity onPress={onBackArrowClick}>
-                            <Icon type="chevronLeft" />
+                            <Icon name="chevronLeft" />
                         </TouchableOpacity>
                     )}
                     <Text variant="titleSmall">{title}</Text>
@@ -67,7 +67,7 @@ export const BottomModal = ({
                         onPress={handleCloseModal}
                         style={applyStyle(closeButtonStyle)}
                     >
-                        <Icon type="close" />
+                        <Icon name="close" />
                     </TouchableOpacity>
                 </Box>
                 <Box paddingHorizontal="md">{children}</Box>
