@@ -15,8 +15,10 @@ import {
     Switch,
     ListItem,
     SelectableListItem,
+    BottomModal,
 } from '@trezor/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { TypographyStyle } from '@trezor/theme';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
     ({ colors, spacings }, { isDarkMode }) => ({
@@ -27,6 +29,16 @@ const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
     }),
 );
 
+const typographyItems: TypographyStyle[] = [
+    'titleLarge',
+    'titleMedium',
+    'titleSmall',
+    'highlight',
+    'body',
+    'callout',
+    'hint',
+    'label',
+];
 export const DemoScreen = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const [inputText, setInputText] = useState<string>('');
@@ -40,6 +52,7 @@ export const DemoScreen = () => {
     const [isChip2Selected, setIsChip2Selected] = useState<boolean>(false);
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
     const handleRadioPress = (value: string) => {
         setRadioChecked(value);
@@ -89,24 +102,22 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <Box>
-                        <Text variant="titleSmall">Title Small</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="highlight">Highlight</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="body">Body</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="callout">Callout</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="hint">Hint</Text>
-                    </Box>
-                    <Box>
-                        <Text variant="label">Label</Text>
-                    </Box>
+                    <Button onPress={() => setIsModalVisible(true)} colorScheme="primary" size="md">
+                        Show Typograhy
+                    </Button>
+                    <BottomModal
+                        isVisible={isModalVisible}
+                        onVisibilityChange={setIsModalVisible}
+                        title="Typography Demo"
+                        hasBackArrow
+                        onBackArrowClick={() => setIsModalVisible(!isModalVisible)}
+                    >
+                        {typographyItems.map(item => (
+                            <Box marginTop="sm" key={item}>
+                                <Text variant={item}>{item}</Text>
+                            </Box>
+                        ))}
+                    </BottomModal>
                     <Box marginVertical="md">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" color="black" />
@@ -115,15 +126,6 @@ export const DemoScreen = () => {
                         <Text>Hints:</Text>
                         <Hint variant="hint">Hned to mažem</Hint>
                         <Hint variant="error">Please enter a valid address dumbo</Hint>
-                    </Box>
-                    <Box marginVertical="md">
-                        <Button
-                            onPress={() => console.log('Get features')}
-                            size="md"
-                            colorScheme="primary"
-                        >
-                            My Fancy Button
-                        </Button>
                     </Box>
                     <Box marginVertical="md">
                         <Text>Radio:</Text>

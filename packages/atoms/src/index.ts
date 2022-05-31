@@ -10,3 +10,4 @@ export * from './Chip';
 export * from './Switch';
 export * from './ListItem/ListItem';
 export * from './ListItem/SelectableListItem';
+export * from './Modal/BottomModal';

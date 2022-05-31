@@ -45,12 +45,12 @@
 		5709B34CF0A7D63546082F79 /* Pods-TrezorSuite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-TrezorSuite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrezorSuite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Regular.otf"; path = "../../theme/fonts/TTSatoshi-Regular.otf"; sourceTree = "<group>"; };
+		69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Regular.otf"; path = "../../theme/fonts/TTSatoshi-Regular.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TrezorSuite/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; sourceTree = "<group>"; };
-		8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-DemiBold.otf"; path = "../../theme/fonts/TTSatoshi-DemiBold.otf"; sourceTree = "<group>"; };
-		92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Bold.otf"; path = "../../theme/fonts/TTSatoshi-Bold.otf"; sourceTree = "<group>"; };
-		A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Medium.otf"; path = "../../theme/fonts/TTSatoshi-Medium.otf"; sourceTree = "<group>"; };
+		8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-DemiBold.otf"; path = "../../theme/fonts/TTSatoshi-DemiBold.otf"; sourceTree = "<group>"; };
+		92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Bold.otf"; path = "../../theme/fonts/TTSatoshi-Bold.otf"; sourceTree = "<group>"; };
+		A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Medium.otf"; path = "../../theme/fonts/TTSatoshi-Medium.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -123,7 +123,6 @@
 				69A6D83EFA4747F2BABDFD0A /* TTSatoshi-Regular.otf */,
 			);
 			name = Resources;
-			path = "";
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
