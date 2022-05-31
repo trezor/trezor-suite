@@ -31,4 +31,6 @@ services:
       - ../:/trezor-suite
   bitcoin-regtest:
     image: ghcr.io/trezor/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
+    depends_on:
+      - trezor-user-env-unix
     network_mode: service:trezor-user-env-unix

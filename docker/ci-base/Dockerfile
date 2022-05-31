@@ -1,7 +1,7 @@
 # Base
 ## Use a proxy or fallback to no proxy at all (direct access to Docker Hub).
 ARG CI_DOCKER_PROXY=""
-FROM ${CI_DOCKER_PROXY}debian:buster-slim as base
+FROM ${CI_DOCKER_PROXY}debian:bullseye-slim as base
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -14,7 +14,7 @@ RUN apt-get update && \
 
 # Docker
 FROM base as docker
-ENV DOCKER_VERSION=19.03.12
+ENV DOCKER_VERSION=20.10.16
 RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz \
     && mv docker-${DOCKER_VERSION}.tgz docker.tgz \
     && tar xzvf docker.tgz \
@@ -23,12 +23,12 @@ RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${
 
 # Docker Compose
 FROM base as docker_compose
-ENV DOCKER_COMPOSE_VERSION=1.26.2
-RUN curl -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+ENV DOCKER_COMPOSE_VERSION=1.29.2
+RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 
 # Final image
-# buster is for debian 10. the same version as firmware team has in its Dockerfile.
-FROM ${CI_DOCKER_PROXY}node:14-buster
+# bullseye is for debian 11. the same version as firmware team has in its Dockerfile.
+FROM ${CI_DOCKER_PROXY}node:lts-bullseye
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -52,7 +52,8 @@ RUN apt-get update && apt-get install -y \
     # why not
     zip \
     jq \
-    rsync
+    rsync \
+    curl
 
 RUN apt-get install -y \
     python3-dev \
@@ -60,6 +61,8 @@ RUN apt-get install -y \
 
 RUN pip3 install attrs
 RUN pip3 install --upgrade setuptools
+# trezor ctl is not working with newer version of click
+RUN pip3 install "click<8.1"
 RUN pip3 install trezor
 RUN pip3 install termcolor
 
@@ -93,22 +96,8 @@ ENV XDG_RUNTIME_DIR "/var/tmp"
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
-
-# Install NVM to manage Node versions
-ENV NVM_DIR /usr/local/nvm
-RUN mkdir ${NVM_DIR}
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-
 # Install and use correct version of node - should match witch Nix and .nvmrc
-ENV NODE_VERSION 14.18.1
-RUN . $NVM_DIR/nvm.sh \
-    && nvm install $NODE_VERSION \
-    && nvm alias default $NODE_VERSION \
-    && nvm use default
-
-# add node and npm to path so the commands are available
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+ENV NODE_VERSION 16.15.0
 
 # Out of the blue, we started to run into CI failures. All of them had one thing in common.
 # Some of our dependencies postinstall scripts tried to execute a binary in ./node_modules/.bin/
@@ -120,7 +109,6 @@ RUN yarn global add opencollective node-pre-gyp lerna
 
 # versions of local tools
 RUN node -v
-RUN . $NVM_DIR/nvm.sh && nvm --version
 RUN npm -v
 RUN yarn -v
 RUN google-chrome --version
