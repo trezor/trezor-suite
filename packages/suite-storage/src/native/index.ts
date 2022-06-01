@@ -89,6 +89,12 @@ class CommonDB<TDBStructure> {
         return Promise.resolve(false);
     };
 
+    isAccessible = async () => {
+        const isSupported = await this.isSupported();
+        // if the instance is blocking db upgrade, db connection will be closed
+        return isSupported && !this.blocking && !this.blocked;
+    };
+
     notify = (_store: StoreNames<TDBStructure>, _keys: any[]) => {};
 
     onChange = (_handler: (event: StorageMessageEvent<TDBStructure>) => any) => {};
