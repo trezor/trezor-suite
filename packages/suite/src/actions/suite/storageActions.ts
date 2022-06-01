@@ -365,8 +365,3 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
         }),
     );
 };
-
-export const loadSuiteSettings = async () => {
-    if (!(await db.isAccessible())) return;
-    return db.getItemByPK('suiteSettings', 'suite');
-};

@@ -1,8 +1,8 @@
 import React from 'react';
-import { useThemeContext } from '@suite-hooks';
+import { useSelector } from '@suite-hooks';
 import { ThemeProvider } from './ThemeProvider';
 
 export const ConnectedThemeProvider: React.FC = ({ children }) => {
-    const { variant } = useThemeContext();
+    const variant = useSelector(state => state.suite.settings.theme.variant);
     return <ThemeProvider themeVariant={variant}>{children}</ThemeProvider>;
 };

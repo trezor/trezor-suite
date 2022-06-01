@@ -59,7 +59,7 @@ export const getInitialState = (state?: InitialState) => {
     const accounts = state ? state.accounts || [] : [];
     const settings = suite?.settings || { debug: {} };
     const debug = settings?.debug || {};
-    const initAction: any = { type: STORAGE.LOADED, payload: { metadata } };
+    const initAction: any = { type: STORAGE.LOAD, payload: { metadata } };
     return {
         metadata: metadataReducer(metadata, initAction),
         devices: device ? [device] : [], // device is needed for notification/event
