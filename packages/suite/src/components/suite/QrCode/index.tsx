@@ -1,5 +1,5 @@
 import React from 'react';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import styled from 'styled-components';
 
 import { colors } from '@trezor/components';
@@ -23,7 +23,7 @@ interface QrCodeProps {
 
 export const QrCode = ({ value }: QrCodeProps) => (
     <Wrapper>
-        <QRCode
+        <QRCodeSVG
             bgColor={colors.BG_WHITE}
             fgColor={colors.TYPE_DARK_GREY}
             level="Q"
