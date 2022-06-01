@@ -1,10 +1,12 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { FlagIcon, FlagIconName } from '@trezor/icons';
+
 import { Box } from './Box';
-import { Icon } from './Icon/Icon';
 import { Radio } from './Radio';
 import { Text } from './Text';
-import { TouchableOpacity } from 'react-native';
 
 export type SelectItemProps = {
     label: string;
@@ -12,6 +14,7 @@ export type SelectItemProps = {
     onSelect: () => void;
     isSelected: boolean;
     isLastChild?: boolean;
+    iconName: FlagIconName;
 };
 
 type SelectItemStyleProps = {
@@ -31,7 +34,7 @@ const underlineSectionStyle = prepareNativeStyle<SelectItemStyleProps>(
         color: utils.colors.gray700,
         paddingVertical: 20,
         marginLeft: 10,
-        borderBottomWidth: utils.borders.widths.sm,
+        borderBottomWidth: utils.borders.widths.small,
         borderColor: utils.colors.gray300,
         extend: [
             {
@@ -55,12 +58,13 @@ export const SelectItem = ({
     value,
     onSelect,
     isSelected,
+    iconName,
     isLastChild = false,
 }: SelectItemProps) => {
     const { applyStyle } = useNativeStyles();
     return (
         <TouchableOpacity style={applyStyle(selectItemStyle)} onPress={onSelect}>
-            <Icon type="closeCircle" />
+            <FlagIcon name={iconName} />
             <Box style={applyStyle(underlineSectionStyle, { isLastChild, isSelected })}>
                 <Text numberOfLines={1}>{label}</Text>
                 <Radio value={String(value)} onPress={onSelect} isChecked={isSelected} />

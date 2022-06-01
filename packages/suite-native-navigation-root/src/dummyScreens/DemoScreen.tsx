@@ -21,6 +21,7 @@ import {
     TipToast,
     IconButton,
     Select,
+    SelectItem,
 } from '@suite-native/atoms';
 import { TypographyStyle } from '@trezor/theme';
 
@@ -43,11 +44,15 @@ const typographyItems: TypographyStyle[] = [
     'hint',
     'label',
 ];
-const SELECT_ITEMS = [
-    { label: 'Czech Republic', value: 'cz' },
-    { label: 'Slovak Republic', value: 'sk' },
-    { label: 'Armenian Republic of Kongo', value: 'arm' },
-    { label: 'The United Kingdom of Great Britain and Northern Ireland', value: 'uk' },
+const SELECT_ITEMS: SelectItem[] = [
+    { label: 'Czech Republic', value: 'cz', iconName: 'cz' },
+    { label: 'Slovak Republic', value: 'sk', iconName: 'cz' },
+    { label: 'Armenian Republic of Kongo', value: 'arm', iconName: 'cz' },
+    {
+        label: 'The United Kingdom of Great Britain and Northern Ireland',
+        value: 'uk',
+        iconName: 'cz',
+    },
 ];
 
 export const DemoScreen = () => {
@@ -114,7 +119,7 @@ export const DemoScreen = () => {
                             onSelect={() => setIsChip1Selected(!isChip1Selected)}
                         />
                         <Chip
-                            icon={<Icon name="settings" />}
+                            icon={<CryptoIcon name="btc" />}
                             title="Bitcoin"
                             isSelected={isChip2Selected}
                             onSelect={() => setIsChip2Selected(!isChip2Selected)}

@@ -1,15 +1,18 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box } from './Box';
-import { SelectItem, SelectItemProps } from './SelectItem';
-import { SelectList } from './SelectList';
-import { Text } from './Text';
-import { Icon } from './Icon/Icon';
 
-type SelectItem = {
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { FlagIconName, Icon } from '@trezor/icons';
+
+import { Box } from './Box';
+import { Text } from './Text';
+import { BottomModal } from './Modal/BottomModal';
+import { SelectItem, SelectItemProps } from './SelectItem';
+
+export type SelectItem = {
     label: string;
     value: string;
+    iconName: FlagIconName;
 };
 
 type SelectProps = {
@@ -22,8 +25,8 @@ const selectStyle = prepareNativeStyle(utils => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: utils.colors.gray200,
-    borderWidth: utils.borders.widths.sm,
-    borderRadius: utils.borders.radii.basic,
+    borderWidth: utils.borders.widths.small,
+    borderRadius: utils.borders.radii.small,
     borderColor: utils.colors.gray200,
     color: utils.colors.gray600,
     paddingLeft: 12,
@@ -35,10 +38,6 @@ export const Select = ({ items, label }: SelectProps) => {
     const { applyStyle } = useNativeStyles();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<null | SelectItemProps['value']>(null);
-
-    useEffect(() => {
-        console.log(selectedItem, 'item selected');
-    }, [selectedItem]);
 
     const handleSelectItem = (value: string) => {
         setSelectedItem(value);
@@ -54,26 +53,31 @@ export const Select = ({ items, label }: SelectProps) => {
         <Box>
             <Box>
                 {isOpen && (
-                    <SelectList onClose={() => setIsOpen(false)}>
+                    <BottomModal
+                        isVisible={isOpen}
+                        onVisibilityChange={setIsOpen}
+                        title="Typography Demo"
+                        hasBackArrow
+                        onBackArrowClick={() => setIsOpen(false)}
+                    >
                         {items.map((item, index) => (
                             <SelectItem
                                 key={item.value}
                                 label={item.label}
                                 value={item.value}
+                                iconName={item.iconName}
                                 isSelected={item.value === selectedItem}
                                 isLastChild={index === items.length - 1}
                                 onSelect={() => handleSelectItem(item.value)}
                             />
                         ))}
-                    </SelectList>
+                    </BottomModal>
                 )}
             </Box>
-            {!isOpen && (
-                <TouchableOpacity onPress={() => setIsOpen(true)} style={applyStyle(selectStyle)}>
-                    <Text numberOfLines={1}>{getLabel()}</Text>
-                    <Icon type="chevronDown" />
-                </TouchableOpacity>
-            )}
+            <TouchableOpacity onPress={() => setIsOpen(true)} style={applyStyle(selectStyle)}>
+                <Text numberOfLines={1}>{getLabel()}</Text>
+                <Icon name="chevronDown" />
+            </TouchableOpacity>
         </Box>
     );
 };
