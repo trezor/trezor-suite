@@ -23,8 +23,11 @@ export const initialState: SendState = {
 const sendFormReducer = (state: SendState = initialState, action: Action): SendState =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.wallet.send;
+            case STORAGE.LOAD:
+                action.payload?.sendFormDrafts.forEach(d => {
+                    draft.drafts[d.key] = d.value;
+                });
+                break;
             case SEND.STORE_DRAFT:
                 draft.drafts[action.key] = action.formState;
                 break;

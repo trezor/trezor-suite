@@ -1,12 +1,11 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from '@trezor/connect';
-import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
+import { SUITE, ROUTER } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import * as storageActions from '@suite-actions/storageActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import * as languageActions from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
@@ -34,11 +33,6 @@ const suite =
         next(action);
 
         switch (action.type) {
-            case SUITE.INIT:
-                await api.dispatch(storageActions.init());
-                // load storage
-                api.dispatch(storageActions.loadStorage());
-                break;
             case SUITE.DESKTOP_HANDSHAKE:
                 if (action.payload.protocol) {
                     api.dispatch(handleProtocolRequest(action.payload.protocol));
@@ -52,17 +46,19 @@ const suite =
                     );
                 }
                 break;
-            case STORAGE.LOADED: {
+            case SUITE.INIT: {
                 // select first device from storage
-                if (
-                    !api.getState().suite.device &&
-                    action.payload.devices &&
-                    action.payload.devices[0]
-                ) {
+                const {
+                    suite: {
+                        device,
+                        settings: { language },
+                    },
+                    devices,
+                    analytics,
+                } = api.getState();
+                if (!device && devices && devices[0]) {
                     // if there are force remember devices, forget them and pick the first one of them as selected device
-                    const forcedDevices = action.payload.devices.filter(
-                        d => d.forceRemember && d.remember,
-                    );
+                    const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
                     forcedDevices.forEach(d => {
                         api.dispatch(suiteActions.toggleRememberDevice(d));
                     });
@@ -70,20 +66,18 @@ const suite =
                         suiteActions.selectDevice(
                             forcedDevices.length
                                 ? forcedDevices[0]
-                                : sortByTimestamp([...action.payload.devices])[0],
+                                : sortByTimestamp([...devices])[0],
                         ),
                     );
                 }
                 // right after storage is loaded, we might start:
                 // 1. init analytics
-                api.dispatch(analyticsActions.init(action.payload.analytics));
+                api.dispatch(analyticsActions.init(analytics));
                 // 2. fetching locales
                 // 3. fetch message system config
                 // 4. redirecting user into welcome screen (if needed)
                 await Promise.all([
-                    api.dispatch(
-                        languageActions.setLanguage(action.payload.suite.settings.language),
-                    ),
+                    api.dispatch(languageActions.setLanguage(language)),
                     api.dispatch(messageSystemActions.init()),
                     api.dispatch(routerActions.initialRedirection()),
                 ]);

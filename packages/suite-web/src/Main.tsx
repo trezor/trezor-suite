@@ -5,7 +5,8 @@ import { Router as RouterProvider } from 'react-router-dom';
 import { init as initSentry } from '@sentry/browser';
 
 import { isDev } from '@suite-utils/build';
-import { store } from '@suite/reducers/store';
+import { initStore } from '@suite/reducers/store';
+import { preloadStore } from '@suite-support/preloadStore';
 import { SENTRY_CONFIG } from '@suite-config';
 
 import Metadata from '@suite-components/Metadata';
@@ -20,6 +21,7 @@ import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from '@suite-support/Router';
 import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
+import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
 import history from '@suite/support/history';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 
@@ -54,10 +56,16 @@ const Main = () => {
     );
 };
 
-export const init = (root: HTMLElement) => {
+export const init = async (root: HTMLElement) => {
     if (!window.Cypress && !isDev) {
         initSentry(SENTRY_CONFIG);
     }
+
+    // render simple loader with theme provider without redux, wait for indexedDB
+    render(<LoadingScreen />, root);
+
+    const preloaded = await preloadStore();
+    const store = initStore(preloaded);
 
     render(
         <ReduxProvider store={store}>

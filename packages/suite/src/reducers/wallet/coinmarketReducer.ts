@@ -155,6 +155,12 @@ const coinmarketReducer = (
 ): State =>
     produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOAD:
+                // TODO-NOTE: this is inconsistent, in previous implementation coinmarketTrades.trades was filled with data from DB, but types are incorrect
+                // investigate more
+                // @ts-ignore
+                draft.trades = action.payload?.coinmarketTrades || draft.trades;
+                break;
             case COINMARKET_BUY.SAVE_BUY_INFO:
                 draft.buy.buyInfo = action.buyInfo;
                 break;
@@ -224,8 +230,6 @@ const coinmarketReducer = (
             case COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO:
                 draft.composedTransactionInfo = action.info;
                 break;
-            case STORAGE.LOADED:
-                return action.payload.wallet.coinmarket;
             case COINMARKET_SELL.SAVE_SELL_INFO:
                 draft.sell.sellInfo = action.sellInfo;
                 break;

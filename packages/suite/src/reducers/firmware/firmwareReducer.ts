@@ -72,8 +72,11 @@ const firmwareUpdate = (
 ): FirmwareUpdateState =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.firmware;
+            case STORAGE.LOAD:
+                if (action.payload?.firmware?.firmwareHashInvalid) {
+                    draft.firmwareHashInvalid = action.payload.firmware.firmwareHashInvalid;
+                }
+                break;
             case FIRMWARE.SET_UPDATE_STATUS:
                 draft.status = action.payload;
                 if (action.payload === 'started') {

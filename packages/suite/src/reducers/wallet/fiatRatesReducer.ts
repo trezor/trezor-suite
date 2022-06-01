@@ -67,6 +67,9 @@ const updateLastWeekRates = (state: CoinFiatRates[], payload: LastWeekRates) => 
 const fiatRatesReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOAD:
+                draft.coins = action.payload?.fiatRates || draft.coins;
+                break;
             case RATE_REMOVE:
                 remove(draft.coins, action.payload);
                 break;
@@ -76,8 +79,6 @@ const fiatRatesReducer = (state: State = initialState, action: Action): State =>
             case LAST_WEEK_RATES_UPDATE:
                 updateLastWeekRates(draft.coins, action.payload);
                 break;
-            case STORAGE.LOADED:
-                return action.payload.wallet.fiat;
             // no default
         }
     });

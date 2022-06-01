@@ -56,7 +56,7 @@ const update = (draft: State, payload: GraphData) => {
     updateError(draft);
 };
 
-const loadFromStorage = (draft: State, payload: GraphData[]) => {
+const loadFromStorage = (draft: State, payload: GraphData[] = []) => {
     draft.data = payload;
     updateError(draft);
 };
@@ -80,8 +80,8 @@ const remove = (draft: State, accounts: Account[]) => {
 const graphReducer = (state: State = initialState, action: WalletAction | SuiteAction): State =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                loadFromStorage(draft, action.payload.wallet.graph.data);
+            case STORAGE.LOAD:
+                loadFromStorage(draft, action.payload?.graph);
                 break;
             case GRAPH.ACCOUNT_GRAPH_START:
                 update(draft, action.payload);

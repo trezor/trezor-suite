@@ -5,7 +5,8 @@ import { Router as RouterProvider } from 'react-router-dom';
 import { init as initSentry } from '@sentry/electron/renderer';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { store } from '@suite/reducers/store';
+import { initStore } from '@suite/reducers/store';
+import { preloadStore } from '@suite-support/preloadStore';
 import { isDev } from '@suite-utils/build';
 
 import Metadata from '@suite-components/Metadata';
@@ -66,6 +67,9 @@ export const init = async (root: HTMLElement) => {
 
     // render simple loader with theme provider without redux, wait for indexedDB
     render(<LoadingScreen />, root);
+
+    const preloaded = await preloadStore();
+    const store = initStore(preloaded);
 
     await desktopApi.handshake();
 

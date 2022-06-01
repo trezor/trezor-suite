@@ -16,10 +16,12 @@ import recoveryReducers from '@recovery-reducers';
 import firmwareReducers from '@firmware-reducers';
 import backupReducers from '@backup-reducers';
 import { desktopReducer } from './desktop';
+import * as STORAGE from '@suite-actions/constants/storageConstants';
 
 // toastMiddleware can be used only in suite-desktop and suite-web
 // it's not included into `@suite-middlewares` index
 import toastMiddleware from '@suite-middlewares/toastMiddleware';
+import type { PreloadedStore } from '@suite-support/preloadStore';
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -69,4 +71,10 @@ const composeEnhancers =
 
 const enhancer = composeEnhancers(applyMiddleware(...middlewares), ...enhancers);
 
-export const store = createStore(rootReducer, enhancer);
+export const initStore = (preloadedStore?: PreloadedStore) => {
+    // get initial state by calling STORAGE.LOAD action with optional payload
+    // payload will be processed in each reducer explicitly
+    const initialState = rootReducer(undefined, { type: STORAGE.LOAD, payload: preloadedStore });
+    // use initialState while creating storage
+    return createStore(rootReducer, initialState, enhancer);
+};

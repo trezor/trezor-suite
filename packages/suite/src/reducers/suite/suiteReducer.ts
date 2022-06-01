@@ -118,11 +118,16 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.INIT:
                 draft.loading = true;
                 break;
-
-            case STORAGE.LOADED:
-                draft.flags = action.payload.suite.flags;
-                draft.settings = action.payload.suite.settings;
-                draft.storageLoaded = action.payload.suite.storageLoaded;
+            case STORAGE.LOAD:
+                draft.flags = {
+                    ...draft.flags,
+                    ...action.payload?.suiteSettings?.flags,
+                };
+                draft.settings = {
+                    ...draft.settings,
+                    ...action.payload?.suiteSettings?.settings,
+                };
+                draft.storageLoaded = true;
                 break;
 
             case SUITE.READY:
