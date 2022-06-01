@@ -9,8 +9,8 @@ type Props = {
     iconName: IconName;
     onPress: () => void;
     isRounded?: boolean;
-    colorScheme: ButtonColorScheme;
-    size: ButtonSize;
+    colorScheme?: ButtonColorScheme;
+    size?: ButtonSize;
 };
 
 type StyleProps = {
@@ -58,7 +58,13 @@ const iconButtonStyle = prepareNativeStyle<StyleProps>(
     },
 );
 
-export const IconButton = ({ iconName, onPress, colorScheme, size, isRounded = false }: Props) => {
+export const IconButton = ({
+    iconName,
+    onPress,
+    colorScheme = 'primary',
+    size = 'medium',
+    isRounded = false,
+}: Props) => {
     const { applyStyle } = useNativeStyles();
 
     return (

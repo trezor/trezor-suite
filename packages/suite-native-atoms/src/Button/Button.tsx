@@ -10,7 +10,7 @@ export type ButtonSize = 'small' | 'medium' | 'large';
 export type ButtonColorScheme = 'primary' | 'gray';
 
 export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
-    colorScheme: ButtonColorScheme;
+    colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
 }
@@ -65,8 +65,8 @@ const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
 
 export const Button = ({
     style,
-    colorScheme,
     children,
+    colorScheme = 'primary',
     size = 'medium',
     ...props
 }: ButtonProps) => {

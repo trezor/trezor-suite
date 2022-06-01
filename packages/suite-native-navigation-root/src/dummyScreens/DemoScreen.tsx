@@ -136,13 +136,7 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <Button
-                        onPress={() => setIsModalVisible(true)}
-                        colorScheme="primary"
-                        size="medium"
-                    >
-                        Show Typograhy
-                    </Button>
+                    <Button onPress={() => setIsModalVisible(true)}>Show Typograhy</Button>
                     <BottomModal
                         isVisible={isModalVisible}
                         onVisibilityChange={setIsModalVisible}
@@ -166,13 +160,7 @@ export const DemoScreen = () => {
                         <Hint variant="error">Please enter a valid address dumbo</Hint>
                     </Box>
                     <Box marginVertical="medium">
-                        <Button
-                            onPress={() => console.log('Get features')}
-                            size="medium"
-                            colorScheme="primary"
-                        >
-                            My Fancy Button
-                        </Button>
+                        <Button onPress={() => console.log('Get features')}>My Fancy Button</Button>
                     </Box>
                     <Box marginVertical="medium">
                         <Text>Radio:</Text>
@@ -234,11 +222,7 @@ export const DemoScreen = () => {
                             console.log('Press num pad button. No implementation yet.', value)
                         }
                     />
-                    <Button
-                        onPress={() => console.log('Get features to be implemented')}
-                        size="medium"
-                        colorScheme="primary"
-                    >
+                    <Button onPress={() => console.log('Get features to be implemented')}>
                         Get features
                     </Button>
                     <Box marginVertical="medium">
