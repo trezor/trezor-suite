@@ -1,6 +1,5 @@
 export * from './Text';
 export * from './Box';
-export * from './Button';
 export * from './Hint';
 export * from './Radio';
 export * from './NumPadButton';
@@ -12,3 +11,5 @@ export * from './ListItem/ListItem';
 export * from './ListItem/SelectableListItem';
 export * from './Modal/BottomModal';
 export * from './TipToast';
+export * from './Button/Button';
+export * from './Button/IconButton';

@@ -14,7 +14,7 @@ interface ListItemProps extends BaseListItem, Omit<TouchableOpacityProps, 'style
 const listItemRightArrowContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: utils.spacings.md,
+    marginLeft: utils.spacings.medium,
 }));
 
 export const ListItem = ({

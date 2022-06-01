@@ -17,14 +17,14 @@ const tipToastStyle = prepareNativeStyle(utils => ({
     justifyContent: 'space-between',
     backgroundColor: utils.colors.black,
     color: utils.colors.white,
-    borderRadius: utils.borders.radii.basic,
-    padding: utils.spacings.sm,
+    borderRadius: utils.borders.radii.small,
+    padding: utils.spacings.small,
 }));
 
 const iconWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: utils.borders.radii.basic,
+    borderRadius: utils.borders.radii.small,
     backgroundColor: utils.colors.gray800,
     width: 40,
     height: 40,

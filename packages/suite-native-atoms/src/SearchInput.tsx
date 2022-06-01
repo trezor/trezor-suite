@@ -15,7 +15,7 @@ const inputStyle = prepareNativeStyle(utils => ({
     ...utils.typography.body,
     flex: 1,
     color: utils.colors.gray700,
-    marginLeft: utils.spacings.md,
+    marginLeft: utils.spacings.medium,
 }));
 
 const clearIconStyle = prepareNativeStyle(utils => ({

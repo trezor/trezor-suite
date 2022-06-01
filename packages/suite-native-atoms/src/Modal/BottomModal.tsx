@@ -37,8 +37,8 @@ const modalHeaderStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: utils.spacings.md,
-    paddingVertical: utils.spacings.md,
+    paddingHorizontal: utils.spacings.medium,
+    paddingVertical: utils.spacings.medium,
 }));
 
 export const BottomModal = ({
@@ -70,7 +70,7 @@ export const BottomModal = ({
                         <Icon name="close" />
                     </TouchableOpacity>
                 </Box>
-                <Box paddingHorizontal="md">{children}</Box>
+                <Box paddingHorizontal="medium">{children}</Box>
             </Box>
         </BottomModalContainer>
     );
