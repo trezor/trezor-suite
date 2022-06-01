@@ -27,7 +27,7 @@
         "@babel/preset-env": "^7.13.15",
         "@babel/preset-typescript": "^7.13.0",
         "@types/fs-extra": "^9.0.6",
-        "@types/ua-parser-js": "^0.7.35",
+        "@types/ua-parser-js": "^0.7.36",
         "ajv": "^8.6.2",
         "autoprefixer": "^10.4.4",
         "babel-loader": "^8.2.2",
