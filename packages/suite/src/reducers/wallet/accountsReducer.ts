@@ -111,8 +111,8 @@ const accountsReducer = (
 ): Account[] =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.wallet.accounts;
+            case STORAGE.LOAD:
+                return action.payload?.accounts || state;
             case ACCOUNT.CREATE:
                 create(draft, action.payload);
                 break;

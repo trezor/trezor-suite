@@ -136,8 +136,11 @@ const blockchainReducer = (
 ): BlockchainState =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.wallet.blockchain;
+            case STORAGE.LOAD:
+                action.payload?.backendSettings.forEach(b => {
+                    draft[b.key].backends = b.value;
+                });
+                break;
             case BLOCKCHAIN.CONNECT:
                 connect(draft, action.payload);
                 break;

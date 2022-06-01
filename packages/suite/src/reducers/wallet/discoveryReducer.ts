@@ -80,8 +80,8 @@ const remove = (draft: State, payload: PartialDiscovery) => {
 const discoveryReducer = (state: State = initialState, action: WalletAction | SuiteAction): State =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.wallet.discovery;
+            case STORAGE.LOAD:
+                return action.payload?.discovery || state;
             case DISCOVERY.CREATE:
                 create(draft, action.payload);
                 break;

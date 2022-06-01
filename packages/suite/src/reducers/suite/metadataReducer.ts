@@ -12,8 +12,8 @@ export const initialState: MetadataState = {
 const metadataReducer = (state = initialState, action: Action): MetadataState =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.metadata;
+            case STORAGE.LOAD:
+                return action.payload?.metadata || state;
             case METADATA.ENABLE:
                 draft.enabled = true;
                 break;

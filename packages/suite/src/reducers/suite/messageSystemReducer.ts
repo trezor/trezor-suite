@@ -51,8 +51,11 @@ const messageSystemReducer = (state: State = initialState, action: Action): Stat
         let messageState;
 
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.messageSystem;
+            case STORAGE.LOAD:
+                return {
+                    ...state,
+                    ...action.payload?.messageSystem,
+                };
             case MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS:
                 draft.timestamp = Date.now();
                 break;

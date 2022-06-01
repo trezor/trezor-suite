@@ -2,6 +2,7 @@ import produce from 'immer';
 import { AccountTransaction, AccountUtxo, AccountAddress } from '@trezor/connect';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { findTransaction } from '@wallet-utils/transactionUtils';
+import { getAccountKey } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction, Network } from '@wallet-types';
 import { Action } from '@suite-types';
@@ -135,8 +136,20 @@ const remove = (draft: State, account: Account, txs: WalletAccountTransaction[])
 const transactionReducer = (state: State = initialState, action: Action | WalletAction): State =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.wallet.transactions;
+            case STORAGE.LOAD: {
+                action.payload?.txs.forEach(item => {
+                    const k = getAccountKey(
+                        item.tx.descriptor,
+                        item.tx.symbol,
+                        item.tx.deviceState,
+                    );
+                    if (!draft.transactions[k]) {
+                        draft.transactions[k] = [];
+                    }
+                    draft.transactions[k][item.order] = item.tx;
+                });
+                break;
+            }
             case ACCOUNT.REMOVE:
                 action.payload.forEach(a => {
                     delete draft.transactions[a.key];

@@ -12,8 +12,11 @@ export const initialState: FormDraftState = {};
 const formDraftReducer = (state: FormDraftState = initialState, action: Action): FormDraftState =>
     produce(state, draft => {
         switch (action.type) {
-            case STORAGE.LOADED:
-                return action.payload.wallet.formDrafts;
+            case STORAGE.LOAD:
+                action.payload?.formDrafts.forEach(d => {
+                    draft[d.key] = d.value;
+                });
+                break;
             case FORM_DRAFT.STORE_DRAFT:
                 draft[action.key] = action.formDraft;
                 break;
