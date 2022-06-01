@@ -26,7 +26,7 @@
         "fela-plugin-unit": "^12.1.1",
         "fela-sort-media-query-mobile-first": "^12.1.1",
         "fela-utils": "^12.1.1",
-        "polished": "^4.1.1",
+        "polished": "^4.2.2",
         "react": "^17.0.2",
         "react-fela": "^12.1.1"
     }

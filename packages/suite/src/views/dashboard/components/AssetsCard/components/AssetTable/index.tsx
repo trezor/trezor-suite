@@ -38,7 +38,7 @@ const Symbol = styled.div`
     text-indent: 6px;
 `;
 
-const StyledCol = styled(motion.div)<{ isLastRow?: boolean }>`
+const StyledCol = styled(motion.div)<{ $isLastRow?: boolean }>`
     display: flex;
     align-items: center;
     padding: 16px 0px;
@@ -49,15 +49,18 @@ const StyledCol = styled(motion.div)<{ isLastRow?: boolean }>`
     padding-right: 20px;
 
     ${props =>
-        props.isLastRow &&
+        props.$isLastRow &&
         css`
             border-bottom: none;
         `}
 `;
 
-const Col = (props: React.ComponentProps<typeof StyledCol>) => (
-    <StyledCol {...ANIMATION.EXPAND} {...props} />
-);
+const Col = (props: React.ComponentProps<typeof StyledCol>) => {
+    const newProps = { ...props };
+    delete newProps.isLastRow;
+
+    return <StyledCol {...ANIMATION.EXPAND} {...newProps} $isLastRow={props.isLastRow} />;
+};
 
 const CoinNameWrapper = styled(Col)`
     overflow: hidden;
