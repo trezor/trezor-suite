@@ -1,6 +1,16 @@
 export const TRANSLATION_PSEUDOLANGUAGE = 'lol' as const;
 
-const LANGUAGES = {
+export type LocaleInfo = {
+    name: string;
+    en: string;
+    complete?: boolean;
+};
+
+// https://stackoverflow.com/questions/54598322/how-to-make-typescript-infer-the-keys-of-an-object-but-define-type-of-its-value
+const prepareTypedLanguagesObject = <T>(languageObject: { [K in keyof T]: LocaleInfo }) =>
+    languageObject;
+
+export const LANGUAGES = prepareTypedLanguagesObject({
     en: { name: 'English', en: 'English', complete: true },
     es: { name: 'Español', en: 'Spanish', complete: true },
     af: { name: 'Afrikaans', en: 'Afrikaans' },
@@ -34,14 +44,6 @@ const LANGUAGES = {
     vi: { name: 'Tiếng Việt', en: 'Vietnamese' },
     'zh-CN': { name: '中文(简体)', en: 'Chinese Simplified' },
     [TRANSLATION_PSEUDOLANGUAGE]: { name: 'TRANSLATION', en: 'TRANSLATION' },
-} as const;
+} as const);
 
 export type Locale = keyof typeof LANGUAGES;
-
-export type LocaleInfo = {
-    name: string;
-    en: string;
-    complete?: boolean;
-};
-
-export default LANGUAGES as { [code in Locale]: LocaleInfo };

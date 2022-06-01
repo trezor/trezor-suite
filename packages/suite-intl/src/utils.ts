@@ -1,8 +1,9 @@
-import LANGUAGES, { Locale, TRANSLATION_PSEUDOLANGUAGE } from '@suite-config/languages';
-import { getPlatformLanguages } from '@suite-utils/env';
+import { LANGUAGES, Locale, TRANSLATION_PSEUDOLANGUAGE } from './languages';
 
 const TRANSLATION_MODE_FLAG = 'translation_mode';
 const DEFAULT_LOCALE = 'en';
+
+export const getPlatformLanguages = () => window.navigator.languages;
 
 export const isTranslationMode = () => localStorage.getItem(TRANSLATION_MODE_FLAG) === 'true';
 

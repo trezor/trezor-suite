@@ -12,6 +12,7 @@
         "build": "run-s copy-files build:app"
     },
     "dependencies": {
+        "@suite/intl": "*",
         "@trezor/components": "1.0.0",
         "@trezor/suite": "1.0.0",
         "@trezor/utils": "*",

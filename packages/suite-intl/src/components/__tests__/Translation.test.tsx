@@ -1,6 +1,19 @@
 import React from 'react';
-import createComponentWithIntl from '../../../support/tests/IntlHelper';
+
+import renderer from 'react-test-renderer';
+import { IntlProvider } from 'react-intl';
 import { Translation } from '../Translation';
+import { Locale } from '../../languages';
+
+const createComponentWithIntl = (children: React.ReactChild, props?: { locale: Locale }) => {
+    const { locale = 'en' } = props || {};
+
+    return renderer.create(
+        <IntlProvider {...props} locale={locale}>
+            {children}
+        </IntlProvider>,
+    );
+};
 
 const messages = {
     TR_HELLO: {

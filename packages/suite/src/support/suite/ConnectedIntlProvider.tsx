@@ -1,54 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { IntlProvider } from 'react-intl';
-import enMessages from '@trezor/suite-data/files/translations/en.json';
+import React from 'react';
 import { useSelector } from '@suite-hooks/useSelector';
 import { isDev } from '@suite-utils/build';
-import type { Locale } from '@suite-config/languages';
+import { IntlProvider } from '@suite/intl';
 
-const useFetchMessages = (locale: Locale) => {
-    const [messages, setMessages] = useState<{ [key: string]: any }>({});
-
-    useEffect(() => {
-        let active = true;
-        const fetchMessages = async () => {
-            const messages =
-                locale === 'en'
-                    ? {}
-                    : await import(`@trezor/suite-data/files/translations/${locale}.json`)
-                          .then(res => res.default)
-                          .catch(() => ({}));
-            if (!active) return;
-            setMessages({ ...enMessages, ...messages });
-        };
-        fetchMessages();
-        return () => {
-            active = false;
-        };
-    }, [locale]);
-
-    return messages;
+type ConnectedIntlProviderProps = {
+    children: React.ReactNode;
 };
 
-const ConnectedIntlProvider: React.FC = ({ children }) => {
+export const ConnectedIntlProvider = ({ children }: ConnectedIntlProviderProps) => {
     const locale = useSelector(state => state.suite.settings.language);
-    const messages = useFetchMessages(locale);
+
     return (
-        <IntlProvider
-            locale={locale}
-            messages={messages}
-            onError={err => {
-                if (isDev) {
-                    // ignore, this expected
-                    if (err.message.includes('MISSING_TRANSLATION')) {
-                        return;
-                    }
-                    console.error(err);
-                }
-            }}
-        >
+        <IntlProvider locale={locale} isDev={isDev}>
             {children}
         </IntlProvider>
     );
 };
-
-export default ConnectedIntlProvider;

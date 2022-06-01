@@ -11,7 +11,7 @@ import { SENTRY_CONFIG } from '@suite-config';
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
-import IntlProvider from '@suite-support/ConnectedIntlProvider';
+import { ConnectedIntlProvider } from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
 import Protocol from '@suite-support/Protocol';
 import Autodetect from '@suite-support/Autodetect';
@@ -51,13 +51,13 @@ const Main = () => {
                                 <Protocol />
                                 <OnlineStatus />
                                 <RouterHandler />
-                                <IntlProvider>
+                                <ConnectedIntlProvider>
                                     <Metadata />
                                     <ToastContainer />
                                     <Preloader>
                                         <AppRouter />
                                     </Preloader>
-                                </IntlProvider>
+                                </ConnectedIntlProvider>
                             </ErrorBoundary>
                         </ModalContextProvider>
                     </RouterProvider>

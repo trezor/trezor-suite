@@ -10,8 +10,8 @@ import {
     getOsVersion,
     getWindowWidth,
     getWindowHeight,
-    getPlatformLanguages,
 } from '@suite-utils/env';
+import { getPlatformLanguages } from '@suite/intl';
 import { getCustomBackends } from '@suite-utils/backend';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 

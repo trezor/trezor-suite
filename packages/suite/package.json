@@ -20,6 +20,7 @@
         "@sentry/integrations": "6.17.2",
         "@sentry/minimal": "6.17.2",
         "@suite/messages": "*",
+        "@suite/intl": "*",
         "@hookform/resolvers": "1.3.5",
         "@trezor/suite-analytics": "*",
         "@trezor/components": "1.0.0",

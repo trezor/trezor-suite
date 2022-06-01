@@ -5,9 +5,8 @@ import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock } from '@suite-types';
-import type { Locale } from '@suite-config/languages';
 import { isWeb, getWindowWidth } from '@suite-utils/env';
-import { ensureLocale } from '@suite-utils/l10n';
+import { ensureLocale, Locale } from '@suite/intl';
 import { getNumberFromPixelString } from '@trezor/utils';
 
 export interface DebugModeOptions {

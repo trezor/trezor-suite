@@ -37,8 +37,13 @@ import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
 import type { Route } from '@suite-constants/routes';
 
-// reexport
-export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
+// reexports
+import type { ExtendedMessageDescriptor as IntlPackageExtendedMessageDescriptor } from '@suite/intl';
+/**
+ * @deprecated Import `ExtendedMessageDescriptor` from `@suite/intl` instead.
+ */
+export type ExtendedMessageDescriptor = IntlPackageExtendedMessageDescriptor;
+
 export type { AppState } from '@suite/reducers/store';
 export type { SuiteThemeColors } from '@trezor/components';
 export type { PrerequisiteType } from '@suite-utils/prerequisites';

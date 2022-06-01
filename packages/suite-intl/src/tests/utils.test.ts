@@ -1,6 +1,6 @@
-import * as utils from '../l10n';
+import * as utils from '../utils';
 
-describe('utils/suite/l10n', () => {
+describe('intl utils', () => {
     describe('getOsLocale', () => {
         let languagesGetter: any;
         beforeEach(() => {
