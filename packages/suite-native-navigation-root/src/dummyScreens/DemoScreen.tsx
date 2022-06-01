@@ -83,15 +83,12 @@ export const DemoScreen = () => {
                             onPress={() => console.log('press icon button')}
                         />
                         <IconButton
-                            size="medium"
-                            colorScheme="primary"
                             iconName="check"
                             isRounded
                             onPress={() => console.log('press icon button')}
                         />
                         <IconButton
                             size="large"
-                            colorScheme="primary"
                             iconName="check"
                             isRounded
                             onPress={() => console.log('press icon button')}
@@ -116,7 +113,8 @@ export const DemoScreen = () => {
                     <Box marginTop="large">
                         {isTipToastVisible && (
                             <TipToast
-                                content="Tip toast"
+                                title="TIP"
+                                description="Tip toast"
                                 onClose={() => setIsTipToastVisible(false)}
                             />
                         )}

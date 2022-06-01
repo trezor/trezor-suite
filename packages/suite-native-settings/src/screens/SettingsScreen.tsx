@@ -19,14 +19,14 @@ export const SettingsScreen = ({
     return (
         <View style={[applyStyle(settingsScreenStyle)]}>
             <Text>Settings content</Text>
-            <Box marginVertical="md">
+            <Box marginVertical="medium">
                 <Button
                     onPress={() =>
                         navigation.navigate(SettingsStackRoutes.SettingsDetail, {
                             message: 'this is detail',
                         })
                     }
-                    size="md"
+                    size="medium"
                     colorScheme="primary"
                 >
                     Show detail

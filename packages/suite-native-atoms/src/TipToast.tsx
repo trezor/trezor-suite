@@ -7,8 +7,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from './Box';
 import { Text } from './Text';
 
-type Props = {
-    content: string;
+type TipToastProps = {
+    title: string;
+    description: string;
     onClose: () => void;
 };
 
@@ -21,7 +22,7 @@ const tipToastStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.small,
 }));
 
-const iconWrapperStyle = prepareNativeStyle(utils => ({
+const closeButtonStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: utils.borders.radii.small,
@@ -30,20 +31,20 @@ const iconWrapperStyle = prepareNativeStyle(utils => ({
     height: 40,
 }));
 
-export const TipToast = ({ content, onClose }: Props) => {
+export const TipToast = ({ title, description, onClose }: TipToastProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Box style={applyStyle(tipToastStyle)}>
             <Box>
                 <Text color="gray400" variant="hint">
-                    TIP
+                    {title}
                 </Text>
                 <Text color="white" variant="hint">
-                    {content}
+                    {description}
                 </Text>
             </Box>
-            <TouchableOpacity onPress={onClose} style={applyStyle(iconWrapperStyle)}>
+            <TouchableOpacity onPress={onClose} style={applyStyle(closeButtonStyle)}>
                 <Icon name="close" color="white" />
             </TouchableOpacity>
         </Box>
