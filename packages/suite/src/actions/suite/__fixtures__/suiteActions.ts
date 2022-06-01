@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { DEVICE, TRANSPORT } from '@trezor/connect';
-import { SUITE, STORAGE, NOTIFICATION, MODAL } from '@suite-actions/constants';
+import { SUITE, NOTIFICATION, MODAL } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { TorStatus } from '@suite-types';
 import * as suiteActions from '../suiteActions';
@@ -52,34 +52,6 @@ const reducerActions = [
             {
                 loading: true,
                 loaded: false,
-            },
-        ],
-    },
-    {
-        description: `STORAGE.LOADED`,
-        actions: [
-            {
-                type: STORAGE.LOADED,
-                payload: {
-                    suite: {
-                        flags: {
-                            initialRun: false,
-                        },
-                        settings: {
-                            language: 'cs',
-                        },
-                    },
-                },
-            },
-        ],
-        result: [
-            {
-                flags: {
-                    initialRun: false,
-                },
-                settings: {
-                    language: 'cs',
-                },
             },
         ],
     },
