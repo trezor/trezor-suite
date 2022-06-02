@@ -41,7 +41,6 @@ const StyledBackdrop = styled(Backdrop)`
 `;
 
 const GuideWrapper = styled.div`
-    position: relative; /* non-static position enables covering the GuideButton by the GuidePanel */
     max-width: 100vw;
     height: 100%;
     z-index: ${variables.Z_INDEX.GUIDE};
