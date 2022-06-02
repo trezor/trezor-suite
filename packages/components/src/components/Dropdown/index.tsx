@@ -68,7 +68,7 @@ const Menu = styled.ul<MenuProps>`
     padding: ${props => props.topPadding}px ${props => props.horizontalPadding}px
         ${props => props.bottomPadding}px;
     border-radius: 10px;
-    z-index: ${Z_INDEX.NAVIGATION_BAR};
+    z-index: ${Z_INDEX.TOOLTIP};
 
     ${props =>
         props.coords &&
