@@ -1149,12 +1149,7 @@
             "coin_label": "Komodo",
             "coin_name": "Komodo",
             "coin_shortcut": "KMD",
-            "consensus_branch_id": {
-                "1": 0,
-                "2": 0,
-                "3": 1537743641,
-                "4": 1991772603
-            },
+            "consensus_branch_id": 1991772603,
             "curve_name": "secp256k1",
             "decimals": 8,
             "decred": false,
@@ -1203,12 +1198,7 @@
             "coin_label": "Koto",
             "coin_name": "Koto",
             "coin_shortcut": "KOTO",
-            "consensus_branch_id": {
-                "1": 0,
-                "2": 0,
-                "3": 1537743641,
-                "4": 733220448
-            },
+            "consensus_branch_id": 733220448,
             "curve_name": "secp256k1",
             "decimals": 8,
             "decred": false,
@@ -2200,13 +2190,7 @@
             "coin_label": "Zcash",
             "coin_name": "Zcash",
             "coin_shortcut": "ZEC",
-            "consensus_branch_id": {
-                "1": 0,
-                "2": 0,
-                "3": 1537743641,
-                "4": 3268858036,
-                "5": 3268858036
-            },
+            "consensus_branch_id": 3268858036,
             "curve_name": "secp256k1",
             "decimals": 8,
             "decred": false,
@@ -2252,13 +2236,7 @@
             "coin_label": "Zcash Testnet",
             "coin_name": "Zcash Testnet",
             "coin_shortcut": "TAZ",
-            "consensus_branch_id": {
-                "1": 0,
-                "2": 0,
-                "3": 1537743641,
-                "4": 3268858036,
-                "5": 3268858036
-            },
+            "consensus_branch_id": 3268858036,
             "curve_name": "secp256k1",
             "decimals": 8,
             "decred": false,

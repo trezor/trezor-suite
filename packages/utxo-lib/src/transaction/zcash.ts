@@ -303,9 +303,6 @@ export function fromBuffer(buffer: Buffer, options: TransactionOptions) {
 
     txSpecific.overwintered = tx.version >>> 31; // Must be 1 for version 3 and up
     tx.version &= 0x07fffffff; // 3 for overwinter
-    if (typeof tx.network.consensusBranchId?.[tx.version] !== 'number') {
-        throw new Error('Unsupported Zcash transaction');
-    }
 
     if (tx.version >= ZCASH_OVERWINTER_VERSION) {
         txSpecific.versionGroupId = bufferReader.readUInt32();

@@ -15,7 +15,7 @@ export interface Network {
     pubKeyHash: number;
     scriptHash: number;
     wif: number;
-    consensusBranchId?: { [version: number]: number };
+    consensusBranchId?: number;
     forkId?: number;
 }
 

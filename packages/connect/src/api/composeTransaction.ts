@@ -360,7 +360,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             options.overwintered = true;
             options.version = 5;
             options.version_group_id = 0x26a7270a;
-            options.branch_id = 0xc2d6d0b4;
+            options.branch_id = coinInfo.network.consensusBranchId;
         }
         if (coinInfo.hasTimestamp) {
             // peercoin, capricoin
