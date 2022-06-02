@@ -2279,9 +2279,9 @@ export default defineMessages({
             'Litecoin changed the format of addresses. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
         id: 'TR_LTC_ADDRESS_INFO',
     },
-    TR_MAXIMUM_LENGTH_IS_9_DIGITS: {
-        defaultMessage: "Enter up to 9 digits on your Trezor's keypad.",
-        id: 'TR_MAXIMUM_LENGTH_IS_9_DIGITS',
+    TR_MAXIMUM_PIN_LENGTH: {
+        defaultMessage: 'Enter up to 50 digits.',
+        id: 'TR_MAXIMUM_PIN_LENGTH',
     },
     TR_MESSAGE: {
         defaultMessage: 'Message',

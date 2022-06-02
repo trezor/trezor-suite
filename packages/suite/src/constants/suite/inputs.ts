@@ -1,5 +1,5 @@
 export enum MAX_LENGTH {
-    PIN = 9,
+    PIN = 50,
     PASSPHRASE = 50,
 
     BTC_MESSAGE = 255,
