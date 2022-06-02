@@ -83,7 +83,7 @@ export const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
                               },
                         {
                             key: 'maxlength',
-                            title: <Translation id="TR_MAXIMUM_LENGTH_IS_9_DIGITS" />,
+                            title: <Translation id="TR_MAXIMUM_PIN_LENGTH" />,
                             icon: 'ASTERISK',
                             iconSize: 20,
                         },

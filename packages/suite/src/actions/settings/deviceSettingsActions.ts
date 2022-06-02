@@ -48,6 +48,15 @@ export const changePin =
             dispatch(addToast({ type: 'pin-changed' }));
         } else if (result.payload.code === 'Failure_PinMismatch') {
             dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
+        } else if (result.payload.error.includes('string overflow')) {
+            // this is a workaround for FW < 1.10.0
+            // translate generic error from the device if the entered PIN is longer than 9 digits
+            dispatch(
+                addToast({
+                    type: 'error',
+                    error: 'Please upgrade your firmware to enable extended PIN format.',
+                }),
+            );
         } else {
             dispatch(addToast({ type: 'error', error: result.payload.error }));
         }
