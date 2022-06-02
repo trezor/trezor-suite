@@ -12,7 +12,7 @@ export const ZEC_SIGN_ENHANCEMENT = {
     overwintered: true,
     version: 4,
     versionGroupId: 0x892f2085,
-    branchId: 0xe9ff75a6,
+    branchId: 0xc2d6d0b4,
 };
 
 export const ERC20_TRANSFER = 'a9059cbb'; // 4 bytes function signature of solidity erc20 `transfer(address,uint256)`

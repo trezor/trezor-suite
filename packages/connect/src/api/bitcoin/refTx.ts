@@ -167,6 +167,11 @@ export const transformReferencedTransactions = (
 ): RefTransaction[] =>
     txs.flatMap(raw => {
         if (coinInfo.type !== 'bitcoin' || raw.type !== 'blockbook') return [];
+        if (coinInfo.network.consensusBranchId && raw.tx.version! > 4) {
+            // TODO: implement v5 https://github.com/trezor/trezor-suite/pull/5453
+            throw new Error(`Unsupported input version v${raw.tx.version}`);
+        }
+
         const { hex } = raw.tx;
         const tx = BitcoinJsTransaction.fromHex(hex, { network: coinInfo.network });
 

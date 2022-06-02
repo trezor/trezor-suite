@@ -161,7 +161,7 @@ export const zcash: Network = {
         1: 0x00,
         2: 0x00,
         3: 0x5ba81b19,
-        4: 0xf5b9230b,
+        4: 0xc2d6d0b4,
     },
 };
 
@@ -179,7 +179,7 @@ export const zcashTest: Network = {
         1: 0x00,
         2: 0x00,
         3: 0x5ba81b19,
-        4: 0xf5b9230b,
+        4: 0xc2d6d0b4,
     },
 };
 
