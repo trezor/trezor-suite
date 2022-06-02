@@ -67,7 +67,7 @@ export const SelectItem = ({
             <FlagIcon name={iconName} />
             <Box style={applyStyle(underlineSectionStyle, { isLastChild, isSelected })}>
                 <Text numberOfLines={1}>{label}</Text>
-                <Radio value={String(value)} onPress={onSelect} isChecked={isSelected} />
+                <Radio value={value} onPress={onSelect} isChecked={isSelected} />
             </Box>
         </TouchableOpacity>
     );

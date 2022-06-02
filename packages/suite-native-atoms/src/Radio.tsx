@@ -3,10 +3,10 @@ import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 export interface RadioProps extends Omit<TouchableOpacityProps, 'style' | 'onPress'> {
-    value: string;
+    value: string | number;
     isChecked?: boolean;
     isDisabled?: boolean;
-    onPress: (value: string) => void;
+    onPress: (value: string | number) => void;
     style?: NativeStyleObject;
 }
 

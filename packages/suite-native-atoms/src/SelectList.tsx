@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Box } from './Box';
-import { Icon } from './Icon/Icon';
+import { Icon } from '@trezor/icons';
 
 type Props = {
     onClose: () => void;
@@ -11,7 +11,7 @@ type Props = {
 export const SelectList = ({ onClose, children }: Props) => (
     <Box>
         <TouchableOpacity onPress={onClose}>
-            <Icon type="closeCircle" />
+            <Icon name="closeCircle" />
         </TouchableOpacity>
         {children}
     </Box>

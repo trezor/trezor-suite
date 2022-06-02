@@ -48,11 +48,6 @@ const SELECT_ITEMS: SelectItem[] = [
     { label: 'Czech Republic', value: 'cz', iconName: 'cz' },
     { label: 'Slovak Republic', value: 'sk', iconName: 'cz' },
     { label: 'Armenian Republic of Kongo', value: 'arm', iconName: 'cz' },
-    {
-        label: 'The United Kingdom of Great Britain and Northern Ireland',
-        value: 'uk',
-        iconName: 'cz',
-    },
 ];
 
 export const DemoScreen = () => {
@@ -83,9 +78,6 @@ export const DemoScreen = () => {
                 style={applyStyle(backgroundStyle, { isDarkMode })}
             >
                 <View>
-                    <Box marginBottom="md">
-                        <Select items={SELECT_ITEMS} label="Open Select" />
-                    </Box>
                     <SearchInput
                         value={inputText}
                         onChange={setInputText}
@@ -109,6 +101,9 @@ export const DemoScreen = () => {
                             isRounded
                             onPress={() => console.log('press icon button')}
                         />
+                    </Box>
+                    <Box marginTop="medium">
+                        <Select items={SELECT_ITEMS} label="Open Select" />
                     </Box>
                     <Box marginTop="large">
                         <FlagIcon name="cz" />

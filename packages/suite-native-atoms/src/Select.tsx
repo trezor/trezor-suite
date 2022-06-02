@@ -44,40 +44,44 @@ export const Select = ({ items, label }: SelectProps) => {
         setIsOpen(false);
     };
 
-    const getLabel = (): string => {
-        if (!selectedItem) return label;
-        return items.find(item => item.value === selectedItem)?.label ?? label;
-    };
+    const getLabel = (): string => items.find(item => item.value === selectedItem)?.label ?? label;
 
     return (
-        <Box>
-            <Box>
-                {isOpen && (
-                    <BottomModal
-                        isVisible={isOpen}
-                        onVisibilityChange={setIsOpen}
-                        title="Typography Demo"
-                        hasBackArrow
-                        onBackArrowClick={() => setIsOpen(false)}
-                    >
-                        {items.map((item, index) => (
-                            <SelectItem
-                                key={item.value}
-                                label={item.label}
-                                value={item.value}
-                                iconName={item.iconName}
-                                isSelected={item.value === selectedItem}
-                                isLastChild={index === items.length - 1}
-                                onSelect={() => handleSelectItem(item.value)}
-                            />
-                        ))}
-                    </BottomModal>
-                )}
-            </Box>
+        <>
+            {isOpen && (
+                <BottomModal
+                    isVisible={isOpen}
+                    onVisibilityChange={setIsOpen}
+                    title="Typography Demo"
+                    hasBackArrow
+                    onBackArrowClick={() => setIsOpen(false)}
+                >
+                    {items.map(({ value, label, iconName }, index) => (
+                        <SelectItem
+                            key={value}
+                            label={label}
+                            value={value}
+                            iconName={iconName}
+                            isSelected={value === selectedItem}
+                            isLastChild={index === items.length - 1}
+                            onSelect={() => handleSelectItem(value)}
+                        />
+                    ))}
+                </BottomModal>
+            )}
             <TouchableOpacity onPress={() => setIsOpen(true)} style={applyStyle(selectStyle)}>
-                <Text numberOfLines={1}>{getLabel()}</Text>
-                <Icon name="chevronDown" />
+                <Box>
+                    {!!selectedItem && (
+                        <Text variant="label" color="gray600">
+                            {label}
+                        </Text>
+                    )}
+                    <Text color="gray700" numberOfLines={1}>
+                        {getLabel()}
+                    </Text>
+                </Box>
+                <Icon size="medium" color="gray600" name="chevronDown" />
             </TouchableOpacity>
-        </Box>
+        </>
     );
 };
