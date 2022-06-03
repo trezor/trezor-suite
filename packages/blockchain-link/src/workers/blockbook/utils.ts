@@ -25,6 +25,9 @@ export const transformServerInfo = (payload: ServerInfo) => ({
     decimals: payload.decimals,
     blockHeight: payload.bestHeight,
     blockHash: payload.bestHash,
+    consensusBranchId: payload.backend?.consensus
+        ? parseInt(payload.backend.consensus.chaintip, 16) // parse from hex string
+        : undefined,
 });
 
 export const filterTokenTransfers = (
