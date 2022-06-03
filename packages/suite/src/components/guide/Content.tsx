@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
     height: 100%;
-    padding: 15px 22px 0;
+    padding: 15px 21px 0;
 `;
 
 type ContentProps = {
