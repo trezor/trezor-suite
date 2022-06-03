@@ -41,3 +41,7 @@ Best way how to debug app is download [Flipper](https://fbflipper.com).
 
 1. Place updated fonts to `packages/theme/fonts`
 2. Run `yarn react-native link`
+
+## Fastlane and CI
+
+
