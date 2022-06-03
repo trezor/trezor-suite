@@ -53,7 +53,7 @@ describe('data/DataManager', () => {
 
     test('getHostLabel', () => {
         expect(DataManager.getHostLabel('webextension@metamask.io')).toEqual({
-            icon: './data/icons/metamask.svg',
+            icon: '',
             label: 'MetaMask',
             origin: 'webextension@metamask.io',
         });
