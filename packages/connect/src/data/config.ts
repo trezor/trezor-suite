@@ -24,26 +24,26 @@ export const config = {
         {
             origin: 'imloifkgjagghnncjkhggdhalmcnfklk',
             label: 'Trezor Password Manager (Develop)',
-            icon: './data/icons/tpm.jpg',
+            icon: '',
         },
-        { origin: 'niebkpllfhmpfbffbfifagfgoamhpflf', label: 'Trezor Password Manager' },
-        { origin: 'trezor-connect@trezor.io', label: 'Trezor Connect FF Extension' },
+        { origin: 'niebkpllfhmpfbffbfifagfgoamhpflf', label: 'Trezor Password Manager', icon: '' },
+        { origin: 'trezor-connect@trezor.io', label: 'Trezor Connect FF Extension', icon: '' },
         {
             origin: 'efbfhenfhihgdcmnfdkhaphjdnopihlf',
             label: 'Trezor Connect Chrome Extension',
-            icon: './data/icons/metamask.svg',
+            icon: '',
         },
         {
             origin: 'mnpfhpndmjholfdlhpkjfmjkgppmodaf',
             label: 'MetaMask',
-            icon: './data/icons/metamask.svg',
+            icon: '',
         },
         {
             origin: 'webextension@metamask.io',
             label: 'MetaMask',
-            icon: './data/icons/metamask.svg',
+            icon: '',
         },
-        { origin: 'file://', label: ' ' },
+        { origin: 'file://', label: ' ', icon: '' },
     ],
     onionDomains: {
         'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
