@@ -10,6 +10,34 @@ export default {
             },
         },
         {
+            description: 'Zcash consensus branch id',
+            serverFixtures: [
+                {
+                    method: 'getInfo',
+                    response: {
+                        data: {
+                            name: 'Zcash',
+                            shortcut: 'zec',
+                            decimals: 8,
+                            bestHeight: 1,
+                            backend: {
+                                consensus: {
+                                    chaintip: 'c2d6d0b4',
+                                },
+                            },
+                        },
+                    },
+                },
+            ],
+            response: {
+                blockHeight: 1,
+                decimals: 8,
+                name: 'Zcash',
+                shortcut: 'zec',
+                consensusBranchId: 3268858036,
+            },
+        },
+        {
             description: 'Error',
             serverFixtures: [
                 {

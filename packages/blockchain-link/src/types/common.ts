@@ -26,6 +26,7 @@ export interface ServerInfo {
     decimals: number;
     blockHeight: number;
     blockHash: string;
+    consensusBranchId?: number; // zcash current branch id
 }
 
 /* Transaction */

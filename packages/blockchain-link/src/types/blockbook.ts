@@ -21,6 +21,14 @@ export interface ServerInfo {
     shortcut: string;
     testnet: boolean;
     version: string;
+    backend?: {
+        subversion: string;
+        version: string;
+        consensus?: {
+            chaintip: string;
+            nextblock: string;
+        };
+    };
 }
 
 export interface BlockHash {
