@@ -4,6 +4,7 @@ module.exports = {
             tsconfig: 'tsconfig.lib.json',
         },
     },
+    testEnvironment: 'node',
     testMatch: ['**/*.test.ts'],
     coverageDirectory: './coverage/',
     collectCoverage: true,
