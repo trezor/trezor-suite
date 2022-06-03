@@ -11,7 +11,7 @@ import { HeaderBreadcrumb, ContentScrolledContext } from '@guide-components';
 const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
     display: flex;
     align-items: center;
-    padding: 12px 22px;
+    padding: 12px 21px;
     position: sticky;
     top: 0;
     background-color: inherit;
