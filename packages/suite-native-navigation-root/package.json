@@ -15,7 +15,7 @@
         "@react-navigation/native": "^6.0.10",
         "@suite-native/settings": "*",
         "@suite-native/navigation": "*",
-        "@trezor/atoms": "*",
+        "@suite-native/atoms": "*",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "react": "^17.0.2",

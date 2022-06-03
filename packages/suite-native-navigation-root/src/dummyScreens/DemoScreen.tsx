@@ -16,7 +16,7 @@ import {
     ListItem,
     SelectableListItem,
     BottomModal,
-} from '@trezor/atoms';
+} from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
 

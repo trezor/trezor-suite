@@ -16,7 +16,7 @@
     "dependencies": {
         "@react-navigation/native": "^6.0.10",
         "@shopify/react-native-skia": "0.1.123",
-        "@trezor/atoms": "*",
+        "@suite-native/atoms": "*",
         "@suite-native/navigation-root": "*",
         "@trezor/connect": "9.0.0-beta.1",
         "@trezor/styles": "*",

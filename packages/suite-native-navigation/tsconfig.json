@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../atoms" },
+        { "path": "../suite-native-atoms" },
         { "path": "../icons" },
         { "path": "../styles" }
     ]

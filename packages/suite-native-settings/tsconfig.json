@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../suite-native-navigation" },
-        { "path": "../atoms" },
+        { "path": "../suite-native-atoms" },
         { "path": "../styles" }
     ]
 }
