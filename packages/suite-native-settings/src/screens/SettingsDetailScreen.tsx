@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text } from '@trezor/atoms';
+import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SettingsStackRoutes, SettingsStackParamList } from '../navigation/routes';
 import { StackProps } from '@suite-native/navigation';

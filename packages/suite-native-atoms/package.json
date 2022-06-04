@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/atoms",
+    "name": "@suite-native/atoms",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
