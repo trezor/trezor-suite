@@ -740,6 +740,7 @@
   "TR_TOR_DISABLE": "Zakázať Tor",
   "TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION": "Teraz môžete bezpečne vypnúť Tor.",
   "TR_TOR_DISABLE_ONIONS_ONLY_RESOLVED": "Zakázať Tor",
+  "TR_TOR_PARAM_TITLE": "Adresa a port Tor",
   "TR_TOR_TITLE": "Tor",
   "TR_TOTAL": "Celkom",
   "TR_TOTAL_INPUT": "Celkový vstup",

@@ -6626,11 +6626,11 @@ export default defineMessages({
     },
     TR_STAKE_REGISTERED: {
         id: 'TR_STAKE_REGISTERED',
-        defaultMessage: 'Stake address registration',
+        defaultMessage: 'Registration of a stake address',
     },
     TR_STAKE_DEREGISTERED: {
         id: 'TR_STAKE_DEREGISTERED',
-        defaultMessage: 'Stake address deregistration',
+        defaultMessage: 'Deregistration of a stake address',
     },
     TR_ERROR_CARDANO_DELEGATE: {
         id: 'TR_ERROR_CARDANO_DELEGATE',
