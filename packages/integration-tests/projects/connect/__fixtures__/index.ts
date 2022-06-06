@@ -48,6 +48,7 @@ import signTransactionPaymentRequest from './signTransactionPaymentRequest';
 import signTransactionPeercoin from './signTransactionPeercoin';
 import signTransactionReplace from './signTransactionReplace';
 import signTransactionSegwit from './signTransactionSegwit';
+import signTransactionTaproot from './signTransactionTaproot';
 import signTransactionZcash from './signTransactionZcash';
 import stellarGetAddress from './stellarGetAddress';
 import stellarSignTransaction from './stellarSignTransaction';
@@ -137,6 +138,7 @@ let fixtures = [
     signTransactionPeercoin,
     signTransactionReplace,
     signTransactionSegwit,
+    signTransactionTaproot,
     signTransactionZcash,
     stellarGetAddress,
     stellarSignTransaction,

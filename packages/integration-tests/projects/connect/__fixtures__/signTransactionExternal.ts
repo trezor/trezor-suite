@@ -270,7 +270,7 @@ export default {
                         script_type: 'PAYTOTAPROOT',
                     },
                 ],
-                refTxs: TX_CACHE(['1010b2']),
+                // refTxs: TX_CACHE([]), // Taproot inputs doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
@@ -382,7 +382,7 @@ export default {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['afde2d', '4012d9']),
+                // refTxs: TX_CACHE([]), // Taproot inputs doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
