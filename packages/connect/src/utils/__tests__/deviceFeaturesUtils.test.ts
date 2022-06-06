@@ -131,6 +131,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 xvg: 'update-required',
                 zcr: 'update-required',
                 replaceTransaction: 'update-required',
+                amountUnit: 'update-required',
                 decreaseOutput: 'update-required',
                 eip1559: 'update-required',
                 'eip712-domain-only': 'update-required',
@@ -143,6 +144,7 @@ describe('utils/deviceFeaturesUtils', () => {
             // @ts-expect-error incomplete features
             expect(getUnavailableCapabilities(feat2, coins)).toEqual({
                 replaceTransaction: 'update-required',
+                amountUnit: 'update-required',
                 decreaseOutput: 'update-required',
                 eip1559: 'update-required',
                 'eip712-domain-only': 'update-required',

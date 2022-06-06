@@ -156,7 +156,7 @@ export const config = {
             ],
         },
         {
-            capabilities: ['replaceTransaction'],
+            capabilities: ['replaceTransaction', 'amountUnit'],
             min: ['1.9.4', '2.3.5'],
             comment: ['new sign tx process since 1.9.4/2.3.5'],
         },
