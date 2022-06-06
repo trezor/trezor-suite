@@ -1,7 +1,6 @@
 import { join } from 'path';
 import * as fs from 'fs-extra';
 
-import { resolveStaticPath } from '@trezor/utils';
 import { GITBOOK_ASSETS_DIR_PREFIX } from './constants';
 
 /**
@@ -87,7 +86,7 @@ export class Parser {
             // which creates unnecessary backslash which is then converted to slash in browser and breaks the image url
             ?.replace(/\\/g, '');
 
-        return image ? resolveStaticPath(`/guide/${image}`) : undefined;
+        return image ? `/guide/${image}` : undefined;
     }
 
     /** Returns a title of given page. */
