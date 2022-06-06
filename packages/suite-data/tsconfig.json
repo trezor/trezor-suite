@@ -5,6 +5,5 @@
         "noImplicitAny": false,
         "outDir": "./libDev"
     },
-    "include": ["./src"],
-    "references": [{ "path": "../utils" }]
+    "include": ["./src"]
 }
