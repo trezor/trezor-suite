@@ -61,6 +61,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'decredStakingTicket', type: 'boolean' },
             { name: 'push', type: 'boolean' },
             { name: 'preauthorized', type: 'boolean' },
+            { name: 'amountUnit', type: ['number', 'string'] },
         ]);
 
         const coinInfo = getBitcoinNetwork(payload.coin);
@@ -108,6 +109,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 version_group_id: payload.versionGroupId,
                 branch_id: payload.branchId,
                 decred_staking_ticket: payload.decredStakingTicket,
+                amount_unit: payload.amountUnit,
             },
             coinInfo,
             push: typeof payload.push === 'boolean' ? payload.push : false,

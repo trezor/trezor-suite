@@ -31,6 +31,8 @@ const result = await TrezorConnect.signTransaction(params);
 -   `timestamp` - _optional_ `number` only for Capricoin, transaction timestamp,
 -   `branchId` - _optional_ `number`, only for Zcash, BRANCH_ID when overwintered is set
 -   `push` - _optional_ `boolean` Broadcast signed transaction to blockchain. Default is set to false
+-   `amountUnit` — _optional_ `PROTO.AmountUnit`
+    > show amounts in BTC, mBTC, uBTC, sat
 
 ### Example
 

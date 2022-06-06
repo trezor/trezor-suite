@@ -49,6 +49,7 @@ export interface TransactionOptions {
     timestamp?: number;
     branch_id?: number;
     decred_staking_ticket?: boolean;
+    amount_unit?: PROTO.AmountUnit;
 }
 
 export interface SignTransaction {
@@ -70,6 +71,7 @@ export interface SignTransaction {
     decredStakingTicket?: boolean;
     push?: boolean;
     preauthorized?: boolean;
+    amountUnit?: PROTO.AmountUnit;
 }
 
 export type SignedTransaction = {
