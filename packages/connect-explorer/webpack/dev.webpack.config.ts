@@ -21,7 +21,7 @@ const dev: webpack.Configuration = {
     },
     plugins: [
         new WebpackPluginServe({
-            port: 8088,
+            port: 8082,
             hmr: true,
             static: [
                 path.join(__dirname, '../build'),
