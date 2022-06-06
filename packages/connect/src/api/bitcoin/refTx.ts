@@ -17,6 +17,12 @@ import type { CoinInfo, AccountAddresses } from '../../types';
 import type { RefTransaction } from '../../types/api/signTransaction';
 import type { PROTO } from '../../constants';
 
+// Referenced transactions are not required if all internal inputs script_type === SPENDTAPROOT
+export const requireReferencedTransactions = (inputs: PROTO.TxInputType[]) => {
+    const inputTypes = ['SPENDTAPROOT', 'EXTERNAL'];
+    return !!inputs.find(input => !inputTypes.find(t => t === input.script_type));
+};
+
 // Get array of unique referenced transactions ids
 export const getReferencedTransactions = (inputs: PROTO.TxInputType[]) => {
     const result: string[] = [];
