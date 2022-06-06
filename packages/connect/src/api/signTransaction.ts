@@ -8,6 +8,7 @@ import { getLabel } from '../utils/pathUtils';
 import { PROTO, ERRORS } from '../constants';
 import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import {
+    requireReferencedTransactions,
     getReferencedTransactions,
     validateReferencedTransactions,
     transformReferencedTransactions,
@@ -16,6 +17,7 @@ import {
     validateTrezorInputs,
     validateTrezorOutputs,
     enhanceTrezorInputs,
+    enhanceSignTx,
     signTx,
     signTxLegacy,
     verifyTx,
@@ -114,10 +116,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             preauthorized: payload.preauthorized,
         };
 
-        if (coinInfo.hasTimestamp && !Object.prototype.hasOwnProperty.call(payload, 'timestamp')) {
-            const d = new Date();
-            this.params.options.timestamp = Math.round(d.getTime() / 1000);
-        }
+        this.params.options = enhanceSignTx(this.params.options, coinInfo);
     }
 
     async run() {
@@ -126,10 +125,14 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         let refTxs: RefTransaction[] = [];
         const useLegacySignProcess = device.unavailableCapabilities.replaceTransaction;
         if (!params.refTxs) {
-            // initialize backend
+            const requiredRefTxs = requireReferencedTransactions(
+                params.inputs,
+                params.options,
+                params.coinInfo,
+            );
             const refTxsIds = getReferencedTransactions(params.inputs);
-            if (refTxsIds.length > 0) {
-                // validate backend
+            if (requiredRefTxs && refTxsIds.length > 0) {
+                // validate and initialize backend
                 isBackendSupported(params.coinInfo);
                 const blockchain = await initBlockchain(params.coinInfo, this.postMessage);
                 const rawTxs = await blockchain.getTransactions(refTxsIds);

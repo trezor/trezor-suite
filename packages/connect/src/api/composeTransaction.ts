@@ -13,11 +13,13 @@ import { getBitcoinNetwork, fixCoinInfoNetwork } from '../data/coinInfo';
 import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import {
     TransactionComposer,
+    requireReferencedTransactions,
     getReferencedTransactions,
     transformReferencedTransactions,
     inputToTrezor,
     validateHDOutput,
     outputToTrezor,
+    enhanceSignTx,
     signTx,
     signTxLegacy,
     verifyTx,
@@ -354,26 +356,16 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         const { coinInfo } = this.params;
 
-        const options: TransactionOptions = {};
-        if (coinInfo.network.consensusBranchId) {
-            // zcash, TODO: get constants from blockbook: https://github.com/trezor/trezor-suite/issues/3749
-            options.overwintered = true;
-            options.version = 4;
-            options.version_group_id = 0x892f2085;
-            options.branch_id = 0xc2d6d0b4;
-        }
-        if (coinInfo.hasTimestamp) {
-            // peercoin, capricoin
-            options.timestamp = Math.round(new Date().getTime() / 1000);
-        }
+        const options: TransactionOptions = enhanceSignTx({}, coinInfo);
         const inputs = tx.transaction.inputs.map(inp =>
             inputToTrezor(inp, this.params.sequence || 0xffffffff),
         );
         const outputs = tx.transaction.outputs.sorted.map(out => outputToTrezor(out, coinInfo));
 
         let refTxs: RefTransaction[] = [];
+        const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
         const refTxsIds = getReferencedTransactions(inputs);
-        if (refTxsIds.length > 0) {
+        if (requiredRefTxs && refTxsIds.length > 0) {
             const blockchain = await initBlockchain(coinInfo, this.postMessage);
             const rawTxs = await blockchain.getTransactions(refTxsIds);
             refTxs = transformReferencedTransactions(rawTxs, coinInfo);
