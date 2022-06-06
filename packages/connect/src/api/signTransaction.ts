@@ -129,11 +129,14 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         let refTxs: RefTransaction[] = [];
         const useLegacySignProcess = device.unavailableCapabilities.replaceTransaction;
         if (!params.refTxs) {
-            // initialize backend
-            const requiredRefTxs = requireReferencedTransactions(params.inputs);
+            const requiredRefTxs = requireReferencedTransactions(
+                params.inputs,
+                params.options,
+                params.coinInfo,
+            );
             const refTxsIds = getReferencedTransactions(params.inputs);
             if (requiredRefTxs && refTxsIds.length > 0) {
-                // validate backend
+                // validate and initialize backend
                 isBackendSupported(params.coinInfo);
                 const blockchain = await initBlockchain(params.coinInfo, this.postMessage);
                 const rawTxs = await blockchain.getTransactions(refTxsIds);

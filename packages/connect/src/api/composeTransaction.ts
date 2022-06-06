@@ -373,7 +373,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const outputs = tx.transaction.outputs.sorted.map(out => outputToTrezor(out, coinInfo));
 
         let refTxs: RefTransaction[] = [];
-        const requiredRefTxs = requireReferencedTransactions(inputs);
+        const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
         const refTxsIds = getReferencedTransactions(inputs);
         if (requiredRefTxs && refTxsIds.length > 0) {
             const blockchain = await initBlockchain(coinInfo, this.postMessage);

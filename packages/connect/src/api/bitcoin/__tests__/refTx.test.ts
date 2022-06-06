@@ -28,6 +28,20 @@ describe('core/methods/tx/refTx', () => {
                 { script_type: 'EXTERNAL' },
             ] as any),
         ).toEqual(false);
+
+        // zcash v5
+        expect(
+            requireReferencedTransactions([], { version: 4 }, { shortcut: 'ZEC' } as any),
+        ).toEqual(true);
+        expect(
+            requireReferencedTransactions([], { version: 4 }, { shortcut: 'TAZ' } as any),
+        ).toEqual(true);
+        expect(
+            requireReferencedTransactions([], { version: 5 }, { shortcut: 'ZEC' } as any),
+        ).toEqual(false);
+        expect(
+            requireReferencedTransactions([], { version: 5 }, { shortcut: 'TAZ' } as any),
+        ).toEqual(false);
     });
 
     it('getReferencedTransactions', () => {

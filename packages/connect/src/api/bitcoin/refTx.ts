@@ -14,11 +14,20 @@ import type {
     TxOutput as BitcoinJsOutput,
 } from '@trezor/utxo-lib/lib/transaction/base';
 import type { CoinInfo, AccountAddresses } from '../../types';
-import type { RefTransaction } from '../../types/api/signTransaction';
+import type { RefTransaction, TransactionOptions } from '../../types/api/signTransaction';
 import type { PROTO } from '../../constants';
 
-// Referenced transactions are not required if all internal inputs script_type === SPENDTAPROOT
-export const requireReferencedTransactions = (inputs: PROTO.TxInputType[]) => {
+// Referenced transactions are not required if:
+// - all internal inputs script_type === SPENDTAPROOT
+// - zcash tx version is NU5 (or greater)
+export const requireReferencedTransactions = (
+    inputs: PROTO.TxInputType[],
+    options: TransactionOptions = {},
+    coinInfo?: CoinInfo,
+) => {
+    if (coinInfo?.shortcut === 'ZEC' || coinInfo?.shortcut === 'TAZ') {
+        return !(options.version && options.version >= 5);
+    }
     const inputTypes = ['SPENDTAPROOT', 'EXTERNAL'];
     return !!inputs.find(input => !inputTypes.find(t => t === input.script_type));
 };
@@ -173,11 +182,6 @@ export const transformReferencedTransactions = (
 ): RefTransaction[] =>
     txs.flatMap(raw => {
         if (coinInfo.type !== 'bitcoin' || raw.type !== 'blockbook') return [];
-        if (coinInfo.network.consensusBranchId && raw.tx.version! > 4) {
-            // TODO: implement v5 https://github.com/trezor/trezor-suite/pull/5453
-            throw new Error(`Unsupported input version v${raw.tx.version}`);
-        }
-
         const { hex } = raw.tx;
         const tx = BitcoinJsTransaction.fromHex(hex, { network: coinInfo.network });
 
