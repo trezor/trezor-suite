@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import { analytics, EventType } from '@trezor/suite-analytics';
+import { resolveStaticPath } from '@trezor/utils';
 
 import { Icon, variables, useTheme } from '@trezor/components';
 import { useActions, useSelector } from '@suite-hooks';
@@ -111,7 +112,7 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
     if (node.type === 'category') {
         return (
             <CategoryNodeButton data-test={`@guide/category${node.id}`} onClick={navigateToNode}>
-                {node.image && <Image src={node.image} />}
+                {node.image && <Image src={resolveStaticPath(node.image)} />}
                 {label}
             </CategoryNodeButton>
         );
