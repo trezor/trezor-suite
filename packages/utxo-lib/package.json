@@ -33,7 +33,7 @@
         "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
     },
     "dependencies": {
-        "@trezor/utils": "^1.0.0",
+        "@trezor/utils": "^9.0.1",
         "bchaddrjs": "^0.5.2",
         "bech32": "^2.0.0",
         "bip66": "^1.1.5",

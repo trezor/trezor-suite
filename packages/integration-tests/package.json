@@ -23,7 +23,7 @@
         "@playwright/test": "^1.19.1",
         "@trezor/suite-analytics": "*",
         "@trezor/transport": "1.1.2",
-        "@trezor/utils": "^1.0.0",
+        "@trezor/utils": "^9.0.1",
         "chrome-remote-interface": "^0.31.2",
         "cypress-image-snapshot": "^4.0.1",
         "cypress-wait-until": "^1.7.2",
