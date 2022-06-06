@@ -8,6 +8,7 @@ import { getLabel } from '../utils/pathUtils';
 import { PROTO, ERRORS } from '../constants';
 import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import {
+    requireReferencedTransactions,
     getReferencedTransactions,
     validateReferencedTransactions,
     transformReferencedTransactions,
@@ -129,8 +130,9 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const useLegacySignProcess = device.unavailableCapabilities.replaceTransaction;
         if (!params.refTxs) {
             // initialize backend
+            const requiredRefTxs = requireReferencedTransactions(params.inputs);
             const refTxsIds = getReferencedTransactions(params.inputs);
-            if (refTxsIds.length > 0) {
+            if (requiredRefTxs && refTxsIds.length > 0) {
                 // validate backend
                 isBackendSupported(params.coinInfo);
                 const blockchain = await initBlockchain(params.coinInfo, this.postMessage);
