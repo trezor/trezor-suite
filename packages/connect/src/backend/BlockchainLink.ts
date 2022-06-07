@@ -1,4 +1,5 @@
 import BlockchainLink, {
+    ServerInfo,
     SubscriptionAccountInfo,
     BlockchainLinkParams,
     BlockchainLinkResponse,
@@ -43,7 +44,7 @@ const getWorker = (type: string) => {
 
 export class Blockchain {
     link: BlockchainLink;
-
+    serverInfo?: ServerInfo;
     coinInfo: Options['coinInfo'];
 
     onionDomains: { [onion: string]: string };
@@ -112,6 +113,7 @@ export class Blockchain {
     async init() {
         this.link.on('connected', async () => {
             const info = await this.link.getInfo();
+            this.serverInfo = info;
             // There is no `rippled` setting that defines which network it uses neither mainnet or testnet
             // see: https://xrpl.org/parallel-networks.html
             const shortcut = this.coinInfo.shortcut === 'tXRP' ? 'XRP' : this.coinInfo.shortcut;

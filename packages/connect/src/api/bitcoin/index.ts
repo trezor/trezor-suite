@@ -1,3 +1,4 @@
+export * from './enhanceSignTx';
 export * from './Fees';
 export * from './inputs';
 export * from './outputs';

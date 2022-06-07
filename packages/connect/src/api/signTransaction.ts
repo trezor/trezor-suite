@@ -17,6 +17,7 @@ import {
     validateTrezorInputs,
     validateTrezorOutputs,
     enhanceTrezorInputs,
+    enhanceSignTx,
     signTx,
     signTxLegacy,
     verifyTx,
@@ -117,10 +118,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             preauthorized: payload.preauthorized,
         };
 
-        if (coinInfo.hasTimestamp && !Object.prototype.hasOwnProperty.call(payload, 'timestamp')) {
-            const d = new Date();
-            this.params.options.timestamp = Math.round(d.getTime() / 1000);
-        }
+        this.params.options = enhanceSignTx(this.params.options, coinInfo);
     }
 
     async run() {
