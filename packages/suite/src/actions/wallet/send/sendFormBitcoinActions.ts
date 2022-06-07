@@ -3,11 +3,7 @@ import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getBitcoinComposeOutputs, restoreOrigOutputsOrder } from '@wallet-utils/sendFormUtils';
-import {
-    ZEC_SIGN_ENHANCEMENT,
-    BTC_RBF_SEQUENCE,
-    BTC_LOCKTIME_SEQUENCE,
-} from '@wallet-constants/sendForm';
+import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@wallet-constants/sendForm';
 import {
     FormState,
     UseSendFormState,
@@ -184,11 +180,7 @@ export const signTransaction =
         const { account } = selectedAccount;
         const { transaction } = transactionInfo;
 
-        let signEnhancement: Partial<SignTransaction> = {};
-        // enhance signTransaction params for zcash (version_group_id etc.)
-        if (account.symbol === 'zec') {
-            signEnhancement = ZEC_SIGN_ENHANCEMENT;
-        }
+        const signEnhancement: Partial<SignTransaction> = {};
 
         if (formValues.bitcoinLockTime) {
             signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
