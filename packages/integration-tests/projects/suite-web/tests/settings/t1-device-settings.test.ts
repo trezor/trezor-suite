@@ -2,14 +2,16 @@
 // @retry=2
 
 describe('T1 - Device settings', () => {
+    beforeEach(() => {
+        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
+        cy.task('setupEmu', { needs_backup: false });
+        cy.task('startBridge');
+    });
     afterEach(() => {
         cy.task('stopEmu');
     });
 
     it('pin mismatch', () => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
-        cy.task('setupEmu', { needs_backup: false });
-        cy.task('startBridge');
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
@@ -45,9 +47,6 @@ describe('T1 - Device settings', () => {
         // Test preparation
         //
 
-        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
-        cy.task('setupEmu', { needs_backup: false });
-        cy.task('startBridge');
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
