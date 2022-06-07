@@ -22,8 +22,6 @@ jobs:
           yarn workspace @suite/messages translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
           yarn workspace @suite/messages translations:backport-en
           yarn workspace @suite/messages translations:format
-          yarn workspace @suite/messages translations:extract
-          cat packages/suite-data/files/translations/master.json
           yarn workspace @suite/messages translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
           git add . && git commit -m "chore: crowdin translation update" && git push origin trezor-ci/crowdin-sync -f
           gh config set prompt disabled

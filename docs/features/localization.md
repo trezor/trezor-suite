@@ -12,7 +12,7 @@ To finish the process these files need to be commited to the repository.
 
 [messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-messages/src/messages.ts) is the place where you add new messages to be used in Suite. It's basically just a huge object where a key is an ID of the message and a value is the message definition.
 
-_Do not manually edit language json files in `suite-data/files/translations/` directory. These are auto-generated, changing them directly is plausible only for development purposes._
+_Do not manually edit language json files in `suite-messages/translations/` directory. These are auto-generated, changing them directly is plausible only for development purposes._
 
 ### Structure
 

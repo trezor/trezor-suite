@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { IntlProvider as ReactIntlProvider } from 'react-intl';
 
-import enMessages from '@trezor/suite-data/files/translations/en.json';
+import enMessages from '@suite/messages/translations/web/en.json';
 import { Locale } from '../languages';
 
 type IntlProviderProps = {
@@ -19,7 +19,7 @@ const useFetchMessages = (locale: Locale) => {
             const messages =
                 locale === 'en'
                     ? {}
-                    : await import(`@trezor/suite-data/files/translations/${locale}.json`)
+                    : await import(`@suite/messages/translations/web/${locale}.json`)
                           .then(res => res.default)
                           .catch(() => ({}));
             if (!active) return;

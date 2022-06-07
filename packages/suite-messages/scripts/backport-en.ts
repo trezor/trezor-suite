@@ -19,6 +19,19 @@ import { messages } from '../src/messages';
 const targetPath = path.join(__dirname, '../src/messages.ts');
 const sourcePath = path.join(__dirname, '../../suite-data/files/translations/en.json');
 
+const sharedMessagesPath = path.join(__dirname, '../src/sharedMessages.json');
+
+const messagesFiles = [
+    {
+        targetPath: path.join(__dirname, '../src/webMessages.json'),
+        sourcePath: path.join(__dirname, '../translations/web/en.json'),
+    },
+    {
+        targetPath: path.join(__dirname, '../src/mobileMessages.json'),
+        sourcePath: path.join(__dirname, '../translations/mobile/en.json'),
+    },
+];
+
 const source: { [key in keyof typeof messages]: string } = JSON.parse(
     fs.readFileSync(sourcePath, 'utf8'),
 );
