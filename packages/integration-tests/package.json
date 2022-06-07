@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "cypress": "9.5.1",
+        "cypress-file-upload": "^5.0.8",
         "express": "^4.17.3",
         "ts-loader": "^9.2.7",
         "webpack": "^5.70.0"
@@ -27,13 +28,13 @@
         "chrome-remote-interface": "^0.31.2",
         "cypress-image-snapshot": "^4.0.1",
         "cypress-wait-until": "^1.7.2",
+        "karma": "^6.3.16",
         "karma-babel-preprocessor": "^8.0.2",
         "karma-chrome-launcher": "^3.1.0",
-        "karma-jasmine-async": "^0.0.1",
         "karma-jasmine": "4.0.1",
+        "karma-jasmine-async": "^0.0.1",
         "karma-sourcemap-loader": "^0.3.8",
         "karma-webpack": "^5.0.0",
-        "karma": "^6.3.16",
         "playwright": "^1.19.1",
         "shelljs": "^0.8.5",
         "ws": "^7.5.5",
