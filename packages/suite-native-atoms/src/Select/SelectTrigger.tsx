@@ -5,10 +5,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
 import { Text } from '../Text';
-import { SelectItem } from './selectTypes';
 
 type SelectTriggerProps = {
-    selectedItem: SelectItem | null;
+    value: string | null;
     label: string;
     icon: ReactNode;
     handlePress: () => void;
@@ -28,21 +27,23 @@ const selectStyle = prepareNativeStyle(utils => ({
     height: 58,
 }));
 
-export const SelectTrigger = ({ selectedItem, label, icon, handlePress }: SelectTriggerProps) => {
+const iconWrapperStyle = prepareNativeStyle(() => ({ marginRight: 1 }));
+
+export const SelectTrigger = ({ value, label, icon, handlePress }: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)}>
             <Box>
-                {!!selectedItem && (
+                {!!value && (
                     <Text variant="label" color="gray600">
                         {label}
                     </Text>
                 )}
-                <Box flexDirection="row">
-                    {selectedItem && <Box marginRight="sm">{icon}</Box>}
+                <Box flexDirection="row" alignItems="center">
+                    {!!value && <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>}
                     <Text color="gray700" numberOfLines={1}>
-                        {selectedItem?.label ?? label}
+                        {label}
                     </Text>
                 </Box>
             </Box>

@@ -2,22 +2,23 @@ import React, { ReactNode, useState } from 'react';
 
 import { CryptoIcon, CryptoIconName, FlagIcon, FlagIconName } from '@trezor/icons';
 
-import { isCryptoIconType, isFlagIconType, SelectItem as TSelectItem } from './selectTypes';
+import { isCryptoIconType, isFlagIconType } from './selectTypes';
 
 import { BottomModal } from '../Modal/BottomModal';
 import { SelectTrigger } from './SelectTrigger';
 import { SelectItem } from './SelectItem';
 
-// TODO: Temporary workaround because I need to import this type in DemoScreen.tsx
-// Alternative would be to `export {SelectItem} from './selectTypes' in index.ts`
-// Delete this when form package is set up and this will then be imported there from selectTypes file
-export type SelectItemType = TSelectItem;
+export type SelectItem = {
+    label: string;
+    value: string;
+    iconName?: FlagIconName;
+};
 
 type SelectProps = {
-    items: SelectItemType[];
+    items: SelectItem[];
     label: string;
-    selectedItem: SelectItemType | null;
-    setSelectedItem: (item: SelectItemType | null) => void;
+    selectedItem: SelectItem | null;
+    setSelectedItem: (item: SelectItem | null) => void;
 };
 
 export const Select = ({ items, label, selectedItem, setSelectedItem }: SelectProps) => {
@@ -28,10 +29,14 @@ export const Select = ({ items, label, selectedItem, setSelectedItem }: SelectPr
         setIsOpen(false);
     };
 
-    const getIcon = (iconName?: CryptoIconName | FlagIconName): ReactNode => {
+    const getIcon = (iconName?: CryptoIconName | FlagIconName, isSelectItem = false): ReactNode => {
         if (!iconName) return null;
-        if (isCryptoIconType(iconName)) return <CryptoIcon name={iconName} />;
-        if (isFlagIconType(iconName)) return <FlagIcon name={iconName} />;
+        if (isCryptoIconType(iconName)) {
+            return <CryptoIcon size={isSelectItem ? 'small' : 'extraSmall'} name={iconName} />;
+        }
+        if (isFlagIconType(iconName)) {
+            return <FlagIcon size={isSelectItem ? 'small' : 'extraSmall'} name={iconName} />;
+        }
     };
 
     return (
@@ -49,7 +54,7 @@ export const Select = ({ items, label, selectedItem, setSelectedItem }: SelectPr
                             key={value}
                             label={label}
                             value={value}
-                            icon={getIcon(iconName)}
+                            icon={getIcon(iconName, true)}
                             isSelected={value === selectedItem?.value}
                             isLastChild={index === items.length - 1}
                             onSelect={() => handleSelectItem(value)}
@@ -58,9 +63,9 @@ export const Select = ({ items, label, selectedItem, setSelectedItem }: SelectPr
                 </BottomModal>
             )}
             <SelectTrigger
-                label={label}
                 icon={getIcon(selectedItem?.iconName)}
-                selectedItem={selectedItem ?? null}
+                value={selectedItem?.value ?? null}
+                label={selectedItem?.label ?? label}
                 handlePress={() => setIsOpen(true)}
             />
         </>
