@@ -4,7 +4,6 @@
     - /^npm-release\//
     - schedules
     - /^release\//
-    - develop
 
 # npm beta packages deploy to npm registry
 .npm_beta_deploy_rules: &npm_beta_deploy_rules
@@ -56,12 +55,29 @@ beta utxo-lib deploy npm:
     - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/utxo-lib version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish --tag beta"
 
+beta connect deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "yarn && cd ./packages/connect && npm publish --tag beta"
+
+beta connect-web deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-web version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "yarn && cd ./packages/connect-web && npm publish --tag beta"
+
 # npm packages deploy to npm registry
 
 .npm_registry_release_rules: &npm_registry_release_rules
   refs:
     - codesing
     - /^npm-release\//
+
+# connect deploy to npm available only from branch release/connect-v9
+.npm_registry_release_connect_rules: &npm_registry_release_connect_rules
+  refs:
+    - release/connect-v9
 
 .npm_deploy_rules: &npm_deploy_rules
   stage: deploy npm
@@ -116,3 +132,19 @@ utxo-lib deploy npm:
   <<: *npm_deploy_rules
   script:
     - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish"
+
+# releases trezor-connect to npm registry
+connect deploy npm:
+  only:
+    <<: *npm_registry_release_connect_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/connect && npm publish"
+
+# releases trezor-connect to npm registry
+connect-web deploy npm:
+  only:
+    <<: *npm_registry_release_connect_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/connect-web && npm publish"
