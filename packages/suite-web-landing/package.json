@@ -12,13 +12,13 @@
         "build": "run-s copy-files build:app"
     },
     "dependencies": {
-        "@trezor/components": "1.0.0",
-        "@trezor/suite": "1.0.0",
+        "@trezor/components": "*",
+        "@trezor/suite": "*",
         "@trezor/utils": "*",
-        "next": "^12.1.1",
+        "next": "^12.1.6",
         "react": "17.0.2",
         "react-dom": "17.0.2",
-        "react-intl": "^5.23.0"
+        "react-intl": "^6.0.4"
     },
     "devDependencies": {
         "@types/react": "^17.0.0",
