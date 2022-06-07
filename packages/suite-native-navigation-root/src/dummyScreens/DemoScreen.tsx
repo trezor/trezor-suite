@@ -21,7 +21,7 @@ import {
     TipToast,
     IconButton,
     Select,
-    SelectItem,
+    SelectItemType,
 } from '@suite-native/atoms';
 import { TypographyStyle } from '@trezor/theme';
 
@@ -44,7 +44,7 @@ const typographyItems: TypographyStyle[] = [
     'hint',
     'label',
 ];
-const SELECT_ITEMS: SelectItem[] = [
+const selectItems: SelectItemType[] = [
     { label: 'Czech Republic', value: 'cz', iconName: 'cz' },
     { label: 'Slovak Republic', value: 'sk', iconName: 'cz' },
     { label: 'Armenian Republic of Kongo', value: 'arm', iconName: 'cz' },
@@ -65,6 +65,7 @@ export const DemoScreen = () => {
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [isTipToastVisible, setIsTipToastVisible] = useState<boolean>(true);
+    const [selectedItem, setSelectedItem] = useState<SelectItemType | null>(null);
 
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
@@ -103,7 +104,12 @@ export const DemoScreen = () => {
                         />
                     </Box>
                     <Box marginTop="medium">
-                        <Select items={SELECT_ITEMS} label="Open Select" />
+                        <Select
+                            items={selectItems}
+                            selectedItem={selectedItem}
+                            setSelectedItem={setSelectedItem}
+                            label="Open Select"
+                        />
                     </Box>
                     <Box marginTop="large">
                         <FlagIcon name="cz" />
