@@ -174,7 +174,6 @@ const parseBitcoinNetworksJson = (json: any) => {
         const coin = json[key];
         const shortcut = coin.coin_shortcut;
         const isBitcoin = shortcut === 'BTC' || shortcut === 'TEST';
-        const hasTimestamp = shortcut === 'CPC' || shortcut === 'PPC' || shortcut === 'tPPC';
 
         const network = {
             messagePrefix: coin.signed_message_header,
@@ -186,7 +185,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             pubKeyHash: coin.address_type,
             scriptHash: coin.address_type_p2sh,
             forkId: coin.fork_id,
-            consensusBranchId: coin.consensus_branch_id, // zcash, komodo
             wif: 0, // doesn't matter, for type correctness
         };
 
@@ -237,7 +235,6 @@ const parseBitcoinNetworksJson = (json: any) => {
             // custom
             network, // bitcoinjs network
             isBitcoin,
-            hasTimestamp,
             maxFee: Math.round(coin.maxfee_kb / 1000),
             minFee: Math.round(coin.minfee_kb / 1000),
 
