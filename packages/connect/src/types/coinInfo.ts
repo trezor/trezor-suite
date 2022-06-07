@@ -15,7 +15,6 @@ export interface Network {
     pubKeyHash: number;
     scriptHash: number;
     wif: number;
-    consensusBranchId?: { [version: number]: number };
     forkId?: number;
 }
 
@@ -62,7 +61,6 @@ export interface BitcoinNetworkInfo extends Common {
     // custom
     network: Network;
     isBitcoin: boolean;
-    hasTimestamp: boolean;
     // used in backend
     blocks?: number;
 }
