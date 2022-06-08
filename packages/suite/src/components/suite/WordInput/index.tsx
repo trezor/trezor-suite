@@ -36,16 +36,32 @@ const SelectWrapper = styled.div`
     @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         width: 280px;
     }
+`;
 
-    .react-select__menu {
-        padding-left: 8px;
+const StyledList = styled(List)`
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    position: static !important;
+
+    > div {
+        position: relative;
     }
 `;
 
 type Option = { label: string; value: string };
 
 const MenuList = (props: MenuListComponentProps<Option, boolean>) => {
-    const children = React.Children.toArray(props.children);
+    const listRef = useRef<List>(null);
+
+    const children = React.Children.toArray(props.children) as React.ReactElement[];
+
+    useEffect(() => {
+        if (listRef.current) {
+            const currentIndex = children.findIndex(child => child.props.isFocused === true);
+            listRef.current.scrollToItem(currentIndex);
+        }
+    }, [children]);
+
     return (
         <List height={34 * 5} itemCount={children.length} itemSize={34} width="100%">
             {({ index, style }) => <div style={style}>{children[index]}</div>}

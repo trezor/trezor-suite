@@ -3,11 +3,11 @@ import ReactSelect, {
     components as ReactSelectComponents,
     Props as ReactSelectProps,
     OptionsType,
+    GroupTypeBase,
     GroupedOptionsType,
     StylesConfig,
     ControlProps,
     OptionProps,
-    NamedProps,
 } from 'react-select';
 import styled, { css } from 'styled-components';
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
@@ -205,7 +205,7 @@ const BottomText = styled.div<Pick<SelectProps, 'inputState'>>`
 
 /** Custom Type Guards to check if options are grouped or not */
 const isOptionGrouped = (
-    x: OptionsType<Option> | GroupedOptionsType<Option>,
+    x: readonly (Option | GroupTypeBase<Option>)[],
 ): x is GroupedOptionsType<Option> => (x as GroupedOptionsType<Option>)[0]?.options !== undefined;
 
 interface Option {
@@ -321,7 +321,7 @@ export const Select = ({
                         optionsToSearchThrough = optionsToSearchThrough.concat(o.options);
                     });
                 } else {
-                    optionsToSearchThrough = options;
+                    optionsToSearchThrough = options as OptionsType<Option>;
                 }
 
                 const optionToFocusOn = findOption(optionsToSearchThrough, searchedTerm.current);
@@ -383,7 +383,9 @@ export const Select = ({
         [],
     );
 
-    const handleOnChange = useCallback<Required<NamedProps>['onChange']>(
+    const handleOnChange = useCallback<
+        Required<ReactSelectProps<Option, boolean, GroupTypeBase<Option>>>['onChange']
+    >(
         (value, { action }) => {
             onChange?.(value);
 

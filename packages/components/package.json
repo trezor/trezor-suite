@@ -22,7 +22,7 @@
         "polished": "^4.2.2",
         "react-date-range": "^1.4.0",
         "react-is": "16.13.1",
-        "react-select": "^3.1.1",
+        "react-select": "^4.3.1",
         "react-spring": "^9.3.2",
         "react-svg": "^15.0.2",
         "react-truncate": "^2.4.0"
@@ -42,7 +42,7 @@
         "@types/randomcolor": "^0.5.6",
         "@types/react": "^17.0.0",
         "@types/react-date-range": "^1.4.3",
-        "@types/react-select": "^3.1.2",
+        "@types/react-select": "^4.0.18",
         "@types/react-truncate": "^2.3.4",
         "@types/styled-components": "^5.1.25",
         "randomcolor": "^0.6.2",
