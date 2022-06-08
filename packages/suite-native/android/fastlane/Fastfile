@@ -1,0 +1,63 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+# Retrieve version of the app in package.json
+package = load_json(json_path: "../package.json")
+
+platform :android do
+
+  desc "Android: Increase versionCode"
+  private_lane :increase_android_version do
+    increment_version_code(gradle_file_path: '../android/app/build.gradle')
+    increment_version_name(gradle_file_path: '../android/app/build.gradle', version_name: package['version'])
+  end
+
+  desc "Bump build numbers, and set the version to match the pacakage.json version."
+  lane :bump do
+    increase_android_version
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Build and uploads the app to play Store for an internal testing release"
+  lane :playstoreInternal do |options|
+    releaseFilePath = File.join(Dir.pwd, "..", "release.keystore")
+    gradle(task: 'clean')
+    gradle(
+      task: 'bundle',
+      build_type: 'Release',
+      # print_command: false,
+      properties: {
+        "android.injected.signing.store.file" => releaseFilePath,
+        "android.injected.signing.store.password" => options[:RELEASE_KEYSTORE_PASSWORD], # keystore password
+        "android.injected.signing.key.alias" => options[:RELEASE_KEYSTORE_ALIAS], # alias
+        "android.injected.signing.key.password" => options[:RELEASE_KEYSTORE_KEY_PASSWORD], # key password
+        "vname" => package["version"]
+      }
+    )
+    # Upload Android App Bundle to PlayStore like Internal testing Release
+
+   # upload_to_play_store(
+   #   track: 'internal',
+   #   release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
+   #   skip_upload_apk: true,
+   # )
+  end
+end

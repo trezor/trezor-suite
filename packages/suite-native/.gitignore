@@ -53,6 +53,18 @@ buck-out/
 */fastlane/Preview.html
 */fastlane/screenshots
 
+# scan temporary files
+*/fastlane/test_output
+
+/ios/*.xcarchive
+
+# fastlane supply (google service account)
+*/fastlane/pc-api-4710771878548015996-769-498f92002b4b.json
+
+# fastlane builds
+/ios/builds/*
+/android/builds/*
+
 # Bundle artifact
 *.jsbundle
 
