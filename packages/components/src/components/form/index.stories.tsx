@@ -236,7 +236,7 @@ export const Basic = ({ ...args }) => (
             <Heading>Select</Heading>
             <Select
                 options={SELECT_OPTIONS}
-                topLabel="Not selected"
+                label="Not selected"
                 wrapperProps={{
                     'data-test': 'select',
                 }}
@@ -247,7 +247,7 @@ export const Basic = ({ ...args }) => (
                     label: 'Option one',
                     value: 'value-one',
                 }}
-                topLabel="Selected"
+                label="Selected"
                 wrapperProps={{
                     'data-test': 'select-selected',
                 }}
@@ -258,7 +258,7 @@ export const Basic = ({ ...args }) => (
                     label: 'Option one',
                     value: 'value-one',
                 }}
-                topLabel="Selected"
+                label="Small"
                 wrapperProps={{
                     'data-test': 'select-small',
                 }}
@@ -267,7 +267,7 @@ export const Basic = ({ ...args }) => (
 
             <Select
                 isDisabled
-                topLabel="Disabled"
+                label="Disabled"
                 wrapperProps={{
                     'data-test': 'select-disabled',
                 }}
