@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { MenuListComponentProps, createFilter } from 'react-select';
 import styled, { keyframes } from 'styled-components';
@@ -63,7 +63,7 @@ const MenuList = (props: MenuListComponentProps<Option, boolean>) => {
     }, [children]);
 
     return (
-        <List height={34 * 5} itemCount={children.length} itemSize={34} width="100%">
+        <List ref={listRef} height={34 * 5} itemCount={children.length} itemSize={34} width="100%">
             {({ index, style }) => <div style={style}>{children[index]}</div>}
         </List>
     );
