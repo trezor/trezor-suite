@@ -1,13 +1,16 @@
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+
 import { TabBar } from '@suite-native/navigation';
 import { SettingsStackNavigator } from '@suite-native/settings';
-import React from 'react';
+
 import { AccountsScreen } from '../dummyScreens/AccountsScreen';
 import { ActionScreen } from '../dummyScreens/ActionScreen';
 import { DemoScreen } from '../dummyScreens/DemoScreen';
 import { PricesScreen } from '../dummyScreens/PricesScreen';
+
 import { RootTabsParamList, RouteTabs, rootTabsOptions } from './routes';
-import { NavigationContainer } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator<RootTabsParamList>();
 

@@ -46,7 +46,7 @@ export const DemoScreen = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
-    const [radioChecked, setRadioChecked] = useState('second');
+    const [radioChecked, setRadioChecked] = useState<string>('second');
     const [isCheckBox1Checked, setIsCheckBox1Checked] = useState(false);
     const [isCheckBox2Checked, setIsCheckBox2Checked] = useState(true);
     const [isCheckBox3Checked, setIsCheckBox3Checked] = useState(false);
@@ -58,8 +58,8 @@ export const DemoScreen = () => {
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [isTipToastVisible, setIsTipToastVisible] = useState<boolean>(true);
 
-    const handleRadioPress = (value: string) => {
-        setRadioChecked(value);
+    const handleRadioPress = (value: string | number) => {
+        setRadioChecked(value.toString());
     };
 
     return (
