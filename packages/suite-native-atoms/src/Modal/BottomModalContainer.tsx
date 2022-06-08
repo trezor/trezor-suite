@@ -18,6 +18,7 @@ const modalWithOverlayStyle = prepareNativeStyle(utils => ({
 
 export const BottomModalContainer = ({ children, isVisible, onClose }: ModalProps) => {
     const { applyStyle } = useNativeStyles();
+
     return (
         <RNModal transparent visible={isVisible} onRequestClose={onClose}>
             <Box style={applyStyle(modalWithOverlayStyle)}>{children}</Box>
