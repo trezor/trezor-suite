@@ -1,6 +1,7 @@
 .next
 build
 build-electron
+build-renderer
 .build-storybook
 *.cpuprofile
 
