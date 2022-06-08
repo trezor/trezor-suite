@@ -89,8 +89,8 @@ export const DemoScreen = () => {
                         placeholder="Type here.."
                     />
                     <Box marginVertical="medium">
-                        <InputWrapper>
-                            <Input value={input2Text} onChange={setInput2Text} />
+                        <InputWrapper label="Recipient">
+                            <Input value={input2Text} onChange={setInput2Text} label="To" />
                         </InputWrapper>
                     </Box>
                     <Box>
