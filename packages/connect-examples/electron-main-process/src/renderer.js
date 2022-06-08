@@ -13,7 +13,7 @@ const printLog = data => {
 const btn = document.getElementById('get-xpub');
 btn.onclick = () => {
     // send request to trezor-connect
-    window.ipcRenderer.send('trezor-connect', {
+    window.TrezorConnect.send({
         method: 'getPublicKey',
         params: {
             path: "m/49'/0'/0'",
@@ -23,9 +23,9 @@ btn.onclick = () => {
 };
 
 // receive data from TrezorConnect
-window.ipcRenderer.on('trezor-connect', (event, message) => {
+window.TrezorConnect.receive((event, message) => {
     printLog(message);
 });
 
 // init TrezorConnect in electron main process
-window.ipcRenderer.send('trezor-connect', 'init');
+window.TrezorConnect.init();
