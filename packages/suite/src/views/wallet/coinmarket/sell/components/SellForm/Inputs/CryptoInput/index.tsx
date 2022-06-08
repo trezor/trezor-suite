@@ -175,7 +175,6 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                             )}
                             isClean
                             hideTextCursor
-                            isDropdownVisible={account.networkType === 'ethereum'}
                             isDisabled={account.networkType !== 'ethereum'}
                             minWidth="100px"
                             formatOptionLabel={(option: any) => (

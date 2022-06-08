@@ -15,7 +15,7 @@ export const buildCurrencyOptions = () => {
 };
 
 const FiatSelect = () => {
-    const { control, setAmountLimits, account, updateFiatCurrency, defaultCurrency } =
+    const { control, setAmountLimits, updateFiatCurrency, defaultCurrency } =
         useCoinmarketExchangeFormContext();
     const currencyOptions = buildCurrencyOptions();
 
@@ -34,7 +34,6 @@ const FiatSelect = () => {
                     value={value}
                     isClearable={false}
                     options={currencyOptions}
-                    isDropdownVisible={account.networkType === 'ethereum'}
                     minWidth="58px"
                     isClean
                     hideTextCursor

@@ -77,7 +77,6 @@ const SendCryptoSelect = () => {
                     value={value}
                     isClearable={false}
                     options={sendCryptoOptions}
-                    isDropdownVisible={account.networkType === 'ethereum'}
                     isDisabled={account.networkType !== 'ethereum'}
                     minWidth="100px"
                     isClean
