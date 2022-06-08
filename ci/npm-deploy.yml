@@ -22,49 +22,49 @@
 beta blockchain-link deploy npm:
   <<: *npm_beta_deploy_rules
   script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/blockchain-link version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/blockchain-link version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish --tag beta"
 
 beta components deploy npm:
   <<: *npm_beta_deploy_rules
   script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/components version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/components version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/components && npm publish --tag beta"
 
 beta connect-common deploy npm:
   <<: *npm_beta_deploy_rules
   script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-common version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-common version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/connect-common && npm publish --tag beta"
 
 beta transport deploy npm:
   <<: *npm_beta_deploy_rules
   script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/transport version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/transport version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/transport && npm publish --tag beta"
 
 beta utils deploy npm:
   <<: *npm_beta_deploy_rules
   script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/utils version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/utils version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/utils && npm publish --tag beta"
 
 beta utxo-lib deploy npm:
   <<: *npm_beta_deploy_rules
   script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/utxo-lib version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/utxo-lib version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish --tag beta"
 
 beta connect deploy npm:
   <<: *npm_beta_deploy_rules
   script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/connect && npm publish --tag beta"
 
 beta connect-web deploy npm:
   <<: *npm_beta_deploy_rules
   script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-web version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-web version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/connect-web && npm publish --tag beta"
 
 # npm packages deploy to npm registry
