@@ -54,7 +54,7 @@ const chipDescriptionStyle = prepareNativeStyle(utils => ({
 
 const textWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
-    marginLeft: utils.spacings.sm,
+    marginLeft: utils.spacings.small,
 }));
 
 export const Chip = ({ title, onSelect, description, icon, isSelected = false }: ChipProps) => {

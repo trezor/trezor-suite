@@ -18,7 +18,7 @@ export const ListItemIcon = ({ iconName }: ListItemIconProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box justifyContent="center" alignItems="center" marginRight="md">
+        <Box justifyContent="center" alignItems="center" marginRight="medium">
             <Box justifyContent="center" alignItems="center" style={applyStyle(listItemIconStyle)}>
                 <Icon name={iconName} />
             </Box>

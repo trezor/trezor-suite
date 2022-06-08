@@ -24,7 +24,7 @@ const iconSizes = {
     large: 24,
 } as const;
 
-type IconSize = keyof typeof iconSizes;
+export type IconSize = keyof typeof iconSizes;
 
 export const Icon = ({ name, size = 'large', color = 'black' }: IconProps) => {
     const svg = useSVG(icons[name]);

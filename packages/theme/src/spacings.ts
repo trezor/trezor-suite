@@ -1,18 +1,18 @@
 export const spacings = {
-    sm: '8px',
-    md: '16px',
-    lg: '24px',
-    xl: '32px',
+    small: '8px',
+    medium: '16px',
+    large: '24px',
+    extraLarge: '32px',
 } as const;
 
 export type Spacings = typeof spacings;
 export type Spacing = keyof typeof spacings;
 
 export const nativeSpacings = {
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
+    small: 8,
+    medium: 16,
+    large: 24,
+    extraLarge: 32,
 } as const;
 
 export type NativeSpacings = typeof nativeSpacings;

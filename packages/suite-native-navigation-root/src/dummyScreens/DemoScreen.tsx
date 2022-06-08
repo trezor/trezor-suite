@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 
 import { Icon, CryptoIcon, FlagIcon } from '@trezor/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import {
     Text,
     Box,
@@ -16,14 +18,15 @@ import {
     ListItem,
     SelectableListItem,
     BottomModal,
+    TipToast,
+    IconButton,
 } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
 
 const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
     ({ colors, spacings }, { isDarkMode }) => ({
         backgroundColor: isDarkMode ? colors.black : colors.white,
-        padding: spacings.lg,
+        padding: spacings.medium,
         marginTop: 0,
         flex: 1,
     }),
@@ -43,7 +46,7 @@ export const DemoScreen = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const [inputText, setInputText] = useState<string>('');
     const { applyStyle } = useNativeStyles();
-    const [radioChecked, setRadioChecked] = useState('second');
+    const [radioChecked, setRadioChecked] = useState<string>('second');
     const [isCheckBox1Checked, setIsCheckBox1Checked] = useState(false);
     const [isCheckBox2Checked, setIsCheckBox2Checked] = useState(true);
     const [isCheckBox3Checked, setIsCheckBox3Checked] = useState(false);
@@ -53,9 +56,10 @@ export const DemoScreen = () => {
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    const [isTipToastVisible, setIsTipToastVisible] = useState<boolean>(true);
 
-    const handleRadioPress = (value: string) => {
-        setRadioChecked(value);
+    const handleRadioPress = (value: string | number) => {
+        setRadioChecked(value.toString());
     };
 
     return (
@@ -71,7 +75,26 @@ export const DemoScreen = () => {
                         onChange={setInputText}
                         placeholder="Type here.."
                     />
-                    <Box marginTop="lg">
+                    <Box>
+                        <IconButton
+                            size="small"
+                            colorScheme="gray"
+                            iconName="check"
+                            onPress={() => console.log('press icon button')}
+                        />
+                        <IconButton
+                            iconName="check"
+                            isRounded
+                            onPress={() => console.log('press icon button')}
+                        />
+                        <IconButton
+                            size="large"
+                            iconName="check"
+                            isRounded
+                            onPress={() => console.log('press icon button')}
+                        />
+                    </Box>
+                    <Box marginTop="large">
                         <FlagIcon name="cz" />
                         <Chip
                             icon={<CryptoIcon name="btc" />}
@@ -87,7 +110,16 @@ export const DemoScreen = () => {
                             description="inc Tokens"
                         />
                     </Box>
-                    <Box marginTop="lg">
+                    <Box marginTop="large">
+                        {isTipToastVisible && (
+                            <TipToast
+                                title="TIP"
+                                description="Tip toast"
+                                onClose={() => setIsTipToastVisible(false)}
+                            />
+                        )}
+                    </Box>
+                    <Box marginTop="large">
                         <Text variant="titleLarge">Title Large</Text>
                     </Box>
                     <Box>
@@ -102,9 +134,7 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <Button onPress={() => setIsModalVisible(true)} colorScheme="primary" size="md">
-                        Show Typograhy
-                    </Button>
+                    <Button onPress={() => setIsModalVisible(true)}>Show Typograhy</Button>
                     <BottomModal
                         isVisible={isModalVisible}
                         onVisibilityChange={setIsModalVisible}
@@ -113,21 +143,24 @@ export const DemoScreen = () => {
                         onBackArrowClick={() => setIsModalVisible(!isModalVisible)}
                     >
                         {typographyItems.map(item => (
-                            <Box marginTop="sm" key={item}>
+                            <Box marginTop="small" key={item}>
                                 <Text variant={item}>{item}</Text>
                             </Box>
                         ))}
                     </BottomModal>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" color="black" />
                     </Box>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <Text>Hints:</Text>
                         <Hint variant="hint">Hned to mažem</Hint>
                         <Hint variant="error">Please enter a valid address dumbo</Hint>
                     </Box>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
+                        <Button onPress={() => console.log('Get features')}>My Fancy Button</Button>
+                    </Box>
+                    <Box marginVertical="medium">
                         <Text>Radio:</Text>
                         <Box flexDirection="row" justifyContent="space-between">
                             <Radio
@@ -157,7 +190,7 @@ export const DemoScreen = () => {
                             />
                         </Box>
                     </Box>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <Text>Checkbox:</Text>
                         <Box flexDirection="row" justifyContent="space-between">
                             <CheckBox
@@ -187,14 +220,10 @@ export const DemoScreen = () => {
                             console.log('Press num pad button. No implementation yet.', value)
                         }
                     />
-                    <Button
-                        onPress={() => console.log('Get features to be implemented')}
-                        size="md"
-                        colorScheme="primary"
-                    >
+                    <Button onPress={() => console.log('Get features to be implemented')}>
                         Get features
                     </Button>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <ListItem
                             iconName="placeholder"
                             title="Headline"
@@ -203,7 +232,7 @@ export const DemoScreen = () => {
                             onPress={() => console.log('Press ListItem. No implementation yet.')}
                         />
                     </Box>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <ListItem
                             iconName="warningCircle"
                             title="Some Really and I mean really Long Headline without isTextWrapped"
@@ -211,14 +240,14 @@ export const DemoScreen = () => {
                             isTextTruncated
                         />
                     </Box>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <ListItem
                             title="Headline"
                             subtitle="Description of that headline"
                             hasRightArrow
                         />
                     </Box>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <ListItem
                             iconName="warningCircle"
                             title="Some Really and I mean really really Long Headline"
@@ -226,7 +255,7 @@ export const DemoScreen = () => {
                             hasRightArrow={false}
                         />
                     </Box>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <ListItem
                             iconName="placeholder"
                             title="Not wrapped example with long and I mean really long Headline"
@@ -235,7 +264,7 @@ export const DemoScreen = () => {
                             isTextTruncated
                         />
                     </Box>
-                    <Box marginVertical="md">
+                    <Box marginVertical="medium">
                         <SelectableListItem
                             iconName="placeholder"
                             title="Headline"

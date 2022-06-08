@@ -1,16 +1,17 @@
 import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
-import { Text } from './Text';
 import { Color } from '@trezor/theme';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-type ButtonSize = 'sm' | 'md' | 'lg';
-type ButtonColorScheme = 'primary' | 'gray';
+import { Text } from '../Text';
+
+export type ButtonSize = 'small' | 'medium' | 'large';
+export type ButtonColorScheme = 'primary' | 'gray';
 
 export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
-    size: ButtonSize;
-    colorScheme: ButtonColorScheme;
+    colorScheme?: ButtonColorScheme;
+    size?: ButtonSize;
     style?: NativeStyleObject;
 }
 
@@ -21,22 +22,22 @@ type ButtonStyleProps = {
 
 const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorScheme }) => {
     const buttonSizeStyles: Record<ButtonSize, NativeStyleObject> = {
-        sm: {
+        small: {
             height: 36,
-            paddingVertical: utils.spacings.sm,
+            paddingVertical: utils.spacings.small,
             paddingHorizontal: 12,
             borderRadius: utils.borders.radii.small,
         },
-        md: {
+        medium: {
             height: 44,
             paddingVertical: 10,
-            paddingHorizontal: utils.spacings.md,
+            paddingHorizontal: utils.spacings.medium,
             borderRadius: utils.borders.radii.small,
         },
-        lg: {
+        large: {
             height: 58,
             paddingVertical: 17,
-            paddingHorizontal: utils.spacings.md,
+            paddingHorizontal: utils.spacings.medium,
             borderRadius: utils.borders.radii.medium,
         },
     };
@@ -62,7 +63,13 @@ const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
     gray: 'gray700',
 };
 
-export const Button = ({ size, style, colorScheme, children, ...props }: ButtonProps) => {
+export const Button = ({
+    style,
+    children,
+    colorScheme = 'primary',
+    size = 'medium',
+    ...props
+}: ButtonProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
