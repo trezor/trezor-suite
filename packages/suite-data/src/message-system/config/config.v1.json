@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2022-05-20T00:00:00+00:00",
-    "sequence": 14,
+    "timestamp": "2022-06-07T00:00:00+00:00",
+    "sequence": 15,
     "actions": [
         {
             "conditions": [
@@ -157,6 +157,111 @@
                     "cs": "Váš Trezor používá neoficiální verzi firmwaru. Okamžitě kontaktujte help@trezor.io",
                     "ru": "На вашем Trezor установлена неофициальная прошивка. Пожалуйста, немедленно напишите в поддержку help@trezor.io",
                     "ja": "お使いのTrezorは非公式ファームウェアが動作しています。すぐにサポート（help@trezor.io）にご連絡ください。"
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "zec": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<22.6.2",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "57934104-14e4-413f-8da1-7c7d42abe313",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Please update your application to be able to sign Zcash transactions",
+                    "en": "Please update your application to be able to sign Zcash transactions",
+                    "es": "Por favor, actualiza tu aplicación para poder firmar transacciones de Zcash",
+                    "cs": "Aktualizujte prosím aplikaci, abyste mohli podepisovat Zcash transakce",
+                    "ru": "_Пожалуйста, обновите свое приложение, чтобы иметь возможность подписывать транзакции Zcash",
+                    "ja": "Zcashの取引に署名できるようにアプリケーションを更新してください"
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "zec": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": ">=22.6.2",
+                        "mobile": "!",
+                        "web": ">=22.6.2"
+                    },
+                    "devices": [
+                        {
+                            "model": "1",
+                            "firmware": "<1.11.1",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": "<2.5.1",
+                            "bootloader": "*",
+                            "variant": "regular",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "0370bae9-a082-4634-9765-a0ce5de015c1",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Please update your firmware to be able to sign Zcash transactions",
+                    "en": "Please update your firmware to be able to sign Zcash transactions",
+                    "es": "Para firmar transacciones de Zcash es necesario actualizar el firmware",
+                    "cs": "Aktualizujte prosím svůj firmware, abyste mohli podepisovat Zcash transakce",
+                    "ru": "Для подписывания транзакций zcach необходимо обновить прошивку",
+                    "ja": "Zcashの取引に署名できるようにファームウェアをアップデートしてください。"
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update Firmware",
+                        "en": "Update Firmware",
+                        "es": "Actualizar el Firmware",
+                        "cs": "Aktualizovat Firmware",
+                        "ru": "Обновить прошивку",
+                        "ja": "ファームウェアのアップデート"
+                    }
                 }
             }
         }
