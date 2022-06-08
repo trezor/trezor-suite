@@ -18,14 +18,14 @@ type SelectProps = {
     items: SelectItem[];
     label: string;
     selectedItem: SelectItem | null;
-    setSelectedItem: (item: SelectItem | null) => void;
+    onSelectItem: (item: SelectItem | null) => void;
 };
 
-export const Select = ({ items, label, selectedItem, setSelectedItem }: SelectProps) => {
+export const Select = ({ items, label, selectedItem, onSelectItem }: SelectProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const handleSelectItem = (value: string) => {
-        setSelectedItem(items.find(item => item.value === value) ?? null);
+        onSelectItem(items.find(item => item.value === value) ?? null);
         setIsOpen(false);
     };
 
@@ -64,8 +64,8 @@ export const Select = ({ items, label, selectedItem, setSelectedItem }: SelectPr
             )}
             <SelectTrigger
                 icon={getIcon(selectedItem?.iconName)}
-                value={selectedItem?.value ?? null}
-                label={selectedItem?.label ?? label}
+                value={selectedItem?.label ?? null}
+                label={label}
                 handlePress={() => setIsOpen(true)}
             />
         </>

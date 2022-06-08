@@ -107,8 +107,8 @@ export const DemoScreen = () => {
                         <Select
                             items={selectItems}
                             selectedItem={selectedItem}
-                            setSelectedItem={setSelectedItem}
-                            label="Open Select"
+                            onSelectItem={setSelectedItem}
+                            label="Language"
                         />
                     </Box>
                     <Box marginTop="large">

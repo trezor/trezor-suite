@@ -43,7 +43,7 @@ export const SelectTrigger = ({ value, label, icon, handlePress }: SelectTrigger
                 <Box flexDirection="row" alignItems="center">
                     {!!value && <Box style={applyStyle(iconWrapperStyle)}>{icon}</Box>}
                     <Text color="gray700" numberOfLines={1}>
-                        {label}
+                        {value ?? label}
                     </Text>
                 </Box>
             </Box>
