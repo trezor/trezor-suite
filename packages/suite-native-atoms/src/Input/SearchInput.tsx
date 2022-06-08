@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
+import { TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { Box } from './Box';
+
+import { Box } from '../Box';
 
 type InputProps = {
     value: string;

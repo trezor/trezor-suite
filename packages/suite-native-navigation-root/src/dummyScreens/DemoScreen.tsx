@@ -23,6 +23,8 @@ import {
     Select,
     SelectItemType,
     SelectValue,
+    InputWrapper,
+    Input,
 } from '@suite-native/atoms';
 import { TypographyStyle } from '@trezor/theme';
 
@@ -54,6 +56,7 @@ const selectItems: SelectItemType[] = [
 export const DemoScreen = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const [inputText, setInputText] = useState<string>('');
+    const [input2Text, setInput2Text] = useState<string>('');
     const { applyStyle } = useNativeStyles();
     const [radioChecked, setRadioChecked] = useState<string>('second');
     const [isCheckBox1Checked, setIsCheckBox1Checked] = useState(false);
@@ -85,6 +88,11 @@ export const DemoScreen = () => {
                         onChange={setInputText}
                         placeholder="Type here.."
                     />
+                    <Box marginVertical="medium">
+                        <InputWrapper>
+                            <Input value={input2Text} onChange={setInput2Text} />
+                        </InputWrapper>
+                    </Box>
                     <Box>
                         <IconButton
                             size="small"
