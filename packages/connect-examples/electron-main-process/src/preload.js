@@ -1,5 +1,7 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, contextBridge } = require('electron');
 
-process.once('loaded', () => {
-    global.ipcRenderer = ipcRenderer;
+contextBridge.exposeInMainWorld('TrezorConnect', {
+    init: () => ipcRenderer.send('trezor-connect', 'init'),
+    receive: fn => ipcRenderer.on('trezor-connect', fn),
+    send: data => ipcRenderer.send('trezor-connect', data),
 });
