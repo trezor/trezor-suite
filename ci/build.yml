@@ -276,7 +276,7 @@ suite-desktop build windows codesign:
     expire_in: 7 days
 
 suite-native build android:
-  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/reactnativecommunity/react-native-android
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/vdovhanych/react-native-android:5.5
   stage: build
   interruptible: true
   script:
