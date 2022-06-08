@@ -280,7 +280,6 @@ const Inputs = () => {
                                     )}
                                     isClean
                                     hideTextCursor
-                                    isDropdownVisible={account.networkType === 'ethereum'}
                                     isDisabled={account.networkType !== 'ethereum'}
                                     minWidth="100px"
                                 />
