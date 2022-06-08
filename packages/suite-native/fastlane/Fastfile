@@ -1,0 +1,15 @@
+# Common Functions and Requirements
+# across Android/iOS Fastfiles
+
+# Path Constants
+ROOT = File.expand_path('../', Dir.pwd).freeze
+PACKAGE_JSON = File.join(ROOT, 'package.json').freeze
+
+# Projects
+ANDROID_PATH = File.join(ROOT, 'android').freeze
+IOS_PATH = File.join(ROOT, 'ios').freeze
+
+VERSION = File.read(File.join(ROOT, 'VERSION'))
+
+import "../ios/fastlane/Fastfile"
+import "../android/fastlane/Fastfile"

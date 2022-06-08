@@ -13,15 +13,20 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-## Android
+## iOS
 
-### android bump
+### ios beta
 
 ```sh
-[bundle exec] fastlane android bump
+[bundle exec] fastlane ios beta
 ```
 
-Bump build numbers, and set the version to match the pacakage.json version.
+Push a new beta build to TestFlight
+
+----
+
+
+## Android
 
 ### android test
 

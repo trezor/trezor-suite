@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-native",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "android": "react-native run-android --no-packager",
@@ -11,10 +11,7 @@
         "lint": "eslint .",
         "type-check": "tsc -b",
         "build:android": "cd android && ./gradlew assembleRelease",
-        "pods": "npx pod-install",
-        "bump-patch": "yarn version --patch --no-git-tag-version && bundle exec fastlane bump",
-        "bump-minor": "yarn version --minor --no-git-tag-version && bundle exec fastlane bump",
-        "bump-major": "yarn version --major --no-git-tag-version && bundle exec fastlane bump"
+        "pods": "npx pod-install"
     },
     "dependencies": {
         "@react-navigation/native": "^6.0.10",

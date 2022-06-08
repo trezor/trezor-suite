@@ -13,22 +13,27 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
-default_platform(:android)
+# Paths
+APP_GRADLE = File.join(ANDROID_PATH, 'app/build.gradle').freeze
+JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'fastlane/pc-api-4710771878548015996-769-498f92002b4b.json').freeze
 
-# Retrieve version of the app in package.json
-package = load_json(json_path: "../package.json")
+# Android Specific Constants
+APP_ID = 'com.trezorsuite'.freeze
+
+default_platform(:android)
 
 platform :android do
 
+  previous_build_number = google_play_track_version_codes(
+    package_name: APP_ID,
+    track: "internal",
+    json_key: JSON_KEY_FILE_PATH,
+  )[0]
+
   desc "Android: Increase versionCode"
   private_lane :increase_android_version do
-    increment_version_code(gradle_file_path: '../android/app/build.gradle')
-    increment_version_name(gradle_file_path: '../android/app/build.gradle', version_name: package['version'])
-  end
-
-  desc "Bump build numbers, and set the version to match the pacakage.json version."
-  lane :bump do
-    increase_android_version
+    increment_version_code(gradle_file_path: APP_GRADLE, version_code: previous_build_number + 1)
+    increment_version_name(gradle_file_path: APP_GRADLE, version_name: VERSION)
   end
 
   desc "Runs all the tests"
@@ -38,18 +43,17 @@ platform :android do
 
   desc "Build and uploads the app to play Store for an internal testing release"
   lane :playstoreInternal do |options|
-    releaseFilePath = File.join(Dir.pwd, "..", "release.keystore")
+    increase_android_version
     gradle(task: 'clean')
     gradle(
       task: 'bundle',
       build_type: 'Release',
-      # print_command: false,
       properties: {
-        "android.injected.signing.store.file" => releaseFilePath,
-        "android.injected.signing.store.password" => options[:RELEASE_KEYSTORE_PASSWORD], # keystore password
-        "android.injected.signing.key.alias" => options[:RELEASE_KEYSTORE_ALIAS], # alias
-        "android.injected.signing.key.password" => options[:RELEASE_KEYSTORE_KEY_PASSWORD], # key password
-        "vname" => package["version"]
+          "android.injected.signing.store.file" => File.join(Dir.pwd, "..", "release.keystore"),
+          "android.injected.signing.store.password" => options[:RELEASE_KEYSTORE_PASSWORD], # keystore password
+          "android.injected.signing.key.alias" => options[:RELEASE_KEYSTORE_ALIAS], # alias
+          "android.injected.signing.key.password" => options[:RELEASE_KEYSTORE_KEY_PASSWORD], # key password
+          "vname" => VERSION
       }
     )
     # Upload Android App Bundle to PlayStore like Internal testing Release
