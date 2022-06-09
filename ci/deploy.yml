@@ -226,3 +226,23 @@ components storybook deploy dev manual:
 #       - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook/snapshots
 #       - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/components-storybook/screenshots
 #   needs: []
+
+# Suite desktop autoupdate deploy
+suite-desktop deploy autoupdate test:
+  stage: deploy to dev
+  needs:
+    - suite-desktop build mac codesign
+    - suite-desktop build linux codesign
+    - suite-desktop build windows codesign
+  only:
+    refs:
+      - codesign
+  when: manual
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - 'rsync --delete -va Trezor-Suite* "${DEPLOY_DIRECTORY}/" || :'
+    - 'rsync --delete -va latest* "${DEPLOY_DIRECTORY}/" || :'
+  tags:
+    - deploy
