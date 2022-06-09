@@ -51,6 +51,27 @@ suite-desktop github release:
   tags:
     - deploy
 
+# Suite Desktop upload to data.trezor.io/suite/releases/<suiteVersion>/
+suite-desktop data.trezor.io deploy:
+  stage: deploy to production
+  when: manual
+  needs:
+    - suite-desktop build mac codesign
+    - suite-desktop build linux codesign
+    - suite-desktop build windows codesign
+  only:
+    refs:
+      - codesign
+  tags:
+    - deploy
+  variables:
+    AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
+  script:
+    - source ${MSG_SYSTEM_DATA_DEPLOY_KEYFILE}
+    - VERSION=$(jq -r .suiteVersion packages/suite/package.json)
+    - aws s3 cp ./Trezor-Suite* latest* s3://data.trezor.io/suite/releases/$VERSION/ --recursive
+    - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/releases/*'
+
 release commit messages:
   stage: deploy to staging
   only:
