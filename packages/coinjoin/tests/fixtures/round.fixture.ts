@@ -1,3 +1,4 @@
+import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import { Round } from '../../src/types/coordinator';
 
 export const DEFAULT_ROUND = {
@@ -54,3 +55,20 @@ export const DEFAULT_ROUND = {
     },
     inputRegistrationEnd: new Date().toUTCString() + 10000,
 } as Round;
+
+type CJRoundOptions = ConstructorParameters<typeof CoinjoinRound>[1];
+interface CreateCoinjoinRoundOptions extends CJRoundOptions {
+    round?: Partial<Round>;
+}
+export const createCoinjoinRound = (
+    inputs: CoinjoinRound['inputs'],
+    { round: roundOptions, ...options }: CreateCoinjoinRoundOptions,
+) => {
+    const round = new CoinjoinRound(DEFAULT_ROUND, options);
+    round.inputs = inputs;
+    if (roundOptions) {
+        round.id = roundOptions.id || round.id;
+        round.phase = roundOptions.phase || round.phase;
+    }
+    return round;
+};
