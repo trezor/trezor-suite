@@ -2,14 +2,13 @@
 # across Android/iOS Fastfiles
 
 # Path Constants
-ROOT = File.expand_path('../', Dir.pwd).freeze
-PACKAGE_JSON = File.join(ROOT, 'package.json').freeze
+SUITE_NATIVE_ROOT_PATH = File.expand_path('../', Dir.pwd).freeze
 
 # Projects
-ANDROID_PATH = File.join(ROOT, 'android').freeze
-IOS_PATH = File.join(ROOT, 'ios').freeze
+ANDROID_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'android').freeze
+IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
 
-VERSION = File.read(File.join(ROOT, 'VERSION'))
+VERSION = File.readlines(File.join(SUITE_NATIVE_ROOT_PATH, 'VERSION')).sample.strip
 
 import "../ios/fastlane/Fastfile"
 import "../android/fastlane/Fastfile"

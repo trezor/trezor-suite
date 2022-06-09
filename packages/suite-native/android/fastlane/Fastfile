@@ -14,7 +14,8 @@
 # update_fastlane
 
 # Paths
-APP_GRADLE = File.join(ANDROID_PATH, 'app/build.gradle').freeze
+APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
+ANDROID_KEYSTORE_PATH = File.join(ANDROID_PATH, 'release.keystore')
 JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'fastlane/pc-api-4710771878548015996-769-498f92002b4b.json').freeze
 
 # Android Specific Constants
@@ -30,38 +31,39 @@ platform :android do
     json_key: JSON_KEY_FILE_PATH,
   )[0]
 
-  desc "Android: Increase versionCode"
+  desc "Android: Increase Android versionCode and versionName"
   private_lane :increase_android_version do
-    increment_version_code(gradle_file_path: APP_GRADLE, version_code: previous_build_number + 1)
-    increment_version_name(gradle_file_path: APP_GRADLE, version_name: VERSION)
+    increment_version_code(gradle_file_path: APP_GRADLE_PATH, version_code: previous_build_number + 1)
+    increment_version_name(gradle_file_path: APP_GRADLE_PATH, version_name: VERSION)
   end
 
   desc "Runs all the tests"
   lane :test do
-    gradle(task: "test")
+    gradle(task: "test", project_dir: ANDROID_PATH)
   end
 
   desc "Build and uploads the app to play Store for an internal testing release"
   lane :playstoreInternal do |options|
     increase_android_version
-    gradle(task: 'clean')
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
     gradle(
       task: 'bundle',
       build_type: 'Release',
       properties: {
-          "android.injected.signing.store.file" => File.join(Dir.pwd, "..", "release.keystore"),
+          "android.injected.signing.store.file" => ANDROID_KEYSTORE_PATH,
           "android.injected.signing.store.password" => options[:RELEASE_KEYSTORE_PASSWORD], # keystore password
           "android.injected.signing.key.alias" => options[:RELEASE_KEYSTORE_ALIAS], # alias
           "android.injected.signing.key.password" => options[:RELEASE_KEYSTORE_KEY_PASSWORD], # key password
           "vname" => VERSION
-      }
+      },
+      project_dir: ANDROID_PATH
     )
-    # Upload Android App Bundle to PlayStore like Internal testing Release
 
-   # upload_to_play_store(
-   #   track: 'internal',
-   #   release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
-   #   skip_upload_apk: true,
-   # )
+    # Upload Android App Bundle to PlayStore like Internal testing Release
+    upload_to_play_store(
+      track: 'internal',
+      release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
+      skip_upload_apk: true,
+    )
   end
 end
