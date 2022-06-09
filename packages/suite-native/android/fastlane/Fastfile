@@ -20,7 +20,7 @@ JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'upload-key.json').freeze
 # Android Specific Constants
 APP_ID = 'com.trezorsuite'.freeze
 
-default_platform(:android)
+# default_platform(:android)
 
 platform :android do
 
@@ -55,11 +55,7 @@ platform :android do
     )
 
     # Upload Android App Bundle to PlayStore like Internal testing Release
-    upload_to_play_store(
-      track: 'internal',
-      release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
-      skip_upload_apk: true,
-    )
+
 
     # TODO push increased versions to Git and tag it
   end

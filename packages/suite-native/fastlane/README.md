@@ -36,10 +36,10 @@ Push a new beta build to TestFlight
 
 Runs all the tests
 
-### android playstoreInternal
+### android internal
 
 ```sh
-[bundle exec] fastlane android playstoreInternal
+[bundle exec] fastlane android internal
 ```
 
 Build and uploads the app to play Store for an internal testing release

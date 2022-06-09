@@ -19,13 +19,12 @@ IOS_PROJECT = "TrezorSuite.xcodeproj"
 IOS_PROJECT_WORKSPACE = "TrezorSuite.xcworkspace"
 IOS_PROJECT_SCHEME = "TrezorSuite"
 
-default_platform(:ios)
+# default_platform(:ios)
 
 platform :ios do
 
   previous_build_number = latest_testflight_build_number(
-    app_identifier: IOS_APP_ID,
-    api_key: api_key,
+    app_identifier: IOS_APP_ID
   )
 
   desc "iOS: Increase iOS versionCode and versionName"
