@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@trezor/icons';
@@ -17,10 +18,14 @@ type BottomModalProps = {
     onBackArrowClick?: () => void;
 };
 
-const modalWrapperStyle = prepareNativeStyle(utils => ({
+type WrapperStyleProps = {
+    insetBottom: number;
+};
+const modalWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.gray100,
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
+    paddingBottom: Math.max(insetBottom, utils.spacings.medium),
 }));
 
 const CLOSE_BUTTON_SIZE = 40;
@@ -50,12 +55,17 @@ export const BottomModal = ({
     hasBackArrow = false,
 }: BottomModalProps) => {
     const { applyStyle } = useNativeStyles();
+    const insets = useSafeAreaInsets();
 
     const handleCloseModal = () => onVisibilityChange(false);
 
     return (
         <BottomModalContainer isVisible={isVisible} onClose={handleCloseModal}>
-            <Box style={applyStyle(modalWrapperStyle)}>
+            <Box
+                style={applyStyle(modalWrapperStyle, {
+                    insetBottom: insets.bottom,
+                })}
+            >
                 <Box style={applyStyle(modalHeaderStyle)}>
                     {hasBackArrow && (
                         <TouchableOpacity onPress={onBackArrowClick}>
