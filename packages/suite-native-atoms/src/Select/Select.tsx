@@ -1,31 +1,37 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 
-import { CryptoIcon, CryptoIconName, FlagIcon, FlagIconName } from '@trezor/icons';
-
-import { isCryptoIconType, isFlagIconType } from './selectTypes';
+import {
+    CryptoIcon,
+    CryptoIconName,
+    FlagIcon,
+    FlagIconName,
+    isCryptoIconType,
+    isFlagIconType,
+} from '@trezor/icons';
 
 import { BottomModal } from '../Modal/BottomModal';
 import { SelectTrigger } from './SelectTrigger';
-import { SelectItem } from './SelectItem';
+import { SelectItem, SelectValue } from './SelectItem';
 
-export type SelectItem = {
+export type SelectItemType = {
     label: string;
-    value: string;
-    iconName?: FlagIconName;
+    value: SelectValue;
+    iconName?: FlagIconName | CryptoIconName;
 };
 
 type SelectProps = {
-    items: SelectItem[];
-    label: string;
-    selectedItem: SelectItem | null;
-    onSelectItem: (item: SelectItem | null) => void;
+    items: SelectItemType[];
+    selectLabel: string;
+    value: SelectValue;
+    onSelectItem: (value: SelectValue) => void;
 };
 
-export const Select = ({ items, label, selectedItem, onSelectItem }: SelectProps) => {
+export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const selectedItem = useMemo(() => items.find(item => item.value === value), [value, items]);
 
-    const handleSelectItem = (value: string) => {
-        onSelectItem(items.find(item => item.value === value) ?? null);
+    const handleSelectItem = (value: SelectValue) => {
+        onSelectItem(value);
         setIsOpen(false);
     };
 
@@ -65,7 +71,7 @@ export const Select = ({ items, label, selectedItem, onSelectItem }: SelectProps
             <SelectTrigger
                 icon={getIcon(selectedItem?.iconName)}
                 value={selectedItem?.label ?? null}
-                label={label}
+                label={selectLabel}
                 handlePress={() => setIsOpen(true)}
             />
         </>

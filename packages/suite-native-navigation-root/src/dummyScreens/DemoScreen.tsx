@@ -21,7 +21,8 @@ import {
     TipToast,
     IconButton,
     Select,
-    SelectItem,
+    SelectItemType,
+    SelectValue,
 } from '@suite-native/atoms';
 import { TypographyStyle } from '@trezor/theme';
 
@@ -44,9 +45,9 @@ const typographyItems: TypographyStyle[] = [
     'hint',
     'label',
 ];
-const selectItems: SelectItem[] = [
+const selectItems: SelectItemType[] = [
     { label: 'Czech Republic', value: 'cz', iconName: 'cz' },
-    { label: 'Slovak Republic', value: 'sk', iconName: 'cz' },
+    { label: 'Slovak Republic', value: 'sk', iconName: 'btc' },
     { label: 'Armenian Republic of Kongo', value: 'arm', iconName: 'cz' },
 ];
 
@@ -65,7 +66,7 @@ export const DemoScreen = () => {
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [isTipToastVisible, setIsTipToastVisible] = useState<boolean>(true);
-    const [selectedItem, setSelectedItem] = useState<SelectItem | null>(null);
+    const [selectedItem, setSelectedItem] = useState<SelectValue>(null);
 
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
@@ -106,9 +107,9 @@ export const DemoScreen = () => {
                     <Box marginTop="medium">
                         <Select
                             items={selectItems}
-                            selectedItem={selectedItem}
+                            value={selectedItem}
                             onSelectItem={setSelectedItem}
-                            label="Language"
+                            selectLabel="Language"
                         />
                     </Box>
                     <Box marginTop="large">

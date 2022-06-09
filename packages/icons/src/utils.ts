@@ -1,4 +1,4 @@
-import { CryptoIconName, cryptoIcons, FlagIconName, flagIcons } from '@trezor/icons';
+import { CryptoIconName, cryptoIcons, FlagIconName, flagIcons } from './icons';
 
 export const isCryptoIconType = (
     iconName: CryptoIconName | FlagIconName,

@@ -7,9 +7,10 @@ import { Box } from '../Box';
 import { Radio } from '../Radio';
 import { Text } from '../Text';
 
+export type SelectValue = string | number | null;
 export type SelectItemProps = {
     label: string;
-    value: string | number;
+    value: SelectValue;
     onSelect: () => void;
     isSelected: boolean;
     isLastChild?: boolean;
@@ -61,6 +62,8 @@ export const SelectItem = ({
     isLastChild = false,
 }: SelectItemProps) => {
     const { applyStyle } = useNativeStyles();
+
+    if (!value) return null;
 
     return (
         <TouchableOpacity style={applyStyle(selectItemStyle)} onPress={onSelect}>
