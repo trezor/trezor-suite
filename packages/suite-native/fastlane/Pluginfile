@@ -4,3 +4,5 @@
 
 gem 'fastlane-plugin-increment_version_name'
 gem 'fastlane-plugin-increment_version_code'
+gem 'fastlane-plugin-increment_build_number'
+gem 'fastlane-plugin-increment_version_number'

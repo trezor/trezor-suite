@@ -68,8 +68,8 @@ buck-out/
 
 # android
 /android/builds/*
-# fastlane supply (google service account)
-*/fastlane/pc-api-4710771878548015996-769-498f92002b4b.json
+# fastlane supply (google service account - upload key)
+android/upload-key.json
 
 # Bundle artifact
 *.jsbundle

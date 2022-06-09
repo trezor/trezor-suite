@@ -15,8 +15,7 @@
 
 # Paths
 APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
-ANDROID_KEYSTORE_PATH = File.join(ANDROID_PATH, 'release.keystore')
-JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'fastlane/pc-api-4710771878548015996-769-498f92002b4b.json').freeze
+JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'upload-key.json').freeze
 
 # Android Specific Constants
 APP_ID = 'com.trezorsuite'.freeze
@@ -43,17 +42,13 @@ platform :android do
   end
 
   desc "Build and uploads the app to play Store for an internal testing release"
-  lane :playstoreInternal do |options|
+  lane :internal do |options|
     increase_android_version
     gradle(task: 'clean', project_dir: ANDROID_PATH)
     gradle(
       task: 'bundle',
       build_type: 'Release',
       properties: {
-          "android.injected.signing.store.file" => ANDROID_KEYSTORE_PATH,
-          "android.injected.signing.store.password" => options[:RELEASE_KEYSTORE_PASSWORD], # keystore password
-          "android.injected.signing.key.alias" => options[:RELEASE_KEYSTORE_ALIAS], # alias
-          "android.injected.signing.key.password" => options[:RELEASE_KEYSTORE_KEY_PASSWORD], # key password
           "vname" => VERSION
       },
       project_dir: ANDROID_PATH
@@ -65,5 +60,7 @@ platform :android do
       release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
       skip_upload_apk: true,
     )
+
+    # TODO push increased versions to Git and tag it
   end
 end
