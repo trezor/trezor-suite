@@ -20,18 +20,16 @@ JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'upload-key.json').freeze
 # Android Specific Constants
 APP_ID = 'com.trezorsuite'.freeze
 
-default_platform(:android)
-
 platform :android do
-
-  previous_build_number = google_play_track_version_codes(
-    package_name: APP_ID,
-    track: "internal",
-    json_key: JSON_KEY_FILE_PATH,
-  )[0]
 
   desc "Android: Increments internal build number and version number"
   private_lane :bump_build_number do
+    previous_build_number = google_play_track_version_codes(
+      package_name: APP_ID,
+      track: "internal",
+      json_key: JSON_KEY_FILE_PATH,
+    )[0]
+
     android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
   end
@@ -41,7 +39,7 @@ platform :android do
     gradle(task: "test", project_dir: ANDROID_PATH)
   end
 
-  desc "Build and uploads the app to play Store for an internal testing release"
+  desc "Build and upload the app to play Store for an internal testing release."
   lane :internal do |options|
     gradle(task: 'clean', project_dir: ANDROID_PATH)
 
@@ -55,12 +53,12 @@ platform :android do
     )
 
     # Upload Android App Bundle to PlayStore like Internal testing Release
-    #upload_to_play_store(
-    #  track: 'internal',
-    #  release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
-    #  skip_upload_apk: true,
-    #  version_name: VERSION
-    #)
+    upload_to_play_store(
+      track: 'internal',
+      release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
+      skip_upload_apk: true,
+      version_name: VERSION
+    )
 
     # TODO push increased versions to Git and tag it
   end
