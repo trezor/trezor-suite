@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { P, variables } from '@trezor/components';
+
 import { DeviceAnimation } from '@onboarding-components';
-import { P } from '@trezor/components';
-import { useDevice } from '@suite-hooks';
+import { useDevice, useSelector } from '@suite-hooks';
+import { isWebUsb } from '@suite-utils/transport';
+import { WebUsbButton } from '@suite-components/WebUsbButton';
 
 const DeviceBadge = styled(DeviceAnimation)`
     margin: 8px 16px 8px 0;
@@ -16,6 +19,7 @@ const Wrapper = styled.div`
     border-radius: 12px;
     margin-bottom: 24px;
     padding: 8px 16px;
+    width: 100%;
 `;
 
 const Description = styled(P)`
@@ -26,6 +30,21 @@ const Column = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 100%;
+`;
+
+const Title = styled(P)`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 0.4rem;
+    }
 `;
 
 interface DeviceBannerProps {
@@ -35,11 +54,24 @@ interface DeviceBannerProps {
 
 export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const { device } = useDevice();
+
+    const { transport } = useSelector(state => ({
+        transport: state.suite.transport,
+    }));
+
+    const isWebUsbTransport = isWebUsb(transport);
+
     return (
         <Wrapper data-test="@settings/device/disconnected-device-banner">
             <DeviceBadge type="CONNECT" shape="CIRCLE" size={64} device={device} />
             <Column>
-                <P weight="bold">{title}</P>
+                <Title weight="bold">
+                    {title}{' '}
+                    {!description && isWebUsbTransport && !device?.connected && (
+                        <WebUsbButton icon="SEARCH" />
+                    )}
+                </Title>
+
                 {description && <Description>{description}</Description>}
             </Column>
         </Wrapper>
