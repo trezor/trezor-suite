@@ -30,9 +30,6 @@ export const SettingsCoins = () => {
             {device?.connected === false && (
                 <DeviceBanner
                     title={
-                        <Translation id="TR_SETTINGS_COINS_BANNER_TITLE_REMEMBERED_DISCONNECTED" />
-                    }
-                    description={
                         <Translation id="TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED" />
                     }
                 />
