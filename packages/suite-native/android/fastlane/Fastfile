@@ -43,7 +43,6 @@ platform :android do
   lane :internal do |options|
     gradle(task: 'clean', project_dir: ANDROID_PATH)
 
-    # Bump android.defaultConfig.versionCode
     bump_build_number
 
     gradle(
@@ -55,9 +54,9 @@ platform :android do
     # Upload Android App Bundle to PlayStore like Internal testing Release
     upload_to_play_store(
       track: 'internal',
+      # set as "draft" to complete the release at some other time in PlayStore
       release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
-      skip_upload_apk: true,
-      version_name: VERSION
+      skip_upload_apk: true
     )
 
     # TODO push increased versions to Git and tag it

@@ -13,6 +13,17 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
+### prepare_release
+
+```sh
+[bundle exec] fastlane prepare_release
+```
+
+Updates the app identifier, display name for dev, testing, and production releases
+
+----
+
+
 ## iOS
 
 ### ios beta
@@ -42,7 +53,7 @@ Runs all the tests
 [bundle exec] fastlane android internal
 ```
 
-Build and uploads the app to play Store for an internal testing release
+Build and upload the app to play Store for an internal testing release.
 
 ----
 

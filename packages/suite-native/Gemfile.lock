@@ -155,7 +155,11 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
+    fastlane-plugin-android_versioning (0.5.5)
+    fastlane-plugin-find_replace_string (0.1.0)
     fastlane-plugin-load_json (0.0.1)
+    fastlane-plugin-update_android_strings (0.1.0)
+      ox
     fastlane-plugin-versioning_android (0.1.0)
     ffi (1.15.5)
     fourflusher (2.3.1)
@@ -221,6 +225,7 @@ GEM
     netrc (0.11.0)
     optparse (0.1.1)
     os (1.1.4)
+    ox (2.14.11)
     plist (3.6.0)
     public_suffix (4.0.7)
     rake (13.0.6)
@@ -281,7 +286,10 @@ PLATFORMS
 DEPENDENCIES
   cocoapods (~> 1.11, >= 1.11.2)
   fastlane
+  fastlane-plugin-android_versioning
+  fastlane-plugin-find_replace_string
   fastlane-plugin-load_json
+  fastlane-plugin-update_android_strings
   fastlane-plugin-versioning_android
 
 RUBY VERSION

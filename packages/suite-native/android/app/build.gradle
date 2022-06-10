@@ -84,7 +84,14 @@ project.ext.react = [
     composeSourceMapsPath: "../../node_modules/react-native/scripts/compose-source-maps.js",
     cliPath: "../../../../node_modules/react-native/cli.js",
     entryFile: "packages/suite-native/index.js",
-    reactRoot: "../../../../"
+    reactRoot: "../../../../",
+    bundleInDebug: false,
+    bundleInTesting: true,
+    bundleInRelease: true,
+    devDisabledInDebug: false,
+    devDisabledInTesting: true,
+    devDisabledInRelease: true,
+    inputExcludes: ["packages/suite-native/ios/**"]
 ]
 
 apply from: "../../../../node_modules/react-native/react.gradle"
@@ -141,6 +148,7 @@ android {
 
     defaultConfig {
         applicationId "com.trezorsuite"
+        applicationIdSuffix ".testing"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3
@@ -227,6 +235,21 @@ android {
         }
     }
     signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        testing {
+            // TODO generate separate keystore file for testing
+            if (project.hasProperty('TREZOR_UPLOAD_STORE_FILE')) {
+                storeFile file(TREZOR_UPLOAD_STORE_FILE)
+                storePassword TREZOR_UPLOAD_STORE_PASSWORD
+                keyAlias TREZOR_UPLOAD_KEY_ALIAS
+                keyPassword TREZOR_UPLOAD_KEY_PASSWORD
+            }
+        }
         release {
             if (project.hasProperty('TREZOR_UPLOAD_STORE_FILE')) {
                 storeFile file(TREZOR_UPLOAD_STORE_FILE)
@@ -235,16 +258,18 @@ android {
                 keyPassword TREZOR_UPLOAD_KEY_PASSWORD
             }
         }
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
     }
     buildTypes {
         debug {
+            applicationIdSuffix ".dev"
             signingConfig signingConfigs.debug
+        }
+        testing {
+            applicationIdSuffix ".testing"
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.testing
+            matchingFallbacks = ['release']
         }
         release {
             // see https://reactnative.dev/docs/signed-apk-android.
