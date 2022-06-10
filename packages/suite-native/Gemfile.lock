@@ -155,8 +155,8 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
-    fastlane-plugin-increment_version_code (0.4.3)
-    fastlane-plugin-increment_version_name (0.0.10)
+    fastlane-plugin-load_json (0.0.1)
+    fastlane-plugin-versioning_android (0.1.0)
     ffi (1.15.5)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -281,8 +281,8 @@ PLATFORMS
 DEPENDENCIES
   cocoapods (~> 1.11, >= 1.11.2)
   fastlane
-  fastlane-plugin-increment_version_code
-  fastlane-plugin-increment_version_name
+  fastlane-plugin-load_json
+  fastlane-plugin-versioning_android
 
 RUBY VERSION
    ruby 2.7.6p219

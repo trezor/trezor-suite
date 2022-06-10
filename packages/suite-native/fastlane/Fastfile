@@ -8,7 +8,9 @@ SUITE_NATIVE_ROOT_PATH = File.expand_path('../', Dir.pwd).freeze
 ANDROID_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'android').freeze
 IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
 
-VERSION = File.readlines(File.join(SUITE_NATIVE_ROOT_PATH, 'VERSION')).sample.strip
+# Retrieve version of Suite Native app in package.json
+PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
+VERSION = load_json(json_path: "package.json")["suiteNativeVersion"]
 
 import "../ios/fastlane/Fastfile"
 import "../android/fastlane/Fastfile"
