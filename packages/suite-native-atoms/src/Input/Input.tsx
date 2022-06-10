@@ -1,26 +1,49 @@
-import React, { useState } from 'react';
-import { TextInput } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { TouchableWithoutFeedback, TextInput } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Text } from '../Text';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { Box } from '../Box';
 
 type InputProps = {
     value: string;
     label: string;
     onChange: (value: string) => void;
+    isInvalid?: boolean;
+    hasWarning?: boolean;
 };
 
-const inputWrapperStyle = prepareNativeStyle(utils => ({
-    borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.gray300,
-    backgroundColor: utils.colors.gray300,
-    borderRadius: utils.borders.radii.small,
-    paddingVertical: utils.spacings.small,
-    paddingHorizontal: 14,
-    height: 58,
-    justifyContent: 'center',
-}));
+type InputWrapperStyleProps = {
+    hasWarning: boolean;
+    isInvalid: boolean;
+};
+const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
+    (utils, { isInvalid, hasWarning }) => ({
+        borderWidth: utils.borders.widths.small,
+        borderColor: utils.colors.gray300,
+        backgroundColor: utils.colors.gray300,
+        borderRadius: utils.borders.radii.small,
+        paddingVertical: utils.spacings.small,
+        paddingHorizontal: 14,
+        height: 58,
+        justifyContent: 'center',
+        extend: [
+            {
+                condition: hasWarning,
+                style: {
+                    borderColor: utils.colors.yellow,
+                    borderWidth: utils.borders.widths.large,
+                },
+            },
+            {
+                condition: isInvalid,
+                style: {
+                    borderColor: utils.colors.red,
+                },
+            },
+        ],
+    }),
+);
 
 const inputStyle = prepareNativeStyle(utils => ({
     ...utils.typography.body,
@@ -31,31 +54,40 @@ const inputStyle = prepareNativeStyle(utils => ({
     maxHeight: 24,
 }));
 
-export const Input = ({ value, onChange, label }: InputProps) => {
+export const Input = ({
+    value,
+    onChange,
+    label,
+    isInvalid = false,
+    hasWarning = false,
+}: InputProps) => {
     const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
-
-    const { applyStyle } = useNativeStyles();
-
+    const inputRef = useRef<TextInput | null>(null);
     const shouldDisplayLabel = isInputFocused || Boolean(value);
 
+    const { applyStyle, utils } = useNativeStyles();
+
+    const handleInputFocus = () => inputRef?.current?.focus();
+
     return (
-        <TouchableWithoutFeedback
-            style={applyStyle(inputWrapperStyle)}
-            onPress={() => console.log('ahoj')}
-        >
-            {shouldDisplayLabel && (
-                <Text variant="label" color="gray600" numberOfLines={1}>
-                    {label}
-                </Text>
-            )}
-            <TextInput
-                value={value}
-                onChangeText={onChange}
-                style={applyStyle(inputStyle)}
-                onFocus={() => setIsInputFocused(true)}
-                onBlur={() => setIsInputFocused(false)}
-                placeholder={isInputFocused ? '' : label}
-            />
+        <TouchableWithoutFeedback onPress={handleInputFocus}>
+            <Box style={applyStyle(inputWrapperStyle, { isInvalid, hasWarning })}>
+                {shouldDisplayLabel && (
+                    <Text variant="label" color="gray600" numberOfLines={1}>
+                        {label}
+                    </Text>
+                )}
+                <TextInput
+                    ref={inputRef}
+                    value={value}
+                    onChangeText={onChange}
+                    style={applyStyle(inputStyle)}
+                    onFocus={() => setIsInputFocused(true)}
+                    onBlur={() => setIsInputFocused(false)}
+                    placeholder={isInputFocused ? '' : label}
+                    placeholderTextColor={utils.colors.gray600}
+                />
+            </Box>
         </TouchableWithoutFeedback>
     );
 };

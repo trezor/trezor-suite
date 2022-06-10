@@ -25,6 +25,7 @@ import {
     SelectValue,
     InputWrapper,
     Input,
+    VStack,
 } from '@suite-native/atoms';
 import { TypographyStyle } from '@trezor/theme';
 
@@ -36,6 +37,12 @@ const backgroundStyle = prepareNativeStyle<{ isDarkMode: boolean }>(
         flex: 1,
     }),
 );
+
+const inputStackStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.gray100,
+    borderRadius: utils.borders.radii.medium,
+    padding: utils.spacings.small,
+}));
 
 const typographyItems: TypographyStyle[] = [
     'titleLarge',
@@ -89,9 +96,33 @@ export const DemoScreen = () => {
                         placeholder="Type here.."
                     />
                     <Box marginVertical="medium">
-                        <InputWrapper label="Recipient">
-                            <Input value={input2Text} onChange={setInput2Text} label="To" />
-                        </InputWrapper>
+                        <VStack style={applyStyle(inputStackStyle)}>
+                            <InputWrapper label="Recipient">
+                                <Input value={input2Text} onChange={setInput2Text} label="To" />
+                            </InputWrapper>
+                            <InputWrapper>
+                                <Input
+                                    value={input2Text}
+                                    onChange={setInput2Text}
+                                    label="From"
+                                    hasWarning
+                                />
+                            </InputWrapper>
+                        </VStack>
+                    </Box>
+                    <Box marginVertical="medium">
+                        <VStack style={applyStyle(inputStackStyle)}>
+                            <InputWrapper
+                                hint={<Hint variant="error">This input is not valid.</Hint>}
+                            >
+                                <Input
+                                    value={input2Text}
+                                    onChange={setInput2Text}
+                                    label="To"
+                                    isInvalid
+                                />
+                            </InputWrapper>
+                        </VStack>
                     </Box>
                     <Box>
                         <IconButton
