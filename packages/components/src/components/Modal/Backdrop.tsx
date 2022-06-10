@@ -9,12 +9,19 @@ const Wrapper = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow: auto;
+
+    /* backdrop-filter does not work in Firefox, use darker background instead */
+    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.3);
+
+    @supports not ((-webkit-backdrop-filter: blur(5px)) or (backdrop-filter: blur(5px))) {
+        background: rgba(0, 0, 0, 0.6);
+    }
+
     > :first-child {
         margin-top: auto;
     }
