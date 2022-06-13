@@ -11,12 +11,6 @@ const GlobalStyle = createGlobalStyle`
         padding: 0;
     }
 
-    *:focus, *:active, *:active:focus, *::selection, *::-moz-selection {
-        outline: 0 !important;
-        -webkit-appearance: none;
-        -webkit-tap-highlight-color: rgba(0,0,0,0);
-    }
-
     html, body {
         width: 100%;
         height: 100%;
