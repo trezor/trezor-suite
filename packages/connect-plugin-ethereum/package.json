@@ -2,7 +2,7 @@
     "name": "@trezor/connect-plugin-ethereum",
     "version": "9.0.0",
     "author": "Trezor <info@trezor.io>",
-    "homepage": "https://github.com/trezor/trezor-suite/packages/connect-plugin-ethereum",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-ethereum",
     "description": "@trezor/connect plugin for Ethereum",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
