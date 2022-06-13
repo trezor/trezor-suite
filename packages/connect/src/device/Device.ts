@@ -435,12 +435,10 @@ export class Device extends EventEmitter {
                 payload.session_id = internalState;
             }
             if (legacy && !this.isT1()) {
-                // @ts-expect-error legacy protobuf
-                payload.state = internalState;
+                payload.session_id = internalState;
                 if (useEmptyPassphrase) {
                     payload._skip_passphrase = useEmptyPassphrase;
-                    // @ts-expect-error legacy protobuf
-                    payload.state = null;
+                    payload.session_id = undefined;
                 }
             }
         }
