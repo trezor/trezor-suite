@@ -44,7 +44,11 @@ export const factory = ({
         },
 
         removeAllListeners: type => {
-            eventEmitter.removeAllListeners(type);
+            if (typeof type === 'string') {
+                eventEmitter.removeAllListeners(type);
+            } else {
+                eventEmitter.removeAllListeners();
+            }
         },
 
         uiResponse,
