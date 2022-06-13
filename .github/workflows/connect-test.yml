@@ -6,6 +6,7 @@ on:
     paths:
       - "packages/blockchain-link"
       - "packages/connect*/**"
+      - "packages/integration-tests/project/connect*/**"
       - "packages/transport"
       - "packages/utxo-lib"
       - "packages/utils"
@@ -42,7 +43,7 @@ jobs:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
-      test-pattern: "init authorizeCoinJoin"
+      test-pattern: "init authorizeCoinJoin passphrase"
 
   management:
     needs: [build]

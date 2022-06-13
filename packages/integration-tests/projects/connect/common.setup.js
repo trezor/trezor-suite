@@ -72,7 +72,7 @@ const setup = async (controller, options) => {
             type: 'emulator-setup',
             mnemonic,
             pin: options.pin || '',
-            passphrase_protection: false,
+            passphrase_protection: !!options.passphrase_protection,
             label: options.label || 'TrezorT',
             needs_backup: false,
             options,
