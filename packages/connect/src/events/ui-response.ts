@@ -61,9 +61,9 @@ export interface UiResponseWord {
 export interface UiResponsePassphrase {
     type: typeof UI_RESPONSE.RECEIVE_PASSPHRASE;
     payload: {
-        save: boolean;
         value: string;
         passphraseOnDevice?: boolean;
+        save?: boolean;
     };
 }
 

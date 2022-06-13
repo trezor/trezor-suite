@@ -2,7 +2,7 @@
 
 export interface CommonParams {
     device?: {
-        path: string;
+        path?: string;
         state?: string;
         instance?: number;
     };
