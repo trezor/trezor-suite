@@ -2,7 +2,7 @@
     "name": "@trezor/utxo-lib",
     "version": "1.0.0",
     "author": "Trezor <info@trezor.io>",
-    "homepage": "https://github.com/trezor/trezor-suite/packages/utxo-lib",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib",
     "description": "Client-side Bitcoin-like JavaScript library",
     "license": "SEE LICENSE IN LICENSE.md",
     "repository": {
