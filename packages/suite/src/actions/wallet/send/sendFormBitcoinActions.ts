@@ -1,7 +1,7 @@
-import TrezorConnect, { FeeLevel, SignTransaction } from '@trezor/connect';
+import TrezorConnect, { FeeLevel, Params, PROTO, SignTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, hasNetworkFeatures } from '@wallet-utils/accountUtils';
 import { getBitcoinComposeOutputs, restoreOrigOutputsOrder } from '@wallet-utils/sendFormUtils';
 import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
 import {
@@ -14,11 +14,22 @@ import {
 import { Dispatch, GetState } from '@suite-types';
 
 export const composeTransaction =
-    (formValues: FormState, formState: UseSendFormState) => async (dispatch: Dispatch) => {
+    (formValues: FormState, formState: UseSendFormState) =>
+    async (dispatch: Dispatch, getState: GetState) => {
         const { account, feeInfo } = formState;
+
+        const {
+            settings: { bitcoinAmountUnit },
+        } = getState().wallet;
+        const { device } = getState().suite;
+
+        const isSatoshis =
+            bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI &&
+            !device?.unavailableCapabilities?.amountUnit;
+
         if (!account.addresses || !account.utxo) return;
 
-        const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol);
+        const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol, isSatoshis);
         if (composeOutputs.length < 1) return;
 
         // clone FeeLevels in rbf, the will be modified later
@@ -145,7 +156,7 @@ export const composeTransaction =
                         .toString();
                 }
                 if (typeof tx.max === 'string') {
-                    tx.max = formatNetworkAmount(tx.max, account.symbol);
+                    tx.max = isSatoshis ? tx.max : formatNetworkAmount(tx.max, account.symbol);
                 }
             } else if (tx.error === 'NOT-ENOUGH-FUNDS') {
                 tx.errorMessage = { id: 'AMOUNT_IS_NOT_ENOUGH' };
@@ -166,15 +177,20 @@ export const composeTransaction =
 export const signTransaction =
     (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount } = getState().wallet;
+        const {
+            selectedAccount,
+            settings: { bitcoinAmountUnit },
+        } = getState().wallet;
         const { device } = getState().suite;
+
         if (
             selectedAccount.status !== 'loaded' ||
             !device ||
             !transactionInfo ||
             transactionInfo.type !== 'final'
-        )
+        ) {
             return;
+        }
 
         // transactionInfo needs some additional changes:
         const { account } = selectedAccount;
@@ -207,7 +223,14 @@ export const signTransaction =
             signEnhancement.outputs = restoreOrigOutputsOrder(transaction.outputs, outputs, txid);
         }
 
-        const signPayload = {
+        if (
+            hasNetworkFeatures(account, 'amount-unit') &&
+            !device.unavailableCapabilities?.amountUnit
+        ) {
+            signEnhancement.amountUnit = bitcoinAmountUnit;
+        }
+
+        const signPayload: Params<SignTransaction> = {
             device: {
                 path: device.path,
                 instance: device.instance,

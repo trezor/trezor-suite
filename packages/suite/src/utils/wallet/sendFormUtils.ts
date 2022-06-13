@@ -242,7 +242,11 @@ export const findToken = (tokens: Account['tokens'], address?: string | null) =>
 
 // BTC composeTransaction
 // returns ComposeOutput[]
-export const getBitcoinComposeOutputs = (values: Partial<FormState>, symbol: Account['symbol']) => {
+export const getBitcoinComposeOutputs = (
+    values: Partial<FormState>,
+    symbol: Account['symbol'],
+    isSatoshis?: boolean,
+) => {
     const result: ComposeOutput[] = [];
     if (!values || !Array.isArray(values.outputs)) return result;
 
@@ -270,7 +274,10 @@ export const getBitcoinComposeOutputs = (values: Partial<FormState>, symbol: Acc
                 result.push({ type: 'send-max-noaddress' });
             }
         } else if (output.amount) {
-            const amount = networkAmountToSatoshi(output.amount, symbol);
+            const amount = isSatoshis
+                ? output.amount || '0'
+                : networkAmountToSatoshi(output.amount, symbol);
+
             if (address) {
                 result.push({
                     type: 'external',

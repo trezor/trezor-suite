@@ -52,7 +52,7 @@ describe('Send form for bitcoin', () => {
     });
 
     it('switch display units to satoshis, fill a form in satoshis and send', () => {
-        cy.getTestElement('amount-unit-switch/btc').click();
+        cy.getTestElement('amount-unit-switch/regtest').click();
 
         // test adding and removing outputs
         cy.getTestElement('outputs[0].amount', { scrollBehavior: 'center' }).type(600);

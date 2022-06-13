@@ -35,23 +35,26 @@ export const useSendFormCompose = ({
 }: Props) => {
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
-    const composeRequestRef = useRef<string | undefined>(undefined); // input name, caller of compose request
-    const composeRequestID = useRef(0); // compose ID, incremented with every compose request
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
-
-    const debounce = useAsyncDebounce();
 
     const { composeTransaction } = useActions({
         composeTransaction: sendFormActions.composeTransaction,
     });
+
+    const composeRequestRef = useRef<string | undefined>(undefined); // input name, caller of compose request
+    const composeRequestID = useRef(0); // compose ID, incremented with every compose request
+
+    const debounce = useAsyncDebounce();
 
     const composeDraft = useCallback(
         async (values: FormState) => {
             // start composing without debounce
             updateContext({ isLoading: true, isDirty: true });
             setComposedLevels(undefined);
+
             const result = await composeTransaction(values, state);
+
             setComposedLevels(result);
             updateContext({ isLoading: false, isDirty: true }); // isDirty needs to be set again, "state" is cached in updateContext callback
         },
@@ -62,10 +65,14 @@ export const useSendFormCompose = ({
     const processComposeRequest = useCallback(async () => {
         // eslint-disable-next-line require-await
         const composeInner = async () => {
-            if (Object.keys(errors).length > 0) return;
+            if (Object.keys(errors).length > 0) {
+                return;
+            }
+
             const values = getValues();
             // save draft (it could be changed later, after composing)
             setDraftSaveRequest(true);
+
             return composeTransaction(values, state);
         };
 

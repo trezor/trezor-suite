@@ -2,7 +2,7 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { DeepPartial } from 'react-hook-form';
-import * as fixtures from '../__fixtures__/useSendForm';
+import { PROTO } from '@trezor/connect';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
 import resizeReducer from '@suite-reducers/resizeReducer';
 import {
@@ -15,6 +15,7 @@ import {
 
 import { SendContextValues } from '@wallet-types/sendForm';
 import SendIndex from '@wallet-views/send';
+import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
 
 jest.mock('@suite-actions/routerActions', () => ({
@@ -35,9 +36,10 @@ interface Args {
     send?: Partial<SendState>;
     fees?: any;
     selectedAccount?: any;
+    bitcoinAmountUnit?: PROTO.AmountUnit;
 }
 
-export const getInitialState = ({ send, fees, selectedAccount }: Args = {}) => ({
+export const getInitialState = ({ send, fees, selectedAccount, bitcoinAmountUnit }: Args = {}) => ({
     ...fixtures.DEFAULT_STORE,
     wallet: {
         ...fixtures.DEFAULT_STORE.wallet,
@@ -50,6 +52,11 @@ export const getInitialState = ({ send, fees, selectedAccount }: Args = {}) => (
             ...fees,
         },
         selectedAccount: selectedAccount ?? fixtures.DEFAULT_STORE.wallet.selectedAccount,
+        settings: {
+            ...fixtures.DEFAULT_STORE.wallet.settings,
+            bitcoinAmountUnit:
+                bitcoinAmountUnit || fixtures.DEFAULT_STORE.wallet.settings.bitcoinAmountUnit,
+        },
     },
     devices: [],
     resize: resizeReducer(undefined, { type: 'foo' } as any),
@@ -318,6 +325,31 @@ describe('useSendForm hook', () => {
 
             // execute user actions sequence
             await actionSequence(f.actionSequence, a => actionCallback(callback, a));
+
+            // validate finalResult
+            actionCallback(callback, { result: f.finalResult });
+
+            unmount();
+        });
+    });
+
+    fixtures.amountUnitChange.forEach(f => {
+        it(f.description, async () => {
+            TrezorConnect.setTestFixtures(f.connect);
+            const store = initStore(getInitialState(f.store));
+            const callback: TestCallback = {};
+            const { unmount } = renderWithProviders(
+                store,
+                <SendIndex>
+                    <Component callback={callback} />
+                </SendIndex>,
+            );
+
+            // wait for first render
+            await waitForLoader();
+
+            // execute user actions sequence
+            await actionSequence(f.actions, a => actionCallback(callback, a));
 
             // validate finalResult
             actionCallback(callback, { result: f.finalResult });
