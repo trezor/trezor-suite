@@ -16,3 +16,4 @@ export const nativeSpacings = {
 } as const;
 
 export type NativeSpacings = typeof nativeSpacings;
+export type NativeSpacing = keyof typeof nativeSpacings;

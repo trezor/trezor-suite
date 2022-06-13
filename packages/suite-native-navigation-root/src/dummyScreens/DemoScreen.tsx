@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StatusBar, useColorScheme, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { SafeAreaView, ScrollView, StatusBar, TextInput, useColorScheme, View } from 'react-native';
 
 import { Icon, CryptoIcon, FlagIcon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -64,6 +64,7 @@ export const DemoScreen = () => {
     const isDarkMode = useColorScheme() === 'dark';
     const [inputText, setInputText] = useState<string>('');
     const [input2Text, setInput2Text] = useState<string>('');
+    const [input3Text, setInput3Text] = useState<string>('sf51s4afsfwfs8f4');
     const { applyStyle } = useNativeStyles();
     const [radioChecked, setRadioChecked] = useState<string>('second');
     const [isCheckBox1Checked, setIsCheckBox1Checked] = useState(false);
@@ -77,6 +78,7 @@ export const DemoScreen = () => {
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [isTipToastVisible, setIsTipToastVisible] = useState<boolean>(true);
     const [selectedItem, setSelectedItem] = useState<SelectValue>(null);
+    const demoInputRef = useRef<TextInput | null>(null);
 
     const handleRadioPress = (value: string | number) => {
         setRadioChecked(value.toString());
@@ -96,30 +98,34 @@ export const DemoScreen = () => {
                         placeholder="Type here.."
                     />
                     <Box marginVertical="medium">
-                        <VStack style={applyStyle(inputStackStyle)}>
+                        <VStack style={applyStyle(inputStackStyle)} spacing="small">
                             <InputWrapper label="Recipient">
-                                <Input value={input2Text} onChange={setInput2Text} label="To" />
+                                <Input
+                                    ref={demoInputRef}
+                                    value={input2Text}
+                                    onChange={setInput2Text}
+                                    label="To"
+                                />
                             </InputWrapper>
                             <InputWrapper>
                                 <Input
-                                    value={input2Text}
-                                    onChange={setInput2Text}
+                                    value={input3Text}
+                                    onChange={setInput3Text}
                                     label="From"
+                                    leftIcon={<CryptoIcon name="btc" />}
                                     hasWarning
                                 />
                             </InputWrapper>
                         </VStack>
                     </Box>
                     <Box marginVertical="medium">
-                        <VStack style={applyStyle(inputStackStyle)}>
-                            <InputWrapper
-                                hint={<Hint variant="error">This input is not valid.</Hint>}
-                            >
+                        <VStack style={applyStyle(inputStackStyle)} spacing="small">
+                            <InputWrapper hint="This input is not valid.">
                                 <Input
                                     value={input2Text}
                                     onChange={setInput2Text}
                                     label="To"
-                                    isInvalid
+                                    hasError
                                 />
                             </InputWrapper>
                         </VStack>
@@ -152,6 +158,18 @@ export const DemoScreen = () => {
                         />
                     </Box>
                     <Box marginTop="large">
+                        {isTipToastVisible && (
+                            <TipToast
+                                title="TIP"
+                                description="Tip toast"
+                                onClose={() => {
+                                    setIsTipToastVisible(false);
+                                    demoInputRef?.current?.focus();
+                                }}
+                            />
+                        )}
+                    </Box>
+                    <Box marginTop="large">
                         <FlagIcon name="cz" />
                         <Chip
                             icon={<CryptoIcon name="btc" />}
@@ -166,15 +184,6 @@ export const DemoScreen = () => {
                             onSelect={() => setIsChip2Selected(!isChip2Selected)}
                             description="inc Tokens"
                         />
-                    </Box>
-                    <Box marginTop="large">
-                        {isTipToastVisible && (
-                            <TipToast
-                                title="TIP"
-                                description="Tip toast"
-                                onClose={() => setIsTipToastVisible(false)}
-                            />
-                        )}
                     </Box>
                     <Box marginTop="large">
                         <Text variant="titleLarge">Title Large</Text>
@@ -211,7 +220,7 @@ export const DemoScreen = () => {
                     </Box>
                     <Box marginVertical="medium">
                         <Text>Hints:</Text>
-                        <Hint variant="hint">Hned to mažem</Hint>
+                        <Hint>Hned to mažem</Hint>
                         <Hint variant="error">Please enter a valid address dumbo</Hint>
                     </Box>
                     <Box marginVertical="medium">

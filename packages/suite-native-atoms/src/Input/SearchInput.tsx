@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Pressable, TextInput, TouchableOpacity } from 'react-native';
 
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -68,7 +68,7 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
     };
 
     return (
-        <TouchableWithoutFeedback onPress={handleInputFocus}>
+        <Pressable onPress={handleInputFocus}>
             <Box style={applyStyle(inputWrapperStyle, { isFocused })}>
                 <Box>
                     <Icon name="search" color="gray600" />
@@ -89,6 +89,6 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
                     </TouchableOpacity>
                 )}
             </Box>
-        </TouchableWithoutFeedback>
+        </Pressable>
     );
 };

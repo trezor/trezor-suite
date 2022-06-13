@@ -4,11 +4,13 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
 import { Text } from '../Text';
+import { Hint } from '../Hint';
 
 type InputWrapperProps = {
     children: ReactNode;
     label?: string;
-    hint?: ReactNode;
+    hint?: string;
+    error?: string;
 };
 
 const labelStyle = prepareNativeStyle(utils => ({
@@ -17,7 +19,7 @@ const labelStyle = prepareNativeStyle(utils => ({
     marginBottom: 18,
 }));
 
-export const InputWrapper = ({ children, label, hint }: InputWrapperProps) => {
+export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -28,7 +30,8 @@ export const InputWrapper = ({ children, label, hint }: InputWrapperProps) => {
                 </Text>
             )}
             <Box>{children}</Box>
-            {hint}
+            {!!error && <Hint variant="error">{error}</Hint>}
+            {!!hint && <Hint>{hint}</Hint>}
         </Box>
     );
 };
