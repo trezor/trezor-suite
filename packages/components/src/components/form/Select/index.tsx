@@ -157,7 +157,6 @@ const selectStyle = (
         fontWeight: FONT_WEIGHT.MEDIUM,
         '&:hover': {
             cursor: 'pointer',
-            background: theme.BG_WHITE_ALT_HOVER,
         },
         '&:active': {
             background: theme.BG_WHITE_ALT_HOVER,
