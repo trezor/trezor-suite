@@ -63,9 +63,15 @@ const MenuList = (props: MenuListComponentProps<Option, boolean>) => {
     }, [children]);
 
     return (
-        <List ref={listRef} height={34 * 5} itemCount={children.length} itemSize={34} width="100%">
+        <StyledList
+            ref={listRef}
+            height={34 * 5 + 8}
+            itemCount={children.length}
+            itemSize={34}
+            width="100%"
+        >
             {({ index, style }) => <div style={style}>{children[index]}</div>}
-        </List>
+        </StyledList>
     );
 };
 
