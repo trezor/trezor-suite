@@ -1,4 +1,5 @@
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import { PROTO } from '@trezor/connect';
 
 export const BTC_ACCOUNT = {
     status: 'loaded',
@@ -90,6 +91,7 @@ export const DEFAULT_STORE = {
             localCurrency: 'usd',
             lastUsedFeeLevel: {},
             debug: {},
+            bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         },
         blockchain: {
             btc: {},
@@ -1836,5 +1838,95 @@ export const feeChange = [
         finalResult: {
             getAccountInfoCalls: 2,
         },
+    },
+];
+
+export const amountUnitChange = [
+    {
+        description: 'compose with satoshi AmountUnit',
+        connect: [
+            {
+                success: true,
+                payload: [
+                    {
+                        type: 'final',
+                        max: '100000000',
+                    },
+                ],
+            },
+        ],
+        store: {
+            bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
+        },
+        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 100 }],
+        finalResult: {
+            composeTransactionCalls: 1,
+            formValues: {
+                selectedFee: undefined,
+                outputs: [{ address: '', amount: '111' }],
+            },
+        },
+    },
+    {
+        description: 'compose with satoshi AmountUnit',
+        connect: [
+            {
+                success: true,
+                payload: [
+                    {
+                        type: 'final',
+                        max: '100000000',
+                    },
+                ],
+            },
+        ],
+        store: {
+            bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
+        },
+        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111' }],
+        finalResult: {
+            composeTransactionCalls: 1,
+            formValues: {
+                selectedFee: undefined,
+                outputs: [{ address: '', amount: '111' }],
+            },
+        },
+    },
+    {
+        description: 'setMax with satoshi AmountUnit',
+        connect: [
+            {
+                success: true,
+                payload: [
+                    {
+                        type: 'nonfinal',
+                        max: '100000000',
+                    },
+                ],
+            },
+        ],
+        actions: [
+            {
+                type: 'hover',
+                element: 'outputs[0].amount',
+            },
+            {
+                type: 'click',
+                element: 'outputs[0].setMax',
+                result: {
+                    composeTransactionCalls: 1,
+                    composeTransactionParams: {
+                        outputs: [{ type: 'send-max-noaddress' }],
+                    },
+                    formValues: {
+                        setMaxOutputId: 0,
+                        outputs: [{ address: '', amount: '1', fiat: '1.00' }],
+                    },
+                    composedLevels: {
+                        normal: { type: 'nonfinal' },
+                    },
+                },
+            },
+        ],
     },
 ];

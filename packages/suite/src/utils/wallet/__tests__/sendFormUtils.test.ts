@@ -132,6 +132,9 @@ describe('sendForm utils', () => {
         expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
             { type: 'noaddress', amount: '100000000' },
         ]);
+        expect(getBitcoinComposeOutputs({ outputs }, 'btc', true)).toEqual([
+            { type: 'noaddress', amount: '1' },
+        ]);
 
         outputs = [
             { type: 'payment', amount: '' },
