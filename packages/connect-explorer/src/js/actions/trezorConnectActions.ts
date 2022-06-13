@@ -40,7 +40,7 @@ export const init =
 
         const { origin } = window.location;
 
-        if (process?.env?.__TREZOR_CONNECT_SRC) {
+        if (process?.env?.__TREZOR_CONNECT_SRC && origin !== 'https://connect.trezor.io/') {
             window.__TREZOR_CONNECT_SRC = process?.env?.__TREZOR_CONNECT_SRC;
         }
         // yarn workspace @trezor/connect-explorer dev starts @trezor/connect-web on localhost port
