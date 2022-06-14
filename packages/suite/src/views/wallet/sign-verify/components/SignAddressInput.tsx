@@ -65,11 +65,13 @@ export const SignAddressInput: React.FC<SignAddressInputProps> = ({
 }) => {
     const { getValue, groupedOptions } = useSignAddressOptions(account, revealedAddresses);
 
+    const handleChange = (addr: AddressItem | null) => onChange?.(optionToAddress(addr));
+
     return (
         <Select
             value={getValue(value)}
             options={groupedOptions}
-            onChange={(addr: AddressItem | null) => onChange(optionToAddress(addr))}
+            onChange={handleChange}
             noError={false}
             isSearchable
             placeholder=""

@@ -2,18 +2,19 @@ import React, { useCallback, useRef } from 'react';
 import ReactSelect, {
     components as ReactSelectComponents,
     Props as ReactSelectProps,
-    OptionsType,
-    GroupTypeBase,
-    GroupedOptionsType,
+    Options,
+    GroupBase,
+    OptionsOrGroups,
     StylesConfig,
     ControlProps,
     OptionProps,
+    SelectInstance,
+    GroupHeadingProps,
 } from 'react-select';
 import styled, { css } from 'styled-components';
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
 import { useTheme } from '../../../utils';
 import { InputVariant, InputState, SuiteThemeColors } from '../../../support/types';
-import { GroupHeadingProps } from 'react-select/src/components/Group';
 import {
     Label,
     LabelLeft,
@@ -182,9 +183,7 @@ const selectStyle = (
     }),
 });
 
-const Wrapper = styled.div<Pick<SelectProps, 'width' | 'isClean'>>`
-    width: ${({ width }) => (width ? `${width}px` : '100%')};
-
+const Wrapper = styled.div<Pick<SelectProps, 'isClean'>>`
     ${({ isClean }) =>
         !isClean &&
         css`
@@ -202,17 +201,13 @@ const BottomText = styled.div<Pick<SelectProps, 'inputState'>>`
     min-height: 27px;
 `;
 
+type Option = any;
+
 /** Custom Type Guards to check if options are grouped or not */
-const isOptionGrouped = (
-    x: readonly (Option | GroupTypeBase<Option>)[],
-): x is GroupedOptionsType<Option> => (x as GroupedOptionsType<Option>)[0]?.options !== undefined;
+const isOptionGrouped = (x: OptionsOrGroups<Option, GroupBase<Option>>): x is GroupBase<Option>[] =>
+    (x as readonly GroupBase<Option>[])[0]?.options !== undefined;
 
-interface Option {
-    value: string;
-    label: string;
-}
-
-interface CommonProps extends Omit<ReactSelectProps, 'components' | 'isSearchable'> {
+interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
     label?: React.ReactNode;
@@ -223,6 +218,8 @@ interface CommonProps extends Omit<ReactSelectProps, 'components' | 'isSearchabl
     hideTextCursor?: boolean; // this prop hides blinking text cursor
     minWidth?: string;
     inputState?: InputState;
+    onChange?: (value: Option) => void;
+    'data-test'?: string;
 }
 
 // Make sure isSearchable can't be defined if useKeyPressScroll===true
@@ -240,7 +237,6 @@ export const Select = ({
     wrapperProps,
     isClean = false,
     label,
-    width,
     variant = 'large',
     noError = true,
     bottomText,
@@ -248,18 +244,19 @@ export const Select = ({
     isSearchable = false,
     minWidth = 'initial',
     inputState,
+    components,
     onChange,
     'data-test': dataTest,
     ...props
 }: SelectProps) => {
-    const selectRef = useRef<ReactSelect<Option>>(null);
+    const selectRef = useRef<SelectInstance<Option>>(null);
 
     const theme = useTheme();
 
     const lastKeyPressTimestamp = useRef(0);
     const searchedTerm = useRef('');
 
-    const findOption = useCallback((options: OptionsType<Option>, query: string) => {
+    const findOption = useCallback((options: Options<Option>, query: string) => {
         let foundOption;
         let lowestIndexOfFirstOccurrence = Infinity;
 
@@ -283,8 +280,8 @@ export const Select = ({
     const scrollToOption = useCallback((option: Option) => {
         if (selectRef.current) {
             // As per https://github.com/JedWatson/react-select/issues/3648
-            selectRef.current.select.scrollToFocusedOptionOnUpdate = true;
-            selectRef.current.select.setState({
+            selectRef.current.scrollToFocusedOptionOnUpdate = true;
+            selectRef.current.setState({
                 focusedValue: null,
                 focusedOption: option,
             });
@@ -310,17 +307,17 @@ export const Select = ({
                 searchedTerm.current += charValue;
             }
 
-            const { options } = selectRef.current.select.props;
+            const { options } = selectRef.current.props;
 
             if (options && options.length > 1) {
-                let optionsToSearchThrough: OptionsType<Option> = [];
+                let optionsToSearchThrough: Options<Option> = [];
 
                 if (isOptionGrouped(options)) {
                     options.forEach(o => {
                         optionsToSearchThrough = optionsToSearchThrough.concat(o.options);
                     });
                 } else {
-                    optionsToSearchThrough = options as OptionsType<Option>;
+                    optionsToSearchThrough = options as Options<Option>;
                 }
 
                 const optionToFocusOn = findOption(optionsToSearchThrough, searchedTerm.current);
@@ -345,14 +342,16 @@ export const Select = ({
     );
 
     const Control = useCallback(
-        (controlProps: ControlProps<Option, boolean>) => (
+        (controlProps: ControlProps<Option>) => (
             <ReactSelectComponents.Control
                 {...controlProps}
                 innerProps={
-                    {
-                        ...controlProps.innerProps,
-                        'data-test': `${dataTest}/input`,
-                    } as ControlProps<Option, boolean>['innerProps']
+                    dataTest
+                        ? ({
+                              ...controlProps.innerProps,
+                              'data-test': `${dataTest}/input`,
+                          } as ControlProps<Option>['innerProps'])
+                        : controlProps.innerProps
                 }
             />
         ),
@@ -360,14 +359,16 @@ export const Select = ({
     );
 
     const Option = useCallback(
-        (optionProps: OptionProps<Option, boolean> & { value: string }) => (
+        (optionProps: OptionProps<Option>) => (
             <ReactSelectComponents.Option
                 {...optionProps}
                 innerProps={
-                    {
-                        ...optionProps.innerProps,
-                        'data-test': `${dataTest}/option/${optionProps.value}`,
-                    } as OptionProps<Option, boolean>['innerProps']
+                    dataTest && optionProps.data.value
+                        ? ({
+                              ...optionProps.innerProps,
+                              'data-test': `${dataTest}/option/${optionProps.data.value}`,
+                          } as OptionProps<Option>['innerProps'])
+                        : optionProps.innerProps
                 }
             />
         ),
@@ -375,16 +376,14 @@ export const Select = ({
     );
 
     const GroupHeading = useCallback(
-        (groupHeadingProps: GroupHeadingProps<Option, boolean> & { data: any }) =>
+        (groupHeadingProps: GroupHeadingProps<Option>) =>
             groupHeadingProps?.data?.label ? (
                 <ReactSelectComponents.GroupHeading {...groupHeadingProps} />
             ) : null,
         [],
     );
 
-    const handleOnChange = useCallback<
-        Required<ReactSelectProps<Option, boolean, GroupTypeBase<Option>>>['onChange']
-    >(
+    const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
         (value, { action }) => {
             onChange?.(value);
 
@@ -398,7 +397,7 @@ export const Select = ({
     );
 
     return (
-        <Wrapper className={className} width={width} isClean={isClean} {...wrapperProps}>
+        <Wrapper className={className} isClean={isClean} {...wrapperProps}>
             {label && (
                 <Label>
                     <LabelLeft>{label}</LabelLeft>
@@ -423,7 +422,7 @@ export const Select = ({
                 onChange={handleOnChange}
                 isSearchable={isSearchable}
                 {...props}
-                components={{ Control, Option, GroupHeading, ...props.components }}
+                components={{ Control, Option, GroupHeading, ...components }}
             />
 
             {!noError && <BottomText inputState={inputState}>{bottomText}</BottomText>}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { FixedSizeList as List } from 'react-window';
-import { MenuListComponentProps, createFilter } from 'react-select';
+import { MenuListProps, createFilter } from 'react-select';
 import styled, { keyframes } from 'styled-components';
 import { Select, variables } from '@trezor/components';
 import { BIP_39 } from '@suite-constants';
@@ -50,7 +50,7 @@ const StyledList = styled(List)`
 
 type Option = { label: string; value: string };
 
-const MenuList = (props: MenuListComponentProps<Option, boolean>) => {
+const MenuList = (props: MenuListProps<Option, boolean>) => {
     const listRef = useRef<List>(null);
 
     const children = React.Children.toArray(props.children) as React.ReactElement[];
