@@ -50,7 +50,7 @@ const buildOptions = (
     exchangeInfo?: ExchangeInfo,
     token?: string,
 ) => {
-    if (!exchangeInfo || !exchangeCoinInfo) return null;
+    if (!exchangeInfo || !exchangeCoinInfo) return undefined;
 
     interface OptionsGroup {
         label: string;

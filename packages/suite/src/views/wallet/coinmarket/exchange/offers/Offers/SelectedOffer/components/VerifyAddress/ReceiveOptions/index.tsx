@@ -198,7 +198,6 @@ const ReceiveOptions = (props: Props) => {
                         return null;
                 }
             }}
-            isDropdownVisible={selectAccountOptions.length === 1}
             isDisabled={selectAccountOptions.length === 1}
             placeholder={
                 <Translation

@@ -7,7 +7,7 @@ import { UseFormMethods, Control, Controller } from 'react-hook-form';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import type { Account } from '@wallet-types';
 import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
-import type { MenuPlacement } from 'react-select/src/types';
+import type { MenuPlacement } from 'react-select';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -45,7 +45,7 @@ const UpperCase = styled.div`
 `;
 
 const buildOptions = (addresses: Account['addresses']) => {
-    if (!addresses) return null;
+    if (!addresses) return undefined;
 
     interface Options {
         label: React.ReactElement;
@@ -80,6 +80,7 @@ const AddressOptions = (props: Props) => {
     const { control, receiveSymbol, setValue, address, account, menuPlacement } = props;
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);
+    const value = address ? addressDictionary[address] : null;
 
     useEffect(() => {
         if (!address && addresses) {
@@ -91,7 +92,7 @@ const AddressOptions = (props: Props) => {
         <Controller
             control={control}
             name="address"
-            defaultValue={addressDictionary && address && addressDictionary[address]}
+            defaultValue={value}
             render={({ ref, ...field }) => (
                 <>
                     <Select
@@ -100,7 +101,7 @@ const AddressOptions = (props: Props) => {
                             setValue('address', accountAddress.address)
                         }
                         isClearable={false}
-                        value={addressDictionary && address && addressDictionary[address]}
+                        value={value}
                         options={buildOptions(addresses)}
                         minWidth="70px"
                         menuPlacement={menuPlacement}
