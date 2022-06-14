@@ -19,9 +19,6 @@ export function onSelectDevice(path: string) {
     };
 }
 
-// eslint-disable-next-line no-unused-expressions
-window.__TREZOR_CONNECT_SRC;
-
 export const init =
     (options: Partial<Parameters<typeof TrezorConnect['init']>[0]> = {}) =>
     async (dispatch: Dispatch) => {
@@ -38,14 +35,14 @@ export const init =
             // this type of event should not be emitted in "popup mode"
         });
 
-        const { origin } = window.location;
+        const { host } = window.location;
 
-        if (process?.env?.__TREZOR_CONNECT_SRC && origin !== 'https://connect.trezor.io/') {
+        if (process?.env?.__TREZOR_CONNECT_SRC && host !== 'connect.trezor.io') {
             window.__TREZOR_CONNECT_SRC = process?.env?.__TREZOR_CONNECT_SRC;
         }
         // yarn workspace @trezor/connect-explorer dev starts @trezor/connect-web on localhost port
         // so we may use it
-        if (!window.__TREZOR_CONNECT_SRC && origin.indexOf('localhost') > -1) {
+        if (!window.__TREZOR_CONNECT_SRC && host.startsWith('localhost')) {
             // use local connect for local development
             window.__TREZOR_CONNECT_SRC = `${window.location.origin}/`;
         }
