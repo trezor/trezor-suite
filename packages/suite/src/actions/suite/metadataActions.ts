@@ -1,4 +1,6 @@
 import TrezorConnect from '@trezor/connect';
+import { analytics, EventType } from '@trezor/suite-analytics';
+
 import { createDeferred } from '@trezor/utils';
 import { METADATA } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
@@ -129,6 +131,13 @@ export const disconnectProvider =
         dispatch({
             type: METADATA.SET_PROVIDER,
             payload: undefined,
+        });
+
+        analytics.report({
+            type: EventType.SettingsGeneralLabelingProvider,
+            payload: {
+                provider: '',
+            },
         });
 
         // dispose metadata values (not keys)
@@ -422,6 +431,13 @@ export const connectProvider = (type: MetadataProviderType) => async (dispatch: 
         payload: result.payload,
     });
 
+    analytics.report({
+        type: EventType.SettingsGeneralLabelingProvider,
+        payload: {
+            provider: result.payload.type,
+        },
+    });
+
     return true;
 };
 
@@ -676,6 +692,7 @@ export const init =
 
             return false;
         }
+
         // if yes, add metadata keys to accounts
         if (getState().metadata.initiating) {
             dispatch(syncMetadataKeys());
