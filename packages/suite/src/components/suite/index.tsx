@@ -14,7 +14,7 @@ import WordInputAdvanced from './WordInputAdvanced';
 import Loading from './Loading';
 import BundleLoader from './BundleLoader';
 import FiatValue from './FiatValue';
-import WebusbButton from './WebusbButton';
+import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
@@ -70,7 +70,7 @@ export {
     WordInputAdvanced,
     Loading,
     BundleLoader,
-    WebusbButton,
+    WebUsbButton,
     HiddenPlaceholder,
     AccountLabeling,
     AddressLabeling,

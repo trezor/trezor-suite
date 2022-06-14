@@ -2,7 +2,7 @@ import React from 'react';
 import { useSpring, config, animated } from 'react-spring';
 import styled from 'styled-components';
 
-import { Translation, TroubleshootingTips, WebusbButton } from '@suite-components';
+import { Translation, TroubleshootingTips, WebUsbButton } from '@suite-components';
 
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
@@ -17,11 +17,11 @@ const Wrapper = styled(animated.div)`
     display: flex;
 `;
 
-interface Props {
-    webusb: boolean;
+interface DeviceConnectProps {
+    isWebUsbTransport: boolean;
 }
 
-const DeviceConnect = ({ webusb }: Props) => {
+const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
     const fadeStyles = useSpring({
         config: { ...config.default },
         delay: 1000,
@@ -29,7 +29,7 @@ const DeviceConnect = ({ webusb }: Props) => {
         to: { opacity: 1 },
     });
 
-    const items = webusb
+    const items = isWebUsbTransport
         ? [
               TROUBLESHOOTING_TIP_UDEV,
               TROUBLESHOOTING_TIP_CABLE,
@@ -49,8 +49,8 @@ const DeviceConnect = ({ webusb }: Props) => {
             <TroubleshootingTips
                 label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
                 items={items}
-                offerWebUsb={webusb}
-                cta={webusb ? <WebusbButton icon="SEARCH" /> : undefined}
+                offerWebUsb={isWebUsbTransport}
+                cta={isWebUsbTransport ? <WebUsbButton icon="SEARCH" /> : undefined}
             />
         </Wrapper>
     );

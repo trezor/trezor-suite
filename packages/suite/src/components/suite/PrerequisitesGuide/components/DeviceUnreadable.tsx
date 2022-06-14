@@ -21,11 +21,6 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-interface Props {
-    device?: TrezorDevice; // this should be actually UnreadableDevice, but it is not worth type casting
-    webusb: boolean;
-}
-
 // linux web
 const UdevWeb = () => (
     <TroubleshootingTips
@@ -100,9 +95,14 @@ const UdevDesktop = () => {
     );
 };
 
+interface DeviceUnreadableProps {
+    device?: TrezorDevice; // this should be actually UnreadableDevice, but it is not worth type casting
+    isWebUsbTransport: boolean;
+}
+
 // We don't really know what happened, show some generic help and provide link to contact a support
-const DeviceUnreadable = ({ device, webusb }: Props) => {
-    if (webusb) {
+const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadableProps) => {
+    if (isWebUsbTransport) {
         // only install bridge will help (webusb + HID device)
         return (
             <Wrapper data-test="@connect-device-prompt/unreadable-hid">
@@ -137,7 +137,7 @@ const DeviceUnreadable = ({ device, webusb }: Props) => {
                     TROUBLESHOOTING_TIP_USB,
                     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
                 ]}
-                offerWebUsb={webusb}
+                offerWebUsb={isWebUsbTransport}
             />
         </Wrapper>
     );

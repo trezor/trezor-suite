@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import * as semver from 'semver';
 
 import { H1, Button, ConfirmOnDevice, variables } from '@trezor/components';
-import { Modal, Translation, WebusbButton } from '@suite-components';
+import { Modal, Translation, WebUsbButton } from '@suite-components';
 import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
 import { DeviceAnimation } from '@onboarding-components/DeviceAnimation';
 import { useDevice, useFirmware } from '@suite-hooks';
@@ -109,7 +109,7 @@ const Heading = styled(H1)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const StyledWebusbButton = styled(WebusbButton)`
+const StyledWebUsbButton = styled(WebUsbButton)`
     margin-top: 24px;
 `;
 
@@ -280,7 +280,7 @@ export const ReconnectDevicePrompt = ({
                                     </ReconnectStep>
                                 </>
                             )}
-                            {rebootPhase === 'disconnected' && isWebUSB && <StyledWebusbButton />}
+                            {rebootPhase === 'disconnected' && isWebUSB && <StyledWebUsbButton />}
                         </>
                     ) : (
                         <>
