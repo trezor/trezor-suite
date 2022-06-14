@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 import { Modal } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
-import { isWebUSB } from '@suite-utils/transport';
+import { isWebUsb } from '@suite-utils/transport';
 import { getBackgroundRoute } from '@suite-utils/router';
 import DeviceItem from './components/DeviceItem';
 import { ForegroundAppProps } from '@suite-types';
 import { useSelector } from '@suite-hooks';
 
-import WebusbButton from '../WebusbButton';
+import { WebUsbButton } from '../WebUsbButton';
 
 const HeadingActions = styled.div`
     display: flex;
@@ -38,7 +38,7 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
         transport: state.suite.transport,
     }));
 
-    const showWebUsb = isWebUSB(transport);
+    const isWebUsbTransport = isWebUsb(transport);
 
     // exclude selectedDevice from list, because other devices could have a higher priority
     // and we want to have selectedDevice on top
@@ -61,9 +61,9 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
                 <>
                     <Translation id="TR_CHOOSE_WALLET" />
                     <HeadingActions>
-                        {showWebUsb && (
+                        {isWebUsbTransport && (
                             <CheckForDevicesWrapper>
-                                <WebusbButton icon="SEARCH" variant="tertiary" />
+                                <WebUsbButton icon="SEARCH" variant="tertiary" />
                             </CheckForDevicesWrapper>
                         )}
                     </HeadingActions>

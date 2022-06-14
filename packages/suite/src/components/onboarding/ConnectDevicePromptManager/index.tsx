@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from '@suite-hooks';
 import { ConnectDevicePrompt } from '@suite-components';
-import { isWebUSB } from '@suite-utils/transport';
+import { isWebUsb } from '@suite-utils/transport';
 import { getConnectedDeviceStatus } from '@suite-utils/device';
 import type { TrezorDevice } from '@suite-types';
 
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-interface Props {
+interface ConnectDevicePromptManagerProps {
     device: TrezorDevice | undefined;
     children?: React.ReactNode;
 }
@@ -34,7 +34,7 @@ interface Props {
  *  2. Device not detected
  *  3. Device in unexpected state (unreadable, seedless, in bootloader)
  */
-const ConnectDevicePromptManager = ({ device, children }: Props) => {
+const ConnectDevicePromptManager = ({ device, children }: ConnectDevicePromptManagerProps) => {
     const { transport } = useSelector(state => ({
         transport: state.suite.transport,
     }));
@@ -57,7 +57,7 @@ const ConnectDevicePromptManager = ({ device, children }: Props) => {
         content = <NoTransport />;
     } else if (!isDetectingDevice) {
         // Transport layer is available, but still no device detected (show WebUSB "check for devices" button if possible and provide helpful tips)
-        content = <NoDeviceDetected offerWebUsb={isWebUSB(transport)} />;
+        content = <NoDeviceDetected offerWebUsb={isWebUsb(transport)} />;
     } else if (deviceInUnexpectedState) {
         // Device detected, but it is in unexpected state (unreadable, seedless, in bootloader)
         content = (

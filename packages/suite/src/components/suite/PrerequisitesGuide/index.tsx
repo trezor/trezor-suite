@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import { ConnectDevicePrompt } from '@suite-components';
-import { isWebUSB } from '@suite-utils/transport';
+import { isWebUsb } from '@suite-utils/transport';
 import { getStatus, deviceNeedsAttention } from '@suite-utils/device';
 import { useSelector } from '@suite-hooks';
 import type { PrerequisiteType } from '@suite-types';
@@ -59,7 +59,7 @@ export const PrerequisitesGuide = ({
         transport: state.suite.transport,
     }));
 
-    const webusb = isWebUSB(transport);
+    const isWebUsbTransport = isWebUsb(transport);
 
     return (
         <Wrapper padded={padded}>
@@ -76,11 +76,16 @@ export const PrerequisitesGuide = ({
                     case 'device-disconnect-required':
                         return <DeviceDisconnectRequired />;
                     case 'device-disconnected':
-                        return <DeviceConnect webusb={webusb} />;
+                        return <DeviceConnect isWebUsbTransport={isWebUsbTransport} />;
                     case 'device-unacquired':
                         return <DeviceAcquire />;
                     case 'device-unreadable':
-                        return <DeviceUnreadable device={device} webusb={webusb} />;
+                        return (
+                            <DeviceUnreadable
+                                device={device}
+                                isWebUsbTransport={isWebUsbTransport}
+                            />
+                        );
                     case 'device-unknown':
                         return <DeviceUnknown />;
                     case 'device-seedless':

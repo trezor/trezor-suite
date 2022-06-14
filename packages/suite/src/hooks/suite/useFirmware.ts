@@ -1,6 +1,6 @@
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import { useActions, useSelector } from '@suite-hooks';
-import { isWebUSB } from '@suite-utils/transport';
+import { isWebUsb } from '@suite-utils/transport';
 import { MODAL } from '@suite/actions/suite/constants';
 
 export const useFirmware = () => {
@@ -25,7 +25,7 @@ export const useFirmware = () => {
     return {
         ...firmware,
         ...actions,
-        isWebUSB: isWebUSB(transport),
+        isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
     };
 };

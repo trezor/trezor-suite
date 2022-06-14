@@ -1,4 +1,4 @@
-import { isWebUSB } from '../transport';
+import { isWebUsb } from '../transport';
 
 const fixtures = [
     {
@@ -25,7 +25,7 @@ const fixtures = [
 describe('transport', () => {
     fixtures.forEach(f => {
         it(f.description, () => {
-            const instance = isWebUSB(f.transport);
+            const instance = isWebUsb(f.transport);
             expect(instance).toEqual(f.result);
         });
     });
