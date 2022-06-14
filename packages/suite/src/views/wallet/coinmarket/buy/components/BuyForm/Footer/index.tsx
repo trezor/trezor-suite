@@ -74,8 +74,6 @@ const Footer = () => {
                     name={countrySelect}
                     render={({ onChange, value }) => (
                         <StyledSelect
-                            isDropdownVisible
-                            isHovered
                             options={regional.countriesOptions}
                             isSearchable
                             value={value}
@@ -100,7 +98,6 @@ const Footer = () => {
                                 onChange(selected);
                                 setAmountLimits(undefined);
                             }}
-                            maxSearchLength={12}
                         />
                     )}
                 />

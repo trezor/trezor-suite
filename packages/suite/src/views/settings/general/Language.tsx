@@ -94,7 +94,6 @@ export const Language = () => {
                 <ActionSelect
                     hideTextCursor
                     useKeyPressScroll
-                    noTopLabel
                     value={selectedValue}
                     options={options}
                     onChange={onChange}

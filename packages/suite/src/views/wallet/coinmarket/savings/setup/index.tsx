@@ -157,7 +157,6 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         minWidth="160px"
                         hideTextCursor
                         onChange={onChange}
-                        maxSearchLength={12}
                     />
                 )}
             />

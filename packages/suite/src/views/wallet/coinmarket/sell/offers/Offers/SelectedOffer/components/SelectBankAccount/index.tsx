@@ -172,8 +172,6 @@ const SelectBankAccount = () => {
                                 )}
                             </Option>
                         )}
-                        isOptionDisabled={(option: BankAccount) => !option.verified}
-                        isDropdownVisible={bankAccounts.length > 1}
                         isDisabled={bankAccounts.length < 2}
                     />
                 </Row>
