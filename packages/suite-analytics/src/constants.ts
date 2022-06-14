@@ -58,6 +58,8 @@ export enum EventType {
     SettingsGeneralChangeTheme = 'settings/general/change-theme',
     SettingsGeneralChangeFiat = 'settings/general/change-fiat',
     SettingsGeneralEarlyAccess = 'settings/general/early-access',
+    SettingsGeneralLabeling = 'settings/general/labeling',
+    SettingsGeneralLabelingProvider = 'settings/general/labeling-provider',
     SettingsCoinsBackend = 'settings/coins/backend',
     SettingsCoins = 'settings/coins',
     SettingsTor = 'settings/tor',

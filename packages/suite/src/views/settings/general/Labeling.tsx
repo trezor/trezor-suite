@@ -1,6 +1,7 @@
 import React from 'react';
-
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { Switch, Tooltip } from '@trezor/components';
+
 import { Translation } from '@suite-components';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useSelector, useActions, useDevice } from '@suite-hooks';
@@ -54,7 +55,19 @@ export const Labeling = () => {
                         isDisabled={isDisabled}
                         dataTest="@settings/metadata-switch"
                         isChecked={metadata.enabled}
-                        onChange={() => (metadata.enabled ? disableMetadata() : initMetadata(true))}
+                        onChange={() => {
+                            if (metadata.enabled) {
+                                disableMetadata();
+                            } else {
+                                initMetadata(true);
+                            }
+                            analytics.report({
+                                type: EventType.SettingsGeneralLabeling,
+                                payload: {
+                                    value: !metadata.enabled,
+                                },
+                            });
+                        }}
                     />
                 </Tooltip>
             </ActionColumn>

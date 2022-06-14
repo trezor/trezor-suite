@@ -2,6 +2,17 @@
 
 This changelog lists changes in suite events.
 
+### 1.21
+
+Added:
+
+-   suite-ready
+    -   labeling: 'dropbox' | 'google' | 'fileSystem' | 'sdCard' | ''
+-   settings/general/labeling
+    -   value: boolean
+-   settings/general/labeling-provider
+    -   provider: 'dropbox' | 'google' | 'fileSystem' | 'sdCard' | ''
+
 ### 1.20
 
 -   analytics 1.19 was never released due to a bug

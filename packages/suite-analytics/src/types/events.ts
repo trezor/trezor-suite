@@ -14,6 +14,7 @@ export type SuiteAnalyticsEvent =
               screenWidth: number;
               screenHeight: number;
               tor: boolean;
+              labeling: string;
               rememberedStandardWallets: number;
               rememberedHiddenWallets: number;
               theme: string;
@@ -268,6 +269,18 @@ export type SuiteAnalyticsEvent =
           type: EventType.SettingsGeneralEarlyAccess;
           payload: {
               allowPrerelease: boolean;
+          };
+      }
+    | {
+          type: EventType.SettingsGeneralLabeling;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
+          type: EventType.SettingsGeneralLabelingProvider;
+          payload: {
+              provider: 'dropbox' | 'google' | 'fileSystem' | 'sdCard' | '';
           };
       }
     | {
