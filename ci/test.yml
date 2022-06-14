@@ -217,9 +217,6 @@ blockchain-link manual:
 # @trezor/connect-popup (via @trezor/connect-explorer)
 .e2e connect-popup:
   stage: integration testing
-  dependencies:
-    - install
-    - connect-web build
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
@@ -243,11 +240,18 @@ blockchain-link manual:
 
 connect-popup:
   extends: .e2e connect-popup
+  dependencies:
+    - install
+    - connect-web build
   only:
     <<: *run_everything_rules
 
 connect-popup manual:
   extends: .e2e connect-popup
+  needs:
+    - install
+    - connect-web build
+    - connect-explorer deploy dev manual
   except:
     <<: *run_everything_rules
   when: manual
