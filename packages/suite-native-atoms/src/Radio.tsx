@@ -2,11 +2,12 @@ import React from 'react';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
+type RadioValue = string | number;
 export interface RadioProps extends Omit<TouchableOpacityProps, 'style' | 'onPress'> {
-    value: string;
+    value: RadioValue;
     isChecked?: boolean;
     isDisabled?: boolean;
-    onPress: (value: string) => void;
+    onPress: (value: RadioValue) => void;
     style?: NativeStyleObject;
 }
 

@@ -8,6 +8,7 @@ type CryptoIconProps = {
 };
 
 const cryptoIconSizes = {
+    extraSmall: 16,
     small: 24,
     large: 42,
 } as const;

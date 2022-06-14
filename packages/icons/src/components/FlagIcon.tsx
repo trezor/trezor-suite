@@ -8,12 +8,14 @@ type FlagIconProps = {
 };
 
 const flagIconSizes = {
-    small: 30,
+    extraSmall: 16,
+    small: 24,
+    medium: 30,
 } as const;
 
 type FlagIconSize = keyof typeof flagIconSizes;
 
-export const FlagIcon = ({ name, size = 'small' }: FlagIconProps) => {
+export const FlagIcon = ({ name, size = 'medium' }: FlagIconProps) => {
     const svg = useSVG(flagIcons[name]);
     const sizeNumber = flagIconSizes[size];
     return (
