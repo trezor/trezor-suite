@@ -10,17 +10,9 @@ const observer = new MutationObserver(() => {
     if (appElement) {
         observer.disconnect();
 
-        Promise.all([
-            import(/* webpackChunkName: "react-dom" */ 'react-dom'),
-            import(/* webpackChunkName: "app" */ './Main'),
-        ])
-            .then(([rd, comp]) => {
-                rd.render(comp.default, appElement);
-            })
-            .catch(err => {
-                // Fatal error
-                console.log(err);
-            });
+        import(/* webpackChunkName: "app" */ './Main')
+            .then(comp => comp.init(appElement))
+            .catch(err => console.error(err)); // Fatal error
     }
 });
 

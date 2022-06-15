@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { init as initSentry } from '@sentry/electron/renderer';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { store } from '@suite/reducers/store';
+import { isDev } from '@suite-utils/build';
 
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
@@ -25,40 +26,45 @@ import DesktopUpdater from './support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite/config/suite';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 
-const Index = () => {
-    useEffect(() => {
+const Main = () => (
+    <ThemeProvider>
+        <RouterProvider history={history}>
+            <ModalContextProvider>
+                <ErrorBoundary>
+                    <Autodetect />
+                    <Resize />
+                    <Tor />
+                    <Protocol />
+                    <OnlineStatus />
+                    <RouterHandler />
+                    <IntlProvider>
+                        <DesktopUpdater>
+                            <Metadata />
+                            <ToastContainer />
+                            <Preloader>
+                                <AppRouter />
+                            </Preloader>
+                        </DesktopUpdater>
+                    </IntlProvider>
+                </ErrorBoundary>
+            </ModalContextProvider>
+        </RouterProvider>
+    </ThemeProvider>
+);
+
+window.onload = () => {
+    if (!isDev) {
         initSentry(SENTRY_CONFIG);
+    }
 
-        desktopApi.clientReady();
-    }, []);
+    desktopApi.clientReady();
 
-    return (
+    const root = document.getElementById('app');
+
+    render(
         <ReduxProvider store={store}>
-            <ThemeProvider>
-                <RouterProvider history={history}>
-                    <ModalContextProvider>
-                        <ErrorBoundary>
-                            <Autodetect />
-                            <Resize />
-                            <Tor />
-                            <Protocol />
-                            <OnlineStatus />
-                            <RouterHandler />
-                            <IntlProvider>
-                                <DesktopUpdater>
-                                    <Metadata />
-                                    <ToastContainer />
-                                    <Preloader>
-                                        <AppRouter />
-                                    </Preloader>
-                                </DesktopUpdater>
-                            </IntlProvider>
-                        </ErrorBoundary>
-                    </ModalContextProvider>
-                </RouterProvider>
-            </ThemeProvider>
-        </ReduxProvider>
+            <Main />
+        </ReduxProvider>,
+        root,
     );
 };
-
-render(<Index />, document.getElementById('app'));

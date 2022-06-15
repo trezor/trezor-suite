@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { render } from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 import { init as initSentry } from '@sentry/browser';
 
-import { store } from '@suite/reducers/store';
 import { isDev } from '@suite-utils/build';
+import { store } from '@suite/reducers/store';
 import { SENTRY_CONFIG } from '@suite-config';
 
 import Metadata from '@suite-components/Metadata';
@@ -27,37 +28,41 @@ import { useCypress } from './support/useCypress';
 
 const Main = () => {
     useCypress();
-    useEffect(() => {
-        if (!window.Cypress && !isDev) {
-            initSentry(SENTRY_CONFIG);
-        }
-    }, []);
 
     return (
-        <ReduxProvider store={store}>
-            <ThemeProvider>
-                <RouterProvider history={history}>
-                    <ModalContextProvider>
-                        <ErrorBoundary>
-                            <Autodetect />
-                            <Resize />
-                            <Tor />
-                            <Protocol />
-                            <OnlineStatus />
-                            <RouterHandler />
-                            <IntlProvider>
-                                <Metadata />
-                                <ToastContainer />
-                                <Preloader>
-                                    <AppRouter />
-                                </Preloader>
-                            </IntlProvider>
-                        </ErrorBoundary>
-                    </ModalContextProvider>
-                </RouterProvider>
-            </ThemeProvider>
-        </ReduxProvider>
+        <ThemeProvider>
+            <RouterProvider history={history}>
+                <ModalContextProvider>
+                    <ErrorBoundary>
+                        <Autodetect />
+                        <Resize />
+                        <Tor />
+                        <Protocol />
+                        <OnlineStatus />
+                        <RouterHandler />
+                        <IntlProvider>
+                            <Metadata />
+                            <ToastContainer />
+                            <Preloader>
+                                <AppRouter />
+                            </Preloader>
+                        </IntlProvider>
+                    </ErrorBoundary>
+                </ModalContextProvider>
+            </RouterProvider>
+        </ThemeProvider>
     );
 };
 
-export default <Main />;
+export const init = (root: HTMLElement) => {
+    if (!window.Cypress && !isDev) {
+        initSentry(SENTRY_CONFIG);
+    }
+
+    render(
+        <ReduxProvider store={store}>
+            <Main />
+        </ReduxProvider>,
+        root,
+    );
+};
