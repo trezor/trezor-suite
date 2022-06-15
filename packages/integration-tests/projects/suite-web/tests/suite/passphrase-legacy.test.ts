@@ -40,5 +40,16 @@ describe('Passphrase - legacy flow', () => {
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/input').type('b{enter}');
         cy.getTestElement('@dashboard/wallet-ready');
+
+        // documenting a bug with wrong walletNumber. It is not correctly assigned for the first
+        // hidden wallet created. I am not fixing this since 2.2.0 will soon be marked with required update
+        cy.screenshot();
+        cy.getTestElement('@menu/switch-device').click();
+
+        // try to get address. passhprase should not be prompted
+        cy.getTestElement('@switch-device/wallet-on-index/2').click();
+        cy.getTestElement('@dashboard/receive-button').click();
+        cy.getTestElement('@wallet/receive/reveal-address-button').click();
+        cy.getTestElement('@modal/confirm-address/address-field');
     });
 });
