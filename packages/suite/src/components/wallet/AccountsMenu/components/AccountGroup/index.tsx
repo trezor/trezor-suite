@@ -77,6 +77,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                         <Translation id={getGroupLabel(props.type)} />
                         {!props.keepOpened && (
                             <Icon
+                                data-test="@account-menu/arrow"
                                 canAnimate={animatedIcon}
                                 isActive={isOpened}
                                 size={16}

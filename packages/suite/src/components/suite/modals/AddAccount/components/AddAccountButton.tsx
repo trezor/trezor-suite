@@ -56,7 +56,13 @@ const AddButton = ({ account, isDisabled, onEnableAccount }: ButtonProps) => {
     }, [account, onEnableAccount, setSearchString, setCoinFilter, coinFilter]);
 
     return (
-        <Button icon="PLUS" variant="primary" isDisabled={isDisabled} onClick={handleClick}>
+        <Button
+            data-test="@add-account"
+            icon="PLUS"
+            variant="primary"
+            isDisabled={isDisabled}
+            onClick={handleClick}
+        >
             <Translation id="TR_ADD_ACCOUNT" />
         </Button>
     );
