@@ -5009,6 +5009,10 @@ export default defineMessages({
         description: 'Send raw form header',
         defaultMessage: 'Send raw transaction',
     },
+    RAW_TRANSACTION: {
+        id: 'RAW_TRANSACTION',
+        defaultMessage: 'Raw transaction',
+    },
     SEND_RAW_TRANSACTION_TOOLTIP: {
         id: 'SEND_RAW_TRANSACTION_TOOLTIP',
         defaultMessage: 'You can provide all the raw data for your transaction by yourself.',

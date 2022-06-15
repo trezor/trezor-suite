@@ -162,7 +162,7 @@ const TransactionDetails = ({ tx, txHash, onClose }: Props) => {
                     {txHash && (
                         <Section>
                             <SectionName>
-                                <Translation id="TR_SIGNATURE" />
+                                <Translation id="RAW_TRANSACTION" />
                             </SectionName>
                             <StyledBox>
                                 <Pre>{txHash}</Pre>
