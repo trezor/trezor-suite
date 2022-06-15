@@ -1016,18 +1016,22 @@ export default defineMessages({
     TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY: {
         defaultMessage: 'each week',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY',
+        dynamic: true,
     },
     TR_SAVINGS_OVERVIEW_PERIOD_BIWEEKLY: {
         defaultMessage: 'bi-weekly',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_BIWEEKLY',
+        dynamic: true,
     },
     TR_SAVINGS_OVERVIEW_PERIOD_MONTHLY: {
         defaultMessage: 'each month',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_MONTHLY',
+        dynamic: true,
     },
     TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY: {
         defaultMessage: 'each quarter',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY',
+        dynamic: true,
     },
     TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT: {
         defaultMessage: 'Current payment',
