@@ -1,0 +1,38 @@
+{
+    "name": "@trezor/connect-plugin-stellar",
+    "version": "9.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-stellar",
+    "description": "@trezor/connect plugin for Stellar",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "trezor-connect",
+        "stellar"
+    ],
+    "sideEffects": false,
+    "main": "lib/index.js",
+    "peerDependencies": {
+        "@trezor/connect": "9.x.x",
+        "stellar-sdk": "^10.1.0"
+    },
+    "devDependencies": {
+        "stellar-sdk": "^10.1.0"
+    },
+    "dependencies": {
+        "bignumber.js": "^9.0.2"
+    },
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build tsconfig.json",
+        "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json"
+    }
+}
