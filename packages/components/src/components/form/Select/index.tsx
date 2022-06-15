@@ -361,16 +361,18 @@ export const Select = ({
     );
 
     const Option = useCallback(
-        (optionProps: OptionProps<Option>) => (
+        (optionProps: OptionProps<Option, boolean>) => (
             <ReactSelectComponents.Option
                 {...optionProps}
                 innerProps={
-                    dataTest && optionProps.data.value
-                        ? ({
-                              ...optionProps.innerProps,
-                              'data-test': `${dataTest}/option/${optionProps.data.value}`,
-                          } as OptionProps<Option>['innerProps'])
-                        : optionProps.innerProps
+                    {
+                        ...optionProps.innerProps,
+                        'data-test': `${dataTest}/option/${
+                            typeof optionProps.data.value === 'string'
+                                ? optionProps.data.value
+                                : optionProps.label
+                        }`,
+                    } as OptionProps<Option, boolean>['innerProps']
                 }
             />
         ),

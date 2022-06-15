@@ -38,6 +38,7 @@ describe('Import a BTC csv file', () => {
             cy.wrap(fileUploadModal)
                 .find('input[type=file]')
                 .attachFile(csvFile, { subjectType: 'drag-n-drop' });
+            cy.getTestElement('@modal').should('not.exist');
         });
 
         //
@@ -56,6 +57,7 @@ describe('Import a BTC csv file', () => {
                     .should('be.visible')
                     .invoke('val')
                     .should('equal', secondAddress);
+                cy.log(secondAddress);
             });
         });
     });
