@@ -148,7 +148,7 @@ android {
 
     defaultConfig {
         applicationId "com.trezorsuite"
-        applicationIdSuffix ".testing"
+        applicationIdSuffix ""
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3
@@ -241,7 +241,7 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        testing {
+        internalTesting {
             // TODO generate separate keystore file for testing
             if (project.hasProperty('TREZOR_UPLOAD_STORE_FILE')) {
                 storeFile file(TREZOR_UPLOAD_STORE_FILE)
@@ -264,11 +264,11 @@ android {
             applicationIdSuffix ".dev"
             signingConfig signingConfigs.debug
         }
-        testing {
+        internalTesting {
             applicationIdSuffix ".testing"
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            signingConfig signingConfigs.testing
+            signingConfig signingConfigs.internalTesting
             matchingFallbacks = ['release']
         }
         release {

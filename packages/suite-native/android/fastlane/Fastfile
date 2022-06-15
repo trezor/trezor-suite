@@ -30,7 +30,7 @@ platform :android do
       json_key: JSON_KEY_FILE_PATH,
     )[0]
 
-    android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
+    # android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
   end
 
