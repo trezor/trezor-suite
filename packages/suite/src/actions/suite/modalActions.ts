@@ -169,7 +169,7 @@ export const onPassphraseSubmit =
             dispatch({
                 type: SUITE.UPDATE_PASSPHRASE_MODE,
                 payload: device,
-                hidden: passphraseOnDevice || value,
+                hidden: passphraseOnDevice || !!value,
                 alwaysOnDevice: passphraseOnDevice,
             });
         }
