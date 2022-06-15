@@ -143,8 +143,8 @@ android {
         applicationId "io.trezor.suite"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "22.7.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
@@ -233,15 +233,24 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('TREZOR_UPLOAD_STORE_FILE')) {
+                storeFile file(TREZOR_UPLOAD_STORE_FILE)
+                storePassword TREZOR_UPLOAD_STORE_PASSWORD
+                keyAlias TREZOR_UPLOAD_KEY_ALIAS
+                keyPassword TREZOR_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
+            applicationIdSuffix ".dev"
             signingConfig signingConfigs.debug
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

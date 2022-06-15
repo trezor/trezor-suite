@@ -1,0 +1,53 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+# iOS Specific Constants
+IOS_APP_ID = 'org.reactjs.native.example.TrezorSuite'.freeze
+IOS_PROJECT = "TrezorSuite.xcodeproj"
+IOS_PROJECT_WORKSPACE = "TrezorSuite.xcworkspace"
+IOS_PROJECT_SCHEME = "TrezorSuite"
+
+platform :ios do
+
+  desc "iOS: Increments internal build number and version number"
+  private_lane :increase_ios_version do
+    previous_build_number = latest_testflight_build_number(
+      app_identifier: IOS_APP_ID
+    )
+
+    increment_build_number(
+      xcodeproj: project,
+      build_number: previous_build_number + 1
+    )
+    increment_version_number(
+      xcodeproj: project,
+      version_number: VERSION
+    )
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    # Get the certification
+    # cert
+    # Connect the provisioning profile.
+    # sigh(force: true)
+    increase_ios_version
+
+    build_app(workspace: IOS_PROJECT_WORKSPACE, scheme: IOS_PROJECT_SCHEME)
+    upload_to_testflight
+
+    # TODO push increased versions to Git and tag it
+  end
+end

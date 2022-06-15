@@ -1,0 +1,94 @@
+# Common Functions and Requirements
+# across Android/iOS Fastfiles
+
+# Path Constants
+SUITE_NATIVE_ROOT_PATH = File.expand_path('../', Dir.pwd).freeze
+
+# Android project
+ANDROID_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'android').freeze
+
+# iOS project
+IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
+# this should be the folder name under `ios` for your project
+IOS_PROJECT_NAME = 'TrezorSuite'
+
+# Retrieve version of Suite Native app in package.json
+PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
+VERSION = load_json(json_path: "package.json")["suiteNativeVersion"]
+
+# This is meant to be run on CI where it changes everything before building the app.
+# Usage:
+#   `RN_BUNDLE_SUFFIX=testing bundle exec fastlane prepare_android_release`
+# These ENV variables should be set via the CI
+desc "Android: Updates the app identifier, display name for dev, testing, and production releases"
+lane :prepare_android_release do
+  # If no suffix is specified, it is the production release
+  suffix = ENV['RN_BUNDLE_SUFFIX'] || ''
+  suffix = suffix.length > 0 ? ".#{suffix}" : suffix
+
+  # assumes identifier is defined in Appfile
+  app_id = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+  new_app_id = "#{app_id}#{suffix}"
+
+  # update the app identifier and bundle
+  UI.message "\n\nSetting app identifier to: #{new_app_id}"
+
+  # TODO
+  # display_name = ENV['RN_DISPLAY_NAME'] || type.capitalize
+  display_name = "TrezorSuite"
+
+  # update android suffix
+  set_value_in_build(
+    app_project_dir: File.join(ANDROID_PATH, "app"),
+    key: "applicationIdSuffix",
+    value: "#{suffix}"
+  )
+
+  # update android display name
+  update_android_strings(
+    block: lambda { |strings|
+      strings['app_name'] = display_name
+    }
+  )
+
+  # TODO update Android url scheme
+end
+
+# This is meant to be run on CI where it changes everything before building the app.
+# Usage:
+#   `RN_BUNDLE_SUFFIX=testing bundle exec fastlane prepare_ios_release`
+# These ENV variables should be set via the CI
+desc "iOS: Updates the app identifier, display name for dev, testing, and production releases"
+lane :prepare_ios_release do
+  # If no suffix is specified, it is the production release
+  suffix = ENV['RN_BUNDLE_SUFFIX'] || ''
+  suffix = suffix.length > 0 ? ".#{suffix}" : suffix
+
+  # assumes identifier is defined in Appfile
+  app_id = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+  new_app_id = "#{app_id}#{suffix}"
+
+  # update the app identifier and bundle
+  UI.message "\n\nSetting app identifier to: #{new_app_id}"
+
+  # TODO
+  # display_name = ENV['RN_DISPLAY_NAME'] || type.capitalize
+  display_name = "TrezorSuite TODO"
+
+  # update ios identifier
+  update_app_identifier(
+    xcodeproj: File.join(IOS_PATH, "#{IOS_PROJECT_NAME}.xcodeproj"),
+    plist_path: "#{IOS_PROJECT_NAME}/Info.plist",
+    app_identifier: new_app_id
+  )
+  update_info_plist(
+    plist_path: "#{IOS_PROJECT_NAME}/Info.plist",
+    xcodeproj: File.join(IOS_PATH, "#{IOS_PROJECT_NAME}.xcodeproj"),
+    display_name: display_name,
+    app_identifier: new_app_id
+  )
+  # TODO update iOS url scheme
+end
+
+import "../ios/fastlane/Fastfile"
+import "../android/fastlane/Fastfile"

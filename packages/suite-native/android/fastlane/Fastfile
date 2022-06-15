@@ -1,0 +1,64 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+# Paths
+APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
+JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'upload-key.json').freeze
+
+# Android Specific Constants
+APP_ID = 'com.trezorsuite'.freeze
+
+platform :android do
+
+  desc "Android: Increments internal build number and version number"
+  private_lane :bump_build_number do
+    previous_build_number = google_play_track_version_codes(
+      package_name: APP_ID,
+      track: "internal",
+      json_key: JSON_KEY_FILE_PATH,
+    )[0]
+
+    android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
+    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test", project_dir: ANDROID_PATH)
+  end
+
+  desc "Build and upload the app to play Store for an internal testing release."
+  lane :internal do |options|
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    bump_build_number
+
+    gradle(
+      task: 'bundle',
+      build_type: 'Release',
+      project_dir: ANDROID_PATH
+    )
+
+    # Upload Android App Bundle to PlayStore like Internal testing Release
+    upload_to_play_store(
+      track: 'internal',
+      # set as "draft" to complete the release at some other time in PlayStore
+      release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
+      skip_upload_apk: true
+    )
+
+    # TODO push increased versions to Git and tag it
+  end
+end
