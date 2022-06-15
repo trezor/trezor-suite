@@ -67,6 +67,12 @@ beta connect-web deploy npm:
     - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-web version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
     - nix-shell --run "yarn && cd ./packages/connect-web && npm publish --tag beta"
 
+beta connect-plugin-stellar deploy npm:
+  <<: *npm_beta_deploy_rules
+  script:
+    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-plugin-stellar version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "yarn && cd ./packages/connect-plugin-stellar && npm publish --tag beta"
+
 # npm packages deploy to npm registry
 
 .npm_registry_release_rules: &npm_registry_release_rules
@@ -148,3 +154,10 @@ connect-web deploy npm:
   <<: *npm_deploy_rules
   script:
     - nix-shell --run "yarn && cd ./packages/connect-web && npm publish"
+
+connect-plugin-stellar deploy npm:
+  only:
+    <<: *npm_registry_release_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/connect-plugin-stellar && npm publish"
