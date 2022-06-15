@@ -1,14 +1,20 @@
 import React from 'react';
-import { Box, Button, Text } from '@suite-native/atoms';
-import { View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SettingsStackRoutes, SettingsStackParamList } from '../navigation/routes';
 import { StackProps } from '@suite-native/navigation';
 
-const settingsScreenStyle = prepareNativeStyle(() => ({
+import { Box, Button } from '@suite-native/atoms';
+import { ApplicationSettings } from '../components/ApplicationSettings';
+import { DeviceSettings } from '../components/DeviceSettings';
+import { CoinsSettings } from '../components/CoinsSettings';
+import { ActionButtons } from '../components/ActionButtons';
+
+const settingsScreenStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    padding: utils.spacings.medium,
 }));
 
 export const SettingsScreen = ({
@@ -17,9 +23,8 @@ export const SettingsScreen = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <View style={[applyStyle(settingsScreenStyle)]}>
-            <Text>Settings content</Text>
-            <Box marginVertical="medium">
+        <ScrollView>
+            <Box style={applyStyle(settingsScreenStyle)}>
                 <Button
                     onPress={() =>
                         navigation.navigate(SettingsStackRoutes.SettingsDetail, {
@@ -31,7 +36,11 @@ export const SettingsScreen = ({
                 >
                     Show detail
                 </Button>
+                <ActionButtons />
+                <ApplicationSettings />
+                <DeviceSettings />
+                <CoinsSettings />
             </Box>
-        </View>
+        </ScrollView>
     );
 };

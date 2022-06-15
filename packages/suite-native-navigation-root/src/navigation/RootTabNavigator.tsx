@@ -17,7 +17,8 @@ const Tab = createBottomTabNavigator<RootTabsParamList>();
 export const RootTabNavigator = () => (
     <NavigationContainer>
         <Tab.Navigator
-            initialRouteName={RouteTabs.Home}
+            // TODO revert this before merge
+            initialRouteName={RouteTabs.SettingsStack}
             screenOptions={{
                 headerShown: false,
                 unmountOnBlur: true,
