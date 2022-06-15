@@ -54,6 +54,7 @@ export const CoinsSettings = () => {
     const handleCoinSelect = () => {
         console.log('Coin select');
     };
+
     return (
         <SettingsSection title="Coins" rightIcon={<CoinSettingsIcon />}>
             <Box flexDirection="row" flexWrap="wrap" alignItems="center">

@@ -15,6 +15,7 @@ export const icons = {
     chevronRight: require('../assets/icons/chevronRight.svg'),
     close: require('../assets/icons/close.svg'),
     closeCircle: require('../assets/icons/closeCircle.svg'),
+    eject: require('../assets/icons/eject.svg'),
     eyeglasses: require('../assets/icons/eyeglasses.svg'),
     flag: require('../assets/icons/flag.svg'),
     ghost: require('../assets/icons/ghost.svg'),
