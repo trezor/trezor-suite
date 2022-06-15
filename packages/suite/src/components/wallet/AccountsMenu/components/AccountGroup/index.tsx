@@ -78,6 +78,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                         {!props.keepOpened && (
                             <Icon
                                 canAnimate={animatedIcon}
+                                data-test="@account-menu/arrow"
                                 isActive={isOpened}
                                 size={16}
                                 color={theme.TYPE_LIGHT_GREY}

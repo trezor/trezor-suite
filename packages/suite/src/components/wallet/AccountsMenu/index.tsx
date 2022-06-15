@@ -313,7 +313,11 @@ const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
                                 <Translation id="TR_MY_ACCOUNTS" />
                             </LoadingContent>
                         </Heading>
-                        <AddAccountButton device={device} noButtonLabel />
+                        <AddAccountButton
+                            data-test="@accounts/add-account"
+                            device={device}
+                            noButtonLabel
+                        />
                     </Row>
                     <AccountSearchBox />
                 </MenuHeader>
