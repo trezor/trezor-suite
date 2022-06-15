@@ -1,7 +1,8 @@
 // @flow
 import { Box, Chip } from '@suite-native/atoms';
-import { CryptoIcon, CryptoIconName } from '@trezor/icons';
+import { CryptoIcon, CryptoIconName, Icon } from '@trezor/icons';
 import * as React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { SettingsSection } from './SettingsSection';
 
 const dummyCoins: { title: string; iconName: CryptoIconName }[] = [
@@ -43,13 +44,19 @@ const dummyCoins: { title: string; iconName: CryptoIconName }[] = [
     },
 ];
 
+const CoinSettingsIcon = () => (
+    <TouchableOpacity onPress={() => console.log('coin settings')}>
+        <Icon name="settings" />
+    </TouchableOpacity>
+);
+
 export const CoinsSettings = () => {
     const handleCoinSelect = () => {
         console.log('Coin select');
     };
     return (
-        <SettingsSection title="Coins">
-            <Box flexDirection="row" flexWrap="wrap">
+        <SettingsSection title="Coins" rightIcon={<CoinSettingsIcon />}>
+            <Box flexDirection="row" flexWrap="wrap" alignItems="center">
                 {dummyCoins.map(item => (
                     <Chip
                         key={item.title}

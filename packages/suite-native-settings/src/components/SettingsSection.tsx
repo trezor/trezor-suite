@@ -2,11 +2,18 @@ import React, { ReactNode } from 'react';
 
 import { Box, Text } from '@suite-native/atoms';
 
-type SettingsSectionProps = { title: string; children: ReactNode };
+type SettingsSectionProps = {
+    title: string;
+    children: ReactNode;
+    rightIcon?: ReactNode;
+};
 
-export const SettingsSection = ({ title, children }: SettingsSectionProps) => (
+export const SettingsSection = ({ title, children, rightIcon }: SettingsSectionProps) => (
     <Box>
-        <Text variant="titleMedium">{title}</Text>
+        <Box flexDirection="row" justifyContent="space-between">
+            <Text variant="titleMedium">{title}</Text>
+            {rightIcon && rightIcon}
+        </Box>
         <Box>{children}</Box>
     </Box>
 );
