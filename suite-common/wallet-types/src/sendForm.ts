@@ -1,7 +1,7 @@
 import { UseFormMethods } from 'react-hook-form';
 
 import { Network } from '@suite-common/wallet-config';
-import { FeeLevel } from '@trezor/connect';
+import { AccountUtxo, FeeLevel } from '@trezor/connect';
 
 import { TypedValidationRules } from './form';
 import { Account } from './account';
@@ -17,6 +17,7 @@ import {
 
 export type FormOptions =
     | 'broadcast'
+    | 'utxoSelection'
     | 'bitcoinRBF'
     | 'bitcoinLockTime'
     | 'ethereumData'
@@ -40,6 +41,7 @@ export type FormState = {
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
     rippleDestinationTag?: string;
     rbfParams?: RbfTransactionParams;
+    selectedUtxos?: AccountUtxo[];
 };
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
@@ -81,6 +83,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         calculateFiat: (outputIndex: number, amount?: string) => void;
         setAmount: (outputIndex: number, amount: string) => void;
         changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
+        toggleUtxoSelection: (utxo: AccountUtxo) => void;
         resetDefaultValue: (field: string) => void;
         setMax: (index: number, active: boolean) => void;
         getDefaultValue: GetDefaultValue;
