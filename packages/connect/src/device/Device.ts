@@ -625,15 +625,6 @@ export class Device extends EventEmitter {
         return this.originalDescriptor.path;
     }
 
-    needAuthentication() {
-        if (this.isUnacquired() || this.isUsedElsewhere() || this.featuresNeedsReload) return true;
-        if (this.features.bootloader_mode || !this.features.initialized) return true;
-        const pin = this.features.pin_protection ? !!this.features.unlocked : true;
-        // @ts-expect-error legacy protobuf
-        const pass = this.features.passphrase_protection ? this.features.passphrase_cached : true;
-        return pin && pass;
-    }
-
     isT1() {
         return this.features ? this.features.major_version === 1 : false;
     }
