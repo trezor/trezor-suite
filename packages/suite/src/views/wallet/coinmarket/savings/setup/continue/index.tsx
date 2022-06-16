@@ -11,7 +11,7 @@ import {
 import { Button, SelectBar, variables } from '@trezor/components';
 import { useSavingsSetupContinue } from '@wallet-hooks/useCoinmarketSavingsSetupContinue';
 import { Translation } from '@suite-components';
-import AddressOptions from '../../../common/AddressOptions';
+import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
 import FiatAmount from '../components/FiatAmount';
 import Summary from '../components/Summary';
 

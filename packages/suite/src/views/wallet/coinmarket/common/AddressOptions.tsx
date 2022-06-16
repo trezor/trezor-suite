@@ -76,11 +76,20 @@ interface Props extends Pick<UseFormMethods<FormState>, 'setValue'> {
     address?: string;
     menuPlacement?: MenuPlacement;
 }
-const AddressOptions = (props: Props) => {
-    const { control, receiveSymbol, setValue, address, account, menuPlacement } = props;
+export const AddressOptions = ({
+    control,
+    receiveSymbol,
+    setValue,
+    address,
+    account,
+    menuPlacement,
+}: Props) => {
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);
     const value = address ? addressDictionary[address] : null;
+
+    const handleChange = (accountAddress: AccountAddress) =>
+        setValue('address', accountAddress.address);
 
     useEffect(() => {
         if (!address && addresses) {
@@ -97,9 +106,7 @@ const AddressOptions = (props: Props) => {
                 <>
                     <Select
                         {...field}
-                        onChange={(accountAddress: AccountAddress) =>
-                            setValue('address', accountAddress.address)
-                        }
+                        onChange={handleChange}
                         isClearable={false}
                         value={value}
                         options={buildOptions(addresses)}
@@ -138,5 +145,3 @@ const AddressOptions = (props: Props) => {
         />
     );
 };
-
-export default AddressOptions;

@@ -11,7 +11,7 @@ import {
 } from '@suite-components';
 import { Input, Button, variables, CoinLogo, DeviceImage } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
-import AddressOptions from '@wallet-views/coinmarket/common/AddressOptions';
+import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
 import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
 
 const Wrapper = styled.div`

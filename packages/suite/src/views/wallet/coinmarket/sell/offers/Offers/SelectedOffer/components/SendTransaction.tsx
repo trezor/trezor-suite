@@ -56,7 +56,7 @@ const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const SendTransactionComponent = () => {
+export const SendTransaction = () => {
     const { account, callInProgress, selectedQuote, sellInfo, sendTransaction, trade } =
         useCoinmarketSellOffersContext();
     useWatchSellTrade(account, trade);
@@ -112,5 +112,3 @@ const SendTransactionComponent = () => {
         </Wrapper>
     );
 };
-
-export default SendTransactionComponent;

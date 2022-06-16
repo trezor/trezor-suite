@@ -67,7 +67,7 @@ type Props = Pick<UseFormMethods<FormState>, 'setValue'> & {
     setSelectedAccountOption: (o: AccountSelectOption) => void;
 };
 
-const ReceiveOptions = (props: Props) => {
+export const ReceiveOptions = (props: Props) => {
     const theme = useTheme();
     const { openModal } = useActions({
         openModal: modalActions.openModal,
@@ -209,5 +209,3 @@ const ReceiveOptions = (props: Props) => {
         />
     );
 };
-
-export default ReceiveOptions;
