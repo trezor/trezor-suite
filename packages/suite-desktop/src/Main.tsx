@@ -25,6 +25,7 @@ import AppRouter from './support/Router';
 import DesktopUpdater from './support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite/config/suite';
 import { ModalContextProvider } from '@suite-support/ModalContext';
+import { desktopHandshake } from '@suite-actions/suiteActions';
 
 const Main = () => {
     useTor();
@@ -55,12 +56,21 @@ const Main = () => {
     );
 };
 
-export const init = (root: HTMLElement) => {
+export const init = async (root: HTMLElement) => {
     if (!isDev) {
         initSentry(SENTRY_CONFIG);
     }
 
-    desktopApi.clientReady();
+    const handshake = await desktopApi.handshake(null);
+
+    // TODO what to do when it fails
+    if (!handshake.success) {
+        console.error('Handshake failed', handshake.error);
+        return;
+    }
+    console.log('Handshake succeeded', handshake.payload);
+
+    store.dispatch(desktopHandshake(handshake.payload));
 
     render(
         <ReduxProvider store={store}>

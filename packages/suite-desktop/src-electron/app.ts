@@ -1,8 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 
-import { app, BrowserWindow, ipcMain, RelaunchOptions, session } from 'electron';
+import { app, BrowserWindow, RelaunchOptions, session } from 'electron';
 import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
+import { ipcMain } from './typed-electron';
 
 // @ts-ignore TODO fix
 import { SENTRY_CONFIG } from '@suite-config';
@@ -180,16 +181,15 @@ const init = async () => {
     const {
         'custom-protocols': protocol,
         'auto-updater': { allowPrerelease, firstRun },
-    } = await loadModules();
+    } = await loadModules(response.payload);
 
-    if (protocol) {
-        mainWindow!.webContents.send('protocol/open', protocol);
-    }
-    mainWindow!.webContents.send('update/allow-prerelease', allowPrerelease);
-    mainWindow!.webContents.send('update/enable');
-    if (firstRun) {
-        mainWindow!.webContents.send('update/new-version-first-run', firstRun);
-    }
+    response.handshake({
+        success: true,
+        payload: {
+            protocol,
+            desktopUpdate: { allowPrerelease, firstRun },
+        },
+    });
 };
 
 init();

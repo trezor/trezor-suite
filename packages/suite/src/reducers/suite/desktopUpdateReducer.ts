@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
-import { DESKTOP_UPDATE } from '@suite-actions/constants';
+import { DESKTOP_UPDATE, SUITE } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 
 /**
@@ -51,8 +51,11 @@ const initialState: State = {
 const desktopUpdateReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
-            case DESKTOP_UPDATE.ENABLE:
-                draft.enabled = true;
+            case SUITE.DESKTOP_HANDSHAKE:
+                if (action.payload.desktopUpdate) {
+                    draft.enabled = true;
+                    draft.allowPrerelease = action.payload.desktopUpdate.allowPrerelease;
+                }
                 break;
             case DESKTOP_UPDATE.CHECKING:
                 draft.state = UpdateState.Checking;

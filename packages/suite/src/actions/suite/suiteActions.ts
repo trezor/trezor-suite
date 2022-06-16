@@ -1,6 +1,6 @@
 import TrezorConnect, { Device, DEVICE } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
 
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
@@ -26,6 +26,7 @@ export type SuiteAction =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
+    | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
     | { type: typeof SUITE.SET_DB_ERROR; payload: AppState['suite']['dbError'] }
     | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
@@ -86,6 +87,11 @@ export type SuiteAction =
     | {
           type: typeof SUITE.REQUEST_DEVICE_RECONNECT;
       };
+
+export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
+    type: SUITE.DESKTOP_HANDSHAKE,
+    payload,
+});
 
 export const removeButtonRequests = (device: TrezorDevice | undefined) => ({
     type: SUITE.ADD_BUTTON_REQUEST,

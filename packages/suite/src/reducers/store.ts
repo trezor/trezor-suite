@@ -15,6 +15,8 @@ import onboardingReducers from '@onboarding-reducers';
 import recoveryReducers from '@recovery-reducers';
 import firmwareReducers from '@firmware-reducers';
 import backupReducers from '@backup-reducers';
+import { desktopReducer } from './desktop';
+
 // toastMiddleware can be used only in suite-desktop and suite-web
 // it's not included into `@suite-middlewares` index
 import toastMiddleware from '@suite-middlewares/toastMiddleware';
@@ -26,6 +28,7 @@ const rootReducer = combineReducers({
     recovery: recoveryReducers,
     firmware: firmwareReducers,
     backup: backupReducers,
+    desktop: desktopReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
