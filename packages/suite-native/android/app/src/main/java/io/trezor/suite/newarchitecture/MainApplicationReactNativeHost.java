@@ -1,4 +1,4 @@
-package com.trezorsuite.newarchitecture;
+package io.trezor.suite.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.trezorsuite.BuildConfig;
-import com.trezorsuite.newarchitecture.components.MainComponentsRegistry;
-import com.trezorsuite.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import io.trezor.suite.BuildConfig;
+import io.trezor.suite.newarchitecture.components.MainComponentsRegistry;
+import io.trezor.suite.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

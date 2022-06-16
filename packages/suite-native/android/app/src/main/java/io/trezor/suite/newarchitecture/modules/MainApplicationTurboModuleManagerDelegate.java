@@ -1,4 +1,4 @@
-package com.trezorsuite.newarchitecture.modules;
+package io.trezor.suite.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
