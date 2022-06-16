@@ -3,6 +3,7 @@
 import { isNotUndefined } from '@trezor/utils';
 import { isDev } from '@suite-utils/build';
 import { StrictBrowserWindow } from '../typed-electron';
+import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
 // General modules (both dev & prod)
 const MODULES = [
@@ -38,7 +39,7 @@ export type Dependencies = {
     interceptor: RequestInterceptor;
 };
 
-type ModuleLoad = () => any | Promise<any>;
+type ModuleLoad = (payload: HandshakeClient) => any | Promise<any>;
 
 type ModuleInit = (dependencies: Dependencies) => ModuleLoad | void;
 
@@ -68,16 +69,29 @@ export const initModules = async (dependencies: Dependencies) => {
     logger.info('modules', 'All modules initialized');
 
     const modulesToLoad = modules.filter(isNotUndefined);
-    return () =>
+    let loaded = 0;
+    return (handshake: HandshakeClient) =>
         Promise.all(
             modulesToLoad.map(async ([module, loadModule]) => {
                 logger.debug('modules', `Loading ${module}`);
                 try {
-                    const payload = await loadModule();
+                    const payload = await loadModule(handshake);
                     logger.debug('modules', `Loaded ${module}`);
+                    dependencies.mainWindow.webContents.send('handshake/event', {
+                        type: 'progress',
+                        message: `${module} loaded`,
+                        progress: {
+                            current: ++loaded,
+                            total: modulesToLoad.length,
+                        },
+                    });
                     return [module, payload] as const;
                 } catch (err) {
                     logger.error('modules', `Couldn't load ${module} (${err.toString()})`);
+                    dependencies.mainWindow.webContents.send('handshake/event', {
+                        type: 'error',
+                        message: `${module} error`,
+                    });
                 }
             }),
         ).then(results => Object.fromEntries(results.filter(isNotUndefined)));

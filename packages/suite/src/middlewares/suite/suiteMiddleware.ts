@@ -12,6 +12,8 @@ import * as languageActions from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { sortByTimestamp } from '@suite-utils/device';
+import { handleProtocolRequest } from '@suite-actions/protocolActions';
+import { addToast } from '@suite-actions/notificationActions';
 
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -36,6 +38,19 @@ const suite =
                 await api.dispatch(storageActions.init());
                 // load storage
                 api.dispatch(storageActions.loadStorage());
+                break;
+            case SUITE.DESKTOP_HANDSHAKE:
+                if (action.payload.protocol) {
+                    api.dispatch(handleProtocolRequest(action.payload.protocol));
+                }
+                if (action.payload.desktopUpdate?.firstRun) {
+                    api.dispatch(
+                        addToast({
+                            type: 'auto-updater-new-version-first-run',
+                            version: action.payload.desktopUpdate.firstRun,
+                        }),
+                    );
+                }
                 break;
             case STORAGE.LOADED: {
                 // select first device from storage

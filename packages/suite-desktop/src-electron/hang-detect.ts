@@ -1,12 +1,15 @@
 import { BrowserWindow, dialog } from 'electron';
 import { ipcMain } from './typed-electron';
 import { APP_SRC } from './libs/constants';
+import type { InvokeResult, HandshakeClient, HandshakeElectron } from '@trezor/suite-desktop-api';
 
 const HANG_WAIT = 30000;
 
 type HangResult =
     | {
           result: 'success';
+          payload: HandshakeClient;
+          handshake: (payload: InvokeResult<HandshakeElectron>) => void;
       }
     | {
           result: 'quit';
@@ -39,9 +42,11 @@ export const hangDetect = (mainWindow: BrowserWindow): Promise<HangResult> => {
             }
         };
         timeout = setTimeout(timeoutCallback, HANG_WAIT);
-        ipcMain.once('client/ready', () => {
+        ipcMain.handleOnce('handshake/client', (_, payload) => {
             clearTimeout(timeout);
-            resolve({ result: 'success' });
+            return new Promise(handshake => {
+                resolve({ result: 'success', payload, handshake });
+            });
         });
         logger.debug('init', `Load URL (${APP_SRC})`);
         mainWindow.loadURL(APP_SRC);
