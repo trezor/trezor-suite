@@ -5,9 +5,12 @@
     "private": true,
     "scripts": {
         "android": "react-native run-android --no-packager",
+        "android:debug": "react-native run-android --variant=devDebug --appIdSuffix=debug",
+        "android:qa": "react-native run-android --variant=qaRelease --appIdSuffix=develop",
+        "android:prod": "react-native run-android --variant=prodRelease",
         "android:clean": "cd android && ./gradlew clean",
         "ios": "react-native run-ios --no-packager",
-        "start": "react-native start",
+        "start": "react-native start --reset-cache",
         "test": "jest",
         "lint": "eslint .",
         "type-check": "tsc -b",
