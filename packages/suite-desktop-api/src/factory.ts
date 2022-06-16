@@ -61,7 +61,7 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
         },
 
         // Client
-        clientReady: () => ipcRenderer.send('client/ready'),
+        handshake: client => ipcRenderer.invoke('handshake/client', client),
 
         // Metadata
         metadataRead: options => {

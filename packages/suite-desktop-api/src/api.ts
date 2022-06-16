@@ -1,5 +1,13 @@
 import { ListenerMethod, SendMethod, InvokeMethod } from './methods';
-import { SuiteThemeVariant, UpdateInfo, UpdateProgress, InvokeResult } from './messages';
+import {
+    SuiteThemeVariant,
+    HandshakeClient,
+    HandshakeElectron,
+    HandshakeEvent,
+    UpdateInfo,
+    UpdateProgress,
+    InvokeResult,
+} from './messages';
 
 // Event messages from renderer to main process
 // Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)
@@ -7,7 +15,6 @@ import { SuiteThemeVariant, UpdateInfo, UpdateProgress, InvokeResult } from './m
 export interface MainChannels {
     'app/restart': void;
     'app/focus': void;
-    'client/ready': void;
     'store/clear': void;
     'theme/change': SuiteThemeVariant;
     'tor/get-status': void;
@@ -43,12 +50,15 @@ export interface RendererChannels {
 
     // custom protocol
     'protocol/open': string;
+
+    'handshake/event': HandshakeEvent;
 }
 
 // Invocation from renderer process
 // Sent by DesktopApi.[method] via ipcRenderer.invoke (./main)
 // Handled by ipcMain.handle (see packages/suite-desktop/src-electron/modules/*)
 export interface InvokeChannels {
+    'handshake/client': (client: HandshakeClient) => InvokeResult<HandshakeElectron>;
     'metadata/read': (options: { file: string }) => InvokeResult<string>;
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
     'server/request-address': (route: string) => string | undefined;
@@ -81,8 +91,8 @@ export interface DesktopApi {
     allowPrerelease: DesktopApiSend<'update/allow-prerelease'>;
     // Theme
     themeChange: DesktopApiSend<'theme/change'>;
-    // Client controls
-    clientReady: DesktopApiSend<'client/ready'>;
+    // Handshake
+    handshake: DesktopApiInvoke<'handshake/client'>;
     // Metadata
     metadataWrite: DesktopApiInvoke<'metadata/write'>;
     metadataRead: DesktopApiInvoke<'metadata/read'>;
