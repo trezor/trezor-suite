@@ -6,22 +6,25 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { isWeb, isDesktop, getLocationHostname } from '@suite-utils/env';
 
 const baseFetch = window.fetch;
+
 const torFetch = (input: RequestInfo, init?: RequestInit | undefined) => {
     if (typeof input === 'string') {
         input = toTorUrl(input);
     }
+
     return baseFetch(input, init);
 };
 
-const Tor = () => {
+export const useTor = () => {
     const isTor = useSelector(state => state.suite.tor);
-    useEffect(() => {
-        window.fetch = isTor ? torFetch : baseFetch;
-    }, [isTor]);
 
     const { updateTorStatus } = useActions({
         updateTorStatus: suiteActions.updateTorStatus,
     });
+
+    useEffect(() => {
+        window.fetch = isTor ? torFetch : baseFetch;
+    }, [isTor]);
 
     useEffect(() => {
         if (isWeb()) {
@@ -33,8 +36,4 @@ const Tor = () => {
             desktopApi.on('tor/status', updateTorStatus);
         }
     }, [updateTorStatus]);
-
-    return null;
 };
-
-export default Tor;
