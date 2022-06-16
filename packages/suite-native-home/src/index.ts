@@ -1,1 +1,2 @@
-export * from './HomeScreen';
+export * from './navigation/routes';
+export * from './navigation/HomeStackNavigator';

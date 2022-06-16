@@ -9,7 +9,7 @@ import { ActionScreen } from '../dummyScreens/ActionScreen';
 // import { DemoScreen } from '../dummyScreens/DemoScreen';
 import { PricesScreen } from '../dummyScreens/PricesScreen';
 import { SettingsScreen } from '@suite-native/settings';
-import { HomeScreen } from '@suite-native/home';
+import { HomeStackNavigator } from '@suite-native/home';
 
 import { RootTabsParamList, RouteTabs, rootTabsOptions } from './routes';
 
@@ -26,7 +26,7 @@ export const RootTabNavigator = () => (
             }}
             tabBar={props => <TabBar tabItemOptions={rootTabsOptions} {...props} />}
         >
-            <Tab.Screen name={RouteTabs.Home} component={HomeScreen} />
+            <Tab.Screen name={RouteTabs.HomeStack} component={HomeStackNavigator} />
             <Tab.Screen name={RouteTabs.Accounts} component={AccountsScreen} />
             <Tab.Screen name={RouteTabs.Action} component={ActionScreen} />
             <Tab.Screen name={RouteTabs.Prices} component={PricesScreen} />
