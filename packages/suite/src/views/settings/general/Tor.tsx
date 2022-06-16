@@ -3,7 +3,7 @@ import { Switch } from '@trezor/components';
 import { TOR_PROJECT_URL } from '@trezor/urls';
 import { useSelector, useActions } from '@suite-hooks';
 import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -13,7 +13,7 @@ export const Tor = () => {
         tor: state.suite.tor,
     }));
     const { toggleTor } = useActions({
-        toggleTor: toggleTorAction,
+        toggleTor: suiteActions.toggleTor,
     });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Tor);
 
@@ -35,9 +35,7 @@ export const Tor = () => {
                 <Switch
                     dataTest="@settings/general/tor-switch"
                     isChecked={tor}
-                    onChange={() => {
-                        toggleTor(!tor);
-                    }}
+                    onChange={() => toggleTor(!tor)}
                 />
             </ActionColumn>
         </SectionItem>

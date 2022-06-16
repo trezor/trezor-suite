@@ -15,7 +15,7 @@ import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
 import Autodetect from '@suite-support/Autodetect';
 import Protocol from '@suite-support/Protocol';
-import Tor from '@suite-support/Tor';
+import { useTor } from '@suite-support/useTor';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from '@suite-support/Router';
@@ -26,31 +26,34 @@ import DesktopUpdater from './support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite/config/suite';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 
-const Main = () => (
-    <ThemeProvider>
-        <RouterProvider history={history}>
-            <ModalContextProvider>
-                <ErrorBoundary>
-                    <Autodetect />
-                    <Resize />
-                    <Tor />
-                    <Protocol />
-                    <OnlineStatus />
-                    <RouterHandler />
-                    <IntlProvider>
-                        <DesktopUpdater>
-                            <Metadata />
-                            <ToastContainer />
-                            <Preloader>
-                                <AppRouter />
-                            </Preloader>
-                        </DesktopUpdater>
-                    </IntlProvider>
-                </ErrorBoundary>
-            </ModalContextProvider>
-        </RouterProvider>
-    </ThemeProvider>
-);
+const Main = () => {
+    useTor();
+
+    return (
+        <ThemeProvider>
+            <RouterProvider history={history}>
+                <ModalContextProvider>
+                    <ErrorBoundary>
+                        <Autodetect />
+                        <Resize />
+                        <Protocol />
+                        <OnlineStatus />
+                        <RouterHandler />
+                        <IntlProvider>
+                            <DesktopUpdater>
+                                <Metadata />
+                                <ToastContainer />
+                                <Preloader>
+                                    <AppRouter />
+                                </Preloader>
+                            </DesktopUpdater>
+                        </IntlProvider>
+                    </ErrorBoundary>
+                </ModalContextProvider>
+            </RouterProvider>
+        </ThemeProvider>
+    );
+};
 
 window.onload = () => {
     if (!isDev) {

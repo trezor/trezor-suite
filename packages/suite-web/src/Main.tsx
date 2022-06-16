@@ -15,7 +15,7 @@ import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
 import Protocol from '@suite-support/Protocol';
 import Autodetect from '@suite-support/Autodetect';
-import Tor from '@suite-support/Tor';
+import { useTor } from '@suite-support/useTor';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from '@suite-support/Router';
@@ -28,6 +28,7 @@ import { useCypress } from './support/useCypress';
 
 const Main = () => {
     useCypress();
+    useTor();
 
     return (
         <ThemeProvider>
@@ -36,7 +37,6 @@ const Main = () => {
                     <ErrorBoundary>
                         <Autodetect />
                         <Resize />
-                        <Tor />
                         <Protocol />
                         <OnlineStatus />
                         <RouterHandler />
