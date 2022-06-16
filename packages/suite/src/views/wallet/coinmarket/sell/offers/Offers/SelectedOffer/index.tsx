@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card, Icon, variables, colors } from '@trezor/components';
-import SelectBankAccount from './components/SelectBankAccount';
-import SendTransaction from './components/SendTransaction';
+import { SelectBankAccount } from './components/SelectBankAccount';
+import { SendTransaction } from './components/SendTransaction';
 import { CoinmarketSellOfferInfo } from '@wallet-components';
 import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
 import { Translation } from '@suite-components';
@@ -64,7 +64,7 @@ const Middle = styled.div`
     color: ${props => props.theme.STROKE_GREY};
 `;
 
-const SelectedOffer = () => {
+export const SelectedOffer = () => {
     const { account, selectedQuote, sellInfo, sellStep } = useCoinmarketSellOffersContext();
     if (!selectedQuote) return null;
 
@@ -97,5 +97,3 @@ const SelectedOffer = () => {
         </Wrapper>
     );
 };
-
-export default SelectedOffer;

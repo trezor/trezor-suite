@@ -108,7 +108,7 @@ const StyledIcon = styled(Icon)`
     margin-right: 3px;
 `;
 
-const SelectBankAccount = () => {
+export const SelectBankAccount = () => {
     const theme = useTheme();
     const { callInProgress, confirmTrade, addBankAccount, selectedQuote } =
         useCoinmarketSellOffersContext();
@@ -190,5 +190,3 @@ const SelectBankAccount = () => {
         </Wrapper>
     );
 };
-
-export default SelectBankAccount;

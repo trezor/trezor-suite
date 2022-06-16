@@ -8,9 +8,9 @@ import { InputError } from '@wallet-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { TypedValidationRules } from '@wallet-types/form';
 import { isHexValid, isInteger } from '@wallet-utils/validation';
-import AddressOptions from '@wallet-views/coinmarket/common/AddressOptions';
+import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
 import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
-import ReceiveOptions, { AccountSelectOption } from './ReceiveOptions';
+import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';
 
 const Wrapper = styled.div`
     display: flex;

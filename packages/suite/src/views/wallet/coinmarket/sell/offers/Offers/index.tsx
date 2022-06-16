@@ -8,7 +8,7 @@ import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellO
 import NoOffers from '@wallet-views/coinmarket/common/no-offers';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import List from './List';
-import SelectedOffer from './SelectedOffer';
+import { SelectedOffer } from './SelectedOffer';
 
 const Wrapper = styled.div`
     padding: 16px 32px 32px 32px;
