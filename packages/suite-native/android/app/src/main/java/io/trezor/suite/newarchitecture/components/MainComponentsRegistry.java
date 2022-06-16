@@ -1,4 +1,4 @@
-package com.trezorsuite.newarchitecture.components;
+package io.trezor.suite.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

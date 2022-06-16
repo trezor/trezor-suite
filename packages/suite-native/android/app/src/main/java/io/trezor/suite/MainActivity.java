@@ -1,4 +1,4 @@
-package com.trezorsuite;
+package io.trezor.suite;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
