@@ -1,29 +1,24 @@
-import type { Transport, AcquireInput, TrezorDeviceInfoWithSession } from '../types';
+import type { AcquireInput, TrezorDeviceInfoWithSession } from '../types';
+import { AbstractTransport } from './abstract';
+export class FallbackTransport extends AbstractTransport {
+    _availableTransports: AbstractTransport[] = [];
+    _activeTransport?: AbstractTransport;
+    _transports: AbstractTransport[] = [];
 
-export class FallbackTransport {
-    _availableTransports: Array<Transport> = [];
-    activeName = '';
-    // @ts-ignore
-    activeTransport: Transport;
-    configured = false;
-    debug = false;
-    isOutdated = false;
     name = 'FallbackTransport';
-    requestNeeded = false;
-    transports: Array<Transport> = [];
-    version = '';
 
-    constructor(transports: Array<Transport>) {
-        this.transports = transports;
+    constructor({ transports, debug }: { transports: AbstractTransport[]; debug: boolean }) {
+        super({ debug });
+        this._transports = transports;
     }
 
     // first one that inits successfully is the final one; others won't even start initiating
     async _tryInitTransports() {
-        const res: Array<Transport> = [];
+        const res: AbstractTransport[] = [];
         let lastError: any = null;
-        for (const transport of this.transports) {
+        for (const transport of this._transports) {
             try {
-                await transport.init(this.debug);
+                await transport.init();
                 res.push(transport);
             } catch (e) {
                 lastError = e;
@@ -36,11 +31,11 @@ export class FallbackTransport {
     }
 
     // first one that inits successfully is the final one; others won't even start initing
-    async _tryConfigureTransports(data: JSON | string) {
+    async _tryConfigureTransports(data: JSON) {
         let lastError: any = null;
         for (const transport of this._availableTransports) {
             try {
-                await transport.configure(data);
+                transport.configure(data);
                 return transport;
             } catch (e) {
                 lastError = e;
@@ -62,63 +57,49 @@ export class FallbackTransport {
         this.configured = false;
     }
 
-    async configure(signedData: JSON | string) {
-        const pt: Promise<Transport> = this._tryConfigureTransports(signedData);
-        this.activeTransport = await pt;
-        this.configured = this.activeTransport.configured;
-        this.version = this.activeTransport.version;
-        this.activeName = this.activeTransport.name;
-        this.requestNeeded = this.activeTransport.requestNeeded;
-        this.isOutdated = this.activeTransport.isOutdated;
+    async configure(signedData: JSON) {
+        const pt: Promise<AbstractTransport> = this._tryConfigureTransports(signedData);
+        this._activeTransport = await pt;
+        this.configured = this._activeTransport.configured;
+        this.version = this._activeTransport.version;
+        this.name = this._activeTransport.name;
     }
 
     enumerate() {
-        return this.activeTransport.enumerate();
+        return this._activeTransport!.enumerate();
     }
 
     listen(old?: Array<TrezorDeviceInfoWithSession>) {
-        return this.activeTransport.listen(old);
+        return this._activeTransport!.listen(old);
     }
 
     acquire(input: AcquireInput, debugLink: boolean) {
-        return this.activeTransport.acquire(input, debugLink);
+        return this._activeTransport!.acquire(input, debugLink);
     }
 
     release(session: string, onclose: boolean, debugLink: boolean) {
-        return this.activeTransport.release(session, onclose, debugLink);
+        return this._activeTransport!.release(session, onclose, debugLink);
     }
 
     call(session: string, name: string, data: Record<string, unknown>, debugLink: boolean) {
-        return this.activeTransport.call(session, name, data, debugLink);
+        return this._activeTransport!.call(session, name, data, debugLink);
     }
 
     post(session: string, name: string, data: Record<string, unknown>, debugLink: boolean) {
-        return this.activeTransport.post(session, name, data, debugLink);
+        return this._activeTransport!.post(session, name, data, debugLink);
     }
 
     read(session: string, debugLink: boolean) {
-        return this.activeTransport.read(session, debugLink);
+        return this._activeTransport!.read(session, debugLink);
     }
 
     requestDevice() {
-        return this.activeTransport.requestDevice();
+        return this._activeTransport!.requestDevice();
     }
 
-    setBridgeLatestUrl(url: string) {
-        for (const transport of this.transports) {
-            transport.setBridgeLatestUrl(url);
-        }
-    }
-
-    setBridgeLatestVersion(version: string) {
-        for (const transport of this.transports) {
-            transport.setBridgeLatestVersion(version);
-        }
-    }
-
-    stop() {
-        for (const transport of this.transports) {
-            transport.stop();
-        }
-    }
+    // stop() {
+    //     for (const transport of this.transports) {
+    //         transport.stop();
+    //     }
+    // }
 }

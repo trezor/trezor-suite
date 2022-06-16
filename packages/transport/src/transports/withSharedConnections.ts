@@ -1,5 +1,5 @@
 import { create as createDeferred, resolveTimeoutPromise } from '../utils/defered';
-import { parseConfigure } from '../lowlevel/protobuf/messages';
+// import { parseConfigure } from '../lowlevel/protobuf/messages';
 import { buildAndSend } from '../lowlevel/send';
 import { receiveAndParse } from '../lowlevel/receive';
 import { postModuleMessage } from '../workers/sharedConnectionWorker';
@@ -323,11 +323,11 @@ export class TransportWithSharedConnections {
         }
     }
 
-    configure(signedData: any) {
-        const messages = parseConfigure(signedData);
-        this._messages = messages;
-        this.configured = true;
-    }
+    // configure(signedData: any) {
+    //     const messages = parseConfigure(signedData);
+    //     this._messages = messages;
+    //     this.configured = true;
+    // }
 
     _sendLowlevel(path: string, debug: boolean): (data: ArrayBuffer) => Promise<void> {
         console.log('sendT_sendLowlevel', this.plugin);
