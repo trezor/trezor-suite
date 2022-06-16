@@ -1,5 +1,3 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
-import { SettingsStackParamList } from '@suite-native/settings';
 import { TabsOption } from '@suite-native/navigation';
 
 export enum RouteTabs {
@@ -7,7 +5,7 @@ export enum RouteTabs {
     Accounts = 'Accounts',
     Action = 'Action',
     Prices = 'Prices',
-    SettingsStack = 'SettingsStack',
+    Settings = 'Settings',
 }
 
 export type RootTabsParamList = {
@@ -15,7 +13,7 @@ export type RootTabsParamList = {
     [RouteTabs.Accounts]: undefined;
     [RouteTabs.Action]: undefined;
     [RouteTabs.Prices]: undefined;
-    [RouteTabs.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
+    [RouteTabs.Settings]: undefined;
 };
 
 export const rootTabsOptions: TabsOption = {
@@ -31,7 +29,7 @@ export const rootTabsOptions: TabsOption = {
     [RouteTabs.Prices]: {
         iconName: 'prices',
     },
-    [RouteTabs.SettingsStack]: {
+    [RouteTabs.Settings]: {
         iconName: 'settings',
     },
 };
