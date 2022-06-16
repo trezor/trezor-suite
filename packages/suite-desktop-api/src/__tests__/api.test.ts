@@ -131,15 +131,6 @@ describe('DesktopApi', () => {
             expect(spy).toBeCalledTimes(1); // invalid param not processed
         });
 
-        it('DesktopApi.clientReady', () => {
-            const spy = jest.spyOn(ipcRenderer, 'send');
-            api.clientReady();
-            expect(spy).toBeCalledWith('client/ready');
-
-            // @ts-expect-error no expected params
-            api.clientReady(true);
-        });
-
         it('DesktopApi.metadataWrite', async () => {
             const spy = jest
                 .spyOn(ipcRenderer, 'invoke')

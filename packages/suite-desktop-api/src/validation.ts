@@ -37,5 +37,6 @@ const validChannels: UnionToTuple<keyof RendererChannels> = [
     'spend/message',
     'tor/status',
     'protocol/open',
+    'handshake/event',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);
