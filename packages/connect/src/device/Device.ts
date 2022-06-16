@@ -153,14 +153,14 @@ export class Device extends EventEmitter {
         this.deferredActions[DEVICE.ACQUIRE] = createDeferred();
         this.deferredActions[DEVICE.ACQUIRED] = createDeferred();
         try {
-            const sessionID = await this.transport.acquire(
-                {
+            const sessionID = await this.transport.acquire({
+                input: {
                     path: this.originalDescriptor.path,
-                    // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
+                    // @ts-expect-error
                     previous: this.originalDescriptor.session,
                 },
-                false,
-            );
+                debug: false,
+            });
             _log.debug('Expected session id:', sessionID);
             this.activitySessionID = sessionID;
             this.deferredActions[DEVICE.ACQUIRED].resolve();

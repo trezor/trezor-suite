@@ -5,7 +5,7 @@
 import EventEmitter from 'events';
 import {
     BridgeTransport,
-    FallbackTransport,
+    // FallbackTransport,
     Transport,
     TrezorDeviceInfoWithSession as DeviceDescriptor,
 } from '@trezor/transport';
@@ -16,11 +16,11 @@ import { DescriptorStream, DeviceDescriptorDiff } from './DescriptorStream';
 import { Device } from './Device';
 import type { Device as DeviceTyped } from '../types';
 import { DataManager } from '../data/DataManager';
-import { getBridgeInfo } from '../data/transportInfo';
+// import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
 import { resolveAfter } from '../utils/promiseUtils';
 
-import { WebUsbPlugin, ReactNativeUsbPlugin } from '../workers/workers';
+import { ReactNativeUsbPlugin } from '../workers/workers';
 import { getAbortController } from './AbortController';
 import type { Controller } from './AbortController';
 
@@ -60,6 +60,7 @@ export interface DeviceList {
     emit<K extends keyof DeviceListEvents>(type: K, args: DeviceListEvents[K]): boolean;
 }
 export class DeviceList extends EventEmitter {
+    // @ts-ignore
     transport: Transport;
 
     transportPlugin: LowLevelPlugin | typeof undefined;
@@ -71,9 +72,9 @@ export class DeviceList extends EventEmitter {
 
     creatingDevicesDescriptors: { [k: string]: DeviceDescriptor } = {};
 
-    defaultMessages: JSON | Record<string, any>;
+    defaultMessages: JSON;
 
-    currentMessages: JSON | Record<string, any>;
+    currentMessages: JSON;
 
     hasCustomMessages = false;
 
@@ -86,6 +87,7 @@ export class DeviceList extends EventEmitter {
     constructor() {
         super();
 
+        // @ts-expect-error
         const { env, webusb } = DataManager.settings;
 
         const transports: Transport[] = [];
@@ -93,9 +95,9 @@ export class DeviceList extends EventEmitter {
         if (env === 'react-native' && typeof ReactNativeUsbPlugin !== 'undefined') {
             transports.push(ReactNativeUsbPlugin());
         } else {
-            const bridgeLatestVersion = getBridgeInfo().version.join('.');
-            const bridge = new BridgeTransport(undefined, undefined);
-            bridge.setBridgeLatestVersion(bridgeLatestVersion);
+            // const bridgeLatestVersion = getBridgeInfo().version.join('.');
+            const bridge = new BridgeTransport({});
+            // bridge.setBridgeLatestVersion(bridgeLatestVersion);
 
             this.fetchController = getAbortController();
             const { signal } = this.fetchController;
@@ -103,16 +105,18 @@ export class DeviceList extends EventEmitter {
             const fetchWithSignal = (args, options = {}) => fetch(args, { ...options, signal });
             BridgeTransport.setFetch(fetchWithSignal, typeof window === 'undefined');
 
-            // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
             transports.push(bridge);
+
+            this.transport = bridge;
         }
 
-        if (webusb && typeof WebUsbPlugin !== 'undefined') {
-            console.log('webusb plugin push');
-            transports.push(WebUsbPlugin());
-        }
+        // if (webusb && typeof WebUsbPlugin !== 'undefined') {
+        //     console.log('webusb plugin push');
+        //     transports.push(WebUsbPlugin());
+        // }
 
-        this.transport = new FallbackTransport(transports);
+        // todo:
+        // this.transport = new FallbackTransport({ transports, debug: false });
         this.defaultMessages = DataManager.getProtobufMessages();
         this.currentMessages = this.defaultMessages;
     }
@@ -123,16 +127,10 @@ export class DeviceList extends EventEmitter {
             _log.debug('Initializing transports');
             await transport.init(_log.enabled);
             _log.debug('Configuring transports');
-            await transport.configure(JSON.stringify(this.defaultMessages));
+            transport.configure(this.defaultMessages);
             _log.debug('Configuring transports done');
 
-            const { activeName } = transport;
-            if (activeName === 'LowlevelTransportWithSharedConnections') {
-                // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
-                this.transportPlugin = transport.activeTransport.plugin;
-            }
-
-            await this._initStream();
+            this._initStream();
 
             // listen for self emitted events and resolve pending transport event if needed
             this.on(DEVICE.CONNECT, this.resolveTransportEvent.bind(this));
@@ -142,24 +140,10 @@ export class DeviceList extends EventEmitter {
         }
     }
 
-    async reconfigure(messages: JSON | Record<string, any> | number[], custom?: boolean) {
-        if (Array.isArray(messages)) {
-            messages = DataManager.getProtobufMessages(messages);
-        }
-        if (this.currentMessages === messages || !messages) return;
-        try {
-            await this.transport.configure(JSON.stringify(messages));
-            this.currentMessages = messages;
-            this.hasCustomMessages = typeof custom === 'boolean' ? custom : false;
-        } catch (error) {
-            throw ERRORS.TypedError('Transport_InvalidProtobuf', error.message);
-        }
-    }
-
     async restoreMessages() {
         if (!this.hasCustomMessages) return;
         try {
-            await this.transport.configure(JSON.stringify(this.defaultMessages));
+            await this.transport.configure(this.defaultMessages);
             this.hasCustomMessages = false;
         } catch (error) {
             throw ERRORS.TypedError('Transport_InvalidProtobuf', error.message);
@@ -214,8 +198,10 @@ export class DeviceList extends EventEmitter {
         stream.listen();
         this.stream = stream;
 
-        if (this.transportPlugin && this.transportPlugin.name === 'WebUsbPlugin') {
-            const { unreadableHidDeviceChange } = this.transportPlugin;
+        if (this.transport.name === 'WebUsbPlugin') {
+            // TODO:
+            // @ts-expect-error
+            const { unreadableHidDeviceChange } = this.transport;
             // TODO: https://github.com/trezor/trezor-link/issues/40
             const UNREADABLE_PATH = 'unreadable'; // unreadable device doesn't return incremental path.
             unreadableHidDeviceChange.on('change', () => {
@@ -285,8 +271,8 @@ export class DeviceList extends EventEmitter {
 
     transportType() {
         const { transport, transportPlugin } = this;
-        const { activeName } = transport;
-        if (activeName === 'BridgeTransport') {
+        const { name } = transport;
+        if (name === 'BridgeTransport') {
             return 'bridge';
         }
         if (transportPlugin) {
@@ -299,7 +285,8 @@ export class DeviceList extends EventEmitter {
         return {
             type: this.transportType(),
             version: this.transport.version,
-            outdated: this.transport.isOutdated,
+            outdated: false, // todo:
+            // outdated: this.transport.isOutdated,
         };
     }
 
@@ -309,9 +296,9 @@ export class DeviceList extends EventEmitter {
         if (this.stream) {
             this.stream.stop();
         }
-        if (this.transport) {
-            this.transport.stop();
-        }
+        // if (this.transport) {
+        //     this.transport.stop();
+        // }
         if (this.fetchController) {
             this.fetchController.abort();
             this.fetchController = null;

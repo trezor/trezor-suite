@@ -343,7 +343,12 @@ export class DeviceCommands {
         logger.debug('Sending', type, logMessage);
 
         try {
-            const promise = this.transport.call(this.sessionId, type, msg, false) as any; // TODO: https://github.com/trezor/trezor-suite/issues/5301
+            const promise = this.transport.call({
+                session: this.sessionId,
+                name: type,
+                data: msg,
+                debug: false,
+            }) as any; // TODO: https://github.com/trezor/trezor-suite/issues/5301
             this.callPromise = promise;
             const res = await promise;
             const logMessage = filterForLog(res.type, res.message);
@@ -381,7 +386,7 @@ export class DeviceCommands {
         } catch (error) {
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
-            await this.transport.read(this.sessionId, false);
+            await this.transport.receive({ session: this.sessionId, debug: false });
             // throw error anyway, next call should be resolved properly
             throw error;
         }
@@ -678,19 +683,20 @@ export class DeviceCommands {
          * Bridge version =< 2.0.28 has a bug that doesn't permit it to cancel
          * user interactions in progress, so we have to do it manually.
          */
-        const { activeName, version } = this.transport;
-        if (
-            activeName &&
-            activeName === 'BridgeTransport' &&
-            versionCompare(version, '2.0.28') < 1
-        ) {
+        const { name, version } = this.transport;
+        if (name && name === 'BridgeTransport' && versionCompare(version, '2.0.28') < 1) {
             await this.device.legacyForceRelease();
         } else {
-            await this.transport.post(this.sessionId, 'Cancel', {}, false);
+            await this.transport.send({
+                session: this.sessionId,
+                name: 'Cancel',
+                data: {},
+                debug: false,
+            });
             // post does not read back from usb stack. this means that there is a pending message left
             // and we need to remove it so that it does not interfere with the next transport call.
             // see DeviceCommands.typedCall
-            await this.transport.read(this.sessionId, false);
+            await this.transport.receive({ session: this.sessionId, debug: false });
         }
     }
 }

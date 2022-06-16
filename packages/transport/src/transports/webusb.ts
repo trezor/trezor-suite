@@ -1,6 +1,10 @@
 /// <reference types="w3c-web-usb" />
 
 import { EventEmitter } from 'events';
+import { Transport, MessageFromTrezor } from './abstract';
+import { buildBuffers } from '../lowlevel/send';
+import { receiveAndParse } from '../lowlevel/receive';
+import { AcquireInput } from '../types';
 
 const T1HID_VENDOR = 0x534c;
 
@@ -20,10 +24,8 @@ const ENDPOINT_ID = 1;
 const DEBUG_INTERFACE_ID = 1;
 const DEBUG_ENDPOINT_ID = 2;
 
-export class WebUsbTransport {
-    allowsWriteAndEnumerate = true;
+export class WebUsbTransport extends Transport {
     configurationId = CONFIGURATION_ID;
-    debug = false;
     debugEndpointId = DEBUG_ENDPOINT_ID;
     debugInterfaceId = DEBUG_INTERFACE_ID;
     name = 'WebUsbPlugin';
@@ -35,6 +37,10 @@ export class WebUsbTransport {
     usb?: USB;
     version = '';
 
+    constructor({ debug }: { debug?: boolean }) {
+        super({ debug });
+    }
+
     init(debug?: boolean) {
         this.debug = !!debug;
         const { usb } = navigator;
@@ -43,6 +49,7 @@ export class WebUsbTransport {
         } else {
             this.usb = usb;
         }
+        return Promise.resolve(); // type compatibility
     }
 
     _deviceHasDebugLink(device: USBDevice) {
@@ -105,6 +112,10 @@ export class WebUsbTransport {
         }));
     }
 
+    async listen(_old: any) {
+        return Promise.reject('not allowed');
+    }
+
     _findDevice(path: string) {
         const deviceO = this._lastDevices.find(d => d.path === path);
         if (deviceO == null) {
@@ -113,36 +124,76 @@ export class WebUsbTransport {
         return deviceO.device;
     }
 
-    async send(path: string, data: ArrayBuffer, debug: boolean) {
-        const device: USBDevice = await this._findDevice(path);
-
-        const newArray: Uint8Array = new Uint8Array(64);
-        newArray[0] = 63;
-        newArray.set(new Uint8Array(data), 1);
-
-        if (!device.opened) {
-            await this.connect(path, debug, false);
-        }
-
-        const endpoint = debug ? this.debugEndpointId : this.normalEndpointId;
-        return device.transferOut(endpoint, newArray).then(() => {});
+    async call({
+        session,
+        name,
+        path,
+        data,
+        debug,
+    }: {
+        session: string;
+        path: string;
+        name: string;
+        data: Record<string, unknown>;
+        debug: boolean;
+    }): Promise<MessageFromTrezor> {
+        await this.send({ name, path, data, debug, session });
+        return this.receive({ path, debug });
     }
 
-    async receive(path: string, debug: boolean): Promise<ArrayBuffer> {
-        const device: USBDevice = await this._findDevice(path);
+    async send({
+        path,
+        data,
+        debug,
+        // session,
+        name,
+    }: {
+        path: string;
+        data: Record<string, unknown>;
+        debug: boolean;
+        session: string;
+        name: string;
+    }) {
+        const device: USBDevice = this._findDevice(path);
+
+        const buffers = buildBuffers(this.messages!, name, data);
+        for (const buffer of buffers) {
+            const newArray: Uint8Array = new Uint8Array(64);
+            newArray[0] = 63;
+            newArray.set(new Uint8Array(buffer), 1);
+
+            if (!device.opened) {
+                await this.acquire({ input: { path }, debug });
+            }
+
+            const endpoint = debug ? this.debugEndpointId : this.normalEndpointId;
+            device.transferOut(endpoint, newArray);
+        }
+    }
+
+    async receive({ path, debug }: { path: string; debug: boolean }) {
+        const message: MessageFromTrezor = await receiveAndParse(this.messages!, () =>
+            this._read(path, debug),
+        );
+        return message;
+    }
+
+    async _read(path: string, debug: boolean): Promise<ArrayBuffer> {
+        const device: USBDevice = this._findDevice(path);
         const endpoint = debug ? this.debugEndpointId : this.normalEndpointId;
 
         try {
             if (!device.opened) {
-                await this.connect(path, debug, false);
+                await this.acquire({ input: { path }, debug });
             }
+
             const res = await device.transferIn(endpoint, 64);
 
             if (!res.data) {
                 throw new Error('no data');
             }
             if (res.data.byteLength === 0) {
-                return this.receive(path, debug);
+                return this._read(path, debug);
             }
             return res.data.buffer.slice(1);
         } catch (e) {
@@ -154,13 +205,24 @@ export class WebUsbTransport {
         }
     }
 
-    async connect(path: string, debug: boolean, first: boolean) {
+    //
+    async acquire({
+        input,
+        debug,
+        first = false,
+    }: {
+        input: AcquireInput;
+        debug: boolean;
+        first?: boolean;
+    }) {
+        const { path } = input;
         for (let i = 0; i < 5; i++) {
             if (i > 0) {
                 await new Promise(resolve => setTimeout(() => resolve(undefined), i * 200));
             }
             try {
-                return await this._connectIn(path, debug, first);
+                await this._connectIn(path, debug, first);
+                return Promise.resolve('??');
             } catch (e) {
                 // ignore
                 if (i === 4) {
@@ -168,10 +230,11 @@ export class WebUsbTransport {
                 }
             }
         }
+        return Promise.resolve('??');
     }
 
     async _connectIn(path: string, debug: boolean, first: boolean) {
-        const device: USBDevice = await this._findDevice(path);
+        const device: USBDevice = this._findDevice(path);
         await device.open();
 
         if (first) {
@@ -188,7 +251,8 @@ export class WebUsbTransport {
         await device.claimInterface(interfaceId);
     }
 
-    async disconnect(path: string, debug: boolean, last: boolean) {
+    // todo: params different meaning from bridge
+    async release(path: string, debug: boolean, last: boolean) {
         const device: USBDevice = await this._findDevice(path);
 
         const interfaceId = debug ? this.debugInterfaceId : this.normalInterfaceId;

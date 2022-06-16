@@ -23,12 +23,12 @@ export type AcquireInput = {
 
 export type MessageFromTrezor = { type: string; message: Record<string, unknown> };
 
-export abstract class AbstractTransport {
+export abstract class Transport {
     configured = false;
-    version?: string;
     messages?: protobuf.Root;
     debug = false;
-    abstract name: string;
+    name = '';
+    version = '';
 
     constructor({ debug = false }) {
         this.debug = debug;
@@ -36,7 +36,15 @@ export abstract class AbstractTransport {
 
     abstract enumerate(): Promise<TrezorDeviceInfoWithSession[]>;
     abstract listen(old?: TrezorDeviceInfoWithSession[]): Promise<TrezorDeviceInfoWithSession[]>;
-    abstract acquire(input: AcquireInput, debugLink: boolean): Promise<string>;
+    abstract acquire({
+        input,
+        debug,
+        first,
+    }: {
+        input: AcquireInput;
+        debug: boolean;
+        first?: boolean;
+    }): Promise<string>;
     abstract release(session: string, onclose: boolean, debugLink: boolean): Promise<void>;
 
     // maybe not needed?
@@ -46,23 +54,57 @@ export abstract class AbstractTransport {
         this.configured = true;
     }
 
-    abstract call(
-        session: string,
-        name: string,
-        data: Record<string, unknown>,
-        debugLink: boolean,
-    ): Promise<MessageFromTrezor>;
-
-    abstract post(
-        session: string,
-        name: string,
-        data: Record<string, unknown>,
-        debugLink: boolean,
-    ): Promise<void>;
-    abstract read(session: string, debugLink: boolean): Promise<MessageFromTrezor>;
-
+    // abstract post(
+    //     session: string,
+    //     name: string,
+    //     data: Record<string, unknown>,
+    //     debugLink: boolean,
+    // ): Promise<void>;
+    // abstract read(session: string, debugLink: boolean): Promise<MessageFromTrezor>;
     // resolves when the transport can be used; rejects when it cannot
     abstract init(debug?: boolean): Promise<void>;
+
+    /**
+     * Encode data and write it to transport layer
+     */
+    abstract send({
+        path,
+        session,
+        data,
+        debug,
+        name,
+    }: {
+        path?: string;
+        session?: string;
+        debug: boolean;
+        // wrap object and name?
+        name: string;
+        data: Record<string, unknown>;
+    }): Promise<void>;
+
+    // only read from transport
+    abstract receive({
+        path,
+        session,
+        debug,
+    }: {
+        path?: string;
+        session?: string;
+        debug: boolean;
+    }): Promise<MessageFromTrezor>;
+
+    // send and read after that
+    abstract call({
+        session,
+        name,
+        data,
+        debug,
+    }: {
+        session: string;
+        name: string;
+        data: Record<string, unknown>;
+        debug: boolean;
+    }): Promise<MessageFromTrezor>;
 
     // todo:
     requestDevice() {}

@@ -9,12 +9,8 @@ import * as Long from 'long';
 protobuf.util.Long = Long;
 protobuf.configure();
 
-export type {
-    Transport,
-    AcquireInput,
-    TrezorDeviceInfoWithSession,
-    MessageFromTrezor,
-} from './types';
+export type { AcquireInput, TrezorDeviceInfoWithSession, MessageFromTrezor } from './types';
+export type { Transport } from './transports/abstract';
 
 export { Messages } from './types';
 

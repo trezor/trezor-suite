@@ -435,9 +435,9 @@ export const onCall = async (message: CoreMessage) => {
     /* eslint-enable no-use-before-define */
 
     // try to reconfigure messages before Initialize
-    if (_deviceList) {
-        await _deviceList.reconfigure(device.getVersion());
-    }
+    // if (_deviceList) {
+    //     await _deviceList.reconfigure(device.getVersion());
+    // }
 
     try {
         let PIN_TRIES = 1;
@@ -529,10 +529,10 @@ export const onCall = async (message: CoreMessage) => {
                 }
             }
 
-            if (_deviceList) {
-                // reconfigure protobuf messages
-                await _deviceList.reconfigure(device.getVersion());
-            }
+            // if (_deviceList) {
+            //     // reconfigure protobuf messages
+            //     await _deviceList.reconfigure(device.getVersion());
+            // }
 
             // Make sure that device will display pin/passphrase
             try {
@@ -598,10 +598,10 @@ export const onCall = async (message: CoreMessage) => {
             // run method
             try {
                 // for CustomMessage method reconfigure transport with custom messages definitions
-                const customMessages = method.getCustomMessages();
-                if (_deviceList && customMessages) {
-                    await _deviceList.reconfigure(customMessages, true);
-                }
+                // const customMessages = method.getCustomMessages();
+                // if (_deviceList && customMessages) {
+                //     await _deviceList.reconfigure(customMessages, true);
+                // }
                 const response = await method.run();
                 messageResponse = createResponseMessage(method.responseID, true, response);
             } catch (error) {

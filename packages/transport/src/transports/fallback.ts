@@ -1,32 +1,34 @@
 import type { AcquireInput, TrezorDeviceInfoWithSession } from '../types';
-import { AbstractTransport } from './abstract';
-export class FallbackTransport extends AbstractTransport {
-    _availableTransports: AbstractTransport[] = [];
-    _activeTransport?: AbstractTransport;
-    _transports: AbstractTransport[] = [];
+import { Transport, MessageFromTrezor } from './abstract';
+export class FallbackTransport extends Transport {
+    _availableTransports: Transport[] = [];
+    _activeTransport?: Transport;
+    _transports: Transport[] = [];
 
     name = 'FallbackTransport';
 
-    constructor({ transports, debug }: { transports: AbstractTransport[]; debug: boolean }) {
+    constructor({ transports, debug }: { transports: Transport[]; debug?: boolean }) {
         super({ debug });
         this._transports = transports;
     }
 
     // first one that inits successfully is the final one; others won't even start initiating
     async _tryInitTransports() {
-        const res: AbstractTransport[] = [];
+        const res: Transport[] = [];
         let lastError: any = null;
         for (const transport of this._transports) {
             try {
                 await transport.init();
                 res.push(transport);
             } catch (e) {
+                console.log('e', e);
                 lastError = e;
             }
         }
         if (res.length === 0) {
             throw lastError || new Error('No transport could be initialized.');
         }
+        console.log('res', res);
         return res;
     }
 
@@ -58,11 +60,10 @@ export class FallbackTransport extends AbstractTransport {
     }
 
     async configure(signedData: JSON) {
-        const pt: Promise<AbstractTransport> = this._tryConfigureTransports(signedData);
+        const pt: Promise<Transport> = this._tryConfigureTransports(signedData);
         this._activeTransport = await pt;
         this.configured = this._activeTransport.configured;
         this.version = this._activeTransport.version;
-        this.name = this._activeTransport.name;
     }
 
     enumerate() {
@@ -73,25 +74,63 @@ export class FallbackTransport extends AbstractTransport {
         return this._activeTransport!.listen(old);
     }
 
-    acquire(input: AcquireInput, debugLink: boolean) {
-        return this._activeTransport!.acquire(input, debugLink);
+    acquire({ input, debug }: { input: AcquireInput; debug: boolean }) {
+        return this._activeTransport!.acquire({ input, debug });
     }
 
     release(session: string, onclose: boolean, debugLink: boolean) {
         return this._activeTransport!.release(session, onclose, debugLink);
     }
 
-    call(session: string, name: string, data: Record<string, unknown>, debugLink: boolean) {
-        return this._activeTransport!.call(session, name, data, debugLink);
+    call({
+        session,
+        name,
+        data,
+        debug,
+    }: {
+        session: string;
+        name: string;
+        data: Record<string, unknown>;
+        debug: boolean;
+    }): Promise<MessageFromTrezor> {
+        return this._activeTransport!.call({ session, name, data, debug });
     }
 
-    post(session: string, name: string, data: Record<string, unknown>, debugLink: boolean) {
-        return this._activeTransport!.post(session, name, data, debugLink);
+    send({
+        path,
+        data,
+        debug,
+        session,
+        name,
+    }: {
+        path: string;
+        debug: boolean;
+        session: string;
+        name: string;
+        data: Record<string, unknown>;
+    }): Promise<void> {
+        return this._activeTransport!.send({ session, name, data, debug, path });
     }
 
-    read(session: string, debugLink: boolean) {
-        return this._activeTransport!.read(session, debugLink);
+    receive({
+        path,
+        debug,
+        session,
+    }: {
+        path: string;
+        debug: boolean;
+        session: string;
+    }): Promise<MessageFromTrezor> {
+        return this._activeTransport!.receive({ session, debug, path });
     }
+
+    // post(session: string, name: string, data: Record<string, unknown>, debugLink: boolean) {
+    //     return this._activeTransport!.post(session, name, data, debugLink);
+    // }
+
+    // read(session: string, debugLink: boolean) {
+    //     return this._activeTransport!.read(session, debugLink);
+    // }
 
     requestDevice() {
         return this._activeTransport!.requestDevice();
