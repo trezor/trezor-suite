@@ -56,7 +56,7 @@
         "@trezor/connect": "../../connect"
     },
     "devDependencies": {
-        "electron": "15.3.7",
+        "electron": "15.5.5",
         "electron-builder": "^23.0.3"
     }
 }
