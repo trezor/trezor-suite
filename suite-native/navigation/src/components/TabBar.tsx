@@ -3,6 +3,8 @@ import { View } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TabBarItem } from './TabBarItem';
+import { RouteTabs } from '@suite-native/navigation-root';
+import { Box, IconButton, Text } from '@suite-native/atoms';
 import { TabsOption } from '../types';
 
 interface TabBarProps extends BottomTabBarProps {
@@ -20,6 +22,30 @@ const tabBarStyle = prepareNativeStyle(utils => ({
     paddingLeft: 51.5,
     paddingRight: 51.5,
 }));
+
+const ActionTabItem = () => {
+    const { applyStyle } = useNativeStyles();
+
+    const actionTabItemStyle = prepareNativeStyle(() => ({
+        position: 'absolute',
+        // top: -13,
+        left: 0,
+        right: 0,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    }));
+
+    return (
+        <Box style={applyStyle(actionTabItemStyle)}>
+            <IconButton
+                iconName="action"
+                onPress={() => console.log('Show actions')}
+                size="extraLarge"
+                isRounded
+            />
+        </Box>
+    );
+};
 
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { applyStyle } = useNativeStyles();
@@ -43,11 +69,14 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                     }
                 };
 
+                if (route.name === RouteTabs.Action) return <ActionTabItem key={route.key} />;
+
                 return (
                     <TabBarItem
                         key={route.key}
                         isFocused={isFocused}
                         iconName={iconName}
+                        title="Ahoj"
                         onPress={handleTabBarItemPress}
                     />
                 );

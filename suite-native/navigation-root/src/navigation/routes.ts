@@ -25,15 +25,15 @@ export const rootTabsOptions: TabsOption = {
         iconName: 'home',
     },
     [RouteTabs.Accounts]: {
-        iconName: 'accounts',
+        iconName: 'standardWallet',
     },
     [RouteTabs.Action]: {
         iconName: 'action',
     },
     [RouteTabs.Prices]: {
-        iconName: 'prices',
+        iconName: 'discover',
     },
     [RouteTabs.SettingsStack]: {
-        iconName: 'settings',
+        iconName: 'trezorT',
     },
 };

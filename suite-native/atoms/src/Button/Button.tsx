@@ -6,7 +6,7 @@ import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/
 
 import { Text } from '../Text';
 
-export type ButtonSize = 'small' | 'medium' | 'large';
+export type ButtonSize = 'small' | 'medium' | 'large' | 'extraLarge';
 export type ButtonColorScheme = 'primary' | 'gray';
 
 export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
@@ -21,7 +21,7 @@ type ButtonStyleProps = {
 };
 
 const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorScheme }) => {
-    const buttonSizeStyles: Record<ButtonSize, NativeStyleObject> = {
+    const buttonSizeStyles: Partial<Record<ButtonSize, NativeStyleObject>> = {
         small: {
             height: 36,
             paddingVertical: utils.spacings.small,
