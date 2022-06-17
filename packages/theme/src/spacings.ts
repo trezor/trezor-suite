@@ -13,6 +13,7 @@ export const nativeSpacings = {
     medium: 16,
     large: 24,
     extraLarge: 32,
+    XXL: 64,
 } as const;
 
 export type NativeSpacings = typeof nativeSpacings;

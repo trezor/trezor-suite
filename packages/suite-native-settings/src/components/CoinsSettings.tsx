@@ -1,11 +1,10 @@
-// @flow
 import { Box, Chip } from '@suite-native/atoms';
 import { CryptoIcon, CryptoIconName, Icon } from '@trezor/icons';
 import * as React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { SettingsSection } from './SettingsSection';
 
-const dummyCoins: { title: string; iconName: CryptoIconName }[] = [
+const dummyCoins: { title: string; iconName: CryptoIconName; description?: string }[] = [
     {
         title: 'Bitcoin',
         iconName: 'btc',
@@ -17,6 +16,7 @@ const dummyCoins: { title: string; iconName: CryptoIconName }[] = [
     {
         title: 'Ethereum',
         iconName: 'eth',
+        description: 'inc. Tokens',
     },
     {
         title: 'Ethereum Classic',
@@ -56,15 +56,21 @@ export const CoinsSettings = () => {
     };
 
     return (
-        <SettingsSection title="Coins" rightIcon={<CoinSettingsIcon />}>
+        <SettingsSection
+            title="Coins"
+            subtitle="2 coins active, 1000 tokens active"
+            rightIcon={<CoinSettingsIcon />}
+        >
             <Box flexDirection="row" flexWrap="wrap" alignItems="center">
                 {dummyCoins.map(item => (
-                    <Chip
-                        key={item.title}
-                        icon={<CryptoIcon name={item.iconName} />}
-                        title={item.title}
-                        onSelect={handleCoinSelect}
-                    />
+                    <Box marginRight="small" marginBottom="small" key={item.title}>
+                        <Chip
+                            icon={<CryptoIcon name={item.iconName} />}
+                            description={item.description}
+                            title={item.title}
+                            onSelect={handleCoinSelect}
+                        />
+                    </Box>
                 ))}
             </Box>
         </SettingsSection>

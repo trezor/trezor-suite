@@ -3,13 +3,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { TabBar } from '@suite-native/navigation';
+import { HomeStackNavigator } from '@suite-native/home';
+import { SettingsStackNavigator } from '@suite-native/settings';
 
 import { AccountsScreen } from '../dummyScreens/AccountsScreen';
 import { ActionScreen } from '../dummyScreens/ActionScreen';
-// import { DemoScreen } from '../dummyScreens/DemoScreen';
 import { PricesScreen } from '../dummyScreens/PricesScreen';
-import { SettingsScreen } from '@suite-native/settings';
-import { HomeStackNavigator } from '@suite-native/home';
 
 import { RootTabsParamList, RouteTabs, rootTabsOptions } from './routes';
 
@@ -19,7 +18,7 @@ export const RootTabNavigator = () => (
     <NavigationContainer>
         <Tab.Navigator
             // TODO revert this before merge
-            initialRouteName={RouteTabs.Settings}
+            initialRouteName={RouteTabs.SettingsStack}
             screenOptions={{
                 headerShown: false,
                 unmountOnBlur: true,
@@ -30,7 +29,7 @@ export const RootTabNavigator = () => (
             <Tab.Screen name={RouteTabs.Accounts} component={AccountsScreen} />
             <Tab.Screen name={RouteTabs.Action} component={ActionScreen} />
             <Tab.Screen name={RouteTabs.Prices} component={PricesScreen} />
-            <Tab.Screen name={RouteTabs.Settings} component={SettingsScreen} />
+            <Tab.Screen name={RouteTabs.SettingsStack} component={SettingsStackNavigator} />
         </Tab.Navigator>
     </NavigationContainer>
 );

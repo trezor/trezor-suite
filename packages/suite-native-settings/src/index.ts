@@ -1,1 +1,2 @@
-export * from './screens/SettingsScreen';
+export * from './navigation/routes';
+export * from './navigation/SettingsStackNavigator';
