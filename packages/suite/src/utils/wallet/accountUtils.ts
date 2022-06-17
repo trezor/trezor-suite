@@ -442,8 +442,12 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
 
     const changedCardano =
         account.networkType === 'cardano' &&
-        freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive &&
-        freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId;
+        // stake address (de)registration
+        (freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
+            // changed rewards amount (rewards are distributed every epoch (5 days))
+            freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
+            // changed stake pool
+            freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId);
 
     return (
         changedTxCountOfflineFresh ||
