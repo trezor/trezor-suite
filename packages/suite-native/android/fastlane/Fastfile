@@ -80,16 +80,23 @@ platform :android do
     increment_firebase_version
 
     gradle(
-      task: 'bundle',
+      task: 'assemble',
       flavor: 'Qa',
       build_type: 'Release',
       project_dir: ANDROID_PATH
     )
 
+    # find apk path
+    output_path = File.join(ANDROID_PATH, 'app/build/outputs/apk/qa/release/').freeze
+    output_json_path = output_path + "output-metadata.json"
+    build_output = load_json(json_path: output_json_path)
+    elements = build_output["elements"][0]
+    apk_path = output_path + elements["outputFile"]
+
     firebase_app_distribution(
         app: ANDROID_FIREBASE_APP_ID,
+        apk_path: apk_path,
         service_credentials_file: JSON_KEY_FILE_PATH,
-        android_artifact_type: "AAB",
         debug: true
     )
   end
