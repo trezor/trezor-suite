@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>@trezor/connect example</title>
+    </head>
+    <body>
+        <script type="text/javascript" src="https://connect.trezor.io/9/trezor-connect.js"></script>
+        <script type="text/javascript">
+            window.TrezorConnect.init({
+                lazyLoad: true,
+                manifest: {
+                    email: 'developer@xyz.com',
+                    appUrl: 'http://your.application.com',
+                },
+            });
+
+            trezorGetAddress = function () {
+                window.TrezorConnect.getAddress({
+                    showOnTrezor: true,
+                    path: "m/49'/0'/0'/0/0",
+                    coin: 'btc',
+                }).then(res => {
+                    console.info(res);
+                    document.getElementById('result').innerText = JSON.stringify(res);
+                });
+            };
+        </script>
+
+        <button onclick="trezorGetAddress()">Get address</button>
+        <div id="result"></div>
+    </body>
+</html>

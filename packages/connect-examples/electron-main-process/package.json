@@ -53,7 +53,7 @@
         }
     },
     "dependencies": {
-        "@trezor/connect": "../../connect"
+        "@trezor/connect": "beta"
     },
     "devDependencies": {
         "electron": "15.3.7",

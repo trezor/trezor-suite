@@ -27,7 +27,7 @@
     "content_scripts": [
         {
             "matches": ["*://connect.trezor.io/9/popup.html"],
-            "js": ["vendor/trezor-content-script.js"]
+            "js": ["./node_modules/@trezor/connect-web/lib/webextension/trezor-content-script.js"]
         }
     ],
 
