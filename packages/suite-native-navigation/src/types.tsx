@@ -3,6 +3,8 @@ import type { StackScreenProps, StackNavigationProp } from '@react-navigation/st
 import { ParamListBase } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { IconName } from '@trezor/icons';
+import { HomeStackParamList, HomeStackRoutes } from '@suite-native/home';
+import { SettingsStackParamList, SettingsStackRoutes } from '@suite-native/settings';
 
 export type TabProps<T extends ParamListBase, K extends keyof T> = BottomTabScreenProps<T, K>;
 export type TabNavigationProp<
@@ -21,3 +23,8 @@ export type RouteProps<T extends ParamListBase, K extends keyof T> = RouteProp<T
 export interface TabsOption {
     [tabName: string]: { iconName: IconName };
 }
+
+export type ScreenProp = StackNavigationProp<
+    SettingsStackParamList | HomeStackParamList,
+    SettingsStackRoutes.Settings | HomeStackRoutes.Home
+>;

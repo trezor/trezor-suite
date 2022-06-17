@@ -1,15 +1,13 @@
 import React from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { StackProps } from '@suite-native/navigation';
 import { VStack } from '@suite-native/atoms';
 
 import { ApplicationSettings } from '../components/ApplicationSettings';
 import { DeviceSettings } from '../components/DeviceSettings';
 import { CoinsSettings } from '../components/CoinsSettings';
 import { DeviceActionButtons } from '../components/DeviceActionButtons';
-import { SettingsStackParamList, SettingsStackRoutes } from '../navigation/routes';
+import { Screen } from '@suite-native/navigation';
 
 const settingsSectionsStyle = prepareNativeStyle(utils => ({
     flex: 1,
@@ -17,24 +15,16 @@ const settingsSectionsStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.medium,
 }));
 
-export const SettingsScreen = ({
-    navigation,
-}: StackProps<SettingsStackParamList, SettingsStackRoutes.Settings>) => {
+export const SettingsScreen = () => {
     const { applyStyle } = useNativeStyles();
-
-    const handleRedirect = (route: SettingsStackRoutes | undefined) => {
-        if (!route) return;
-        navigation?.navigate(route);
-    };
-
     return (
-        <ScrollView>
+        <Screen>
             <DeviceActionButtons />
-            <VStack spacing="XXL" style={applyStyle(settingsSectionsStyle)}>
-                <ApplicationSettings onRedirect={handleRedirect} />
+            <VStack spacing="xxl" style={applyStyle(settingsSectionsStyle)}>
+                <ApplicationSettings />
                 <DeviceSettings />
                 <CoinsSettings />
             </VStack>
-        </ScrollView>
+        </Screen>
     );
 };

@@ -1,15 +1,24 @@
 import React, { ReactNode } from 'react';
 
 import { Box, Text, VStack } from '@suite-native/atoms';
+import { TouchableOpacity } from 'react-native';
+import { Icon, IconName } from '@trezor/icons';
 
 type SettingsSectionProps = {
     title: string;
     children: ReactNode;
-    rightIcon?: ReactNode;
+    rightIconName?: IconName;
+    onRightIconPress?: () => void;
     subtitle?: string;
 };
 
-export const SettingsSection = ({ title, subtitle, children, rightIcon }: SettingsSectionProps) => (
+export const SettingsSection = ({
+    title,
+    subtitle,
+    children,
+    rightIconName,
+    onRightIconPress,
+}: SettingsSectionProps) => (
     <Box>
         <Box
             flexDirection="row"
@@ -25,7 +34,11 @@ export const SettingsSection = ({ title, subtitle, children, rightIcon }: Settin
                     </Text>
                 )}
             </Box>
-            {rightIcon && rightIcon}
+            {rightIconName && (
+                <TouchableOpacity onPress={onRightIconPress}>
+                    <Icon name={rightIconName} />
+                </TouchableOpacity>
+            )}
         </Box>
         <VStack spacing="medium">{children}</VStack>
     </Box>

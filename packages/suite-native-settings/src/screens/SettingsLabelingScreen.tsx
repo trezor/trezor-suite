@@ -1,21 +1,10 @@
 import React from 'react';
-import { View } from 'react-native';
 
 import { Text } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
-const screenStyle = prepareNativeStyle(() => ({
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-}));
-
-export const SettingsLabelingScreen = () => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <View style={[applyStyle(screenStyle)]}>
-            <Text>Labeling screen</Text>
-        </View>
-    );
-};
+export const SettingsLabelingScreen = () => (
+    <Screen header={<ScreenHeader />}>
+        <Text>Labeling screen</Text>
+    </Screen>
+);

@@ -21,6 +21,7 @@ const spacingStylePropsKeys = [
     'marginRight',
     'marginBottom',
     'marginLeft',
+    'margin',
 
     'paddingHorizontal',
     'paddingVertical',
@@ -28,6 +29,7 @@ const spacingStylePropsKeys = [
     'paddingRight',
     'paddingBottom',
     'paddingLeft',
+    'padding',
 ] as const;
 
 type SpacingStyleProps = Partial<Record<typeof spacingStylePropsKeys[number], Spacing>>;

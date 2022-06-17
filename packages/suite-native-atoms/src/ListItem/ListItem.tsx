@@ -7,8 +7,10 @@ import { ListItemIcon } from './ListItemIcon';
 import { ListItemText } from './ListItemText';
 import { Box } from '../Box';
 
-interface ListItemProps extends BaseListItem, Omit<TouchableOpacityProps, 'style' | 'onPress'> {
-    hasRightArrow: boolean;
+export interface ListItemProps
+    extends BaseListItem,
+        Omit<TouchableOpacityProps, 'style' | 'onPress'> {
+    hasRightArrow?: boolean;
 }
 
 const listItemRightArrowContainerStyle = prepareNativeStyle(utils => ({
@@ -21,9 +23,9 @@ export const ListItem = ({
     iconName,
     title,
     subtitle,
-    hasRightArrow,
     style,
     onPress,
+    hasRightArrow = false,
     isTextTruncated = false,
     ...props
 }: ListItemProps) => {
@@ -36,7 +38,7 @@ export const ListItem = ({
                 <ListItemText title={title} subtitle={subtitle} isTextTruncated={isTextTruncated} />
                 {hasRightArrow && (
                     <View style={applyStyle(listItemRightArrowContainerStyle)}>
-                        <Icon name="chevronRight" />
+                        <Icon name="chevronRight" color="gray400" />
                     </View>
                 )}
             </Box>

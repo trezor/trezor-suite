@@ -6,14 +6,14 @@ import { Box } from '../Box';
 import { Text } from '../Text';
 import { Icon, IconName } from '@trezor/icons';
 
-type ActionIconButtonProps = {
+type TileButtonProps = {
     iconName: IconName;
     title: string;
     onPress: () => void;
     style?: NativeStyleObject;
 };
 
-const rectangleButtonStyle = prepareNativeStyle(utils => ({
+const tileButtonStyle = prepareNativeStyle(utils => ({
     height: 79,
     justifyContent: 'center',
     alignItems: 'center',
@@ -22,13 +22,25 @@ const rectangleButtonStyle = prepareNativeStyle(utils => ({
     flex: 1,
 }));
 
-export const TileButton = ({ iconName, title, onPress, style }: ActionIconButtonProps) => {
+const iconWrapperStyle = prepareNativeStyle(() => ({
+    marginBottom: 5,
+}));
+
+const textStyle = prepareNativeStyle(() => ({
+    textTransform: 'uppercase',
+}));
+
+export const TileButton = ({ iconName, title, onPress, style }: TileButtonProps) => {
     const { applyStyle } = useNativeStyles();
     return (
-        <TouchableOpacity style={[applyStyle(rectangleButtonStyle), style]} onPress={onPress}>
+        <TouchableOpacity style={[applyStyle(tileButtonStyle), style]} onPress={onPress}>
             <Box justifyContent="center" alignItems="center">
-                <Icon name={iconName} />
-                <Text variant="label">{title.toUpperCase()}</Text>
+                <Box style={applyStyle(iconWrapperStyle)}>
+                    <Icon name={iconName} />
+                </Box>
+                <Text variant="label" style={applyStyle(textStyle)}>
+                    {title}
+                </Text>
             </Box>
         </TouchableOpacity>
     );

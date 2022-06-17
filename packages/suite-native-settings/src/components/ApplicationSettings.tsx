@@ -1,43 +1,38 @@
 import React from 'react';
 
-import { ListItem } from '@suite-native/atoms';
-
+import { useNavigation } from '@react-navigation/core';
 import { SettingsSection } from './SettingsSection';
 
-import { SettingItem } from '../types';
-import { SettingsStackRoutes } from '../navigation/routes';
+import { SettingsScreenProp, SettingsStackRoutes } from '../navigation/routes';
+import { SettingsSectionItem } from './SettingsSectionItem';
 
-const applicationSettingsItems: SettingItem[] = [
-    {
-        title: 'Localisation',
-        description: 'Language, Currency',
-        iconName: 'flag',
-        route: SettingsStackRoutes.SettingsLocalisation,
-    },
-    {
-        title: 'Labeling',
-        description: 'Saved locally',
-        iconName: 'label',
-        route: SettingsStackRoutes.SettingsLabeling,
-    },
-    {
-        title: 'Advanced',
-        description: 'Usage data, Logs',
-        iconName: 'eyeglasses',
-        route: SettingsStackRoutes.SettingsAdvanced,
-    },
-];
-export const ApplicationSettings = ({ onRedirect }: any) => (
-    <SettingsSection title="Aplication">
-        {applicationSettingsItems.map(item => (
-            <ListItem
-                key={item.title}
-                iconName={item.iconName}
-                title={item.title}
-                subtitle={item.description}
-                onPress={() => onRedirect(item.route)}
-                hasRightArrow
+export const ApplicationSettings = () => {
+    const navigation = useNavigation<SettingsScreenProp>();
+
+    const handleNavigation = (routeName: SettingsStackRoutes): void => {
+        navigation.navigate(routeName);
+    };
+
+    return (
+        <SettingsSection title="Aplication">
+            <SettingsSectionItem
+                iconName="flag"
+                title="Localisation"
+                subtitle="Language, Currency"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsLocalisation)}
             />
-        ))}
-    </SettingsSection>
-);
+            <SettingsSectionItem
+                iconName="label"
+                title="Labeling"
+                subtitle="Saved locally"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsLabeling)}
+            />
+            <SettingsSectionItem
+                iconName="eyeglasses"
+                title="Advanced"
+                subtitle="Usage data, Logs"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsAdvanced)}
+            />
+        </SettingsSection>
+    );
+};
