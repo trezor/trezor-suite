@@ -37,7 +37,7 @@
         "@types/w3c-web-usb": "^1.0.5"
     },
     "dependencies": {
-        "@trezor/utils": "^9.0.1",
+        "@trezor/utils": "^9.0.2",
         "bytebuffer": "^5.0.1",
         "json-stable-stringify": "^1.0.1",
         "long": "^4.0.0",
