@@ -151,8 +151,8 @@ const ExpandButton = styled(Button)`
     align-self: flex-start;
 `;
 
-const StyledFeeRow = styled(FeeRow)<{ isFailed?: boolean }>`
-    margin-top: ${props => (props.isFailed ? '20px' : '0px')};
+const StyledFeeRow = styled(FeeRow)<{ $isFailed?: boolean }>`
+    margin-top: ${({ $isFailed }) => ($isFailed ? '20px' : '0px')};
 `;
 
 const DEFAULT_LIMIT = 3;
@@ -369,7 +369,7 @@ const TransactionItem = React.memo(
                                     <StyledFeeRow
                                         transaction={transaction}
                                         useFiatValues={useFiatValues}
-                                        isFailed={type !== 'failed'}
+                                        $isFailed={type !== 'failed'}
                                         isFirst
                                         isLast
                                     />
