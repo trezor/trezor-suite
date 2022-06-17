@@ -3,5 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {},
-    "dependencies": {}
+    "dependencies": {
+        "@trezor/connect-web": "9.0.0-beta.1"
+    }
 }

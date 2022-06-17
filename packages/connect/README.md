@@ -44,6 +44,16 @@ With regards to this repo - All updates should go to current version branch, the
 
 For deployment process of trezor-connect v8 refer to [trezor/connect repository](https://github.com/trezor/connect/blob/develop/docs/deployment/index.md)
 
+## Docs
+
+Interactive API explorer is available on https://connect.trezor.io/9/#/
+
+Documentation is available [docs/packages/connect](../../docs/packages/connect/index.md)
+
+## Examples
+
+A collection of examples on how to implement @trezor/connect in various environments is available in [packages/connect-examples](../connect-examples/README.md)
+
 ## Tests
 
 For integration testing against trezord and emulator refer to [this document](https://github.com/trezor/trezor-suite/blob/develop/packages/integration-tests/projects/connect/README.md).

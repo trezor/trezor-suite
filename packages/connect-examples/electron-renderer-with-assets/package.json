@@ -6,14 +6,14 @@
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "license": "MIT",
     "scripts": {
-        "dev": "concurrently --kill-others --names \"webpack,electron\" \"yarn dev:renderer\" \"wait-on http://localhost:8080 && yarn dev:main\"",
+        "dev": "NODE_ENV=development concurrently --kill-others --names \"webpack,electron\" \"yarn dev:renderer\" \"wait-on http://localhost:8080 && yarn dev:main\"",
         "dev:main": "electron .",
         "dev:renderer": "webpack --config ./webpack/config.dev.js",
         "build:connect": "cd ../../connect-iframe && yarn build",
         "build:renderer": "webpack --config ./webpack/config.prod.js",
-        "build:mac": "yarn build && electron-builder --mac",
-        "build:linux": "yarn build:connect && electron-builder --linux",
-        "build:win": "yarn build:connect && electron-builder --win"
+        "build:mac": "yarn build:connect && yarn build:renderer && electron-builder --mac",
+        "build:linux": "yarn build:connect && yarn build:renderer && electron-builder --linux",
+        "build:win": "yarn build:connect && yarn build:renderer && electron-builder --win"
     },
     "build": {
         "appId": "${name}",
@@ -56,11 +56,8 @@
             "target": "portable"
         }
     },
-    "dependencies": {
-        "electron-is-dev": "^2.0.0"
-    },
     "devDependencies": {
-        "@trezor/connect": "../../connect",
+        "@trezor/connect": "beta",
         "babel-loader": "^8.2.2",
         "concurrently": "^7.2.1",
         "copy-webpack-plugin": "^10.2.4",
