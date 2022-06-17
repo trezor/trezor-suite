@@ -975,7 +975,7 @@ export default defineMessages({
     },
     TR_SAVINGS_SETUP_KYC_FAILED_DESCRIPTION: {
         defaultMessage: 'KYC verification failed. Please contact {providerName} support.',
-        id: 'TR_SAVINGS_SETUP_KYC_IN_PROGRESS_DESCRIPTION',
+        id: 'TR_SAVINGS_SETUP_KYC_FAILED_DESCRIPTION',
     },
     TR_SAVINGS_SETUP_KYC_ERROR_HEADER: {
         defaultMessage: 'KYC error',
@@ -1084,7 +1084,7 @@ export default defineMessages({
     },
     TR_SAVINGS_FOR_YOUR_SAFETY: {
         defaultMessage: 'Keep your security in mind',
-        id: 'TR_BUY_FOR_YOUR_SAFETY',
+        id: 'TR_SAVINGS_FOR_YOUR_SAFETY',
     },
     TR_SAVINGS_TERMS_1: {
         defaultMessage:
