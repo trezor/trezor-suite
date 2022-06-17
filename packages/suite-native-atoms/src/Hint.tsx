@@ -8,7 +8,7 @@ import { Text } from './Text';
 type HintVariant = 'hint' | 'error';
 
 type HintProps = {
-    variant: HintVariant;
+    variant?: HintVariant;
     style?: NativeStyleObject;
     children?: React.ReactNode;
 };
@@ -36,7 +36,7 @@ const hintVariants: Record<HintVariant, { iconName: IconName; color: Color }> = 
     },
 };
 
-export const Hint = ({ variant, style, children }: HintProps) => {
+export const Hint = ({ style, children, variant = 'hint' }: HintProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
