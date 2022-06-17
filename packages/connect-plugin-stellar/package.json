@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-plugin-stellar",
-    "version": "9.0.0",
+    "version": "9.0.0-beta.1",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-stellar",
     "description": "@trezor/connect plugin for Stellar",
