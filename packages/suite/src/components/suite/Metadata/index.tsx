@@ -15,7 +15,8 @@ type Props = {
 const Metadata = ({
     title = 'Trezor Suite',
     description,
-    image = `${SUITE_URL}${resolveStaticPath('images/meta.png')}`,
+    // todo: test that it is really available
+    image = `${SUITE_URL}${resolveStaticPath('images/suite-web-landing/meta.png')}`,
     url = SUITE_URL,
 }: Props) => {
     const intl = useIntl();
