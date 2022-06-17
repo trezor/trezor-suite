@@ -15,7 +15,7 @@ export const SettingsAdvancedScreen = () => {
 
     return (
         <View style={[applyStyle(screenStyle)]}>
-            <Text>Localisation screen</Text>
+            <Text>Advanced settings screen</Text>
         </View>
     );
 };

@@ -22,7 +22,7 @@ const rectangleButtonStyle = prepareNativeStyle(utils => ({
     flex: 1,
 }));
 
-export const ActionIconButton = ({ iconName, title, onPress, style }: ActionIconButtonProps) => {
+export const TileButton = ({ iconName, title, onPress, style }: ActionIconButtonProps) => {
     const { applyStyle } = useNativeStyles();
     return (
         <TouchableOpacity style={[applyStyle(rectangleButtonStyle), style]} onPress={onPress}>

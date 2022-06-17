@@ -50,9 +50,9 @@ const selectItems: SelectItemType[] = [
     { label: 'Armenian Republic of Kongo', value: 'arm', iconName: 'cz' },
 ];
 
-export const HomeDetailScreen = ({
+export const HomeDemoScreen = ({
     route,
-}: StackProps<HomeStackParamList, HomeStackRoutes.HomeDetail>) => {
+}: StackProps<HomeStackParamList, HomeStackRoutes.HomeDemo>) => {
     const { applyStyle } = useNativeStyles();
     const isDarkMode = useColorScheme() === 'dark';
     const [radioChecked, setRadioChecked] = useState<string>('second');

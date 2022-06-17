@@ -1,6 +1,7 @@
-import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { HomeDetailScreen } from '../screens/HomeDetailScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import { HomeDemoScreen } from '../screens/HomeDemoScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { HomeStackParamList, HomeStackRoutes } from './routes';
 
@@ -18,8 +19,8 @@ export const HomeStackNavigator = () => (
         />
         <HomeStack.Screen
             options={{ title: 'HomeDetail' }}
-            name={HomeStackRoutes.HomeDetail}
-            component={HomeDetailScreen}
+            name={HomeStackRoutes.HomeDemo}
+            component={HomeDemoScreen}
         />
     </HomeStack.Navigator>
 );

@@ -15,7 +15,7 @@ export const SettingsLabelingScreen = () => {
 
     return (
         <View style={[applyStyle(screenStyle)]}>
-            <Text>Localisation screen</Text>
+            <Text>Labeling screen</Text>
         </View>
     );
 };

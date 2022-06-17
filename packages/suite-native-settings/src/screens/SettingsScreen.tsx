@@ -8,7 +8,7 @@ import { VStack } from '@suite-native/atoms';
 import { ApplicationSettings } from '../components/ApplicationSettings';
 import { DeviceSettings } from '../components/DeviceSettings';
 import { CoinsSettings } from '../components/CoinsSettings';
-import { ActionButtons } from '../components/ActionButtons';
+import { DeviceActionButtons } from '../components/DeviceActionButtons';
 import { SettingsStackParamList, SettingsStackRoutes } from '../navigation/routes';
 
 const settingsSectionsStyle = prepareNativeStyle(utils => ({
@@ -29,7 +29,7 @@ export const SettingsScreen = ({
 
     return (
         <ScrollView>
-            <ActionButtons />
+            <DeviceActionButtons />
             <VStack spacing="XXL" style={applyStyle(settingsSectionsStyle)}>
                 <ApplicationSettings onRedirect={handleRedirect} />
                 <DeviceSettings />
