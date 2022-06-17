@@ -13,25 +13,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-### prepare_android_release
-
-```sh
-[bundle exec] fastlane prepare_android_release
-```
-
-Android: Updates the app identifier, display name for dev, testing, and production releases
-
-### prepare_ios_release
-
-```sh
-[bundle exec] fastlane prepare_ios_release
-```
-
-iOS: Updates the app identifier, display name for dev, testing, and production releases
-
-----
-
-
 ## iOS
 
 ### ios beta
@@ -62,6 +43,14 @@ Runs all the tests
 ```
 
 Build and upload the app to play Store for an internal testing release.
+
+### android develop
+
+```sh
+[bundle exec] fastlane android develop
+```
+
+Build and upload the app to Firebase App Distribution for testing (develop) release.
 
 ----
 

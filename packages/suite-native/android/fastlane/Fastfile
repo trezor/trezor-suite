@@ -18,7 +18,7 @@ APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
 JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'upload-key.json').freeze
 
 # Android Specific Constants
-APP_ID = 'com.trezorsuite'.freeze
+APP_ID = 'io.trezor.suite'.freeze
 
 platform :android do
 
@@ -31,6 +31,18 @@ platform :android do
     )[0]
 
     android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
+    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
+  end
+
+  private_lane :increment_firebase_version do
+    latest_release = firebase_app_distribution_get_latest_release(
+      app: ANDROID_FIREBASE_APP_ID,
+      service_credentials_file: JSON_KEY_FILE_PATH,
+    )
+
+    unless latest_release.nil?
+      android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: latest_release[:buildVersion].to_i + 1)
+    end
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
   end
 
@@ -47,6 +59,7 @@ platform :android do
 
     gradle(
       task: 'bundle',
+      flavor: 'Qa',
       build_type: 'Release',
       project_dir: ANDROID_PATH
     )
@@ -58,7 +71,26 @@ platform :android do
       release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
       skip_upload_apk: true
     )
+  end
 
-    # TODO push increased versions to Git and tag it
+  desc "Build and upload the app to Firebase App Distribution for testing (develop) release."
+  lane :develop do |options|
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    increment_firebase_version
+
+    gradle(
+      task: 'bundle',
+      flavor: 'Qa',
+      build_type: 'Release',
+      project_dir: ANDROID_PATH
+    )
+
+    firebase_app_distribution(
+        app: ANDROID_FIREBASE_APP_ID,
+        service_credentials_file: JSON_KEY_FILE_PATH,
+        android_artifact_type: "AAB",
+        debug: true
+    )
   end
 end

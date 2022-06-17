@@ -47,7 +47,5 @@ platform :ios do
 
     build_app(workspace: IOS_PROJECT_WORKSPACE, scheme: IOS_PROJECT_SCHEME)
     upload_to_testflight
-
-    # TODO push increased versions to Git and tag it
   end
 end
