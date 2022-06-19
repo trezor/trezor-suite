@@ -2,15 +2,20 @@ import React, { useMemo } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Translation } from '@suite-components';
-import { isTranslationMode, getOsLocale } from '@suite-utils/l10n';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import LANGUAGES, { Locale, LocaleInfo } from '@suite-config/languages';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as languageActions from '@settings-actions/languageActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
-import { getPlatformLanguages } from '@suite-utils/env';
+import {
+    getPlatformLanguages,
+    Locale,
+    LocaleInfo,
+    LANGUAGES,
+    isTranslationMode,
+    getOsLocale,
+} from '@suite/intl';
 
 const onlyComplete = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
     !!locale[1].complete;

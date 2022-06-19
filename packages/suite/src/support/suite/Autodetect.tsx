@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { getOsTheme, watchOsTheme } from '@suite-utils/env';
-import { getOsLocale, watchOsLocale } from '@suite-utils/l10n';
+import { getOsLocale, watchOsLocale } from '@suite/intl';
 import { useActions, useSelector } from '@suite-hooks';
 import { setTheme as setThemeAction } from '@suite-actions/suiteActions';
 import * as languageActions from '@settings-actions/languageActions';

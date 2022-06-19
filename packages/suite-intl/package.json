@@ -1,0 +1,22 @@
+{
+    "name": "@suite/intl",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@suite/messages": "*",
+        "@trezor/suite-data": "*",
+        "react": "17.0.2",
+        "react-intl": "^5.23.0"
+    },
+    "devDependencies": {
+        "react-test-renderer": "^17.0.1"
+    }
+}

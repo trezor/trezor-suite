@@ -1,12 +1,6 @@
-import React from 'react';
-import BaseTranslation from './components/BaseTranslation';
-import { Props } from './components/HelperTooltip';
+import { Translation as IntlPackageTranslation } from '@suite/intl';
 
-// TODO: could be removed after old translation mode is upgraded in landing page as well
-const HelperTooltipDummy = ({ children }: Props) => children;
-
-const Translation = (
-    props: Omit<React.ComponentProps<typeof BaseTranslation>, 'translationTooltip'>,
-) => <BaseTranslation {...props} translationTooltip={HelperTooltipDummy} />;
-
-export { Translation };
+/**
+ * @deprecated Import `Translation` from `@suite/intl` instead.
+ */
+export const Translation = IntlPackageTranslation;

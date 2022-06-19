@@ -8,8 +8,8 @@ import { isOnionUrl } from '@suite-utils/tor';
 import { getCustomBackends } from '@suite-utils/backend';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
+import { Locale } from '@suite/intl';
 import { SUITE, METADATA } from './constants';
-import type { Locale } from '@suite-config/languages';
 import type {
     Action,
     Dispatch,

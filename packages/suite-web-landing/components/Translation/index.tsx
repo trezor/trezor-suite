@@ -1,8 +1,6 @@
 import React, { useContext } from 'react';
-import BaseTranslation from '@suite-components/Translation/components/BaseTranslation';
-import HelperTooltip, {
-    Props as HelperTooltipProps,
-} from '@suite-components/Translation/components/HelperTooltip';
+import { BaseTranslation, TranslationProps, messages, MessageId } from '@suite/messages';
+import { HelperTooltip, HelperTooltipProps } from './HelperTooltip';
 
 export const TranslationModeContext = React.createContext(false);
 
@@ -16,9 +14,8 @@ const CustomHelperTooltip = (props: HelperTooltipProps) => {
     );
 };
 
-type TranslationProps = Omit<React.ComponentProps<typeof BaseTranslation>, 'translationTooltip'>;
-const Translation = (props: TranslationProps) => (
-    <BaseTranslation {...props} translationTooltip={CustomHelperTooltip} />
+const Translation = (props: TranslationProps<MessageId>) => (
+    <BaseTranslation {...props} messages={messages} translationTooltip={CustomHelperTooltip} />
 );
 
 export default Translation;

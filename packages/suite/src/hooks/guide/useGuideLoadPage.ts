@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Node } from '@suite-types/guide';
-import type { Locale } from '@suite-config/languages';
+import { Locale } from '@suite/intl';
 
 export const loadPageMarkdownFile = async (id: string, language = 'en'): Promise<string> => {
     const file = await import(`@trezor/suite-data/files/guide/${language}${id}`);

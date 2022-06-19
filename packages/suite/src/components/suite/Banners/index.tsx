@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { isDesktop } from '@suite-utils/env';
-import { isTranslationMode } from '@suite-utils/l10n';
+import { isTranslationMode } from '@suite/intl';
 import { useSelector } from '@suite-hooks';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import OnlineStatus from './OnlineStatus';
