@@ -1,7 +1,6 @@
 # Localization
 
 Suite uses [react-intl](https://github.com/formatjs/formatjs) package for all in-app localization needs.
-Definitions of all messages are stored in [messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/support/messages.ts).
 
 To allow non-developers to edit these messages through user-friendly interface, we upload them to [Crowdin](https://crowdin.com/project/trezor-suite) via their [CLI](https://github.com/crowdin/crowdin-cli).
 
@@ -10,27 +9,35 @@ To finish the process these files need to be commited to the repository.
 
 ## Message definitions
 
-[messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/support/messages.ts) is the place where you add new messages to be used in Suite. It's basically just a huge object where a key is an ID of the message and a value is the message definition.
+You can find all message definitions files in `@suite/messages` package.
 
-_Do not manually edit language json files in `suite-data/files/translations/` directory. These are auto-generated, changing them directly is plausible only for development purposes._
+We need to know that there two locations in package, where we can find messages. First location is `packages/suite-messages/translations`. These folder and all subfolder contains already translated messages downloaded from CrowdIn.
 
-### Structure
+If you want for example source messages for desktop and web Suite, you need go to file `src/webMessages.json` or some messages could be also in `src/sharedMessages.json`.
+
+> ❗❗ Warning ❗❗ Do not manually edit files in `suite-messages/translations/` directory. These are auto-generated, changing them directly is plausible only for development purposes.
+
+Another location is `packages/suite-messages/src` where you can find bunch JSON files. These are files that are you should edit in case you want add or change some messages.
+
+Files are split by domains:
+
+-   `webMessages.json` - for desktop or web suite messages
+-   `mobileMessages.json` - for mobile app messages
+-   `sharedMessages.json` - for messages shared between all other domains
+
+### Message definition structure
+
+We are using simple JSON with `key: "value"` structure:
 
 -   `id`: We don't have strict conventions for generating these IDs, although using a prefix `TR_`, or expanded variant `TR_<SCOPE>`, where scope is, for example, "ONBOARDING" is really handy. ID must be the same as the object's key.
--   `defaultMessage`: Used as a source string for translator. It's also a text that is shown in the app as a fallback till someone changes/improves it in Crowdin.
--   `description`: Optional. Useful for describing the context in which the message occurs, especially if it is not clear from a `defaultMessage` field.
+-   `value`: Used as a source string for translator. It's also a text that is shown in the app as a fallback till someone changes/improves it in Crowdin.
 
 Example:
 
-```js
+```json
 {
-  ...
-  TR_ADDRESS: {
-      id: 'TR_ADDRESS',
-      defaultMessage: 'Address',
-      description: 'Used as label for receive/send address input',
-  },
-  ...
+    "TR_ADDRESS": "Address",
+    "TR_NAME": "Name"
 }
 ```
 
@@ -69,10 +76,7 @@ translationString('TR_ENTERED_PIN_NOT_CORRECT', { deviceLabel: device.label });
 Definition for `TR_ENTERED_PIN_NOT_CORRECT`:
 
 ```
-TR_ENTERED_PIN_NOT_CORRECT: {
-    defaultMessage: 'Entered PIN for "{deviceLabel}" is not correct',
-    id: 'TR_ENTERED_PIN_NOT_CORRECT',
-}
+TR_ENTERED_PIN_NOT_CORRECT: 'Entered PIN for "{deviceLabel}" is not correct'
 ```
 
 Sometimes you need to provide a translator the ability to emphasize some words in a sentence AKA rich text formatting. In this example a text enclosed in `<strong>` will be wrapped in `StrongStyling` component.
@@ -89,14 +93,14 @@ Sometimes you need to provide a translator the ability to emphasize some words i
 Definition for `TR_TRANSACTIONS_SEARCH_TIP_2`:
 
 ```
-TR_TRANSACTIONS_SEARCH_TIP_2: {
-  id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
-  defaultMessage:
-      'Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1<strong> will show all transactions that have an amount of 1 or higher.',
-},
+TR_TRANSACTIONS_SEARCH_TIP_2: 'Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1<strong> will show all transactions that have an amount of 1 or higher.',
 ```
 
 For even more shenanigans (like handling plural form) check this great overview on [ICU Message syntax](https://support.crowdin.com/icu-message-syntax/).
+
+### Shared messages between multiple apps
+
+If you need messages that will be shared across all projects, simply place it to `sharedMessages.json` instead of domain specific file. Could be useful for some simple button labels like `Cancel` etc.
 
 ### Translation mode
 
@@ -135,25 +139,15 @@ All work could be done with shortcuts defined in [package.json scripts](https://
 or, alternatively, add it as an option for each called script:
 
 ```
-yarn workspace @trezor/suite translations:download --token xxxx
+yarn workspace @suite/messages translations:download --token xxxx
 ```
-
-### Extract
-
-To extract message definitions from Suite into `master.json` file run:
-
-```bash
-yarn workspace @trezor/suite translations:extract
-```
-
-The newly created `master.json` file is generated from `messages.ts` and serves only as a base for translations in Crowdin, therefore it is not commited into Git repository.
 
 ### Upload
 
-To upload extracted `master.json` file with updated message definitions from Suite to Crowdin run:
+To upload source messages files with updated messages definitions from Suite to Crowdin run:
 
 ```bash
-yarn workspace @trezor/suite translations:upload
+yarn workspace @suite/messages translations:upload
 ```
 
 You can even do that from your branch with messages that are not yet merged in develop branch, just be sure you have rebased your branch on latest develop before doing so. This process replaces all definitions in Crowdin, meaning if your branch is missing some definitions, that are already in develop branch and uploaded in Crowdin, they will be removed.
@@ -163,7 +157,7 @@ You can even do that from your branch with messages that are not yet merged in d
 To download new translations from Crowdin run:
 
 ```bash
-yarn workspace @trezor/suite translations:download
+yarn workspace @suite/messages translations:download
 ```
 
 and then open a PR with updated language files.
@@ -177,12 +171,10 @@ git checkout develop
 git pull
 git checkout -b $BRANCH_NAME
 
-# Extract message definitions from Suite
-yarn workspace @trezor/suite translations:extract
 # Upload to sync the key set.
-yarn workspace @trezor/suite translations:upload
+yarn workspace @suite/messages translations:upload
 # Download to fetch values for all keys.
-yarn workspace @trezor/suite translations:download
+yarn workspace @suite/messages translations:download
 
 git add packages/suite-data/files/translations
 git commit -m 'feat(translations): Sync with Crowdin'

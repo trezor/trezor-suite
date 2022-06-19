@@ -1,0 +1,19 @@
+"project_id": 383255
+"base_path": "./"
+"base_url": "https://api.crowdin.com"
+"preserve_hierarchy": true
+files:
+  [
+    {
+      "sources": ["src/webMessages.json", "src/sharedMessages.json"],
+      "translation": "translations/web/%two_letters_code%.json",
+      "update_option": "update_as_unapproved",
+      labels: ["suite", "web", "desktop"],
+    },
+    {
+      "sources": ["src/mobileMessages.json", "src/sharedMessages.json"],
+      "translation": "translations/mobile/%two_letters_code%.json",
+      "update_option": "update_as_unapproved",
+      labels: ["suite", "mobile"],
+    },
+  ]

@@ -17,7 +17,7 @@
             }
         },
         {
-            "files": ["packages/suite-data/files/translations/*.json"],
+            "files": ["packages/suite-messages/translations/**/*.json"],
             "options": {
                 "tabWidth": 2
             }

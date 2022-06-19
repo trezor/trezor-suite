@@ -3,7 +3,7 @@ import { resolveStaticPath } from '@trezor/utils';
 import { SUITE_URL } from '@trezor/urls';
 import Helmet from 'react-helmet';
 import { useIntl } from 'react-intl';
-import messages from '@suite/support/messages';
+import { messages } from '@suite/messages';
 
 type Props = {
     title?: string;

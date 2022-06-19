@@ -1,0 +1,28 @@
+{
+    "name": "@suite/messages",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest",
+        "type-check": "tsc --build",
+        "translations:upload": "crowdin upload",
+        "translations:download": "crowdin download --all",
+        "translations:backport-en": "yarn ts-node -O '{\"module\": \"commonjs\"}' ./scripts/backport-en.ts && yarn prettier --write \"./src/messages.ts\"",
+        "translations:list-duplicates": "yarn ts-node -O '{\"module\": \"commonjs\"}' ./scripts/list-duplicates.ts",
+        "translations:list-unused": "yarn ts-node -O '{\"module\": \"commonjs\"}' ./scripts/list-unused.ts"
+    },
+    "dependencies": {
+        "@mobily/ts-belt": "^3.11.0",
+        "react-intl": "^5.23.0",
+        "react": "17.0.2"
+    },
+    "devDependencies": {
+        "@crowdin/cli": "^3.7.8",
+        "chalk": "^5.0.0",
+        "react-test-renderer": "^17.0.1"
+    }
+}

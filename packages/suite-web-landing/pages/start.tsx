@@ -7,7 +7,7 @@ import Download from '../components/Download';
 import Feature from '../components/Feature';
 import { resolveStaticPath } from '@trezor/utils/lib/resolveStaticPath';
 import Metadata from '@suite-components/Metadata';
-import enLocale from '@trezor/suite-data/files/translations/en.json';
+import enLocale from '@suite/messages/translations/web/en.json';
 import {
     Wrapper,
     StyledHeroCta,
