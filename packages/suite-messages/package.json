@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.11.0",
-        "react-intl": "^5.23.0",
+        "react-intl": "^6.0.4",
         "react": "17.0.2"
     },
     "devDependencies": {

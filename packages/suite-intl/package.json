@@ -14,7 +14,7 @@
         "@suite/messages": "*",
         "@trezor/suite-data": "*",
         "react": "17.0.2",
-        "react-intl": "^5.23.0"
+        "react-intl": "^6.0.4"
     },
     "devDependencies": {
         "react-test-renderer": "^17.0.1"

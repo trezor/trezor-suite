@@ -11,11 +11,11 @@
         "**/*.json"
     ],
     "references": [
-        { "path": "../suite-intl" },
-        { "path": "../suite-messages" },
         { "path": "../components" },
         { "path": "../suite" },
         { "path": "../urls" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../suite-intl" },
+        { "path": "../suite-messages" }
     ]
 }
