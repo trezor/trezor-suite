@@ -4,10 +4,7 @@
     "suiteNativeVersion": "22.7.0",
     "private": true,
     "scripts": {
-        "android": "react-native run-android --no-packager",
-        "android:debug": "react-native run-android --variant=devDebug --appIdSuffix=debug",
-        "android:qa": "react-native run-android --variant=qaRelease --appIdSuffix=develop",
-        "android:prod": "react-native run-android --variant=prodRelease",
+        "android": "react-native run-android --no-packager --variant=devDebug --appIdSuffix=debug",
         "android:clean": "cd android && ./gradlew clean",
         "ios": "react-native run-ios --no-packager",
         "start": "react-native start --reset-cache",

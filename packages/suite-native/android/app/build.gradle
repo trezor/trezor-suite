@@ -259,8 +259,11 @@ android {
         dev {
             applicationIdSuffix '.debug'
         }
-        qa {
+        qaDevelop {
             applicationIdSuffix '.develop'
+        }
+        qaStaging {
+            applicationIdSuffix '.staging'
         }
         prod {
             // Placeholder, we can assemble `prodRelease` build variant
