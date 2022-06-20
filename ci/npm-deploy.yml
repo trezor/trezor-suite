@@ -59,12 +59,14 @@ beta connect deploy npm:
   <<: *npm_beta_deploy_rules
   script:
     - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "node ci/scripts/check-npm-dependencies.js connect"
     - nix-shell --run "yarn && cd ./packages/connect && npm publish --tag beta"
 
 beta connect-web deploy npm:
   <<: *npm_beta_deploy_rules
   script:
     - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-web version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
+    - nix-shell --run "node ci/scripts/check-npm-dependencies.js connect-web"
     - nix-shell --run "yarn && cd ./packages/connect-web && npm publish --tag beta"
 
 beta connect-plugin-stellar deploy npm:
@@ -145,6 +147,7 @@ connect deploy npm:
     <<: *npm_registry_release_connect_rules
   <<: *npm_deploy_rules
   script:
+    - nix-shell --run "node ci/scripts/check-npm-dependencies.js connect"
     - nix-shell --run "yarn && cd ./packages/connect && npm publish"
 
 # releases trezor-connect to npm registry
@@ -153,6 +156,7 @@ connect-web deploy npm:
     <<: *npm_registry_release_connect_rules
   <<: *npm_deploy_rules
   script:
+    - nix-shell --run "node ci/scripts/check-npm-dependencies.js connect-web"
     - nix-shell --run "yarn && cd ./packages/connect-web && npm publish"
 
 connect-plugin-stellar deploy npm:
