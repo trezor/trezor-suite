@@ -17,6 +17,7 @@ import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 
 import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
+import { getIsTorEnabled } from './tor';
 
 // redact transaction id from account transaction anchor
 export const redactTransactionIdFromAnchor = (anchor?: string) => {
@@ -42,7 +43,7 @@ export const getSuiteReadyPayload = (state: AppState) => ({
     screenWidth: getScreenWidth(),
     screenHeight: getScreenHeight(),
     platformLanguages: getPlatformLanguages().join(','),
-    tor: state.suite.tor,
+    tor: getIsTorEnabled(state.suite.torStatus),
     labeling: state.metadata.enabled ? state.metadata.provider?.type || '' : '',
     rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase).length,
     rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase).length,

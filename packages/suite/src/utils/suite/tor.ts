@@ -1,5 +1,6 @@
 import { parseHostname } from '@trezor/utils';
 import { TOR_URLS } from '@suite-constants/tor';
+import { TorStatus } from '@suite-reducers/suiteReducer';
 
 /**
  * returns tor url if tor url is request and tor url is available for given domain
@@ -45,4 +46,34 @@ export const torFetch = (input: RequestInfo, init?: RequestInit | undefined) => 
     }
 
     return baseFetch(input, init);
+};
+
+export const getIsTorEnabled = (torStatus: TorStatus) => {
+    switch (torStatus) {
+        case TorStatus.Enabled:
+            return true;
+
+        case TorStatus.Enabling:
+        case TorStatus.Disabling:
+        case TorStatus.Disabled:
+            return false;
+
+        default:
+            return false;
+    }
+};
+
+export const getIsTorLoading = (torStatus: TorStatus) => {
+    switch (torStatus) {
+        case TorStatus.Enabling:
+        case TorStatus.Disabling:
+            return true;
+
+        case TorStatus.Enabled:
+        case TorStatus.Disabled:
+            return false;
+
+        default:
+            return false;
+    }
 };

@@ -45,9 +45,16 @@ export interface SuiteSettings {
     autodetect: AutodetectSettings;
 }
 
+export enum TorStatus {
+    Disabled,
+    Enabling,
+    Disabling,
+    Enabled,
+}
+
 export interface SuiteState {
     online: boolean;
-    tor: boolean;
+    torStatus: TorStatus;
     loading: boolean;
     storageLoaded: boolean;
     loaded: boolean;
@@ -62,7 +69,7 @@ export interface SuiteState {
 
 const initialState: SuiteState = {
     online: true,
-    tor: false,
+    torStatus: TorStatus.Disabled,
     loading: false,
     storageLoaded: false,
     loaded: false,
@@ -184,7 +191,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case SUITE.TOR_STATUS:
-                draft.tor = action.payload;
+                draft.torStatus = action.payload;
                 break;
 
             case SUITE.ONION_LINKS:

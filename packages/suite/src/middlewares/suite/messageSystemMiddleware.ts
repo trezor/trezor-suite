@@ -7,6 +7,7 @@ import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { saveValidMessages, ValidMessagesPayload } from '@suite-actions/messageSystemActions';
 
 import type { AppState, Action, Dispatch } from '@suite-types';
+import { getIsTorEnabled } from '@suite-utils/tor';
 
 // actions which can affect message system messages
 const actions = [
@@ -26,14 +27,14 @@ const messageSystemMiddleware =
 
         if (actions.includes(action.type)) {
             const { config } = api.getState().messageSystem;
-            const { device, transport, tor } = api.getState().suite;
+            const { device, transport, torStatus } = api.getState().suite;
             const { enabledNetworks } = api.getState().wallet.settings;
 
             const messages = getValidMessages(config, {
                 device,
                 transport,
                 settings: {
-                    tor,
+                    tor: getIsTorEnabled(torStatus),
                     enabledNetworks,
                 },
             });

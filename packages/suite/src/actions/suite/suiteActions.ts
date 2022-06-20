@@ -19,6 +19,7 @@ import type {
     AppState,
 } from '@suite-types';
 import type { DebugModeOptions, AutodetectSettings } from '@suite-reducers/suiteReducer';
+import { TorStatus } from '@suite-reducers/suiteReducer';
 import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
 
 export type SuiteAction =
@@ -53,7 +54,7 @@ export type SuiteAction =
       }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
-    | { type: typeof SUITE.TOR_STATUS; payload: boolean }
+    | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
@@ -152,7 +153,7 @@ export const updateOnlineStatus = (payload: boolean): SuiteAction => ({
  * @param {boolean} payload
  * @returns {Action}
  */
-export const updateTorStatus = (payload: boolean): SuiteAction => ({
+export const updateTorStatus = (payload: TorStatus): SuiteAction => ({
     type: SUITE.TOR_STATUS,
     payload,
 });
@@ -172,7 +173,9 @@ export const toggleTor = (isEnabled: boolean) => async (dispatch: Dispatch, getS
     if (ipcResponse.success) {
         window.fetch = isEnabled ? torFetch : baseFetch;
 
-        dispatch(updateTorStatus(isEnabled));
+        const newStatus = isEnabled ? TorStatus.Enabled : TorStatus.Disabled;
+
+        dispatch(updateTorStatus(newStatus));
 
         analytics.report({
             type: EventType.SettingsTor,

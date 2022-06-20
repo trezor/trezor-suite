@@ -3,6 +3,7 @@ import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { SUITE, STORAGE, NOTIFICATION, MODAL } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import * as suiteActions from '../suiteActions';
+import { TorStatus } from '@suite-reducers/suiteReducer';
 
 const { getSuiteDevice, getConnectDevice } = global.JestMocks;
 
@@ -132,7 +133,10 @@ const reducerActions = [
     },
     {
         description: `updateTorStatus (true/false)`,
-        actions: [suiteActions.updateTorStatus(true), suiteActions.updateTorStatus(false)],
+        actions: [
+            suiteActions.updateTorStatus(TorStatus.Enabled),
+            suiteActions.updateTorStatus(TorStatus.Enabled),
+        ],
         result: [
             {
                 tor: true,
