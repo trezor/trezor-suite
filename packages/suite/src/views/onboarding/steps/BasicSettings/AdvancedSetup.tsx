@@ -6,6 +6,7 @@ import { Icon, useTheme } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import Tor from './Tor';
+import { getIsTorEnabled } from '@suite-utils/tor';
 
 const AdvancedSetupWrapper = styled.div`
     width: 100%;
@@ -41,9 +42,7 @@ const AdvancedSetup = ({ children }: Props) => {
     const [torOpen, setTorOpen] = useState(false);
     const theme = useTheme();
 
-    const { tor } = useSelector(state => ({
-        tor: state.suite.tor,
-    }));
+    const isTorEnabled = useSelector(state => getIsTorEnabled(state.suite.torStatus));
 
     const toggleTor = () => {
         setTorOpen(!torOpen);
@@ -52,7 +51,7 @@ const AdvancedSetup = ({ children }: Props) => {
     return (
         <AdvancedSetupWrapper>
             <Boxes>
-                {(isDesktop() || (isWeb() && tor)) && (
+                {(isDesktop() || (isWeb() && isTorEnabled)) && (
                     <Box
                         heading={<Translation id="TR_TOR" />}
                         description={
@@ -67,7 +66,7 @@ const AdvancedSetup = ({ children }: Props) => {
                         expanded={torOpen}
                         expandableIcon={
                             <IconWrapper>
-                                {tor ? (
+                                {isTorEnabled ? (
                                     <Icon icon="CHECK" size={24} color={theme.TYPE_LIGHT_GREY} />
                                 ) : (
                                     <Icon icon="PLUS" size={24} color={theme.TYPE_LIGHT_GREY} />
@@ -76,7 +75,7 @@ const AdvancedSetup = ({ children }: Props) => {
                         }
                         onToggle={toggleTor}
                     >
-                        <Tor tor={tor} />
+                        <Tor tor={isTorEnabled} />
                     </Box>
                 )}
             </Boxes>
