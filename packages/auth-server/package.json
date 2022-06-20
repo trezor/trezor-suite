@@ -1,0 +1,20 @@
+{
+    "name": "@trezor/auth-server",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest --passWithNoTests",
+        "type-check": "tsc --build",
+        "dev": "npx nodemon --exec 'ts-node' ./src/index.ts",
+        "build": "rimraf ./lib && tsc --build tsconfig.lib.json",
+        "start": "node ./lib/index.js"
+    },
+    "dependencies": {
+        "express": "^4.18.1",
+        "node-fetch": "^2.6.7"
+    }
+}
