@@ -6,7 +6,7 @@ import InputError from '@wallet-components/InputError';
 import { useSelector, useActions } from '@suite-hooks';
 import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
 import { useDefaultUrls, useBackendsForm } from '@settings-hooks/backends';
-import { toTorUrl } from '@suite-utils/tor';
+import { getIsTorEnabled, toTorUrl } from '@suite-utils/tor';
 import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
@@ -64,9 +64,9 @@ interface CustomBackendsProps {
 export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
     const { symbol: coin } = network;
     const defaultUrls = useDefaultUrls(coin);
-    const { blockchain, tor } = useSelector(state => ({
+    const { blockchain, isTorEnabled } = useSelector(state => ({
         blockchain: state.wallet.blockchain,
-        tor: state.suite.tor,
+        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
     }));
     const { toggleTor } = useActions({
         toggleTor: toggleTorAction,
@@ -78,7 +78,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
     const [torModalOpen, setTorModalOpen] = React.useState(false);
 
     const onSaveClick = () => {
-        if (!tor && hasOnlyOnions()) {
+        if (!isTorEnabled && hasOnlyOnions()) {
             setTorModalOpen(true);
         } else {
             save();
@@ -130,7 +130,7 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
             <BackendTypeSelect network={network} value={type} onChange={changeType} />
 
             {(editable ? urls : defaultUrls).map(u => {
-                const url = tor && !editable ? toTorUrl(u) : u;
+                const url = isTorEnabled && !editable ? toTorUrl(u) : u;
                 return (
                     <BackendInput
                         key={url}

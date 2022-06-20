@@ -1,5 +1,5 @@
 import { TOR_URLS } from '@suite-constants';
-import { getTorUrlIfAvailable, isTorDomain, isOnionUrl, toTorUrl } from '@suite-utils/tor';
+import { getTorUrlIfAvailable, getIsTorDomain, isOnionUrl, toTorUrl } from '@suite-utils/tor';
 
 describe('tor', () => {
     beforeAll(() => {
@@ -51,7 +51,7 @@ describe('tor', () => {
         });
     });
 
-    describe('isTorDomain', () => {
+    describe('getIsTorDomain', () => {
         const fixtures = [
             {
                 desc: 'yes',
@@ -67,7 +67,7 @@ describe('tor', () => {
 
         fixtures.forEach(f => {
             it(f.desc, () => {
-                expect(isTorDomain(f.in)).toEqual(f.out);
+                expect(getIsTorDomain(f.in)).toEqual(f.out);
             });
         });
     });

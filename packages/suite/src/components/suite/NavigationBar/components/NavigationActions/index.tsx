@@ -17,6 +17,7 @@ import { NavSettings } from './components/NavSettings';
 import { variables } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
 import { useGuide } from '@guide-hooks/useGuide';
+import { getIsTorEnabled } from '@suite-utils/tor';
 
 import type { Route } from '@suite-types';
 
@@ -54,16 +55,22 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
     closeMainNavigation,
     isMobileLayout,
 }) => {
-    const { activeApp, notifications, discreetMode, tor, allowPrerelease, enabledNetworks } =
-        useSelector(state => ({
-            activeApp: state.router.app,
-            notifications: state.notifications,
-            discreetMode: state.wallet.settings.discreetMode,
-            tor: state.suite.tor,
-            theme: state.suite.settings.theme,
-            allowPrerelease: state.desktopUpdate.allowPrerelease,
-            enabledNetworks: state.wallet.settings.enabledNetworks,
-        }));
+    const {
+        activeApp,
+        notifications,
+        discreetMode,
+        isTorEnabled,
+        allowPrerelease,
+        enabledNetworks,
+    } = useSelector(state => ({
+        activeApp: state.router.app,
+        notifications: state.notifications,
+        discreetMode: state.wallet.settings.discreetMode,
+        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
+        theme: state.suite.settings.theme,
+        allowPrerelease: state.desktopUpdate.allowPrerelease,
+        enabledNetworks: state.wallet.settings.enabledNetworks,
+    }));
 
     const { goto, setDiscreetMode, toggleTor } = useActions({
         goto: routerActions.goto,
@@ -123,16 +130,16 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
                 (isMobileLayout ? (
                     <ActionItem
                         onClick={() => {
-                            toggleTor(!tor);
+                            toggleTor(!isTorEnabled);
                         }}
                         label={<Translation id="TR_TOR" />}
                         icon="TOR"
                         isMobileLayout
                         marginLeft
-                        indicator={tor ? 'check' : undefined}
+                        indicator={isTorEnabled ? 'check' : undefined}
                     />
                 ) : (
-                    <NavTor isActive={tor} />
+                    <NavTor isActive={isTorEnabled} />
                 ))}
 
             {allowPrerelease &&
