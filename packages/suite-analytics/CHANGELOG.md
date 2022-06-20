@@ -8,6 +8,10 @@ Added:
 
 -   suite-ready
     -   labeling: 'missing-provider' (in case labeling is enabled, but no provider set)
+-   settings/general/change-bitcoin-unit
+    -   unit: 'BTC' | 'μBTC' | 'mBTC' | 'sat'
+-   suite-ready
+    -   bitcoinUnit: 'BTC' | 'μBTC' | 'mBTC' | 'sat'
 
 ### 1.21
 
