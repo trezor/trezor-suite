@@ -16,8 +16,9 @@ import path from 'path';
 
 import messages from '@trezor/suite/src/support/messages';
 
-const targetPath = path.join(__dirname, '../../suite/src/support/messages.ts');
-const sourcePath = path.join(__dirname, '../../suite-data/files/translations/en.json');
+const packagesRoot = path.join(__dirname, '../../../');
+const targetPath = path.join(packagesRoot, 'suite/src/support/messages.ts');
+const sourcePath = path.join(packagesRoot, 'suite-data/files/translations/en.json');
 
 const source: { [key in keyof typeof messages]: string } = JSON.parse(
     fs.readFileSync(sourcePath, 'utf8'),
