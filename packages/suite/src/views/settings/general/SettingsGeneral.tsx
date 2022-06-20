@@ -19,11 +19,12 @@ import { ShowLog } from './ShowLog';
 import { ClearStorage } from './ClearStorage';
 import { VersionWithUpdate } from './VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
+import { getIsTorEnabled } from '@suite-utils/tor';
 
 export const SettingsGeneral = () => {
-    const { desktopUpdate, tor } = useSelector(state => ({
+    const { desktopUpdate, isTorEnabled } = useSelector(state => ({
         desktopUpdate: state.desktopUpdate,
-        tor: state.suite.tor,
+        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
     }));
 
     return (
@@ -39,10 +40,10 @@ export const SettingsGeneral = () => {
                 <LabelingConnect />
             </SettingsSection>
 
-            {(isDesktop() || (isWeb() && tor)) && (
+            {(isDesktop() || (isWeb() && isTorEnabled)) && (
                 <SettingsSection title={<Translation id="TR_TOR" />} icon="TOR_MINIMAL">
                     {isDesktop() && <Tor />}
-                    {tor && <TorOnionLinks />}
+                    {isTorEnabled && <TorOnionLinks />}
                 </SettingsSection>
             )}
 

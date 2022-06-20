@@ -7,14 +7,15 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { getIsTorEnabled } from '@suite-utils/tor';
 
 export const Tor = () => {
-    const { tor } = useSelector(state => ({
-        tor: state.suite.tor,
-    }));
+    const isTorEnabled = useSelector(state => getIsTorEnabled(state.suite.torStatus));
+
     const { toggleTor } = useActions({
         toggleTor: suiteActions.toggleTor,
     });
+
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Tor);
 
     return (
@@ -34,8 +35,8 @@ export const Tor = () => {
             <ActionColumn>
                 <Switch
                     dataTest="@settings/general/tor-switch"
-                    isChecked={tor}
-                    onChange={() => toggleTor(!tor)}
+                    isChecked={isTorEnabled}
+                    onChange={() => toggleTor(!isTorEnabled)}
                 />
             </ActionColumn>
         </SectionItem>

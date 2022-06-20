@@ -6,6 +6,7 @@ import { Button, P, Link, Select, useTheme, variables, Loader } from '@trezor/co
 import * as routerActions from '@suite-actions/routerActions';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import { useSelector, useActions } from '@suite-hooks';
+import { getIsTorEnabled } from '@suite-utils/tor';
 
 const Content = styled.div`
     display: flex;
@@ -98,9 +99,9 @@ export const InstallBridge = () => {
     const actions = useActions({
         goto: routerActions.goto,
     });
-    const { tor, transport } = useSelector(state => ({
+    const { isTorEnabled, transport } = useSelector(state => ({
+        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
         transport: state.suite.transport,
-        tor: state.suite.tor,
     }));
     const theme = useTheme();
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
@@ -177,7 +178,7 @@ export const InstallBridge = () => {
                         </TrezorLink>
                     </Download>
                 )}
-                {isWeb() && tor && (
+                {isWeb() && isTorEnabled && (
                     <P>
                         <TrezorLink href={WIKI_TOR_URL}>
                             <Translation id="TR_TOR_BRIDGE" />
