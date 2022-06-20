@@ -891,11 +891,11 @@ export default defineMessages({
         id: 'TR_BUY_STATUS_PENDING',
     },
     TR_SAVINGS_KYC_SUCCESS_NOTIFICATION: {
-        defaultMessage: 'KYC verification successfully passed.',
+        defaultMessage: 'KYC verification was successful.',
         id: 'TR_SAVINGS_KYC_SUCCESS_NOTIFICATION',
     },
     TR_SAVINGS_KYC_FAILED_NOTIFICATION: {
-        defaultMessage: 'Sorry, KYC verification failed.',
+        defaultMessage: 'KYC verification was unsuccessful.',
         id: 'TR_SAVINGS_KYC_FAILED_NOTIFICATION',
     },
     TR_SAVINGS_NO_PROVIDERS: {
@@ -919,17 +919,17 @@ export default defineMessages({
         id: 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM',
     },
     TR_SAVINGS_SETUP_HEADER: {
-        defaultMessage: 'Your saving crypto account setup',
+        defaultMessage: 'Your savings account setup',
         id: 'TR_SAVINGS_SETUP_HEADER',
     },
     TR_SAVINGS_SETUP_COUNTRY_LOCATION_DESCRIPTION: {
         defaultMessage:
-            'Save into {cryptoCurrencyName} is location specific feature and we are unable to give you any offer unless you are from supported country.',
+            '{cryptoCurrencyName} savings account is a location specific feature. We are only able to provide offers to users from the supported countries listed below.',
         id: 'TR_SAVINGS_SETUP_COUNTRY_LOCATION_DESCRIPTION',
     },
     TR_SAVINGS_SETUP_COUNTRY_MISMATCH_DESCRIPTION: {
         defaultMessage:
-            "If your country isn't listed above, you may always stack sats with {oneTimeBuyLink}.",
+            "If your country isn't listed above, you can always stack sats with {oneTimeBuyLink}.",
         id: 'TR_SAVINGS_SETUP_COUNTRY_MISMATCH_DESCRIPTION',
     },
     TR_SAVINGS_SETUP_ONE_TIME_BUY_LINK: {
@@ -950,11 +950,11 @@ export default defineMessages({
     },
     TR_SAVINGS_SETUP_RECEIVING_ADDRESS_CHANGES_PAYMENT_INFO: {
         defaultMessage:
-            'Change of receiving address changes payment information. If you change the address, please double check payment information on next page.',
+            'Changing the receiving address changes payment information. Please review the information on the next page carefully.',
         id: 'TR_SAVINGS_SETUP_RECEIVING_ADDRESS_CHANGES_PAYMENT_INFO',
     },
     TR_SAVINGS_SETUP_SUMMARY_LABEL: {
-        defaultMessage: "In a Year you'll save",
+        defaultMessage: "In one year you'll save up",
         id: 'TR_SAVINGS_SETUP_SUMMARY_LABEL',
     },
     TR_SAVINGS_SETUP_CONFIRM_BUTTON: {
@@ -982,7 +982,7 @@ export default defineMessages({
         id: 'TR_SAVINGS_SETUP_KYC_ERROR_HEADER',
     },
     TR_SAVINGS_SETUP_KYC_ERROR_DESCRIPTION: {
-        defaultMessage: 'Something went wrong during KYC check. Please contact our support.',
+        defaultMessage: 'Something went wrong during the KYC check. Please contact Trezor support.',
         id: 'TR_SAVINGS_SETUP_KYC_ERROR_DESCRIPTION',
     },
     TR_SAVINGS_PAYMENT_INFO_HEADER: {
@@ -990,7 +990,8 @@ export default defineMessages({
         id: 'TR_SAVINGS_PAYMENT_INFO_HEADER',
     },
     TR_SAVINGS_PAYMENT_INFO_DESCRIPTION: {
-        defaultMessage: 'Setup a standing order to make your savings automatic.',
+        defaultMessage:
+            'Set up a standing order in your bank to make sure your payments and savings are automatic.',
         id: 'TR_SAVINGS_PAYMENT_INFO_DESCRIPTION',
     },
     TR_SAVINGS_PAYMENT_INFO_NAME_LABEL: {
@@ -1014,7 +1015,7 @@ export default defineMessages({
         id: 'TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL',
     },
     TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY: {
-        defaultMessage: 'each week',
+        defaultMessage: 'weekly',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY',
     },
     TR_SAVINGS_OVERVIEW_PERIOD_BIWEEKLY: {
@@ -1022,11 +1023,11 @@ export default defineMessages({
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_BIWEEKLY',
     },
     TR_SAVINGS_OVERVIEW_PERIOD_MONTHLY: {
-        defaultMessage: 'each month',
+        defaultMessage: 'monthly',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_MONTHLY',
     },
     TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY: {
-        defaultMessage: 'each quarter',
+        defaultMessage: 'quarterly',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_QUARTERLY',
     },
     TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_CURRENT_PAYMENT: {
@@ -1059,7 +1060,7 @@ export default defineMessages({
     },
     TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION: {
         defaultMessage:
-            "Didn't make it yet? Check View payment details to know where to send the payment.",
+            'Select View payment details to find the information you need to make the payment.',
         id: 'TR_SAVINGS_OVERVIEW_WAITING_FOR_FIRST_PAYMENT_DESCRIPTION',
     },
     TR_SAVINGS_STATUS_PENDING: {
@@ -1116,7 +1117,7 @@ export default defineMessages({
         id: 'TR_SAVINGS_CONFIRM',
     },
     TR_SAVINGS_SETUP_WAITING_MESSAGE: {
-        defaultMessage: 'Waiting for completion on Invity web page.',
+        defaultMessage: 'Please complete the setup on the Invity.io website.',
         id: 'TR_SAVINGS_SETUP_WAITING_MESSAGE',
     },
     TR_SAVINGS_SETUP_WAITING_BUTTON_LABEL: {
@@ -4654,7 +4655,7 @@ export default defineMessages({
     },
     TR_NAV_SAVINGS: {
         id: 'TR_NAV_SAVINGS',
-        defaultMessage: 'Save into {cryptoCurrencyName}',
+        defaultMessage: 'Save {cryptoCurrencyName}',
     },
     TR_NAV_INVITY: {
         id: 'TR_NAV_INVITY',
