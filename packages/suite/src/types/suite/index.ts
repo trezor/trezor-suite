@@ -138,3 +138,10 @@ export type ForegroundAppProps = {
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
 export type EnvironmentType = 'web' | 'desktop' | 'mobile' | '';
+
+export enum TorStatus {
+    Disabled = 'Disabled',
+    Enabling = 'Enabling',
+    Disabling = 'Disabling',
+    Enabled = 'Enabled',
+}

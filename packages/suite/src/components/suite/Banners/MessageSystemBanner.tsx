@@ -5,7 +5,7 @@ import { variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import { useActions, useSelector } from '@suite-hooks';
-import { getTorUrlIfAvailable } from '@suite-utils/tor';
+import { getIsTorEnabled, getTorUrlIfAvailable } from '@suite-utils/tor';
 import { Banner } from './Banner';
 
 import type { Message } from '@suite-types/messageSystem';
@@ -22,9 +22,9 @@ type Props = {
 const MessageSystemBanner = ({ message }: Props) => {
     const { cta, variant, id, content, dismissible } = message;
 
-    const { language, tor, torOnionLinks } = useSelector(state => ({
+    const { language, isTorEnabled, torOnionLinks } = useSelector(state => ({
         language: state.suite.settings.language,
-        tor: state.suite.tor,
+        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
         torOnionLinks: state.suite.settings.torOnionLinks,
     }));
 
@@ -44,7 +44,10 @@ const MessageSystemBanner = ({ message }: Props) => {
             onClick = () => goto(link, { anchor });
         } else if (action === 'external-link') {
             onClick = () =>
-                window.open(tor && torOnionLinks ? getTorUrlIfAvailable(link) : link, '_blank');
+                window.open(
+                    isTorEnabled && torOnionLinks ? getTorUrlIfAvailable(link) : link,
+                    '_blank',
+                );
         }
 
         return {
@@ -52,7 +55,7 @@ const MessageSystemBanner = ({ message }: Props) => {
             onClick: onClick!,
             'data-test': `@message-system/${id}/cta`,
         };
-    }, [id, cta, goto, language, tor, torOnionLinks]);
+    }, [id, cta, goto, language, isTorEnabled, torOnionLinks]);
 
     const dismissalConfig = useMemo(() => {
         if (!dismissible) return undefined;

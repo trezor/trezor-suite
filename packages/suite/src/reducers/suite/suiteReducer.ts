@@ -4,7 +4,7 @@ import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { Action, TrezorDevice, Lock } from '@suite-types';
+import { Action, TrezorDevice, Lock, TorStatus } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb, getWindowWidth } from '@suite-utils/env';
 import { ensureLocale } from '@suite-utils/l10n';
@@ -47,7 +47,7 @@ export interface SuiteSettings {
 
 export interface SuiteState {
     online: boolean;
-    tor: boolean;
+    torStatus: TorStatus;
     loading: boolean;
     storageLoaded: boolean;
     loaded: boolean;
@@ -62,7 +62,7 @@ export interface SuiteState {
 
 const initialState: SuiteState = {
     online: true,
-    tor: false,
+    torStatus: TorStatus.Disabled,
     loading: false,
     storageLoaded: false,
     loaded: false,
@@ -184,7 +184,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case SUITE.TOR_STATUS:
-                draft.tor = action.payload;
+                draft.torStatus = action.payload;
                 break;
 
             case SUITE.ONION_LINKS:
