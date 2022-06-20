@@ -789,7 +789,6 @@
   "TR_LTC_ADDRESS_INFO": "Litecoin a schimbat formatul adreselor. Găsiți mai multe informații despre cum să vă convertiți adresa pe blogul nostru. {TR_LEARN_MORE}",
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Asigurați-vă că nimeni nu poate trage cu ochiul deasupra umărului sau că nu există camere care să vă urmărească ecranul. Nimeni nu ar trebui să vă vadă vreodată sămânța.",
   "TR_MANAGE": "gestionare",
-  "TR_MAXIMUM_LENGTH_IS_9_DIGITS": "Lungimea maximă este de 9 cifre.",
   "TR_MAX_LABEL_LENGTH_IS": "Lungimea maximă a etichetei este de {length} caractere",
   "TR_MESSAGE": "Mesaj",
   "TR_MINED_TIME": "Timp minat",
