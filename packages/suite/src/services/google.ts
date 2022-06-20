@@ -16,6 +16,7 @@ import { isWeb, isDesktop } from '@suite-utils/env';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const BOUNDARY = '-------314159265358979323846';
+const AUTH_SERVER_URL = process.env.AUTH_SERVER_URL || 'http://localhost:3005'; // TODO: replace with server URL
 
 type QueryParams = {
     q?: string;
@@ -122,6 +123,45 @@ class Client {
         }
     }
 
+    isTokenExpiring() {
+        const expiryDate = this.oauth2Client.credentials.expiry_date;
+        return expiryDate
+            ? expiryDate <= new Date().getTime() + this.oauth2Client.eagerRefreshThresholdMillis
+            : false;
+    }
+
+    setCredentials(json: any) {
+        if (json && json.expires_in) {
+            json.expiry_date = new Date().getTime() + json.expires_in * 1000;
+            delete json.expires_in;
+        }
+        this.oauth2Client.emit('tokens', json);
+        this.oauth2Client.setCredentials(json);
+    }
+
+    async getAccessToken() {
+        const shouldRefresh = !this.oauth2Client.credentials.access_token || this.isTokenExpiring();
+        if (shouldRefresh) {
+            const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-refresh`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    clientId: METADATA.GOOGLE_CLIENT_ID_DESKTOP,
+                    refreshToken: this.oauth2Client.credentials.refresh_token,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const json = await res.json();
+            this.setCredentials(json);
+            if (!json.credentials?.access_token) {
+                throw new Error('Could not refresh access token.');
+            }
+            return json.credentials.access_token;
+        }
+        return this.oauth2Client.credentials.access_token;
+    }
+
     async authorize() {
         const redirectUri = await getOauthReceiverUrl();
         if (!redirectUri) return;
@@ -133,26 +173,23 @@ class Client {
             redirect_uri: redirectUri,
         };
 
-        switch (process.env.SUITE_TYPE) {
-            case 'desktop':
-                // authorization code flow with PKCE
-                Object.assign(options, {
-                    access_type: 'offline',
-                    code_challenge: random,
-                    code_challenge_method: CodeChallengeMethod.Plain,
-                });
-                break;
-            case 'web':
-                // implicit flow
-                Object.assign(options, { access_type: 'online', response_type: 'token' });
-                break;
-            default:
-            // no default
+        if (isDesktop() && (await fetch('http://localhost:3005/status')).ok) {
+            // authorization code flow with PKCE
+            Object.assign(options, {
+                access_type: 'offline',
+                code_challenge: random,
+                code_challenge_method: CodeChallengeMethod.Plain,
+            });
+        } else {
+            // implicit flow
+            Object.assign(options, { access_type: 'online', response_type: 'token' });
         }
 
         const url = this.oauth2Client.generateAuthUrl(options);
 
-        const { access_token, code } = await extractCredentialsFromAuthorizationFlow(url);
+        const response = await extractCredentialsFromAuthorizationFlow(url);
+
+        const { access_token, code } = response;
         // implicit flow returns short lived access_token directly
         if (access_token) {
             this.token = access_token;
@@ -160,15 +197,21 @@ class Client {
             return;
         }
 
-        // otherwise authorization code which is to be exchanged for tokens is retrieved
-        if (code) {
-            const { tokens } = await this.oauth2Client.getToken({
+        const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-init`, {
+            method: 'POST',
+            body: JSON.stringify({
+                clientId: METADATA.GOOGLE_CLIENT_ID_DESKTOP,
                 code,
-                redirect_uri: redirectUri,
                 codeVerifier: random,
-            });
-            this.oauth2Client.setCredentials(tokens);
-        }
+                redirectUri,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const json = await res.json();
+        this.setCredentials(json);
+        this.oauth2Client.setCredentials(json);
     }
 
     /**
@@ -326,13 +369,13 @@ class Client {
             url += `?${query}`;
         }
 
-        const accessToken = await this.oauth2Client.getAccessToken();
+        const accessToken = await this.getAccessToken();
 
         const fetchOptions = {
             ...fetchParams,
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessToken?.token}`,
+                Authorization: `Bearer ${accessToken}`,
                 ...fetchParams.headers,
             },
         };

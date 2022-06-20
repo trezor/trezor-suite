@@ -27,8 +27,11 @@ export const AUTH_WINDOW_HEIGHT = 720;
 export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
 
 // google does not allow authorization code flow (with long lived tokens) for web. that is the reason why 2 clientIds are used
+// export const GOOGLE_CLIENT_ID_DESKTOP =
+//     '705190185912-q1usa46qtt21mbtldki8juhn78a0v0ma.apps.googleusercontent.com';
 export const GOOGLE_CLIENT_ID_DESKTOP =
-    '705190185912-q1usa46qtt21mbtldki8juhn78a0v0ma.apps.googleusercontent.com';
+    '721022212539-0o49kanusndsufaeh1nut13pp23hb1t8.apps.googleusercontent.com';
+
 export const GOOGLE_CLIENT_ID_WEB =
     '705190185912-nejegm4dbdecdaiumncbaa4ulrfnpk82.apps.googleusercontent.com';
 // dropbox allows authorization code flow for both web and desktop
