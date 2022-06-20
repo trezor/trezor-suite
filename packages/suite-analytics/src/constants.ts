@@ -60,6 +60,7 @@ export enum EventType {
     SettingsGeneralChangeLanguage = 'settings/general/change-language',
     SettingsGeneralChangeTheme = 'settings/general/change-theme',
     SettingsGeneralChangeFiat = 'settings/general/change-fiat',
+    SettingsGeneralChangeBitcoinUnit = 'settings/general/change-bitcoin-unit',
     SettingsGeneralEarlyAccess = 'settings/general/early-access',
     SettingsGeneralLabeling = 'settings/general/labeling',
     SettingsGeneralLabelingProvider = 'settings/general/labeling-provider',

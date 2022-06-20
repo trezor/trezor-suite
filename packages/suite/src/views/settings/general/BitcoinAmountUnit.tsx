@@ -1,6 +1,7 @@
 import React from 'react';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import { PROTO } from '@trezor/connect';
+
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import { Translation } from '@suite-components/Translation';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -11,8 +12,9 @@ export const BitcoinAmountUnit = () => {
         useBitcoinAmountUnit();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.BitcoinAmountUnit);
 
-    const handleUnitsChange = ({ value }: { value: PROTO.AmountUnit }) =>
+    const handleUnitsChange = ({ value }: { value: PROTO.AmountUnit }) => {
         setBitcoinAmountUnits(value);
+    };
 
     return (
         <SectionItem

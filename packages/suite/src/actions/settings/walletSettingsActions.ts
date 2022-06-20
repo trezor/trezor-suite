@@ -1,9 +1,12 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { FeeLevel, PROTO } from '@trezor/connect';
+
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
-import type { Network } from '@wallet-types';
 import { WALLET_SETTINGS } from './constants';
+import { UNIT_ABBREVIATIONS } from '@wallet-hooks/useBitcoinAmountUnit';
+
+import type { Network } from '@wallet-types';
 
 export type WalletSettingsAction =
     | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
@@ -87,10 +90,18 @@ export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
 };
 
-export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAction => ({
-    type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
-    payload: units,
-});
+export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAction => {
+    analytics.report({
+        type: EventType.SettingsGeneralChangeBitcoinUnit,
+        payload: {
+            unit: UNIT_ABBREVIATIONS[units],
+        },
+    });
+    return {
+        type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
+        payload: units,
+    };
+};
 
 export const toggleBitcoinAmountUnits = () => (dispatch: Dispatch, getState: GetState) => {
     const currentUnits = getState().wallet.settings.bitcoinAmountUnit;

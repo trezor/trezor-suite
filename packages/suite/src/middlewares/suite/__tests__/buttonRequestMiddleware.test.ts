@@ -27,6 +27,18 @@ jest.mock('@wallet-actions/blockchainActions', () => ({
 
 jest.mock('@trezor/connect', () => {
     const callbacks: { [key: string]: (e: string) => any } = {};
+
+    const AmountUnit = {
+        BITCOIN: 0,
+        MILLIBITCOIN: 1,
+        MICROBITCOIN: 2,
+        SATOSHI: 3,
+    };
+
+    const PROTO = {
+        AmountUnit,
+    };
+
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -55,6 +67,7 @@ jest.mock('@trezor/connect', () => {
                 ...data,
             });
         },
+        PROTO,
     };
 });
 

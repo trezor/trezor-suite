@@ -1,9 +1,17 @@
 import { PROTO } from '@trezor/connect';
+
 import { useSelector } from '@suite-hooks/useSelector';
 import { useActions } from '@suite-hooks/useActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { NETWORKS } from '@wallet-config';
 import { NetworkSymbol } from '@wallet-types';
+
+export const UNIT_ABBREVIATIONS = {
+    [PROTO.AmountUnit.BITCOIN]: 'BTC',
+    [PROTO.AmountUnit.MICROBITCOIN]: 'μBTC',
+    [PROTO.AmountUnit.MILLIBITCOIN]: 'mBTC',
+    [PROTO.AmountUnit.SATOSHI]: 'sat',
+};
 
 const UNIT_LABELS = {
     [PROTO.AmountUnit.BITCOIN]: 'Bitcoin',

@@ -15,6 +15,7 @@ import {
 import { getCustomBackends } from '@suite-utils/backend';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 import { getIsTorEnabled } from './tor';
+import { UNIT_ABBREVIATIONS } from '@wallet-hooks/useBitcoinAmountUnit';
 
 import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
@@ -39,6 +40,7 @@ export const getSuiteReadyPayload = (state: AppState) => ({
     enabledNetworks: state.wallet.settings.enabledNetworks,
     customBackends: getCustomBackends(state.wallet.blockchain).map(({ coin }) => coin),
     localCurrency: state.wallet.settings.localCurrency,
+    bitcoinUnit: UNIT_ABBREVIATIONS[state.wallet.settings.bitcoinAmountUnit],
     discreetMode: state.wallet.settings.discreetMode,
     screenWidth: getScreenWidth(),
     screenHeight: getScreenHeight(),
