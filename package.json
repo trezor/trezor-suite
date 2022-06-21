@@ -108,6 +108,7 @@
         "prettier": "2.5.1",
         "prettier-eslint": "^13.0.0",
         "rimraf": "^3.0.2",
+        "semver": "^7.3.7",
         "ts-jest": "^26.5.4",
         "ts-node": "^10.6.0",
         "tsconfig-paths": "^3.13.0",

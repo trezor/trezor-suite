@@ -10,9 +10,7 @@ User interface is presented in a secure popup window served from `connect.trezor
 
 -   [Integration](https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md)
 
-## Versions
-
-### Version 9+ (experimental)
+## Version 9+ (experimental)
 
 Since version 9 we are adopting a new versioning strategy. With every release, we are going to update two urls
 
@@ -21,7 +19,17 @@ Since version 9 we are adopting a new versioning strategy. With every release, w
 
 Version 9+ will be available as `@trezor/connect` and `@trezor/connect-web` npm packages.
 
-### Version 8 (stable)
+## Step by step release process
+
+-   Make sure you have released all [npm dependencies](../../releases/npm-packages.md)
+-   bump version in all @trezor/connect\* packages (except plugin packages).
+-   make sure CHANGELOG files have been updated
+-   merge into develop branch
+-   from develop branch create a pull requests into branch `release/connect-v9`
+-   gitlab: click manual release `@trezor/connect-web` and `@trezor/connect` into npm
+-   gitlab: click manual release `@trezor/connect-web` and `@trezor/connect` into npm
+
+## Version 8 (stable)
 
 Currently, we are at version 8, which has an url https://connect.trezor.io/8/trezor-connect.js.
 
@@ -32,6 +40,8 @@ If you would like to find out which version is deployed precisely simply run:
 `curl -s https://connect.trezor.io/8/trezor-connect.js | grep VERSION`
 
 With regards to this repo - All updates should go to current version branch, the previous releases are in corresponding branches. The gh-pages is the same older version, that is used at trezor.github.io/connect/connect.js, and it's there for backwards compatibility; please don't touch.
+
+For deployment process of trezor-connect v8 refer to [trezor/connect repository](https://github.com/trezor/connect/blob/develop/docs/deployment/index.md)
 
 ## Tests
 
