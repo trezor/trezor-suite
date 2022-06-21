@@ -34,7 +34,6 @@ describe('Check notification toast', () => {
             .getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
-        cy.wait(1000);
         //
         // Assert
         //
