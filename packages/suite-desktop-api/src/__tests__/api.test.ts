@@ -211,7 +211,7 @@ describe('DesktopApi', () => {
         });
 
         it('DesktopApi.toggleTor', () => {
-            const spy = jest.spyOn(ipcRenderer, 'send');
+            const spy = jest.spyOn(ipcRenderer, 'invoke');
             api.toggleTor(true);
             expect(spy).toBeCalledWith('tor/toggle', true);
 
