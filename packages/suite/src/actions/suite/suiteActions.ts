@@ -4,7 +4,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
-import { baseFetch, isOnionUrl, torFetch } from '@suite-utils/tor';
+import { baseFetch, getIsTorLoading, isOnionUrl, torFetch } from '@suite-utils/tor';
 import { getCustomBackends } from '@suite-utils/backend';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -158,42 +158,59 @@ export const updateTorStatus = (payload: TorStatus): SuiteAction => ({
     payload,
 });
 
-export const toggleTor = (isEnabled: boolean) => async (dispatch: Dispatch, getState: GetState) => {
-    const backends = getCustomBackends(getState().wallet.blockchain);
-    // Is there any network with only onion custom backends?
-    const hasOnlyOnionBackends = backends.some(({ urls }) => urls.length && urls.every(isOnionUrl));
+export const toggleTor =
+    (shouldEnable: boolean) => async (dispatch: Dispatch, getState: GetState) => {
+        const isTorLoading = getIsTorLoading(getState().suite.torStatus);
 
-    if (!isEnabled && hasOnlyOnionBackends) {
-        const res = await dispatch(modalActions.openDeferredModal({ type: 'disable-tor' }));
-        if (!res) return;
-    }
+        if (isTorLoading) {
+            return;
+        }
 
-    const ipcResponse = await desktopApi.toggleTor(isEnabled);
-
-    if (ipcResponse.success) {
-        window.fetch = isEnabled ? torFetch : baseFetch;
-
-        const newStatus = isEnabled ? TorStatus.Enabled : TorStatus.Disabled;
-
-        dispatch(updateTorStatus(newStatus));
-
-        analytics.report({
-            type: EventType.SettingsTor,
-            payload: {
-                value: isEnabled,
-            },
-        });
-    }
-
-    if (!ipcResponse.success && ipcResponse.error) {
-        dispatch(
-            addToast({
-                type: 'tor-toggle-error',
-                error: ipcResponse.error as TranslationKey,
-            }),
+        const backends = getCustomBackends(getState().wallet.blockchain);
+        // Is there any network with only onion custom backends?
+        const hasOnlyOnionBackends = backends.some(
+            ({ urls }) => urls.length && urls.every(isOnionUrl),
         );
-    }
-};
+
+        if (!shouldEnable && hasOnlyOnionBackends) {
+            const res = await dispatch(modalActions.openDeferredModal({ type: 'disable-tor' }));
+            if (!res) return;
+        }
+
+        const progressStatus = shouldEnable ? TorStatus.Enabling : TorStatus.Disabling;
+
+        dispatch(updateTorStatus(progressStatus));
+
+        const ipcResponse = await desktopApi.toggleTor(shouldEnable);
+
+        if (ipcResponse.success) {
+            window.fetch = shouldEnable ? torFetch : baseFetch;
+
+            const newStatus = shouldEnable ? TorStatus.Enabled : TorStatus.Disabled;
+
+            dispatch(updateTorStatus(newStatus));
+
+            analytics.report({
+                type: EventType.SettingsTor,
+                payload: {
+                    value: shouldEnable,
+                },
+            });
+        }
+
+        if (!ipcResponse.success && ipcResponse.error) {
+            const previousStatus = shouldEnable ? TorStatus.Disabled : TorStatus.Enabled;
+
+            dispatch(updateTorStatus(previousStatus));
+
+            dispatch(
+                addToast({
+                    type: 'tor-toggle-error',
+                    error: ipcResponse.error as TranslationKey,
+                }),
+            );
+        }
+    };
 
 export const setOnionLinks = (payload: boolean): SuiteAction => ({
     type: SUITE.ONION_LINKS,

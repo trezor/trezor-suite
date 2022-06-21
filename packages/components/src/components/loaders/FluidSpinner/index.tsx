@@ -10,6 +10,7 @@ interface Props {
 
 const Wrapper = styled.div<Props>`
     /* https://loading.io/css/ */
+    position: relative;
     width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
     height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
 
@@ -39,7 +40,7 @@ const Wrapper = styled.div<Props>`
     }
 `;
 
-const FluidSpinner = ({ size, strokeWidth, color }: Props) => (
+export const FluidSpinner = ({ size, strokeWidth, color }: Props) => (
     <Wrapper size={size} strokeWidth={strokeWidth} color={color}>
         <div />
         <div />
@@ -47,5 +48,3 @@ const FluidSpinner = ({ size, strokeWidth, color }: Props) => (
         <div />
     </Wrapper>
 );
-
-export default FluidSpinner;
