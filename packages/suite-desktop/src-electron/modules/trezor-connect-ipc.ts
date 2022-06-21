@@ -62,8 +62,6 @@ const init: Module = ({ mainWindow, store }) => {
         return TrezorConnect.setProxy(payload);
     };
 
-    ipcMain.on('tor/toggle', () => setProxy());
-
     ipcMain.on(
         'trezor-connect-call',
         async ({ reply }: Electron.IpcMainEvent, [method, responseEvent, ...params]: Call) => {

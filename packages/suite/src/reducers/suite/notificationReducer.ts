@@ -5,6 +5,7 @@ import { Action, TrezorDevice } from '@suite-types';
 import { Network } from '@wallet-types';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
+import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
 
 interface Options {
     seen?: boolean;
@@ -111,6 +112,10 @@ export type ToastPayload = (
       }
     | {
           type: 'savings-kyc-success';
+      }
+    | {
+          type: 'tor-toggle-error';
+          error: TranslationKey;
       }
 ) &
     Options;
