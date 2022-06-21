@@ -42,6 +42,9 @@ describe('Check Bitcoin XPUB', () => {
         //
         // Assert
         //
-        cy.getTestElement('@xpub-modal/xpub-field').should('be.visible');
+        cy.getTestElement('@xpub-modal/xpub-field')
+            .should('be.visible')
+            .invoke('text')
+            .should('contain', 'zpub');
     });
 });
