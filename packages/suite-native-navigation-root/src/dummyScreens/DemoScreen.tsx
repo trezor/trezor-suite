@@ -112,7 +112,7 @@ export const DemoScreen = () => {
                                     value={input3Text}
                                     onChange={setInput3Text}
                                     label="From"
-                                    leftIcon={<CryptoIcon name="btc" />}
+                                    leftIcon={<CryptoIcon name="btc" size="extraSmall" />}
                                     hasWarning
                                 />
                             </InputWrapper>
