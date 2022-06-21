@@ -17,9 +17,9 @@ import { NavSettings } from './components/NavSettings';
 import { variables } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
 import { useGuide } from '@guide-hooks/useGuide';
+import { getIsTorEnabled } from '@suite-utils/tor';
 
 import type { Route } from '@suite-types';
-import { getIsTorEnabled } from '@suite-utils/tor';
 
 const Wrapper = styled.div`
     display: flex;

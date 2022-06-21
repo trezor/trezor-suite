@@ -46,10 +46,10 @@ export interface SuiteSettings {
 }
 
 export enum TorStatus {
-    Disabled,
-    Enabling,
-    Disabling,
-    Enabled,
+    Disabled = 'Disabled',
+    Enabling = 'Enabling',
+    Disabling = 'Disabling',
+    Enabled = 'Enabled',
 }
 
 export interface SuiteState {

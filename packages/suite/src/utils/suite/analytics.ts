@@ -14,10 +14,10 @@ import {
 } from '@suite-utils/env';
 import { getCustomBackends } from '@suite-utils/backend';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
+import { getIsTorEnabled } from './tor';
 
 import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
-import { getIsTorEnabled } from './tor';
 
 // redact transaction id from account transaction anchor
 export const redactTransactionIdFromAnchor = (anchor?: string) => {

@@ -5,9 +5,9 @@ import { MESSAGE_SYSTEM, STORAGE, SUITE } from '@suite-actions/constants';
 import { getValidMessages } from '@suite-utils/messageSystem';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { saveValidMessages, ValidMessagesPayload } from '@suite-actions/messageSystemActions';
+import { getIsTorEnabled } from '@suite-utils/tor';
 
 import type { AppState, Action, Dispatch } from '@suite-types';
-import { getIsTorEnabled } from '@suite-utils/tor';
 
 // actions which can affect message system messages
 const actions = [
