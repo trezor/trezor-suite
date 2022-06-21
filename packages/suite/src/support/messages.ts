@@ -6670,4 +6670,12 @@ export default defineMessages({
         id: 'TR_ABORT',
         defaultMessage: 'Abort',
     },
+    FAILED_TO_ENABLE_TOR: {
+        id: 'FAILED_TO_ENABLE_TOR',
+        defaultMessage: 'Failed to enable Tor',
+    },
+    FAILED_TO_DISABLE_TOR: {
+        id: 'FAILED_TO_DISABLE_TOR',
+        defaultMessage: 'Failed to disable Tor',
+    },
 });

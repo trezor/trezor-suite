@@ -38,55 +38,81 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
         });
     };
 
-    const setupTor = async (settings: TorSettings) => {
-        const shouldRunBundledTor = settings.running;
-        if (settings.running !== (await tor.status()).process) {
-            if (shouldRunBundledTor === true) {
-                try {
-                    await tor.start();
-                } catch (error) {
-                    logger.error('tor', `Failed to start: ${error.message}`);
-                    captureException(error);
-                }
-            } else {
-                try {
-                    await tor.stop();
-                } catch (error) {
-                    logger.error('tor', `Failed to stop: ${error.message}`);
-                    captureException(error);
-                }
-            }
-        }
-
-        // Start (or stop) routing all communication through tor.
-        if (settings.running) {
-            setProxy(`socks5://${host}:${port}`);
-        } else {
-            setProxy('');
-        }
-
-        // Notify the renderer.
-        mainWindow.webContents.send('tor/status', settings.running);
-    };
-
-    ipcMain.on('tor/toggle', async (_: unknown, start: boolean) => {
-        logger.info('tor', `Toggling ${start ? 'ON' : 'OFF'}`);
-        const settings = persistSettings({ running: start });
-        await setupTor(settings);
-        // After setupTor we can assume TOR is available so we set the proxy in TrezorConnect
-        // This is only required when 'toggle' because when app starts with TOR enable TrezorConnect is
-        // correctly set in module trezor-connect-ipc.
-        const payload = start
+    const getProxySettings = (shouldEnableTor: boolean) =>
+        shouldEnableTor
             ? {
                   proxy: `socks://${address}`,
                   useOnionLinks: true,
               }
             : { proxy: '', useOnionLinks: false };
 
-        logger.info('tor', `${start ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
-        await TrezorConnect.setProxy(payload);
+    const setupTor = async (settings: TorSettings) => {
+        const shouldEnableTor = settings.running;
+        const isTorRunning = (await tor.status()).process;
+
+        if (shouldEnableTor === isTorRunning) {
+            return;
+        }
+
+        if (shouldEnableTor === true) {
+            await tor.start();
+
+            setProxy(`socks5://${host}:${port}`);
+        } else {
+            await tor.stop();
+            setProxy('');
+        }
+
+        persistSettings(settings);
+
+        // Notify the renderer.
+        mainWindow.webContents.send('tor/status', settings.running);
+    };
+
+    ipcMain.handle('tor/toggle', async (_: unknown, shouldEnableTor: boolean) => {
+        logger.info('tor', `Toggling ${shouldEnableTor ? 'ON' : 'OFF'}`);
+
+        const settings: TorSettings = { ...store.getTorSettings(), running: shouldEnableTor };
+
+        try {
+            await setupTor(settings);
+
+            // After setupTor we can assume TOR is available so we set the proxy in TrezorConnect
+            // This is only required when 'toggle' because when app starts with TOR enable TrezorConnect is
+            // correctly set in module trezor-connect-ipc.
+            const proxySettings = getProxySettings(shouldEnableTor);
+
+            await TrezorConnect.setProxy(proxySettings);
+
+            logger.info(
+                'tor',
+                `${shouldEnableTor ? 'Enabled' : 'Disabled'} proxy ${proxySettings.proxy}`,
+            );
+        } catch (error) {
+            await setupTor({ ...settings, running: !shouldEnableTor });
+
+            const proxySettings = getProxySettings(!shouldEnableTor);
+
+            await TrezorConnect.setProxy(proxySettings);
+
+            const loggerMessage = shouldEnableTor
+                ? `Failed to start: ${error.message}`
+                : `Failed to stop: ${error.message}`;
+
+            logger.error('tor', loggerMessage);
+            captureException(error);
+
+            const errorMessage = shouldEnableTor ? 'FAILED_TO_ENABLE_TOR' : 'FAILED_TO_DISABLE_TOR';
+
+            return { success: false, error: errorMessage };
+        }
+
+        return { success: true };
     });
 
+    // TODO: Change to ipcMain.handle?
+    // desktopApi.getTorStatus();
+    // desktopApi.on('tor/status', updateTorStatus);
     ipcMain.on('tor/get-status', () => {
         logger.debug('tor', `Getting status (${store.getTorSettings().running ? 'ON' : 'OFF'})`);
         mainWindow.webContents.send('tor/status', store.getTorSettings().running);

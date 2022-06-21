@@ -4,7 +4,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
-import { isOnionUrl } from '@suite-utils/tor';
+import { baseFetch, isOnionUrl, torFetch } from '@suite-utils/tor';
 import { getCustomBackends } from '@suite-utils/backend';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -19,6 +19,7 @@ import type {
     AppState,
 } from '@suite-types';
 import type { DebugModeOptions, AutodetectSettings } from '@suite-reducers/suiteReducer';
+import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
@@ -156,25 +157,39 @@ export const updateTorStatus = (payload: boolean): SuiteAction => ({
     payload,
 });
 
-export const toggleTor = (enable: boolean) => async (dispatch: Dispatch, getState: GetState) => {
+export const toggleTor = (isEnabled: boolean) => async (dispatch: Dispatch, getState: GetState) => {
     const backends = getCustomBackends(getState().wallet.blockchain);
-    const hasOnlyOnionBackends = backends.some(
-        // Is there any network with only onion custom backends?
-        ({ urls }) => urls.length && urls.every(isOnionUrl),
-    );
+    // Is there any network with only onion custom backends?
+    const hasOnlyOnionBackends = backends.some(({ urls }) => urls.length && urls.every(isOnionUrl));
 
-    if (!enable && hasOnlyOnionBackends) {
+    if (!isEnabled && hasOnlyOnionBackends) {
         const res = await dispatch(modalActions.openDeferredModal({ type: 'disable-tor' }));
         if (!res) return;
     }
-    desktopApi.toggleTor(enable);
 
-    analytics.report({
-        type: EventType.SettingsTor,
-        payload: {
-            value: enable,
-        },
-    });
+    const ipcResponse = await desktopApi.toggleTor(isEnabled);
+
+    if (ipcResponse.success) {
+        window.fetch = isEnabled ? torFetch : baseFetch;
+
+        dispatch(updateTorStatus(isEnabled));
+
+        analytics.report({
+            type: EventType.SettingsTor,
+            payload: {
+                value: isEnabled,
+            },
+        });
+    }
+
+    if (!ipcResponse.success && ipcResponse.error) {
+        dispatch(
+            addToast({
+                type: 'tor-toggle-error',
+                error: ipcResponse.error as TranslationKey,
+            }),
+        );
+    }
 };
 
 export const setOnionLinks = (payload: boolean): SuiteAction => ({

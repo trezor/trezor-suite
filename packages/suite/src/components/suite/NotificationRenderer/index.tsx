@@ -132,6 +132,8 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return error(render, notification, 'TOAST_QR_INCORRECT_COIN_SCHEME_PROTOCOL', {
                 coin: notification.coin,
             });
+        case 'tor-toggle-error':
+            return error(render, notification, notification.error);
         case 'coin-scheme-protocol':
             return <CoinProtocolRenderer render={render} notification={notification} />;
         case 'tx-received':
