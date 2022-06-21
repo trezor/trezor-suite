@@ -4,10 +4,12 @@ import { useLocation } from 'react-router-dom';
 import { useActions } from '@suite-hooks/useActions';
 import * as routerActions from '@suite-actions/routerActions';
 import history from '@suite/support/history';
-import { useOnce } from '@suite-hooks';
+import { useSelector } from '@suite-hooks';
 
 const RouterComponent = () => {
-    const isFirstRender = useOnce(true, false);
+    const { storageLoaded } = useSelector(state => ({
+        storageLoaded: state.suite.storageLoaded,
+    }));
 
     const location = useLocation();
     const { onLocationChange, onBeforePopState } = useActions({
@@ -17,12 +19,12 @@ const RouterComponent = () => {
 
     useEffect(() => {
         // Let router to be initialized properly
-        if (!isFirstRender) {
+        if (storageLoaded) {
             // Handle browser navigation (back button)
             const url = location.pathname + location.hash;
             onLocationChange(url);
         }
-    }, [location.pathname, location.hash, onLocationChange, isFirstRender]);
+    }, [location.pathname, location.hash, onLocationChange, storageLoaded]);
 
     useEffect(() => {
         const onPopState = () => {
