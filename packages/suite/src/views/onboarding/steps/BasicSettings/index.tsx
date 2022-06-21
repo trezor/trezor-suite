@@ -4,10 +4,16 @@ import { OnboardingButtonCta } from '@onboarding-components';
 import { useOnboarding, useSelector } from '@suite-hooks';
 import BasicSettingsStepBox from './BasicSettingsStepBox';
 import AdvancedSetup from './AdvancedSetup';
+import { getIsTorLoading } from '@suite-utils/tor';
 
 const BasicSettings = () => {
-    const noNetworkEnabled = useSelector(s => !s.wallet.settings.enabledNetworks.length);
+    const { noNetworkEnabled, isTorLoading } = useSelector(state => ({
+        noNetworkEnabled: !state.wallet.settings.enabledNetworks.length,
+        isTorLoading: getIsTorLoading(state.suite.torStatus),
+    }));
+
     const { goToNextStep } = useOnboarding();
+
     return (
         <BasicSettingsStepBox
             heading={<Translation id="TR_ONBOARDING_COINS_STEP" />}
@@ -19,6 +25,7 @@ const BasicSettings = () => {
                         onClick={() => {
                             goToNextStep();
                         }}
+                        isLoading={isTorLoading}
                         isDisabled={noNetworkEnabled}
                     >
                         <Translation id="TR_COMPLETE_SETUP" />

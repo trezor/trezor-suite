@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
 import { findRouteByName } from '@suite-utils/router';
@@ -17,9 +16,10 @@ import { NavSettings } from './components/NavSettings';
 import { variables } from '@trezor/components';
 import { NavBackends } from './components/NavBackends';
 import { useGuide } from '@guide-hooks/useGuide';
-import { getIsTorEnabled } from '@suite-utils/tor';
+import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
 
 import type { Route } from '@suite-types';
+import { SettingsAnchor } from '@suite-constants/anchors';
 
 const Wrapper = styled.div`
     display: flex;
@@ -46,6 +46,16 @@ const Separator = styled.div`
     opacity: 0.7;
 `;
 
+const getTorIndicator = (isActive: boolean, isLoading: boolean) => {
+    if (isActive) {
+        return 'check';
+    }
+
+    if (isLoading) {
+        return 'loading';
+    }
+};
+
 interface NavigationActionsProps {
     closeMainNavigation?: () => void;
     isMobileLayout?: boolean;
@@ -55,35 +65,28 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
     closeMainNavigation,
     isMobileLayout,
 }) => {
-    const {
-        activeApp,
-        notifications,
-        discreetMode,
-        isTorEnabled,
-        allowPrerelease,
-        enabledNetworks,
-    } = useSelector(state => ({
-        activeApp: state.router.app,
-        notifications: state.notifications,
-        discreetMode: state.wallet.settings.discreetMode,
-        isTorEnabled: getIsTorEnabled(state.suite.torStatus),
-        theme: state.suite.settings.theme,
-        allowPrerelease: state.desktopUpdate.allowPrerelease,
-        enabledNetworks: state.wallet.settings.enabledNetworks,
-    }));
+    const { activeApp, notifications, discreetMode, torStatus, allowPrerelease, enabledNetworks } =
+        useSelector(state => ({
+            activeApp: state.router.app,
+            notifications: state.notifications,
+            discreetMode: state.wallet.settings.discreetMode,
+            torStatus: state.suite.torStatus,
+            theme: state.suite.settings.theme,
+            allowPrerelease: state.desktopUpdate.allowPrerelease,
+            enabledNetworks: state.wallet.settings.enabledNetworks,
+        }));
 
-    const { goto, setDiscreetMode, toggleTor } = useActions({
+    const { goto, setDiscreetMode } = useActions({
         goto: routerActions.goto,
         setDiscreetMode: walletSettingsActions.setDiscreetMode,
-        toggleTor: suiteActions.toggleTor,
     });
 
     const { openGuide } = useGuide();
 
     const WrapperComponent = isMobileLayout ? MobileWrapper : Wrapper;
 
-    const action = (route: Route['name']) => {
-        goto(route);
+    const action = (...gotoArgs: Parameters<typeof goto>) => {
+        goto(...gotoArgs);
         if (closeMainNavigation) closeMainNavigation();
     };
 
@@ -102,6 +105,9 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
     const customBackends = useCustomBackends().filter(backend =>
         enabledNetworks.includes(backend.coin),
     );
+
+    const isTorEnabled = getIsTorEnabled(torStatus);
+    const isTorLoading = getIsTorLoading(torStatus);
 
     return (
         <WrapperComponent>
@@ -129,17 +135,15 @@ export const NavigationActions: React.FC<NavigationActionsProps> = ({
             {isDesktop() &&
                 (isMobileLayout ? (
                     <ActionItem
-                        onClick={() => {
-                            toggleTor(!isTorEnabled);
-                        }}
+                        onClick={() => action('settings-index', { anchor: SettingsAnchor.Tor })}
                         label={<Translation id="TR_TOR" />}
                         icon="TOR"
                         isMobileLayout
                         marginLeft
-                        indicator={isTorEnabled ? 'check' : undefined}
+                        indicator={getTorIndicator(isTorEnabled, isTorLoading)}
                     />
                 ) : (
-                    <NavTor isActive={isTorEnabled} />
+                    <NavTor indicator={getTorIndicator(isTorEnabled, isTorLoading)} />
                 ))}
 
             {allowPrerelease &&
