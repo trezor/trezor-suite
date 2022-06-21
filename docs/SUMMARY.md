@@ -19,7 +19,6 @@
     -   [@trezor/connect](./packages/connect/index.md)
         -   [debugging](./packages/connect/debugging.md)
         -   [dependencies](./packages/connect/dependencies.md)
-        -   [deployment](./packages/connect/deployment.md)
         -   [protobuf](./packages/connect/protobuf-type-definitions.md)
         -   [coins support](./packages/connect/supported-coins.md)
         -   [events](./packages/connect/events.md)
