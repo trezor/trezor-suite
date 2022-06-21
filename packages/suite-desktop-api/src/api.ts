@@ -11,7 +11,6 @@ export interface MainChannels {
     'store/clear': void;
     'theme/change': SuiteThemeVariant;
     'tor/get-status': void;
-    'tor/toggle': boolean;
     'update/allow-prerelease': boolean;
     'update/cancel': void;
     'update/check': boolean | undefined;
@@ -54,6 +53,7 @@ export interface InvokeChannels {
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
     'server/request-address': (route: string) => string | undefined;
     'tor/get-address': () => string;
+    'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'user-data/clear': () => InvokeResult;
     'user-data/get-info': () => InvokeResult<{ dir: string }>;
     'udev/install': () => InvokeResult;
@@ -90,7 +90,7 @@ export interface DesktopApi {
     getHttpReceiverAddress: DesktopApiInvoke<'server/request-address'>;
     // Tor
     getTorStatus: DesktopApiSend<'tor/get-status'>;
-    toggleTor: DesktopApiSend<'tor/toggle'>;
+    toggleTor: DesktopApiInvoke<'tor/toggle'>;
     // Store
     clearStore: DesktopApiSend<'store/clear'>;
     clearUserData: DesktopApiInvoke<'user-data/clear'>;
