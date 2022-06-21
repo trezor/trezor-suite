@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite-components';
-import { ActionItem } from './ActionItem';
+import { ActionItem, IndicatorStatus } from './ActionItem';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -12,11 +12,11 @@ const Wrapper = styled.div`
     margin-left: 8px;
 `;
 
-interface TorProps {
-    isActive?: boolean;
+interface NavTorProps {
+    indicator?: IndicatorStatus;
 }
 
-export const NavTor = ({ isActive }: TorProps) => {
+export const NavTor = ({ indicator }: NavTorProps) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -26,7 +26,7 @@ export const NavTor = ({ isActive }: TorProps) => {
             <ActionItem
                 label={<Translation id="TR_TOR" />}
                 icon="TOR"
-                indicator={isActive ? 'check' : undefined}
+                indicator={indicator}
                 onClick={() => goto('settings-index', { anchor: SettingsAnchor.Tor })}
             />
         </Wrapper>

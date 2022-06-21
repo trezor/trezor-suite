@@ -3,6 +3,8 @@ import colors, { THEME } from './config/colors';
 export * as variables from './config/variables';
 
 export * as types from './support/types';
+export * from './support/ThemeProvider';
+export * from './support/types';
 
 export * from './utils/hooks';
 
@@ -33,17 +35,15 @@ export * from './components/logos/CoinLogo';
 export * from './components/logos/TrezorLogo';
 export * from './components/loaders/Loader';
 export * from './components/loaders/Progress';
+export * from './components/loaders/FluidSpinner';
 export * from './components/loaders/LoadingContent';
 export * from './components/Tooltip';
 export * from './components/Timerange';
 export * from './components/Truncate';
 export * from './components/form/SelectBar';
-export * from './support/ThemeProvider';
-
 export * from './components/HoverAnimation';
 export * from './components/Fade';
-export * from './constants/keyboardEvents';
 
-export * from './support/types';
+export * from './constants/keyboardEvents';
 
 export { colors, THEME };
