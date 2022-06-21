@@ -87,8 +87,11 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
 
         // Tor
         getTorStatus: () => ipcRenderer.send('tor/get-status'),
-        toggleTor: start => {
-            if (validation.isPrimitive('boolean', start)) ipcRenderer.send('tor/toggle', start);
+        toggleTor: shouldEnableTor => {
+            if (validation.isPrimitive('boolean', shouldEnableTor)) {
+                return ipcRenderer.invoke('tor/toggle', shouldEnableTor);
+            }
+            return Promise.resolve({ success: false, error: 'invalid params' });
         },
 
         // Store
