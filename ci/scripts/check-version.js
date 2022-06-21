@@ -1,28 +1,60 @@
+/* eslint-disable camelcase */
+
+const child_process = require('child_process');
 const semver = require('semver');
-const packageJSON = require('../package.json');
+const fs = require('fs');
+const path = require('path');
 
 const args = process.argv.slice(2);
 
-if (args.length < 2)
+if (args.length < 3)
     throw new Error(
-        'Version check script requires 2 parameters: current npm version and branch name',
+        'Version check script requires 3 parameters: current npm version, branch name and dist tag (beta | latest)',
     );
 
-const [npmVersion, branch] = args;
-const PRODUCTION = ['npm-release'];
+const [packageName, branch, distTag] = args;
 
+if (!['latest', 'beta'].includes(distTag)) {
+    throw new Error('distTag (3rd parameter) must be either "beta" or "latest"');
+}
+
+const ROOT = path.join(__dirname, '..', '..');
+const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
+
+// read package version
+const packageJSONRaw = fs.readFileSync(path.join(PACKAGE_PATH, 'package.json'), {
+    encoding: 'utf-8',
+});
+const packageJSON = JSON.parse(packageJSONRaw);
 const { version } = packageJSON;
+
+// check remote package
+const npmInfoRaw = child_process.spawnSync('npm', ['view', '--json'], {
+    encoding: 'utf-8',
+    cwd: PACKAGE_PATH,
+}).stdout;
+
+const npmInfo = JSON.parse(npmInfoRaw);
+const npmVersion = npmInfo['dist-tags'][distTag];
+
+const PRODUCTION = ['npm-release'];
 
 if (!semver.valid(version)) throw new Error(`${version} is not a valid version`);
 
 if (PRODUCTION.find(b => branch.startsWith(b))) {
-    if (semver.prerelease(version)) throw new Error(`${version} is a prerelease version`);
+    if (semver.prerelease(version)) {
+        throw new Error(`${version} is a prerelease version`);
+    }
 } else {
     const pre = semver.prerelease(version);
-    if (!pre) throw new Error(`${version} is not a prerelease version`);
-    if (pre[0] !== 'beta')
+    if (!pre) {
+        throw new Error(`${version} is not a prerelease version`);
+    }
+    if (pre[0] !== 'beta') {
         throw new Error(`${version} prerelease version should contain "-beta" suffix`);
+    }
 }
 
-if (!semver.gt(version, npmVersion))
+if (!semver.gt(version, npmVersion)) {
     throw new Error(`${version} is the same or lower than the npm registry version ${npmVersion}`);
+}

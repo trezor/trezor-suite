@@ -1,3 +1,25 @@
+.packages_matrix: &packages_matrix
+  parallel:
+    matrix:
+      - PACKAGE:
+          [
+            "blockchain-link",
+            "components",
+            "connect-common",
+            "transport",
+            "utils",
+            "utxo-lib",
+            "connect-plugin-stellar",
+            "connect",
+            "connect-web",
+            "connect-common",
+          ]
+
+.packages_matrix_connect: &packages_matrix_connect
+  parallel:
+    matrix:
+      - PACKAGE: ["connect", "connect-web"]
+
 .npm_registry_beta_rules: &npm_registry_beta_rules
   except:
     - codesing
@@ -5,87 +27,14 @@
     - schedules
     - /^release\//
 
-# npm beta packages deploy to npm registry
-.npm_beta_deploy_rules: &npm_beta_deploy_rules
-  stage: deploy npm
-  when: manual
-  <<: *npm_registry_beta_rules
-  dependencies:
-    - install
-  tags:
-    - deploy
-  before_script:
-    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-  after_script:
-    - rm ~/.npmrc
-
-beta blockchain-link deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/blockchain-link version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish --tag beta"
-
-beta components deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/components version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/components && npm publish --tag beta"
-
-beta connect-common deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-common version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/connect-common && npm publish --tag beta"
-
-beta transport deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/transport version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/transport && npm publish --tag beta"
-
-beta utils deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/utils version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/utils && npm publish --tag beta"
-
-beta utxo-lib deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/utxo-lib version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish --tag beta"
-
-beta connect deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/connect && npm publish --tag beta"
-
-beta connect-web deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-web version --tag beta) && node ./ci/scripts/check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/connect-web && npm publish --tag beta"
-
-beta connect-plugin-stellar deploy npm:
-  <<: *npm_beta_deploy_rules
-  script:
-    - nix-shell --run "REMOTE_VERSION=\$(npm show @trezor/connect-plugin-stellar version --tag beta) && node ./ci/scripts/ci-check-version \$REMOTE_VERSION $CI_COMMIT_BRANCH"
-    - nix-shell --run "yarn && cd ./packages/connect-plugin-stellar && npm publish --tag beta"
-
-# npm packages deploy to npm registry
-
 .npm_registry_release_rules: &npm_registry_release_rules
-  refs:
-    - codesing
-    - /^npm-release\//
+  only:
+    refs:
+      - codesing
+      - /^npm-release\//
 
-# connect deploy to npm available only from branch release/connect-v9
-.npm_registry_release_connect_rules: &npm_registry_release_connect_rules
-  refs:
-    - release/connect-v9
-
-.npm_deploy_rules: &npm_deploy_rules
+# npm beta packages deploy to npm registry
+.deploy npm base:
   stage: deploy npm
   when: manual
   dependencies:
@@ -93,71 +42,34 @@ beta connect-plugin-stellar deploy npm:
   tags:
     - deploy
   before_script:
+    - nix-shell --run "yarn install --pure-lockfile --cache-folder .yarn --prefer-offline"
     - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
   after_script:
     - rm ~/.npmrc
 
-blockchain-link deploy npm:
-  only:
-    <<: *npm_registry_release_rules
-  <<: *npm_deploy_rules
+beta deploy npm:
+  extends: .deploy npm base
+  <<: *npm_registry_beta_rules
+  <<: *packages_matrix
   script:
-    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish"
+    - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH beta"
+    - nix-shell --run "yarn && cd ./packages/$PACKAGE && npm publish --tag beta"
 
-components deploy npm:
-  only:
-    <<: *npm_registry_release_rules
-  <<: *npm_deploy_rules
+deploy npm:
+  extends: .deploy npm base
+  <<: *npm_registry_release_rules
+  <<: *packages_matrix
   script:
-    - nix-shell --run "yarn && cd ./packages/components && npm publish"
+    - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH latest"
+    - nix-shell --run "yarn && cd ./packages/${PACKAGE} && npm publish"
 
-connect-common deploy npm:
+deploy npm connect:
+  extends: .deploy npm base
   only:
-    <<: *npm_registry_release_rules
-  <<: *npm_deploy_rules
+    refs:
+      - release/connect-v9
+  <<: *packages_matrix_connect
   script:
-    - nix-shell --run "yarn && cd ./packages/connect-common && npm publish"
-
-transport deploy npm:
-  only:
-    <<: *npm_registry_release_rules
-  <<: *npm_deploy_rules
-  script:
-    - nix-shell --run "yarn && cd ./packages/transport && npm publish"
-
-utils deploy npm:
-  only:
-    <<: *npm_registry_release_rules
-  <<: *npm_deploy_rules
-  script:
-    - nix-shell --run "yarn && cd ./packages/utils && npm publish"
-
-utxo-lib deploy npm:
-  only:
-    <<: *npm_registry_release_rules
-  <<: *npm_deploy_rules
-  script:
-    - nix-shell --run "yarn && cd ./packages/utxo-lib && npm publish"
-
-# releases trezor-connect to npm registry
-connect deploy npm:
-  only:
-    <<: *npm_registry_release_connect_rules
-  <<: *npm_deploy_rules
-  script:
-    - nix-shell --run "yarn && cd ./packages/connect && npm publish"
-
-# releases trezor-connect to npm registry
-connect-web deploy npm:
-  only:
-    <<: *npm_registry_release_connect_rules
-  <<: *npm_deploy_rules
-  script:
-    - nix-shell --run "yarn && cd ./packages/connect-web && npm publish"
-
-connect-plugin-stellar deploy npm:
-  only:
-    <<: *npm_registry_release_rules
-  <<: *npm_deploy_rules
-  script:
-    - nix-shell --run "yarn && cd ./packages/connect-plugin-stellar && npm publish"
+    # todo: consider this. might not be needed, it is run in github.
+    # - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH latest"
+    - nix-shell --run "cd ./packages/${PACKAGE} && npm publish"

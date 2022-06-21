@@ -22,5 +22,15 @@ jobs:
       - uses: actions/setup-node@v3
       - run: |
           yarn install
-          REMOTE_VERSION=$(npm show trezor-connect version)
-          node ci/scripts/check-version.js $REMOTE_VERSION npm-release
+          node ci/scripts/check-version.js connect npm-release latest
+
+  dependencies_check:
+    name: Check connect dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - run: |
+          yarn install
+          node ci/scripts/check-npm-dependencies connect
+          node ci/scripts/check-npm-dependencies connect-web
