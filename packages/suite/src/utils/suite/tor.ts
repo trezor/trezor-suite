@@ -31,11 +31,11 @@ export const toTorUrl = (url: string) => {
     return torUrl;
 };
 
-export const isTorDomain = (domain: string) => domain.endsWith('.onion');
+export const getIsTorDomain = (domain: string) => domain.endsWith('.onion');
 
 export const isOnionUrl = (url: string) => {
     const hostname = parseHostname(url);
-    return !!hostname && isTorDomain(hostname);
+    return !!hostname && getIsTorDomain(hostname);
 };
 
 export const baseFetch = window.fetch;

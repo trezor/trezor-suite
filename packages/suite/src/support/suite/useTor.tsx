@@ -1,12 +1,7 @@
 import { useEffect } from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { useActions, useSelector } from '@suite-hooks';
-import {
-    baseFetch,
-    getIsTorEnabled,
-    isTorDomain as getIsTorDomain,
-    torFetch,
-} from '@suite-utils/tor';
+import { baseFetch, getIsTorEnabled, getIsTorDomain, torFetch } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { isWeb, isDesktop, getLocationHostname } from '@suite-utils/env';
 import { TorStatus } from '@suite-reducers/suiteReducer';
