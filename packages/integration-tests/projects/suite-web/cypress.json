@@ -4,7 +4,7 @@
     "downloadsFolder": "./downloads",
     "pluginsFile": "./plugins/index.js",
     "supportFile": "./support/index.ts",
-    "defaultCommandTimeout": 10000,
+    "defaultCommandTimeout": 20000,
     "screenshotsFolder": "./screenshots",
     "videosFolder": "./videos",
     "video": true,
