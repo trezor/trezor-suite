@@ -36,3 +36,13 @@ export const isOnionUrl = (url: string) => {
     const hostname = parseHostname(url);
     return !!hostname && isTorDomain(hostname);
 };
+
+export const baseFetch = window.fetch;
+
+export const torFetch = (input: RequestInfo, init?: RequestInit | undefined) => {
+    if (typeof input === 'string') {
+        input = toTorUrl(input);
+    }
+
+    return baseFetch(input, init);
+};

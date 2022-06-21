@@ -2,9 +2,10 @@ import React from 'react';
 import { FormattedMessage, MessageDescriptor } from 'react-intl';
 import messages from '@suite/support/messages';
 
+export type TranslationKey = keyof typeof messages;
 interface TooltipProps {
     isNested?: boolean;
-    messageId: keyof typeof messages;
+    messageId: TranslationKey;
     children: any;
 }
 
@@ -20,7 +21,7 @@ type PrimitiveType = string | number | boolean | Date | null | undefined;
 // eslint-disable-next-line @typescript-eslint/ban-types
 type FormatXMLElementFn = (...args: any[]) => string | object;
 export interface ExtendedMessageDescriptor extends MessageDescriptor {
-    id: keyof typeof messages;
+    id: TranslationKey;
     values?: {
         [key: string]:
             | PrimitiveType
