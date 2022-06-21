@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Translation } from '@suite-components';
 import { Box } from '@onboarding-components';
 import styled from 'styled-components';
@@ -39,14 +39,16 @@ interface Props {
 }
 
 const AdvancedSetup = ({ children }: Props) => {
+    const torStatus = useSelector(state => state.suite.torStatus);
     const [torOpen, setTorOpen] = useState(false);
+
     const theme = useTheme();
 
-    const isTorEnabled = useSelector(state => getIsTorEnabled(state.suite.torStatus));
-
-    const toggleTor = () => {
+    const toggleTor = useCallback(() => {
         setTorOpen(!torOpen);
-    };
+    }, [torOpen]);
+
+    const isTorEnabled = getIsTorEnabled(torStatus);
 
     return (
         <AdvancedSetupWrapper>
@@ -75,7 +77,7 @@ const AdvancedSetup = ({ children }: Props) => {
                         }
                         onToggle={toggleTor}
                     >
-                        <Tor tor={isTorEnabled} />
+                        <Tor torStatus={torStatus} />
                     </Box>
                 )}
             </Boxes>

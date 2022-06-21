@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Input, Button, H3 } from '@trezor/components';
 import { Translation, TooltipSymbol, CollapsibleBox } from '@suite-components';
@@ -71,11 +71,12 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
     const { toggleTor } = useActions({
         toggleTor: toggleTorAction,
     });
+
     const { type, urls, input, changeType, addUrl, removeUrl, save, hasOnlyOnions } =
         useBackendsForm(coin);
     const editable = type !== 'default';
 
-    const [torModalOpen, setTorModalOpen] = React.useState(false);
+    const [torModalOpen, setTorModalOpen] = useState(false);
 
     const onSaveClick = () => {
         if (!isTorEnabled && hasOnlyOnions()) {
@@ -86,104 +87,110 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
         }
     };
 
-    const onTorResult = (result: TorResult) => {
-        setTorModalOpen(false);
+    const onTorResult = async (result: TorResult) => {
         switch (result) {
             case 'enable-tor':
-                toggleTor(true);
+                await toggleTor(true);
+
+                setTorModalOpen(false);
                 save();
                 onCancel();
+
                 break;
             case 'use-defaults':
                 changeType('default');
+                setTorModalOpen(false);
+
             // no default
         }
     };
 
     return (
-        <Wrapper>
-            {torModalOpen && <TorModal onResult={onTorResult} />}
-
-            <Heading>
-                <Translation id="TR_BACKENDS" />
-                <TooltipSymbol
-                    content={
-                        <TooltipContent>
-                            <Translation
-                                id={
-                                    network?.networkType === 'cardano'
-                                        ? 'SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION'
-                                        : 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION'
-                                }
-                            />
-                            <Translation
-                                id="TR_DEFAULT_VALUE"
-                                values={{
-                                    value: defaultUrls.join(', ') ?? '',
-                                }}
-                            />
-                        </TooltipContent>
-                    }
-                />
-            </Heading>
-
-            <BackendTypeSelect network={network} value={type} onChange={changeType} />
-
-            {(editable ? urls : defaultUrls).map(u => {
-                const url = isTorEnabled && !editable ? toTorUrl(u) : u;
-                return (
-                    <BackendInput
-                        key={url}
-                        url={url}
-                        active={url === blockchain[coin]?.url}
-                        onRemove={editable ? () => removeUrl(u) : undefined}
+        <>
+            <Wrapper>
+                <Heading>
+                    <Translation id="TR_BACKENDS" />
+                    <TooltipSymbol
+                        content={
+                            <TooltipContent>
+                                <Translation
+                                    id={
+                                        network?.networkType === 'cardano'
+                                            ? 'SETTINGS_ADV_COIN_BLOCKFROST_DESCRIPTION'
+                                            : 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION'
+                                    }
+                                />
+                                <Translation
+                                    id="TR_DEFAULT_VALUE"
+                                    values={{
+                                        value: defaultUrls.join(', ') ?? '',
+                                    }}
+                                />
+                            </TooltipContent>
+                        }
                     />
-                );
-            })}
+                </Heading>
 
-            {editable && (
-                <Input
-                    type="text"
-                    noTopLabel
-                    name={input.name}
-                    data-test={`@settings/advance/${input.name}`}
-                    placeholder={input.placeholder}
-                    innerRef={input.ref}
-                    inputState={input.error ? 'error' : undefined}
-                    bottomText={<InputError error={input.error} />}
-                />
-            )}
+                <BackendTypeSelect network={network} value={type} onChange={changeType} />
 
-            {editable && (
-                <AddUrlButton
-                    variant="tertiary"
-                    icon="PLUS"
-                    data-test="@settings/advance/button/add"
-                    onClick={() => {
-                        addUrl(input.value);
-                        input.reset();
-                    }}
-                    isDisabled={!!input.error || input.value === ''}
+                {(editable ? urls : defaultUrls).map(u => {
+                    const url = isTorEnabled && !editable ? toTorUrl(u) : u;
+                    return (
+                        <BackendInput
+                            key={url}
+                            url={url}
+                            active={url === blockchain[coin]?.url}
+                            onRemove={editable ? () => removeUrl(u) : undefined}
+                        />
+                    );
+                })}
+
+                {editable && (
+                    <Input
+                        type="text"
+                        noTopLabel
+                        name={input.name}
+                        data-test={`@settings/advance/${input.name}`}
+                        placeholder={input.placeholder}
+                        innerRef={input.ref}
+                        inputState={input.error ? 'error' : undefined}
+                        bottomText={<InputError error={input.error} />}
+                    />
+                )}
+
+                {editable && (
+                    <AddUrlButton
+                        variant="tertiary"
+                        icon="PLUS"
+                        data-test="@settings/advance/button/add"
+                        onClick={() => {
+                            addUrl(input.value);
+                            input.reset();
+                        }}
+                        isDisabled={!!input.error || input.value === ''}
+                    >
+                        <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
+                    </AddUrlButton>
+                )}
+
+                <TransparentCollapsibleBox
+                    variant="large"
+                    heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}
                 >
-                    <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
-                </AddUrlButton>
-            )}
+                    <ConnectionInfo coin={coin} />
+                </TransparentCollapsibleBox>
 
-            <TransparentCollapsibleBox
-                variant="large"
-                heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}
-            >
-                <ConnectionInfo coin={coin} />
-            </TransparentCollapsibleBox>
+                <SaveButton
+                    variant="primary"
+                    onClick={onSaveClick}
+                    isDisabled={!!input.error}
+                    data-test="@settings/advance/button/save"
+                >
+                    <Translation id="TR_CONFIRM" />
+                </SaveButton>
+            </Wrapper>
 
-            <SaveButton
-                variant="primary"
-                onClick={onSaveClick}
-                isDisabled={!!input.error}
-                data-test="@settings/advance/button/save"
-            >
-                <Translation id="TR_CONFIRM" />
-            </SaveButton>
-        </Wrapper>
+            {torModalOpen && <TorModal onResult={onTorResult} />}
+        </>
     );
 };

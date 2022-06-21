@@ -4,7 +4,7 @@ import { Icon } from '../../Icon';
 import { IconType, ButtonVariant, SuiteThemeColors } from '../../../support/types';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
-import FluidSpinner from '../../loaders/FluidSpinner';
+import { FluidSpinner } from '../../loaders/FluidSpinner';
 import { darken } from 'polished';
 
 const getPadding = (variant: ButtonVariant, hasLabel: boolean) => {
@@ -51,6 +51,7 @@ interface WrapperProps {
     variant: ButtonVariant;
     hasLabel: boolean;
     isDisabled: boolean;
+    disabled: boolean;
     isWhite: boolean;
     fullWidth: boolean;
     color: string | undefined;
@@ -72,44 +73,44 @@ const Wrapper = styled.button<WrapperProps>`
     transition: ${props =>
         `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
     color: ${({ variant, isDisabled, theme }) => getColor(variant, isDisabled, theme)};
+    pointer-events: ${({ disabled }) => disabled && 'none'};
 
     ${props =>
         props.variant === 'primary' &&
         css`
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-            background: ${props => props.theme.BG_GREEN};
+            background: ${({ theme }) => theme.BG_GREEN};
 
             &:hover,
             &:focus,
             &:active {
                 /* we use this color only for this case  */
-                background: ${props => props.theme.BG_GREEN_HOVER};
+                background: ${({ theme }) => theme.BG_GREEN_HOVER};
             }
         `}
 
     ${props =>
         props.variant === 'secondary' &&
         css`
-            background: ${props => props.theme.BG_SECONDARY};
+            background: ${({ theme }) => theme.BG_SECONDARY};
 
             &:hover,
             &:focus,
             &:active {
                 /* we use this color only for this case  */
-                background: ${props => props.theme.BG_SECONDARY_HOVER};
+                background: ${({ theme }) => theme.BG_SECONDARY_HOVER};
             }
         `}
 
     ${props =>
         props.variant === 'tertiary' &&
         css`
-            background: ${props => props.theme.BG_GREY_ALT};
+            background: ${({ theme }) => theme.BG_GREY_ALT};
 
-            &:hover,
-            &:active,
-            &:focus {
-                background: ${props =>
-                    darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_GREY_ALT)};
+            :hover,
+            :active,
+            :focus {
+                background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_GREY_ALT)};
             }
         `};
 
@@ -117,31 +118,31 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'tertiary' &&
         props.isWhite &&
         css`
-            background: ${props => props.theme.BG_WHITE};
+            background: ${({ theme }) => theme.BG_WHITE};
         `};
 
     ${props =>
         props.variant === 'danger' &&
         css`
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-            background: ${props => props.theme.BUTTON_RED};
+            background: ${({ theme }) => theme.BUTTON_RED};
 
-            &:hover,
-            &:active,
-            &:focus {
-                background: ${props => props.theme.BUTTON_RED_HOVER};
+            :hover,
+            :active,
+            :focus {
+                background: ${({ theme }) => theme.BUTTON_RED_HOVER};
             }
         `}
 
     ${props =>
         props.isDisabled &&
         css`
-            background: ${props => props.theme.BG_GREY};
+            background: ${({ theme }) => theme.BG_GREY};
 
-            &:hover,
-            &:active,
-            &:focus {
-                background: ${props => props.theme.BG_GREY};
+            :hover,
+            :active,
+            :focus {
+                background: ${({ theme }) => theme.BG_GREY};
             }
         `}
 

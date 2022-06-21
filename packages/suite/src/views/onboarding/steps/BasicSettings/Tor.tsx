@@ -4,22 +4,22 @@ import { variables, Switch } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { toggleTor as toggleTorAction } from '@suite-actions/suiteActions';
+import { getIsTorEnabled, getIsTorLoading } from '@suite-utils/tor';
+import { TorStatus } from '@suite-types';
 
 const TorWrapper = styled.div`
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 3fr 0.5fr;
-    grid-template-rows: 1fr;
-    gap: 9px 54px;
-    padding: 9px 0 0 0;
-    margin: 0 0 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    margin-bottom: 12px;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const Label = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-weight: 500;
-    padding-top: 11px;
 `;
 
 const SwitchWrapper = styled.div`
@@ -29,13 +29,16 @@ const SwitchWrapper = styled.div`
 `;
 
 interface Props {
-    tor: boolean;
+    torStatus: TorStatus;
 }
 
-const Tor = ({ tor }: Props) => {
+const Tor = ({ torStatus }: Props) => {
     const { toggleTor } = useActions({
         toggleTor: toggleTorAction,
     });
+
+    const isTorEnabled = getIsTorEnabled(torStatus);
+    const isTorLoading = getIsTorLoading(torStatus);
 
     return (
         <TorWrapper>
@@ -45,9 +48,10 @@ const Tor = ({ tor }: Props) => {
             <SwitchWrapper>
                 <Switch
                     dataTest="@onboarding/tor-switch"
-                    isChecked={tor}
+                    isChecked={isTorEnabled || torStatus === TorStatus.Enabling}
+                    isDisabled={isTorLoading}
                     onChange={() => {
-                        toggleTor(!tor);
+                        toggleTor(!isTorEnabled);
                     }}
                 />
             </SwitchWrapper>
