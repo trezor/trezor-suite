@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../suite-native-navigation" },
+        { "path": "../suite-native-atoms" },
+        { "path": "../styles" }
+    ]
+}

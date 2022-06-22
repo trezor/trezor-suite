@@ -1,37 +1,30 @@
 import React from 'react';
-import { Box, Button, Text } from '@suite-native/atoms';
-import { View } from 'react-native';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { SettingsStackRoutes, SettingsStackParamList } from '../navigation/routes';
-import { StackProps } from '@suite-native/navigation';
 
-const settingsScreenStyle = prepareNativeStyle(() => ({
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { VStack } from '@suite-native/atoms';
+
+import { ApplicationSettings } from '../components/ApplicationSettings';
+import { DeviceSettings } from '../components/DeviceSettings';
+import { CoinsSettings } from '../components/CoinsSettings';
+import { DeviceActionButtons } from '../components/DeviceActionButtons';
+import { Screen } from '@suite-native/navigation';
+
+const settingsSectionsStyle = prepareNativeStyle(utils => ({
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    padding: utils.spacings.medium,
 }));
 
-export const SettingsScreen = ({
-    navigation,
-}: StackProps<SettingsStackParamList, SettingsStackRoutes.Settings>) => {
+export const SettingsScreen = () => {
     const { applyStyle } = useNativeStyles();
-
     return (
-        <View style={[applyStyle(settingsScreenStyle)]}>
-            <Text>Settings content</Text>
-            <Box marginVertical="medium">
-                <Button
-                    onPress={() =>
-                        navigation.navigate(SettingsStackRoutes.SettingsDetail, {
-                            message: 'this is detail',
-                        })
-                    }
-                    size="medium"
-                    colorScheme="primary"
-                >
-                    Show detail
-                </Button>
-            </Box>
-        </View>
+        <Screen>
+            <DeviceActionButtons />
+            <VStack spacing="xxl" style={applyStyle(settingsSectionsStyle)}>
+                <ApplicationSettings />
+                <DeviceSettings />
+                <CoinsSettings />
+            </VStack>
+        </Screen>
     );
 };

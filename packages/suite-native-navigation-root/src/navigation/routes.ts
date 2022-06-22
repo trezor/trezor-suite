@@ -1,9 +1,11 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-import { SettingsStackParamList } from '@suite-native/settings';
+
+import { HomeStackParamList } from '@suite-native/home';
 import { TabsOption } from '@suite-native/navigation';
+import { SettingsStackParamList } from '@suite-native/settings';
 
 export enum RouteTabs {
-    Home = 'Home',
+    HomeStack = 'HomeStack',
     Accounts = 'Accounts',
     Action = 'Action',
     Prices = 'Prices',
@@ -11,7 +13,7 @@ export enum RouteTabs {
 }
 
 export type RootTabsParamList = {
-    [RouteTabs.Home]: undefined;
+    [RouteTabs.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [RouteTabs.Accounts]: undefined;
     [RouteTabs.Action]: undefined;
     [RouteTabs.Prices]: undefined;
@@ -19,7 +21,7 @@ export type RootTabsParamList = {
 };
 
 export const rootTabsOptions: TabsOption = {
-    [RouteTabs.Home]: {
+    [RouteTabs.HomeStack]: {
         iconName: 'home',
     },
     [RouteTabs.Accounts]: {
