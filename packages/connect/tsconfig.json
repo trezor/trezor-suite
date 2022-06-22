@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../blockchain-link" },
+        { "path": "../connect-common" },
         { "path": "../transport" },
         { "path": "../utils" },
         { "path": "../utxo-lib" }
