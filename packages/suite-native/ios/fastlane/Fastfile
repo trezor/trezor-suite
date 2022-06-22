@@ -1,30 +1,16 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+skip_docs
 
 # iOS Specific Constants
-IOS_APP_ID = 'org.reactjs.native.example.TrezorSuite'.freeze
-IOS_PROJECT = "TrezorSuite.xcodeproj"
-IOS_PROJECT_WORKSPACE = "TrezorSuite.xcworkspace"
-IOS_PROJECT_SCHEME = "TrezorSuite"
+IOS_PROJECT = "TrezorSuite.xcodeproj".freeze
+IOS_PROJECT_WORKSPACE = "TrezorSuite.xcworkspace".freeze
+IOS_PROJECT_SCHEME = "TrezorSuite".freeze
 
 platform :ios do
 
   desc "iOS: Increments internal build number and version number"
-  private_lane :increase_ios_version do
+  private_lane :bump_ios_version do
     previous_build_number = latest_testflight_build_number(
-      app_identifier: IOS_APP_ID
+      app_identifier: APP_ID
     )
 
     increment_build_number(
@@ -43,9 +29,24 @@ platform :ios do
     # cert
     # Connect the provisioning profile.
     # sigh(force: true)
-    increase_ios_version
+    bump_ios_version
 
     build_app(workspace: IOS_PROJECT_WORKSPACE, scheme: IOS_PROJECT_SCHEME)
     upload_to_testflight
+  end
+
+  after_all do |lane|
+    # This block is called, only if the executed lane was successful
+
+    # slack(
+    #   message: "Successfully deployed new App Update."
+    # )
+  end
+
+  error do |lane, exception|
+    # slack(
+    #   message: exception.message,
+    #   success: false
+    # )
   end
 end

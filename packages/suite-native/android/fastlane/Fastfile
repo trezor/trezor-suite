@@ -1,45 +1,30 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+skip_docs
 
 # Paths
 APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
-JSON_KEY_FILE_PATH = File.join(ANDROID_PATH, 'upload-key.json').freeze
-
-# Android Specific Constants
-APP_ID = 'io.trezor.suite'.freeze
+UPLOAD_KEY_FILE_PATH = ENV['UPLOAD_KEY_FILE_PATH']
 
 platform :android do
 
   desc "Android: Increments internal build number and version number"
-  private_lane :bump_build_number do
+  private_lane :bump_play_version do
     previous_build_number = google_play_track_version_codes(
       package_name: APP_ID,
       track: "internal",
-      json_key: JSON_KEY_FILE_PATH,
+      json_key: UPLOAD_KEY_FILE_PATH,
     )[0]
 
     android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
   end
 
-  private_lane :increment_firebase_version do
+  private_lane :bump_firebase_version do
     latest_release = firebase_app_distribution_get_latest_release(
       app: ANDROID_FIREBASE_APP_ID,
-      service_credentials_file: JSON_KEY_FILE_PATH,
+      service_credentials_file: UPLOAD_KEY_FILE_PATH,
     )
 
+    # when there are no Firebase releases yet
     unless latest_release.nil?
       android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: latest_release[:buildVersion].to_i + 1)
     end
@@ -51,15 +36,15 @@ platform :android do
     gradle(task: "test", project_dir: ANDROID_PATH)
   end
 
-  desc "Build and upload the app to play Store for an internal testing release."
-  lane :internal do |options|
+  desc "Build and upload the app (release build) to play Store for an internal testing release."
+  lane :releaseInternal do |options|
     gradle(task: 'clean', project_dir: ANDROID_PATH)
 
-    bump_build_number
+    bump_play_version
 
     gradle(
       task: 'bundle',
-      flavor: 'QaDevelop',
+      flavor: 'prod',
       build_type: 'Release',
       project_dir: ANDROID_PATH
     )
@@ -77,7 +62,7 @@ platform :android do
   lane :develop do |options|
     gradle(task: 'clean', project_dir: ANDROID_PATH)
 
-    increment_firebase_version
+    bump_firebase_version
 
     gradle(
       task: 'assemble',
@@ -102,10 +87,25 @@ platform :android do
     firebase_app_distribution(
         app: ANDROID_FIREBASE_APP_ID,
         apk_path: apk_path,
-        service_credentials_file: JSON_KEY_FILE_PATH,
+        service_credentials_file: UPLOAD_KEY_FILE_PATH,
         release_notes: "#{release_note}",
         groups: "develop-testers",
         debug: true
     )
+  end
+
+  after_all do |lane|
+    # This block is called, only if the executed lane was successful
+
+    # slack(
+    #   message: "Successfully deployed new App Update."
+    # )
+  end
+
+  error do |lane, exception|
+    # slack(
+    #   message: exception.message,
+    #   success: false
+    # )
   end
 end

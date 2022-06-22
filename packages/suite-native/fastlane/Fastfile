@@ -6,11 +6,13 @@ SUITE_NATIVE_ROOT_PATH = File.expand_path('../', Dir.pwd).freeze
 
 # Android project
 ANDROID_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'android').freeze
-ANDROID_FIREBASE_APP_ID = "1:191883890128:android:625bcdab76b3b3a644bdd5"
+ANDROID_FIREBASE_APP_ID = ENV['FIREBASE_APP_ID']
 
 # iOS project
 IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
 # this should be the folder name under `ios` for your project
+
+APP_ID = 'io.trezor.suite'.freeze
 
 # Retrieve version of Suite Native app in package.json
 PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze

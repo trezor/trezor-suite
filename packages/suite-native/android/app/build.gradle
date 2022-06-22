@@ -235,12 +235,10 @@ android {
             keyPassword 'android'
         }
         release {
-            if (project.hasProperty('TREZOR_UPLOAD_STORE_FILE')) {
-                storeFile file(TREZOR_UPLOAD_STORE_FILE)
-                storePassword TREZOR_UPLOAD_STORE_PASSWORD
-                keyAlias TREZOR_UPLOAD_KEY_ALIAS
-                keyPassword TREZOR_UPLOAD_KEY_PASSWORD
-            }
+            storeFile file(System.getenv("TREZOR_UPLOAD_STORE_FILE"))
+            storePassword System.getenv("TREZOR_UPLOAD_STORE_PASSWORD")
+            keyAlias System.getenv("TREZOR_UPLOAD_KEY_ALIAS")
+            keyPassword System.getenv("TREZOR_UPLOAD_KEY_PASSWORD")
         }
     }
     buildTypes {
