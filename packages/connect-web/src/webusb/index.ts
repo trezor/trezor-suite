@@ -3,28 +3,14 @@
 import { config } from '@trezor/connect/lib/data/config';
 
 // handle message received from connect.js
-const handleMessage = (event: MessageEvent) => {
-    if (!event.data) return;
-    const { data } = event;
-
+const onload = () => {
     const exists = document.getElementsByTagName('button');
     if (exists && exists.length > 0) {
         return;
     }
 
     const button = document.createElement('button');
-
-    if (typeof data.style === 'string') {
-        const css: { [k: string]: string } = JSON.parse(data.style);
-        Object.keys(css).forEach(key => {
-            if (Object.prototype.hasOwnProperty.call(button.style, key)) {
-                button.style.setProperty(key, css[key]);
-            }
-        });
-    } else {
-        button.className = 'default';
-    }
-
+    button.className = 'default';
     button.onclick = async () => {
         const { usb } = navigator;
         if (usb) {
@@ -41,4 +27,4 @@ const handleMessage = (event: MessageEvent) => {
     }
 };
 
-window.addEventListener('message', handleMessage);
+window.addEventListener('load', onload);

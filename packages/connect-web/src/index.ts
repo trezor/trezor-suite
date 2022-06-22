@@ -254,7 +254,7 @@ const uiResponse = (response: UiResponseEvent) => {
 };
 
 const renderWebUSBButton = (className?: string) => {
-    webUSBButton(className, _settings.webusbSrc, iframe.origin);
+    webUSBButton(className, _settings.webusbSrc);
 };
 
 const customMessage = async (params: any) => {
