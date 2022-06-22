@@ -33,14 +33,14 @@
         "update:protobuf": "./scripts/protobuf-build.sh"
     },
     "devDependencies": {
-        "@types/bytebuffer": "^5.0.42",
-        "@types/w3c-web-usb": "^1.0.5"
+        "@types/bytebuffer": "^5.0.43",
+        "@types/w3c-web-usb": "^1.0.6"
     },
     "dependencies": {
         "@trezor/utils": "^9.0.2",
         "bytebuffer": "^5.0.1",
         "json-stable-stringify": "^1.0.1",
         "long": "^4.0.0",
-        "protobufjs": "^6.11.2"
+        "protobufjs": "^6.11.3"
     }
 }
