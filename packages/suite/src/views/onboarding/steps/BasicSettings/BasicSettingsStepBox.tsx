@@ -16,7 +16,7 @@ const StyledCoinsGroup = styled(CoinsGroup)`
     margin-top: 30px;
 `;
 
-const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
+export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
 
     // BTC should be enabled by default
@@ -41,5 +41,3 @@ const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
         </OnboardingStepBox>
     );
 };
-
-export default BasicSettingsStepBox;

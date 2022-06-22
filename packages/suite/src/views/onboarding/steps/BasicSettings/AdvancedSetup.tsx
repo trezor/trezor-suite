@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
+import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { Box } from '@onboarding-components';
-import styled from 'styled-components';
 import { Icon, useTheme } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import { isDesktop, isWeb } from '@suite-utils/env';
-import Tor from './Tor';
+import { TorSection } from './TorSection';
 import { getIsTorEnabled } from '@suite-utils/tor';
 
 const AdvancedSetupWrapper = styled.div`
@@ -19,7 +19,8 @@ const Boxes = styled.div`
     flex-direction: column;
     text-align: left;
     margin-bottom: 36px;
-    & > * + * {
+
+    > * + * {
         margin-top: 24px;
     }
 `;
@@ -34,11 +35,11 @@ const IconWrapper = styled.div`
     margin: 0 28px 0 0;
 `;
 
-interface Props {
+interface AdvancedSetupProps {
     children: React.ReactNode;
 }
 
-const AdvancedSetup = ({ children }: Props) => {
+export const AdvancedSetup = ({ children }: AdvancedSetupProps) => {
     const torStatus = useSelector(state => state.suite.torStatus);
     const [torOpen, setTorOpen] = useState(false);
 
@@ -77,7 +78,7 @@ const AdvancedSetup = ({ children }: Props) => {
                         }
                         onToggle={toggleTor}
                     >
-                        <Tor torStatus={torStatus} />
+                        <TorSection torStatus={torStatus} />
                     </Box>
                 )}
             </Boxes>
@@ -85,5 +86,3 @@ const AdvancedSetup = ({ children }: Props) => {
         </AdvancedSetupWrapper>
     );
 };
-
-export default AdvancedSetup;
