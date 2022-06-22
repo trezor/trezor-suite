@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { TextInput } from 'react-native';
 import {
     Text,
     Box,

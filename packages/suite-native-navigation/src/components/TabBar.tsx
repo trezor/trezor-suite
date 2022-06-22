@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TabBarItem } from './TabBarItem';
-import { TabsOption } from './types';
+import { TabsOption } from '../types';
 
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOption;

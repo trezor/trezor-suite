@@ -41,7 +41,7 @@ const dummyCoins: { title: string; iconName: CryptoIconName; description?: strin
         title: 'DigiByte',
         iconName: 'ltc',
     },
-] as const;
+];
 
 export const CoinsSettings = () => {
     const handleCoinSelect = () => {
