@@ -66,13 +66,13 @@ platform :android do
 
     gradle(
       task: 'assemble',
-      flavor: 'QaDevelop',
+      flavor: 'FirebaseDevelop',
       build_type: 'Release',
       project_dir: ANDROID_PATH
     )
 
     # find apk path
-    output_path = File.join(ANDROID_PATH, 'app/build/outputs/apk/qaDevelop/release/').freeze
+    output_path = File.join(ANDROID_PATH, 'app/build/outputs/apk/firebaseDevelop/release/').freeze
     output_json_path = output_path + "output-metadata.json"
     build_output = load_json(json_path: output_json_path)
     elements = build_output["elements"][0]

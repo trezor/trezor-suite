@@ -1,5 +1,8 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.google.gms.google-services'
+
+if (getGradle().getStartParameter().getTaskRequests().toString().contains("firebaseDevelop")){
+    apply plugin: 'com.google.gms.google-services'
+}
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
@@ -144,8 +147,9 @@ android {
         applicationId "io.trezor.suite"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        // defaults - correct versions are managed by fastlane while building the app
         versionCode 1
-        versionName "22.7.0"
+        versionName "1.0.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
@@ -235,10 +239,12 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file(System.getenv("TREZOR_UPLOAD_STORE_FILE"))
-            storePassword System.getenv("TREZOR_UPLOAD_STORE_PASSWORD")
-            keyAlias System.getenv("TREZOR_UPLOAD_KEY_ALIAS")
-            keyPassword System.getenv("TREZOR_UPLOAD_KEY_PASSWORD")
+            if (System.getenv("TREZOR_UPLOAD_STORE_FILE")) {
+                storeFile file(System.getenv("TREZOR_UPLOAD_STORE_FILE"))
+                storePassword System.getenv("TREZOR_UPLOAD_STORE_PASSWORD")
+                keyAlias System.getenv("TREZOR_UPLOAD_KEY_ALIAS")
+                keyPassword System.getenv("TREZOR_UPLOAD_KEY_PASSWORD")
+            }
         }
     }
     buildTypes {
@@ -257,10 +263,10 @@ android {
         dev {
             applicationIdSuffix '.debug'
         }
-        qaDevelop {
+        firebaseDevelop {
             applicationIdSuffix '.develop'
         }
-        qaStaging {
+        firebaseStaging {
             applicationIdSuffix '.staging'
         }
         prod {
@@ -288,7 +294,7 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
-    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    firebaseDevelopImplementation platform('com.google.firebase:firebase-bom:30.1.0')
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules

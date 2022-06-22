@@ -11,7 +11,7 @@
         "test": "jest",
         "lint": "eslint .",
         "type-check": "tsc -b",
-        "build:android": "cd android && ./gradlew assembleRelease",
+        "build:android": "cd android && ./gradlew assembleDevDebug",
         "pods": "npx pod-install"
     },
     "dependencies": {
