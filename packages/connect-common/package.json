@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-common",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-common",
     "keywords": [
@@ -19,7 +19,6 @@
     "main": "./lib/index.js",
     "files": [
         "lib/",
-        "!lib/storage",
         "files/**/*.json",
         "files/**/*.txt",
         "CHANGELOG.md",
