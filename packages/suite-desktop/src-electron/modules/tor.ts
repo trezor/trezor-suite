@@ -55,12 +55,11 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
         }
 
         if (shouldEnableTor === true) {
-            await tor.start();
-
             setProxy(`socks5://${host}:${port}`);
+            await tor.start();
         } else {
-            await tor.stop();
             setProxy('');
+            await tor.stop();
         }
 
         persistSettings(settings);
