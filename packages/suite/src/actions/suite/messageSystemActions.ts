@@ -74,12 +74,19 @@ const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
                 throw Error('Decoding of config failed');
             }
 
-            const { alg } = decodedJws?.header;
             // Disable eslint rule as object destruction does not work here
             // eslint-disable-next-line prefer-destructuring
             const PUBLIC_KEY = process.env.PUBLIC_KEY;
 
-            const isAuthenticityValid = jws.verify(jwsResponse, alg, PUBLIC_KEY!);
+            // It has to be consistent with algorithm used for signing https://github.com/trezor/trezor-suite/blob/32bf733f3086bec1273caf03dfae1a5bccdbca24/packages/suite-data/src/message-system/scripts/sign-config.ts#L30
+            const algorithm = 'ES256';
+
+            const algorithmInHeader = decodedJws?.header.alg;
+            if (algorithmInHeader !== algorithm) {
+                throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
+            }
+
+            const isAuthenticityValid = jws.verify(jwsResponse, algorithm, PUBLIC_KEY!);
 
             if (!isAuthenticityValid) {
                 throw Error('Config authenticity is invalid');

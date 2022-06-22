@@ -27,7 +27,7 @@ const getConfigJwsSignature = () => {
     const config = fs.readFileSync(CONFIG_PATH, 'utf-8');
 
     const jwsConfig = jws.sign({
-        header: { alg: 'ES256' },
+        header: { alg: 'ES256' }, // Algorithm has to be consistent with the one used for verification https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/messageSystemActions.ts#L82
         payload: config,
         secret: JWS_PRIVATE_KEY,
     });
