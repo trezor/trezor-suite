@@ -14,7 +14,7 @@ const dev: webpack.Configuration = {
     watch: true,
     devtool: 'eval-source-map',
     entry: {
-        index: path.resolve(__dirname, '../src/js/index.tsx'),
+        index: path.resolve(__dirname, '../src/index.tsx'),
     },
     output: {
         filename: '[name].js',

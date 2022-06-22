@@ -6,7 +6,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 const config: webpack.Configuration = {
     mode: 'production',
     entry: {
-        index: path.resolve(__dirname, '../src/js/index.tsx'),
+        index: path.resolve(__dirname, '../src/index.tsx'),
     },
     output: {
         filename: '[name].[hash].js',
