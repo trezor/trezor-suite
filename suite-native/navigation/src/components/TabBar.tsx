@@ -4,7 +4,7 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TabBarItem } from './TabBarItem';
 import { RouteTabs } from '@suite-native/navigation-root';
-import { Box, IconButton, Text } from '@suite-native/atoms';
+import { Box, IconButton } from '@suite-native/atoms';
 import { TabsOption } from '../types';
 
 interface TabBarProps extends BottomTabBarProps {
@@ -27,10 +27,7 @@ const ActionTabItem = () => {
     const { applyStyle } = useNativeStyles();
 
     const actionTabItemStyle = prepareNativeStyle(() => ({
-        position: 'absolute',
-        // top: -13,
-        left: 0,
-        right: 0,
+        marginTop: -40,
         alignItems: 'center',
         justifyContent: 'flex-start',
     }));
