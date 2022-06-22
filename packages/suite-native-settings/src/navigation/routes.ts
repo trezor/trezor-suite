@@ -1,3 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
+
 export enum SettingsStackRoutes {
     Settings = 'Settings',
     SettingsLocalisation = 'SettingsLocalisation',
@@ -11,3 +13,8 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsLabeling]: undefined;
     [SettingsStackRoutes.SettingsAdvanced]: undefined;
 };
+
+export type SettingsScreenProp = StackNavigationProp<
+    SettingsStackParamList,
+    SettingsStackRoutes.Settings
+>;

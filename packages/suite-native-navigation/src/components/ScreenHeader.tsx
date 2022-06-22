@@ -5,7 +5,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
 import { TouchableOpacity } from 'react-native';
 import { Icon } from '@trezor/icons';
-import { ScreenProp } from '@suite-native/navigation';
 
 const iconStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray300,
@@ -23,7 +22,7 @@ const headerStyle = prepareNativeStyle(utils => ({
 
 export const ScreenHeader = () => {
     const { applyStyle } = useNativeStyles();
-    const navigation = useNavigation<ScreenProp>();
+    const navigation = useNavigation();
 
     return (
         <Box style={applyStyle(headerStyle)}>

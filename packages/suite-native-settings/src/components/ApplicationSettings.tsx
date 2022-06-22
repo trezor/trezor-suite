@@ -3,12 +3,11 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { SettingsSection } from './SettingsSection';
 
-import { SettingsStackRoutes } from '../navigation/routes';
+import { SettingsStackRoutes, SettingsScreenProp } from '../navigation/routes';
 import { SettingsSectionItem } from './SettingsSectionItem';
-import { ScreenProp } from '@suite-native/navigation';
 
 export const ApplicationSettings = () => {
-    const navigation = useNavigation<ScreenProp>();
+    const navigation = useNavigation<SettingsScreenProp>();
 
     const handleNavigation = (routeName: SettingsStackRoutes): void => {
         navigation.navigate(routeName);
