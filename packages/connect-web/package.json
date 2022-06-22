@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-web",
-    "version": "9.0.0-beta.3",
+    "version": "9.0.0-beta.4",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-web",
     "description": "High-level javascript interface for Trezor hardware wallet.",
@@ -35,7 +35,7 @@
         "build": "rimraf build && yarn build:inline && yarn build:webextension"
     },
     "dependencies": {
-        "@trezor/connect": "9.0.0-beta.3",
+        "@trezor/connect": "9.0.0-beta.4",
         "@trezor/utils": "^9.0.2",
         "events": "^3.3.0",
         "tslib": "^2.3.1"
