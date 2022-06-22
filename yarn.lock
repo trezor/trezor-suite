@@ -4652,10 +4652,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@trezor/connect-common@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@trezor/connect-common/-/connect-common-0.0.7.tgz#fabe15bbb5e99b4563c9d63ae7ea3165b321198d"
-  integrity sha512-Z4I/LlxUwdiZL9L59rhjZ/x9Hkf+rfLXVgaYpp0AX5INgp9/AGfcLJvYgAuuF7iJ/xLgArXTICbgBq8VxvB+jg==
+"@trezor/connect-common@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@trezor/connect-common/-/connect-common-0.0.8.tgz#949def3db3ddc64f44a6c1bf5f25108296d85f39"
+  integrity sha512-C8TEfYmzLanV9c1yuD77n1aZp+0gWJNBxg8pz2PSfsmaQtLKjiX3UXo+MJHgtGjnVnncK89HtNnus5cOogwYPg==
 
 "@trezor/connect-web@9.0.0-beta.2":
   version "9.0.0-beta.2"
