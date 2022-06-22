@@ -18,7 +18,7 @@
         "@shopify/react-native-skia": "0.1.123",
         "@suite-native/atoms": "*",
         "@suite-native/navigation-root": "*",
-        "@trezor/connect": "9.0.0-beta.3",
+        "@trezor/connect": "9.0.0-beta.4",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "@trezor/transport-native": "*",
