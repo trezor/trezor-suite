@@ -19,6 +19,18 @@ const labelStyle = prepareNativeStyle(utils => ({
     marginBottom: 18,
 }));
 
+const hintStyle = prepareNativeStyle(
+    (_, { error, hint }: Pick<InputWrapperProps, 'error' | 'hint'>) => ({
+        marginTop: 0,
+        extend: {
+            condition: !!error || !!hint,
+            style: {
+                marginTop: 3,
+            },
+        },
+    }),
+);
+
 export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -30,8 +42,10 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
                 </Text>
             )}
             <Box>{children}</Box>
-            {!!error && <Hint variant="error">{error}</Hint>}
-            {!!hint && <Hint>{hint}</Hint>}
+            <Box style={applyStyle(hintStyle, { error, hint })}>
+                {!!error && <Hint variant="error">{error}</Hint>}
+                {!!hint && <Hint>{hint}</Hint>}
+            </Box>
         </Box>
     );
 };

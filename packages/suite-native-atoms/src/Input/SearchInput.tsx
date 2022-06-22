@@ -18,6 +18,7 @@ const inputStyle = prepareNativeStyle(utils => ({
     flex: 1,
     color: utils.colors.gray700,
     marginLeft: utils.spacings.medium,
+    lineHeight: 0,
 }));
 
 const clearIconStyle = prepareNativeStyle(utils => ({
