@@ -2,8 +2,8 @@ import React from 'react';
 import { Translation } from '@suite-components';
 import { OnboardingButtonCta } from '@onboarding-components';
 import { useOnboarding, useSelector } from '@suite-hooks';
-import BasicSettingsStepBox from './BasicSettingsStepBox';
-import AdvancedSetup from './AdvancedSetup';
+import { BasicSettingsStepBox } from './BasicSettingsStepBox';
+import { AdvancedSetup } from './AdvancedSetup';
 import { getIsTorLoading } from '@suite-utils/tor';
 
 const BasicSettings = () => {

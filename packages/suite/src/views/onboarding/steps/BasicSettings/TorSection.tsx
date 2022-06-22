@@ -14,7 +14,7 @@ const TorWrapper = styled.div`
     align-items: center;
     padding-top: 16px;
     margin-bottom: 12px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
 const Label = styled.div`
@@ -28,11 +28,11 @@ const SwitchWrapper = styled.div`
     justify-content: flex-end;
 `;
 
-interface Props {
+interface TorSectionProps {
     torStatus: TorStatus;
 }
 
-const Tor = ({ torStatus }: Props) => {
+export const TorSection = ({ torStatus }: TorSectionProps) => {
     const { toggleTor } = useActions({
         toggleTor: toggleTorAction,
     });
@@ -58,5 +58,3 @@ const Tor = ({ torStatus }: Props) => {
         </TorWrapper>
     );
 };
-
-export default Tor;

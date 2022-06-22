@@ -17,7 +17,8 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     text-align: left;
-    & > * + * {
+
+    > * + * {
         margin-top: 8px;
     }
 `;
@@ -28,7 +29,7 @@ const AddUrlButton = styled(Button)`
 `;
 
 const Heading = styled(H3)`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     margin-bottom: 6px;
 `;
 
@@ -47,11 +48,13 @@ const TransparentCollapsibleBox = styled(CollapsibleBox)`
     background: transparent;
     box-shadow: none;
     margin-top: 16px;
-    & > div:first-child {
+
+    > div:first-child {
         padding: 12px 0;
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
-        &:hover {
-            background-color: ${props => props.theme.BG_LIGHT_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+
+        :hover {
+            background-color: ${({ theme }) => theme.BG_LIGHT_GREY};
         }
     }
 `;
@@ -62,21 +65,20 @@ interface CustomBackendsProps {
 }
 
 export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
-    const { symbol: coin } = network;
-    const defaultUrls = useDefaultUrls(coin);
     const { blockchain, isTorEnabled } = useSelector(state => ({
         blockchain: state.wallet.blockchain,
         isTorEnabled: getIsTorEnabled(state.suite.torStatus),
     }));
+    const [torModalOpen, setTorModalOpen] = useState(false);
+
     const { toggleTor } = useActions({
         toggleTor: toggleTorAction,
     });
 
+    const { symbol: coin } = network;
+
     const { type, urls, input, changeType, addUrl, removeUrl, save, hasOnlyOnions } =
         useBackendsForm(coin);
-    const editable = type !== 'default';
-
-    const [torModalOpen, setTorModalOpen] = useState(false);
 
     const onSaveClick = () => {
         if (!isTorEnabled && hasOnlyOnions()) {
@@ -104,6 +106,9 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
             // no default
         }
     };
+
+    const defaultUrls = useDefaultUrls(coin);
+    const editable = type !== 'default';
 
     return (
         <>

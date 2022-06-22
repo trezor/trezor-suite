@@ -1,29 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
-import { animations } from '../../../config';
+import { animations } from '../../config';
 
-interface Props {
+interface FluidSpinnerProps {
     size: number;
     strokeWidth?: number;
     color?: string;
 }
 
-const Wrapper = styled.div<Props>`
+const Wrapper = styled.div<FluidSpinnerProps>`
     /* https://loading.io/css/ */
     position: relative;
-    width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-    height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
+    width: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
+    height: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
 
     div {
         position: absolute;
         box-sizing: border-box;
-        width: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-        height: ${props => `${props.size}px`}; /* change to 1em to scale based on used font-size */
-        border: ${props => (props.strokeWidth ? `${props.strokeWidth}px` : '1px')} solid transparent; /* change to 0.1em to scale based on used font-size */
+        width: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
+        height: ${({ size }) => `${size}px`}; /* change to 1em to scale based on used font-size */
+        border: ${({ strokeWidth }) => (strokeWidth ? `${strokeWidth}px` : '1px')} solid transparent; /* change to 0.1em to scale based on used font-size */
         border-radius: 50%;
         animation: ${animations.SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         border-color: #fff transparent transparent transparent;
-        border-top-color: ${props => (props.color ? props.color : 'inherit')};
+        border-top-color: ${({ color }) => color || 'inherit'};
         will-change: transform;
     }
 
@@ -40,7 +40,7 @@ const Wrapper = styled.div<Props>`
     }
 `;
 
-export const FluidSpinner = ({ size, strokeWidth, color }: Props) => (
+export const FluidSpinner = ({ size, strokeWidth, color }: FluidSpinnerProps) => (
     <Wrapper size={size} strokeWidth={strokeWidth} color={color}>
         <div />
         <div />

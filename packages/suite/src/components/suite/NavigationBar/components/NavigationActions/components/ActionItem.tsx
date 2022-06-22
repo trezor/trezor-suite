@@ -10,7 +10,7 @@ import {
 } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
-const Wrapper = styled.div<Pick<Props, 'isOpen' | 'marginLeft'>>`
+const Wrapper = styled.div<Pick<ActionItemProps, 'isOpen' | 'marginLeft'>>`
     width: 44px;
     height: 44px;
     display: flex;
@@ -25,18 +25,18 @@ const Wrapper = styled.div<Pick<Props, 'isOpen' | 'marginLeft'>>`
         `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
 `;
 
-const MobileWrapper = styled.div<Pick<Props, 'isActive'>>`
+const MobileWrapper = styled.div<Pick<ActionItemProps, 'isActive'>>`
     display: flex;
     position: relative;
     cursor: pointer;
     align-items: center;
 
     & + & {
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
+        border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 `;
 
-const MobileIconWrapper = styled.div<Pick<Props, 'isActive'>>`
+const MobileIconWrapper = styled.div<Pick<ActionItemProps, 'isActive'>>`
     display: flex;
     position: relative;
     cursor: pointer;
@@ -46,7 +46,7 @@ const MobileIconWrapper = styled.div<Pick<Props, 'isActive'>>`
 
 const Label = styled.span`
     padding: 16px 8px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
@@ -61,7 +61,7 @@ const AlertDotWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     animation: ${FADE_IN} 0.2s ease-out;
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
@@ -75,11 +75,11 @@ const AlertDot = styled.div`
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: ${props => props.theme.TYPE_ORANGE};
+    background: ${({ theme }) => theme.TYPE_ORANGE};
 `;
 
 const Indicator = styled.div`
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -120,12 +120,13 @@ interface IconComponentProps extends CommonProps {
     iconComponent?: never;
 }
 
-type Props = CustomIconComponentProps | IconComponentProps;
+type ActionItemProps = CustomIconComponentProps | IconComponentProps;
 
 // Reason to use forwardRef: We want the user to be able to close Notifications dropdown by clicking somewhere else.
 // In order to achieve that behavior, we need to pass reference to ActionItem
-export const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
-    const theme = useTheme();
+export const ActionItem = React.forwardRef(
+    (props: ActionItemProps, ref: React.Ref<HTMLDivElement>) => {
+        const theme = useTheme();
 
         const iconComponent = useMemo(
             () =>
@@ -165,20 +166,21 @@ export const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDiv
             [props.indicator, iconComponent, theme],
         );
 
-    if (props.isMobileLayout) {
-        return (
-            <MobileWrapper {...props}>
-                <MobileIconWrapper isActive={props.isActive}>{Content}</MobileIconWrapper>
-                <Label>{props.label}</Label>
-            </MobileWrapper>
-        );
-    }
+        if (props.isMobileLayout) {
+            return (
+                <MobileWrapper {...props}>
+                    <MobileIconWrapper isActive={props.isActive}>{Content}</MobileIconWrapper>
+                    <Label>{props.label}</Label>
+                </MobileWrapper>
+            );
+        }
 
-    return (
-        <HoverAnimation isHoverable={!props.isOpen}>
-            <Wrapper isActive={props.isActive} isOpen={props.isOpen} ref={ref} {...props}>
-                {Content}
-            </Wrapper>
-        </HoverAnimation>
-    );
-});
+        return (
+            <HoverAnimation isHoverable={!props.isOpen}>
+                <Wrapper isActive={props.isActive} isOpen={props.isOpen} ref={ref} {...props}>
+                    {Content}
+                </Wrapper>
+            </HoverAnimation>
+        );
+    },
+);
