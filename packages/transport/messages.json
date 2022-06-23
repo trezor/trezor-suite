@@ -1554,6 +1554,12 @@
                 "POLICY_ID": 2
             }
         },
+        "CardanoTxOutputSerializationFormat": {
+            "values": {
+                "ARRAY_LEGACY": 0,
+                "MAP_BABBAGE": 1
+            }
+        },
         "CardanoCertificateType": {
             "values": {
                 "STAKE_REGISTRATION": 0,
@@ -1880,6 +1886,24 @@
                     "rule": "required",
                     "type": "uint32",
                     "id": 18
+                },
+                "has_collateral_return": {
+                    "type": "bool",
+                    "id": 19,
+                    "options": {
+                        "default": false
+                    }
+                },
+                "total_collateral": {
+                    "type": "uint64",
+                    "id": 20
+                },
+                "reference_inputs_count": {
+                    "type": "uint32",
+                    "id": 21,
+                    "options": {
+                        "default": 0
+                    }
                 }
             }
         },
@@ -1920,6 +1944,27 @@
                 "datum_hash": {
                     "type": "bytes",
                     "id": 5
+                },
+                "format": {
+                    "type": "CardanoTxOutputSerializationFormat",
+                    "id": 6,
+                    "options": {
+                        "default": "ARRAY_LEGACY"
+                    }
+                },
+                "inline_datum_size": {
+                    "type": "uint32",
+                    "id": 7,
+                    "options": {
+                        "default": 0
+                    }
+                },
+                "reference_script_size": {
+                    "type": "uint32",
+                    "id": 8,
+                    "options": {
+                        "default": 0
+                    }
                 }
             }
         },
@@ -1951,6 +1996,24 @@
                 "mint_amount": {
                     "type": "sint64",
                     "id": 3
+                }
+            }
+        },
+        "CardanoTxInlineDatumChunk": {
+            "fields": {
+                "data": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "CardanoTxReferenceScriptChunk": {
+            "fields": {
+                "data": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
                 }
             }
         },
@@ -2195,6 +2258,20 @@
                     "options": {
                         "packed": false
                     }
+                }
+            }
+        },
+        "CardanoTxReferenceInput": {
+            "fields": {
+                "prev_hash": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "prev_index": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 2
                 }
             }
         },
@@ -6151,6 +6228,9 @@
                 "MessageType_CardanoTxMint": 332,
                 "MessageType_CardanoTxCollateralInput": 333,
                 "MessageType_CardanoTxRequiredSigner": 334,
+                "MessageType_CardanoTxInlineDatumChunk": 335,
+                "MessageType_CardanoTxReferenceScriptChunk": 336,
+                "MessageType_CardanoTxReferenceInput": 337,
                 "MessageType_RippleGetAddress": 400,
                 "MessageType_RippleAddress": 401,
                 "MessageType_RippleSignTx": 402,

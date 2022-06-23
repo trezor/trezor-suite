@@ -6,6 +6,7 @@ const {
     CardanoNativeScriptHashDisplayFormat,
     CardanoNativeScriptType,
     CardanoPoolRelayType,
+    CardanoTxOutputSerializationFormat,
     CardanoTxSigningMode,
 } = PROTO;
 
@@ -238,6 +239,9 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
                     },
                 ],
                 datumHash: 'aaff00..',
+                format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+                inlineDatum: 'aaff00..',
+                referenceScript: 'aaff00..',
             },
             {
                 addressParameters: {
@@ -259,6 +263,9 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
                     },
                 ],
                 datumHash: 'aaff00..',
+                format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+                inlineDatum: 'aaff00..',
+                referenceScript: 'aaff00..',
             },
         ],
         certificates: [
@@ -347,6 +354,37 @@ export const cardanoSignTransaction = async (api: TrezorConnect) => {
             {
                 keyPath: 'm/44',
                 keyHash: '1af..',
+            },
+        ],
+        collateralReturn: {
+            addressParameters: {
+                addressType: CardanoAddressType.BASE,
+                path: 'm/44',
+                stakingPath: 'm/44',
+                stakingKeyHash: 'aaff00..',
+                certificatePointer: {
+                    blockIndex: 0,
+                    txIndex: 0,
+                    certificateIndex: 0,
+                },
+            },
+            amount: '3003112',
+            tokenBundle: [
+                {
+                    policyId: 'aaff00..',
+                    tokenAmounts: [{ assetNameBytes: 'aaff00..', amount: '3003112' }],
+                },
+            ],
+            datumHash: 'aaff00..',
+            format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+            inlineDatum: 'aaff00..',
+            referenceScript: 'aaff00..',
+        },
+        totalCollateral: '0',
+        referenceInputs: [
+            {
+                prev_hash: '1af..',
+                prev_index: 0,
             },
         ],
         protocolMagic: 0,

@@ -43,3 +43,14 @@ export const transformCollateralInput = (collateralInput: any): CollateralInputW
         path: collateralInput.path ? validatePath(collateralInput.path, 5) : undefined,
     };
 };
+
+export const transformReferenceInput = (referenceInput: any): PROTO.CardanoTxReferenceInput => {
+    validateParams(referenceInput, [
+        { name: 'prev_hash', type: 'string', required: true },
+        { name: 'prev_index', type: 'number', required: true },
+    ]);
+    return {
+        prev_hash: referenceInput.prev_hash,
+        prev_index: referenceInput.prev_index,
+    };
+};

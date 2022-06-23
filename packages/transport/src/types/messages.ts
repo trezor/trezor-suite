@@ -594,6 +594,11 @@ export enum CardanoNativeScriptHashDisplayFormat {
     POLICY_ID = 2,
 }
 
+export enum CardanoTxOutputSerializationFormat {
+    ARRAY_LEGACY = 0,
+    MAP_BABBAGE = 1,
+}
+
 export enum CardanoCertificateType {
     STAKE_REGISTRATION = 0,
     STAKE_DEREGISTRATION = 1,
@@ -712,6 +717,9 @@ export type CardanoSignTxInit = {
     script_data_hash?: string;
     collateral_inputs_count: number;
     required_signers_count: number;
+    has_collateral_return?: boolean;
+    total_collateral?: UintType;
+    reference_inputs_count?: number;
 };
 
 // CardanoTxInput
@@ -727,6 +735,9 @@ export type CardanoTxOutput = {
     amount: UintType;
     asset_groups_count: number;
     datum_hash?: string;
+    format?: CardanoTxOutputSerializationFormat;
+    inline_datum_size?: number;
+    reference_script_size?: number;
 };
 
 // CardanoAssetGroup
@@ -740,6 +751,16 @@ export type CardanoToken = {
     asset_name_bytes: string;
     amount?: UintType;
     mint_amount?: UintType;
+};
+
+// CardanoTxInlineDatumChunk
+export type CardanoTxInlineDatumChunk = {
+    data: string;
+};
+
+// CardanoTxReferenceScriptChunk
+export type CardanoTxReferenceScriptChunk = {
+    data: string;
 };
 
 // CardanoPoolOwner
@@ -824,6 +845,12 @@ export type CardanoTxCollateralInput = {
 export type CardanoTxRequiredSigner = {
     key_hash?: string;
     key_path?: number[];
+};
+
+// CardanoTxReferenceInput
+export type CardanoTxReferenceInput = {
+    prev_hash: string;
+    prev_index: number;
 };
 
 // CardanoTxItemAck
@@ -2189,6 +2216,8 @@ export type MessageType = {
     CardanoTxOutput: CardanoTxOutput;
     CardanoAssetGroup: CardanoAssetGroup;
     CardanoToken: CardanoToken;
+    CardanoTxInlineDatumChunk: CardanoTxInlineDatumChunk;
+    CardanoTxReferenceScriptChunk: CardanoTxReferenceScriptChunk;
     CardanoPoolOwner: CardanoPoolOwner;
     CardanoPoolRelayParameters: CardanoPoolRelayParameters;
     CardanoPoolMetadataType: CardanoPoolMetadataType;
@@ -2200,6 +2229,7 @@ export type MessageType = {
     CardanoTxMint: CardanoTxMint;
     CardanoTxCollateralInput: CardanoTxCollateralInput;
     CardanoTxRequiredSigner: CardanoTxRequiredSigner;
+    CardanoTxReferenceInput: CardanoTxReferenceInput;
     CardanoTxItemAck: CardanoTxItemAck;
     CardanoTxAuxiliaryDataSupplement: CardanoTxAuxiliaryDataSupplement;
     CardanoTxWitnessRequest: CardanoTxWitnessRequest;

@@ -19,19 +19,21 @@ export interface CardanoAssetGroup {
     tokenAmounts: CardanoToken[];
 }
 
-export type CardanoOutput =
+export type CardanoOutput = (
     | {
           addressParameters: CardanoAddressParameters;
-          amount: string;
-          tokenBundle?: CardanoAssetGroup[];
-          datumHash?: string;
       }
     | {
           address: string;
-          amount: string;
-          tokenBundle?: CardanoAssetGroup[];
-          datumHash?: string;
-      };
+      }
+) & {
+    amount: string;
+    tokenBundle?: CardanoAssetGroup[];
+    datumHash?: string;
+    format?: PROTO.CardanoTxOutputSerializationFormat;
+    inlineDatum?: string;
+    referenceScript?: string;
+};
 
 export interface CardanoPoolOwner {
     stakingKeyPath?: string | number[];
@@ -97,6 +99,11 @@ export interface CardanoRequiredSigner {
     keyHash?: string;
 }
 
+export interface CardanoReferenceInput {
+    prev_hash: string;
+    prev_index: number;
+}
+
 export interface CardanoCatalystRegistrationParameters {
     votingPublicKey: string;
     stakingPath: string | number[];
@@ -122,6 +129,9 @@ export interface CardanoSignTransaction {
     scriptDataHash?: string;
     collateralInputs?: CardanoCollateralInput[];
     requiredSigners?: CardanoRequiredSigner[];
+    collateralReturn?: CardanoOutput;
+    totalCollateral?: string;
+    referenceInputs?: CardanoReferenceInput[];
     additionalWitnessRequests?: (string | number[])[];
     protocolMagic: number;
     networkId: number;
