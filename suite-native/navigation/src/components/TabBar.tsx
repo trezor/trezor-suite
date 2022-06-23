@@ -22,7 +22,7 @@ const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        paddingTop: 20.5,
+        paddingTop: 11,
         paddingLeft: Math.max(insetLeft, 33),
         paddingRight: Math.max(insetRight, 33),
     }),
