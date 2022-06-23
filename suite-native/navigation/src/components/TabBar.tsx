@@ -1,57 +1,42 @@
 import React from 'react';
-import { View } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TabBarItem } from './TabBarItem';
 import { RouteTabs } from '@suite-native/navigation-root';
-import { Box, IconButton } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { TabsOption } from '../types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ActionTabItem } from './ActionTabBarItem';
 
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOption;
 }
 
-const tabBarStyle = prepareNativeStyle(utils => ({
-    height: 86,
-    backgroundColor: utils.colors.gray100,
-    borderTopColor: utils.colors.gray300,
-    borderTopWidth: utils.borders.widths.small,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 20.5,
-    paddingLeft: 51.5,
-    paddingRight: 51.5,
-}));
-
-const ActionTabItem = () => {
-    const { applyStyle } = useNativeStyles();
-
-    const actionTabItemStyle = prepareNativeStyle(() => ({
-        marginTop: -40,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    }));
-
-    return (
-        <Box style={applyStyle(actionTabItemStyle)}>
-            <IconButton
-                iconName="action"
-                onPress={() => console.log('Show actions')}
-                size="extraLarge"
-                isRounded
-            />
-        </Box>
-    );
-};
+const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }>(
+    (utils, { insetLeft, insetRight }) => ({
+        height: 86,
+        width: '100%',
+        backgroundColor: utils.colors.gray100,
+        borderTopColor: utils.colors.gray300,
+        borderTopWidth: utils.borders.widths.small,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        paddingTop: 20.5,
+        paddingLeft: Math.max(insetLeft, 33),
+        paddingRight: Math.max(insetRight, 33),
+    }),
+);
 
 export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { applyStyle } = useNativeStyles();
+    const insets = useSafeAreaInsets();
 
     return (
-        <View style={[applyStyle(tabBarStyle)]}>
+        <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
-                const { iconName } = tabItemOptions[route.name];
+                const { iconName, routeLabel } = tabItemOptions[route.name];
 
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({
@@ -73,11 +58,11 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         key={route.key}
                         isFocused={isFocused}
                         iconName={iconName}
-                        title="Ahoj"
+                        title={routeLabel}
                         onPress={handleTabBarItemPress}
                     />
                 );
             })}
-        </View>
+        </Box>
     );
 };

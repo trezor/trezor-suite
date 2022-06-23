@@ -9,10 +9,12 @@ type TabBarItemProps = {
     isFocused: boolean;
     onPress: () => void;
     iconName: IconName;
-    title: string;
+    title?: string;
 };
 
 const tabBarItemStyle = prepareNativeStyle(utils => ({
+    justifyContent: 'center',
+    alignItems: 'center',
     color: utils.colors.forest,
 }));
 
@@ -33,7 +35,11 @@ export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemPr
             style={applyStyle(tabBarItemStyle)}
         >
             <Icon name={iconName} size="large" color={isFocused ? 'forest' : 'gray500'} />
-            <Text color={isFocused ? 'forest' : 'gray500'}>{title}</Text>
+            {title && (
+                <Text variant="label" color={isFocused ? 'forest' : 'gray500'}>
+                    {title}
+                </Text>
+            )}
         </TouchableOpacity>
     );
 };
