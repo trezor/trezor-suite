@@ -4,7 +4,7 @@ import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { variables } from '@trezor/components';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { Action, TrezorDevice, Lock } from '@suite-types';
+import { Action, TrezorDevice, Lock, TorStatus } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb, getWindowWidth } from '@suite-utils/env';
 import { ensureLocale } from '@suite-utils/l10n';
@@ -43,13 +43,6 @@ export interface SuiteSettings {
     torOnionLinks: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
-}
-
-export enum TorStatus {
-    Disabled = 'Disabled',
-    Enabling = 'Enabling',
-    Disabling = 'Disabling',
-    Enabled = 'Enabled',
 }
 
 export interface SuiteState {

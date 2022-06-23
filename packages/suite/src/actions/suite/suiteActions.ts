@@ -8,7 +8,7 @@ import { baseFetch, isOnionUrl, torFetch } from '@suite-utils/tor';
 import { getCustomBackends } from '@suite-utils/backend';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { TorStatus } from '@suite-reducers/suiteReducer';
+import { TorStatus } from '@suite-types';
 import { SUITE, METADATA } from './constants';
 import type { Locale } from '@suite-config/languages';
 import type {

@@ -4,7 +4,7 @@ import { useActions, useSelector } from '@suite-hooks';
 import { baseFetch, getIsTorEnabled, getIsTorDomain, torFetch } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { isWeb, isDesktop, getLocationHostname } from '@suite-utils/env';
-import { TorStatus } from '@suite-reducers/suiteReducer';
+import { TorStatus } from '@suite-types';
 
 export const useTor = () => {
     const isTorEnabled = useSelector(state => getIsTorEnabled(state.suite.torStatus));
