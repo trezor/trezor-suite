@@ -196,11 +196,11 @@ export class TransportWithSharedConnections extends Transport {
 
     _lastStringified = '';
 
-    listen(old: Array<TrezorDeviceInfoWithSession>) {
-        const oldStringified = stableStringify(old);
-        const last = old == null ? this._lastStringified : oldStringified;
-        return this._runIter(0, last);
-    }
+    // listen(old: Array<TrezorDeviceInfoWithSession>) {
+    //     const oldStringified = stableStringify(old);
+    //     const last = old == null ? this._lastStringified : oldStringified;
+    //     return this._runIter(0, last);
+    // }
 
     async _runIter(
         iteration: number,
@@ -360,9 +360,9 @@ export class TransportWithSharedConnections extends Transport {
     }
 
     receive({ session, debug }: { session: string; debug: boolean }) {
-        return this.doWithSession(session, debug, () => {
-            return this._transport.receive({ session, debug });
-        });
+        return this.doWithSession(session, debug, () =>
+            this._transport.receive({ session, debug }),
+        );
     }
 
     async init(debug?: boolean) {

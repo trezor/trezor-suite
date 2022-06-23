@@ -61,6 +61,9 @@ export const PrerequisitesGuide = ({
 
     const webusb = isWebUSB(transport);
 
+    console.log('webusb in prerequisitesGuide', webusb);
+    console.log('prerequisite', prerequisite);
+
     return (
         <Wrapper padded={padded}>
             <ConnectDevicePrompt
@@ -72,10 +75,12 @@ export const PrerequisitesGuide = ({
             {(() => {
                 switch (prerequisite) {
                     case 'transport-bridge':
+                        console.log('transport-bridge');
                         return <Transport />;
                     case 'device-disconnect-required':
                         return <DeviceDisconnectRequired />;
                     case 'device-disconnected':
+                        console.log('device-disconnected');
                         return <DeviceConnect webusb={webusb} />;
                     case 'device-unacquired':
                         return <DeviceAcquire />;

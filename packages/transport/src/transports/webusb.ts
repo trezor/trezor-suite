@@ -42,13 +42,16 @@ export class WebUsbTransport extends Transport {
     }
 
     init(debug?: boolean) {
+        console.log('WebUsbTransport init !!!!!!!');
         this.debug = !!debug;
+        console.log('navigator', navigator);
         const { usb } = navigator;
         if (!usb) {
             throw new Error('WebUSB is not available on this browser.');
         } else {
             this.usb = usb;
         }
+        console.log('usb in webusbtransport init');
         return Promise.resolve(); // type compatibility
     }
 
@@ -71,12 +74,14 @@ export class WebUsbTransport extends Transport {
     async _listDevices() {
         let bootloaderId = 0;
         const devices = await this.usb!.getDevices();
+        console.log('devices', devices);
         const trezorDevices = devices.filter(dev => {
             const isTrezor = TREZOR_DESCS.some(
                 desc => dev.vendorId === desc.vendorId && dev.productId === desc.productId,
             );
             return isTrezor;
         });
+        console.log('trezorDevices', trezorDevices);
         const hidDevices = trezorDevices.filter(dev => this._deviceIsHid(dev));
         const nonHidDevices = trezorDevices.filter(dev => !this._deviceIsHid(dev));
 
@@ -100,27 +105,33 @@ export class WebUsbTransport extends Transport {
             this.unreadableHidDeviceChange.emit('change');
         }
 
+        console.log('this._lastDevices', this._lastDevices);
         return this._lastDevices;
     }
 
     _lastDevices: Array<{ path: string; device: USBDevice; debug: boolean }> = [];
 
     async enumerate() {
+        console.log('enumerate');
         return (await this._listDevices()).map(info => ({
             path: info.path,
             debug: info.debug,
         }));
     }
 
-    async listen(_old: any) {
-        return Promise.reject('not allowed');
-    }
+    // TODO(karliatto): we want to get read of `listen` and instead use `enumerate`
+    // async listen(_old: any) {
+    //     // This method is not implemented
+    //     return Promise.resolve({});
+    // }
 
     _findDevice(path: string) {
+        console.log('_findDevice');
         const deviceO = this._lastDevices.find(d => d.path === path);
         if (deviceO == null) {
             throw new Error('Action was interrupted.');
         }
+        console.log('deviceO', deviceO);
         return deviceO.device;
     }
 
@@ -262,8 +273,10 @@ export class WebUsbTransport extends Transport {
         }
     }
 
-    async requestDevice() {
-        // I am throwing away the resulting device, since it appears in enumeration anyway
-        await this.usb!.requestDevice({ filters: TREZOR_DESCS });
-    }
+    // // TODO(karliatto): apparetly we can remove it from here since it is used in:
+    // // packages/suite/src/components/suite/WebusbButton/index.tsx
+    // async requestDevice() {
+    //     // I am throwing away the resulting device, since it appears in enumeration anyway
+    //     await this.usb!.requestDevice({ filters: TREZOR_DESCS });
+    // }
 }

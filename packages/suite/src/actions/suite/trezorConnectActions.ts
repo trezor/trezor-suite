@@ -119,14 +119,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(cardanoPatch());
 
     try {
-        const connectSrc = resolveStaticPath('connect/');
+        const connectSrc = 'https://localhost:8088/';
         // 'https://localhost:8088/';
         // 'https://connect.corp.sldev.cz/develop/';
 
         await TrezorConnect.init({
             connectSrc,
             transportReconnect: true,
-            debug: false,
+            debug: true,
             popup: false,
             webusb: isWeb(),
             pendingTransportEvent: getState().devices.length < 1,

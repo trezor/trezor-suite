@@ -73,8 +73,10 @@ const getExcludedPrerequisites = (router: PrerequisitesInput['router']): Prerequ
  * Returns information about reason that is blocking user from interacting with Suite
  */
 export const getPrerequisites = ({ router, device, transport }: PrerequisitesInput) => {
+    console.log('getPrerequisites in suite utils/suite');
     const excluded = getExcludedPrerequisites(router);
 
+    console.log('transport in getPrerequisites', transport);
     const prerequisite = getPrerequisiteName({ router, device, transport });
 
     if (typeof prerequisite === 'undefined') return;

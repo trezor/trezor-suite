@@ -4,12 +4,13 @@
 
 import EventEmitter from 'events';
 import {
-    BridgeTransport,
+    // BridgeTransport,
     // FallbackTransport,
+    WebUsbTransport,
     Transport,
     TrezorDeviceInfoWithSession as DeviceDescriptor,
 } from '@trezor/transport';
-import fetch from 'cross-fetch';
+// import fetch from 'cross-fetch';
 import { ERRORS } from '../constants';
 import { TRANSPORT, DEVICE, TransportInfo } from '../events';
 import { DescriptorStream, DeviceDescriptorDiff } from './DescriptorStream';
@@ -21,7 +22,7 @@ import { initLog } from '../utils/debug';
 import { resolveAfter } from '../utils/promiseUtils';
 
 import { ReactNativeUsbPlugin } from '../workers/workers';
-import { getAbortController } from './AbortController';
+// import { getAbortController } from './AbortController';
 import type { Controller } from './AbortController';
 
 // custom log
@@ -87,35 +88,34 @@ export class DeviceList extends EventEmitter {
     constructor() {
         super();
 
-        // @ts-expect-error
         const { env, webusb } = DataManager.settings;
+        console.log('webusb', webusb);
+        console.log('env', env);
 
         const transports: Transport[] = [];
 
         if (env === 'react-native' && typeof ReactNativeUsbPlugin !== 'undefined') {
             transports.push(ReactNativeUsbPlugin());
         } else {
-            // const bridgeLatestVersion = getBridgeInfo().version.join('.');
-            const bridge = new BridgeTransport({});
-            // bridge.setBridgeLatestVersion(bridgeLatestVersion);
-
-            this.fetchController = getAbortController();
-            const { signal } = this.fetchController;
-            // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
-            const fetchWithSignal = (args, options = {}) => fetch(args, { ...options, signal });
-            BridgeTransport.setFetch(fetchWithSignal, typeof window === 'undefined');
-
-            transports.push(bridge);
-
-            this.transport = bridge;
+            // // const bridgeLatestVersion = getBridgeInfo().version.join('.');
+            // const bridge = new BridgeTransport({});
+            // // bridge.setBridgeLatestVersion(bridgeLatestVersion);
+            // this.fetchController = getAbortController();
+            // const { signal } = this.fetchController;
+            // // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
+            // const fetchWithSignal = (args, options = {}) => fetch(args, { ...options, signal });
+            // BridgeTransport.setFetch(fetchWithSignal, typeof window === 'undefined');
+            // transports.push(bridge);
+            // this.transport = bridge;
         }
 
-        // if (webusb && typeof WebUsbPlugin !== 'undefined') {
-        //     console.log('webusb plugin push');
-        //     transports.push(WebUsbPlugin());
-        // }
+        if (webusb && typeof WebUsbTransport !== 'undefined') {
+            const webusb: Transport = new WebUsbTransport({});
+            transports.push(webusb);
+            this.transport = webusb;
+        }
 
-        // todo:
+        // todo: something that takes one transport or the other depending on a priority list or similar.
         // this.transport = new FallbackTransport({ transports, debug: false });
         this.defaultMessages = DataManager.getProtobufMessages();
         this.currentMessages = this.defaultMessages;

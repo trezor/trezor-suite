@@ -15,6 +15,6 @@ export type { Transport } from './transports/abstract';
 export { Messages } from './types';
 
 export { BridgeTransport } from './transports/bridge';
-export { FallbackTransport } from './transports/fallback';
-export { TransportWithSharedConnections } from './transports/withSharedConnections';
+// export { FallbackTransport } from './transports/fallback';
+// export { TransportWithSharedConnections } from './transports/withSharedConnections';
 export { WebUsbTransport } from './transports/webusb';

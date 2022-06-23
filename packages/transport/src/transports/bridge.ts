@@ -34,19 +34,30 @@ export class BridgeTransport extends Transport {
         await this._silentInit();
     }
 
-    async listen(old?: Array<TrezorDeviceInfoWithSession>) {
-        if (old == null) {
-            throw new Error('Bridge v2 does not support listen without previous.');
-        }
-        const devicesS = await this._post({
-            url: '/listen',
-            body: old,
-        });
-        const devices = check.devices(devicesS);
-        return devices;
-    }
+    // TODO(karliatto): we are getting rid of `listen` in all the transport.
+    // async listen(old?: Array<TrezorDeviceInfoWithSession>) {
+    //     console.log('old in listen Bridge transport', old);
+    //     if (old == null) {
+    //         throw new Error('Bridge v2 does not support listen without previous.');
+    //     }
+    //     const devicesS = await this._post({
+    //         url: '/listen',
+    //         body: old,
+    //     });
+    //     const devices = check.devices(devicesS);
+    //     console.log('devices from listen in bridge transport', devices);
+    //     return devices;
+    // }
 
-    async enumerate() {
+    async enumerate(old?: Array<TrezorDeviceInfoWithSession>) {
+        if (old) {
+            const devicesS = await this._post({
+                url: '/listen',
+                body: old,
+            });
+            const devices = check.devices(devicesS);
+            return devices;
+        }
         const devicesS = await this._post({ url: '/enumerate' });
         const devices = check.devices(devicesS);
         return devices;
@@ -81,7 +92,7 @@ export class BridgeTransport extends Transport {
         if (this.messages == null) {
             throw new Error('Transport not configured.');
         }
-        const messages = this.messages;
+        const { messages } = this;
         const o = buildOne(messages, name, data);
         const outData = o.toString('hex');
         const resData = await this._post({
@@ -109,7 +120,7 @@ export class BridgeTransport extends Transport {
         if (this.messages == null) {
             throw new Error('Transport not configured.');
         }
-        const messages = this.messages;
+        const { messages } = this;
         const outData = buildOne(messages, name, data).toString('hex');
         await this._post({
             url: `${debug ? '/debug' : ''}/post/${session}`,
@@ -121,7 +132,7 @@ export class BridgeTransport extends Transport {
         if (this.messages == null) {
             throw new Error('Transport not configured.');
         }
-        const messages = this.messages;
+        const { messages } = this;
         const resData = await this._post({
             url: `${debug ? '/debug' : ''}/read/${session}`,
         });

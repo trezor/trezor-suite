@@ -115,7 +115,7 @@ export class DescriptorStream extends EventEmitter {
             logger.debug('Start listening', current);
             this.listenTimestamp = new Date().getTime();
             descriptors = waitForEvent
-                ? await this.transport.listen(current)
+                ? await this.transport.enumerate(current)
                 : await this.transport.enumerate();
             if (this.listening && !waitForEvent) {
                 // enumerate returns some value
@@ -131,6 +131,7 @@ export class DescriptorStream extends EventEmitter {
             this.upcoming = descriptors;
             logger.debug('Listen result', descriptors);
             this._reportChanges();
+            // TODO(karliatto): HERE!!! this is for some reason trigger and trigger here so it should stop to allow continuation.
             if (this.listening) this.listen(); // handlers might have called stop()
         } catch (error) {
             const time = new Date().getTime() - this.listenTimestamp;

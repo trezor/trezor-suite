@@ -34,8 +34,9 @@ export abstract class Transport {
         this.debug = debug;
     }
 
-    abstract enumerate(): Promise<TrezorDeviceInfoWithSession[]>;
-    abstract listen(old?: TrezorDeviceInfoWithSession[]): Promise<TrezorDeviceInfoWithSession[]>;
+    abstract enumerate(old?: TrezorDeviceInfoWithSession[]): Promise<TrezorDeviceInfoWithSession[]>;
+    // TODO(karliatto): we want to totally get rid of `listen`, and use instead `enumerate`.
+    // abstract listen(old?: TrezorDeviceInfoWithSession[]): Promise<TrezorDeviceInfoWithSession[]>;
     abstract acquire({
         input,
         debug,
