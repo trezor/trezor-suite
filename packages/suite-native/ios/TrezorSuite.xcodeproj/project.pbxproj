@@ -34,6 +34,7 @@
 		00E356EE1AD99517003FC87E /* TrezorSuiteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrezorSuiteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* TrezorSuiteTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrezorSuiteTests.m; sourceTree = "<group>"; };
+		0F3292AC08614F1263173E83 /* Pods-TrezorSuite.develop.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite.develop.xcconfig"; path = "Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite.develop.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* TrezorSuite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrezorSuite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = TrezorSuite/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = TrezorSuite/AppDelegate.mm; sourceTree = "<group>"; };
@@ -51,6 +52,7 @@
 		8BCDC7530653430F8480AEF1 /* TTSatoshi-DemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-DemiBold.otf"; path = "../../theme/fonts/TTSatoshi-DemiBold.otf"; sourceTree = "<group>"; };
 		92AC1F3110C34E2F8264BEAE /* TTSatoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Bold.otf"; path = "../../theme/fonts/TTSatoshi-Bold.otf"; sourceTree = "<group>"; };
 		A0E40F5120CB4E82AF6C1CA0 /* TTSatoshi-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TTSatoshi-Medium.otf"; path = "../../theme/fonts/TTSatoshi-Medium.otf"; sourceTree = "<group>"; };
+		DBEFE34084B7D0F587B82E95 /* Pods-TrezorSuite-TrezorSuiteTests.develop.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.develop.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.develop.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -164,6 +166,8 @@
 				5709B34CF0A7D63546082F79 /* Pods-TrezorSuite.release.xcconfig */,
 				5B7EB9410499542E8C5724F5 /* Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig */,
 				89C6BE57DB24E9ADA2F236DE /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */,
+				0F3292AC08614F1263173E83 /* Pods-TrezorSuite.develop.xcconfig */,
+				DBEFE34084B7D0F587B82E95 /* Pods-TrezorSuite-TrezorSuiteTests.develop.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -530,7 +534,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -574,13 +579,15 @@
 		};
 		04646A242864803D00F96327 /* Develop */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-TrezorSuite.debug.xcconfig */;
+			baseConfigurationReference = 0F3292AC08614F1263173E83 /* Pods-TrezorSuite.develop.xcconfig */;
 			buildSettings = {
 				APP_DISPLAY_NAME = "Dev-TrezorSuite";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Develop";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3P22XVH2C;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrezorSuite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -594,6 +601,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.trezor.suite.develop;
 				PRODUCT_NAME = TrezorSuite;
+				PROVISIONING_PROFILE_SPECIFIER = "Trezor Suite distribution";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -602,7 +610,7 @@
 		};
 		04646A252864803D00F96327 /* Develop */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig */;
+			baseConfigurationReference = DBEFE34084B7D0F587B82E95 /* Pods-TrezorSuite-TrezorSuiteTests.develop.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -634,8 +642,10 @@
 				APP_DISPLAY_NAME = "Local-TrezorSuite";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Debug";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3P22XVH2C;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = TrezorSuite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -649,6 +659,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.trezor.suite.debug;
 				PRODUCT_NAME = TrezorSuite;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -663,7 +674,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C3P22XVH2C;
 				INFOPLIST_FILE = TrezorSuite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -676,6 +689,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.trezor.suite;
 				PRODUCT_NAME = TrezorSuite;
+				PROVISIONING_PROFILE_SPECIFIER = "Trezor Suite distribution";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -781,7 +795,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
