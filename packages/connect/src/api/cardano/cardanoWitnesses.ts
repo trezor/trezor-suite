@@ -48,11 +48,11 @@ export const gatherWitnessPaths = (
         collateralInputsWithPath.forEach(({ path }) => {
             if (path) _insert(path);
         });
-
-        requiredSigners.forEach(({ key_path }) => {
-            if (key_path) _insert(key_path);
-        });
     }
+
+    requiredSigners.forEach(({ key_path }) => {
+        if (key_path) _insert(key_path);
+    });
 
     // add additional witness requests in all cases (because of minting)
     additionalWitnessRequests.forEach(path => {

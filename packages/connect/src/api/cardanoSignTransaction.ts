@@ -1,6 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CardanoSignTransaction.js
 
+// allow for...of statements
 /* eslint-disable no-restricted-syntax */
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { getMiscNetwork } from '../data/coinInfo';
@@ -11,10 +13,16 @@ import {
 } from './cardano/cardanoAuxiliaryData';
 import { transformCertificate } from './cardano/cardanoCertificate';
 import type { CertificateWithPoolOwnersAndRelays } from './cardano/cardanoCertificate';
-import type { Path, InputWithPath, CollateralInputWithPath } from './cardano/cardanoInputs';
-import { transformInput, transformCollateralInput } from './cardano/cardanoInputs';
-import { transformOutput } from './cardano/cardanoOutputs';
-import type { OutputWithTokens } from './cardano/cardanoOutputs';
+import {
+    Path,
+    InputWithPath,
+    CollateralInputWithPath,
+    transformReferenceInput,
+    transformInput,
+    transformCollateralInput,
+} from './cardano/cardanoInputs';
+import { sendOutput, transformOutput } from './cardano/cardanoOutputs';
+import type { OutputWithData } from './cardano/cardanoOutputs';
 import { PROTO, ERRORS } from '../constants';
 import type {
     CardanoAuxiliaryDataSupplement,
@@ -35,12 +43,13 @@ const CardanoSignTransactionFeatures = Object.freeze({
     ScriptDataHash: ['0', '2.4.4'],
     Plutus: ['0', '2.4.4'],
     KeyHashStakeCredential: ['0', '2.4.4'],
+    Babbage: ['0', '2.5.2'],
 });
 
 export type CardanoSignTransactionParams = {
     signingMode: PROTO.CardanoTxSigningMode;
     inputsWithPath: InputWithPath[];
-    outputsWithTokens: OutputWithTokens[];
+    outputsWithData: OutputWithData[];
     fee: PROTO.UintType;
     ttl?: PROTO.UintType;
     certificatesWithPoolOwnersAndRelays: CertificateWithPoolOwnersAndRelays[];
@@ -51,6 +60,9 @@ export type CardanoSignTransactionParams = {
     scriptDataHash?: string;
     collateralInputsWithPath: CollateralInputWithPath[];
     requiredSigners: PROTO.CardanoTxRequiredSigner[];
+    collateralReturnWithData?: OutputWithData;
+    totalCollateral?: PROTO.UintType;
+    referenceInputs: PROTO.CardanoTxReferenceInput[];
     protocolMagic: number;
     networkId: number;
     witnessPaths: Path[];
@@ -104,6 +116,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
             { name: 'scriptDataHash', type: 'string' },
             { name: 'collateralInputs', type: 'array', allowEmpty: true },
             { name: 'requiredSigners', type: 'array', allowEmpty: true },
+            { name: 'totalCollateral', type: 'uint' },
+            { name: 'referenceInputs', type: 'array', allowEmpty: true },
             { name: 'protocolMagic', type: 'number', required: true },
             { name: 'networkId', type: 'number', required: true },
             { name: 'additionalWitnessRequests', type: 'array', allowEmpty: true },
@@ -113,7 +127,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
 
         const inputsWithPath = payload.inputs.map(transformInput);
 
-        const outputsWithTokens = payload.outputs.map(transformOutput);
+        const outputsWithData = payload.outputs.map(transformOutput);
 
         let certificatesWithPoolOwnersAndRelays: CertificateWithPoolOwnersAndRelays[] = [];
         if (payload.certificates) {
@@ -172,10 +186,19 @@ export default class CardanoSignTransaction extends AbstractMethod<
             });
         }
 
+        const collateralReturnWithData = payload.collateralReturn
+            ? transformOutput(payload.collateralReturn)
+            : undefined;
+
+        let referenceInputs: PROTO.CardanoTxReferenceInput[] = [];
+        if (payload.referenceInputs) {
+            referenceInputs = payload.referenceInputs.map(transformReferenceInput);
+        }
+
         this.params = {
             signingMode: payload.signingMode,
             inputsWithPath,
-            outputsWithTokens,
+            outputsWithData,
             fee: payload.fee,
             ttl: payload.ttl,
             certificatesWithPoolOwnersAndRelays,
@@ -186,6 +209,9 @@ export default class CardanoSignTransaction extends AbstractMethod<
             scriptDataHash: payload.scriptDataHash,
             collateralInputsWithPath,
             requiredSigners,
+            collateralReturnWithData,
+            totalCollateral: payload.totalCollateral,
+            referenceInputs,
             protocolMagic: payload.protocolMagic,
             networkId: payload.networkId,
             witnessPaths: gatherWitnessPaths(
@@ -231,7 +257,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             }
         });
 
-        params.outputsWithTokens.forEach(({ output }) => {
+        params.outputsWithData.forEach(({ output }) => {
             if (output.datum_hash) {
                 this._ensureFeatureIsSupported('OutputDatumHash');
             }
@@ -265,6 +291,24 @@ export default class CardanoSignTransaction extends AbstractMethod<
         if (params.signingMode === PROTO.CardanoTxSigningMode.PLUTUS_TRANSACTION) {
             this._ensureFeatureIsSupported('Plutus');
         }
+
+        params.outputsWithData.forEach(({ output, inlineDatum, referenceScript }) => {
+            if (
+                output.format === PROTO.CardanoTxOutputSerializationFormat.MAP_BABBAGE ||
+                inlineDatum ||
+                referenceScript
+            ) {
+                this._ensureFeatureIsSupported('Babbage');
+            }
+        });
+
+        if (
+            params.collateralReturnWithData ||
+            params.totalCollateral != null ||
+            params.referenceInputs.length > 0
+        ) {
+            this._ensureFeatureIsSupported('Babbage');
+        }
     }
 
     async _sign_tx(): Promise<CardanoSignedTxData> {
@@ -277,7 +321,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             protocol_magic: this.params.protocolMagic,
             network_id: this.params.networkId,
             inputs_count: this.params.inputsWithPath.length,
-            outputs_count: this.params.outputsWithTokens.length,
+            outputs_count: this.params.outputsWithData.length,
             fee: this.params.fee,
             ttl: this.params.ttl,
             certificates_count: this.params.certificatesWithPoolOwnersAndRelays.length,
@@ -289,6 +333,9 @@ export default class CardanoSignTransaction extends AbstractMethod<
             script_data_hash: this.params.scriptDataHash,
             collateral_inputs_count: this.params.collateralInputsWithPath.length,
             required_signers_count: this.params.requiredSigners.length,
+            has_collateral_return: this.params.collateralReturnWithData != null,
+            total_collateral: this.params.totalCollateral,
+            reference_inputs_count: this.params.referenceInputs.length,
             derivation_type: this.params.derivationType,
             include_network_id: this.params.includeNetworkId,
         };
@@ -300,19 +347,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
             await typedCall('CardanoTxInput', 'CardanoTxItemAck', input);
         }
         // outputs and tokens
-        for (const { output, tokenBundle } of this.params.outputsWithTokens) {
-            await typedCall('CardanoTxOutput', 'CardanoTxItemAck', output);
-            if (tokenBundle) {
-                for (const assetGroup of tokenBundle) {
-                    await typedCall('CardanoAssetGroup', 'CardanoTxItemAck', {
-                        policy_id: assetGroup.policyId,
-                        tokens_count: assetGroup.tokens.length,
-                    });
-                    for (const token of assetGroup.tokens) {
-                        await typedCall('CardanoToken', 'CardanoTxItemAck', token);
-                    }
-                }
-            }
+        for (const outputWithData of this.params.outputsWithData) {
+            await sendOutput(typedCall, outputWithData);
         }
         // certificates, owners and relays
         for (const { certificate, poolOwners, poolRelays } of this.params
@@ -379,6 +415,14 @@ export default class CardanoSignTransaction extends AbstractMethod<
         // required signers
         for (const requiredSigner of this.params.requiredSigners) {
             await typedCall('CardanoTxRequiredSigner', 'CardanoTxItemAck', requiredSigner);
+        }
+        // collateral return
+        if (this.params.collateralReturnWithData) {
+            await sendOutput(typedCall, this.params.collateralReturnWithData);
+        }
+        // reference inputs
+        for (const referenceInput of this.params.referenceInputs) {
+            await typedCall('CardanoTxReferenceInput', 'CardanoTxItemAck', referenceInput);
         }
         // witnesses
         const witnesses: CardanoSignedTxWitness[] = [];

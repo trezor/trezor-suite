@@ -2,6 +2,7 @@ import { NETWORK_IDS, PROTOCOL_MAGICS } from '@trezor/connect/lib/constants/card
 import {
     CardanoAddressType,
     CardanoCertificateType,
+    CardanoTxOutputSerializationFormat,
     CardanoTxSigningMode,
 } from '@trezor/transport/lib/types/messages';
 
@@ -28,14 +29,21 @@ const SAMPLE_INPUTS = {
         prev_hash: '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
         prev_index: 0,
     },
+    plutus_input: {
+        path: "m/1852'/1815'/0'/0/0",
+        prev_hash: '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+        prev_index: 0,
+    },
 };
 
 const SAMPLE_OUTPUTS = {
     simple_byron_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         address: 'Ae2tdPwUPEZCanmBz5g2GEwFqKTKpNJcGYPKfDxoNeKZ8bRHr8366kseiK2',
         amount: '3003112',
     },
     byron_change_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         addressParameters: {
             addressType: CardanoAddressType.BYRON,
             path: "m/44'/1815'/0'/0/1",
@@ -43,16 +51,19 @@ const SAMPLE_OUTPUTS = {
         amount: '1000000',
     },
     simple_shelley_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         address:
             'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
         amount: '1',
     },
     base_address_with_script_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         address:
             'addr1z90z7zqwhya6mpk5q929ur897g3pp9kkgalpreny8y304r2dcrtx0sf3dluyu4erzr3xtmdnzvcyfzekkuteu2xagx0qeva0pr',
         amount: '7120787',
     },
     base_address_change_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         addressParameters: {
             addressType: CardanoAddressType.BASE,
             path: "m/1852'/1815'/0'/0/0",
@@ -61,6 +72,7 @@ const SAMPLE_OUTPUTS = {
         amount: '7120787',
     },
     base_address_change_output_numbers: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         addressParameters: {
             addressType: CardanoAddressType.BASE,
             path: [0x80000000 + 1852, 0x80000000 + 1815, 0x80000000, 0, 0],
@@ -69,6 +81,7 @@ const SAMPLE_OUTPUTS = {
         amount: '7120787',
     },
     staking_key_hash_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         addressParameters: {
             addressType: CardanoAddressType.BASE,
             path: "m/1852'/1815'/0'/0/0",
@@ -77,6 +90,7 @@ const SAMPLE_OUTPUTS = {
         amount: '7120787',
     },
     pointer_address_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         addressParameters: {
             addressType: CardanoAddressType.POINTER,
             path: "m/1852'/1815'/0'/0/0",
@@ -89,6 +103,7 @@ const SAMPLE_OUTPUTS = {
         amount: '7120787',
     },
     enterprise_address_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         addressParameters: {
             addressType: CardanoAddressType.ENTERPRISE,
             path: "m/1852'/1815'/0'/0/0",
@@ -96,14 +111,17 @@ const SAMPLE_OUTPUTS = {
         amount: '7120787',
     },
     testnet_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         address: '2657WMsDfac7BteXkJq5Jzdog4h47fPbkwUM49isuWbYAr2cFRHa3rURP236h9PBe',
         amount: '3003112',
     },
     shelley_testnet_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         address: 'addr_test1vr9s8py7y68e3x66sscs0wkhlg5ssfrfs65084jrlrqcfqqtmut0e',
         amount: '1',
     },
     token_output: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         address:
             'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
         amount: '2000000',
@@ -133,6 +151,7 @@ const SAMPLE_OUTPUTS = {
         ],
     },
     output_common_with_ledger: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         address:
             'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
         amount: '2000000',
@@ -149,9 +168,51 @@ const SAMPLE_OUTPUTS = {
         ],
     },
     output_with_datum_hash: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
         address: 'addr1w9rhu54nz94k9l5v6d9rzfs47h7dv7xffcwkekuxcx3evnqpvuxu0',
         amount: '1',
         datumHash: '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+    },
+    output_with_datum_hash_and_base_address_paramaters: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+        addressParameters: {
+            addressType: CardanoAddressType.BASE,
+            path: "m/1852'/1815'/0'/0/0",
+            stakingPath: "m/1852'/1815'/0'/2/0",
+        },
+        amount: '7120787',
+        datumHash: '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+    },
+    output_with_babbage_data: {
+        format: CardanoTxOutputSerializationFormat.MAP_BABBAGE,
+        address: 'addr1w9rhu54nz94k9l5v6d9rzfs47h7dv7xffcwkekuxcx3evnqpvuxu0',
+        amount: '1',
+        inlineDatum: 'b7',
+        referenceScript:
+            '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0',
+    },
+    output_with_long_babbage_data_and_change_address: {
+        format: CardanoTxOutputSerializationFormat.MAP_BABBAGE,
+        addressParameters: {
+            addressType: CardanoAddressType.BASE,
+            path: "m/1852'/1815'/0'/0/0",
+            stakingPath: "m/1852'/1815'/0'/2/0",
+        },
+        amount: '1',
+        inlineDatum:
+            '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+        referenceScript:
+            '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7b3',
+    },
+    babbage_output_common_with_ledger: {
+        format: CardanoTxOutputSerializationFormat.MAP_BABBAGE,
+        address:
+            'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
+        amount: '1',
+        inlineDatum:
+            '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+        referenceScript:
+            '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7b3',
     },
 };
 
@@ -329,6 +390,7 @@ const FEE = '42';
 const TTL = '10';
 const VALIDITY_INTERVAL_START = '47';
 const SCRIPT_DATA_HASH = 'd593fd793c377ac50a3169bb8378ffc257c944da31aa8f355dfa5a4f6ff89e02';
+const TOTAL_COLLATERAL = '1000';
 
 const legacyResults = {
     beforeTransactionStreaming: {
@@ -345,6 +407,12 @@ const legacyResults = {
         // older FW doesn't support plutus-related features (OutputDatumHash, ScriptDataHash,
         // Plutus, KeyHashStakeCredential)
         rules: ['<2.4.4', '1'],
+        payload: false,
+    },
+    beforeBabbage: {
+        // older FW doesn't support babbage-related features (inlineDatum, referenceScript, collateralReturn,
+        // totalCollateral, referenceInputs)
+        rules: ['<2.5.2', '1'],
         payload: false,
     },
 };
@@ -1439,11 +1507,13 @@ export default {
                 ],
                 outputs: [
                     {
+                        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
                         address:
                             'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
                         amount: '1234',
                     },
                     {
+                        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
                         addressParameters: {
                             addressType: CardanoAddressType.BASE,
                             path: "m/1852'/1815'/0'/0/0",
@@ -1452,6 +1522,7 @@ export default {
                         amount: '7120787',
                     },
                     {
+                        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
                         addressParameters: {
                             addressType: CardanoAddressType.BASE,
                             path: "m/1852'/1815'/0'/0/0",
@@ -1461,6 +1532,7 @@ export default {
                         amount: '7120787',
                     },
                     {
+                        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
                         addressParameters: {
                             addressType: CardanoAddressType.POINTER,
                             path: "m/1852'/1815'/0'/0/0",
@@ -1473,6 +1545,7 @@ export default {
                         amount: '7120787',
                     },
                     {
+                        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
                         addressParameters: {
                             addressType: CardanoAddressType.ENTERPRISE,
                             path: "m/1852'/1815'/0'/0/0",
@@ -1480,6 +1553,7 @@ export default {
                         amount: '7120787',
                     },
                     {
+                        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
                         addressParameters: {
                             addressType: CardanoAddressType.BYRON,
                             path: "m/44'/1815'/0'/0/1",
@@ -1487,6 +1561,7 @@ export default {
                         amount: '1000000',
                     },
                     {
+                        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
                         address:
                             'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
                         amount: '1234',
@@ -2100,6 +2175,324 @@ export default {
                 auxiliaryDataSupplement: undefined,
             },
             legacyResults: [legacyResults.beforePlutus],
+        },
+
+        {
+            description: 'ordinaryTransactionWithOutputDatumHashAndBaseAddressParameters',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.output_with_datum_hash_and_base_address_paramaters],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: 'b90ad6dd0e1155559bd3e66f2fce91f4c85598d47c90922f01e121ea4f51f96e',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'bce7857e140ad2edefdc2c162fe3bfadd7693337da49d0231e04ab23f837afd9a041a807ed3fb2d76fb67377d89b5af0f627cb0109a7983b4663bf8b3e8a250e',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeBabbage],
+        },
+
+        {
+            description: 'ordinaryTransactionWithRequiredSigner',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+                requiredSigners: [{ keyPath: "m/1852'/1815'/0'/0/1" }],
+            },
+            result: {
+                hash: '8c328640f974f47cecbcaed56e46c3ba4f2ea6769e6e3528915deb3bb518aa06',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '795cde3de6c43c4cd8030d80b5eb29c8bf60c6d90a641aa86b6590fce97e920261f947a7783193faad2ad26bf8e8f1f2c2eab3ee4a56f105c0acd97b0a779d00',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: '36a8ef21d5b98fdf23a27325cf643deaac35e912c835e35037f23d1061ae5b16',
+                        signature:
+                            '53635fa332a154b8d345279e47d264c55533a897490016da76542fb960434afe99a759580b273e89233c45c7a2a193d7fae2e3b1181fcfba24988a045f7aea03',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeBabbage],
+        },
+
+        {
+            description: 'multisigTransactionWithRequiredSigner',
+            params: {
+                inputs: [SAMPLE_INPUTS.external_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.MULTISIG_TRANSACTION,
+                requiredSigners: [{ keyPath: "m/1854'/1815'/0'/0/1" }],
+                additionalWitnessRequests: ["m/1854'/1815'/0'/0/2"],
+            },
+            result: {
+                hash: '2cb5fd3a027578e5c0d06853690fb91b9403b6feda9032b1bf8df83bbad15465',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '021a000e3be05eb09051983cbf728322149cc5687a79f0a1dbccd25b3a754c59',
+                        signature:
+                            '7c69ad3122964c8f37f0a0a364ad187cc28b424ddca5c14429fc97461d416fa270c9cbd65a26b83149220f61c87b40c252638640c2b02f9a82489f12fe98be04',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'e03c8b809288457c44e6dac9bc03d7c91cc0b26b482ae370f6b58da7c1fa90ec',
+                        signature:
+                            '47685f84c364f2db7a7249119f159375adf539b721dcdee3959fb83389209166c433c22384fa3ef52f690f63c40904efbcce0d86fda1e826e4fe063a0255e503',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeBabbage],
+        },
+
+        {
+            description: 'ordinaryTransactionWithBothOutputFormats',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [
+                    {
+                        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+                        address: 'addr1w9rhu54nz94k9l5v6d9rzfs47h7dv7xffcwkekuxcx3evnqpvuxu0',
+                        amount: '1',
+                        tokenBundle: [
+                            {
+                                policyId:
+                                    '95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39',
+                                tokenAmounts: [
+                                    {
+                                        assetNameBytes: '74652474436f696e',
+                                        amount: '7878754',
+                                    },
+                                ],
+                            },
+                        ],
+                        datumHash:
+                            '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+                    },
+                    {
+                        format: CardanoTxOutputSerializationFormat.MAP_BABBAGE,
+                        address: 'addr1w9rhu54nz94k9l5v6d9rzfs47h7dv7xffcwkekuxcx3evnqpvuxu0',
+                        amount: '1',
+                        tokenBundle: [
+                            {
+                                policyId:
+                                    '95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39',
+                                tokenAmounts: [
+                                    {
+                                        assetNameBytes: '74652474436f696e',
+                                        amount: '7878754',
+                                    },
+                                ],
+                            },
+                        ],
+                        datumHash:
+                            '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+                    },
+                ],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: 'b664d33bfcbfc1b54f34c813438ab4dac788ce715a3461f85142c4d19460e949',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'e9ecd38c4c8219eca08971a6949971f3afb33e64f727e9958bfc51b42b913f445adec954d938b9bad0759740979d45f5e97da1581d1d588ff0acfbf53232e90e',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeBabbage],
+        },
+
+        {
+            description: 'ordinaryTransactionWithBabbageOutput',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.output_with_babbage_data],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '719d33e1e2811f82046951dccee1a9af82d8fe1d8abc36d581a9eccc421c3204',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '57831ef649d0fd3fcda9ec218d071889dfd9296643a908101ae4a8030d053df4141b201dea9866ff63533547274db060abe7513989ab1299852b94db6236b20e',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeBabbage],
+        },
+
+        {
+            description: 'ordinaryTransactionWithLongBabbageOutput',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.output_with_long_babbage_data_and_change_address],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '821e8163c5cf225c09f338f385c81e4326610f830e2abb89f9961e20741e6b70',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '563c135e4a7eddbdcdf2e34f4f18b6e6d813d150a81cdeed2290fdc4b4884e2af0a849d7191713f4a26b15ebe35cb362b6d289b4030f79128070d5a5733c8909',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeBabbage],
+        },
+
+        {
+            description: 'plutusWithBabbageElementsAndSharedWithLedger',
+            params: {
+                inputs: [SAMPLE_INPUTS.plutus_input],
+                outputs: [
+                    SAMPLE_OUTPUTS.output_common_with_ledger,
+                    SAMPLE_OUTPUTS.babbage_output_common_with_ledger,
+                ],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.PLUTUS_TRANSACTION,
+                scriptDataHash: SCRIPT_DATA_HASH,
+                collateralInputs: [SAMPLE_INPUTS.plutus_input],
+                collateralReturn: {
+                    format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+                    address:
+                        'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
+                    amount: '2000000',
+                    tokenBundle: [
+                        {
+                            policyId: '95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39',
+                            tokenAmounts: [
+                                {
+                                    assetNameBytes: '74652474436f696e',
+                                    amount: '7878754',
+                                },
+                            ],
+                        },
+                    ],
+                },
+                totalCollateral: TOTAL_COLLATERAL,
+                referenceInput: [SAMPLE_INPUTS.plutus_input],
+            },
+            result: {
+                hash: '699d3267d8c59cfcb838385cd2fee864e9c2043b7b85d80e6626d88c1966dd71',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '0ea26710d9fc8a321163139de2641241df4e54137641809b090b75b2d54a9aa868ff9c6e25d596498a17d6d75fc99bf3c45bebad520982075a5c12c836cdbb0d',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeBabbage],
+        },
+
+        {
+            description: 'plutusWithDeviceOwnedCollateralReturn',
+            params: {
+                inputs: [SAMPLE_INPUTS.plutus_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.PLUTUS_TRANSACTION,
+                scriptDataHash: SCRIPT_DATA_HASH,
+                collateralInputs: [SAMPLE_INPUTS.plutus_input],
+                collateralReturn: {
+                    format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+                    addressParameters: {
+                        addressType: CardanoAddressType.BASE,
+                        path: "m/1852'/1815'/0'/0/0",
+                        stakingPath: "m/1852'/1815'/0'/2/0",
+                    },
+                    amount: '2000000',
+                    tokenBundle: [
+                        {
+                            policyId: '95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39',
+                            tokenAmounts: [
+                                {
+                                    assetNameBytes: '74652474436f696e',
+                                    amount: '7878754',
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+            result: {
+                hash: 'c95a6f99f5763d89926b44b8a0f7fa12f14ee3978c120e42c581a3f47638d490',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '495b8941fac6fd3f61de87c592f65f06bd4c8499a683a396382c3da89faca348d8559d3775bb5046be6213f4623a917fc3412b26065f943731769df3452d6308',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeBabbage],
         },
     ],
 };
