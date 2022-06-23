@@ -10,6 +10,7 @@
             "utils",
             "utxo-lib",
             "connect-plugin-stellar",
+            "connect-plugin-ethereum",
             "connect",
             "connect-web",
             "connect-common",

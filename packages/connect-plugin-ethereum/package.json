@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-plugin-ethereum",
-    "version": "9.0.0",
+    "version": "9.0.0-beta.1",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-ethereum",
     "description": "@trezor/connect plugin for Ethereum",
@@ -18,7 +18,10 @@
         "Ethereum"
     ],
     "sideEffects": false,
-    "main": "index.js",
+    "main": "lib/index.js",
+    "files": [
+        "lib/"
+    ],
     "peerDependencies": {
         "@metamask/eth-sig-util": "^4.0.1"
     },
@@ -26,6 +29,9 @@
         "@metamask/eth-sig-util": "^4.0.1"
     },
     "scripts": {
-        "test:unit": "jest"
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest --verbose -c jest.config.js",
+        "type-check": "tsc --build tsconfig.json",
+        "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json"
     }
 }
