@@ -139,10 +139,10 @@ const reducerActions = [
         ],
         result: [
             {
-                tor: TorStatus.Enabled,
+                torStatus: TorStatus.Enabled,
             },
             {
-                tor: TorStatus.Disabled,
+                torStatus: TorStatus.Disabled,
             },
         ],
     },
