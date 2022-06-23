@@ -1,0 +1,52 @@
+name: suite-native develop ci
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "packages/suite-*/**"
+      - "suite-native/**"
+      - "packages/icons/**"
+  workflow_dispatch:
+
+jobs:
+  android_develop:
+    defaults:
+      run:
+        working-directory: suite-native
+    runs-on: ubuntu-latest
+    environment: develop
+    timeout-minutes: 45
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup react-native kernel and increase watchers
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Decode files
+        env:
+          ENCODED_STRING_KEYSTORE: ${{ secrets.DEVELOP_KEYSTORE_FILE }}
+          ENCODED_STRING_JSON_FILE: ${{secrets.GOOGLE_PLAY_JSON_KEY}}
+        run: |
+          TMP_FILE_PATH="${RUNNER_TEMP}/app"
+          mkdir "${TMP_FILE_PATH}"
+          echo $ENCODED_STRING_KEYSTORE | base64 -di > "${TMP_FILE_PATH}/release.keystore"
+          echo $ENCODED_STRING_JSON_FILE > "${TMP_FILE_PATH}/firebase_key.json"
+      - name: Install dependecies
+        run: yarn install
+      - name: Ruby Setup for Fastlane
+        uses: ruby/setup-ruby@v1
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Fastlane build and deploy
+        env:
+          SIGNING_KEY_STORE_FILE: $TMP_FILE_PATH/release.keystore
+          SIGNING_KEY_STORE_PASSWORD: ${{ secrets.SIGNING_KEY_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          GOOGLE_PLAY_JSON_KEY_FILE: $TMP_FILE_PATH/firebase_key.json
+          FIREBASE_APP_ID: ${{secrets.ANDROID_FIREBASE_APP_ID}}
+        # builds and publishes the app
+        run: bundle exec fastlane android develop
+## TODO: ios app develop release ci setup

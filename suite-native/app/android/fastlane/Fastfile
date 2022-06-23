@@ -2,7 +2,7 @@ skip_docs
 
 # Paths
 APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
-UPLOAD_KEY_FILE_PATH = ENV['UPLOAD_KEY_FILE_PATH']
+GOOGLE_PLAY_JSON_KEY_FILE = ENV['GOOGLE_PLAY_JSON_KEY_FILE']
 
 platform :android do
 
@@ -11,7 +11,7 @@ platform :android do
     previous_build_number = google_play_track_version_codes(
       package_name: APP_ID,
       track: "internal",
-      json_key: UPLOAD_KEY_FILE_PATH,
+      json_key: GOOGLE_PLAY_JSON_KEY_FILE,
     )[0]
 
     android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
@@ -21,7 +21,7 @@ platform :android do
   private_lane :bump_firebase_version do
     latest_release = firebase_app_distribution_get_latest_release(
       app: ANDROID_FIREBASE_APP_ID,
-      service_credentials_file: UPLOAD_KEY_FILE_PATH,
+      service_credentials_file: GOOGLE_PLAY_JSON_KEY_FILE,
     )
 
     # when there are no Firebase releases yet
@@ -87,7 +87,7 @@ platform :android do
     firebase_app_distribution(
         app: ANDROID_FIREBASE_APP_ID,
         apk_path: apk_path,
-        service_credentials_file: UPLOAD_KEY_FILE_PATH,
+        service_credentials_file: GOOGLE_PLAY_JSON_KEY_FILE,
         release_notes: "#{release_note}",
         groups: "develop-testers",
         debug: true
