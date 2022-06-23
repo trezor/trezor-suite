@@ -135,14 +135,14 @@ const reducerActions = [
         description: `updateTorStatus (true/false)`,
         actions: [
             suiteActions.updateTorStatus(TorStatus.Enabled),
-            suiteActions.updateTorStatus(TorStatus.Enabled),
+            suiteActions.updateTorStatus(TorStatus.Disabled),
         ],
         result: [
             {
                 tor: TorStatus.Enabled,
             },
             {
-                tor: TorStatus.Enabled,
+                tor: TorStatus.Disabled,
             },
         ],
     },
