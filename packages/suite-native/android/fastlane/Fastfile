@@ -1,0 +1,111 @@
+skip_docs
+
+# Paths
+APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
+UPLOAD_KEY_FILE_PATH = ENV['UPLOAD_KEY_FILE_PATH']
+
+platform :android do
+
+  desc "Android: Increments internal build number and version number"
+  private_lane :bump_play_version do
+    previous_build_number = google_play_track_version_codes(
+      package_name: APP_ID,
+      track: "internal",
+      json_key: UPLOAD_KEY_FILE_PATH,
+    )[0]
+
+    android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
+    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
+  end
+
+  private_lane :bump_firebase_version do
+    latest_release = firebase_app_distribution_get_latest_release(
+      app: ANDROID_FIREBASE_APP_ID,
+      service_credentials_file: UPLOAD_KEY_FILE_PATH,
+    )
+
+    # when there are no Firebase releases yet
+    unless latest_release.nil?
+      android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: latest_release[:buildVersion].to_i + 1)
+    end
+    android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test", project_dir: ANDROID_PATH)
+  end
+
+  desc "Build and upload the app (release build) to play Store for an internal testing release."
+  lane :releaseInternal do |options|
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    bump_play_version
+
+    gradle(
+      task: 'bundle',
+      flavor: 'prod',
+      build_type: 'Release',
+      project_dir: ANDROID_PATH
+    )
+
+    # Upload Android App Bundle to PlayStore like Internal testing Release
+    upload_to_play_store(
+      track: 'internal',
+      # set as "draft" to complete the release at some other time in PlayStore
+      release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
+      skip_upload_apk: true
+    )
+  end
+
+  desc "Build and upload the app to Firebase App Distribution for testing (develop) release."
+  lane :develop do |options|
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+
+    bump_firebase_version
+
+    gradle(
+      task: 'assemble',
+      flavor: 'FirebaseDevelop',
+      build_type: 'Release',
+      project_dir: ANDROID_PATH
+    )
+
+    # find apk path
+    output_path = File.join(ANDROID_PATH, 'app/build/outputs/apk/firebaseDevelop/release/').freeze
+    output_json_path = output_path + "output-metadata.json"
+    build_output = load_json(json_path: output_json_path)
+    elements = build_output["elements"][0]
+    apk_path = output_path + elements["outputFile"]
+
+    commit = last_git_commit
+    commit_message = commit[:message]
+    commit_hash = commit[:abbreviated_commit_hash]
+    release_note_information = "[#{git_branch}] - #{commit_hash} - #{commit_message}"
+    release_note = "#{release_note_information} \n #{options[:r]}"
+
+    firebase_app_distribution(
+        app: ANDROID_FIREBASE_APP_ID,
+        apk_path: apk_path,
+        service_credentials_file: UPLOAD_KEY_FILE_PATH,
+        release_notes: "#{release_note}",
+        groups: "develop-testers",
+        debug: true
+    )
+  end
+
+  after_all do |lane|
+    # This block is called, only if the executed lane was successful
+
+    # slack(
+    #   message: "Successfully deployed new App Update."
+    # )
+  end
+
+  error do |lane, exception|
+    # slack(
+    #   message: exception.message,
+    #   success: false
+    # )
+  end
+end

@@ -1,16 +1,17 @@
 {
     "name": "@trezor/suite-native",
     "version": "1.0.0",
+    "suiteNativeVersion": "22.7.0",
     "private": true,
     "scripts": {
-        "android": "react-native run-android --no-packager",
+        "android": "react-native run-android --no-packager --variant=devDebug --appIdSuffix=debug",
         "android:clean": "cd android && ./gradlew clean",
         "ios": "react-native run-ios --no-packager",
-        "start": "react-native start",
+        "start": "react-native start --reset-cache",
         "test": "jest",
         "lint": "eslint .",
         "type-check": "tsc -b",
-        "build:android": "cd android && ./gradlew assembleRelease",
+        "build:android": "cd android && ./gradlew assembleDevDebug",
         "pods": "npx pod-install"
     },
     "dependencies": {

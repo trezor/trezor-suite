@@ -1,0 +1,10 @@
+# iOS
+app_identifier("io.trezor.suite") # The bundle identifier of your app
+apple_id("jan.bouchner@satoshilabs.com") # Your Apple email address
+
+itc_team_id("119058140") # App Store Connect Team ID
+team_id("C3P22XVH2C") # Developer Portal Team ID
+
+# Android
+json_key_file(ENV['UPLOAD_KEY_FILE_PATH']) # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("io.trezor.suite")

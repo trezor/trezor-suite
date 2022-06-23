@@ -1,0 +1,22 @@
+# Common Functions and Requirements
+# across Android/iOS Fastfiles
+
+# Path Constants
+SUITE_NATIVE_ROOT_PATH = File.expand_path('../', Dir.pwd).freeze
+
+# Android project
+ANDROID_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'android').freeze
+ANDROID_FIREBASE_APP_ID = ENV['FIREBASE_APP_ID']
+
+# iOS project
+IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
+# this should be the folder name under `ios` for your project
+
+APP_ID = 'io.trezor.suite'.freeze
+
+# Retrieve version of Suite Native app in package.json
+PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
+VERSION = load_json(json_path: "package.json")["suiteNativeVersion"]
+
+import "../ios/fastlane/Fastfile"
+import "../android/fastlane/Fastfile"

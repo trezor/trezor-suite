@@ -1,0 +1,52 @@
+skip_docs
+
+# iOS Specific Constants
+IOS_PROJECT = "TrezorSuite.xcodeproj".freeze
+IOS_PROJECT_WORKSPACE = "TrezorSuite.xcworkspace".freeze
+IOS_PROJECT_SCHEME = "TrezorSuite".freeze
+
+platform :ios do
+
+  desc "iOS: Increments internal build number and version number"
+  private_lane :bump_ios_version do
+    previous_build_number = latest_testflight_build_number(
+      app_identifier: APP_ID
+    )
+
+    increment_build_number(
+      xcodeproj: project,
+      build_number: previous_build_number + 1
+    )
+    increment_version_number(
+      xcodeproj: project,
+      version_number: VERSION
+    )
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    # Get the certification
+    # cert
+    # Connect the provisioning profile.
+    # sigh(force: true)
+    bump_ios_version
+
+    build_app(workspace: IOS_PROJECT_WORKSPACE, scheme: IOS_PROJECT_SCHEME)
+    upload_to_testflight
+  end
+
+  after_all do |lane|
+    # This block is called, only if the executed lane was successful
+
+    # slack(
+    #   message: "Successfully deployed new App Update."
+    # )
+  end
+
+  error do |lane, exception|
+    # slack(
+    #   message: exception.message,
+    #   success: false
+    # )
+  end
+end

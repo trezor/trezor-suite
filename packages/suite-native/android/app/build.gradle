@@ -1,5 +1,9 @@
 apply plugin: "com.android.application"
 
+if (getGradle().getStartParameter().getTaskRequests().toString().contains("firebaseDevelop")){
+    apply plugin: 'com.google.gms.google-services'
+}
+
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
 
@@ -136,15 +140,16 @@ def reactNativeArchitectures() {
 
 android {
     ndkVersion rootProject.ext.ndkVersion
-
     compileSdkVersion rootProject.ext.compileSdkVersion
+    flavorDimensions "default"
 
     defaultConfig {
         applicationId "io.trezor.suite"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        // defaults - correct versions are managed by fastlane while building the app
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
@@ -233,6 +238,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (System.getenv("TREZOR_UPLOAD_STORE_FILE")) {
+                storeFile file(System.getenv("TREZOR_UPLOAD_STORE_FILE"))
+                storePassword System.getenv("TREZOR_UPLOAD_STORE_PASSWORD")
+                keyAlias System.getenv("TREZOR_UPLOAD_KEY_ALIAS")
+                keyPassword System.getenv("TREZOR_UPLOAD_KEY_PASSWORD")
+            }
+        }
     }
     buildTypes {
         debug {
@@ -241,9 +254,23 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+    productFlavors {
+        dev {
+            applicationIdSuffix '.debug'
+        }
+        firebaseDevelop {
+            applicationIdSuffix '.develop'
+        }
+        firebaseStaging {
+            applicationIdSuffix '.staging'
+        }
+        prod {
+            // Placeholder, we can assemble `prodRelease` build variant
         }
     }
 
@@ -266,6 +293,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    firebaseDevelopImplementation platform('com.google.firebase:firebase-bom:30.1.0')
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
