@@ -113,7 +113,7 @@ jobs:
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
-      methods: "tezosGetAddress,tezosGetPublicKey"
+      methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
 
   binance:
     needs: [build]
