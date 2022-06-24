@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 
-import { useSelector, useActions } from '@suite-hooks';
+import { useLocation } from 'react-router-dom';
+import { useActions } from '@suite-hooks/useActions';
 import * as routerActions from '@suite-actions/routerActions';
 import history from '@suite/support/history';
+import { useSelector } from '@suite-hooks';
+import { useDidUpdate } from '@suite-hooks/useDidUpdate';
 
 const RouterComponent = () => {
-    const { storageLoaded } = useSelector(state => ({
-        storageLoaded: state.suite.storageLoaded,
+    const { routerLoaded } = useSelector(state => ({
+        routerLoaded: state.router.loaded,
     }));
 
     const location = useLocation();
@@ -16,14 +18,14 @@ const RouterComponent = () => {
         onBeforePopState: routerActions.onBeforePopState,
     });
 
-    useEffect(() => {
+    useDidUpdate(() => {
         // Let router to be initialized properly
-        if (storageLoaded) {
+        if (routerLoaded) {
             // Handle browser navigation (back button)
             const url = location.pathname + location.hash;
             onLocationChange(url);
         }
-    }, [location.pathname, location.hash, onLocationChange, storageLoaded]);
+    }, [location.pathname, location.hash, onLocationChange]);
 
     useEffect(() => {
         const onPopState = () => {
