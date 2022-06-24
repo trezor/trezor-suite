@@ -6,7 +6,7 @@ on:
     paths:
       - "packages/blockchain-link"
       - "packages/connect*/**"
-      - "packages/integration-tests/project/connect*/**"
+      - "packages/integration-tests/projects/connect*/**"
       - "packages/transport"
       - "packages/utxo-lib"
       - "packages/utils"
