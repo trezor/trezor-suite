@@ -64,9 +64,6 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
         }
 
         persistSettings(settings);
-
-        // Notify the renderer.
-        mainWindow.webContents.send('tor/status', settings.running);
     };
 
     ipcMain.handle('tor/toggle', async (_: unknown, shouldEnableTor: boolean) => {
@@ -153,6 +150,7 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
     }
 
     await setupTor(store.getTorSettings());
+    mainWindow.webContents.send('tor/status', store.getTorSettings().running);
 };
 
 export default init;
