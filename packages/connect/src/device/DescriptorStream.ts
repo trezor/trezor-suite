@@ -117,6 +117,7 @@ export class DescriptorStream extends EventEmitter {
             descriptors = waitForEvent
                 ? await this.transport.enumerate(current)
                 : await this.transport.enumerate();
+            console.log('descriptors stream', descriptors);
             if (this.listening && !waitForEvent) {
                 // enumerate returns some value
                 // TRANSPORT.START will be emitted from DeviceList after device will be available (either acquired or unacquired)

@@ -1,15 +1,11 @@
-// bridge v2 is half-way between lowlevel and not
-// however, it is not doing actual sending in/to the devices
-// and it refers enumerate to bridge
-// import { versionUtils } from '@trezor/utils';
-
 import { request as http, setFetch as rSetFetch } from '../utils/http';
 import * as check from '../utils/highlevel-checks';
 import { buildOne } from '../lowlevel/send';
 import { receiveOne } from '../lowlevel/receive';
 import { DEFAULT_URL } from '../constants';
-import type { AcquireInput, TrezorDeviceInfoWithSession } from '../types';
 import { Transport } from './abstract';
+
+import type { AcquireInput, TrezorDeviceInfoWithSession } from '../types';
 
 type IncompleteRequestOptions = {
     body?: Array<any> | Record<string, unknown> | string;
@@ -20,12 +16,12 @@ export class BridgeTransport extends Transport {
     bridgeVersion?: string;
     debug = false;
     isOutdated?: boolean;
+    // todo: name only 'bridge' ? or BridgeTransport and WebUsbTransport ?
     name = 'BridgeTransport';
     url: string;
 
     constructor({ url = DEFAULT_URL }: { url?: string }) {
         super({});
-        // this.name = 'BridgeTransport';
         this.url = url;
     }
 
@@ -33,21 +29,6 @@ export class BridgeTransport extends Transport {
         this.debug = !!debug;
         await this._silentInit();
     }
-
-    // TODO(karliatto): we are getting rid of `listen` in all the transport.
-    // async listen(old?: Array<TrezorDeviceInfoWithSession>) {
-    //     console.log('old in listen Bridge transport', old);
-    //     if (old == null) {
-    //         throw new Error('Bridge v2 does not support listen without previous.');
-    //     }
-    //     const devicesS = await this._post({
-    //         url: '/listen',
-    //         body: old,
-    //     });
-    //     const devices = check.devices(devicesS);
-    //     console.log('devices from listen in bridge transport', devices);
-    //     return devices;
-    // }
 
     async enumerate(old?: Array<TrezorDeviceInfoWithSession>) {
         if (old) {

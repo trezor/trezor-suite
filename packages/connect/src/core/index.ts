@@ -1055,6 +1055,7 @@ export const initTransport = async (settings: ConnectSettings) => {
             initDeviceList(settings);
         }
     } catch (error) {
+        console.log('connect index init transport error', error);
         _log.error('initTransport', error);
         throw error;
     }

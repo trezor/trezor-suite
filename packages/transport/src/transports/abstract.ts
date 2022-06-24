@@ -55,13 +55,6 @@ export abstract class Transport {
         this.configured = true;
     }
 
-    // abstract post(
-    //     session: string,
-    //     name: string,
-    //     data: Record<string, unknown>,
-    //     debugLink: boolean,
-    // ): Promise<void>;
-    // abstract read(session: string, debugLink: boolean): Promise<MessageFromTrezor>;
     // resolves when the transport can be used; rejects when it cannot
     abstract init(debug?: boolean): Promise<void>;
 

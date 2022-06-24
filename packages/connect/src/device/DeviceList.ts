@@ -109,11 +109,11 @@ export class DeviceList extends EventEmitter {
             // this.transport = bridge;
         }
 
-        if (webusb && typeof WebUsbTransport !== 'undefined') {
-            const webusb: Transport = new WebUsbTransport({});
-            transports.push(webusb);
-            this.transport = webusb;
-        }
+        // if (webusb && typeof WebUsbTransport !== 'undefined') {
+        // const webusb: Transport = new WebUsbTransport({});
+        // transports.push(webusb);
+        this.transport = new WebUsbTransport({});
+        // }
 
         // todo: something that takes one transport or the other depending on a priority list or similar.
         // this.transport = new FallbackTransport({ transports, debug: false });

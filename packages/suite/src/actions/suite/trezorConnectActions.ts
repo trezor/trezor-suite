@@ -8,7 +8,7 @@ import { SUITE } from '@suite-actions/constants';
 import { lockDevice } from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import { isWeb } from '@suite-utils/env';
-import { resolveStaticPath } from '@trezor/utils';
+// import { resolveStaticPath } from '@trezor/utils';
 
 export const cardanoPatch = () => (_dispatch: Dispatch, getState: GetState) => {
     // Pass additional parameter `useCardanoDerivation` to Trezor Connect methods
@@ -140,6 +140,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             type: SUITE.CONNECT_INITIALIZED,
         });
     } catch (error) {
+        console.log('connect ererr', error);
         let formattedError: string;
         if (typeof error === 'string') {
             formattedError = error;
