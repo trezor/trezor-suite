@@ -314,7 +314,7 @@ connect-popup manual:
             "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
             "nemGetAddress,nemSignTransaction",
             "rippleGetAddress,rippleSignTransaction",
-            "tezosGetAddress,tezosGetPublicKey",
+            "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction",
             "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction",
           ]
         TESTS_MOCK_BACKENDS: "false"

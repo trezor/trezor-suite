@@ -56,6 +56,7 @@ import stellarGetAddress from './stellarGetAddress';
 import stellarSignTransaction from './stellarSignTransaction';
 import tezosGetAddress from './tezosGetAddress';
 import tezosGetPublicKey from './tezosGetPublicKey';
+import tezosSignTransaction from './tezosSignTransaction';
 import verifyMessage from './verifyMessage';
 import verifyMessageSegwit from './verifyMessageSegwit';
 import verifyMessageSegwitNative from './verifyMessageSegwitNative';
@@ -146,6 +147,7 @@ let fixtures = [
     stellarSignTransaction,
     tezosGetAddress,
     tezosGetPublicKey,
+    tezosSignTransaction,
     verifyMessage,
     verifyMessageSegwit,
     verifyMessageSegwitNative,
