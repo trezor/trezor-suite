@@ -315,7 +315,7 @@ connect-popup manual:
             "nemGetAddress,nemSignTransaction",
             "rippleGetAddress,rippleSignTransaction",
             "tezosGetAddress,tezosGetPublicKey",
-            "binanceSignTransaction",
+            "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction",
           ]
         TESTS_MOCK_BACKENDS: "false"
   interruptible: true

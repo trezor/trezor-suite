@@ -1,6 +1,8 @@
 import applyFlags from './applyFlags';
 import applySettings from './applySettings';
 import binanceSignTransaction from './binanceSignTransaction';
+import binanceGetPublicKey from './binanceGetPublicKey';
+import binanceGetAddress from './binanceGetAddress';
 import cardanoGetAddress from './cardanoGetAddress';
 import cardanoGetAddressDerivations from './cardanoGetAddressDerivations';
 import cardanoGetNativeScriptHash from './cardanoGetNativeScriptHash';
@@ -60,8 +62,6 @@ import verifyMessageSegwitNative from './verifyMessageSegwitNative';
 
 // TODO: add fixtures for missing dependencies https://github.com/trezor/trezor-suite/issues/5353
 // backupDevice
-// binanceGetAddress
-// binanceGetPublicKey
 // blockchainDisconnect
 // blockchainEstimateFee
 // blockchainGetAccountBalanceHistory
@@ -90,6 +90,8 @@ import verifyMessageSegwitNative from './verifyMessageSegwitNative';
 let fixtures = [
     applyFlags,
     applySettings,
+    binanceGetAddress,
+    binanceGetPublicKey,
     binanceSignTransaction,
     cardanoGetAddress,
     cardanoGetAddressDerivations,

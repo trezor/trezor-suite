@@ -120,4 +120,4 @@ jobs:
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
-      methods: "binanceSignTransaction"
+      methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
