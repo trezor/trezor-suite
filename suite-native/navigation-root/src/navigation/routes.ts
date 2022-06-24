@@ -23,21 +23,21 @@ export type RootTabsParamList = {
 export const rootTabsOptions: TabsOption = {
     [RouteTabs.HomeStack]: {
         iconName: 'home',
-        routeLabel: 'Home',
+        label: 'Home',
     },
     [RouteTabs.Accounts]: {
         iconName: 'standardWallet',
-        routeLabel: 'Accounts',
+        label: 'Accounts',
     },
     [RouteTabs.Action]: {
         iconName: 'action',
     },
     [RouteTabs.Prices]: {
         iconName: 'discover',
-        routeLabel: 'Discover',
+        label: 'Discover',
     },
     [RouteTabs.SettingsStack]: {
         iconName: 'trezorT',
-        routeLabel: 'Trezor',
+        label: 'Trezor',
     },
 };

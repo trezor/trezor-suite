@@ -4,7 +4,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 const actionTabItemStyle = prepareNativeStyle(utils => ({
-    marginTop: -25,
+    marginTop: -24, // Top padding value of tab bar + 13px (from figma)
     marginHorizontal: -15,
     width: 58,
     height: 58,

@@ -19,5 +19,5 @@ export type StackNavigationProps<
 export type RouteProps<T extends ParamListBase, K extends keyof T> = RouteProp<T, K>;
 
 export interface TabsOption {
-    [tabName: string]: { iconName: IconName; routeLabel?: string };
+    [tabName: string]: { iconName: IconName; label?: string };
 }

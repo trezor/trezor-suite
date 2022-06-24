@@ -36,7 +36,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
         <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
-                const { iconName, routeLabel } = tabItemOptions[route.name];
+                const { iconName, label } = tabItemOptions[route.name];
 
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({
@@ -58,7 +58,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         key={route.key}
                         isFocused={isFocused}
                         iconName={iconName}
-                        title={routeLabel}
+                        title={label}
                         onPress={handleTabBarItemPress}
                     />
                 );
