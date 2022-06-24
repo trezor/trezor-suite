@@ -46,12 +46,12 @@ export type MetadataAction =
 let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-const createProvider = (type: MetadataProvider['type'], token?: MetadataProvider['token']) => {
+const createProvider = (type: MetadataProvider['type'], tokens?: MetadataProvider['tokens']) => {
     switch (type) {
         case 'dropbox':
-            return new DropboxProvider(token);
+            return new DropboxProvider(tokens?.refreshToken);
         case 'google':
-            return new GoogleProvider(token);
+            return new GoogleProvider(tokens?.accessToken, tokens?.refreshToken);
         case 'fileSystem':
             return new FileSystemProvider();
         default:
@@ -154,6 +154,7 @@ export const disconnectProvider =
  */
 const handleProviderError =
     (error: MetadataProviderError, action: string) => (dispatch: Dispatch) => {
+        console.log('error: ', error);
         // error should be of specified type, but in case it is not (catch is not typed) show generic error
         if (!error?.code) {
             // if this happens, it means that there is a hole in error handling and it should be fixed
@@ -207,7 +208,7 @@ const getProvider = () => (_dispatch: Dispatch, getState: GetState) => {
 
     if (providerInstance) return providerInstance;
 
-    providerInstance = createProvider(state.type, state.token);
+    providerInstance = createProvider(state.type, state.tokens);
 
     return providerInstance;
 };
@@ -232,6 +233,8 @@ export const initProvider = () => (dispatch: Dispatch) => {
 
 export const fetchMetadata =
     (deviceState: string) => async (dispatch: Dispatch, getState: GetState) => {
+        console.log('metadatActions fetchMetadata');
+
         const provider = dispatch(getProvider());
         if (!provider) {
             return;
@@ -250,7 +253,10 @@ export const fetchMetadata =
         // this triggers renewal of access token if needed. Otherwise multiple requests
         // to renew access token are issued by every provider.getFileContent
         const response = await provider.getProviderDetails();
-        if (!response.success) return;
+        if (!response.success) {
+            console.log('revoking', response);
+            return dispatch(handleProviderError(response, ProviderErrorAction.LOAD));
+        }
 
         const deviceFileContentP = new Promise<void>((resolve, reject) => {
             if (device?.metadata?.status !== 'enabled') {
@@ -408,19 +414,24 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
 };
 
 export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
+    console.log('metadatActions connectProvider');
+
     let provider = dispatch(getProvider());
 
     if (!provider) {
         provider = createProvider(type);
     }
+
     const isConnected = await provider.isConnected();
-    if (provider && !isConnected) {
+    if (!isConnected) {
         const connectionResult = await provider.connect();
         if ('error' in connectionResult) {
             return connectionResult.error;
         }
     }
+
     const result = await provider.getProviderDetails();
+
     if (!result.success) {
         dispatch(handleProviderError(result, ProviderErrorAction.CONNECT));
         return;

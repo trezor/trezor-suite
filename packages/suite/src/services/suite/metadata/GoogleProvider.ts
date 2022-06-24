@@ -3,16 +3,16 @@ import GoogleClient from '@suite/services/google';
 
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
-    client: GoogleClient;
     isCloud = true;
-    constructor(token?: string) {
+    constructor(accessToken?: string, refreshToken?: string) {
         super('google');
-        this.client = new GoogleClient(token);
+        console.log('init in GoogleProvider');
+        GoogleClient.init(accessToken, refreshToken);
     }
 
     async connect() {
         try {
-            await this.client.authorize();
+            await GoogleClient.authorize();
             this.connected = true;
             return this.ok();
         } catch (err) {
@@ -28,7 +28,7 @@ class GoogleProvider extends AbstractMetadataProvider {
 
     async disconnect() {
         try {
-            await this.client.revoke();
+            await GoogleClient.revoke();
             return this.ok();
         } catch (error) {
             return this.handleProviderError(error);
@@ -37,12 +37,12 @@ class GoogleProvider extends AbstractMetadataProvider {
 
     async getFileContent(file: string) {
         try {
-            const id = await this.client.getIdByName(`${file}.mtdt`);
+            const id = await GoogleClient.getIdByName(`${file}.mtdt`);
             if (!id) {
                 return this.ok(undefined);
             }
 
-            const response = await this.client.get(
+            const response = await GoogleClient.get(
                 {
                     query: {
                         alt: 'media',
@@ -67,9 +67,9 @@ class GoogleProvider extends AbstractMetadataProvider {
         try {
             // search for file by name with forceReload=true parameter to make sure that we do not save
             // two files with the same name but different ids
-            const id = await this.client.getIdByName(`${file}.mtdt`, true);
+            const id = await GoogleClient.getIdByName(`${file}.mtdt`, true);
             if (id) {
-                await this.client.update(
+                await GoogleClient.update(
                     {
                         body: {
                             name: `${file}.mtdt`,
@@ -81,7 +81,7 @@ class GoogleProvider extends AbstractMetadataProvider {
                 );
                 return this.ok();
             }
-            await this.client.create(
+            await GoogleClient.create(
                 {
                     body: {
                         name: `${file}.mtdt`,
@@ -98,13 +98,25 @@ class GoogleProvider extends AbstractMetadataProvider {
     }
 
     async getProviderDetails() {
-        if (!this.client.token) return this.error('AUTH_ERROR', 'token is missing');
+        // if (!GoogleClient.token) return this.error('AUTH_ERROR', 'token is missing');
         try {
-            const response = await this.client.getTokenInfo();
+            console.log(
+                'getting token info',
+                GoogleClient.oauth2Client.credentials.refresh_token,
+                GoogleClient.oauth2Client.credentials.access_token,
+            );
+            const response = await GoogleClient.getTokenInfo();
+            console.log(
+                'got token info',
+                GoogleClient.oauth2Client.credentials.refresh_token,
+                GoogleClient.oauth2Client.credentials.access_token,
+            );
             return this.ok({
                 type: this.type,
                 isCloud: this.isCloud,
-                token: this.client.token,
+                token:
+                    GoogleClient.oauth2Client.credentials.refresh_token ||
+                    GoogleClient.oauth2Client.credentials.access_token!,
                 user: response.user.displayName,
             } as const);
         } catch (err) {
@@ -114,8 +126,9 @@ class GoogleProvider extends AbstractMetadataProvider {
 
     async isConnected() {
         try {
-            await this.client.oauth2Client.getAccessToken();
-            return true;
+            const result = await GoogleClient.getAccessToken();
+            console.log('isConnected, a', result);
+            return !!result.access_token;
         } catch (_err) {
             return false;
         }

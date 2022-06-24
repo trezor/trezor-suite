@@ -30,9 +30,14 @@ export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDO
 // export const GOOGLE_CLIENT_ID_DESKTOP =
 //     '705190185912-q1usa46qtt21mbtldki8juhn78a0v0ma.apps.googleusercontent.com';
 export const GOOGLE_CLIENT_ID_DESKTOP =
-    '721022212539-0o49kanusndsufaeh1nut13pp23hb1t8.apps.googleusercontent.com';
-
+    // komar
+    // '721022212539-0o49kanusndsufaeh1nut13pp23hb1t8.apps.googleusercontent.com';
+    // desktop
+    '461402843655-q535pphcl2qq9u5o8kb66i02q7f7nn5r.apps.googleusercontent.com';
+// web
+// '461402843655-4e5qh2eqi47ghslmhd1tvsscrskuginb.apps.googleusercontent.com';
 export const GOOGLE_CLIENT_ID_WEB =
-    '705190185912-nejegm4dbdecdaiumncbaa4ulrfnpk82.apps.googleusercontent.com';
+    // '705190185912-nejegm4dbdecdaiumncbaa4ulrfnpk82.apps.googleusercontent.com';
+    '461402843655-4e5qh2eqi47ghslmhd1tvsscrskuginb.apps.googleusercontent.com';
 // dropbox allows authorization code flow for both web and desktop
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';
