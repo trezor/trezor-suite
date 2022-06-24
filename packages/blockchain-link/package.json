@@ -65,6 +65,6 @@
         "events": "^3.3.0",
         "ripple-lib": "1.10.0",
         "socks-proxy-agent": "6.1.1",
-        "ws": "7.4.6"
+        "ws": "8.8.0"
     }
 }
