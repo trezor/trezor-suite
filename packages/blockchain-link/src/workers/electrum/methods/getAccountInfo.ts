@@ -5,7 +5,7 @@ import type { ElectrumAPI } from '../../../types/electrum';
 import type { GetAccountInfo as Req } from '../../../types/messages';
 import type { GetAccountInfo as Res } from '../../../types/responses';
 import type { VinVout } from '../../../types/blockbook';
-import type { Address } from '../../../types';
+import type { Address, Transaction } from '../../../types';
 
 // const PAGE_DEFAULT = 0;
 const PAGE_SIZE_DEFAULT = 25;
@@ -46,8 +46,15 @@ const getBalances =
             }),
         );
 
+const getPagination = (perPage: number, txs: Transaction[]) => ({
+    index: 1,
+    // Intentionally incorrect as Electrum backend doesn't support pagination yet but Suite needs total page count
+    size: perPage,
+    total: Math.ceil(txs.length / perPage),
+});
+
 const getAccountInfo: Api<Req, Res> = async (client, payload) => {
-    const { descriptor, details = 'basic', pageSize } = payload;
+    const { descriptor, details = 'basic', pageSize = PAGE_SIZE_DEFAULT } = payload;
     const network = client.getInfo()?.network;
 
     const parsed = tryGetScripthash(descriptor, network);
@@ -71,15 +78,6 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
                   )
                 : undefined;
 
-        const page =
-            details === 'txids' || details === 'txs'
-                ? {
-                      index: 1,
-                      size: pageSize || PAGE_SIZE_DEFAULT,
-                      total: 1,
-                  }
-                : undefined;
-
         return {
             descriptor,
             balance: confirmed.toString(),
@@ -90,7 +88,7 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
                 unconfirmed: historyUnconfirmed,
                 transactions,
             },
-            page,
+            page: details === 'txs' ? getPagination(pageSize, transactions ?? []) : undefined,
         };
     }
     const discover = discoverAddress(client);
@@ -172,6 +170,7 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
                       used: addresses.used.map(extendAddressInfo),
                   }
                 : undefined,
+        page: details === 'txs' ? getPagination(pageSize, transactions) : undefined,
     };
 };
 
