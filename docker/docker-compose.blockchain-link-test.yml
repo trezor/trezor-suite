@@ -1,8 +1,8 @@
-version: '3'
+version: "3.9"
 services:
   electrum-regtest:
     image: ghcr.io/vdovhanych/electrs:latest
-    network_mode: bridge  # this makes docker reuse existing networks
+    network_mode: bridge # this makes docker reuse existing networks
 
   test-run:
     build:
