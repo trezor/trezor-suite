@@ -46,9 +46,7 @@
 
 /packages/suite-desktop-api @szymonlesisz @marekrjpolak
 
-/packages/suite-native @matejkriz @Nodonisko
-
-/packages/suite-native-* @Nodonisko @bouchja1 @juriczech
+/suite-native @Nodonisko @bouchja1 @juriczech
 
 /packages/suite-storage @matejkriz
 
