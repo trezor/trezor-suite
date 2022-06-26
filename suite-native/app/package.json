@@ -15,10 +15,13 @@
         "pods": "npx pod-install"
     },
     "dependencies": {
+        "@react-navigation/bottom-tabs": "^6.3.1",
         "@react-navigation/native": "^6.0.10",
         "@shopify/react-native-skia": "0.1.123",
         "@suite-native/atoms": "*",
-        "@suite-native/navigation-root": "*",
+        "@suite-native/module-home": "*",
+        "@suite-native/module-settings": "*",
+        "@suite-native/navigation": "*",
         "@trezor/connect": "9.0.0-beta.4",
         "@trezor/styles": "*",
         "@trezor/theme": "*",

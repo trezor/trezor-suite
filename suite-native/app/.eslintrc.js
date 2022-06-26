@@ -4,13 +4,19 @@ module.exports = {
         // These rules have to do with variable declarations.
         'no-catch-shadow': 1, // disallow the catch clause parameter name being the same as a variable in the outer scope (off by default in the node environment)
         'no-label-var': 2, // disallow labels that share a name with a variable
-        'no-shadow': 2, // disallow declaration of variables already declared in the outer scope
+        'no-shadow': 'off', // disable in favor of @typescript-eslint/no-shadow
+        '@typescript-eslint/no-shadow': ['error'], // disallow declaration of variables already declared in the outer scope
         'no-shadow-restricted-names': 2, // disallow shadowing of names such as arguments
-        'no-undef': 2, // disallow use of undeclared variables unless mentioned in a /*global */ block
+        'no-undef': 2, // disallow use of undeclared variables unless mentioned in a /* global */ block
         'no-undefined': 0, // disallow use of undefined variable (off by default)
         'no-undef-init': 2, // disallow use of undefined when initializing variables
-        'no-unused-vars': [2, { vars: 'all', args: 'none', ignoreRestSiblings: true }], // disallow declaration of variables that are not used in the code
-        'no-use-before-define': 2, // disallow use of variables before they are defined
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': [
+            2,
+            { vars: 'all', args: 'none', ignoreRestSiblings: true },
+        ],
+        'no-use-before-define': 'off',
+        '@typescript-eslint/no-use-before-define': ['error'],
 
         // Node.js
         // These rules are specific to JavaScript running on Node.js.

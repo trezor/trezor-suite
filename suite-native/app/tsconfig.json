@@ -3,7 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../atoms" },
-        { "path": "../navigation-root" },
+        { "path": "../module-home" },
+        { "path": "../module-settings" },
+        { "path": "../navigation" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

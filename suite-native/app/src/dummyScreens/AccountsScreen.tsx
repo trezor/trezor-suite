@@ -1,5 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
+
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
