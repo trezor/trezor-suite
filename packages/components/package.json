@@ -8,7 +8,7 @@
     "scripts": {
         "lint": "run-s lint:*",
         "lint:js": "eslint '**/*.{ts,tsx,js}'",
-        "lint:styles": "npx stylelint './src/**/*{.tsx,.ts}'",
+        "lint:styles": "npx stylelint './src/**/*{.tsx,.ts}' --cache",
         "lint-fix": "npx eslint ./src --fix",
         "type-check": "tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
