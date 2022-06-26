@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../module-settings" },
+        { "path": "../navigation" },
+        { "path": "../atoms" },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/styles" }
+    ]
+}

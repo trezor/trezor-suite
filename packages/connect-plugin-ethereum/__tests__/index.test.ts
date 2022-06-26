@@ -12,8 +12,8 @@ function messageToHex(string: string) {
 
 describe('typedData', () => {
     commonFixtures.tests
-        .filter(test => test.parameters.metamask_v4_compat)
-        .forEach(test => {
+        .filter((test: any) => test.parameters.metamask_v4_compat)
+        .forEach((test: any) => {
             it('typedData to message_hash and domain_separator_hash', () => {
                 const transformed = transformTypedData(
                     // @ts-ignore JSON..

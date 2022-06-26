@@ -11,6 +11,7 @@
     "workspaces": {
         "packages": [
             "packages/*",
+            "suite-native/*",
             "scripts"
         ],
         "nohoist": [

@@ -28,7 +28,7 @@
 | [@trezor/suite-data](./packages/suite-data)                           | suite static data                            |
 | [@trezor/suite-desktop-api](./packages/suite-desktop-api)             | API for suite - suite-desktop communication  |
 | [@trezor/suite-desktop](./packages/suite-desktop)                     | suite build target for Mac, Win, Linux       |
-| [@trezor/suite-native](./packages/suite-native)                       | suite build target for react-native          |
+| [@trezor/suite-native](./suite-native/app)                            | suite build target for react-native          |
 | [@trezor/suite-storage](./packages/suite-storage)                     | abstract database definition for suite       |
 | [@trezor/suite-web-landing](./packages/suite-web-landing)             | https://suite.trezor.io/                     |
 | [@trezor/suite-web](./packages/suite-web)                             | suite build target for web                   |
@@ -49,7 +49,7 @@ Before you start make sure you have downloaded and installed [NVM](https://githu
 -   `yarn`
 -   `yarn build:libs && yarn workspace @trezor/suite-data msg-system-sign-config`
 
-_To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-native#development)._
+_To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#development)._
 
 Run a dev build:
 
