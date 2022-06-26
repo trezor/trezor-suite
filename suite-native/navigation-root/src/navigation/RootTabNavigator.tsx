@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { TabBar } from '@suite-native/navigation';
-import { HomeStackNavigator } from '@suite-native/home';
-import { SettingsStackNavigator } from '@suite-native/settings';
+import { HomeStackNavigator } from '@suite-native/module-home';
+import { SettingsStackNavigator } from '@suite-native/module-settings';
 
 import { AccountsScreen } from '../dummyScreens/AccountsScreen';
 import { ActionScreen } from '../dummyScreens/ActionScreen';

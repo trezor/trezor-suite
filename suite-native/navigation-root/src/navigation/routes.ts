@@ -1,8 +1,8 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
-import { HomeStackParamList } from '@suite-native/home';
+import { HomeStackParamList } from '@suite-native/module-home';
 import { TabsOption } from '@suite-native/navigation';
-import { SettingsStackParamList } from '@suite-native/settings';
+import { SettingsStackParamList } from '@suite-native/module-settings';
 
 export enum RouteTabs {
     HomeStack = 'HomeStack',
