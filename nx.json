@@ -1,0 +1,35 @@
+{
+    "extends": "nx/presets/npm.json",
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "nx/tasks-runners/default",
+            "options": {
+                "cacheableOperations": [
+                    "lint",
+                    "test:unit",
+                    "type-check",
+                    "lint:js",
+                    "lint:styles"
+                ],
+                "accessToken": "NGE1OTQ2MjMtNTE4MC00MjJlLTk3MDMtYzdjNDdjODEzNDc5fHJlYWQtd3JpdGU="
+            }
+        }
+    },
+    "targetDefaults": {
+        "build:lib": {
+            "dependsOn": ["^build:lib"],
+            "outputs": ["./lib"]
+        },
+        "type-check": {
+            "dependsOn": ["^build:lib", "^type-check"],
+            "outputs": []
+        },
+        "test:unit": {
+            "dependsOn": ["^build:lib"],
+            "outputs": []
+        }
+    },
+    "affected": {
+        "defaultBase": "develop"
+    }
+}
