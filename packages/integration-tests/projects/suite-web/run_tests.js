@@ -118,6 +118,7 @@ const runTests = async () => {
             baseUrl: CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
             supportFile: `${__dirname}/support/index.ts`,
             pluginsFile: `${__dirname}/plugins/index.js`,
+            fixturesFolder: `${__dirname}/fixtures`,
             screenshotsFolder: `${__dirname}/screenshots`,
             integrationFolder: `${__dirname}/tests`,
             videosFolder: `${__dirname}/videos`,
