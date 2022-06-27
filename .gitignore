@@ -82,11 +82,6 @@ local.properties
 *.iml
 *.hprof
 
-# node.js
-node_modules/
-npm-debug.log
-yarn-error.log
-
 # BUCK
 buck-out/
 \.buckd/
@@ -100,30 +95,30 @@ buck-out/
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/
 
-android/fastlane/report.xml
-android/fastlane/Preview.html
-android/fastlane/screenshots
-ios/fastlane/report.xml
-ios/fastlane/Preview.html
-ios/fastlane/screenshots
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
+**/android/fastlane/report.xml
+**/android/fastlane/Preview.html
+**/android/fastlane/screenshots
+**/ios/fastlane/report.xml
+**/ios/fastlane/Preview.html
+**/ios/fastlane/screenshots
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
 
 # scan temporary files
-android/fastlane/test_output
+**/android/fastlane/test_output
 
 # ios
-ios/*.xcarchive
-ios/builds/*
+**/ios/*.xcarchive
+**/ios/builds/*
 # Ruby / CocoaPods
-ios/Pods/
-vendor/bundle/
+**/ios/Pods/
+**/vendor/bundle/
 
 # android
-android/builds/*
+**/android/builds/*
 # fastlane supply (google service account - upload key)
-android/upload-key.json
+**/android/upload-key.json
 
 # Bundle artifact
 *.jsbundle
