@@ -2,14 +2,13 @@ import React from 'react';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TabBarItem } from './TabBarItem';
-import { RouteTabs } from '@suite-native/navigation-root';
 import { Box } from '@suite-native/atoms';
-import { TabsOption } from '../types';
+import { TabsOptions } from '../types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ActionTabItem } from './ActionTabBarItem';
 
 interface TabBarProps extends BottomTabBarProps {
-    tabItemOptions: TabsOption;
+    tabItemOptions: TabsOptions;
 }
 
 const tabBarStyle = prepareNativeStyle<{ insetLeft: number; insetRight: number }>(
@@ -36,7 +35,9 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
         <Box style={applyStyle(tabBarStyle, { insetLeft: insets.left, insetRight: insets.right })}>
             {state.routes.map((route, index) => {
                 const isFocused = state.index === index;
-                const { iconName, label } = tabItemOptions[route.name];
+                const { iconName, label, isActionTabItem } = tabItemOptions[route.name];
+
+                if (isActionTabItem) return <ActionTabItem key={route.key} />;
 
                 const handleTabBarItemPress = () => {
                     const event = navigation.emit({
@@ -50,8 +51,6 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         navigation.navigate(route.name, { merge: true });
                     }
                 };
-
-                if (route.name === RouteTabs.Action) return <ActionTabItem key={route.key} />;
 
                 return (
                     <TabBarItem
