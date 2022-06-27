@@ -6,6 +6,7 @@
 export const icons = {
     accounts: require('../assets/icons/accounts.svg'),
     action: require('../assets/icons/action.svg'),
+    actionHorizontal: require('../assets/icons/actionHorizontal.svg'),
     backspace: require('../assets/icons/backspace.svg'),
     biometric: require('../assets/icons/biometric.svg'),
     calendar: require('../assets/icons/calendar.svg'),
@@ -15,6 +16,7 @@ export const icons = {
     chevronRight: require('../assets/icons/chevronRight.svg'),
     close: require('../assets/icons/close.svg'),
     closeCircle: require('../assets/icons/closeCircle.svg'),
+    discover: require('../assets/icons/discover.svg'),
     eject: require('../assets/icons/eject.svg'),
     eyeglasses: require('../assets/icons/eyeglasses.svg'),
     flag: require('../assets/icons/flag.svg'),
@@ -39,6 +41,7 @@ export const icons = {
     standardWallet: require('../assets/icons/standardWallet.svg'),
     tor: require('../assets/icons/tor.svg'),
     trade: require('../assets/icons/trade.svg'),
+    trezorT: require('../assets/icons/trezorT.svg'),
     warningCircle: require('../assets/icons/warningCircle.svg'),
 } as const;
 export type IconName = keyof typeof icons;
