@@ -10,7 +10,7 @@ const result = await TrezorConnect.cardanoGetNativeScriptHash(params);
 
 [\***\*Optional common params\*\***](commonParams.md)
 
-##### [flowtype](../../src/js/types/networks/cardano.js#L76-L79)
+#### [type](../../../../packages/connect/src/types/api/cardanoGetNativeScriptHash.ts#L14)
 
 -   `script` — _required_ `CardanoNativeScript` see description below.
 -   `displayFormat` — _required_ `CardanoNativeScriptHashDisplayFormat` enum.
@@ -18,7 +18,7 @@ const result = await TrezorConnect.cardanoGetNativeScriptHash(params);
 
 #### CardanoNativeScript
 
-###### [flowtype](../../src/js/types/networks/cardano.js#L66-74)
+##### [type](../../../../packages/connect/src/types/api/cardanoGetNativeScriptHash.ts#L4)
 
 -   `type` - _required_ `CardanoNativeScriptType`/`number`.
 -   `scripts` — _optional_ `Array` of nested `CardanoNativeScript`s.
