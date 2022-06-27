@@ -1,8 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-
-import { HomeStackParamList } from '@suite-native/home';
-import { TabsOption } from '@suite-native/navigation';
-import { SettingsStackParamList } from '@suite-native/settings';
+import { HomeStackParamList } from '@suite-native/module-home';
+import { SettingsStackParamList } from '@suite-native/module-settings';
+import { TabsOptions } from '@suite-native/navigation';
 
 export enum RouteTabs {
     HomeStack = 'HomeStack',
@@ -20,7 +19,7 @@ export type RootTabsParamList = {
     [RouteTabs.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
 };
 
-export const rootTabsOptions: TabsOption = {
+export const rootTabsOptions: TabsOptions = {
     [RouteTabs.HomeStack]: {
         iconName: 'home',
         label: 'Home',

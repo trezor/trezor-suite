@@ -1,8 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
-import { TabProps } from '@suite-native/navigation';
+
 import { Text } from '@suite-native/atoms';
+import { TabProps } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { RootTabsParamList, RouteTabs } from '../navigation/routes';
 
 const pricesScreenStyle = prepareNativeStyle(() => ({

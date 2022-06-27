@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/settings",
+    "name": "@suite-native/module-settings",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

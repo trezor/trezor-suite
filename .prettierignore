@@ -44,6 +44,7 @@ __docker-snapshots__
 __pycache__/
 .cache/
 .eslintcache
+.stylelintache
 *.tsbuildinfo
 
 # model 1 emulation file
