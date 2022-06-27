@@ -11,31 +11,32 @@ const result = await TrezorConnect.cardanoSignTransaction(params);
 
 [\***\*Optional common params\*\***](commonParams.md)
 
-###### [flowtype](../../src/js/types/networks/cardano.js#L89-L216)
+#### [type](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L119)
 
 -   `signingMode` - _required_ [CardanoTxSigningMode](#CardanoTxSigningMode)
--   `inputs` - _required_ `Array` of [CardanoInput](../../src/js/types/networks/cardano.js#L92)
--   `outputs` - _required_ `Array` of [CardanoOutput](../../src/js/types/networks/cardano.js#L109)
+-   `inputs` - _required_ `Array` of [CardanoInput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L5)
+-   `outputs` - _required_ `Array` of [CardanoOutput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L22)
 -   `fee` - _required_ `String`
 -   `protocolMagic` - _required_ `Integer` 764824073 for Mainnet, 1097911063 for Testnet
 -   `networkId` - _required_ `Integer` 1 for Mainnet, 0 for Testnet
 -   `ttl` - _optional_ `String`
 -   `validityIntervalStart` - _optional_ `String`
--   `certificates` - _optional_ `Array` of [CardanoCertificate](../../src/js/types/networks/cardano.js#L158)
--   `withdrawals` - _optional_ `Array` of [CardanoWithdrawal](../../src/js/types/networks/cardano.js#L166)
--   `auxiliaryData` - _optional_ [CardanoAuxiliaryData](../../src/js/types/networks/cardano.js#L194)
--   `mint` - _optional_ [CardanoMint](../../src/js/types/networks/cardano.js#L174)
+-   `certificates` - _optional_ `Array` of [CardanoCertificate](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L73)
+-   `withdrawals` - _optional_ `Array` of [CardanoWithdrawal](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L82)
+-   `auxiliaryData` - _optional_ [CardanoAuxiliaryData](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L114)
+-   `mint` - _optional_ [CardanoMint](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L89)
 -   `scriptDataHash` - _optional_ `String`
--   `collateralInputs` - _optional_ `Array` of [CardanoCollateralInput](../../src/js/types/networks/cardano.js#L176)
--   `requiredSigners` - _optional_ `Array` of [CardanoRequiredSigner](../../src/js/types/networks/cardano.js#L182)
+-   `collateralInputs` - _optional_ `Array` of [CardanoCollateralInput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L91)
+-   `requiredSigners` - _optional_ `Array` of [CardanoRequiredSigner](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L97)
+-   `collateralReturn` - _optional_ [CardanoOutput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L22)
+-   `totalCollateral` - _optional_ `String`
+-   `referenceInputs` - _optional_ `Array` of [CardanoReferenceInput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L102)
 -   `additionalWitnessRequests` - _optional_ `Array` of `string | Array<number>` (paths). Used for multi-sig and token minting witness requests as those can not be determined from the transaction parameters.
 -   `metadata` - _removed_ - use `auxiliaryData` instead
 -   `derivationType` — _optional_ `CardanoDerivationType` enum. Determines used derivation type. Default is set to ICARUS_TREZOR=2.
 -   `includeNetworkId` — _optional_ `Boolean`. Determines whether `networkId` should be explicitly serialized into the transaction body. Default is `false`.
 
 ### CardanoTxSigningMode
-
-[Type definition](../../src/js/types/trezor/protobuf.js#L604)
 
 #### `ORDINARY_TRANSACTION`
 
@@ -128,6 +129,7 @@ TrezorConnect.cardanoSignTransaction({
             amount: '7120787',
         },
         {
+            format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
             address:
                 'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
             amount: '2000000',
@@ -147,6 +149,15 @@ TrezorConnect.cardanoSignTransaction({
             address: 'addr1w9rhu54nz94k9l5v6d9rzfs47h7dv7xffcwkekuxcx3evnqpvuxu0',
             amount: '1',
             datumHash: '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+        },
+        {
+            format: CardanoTxOutputSerializationFormat.MAP_BABBAGE,
+            address: 'addr1w9rhu54nz94k9l5v6d9rzfs47h7dv7xffcwkekuxcx3evnqpvuxu0',
+            amount: '1',
+            inlineDatum:
+                '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+            referenceScript:
+                '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b73b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
         },
     ],
     fee: '42',
@@ -472,6 +483,31 @@ TrezorConnect.cardanoSignTransaction({
             prev_index: 0,
         },
     ],
+    collateralReturn: {
+        format: CardanoTxOutputSerializationFormat.ARRAY_LEGACY,
+        address:
+            'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
+        amount: '1000',
+        tokenBundle: [
+            {
+                policyId: '95a292ffee938be03e9bae5657982a74e9014eb4960108c9e23a5b39',
+                tokenAmounts: [
+                    {
+                        assetNameBytes: '74652474436f696e',
+                        amount: '7878754',
+                    },
+                ],
+            },
+        ],
+    },
+    totalCollateral: '1000',
+    referenceInputs: [
+        {
+            path: "m/1852'/1815'/0'/0/0",
+            prev_hash: '1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc',
+            prev_index: 0,
+        },
+    ],
     requiredSigners: [
         {
             keyPath: "m/1852'/1815'/0'/0/1",
@@ -491,7 +527,7 @@ TrezorConnect.cardanoSignTransaction({
 
 Since transaction streaming has been introduced to the Cardano implementation on Trezor because of memory constraints, Trezor no longer returns the whole serialized transaction as a result of the `CardanoSignTransaction` call. Instead the transaction hash, transaction witnesses and auxiliary data supplement are returned and the serialized transaction needs to be assembled by the client.
 
-###### [flowtype](../../src/js/types/networks/cardano.js#L231-L235)
+#### [type](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L156)
 
 ```javascript
 {

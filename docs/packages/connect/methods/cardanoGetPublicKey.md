@@ -11,6 +11,8 @@ const result = await TrezorConnect.cardanoGetPublicKey(params);
 
 [\***\*Optional common params\*\***](commonParams.md)
 
+#### [type](../../../../packages/connect/src/types/api/cardanoGetPublicKey.ts#L4)
+
 #### Exporting single public key
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](path.md)

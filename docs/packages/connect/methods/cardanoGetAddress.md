@@ -10,6 +10,8 @@ const result = await TrezorConnect.cardanoGetAddress(params);
 
 [\***\*Optional common params\*\***](commonParams.md)
 
+#### [type](../../../../packages/connect/src/types/api/cardanoGetAddress.ts#L20)
+
 #### Exporting single address
 
 -   `addressParameters` — _required_ see description below
@@ -25,13 +27,13 @@ const result = await TrezorConnect.cardanoGetAddress(params);
 
 #### Address Parameters
 
-###### [flowtype](../../src/js/types/networks/cardano.js#L37-L45)
+##### [type](../../../../packages/connect/src/types/api/cardanoGetAddress.ts#L10)
 
 -   `addressType` - _required_ `CardanoAddressType`/`number` - you can use the flow `CARDANO.ADDRESS_TYPE` object or typescript `CardanoAddressType` enum. Supports all address types.
 -   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](path.md)
 -   `stakingPath` — _optional_ `string | Array<number>` minimum length is `5`. [read more](path.md) Used for base and reward address derivation
 -   `stakingKeyHash` - _optional_ `string` hex string of staking key hash. Used for base address derivation (as an alternative to `stakingPath`)
--   `certificatePointer` - _optional_ `CardanoCertificatePointer` object. Must contain `number`s `blockIndex`, `txIndex` and `certificateIndex`. ([flowtype](../../src/js/types/networks/cardano.js#L31-L35)) Used for pointer address derivation. [read more about pointer address](https://hydra.iohk.io/build/2006688/download/1/delegation_design_spec.pdf#subsubsection.3.2.2)
+-   `certificatePointer` - _optional_ [CardanoCertificatePointer](../../../../packages/connect/src/types/api/cardanoGetAddress.ts#L4) object. Must contain `number`s `blockIndex`, `txIndex` and `certificateIndex`. Used for pointer address derivation. [read more about pointer address](https://hydra.iohk.io/build/2006688/download/1/delegation_design_spec.pdf#subsubsection.3.2.2)
 -   `paymentScriptHash` - _optional_ `string` hex string of payment script hash.
 -   `stakingScriptHash` - _optional_ `string` hex string of staking script hash.
 
