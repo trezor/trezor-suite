@@ -20,7 +20,7 @@
     "devDependencies": {
         "@cypress/skip-test": "^2.6.1",
         "@cypress/webpack-preprocessor": "^5.11.1",
-        "@playwright/test": "^1.19.1",
+        "@playwright/test": "^1.22.2",
         "@trezor/suite-analytics": "*",
         "@trezor/transport": "*",
         "@trezor/utils": "*",
@@ -34,7 +34,7 @@
         "karma-sourcemap-loader": "^0.3.8",
         "karma-webpack": "^5.0.0",
         "karma": "^6.3.16",
-        "playwright": "^1.19.1",
+        "playwright": "^1.22.2",
         "shelljs": "^0.8.5",
         "ws": "^7.5.5",
         "xvfb-maybe": "^0.2.1"
