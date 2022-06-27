@@ -12,7 +12,7 @@ export const SettingsStack = createStackNavigator<SettingsStackParamList>();
 
 export const SettingsStackNavigator = () => (
     <SettingsStack.Navigator
-        initialRouteName={SettingsStackRoutes.Settings}
+        initialRouteName={SettingsStackRoutes.SettingsLocalisation} // TODO revert
         screenOptions={stackNavigationOptionsConfig}
     >
         <SettingsStack.Screen

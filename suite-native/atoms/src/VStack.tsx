@@ -1,35 +1,37 @@
 import React, { ReactNode } from 'react';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeSpacing } from '@trezor/theme';
 
-import { Box } from './Box';
+import { Box, BoxProps } from './Box';
 
-type VStackProps = {
+interface VStackProps extends BoxProps {
     children: ReactNode;
-    style?: NativeStyleObject;
-    spacing: NativeSpacing;
-};
+    spacing?: NativeSpacing | number;
+}
 
 type SpacerStyleProps = {
     isLastChild: boolean;
-    spacing: NativeSpacing;
+    spacing?: NativeSpacing | number;
 };
 
-const spacerStyle = prepareNativeStyle<SpacerStyleProps>((utils, { isLastChild, spacing }) => ({
-    extend: {
-        condition: !isLastChild,
-        style: {
-            marginBottom: utils.spacings[spacing],
+const spacerStyle = prepareNativeStyle<SpacerStyleProps>((utils, { isLastChild, spacing }) => {
+    const spacingValue = typeof spacing === 'number' ? spacing : utils.spacings[spacing ?? 'small'];
+    return {
+        extend: {
+            condition: !isLastChild,
+            style: {
+                marginBottom: spacingValue,
+            },
         },
-    },
-}));
+    };
+});
 
-export const VStack = ({ children, style, spacing }: VStackProps) => {
+export const VStack = ({ children, style, spacing, ...rest }: VStackProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box style={style}>
+        <Box style={style} {...rest}>
             {React.Children?.map(children, (child, index) => (
                 <>
                     <Box
