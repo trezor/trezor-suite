@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Color, colorVariants } from '@trezor/theme';
 import { Box, Text } from '@suite-native/atoms';
 
 type ColorSchemePickerItemProps = {
@@ -12,15 +12,15 @@ type ColorSchemePickerItemProps = {
 };
 
 export enum ColorScheme {
-    Standard = 'Standard',
-    Chill = 'Chill',
-    Dark = 'Dark',
+    Standard = 'standard',
+    Chill = 'chill',
+    Dark = 'dark',
 }
 
 const colorSchemeColors: Record<ColorScheme, Color[]> = {
     [ColorScheme.Standard]: ['gray400', 'gray500', 'black'],
-    [ColorScheme.Chill]: ['gray500', 'gray600', 'black'],
-    [ColorScheme.Dark]: ['gray600', 'gray700', 'black'],
+    [ColorScheme.Chill]: ['gray400', 'gray500', 'black'],
+    [ColorScheme.Dark]: ['gray600', 'gray800', 'black'],
 };
 
 const pickerItemWrapperStyle = prepareNativeStyle<{ isSelected: boolean }>(
@@ -35,25 +35,28 @@ const pickerItemWrapperStyle = prepareNativeStyle<{ isSelected: boolean }>(
     }),
 );
 
-const pickerItemDotStyle = prepareNativeStyle<{ bgColor: Color; isFirstItem: boolean }>(
-    (utils, { bgColor, isFirstItem }) => ({
-        width: 26,
-        height: 26,
-        backgroundColor: utils.colors[bgColor],
-        borderRadius: utils.borders.radii.round,
-        extend: {
-            condition: !isFirstItem,
-            style: {
-                marginLeft: -utils.spacings.small,
-            },
+const pickerItemDotStyle = prepareNativeStyle<{
+    scheme: ColorScheme;
+    bgColor: Color;
+    isFirstItem: boolean;
+}>((utils, { bgColor, isFirstItem, scheme }) => ({
+    width: 26,
+    height: 26,
+    backgroundColor: colorVariants[scheme][bgColor],
+    borderRadius: utils.borders.radii.round,
+    extend: {
+        condition: !isFirstItem,
+        style: {
+            marginLeft: -utils.spacings.small,
         },
-    }),
-);
+    },
+}));
 
 const textStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
     paddingTop: 23,
     paddingBottom: utils.spacings.small,
+    textTransform: 'capitalize',
 }));
 
 export const ColorSchemePickerItem = ({
@@ -71,18 +74,21 @@ export const ColorSchemePickerItem = ({
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
                         bgColor: colorSchemeColors[colorSchemeItem][0],
+                        scheme: colorSchemeItem,
                         isFirstItem: true,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
                         bgColor: colorSchemeColors[colorSchemeItem][1],
+                        scheme: colorSchemeItem,
                         isFirstItem: false,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
                         bgColor: colorSchemeColors[colorSchemeItem][2],
+                        scheme: colorSchemeItem,
                         isFirstItem: false,
                     })}
                 />
