@@ -1,3 +1,4 @@
+// @ts-nocheck
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DescriptorStream.js
 
 // This file reads descriptor with very little logic, and sends it to layers above
@@ -112,12 +113,10 @@ export class DescriptorStream extends EventEmitter {
 
         let descriptors: DeviceDescriptor[];
         try {
-            logger.debug('Start listening', current);
             this.listenTimestamp = new Date().getTime();
             descriptors = waitForEvent
                 ? await this.transport.enumerate(current)
                 : await this.transport.enumerate();
-            console.log('descriptors stream', descriptors);
             if (this.listening && !waitForEvent) {
                 // enumerate returns some value
                 // TRANSPORT.START will be emitted from DeviceList after device will be available (either acquired or unacquired)
@@ -133,7 +132,10 @@ export class DescriptorStream extends EventEmitter {
             logger.debug('Listen result', descriptors);
             this._reportChanges();
             // TODO(karliatto): HERE!!! this is for some reason trigger and trigger here so it should stop to allow continuation.
-            if (this.listening) this.listen(); // handlers might have called stop()
+            if (this.listening) {
+                await resolveAfter(10000, null); // ?
+                this.listen(); // handlers might have called stop()
+            }
         } catch (error) {
             const time = new Date().getTime() - this.listenTimestamp;
             logger.debug('Listen error', 'timestamp', time, typeof error);

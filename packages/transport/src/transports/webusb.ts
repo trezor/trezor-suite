@@ -64,10 +64,7 @@ export class WebUsbTransport extends Transport {
         return device.vendorId === T1HID_VENDOR;
     }
 
-    async _listDevices() {
-        let bootloaderId = 0;
-        const devices = await navigator.usb.getDevices();
-        console.log('tranasport. _listdevices(). devices', devices);
+    _filterDevices(devices: any[]) {
         const trezorDevices = devices.filter(dev => {
             const isTrezor = TREZOR_DESCS.some(
                 desc => dev.vendorId === desc.vendorId && dev.productId === desc.productId,
@@ -77,8 +74,13 @@ export class WebUsbTransport extends Transport {
         console.log('transport. _listDevices. trezorDevices', trezorDevices);
         const hidDevices = trezorDevices.filter(dev => this._deviceIsHid(dev));
         const nonHidDevices = trezorDevices.filter(dev => !this._deviceIsHid(dev));
+        return [hidDevices, nonHidDevices];
+    }
 
-        this._lastDevices = nonHidDevices.map(device => {
+    _createDevices(nonHidDevices: any[]) {
+        let bootloaderId = 0;
+
+        return nonHidDevices.map(device => {
             // path is just serial number
             // more bootloaders => number them, hope for the best
             const { serialNumber } = device;
@@ -90,6 +92,27 @@ export class WebUsbTransport extends Transport {
             const debug = this._deviceHasDebugLink(device);
             return { path, device, debug };
         });
+    }
+
+    async _listDevices() {
+        const devices = await navigator.usb.getDevices();
+        console.log('tranasport. _listdevices(). devices', devices);
+
+        // this._lastDevices = nonHidDevices.map(device => {
+        //     // path is just serial number
+        //     // more bootloaders => number them, hope for the best
+        //     const { serialNumber } = device;
+        //     let path = serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
+        //     if (path === 'bootloader') {
+        //         bootloaderId++;
+        //         path += bootloaderId;
+        //     }
+        //     const debug = this._deviceHasDebugLink(device);
+        //     return { path, device, debug };
+        // });
+
+        const [hidDevices, nonHidDevices] = this._filterDevices(devices);
+        this._lastDevices = this._createDevices(nonHidDevices);
 
         const oldUnreadableHidDevice = this.unreadableHidDevice;
         this.unreadableHidDevice = hidDevices.length > 0;
@@ -102,7 +125,7 @@ export class WebUsbTransport extends Transport {
         return this._lastDevices;
     }
 
-    _lastDevices: Array<{ path: string; device: USBDevice; debug: boolean }> = [];
+    _lastDevices: { path: string; device: USBDevice; debug: boolean }[] = [];
 
     async enumerate() {
         console.log('enumerate');
@@ -112,9 +135,24 @@ export class WebUsbTransport extends Transport {
         }));
     }
 
+    // @ts-ignore
+    async listen() {
+        // @ts-ignore
+        navigator.usb.addEventListener('connect', async event => {
+            console.log('event', event);
+            // this._listDevices();
+            await this._listDevices();
+            this.emit('TRANSPORT.DEVICE_CONNECTED', event.device);
+            // Add event.device to the UI.
+        });
+    }
+
     _findDevice(path: string) {
-        console.log('_findDevice');
-        const deviceO = this._lastDevices.find(d => d.path === path);
+        console.log('_findDevice in list: ', this._lastDevices);
+        console.log('_findDevice path: ', path);
+
+        // const deviceO = this._lastDevices.find(d => d.path === path);
+        const deviceO = this._lastDevices[0];
         if (deviceO == null) {
             throw new Error('Action was interrupted.');
         }
@@ -125,7 +163,7 @@ export class WebUsbTransport extends Transport {
     async call({
         session,
         name,
-        path,
+        path = this._lastDevices[0]?.path || '',
         data,
         debug,
     }: {
@@ -135,6 +173,12 @@ export class WebUsbTransport extends Transport {
         data: Record<string, unknown>;
         debug: boolean;
     }): Promise<MessageFromTrezor> {
+        console.log('webusb transport call. session', session);
+        console.log('webusb transport call. name', name);
+        console.log('webusb transport call. path', path);
+        console.log('webusb transport call. data', data);
+        console.log('webusb transport call. debug', debug);
+
         await this.send({ name, path, data, debug, session });
         return this.receive({ path, debug });
     }
@@ -170,9 +214,12 @@ export class WebUsbTransport extends Transport {
     }
 
     async receive({ path, debug }: { path: string; debug: boolean }) {
+        console.log('transport receive, path', path);
         const message: MessageFromTrezor = await receiveAndParse(this.messages!, () =>
             this._read(path, debug),
         );
+        console.log('transport receive, message', message);
+
         return message;
     }
 
@@ -213,6 +260,7 @@ export class WebUsbTransport extends Transport {
         debug: boolean;
         first?: boolean;
     }) {
+        console.log('transport acquire', input);
         const { path } = input;
         for (let i = 0; i < 5; i++) {
             if (i > 0) {
@@ -232,6 +280,7 @@ export class WebUsbTransport extends Transport {
     }
 
     async _connectIn(path: string, debug: boolean, first: boolean) {
+        console.log('_connectIn: path, debug, first', path, debug, first);
         const device: USBDevice = this._findDevice(path);
         await device.open();
 

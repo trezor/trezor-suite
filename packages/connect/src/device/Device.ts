@@ -266,9 +266,12 @@ export class Device extends EventEmitter {
     }
 
     async _runInner<X>(fn: (() => Promise<X>) | undefined, options: RunOptions): Promise<void> {
+        console.log('_runInner', this.isUsedHere());
         if (!this.isUsedHere() || this.commands.disposed || !this.getExternalState()) {
             // acquire session
+            console.log('_runInner acquire');
             await this.acquire();
+            console.log('_runInner acquire done');
 
             // update features
             try {
@@ -283,6 +286,8 @@ export class Device extends EventEmitter {
                     // transport response is pending endlessly, calling any other message will end up with "device call in progress"
                     // set the timeout for this call so whenever it happens "unacquired device" will be created instead
                     // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
+                    console.log('_runInner promise race');
+
                     await Promise.race([
                         this.getFeatures(),
                         new Promise((_resolve, reject) =>
@@ -290,6 +295,7 @@ export class Device extends EventEmitter {
                         ),
                     ]);
                 }
+                console.log('_runInner promise race done');
             } catch (error) {
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
                     // handling corner-case T1 + bootloader < 1.4.0 (above)
@@ -317,16 +323,24 @@ export class Device extends EventEmitter {
         }
 
         // wait for event from trezor-link
-        await this.deferredActions[DEVICE.ACQUIRE].promise;
+        console.log('_runInner, this.deferredActions[DEVICE.ACQUIRE]');
+        // await this.deferredActions[DEVICE.ACQUIRE].promise;
+        console.log('_runInner, this.deferredActions[DEVICE.ACQUIRE] done');
 
         // call inner function
         if (fn) {
+            console.log('_runInner, fn');
+
             await fn();
+            console.log('_runInner, fn done');
         }
 
         // reload features
         if (this.loaded && this.features && !options.skipFinalReload) {
+            console.log('_runInner, getFeatures 2');
+
             await this.getFeatures();
+            console.log('_runInner, getFeatures 2 done');
         }
 
         // await resolveAfter(2000, null);
@@ -335,7 +349,9 @@ export class Device extends EventEmitter {
             options.keepSession === false
         ) {
             this.keepSession = false;
+            console.log('_runInner, release');
             await this.release();
+            console.log('_runInner, release done');
         }
 
         if (this.runPromise) {

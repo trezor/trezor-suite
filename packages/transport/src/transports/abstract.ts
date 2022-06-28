@@ -1,4 +1,5 @@
 import * as protobuf from 'protobufjs/light';
+import { EventEmitter } from 'events';
 
 // does not have session
 export type TrezorDeviceInfo = {
@@ -23,7 +24,7 @@ export type AcquireInput = {
 
 export type MessageFromTrezor = { type: string; message: Record<string, unknown> };
 
-export abstract class Transport {
+export abstract class Transport extends EventEmitter {
     configured = false;
     messages?: protobuf.Root;
     debug = false;
@@ -31,6 +32,7 @@ export abstract class Transport {
     version = '';
 
     constructor({ debug = false }) {
+        super();
         this.debug = debug;
     }
 

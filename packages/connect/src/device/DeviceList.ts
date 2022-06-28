@@ -113,6 +113,16 @@ export class DeviceList extends EventEmitter {
         // const webusb: Transport = new WebUsbTransport({});
         // transports.push(webusb);
         this.transport = new WebUsbTransport({});
+        // @ts-ignore
+        // @ts-ignore
+        // this.transport.on('TRANSPORT.DEVICE_CONNECTED', async dev => {
+        //     console.log('========= TRANSPORT.DEVICE_CONNECTED event in connect ', dev);
+
+        //     const device = Device.fromDescriptor(this.transport, dev);
+        //     console.log('device created from descriptor', device);
+        //     await device.run();
+        //     this.emit(DEVICE.CONNECT, device.toMessageObject());
+        // });
         // }
 
         // todo: something that takes one transport or the other depending on a priority list or similar.
@@ -129,6 +139,8 @@ export class DeviceList extends EventEmitter {
             _log.debug('Configuring transports');
             transport.configure(this.defaultMessages);
             _log.debug('Configuring transports done');
+            // @ts-ignore
+            // this.transport.listen();
 
             this._initStream();
 
@@ -185,6 +197,7 @@ export class DeviceList extends EventEmitter {
             this.emit(TRANSPORT.START, this.getTransportInfo());
         });
 
+        // wut, never emitted?
         stream.on(TRANSPORT.UPDATE, (diff: DeviceDescriptorDiff) => {
             // eslint-disable-next-line no-use-before-define
             new DiffHandler(this, diff).handle();
@@ -421,9 +434,12 @@ class CreateDeviceHandler {
     }
 
     async _takeAndCreateDevice() {
+        console.log('_takeAndCreateDevice. this.path', this.path);
         const device = Device.fromDescriptor(this.list.transport, this.descriptor);
+        console.log('device from descriptor', device);
         this.list.devices[this.path] = device;
         await device.run();
+        console.log('device. run finished');
         this.list.emit(DEVICE.CONNECT, device.toMessageObject());
     }
 
