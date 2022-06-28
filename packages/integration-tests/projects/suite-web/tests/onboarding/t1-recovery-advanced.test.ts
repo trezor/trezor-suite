@@ -5,7 +5,7 @@
 
 describe('Onboarding - recover wallet T1', () => {
     beforeEach(() => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
+        cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.task('startBridge');
 
         cy.viewport(1080, 1440).resetDb();
@@ -35,7 +35,7 @@ describe('Onboarding - recover wallet T1', () => {
         cy.wait(501);
         cy.task('stopEmu');
         cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
-        cy.task('startEmu', { version: Cypress.env('emuVersionT1') });
+        cy.task('startEmu', { version: '1-latest' });
 
         cy.getTestElement('@onboarding/recovery/retry-button').click();
         cy.getTestElement('@recover/select-count/12').click();

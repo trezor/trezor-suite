@@ -11,7 +11,7 @@ describe('Onboarding - create wallet', () => {
     // todo: skipping for it is too flaky..
     // after calling "resetDevice" we almost always receive "device disconnected during action" which is error sent by bridge.
     it.skip('Success (basic)', () => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
+        cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@firmware/continue-button').click();

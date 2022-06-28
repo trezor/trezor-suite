@@ -4,7 +4,7 @@
 describe('Check notification toast', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/settings/device');
