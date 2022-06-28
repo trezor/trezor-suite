@@ -60,7 +60,7 @@ describe('Electrum', () => {
                 availableBalance: '0',
                 empty: true,
                 history: { total: 0, unconfirmed: 0, transactions: [] },
-                page: { index: 1, size: 25, total: 1 },
+                page: { index: 1, size: 25, total: 0 },
             },
         });
     });
