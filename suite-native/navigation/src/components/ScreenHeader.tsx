@@ -10,14 +10,16 @@ type ScreenHeaderProps = {
     title?: string;
 };
 
+const goBackButtonSize = 40;
 const iconStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray300,
-    height: 40,
-    width: 40,
+    height: goBackButtonSize,
+    width: goBackButtonSize,
     borderRadius: utils.borders.radii.round,
     justifyContent: 'center',
     alignItems: 'center',
 }));
+
 const headerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
@@ -39,6 +41,8 @@ export const ScreenHeader = ({ title }: ScreenHeaderProps) => {
                 <Icon name="chevronLeft" size="large" color="gray800" />
             </TouchableOpacity>
             {title && <Text variant="titleSmall">{title}</Text>}
+            {/* Empty box for centered header text */}
+            <Box style={{ width: goBackButtonSize }} />
         </Box>
     );
 };
