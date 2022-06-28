@@ -6,7 +6,7 @@
 // todo: this started to fail mysteriously after merging new base image. Skipping it for now and will investigate.
 describe.skip('Onboarding - recover wallet T1', () => {
     before(() => {
-        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
+        cy.task('startEmu', { version: '1-latest', wipe: true });
         cy.task('startBridge');
 
         cy.viewport(1080, 1440).resetDb();
