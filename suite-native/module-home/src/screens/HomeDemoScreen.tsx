@@ -107,7 +107,7 @@ export const HomeDemoScreen = ({
                             items={selectItems}
                             value={selectedItem}
                             onSelectItem={setSelectedItem}
-                            selectLabel="Language"
+                            selectLabel="Typography"
                         />
                     </Box>
                     <Box marginVertical="medium">
