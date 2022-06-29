@@ -1,6 +1,16 @@
-import React, { ReactNode } from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { ReactNode, useCallback, useEffect } from 'react';
+import { Dimensions, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, {
+    Easing,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+    useAnimatedGestureHandler,
+    runOnJS,
+} from 'react-native-reanimated';
+import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@trezor/icons';
@@ -21,6 +31,11 @@ type BottomModalProps = {
 type WrapperStyleProps = {
     insetBottom: number;
 };
+
+type GestureHandlerContext = {
+    translateY: number;
+};
+
 const modalWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.gray100,
     borderTopLeftRadius: utils.borders.radii.large,
@@ -29,6 +44,8 @@ const modalWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetB
 }));
 
 const CLOSE_BUTTON_SIZE = 40;
+const SCREEN_HEIGHT = Dimensions.get('screen').height;
+
 const closeButtonStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,
     borderRadius: utils.borders.radii.round,
@@ -56,32 +73,87 @@ export const BottomModal = ({
 }: BottomModalProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
+    const translatePanY = useSharedValue(SCREEN_HEIGHT);
 
-    const handleCloseModal = () => onVisibilityChange(false);
+    const animatedModalWrapperStyle = useAnimatedStyle(() => ({
+        top: withTiming(interpolate(translatePanY.value, [-1, 0, 1], [0, 0, 1]), {
+            duration: 300,
+            easing: Easing.out(Easing.cubic),
+        }),
+    }));
+
+    const closeModalAnimated = () => {
+        'worklet';
+
+        translatePanY.value = SCREEN_HEIGHT;
+        runOnJS(onVisibilityChange)(false);
+    };
+
+    const resetModalAnimated = useCallback(() => {
+        'worklet';
+
+        translatePanY.value = 0;
+    }, [translatePanY]);
+
+    useEffect(() => {
+        if (isVisible) {
+            resetModalAnimated();
+        }
+    }, [isVisible, resetModalAnimated]);
+
+    const panGestureEvent = useAnimatedGestureHandler<
+        PanGestureHandlerGestureEvent,
+        GestureHandlerContext
+    >({
+        onStart: (_, context) => {
+            context.translateY = translatePanY.value;
+        },
+        onActive: (event, context) => {
+            const { translationY } = event;
+            translatePanY.value = translationY + context.translateY;
+        },
+        onEnd: event => {
+            const { translationY, velocityY } = event;
+            if (translationY > 0 && velocityY > 2) {
+                closeModalAnimated();
+            } else {
+                resetModalAnimated();
+            }
+        },
+    });
+
+    const handleCloseModal = () => {
+        closeModalAnimated();
+    };
 
     return (
         <BottomModalContainer isVisible={isVisible} onClose={handleCloseModal}>
-            <Box
-                style={applyStyle(modalWrapperStyle, {
-                    insetBottom: insets.bottom,
-                })}
-            >
-                <Box style={applyStyle(modalHeaderStyle)}>
-                    {hasBackArrow && (
-                        <TouchableOpacity onPress={onBackArrowClick}>
-                            <Icon name="chevronLeft" />
+            <PanGestureHandler onGestureEvent={panGestureEvent}>
+                <Animated.View
+                    style={[
+                        animatedModalWrapperStyle,
+                        applyStyle(modalWrapperStyle, {
+                            insetBottom: insets.bottom,
+                        }),
+                    ]}
+                >
+                    <Box style={applyStyle(modalHeaderStyle)}>
+                        {hasBackArrow && (
+                            <TouchableOpacity onPress={onBackArrowClick}>
+                                <Icon name="chevronLeft" />
+                            </TouchableOpacity>
+                        )}
+                        <Text variant="titleSmall">{title}</Text>
+                        <TouchableOpacity
+                            onPress={handleCloseModal}
+                            style={applyStyle(closeButtonStyle)}
+                        >
+                            <Icon name="close" />
                         </TouchableOpacity>
-                    )}
-                    <Text variant="titleSmall">{title}</Text>
-                    <TouchableOpacity
-                        onPress={handleCloseModal}
-                        style={applyStyle(closeButtonStyle)}
-                    >
-                        <Icon name="close" />
-                    </TouchableOpacity>
-                </Box>
-                <Box paddingHorizontal="medium">{children}</Box>
-            </Box>
+                    </Box>
+                    <Box paddingHorizontal="medium">{children}</Box>
+                </Animated.View>
+            </PanGestureHandler>
         </BottomModalContainer>
     );
 };
