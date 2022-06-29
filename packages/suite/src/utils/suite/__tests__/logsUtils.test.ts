@@ -1,6 +1,6 @@
-import { redactAccount, redactDevice, REDACTED_REPLACEMENT } from '@suite-utils/logUtils';
+import { redactAccount, redactDevice, REDACTED_REPLACEMENT } from '@suite-utils/logsUtils';
 
-describe('logUtils', () => {
+describe('logsUtils', () => {
     const acc = global.JestMocks.getWalletAccount({
         deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
         descriptor:

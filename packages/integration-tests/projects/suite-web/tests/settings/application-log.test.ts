@@ -1,7 +1,7 @@
 // @group:settings
 // @retry=2
 
-describe('Log', () => {
+describe('ApplicationLog', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
@@ -20,7 +20,7 @@ describe('Log', () => {
         });
         cy.getTestElement('@log/copy-button');
         // cypress open todo: implement match-image snapshot. blackout stopped working properly
-        cy.getTestElement('@modal/log').screenshot('log-modal', {
+        cy.getTestElement('@modal/application-log').screenshot('log-modal', {
             blackout: ['[data-test="@log/content"]'],
         });
 

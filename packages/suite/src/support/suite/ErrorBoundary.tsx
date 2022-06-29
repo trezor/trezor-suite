@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { reportToSentry } from '@suite-actions/logActions';
 import { Error } from '@suite-components/Error';
+import { reportToSentry } from '@suite-utils/sentry';
 
 interface StateProps {
     error: Error | null | undefined;

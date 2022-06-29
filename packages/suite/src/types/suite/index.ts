@@ -17,7 +17,7 @@ import type { StorageAction } from '@suite-actions/storageActions';
 import type { SuiteAction } from '@suite-actions/suiteActions';
 import type { ResizeAction } from '@suite-actions/resizeActions';
 import type { ModalAction } from '@suite-actions/modalActions';
-import type { LogAction } from '@suite-actions/logActions';
+import type { LogAction } from '@suite-actions/logsActions';
 import type { NotificationAction } from '@suite-actions/notificationActions';
 import type { AnalyticsAction } from '@suite-actions/analyticsActions';
 import type { MetadataAction } from '@suite-actions/metadataActions';

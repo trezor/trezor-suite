@@ -95,7 +95,7 @@ export type UserContextPayload =
           decision: Deferred<boolean>;
       }
     | {
-          type: 'log';
+          type: 'application-log';
       }
     | {
           type: 'pin-mismatch';

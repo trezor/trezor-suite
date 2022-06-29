@@ -7,21 +7,25 @@ import { Translation } from '@suite-components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
-export const ShowLog = () => {
+export const ShowApplicationLog = () => {
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.ShowLog);
 
     return (
-        <SectionItem data-test="@settings/log" ref={anchorRef} shouldHighlight={shouldHighlight}>
+        <SectionItem
+            data-test="@settings/application-log"
+            ref={anchorRef}
+            shouldHighlight={shouldHighlight}
+        >
             <TextColumn
                 title={<Translation id="TR_LOG" />}
                 description={<Translation id="TR_LOG_DESCRIPTION" />}
             />
             <ActionColumn>
                 <ActionButton
-                    onClick={() => openModal({ type: 'log' })}
+                    onClick={() => openModal({ type: 'application-log' })}
                     variant="secondary"
                     data-test="@settings/show-log-button"
                 >
