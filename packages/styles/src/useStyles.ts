@@ -12,7 +12,7 @@ import {
     StyleUtils,
 } from './types';
 import { Theme, NativeTheme } from '@trezor/theme';
-import { multiply, getValueAndUnit, sum } from './utils';
+import { multiply, getValueAndUnit, sum, negative } from './utils';
 import { processStyles, processNativeStyles } from './processStyles';
 import { mediaQueries } from './mediaQueries';
 import { useDirection } from './useDirection';
@@ -23,6 +23,7 @@ const sharedUtils = {
     lighten,
     multiply,
     sum,
+    negative,
     transparentize,
 };
 

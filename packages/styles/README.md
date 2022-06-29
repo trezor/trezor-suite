@@ -251,6 +251,12 @@ multiply(0.5, '100%'); // => 50%
 sum(['2rem', '3rem']); // => 5rem
 ```
 
+### negative
+
+```tsx
+negative(5); // => -5
+```
+
 ## Utils from polished
 
 Some of the utils like `darken`, `lighten`, `transparentize` are just reexported from [polished](https://github.com/styled-components/polished) for best experience a to have everything in one place like our custom utils mentioned before.

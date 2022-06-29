@@ -24,19 +24,19 @@ const pickerItemWrapperStyle = prepareNativeStyle<{ isSelected: boolean }>(
 );
 
 type PickerItemDotStyleProps = {
-    bgColor: ColorValue;
+    backgroundColor: ColorValue;
     isFirstItem: boolean;
 };
 const pickerItemDotStyle = prepareNativeStyle<PickerItemDotStyleProps>(
-    (utils, { bgColor, isFirstItem }) => ({
+    (utils, { backgroundColor, isFirstItem }) => ({
         width: 26,
         height: 26,
-        backgroundColor: bgColor,
+        backgroundColor,
         borderRadius: utils.borders.radii.round,
         extend: {
             condition: !isFirstItem,
             style: {
-                marginLeft: -utils.spacings.small,
+                marginLeft: utils.negative(utils.spacings.small),
             },
         },
     }),
@@ -63,19 +63,19 @@ export const ColorSchemePickerItem = ({
             <Box flexDirection="row" justifyContent="center">
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        bgColor: colorVariants[colorScheme].gray400,
+                        backgroundColor: colorVariants[colorScheme].gray400,
                         isFirstItem: true,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        bgColor: colorVariants[colorScheme].gray500,
+                        backgroundColor: colorVariants[colorScheme].gray500,
                         isFirstItem: false,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        bgColor: colorVariants[colorScheme].black,
+                        backgroundColor: colorVariants[colorScheme].black,
                         isFirstItem: false,
                     })}
                 />
