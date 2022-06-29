@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
-import { Modal as RNModal, View } from 'react-native';
+import { Modal as RNModal } from 'react-native';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { Box } from '../Box';
 
 type ModalProps = {
     children: ReactNode;
@@ -19,7 +21,7 @@ export const BottomModalContainer = ({ children, isVisible, onClose }: ModalProp
 
     return (
         <RNModal transparent visible={isVisible} onRequestClose={onClose} animationType="fade">
-            <View style={applyStyle(modalWithOverlayStyle)}>{children}</View>
+            <Box style={applyStyle(modalWithOverlayStyle)}>{children}</Box>
         </RNModal>
     );
 };

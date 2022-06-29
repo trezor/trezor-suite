@@ -33,7 +33,7 @@ type WrapperStyleProps = {
 };
 
 type GestureHandlerContext = {
-    translateY: number;
+    translatePanY: number;
 };
 
 const modalWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
@@ -63,16 +63,9 @@ const modalHeaderStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.medium,
 }));
 
-export const BottomModal = ({
-    isVisible,
+const useAnimationStyles = ({
     onVisibilityChange,
-    title,
-    onBackArrowClick,
-    children,
-    hasBackArrow = false,
-}: BottomModalProps) => {
-    const { applyStyle } = useNativeStyles();
-    const insets = useSafeAreaInsets();
+}: Pick<BottomModalProps, 'onVisibilityChange'>) => {
     const translatePanY = useSharedValue(SCREEN_HEIGHT);
 
     const animatedModalWrapperStyle = useAnimatedStyle(() => ({
@@ -95,22 +88,16 @@ export const BottomModal = ({
         translatePanY.value = 0;
     }, [translatePanY]);
 
-    useEffect(() => {
-        if (isVisible) {
-            resetModalAnimated();
-        }
-    }, [isVisible, resetModalAnimated]);
-
     const panGestureEvent = useAnimatedGestureHandler<
         PanGestureHandlerGestureEvent,
         GestureHandlerContext
     >({
         onStart: (_, context) => {
-            context.translateY = translatePanY.value;
+            context.translatePanY = translatePanY.value;
         },
         onActive: (event, context) => {
             const { translationY } = event;
-            translatePanY.value = translationY + context.translateY;
+            translatePanY.value = translationY + context.translatePanY;
         },
         onEnd: event => {
             const { translationY, velocityY } = event;
@@ -121,6 +108,33 @@ export const BottomModal = ({
             }
         },
     });
+
+    return {
+        animatedModalWrapperStyle,
+        closeModalAnimated,
+        resetModalAnimated,
+        panGestureEvent,
+    };
+};
+
+export const BottomModal = ({
+    isVisible,
+    onVisibilityChange,
+    title,
+    onBackArrowClick,
+    children,
+    hasBackArrow = false,
+}: BottomModalProps) => {
+    const { applyStyle } = useNativeStyles();
+    const insets = useSafeAreaInsets();
+    const { animatedModalWrapperStyle, closeModalAnimated, resetModalAnimated, panGestureEvent } =
+        useAnimationStyles({ onVisibilityChange });
+
+    useEffect(() => {
+        if (isVisible) {
+            resetModalAnimated();
+        }
+    }, [isVisible, resetModalAnimated]);
 
     const handleCloseModal = () => {
         closeModalAnimated();
