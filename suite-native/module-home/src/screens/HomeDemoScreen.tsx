@@ -175,7 +175,6 @@ export const HomeDemoScreen = ({
                         isVisible={isModalVisible}
                         onVisibilityChange={setIsModalVisible}
                         title="Typography Demo"
-                        hasBackArrow
                         onBackArrowClick={() => setIsModalVisible(!isModalVisible)}
                     >
                         {typographyItems.map(item => (
