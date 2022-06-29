@@ -1,4 +1,4 @@
-import { multiply, getValueAndUnit, sum } from './utils';
+import { multiply, getValueAndUnit, sum, negative } from './utils';
 
 describe('multiply', () => {
     it('handles various units', () => {
@@ -41,5 +41,13 @@ describe('sum', () => {
 
     it('handles negative values with units', () => {
         expect(sum(['2rem', '-3rem'])).toBe('-1rem');
+    });
+});
+
+describe('negative', () => {
+    it('returns negative value of passed number', () => {
+        expect(negative(5)).toBe(-5);
+        expect(negative(0)).toBe(0);
+        expect(negative(-5)).toBe(-5);
     });
 });

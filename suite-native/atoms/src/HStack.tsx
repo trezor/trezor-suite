@@ -5,7 +5,7 @@ import { NativeSpacing } from '@trezor/theme';
 
 import { Box, BoxProps } from './Box';
 
-interface VStackProps extends BoxProps {
+interface HStackProps extends BoxProps {
     children: ReactNode;
     spacing?: NativeSpacing | number;
 }
@@ -21,20 +21,21 @@ const spacerStyle = prepareNativeStyle<SpacerStyleProps>((utils, { isLastChild, 
         extend: {
             condition: !isLastChild,
             style: {
-                marginBottom: spacingValue,
+                marginRight: spacingValue,
             },
         },
     };
 });
 
-export const VStack = ({ children, style, spacing, ...rest }: VStackProps) => {
+export const HStack = ({ children, style, spacing, ...rest }: HStackProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Box style={style} {...rest}>
+        <Box flexDirection="row" style={style} {...rest}>
             {React.Children?.map(children, (child, index) => (
                 <>
                     <Box
+                        flex={1}
                         style={applyStyle(spacerStyle, {
                             isLastChild: index === React.Children.count(children) - 1,
                             spacing,

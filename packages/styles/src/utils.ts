@@ -22,3 +22,8 @@ export const sum = (valuesAndUnits: string[]) => {
         valueUnitPairs[0][1]
     }`;
 };
+
+export const negative = (value: number): number => {
+    if (value <= 0) return value;
+    return value * -1;
+};

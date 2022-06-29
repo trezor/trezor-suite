@@ -51,7 +51,7 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
                 <BottomModal
                     isVisible={isOpen}
                     onVisibilityChange={setIsOpen}
-                    title="Typography Demo"
+                    title={selectLabel}
                     hasBackArrow
                     onBackArrowClick={() => setIsOpen(false)}
                 >

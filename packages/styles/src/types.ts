@@ -5,7 +5,7 @@ import type { darken, lighten, transparentize } from 'polished';
 // use an ambient module declaration instead of importing it here, just like Emotion does.
 // https://emotion.sh/docs/typescript#define-a-theme
 import type { Theme, NativeTheme } from '@trezor/theme';
-import type { multiply, getValueAndUnit, sum } from './utils';
+import type { multiply, getValueAndUnit, sum, negative } from './utils';
 import type { mediaQueries } from './mediaQueries';
 
 export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
@@ -32,6 +32,7 @@ export interface StyleUtils extends Theme, DirectionUtils {
     media: typeof mediaQueries;
     multiply: typeof multiply;
     sum: typeof sum;
+    negative: typeof negative;
     transparentize: typeof transparentize;
 }
 
@@ -39,6 +40,7 @@ export interface NativeStyleUtils extends NativeTheme, DirectionUtils {
     darken: typeof darken;
     lighten: typeof lighten;
     transparentize: typeof transparentize;
+    negative: typeof negative;
 }
 
 export type PlainStyleObject = CSS.Properties<string | number>;
