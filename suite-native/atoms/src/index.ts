@@ -19,4 +19,5 @@ export * from './Button/TileButton';
 export * from './Select/Select';
 export * from './Select/SelectItem';
 export * from './VStack';
+export * from './HStack';
 export * from './Divider';

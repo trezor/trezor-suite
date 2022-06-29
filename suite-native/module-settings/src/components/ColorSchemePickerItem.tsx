@@ -1,26 +1,14 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { ColorValue, TouchableOpacity } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, colorVariants } from '@trezor/theme';
+import { colorVariants, ThemeColorVariant } from '@trezor/theme';
 import { Box, Text } from '@suite-native/atoms';
 
 type ColorSchemePickerItemProps = {
     isSelected?: boolean;
     onPress: () => void;
-    colorSchemeItem: ColorScheme;
-};
-
-export enum ColorScheme {
-    Standard = 'standard',
-    Chill = 'chill',
-    Dark = 'dark',
-}
-
-const colorSchemeColors: Record<ColorScheme, Color[]> = {
-    [ColorScheme.Standard]: ['gray400', 'gray500', 'black'],
-    [ColorScheme.Chill]: ['gray400', 'gray500', 'black'],
-    [ColorScheme.Dark]: ['gray600', 'gray800', 'black'],
+    colorScheme: ThemeColorVariant;
 };
 
 const pickerItemWrapperStyle = prepareNativeStyle<{ isSelected: boolean }>(
@@ -28,29 +16,31 @@ const pickerItemWrapperStyle = prepareNativeStyle<{ isSelected: boolean }>(
         backgroundColor: utils.colors.gray100,
         borderRadius: utils.borders.radii.medium,
         height: 114,
-        width: 109,
+        flex: 1,
         paddingTop: 33,
         borderWidth: utils.borders.widths.medium,
         borderColor: isSelected ? utils.colors.green : utils.colors.gray100,
     }),
 );
 
-const pickerItemDotStyle = prepareNativeStyle<{
-    scheme: ColorScheme;
-    bgColor: Color;
+type PickerItemDotStyleProps = {
+    bgColor: ColorValue;
     isFirstItem: boolean;
-}>((utils, { bgColor, isFirstItem, scheme }) => ({
-    width: 26,
-    height: 26,
-    backgroundColor: colorVariants[scheme][bgColor],
-    borderRadius: utils.borders.radii.round,
-    extend: {
-        condition: !isFirstItem,
-        style: {
-            marginLeft: -utils.spacings.small,
+};
+const pickerItemDotStyle = prepareNativeStyle<PickerItemDotStyleProps>(
+    (utils, { bgColor, isFirstItem }) => ({
+        width: 26,
+        height: 26,
+        backgroundColor: bgColor,
+        borderRadius: utils.borders.radii.round,
+        extend: {
+            condition: !isFirstItem,
+            style: {
+                marginLeft: -utils.spacings.small,
+            },
         },
-    },
-}));
+    }),
+);
 
 const textStyle = prepareNativeStyle(utils => ({
     alignSelf: 'center',
@@ -61,7 +51,7 @@ const textStyle = prepareNativeStyle(utils => ({
 
 export const ColorSchemePickerItem = ({
     onPress,
-    colorSchemeItem,
+    colorScheme,
     isSelected = false,
 }: ColorSchemePickerItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -73,28 +63,25 @@ export const ColorSchemePickerItem = ({
             <Box flexDirection="row" justifyContent="center">
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        bgColor: colorSchemeColors[colorSchemeItem][0],
-                        scheme: colorSchemeItem,
+                        bgColor: colorVariants[colorScheme].gray400,
                         isFirstItem: true,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        bgColor: colorSchemeColors[colorSchemeItem][1],
-                        scheme: colorSchemeItem,
+                        bgColor: colorVariants[colorScheme].gray500,
                         isFirstItem: false,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        bgColor: colorSchemeColors[colorSchemeItem][2],
-                        scheme: colorSchemeItem,
+                        bgColor: colorVariants[colorScheme].black,
                         isFirstItem: false,
                     })}
                 />
             </Box>
             <Text style={applyStyle(textStyle)} color={isSelected ? 'green' : 'gray600'}>
-                {colorSchemeItem}
+                {colorScheme}
             </Text>
         </TouchableOpacity>
     );
