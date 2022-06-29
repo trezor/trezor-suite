@@ -7,7 +7,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "chalk": "^5.0.0",
+        "chalk": "^4.1.2",
         "fs-extra": "^10.1.0",
         "minimatch": "^3.0.4",
         "prettier": "2.5.1",
