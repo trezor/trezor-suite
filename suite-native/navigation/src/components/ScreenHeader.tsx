@@ -10,11 +10,11 @@ type ScreenHeaderProps = {
     title?: string;
 };
 
-const goBackButtonSize = 40;
+const GO_BACK_BUTTON_SIZE = 40;
 const iconStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray300,
-    height: goBackButtonSize,
-    width: goBackButtonSize,
+    height: GO_BACK_BUTTON_SIZE,
+    width: GO_BACK_BUTTON_SIZE,
     borderRadius: utils.borders.radii.round,
     justifyContent: 'center',
     alignItems: 'center',
@@ -42,7 +42,7 @@ export const ScreenHeader = ({ title }: ScreenHeaderProps) => {
             </TouchableOpacity>
             {title && <Text variant="titleSmall">{title}</Text>}
             {/* Empty box for centered header text */}
-            <Box style={{ width: goBackButtonSize }} />
+            <Box style={{ width: GO_BACK_BUTTON_SIZE }} />
         </Box>
     );
 };
