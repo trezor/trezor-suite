@@ -1,13 +1,12 @@
-import React, { createRef } from 'react';
+import React, { createRef, useState } from 'react';
 import styled from 'styled-components';
 import { Switch, Button, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as logActions from '@suite-actions/logActions';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
 import { copyToClipboard } from '@suite-utils/dom';
-import { prettifyLog } from '@suite-utils/logUtils';
+import { getApplicationInfo, getApplicationLog, prettifyLog } from '@suite-utils/logsUtils';
 
 const LogWrapper = styled.pre`
     padding: 20px;
@@ -21,27 +20,24 @@ const LogWrapper = styled.pre`
     word-break: break-all;
 `;
 
-type Props = {
-    onCancel: () => void;
-};
+type ApplicationLogProps = { onCancel: () => void };
 
-export const Log = ({ onCancel }: Props) => {
+export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
     const htmlElement = createRef<HTMLPreElement>();
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
 
     const { state, logs } = useSelector(state => ({ state, logs: state.logs }));
-    const actions = useActions({
-        addNotification: notificationActions.addToast,
-        getLog: logActions.getLog,
-        toggleExcludeBalanceRelated: logActions.toggleExcludeBalanceRelated,
-    });
+    const { addToast } = useActions({ addToast: notificationActions.addToast });
 
-    const log = prettifyLog(actions.getLog(excludeBalanceRelated));
+    const actionLog = getApplicationLog(logs, hideSensitiveInfo);
+    const applicationInfo = getApplicationInfo(state);
+
+    const log = prettifyLog([applicationInfo, ...actionLog]);
 
     const copy = () => {
         const result = copyToClipboard(log, htmlElement.current);
         if (typeof result !== 'string') {
-            actions.addNotification({ type: 'copy-to-clipboard' });
+            addToast({ type: 'copy-to-clipboard' });
         }
     };
 
@@ -64,17 +60,13 @@ export const Log = ({ onCancel }: Props) => {
             onCancel={onCancel}
             heading={<Translation id="TR_LOG" />}
             description={<Translation id="LOG_DESCRIPTION" />}
-            data-test="@modal/log"
+            data-test="@modal/application-log"
             bottomBar={
                 <>
-                    <Button variant="secondary" onClick={() => copy()} data-test="@log/copy-button">
+                    <Button variant="secondary" onClick={copy} data-test="@log/copy-button">
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                     </Button>
-                    <Button
-                        variant="secondary"
-                        onClick={() => download()}
-                        data-test="@log/export-button"
-                    >
+                    <Button variant="secondary" onClick={download} data-test="@log/export-button">
                         <Translation id="TR_EXPORT_TO_FILE" />
                     </Button>
                 </>
