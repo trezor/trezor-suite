@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { TextInput, Pressable } from 'react-native';
+import { D } from '@mobily/ts-belt';
 import Animated, {
     Easing,
     interpolate,
@@ -78,14 +79,14 @@ const inputStyle = prepareNativeStyle(utils => ({
 
 const inputLabelStyle = prepareNativeStyle(
     (utils, { isLabelMinimized }: Pick<InputWrapperStyleProps, 'isLabelMinimized'>) => ({
-        ...utils.typography.body,
+        ...D.deleteKey(utils.typography.body, 'fontSize'),
         color: utils.colors.gray600,
         position: 'absolute',
         left: INPUT_WRAPPER_PADDING_HORIZONTAL,
         extend: {
             condition: isLabelMinimized,
             style: {
-                ...utils.typography.label,
+                ...D.deleteKey(utils.typography.label, 'fontSize'),
             },
         },
     }),
@@ -162,6 +163,11 @@ export const Input = React.forwardRef<TextInput, InputProps>(
                 >
                     <Animated.Text
                         style={[
+                            /*
+                            fontSize has to be defined by the animation style itself.
+                            Otherwise, it re-renders and blinks when the size is defined
+                            in both places (native and animated style).
+                            */
                             animatedInputLabelStyle,
                             applyStyle(inputLabelStyle, { isLabelMinimized }),
                         ]}
