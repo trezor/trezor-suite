@@ -1,38 +1,54 @@
 skip_docs
 
 # iOS Specific Constants
-IOS_PROJECT = "TrezorSuite.xcodeproj".freeze
-IOS_PROJECT_WORKSPACE = "TrezorSuite.xcworkspace".freeze
-IOS_PROJECT_SCHEME = "TrezorSuite".freeze
+IOS_PROJECT = File.join(IOS_PATH, "TrezorSuite.xcodeproj").freeze
+IOS_PROJECT_WORKSPACE = File.join(IOS_PATH, "TrezorSuite.xcworkspace").freeze
+APPSTORE_API_KEY = app_store_connect_api_key(
+  key_id: ENV['APPSTORE_KEY_ID'],
+  issuer_id: ENV['APPSTORE_KEY_ISSUER_ID'],
+  key_filepath: ENV['APPSTORE_KEY_FILE'],
+  duration: 1200,
+  in_house: false
+)
 
 platform :ios do
 
+  lane :develop do testing(scheme: "Develop", suffix: ".develop")
+  end
+  lane :staging do testing(scheme: "Staging", suffix: ".staging")
+  end
+  lane :production do release(scheme: "Release")
+  end
+
   desc "iOS: Increments internal build number and version number"
-  private_lane :bump_ios_version do
+  private_lane :bump_ios_version do |options|
     previous_build_number = latest_testflight_build_number(
-      app_identifier: APP_ID
+      app_identifier: APP_ID + options[:suffix],
+      api_key: APPSTORE_API_KEY
     )
 
     increment_build_number(
-      xcodeproj: project,
+      xcodeproj: IOS_PROJECT,
       build_number: previous_build_number + 1
     )
     increment_version_number(
-      xcodeproj: project,
+      xcodeproj: IOS_PROJECT,
       version_number: VERSION
     )
   end
 
   desc "Push a new beta build to TestFlight"
-  lane :beta do
-    # Get the certification
-    # cert
-    # Connect the provisioning profile.
-    # sigh(force: true)
-    bump_ios_version
+  private_lane :testing do |options|
+    IOS_PROJECT_SCHEME = options[:scheme]
+
+    bump_ios_version(suffix: options[:suffix])
 
     build_app(workspace: IOS_PROJECT_WORKSPACE, scheme: IOS_PROJECT_SCHEME)
-    upload_to_testflight
+
+    upload_to_testflight(
+        api_key: APPSTORE_API_KEY,
+        skip_waiting_for_build_processing: true
+    )
   end
 
   after_all do |lane|
