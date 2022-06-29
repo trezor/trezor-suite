@@ -3,30 +3,11 @@ import produce from 'immer';
 import { LOGS } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 
-export type ActionLogEntry = {
-    time: number;
-    custom: false;
-    action: Action;
-};
+export type LogEntry = { datetime: string; type: Action['type']; payload?: Record<any, any> };
 
-export type CustomLogEntry = {
-    time: number;
-    custom: true;
-    action: {
-        type: Action['type'];
-        payload?: Record<any, any> | undefined;
-    };
-};
+export type State = LogEntry[];
 
-export type LogEntry = ActionLogEntry | CustomLogEntry;
-
-export interface State {
-    entries: LogEntry[];
-}
-
-export const initialState: State = {
-    entries: [],
-};
+export const initialState: State = [];
 
 const MAX_ENTRIES = 200;
 
@@ -40,11 +21,8 @@ const addToStack = (stack: LogEntry[], entry: LogEntry) => {
 const logsReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
-            case LOG.ADD:
-                // idk what is going on with this type. WTF related to ActionLogEntry
-                // draft.entries should have correct State type, but it doesn't
-                // it behave like this since i've added new optional field (features) to `config/wallet/networks.ts`
-                addToStack(draft.entries as LogEntry[], action.payload);
+            case LOGS.ADD:
+                addToStack(draft, action.payload);
                 break;
             // no default
         }

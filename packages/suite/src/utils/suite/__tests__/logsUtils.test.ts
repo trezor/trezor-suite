@@ -1,18 +1,29 @@
-import { redactAccount, redactDevice, REDACTED_REPLACEMENT } from '@suite-utils/logsUtils';
+import {
+    redactAccount,
+    redactAction,
+    redactDevice,
+    redactDiscovery,
+    REDACTED_REPLACEMENT,
+} from '@suite-utils/logsUtils';
+import { DISCOVERY } from '@wallet-actions/constants';
 
 describe('logsUtils', () => {
-    const acc = global.JestMocks.getWalletAccount({
+    const account = global.JestMocks.getWalletAccount({
         deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
         descriptor:
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
         symbol: 'btc',
     });
-    const dev = global.JestMocks.getSuiteDevice();
+    const device = global.JestMocks.getSuiteDevice();
+    const discovery = {
+        deviceState: 'n3G5TV6d5D8nMjWTDUdjLmyFv5LtycJxT6@1945380BFC121301C978931C:1',
+        status: DISCOVERY.STATUS.COMPLETED,
+    };
 
     describe('redactAccount', () => {
         it('should redact sensitive fields on account', () => {
-            expect(redactAccount(acc)).toEqual({
-                ...acc,
+            expect(redactAccount(account)).toEqual({
+                ...account,
                 descriptor: REDACTED_REPLACEMENT,
                 addresses: REDACTED_REPLACEMENT,
                 balance: REDACTED_REPLACEMENT,
@@ -25,19 +36,47 @@ describe('logsUtils', () => {
                 key: REDACTED_REPLACEMENT,
             });
         });
+    });
+
+    describe('redactDevice', () => {
         it('should redact sensitive fields on device', () => {
-            expect(redactDevice(dev)).toEqual({
-                ...dev,
+            expect(redactDevice(device)).toEqual({
+                ...device,
                 id: REDACTED_REPLACEMENT,
                 label: REDACTED_REPLACEMENT,
                 firmwareRelease: REDACTED_REPLACEMENT,
                 state: REDACTED_REPLACEMENT,
                 features: {
-                    ...dev.features,
+                    ...device.features,
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     device_id: REDACTED_REPLACEMENT,
                     label: REDACTED_REPLACEMENT,
                 },
+            });
+        });
+    });
+
+    describe('redactDiscovery', () => {
+        it('should redact sensitive fields from discovery', () => {
+            expect(redactDiscovery(discovery)).toEqual({
+                ...discovery,
+                deviceState: REDACTED_REPLACEMENT,
+            });
+        });
+    });
+
+    describe('redactAction', () => {
+        it('should redact sensitive fields from discovery', () => {
+            expect(
+                redactAction({
+                    datetime: 'Fri, 01 Jul 2022 10:07:17 GMT',
+                    type: DISCOVERY.COMPLETE,
+                    payload: discovery,
+                }),
+            ).toEqual({
+                datetime: 'Fri, 01 Jul 2022 10:07:17 GMT',
+                type: DISCOVERY.COMPLETE,
+                payload: { ...discovery, deviceState: REDACTED_REPLACEMENT },
             });
         });
     });

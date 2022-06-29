@@ -1,79 +1,13 @@
-import { LogEntry } from '@suite-reducers/logReducer';
-import { Action, Dispatch, GetState } from '@suite-types';
-import * as Sentry from '@sentry/minimal';
-import { LOG } from './constants';
-import { redactDevice, redactCustom, redactAction, redactDiscovery } from '@suite-utils/logUtils';
+import { LogEntry } from '@suite-reducers/logsReducer';
+import { Action } from '@suite-types';
+import { LOGS } from './constants';
 
-export type LogAction =
-    | { type: typeof LOG.ADD; payload: LogEntry }
-    | { type: typeof LOG.TOGGLE_EXCLUDE_BALANCE_RELATED };
+export type LogAction = { type: typeof LOGS.ADD; payload: LogEntry };
 
-export const addCustom = (
+export const addAction = (
     action: Action,
     payload: Record<string, unknown> | undefined,
 ): LogAction => ({
-    type: LOG.ADD,
-    payload: {
-        time: new Date().getTime(),
-        custom: true,
-        action: {
-            type: action.type,
-            payload,
-        },
-    },
+    type: LOGS.ADD,
+    payload: { datetime: new Date().toUTCString(), type: action.type, payload },
 });
-
-export const addAction = (action: Action, options?: { stripPayload: true }): LogAction => {
-    const stripPayload = !!options?.stripPayload;
-
-    if (stripPayload) {
-        // log only type
-        return {
-            type: LOG.ADD,
-            payload: {
-                time: new Date().getTime(),
-                custom: true,
-                action: { type: action.type },
-            },
-        };
-    }
-
-    // log full action objct
-    return {
-        type: LOG.ADD,
-        payload: {
-            time: new Date().getTime(),
-            custom: false,
-            action,
-        },
-    };
-};
-export const getLog =
-    (redactSensitiveData = false) =>
-    (_dispatch: Dispatch, getState: GetState) => {
-        const { log } = getState();
-
-        return log.entries.map(entry => {
-            const metaData = {
-                type: entry.action.type,
-                time: entry.time,
-            };
-
-            let redactedAction = entry.action;
-            if (redactSensitiveData) {
-                redactedAction = entry.custom
-                    ? redactCustom(entry.action)
-                    : redactAction(entry.action);
-            }
-
-            const actionKeys = Object.keys(redactedAction);
-            if (actionKeys.length === 1 && actionKeys[0] === 'type') {
-                // no payload, print only metadata
-                return metaData;
-            }
-            return {
-                ...metaData,
-                action: redactedAction,
-            };
-        });
-    };
