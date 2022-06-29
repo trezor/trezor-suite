@@ -25,7 +25,7 @@ export { AddAccount } from './AddAccount';
 export { QrScanner } from './QrScanner';
 export { BackgroundGallery } from './BackgroundGallery';
 export { TransactionDetail } from './TransactionDetail';
-export { Log } from './Log';
+export { ApplicationLog } from './ApplicationLog';
 export { WipeDevice } from './WipeDevice';
 export { MetadataProvider } from './metadata/MetadataProvider';
 export { AdvancedCoinSettings } from './AdvancedCoinSettings';

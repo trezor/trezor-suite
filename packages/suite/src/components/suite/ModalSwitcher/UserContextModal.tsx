@@ -20,7 +20,7 @@ import {
     QrScanner,
     BackgroundGallery,
     TransactionDetail,
-    Log,
+    ApplicationLog,
     WipeDevice,
     MetadataProvider,
     AdvancedCoinSettings,
@@ -123,8 +123,8 @@ export const UserContextModal = ({
             return <ImportTransaction {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':
             return <PinMismatch renderer={renderer} />;
-        case 'log':
-            return <Log onCancel={onCancel} />;
+        case 'application-log':
+            return <ApplicationLog onCancel={onCancel} />;
         case 'metadata-provider':
             return <MetadataProvider onCancel={onCancel} decision={payload.decision} />;
         case 'advanced-coin-settings':

@@ -4,7 +4,7 @@ import { useFilteredModal } from '../useFilteredModal';
 export const filters: Parameters<typeof useFilteredModal>[] = [
     [[MODAL.CONTEXT_USER]],
     [[MODAL.CONTEXT_DEVICE_CONFIRMATION]],
-    [[MODAL.CONTEXT_DEVICE, MODAL.CONTEXT_USER], ['log']],
+    [[MODAL.CONTEXT_DEVICE, MODAL.CONTEXT_USER], ['application-log']],
     [[MODAL.CONTEXT_USER], ['qr-reader']],
 ];
 
@@ -21,7 +21,7 @@ export const fixtures = [
         {
             context: MODAL.CONTEXT_USER,
             payload: {
-                type: 'log',
+                type: 'application-log',
             },
         },
         [true, false, true, false],

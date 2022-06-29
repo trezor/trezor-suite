@@ -48,11 +48,6 @@ export const addAction = (action: Action, options?: { stripPayload: true }): Log
         },
     };
 };
-
-export const toggleExcludeBalanceRelated = (): LogAction => ({
-    type: LOG.TOGGLE_EXCLUDE_BALANCE_RELATED,
-});
-
 export const getLog =
     (redactSensitiveData = false) =>
     (_dispatch: Dispatch, getState: GetState) => {
@@ -82,18 +77,3 @@ export const getLog =
             };
         });
     };
-
-export const reportToSentry = (error: any) => (dispatch: Dispatch, getState: GetState) => {
-    const { analytics, wallet, suite } = getState();
-
-    Sentry.withScope(scope => {
-        scope.setUser({ id: analytics.instanceId });
-        scope.setContext('suiteState', {
-            device: redactDevice(suite.device) ?? null,
-            discovery: wallet.discovery.map(redactDiscovery),
-            enabledCoins: wallet.settings.enabledNetworks,
-            suiteLog: dispatch(getLog(true))?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry
-        });
-        Sentry.captureException(error);
-    });
-};

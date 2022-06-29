@@ -15,7 +15,7 @@ import { Tor } from './Tor';
 import { TorOnionLinks } from './TorOnionLinks';
 import { Theme } from './Theme';
 import { Analytics } from './Analytics';
-import { ShowLog } from './ShowLog';
+import { ShowApplicationLog } from './ShowApplicationLog';
 import { ClearStorage } from './ClearStorage';
 import { VersionWithUpdate } from './VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
@@ -50,7 +50,7 @@ export const SettingsGeneral = () => {
             <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="APP">
                 <Theme />
                 <Analytics />
-                <ShowLog />
+                <ShowApplicationLog />
                 <ClearStorage />
                 <VersionWithUpdate />
             </SettingsSection>

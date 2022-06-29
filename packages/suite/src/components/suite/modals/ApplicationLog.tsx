@@ -27,8 +27,9 @@ type Props = {
 
 export const Log = ({ onCancel }: Props) => {
     const htmlElement = createRef<HTMLPreElement>();
+    const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
 
-    const { excludeBalanceRelated } = useSelector(state => state.log);
+    const { state, logs } = useSelector(state => ({ state, logs: state.logs }));
     const actions = useActions({
         addNotification: notificationActions.addToast,
         getLog: logActions.getLog,
@@ -89,8 +90,8 @@ export const Log = ({ onCancel }: Props) => {
                 />
                 <ActionColumn>
                     <Switch
-                        isChecked={!excludeBalanceRelated}
-                        onChange={actions.toggleExcludeBalanceRelated}
+                        isChecked={!hideSensitiveInfo}
+                        onChange={() => setHideSensitiveInfo(!hideSensitiveInfo)}
                     />
                 </ActionColumn>
             </SectionItem>

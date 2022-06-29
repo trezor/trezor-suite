@@ -46,7 +46,7 @@ export default [
         initialState: {
             context: MODAL.CONTEXT_USER,
             payload: {
-                type: 'log',
+                type: 'application-log',
             },
         },
         actions: [
@@ -208,14 +208,14 @@ export default [
             {
                 type: MODAL.OPEN_USER_CONTEXT,
                 payload: {
-                    type: 'log',
+                    type: 'application-log',
                 },
             },
         ],
         result: {
             context: MODAL.CONTEXT_USER,
             payload: {
-                type: 'log',
+                type: 'application-log',
             },
         },
     },

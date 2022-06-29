@@ -1,6 +1,6 @@
 import produce from 'immer';
-import { LOG } from '@suite-actions/constants';
 
+import { LOGS } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 
 export type ActionLogEntry = {
@@ -21,12 +21,10 @@ export type CustomLogEntry = {
 export type LogEntry = ActionLogEntry | CustomLogEntry;
 
 export interface State {
-    excludeBalanceRelated: boolean;
     entries: LogEntry[];
 }
 
 export const initialState: State = {
-    excludeBalanceRelated: false,
     entries: [],
 };
 
@@ -39,7 +37,7 @@ const addToStack = (stack: LogEntry[], entry: LogEntry) => {
     }
 };
 
-const logReducer = (state: State = initialState, action: Action): State =>
+const logsReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case LOG.ADD:
@@ -48,11 +46,7 @@ const logReducer = (state: State = initialState, action: Action): State =>
                 // it behave like this since i've added new optional field (features) to `config/wallet/networks.ts`
                 addToStack(draft.entries as LogEntry[], action.payload);
                 break;
-            case LOG.TOGGLE_EXCLUDE_BALANCE_RELATED:
-                draft.excludeBalanceRelated = !draft.excludeBalanceRelated;
-                break;
             // no default
         }
     });
-
-export default logReducer;
+export default logsReducer;

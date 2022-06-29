@@ -1,4 +1,4 @@
-import log from './logMiddleware';
+import log from './logsMiddleware';
 import suite from './suiteMiddleware';
 import redirect from './redirectMiddleware';
 import analytics from './analyticsMiddleware';

@@ -2,7 +2,7 @@ import router from './routerReducer';
 import suite from './suiteReducer';
 import devices from './deviceReducer';
 import modal from './modalReducer';
-import log from './logReducer';
+import logs from './logsReducer';
 import notifications from './notificationReducer';
 import resize from './resizeReducer';
 import analytics from './analyticsReducer';
@@ -17,7 +17,7 @@ export default {
     router,
     modal,
     devices,
-    log,
+    logs,
     notifications,
     resize,
     analytics,
