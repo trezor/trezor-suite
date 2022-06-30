@@ -3,28 +3,69 @@ skip_docs
 # iOS Specific Constants
 IOS_PROJECT = File.join(IOS_PATH, "TrezorSuite.xcodeproj").freeze
 IOS_PROJECT_WORKSPACE = File.join(IOS_PATH, "TrezorSuite.xcworkspace").freeze
-APPSTORE_API_KEY = app_store_connect_api_key(
-  key_id: ENV['APPSTORE_KEY_ID'],
-  issuer_id: ENV['APPSTORE_KEY_ISSUER_ID'],
-  key_filepath: ENV['APPSTORE_KEY_FILE'],
-  duration: 1200,
-  in_house: false
-)
 
 platform :ios do
 
-  lane :develop do testing(scheme: "Develop", suffix: ".develop")
-  end
-  lane :staging do testing(scheme: "Staging", suffix: ".staging")
-  end
-  lane :production do release(scheme: "Release")
+  before_all do |lane|
+    puts "Running lane #{lane}..."
+
+    if lane == :develop
+      BUILD_SCHEME = "Develop".freeze
+      PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
+    elsif lane == :staging
+      BUILD_SCHEME = "Staging".freeze
+      PROVISIONING_NAME = "AppStore io.trezor.suite.staging"
+    elsif lane == :production
+      BUILD_SCHEME = "Release".freeze
+      PROVISIONING_NAME = "AppStore io.trezor.suite"
+    end
   end
 
-  desc "iOS: Increments internal build number and version number"
-  private_lane :bump_ios_version do |options|
+  lane :develop do testing
+  end
+  lane :staging do testing
+  end
+  lane :production do release
+  end
+
+  desc "Load Appstore Connect API Key information to use in subsequent lanes"
+  private_lane :load_appstore_connect_api_key do |options|
+    app_store_connect_api_key(
+      key_id: ENV['APPSTORE_KEY_ID'], # the Key ID used for Appstore Connect authentication
+      issuer_id: ENV['APPSTORE_KEY_ISSUER_ID'], # the issuer ID used for Appstore Connect authentication
+      key_content: ENV['APPSTORE_KEY_FILE_CONTENT'], # the base64-encoded private key (.p8) used for Appstore Connect authentication
+      is_key_content_base64: true,
+      duration: 1200,
+      in_house: false
+    )
+  end
+
+  desc "Check certs and profiles"
+  private_lane :prepare_signing do |options|
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
+
+    cert(
+      api_key: api_key,
+      keychain_path: ENV["KEYCHAIN_PATH"] # the path to the keychain where your certificates are stored
+    )
+
+    sigh(
+      api_key: api_key,
+      app_identifier: app_identifier,
+      provisioning_name: PROVISIONING_NAME,
+      force: true # always recreate this exact profile to ensure it's valid and not expired
+    )
+  end
+
+  desc "Increments internal build number and version number"
+  private_lane :fetch_and_bump_versions do |options|
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
+
     previous_build_number = latest_testflight_build_number(
-      app_identifier: APP_ID + options[:suffix],
-      api_key: APPSTORE_API_KEY
+      app_identifier: app_identifier,
+      api_key: api_key
     )
 
     increment_build_number(
@@ -37,18 +78,46 @@ platform :ios do
     )
   end
 
-  desc "Push a new beta build to TestFlight"
-  private_lane :testing do |options|
-    IOS_PROJECT_SCHEME = options[:scheme]
+  desc "Build the iOS app for testing"
+  private_lane :build_testing do |options|
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
-    bump_ios_version(suffix: options[:suffix])
+   # turn off automatic signing during build so correct code signing identity is guaranteed to be used
+   update_code_signing_settings(
+     use_automatic_signing: false,
+     targets: ["TrezorSuite"],
+     code_sign_identity: "iPhone Distribution",
+     bundle_identifier: app_identifier,
+     profile_name: PROVISIONING_NAME,
+     build_configurations: [BUILD_SCHEME], # only toggle code signing settings for Release configurations
+     path: IOS_PROJECT
+   )
 
-    build_app(workspace: IOS_PROJECT_WORKSPACE, scheme: IOS_PROJECT_SCHEME)
+    build_app(
+      scheme: BUILD_SCHEME,
+      output_name: "#{BUILD_SCHEME}-TrezorSuite",
+      workspace: IOS_PROJECT_WORKSPACE,
+      configuration: BUILD_SCHEME
+    )
+  end
+
+  desc "Upload to TestFlight"
+  private_lane :upload_testing do |options|
+    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
     upload_to_testflight(
-        api_key: APPSTORE_API_KEY,
-        skip_waiting_for_build_processing: true
+        api_key: api_key,
+        changelog: RELEASE_NOTES
     )
+  end
+
+  desc "Push a new beta build to TestFlight"
+  private_lane :testing do
+    load_appstore_connect_api_key
+    prepare_signing
+    fetch_and_bump_versions
+    build_testing
+    upload_testing
   end
 
   after_all do |lane|

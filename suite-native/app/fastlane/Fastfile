@@ -18,5 +18,12 @@ APP_ID = 'io.trezor.suite'.freeze
 PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
 VERSION = load_json(json_path: "package.json")["suiteNativeVersion"]
 
+commit = last_git_commit
+commit_message = commit[:message]
+commit_hash = commit[:abbreviated_commit_hash]
+release_note_information = "[#{git_branch}] - #{commit_hash} - #{commit_message}"
+
+RELEASE_NOTES = "#{release_note_information}"
+
 import "../ios/fastlane/Fastfile"
 import "../android/fastlane/Fastfile"
