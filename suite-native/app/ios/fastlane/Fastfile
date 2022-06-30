@@ -10,22 +10,12 @@ platform :ios do
     puts "Running lane #{lane}..."
 
     if lane == :develop
-      BUILD_SCHEME = "Develop".freeze
       PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
     elsif lane == :staging
-      BUILD_SCHEME = "Staging".freeze
       PROVISIONING_NAME = "AppStore io.trezor.suite.staging"
     elsif lane == :production
-      BUILD_SCHEME = "Release".freeze
       PROVISIONING_NAME = "AppStore io.trezor.suite"
     end
-  end
-
-  lane :develop do testing
-  end
-  lane :staging do testing
-  end
-  lane :production do release
   end
 
   desc "Load Appstore Connect API Key information to use in subsequent lanes"
@@ -80,6 +70,7 @@ platform :ios do
 
   desc "Build the iOS app for testing"
   private_lane :build_testing do |options|
+    build_scheme = options[:scheme]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
    # turn off automatic signing during build so correct code signing identity is guaranteed to be used
@@ -89,15 +80,15 @@ platform :ios do
      code_sign_identity: "iPhone Distribution",
      bundle_identifier: app_identifier,
      profile_name: PROVISIONING_NAME,
-     build_configurations: [BUILD_SCHEME], # only toggle code signing settings for Release configurations
+     build_configurations: [build_scheme], # only toggle code signing settings for Release configurations
      path: IOS_PROJECT
    )
 
     build_app(
-      scheme: BUILD_SCHEME,
-      output_name: "#{BUILD_SCHEME}-TrezorSuite",
+      scheme: build_scheme,
+      output_name: "#{build_scheme}-TrezorSuite",
       workspace: IOS_PROJECT_WORKSPACE,
-      configuration: BUILD_SCHEME
+      configuration: build_scheme
     )
   end
 
@@ -107,17 +98,28 @@ platform :ios do
 
     upload_to_testflight(
         api_key: api_key,
-        changelog: RELEASE_NOTES
+        changelog: CHANGELOG
     )
   end
 
   desc "Push a new beta build to TestFlight"
-  private_lane :testing do
+  private_lane :testing do |options|
     load_appstore_connect_api_key
     prepare_signing
     fetch_and_bump_versions
-    build_testing
+    build_testing(options[:scheme])
     upload_testing
+  end
+
+  lane :develop do
+    testing(scheme: "Develop")
+  end
+  lane :staging do
+    testing(scheme: "Staging")
+  end
+  lane :production do
+    # TODO
+    # sth(scheme: "Release", provisioning_name: "AppStore io.trezor.suite"))
   end
 
   after_all do |lane|

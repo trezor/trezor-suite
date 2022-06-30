@@ -10,9 +10,6 @@ ANDROID_FIREBASE_APP_ID = ENV['FIREBASE_APP_ID']
 
 # iOS project
 IOS_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'ios').freeze
-# this should be the folder name under `ios` for your project
-
-APP_ID = 'io.trezor.suite'.freeze
 
 # Retrieve version of Suite Native app in package.json
 PACKAGE_JSON_PATH = File.join(SUITE_NATIVE_ROOT_PATH, 'package.json').freeze
@@ -23,7 +20,7 @@ commit_message = commit[:message]
 commit_hash = commit[:abbreviated_commit_hash]
 release_note_information = "[#{git_branch}] - #{commit_hash} - #{commit_message}"
 
-RELEASE_NOTES = "#{release_note_information}"
+CHANGELOG = "#{release_note_information}"
 
 import "../ios/fastlane/Fastfile"
 import "../android/fastlane/Fastfile"

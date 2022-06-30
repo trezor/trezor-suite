@@ -2,26 +2,29 @@ skip_docs
 
 # Paths
 APP_GRADLE_PATH = File.join(ANDROID_PATH, 'app/build.gradle').freeze
-GOOGLE_PLAY_JSON_KEY_FILE = ENV['GOOGLE_PLAY_JSON_KEY_FILE']
 
 platform :android do
 
   desc "Android: Increments internal build number and version number"
-  private_lane :bump_play_version do
+  private_lane :fetch_and_bump_play_version do
+    google_play_json_key_file = CredentialsManager::AppfileConfig.try_fetch_value(:json_key_file)
+    package_name = CredentialsManager::AppfileConfig.try_fetch_value(:package_name)
+
     previous_build_number = google_play_track_version_codes(
-      package_name: APP_ID,
+      package_name: package_name,
       track: "internal",
-      json_key: GOOGLE_PLAY_JSON_KEY_FILE,
+      json_key: google_play_json_key_file,
     )[0]
 
     android_set_version_code(gradle_file: APP_GRADLE_PATH, version_code: previous_build_number + 1)
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
   end
 
-  private_lane :bump_firebase_version do
+  private_lane :fetch_and_bump_firebase_version do
+    google_play_json_key_file = CredentialsManager::AppfileConfig.try_fetch_value(:json_key_file)
     latest_release = firebase_app_distribution_get_latest_release(
       app: ANDROID_FIREBASE_APP_ID,
-      service_credentials_file: GOOGLE_PLAY_JSON_KEY_FILE,
+      service_credentials_file: google_play_json_key_file,
     )
 
     # when there are no Firebase releases yet
@@ -31,20 +34,16 @@ platform :android do
     android_set_version_name(gradle_file: APP_GRADLE_PATH, version_name: VERSION)
   end
 
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test", project_dir: ANDROID_PATH)
-  end
+  desc "Build and upload the app to Google Play Store."
+  private_lane :deploy_android_play_store do |options|
+    productFlavor = options[:flavor]
 
-  desc "Build and upload the app (release build) to play Store for an internal testing release."
-  lane :releaseInternal do |options|
     gradle(task: 'clean', project_dir: ANDROID_PATH)
-
-    bump_play_version
+    fetch_and_bump_play_version
 
     gradle(
       task: 'bundle',
-      flavor: 'prod',
+      flavor: productFlavor,
       build_type: 'Release',
       project_dir: ANDROID_PATH
     )
@@ -56,13 +55,25 @@ platform :android do
       release_status: 'draft', # <http://docs.fastlane.tools/actions/upload_to_play_store/#parameters>
       skip_upload_apk: true
     )
+
   end
 
-  desc "Build and upload the app to Firebase App Distribution for testing (develop) release."
-  lane :develop do |options|
-    gradle(task: 'clean', project_dir: ANDROID_PATH)
+  desc "Deploy staging build to Google Play Store."
+  lane :staging do |options|
+    deploy_android_play_store(flavor: "firebaseStaging")
+  end
 
-    bump_firebase_version
+  desc "Deploy production build to Google Play Store."
+  lane :production do |options|
+    deploy_android_play_store(flavor: "prod")
+  end
+
+  desc "Build and deploy the app to Firebase App Distribution for develop build."
+  lane :develop do |options|
+    google_play_json_key_file = CredentialsManager::AppfileConfig.try_fetch_value(:json_key_file)
+
+    gradle(task: 'clean', project_dir: ANDROID_PATH)
+    fetch_and_bump_firebase_version
 
     gradle(
       task: 'assemble',
@@ -81,8 +92,8 @@ platform :android do
     firebase_app_distribution(
         app: ANDROID_FIREBASE_APP_ID,
         apk_path: apk_path,
-        service_credentials_file: GOOGLE_PLAY_JSON_KEY_FILE,
-        release_notes: "#{RELEASE_NOTES}",
+        service_credentials_file: google_play_json_key_file,
+        release_notes: CHANGELOG,
         groups: "develop-testers",
         debug: true
     )
