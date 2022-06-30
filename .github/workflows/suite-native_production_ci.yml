@@ -29,6 +29,9 @@ jobs:
         run: yarn install
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.0"
+          bundler-cache: true
       - name: Install bundler
         run: gem install bundler
 
