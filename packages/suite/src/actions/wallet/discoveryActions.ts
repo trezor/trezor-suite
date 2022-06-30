@@ -472,12 +472,6 @@ export const start =
                 }
             }
 
-            // if previous discovery status was running (typically after application start or when user added a new account)
-            // trigger fetch metadata
-            if (discovery.status === DISCOVERY.STATUS.RUNNING) {
-                dispatch(metadataActions.fetchMetadata(deviceState));
-            }
-
             dispatch(
                 update(
                     {

@@ -154,7 +154,6 @@ export const disconnectProvider =
  */
 const handleProviderError =
     (error: MetadataProviderError, action: string) => (dispatch: Dispatch) => {
-        console.log('error: ', error);
         // error should be of specified type, but in case it is not (catch is not typed) show generic error
         if (!error?.code) {
             // if this happens, it means that there is a hole in error handling and it should be fixed
@@ -233,8 +232,6 @@ export const initProvider = () => (dispatch: Dispatch) => {
 
 export const fetchMetadata =
     (deviceState: string) => async (dispatch: Dispatch, getState: GetState) => {
-        console.log('metadatActions fetchMetadata');
-
         const provider = dispatch(getProvider());
         if (!provider) {
             return;
@@ -254,7 +251,6 @@ export const fetchMetadata =
         // to renew access token are issued by every provider.getFileContent
         const response = await provider.getProviderDetails();
         if (!response.success) {
-            console.log('revoking', response);
             return dispatch(handleProviderError(response, ProviderErrorAction.LOAD));
         }
 
@@ -414,8 +410,6 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
 };
 
 export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
-    console.log('metadatActions connectProvider');
-
     let provider = dispatch(getProvider());
 
     if (!provider) {

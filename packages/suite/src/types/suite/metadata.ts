@@ -36,8 +36,8 @@ export type MetadataItem = string;
 export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'sdCard';
 
 export type Tokens = {
-    accessToken?: string;
-    refreshToken?: string;
+    accessToken?: string | null;
+    refreshToken?: string | null;
 };
 
 /**

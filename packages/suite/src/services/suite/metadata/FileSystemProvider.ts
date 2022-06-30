@@ -20,7 +20,7 @@ class FileSystemProvider extends AbstractMetadataProvider {
         return this.ok({
             type: this.type,
             isCloud: this.isCloud,
-            token: '',
+            tokens: {},
             user: '',
         });
     }

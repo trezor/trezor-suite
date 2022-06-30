@@ -4,9 +4,8 @@ import GoogleClient from '@suite/services/google';
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     isCloud = true;
-    constructor(accessToken?: string, refreshToken?: string) {
+    constructor(accessToken?: string | null, refreshToken?: string | null) {
         super('google');
-        console.log('init in GoogleProvider');
         GoogleClient.init(accessToken, refreshToken);
     }
 
@@ -98,25 +97,15 @@ class GoogleProvider extends AbstractMetadataProvider {
     }
 
     async getProviderDetails() {
-        // if (!GoogleClient.token) return this.error('AUTH_ERROR', 'token is missing');
         try {
-            console.log(
-                'getting token info',
-                GoogleClient.oauth2Client.credentials.refresh_token,
-                GoogleClient.oauth2Client.credentials.access_token,
-            );
             const response = await GoogleClient.getTokenInfo();
-            console.log(
-                'got token info',
-                GoogleClient.oauth2Client.credentials.refresh_token,
-                GoogleClient.oauth2Client.credentials.access_token,
-            );
             return this.ok({
                 type: this.type,
                 isCloud: this.isCloud,
-                token:
-                    GoogleClient.oauth2Client.credentials.refresh_token ||
-                    GoogleClient.oauth2Client.credentials.access_token!,
+                tokens: {
+                    accessToken: GoogleClient.oauth2Client.credentials.access_token,
+                    refreshToken: GoogleClient.oauth2Client.credentials.refresh_token,
+                },
                 user: response.user.displayName,
             } as const);
         } catch (err) {
@@ -127,7 +116,6 @@ class GoogleProvider extends AbstractMetadataProvider {
     async isConnected() {
         try {
             const result = await GoogleClient.getAccessToken();
-            console.log('isConnected, a', result);
             return !!result.access_token;
         } catch (_err) {
             return false;
@@ -139,13 +127,7 @@ class GoogleProvider extends AbstractMetadataProvider {
      */
     handleProviderError(err: any) {
         // collect human readable errors from wherever possible or fill with own general message;
-        let message: string = err?.error?.message || err?.message;
-
-        if (typeof message !== 'string') {
-            // this should never happen
-            message = 'unknown error';
-        }
-
+        const message = err?.error?.message || err?.message || err?.description || '';
         if (err?.error?.code >= 500) {
             return this.error('PROVIDER_ERROR', message);
         }

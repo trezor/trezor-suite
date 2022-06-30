@@ -11,10 +11,10 @@ import { getWeakRandomId } from '@trezor/utils';
 class DropboxProvider extends AbstractMetadataProvider {
     client: Dropbox;
     auth: DropboxAuth;
-    user: users.FullAccount | undefined;
+    user?: users.FullAccount;
     isCloud = true;
 
-    constructor(token?: string) {
+    constructor(token?: string | null) {
         super('dropbox');
 
         const fetch = window.fetch.bind(window);
@@ -175,7 +175,9 @@ class DropboxProvider extends AbstractMetadataProvider {
             const account = {
                 type: this.type,
                 isCloud: this.isCloud,
-                token,
+                tokens: {
+                    refreshToken: token,
+                },
                 user: result.name.given_name,
             } as const;
 
