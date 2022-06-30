@@ -9,6 +9,7 @@ import {
     WebUsbTransport,
     Transport,
     TrezorDeviceInfoWithSession as DeviceDescriptor,
+    getAvailableTransport,
 } from '@trezor/transport';
 // import fetch from 'cross-fetch';
 import { ERRORS } from '../constants';
@@ -59,25 +60,6 @@ export interface DeviceList {
         listener: (event: DeviceListEvents[K]) => void,
     ): this;
     emit<K extends keyof DeviceListEvents>(type: K, args: DeviceListEvents[K]): boolean;
-}
-
-// first one that inits successfully is the final one; others won't even start initiating
-async function tryInitTransports(transports: Transport[], debug: boolean) {
-    const res: Array<Transport> = [];
-    let lastError: any = null;
-    // eslint-disable-next-line no-restricted-syntax
-    for (const transport of transports) {
-        try {
-            await transport.init(debug);
-            res.push(transport);
-        } catch (e) {
-            lastError = e;
-        }
-    }
-    if (res.length === 0) {
-        throw lastError || new Error('No transport could be initialized.');
-    }
-    return res[0];
 }
 
 export class DeviceList extends EventEmitter {
@@ -156,7 +138,7 @@ export class DeviceList extends EventEmitter {
 
     async init() {
         // const { transport } = this;
-        this.transport = await tryInitTransports(this.transports, true);
+        this.transport = await getAvailableTransport(this.transports, true);
         console.log('this.transport', this.transport);
 
         try {

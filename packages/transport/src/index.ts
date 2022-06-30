@@ -18,3 +18,5 @@ export { BridgeTransport } from './transports/bridge';
 // export { FallbackTransport } from './transports/fallback';
 // export { TransportWithSharedConnections } from './transports/withSharedConnections';
 export { WebUsbTransport } from './transports/webusb';
+
+export { getAvailableTransport } from './utils/getAvailableTransport';
