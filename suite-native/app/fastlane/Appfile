@@ -1,6 +1,14 @@
 # iOS
 app_identifier("io.trezor.suite") # The bundle identifier of your app
 
+for_lane :develop do
+    app_identifier 'io.trezor.suite.develop'
+end
+
+for_lane :staging do
+    app_identifier 'io.trezor.suite.staging'
+end
+
 itc_team_id("119058140") # App Store Connect Team ID
 team_id("C3P22XVH2C") # Developer Portal Team ID
 

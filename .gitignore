@@ -107,6 +107,9 @@ buck-out/
 **/fastlane/Preview.html
 **/fastlane/screenshots
 
+*.cer
+*.mobileprovision
+
 # scan temporary files
 **/android/fastlane/test_output
 
