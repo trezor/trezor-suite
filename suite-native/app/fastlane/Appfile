@@ -4,15 +4,15 @@ for_platform :ios do
   team_id("C3P22XVH2C") # Developer Portal Team ID
 
   for_lane :develop do
-      app_identifier 'io.trezor.suite.develop'
+    app_identifier 'io.trezor.suite.develop'
   end
 
   for_lane :staging do
-      app_identifier 'io.trezor.suite.staging'
+    app_identifier 'io.trezor.suite.staging'
   end
 
   for_lane :production do
-      app_identifier 'io.trezor.suite'
+    app_identifier 'io.trezor.suite'
   end
 end
 
