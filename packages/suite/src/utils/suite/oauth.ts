@@ -56,7 +56,6 @@ const handleResponse = (
     onSuccess: (result: Credentials) => void,
     onError: (error: any) => void,
 ) => {
-    console.log('handleresponse', message);
     if (!message.search && !message.hash) return;
     let parsedMessage;
 

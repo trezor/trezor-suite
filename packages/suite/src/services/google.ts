@@ -8,11 +8,10 @@
  * to do the same with googleapis package
  */
 
-import { OAuth2Client, CodeChallengeMethod } from 'google-auth-library';
+import { OAuth2Client, CodeChallengeMethod, Credentials } from 'google-auth-library';
 import { METADATA } from '@suite-actions/constants';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { getCodeChallenge } from '@suite-utils/random';
-import { isDesktop } from '@suite-utils/env';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const BOUNDARY = '-------314159265358979323846';
@@ -82,129 +81,53 @@ type GetTokenInfoResponse = {
     };
 };
 
+type Flow = 'online' | 'offline';
+
 /**
  * This class provides communication interface with selected google rest APIs:
  * - oauth v2
  * - drive v3
  */
 class Client {
-    // static token?: string;
     static nameIdMap: Record<string, string>;
     static listPromise?: Promise<ListResponse>;
-    static oauth2Client: OAuth2Client = new OAuth2Client({
-        clientId: METADATA.GOOGLE_CLIENT_ID_DESKTOP,
-    });
-    static flow: 'online' | 'offline';
+    static oauth2Client: OAuth2Client = new OAuth2Client({});
+    static flow: Flow;
     static clientId = '';
     static authServerAvailable = false;
     static initPromise: Promise<Client> | undefined;
 
-    // constructor(token?: string) {
-    //     console.log('=====constructor=====');
-    //     Client.token = token;
-    //     Client.nameIdMap = {};
-    //     Client.oauth2Client = new OAuth2Client({
-    //         clientId: METADATA.GOOGLE_CLIENT_ID_DESKTOP,
-    //     });
-    // }
-
-    static async getAvailableFlow(): Promise<'offline' | 'online'> {
-        const isAuthServerAvailable = await Client.isAuthServerAvailable();
-
-        if (isAuthServerAvailable) {
-            if (isDesktop()) {
-                return 'offline';
-            }
-            // web
-            // return 'offline';
-            return 'online';
-        }
-        if (isDesktop()) {
-            // return 'offline'; // client_secret is missing
-            return 'online'; // bunch of other problems
-        }
-        return 'online';
-    }
-
-    static setClientIdForFlow(flow: 'offline' | 'online') {
-        if (flow === 'offline') {
-            if (isDesktop()) {
-                // console.log('using desktop id');
-                Client.clientId = METADATA.GOOGLE_CLIENT_ID_DESKTOP;
-                // tv
-                // Client.clientId =
-                // '461402843655-a67saht8v848ukj22biek69ibunaie33.apps.googleusercontent.com'; // native device not allowed with local uri
-            } else {
-                console.log('using web id');
-                Client.clientId = METADATA.GOOGLE_CLIENT_ID_WEB;
-            }
-        } else {
-            console.log('using web id');
-
-            Client.clientId = METADATA.GOOGLE_CLIENT_ID_WEB;
-        }
-        return Client.clientId;
-    }
-
-    static init(accessToken = '', refreshToken = '') {
-        Client.initPromise = new Promise(async resolve => {
-            console.log('init google token');
-
-            // Client.token = token;
+    static init(accessToken: string | null = '', refreshToken: string | null = '') {
+        Client.initPromise = new Promise(resolve => {
             Client.nameIdMap = {};
+            Client.isAuthServerAvailable().then(result => {
+                Client.flow = result ? 'offline' : 'online';
+                Client.clientId =
+                    Client.flow === 'offline'
+                        ? METADATA.GOOGLE_CODE_FLOW_CLIENT_ID
+                        : METADATA.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
 
-            Client.flow = await Client.getAvailableFlow();
-            console.log('==floooow==', Client.flow);
-            const clientId = Client.setClientIdForFlow(Client.flow);
-
-            Client.oauth2Client = new OAuth2Client({
-                clientId,
-            });
-
-            // which token is going to be updated depends on platform
-            // Client.oauth2Client.on('tokens', tokens => {
-            //     console.log('tokens', tokens);
-            //     if (tokens.refresh_token) {
-            //         Client.token = tokens.refresh_token;
-            //     }
-            //     if (tokens.access_token) {
-            //         Client.token = tokens.access_token;
-            //     }
-            // });
-
-            console.log('INIT TOKENS: ', accessToken, refreshToken);
-            // which token is going to be remembered depends on platform
-            if (accessToken || refreshToken) {
-                if (Client.flow === 'offline') {
-                    console.log('init setCredentials isAuthServerAvailable');
+                if (accessToken || refreshToken) {
                     Client.oauth2Client.setCredentials({
                         access_token: accessToken,
                         refresh_token: refreshToken,
                     });
-                } else {
-                    console.log('init setCredentials');
-
-                    Client.oauth2Client.setCredentials({
-                        access_token: accessToken,
-                    });
                 }
-            }
 
-            resolve(Client);
+                resolve(Client);
+            });
         });
-        return Client.initPromise;
     }
 
     static isTokenExpiring() {
         const expiryDate = Client.oauth2Client.credentials.expiry_date;
         return expiryDate
-            ? expiryDate <= new Date().getTime() + Client.oauth2Client.eagerRefreshThresholdMillis
+            ? expiryDate <= new Date().getTime() + 58 * 60 * 1000 // Client.oauth2Client.eagerRefreshThresholdMillis
             : false;
     }
 
-    static setCredentials(json: any) {
-        console.log('setCredentials', json);
-        if (json && json.expires_in) {
+    static setCredentials(json: Credentials & { expires_in?: number }) {
+        if (json?.expires_in) {
             json.expiry_date = new Date().getTime() + json.expires_in * 1000;
             delete json.expires_in;
         }
@@ -214,22 +137,8 @@ class Client {
 
     static async getAccessToken() {
         await Client.initPromise;
-        console.log(
-            'getAccessToken Client.oauth2Client.credentials',
-            Client.oauth2Client?.credentials,
-            // this.token,
-        );
-
         const { access_token, refresh_token } = Client.oauth2Client?.credentials || {};
         const shouldRefresh = Client.isTokenExpiring() || !!(!access_token && refresh_token);
-        //! Client.oauth2Client.credentials.access_token || Client.isTokenExpiring();
-        console.log(
-            'shouldRefresh',
-            shouldRefresh,
-            Client.isTokenExpiring(),
-            access_token,
-            refresh_token,
-        );
         if (shouldRefresh) {
             const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-refresh`, {
                 method: 'POST',
@@ -242,14 +151,13 @@ class Client {
                 },
             });
             const json = await res.json();
-            console.log('refresh response', json);
             Client.setCredentials(json);
             if (!json?.access_token) {
                 throw new Error('Could not refresh access token.');
             }
             return json.access_token;
         }
-        return Client.oauth2Client.credentials.access_token; // || Client.token;
+        return Client.oauth2Client.credentials.access_token;
     }
 
     static async isAuthServerAvailable() {
@@ -276,37 +184,27 @@ class Client {
         if (Client.flow === 'offline') {
             // authorization code flow with PKCE
             Object.assign(options, {
-                access_type: 'offline',
+                client_id: Client.clientId,
                 code_challenge: random,
                 code_challenge_method: CodeChallengeMethod.Plain,
             });
         } else {
             // implicit flow
             Object.assign(options, {
-                access_type: 'online',
+                client_id: Client.clientId,
                 response_type: 'token',
-                // response_type: 'code',
             });
         }
 
-        console.log('options', options);
-
         const url = Client.oauth2Client.generateAuthUrl(options);
-        console.log('url', url);
         const response = await extractCredentialsFromAuthorizationFlow(url);
-
-        console.log('extractCredentialsFromAuthorizationFlow', response);
-
         const { access_token, code } = response;
-        // implicit flow returns short lived access_token directly
-        if (access_token) {
-            console.log('access_token', access_token);
-            // Client.token = access_token;
-            Client.oauth2Client.setCredentials({ access_token });
-            return;
-        }
 
-        if (Client.authServerAvailable) {
+        if (access_token) {
+            // implicit flow returns short lived access_token directly
+            Client.oauth2Client.setCredentials({ access_token });
+        } else {
+            // authorization code flow retrieves code, then refresh_token, which can generate access_token on demand
             const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-init`, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -322,15 +220,6 @@ class Client {
 
             const json = await res.json();
             Client.setCredentials(json);
-            Client.oauth2Client.setCredentials(json);
-        } else if (code) {
-            // otherwise authorization code which is to be exchanged for tokens is retrieved
-            const { tokens } = await Client.oauth2Client.getToken({
-                code,
-                redirect_uri: redirectUri,
-                codeVerifier: random,
-            });
-            this.oauth2Client.setCredentials(tokens);
         }
     }
 
@@ -338,8 +227,6 @@ class Client {
      * implementation of https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow#tokenrevoke
      */
     static revoke() {
-        console.log('Client.revoke');
-        // if (!Client.token) return;
         const promise = Client.call(
             `https://oauth2.googleapis.com/revoke?token=${Client.oauth2Client.credentials.access_token}`,
             {
@@ -347,7 +234,6 @@ class Client {
             },
         );
         Client.setCredentials({});
-        // Client.token = '';
         return promise;
     }
 
@@ -496,9 +382,7 @@ class Client {
             const query = new URLSearchParams(apiParams.query as Record<string, string>).toString();
             url += `?${query}`;
         }
-        console.log('call', url, apiParams);
         const accessToken = await Client.getAccessToken();
-        console.log('access token: ', accessToken);
         const fetchOptions = {
             ...fetchParams,
             headers: {

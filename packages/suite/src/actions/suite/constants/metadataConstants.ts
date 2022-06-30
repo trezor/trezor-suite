@@ -29,15 +29,19 @@ export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDO
 // google does not allow authorization code flow (with long lived tokens) for web. that is the reason why 2 clientIds are used
 // export const GOOGLE_CLIENT_ID_DESKTOP =
 //     '705190185912-q1usa46qtt21mbtldki8juhn78a0v0ma.apps.googleusercontent.com';
-export const GOOGLE_CLIENT_ID_DESKTOP =
+export const GOOGLE_CODE_FLOW_CLIENT_ID =
     // komar
     // '721022212539-0o49kanusndsufaeh1nut13pp23hb1t8.apps.googleusercontent.com';
     // desktop
-    '461402843655-q535pphcl2qq9u5o8kb66i02q7f7nn5r.apps.googleusercontent.com';
+    // '461402843655-q535pphcl2qq9u5o8kb66i02q7f7nn5r.apps.googleusercontent.com';
+    '721022212539-0o49kanusndsufaeh1nut13pp23hb1t8.apps.googleusercontent.com';
 // web
 // '461402843655-4e5qh2eqi47ghslmhd1tvsscrskuginb.apps.googleusercontent.com';
-export const GOOGLE_CLIENT_ID_WEB =
+export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
     // '705190185912-nejegm4dbdecdaiumncbaa4ulrfnpk82.apps.googleusercontent.com';
-    '461402843655-4e5qh2eqi47ghslmhd1tvsscrskuginb.apps.googleusercontent.com';
+    // '461402843655-4e5qh2eqi47ghslmhd1tvsscrskuginb.apps.googleusercontent.com';
+    '721022212539-780n7vtfc5pmc2usvtpea2mqckl88tt8.apps.googleusercontent.com';
+// '721022212539-0o49kanusndsufaeh1nut13pp23hb1t8.apps.googleusercontent.com';
+
 // dropbox allows authorization code flow for both web and desktop
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';

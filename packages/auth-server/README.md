@@ -8,7 +8,7 @@ Google requires `client_secret` specific for an app to grant long term access to
 
 1. Generate your own testing credentials for a Desktop App in [Google Cloud Platform](https://console.cloud.google.com/apis/credentials).
 1. In Google Cloud Platform, add your account as a test user of the app.
-1. Replace `GOOGLE_CLIENT_ID_DESKTOP` and `GOOGLE_CLIENT_SECRET` in this project with generated credentials.
+1. Replace `client_secret` and `client_id` values in requests with generated credentials.
 1. Set `AUTH_SERVER_URL` in `@trezor/suite` to `http://localhost:3005`.
 1. Install dependencies via `yarn workspace @trezor/auth-server install`.
 1. Run the server locally via `yarn workspace @trezor/auth-server dev`.
