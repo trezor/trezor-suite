@@ -4,7 +4,7 @@
 
 import EventEmitter from 'events';
 import {
-    // BridgeTransport,
+    BridgeTransport,
     // FallbackTransport,
     WebUsbTransport,
     Transport,
@@ -60,9 +60,30 @@ export interface DeviceList {
     ): this;
     emit<K extends keyof DeviceListEvents>(type: K, args: DeviceListEvents[K]): boolean;
 }
+
+// first one that inits successfully is the final one; others won't even start initiating
+async function tryInitTransports(transports: Transport[], debug: boolean) {
+    const res: Array<Transport> = [];
+    let lastError: any = null;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const transport of transports) {
+        try {
+            await transport.init(debug);
+            res.push(transport);
+        } catch (e) {
+            lastError = e;
+        }
+    }
+    if (res.length === 0) {
+        throw lastError || new Error('No transport could be initialized.');
+    }
+    return res[0];
+}
+
 export class DeviceList extends EventEmitter {
     // @ts-ignore
     transport: Transport;
+    transports: Transport[];
 
     transportPlugin: LowLevelPlugin | typeof undefined;
 
@@ -92,52 +113,57 @@ export class DeviceList extends EventEmitter {
         console.log('webusb', webusb);
         console.log('env', env);
 
-        const transports: Transport[] = [];
+        // const transports: Transport[] = [];
+        this.transports = [];
 
         if (env === 'react-native' && typeof ReactNativeUsbPlugin !== 'undefined') {
-            transports.push(ReactNativeUsbPlugin());
+            // transports.push(ReactNativeUsbPlugin());
         } else {
-            // // const bridgeLatestVersion = getBridgeInfo().version.join('.');
-            // const bridge = new BridgeTransport({});
+            // const bridgeLatestVersion = getBridgeInfo().version.join('.');
+            const bridge = new BridgeTransport({});
             // // bridge.setBridgeLatestVersion(bridgeLatestVersion);
             // this.fetchController = getAbortController();
             // const { signal } = this.fetchController;
             // // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
             // const fetchWithSignal = (args, options = {}) => fetch(args, { ...options, signal });
             // BridgeTransport.setFetch(fetchWithSignal, typeof window === 'undefined');
-            // transports.push(bridge);
+            this.transports.push(bridge);
             // this.transport = bridge;
         }
 
-        // if (webusb && typeof WebUsbTransport !== 'undefined') {
-        // const webusb: Transport = new WebUsbTransport({});
-        // transports.push(webusb);
-        this.transport = new WebUsbTransport({});
-        // @ts-ignore
-        // @ts-ignore
-        // this.transport.on('TRANSPORT.DEVICE_CONNECTED', async dev => {
-        //     console.log('========= TRANSPORT.DEVICE_CONNECTED event in connect ', dev);
+        if (webusb && typeof WebUsbTransport !== 'undefined') {
+            const webusb: Transport = new WebUsbTransport({});
+            this.transports.push(webusb);
+            // this.transport = new WebUsbTransport({});
+            // @ts-ignore
+            // @ts-ignore
+            // this.transport.on('TRANSPORT.DEVICE_CONNECTED', async dev => {
+            //     console.log('========= TRANSPORT.DEVICE_CONNECTED event in connect ', dev);
 
-        //     const device = Device.fromDescriptor(this.transport, dev);
-        //     console.log('device created from descriptor', device);
-        //     await device.run();
-        //     this.emit(DEVICE.CONNECT, device.toMessageObject());
-        // });
-        // }
+            //     const device = Device.fromDescriptor(this.transport, dev);
+            //     console.log('device created from descriptor', device);
+            //     await device.run();
+            //     this.emit(DEVICE.CONNECT, device.toMessageObject());
+            // });
+        }
 
         // todo: something that takes one transport or the other depending on a priority list or similar.
         // this.transport = new FallbackTransport({ transports, debug: false });
+
         this.defaultMessages = DataManager.getProtobufMessages();
         this.currentMessages = this.defaultMessages;
     }
 
     async init() {
-        const { transport } = this;
+        // const { transport } = this;
+        this.transport = await tryInitTransports(this.transports, true);
+        console.log('this.transport', this.transport);
+
         try {
             _log.debug('Initializing transports');
-            await transport.init(_log.enabled);
+            await this.transport.init(_log.enabled);
             _log.debug('Configuring transports');
-            transport.configure(this.defaultMessages);
+            this.transport.configure(this.defaultMessages);
             _log.debug('Configuring transports done');
             // @ts-ignore
             // this.transport.listen();
@@ -409,6 +435,7 @@ class CreateDeviceHandler {
                 error.message === ERRORS.WRONG_PREVIOUS_SESSION_ERROR_MESSAGE ||
                 error.toString() === ERRORS.WEBUSB_ERROR_MESSAGE
             ) {
+                console.log('error in handle DeviceList', error);
                 this.list.enumerate();
                 this._handleUsedElsewhere();
             } else if (error.message.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
