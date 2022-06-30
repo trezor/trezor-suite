@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { TRANSPORT } from '@trezor/connect';
+import { TRANSPORT, DEVICE } from '@trezor/connect';
 
 import { MESSAGE_SYSTEM, STORAGE, SUITE } from '@suite-actions/constants';
 import { getValidMessages } from '@suite-utils/messageSystem';
@@ -17,6 +17,7 @@ const actions = [
     MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
     WALLET_SETTINGS.CHANGE_NETWORKS,
     TRANSPORT.START,
+    DEVICE.CONNECT,
 ];
 
 const messageSystemMiddleware =
