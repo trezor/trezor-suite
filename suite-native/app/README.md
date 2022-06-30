@@ -66,33 +66,37 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 #### iOS
 
-##### ios beta
+##### iOS develop
 
 ```sh
-[bundle exec] fastlane ios beta
+[bundle exec] fastlane ios develop
 ```
 
-Push a new beta build to TestFlight
+Push a new beta build to TestFlight for develop build schema.
+
+---
+
+##### iOS staging
+
+```sh
+[bundle exec] fastlane ios staging
+```
+
+Push a new beta build to TestFlight for staging build schema.
+
+---
+
+##### iOS production
+
+```sh
+[bundle exec] fastlane ios production
+```
+
+TODO
 
 ---
 
 #### Android
-
-##### android test
-
-```sh
-[bundle exec] fastlane android test
-```
-
-Runs all the tests
-
-##### android releaseInternal
-
-```sh
-[bundle exec] fastlane android releaseInternal
-```
-
-Build and upload the app (release build) to play Store for an internal testing release.
 
 ##### android develop
 
@@ -100,4 +104,24 @@ Build and upload the app (release build) to play Store for an internal testing r
 [bundle exec] fastlane android develop
 ```
 
-Build and upload the app to Firebase App Distribution for testing (develop) release.
+Build and upload the app (develop) to Firebase App Distribution for testing in a small group of testers.
+
+---
+
+##### android staging
+
+```sh
+[bundle exec] fastlane android staging
+```
+
+Build and upload the app (staging) to Google Play Store for internal testing.
+
+---
+
+##### android production
+
+```sh
+[bundle exec] fastlane android production
+```
+
+Build and upload the app (production) to Google Play Store for internal testing.
