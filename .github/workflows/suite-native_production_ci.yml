@@ -7,7 +7,7 @@ jobs:
   android_production:
     defaults:
       run:
-        working-directory: suite-native
+        working-directory: suite-native/app
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 45

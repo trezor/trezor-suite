@@ -14,7 +14,7 @@ jobs:
   android_develop:
     defaults:
       run:
-        working-directory: suite-native
+        working-directory: suite-native/app
     runs-on: ubuntu-latest
     environment: develop
     timeout-minutes: 45
