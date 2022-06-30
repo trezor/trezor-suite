@@ -152,17 +152,24 @@ export class Device extends EventEmitter {
         // will be resolved after trezor-link acquire event
         this.deferredActions[DEVICE.ACQUIRE] = createDeferred();
         this.deferredActions[DEVICE.ACQUIRED] = createDeferred();
+        console.log('this.originalDescriptor.session', this.originalDescriptor.session);
+        console.log('this.activitySessionID', this.activitySessionID);
+        const session = this.activitySessionID
+            ? this.activitySessionID
+            : this.originalDescriptor.session;
         try {
             const sessionID = await this.transport.acquire({
                 input: {
                     path: this.originalDescriptor.path,
                     // @ts-expect-error
-                    previous: this.originalDescriptor.session,
+                    previous: session,
                 },
                 debug: false,
             });
+            console.log('sessionID', sessionID);
             _log.debug('Expected session id:', sessionID);
             this.activitySessionID = sessionID;
+            console.log('this.activitySessionID', this.activitySessionID);
             this.deferredActions[DEVICE.ACQUIRED].resolve();
             delete this.deferredActions[DEVICE.ACQUIRED];
 
@@ -174,6 +181,7 @@ export class Device extends EventEmitter {
             // future defer for trezor-link release event
             this.deferredActions[DEVICE.RELEASE] = createDeferred();
         } catch (error) {
+            console.log('error in connect Device acquire', error);
             this.deferredActions[DEVICE.ACQUIRED].resolve();
             delete this.deferredActions[DEVICE.ACQUIRED];
             if (this.runPromise) {
