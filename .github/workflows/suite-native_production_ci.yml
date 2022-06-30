@@ -44,5 +44,8 @@ jobs:
           GOOGLE_PLAY_JSON_KEY_FILE: $TMP_FILE_PATH/firebase_key.json
           FIREBASE_APP_ID: ${{secrets.ANDROID_FIREBASE_APP_ID}}
         # builds and publishes the app
-        run: bundle exec fastlane android production
+        run: |
+          bundle install
+          bundle exec fastlane android production
+
 ## TODO: ios app production release ci setup
