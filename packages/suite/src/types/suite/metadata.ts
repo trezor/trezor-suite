@@ -35,11 +35,6 @@ export type MetadataItem = string;
 
 export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'sdCard';
 
-export type Tokens = {
-    accessToken?: string | null;
-    refreshToken?: string | null;
-};
-
 /**
  * Representation of provider data stored in reducer
  * properties 'tokens' and 'type' are needed to recreate corresponding provider instance
@@ -49,7 +44,7 @@ export type Tokens = {
 export type MetadataProvider = {
     type: MetadataProviderType;
     user: string;
-    tokens: Tokens;
+    token?: string;
     isCloud: boolean;
 };
 
