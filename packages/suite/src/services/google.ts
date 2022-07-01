@@ -8,7 +8,7 @@
  * to do the same with googleapis package
  */
 
-import { OAuth2Client, CodeChallengeMethod, Credentials } from 'google-auth-library';
+import { OAuth2Client, CodeChallengeMethod } from 'google-auth-library';
 import { METADATA } from '@suite-actions/constants';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { getCodeChallenge } from '@suite-utils/random';
@@ -96,6 +96,8 @@ class Client {
     static clientId = '';
     static authServerAvailable = false;
     static initPromise: Promise<Client> | undefined;
+    static accessToken: string;
+    static refreshToken: string;
 
     static init(accessToken: string | null = '', refreshToken: string | null = '') {
         Client.initPromise = new Promise(resolve => {
@@ -106,12 +108,11 @@ class Client {
                     Client.flow === 'offline'
                         ? METADATA.GOOGLE_CODE_FLOW_CLIENT_ID
                         : METADATA.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
-
-                if (accessToken || refreshToken) {
-                    Client.oauth2Client.setCredentials({
-                        access_token: accessToken,
-                        refresh_token: refreshToken,
-                    });
+                if (accessToken) {
+                    Client.accessToken = accessToken;
+                }
+                if (refreshToken) {
+                    Client.refreshToken = refreshToken;
                 }
 
                 resolve(Client);
@@ -119,45 +120,31 @@ class Client {
         });
     }
 
-    static isTokenExpiring() {
-        const expiryDate = Client.oauth2Client.credentials.expiry_date;
-        return expiryDate
-            ? expiryDate <= new Date().getTime() + 58 * 60 * 1000 // Client.oauth2Client.eagerRefreshThresholdMillis
-            : false;
-    }
-
-    static setCredentials(json: Credentials & { expires_in?: number }) {
-        if (json?.expires_in) {
-            json.expiry_date = new Date().getTime() + json.expires_in * 1000;
-            delete json.expires_in;
-        }
-        Client.oauth2Client.emit('tokens', json);
-        Client.oauth2Client.setCredentials(json);
-    }
-
     static async getAccessToken() {
         await Client.initPromise;
-        const { access_token, refresh_token } = Client.oauth2Client?.credentials || {};
-        const shouldRefresh = Client.isTokenExpiring() || !!(!access_token && refresh_token);
-        if (shouldRefresh) {
-            const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-refresh`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    clientId: Client.clientId,
-                    refreshToken: Client.oauth2Client.credentials.refresh_token,
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const json = await res.json();
-            Client.setCredentials(json);
-            if (!json?.access_token) {
-                throw new Error('Could not refresh access token.');
+        if (!Client.accessToken) {
+            if (Client.flow === 'offline') {
+                const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-refresh`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        clientId: Client.clientId,
+                        refreshToken: Client.refreshToken,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const json = await res.json();
+                if (!json?.access_token) {
+                    throw new Error('Could not refresh access token.');
+                } else {
+                    Client.accessToken = json.access_token;
+                }
+                return json.access_token;
             }
-            return json.access_token;
+            await Client.authorize();
         }
-        return Client.oauth2Client.credentials.access_token;
+        return Client.accessToken;
     }
 
     static async isAuthServerAvailable() {
@@ -199,10 +186,9 @@ class Client {
         const url = Client.oauth2Client.generateAuthUrl(options);
         const response = await extractCredentialsFromAuthorizationFlow(url);
         const { access_token, code } = response;
-
         if (access_token) {
             // implicit flow returns short lived access_token directly
-            Client.oauth2Client.setCredentials({ access_token });
+            Client.accessToken = access_token;
         } else {
             // authorization code flow retrieves code, then refresh_token, which can generate access_token on demand
             const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-init`, {
@@ -219,7 +205,8 @@ class Client {
             });
 
             const json = await res.json();
-            Client.setCredentials(json);
+            Client.accessToken = json.access_token;
+            Client.refreshToken = json.refresh_token;
         }
     }
 
@@ -228,12 +215,12 @@ class Client {
      */
     static revoke() {
         const promise = Client.call(
-            `https://oauth2.googleapis.com/revoke?token=${Client.oauth2Client.credentials.access_token}`,
+            `https://oauth2.googleapis.com/revoke?token=${Client.accessToken}`,
             {
                 method: 'POST',
             },
         );
-        Client.setCredentials({});
+        Client.accessToken = '';
         return promise;
     }
 
@@ -341,7 +328,6 @@ class Client {
         if (!forceReload && Client.nameIdMap[name]) {
             return Client.nameIdMap[name];
         }
-
         try {
             // request to list files might have already been dispatched and exist as unresolved promise, so wait for it here in that case
             if (Client.listPromise) {
@@ -382,7 +368,6 @@ class Client {
             const query = new URLSearchParams(apiParams.query as Record<string, string>).toString();
             url += `?${query}`;
         }
-        const accessToken = await Client.getAccessToken();
         const fetchOptions = {
             ...fetchParams,
             headers: {
@@ -390,12 +375,6 @@ class Client {
                 ...fetchParams.headers,
             },
         };
-
-        if (accessToken) {
-            Object.assign(fetchOptions.headers, {
-                Authorization: `Bearer ${accessToken}`,
-            });
-        }
 
         if (apiParams?.body) {
             const body =
@@ -405,11 +384,25 @@ class Client {
             Object.assign(fetchOptions, { body });
         }
 
-        const response = await fetch(url, fetchOptions);
-        if (response.status !== 200) {
-            const error = await response.json();
-            throw error;
-        }
+        const getTokenAndFetch = async (isRetry?: boolean) => {
+            await Client.getAccessToken();
+            if (Client.accessToken) {
+                Object.assign(fetchOptions.headers, {
+                    Authorization: `Bearer ${Client.accessToken}`,
+                });
+            }
+            let response = await fetch(url, fetchOptions);
+            if (!isRetry && response.status === 401) {
+                Client.accessToken = '';
+                response = await getTokenAndFetch(true);
+            } else if (response.status !== 200) {
+                const error = await response.json();
+                throw error;
+            }
+            return response;
+        };
+
+        const response = await getTokenAndFetch();
         return response;
     }
 }
