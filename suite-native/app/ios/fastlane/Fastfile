@@ -9,16 +9,8 @@ platform :ios do
   before_all do |lane|
     puts "Running lane #{lane}..."
 
-    if is_ci
-      # setup a temporary keychain
-      setup_ci
-
-      # this is set up by setup_ci (https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/actions/setup_ci.rb)
-      keychain_name = ENV["MATCH_KEYCHAIN_NAME"]
-      KEYCHAIN_PATH = "~/Library/Keychains/#{keychain_name}"
-    else
-      KEYCHAIN_PATH = ENV["KEYCHAIN_PATH"] # the path to the keychain where your certificates are stored
-    end
+    # setup a temporary keychain
+    setup_ci
 
     if lane == :develop
       PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
@@ -46,9 +38,11 @@ platform :ios do
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
+    # path and password are set by setup_ci (https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/actions/setup_ci.rb)
     cert(
       api_key: api_key,
-      keychain_path: KEYCHAIN_PATH
+      keychain_path: "~/Library/Keychains/#{ENV["MATCH_KEYCHAIN_NAME"]}",
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
     )
 
     sigh(
