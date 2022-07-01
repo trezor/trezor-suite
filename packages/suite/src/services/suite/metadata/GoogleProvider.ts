@@ -103,8 +103,8 @@ class GoogleProvider extends AbstractMetadataProvider {
                 type: this.type,
                 isCloud: this.isCloud,
                 tokens: {
-                    accessToken: GoogleClient.oauth2Client.credentials.access_token,
-                    refreshToken: GoogleClient.oauth2Client.credentials.refresh_token,
+                    accessToken: GoogleClient.accessToken,
+                    refreshToken: GoogleClient.refreshToken,
                 },
                 user: response.user.displayName,
             } as const);
@@ -116,7 +116,7 @@ class GoogleProvider extends AbstractMetadataProvider {
     async isConnected() {
         try {
             const result = await GoogleClient.getAccessToken();
-            return !!result.access_token;
+            return !!result;
         } catch (_err) {
             return false;
         }
