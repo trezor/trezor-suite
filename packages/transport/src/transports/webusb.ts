@@ -6,24 +6,15 @@ import { buildBuffers } from '../lowlevel/send';
 import { receiveAndParse } from '../lowlevel/receive';
 
 import type { AcquireInput } from '../types';
-
-const T1HID_VENDOR = 0x534c;
-
-const TREZOR_DESCS = [
-    // TREZOR v1
-    // won't get opened, but we can show error at least
-    { vendorId: 0x534c, productId: 0x0001 },
-    // TREZOR webusb Bootloader
-    { vendorId: 0x1209, productId: 0x53c0 },
-    // TREZOR webusb Firmware
-    { vendorId: 0x1209, productId: 0x53c1 },
-];
-
-const CONFIGURATION_ID = 1;
-const INTERFACE_ID = 0;
-const ENDPOINT_ID = 1;
-const DEBUG_INTERFACE_ID = 1;
-const DEBUG_ENDPOINT_ID = 2;
+import {
+    CONFIGURATION_ID,
+    DEBUG_ENDPOINT_ID,
+    DEBUG_INTERFACE_ID,
+    ENDPOINT_ID,
+    INTERFACE_ID,
+    T1HID_VENDOR,
+    TREZOR_DESCS,
+} from '../constants';
 
 export class WebUsbTransport extends Transport {
     // todo: global replace WebUsbPlugin for webusb

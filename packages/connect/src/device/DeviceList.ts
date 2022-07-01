@@ -7,6 +7,7 @@ import {
     BridgeTransport,
     // FallbackTransport,
     WebUsbTransport,
+    NodeUsbTransport,
     Transport,
     TrezorDeviceInfoWithSession as DeviceDescriptor,
     getAvailableTransport,
@@ -91,15 +92,15 @@ export class DeviceList extends EventEmitter {
     constructor() {
         super();
 
+        console.log('DataManager.settings', DataManager.settings);
         const { env, webusb } = DataManager.settings;
-        console.log('webusb', webusb);
         console.log('env', env);
 
-        // const transports: Transport[] = [];
         this.transports = [];
+        this.transports.push(new NodeUsbTransport({}));
 
         if (env === 'react-native' && typeof ReactNativeUsbPlugin !== 'undefined') {
-            // transports.push(ReactNativeUsbPlugin());
+            this.transports.push(ReactNativeUsbPlugin());
         } else {
             // const bridgeLatestVersion = getBridgeInfo().version.join('.');
             const bridge = new BridgeTransport({});
