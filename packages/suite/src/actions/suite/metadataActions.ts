@@ -46,12 +46,12 @@ export type MetadataAction =
 let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-const createProvider = (type: MetadataProvider['type'], tokens?: MetadataProvider['tokens']) => {
+const createProvider = (type: MetadataProvider['type'], token?: MetadataProvider['token']) => {
     switch (type) {
         case 'dropbox':
-            return new DropboxProvider(tokens?.refreshToken);
+            return new DropboxProvider(token);
         case 'google':
-            return new GoogleProvider(tokens?.accessToken, tokens?.refreshToken);
+            return new GoogleProvider(token);
         case 'fileSystem':
             return new FileSystemProvider();
         default:
@@ -207,7 +207,7 @@ const getProvider = () => (_dispatch: Dispatch, getState: GetState) => {
 
     if (providerInstance) return providerInstance;
 
-    providerInstance = createProvider(state.type, state.tokens);
+    providerInstance = createProvider(state.type, state.token);
 
     return providerInstance;
 };

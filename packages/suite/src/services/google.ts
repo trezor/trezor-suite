@@ -1,14 +1,12 @@
 /* eslint camelcase: 0 */
 
 /**
- * Reason why this file exists:
- * at the begging I did not like googleapis package (official from google) as it does not have browser support
- * but later I found out that it was possible to use google-auth-library, also official google package
- * which is also a part of googleapis only by little tweaking in webpack config. So, it might be possible (haven't tried yet)
- * to do the same with googleapis package
+ * This is a custom implementation of Google OAuth authorization code flow with a fallback to an implicit flow. The documentation and packages
+ * (we originally used google-auth-library-nodejs) recommend using one way or the other, but since we had to implement the authorization code
+ * flow for the desktop app anyway, we enabled it for the web app as well for users' convenience. We also use the implicit flow as a backup if
+ *  our authorization server (which holds a client secret necessary for the authorization code flow) is not available.
  */
 
-import { OAuth2Client, CodeChallengeMethod } from 'google-auth-library';
 import { METADATA } from '@suite-actions/constants';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { getCodeChallenge } from '@suite-utils/random';
@@ -81,7 +79,7 @@ type GetTokenInfoResponse = {
     };
 };
 
-type Flow = 'online' | 'offline';
+type Flow = 'implicit' | 'code';
 
 /**
  * This class provides communication interface with selected google rest APIs:
@@ -91,7 +89,6 @@ type Flow = 'online' | 'offline';
 class Client {
     static nameIdMap: Record<string, string>;
     static listPromise?: Promise<ListResponse>;
-    static oauth2Client: OAuth2Client = new OAuth2Client({});
     static flow: Flow;
     static clientId = '';
     static authServerAvailable = false;
@@ -99,20 +96,19 @@ class Client {
     static accessToken: string;
     static refreshToken: string;
 
-    static init(accessToken: string | null = '', refreshToken: string | null = '') {
+    static init(token?: string) {
         Client.initPromise = new Promise(resolve => {
             Client.nameIdMap = {};
             Client.isAuthServerAvailable().then(result => {
-                Client.flow = result ? 'offline' : 'online';
+                // if our server providing the refresh token is not available, fallback to a flow with access tokens only (authorization for a limited time)
+                Client.flow = result ? 'code' : 'implicit';
+                // the app has two sets of credentials to enable both OAuth flows
                 Client.clientId =
-                    Client.flow === 'offline'
+                    Client.flow === 'code'
                         ? METADATA.GOOGLE_CODE_FLOW_CLIENT_ID
                         : METADATA.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
-                if (accessToken) {
-                    Client.accessToken = accessToken;
-                }
-                if (refreshToken) {
-                    Client.refreshToken = refreshToken;
+                if (token) {
+                    Client.refreshToken = token;
                 }
 
                 resolve(Client);
@@ -122,27 +118,23 @@ class Client {
 
     static async getAccessToken() {
         await Client.initPromise;
-        if (!Client.accessToken) {
-            if (Client.flow === 'offline') {
-                const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-refresh`, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        clientId: Client.clientId,
-                        refreshToken: Client.refreshToken,
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                const json = await res.json();
-                if (!json?.access_token) {
-                    throw new Error('Could not refresh access token.');
-                } else {
-                    Client.accessToken = json.access_token;
-                }
-                return json.access_token;
+        if (!Client.accessToken && Client.refreshToken && Client.flow === 'code') {
+            const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-refresh`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    clientId: Client.clientId,
+                    refreshToken: Client.refreshToken,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const json = await res.json();
+            if (!json?.access_token) {
+                throw new Error('Could not refresh access token.');
+            } else {
+                Client.accessToken = json.access_token;
             }
-            await Client.authorize();
         }
         return Client.accessToken;
     }
@@ -164,26 +156,28 @@ class Client {
         const random = getCodeChallenge();
 
         const options = {
-            scope: SCOPES,
+            client_id: Client.clientId,
             redirect_uri: redirectUri,
+            scope: SCOPES,
         };
 
-        if (Client.flow === 'offline') {
+        if (Client.flow === 'code') {
             // authorization code flow with PKCE
             Object.assign(options, {
-                client_id: Client.clientId,
                 code_challenge: random,
-                code_challenge_method: CodeChallengeMethod.Plain,
+                code_challenge_method: 'plain',
+                response_type: 'code',
             });
         } else {
             // implicit flow
             Object.assign(options, {
-                client_id: Client.clientId,
                 response_type: 'token',
             });
         }
 
-        const url = Client.oauth2Client.generateAuthUrl(options);
+        const url = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams(
+            options,
+        ).toString()}`;
         const response = await extractCredentialsFromAuthorizationFlow(url);
         const { access_token, code } = response;
         if (access_token) {
@@ -214,6 +208,7 @@ class Client {
      * implementation of https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow#tokenrevoke
      */
     static revoke() {
+        // revoking an access token also invalidates any corresponding refresh token
         const promise = Client.call(
             `https://oauth2.googleapis.com/revoke?token=${Client.accessToken}`,
             {
@@ -386,13 +381,12 @@ class Client {
 
         const getTokenAndFetch = async (isRetry?: boolean) => {
             await Client.getAccessToken();
-            if (Client.accessToken) {
-                Object.assign(fetchOptions.headers, {
-                    Authorization: `Bearer ${Client.accessToken}`,
-                });
-            }
+            Object.assign(fetchOptions.headers, {
+                Authorization: `Bearer ${Client.accessToken}`,
+            });
             let response = await fetch(url, fetchOptions);
-            if (!isRetry && response.status === 401) {
+            if (!isRetry && response.status === 401 && Client.refreshToken) {
+                // refresh access token if expired and attempt the request again
                 Client.accessToken = '';
                 response = await getTokenAndFetch(true);
             } else if (response.status !== 200) {

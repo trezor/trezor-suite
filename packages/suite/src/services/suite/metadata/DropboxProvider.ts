@@ -14,7 +14,7 @@ class DropboxProvider extends AbstractMetadataProvider {
     user?: users.FullAccount;
     isCloud = true;
 
-    constructor(token?: string | null) {
+    constructor(token?: string) {
         super('dropbox');
 
         const fetch = window.fetch.bind(window);

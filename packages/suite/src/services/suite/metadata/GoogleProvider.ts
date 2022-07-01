@@ -4,9 +4,9 @@ import GoogleClient from '@suite/services/google';
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     isCloud = true;
-    constructor(accessToken?: string | null, refreshToken?: string | null) {
+    constructor(token?: string) {
         super('google');
-        GoogleClient.init(accessToken, refreshToken);
+        GoogleClient.init(token);
     }
 
     async connect() {
@@ -102,10 +102,7 @@ class GoogleProvider extends AbstractMetadataProvider {
             return this.ok({
                 type: this.type,
                 isCloud: this.isCloud,
-                tokens: {
-                    accessToken: GoogleClient.accessToken,
-                    refreshToken: GoogleClient.refreshToken,
-                },
+                token: GoogleClient.refreshToken,
                 user: response.user.displayName,
             } as const);
         } catch (err) {
