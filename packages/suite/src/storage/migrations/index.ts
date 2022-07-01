@@ -356,6 +356,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             .then(accountsStore => {
                 accounts.forEach(account => {
                     account.deviceState = account.deviceState.replace('undefined', '0');
+                    account.key = account.key.replace('undefined', '0');
                     accountsStore.add(account);
                 });
             });
