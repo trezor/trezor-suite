@@ -239,12 +239,10 @@ android {
             keyPassword 'android'
         }
         release {
-            if (System.getenv("SIGNING_KEY_STORE_FILE")) {
-                storeFile file(System.getenv("SIGNING_KEY_STORE_FILE"))
+                storeFile file('release.keystore')
                 storePassword System.getenv("SIGNING_KEY_STORE_PASSWORD")
                 keyAlias System.getenv("SIGNING_KEY_ALIAS")
                 keyPassword System.getenv("SIGNING_KEY_PASSWORD")
-            }
         }
     }
     buildTypes {
