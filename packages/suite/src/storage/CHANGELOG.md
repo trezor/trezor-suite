@@ -1,5 +1,9 @@
 # Storage changelog
 
+# 28
+
+-   with advent of connect v9, device.state field has changed. migrated all affected data.
+
 ## 27
 
 -   removed walletSettings.backends
