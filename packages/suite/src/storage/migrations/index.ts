@@ -8,6 +8,8 @@ import type { Network, Account, Discovery } from '@wallet-types';
 import type { BackendSettings } from '@wallet-reducers/blockchainReducer';
 import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/definitions';
 import type { GraphData } from '@wallet-types/graph';
+import type { FormDraft } from '@wallet-types/form';
+import type { FormState } from '@wallet-types/sendForm';
 
 type WalletWithBackends = {
     backends?: Partial<{
@@ -462,6 +464,54 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 discoveries.forEach(discovery => {
                     discovery.deviceState = discovery.deviceState.replace('undefined', '0');
                     discoveryStore.add(discovery);
+                });
+            });
+
+        // sendFormDrafts
+        const sendFormDrafts: Record<string, FormState> = {};
+        const sendFormDraftsStore = transaction.objectStore('sendFormDrafts');
+        sendFormDraftsStore
+            .openCursor()
+            .then(function read(cursor): Promise<void> | undefined {
+                if (!cursor) {
+                    return;
+                }
+                sendFormDrafts[cursor.primaryKey] = cursor.value;
+                return cursor.continue().then(read);
+            })
+            .then(() => {
+                db.deleteObjectStore('sendFormDrafts');
+            })
+            .then(() => {
+                return db.createObjectStore('sendFormDrafts');
+            })
+            .then(sendFormDraftsStore => {
+                Object.keys(sendFormDrafts).forEach(key => {
+                    sendFormDraftsStore.add(sendFormDrafts[key], key);
+                });
+            });
+
+        // formDrafts
+        const formDrafts: Record<string, FormDraft> = {};
+        const formDraftsStore = transaction.objectStore('formDrafts');
+        formDraftsStore
+            .openCursor()
+            .then(function read(cursor): Promise<void> | undefined {
+                if (!cursor) {
+                    return;
+                }
+                formDrafts[cursor.primaryKey] = cursor.value;
+                return cursor.continue().then(read);
+            })
+            .then(() => {
+                db.deleteObjectStore('formDrafts');
+            })
+            .then(() => {
+                return db.createObjectStore('formDrafts');
+            })
+            .then(formDraftsStore => {
+                Object.keys(formDrafts).forEach(key => {
+                    formDraftsStore.add(formDrafts[key], key);
                 });
             });
     }
