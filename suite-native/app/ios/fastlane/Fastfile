@@ -9,6 +9,17 @@ platform :ios do
   before_all do |lane|
     puts "Running lane #{lane}..."
 
+    if is_ci
+      # setup a temporary keychain
+      setup_ci
+
+      # this is set up by setup_ci (https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/actions/setup_ci.rb)
+      keychain_name = ENV["MATCH_KEYCHAIN_NAME"]
+      KEYCHAIN_PATH = "~/Library/Keychains/#{keychain_name}"
+    else
+      KEYCHAIN_PATH = ENV["KEYCHAIN_PATH"] # the path to the keychain where your certificates are stored
+    end
+
     if lane == :develop
       PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
     elsif lane == :staging
@@ -37,7 +48,7 @@ platform :ios do
 
     cert(
       api_key: api_key,
-      keychain_path: ENV["KEYCHAIN_PATH"] # the path to the keychain where your certificates are stored
+      keychain_path: KEYCHAIN_PATH
     )
 
     sigh(
@@ -73,9 +84,9 @@ platform :ios do
     build_scheme = options[:scheme]
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
-   # turn off automatic signing during build so correct code signing identity is guaranteed to be used
+   # update the code signing identities to match profile name and app bundle identifier
    update_code_signing_settings(
-     use_automatic_signing: false,
+     use_automatic_signing: false, # turn off automatic signing during build so correct code signing identity is guaranteed to be used
      targets: ["TrezorSuite"],
      code_sign_identity: "iPhone Distribution",
      bundle_identifier: app_identifier,

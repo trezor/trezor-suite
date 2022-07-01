@@ -74,18 +74,11 @@ jobs:
       - name: Install bundler
         run: gem install bundler
 
-      - name: Import Code-Signing Certificates
-        uses: Apple-Actions/import-codesign-certs@v1
-        with:
-          p12-file-base64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
-          p12-password: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
-
       - name: Fastlane build and deploy
         env:
           APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
           APPSTORE_KEY_ISSUER_ID: ${{ secrets.APPSTORE_KEY_ISSUER_ID }}
           APPSTORE_KEY_FILE_CONTENT: ${{ secrets.APPSTORE_KEY_FILE_CONTENT }}
-          KEYCHAIN_PATH: ~/Library/Keychains/signing_temp.keychain-db
         # builds and publishes the app
         run: |
           bundle install

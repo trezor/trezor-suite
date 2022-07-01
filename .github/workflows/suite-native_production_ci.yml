@@ -39,7 +39,6 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           GOOGLE_PLAY_JSON_KEY_FILE: ./android/firebase_key.json
-          FIREBASE_APP_ID: ${{secrets.ANDROID_FIREBASE_APP_ID}}
         # builds and publishes the app
         run: |
           bundle install
