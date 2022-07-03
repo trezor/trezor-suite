@@ -25,7 +25,9 @@
         "./lib/utils/assets": "./lib/utils/assets-browser"
     },
     "react-native": {
-        "./lib/workers/workers": "./lib/workers/workers-react-native"
+        "./lib/index": "./lib/index",
+        "./lib/workers/workers": "./lib/workers/workers-react-native",
+        "./lib/utils/assets": "./lib/utils/assets-native"
     },
     "files": [
         "lib/",
