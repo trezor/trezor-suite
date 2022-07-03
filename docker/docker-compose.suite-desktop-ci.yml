@@ -11,6 +11,6 @@ services:
     ipc: host
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
-    command: bash -c "docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:desktop"
+    command: bash -c "yarn workspace @trezor/integration-tests test:desktop"
     volumes:
       - ../:/trezor-suite
