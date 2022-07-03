@@ -6,6 +6,7 @@ import BridgeProcess from '../libs/processes/BridgeProcess';
 import { b2t } from '../libs/utils';
 
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
+const bridgeTest = app.commandLine.hasSwitch('bridge-test');
 
 const init = async () => {
     const { logger } = global;
@@ -15,6 +16,8 @@ const init = async () => {
         logger.info('bridge', `Starting (Dev: ${b2t(bridgeDev)})`);
         if (bridgeDev) {
             await bridge.startDev();
+        } else if (bridgeTest) {
+            await bridge.startTest();
         } else {
             await bridge.start();
         }

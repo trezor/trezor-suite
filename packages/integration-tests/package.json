@@ -5,7 +5,7 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "test:transport": "jest --verbose -c ./projects/transport/jest.config.js --runInBand",
-        "test:desktop": "xvfb-maybe -- playwright test --config=./projects/suite-desktop/playwright.config.ts",
+        "test:desktop": "DEBUG=pw:browser xvfb-maybe playwright test --config=./projects/suite-desktop/playwright.config.ts",
         "test:connect-popup": "xvfb-maybe -- playwright test --config=./projects/connect-popup/playwright.config.ts",
         "test:connect:node": "jest --runInBand --verbose -c projects/connect/jest.config.js",
         "test:connect:web": "karma start projects/connect/karma.config.js",
