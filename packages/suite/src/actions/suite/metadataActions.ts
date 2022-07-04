@@ -8,6 +8,7 @@ import {
     MetadataProviderType,
     MetadataProvider,
     MetadataAddPayload,
+    Tokens,
     DeviceMetadata,
     Error as MetadataProviderError,
     ProviderErrorAction,
@@ -46,12 +47,12 @@ export type MetadataAction =
 let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-const createProvider = (type: MetadataProvider['type'], token?: MetadataProvider['token']) => {
+const createProvider = (type: MetadataProvider['type'], tokens: Tokens = {}) => {
     switch (type) {
         case 'dropbox':
-            return new DropboxProvider(token);
+            return new DropboxProvider(tokens?.accessToken);
         case 'google':
-            return new GoogleProvider(token);
+            return new GoogleProvider(tokens);
         case 'fileSystem':
             return new FileSystemProvider();
         default:
@@ -207,7 +208,7 @@ const getProvider = () => (_dispatch: Dispatch, getState: GetState) => {
 
     if (providerInstance) return providerInstance;
 
-    providerInstance = createProvider(state.type, state.token);
+    providerInstance = createProvider(state.type, state.tokens);
 
     return providerInstance;
 };

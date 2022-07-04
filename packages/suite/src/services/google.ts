@@ -8,6 +8,7 @@
  */
 
 import { METADATA } from '@suite-actions/constants';
+import { Tokens } from '@suite-types/metadata';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { getCodeChallenge } from '@suite-utils/random';
 
@@ -96,7 +97,7 @@ class Client {
     static accessToken: string;
     static refreshToken: string;
 
-    static init(token?: string) {
+    static init({ accessToken, refreshToken }: Tokens) {
         Client.initPromise = new Promise(resolve => {
             Client.nameIdMap = {};
             Client.isAuthServerAvailable().then(result => {
@@ -107,8 +108,11 @@ class Client {
                     Client.flow === 'code'
                         ? METADATA.GOOGLE_CODE_FLOW_CLIENT_ID
                         : METADATA.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
-                if (token) {
-                    Client.refreshToken = token;
+                if (refreshToken) {
+                    Client.refreshToken = refreshToken;
+                }
+                if (accessToken) {
+                    Client.accessToken = accessToken;
                 }
 
                 resolve(Client);
@@ -216,6 +220,7 @@ class Client {
             },
         );
         Client.accessToken = '';
+        Client.refreshToken = '';
         return promise;
     }
 
