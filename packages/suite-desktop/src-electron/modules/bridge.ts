@@ -4,13 +4,19 @@
 import { app } from 'electron';
 import BridgeProcess from '../libs/processes/BridgeProcess';
 import { b2t } from '../libs/utils';
+import type { Module } from './index';
 
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 const bridgeTest = app.commandLine.hasSwitch('bridge-test');
 
-const init = async () => {
+const load = async () => {
     const { logger } = global;
     const bridge = new BridgeProcess();
+
+    app.on('before-quit', () => {
+        logger.info('bridge', 'Stopping (app quit)');
+        bridge.stop();
+    });
 
     try {
         logger.info('bridge', `Starting (Dev: ${b2t(bridgeDev)})`);
@@ -24,11 +30,11 @@ const init = async () => {
     } catch (err) {
         logger.error('bridge', `Start failed: ${err.message}`);
     }
+};
 
-    app.on('before-quit', () => {
-        logger.info('bridge', 'Stopping (app quit)');
-        bridge.stop();
-    });
+const init: Module = () => () => {
+    // TODO intentionally not awaited to mimic previous behavior, resolve later!
+    load();
 };
 
 export default init;

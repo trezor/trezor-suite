@@ -4,20 +4,20 @@
 import path from 'path';
 import { session } from 'electron';
 
-import { PROTOCOL } from '../libs/constants';
-import { Module } from './index';
+import { FILE_PROTOCOL, APP_SRC } from '../libs/constants';
+import type { Module } from './index';
 
-const init: Module = ({ mainWindow, src }) => {
+const init: Module = ({ mainWindow }) => {
     // Point to the right directory for file protocol requests
-    session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
-        let url = request.url.substr(PROTOCOL.length + 1);
+    session.defaultSession.protocol.interceptFileProtocol(FILE_PROTOCOL, (request, callback) => {
+        let url = request.url.substring(FILE_PROTOCOL.length + 1);
         url = path.join(__dirname, '..', '..', 'build', url);
         callback(url);
     });
 
     // Refresh if it failed to load
     mainWindow.webContents.on('did-fail-load', () => {
-        mainWindow.loadURL(src);
+        mainWindow.loadURL(APP_SRC);
     });
 };
 

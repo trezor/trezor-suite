@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { dialog } from 'electron';
 import { app, ipcMain } from '../typed-electron';
-import { Module } from './index';
+import type { Module } from './index';
 
 const HANG_WAIT = 30000;
 

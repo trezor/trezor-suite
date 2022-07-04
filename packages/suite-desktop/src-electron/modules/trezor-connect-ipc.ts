@@ -6,7 +6,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
 } from '@trezor/connect';
-import { Module } from './index';
+import type { Module } from './index';
 
 type Call = [keyof typeof TrezorConnect, string, ...any[]];
 
@@ -17,37 +17,6 @@ const init: Module = ({ mainWindow, store }) => {
     logger.info(SERVICE_NAME, `Starting service`);
 
     app.on('before-quit', TrezorConnect.dispose);
-
-    mainWindow.webContents.on('did-finish-load', () => {
-        // reset previous instance, possible left over after renderer refresh (F5)
-        TrezorConnect.dispose();
-
-        // DesktopApi is now too strict :)
-        // this channel is not declared in DesktopApi, it will be moved in to @trezor/connect-electron
-        const channel: any = 'trezor-connect-event';
-
-        // propagate all events using trezor-connect-event channel
-        // listeners references are managed by desktopApi (see ./src-electron/modules/trezor-connect-preload)
-        TrezorConnect.on(DEVICE_EVENT, event => {
-            logger.debug(SERVICE_NAME, `DEVICE_EVENT ${event.type}`);
-            mainWindow.webContents.send(channel, event);
-        });
-
-        TrezorConnect.on(UI_EVENT, event => {
-            logger.debug(SERVICE_NAME, `UI_EVENT ${event.type}`);
-            mainWindow.webContents.send(channel, event);
-        });
-
-        TrezorConnect.on(TRANSPORT_EVENT, event => {
-            logger.debug(SERVICE_NAME, `TRANSPORT_EVENT ${event.type}`);
-            mainWindow.webContents.send(channel, event);
-        });
-
-        TrezorConnect.on(BLOCKCHAIN_EVENT, event => {
-            logger.debug(SERVICE_NAME, `BLOCKCHAIN_EVENT ${event.type}`);
-            mainWindow.webContents.send(channel, event);
-        });
-    });
 
     const setProxy = (ifRunning = false) => {
         const tor = store.getTorSettings();
@@ -90,6 +59,37 @@ const init: Module = ({ mainWindow, store }) => {
     //     // @ts-ignore method name union
     //     return TrezorConnect[method](...params);
     // });
+
+    return () => {
+        // reset previous instance, possible left over after renderer refresh (F5)
+        TrezorConnect.dispose();
+
+        // DesktopApi is now too strict :)
+        // this channel is not declared in DesktopApi, it will be moved in to @trezor/connect-electron
+        const channel: any = 'trezor-connect-event';
+
+        // propagate all events using trezor-connect-event channel
+        // listeners references are managed by desktopApi (see ./src-electron/modules/trezor-connect-preload)
+        TrezorConnect.on(DEVICE_EVENT, event => {
+            logger.debug(SERVICE_NAME, `DEVICE_EVENT ${event.type}`);
+            mainWindow.webContents.send(channel, event);
+        });
+
+        TrezorConnect.on(UI_EVENT, event => {
+            logger.debug(SERVICE_NAME, `UI_EVENT ${event.type}`);
+            mainWindow.webContents.send(channel, event);
+        });
+
+        TrezorConnect.on(TRANSPORT_EVENT, event => {
+            logger.debug(SERVICE_NAME, `TRANSPORT_EVENT ${event.type}`);
+            mainWindow.webContents.send(channel, event);
+        });
+
+        TrezorConnect.on(BLOCKCHAIN_EVENT, event => {
+            logger.debug(SERVICE_NAME, `BLOCKCHAIN_EVENT ${event.type}`);
+            mainWindow.webContents.send(channel, event);
+        });
+    };
 };
 
 export default init;

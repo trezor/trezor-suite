@@ -6,11 +6,11 @@ import { session } from 'electron';
 import TorProcess from '../libs/processes/TorProcess';
 import { onionDomain } from '../config';
 import { app, ipcMain } from '../typed-electron';
-import { Module } from './index';
 import { getFreePort } from '../libs/getFreePort';
 import TrezorConnect from '@trezor/connect';
+import type { Module, Dependencies } from './index';
 
-const init: Module = async ({ mainWindow, store, interceptor }) => {
+const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
     const { logger } = global;
     const host = '127.0.0.1';
     const port = await getFreePort();
@@ -147,6 +147,11 @@ const init: Module = async ({ mainWindow, store, interceptor }) => {
 
     await setupTor(store.getTorSettings());
     mainWindow.webContents.send('tor/status', store.getTorSettings().running);
+};
+
+const init: Module = dependencies => () => {
+    // TODO intentionally not awaited to mimic previous behavior, resolve later!
+    load(dependencies);
 };
 
 export default init;

@@ -43,31 +43,6 @@ const init: Module = ({ mainWindow, store }) => {
         return;
     }
 
-    // Enable feature on FE once it's ready
-    mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow.webContents.send('update/allow-prerelease', autoUpdater.allowPrerelease);
-        mainWindow.webContents.send('update/enable');
-
-        // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
-        // and if it does not match current application version it means that application got updated and the new version
-        // is run for the first time.
-        const updateSettings = store.getUpdateSettings();
-        const { savedCurrentVersion } = updateSettings;
-        const currentVersion = app.getVersion();
-        logger.debug(
-            'auto-updater',
-            `version of application before this launch: ${savedCurrentVersion}, current app version: ${currentVersion}`,
-        );
-        if (savedCurrentVersion && savedCurrentVersion !== currentVersion) {
-            mainWindow.webContents.send('update/new-version-first-run', currentVersion);
-        }
-        // save current app version so that after app is relaunched we can show info about transition to the new version
-        store.setUpdateSettings({
-            ...updateSettings,
-            savedCurrentVersion: currentVersion,
-        });
-    });
-
     let isManualCheck = false;
     let updateCancellationToken: CancellationToken;
     let shouldInstallUpdateOnQuit = false;
@@ -82,7 +57,6 @@ const init: Module = ({ mainWindow, store }) => {
 
     const updateSettings = store.getUpdateSettings();
     autoUpdater.allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
-    mainWindow.webContents.send('update/allow-prerelease', autoUpdater.allowPrerelease);
 
     autoUpdater.logger = null;
 
@@ -292,6 +266,34 @@ const init: Module = ({ mainWindow, store }) => {
             quitAndInstall();
         }
     });
+
+    // Enable feature on FE once it's ready
+    return () => {
+        // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
+        // and if it does not match current application version it means that application got updated and the new version
+        // is run for the first time.
+        const updateSettings = store.getUpdateSettings();
+        const { savedCurrentVersion } = updateSettings;
+        const currentVersion = app.getVersion();
+        logger.debug(
+            'auto-updater',
+            `version of application before this launch: ${savedCurrentVersion}, current app version: ${currentVersion}`,
+        );
+
+        // save current app version so that after app is relaunched we can show info about transition to the new version
+        store.setUpdateSettings({
+            ...updateSettings,
+            savedCurrentVersion: currentVersion,
+        });
+
+        return {
+            allowPrerelease: autoUpdater.allowPrerelease,
+            firstRun:
+                savedCurrentVersion && savedCurrentVersion !== currentVersion
+                    ? currentVersion
+                    : undefined,
+        };
+    };
 };
 
 export default init;

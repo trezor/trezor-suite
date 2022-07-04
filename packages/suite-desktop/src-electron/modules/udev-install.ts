@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
 import { app, ipcMain } from '../typed-electron';
+import type { Module } from './index';
 
 const FILE_NAME = '51-trezor.rules';
 
@@ -15,7 +16,7 @@ const fileExists = async (path: string) => {
     return false;
 };
 
-const init = () => {
+const init: Module = () => {
     ipcMain.handle('udev/install', async () => {
         const { logger, resourcesPath } = global;
         const resourceRules = path.join(resourcesPath, `bin/udev/${FILE_NAME}`);

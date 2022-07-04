@@ -3,7 +3,7 @@
  */
 import { app } from 'electron';
 import { isValidProtocol } from '../libs/protocol';
-import { Module } from './index';
+import type { Module } from './index';
 
 const init: Module = ({ mainWindow }) => {
     const { logger } = global;
@@ -42,29 +42,6 @@ const init: Module = ({ mainWindow }) => {
         }
     });
 
-    // App is launched via custom protocol (Linux, Windows)
-    if (['win32', 'linux'].includes(process.platform)) {
-        const { argv } = process;
-
-        if (argv[1]) {
-            logger.debug(
-                'custom-protocols',
-                'App is launched via custom protocol (Linux, Windows)',
-            );
-
-            mainWindow.webContents.on('did-finish-load', () => {
-                sendProtocolInfo(argv[1]);
-            });
-        }
-    }
-
-    // App is launched via custom protocol (macOS)
-    if (global.customProtocolUrl) {
-        mainWindow.webContents.on('did-finish-load', () => {
-            sendProtocolInfo(global.customProtocolUrl);
-        });
-    }
-
     // App is running and custom protocol was activated (macOS)
     app.on('open-url', (event, url) => {
         event.preventDefault();
@@ -79,6 +56,29 @@ const init: Module = ({ mainWindow }) => {
 
         sendProtocolInfo(url);
     });
+
+    // App is launched via custom protocol (Linux, Windows)
+    if (['win32', 'linux'].includes(process.platform)) {
+        const { argv } = process;
+
+        if (argv[1]) {
+            logger.debug(
+                'custom-protocols',
+                'App is launched via custom protocol (Linux, Windows)',
+            );
+
+            if (isValidProtocol(argv[1], protocols)) {
+                return () => argv[1];
+            }
+        }
+    }
+
+    // App is launched via custom protocol (macOS)
+    if (global.customProtocolUrl) {
+        if (isValidProtocol(global.customProtocolUrl, protocols)) {
+            return () => global.customProtocolUrl;
+        }
+    }
 };
 
 export default init;
