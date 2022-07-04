@@ -184,6 +184,8 @@ const selectStyle = (
 });
 
 const Wrapper = styled.div<Pick<SelectProps, 'isClean'>>`
+    width: 100%;
+
     ${({ isClean }) =>
         !isClean &&
         css`
