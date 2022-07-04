@@ -20,6 +20,6 @@ describe('Validation', () => {
 
     it('isValidChannel', () => {
         expect(validation.isValidChannel('foo')).toBe(false);
-        expect(validation.isValidChannel('update/enable')).toBe(true);
+        expect(validation.isValidChannel('handshake/event')).toBe(true);
     });
 });
