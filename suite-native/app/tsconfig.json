@@ -6,6 +6,7 @@
         { "path": "../module-home" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../state" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

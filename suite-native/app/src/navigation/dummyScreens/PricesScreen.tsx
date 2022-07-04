@@ -5,7 +5,7 @@ import { Text } from '@suite-native/atoms';
 import { TabProps } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { RootTabsParamList, RouteTabs } from '../navigation/routes';
+import { RootTabsParamList, RouteTabs } from '../routes';
 
 const pricesScreenStyle = prepareNativeStyle(() => ({
     flex: 1,

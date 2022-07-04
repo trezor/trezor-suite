@@ -1,21 +1,21 @@
 import React from 'react';
 
-import { StylesProvider, createRenderer } from '@trezor/styles';
-import { prepareNativeTheme } from '@trezor/theme';
+import { NavigationContainer } from '@react-navigation/native';
+import { store } from '@suite-native/state';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
 
 import { RootTabNavigator } from './navigation/RootTabNavigator';
+import { StylesProvider } from './StylesProvider';
 
-const renderer = createRenderer();
-
-export const App = () => {
-    const theme = prepareNativeTheme({ colorVariant: 'standard' });
-
-    return (
-        <SafeAreaProvider>
-            <StylesProvider theme={theme} renderer={renderer}>
-                <RootTabNavigator />
-            </StylesProvider>
-        </SafeAreaProvider>
-    );
-};
+export const App = () => (
+    <NavigationContainer>
+        <Provider store={store}>
+            <SafeAreaProvider>
+                <StylesProvider>
+                    <RootTabNavigator />
+                </StylesProvider>
+            </SafeAreaProvider>
+        </Provider>
+    </NavigationContainer>
+);
