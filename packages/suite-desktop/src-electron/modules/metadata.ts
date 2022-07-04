@@ -3,10 +3,11 @@
  */
 import { ipcMain } from '../typed-electron';
 import { save, read } from '../libs/user-data';
+import type { Module } from './index';
 
 const DATA_DIR = '/metadata';
 
-export const init = () => {
+export const init: Module = () => {
     const { logger } = global;
 
     ipcMain.handle('metadata/write', async (_, message) => {

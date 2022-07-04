@@ -1,6 +1,7 @@
 import { app } from 'electron';
+import type { Module } from '../index';
 
-const init = () => {
+const init: Module = () => {
     const { logger } = global;
 
     app.on('ready', () => {

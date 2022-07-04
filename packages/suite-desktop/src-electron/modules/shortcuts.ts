@@ -1,7 +1,8 @@
 import electronLocalshortcut from 'electron-localshortcut';
-import { Module } from './index';
+import { APP_SRC } from '../libs/constants';
+import type { Module } from './index';
 
-const init: Module = ({ mainWindow, src }) => {
+const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
     // Register more shortcuts for opening dev tools
@@ -15,12 +16,12 @@ const init: Module = ({ mainWindow, src }) => {
 
     electronLocalshortcut.register(mainWindow, 'F5', () => {
         logger.info('shortcuts', 'F5 pressed');
-        mainWindow.loadURL(src);
+        mainWindow.loadURL(APP_SRC);
     });
 
     electronLocalshortcut.register(mainWindow, 'CommandOrControl+R', () => {
         logger.info('shortcuts', 'CTRL+R pressed');
-        mainWindow.loadURL(src);
+        mainWindow.loadURL(APP_SRC);
     });
 };
 

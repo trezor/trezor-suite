@@ -1,4 +1,6 @@
-const init = () => {
+import type { Module } from '../index';
+
+const init: Module = () => {
     const { logger } = global;
 
     process.on('uncaughtException', e => {

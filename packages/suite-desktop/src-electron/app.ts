@@ -1,27 +1,18 @@
 import path from 'path';
-import url from 'url';
 import { app, BrowserWindow, ipcMain, RelaunchOptions, session } from 'electron';
 import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
 
 import { SENTRY_CONFIG } from '@suite-config';
 import { isDev } from '@suite-utils/build';
-import { PROTOCOL } from './libs/constants';
+import { APP_NAME, APP_SRC } from './libs/constants';
 import * as store from './libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import Logger, { LogLevel, defaultOptions as loggerDefaults } from './libs/logger';
 import { buildInfo, computerInfo } from './libs/info';
-import { loadModules } from './modules';
+import { initModules } from './modules';
 import { createInterceptor } from './libs/request-interceptor';
 
 let mainWindow: BrowserWindow | typeof undefined;
-const APP_NAME = 'Trezor Suite';
-const src = isDev
-    ? 'http://localhost:8000/'
-    : url.format({
-          pathname: 'index.html',
-          protocol: PROTOCOL,
-          slashes: true,
-      });
 
 // @ts-ignore using internal electron API to set suite version in dev mode correctly
 if (isDev) app.setVersion(process.env.VERSION);
@@ -81,8 +72,8 @@ const init = async () => {
     });
 
     // Load page
-    logger.debug('init', `Load URL (${src})`);
-    mainWindow.loadURL(src);
+    logger.debug('init', `Load URL (${APP_SRC})`);
+    mainWindow.loadURL(APP_SRC);
 
     let resizeDebounce: ReturnType<typeof setTimeout> | null = null;
     mainWindow.on('resize', () => {
@@ -104,11 +95,25 @@ const init = async () => {
     const interceptor = createInterceptor();
 
     // Modules
-    await loadModules({
+    const loadModules = await initModules({
         mainWindow,
-        src,
         store,
         interceptor,
+    });
+
+    mainWindow.webContents.once('did-finish-load', async () => {
+        const {
+            'custom-protocols': protocol,
+            'auto-updater': { allowPrerelease, firstRun },
+        } = await loadModules();
+        if (protocol) {
+            mainWindow!.webContents.send('protocol/open', protocol);
+        }
+        mainWindow!.webContents.send('update/allow-prerelease', allowPrerelease);
+        mainWindow!.webContents.send('update/enable');
+        if (firstRun) {
+            mainWindow!.webContents.send('update/new-version-first-run', firstRun);
+        }
     });
 };
 
