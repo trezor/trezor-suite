@@ -5,24 +5,17 @@ import { bytesToHumanReadable } from '@trezor/utils';
 import { isDev } from '@suite-utils/build';
 import { b2t } from './utils';
 
-export const buildInfo = () => {
-    global.logger.info('build', [
-        'Info:',
-        `- Version: ${app.getVersion()}`,
-        `- Electron: ${process.versions.electron}`,
-        `- Commit: ${process.env.COMMITHASH}`,
-        `- Dev: ${b2t(isDev)}`,
-        `- Args: ${process.argv.slice(1).join(' ')}`,
-        `- CWD: ${process.cwd()}`,
-    ]);
-};
+export const getBuildInfo = () => [
+    'Info:',
+    `- Version: ${app.getVersion()}`,
+    `- Electron: ${process.versions.electron}`,
+    `- Commit: ${process.env.COMMITHASH}`,
+    `- Dev: ${b2t(isDev)}`,
+    `- Args: ${process.argv.slice(1).join(' ')}`,
+    `- CWD: ${process.cwd()}`,
+];
 
-export const computerInfo = async () => {
-    const { logger } = global;
-    if (logger.level !== 'debug') {
-        return;
-    }
-
+export const getComputerInfo = async () => {
     const { system, cpu, mem, osInfo } = await si.get({
         system: 'manufacturer, model, virtual',
         cpu: 'manufacturer, brand, processors, physicalCores, cores, speed',
@@ -30,7 +23,7 @@ export const computerInfo = async () => {
         osInfo: 'platform, arch, distro, release',
     });
 
-    logger.debug('computer', [
+    return [
         'Info:',
         `- Platform: ${osInfo.platform} ${osInfo.arch}`,
         `- OS: ${osInfo.distro} ${osInfo.release}`,
@@ -42,5 +35,5 @@ export const computerInfo = async () => {
             cpu.speed
         }GHz`,
         `- RAM: ${bytesToHumanReadable(mem.total)}`,
-    ]);
+    ];
 };

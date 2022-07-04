@@ -12,7 +12,6 @@ const MODULES = [
     'event-logging/contents',
     // Standard modules
     'crash-recover',
-    'hang-detect',
     'menu',
     'shortcuts',
     'request-filter',
