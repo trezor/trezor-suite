@@ -11,6 +11,9 @@ export const getInitialState = (state?: ProtocolState) => ({
         ...protocolReducer(undefined, { type: 'foo' } as any),
         ...state,
     },
+    suite: {
+        device: undefined,
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;
@@ -30,17 +33,16 @@ const initStore = (state: State) => {
 
 describe('Protocol actions', () => {
     it('gives a command to fill a send form with address and amount', async () => {
-        const store = initStore({
-            protocol: {
-                ...getInitialState().protocol,
+        const store = initStore(
+            getInitialState({
                 sendForm: {
                     scheme: PROTOCOL_SCHEME.BITCOIN,
                     address: '12345abcde',
                     amount: 1.02,
                     shouldFill: false,
                 },
-            },
-        });
+            }),
+        );
 
         await store.dispatch(protocolActions.fillSendForm(true));
         await store.dispatch(protocolActions.fillSendForm(false));
@@ -53,17 +55,16 @@ describe('Protocol actions', () => {
     });
 
     it('gives a command to fill a send form with address', async () => {
-        const store = initStore({
-            protocol: {
-                ...getInitialState().protocol,
+        const store = initStore(
+            getInitialState({
                 sendForm: {
                     scheme: PROTOCOL_SCHEME.BITCOIN,
                     address: '12345abcde',
                     amount: undefined,
                     shouldFill: false,
                 },
-            },
-        });
+            }),
+        );
 
         await store.dispatch(protocolActions.fillSendForm(true));
         await store.dispatch(protocolActions.fillSendForm(false));
@@ -76,17 +77,13 @@ describe('Protocol actions', () => {
     });
 
     it('saves address and amount from Bitcoin URI protocol', async () => {
-        const store = initStore({
-            protocol: {
-                ...getInitialState().protocol,
-            },
-        });
+        const store = initStore(getInitialState());
 
         await store.dispatch(
-            protocolActions.saveCoinProtocol(PROTOCOL_SCHEME.BITCOIN, '12345abcde', 1.02),
+            protocolActions.handleProtocolRequest('bitcoin:12345abcde?amount=1.02'),
         );
 
-        expect(store.getActions().length).toBe(1);
+        expect(store.getActions().length).toBe(2);
         expect(store.getActions()[0].type).toBe(protocolConstants.SAVE_COIN_PROTOCOL);
         expect(store.getActions()[0].payload.scheme).toBe(PROTOCOL_SCHEME.BITCOIN);
         expect(store.getActions()[0].payload.address).toBe('12345abcde');
@@ -94,17 +91,11 @@ describe('Protocol actions', () => {
     });
 
     it('saves address from Bitcoin URI protocol', async () => {
-        const store = initStore({
-            protocol: {
-                ...getInitialState().protocol,
-            },
-        });
+        const store = initStore(getInitialState());
 
-        await store.dispatch(
-            protocolActions.saveCoinProtocol(PROTOCOL_SCHEME.BITCOIN, '12345abcde', undefined),
-        );
+        await store.dispatch(protocolActions.handleProtocolRequest('bitcoin:12345abcde'));
 
-        expect(store.getActions().length).toBe(1);
+        expect(store.getActions().length).toBe(2);
         expect(store.getActions()[0].type).toBe(protocolConstants.SAVE_COIN_PROTOCOL);
         expect(store.getActions()[0].payload.scheme).toBe(PROTOCOL_SCHEME.BITCOIN);
         expect(store.getActions()[0].payload.address).toBe('12345abcde');
@@ -112,17 +103,7 @@ describe('Protocol actions', () => {
     });
 
     it('resets protocol state', async () => {
-        const store = initStore({
-            protocol: {
-                ...getInitialState().protocol,
-                sendForm: {
-                    scheme: PROTOCOL_SCHEME.BITCOIN,
-                    address: '12345abcde',
-                    amount: 1.02,
-                    shouldFill: false,
-                },
-            },
-        });
+        const store = initStore(getInitialState());
 
         await store.dispatch(protocolActions.resetProtocol());
 

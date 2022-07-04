@@ -1,38 +1,15 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { isWeb, isDesktop } from '@suite-utils/env';
-import { getProtocolInfo, isProtocolScheme } from '@suite-utils/protocol';
 import { useActions } from '@suite-hooks';
-import * as notificationActions from '@suite-actions/notificationActions';
 import * as protocolActions from '@suite-actions/protocolActions';
 
 const Protocol = () => {
-    const { addToast, saveCoinProtocol } = useActions({
-        addToast: notificationActions.addToast,
-        saveCoinProtocol: protocolActions.saveCoinProtocol,
+    const { handleProtocolRequest } = useActions({
+        handleProtocolRequest: protocolActions.handleProtocolRequest,
     });
-
-    const handleProtocolRequest = useCallback(
-        (uri: string) => {
-            const protocol = getProtocolInfo(uri);
-
-            if (protocol && isProtocolScheme(protocol.scheme)) {
-                const { scheme, amount, address } = protocol;
-
-                saveCoinProtocol(scheme, address, amount);
-                addToast({
-                    type: 'coin-scheme-protocol',
-                    address,
-                    scheme,
-                    amount,
-                    autoClose: false,
-                });
-            }
-        },
-        [addToast, saveCoinProtocol],
-    );
 
     const { search } = useLocation();
     useEffect(() => {
