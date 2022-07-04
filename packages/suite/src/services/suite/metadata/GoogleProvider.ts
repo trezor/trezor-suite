@@ -1,12 +1,12 @@
-import { AbstractMetadataProvider } from '@suite-types/metadata';
+import { AbstractMetadataProvider, Tokens } from '@suite-types/metadata';
 import GoogleClient from '@suite/services/google';
 
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     isCloud = true;
-    constructor(token?: string) {
+    constructor(tokens: Tokens) {
         super('google');
-        GoogleClient.init(token);
+        GoogleClient.init(tokens);
     }
 
     async connect() {
@@ -102,7 +102,12 @@ class GoogleProvider extends AbstractMetadataProvider {
             return this.ok({
                 type: this.type,
                 isCloud: this.isCloud,
-                token: GoogleClient.refreshToken,
+                tokens: {
+                    // saving the access token for users using the implicit OAuth flow
+                    // returning to Suite shortly after authorization or refreshing the page
+                    accessToken: GoogleClient.accessToken,
+                    refreshToken: GoogleClient.refreshToken,
+                },
                 user: response.user.displayName,
             } as const);
         } catch (err) {

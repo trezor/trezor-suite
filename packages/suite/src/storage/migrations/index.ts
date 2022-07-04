@@ -464,6 +464,27 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                     discoveryStore.add(discovery);
                 });
             });
+
+        // metadata provider
+        const providerStore = await transaction.objectStore('metadata');
+        providerStore.openCursor().then(function update(cursor): Promise<void> | undefined {
+            if (!cursor) {
+                return;
+            }
+            const state = cursor.value;
+            // @ts-ignore property removed
+            if (state.provider?.token) {
+                state.provider.tokens = {
+                    accessToken: '',
+                    // @ts-ignore
+                    refreshToken: state.provider.token,
+                };
+                // @ts-ignore
+                delete state.provider.token;
+                cursor.update(state);
+            }
+            return cursor.continue().then(update);
+        });
     }
 
     if (oldVersion < 29) {
