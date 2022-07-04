@@ -25,14 +25,12 @@ export const isTheme = (theme: any) => validThemes.includes(theme);
 
 const validChannels: UnionToTuple<keyof RendererChannels> = [
     'oauth/response',
-    'update/enable',
     'update/checking',
     'update/available',
     'update/not-available',
     'update/error',
     'update/downloading',
     'update/downloaded',
-    'update/new-version-first-run',
     'update/allow-prerelease',
     'spend/message',
     'tor/status',

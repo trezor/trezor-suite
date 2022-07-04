@@ -19,18 +19,15 @@ interface DesktopUpdaterProps {
 
 const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     const {
-        enable,
         checking,
         available,
         notAvailable,
         downloading,
         ready,
         error,
-        newVersionFirstRun,
         setUpdateWindow,
         allowPrerelease,
     } = useActions({
-        enable: desktopUpdateActions.enable,
         checking: desktopUpdateActions.checking,
         available: desktopUpdateActions.available,
         notAvailable: desktopUpdateActions.notAvailable,
@@ -38,7 +35,6 @@ const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         ready: desktopUpdateActions.ready,
         error: desktopUpdateActions.error,
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
-        newVersionFirstRun: desktopUpdateActions.newVersionFirstRun,
         allowPrerelease: desktopUpdateActions.allowPrerelease,
     });
     const desktopUpdate = useSelector(state => state.desktopUpdate);
@@ -47,7 +43,6 @@ const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         desktopApi.on('update/allow-prerelease', allowPrerelease);
 
         if (!desktopUpdate.enabled) {
-            desktopApi.on('update/enable', enable);
             return;
         }
         desktopApi.on('update/checking', checking);
@@ -56,7 +51,6 @@ const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         desktopApi.on('update/downloaded', ready);
         desktopApi.on('update/downloading', downloading);
         desktopApi.on('update/error', error);
-        desktopApi.on('update/new-version-first-run', newVersionFirstRun);
 
         // Initial check for updates
         desktopApi.checkForUpdates();
@@ -73,8 +67,6 @@ const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         notAvailable,
         ready,
         error,
-        enable,
-        newVersionFirstRun,
         desktopUpdate.enabled,
         allowPrerelease,
     ]);

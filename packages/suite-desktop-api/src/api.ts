@@ -33,14 +33,12 @@ export interface RendererChannels {
     'oauth/response': { [key: string]: string };
 
     // Update events
-    'update/enable': void;
     'update/checking': void;
     'update/available': UpdateInfo;
     'update/not-available': UpdateInfo;
     'update/error': Error;
     'update/downloading': UpdateProgress;
     'update/downloaded': UpdateInfo;
-    'update/new-version-first-run': string;
     'update/allow-prerelease': boolean;
     // invity
     'spend/message': Partial<MessageEvent>;

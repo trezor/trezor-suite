@@ -9,7 +9,6 @@ import { getAppUpdatePayload } from '@suite-utils/analytics';
 import type { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 
 export type DesktopUpdateAction =
-    | { type: typeof DESKTOP_UPDATE.ENABLE }
     | { type: typeof DESKTOP_UPDATE.CHECKING }
     | { type: typeof DESKTOP_UPDATE.AVAILABLE; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload?: UpdateInfo }
@@ -20,8 +19,6 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_ENABLE }
     | { type: typeof DESKTOP_UPDATE.OPEN_EARLY_ACCESS_DISABLE }
     | { type: typeof DESKTOP_UPDATE.ALLOW_PRERELEASE; payload: boolean };
-
-export const enable = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.ENABLE });
 
 export const checking = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.CHECKING });
 
@@ -92,10 +89,6 @@ export const setUpdateWindow = (win: UpdateWindow): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.WINDOW,
     payload: win,
 });
-
-export const newVersionFirstRun = (version: string) => (dispatch: Dispatch) => {
-    dispatch(addToast({ type: 'auto-updater-new-version-first-run', version }));
-};
 
 export const openEarlyAccessSetup = (earlyAccessEnabled: boolean): DesktopUpdateAction => ({
     type: earlyAccessEnabled

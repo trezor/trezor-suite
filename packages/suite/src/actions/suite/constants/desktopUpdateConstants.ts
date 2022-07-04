@@ -1,4 +1,3 @@
-export const ENABLE = '@desktop-update/enable';
 export const CHECKING = '@desktop-update/checking';
 export const AVAILABLE = '@desktop-update/available';
 export const NOT_AVAILABLE = '@desktop-update/not-available';
