@@ -2,7 +2,7 @@ import { SUITE } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 import type { HandshakeElectron } from '@trezor/suite-desktop-api';
 
-export type DesktopState = null | Pick<HandshakeElectron, 'paths'>;
+export type DesktopState = null | Pick<HandshakeElectron, 'paths' | 'urls'>;
 
 const initialState: DesktopState = null;
 

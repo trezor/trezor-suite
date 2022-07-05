@@ -10,7 +10,7 @@ const init: Module = ({ mainWindow }) => {
     let httpReceiver: HttpReceiver | null = null;
     return async () => {
         if (httpReceiver) {
-            return;
+            return httpReceiver.getInfo();
         }
         // External request handler
         const receiver = new HttpReceiver();
@@ -55,6 +55,8 @@ const init: Module = ({ mainWindow }) => {
 
         logger.info('http-receiver', 'Starting server');
         await receiver.start();
+
+        return receiver.getInfo();
     };
 };
 
