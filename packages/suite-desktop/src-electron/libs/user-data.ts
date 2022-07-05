@@ -55,18 +55,6 @@ export const clear = async (): Promise<InvokeResult> => {
     }
 };
 
-export const getInfo = (): InvokeResult<{ dir: string }> => {
-    const dir = app.getPath('userData');
-    try {
-        return {
-            success: true,
-            payload: {
-                dir,
-                // possibly more info can be returned (size, last modified,...)
-            },
-        };
-    } catch (error) {
-        global.logger.error('user-data', `getInfo failed: ${error.message}`);
-        return { success: false, error: error.message, code: error.code };
-    }
-};
+export const getInfo = () => ({
+    dir: app.getPath('userData'),
+});

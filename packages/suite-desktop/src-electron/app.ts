@@ -181,6 +181,7 @@ const init = async () => {
     const {
         'custom-protocols': protocol,
         'auto-updater': { allowPrerelease, firstRun },
+        'user-data': { dir: userDir },
     } = await loadModules(response.payload);
 
     response.handshake({
@@ -188,6 +189,7 @@ const init = async () => {
         payload: {
             protocol,
             desktopUpdate: { allowPrerelease, firstRun },
+            paths: { userDir },
         },
     });
 };
