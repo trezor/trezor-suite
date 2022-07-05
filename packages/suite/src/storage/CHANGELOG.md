@@ -1,10 +1,10 @@
 # Storage changelog
 
-## 29
+# 29
 
--   added firmware.firmwareHashInvalid
+-   split to `token` property for storing OAuth tokens into `tokens.accessToken` and `tokens.refreshToken`
 
-## 28
+# 28
 
 -   with advent of connect v9, device.state field has changed. migrated all affected data.
 
