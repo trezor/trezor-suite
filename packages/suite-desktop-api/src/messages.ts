@@ -28,6 +28,9 @@ export type HandshakeElectron = {
         allowPrerelease: boolean;
         firstRun?: string;
     };
+    paths: {
+        userDir: string;
+    };
 };
 
 export interface UpdateInfo {

@@ -237,25 +237,6 @@ describe('DesktopApi', () => {
             api.clearUserData(true);
         });
 
-        it('DesktopApi.getUserDataInfo', async () => {
-            const spy = jest
-                .spyOn(ipcRenderer, 'invoke')
-                .mockImplementation(() =>
-                    Promise.resolve({ success: true, payload: { dir: '/' } }),
-                );
-            const result = await api.getUserDataInfo();
-            expect(spy).toBeCalledWith('user-data/get-info');
-            expect(result.success).toBe(true);
-            if (result.success) {
-                expect(result.payload).toEqual({ dir: '/' });
-            } else {
-                expect(result.error).toBe('should not happen');
-            }
-
-            // @ts-expect-error no expected params
-            api.getUserDataInfo(true);
-        });
-
         it('DesktopApi.installUdevRules', async () => {
             const spy = jest
                 .spyOn(ipcRenderer, 'invoke')

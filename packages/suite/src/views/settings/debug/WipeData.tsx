@@ -1,33 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
-import { isWeb } from '@suite-utils/env';
+import { useSelector } from '@suite-hooks';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
-import type { Await } from '@suite/types/utils';
-
-type UserData = Extract<
-    Await<ReturnType<NonNullable<typeof desktopApi>['getUserDataInfo']>>,
-    { success: true }
->;
-
 export const WipeData = () => {
-    const [userData, setUserData] = useState<UserData['payload'] | null>(null);
+    const userDataDir = useSelector(state => state.desktop?.paths.userDir);
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.WipeData);
-
-    useEffect(() => {
-        if (isWeb()) {
-            return;
-        }
-        const getUserDataInfo = async () => {
-            const result = await desktopApi.getUserDataInfo();
-            if (result.success) {
-                setUserData(result.payload);
-            }
-        };
-        getUserDataInfo();
-    }, []);
 
     return (
         <SectionItem
@@ -38,7 +18,7 @@ export const WipeData = () => {
             <TextColumn
                 title="Wipe app data"
                 description={`Clicking this button restarts your application and wipes all your data including locally saved labels. ${
-                    userData?.dir ? `Your local folder is: ${userData.dir}` : ''
+                    userDataDir ? `Your local folder is: ${userDataDir}` : ''
                 }`}
             />
             <ActionColumn>

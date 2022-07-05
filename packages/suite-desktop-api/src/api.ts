@@ -63,7 +63,6 @@ export interface InvokeChannels {
     'tor/get-address': () => string;
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'user-data/clear': () => InvokeResult;
-    'user-data/get-info': () => InvokeResult<{ dir: string }>;
     'udev/install': () => InvokeResult;
 }
 
@@ -102,7 +101,6 @@ export interface DesktopApi {
     // Store
     clearStore: DesktopApiSend<'store/clear'>;
     clearUserData: DesktopApiInvoke<'user-data/clear'>;
-    getUserDataInfo: DesktopApiInvoke<'user-data/get-info'>;
     // Udev rules
     installUdevRules: DesktopApiInvoke<'udev/install'>;
 }

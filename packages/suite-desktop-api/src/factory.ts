@@ -99,7 +99,6 @@ export const factory = <R extends StrictIpcRenderer<any>>(ipcRenderer?: R): Desk
 
         // user-data
         clearUserData: () => ipcRenderer.invoke('user-data/clear'),
-        getUserDataInfo: () => ipcRenderer.invoke('user-data/get-info'),
 
         // Udev rules
         installUdevRules: () => ipcRenderer.invoke('udev/install'),
