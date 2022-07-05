@@ -25,11 +25,22 @@ describe('Sign and verify', () => {
         cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
     });
 
+    /* Test case
+     * 1. Pass onboarding.
+     * 2. Navigate to wallet-index.
+     * 3. Open sign and verify dialogue.
+     * 4. Fill in message to sign
+     * 5. Select address
+     * 6. Press Sign and confirm on device
+     * 7. Compare signature with expected value
+     */
+
     it('Sign', () => {
         cy.getTestElement('@sign-verify/message').type(MESSAGE);
         cy.getTestElement('@sign-verify/sign-address/input').click();
         cy.getTestElement(`@sign-verify/sign-address/option/${PATH}`).click();
         cy.getTestElement('@sign-verify/sign-address/input').should('contain', ADDRESS);
+        cy.discoveryShouldFinish();
         cy.getTestElement('@sign-verify/submit').click();
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getConfirmActionOnDeviceModal().task('pressYes');
@@ -44,6 +55,7 @@ describe('Sign and verify', () => {
         cy.getTestElement('@sign-verify/format').within(() =>
             cy.getTestElement(`select-bar/${true}`).click(),
         );
+        cy.discoveryShouldFinish();
         cy.getTestElement('@sign-verify/submit').click();
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getConfirmActionOnDeviceModal().task('pressYes');
@@ -55,6 +67,7 @@ describe('Sign and verify', () => {
         cy.getTestElement('@sign-verify/message').type(MESSAGE);
         cy.getTestElement('@sign-verify/select-address').type(ADDRESS);
         cy.getTestElement('@sign-verify/signature').type(SIGNATURE);
+        cy.discoveryShouldFinish();
         cy.getTestElement('@sign-verify/submit').click();
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getConfirmActionOnDeviceModal().task('pressYes');
