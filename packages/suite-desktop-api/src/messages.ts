@@ -31,6 +31,9 @@ export type HandshakeElectron = {
     paths: {
         userDir: string;
     };
+    urls: {
+        httpReceiver: string;
+    };
 };
 
 export interface UpdateInfo {

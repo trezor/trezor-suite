@@ -109,6 +109,13 @@ export class HttpReceiver extends EventEmitter {
         return `http://${address.address}:${address.port}${route.pathname}`;
     }
 
+    getInfo() {
+        const address = this.getServerAddress();
+        return {
+            url: `http://${address.address}:${address.port}`,
+        };
+    }
+
     start() {
         return new Promise((resolve, reject) => {
             this.server.on('error', e => {
@@ -197,7 +204,7 @@ export class HttpReceiver extends EventEmitter {
             origins.findIndex(origin => {
                 // Wildcard for subdomains
                 if (origin.startsWith('*')) {
-                    return domain.endsWith(origin.substr(1));
+                    return domain.endsWith(origin.substring(1));
                 }
 
                 return origin.includes(domain);
