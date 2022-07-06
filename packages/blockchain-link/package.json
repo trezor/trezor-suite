@@ -32,7 +32,7 @@
     },
     "react-native": {
         "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-        "ws": "@trezor/blockchain-link/lib/utils/ws.js",
+        "ws": "@trezor/blockchain-link/lib/utils/ws-native.js",
         "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.js"
     },
     "scripts": {
