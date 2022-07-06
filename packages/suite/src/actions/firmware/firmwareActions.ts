@@ -3,6 +3,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import { getBootloaderVersion, getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { isDesktop } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
 import { addToast } from '@suite-actions/notificationActions';
 
@@ -115,14 +116,18 @@ const firmwareInstall =
                 toBtcOnly: isBtcOnlyFirmware,
             };
 
+            // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
+            const baseUrl = isDesktop()
+                ? getState().desktop?.paths.binDir
+                : resolveStaticPath('connect/data');
+
             updateResponse = await TrezorConnect.firmwareUpdate({
                 keepSession: false,
                 skipFinalReload: true,
                 device: {
                     path: device.path,
                 },
-                // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
-                baseUrl: resolveStaticPath('connect/data'),
+                baseUrl,
                 btcOnly: isBtcOnlyFirmware,
                 version: toRelease.release.version,
                 // if we detect latest firmware may not be used right away, we should use intermediary instead

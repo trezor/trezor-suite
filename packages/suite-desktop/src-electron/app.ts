@@ -185,12 +185,14 @@ const init = async () => {
         'http-receiver': { url: httpReceiver },
     } = await loadModules(response.payload);
 
+    const binDir = path.join(global.resourcesPath, 'bin');
+
     response.handshake({
         success: true,
         payload: {
             protocol,
             desktopUpdate: { allowPrerelease, firstRun },
-            paths: { userDir },
+            paths: { userDir, binDir },
             urls: { httpReceiver },
         },
     });
