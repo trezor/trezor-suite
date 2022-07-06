@@ -1,4 +1,3 @@
-import path from 'path';
 import { app, ipcMain } from 'electron';
 import TrezorConnect, {
     DEVICE_EVENT,
@@ -13,7 +12,7 @@ type Call = [keyof typeof TrezorConnect, string, ...any[]];
 const SERVICE_NAME = 'trezor-connect-ipc';
 
 const init: Module = ({ mainWindow, store }) => {
-    const { logger, resourcesPath } = global;
+    const { logger } = global;
     logger.info(SERVICE_NAME, `Starting service`);
 
     app.on('before-quit', TrezorConnect.dispose);
@@ -36,11 +35,6 @@ const init: Module = ({ mainWindow, store }) => {
         async ({ reply }: Electron.IpcMainEvent, [method, responseEvent, ...params]: Call) => {
             logger.debug(SERVICE_NAME, `TrezorConnect.${method}`);
 
-            // TODO: refactor desktopApi and send all app paths at the begging, then use this path in suite/firmwareUpdateActions
-            // https://github.com/trezor/trezor-suite/issues/4809
-            if (method === 'firmwareUpdate') {
-                params[0].baseUrl = path.join(resourcesPath, 'bin');
-            }
             // @ts-ignore method name union
             const response = await TrezorConnect[method](...params);
 

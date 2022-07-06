@@ -30,6 +30,7 @@ export type HandshakeElectron = {
     };
     paths: {
         userDir: string;
+        binDir: string;
     };
     urls: {
         httpReceiver: string;
