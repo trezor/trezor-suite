@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 
-import TrezorConnect from '@trezor/connect';
 import { NavigationContainer } from '@react-navigation/native';
 import { store } from '@suite-native/state';
+import TrezorConnect from '@trezor/connect';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
@@ -11,17 +11,10 @@ import { RootTabNavigator } from './navigation/RootTabNavigator';
 import { StylesProvider } from './StylesProvider';
 
 const connectOptions = {
-    // connectSrc: 'https://connect.corp.sldev.cz/develop/',
-
-    connectSrc: 'http://localhost:8088/',
-    // transportReconnect: true,
     debug: true,
-    popup: false,
-    webusb: false,
-    lazyLoad: true,
     manifest: {
         email: 'info@trezor.io',
-        appUrl: '@trezor/suite',
+        appUrl: '@trezor/suite-native',
     },
 };
 
@@ -64,4 +57,4 @@ export const App = () => {
             </NavigationContainer>
         </GestureHandlerRootView>
     );
-}
+};
