@@ -5,6 +5,7 @@ const PACKAGE_PATH = path.join(__dirname, '..');
 
 const args = process.argv.slice(2);
 
+// eslint-disable-next-line no-console
 console.log('args', args);
 
 if (args.length !== 1) {
