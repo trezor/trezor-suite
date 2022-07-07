@@ -24,6 +24,7 @@ import getAddress from './getAddress';
 import getAddressMultisig from './getAddressMultisig';
 import getAddressSegwit from './getAddressSegwit';
 import getFeatures from './getFeatures';
+import getFirmwareHash from './getFirmwareHash';
 import getOwnershipId from './getOwnershipId';
 import getOwnershipProof from './getOwnershipProof';
 import getPublicKey from './getPublicKey';
@@ -115,6 +116,7 @@ let fixtures = [
     getAddressMultisig,
     getAddressSegwit,
     getFeatures,
+    getFirmwareHash,
     getOwnershipId,
     getOwnershipProof,
     getPublicKey,

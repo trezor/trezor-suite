@@ -50,7 +50,7 @@ jobs:
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
-      methods: "applySettings,applyFlags,getFeatures"
+      methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
 
   btc-sign:
     needs: [build]
