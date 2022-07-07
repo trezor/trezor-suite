@@ -10,11 +10,9 @@ import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/defin
 import type { GraphData } from '@wallet-types/graph';
 
 type WalletWithBackends = {
-    backends?: Partial<
-        {
-            [coin in Network['symbol']]: Omit<CustomBackend, 'coin'>;
-        }
-    >;
+    backends?: Partial<{
+        [coin in Network['symbol']]: Omit<CustomBackend, 'coin'>;
+    }>;
 };
 
 export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
