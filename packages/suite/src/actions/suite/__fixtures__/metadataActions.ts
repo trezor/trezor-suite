@@ -91,7 +91,11 @@ const setDeviceMetadataKey = [
         initialState: {
             metadata: {
                 enabled: true,
-                provider: { type: 'dropbox', user: 'User Name', token: 'oauth-token' },
+                provider: {
+                    type: 'dropbox',
+                    user: 'User Name',
+                    tokens: { refreshToken: 'oauth-token' },
+                },
             },
             device: { state: 'device-state', connected: true, metadata: { status: 'disabled' } },
         },
@@ -313,7 +317,7 @@ const fetchMetadata = [
             metadata: {
                 enabled: true,
                 provider: {
-                    token: 'foo',
+                    tokens: { refreshToken: 'foo' },
                     type: 'google',
                     user: 'batman',
                 },
@@ -328,7 +332,11 @@ const fetchMetadata = [
         initialState: {
             metadata: {
                 enabled: true,
-                provider: { type: 'dropbox', user: 'User Name', token: 'oauth-token' },
+                provider: {
+                    type: 'dropbox',
+                    user: 'User Name',
+                    tokens: { refreshToken: 'oauth-token' },
+                },
             },
             device: {
                 state: 'mkUHEWSY9zaq4A4RjicJSPSPPxZ1dr2CfF@B45F1224E1EFDEE921BE328F:undefined',
@@ -363,7 +371,12 @@ const connectProvider = [
         result: [
             {
                 type: '@metadata/set-provider',
-                payload: { type: 'dropbox', token: 'token-haf-mnau', user: 'haf', isCloud: true },
+                payload: {
+                    type: 'dropbox',
+                    tokens: { refreshToken: 'token-haf-mnau' },
+                    user: 'haf',
+                    isCloud: true,
+                },
             },
         ],
     },
@@ -388,7 +401,11 @@ const addMetadata = [
         initialState: {
             metadata: {
                 enabled: true,
-                provider: { type: 'dropbox', user: 'User Name', token: 'oauth-token' },
+                provider: {
+                    type: 'dropbox',
+                    user: 'User Name',
+                    tokens: { refreshToken: 'oauth-token' },
+                },
             },
             device: {
                 state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
@@ -408,7 +425,11 @@ const addMetadata = [
         initialState: {
             metadata: {
                 enabled: true,
-                provider: { type: 'dropbox', user: 'User Name', token: 'oauth-token' },
+                provider: {
+                    type: 'dropbox',
+                    user: 'User Name',
+                    tokens: { refreshToken: 'oauth-token' },
+                },
             },
             device: {
                 state: 'mmcGdEpTPqgQNRHqf3gmB5uDsEoPo2d3tp@46CE52D1ED50A900687D6BA2:undefined',
@@ -497,7 +518,12 @@ const init = [
             },
             {
                 type: '@metadata/set-provider',
-                payload: { type: 'dropbox', token: 'token', user: 'power-user', isCloud: true },
+                payload: {
+                    type: 'dropbox',
+                    tokens: { refreshToken: 'token' },
+                    user: 'power-user',
+                    isCloud: true,
+                },
             },
             {
                 type: '@metadata/wallet-loaded',
