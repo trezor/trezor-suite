@@ -28,9 +28,9 @@ export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDO
 
 // used when auth-server is running
 export const GOOGLE_CODE_FLOW_CLIENT_ID =
-    '721022212539-0o49kanusndsufaeh1nut13pp23hb1t8.apps.googleusercontent.com'; // komret test account
+    '705190185912-m4mrh55knjbg6gqhi72fr906a6n0b0u1.apps.googleusercontent.com'; // generate testing credentials for development
 
-// used as a fallback from authorziation code flow
+// used as a fallback from authorization code flow
 export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
     '721022212539-780n7vtfc5pmc2usvtpea2mqckl88tt8.apps.googleusercontent.com'; // komret test account
 
