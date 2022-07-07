@@ -15,6 +15,7 @@ import {
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM } from '@suite-actions/constants';
+import { FIRMWARE } from '@firmware-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
@@ -225,6 +226,9 @@ const storageMiddleware =
             }
             case FORM_DRAFT.REMOVE_DRAFT:
                 storageActions.removeFormDraft(action.key);
+                break;
+            case FIRMWARE.SET_HASH_INVALID:
+                api.dispatch(storageActions.saveFirmware());
                 break;
 
             default:

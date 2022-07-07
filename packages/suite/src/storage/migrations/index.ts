@@ -454,15 +454,19 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             .then(() => {
                 db.deleteObjectStore('discovery');
             })
-            .then(() => {
+            .then(() =>
                 // object store for discovery
-                return db.createObjectStore('discovery', { keyPath: 'deviceState' });
-            })
+                db.createObjectStore('discovery', { keyPath: 'deviceState' }),
+            )
             .then(discoveryStore => {
                 discoveries.forEach(discovery => {
                     discovery.deviceState = discovery.deviceState.replace('undefined', '0');
                     discoveryStore.add(discovery);
                 });
             });
+    }
+
+    if (oldVersion < 29) {
+        db.createObjectStore('firmware');
     }
 };

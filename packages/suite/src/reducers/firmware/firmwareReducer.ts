@@ -2,17 +2,30 @@ import produce from 'immer';
 import { UI, Device } from '@trezor/connect';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, STORAGE } from '@suite-actions/constants';
 
 import type { Action, AcquiredDevice } from '@suite-types';
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;
-    hasSeed: boolean; // Stores confirmation from the user about having a seed card available when doing a fw update (check-seed step)
+    // Stores confirmation from the user about having a seed card available when doing a fw update (check-seed step)
+    hasSeed: boolean;
+    // we need to assess next firmware outside of bootloader mode for best results.
+    // we actually can do it even in bl mode, but cant guarantee we will really get the
+    // same firmware as was initially offered in 'firmware' mode.
     targetRelease: AcquiredDevice['firmwareRelease'];
-    prevDevice?: Device; // cached device for the purpose of fw update
-    intermediaryInstalled: boolean; // Fresh unpacked T1 comes with 1.4.0 bootloader and will install intermediary fw, after the installation is complete it is set to true
-    subsequentInstalling: boolean; // Used to reset state of progress bar when installing subsequent update right after an intermediary one
+    // cached device for the purpose of fw update
+    prevDevice?: Device;
+    // Fresh unpacked T1 comes with 1.4.0 bootloader and will install intermediary fw, after the installation is complete it is set to true
+    intermediaryInstalled: boolean;
+    // Used to reset state of progress bar when installing subsequent update right after an intermediary one
+    subsequentInstalling: boolean;
+    firmwareHash?: string;
+    firmwareChallenge?: string;
+    // Array of device ids where suite claims their firmware might have been "hacked". This information is available only after firmware update is finished
+    // and we need to store this information persistently so that it does not disappear after accidental device reconnection.
+    // todo: in the future we might implement additional check that will validate firmware after every connection
+    firmwareHashInvalid: string[];
 };
 
 export type FirmwareStatus =
@@ -26,6 +39,7 @@ export type FirmwareStatus =
     | 'wait-for-reboot' // progress - model t2 is restarting after firmware update
     | 'unplug' // progress - user is asked to reconnect device (t1)
     | 'reconnect-in-normal' // progress - after unplugging device from previous step, user is asked to connect it again
+    | 'validation' // firmware validation in progress
     | 'done'; // firmware successfully installed
 
 export type FirmwareUpdateState =
@@ -42,19 +56,22 @@ const initialState: FirmwareUpdateState = {
     status: 'initial',
     installingProgress: undefined,
     error: undefined,
-    // we need to assess next firmware outside of bootloader mode for best results.
-    // we actually can do it even in bl mode, but cant guarantee we will really get the
-    // same firmware as was initially offered in 'firmware' mode.
     targetRelease: undefined,
     hasSeed: false,
     prevDevice: undefined,
     intermediaryInstalled: false,
     subsequentInstalling: false,
+    firmwareHashInvalid: [],
 };
 
-const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) =>
+const firmwareUpdate = (
+    state: FirmwareUpdateState = initialState,
+    action: Action,
+): FirmwareUpdateState =>
     produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOADED:
+                return action.payload.firmware;
             case FIRMWARE.SET_UPDATE_STATUS:
                 draft.status = action.payload;
                 if (action.payload === 'started') {
@@ -67,6 +84,14 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                     }
                     draft.error = undefined;
                 }
+                break;
+            case FIRMWARE.SET_HASH:
+                draft.firmwareHash = action.payload.hash;
+                draft.firmwareChallenge = action.payload.challenge;
+                break;
+            case FIRMWARE.SET_HASH_INVALID:
+                draft.firmwareHashInvalid.push(action.payload);
+                draft.status = 'error';
                 break;
             case FIRMWARE.SET_ERROR:
                 draft.error = action.payload;
@@ -102,7 +127,7 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 draft.prevDevice = action.payload;
                 break;
             case FIRMWARE.RESET_REDUCER:
-                return initialState;
+                return { ...initialState, firmwareHashInvalid: draft.firmwareHashInvalid };
             default:
 
             // no default

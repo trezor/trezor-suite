@@ -35,6 +35,9 @@ const getInitialState = (
         ...suite,
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
+    analytics: {
+        enabled: false,
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;
@@ -91,7 +94,34 @@ describe('firmware middleware', () => {
         ]);
     });
 
-    it('SELECT.DEVICE if in wait-for-reboot changes status to "done" if firmware === valid', async () => {
+    it('SELECT.DEVICE if in wait-for-reboot -> changes status to "started" if intermediaryInstalled === true', async () => {
+        const store = initStore(
+            getInitialState(undefined, {
+                status: 'wait-for-reboot',
+                error: undefined,
+                intermediaryInstalled: true,
+            }),
+        );
+
+        await store.dispatch({
+            type: SUITE.SELECT_DEVICE,
+            payload: getSuiteDevice({
+                mode: 'bootloader',
+                connected: true,
+            }),
+        });
+
+        const result = store.getActions();
+        expect(result).toEqual([
+            {
+                type: SUITE.SELECT_DEVICE,
+                payload: getSuiteDevice({ connected: true, mode: 'bootloader' }),
+            },
+            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+        ]);
+    });
+
+    it('SELECT.DEVICE if in wait-for-reboot changes status to "validation" if firmware === valid', async () => {
         const store = initStore(
             getInitialState(undefined, {
                 status: 'wait-for-reboot',
@@ -111,31 +141,7 @@ describe('firmware middleware', () => {
                 type: SUITE.SELECT_DEVICE,
                 payload: getSuiteDevice({ firmware: 'valid', connected: true }),
             },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'done' },
-        ]);
-    });
-
-    it('SELECT.DEVICE if in wait-for-reboot changes status to "partially-done" if firmware === outdated', async () => {
-        const store = initStore(
-            getInitialState(undefined, {
-                status: 'wait-for-reboot',
-                error: undefined,
-            }),
-        );
-
-        await store.dispatch({
-            type: SUITE.SELECT_DEVICE,
-            payload: getSuiteDevice({ firmware: 'outdated', connected: true }),
-        });
-
-        const result = store.getActions();
-
-        expect(result).toEqual([
-            {
-                type: SUITE.SELECT_DEVICE,
-                payload: getSuiteDevice({ firmware: 'outdated', connected: true }),
-            },
-            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'partially-done' },
+            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'validation' },
         ]);
     });
 

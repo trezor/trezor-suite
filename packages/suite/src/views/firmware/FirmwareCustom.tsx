@@ -86,23 +86,26 @@ export const FirmwareCustom = () => {
 
     const Step = useMemo(
         () => () => {
-            if (error) {
-                return (
-                    <OnboardingStepBox
-                        image="FIRMWARE"
-                        heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
-                        description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                        innerActions={
-                            <CloseButton onClick={onClose}>
-                                <Translation id="TR_BACK" />
-                            </CloseButton>
-                        }
-                        nested
-                    />
-                );
-            }
-
             switch (status) {
+                case 'error':
+                    return (
+                        <OnboardingStepBox
+                            image="FIRMWARE"
+                            heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
+                            description={
+                                <Translation
+                                    id="TOAST_GENERIC_ERROR"
+                                    values={{ error: error || '' }}
+                                />
+                            }
+                            innerActions={
+                                <CloseButton onClick={onClose}>
+                                    <Translation id="TR_BACK" />
+                                </CloseButton>
+                            }
+                            nested
+                        />
+                    );
                 case 'initial':
                     return shouldDisplayConnectPrompt(liveDevice) ? (
                         <ConnectDevicePromptManager device={liveDevice} />
@@ -129,6 +132,7 @@ export const FirmwareCustom = () => {
                 case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
                 case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
                 case 'done':
+                case 'validation':
                     return (
                         <FirmwareInstallation
                             cachedDevice={cachedDevice}

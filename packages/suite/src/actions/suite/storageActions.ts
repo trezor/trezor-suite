@@ -346,6 +346,13 @@ export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: Get
     );
 };
 
+export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await db.isAccessible())) return;
+    const { firmware } = getState();
+
+    db.addItem('firmware', { firmwareHashInvalid: firmware.firmwareHashInvalid }, 'firmware', true);
+};
+
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
 
@@ -392,6 +399,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
         const messageSystem = await db.getItemByPK('messageSystem', 'suite');
         const backendSettings = await db.getItemsWithKeys('backendSettings');
+        const firmware = await db.getItemByPK('firmware', 'firmware');
 
         txs.forEach(item => {
             const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
@@ -487,6 +495,10 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                 messageSystem: {
                     ...initialState.messageSystem,
                     ...messageSystem,
+                },
+                firmware: {
+                    ...initialState.firmware,
+                    ...firmware,
                 },
             },
         });

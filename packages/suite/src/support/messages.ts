@@ -6678,4 +6678,9 @@ export default defineMessages({
         id: 'FAILED_TO_DISABLE_TOR',
         defaultMessage: 'Failed to disable Tor',
     },
+    TR_FIRMWARE_HASH_MISMATCH: {
+        id: 'TR_FIRMWARE_HASH_MISMATCH',
+        defaultMessage:
+            'Your Trezor is running unofficial firmware. Please contact help@trezor.io immediately.',
+    },
 });
