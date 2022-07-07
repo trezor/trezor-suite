@@ -17,8 +17,7 @@ const corsOptions: CorsOptions = {
 app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3005;
-const GOOGLE_CLIENT_SECRET =
-    process.env.GOOGLE_CLIENT_SECRET || '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'; // TODO remove temporary client secret (komret test account)
+const { GOOGLE_CLIENT_SECRET } = process.env; // generate testing credentials for development
 
 const checkResponse = (responseBody: object, expectedProperties: string[]) => {
     expectedProperties.forEach(property => {

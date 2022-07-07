@@ -14,7 +14,7 @@ import { getCodeChallenge } from '@suite-utils/random';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const BOUNDARY = '-------314159265358979323846';
-const AUTH_SERVER_URL = process.env.AUTH_SERVER_URL || 'http://localhost:3005'; // TODO: replace with server URL
+const AUTH_SERVER_URL = ''; // set to 'http://localhost:3005' for development
 
 type QueryParams = {
     q?: string;
@@ -144,11 +144,16 @@ class Client {
     }
 
     static async isAuthServerAvailable() {
-        try {
-            Client.authServerAvailable = (await fetch('http://localhost:3005/status')).ok;
-        } catch (err) {
+        if (!AUTH_SERVER_URL) {
             Client.authServerAvailable = false;
+        } else {
+            try {
+                Client.authServerAvailable = (await fetch('http://localhost:3005/status')).ok;
+            } catch (err) {
+                Client.authServerAvailable = false;
+            }
         }
+
         return Client.authServerAvailable;
     }
 
