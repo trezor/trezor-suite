@@ -10,9 +10,11 @@ import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/defin
 import type { GraphData } from '@wallet-types/graph';
 
 type WalletWithBackends = {
-    backends?: Partial<{
-        [coin in Network['symbol']]: Omit<CustomBackend, 'coin'>;
-    }>;
+    backends?: Partial<
+        {
+            [coin in Network['symbol']]: Omit<CustomBackend, 'coin'>;
+        }
+    >;
 };
 
 export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
@@ -454,10 +456,10 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             .then(() => {
                 db.deleteObjectStore('discovery');
             })
-            .then(() => {
+            .then(() =>
                 // object store for discovery
-                return db.createObjectStore('discovery', { keyPath: 'deviceState' });
-            })
+                db.createObjectStore('discovery', { keyPath: 'deviceState' }),
+            )
             .then(discoveryStore => {
                 discoveries.forEach(discovery => {
                     discovery.deviceState = discovery.deviceState.replace('undefined', '0');
