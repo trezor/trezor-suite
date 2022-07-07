@@ -141,7 +141,6 @@ export class HttpReceiver extends EventEmitter {
      * Entry point for handling requests
      */
     private onRequest = (request: http.IncomingMessage, response: http.ServerResponse) => {
-        console.log('request.url', request.url);
         // mostly ts stuff. request should always have url defined.
         if (!request.url) {
             this.logger.warn('http-receiver', 'Unexpected incoming message (no url)');
@@ -235,6 +234,7 @@ export class HttpReceiver extends EventEmitter {
             this.emit('oauth/response', { search });
         }
 
+        // replace # with ? so that query parameters can be read by renderer
         const script = `
             <script>
                 if (window.location.href.includes('#')) {

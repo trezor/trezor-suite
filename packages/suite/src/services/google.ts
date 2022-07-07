@@ -14,7 +14,6 @@ import { getCodeChallenge } from '@suite-utils/random';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const BOUNDARY = '-------314159265358979323846';
-const AUTH_SERVER_URL = ''; // set to 'http://localhost:3005' for development
 
 type QueryParams = {
     q?: string;
@@ -123,35 +122,35 @@ class Client {
     static async getAccessToken() {
         await Client.initPromise;
         if (!Client.accessToken && Client.refreshToken && Client.flow === 'code') {
-            const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-refresh`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    clientId: Client.clientId,
-                    refreshToken: Client.refreshToken,
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const json = await res.json();
-            if (!json?.access_token) {
-                throw new Error('Could not refresh access token.');
-            } else {
-                Client.accessToken = json.access_token;
+            try {
+                const res = await fetch(`${METADATA.AUTH_SERVER_URL}/google-oauth-refresh`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        clientId: Client.clientId,
+                        refreshToken: Client.refreshToken,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const json = await res.json();
+                if (!json?.access_token) {
+                    throw new Error('Could not refresh access token.');
+                } else {
+                    Client.accessToken = json.access_token;
+                }
+            } catch {
+                Client.authServerAvailable = false;
             }
         }
         return Client.accessToken;
     }
 
     static async isAuthServerAvailable() {
-        if (!AUTH_SERVER_URL) {
+        try {
+            Client.authServerAvailable = (await fetch(`${METADATA.AUTH_SERVER_URL}/status`)).ok;
+        } catch (err) {
             Client.authServerAvailable = false;
-        } else {
-            try {
-                Client.authServerAvailable = (await fetch('http://localhost:3005/status')).ok;
-            } catch (err) {
-                Client.authServerAvailable = false;
-            }
         }
 
         return Client.authServerAvailable;
@@ -194,22 +193,26 @@ class Client {
             Client.accessToken = access_token;
         } else {
             // authorization code flow retrieves code, then refresh_token, which can generate access_token on demand
-            const res = await fetch(`${AUTH_SERVER_URL}/google-oauth-init`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    clientId: Client.clientId,
-                    code,
-                    codeVerifier: random,
-                    redirectUri,
-                }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            try {
+                const res = await fetch(`${METADATA.AUTH_SERVER_URL}/google-oauth-init`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        clientId: Client.clientId,
+                        code,
+                        codeVerifier: random,
+                        redirectUri,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-            const json = await res.json();
-            Client.accessToken = json.access_token;
-            Client.refreshToken = json.refresh_token;
+                const json = await res.json();
+                Client.accessToken = json.access_token;
+                Client.refreshToken = json.refresh_token;
+            } catch {
+                Client.authServerAvailable = false;
+            }
         }
     }
 

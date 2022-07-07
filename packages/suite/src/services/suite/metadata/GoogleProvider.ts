@@ -129,7 +129,7 @@ class GoogleProvider extends AbstractMetadataProvider {
      */
     handleProviderError(err: any) {
         // collect human readable errors from wherever possible or fill with own general message;
-        let message = err?.error?.message || err?.message || err?.description || '';
+        let message = err?.error?.message || err?.message;
 
         if (typeof message !== 'string') {
             // this should never happen
