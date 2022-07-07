@@ -66,7 +66,22 @@ module.exports = {
         'react/jsx-indent': [2, 4],
         // I believe shadowing is a nice language feature.
         'no-shadow': 'off',
-        'import/order': 'off',
+        'import/order': [
+            1,
+            {
+                groups: ['external', 'internal'],
+                pathGroups: [
+                    { pattern: '@trezor/**', group: 'internal' },
+                    { pattern: '@suite-native/**', group: 'internal' },
+                ],
+                pathGroupsExcludedImportTypes: ['internal'],
+                alphabetize: {
+                    order: 'asc',
+                    caseInsensitive: true,
+                },
+                'newlines-between': 'always',
+            },
+        ],
         // Does not work with TypeScript export type.
         'import/prefer-default-export': 'off',
         // Does not work with Babel react-native to react-native-web
@@ -92,7 +107,7 @@ module.exports = {
                 allowObject: true,
             },
         ],
-        // We have types.
+        // We have typescript.
         'react/prop-types': 'off',
         // It's fine.
         'react/no-multi-comp': 'off',

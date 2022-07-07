@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
-
 import { NavigationContainer } from '@react-navigation/native';
-import { store } from '@suite-native/state';
-import TrezorConnect from '@trezor/connect';
+import React, { useCallback, useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
+
+import { store } from '@suite-native/state';
+import TrezorConnect from '@trezor/connect';
 
 import { RootTabNavigator } from './navigation/RootTabNavigator';
 import { StylesProvider } from './StylesProvider';
