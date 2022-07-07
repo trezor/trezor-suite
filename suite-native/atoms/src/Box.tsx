@@ -1,8 +1,9 @@
 import { D, pipe } from '@mobily/ts-belt';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Spacing } from '@trezor/theme';
 import React from 'react';
 import { View, ViewProps, ViewStyle } from 'react-native';
+
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Spacing } from '@trezor/theme';
 
 const layoutStylePropsKeys = [
     'flex',

@@ -1,10 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { stackNavigationOptionsConfig } from '@suite-native/navigation';
+
 import { HomeDemoScreen } from '../screens/HomeDemoScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { HomeStackParamList, HomeStackRoutes } from './routes';
-import { stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 const HomeStack = createStackNavigator<HomeStackParamList>();
 

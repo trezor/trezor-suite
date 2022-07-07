@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Pressable } from 'react-native';
 import Animated, {
     Easing,
     useAnimatedStyle,
@@ -6,8 +7,8 @@ import Animated, {
     interpolateColor,
     withTiming,
 } from 'react-native-reanimated';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Pressable } from 'react-native';
 
 type SwitchProps = {
     isChecked: boolean;

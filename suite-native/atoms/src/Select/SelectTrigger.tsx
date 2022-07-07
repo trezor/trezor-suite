@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
+
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

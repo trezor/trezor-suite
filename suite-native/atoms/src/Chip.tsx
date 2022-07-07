@@ -1,8 +1,10 @@
 import React, { ReactNode } from 'react';
-import { Text } from './Text';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TouchableOpacity } from 'react-native';
+
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { Box } from './Box';
+import { Text } from './Text';
 
 type ChipProps = {
     title: string;

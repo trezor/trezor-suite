@@ -1,7 +1,8 @@
-import { Text } from '../Text';
 import React from 'react';
-import { BaseListItem } from './listItemTypes';
+
 import { Box } from '../Box';
+import { Text } from '../Text';
+import { BaseListItem } from './listItemTypes';
 
 type ListItemTextProps = Pick<BaseListItem, 'title' | 'subtitle' | 'isTextTruncated'>;
 

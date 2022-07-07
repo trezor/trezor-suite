@@ -71,14 +71,10 @@ module.exports = {
             {
                 groups: ['external', 'internal'],
                 pathGroups: [
-                    { pattern: '@trezor/**', group: 'internal' },
+                    { pattern: '@trezor/**', group: 'internal' }, // Translates to /packages/** */
                     { pattern: '@suite-native/**', group: 'internal' },
                 ],
                 pathGroupsExcludedImportTypes: ['internal'],
-                alphabetize: {
-                    order: 'asc',
-                    caseInsensitive: true,
-                },
                 'newlines-between': 'always',
             },
         ],
@@ -121,7 +117,7 @@ module.exports = {
         'no-plusplus': 'off',
         'no-return-assign': 'off',
         'consistent-return': 'off',
-        'no-console': 'off',
+        'no-console': 'error',
         // TSC checks it.
         '@typescript-eslint/no-unused-vars': 'off',
         'no-undef': 'off',

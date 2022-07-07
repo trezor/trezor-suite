@@ -1,8 +1,10 @@
 import React from 'react';
 import { View } from 'react-native';
+
+import { Icon, IconName } from '@trezor/icons';
 import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
 import { Color } from '@trezor/theme';
-import { Icon, IconName } from '@trezor/icons';
+
 import { Text } from './Text';
 
 type HintVariant = 'hint' | 'error';

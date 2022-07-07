@@ -1,6 +1,7 @@
 import React from 'react';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type RadioValue = string | number;
 export interface RadioProps extends Omit<TouchableOpacityProps, 'style' | 'onPress'> {

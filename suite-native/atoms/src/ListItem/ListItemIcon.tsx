@@ -1,6 +1,8 @@
-import { Icon, IconName } from '@trezor/icons';
 import React from 'react';
+
+import { Icon, IconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { Box } from '../Box';
 
 type ListItemIconProps = {

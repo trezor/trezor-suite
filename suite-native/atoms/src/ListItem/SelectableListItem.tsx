@@ -1,10 +1,11 @@
 import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+
+import { Box } from '../Box';
+import { Radio, RadioProps } from '../Radio';
 import { ListItemIcon } from './ListItemIcon';
 import { ListItemText } from './ListItemText';
-import { Radio, RadioProps } from '../Radio';
 import { BaseListItem } from './listItemTypes';
-import { Box } from '../Box';
 
 type SelectableListItemProps = RadioProps &
     Omit<BaseListItem, 'onPress'> &

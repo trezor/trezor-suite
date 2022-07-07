@@ -1,5 +1,7 @@
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import React from 'react';
+
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { Box } from './Box';
 
 const dividerStyle = prepareNativeStyle(utils => ({
