@@ -1,6 +1,8 @@
+import * as React from 'react';
+
 import { Box, Chip } from '@suite-native/atoms';
 import { CryptoIcon, CryptoIconName } from '@trezor/icons';
-import * as React from 'react';
+
 import { SettingsSection } from './SettingsSection';
 
 const dummyCoins: { title: string; iconName: CryptoIconName; description?: string }[] = [

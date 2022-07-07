@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
+/* eslint-disable no-console */
+
+const semver = require('semver');
 
 const child_process = require('child_process');
-const semver = require('semver');
 const fs = require('fs');
 const path = require('path');
 

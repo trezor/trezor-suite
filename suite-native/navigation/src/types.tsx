@@ -2,6 +2,7 @@ import type { BottomTabScreenProps, BottomTabNavigationProp } from '@react-navig
 import type { StackScreenProps, StackNavigationProp } from '@react-navigation/stack';
 import { ParamListBase } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
+
 import { IconName } from '@trezor/icons';
 
 export type TabProps<T extends ParamListBase, K extends keyof T> = BottomTabScreenProps<T, K>;

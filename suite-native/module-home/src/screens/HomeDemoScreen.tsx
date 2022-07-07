@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { TextInput } from 'react-native';
+
 import {
     Text,
     Box,
@@ -23,10 +24,11 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
 import { Screen, StackProps } from '@suite-native/navigation';
 import { TypographyStyle } from '@trezor/theme';
 import { CryptoIcon, Icon } from '@trezor/icons';
+
+import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,

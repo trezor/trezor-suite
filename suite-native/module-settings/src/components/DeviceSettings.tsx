@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { SettingsScreenProp, SettingsStackRoutes } from '../navigation/routes';
 
+import { SettingsScreenProp, SettingsStackRoutes } from '../navigation/routes';
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
 

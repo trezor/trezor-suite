@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { stackNavigationOptionsConfig } from '@suite-native/navigation';
+
 import { SettingsStackRoutes, SettingsStackParamList } from './routes';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { SettingsLocalisationScreen } from '../screens/SettingsLocalisationScreen';

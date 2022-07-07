@@ -3,6 +3,7 @@ import React from 'react';
 import { Divider, Select, VStack } from '@suite-native/atoms';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { ColorSchemePicker } from '../components/ColorSchemePicker';
 
 const screenStyle = prepareNativeStyle(() => ({

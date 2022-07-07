@@ -11,6 +11,7 @@ import Animated, {
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeSpacings } from '@trezor/theme';
+
 import { Box } from '../Box';
 
 type InputProps = {

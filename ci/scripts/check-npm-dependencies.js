@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+/* eslint-disable no-console */
 
 /**
  * node check-npm-dependencies.js <package_name>

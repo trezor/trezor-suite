@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { Box, Text, VStack } from '@suite-native/atoms';
-import { TouchableOpacity } from 'react-native';
 import { Icon, IconName } from '@trezor/icons';
 
 type SettingsSectionProps = {

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { ThemeColorVariant } from '@trezor/theme';
 import { RootState } from '@suite-native/state';
 

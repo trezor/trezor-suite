@@ -1,6 +1,5 @@
 import fixtures from './fixtures/encodeDataToQueryString';
 import { encodeDataToQueryString, getRandomId } from '../utils';
-
 import { Analytics } from '../analytics';
 
 describe('analytics', () => {
@@ -66,8 +65,8 @@ describe('analytics', () => {
             sessionId,
             commitId,
             callbacks: {
-                onDisable: () => console.log('disabled'),
-                onEnable: () => console.log('enabled'),
+                onDisable: () => console.warn('disabled'),
+                onEnable: () => console.warn('enabled'),
             },
         });
 
@@ -75,11 +74,11 @@ describe('analytics', () => {
 
         analytics.enable();
         expect(analytics.isEnabled()).toBeTruthy();
-        expect(console.log).toHaveBeenLastCalledWith('enabled');
+        expect(console.warn).toHaveBeenLastCalledWith('enabled');
 
         analytics.disable();
         expect(analytics.isEnabled()).toBeFalsy();
-        expect(console.log).toHaveBeenLastCalledWith('disabled');
+        expect(console.warn).toHaveBeenLastCalledWith('disabled');
     });
 
     fixtures.forEach(f => {

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+
 import { VStack, Text, HStack } from '@suite-native/atoms';
-import { ColorSchemePickerItem } from './ColorSchemePickerItem';
 import { ThemeColorVariant } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { ColorSchemePickerItem } from './ColorSchemePickerItem';
 
 const stackStyle = prepareNativeStyle(() => ({
     justifyContent: 'space-between',

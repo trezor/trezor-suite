@@ -1,5 +1,4 @@
 import { encodeDataToQueryString, getRandomId, getUrl } from './utils';
-
 import type { InitOptions, Event, App } from './types';
 
 export class Analytics<T extends Event> {

@@ -1,7 +1,8 @@
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@trezor/icons';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
+
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Icon } from '@trezor/icons';
 
 const actionTabItemStyle = prepareNativeStyle(utils => ({
     marginTop: -40,

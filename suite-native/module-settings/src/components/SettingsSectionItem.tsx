@@ -1,6 +1,7 @@
+import React from 'react';
+
 import { ListItem, ListItemProps } from '@suite-native/atoms';
 import { IconName } from '@trezor/icons';
-import React from 'react';
 
 export type SettingSectionItem = {
     title: string;
