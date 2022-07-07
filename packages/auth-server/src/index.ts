@@ -1,11 +1,20 @@
 import express from 'express';
 import fetch from 'node-fetch';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+const corsOptions: CorsOptions = {
+    origin: [
+        'trezor.io', // production web
+        'sldev.cz', // staging web
+        'localhost', // development web + all desktop
+        'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion', // onion address for production web (Suite does not work here now)
+    ],
+};
+app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3005;
 const GOOGLE_CLIENT_SECRET =
