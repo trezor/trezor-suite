@@ -188,7 +188,9 @@ describe('Metadata Actions', () => {
                     payload: {
                         type: 'dropbox',
                         isCloud: true,
-                        token: 'token',
+                        tokens: {
+                            refreshToken: 'token',
+                        },
                         user: 'power-user',
                     },
                 });

@@ -50,7 +50,7 @@ const fetchIntervals: { [deviceState: string]: any } = {}; // any because of nat
 const createProvider = (type: MetadataProvider['type'], tokens: Tokens = {}) => {
     switch (type) {
         case 'dropbox':
-            return new DropboxProvider(tokens?.accessToken);
+            return new DropboxProvider(tokens?.refreshToken);
         case 'google':
             return new GoogleProvider(tokens);
         case 'fileSystem':
