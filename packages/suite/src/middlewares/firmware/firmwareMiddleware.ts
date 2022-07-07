@@ -1,11 +1,8 @@
-import { MiddlewareAPI } from 'redux';
-import TrezorConnect from '@trezor/connect';
-
 import { SUITE } from '@suite-actions/constants';
+import { FIRMWARE } from '@firmware-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
-
-import { AppState, Action, Dispatch } from '@suite-types';
-import { FIRMWARE } from '@suite/actions/firmware/constants';
+import type { MiddlewareAPI } from 'redux';
+import type { AppState, Action, Dispatch } from '@suite-types';
 
 const firmware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -68,36 +65,14 @@ const firmware =
                 }
 
                 // here user connected device that was force remembered before
-
                 if (
-                    action.payload &&
-                    action.payload.features &&
-                    action.payload.connected &&
-                    ['reconnect-in-normal', 'wait-for-reboot'].includes(status)
+                    action.payload?.features &&
+                    action.payload?.connected &&
+                    action.payload?.mode !== 'bootloader' && // after custom firmware install waiting for confirmation of fingerprint
+                    ['reconnect-in-normal', 'wait-for-reboot'].includes(status) &&
+                    !intermediaryInstalled
                 ) {
-                    // TLDR: if you don't reload features, after updating model T from non-shamir firmware to shamir firmware, you
-                    // won't see shamir vs. standard wallet selection.
-                    // firmwareActions.firmwareUpdate method sends skipFinalReload parameter into @trezor/connect, which results
-                    // in capabilities not being reloaded properly even after device reconnect. this is because messages definitions
-                    // which are required to parse incoming message from trezor are reloaded only before call to device starts and
-                    // after it ends (if there is no skipFinalReload flag). This does not apply for our case here, so we must
-                    // force features reload.
-                    TrezorConnect.getFeatures({
-                        device: {
-                            path: action.payload.path,
-                        },
-                        keepSession: false,
-                    });
-
-                    // last version of firmware or custom firmware version was installed
-                    if (
-                        action.payload.firmware === 'valid' ||
-                        (action.payload.firmware === 'outdated' && prevApp === 'firmware-custom')
-                    ) {
-                        api.dispatch(firmwareActions.setStatus('done'));
-                    } else if (['outdated', 'required'].includes(action.payload.firmware)) {
-                        api.dispatch(firmwareActions.setStatus('partially-done'));
-                    }
+                    api.dispatch(firmwareActions.validateFirmwareHash(action.payload));
                 }
                 break;
             case SUITE.APP_CHANGED:

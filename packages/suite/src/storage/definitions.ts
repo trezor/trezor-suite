@@ -123,6 +123,12 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: FormDraft;
     };
+    firmware: {
+        key: 'firmware';
+        value: {
+            firmwareHashInvalid: string[];
+        };
+    };
 }
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;

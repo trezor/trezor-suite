@@ -13,16 +13,18 @@ import FailedBackup from './FailedBackup';
 import MessageSystemBanner from './MessageSystemBanner';
 import SafetyChecksBanner from './SafetyChecks';
 import TranslationMode from './TranslationMode';
+import FirmwareHashMismatch from './FirmwareHashMismatch';
 
 const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
 `;
 
 const Banners = () => {
-    const { transport, device, online } = useSelector(state => ({
+    const { transport, device, online, firmwareHashInvalid } = useSelector(state => ({
         transport: state.suite.transport,
         device: state.suite.device,
         online: state.suite.online,
+        firmwareHashInvalid: state.firmware.firmwareHashInvalid,
     }));
 
     const { banner: messageSystemBanner } = useMessageSystem();
@@ -46,7 +48,10 @@ const Banners = () => {
 
     let banner;
     let priority = 0;
-    if (device?.features?.unfinished_backup) {
+    if (device?.id && firmwareHashInvalid.includes(device.id)) {
+        banner = <FirmwareHashMismatch />;
+        priority = 91;
+    } else if (device?.features?.unfinished_backup) {
         banner = <FailedBackup />;
         priority = 90;
     } else if (device?.features?.needs_backup) {

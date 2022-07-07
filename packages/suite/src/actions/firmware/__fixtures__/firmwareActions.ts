@@ -17,6 +17,10 @@ const bootloaderDeviceNeedsIntermediary = {
         { major_version: 1 },
     ),
 };
+const firmwareUpdateResponsePayload = {
+    hash: 'abc',
+    challenge: 'def',
+};
 
 export const actions = [
     {
@@ -25,6 +29,7 @@ export const actions = [
         mocks: {
             connect: {
                 success: true,
+                payload: firmwareUpdateResponsePayload,
             },
         },
         initialState: {
@@ -36,6 +41,7 @@ export const actions = [
         result: {
             actions: [
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_HASH, payload: firmwareUpdateResponsePayload },
                 // todo: waiting-for-confirmation and installing is not tested
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'wait-for-reboot' },
             ],
@@ -48,6 +54,7 @@ export const actions = [
         mocks: {
             connect: {
                 success: true,
+                payload: firmwareUpdateResponsePayload,
             },
         },
         initialState: {
@@ -59,7 +66,8 @@ export const actions = [
         result: {
             actions: [
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
-                { type: FIRMWARE.SET_INTERMEDIARY_INSTALLED },
+                { type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true },
+                { type: FIRMWARE.SET_HASH, payload: firmwareUpdateResponsePayload },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'unplug' },
             ],
             state: { firmware: { status: 'unplug', error: undefined } },
@@ -71,6 +79,7 @@ export const actions = [
         mocks: {
             connect: {
                 success: true,
+                payload: firmwareUpdateResponsePayload,
             },
         },
         initialState: {
@@ -92,6 +101,7 @@ export const actions = [
         result: {
             actions: [
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_HASH, payload: firmwareUpdateResponsePayload },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'unplug' },
             ],
             state: { firmware: { status: 'unplug', error: undefined } },

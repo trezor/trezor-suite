@@ -17,8 +17,25 @@ const FirmwareStep = () => {
         device: state.suite.device,
     }));
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const { status, error, resetReducer, firmwareUpdate, showFingerprintCheck } = useFirmware();
+    const {
+        status,
+        error,
+        resetReducer,
+        firmwareUpdate,
+        showFingerprintCheck,
+        firmwareHashInvalid,
+    } = useFirmware();
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
+
+    // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
+    if (device?.id && firmwareHashInvalid.includes(device.id)) {
+        return (
+            <OnboardingStepBox
+                image="UNI_ERROR"
+                heading={<Translation id="TR_FIRMWARE_HASH_MISMATCH" />}
+            />
+        );
+    }
 
     if (showFingerprintCheck && device) {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck

@@ -47,7 +47,8 @@ const StyledModal = styled(Modal)`
 `;
 
 export const Firmware = () => {
-    const { resetReducer, status, setStatus, error, firmwareUpdate } = useFirmware();
+    const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
+        useFirmware();
     const { device } = useSelector(state => ({
         device: state.suite.device,
     }));
@@ -81,23 +82,36 @@ export const Firmware = () => {
 
     const getComponent = () => {
         // edge case 1 - error
-        if (error) {
+
+        // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
+        if (device?.id && firmwareHashInvalid.includes(device.id)) {
             return (
                 <OnboardingStepBox
-                    image="FIRMWARE"
-                    heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
-                    description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                    innerActions={
-                        <CloseButton onClick={onClose}>
-                            <Translation id="TR_BACK" />
-                        </CloseButton>
-                    }
+                    image="UNI_ERROR"
+                    heading={<Translation id="TR_FIRMWARE_HASH_MISMATCH" />}
                     nested
                 />
             );
         }
 
         switch (status) {
+            case 'error': {
+                return (
+                    <OnboardingStepBox
+                        image="FIRMWARE"
+                        heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
+                        description={
+                            <Translation id="TOAST_GENERIC_ERROR" values={{ error: error || '' }} />
+                        }
+                        innerActions={
+                            <CloseButton onClick={onClose}>
+                                <Translation id="TR_BACK" />
+                            </CloseButton>
+                        }
+                        nested
+                    />
+                );
+            }
             case 'initial':
             case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
                 return (
@@ -117,6 +131,7 @@ export const Firmware = () => {
             case 'unplug': // only relevant for T1, TT auto restarts itself
             case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
             case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
+            case 'validation':
             case 'done':
                 return (
                     <FirmwareInstallation

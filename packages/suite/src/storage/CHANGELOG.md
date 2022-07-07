@@ -1,6 +1,10 @@
 # Storage changelog
 
-# 28
+## 29
+
+-   added firmware.firmwareHashInvalid
+
+## 28
 
 -   with advent of connect v9, device.state field has changed. migrated all affected data.
 

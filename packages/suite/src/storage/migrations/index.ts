@@ -465,4 +465,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 });
             });
     }
+
+    if (oldVersion < 29) {
+        db.createObjectStore('firmware');
+    }
 };

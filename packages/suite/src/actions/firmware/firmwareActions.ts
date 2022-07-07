@@ -14,6 +14,8 @@ export type FirmwareAction =
           type: typeof FIRMWARE.SET_UPDATE_STATUS;
           payload: ReturnType<GetState>['firmware']['status'];
       }
+    | { type: typeof FIRMWARE.SET_HASH; payload: { hash: string; challenge: string } }
+    | { type: typeof FIRMWARE.SET_HASH_INVALID; payload: string }
     | { type: typeof FIRMWARE.SET_TARGET_RELEASE; payload: AcquiredDevice['firmwareRelease'] }
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
@@ -75,6 +77,7 @@ const firmwareInstall =
         if (fwBinary) {
             console.warn(`Installing custom firmware`);
 
+            // todo: what about firmware hash ?
             analyticsPayload = {};
             updateResponse = await TrezorConnect.firmwareUpdate({
                 keepSession: false,
@@ -139,13 +142,7 @@ const firmwareInstall =
         if (!updateResponse.success) {
             return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
         }
-
-        // handling case described here: https://github.com/trezor/trezor-suite/issues/2650
-        // firmwareMiddleware handles device-connect event but it never happens for model T
-        // with pin_protection set to true. In this case, we show success screen directly.
-        if (prevDevice?.features?.pin_protection && prevDevice?.features?.major_version === 2) {
-            return dispatch(setStatus('done'));
-        }
+        dispatch({ type: FIRMWARE.SET_HASH, payload: updateResponse.payload });
 
         // model 1
         // ask user to unplug device if BL < 1.10.0 (see firmwareMiddleware), BL starting with 1.10.0 will automatically restart itself just like on model T
@@ -159,6 +156,55 @@ const firmwareInstall =
     };
 
 export const firmwareUpdate = () => firmwareInstall();
+
+/**
+ * After installing a new firmware validate its hash (already saved into application state) with the result of
+ * TrezorConnect.getFirmwareHash call
+ */
+export const validateFirmwareHash =
+    (device: Device) => async (dispatch: Dispatch, getState: GetState) => {
+        const { app: prevApp } = getState().router;
+        const { firmwareChallenge, firmwareHash } = getState().firmware;
+
+        dispatch(setStatus('validation'));
+        const fwHash = await TrezorConnect.getFirmwareHash({
+            device: {
+                path: device.path,
+            },
+            challenge: firmwareChallenge,
+        });
+        if (!fwHash.success) {
+            dispatch({
+                type: FIRMWARE.SET_ERROR,
+                payload: 'Unable to validate firmware hash. Please reinstall firmware again',
+            });
+            return;
+        }
+
+        if (fwHash.payload.hash !== firmwareHash) {
+            dispatch({
+                type: FIRMWARE.SET_HASH_INVALID,
+                // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
+                payload: device.id!,
+            });
+            dispatch({ type: FIRMWARE.SET_ERROR, payload: 'Invalid hash' });
+            return;
+        }
+
+        // last version of firmware or custom firmware version was installed
+        if (
+            device.firmware === 'valid' ||
+            (device.firmware === 'outdated' && prevApp === 'firmware-custom')
+        ) {
+            dispatch(setStatus('done'));
+            // at the moment, this should never happen. after firmware hash is validated using TrezorConnect.getFirmwareHash we know
+            // that device has either firmware 1.11.1 or higher or 2.5.1 or higher as this method is not available before that.
+            // and we also know that firmware update to the latest version (after 1.11.1 and 2.5.1) is straightforward without any need
+            // to update incrementally or using intermediary firmware.
+        } else if (['outdated', 'required'].includes(device.firmware!)) {
+            dispatch(setStatus('partially-done'));
+        }
+    };
 
 export const firmwareCustom = (fwBinary: ArrayBuffer) => firmwareInstall(fwBinary);
 
