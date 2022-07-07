@@ -74,3 +74,10 @@ Every method require an [`Object`](https://developer.mozilla.org/en-US/docs/Web/
 -   [TrezorConnect.binanceGetAddress](methods/binanceGetAddress.md)
 -   [TrezorConnect.binanceGetPublicKey](methods/binanceGetPublicKey.md)
 -   [TrezorConnect.binanceSignTransaction](methods/binanceSignTransaction.md)
+
+### Management
+
+> please note that these method are not available from popup mode
+
+-   [TrezorConnect.firmwareUpdate](methods/firmwareUpdate.md)
+-   [TrezorConnect.getFirmwareHash](methods/getFirmwareHash.md)

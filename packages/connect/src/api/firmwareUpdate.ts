@@ -1,11 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/FirmwareUpdate.js
 
-import { getBinary } from './firmware/getBinary';
-import { modifyFirmware } from './firmware/modifyFirmware';
+import randombytes from 'randombytes';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
-import { uploadFirmware } from './management/uploadFirmware';
+import { getBinary, modifyFirmware, uploadFirmware, calculateFirmwareHash } from './firmware';
 import { validateParams } from './common/paramsValidator';
 import { getReleases } from '../data/firmwareInfo';
 import { isStrictFeatures } from '../utils/firmwareUtils';
@@ -113,11 +112,13 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
             );
         }
 
-        return uploadFirmware(
+        await uploadFirmware(
             this.device.getCommands().typedCall.bind(this.device.getCommands()),
             this.postMessage,
             device,
             { payload: binary },
         );
+
+        return calculateFirmwareHash(device.features.major_version, binary, randombytes(32));
     }
 }

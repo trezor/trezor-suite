@@ -61,6 +61,8 @@
             -   [binanceGetAddress](./packages/connect/methods/binanceGetAddress.md)
             -   [binanceGetPublicKey](./packages/connect/methods/binanceGetPublicKey.md)
             -   [binanceSignTransaction](./packages/connect/methods/binanceSignTransaction.md)
+            -   [firmwareUpdate](./packages/connect/methods/firmwareUpdate.md)
+            -   [getFirmwareHash](./packages/connect/methods/getFirmwareHash.md)
     -   [@trezor/suite](./packages/suite/index.md)
         -   [send form](./packages/suite/send.md)
         -   [send form architecture](./packages/suite/send/ARCHITECTURE.md)
