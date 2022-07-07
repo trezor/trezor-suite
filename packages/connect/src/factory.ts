@@ -137,6 +137,8 @@ export const factory = ({
 
         getFeatures: params => call({ ...params, method: 'getFeatures' }),
 
+        getFirmwareHash: params => call({ ...params, method: 'getFirmwareHash' }),
+
         getOwnershipId: params => call({ ...params, method: 'getOwnershipId' }),
 
         getOwnershipProof: params => call({ ...params, method: 'getOwnershipProof' }),

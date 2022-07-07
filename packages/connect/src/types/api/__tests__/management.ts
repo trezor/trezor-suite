@@ -41,13 +41,19 @@ export const management = async (api: TrezorConnect) => {
     const fwBinary = await api.firmwareUpdate({
         binary: new ArrayBuffer(0),
     });
-    if (fwBinary.success) fwBinary.payload.message.toLowerCase();
+    if (fwBinary.success) {
+        fwBinary.payload.challenge.toLowerCase();
+        fwBinary.payload.hash.toLowerCase();
+    }
 
     const fwAuto = await api.firmwareUpdate({
         version: [2, 2, 0],
         btcOnly: false,
     });
-    if (fwAuto.success) fwAuto.payload.message.toLowerCase();
+    if (fwAuto.success) {
+        fwAuto.payload.challenge.toLowerCase();
+        fwAuto.payload.hash.toLowerCase();
+    }
 
     // @ts-expect-error: cannot use both
     api.firmwareUpdate({

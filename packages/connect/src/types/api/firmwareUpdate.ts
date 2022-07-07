@@ -1,4 +1,3 @@
-import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
 
 export interface FirmwareUpdateBinary {
@@ -12,7 +11,14 @@ export interface FirmwareUpdate {
     intermediary?: boolean;
 }
 
-export declare function firmwareUpdate(params: Params<FirmwareUpdate>): Response<PROTO.Success>;
+export interface FirmwareUpdateResponse {
+    hash: string;
+    challenge: string;
+}
+
+export declare function firmwareUpdate(
+    params: Params<FirmwareUpdate>,
+): Response<FirmwareUpdateResponse>;
 export declare function firmwareUpdate(
     params: Params<FirmwareUpdateBinary>,
-): Response<PROTO.Success>;
+): Response<FirmwareUpdateResponse>;
