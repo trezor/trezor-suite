@@ -14,7 +14,7 @@ RUN apt-get update && \
 
 # Docker
 FROM base as docker
-ENV DOCKER_VERSION=20.10.16
+ENV DOCKER_VERSION=20.10.17
 RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz \
     && mv docker-${DOCKER_VERSION}.tgz docker.tgz \
     && tar xzvf docker.tgz \
