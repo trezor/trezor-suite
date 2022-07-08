@@ -1,5 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
+import path from 'path';
 import { isNotUndefined } from '@trezor/utils';
 import { isDev } from '@suite-utils/build';
 import { StrictBrowserWindow } from '../typed-electron';
@@ -92,7 +93,22 @@ export const initModules = async (dependencies: Dependencies) => {
                         type: 'error',
                         message: `${module} error`,
                     });
+                    throw err;
                 }
             }),
-        ).then(results => Object.fromEntries(results.filter(isNotUndefined)));
+        )
+            .then(results => Object.fromEntries(results.filter(isNotUndefined)))
+            .then(
+                ({
+                    'custom-protocols': protocol,
+                    'auto-updater': desktopUpdate,
+                    'user-data': { dir: userDir },
+                    'http-receiver': { url: httpReceiver },
+                }) => ({
+                    protocol,
+                    desktopUpdate,
+                    paths: { userDir, binDir: path.join(global.resourcesPath, 'bin') },
+                    urls: { httpReceiver },
+                }),
+            );
 };

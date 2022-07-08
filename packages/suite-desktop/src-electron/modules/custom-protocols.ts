@@ -57,6 +57,14 @@ const init: Module = ({ mainWindow }) => {
         sendProtocolInfo(url);
     });
 
+    // In consequent loads, custom protocol url should be ignored
+    let firstRun = true;
+    const firstRunOnly = (url: string) => () => {
+        if (!firstRun) return;
+        firstRun = false;
+        return url;
+    };
+
     // App is launched via custom protocol (Linux, Windows)
     if (['win32', 'linux'].includes(process.platform)) {
         const { argv } = process;
@@ -68,7 +76,7 @@ const init: Module = ({ mainWindow }) => {
             );
 
             if (isValidProtocol(argv[1], protocols)) {
-                return () => argv[1];
+                return firstRunOnly(argv[1]);
             }
         }
     }
@@ -76,7 +84,7 @@ const init: Module = ({ mainWindow }) => {
     // App is launched via custom protocol (macOS)
     if (global.customProtocolUrl) {
         if (isValidProtocol(global.customProtocolUrl, protocols)) {
-            return () => global.customProtocolUrl;
+            return firstRunOnly(global.customProtocolUrl);
         }
     }
 };

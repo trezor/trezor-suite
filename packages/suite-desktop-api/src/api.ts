@@ -56,7 +56,8 @@ export interface RendererChannels {
 // Sent by DesktopApi.[method] via ipcRenderer.invoke (./main)
 // Handled by ipcMain.handle (see packages/suite-desktop/src-electron/modules/*)
 export interface InvokeChannels {
-    'handshake/client': (client: HandshakeClient) => InvokeResult<HandshakeElectron>;
+    'handshake/client': () => void;
+    'handshake/load-modules': (payload: HandshakeClient) => InvokeResult<HandshakeElectron>;
     'metadata/read': (options: { file: string }) => InvokeResult<string>;
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
     'server/request-address': (route: string) => string | undefined;
@@ -90,6 +91,7 @@ export interface DesktopApi {
     themeChange: DesktopApiSend<'theme/change'>;
     // Handshake
     handshake: DesktopApiInvoke<'handshake/client'>;
+    loadModules: DesktopApiInvoke<'handshake/load-modules'>;
     // Metadata
     metadataWrite: DesktopApiInvoke<'metadata/write'>;
     metadataRead: DesktopApiInvoke<'metadata/read'>;

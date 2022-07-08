@@ -19,7 +19,7 @@ import { useTor } from '@suite-support/useTor';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from '@suite-support/Router';
-import ThemeProvider from '@suite-support/ThemeProvider';
+import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
 import history from '@suite/support/history';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 
@@ -31,7 +31,7 @@ const Main = () => {
     useTor();
 
     return (
-        <ThemeProvider>
+        <ConnectedThemeProvider>
             <RouterProvider history={history}>
                 <ModalContextProvider>
                     <ErrorBoundary>
@@ -50,7 +50,7 @@ const Main = () => {
                     </ErrorBoundary>
                 </ModalContextProvider>
             </RouterProvider>
-        </ThemeProvider>
+        </ConnectedThemeProvider>
     );
 };
 

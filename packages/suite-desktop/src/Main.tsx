@@ -19,7 +19,10 @@ import { useTor } from '@suite-support/useTor';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from '@suite-support/Router';
-import ThemeProvider from '@suite-support/ThemeProvider';
+import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
+import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
+import { ErrorScreen } from '@suite-support/screens/ErrorScreen';
+import { ModulesLoadingScreen } from './support/screens/ModulesLoadingScreen';
 import history from '@suite/support/history';
 import AppRouter from './support/Router';
 import DesktopUpdater from './support/DesktopUpdater';
@@ -31,7 +34,7 @@ const Main = () => {
     useTor();
 
     return (
-        <ThemeProvider>
+        <ConnectedThemeProvider>
             <RouterProvider history={history}>
                 <ModalContextProvider>
                     <ErrorBoundary>
@@ -52,7 +55,7 @@ const Main = () => {
                     </ErrorBoundary>
                 </ModalContextProvider>
             </RouterProvider>
-        </ThemeProvider>
+        </ConnectedThemeProvider>
     );
 };
 
@@ -61,17 +64,25 @@ export const init = async (root: HTMLElement) => {
         initSentry(SENTRY_CONFIG);
     }
 
-    const handshake = await desktopApi.handshake(null);
+    // render simple loader with theme provider without redux, wait for indexedDB
+    render(<LoadingScreen />, root);
 
-    // TODO what to do when it fails
-    if (!handshake.success) {
-        console.error('Handshake failed', handshake.error);
+    await desktopApi.handshake();
+
+    // render more complex interactive loader with theme provider without redux
+    render(<ModulesLoadingScreen />, root);
+
+    // start loading desktop modules, handle progress in <ModulesLoadingScreen />
+    const loadModules = await desktopApi.loadModules(null);
+    if (!loadModules.success) {
+        // loading failed, render error with theme provider without redux and do not continue
+        render(<ErrorScreen error={loadModules.error} />, root);
         return;
     }
-    console.log('Handshake succeeded', handshake.payload);
 
-    store.dispatch(desktopHandshake(handshake.payload));
+    store.dispatch(desktopHandshake(loadModules.payload));
 
+    // finally render whole app
     render(
         <ReduxProvider store={store}>
             <Main />

@@ -11,8 +11,12 @@ const LoaderWrapper = styled.div`
     flex-direction: column;
 `;
 
-const Loading = () => (
-    <LoaderWrapper data-test="@suite/loading">
+type LoadingProps = {
+    className?: string;
+};
+
+const Loading = ({ className }: LoadingProps) => (
+    <LoaderWrapper data-test="@suite/loading" className={className}>
         <Image width={80} height={80} image="SPINNER" />
     </LoaderWrapper>
 );

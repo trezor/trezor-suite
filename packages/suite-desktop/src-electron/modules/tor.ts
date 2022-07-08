@@ -149,9 +149,14 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
     mainWindow.webContents.send('tor/status', store.getTorSettings().running);
 };
 
-const init: Module = dependencies => () => {
-    // TODO intentionally not awaited to mimic previous behavior, resolve later!
-    load(dependencies);
+const init: Module = dependencies => {
+    let loaded = false;
+    return () => {
+        if (loaded) return;
+        loaded = true;
+        // TODO intentionally not awaited to mimic previous behavior, resolve later!
+        load(dependencies);
+    };
 };
 
 export default init;

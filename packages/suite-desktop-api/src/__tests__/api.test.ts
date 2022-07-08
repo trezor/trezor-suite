@@ -253,5 +253,25 @@ describe('DesktopApi', () => {
             // @ts-expect-error no expected params
             api.installUdevRules(true);
         });
+
+        it('DesktopApi.handshake', async () => {
+            const spy = jest
+                .spyOn(ipcRenderer, 'invoke')
+                .mockImplementation(() => Promise.resolve());
+            await api.handshake();
+            expect(spy).toBeCalledWith('handshake/client');
+        });
+
+        it('DesktopApi.loadModules', async () => {
+            const spy = jest
+                .spyOn(ipcRenderer, 'invoke')
+                .mockImplementation(() => Promise.resolve({ success: true }));
+            const data = await api.loadModules(null);
+            expect(spy).toBeCalledWith('handshake/load-modules', null);
+            expect(data.success).toBe(true);
+
+            // @ts-expect-error param expected
+            api.loadModules();
+        });
     });
 });
