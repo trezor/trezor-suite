@@ -108,14 +108,13 @@ runDocker() {
 }
 
 getLatestFirmware() {
-  TESTS_FIRMWARE=$(node ./packages/integration-tests/get-latest-firmware.js)
+  TESTS_FIRMWARE=${TESTS_FIRMWARE:=$(node ./packages/integration-tests/get-latest-firmware.js)}
 }
-
 
 run() {
 
   echo "Testing env: ${ENVIRONEMT}. Using: ${SCRIPT} ${PATTERN}"
-  echo "  Firmware: ${FIRMWARE}"
+  echo "  Firmware: ${TESTS_FIRMWARE}"
   echo "  Test pattern: $PATTERN"
   echo "  Included methods: ${INCLUDED_METHODS}"
   echo "  Excluded methods: ${EXCLUDED_METHODS}"
@@ -132,4 +131,3 @@ run() {
 }
 
 run
-
