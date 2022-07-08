@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-native/state" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/utils" }
+    ]
+}

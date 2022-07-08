@@ -3,6 +3,7 @@ import { Device, DEVICE, Features } from '@trezor/connect';
 import { SUITE, STORAGE, METADATA } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import type { TrezorDevice, AcquiredDevice, Action, ButtonRequest } from '@suite-types';
+import { AppState } from '@suite-types';
 
 type State = TrezorDevice[];
 const initialState: State = [];
@@ -454,5 +455,7 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
             // no default
         }
     });
+
+export const selectIsPendingTransportEvent = (state: AppState) => state.devices.length < 1;
 
 export default deviceReducer;

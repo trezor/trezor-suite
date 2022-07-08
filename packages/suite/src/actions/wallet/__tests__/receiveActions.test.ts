@@ -8,6 +8,7 @@ import modalReducer from '@suite-reducers/modalReducer';
 import { init } from '@suite-actions/trezorConnectActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import fixtures from '../__fixtures__/receiveActions';
+import { discardMockedConnectInitActions } from '@suite-utils/storage';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -133,8 +134,10 @@ describe('ReceiveActions', () => {
             await store.dispatch(init());
             await store.dispatch(f.action());
 
+            const expectedActions = discardMockedConnectInitActions(store.getActions());
+
             if (f.result && f.result.actions) {
-                expect(store.getActions()).toMatchObject(f.result.actions);
+                expect(expectedActions).toMatchObject(f.result.actions);
             }
         });
     });

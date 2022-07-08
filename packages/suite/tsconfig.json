@@ -15,6 +15,9 @@
         { "path": "../connect" },
         { "path": "../react-utils" },
         { "path": "../suite-analytics" },
+        {
+            "path": "../../suite-common/connect-init"
+        },
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
         { "path": "../suite-storage" },
