@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import openpgp from 'openpgp';
+import { createMessage, readKey, readSignature, verify } from 'openpgp';
 
 import { getSignatureFileURL } from '@suite/services/github';
 
@@ -45,16 +45,16 @@ export const verifySignature = async ({
 
     // Read downloaded file and create message to verify
     const file = await fs.promises.readFile(downloadedFile);
-    const message = await openpgp.createMessage({ binary: file });
+    const message = await createMessage({ binary: file });
 
     // Load pubkey and signature
-    const pubkey = await openpgp.readKey({ armoredKey: signingKey });
-    const signature = await openpgp.readSignature({
+    const pubkey = await readKey({ armoredKey: signingKey });
+    const signature = await readSignature({
         armoredSignature: signatureFile,
     });
 
     // Check file against signature
-    const verified = await openpgp.verify({
+    const verified = await verify({
         message,
         signature,
         verificationKeys: pubkey,
