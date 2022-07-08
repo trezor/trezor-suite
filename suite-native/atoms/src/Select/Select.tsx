@@ -52,7 +52,6 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
                     isVisible={isOpen}
                     onVisibilityChange={setIsOpen}
                     title={selectLabel}
-                    hasBackArrow
                     onBackArrowClick={() => setIsOpen(false)}
                 >
                     {items.map(({ value, label, iconName }, index) => (

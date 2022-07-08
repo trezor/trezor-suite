@@ -1,8 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Modal as RNModal } from 'react-native';
-
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box } from '../Box';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 type ModalProps = {
     children: ReactNode;
@@ -10,18 +8,17 @@ type ModalProps = {
     onClose: () => void;
 };
 
-const modalWithOverlayStyle = prepareNativeStyle(utils => ({
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: utils.transparentize(0.3, utils.colors.black),
-}));
+/**
+ * On Android RNGH does not work by default because modals are not located under React Native Root view in native hierarchy.
+ * To fix that, components need to be wrapped with gestureHandlerRootHOC (it's no-op on iOS and web).
+ * See more details: https://docs.swmansion.com/react-native-gesture-handler/docs/installation/#usage-with-modals-on-android
+ */
+const BottomModalGestureHandler = gestureHandlerRootHOC(({ children }: { children: ReactNode }) => (
+    <>{children}</>
+));
 
-export const BottomModalContainer = ({ children, isVisible, onClose }: ModalProps) => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <RNModal transparent visible={isVisible} onRequestClose={onClose}>
-            <Box style={applyStyle(modalWithOverlayStyle)}>{children}</Box>
-        </RNModal>
-    );
-};
+export const BottomModalContainer = ({ children, isVisible, onClose }: ModalProps) => (
+    <RNModal transparent visible={isVisible} onRequestClose={onClose}>
+        <BottomModalGestureHandler>{children}</BottomModalGestureHandler>
+    </RNModal>
+);

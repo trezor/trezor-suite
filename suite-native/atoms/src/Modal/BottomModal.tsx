@@ -1,6 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated from 'react-native-reanimated';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@trezor/icons';
@@ -8,19 +10,20 @@ import { Icon } from '@trezor/icons';
 import { Box } from '../Box';
 import { Text } from '../Text';
 import { BottomModalContainer } from './BottomModalContainer';
+import { useBottomModalAnimation } from './useBottomModalAnimation';
 
 type BottomModalProps = {
     isVisible: boolean;
     onVisibilityChange: (isVisible: boolean) => void;
     children: ReactNode;
     title: string;
-    hasBackArrow?: boolean;
     onBackArrowClick?: () => void;
 };
 
 type WrapperStyleProps = {
     insetBottom: number;
 };
+
 const modalWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.gray100,
     borderTopLeftRadius: utils.borders.radii.large,
@@ -29,6 +32,7 @@ const modalWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetB
 }));
 
 const CLOSE_BUTTON_SIZE = 40;
+
 const closeButtonStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,
     borderRadius: utils.borders.radii.round,
@@ -46,42 +50,70 @@ const modalHeaderStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.medium,
 }));
 
+const modalWithOverlayStyle = prepareNativeStyle(_ => ({
+    flex: 1,
+    justifyContent: 'flex-end',
+}));
+
 export const BottomModal = ({
     isVisible,
     onVisibilityChange,
     title,
     onBackArrowClick,
     children,
-    hasBackArrow = false,
 }: BottomModalProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
+    const {
+        animatedModalWithOverlayStyle,
+        animatedModalWrapperStyle,
+        closeModalAnimated,
+        resetModalAnimated,
+        panGestureEvent,
+    } = useBottomModalAnimation({ onVisibilityChange, isVisible });
 
-    const handleCloseModal = () => onVisibilityChange(false);
+    useEffect(() => {
+        if (isVisible) {
+            resetModalAnimated();
+        }
+    }, [isVisible, resetModalAnimated]);
+
+    const handleCloseModal = () => {
+        closeModalAnimated();
+    };
 
     return (
         <BottomModalContainer isVisible={isVisible} onClose={handleCloseModal}>
-            <Box
-                style={applyStyle(modalWrapperStyle, {
-                    insetBottom: insets.bottom,
-                })}
+            <Animated.View
+                style={[animatedModalWithOverlayStyle, applyStyle(modalWithOverlayStyle)]}
             >
-                <Box style={applyStyle(modalHeaderStyle)}>
-                    {hasBackArrow && (
-                        <TouchableOpacity onPress={onBackArrowClick}>
-                            <Icon name="chevronLeft" />
-                        </TouchableOpacity>
-                    )}
-                    <Text variant="titleSmall">{title}</Text>
-                    <TouchableOpacity
-                        onPress={handleCloseModal}
-                        style={applyStyle(closeButtonStyle)}
+                <PanGestureHandler onGestureEvent={panGestureEvent}>
+                    <Animated.View
+                        style={[
+                            animatedModalWrapperStyle,
+                            applyStyle(modalWrapperStyle, {
+                                insetBottom: insets.bottom,
+                            }),
+                        ]}
                     >
-                        <Icon name="close" />
-                    </TouchableOpacity>
-                </Box>
-                <Box paddingHorizontal="medium">{children}</Box>
-            </Box>
+                        <Box style={applyStyle(modalHeaderStyle)}>
+                            {onBackArrowClick && (
+                                <TouchableOpacity onPress={onBackArrowClick}>
+                                    <Icon name="chevronLeft" />
+                                </TouchableOpacity>
+                            )}
+                            <Text variant="titleSmall">{title}</Text>
+                            <TouchableOpacity
+                                onPress={handleCloseModal}
+                                style={applyStyle(closeButtonStyle)}
+                            >
+                                <Icon name="close" />
+                            </TouchableOpacity>
+                        </Box>
+                        <Box paddingHorizontal="medium">{children}</Box>
+                    </Animated.View>
+                </PanGestureHandler>
+            </Animated.View>
         </BottomModalContainer>
     );
 };
