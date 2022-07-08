@@ -10,6 +10,7 @@ on:
       - "packages/transport"
       - "packages/utxo-lib"
       - "packages/utils"
+      - "docker"
 
 jobs:
   # todo: meaning of 'build' job is questionable. only 'web' tests use part of this jobs output

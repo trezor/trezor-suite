@@ -14,14 +14,20 @@ const getLatestFirmware = () =>
         controller.on('error', error => {
             reject(error);
         });
-        controller.on('firmwares', ({ T1, TT }) => {
+        controller.on('firmwares', res => {
+            if (!res['1'] || !res['2'] || !res.R) {
+                return reject(new Error('unexpected response in firmwares event'));
+            }
             let firmware;
             if (!firmwareArg || firmwareArg === '2-latest') {
-                [firmware] = TT.filter(fw => !fw.includes('-'));
+                [firmware] = res['2'].filter(fw => !fw.includes('-'));
             } else if (firmwareArg === '1-latest') {
-                [firmware] = T1.filter(fw => !fw.includes('-'));
+                [firmware] = res['1'].filter(fw => !fw.includes('-'));
+                // todo: 3-latest? r-latest? we will see
             } else {
-                firmware = T1.find(fw => fw === firmwareArg) || TT.find(fw => fw === firmwareArg);
+                firmware =
+                    res['1'].find(fw => fw === firmwareArg) ||
+                    res['2'].find(fw => fw === firmwareArg);
             }
 
             if (!firmware) {
@@ -33,23 +39,19 @@ const getLatestFirmware = () =>
         controller.connect().catch(reject);
     });
 
-const success = fw => {
-    if (!fw) {
-        throw new Error('Latest FW version not found');
-    }
-
+const writeOut = fw => {
     process.stdout.write(fw);
     process.exit();
 };
 
 const load = () => {
     if (tries > 60) {
-        throw new Error('trezor-user-env not found');
+        return getLatestFirmware().then(writeOut).catch(writeOut);
     }
     tries++;
     setTimeout(
         () => {
-            getLatestFirmware().then(success).catch(load);
+            getLatestFirmware().then(writeOut).catch(load);
         },
         tries > 1 ? 1000 : 0,
     );
