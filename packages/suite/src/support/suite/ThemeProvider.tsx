@@ -1,10 +1,16 @@
 import React from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
-import { useThemeContext } from '@suite-hooks';
+import { getThemeColors } from '@suite-utils/theme';
+import { getOsTheme } from '@suite-utils/env';
 import GlobalStyle from './styles/GlobalStyle';
 
-const ThemeProvider: React.FC = ({ children }) => {
-    const theme = useThemeContext();
+type ThemeProviderProps = {
+    children: React.ReactNode;
+    themeVariant?: 'light' | 'dark';
+};
+
+export const ThemeProvider = ({ children, themeVariant }: ThemeProviderProps) => {
+    const theme = getThemeColors({ variant: themeVariant ?? getOsTheme() });
     return (
         <SCThemeProvider theme={theme}>
             <GlobalStyle theme={theme} />
@@ -12,5 +18,3 @@ const ThemeProvider: React.FC = ({ children }) => {
         </SCThemeProvider>
     );
 };
-
-export default ThemeProvider;

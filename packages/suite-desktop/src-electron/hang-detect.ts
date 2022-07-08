@@ -1,22 +1,10 @@
 import { BrowserWindow, dialog } from 'electron';
 import { ipcMain } from './typed-electron';
 import { APP_SRC } from './libs/constants';
-import type { InvokeResult, HandshakeClient, HandshakeElectron } from '@trezor/suite-desktop-api';
 
 const HANG_WAIT = 30000;
 
-type HangResult =
-    | {
-          result: 'success';
-          payload: HandshakeClient;
-          handshake: (payload: InvokeResult<HandshakeElectron>) => void;
-      }
-    | {
-          result: 'quit';
-      }
-    | {
-          result: 'reload';
-      };
+type HandshakeResult = 'success' | 'quit' | 'reload';
 
 const showDialog = async (mainWindow: BrowserWindow) => {
     const resp = await dialog.showMessageBox(mainWindow, {
@@ -27,26 +15,28 @@ const showDialog = async (mainWindow: BrowserWindow) => {
     return (['wait', 'quit', 'reload'] as const)[resp.response];
 };
 
-export const hangDetect = (mainWindow: BrowserWindow): Promise<HangResult> => {
+export const hangDetect = (mainWindow: BrowserWindow): Promise<HandshakeResult> => {
     const { logger } = global;
     let timeout: ReturnType<typeof setTimeout>;
 
     return new Promise(resolve => {
         const timeoutCallback = async () => {
+            // TODO: what happen if handshake will be fired up after timeout?
             const result = await showDialog(mainWindow);
             if (result === 'wait') {
                 logger.info('hang-detect', 'Delaying check');
                 timeout = setTimeout(timeoutCallback, HANG_WAIT);
             } else {
-                resolve({ result });
+                resolve(result);
             }
         };
         timeout = setTimeout(timeoutCallback, HANG_WAIT);
-        ipcMain.handleOnce('handshake/client', (_, payload) => {
+        ipcMain.handleOnce('handshake/client', () => {
             clearTimeout(timeout);
-            return new Promise(handshake => {
-                resolve({ result: 'success', payload, handshake });
-            });
+            // always resolve repeated handshakes from renderer (e.g. Ctrl+R)
+            ipcMain.handle('handshake/client', () => Promise.resolve());
+            resolve('success');
+            return Promise.resolve();
         });
         logger.debug('init', `Load URL (${APP_SRC})`);
         mainWindow.loadURL(APP_SRC);

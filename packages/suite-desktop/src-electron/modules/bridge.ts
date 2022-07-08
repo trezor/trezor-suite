@@ -32,9 +32,14 @@ const load = async () => {
     }
 };
 
-const init: Module = () => () => {
-    // TODO intentionally not awaited to mimic previous behavior, resolve later!
-    load();
+const init: Module = () => {
+    let loaded = false;
+    return () => {
+        if (loaded) return;
+        loaded = true;
+        // TODO intentionally not awaited to mimic previous behavior, resolve later!
+        load();
+    };
 };
 
 export default init;

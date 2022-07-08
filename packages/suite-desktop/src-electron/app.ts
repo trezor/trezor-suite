@@ -16,6 +16,7 @@ import { initModules } from './modules';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { createLogger } from './logger';
+import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
 // @ts-ignore using internal electron API to set suite version in dev mode correctly
 if (isDev) app.setVersion(process.env.VERSION);
@@ -154,48 +155,40 @@ const init = async () => {
         interceptor,
     });
 
-    const response = await hangDetect(mainWindow);
+    // create handler for handshake/load-modules
+    const loadModulesResponse = (clientData: HandshakeClient) =>
+        loadModules(clientData)
+            .then(payload => ({
+                success: true as const,
+                payload,
+            }))
+            .catch(err => ({
+                success: false as const,
+                error: err.message,
+            }));
 
-    if (response.result === 'quit') {
+    // repeated during app lifecycle (e.g. Ctrl+R)
+    ipcMain.handle('handshake/load-modules', (_, payload) => loadModulesResponse(payload));
+
+    // load and wait for handshake message from renderer
+    const handshake = await hangDetect(mainWindow);
+
+    // handle hangDetect errors
+    if (handshake === 'quit') {
         logger.info('hang-detect', 'Quitting app');
         app.quit();
 
         return;
     }
 
-    if (response.result === 'reload') {
+    if (handshake === 'reload') {
         logger.info('hang-detect', 'Deleting cache');
         await clearAppCache().catch(err =>
             logger.error('hang-detect', `Couldn't clear cache: ${err.message}`),
         );
         app.relaunch();
         app.quit();
-
-        return;
     }
-
-    // TODO: gather all system info (see "init" fn)
-    // TODO: startup app process (tor, bridge etc, see "init" fn)
-
-    // Modules
-    const {
-        'custom-protocols': protocol,
-        'auto-updater': { allowPrerelease, firstRun },
-        'user-data': { dir: userDir },
-        'http-receiver': { url: httpReceiver },
-    } = await loadModules(response.payload);
-
-    const binDir = path.join(global.resourcesPath, 'bin');
-
-    response.handshake({
-        success: true,
-        payload: {
-            protocol,
-            desktopUpdate: { allowPrerelease, firstRun },
-            paths: { userDir, binDir },
-            urls: { httpReceiver },
-        },
-    });
 };
 
 init();
