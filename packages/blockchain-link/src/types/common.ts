@@ -9,6 +9,7 @@ export interface BlockchainSettings {
     name: string;
     worker: string | (() => any);
     server: string[];
+    fallbackServers?: string[];
     proxy?: string | SocksProxyAgentOptions;
     debug?: boolean;
     timeout?: number;

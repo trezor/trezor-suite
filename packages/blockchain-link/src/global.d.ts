@@ -11,3 +11,7 @@ declare module 'tiny-worker' {
     }
     export = Worker;
 }
+
+declare module 'golomb';
+
+declare module 'n64';
