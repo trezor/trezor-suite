@@ -51,3 +51,35 @@ jobs:
         run: |
           bundle install
           bundle exec fastlane android develop
+
+  ios_develop:
+    defaults:
+      run:
+        working-directory: suite-native/app
+    runs-on: macos-latest
+    environment: develop
+    timeout-minutes: 45
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup react-native kernel and increase watchers
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Install dependecies
+        run: yarn install
+      - name: Ruby Setup for Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7"
+          bundler-cache: true
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Fastlane build and deploy
+        env:
+          APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          APPSTORE_KEY_ISSUER_ID: ${{ secrets.APPSTORE_KEY_ISSUER_ID }}
+          APPSTORE_KEY_FILE_CONTENT: ${{ secrets.APPSTORE_KEY_FILE_CONTENT }}
+        # builds and publishes the app
+        run: |
+          bundle install
+          bundle exec fastlane ios develop
