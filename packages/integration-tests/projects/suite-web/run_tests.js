@@ -151,6 +151,11 @@ const runTests = async () => {
                     configFile: false,
                 });
 
+                // test failed to run. this is some kind of setup problem
+                if (runResult.status === 'failed') {
+                    throw new Error(runResult.message);
+                }
+
                 const { totalFailed, totalPending, totalDuration } = runResult;
 
                 const { tests } = runResult.runs[0];
