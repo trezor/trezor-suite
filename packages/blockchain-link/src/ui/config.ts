@@ -1,5 +1,36 @@
 export default [
     {
+        selected: true,
+        blockchain: {
+            name: 'WabiSabi',
+            worker: 'js/wabisabi-worker.js',
+            server: ['wss://s1.ripple.com'],
+            debug: true,
+        },
+        data: {
+            address: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj', // address with 1 in 1 out tx
+            // address: 'rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy', // some exchange
+            // address: 'rsG1sNifXJxGS2nDQ9zHyoe1S5APrtwpjV', // another exchange
+            accountInfoOptions: {
+                pageSize: 1,
+                marker: {
+                    ledger: 0,
+                    seq: 0,
+                },
+                // from: 0,
+                // to: 0,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '94E7CDAA9764D6CE8BA76220DE026FD1DD106B18020847A732829517369DD6B3',
+            tx: '304402202f0046af4147a8646a1c06ef63789698756cffb5e2e380cd2740688b71bd15a302201797d6b55175b6b326257737f331f701f1c9d8271fcc990644ef12d1bf3bdf80',
+            // subscribe: 'rJb5KsHsDHF1YS5B5DU6QCkH5NsPaKQTcy,rsG1sNifXJxGS2nDQ9zHyoe1S5APrtwpjV'
+            // subscribe: 'rMBzp8CgpE441cp5PVyA9rpVV7oT8hP3ys', // some echange (tx offers)
+            subscribe: 'rPVMhWBsfF9iMXYj3aAzJVkPDTFNSyWdKy', // bittrex (payments)
+        },
+    },
+    {
         blockchain: {
             name: 'Ripple',
             worker: 'js/ripple-worker.js',
@@ -195,7 +226,7 @@ export default [
             subscribe: '1G47mSr3oANXMafVrR8UC4pzV7FEAzo3r9', // Poloniex: https://www.walletexplorer.com/wallet/Poloniex.com
             // subscribe: '0x2a0c0dbecc7e4d658f48e01e3fa353f44050c208', // Poloniex: https://www.walletexplorer.com/wallet/Poloniex.com
         },
-        selected: true,
+        // selected: true,
     },
     {
         blockchain: {

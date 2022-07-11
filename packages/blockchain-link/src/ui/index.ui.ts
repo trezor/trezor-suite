@@ -1,6 +1,7 @@
 import BlockbookWorker from '../workers/blockbook/index';
 import RippleWorker from '../workers/ripple/index';
 import BlockfrostWorker from '../workers/blockfrost/index';
+import WabiSabiWorker from '../workers/wabisabi/index';
 import CONFIG from './config';
 import BlockchainLink from '../index';
 import { getInputValue, fillValues, onClear } from './utils';
@@ -28,7 +29,29 @@ const handleClick = (event: MouseEvent) => {
             break;
 
         case 'get-info':
-            blockchain.getInfo().then(onResponse).catch(onError);
+            // blockchain.getInfo().then(onResponse).catch(onError);
+            blockchain
+                .analyzeBlockFilters({
+                    filters: [
+                        {
+                            blockHeight: 102,
+                            blockHash:
+                                '7786fcdf7d1fce61fcee4ab5a45efe0a001a080b26dbc9aaf4441d0d29acd3ed',
+                            filter: '01699290',
+                            prevHash:
+                                '6e9fdf3751990cddd67ebbc4146d5577ba3fa919b9bd33109cf324e1e30e3b99',
+                            blockTime: 1656515383,
+                        },
+                    ],
+                    descriptor: 'a',
+                    addresses: [
+                        'bcrt1pswrqtykue8r89t9u4rprjs0gt4qzkdfuursfnvqaa3f2yql07zmq2fdmpx',
+                        'bcrt1q7gefpk0ehc738gc4kmltu20uq7rdxnyk7aupqg',
+                        'n2uwaLQYxRRutG7LQvsATxAb5Ze4GeVfXC',
+                    ],
+                })
+                .then(onResponse)
+                .catch(onError);
             break;
 
         case 'get-account-info': {
@@ -339,6 +362,10 @@ CONFIG.forEach(i => {
 
     if (i.blockchain.worker.includes('blockfrost')) {
         worker = BlockfrostWorker;
+    }
+
+    if (i.blockchain.worker.includes('wabisabi')) {
+        worker = WabiSabiWorker;
     }
 
     const b = new BlockchainLink({
