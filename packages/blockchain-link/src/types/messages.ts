@@ -1,5 +1,10 @@
 import * as MESSAGES from '../constants/messages';
-import type { SubscriptionAccountInfo, BlockchainSettings, ChannelMessage } from './common';
+import type {
+    SubscriptionAccountInfo,
+    BlockchainSettings,
+    BlockFilter,
+    ChannelMessage,
+} from './common';
 import type {
     AccountBalanceHistoryParams,
     GetCurrentFiatRatesParams,
@@ -25,6 +30,23 @@ export interface GetInfo {
 export interface GetBlockHash {
     type: typeof MESSAGES.GET_BLOCK_HASH;
     payload: number;
+}
+
+export interface GetBlockFilters {
+    type: typeof MESSAGES.GET_BLOCK_FILTERS;
+    payload: {
+        knownBlockHash: string;
+        count: number;
+    };
+}
+
+export interface AnalyzeBlockFilters {
+    type: typeof MESSAGES.ANALYZE_BLOCK_FILTERS;
+    payload: {
+        filters: BlockFilter[];
+        descriptor: string;
+        addresses?: string[];
+    };
 }
 
 export interface GetAccountInfo {
@@ -118,6 +140,8 @@ export type Message =
     | ChannelMessage<Disconnect>
     | ChannelMessage<GetInfo>
     | ChannelMessage<GetBlockHash>
+    | ChannelMessage<GetBlockFilters>
+    | ChannelMessage<AnalyzeBlockFilters>
     | ChannelMessage<GetAccountInfo>
     | ChannelMessage<GetAccountUtxo>
     | ChannelMessage<GetTransaction>

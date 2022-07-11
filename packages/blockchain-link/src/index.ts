@@ -126,6 +126,26 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Get array of block fiters of given count. */
+    getBlockFilters(
+        payload: MessageTypes.GetBlockFilters['payload'],
+    ): Promise<ResponseTypes.GetBlockFilters['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.GET_BLOCK_FILTERS,
+            payload,
+        });
+    }
+
+    /** Get array of blocks. */
+    analyzeBlockFilters(
+        payload: MessageTypes.AnalyzeBlockFilters['payload'],
+    ): Promise<ResponseTypes.AnalyzeBlockFilters['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.ANALYZE_BLOCK_FILTERS,
+            payload,
+        });
+    }
+
     /** Get info about an account, eg. derived addresses, balance, transaction history etc. */
     getAccountInfo(
         payload: MessageTypes.GetAccountInfo['payload'],

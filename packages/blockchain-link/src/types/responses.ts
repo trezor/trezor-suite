@@ -8,6 +8,7 @@ import type {
     Transaction,
     TypedRawTransaction,
     AccountBalanceHistory,
+    BlockFilter,
     ChannelMessage,
 } from './common';
 
@@ -34,6 +35,16 @@ export interface GetInfo {
 export interface GetBlockHash {
     type: typeof RESPONSES.GET_BLOCK_HASH;
     payload: string;
+}
+
+export interface GetBlockFilters {
+    type: typeof RESPONSES.GET_BLOCK_FLITERS;
+    payload: BlockFilter[];
+}
+
+export interface AnalyzeBlockFilters {
+    type: typeof RESPONSES.ANALYZE_BLOCK_FLITERS;
+    payload: BlockFilter[];
 }
 
 export interface GetAccountInfo {
@@ -148,6 +159,8 @@ export type Response =
     | ChannelMessage<Connect>
     | ChannelMessage<GetInfo>
     | ChannelMessage<GetBlockHash>
+    | ChannelMessage<GetBlockFilters>
+    | ChannelMessage<AnalyzeBlockFilters>
     | ChannelMessage<GetAccountInfo>
     | ChannelMessage<GetAccountUtxo>
     | ChannelMessage<GetTransaction>

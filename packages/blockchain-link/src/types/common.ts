@@ -206,4 +206,12 @@ export interface SubscriptionAccountInfo {
     addresses?: AccountAddresses; // bitcoin addresses
 }
 
+export interface BlockFilter {
+    blockHeight: number;
+    blockHash: string;
+    filter: string;
+    prevHash: string;
+    blockTime: number;
+}
+
 export type ChannelMessage<T> = T & { id: number };
