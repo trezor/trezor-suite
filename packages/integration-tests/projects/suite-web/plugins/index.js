@@ -182,10 +182,9 @@ module.exports = on => {
         startEmu: async arg => {
             const params = {
                 type: 'emulator-start',
-                version: process.env.FIRMWARE || firmwares.TT[1],
+                version: process.env.FIRMWARE || '2-latest',
                 ...arg,
             };
-            console.log('starting fw version: ', params.version);
             await controller.send(params);
             return params;
         },
