@@ -1,8 +1,9 @@
-import { NavigationContainer } from '@react-navigation/native';
 import React, { useCallback, useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
+
+import { NavigationContainer } from '@react-navigation/native';
 
 import { store } from '@suite-native/state';
 import TrezorConnect from '@trezor/connect';
@@ -26,9 +27,11 @@ export const App = () => {
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
         })
             .then(accountInfo => {
+                // eslint-disable-next-line no-console
                 console.log('Account info result: ', JSON.stringify(accountInfo, null, 2));
             })
             .catch(error => {
+                // eslint-disable-next-line no-console
                 console.log('getAccountInfo failed: ', JSON.stringify(error));
             });
     }, []);
@@ -36,10 +39,12 @@ export const App = () => {
     useEffect(() => {
         TrezorConnect.init(connectOptions)
             .then(initResult => {
+                // eslint-disable-next-line no-console
                 console.log('Init result: ', initResult);
                 getAccountInfo();
             })
             .catch(error => {
+                // eslint-disable-next-line no-console
                 console.log('Init failed', JSON.stringify(error.code));
             });
     }, [getAccountInfo]);

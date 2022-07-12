@@ -11,6 +11,7 @@ import {
 import { useCallback, useEffect } from 'react';
 import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { Dimensions } from 'react-native';
+
 import { useNativeStyles } from '@trezor/styles';
 
 type GestureHandlerContext = {

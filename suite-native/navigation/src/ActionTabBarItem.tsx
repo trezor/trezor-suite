@@ -18,10 +18,7 @@ export const ActionTabItem = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity
-            style={applyStyle(actionTabItemStyle)}
-            onPress={() => console.log('Show actions')}
-        >
+        <TouchableOpacity style={applyStyle(actionTabItemStyle)} onPress={() => {}}>
             <Icon name="actionHorizontal" color="white" />
         </TouchableOpacity>
     );

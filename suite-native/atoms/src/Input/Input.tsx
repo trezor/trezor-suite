@@ -1,6 +1,5 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { TextInput, Pressable } from 'react-native';
-import { D } from '@mobily/ts-belt';
 import Animated, {
     Easing,
     interpolate,
@@ -8,6 +7,8 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
+
+import { D } from '@mobily/ts-belt';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeSpacings } from '@trezor/theme';

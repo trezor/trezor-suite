@@ -12,14 +12,18 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@react-navigation/core": "^6.2.1",
         "@react-navigation/native": "^6.0.10",
-        "@react-navigation/stack": "^6.2.1",
-        "@suite-native/navigation": "*",
+        "@react-navigation/stack": "^6.2.2",
+        "@reduxjs/toolkit": "^1.8.3",
         "@suite-native/atoms": "*",
+        "@suite-native/navigation": "*",
         "@suite-native/state": "*",
         "@trezor/styles": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2",
-        "react-redux": "^8.0.2"
+        "react-redux": "^8.0.2",
+        "@trezor/theme": "*",
+        "@trezor/icons": "*"
     }
 }

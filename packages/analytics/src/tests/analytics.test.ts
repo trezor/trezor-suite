@@ -65,8 +65,8 @@ describe('analytics', () => {
             sessionId,
             commitId,
             callbacks: {
-                onDisable: () => console.warn('disabled'),
-                onEnable: () => console.warn('enabled'),
+                onDisable: () => console.log('disabled'),
+                onEnable: () => console.log('enabled'),
             },
         });
 
@@ -74,11 +74,11 @@ describe('analytics', () => {
 
         analytics.enable();
         expect(analytics.isEnabled()).toBeTruthy();
-        expect(console.warn).toHaveBeenLastCalledWith('enabled');
+        expect(console.log).toHaveBeenLastCalledWith('enabled');
 
         analytics.disable();
         expect(analytics.isEnabled()).toBeFalsy();
-        expect(console.warn).toHaveBeenLastCalledWith('disabled');
+        expect(console.log).toHaveBeenLastCalledWith('disabled');
     });
 
     fixtures.forEach(f => {

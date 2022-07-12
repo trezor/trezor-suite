@@ -1,6 +1,7 @@
-import { D, pipe } from '@mobily/ts-belt';
 import React from 'react';
 import { View, ViewProps, ViewStyle } from 'react-native';
+
+import { D, pipe } from '@mobily/ts-belt';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Spacing } from '@trezor/theme';

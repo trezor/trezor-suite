@@ -1,5 +1,6 @@
 import { assignStyle } from 'css-in-js-utils';
 import { A, G, D } from '@mobily/ts-belt';
+
 import { StyleObject } from '../types';
 import { breakpointMediaQueries, breakpoints } from '../breakpoints';
 

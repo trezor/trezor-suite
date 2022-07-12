@@ -13,12 +13,14 @@
     },
     "dependencies": {
         "@react-navigation/native": "^6.0.10",
-        "@react-navigation/stack": "^6.2.1",
+        "@react-navigation/stack": "^6.2.2",
         "@suite-native/navigation": "*",
         "@suite-native/atoms": "*",
         "@trezor/styles": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2",
-        "react-redux": "^8.0.2"
+        "react-redux": "^8.0.2",
+        "@trezor/theme": "*",
+        "@trezor/icons": "*"
     }
 }

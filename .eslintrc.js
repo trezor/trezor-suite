@@ -36,15 +36,6 @@ module.exports = {
         'packages/suite-data/files/*',
         'packages/transport/scripts/protobuf-patches/*',
     ],
-    overrides: [
-        {
-            files: ['**/*.js'],
-            rules: {
-                // JS files are usually configs or scripts where require is OK
-                '@typescript-eslint/no-var-requires': 'off',
-            },
-        },
-    ],
     rules: {
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
@@ -69,17 +60,26 @@ module.exports = {
         'import/order': [
             1,
             {
-                groups: ['external', 'internal'],
+                groups: [['builtin', 'external'], 'internal', ['sibling', 'parent']],
                 pathGroups: [
                     { pattern: '@trezor/**', group: 'internal' }, // Translates to /packages/** */
                     { pattern: '@suite-native/**', group: 'internal' },
+                    { pattern: 'react*', group: 'external', position: 'before' },
                 ],
-                pathGroupsExcludedImportTypes: ['internal'],
+                pathGroupsExcludedImportTypes: ['internal', 'react'],
                 'newlines-between': 'always',
+            },
+        ],
+        'import/no-extraneous-dependencies': [
+            'error',
+            {
+                // add scripts/ folder
+                devDependencies: ['**/*.test.{tsx,ts,js}'],
             },
         ],
         // Does not work with TypeScript export type.
         'import/prefer-default-export': 'off',
+        'no-nested-ternary': 'error',
         // Does not work with Babel react-native to react-native-web
         'import/no-unresolved': 'off',
         'import/extensions': [
@@ -93,7 +93,6 @@ module.exports = {
                 },
             },
         ],
-        'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'error',
         'import/no-anonymous-default-export': [
             'error',
@@ -119,7 +118,6 @@ module.exports = {
         'consistent-return': 'off',
         'no-console': ['error', { allow: ['warn', 'error'] }],
         // TSC checks it.
-        '@typescript-eslint/no-unused-vars': 'off',
         'no-undef': 'off',
         'react/jsx-no-undef': 'off',
         // React Hooks.
@@ -151,5 +149,87 @@ module.exports = {
         'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': ['error'],
         'require-await': ['error'],
+
+        // Node.js
+        // These rules are specific to JavaScript running on Node.js.
+        'handle-callback-err': 'error', // enforces error handling in callbacks (off by default) (on by default in the node environment)
+        'no-mixed-requires': 'error', // disallow mixing regular variable and require declarations (off by default) (on by default in the node environment)
+        'no-new-require': 'error', // disallow use of new operator with the require function (off by default) (on by default in the node environment)
+        'no-path-concat': 'error', // disallow string concatenation with __dirname and __filename (off by default) (on by default in the node environment)
+        'no-process-exit': 'off', // disallow process.exit() (on by default in the node environment)
+        'no-restricted-modules': 'error', // restrict usage of specified node modules (off by default)
+        'no-sync': 'off', // disallow use of synchronous methods (off by default)
+        'eol-last': 'error',
+        'import/no-default-export': 'error',
+
+        // Variables
+        // These rules have to do with variable declarations.
+        'no-catch-shadow': 'warn', // disallow the catch clause parameter name being the same as a variable in the outer scope (off by default in the node environment)
+        'no-label-var': 'error', // disallow labels that share a name with a variable
+        // '@typescript-eslint/no-shadow': ['error'], // disallow declaration of variables already declared in the outer scope
+        // 'no-shadow-restricted-names': 'error', // disallow shadowing of names such as arguments
+        'no-undefined': 'off', // disallow use of undefined variable (off by default)
+        'no-undef-init': 'error', // disallow use of undefined when initializing variables
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': [
+            'error',
+            { vars: 'all', args: 'none', ignoreRestSiblings: true, varsIgnorePattern: '^_' },
+        ],
     },
+    overrides: [
+        {
+            files: ['**/*.js'],
+            rules: {
+                // JS files are usually configs or scripts where require is OK
+                '@typescript-eslint/no-var-requires': 'off',
+                'import/no-unresolved': 'error',
+                'no-console': 'off',
+            },
+        },
+        {
+            // we are using explicit blacklist because this will enforce new rules in newly created packages
+            files: [
+                'packages/analytics/**/*',
+                'packages/blockchain-link/**/*',
+                'packages/components/**/*',
+                'packages/connect/**/*',
+                'packages/connect-common/**/*',
+                'packages/connect-explorer/**/*',
+                'packages/connect-web/**/*',
+                'packages/connect-popup/**/*',
+                'packages/connect-iframe/**/*',
+                'packages/connect-examples/**/*',
+                'packages/connect-plugin-ethereum/**/*',
+                'packages/connect-plugin-stellar/**/*',
+                'packages/integration-tests/**/*',
+                'packages/news-api/**/*',
+                'packages/request-manager/**/*',
+                'packages/rollout/**/*',
+                'packages/suite/**/*',
+                'packages/suite-build/**/*',
+                'packages/suite-data/**/*',
+                'packages/suite-desktop/**/*',
+                'packages/suite-desktop-api/**/*',
+                'packages/suite-storage/**/*',
+                'packages/suite-web-landing/**/*',
+                'packages/suite-web/**/*',
+                'packages/transport/**/*',
+                'packages/utxo-lib/**/*',
+                'ci/scripts/**/*',
+                'docs/**/*',
+            ],
+            rules: {
+                '@typescript-eslint/no-shadow': 'off',
+                'import/no-default-export': 'off',
+                'import/order': 'off',
+                'import/no-unresolved': 'off',
+                'import/no-extraneous-dependencies': 'off',
+                '@typescript-eslint/no-unused-vars': 'off',
+                'no-undef': 'off',
+                'no-console': 'off',
+                'react/jsx-no-undef': 'off',
+                'no-catch-shadow': 'off',
+            },
+        },
+    ],
 };

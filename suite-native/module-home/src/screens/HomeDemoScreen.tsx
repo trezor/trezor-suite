@@ -90,19 +90,10 @@ export const HomeDemoScreen = ({
                             size="small"
                             colorScheme="gray"
                             iconName="check"
-                            onPress={() => console.log('press icon button')}
+                            onPress={() => {}}
                         />
-                        <IconButton
-                            iconName="check"
-                            isRounded
-                            onPress={() => console.log('press icon button')}
-                        />
-                        <IconButton
-                            size="large"
-                            iconName="check"
-                            isRounded
-                            onPress={() => console.log('press icon button')}
-                        />
+                        <IconButton iconName="check" isRounded onPress={() => {}} />
+                        <IconButton size="large" iconName="check" isRounded onPress={() => {}} />
                     </Box>
                     <Box marginTop="medium">
                         <Select
@@ -251,7 +242,7 @@ export const HomeDemoScreen = ({
                     <NumPadButton
                         value={5}
                         onPress={value =>
-                            console.log('Press num pad button. No implementation yet.', value)
+                            console.warn('Press num pad button. No implementation yet.', value)
                         }
                     />
                     <Box marginVertical="medium">

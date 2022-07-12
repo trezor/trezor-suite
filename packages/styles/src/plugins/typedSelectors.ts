@@ -1,4 +1,5 @@
 import { G, D } from '@mobily/ts-belt';
+
 import { StyleObject } from '../types';
 
 // NOTE: Mutations for maximum performance. Yuck.

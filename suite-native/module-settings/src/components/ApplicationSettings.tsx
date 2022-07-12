@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useNavigation } from '@react-navigation/core';
 
 import { SettingsSection } from './SettingsSection';

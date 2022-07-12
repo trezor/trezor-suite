@@ -1,6 +1,5 @@
 /* eslint-disable require-await */
 const nodejs = require('node-libs-browser');
-
 const path = require('path');
 
 module.exports = {

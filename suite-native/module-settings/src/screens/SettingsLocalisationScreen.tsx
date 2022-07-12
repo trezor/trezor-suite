@@ -15,18 +15,8 @@ export const SettingsLocalisationScreen = () => {
     return (
         <Screen header={<ScreenHeader title="Localisation" />}>
             <VStack style={applyStyle(screenStyle)} spacing={12}>
-                <Select
-                    items={[]}
-                    selectLabel="Language"
-                    value={null}
-                    onSelectItem={() => console.log('select')}
-                />
-                <Select
-                    items={[]}
-                    selectLabel="Currency"
-                    value={null}
-                    onSelectItem={() => console.log('select')}
-                />
+                <Select items={[]} selectLabel="Language" value={null} onSelectItem={() => {}} />
+                <Select items={[]} selectLabel="Currency" value={null} onSelectItem={() => {}} />
                 <Divider />
                 <ColorSchemePicker />
             </VStack>

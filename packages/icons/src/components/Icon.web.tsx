@@ -1,6 +1,8 @@
 import React from 'react';
-import { IconName } from '../icons';
+
 import { Color } from '@trezor/theme';
+
+import { IconName } from '../icons';
 
 type IconProps = {
     name: IconName;
