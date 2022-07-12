@@ -21,10 +21,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
+
       - name: Setup react-native kernel and increase watchers
         run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
       - name: Decode files
@@ -34,8 +36,12 @@ jobs:
         run: |
           echo $ENCODED_STRING_KEYSTORE | base64 -di > android/app/release.keystore
           echo $ENCODED_STRING_JSON_FILE > android/firebase_key.json
+
       - name: Install dependecies
-        run: yarn install
+        run: |
+          yarn install
+          yarn build:libs
+
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
         with:
@@ -66,12 +72,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version-file: ".nvmrc"
+
       - name: Install dependecies
-        run: yarn install
+        run: |
+          yarn install
+          yarn build:libs
+
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
         with:
