@@ -1,0 +1,59 @@
+diff --git a/node_modules/electron-updater/out/providers/GitHubProvider.js b/node_modules/electron-updater/out/providers/GitHubProvider.js
+index 8f15cd3..c719b66 100644
+--- a/node_modules/electron-updater/out/providers/GitHubProvider.js
++++ b/node_modules/electron-updater/out/providers/GitHubProvider.js
+@@ -45,28 +45,32 @@ class GitHubProvider extends BaseGitHubProvider {
+         try {
+             if (this.updater.allowPrerelease) {
+                 const currentChannel = ((_a = this.updater) === null || _a === void 0 ? void 0 : _a.channel) || ((_b = semver.prerelease(this.updater.currentVersion)) === null || _b === void 0 ? void 0 : _b[0]) || null;
+-                for (const element of feed.getElements("entry")) {
+-                    // noinspection TypeScriptValidateJSTypes
+-                    const hrefElement = hrefRegExp.exec(element.element("link").attribute("href"));
+-                    // If this is null then something is wrong and skip this release
+-                    if (hrefElement === null)
+-                        continue;
+-                    // This Release's Tag
+-                    const hrefTag = hrefElement[1];
+-                    //Get Channel from this release's tag
+-                    const hrefChannel = ((_c = semver.prerelease(hrefTag)) === null || _c === void 0 ? void 0 : _c[0]) || null;
+-                    const shouldFetchVersion = !currentChannel || ["alpha", "beta"].includes(currentChannel);
+-                    const isCustomChannel = !["alpha", "beta"].includes(String(hrefChannel));
+-                    // Allow moving from alpha to beta but not down
+-                    const channelMismatch = currentChannel === "beta" && hrefChannel === "alpha";
+-                    if (shouldFetchVersion && !isCustomChannel && !channelMismatch) {
+-                        tag = hrefTag;
+-                        break;
+-                    }
+-                    const isNextPreRelease = hrefChannel && hrefChannel === currentChannel;
+-                    if (isNextPreRelease) {
+-                        tag = hrefTag;
+-                        break;
++                if (currentChannel === null) {
++                    tag = hrefRegExp.exec(latestRelease.element("link").attribute("href"))[1]
++                } else {
++                    for (const element of feed.getElements("entry")) {
++                        // noinspection TypeScriptValidateJSTypes
++                        const hrefElement = hrefRegExp.exec(element.element("link").attribute("href"));
++                        // If this is null then something is wrong and skip this release
++                        if (hrefElement === null)
++                            continue;
++                        // This Release's Tag
++                        const hrefTag = hrefElement[1];
++                        //Get Channel from this release's tag
++                        const hrefChannel = ((_c = semver.prerelease(hrefTag)) === null || _c === void 0 ? void 0 : _c[0]) || null;
++                        const shouldFetchVersion = !currentChannel || ["alpha", "beta"].includes(currentChannel);
++                        const isCustomChannel = !["alpha", "beta"].includes(String(hrefChannel));
++                        // Allow moving from alpha to beta but not down
++                        const channelMismatch = currentChannel === "beta" && hrefChannel === "alpha";
++                        if (shouldFetchVersion && !isCustomChannel && !channelMismatch) {
++                            tag = hrefTag;
++                            break;
++                        }
++                        const isNextPreRelease = hrefChannel && hrefChannel === currentChannel;
++                        if (isNextPreRelease) {
++                            tag = hrefTag;
++                            break;
++                        }
+                     }
+                 }
+             }
