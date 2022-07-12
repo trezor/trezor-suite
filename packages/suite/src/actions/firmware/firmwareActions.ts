@@ -178,6 +178,12 @@ export const validateFirmwareHash =
                 type: FIRMWARE.SET_ERROR,
                 payload: 'Unable to validate firmware hash. Please reinstall firmware again',
             });
+            analytics.report({
+                type: EventType.FirmwareValidateHashError,
+                payload: {
+                    error: fwHash.payload.error,
+                },
+            });
             return;
         }
 
@@ -188,6 +194,9 @@ export const validateFirmwareHash =
                 payload: device.id!,
             });
             dispatch({ type: FIRMWARE.SET_ERROR, payload: 'Invalid hash' });
+            analytics.report({
+                type: EventType.FirmwareValidateHashMismatch,
+            });
             return;
         }
 

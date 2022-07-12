@@ -20,6 +20,9 @@ export enum EventType {
     DeviceUpdateFirmware = 'device-update-firmware',
     DeviceSetupCompleted = 'device-setup-completed',
 
+    FirmwareValidateHashError = 'firmware-validate-hash-error',
+    FirmwareValidateHashMismatch = 'firmware-validate-hash-mismatch',
+
     CreateBackup = 'create-backup',
 
     AccountsStatus = 'accounts/status',
