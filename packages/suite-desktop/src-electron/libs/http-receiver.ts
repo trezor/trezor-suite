@@ -56,7 +56,7 @@ export class HttpReceiver extends EventEmitter {
             {
                 pathname: '/oauth',
                 handler: this.oauthHandler,
-                origins: ['', '127.0.0.1'], // No referer is sent by Google and Dropbox
+                origins: ['', '127.0.0.1', 'www.dropbox.com'], // No referer is sent by Google, Dropbox sends referer when using Safari
             },
             {
                 pathname: '/buy-redirect',
