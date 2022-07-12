@@ -26,6 +26,7 @@ type FirmwareUpdateCommon = {
     // and we need to store this information persistently so that it does not disappear after accidental device reconnection.
     // todo: in the future we might implement additional check that will validate firmware after every connection
     firmwareHashInvalid: string[];
+    isCustom: boolean;
 };
 
 export type FirmwareStatus =
@@ -62,6 +63,7 @@ const initialState: FirmwareUpdateState = {
     intermediaryInstalled: false,
     subsequentInstalling: false,
     firmwareHashInvalid: [],
+    isCustom: false,
 };
 
 const firmwareUpdate = (
@@ -125,6 +127,9 @@ const firmwareUpdate = (
                 break;
             case FIRMWARE.REMEMBER_PREVIOUS_DEVICE:
                 draft.prevDevice = action.payload;
+                break;
+            case FIRMWARE.SET_IS_CUSTOM:
+                draft.isCustom = action.payload;
                 break;
             case FIRMWARE.RESET_REDUCER:
                 return { ...initialState, firmwareHashInvalid: draft.firmwareHashInvalid };
