@@ -24,7 +24,7 @@ const sendFormReducer = (state: SendState = initialState, action: Action): SendS
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                action.payload?.sendFormDrafts.forEach(d => {
+                action.payload.sendFormDrafts.forEach(d => {
                     draft.drafts[d.key] = d.value;
                 });
                 break;

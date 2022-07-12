@@ -81,7 +81,7 @@ const discoveryReducer = (state: State = initialState, action: WalletAction | Su
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                return action.payload?.discovery || state;
+                return action.payload.discovery;
             case DISCOVERY.CREATE:
                 create(draft, action.payload);
                 break;

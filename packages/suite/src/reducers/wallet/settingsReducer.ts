@@ -25,7 +25,7 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                return action.payload?.walletSettings || state;
+                return action.payload.walletSettings || state;
 
             case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
                 draft.localCurrency = action.localCurrency;

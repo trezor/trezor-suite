@@ -137,7 +137,7 @@ const transactionReducer = (state: State = initialState, action: Action | Wallet
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD: {
-                action.payload?.txs.forEach(item => {
+                action.payload.txs.forEach(item => {
                     const k = getAccountKey(
                         item.tx.descriptor,
                         item.tx.symbol,

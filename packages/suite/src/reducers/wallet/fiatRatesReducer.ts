@@ -68,7 +68,7 @@ const fiatRatesReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                draft.coins = action.payload?.fiatRates || draft.coins;
+                draft.coins = action.payload.fiatRates;
                 break;
             case RATE_REMOVE:
                 remove(draft.coins, action.payload);

@@ -27,7 +27,6 @@ export type SuiteAction =
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
-    | { type: typeof SUITE.SET_DB_ERROR; payload: AppState['suite']['dbError'] }
     | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
@@ -101,11 +100,6 @@ export const removeButtonRequests = (device: TrezorDevice | undefined) => ({
 export const addButtonRequest = (device: TrezorDevice | undefined, payload: ButtonRequest) => ({
     type: SUITE.ADD_BUTTON_REQUEST,
     device,
-    payload,
-});
-
-export const setDbError = (payload: AppState['suite']['dbError']) => ({
-    type: SUITE.SET_DB_ERROR,
     payload,
 });
 

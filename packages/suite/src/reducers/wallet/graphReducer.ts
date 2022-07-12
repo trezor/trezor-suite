@@ -81,7 +81,7 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                loadFromStorage(draft, action.payload?.graph);
+                loadFromStorage(draft, action.payload.graph);
                 break;
             case GRAPH.ACCOUNT_GRAPH_START:
                 update(draft, action.payload);

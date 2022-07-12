@@ -403,7 +403,7 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                return action.payload?.devices || state;
+                return action.payload.devices;
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
                 connectDevice(draft, action.payload);
