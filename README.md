@@ -8,6 +8,7 @@
 | --------------------------------------------------------------------- | -------------------------------------------- |
 | [@trezor/analytics](./packages/analytics)                             | generic analytics implementation             |
 | [@trezor/atoms](./packages/atoms)                                     | front-end React Native components            |
+| [@trezor/auth-server](./packages/auth-server)                         | NodeJS server for secure Google OAuth        |
 | [@trezor/blockchain-link](./packages/blockchain-link)                 | lib for connecting to blockchains            |
 | [@trezor/components](./packages/components)                           | front-end React components for web + desktop |
 | [@trezor/connect](./packages/connect)                                 | 3rd party interface entrypoint for nodejs    |

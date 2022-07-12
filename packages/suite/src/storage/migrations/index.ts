@@ -468,6 +468,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 29) {
+        db.createObjectStore('firmware');
+
         const providerStore = await transaction.objectStore('metadata');
         providerStore.openCursor().then(function update(cursor): Promise<void> | undefined {
             if (!cursor) {
@@ -489,9 +491,5 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
             return cursor.continue().then(update);
         });
-    }
-
-    if (oldVersion < 29) {
-        db.createObjectStore('firmware');
     }
 };
