@@ -73,7 +73,7 @@ const firmwareUpdate = (
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                if (action.payload?.firmware?.firmwareHashInvalid) {
+                if (action.payload.firmware?.firmwareHashInvalid) {
                     draft.firmwareHashInvalid = action.payload.firmware.firmwareHashInvalid;
                 }
                 break;

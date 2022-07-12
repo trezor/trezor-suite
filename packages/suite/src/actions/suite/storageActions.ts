@@ -5,7 +5,6 @@ import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { getFormDraftKey } from '@wallet-utils/formDraftUtils';
 import { FormDraftPrefixKeyValues } from '@wallet-constants/formDraft';
-import { STORAGE } from './constants';
 
 import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import type { Account, Network } from '@wallet-types';
@@ -14,9 +13,9 @@ import type { Discovery } from '@wallet-reducers/discoveryReducer';
 import type { FormState } from '@wallet-types/sendForm';
 import type { Trade, TradeType } from '@wallet-types/coinmarketCommonTypes';
 import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
-import type { PreloadedStore } from '@suite-support/preloadStore';
+import type { PreloadStoreAction } from '@suite-support/preloadStore';
 
-export type StorageAction = { type: typeof STORAGE.LOAD; payload: PreloadedStore };
+export type StorageAction = NonNullable<PreloadStoreAction>;
 
 // send form drafts start
 export const saveDraft = async (formState: FormState, accountKey: string) => {

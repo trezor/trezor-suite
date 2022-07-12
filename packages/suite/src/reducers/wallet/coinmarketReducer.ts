@@ -159,7 +159,7 @@ const coinmarketReducer = (
                 // TODO-NOTE: this is inconsistent, in previous implementation coinmarketTrades.trades was filled with data from DB, but types are incorrect
                 // investigate more
                 // @ts-ignore
-                draft.trades = action.payload?.coinmarketTrades || draft.trades;
+                draft.trades = action.payload.coinmarketTrades || draft.trades;
                 break;
             case COINMARKET_BUY.SAVE_BUY_INFO:
                 draft.buy.buyInfo = action.buyInfo;

@@ -13,7 +13,7 @@ const formDraftReducer = (state: FormDraftState = initialState, action: Action):
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
-                action.payload?.formDrafts.forEach(d => {
+                action.payload.formDrafts.forEach(d => {
                     draft[d.key] = d.value;
                 });
                 break;

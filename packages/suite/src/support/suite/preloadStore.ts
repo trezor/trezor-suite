@@ -1,4 +1,5 @@
 import { db } from '@suite/storage';
+import * as STORAGE from '@suite-actions/constants/storageConstants';
 
 // This function should be called before first render
 // PreloadedState will be used in redux store creation
@@ -6,14 +7,20 @@ export const preloadStore = async () => {
     if (!(await db.isSupported())) return;
 
     // check if db is blocked/blocking before preloading start
-    // TODO-NOTE: maybe it should return { suite: { dbError: '' }} instead?
-    await new Promise<void>((resolve, reject) => {
+    const dbError = await new Promise<'blocked' | 'blocking' | undefined>(resolve => {
         // set callbacks that are fired when upgrading the db is blocked because of multiple instances are running
-        db.onBlocked = () => reject(new Error('blocked'));
-        db.onBlocking = () => reject(new Error('blocking'));
+        db.onBlocked = () => resolve('blocked');
+        db.onBlocking = () => resolve('blocking');
         // initialize
-        db.getDB().then(() => resolve());
+        db.getDB().then(() => resolve(undefined));
     });
+
+    if (dbError) {
+        return {
+            type: STORAGE.ERROR,
+            payload: dbError,
+        } as const;
+    }
 
     // load state from database
     const suiteSettings = await db.getItemByPK('suiteSettings', 'suite');
@@ -34,23 +41,26 @@ export const preloadStore = async () => {
     const firmware = await db.getItemByPK('firmware', 'firmware');
 
     return {
-        suiteSettings,
-        walletSettings,
-        devices,
-        accounts,
-        discovery,
-        txs,
-        fiatRates,
-        graph,
-        coinmarketTrades,
-        sendFormDrafts,
-        formDrafts,
-        analytics,
-        metadata,
-        messageSystem,
-        backendSettings,
-        firmware,
-    };
+        type: STORAGE.LOAD,
+        payload: {
+            suiteSettings,
+            walletSettings,
+            devices,
+            accounts,
+            discovery,
+            txs,
+            fiatRates,
+            graph,
+            coinmarketTrades,
+            sendFormDrafts,
+            formDrafts,
+            analytics,
+            metadata,
+            messageSystem,
+            backendSettings,
+            firmware,
+        },
+    } as const;
 };
 
-export type PreloadedStore = Awaited<ReturnType<typeof preloadStore>>;
+export type PreloadStoreAction = Awaited<ReturnType<typeof preloadStore>>;

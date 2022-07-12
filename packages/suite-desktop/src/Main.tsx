@@ -68,8 +68,8 @@ export const init = async (root: HTMLElement) => {
     // render simple loader with theme provider without redux, wait for indexedDB
     render(<LoadingScreen />, root);
 
-    const preloaded = await preloadStore();
-    const store = initStore(preloaded);
+    const preloadAction = await preloadStore();
+    const store = initStore(preloadAction);
 
     await desktopApi.handshake();
 

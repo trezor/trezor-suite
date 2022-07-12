@@ -113,20 +113,22 @@ const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
 const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteState =>
     produce(state, draft => {
         switch (action.type) {
-            case SUITE.INIT:
-                draft.loading = true;
-                break;
             case STORAGE.LOAD:
                 draft.flags = {
                     ...draft.flags,
-                    ...action.payload?.suiteSettings?.flags,
+                    ...action.payload.suiteSettings?.flags,
                 };
                 draft.settings = {
                     ...draft.settings,
-                    ...action.payload?.suiteSettings?.settings,
+                    ...action.payload.suiteSettings?.settings,
                 };
                 break;
-
+            case STORAGE.ERROR:
+                draft.dbError = action.payload;
+                break;
+            case SUITE.INIT:
+                draft.loading = true;
+                break;
             case SUITE.READY:
                 draft.loading = false;
                 draft.loaded = true;
@@ -136,12 +138,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 draft.loading = false;
                 draft.loaded = false;
                 draft.error = action.error;
-                break;
-
-            case SUITE.SET_DB_ERROR:
-                draft.loading = false;
-                draft.loaded = false;
-                draft.dbError = action.payload;
                 break;
 
             case SUITE.SELECT_DEVICE:

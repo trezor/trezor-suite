@@ -54,7 +54,7 @@ const messageSystemReducer = (state: State = initialState, action: Action): Stat
             case STORAGE.LOAD:
                 return {
                     ...state,
-                    ...action.payload?.messageSystem,
+                    ...action.payload.messageSystem,
                 };
             case MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS:
                 draft.timestamp = Date.now();
