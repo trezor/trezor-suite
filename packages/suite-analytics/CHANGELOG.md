@@ -12,6 +12,9 @@ Added:
     -   value: boolean
 -   settings/general/labeling-provider
     -   provider: 'dropbox' | 'google' | 'fileSystem' | 'sdCard' | ''
+-   firmware-validate-hash-error
+    -   error: string
+-   firmware-validate-hash-mismatch
 
 ### 1.20
 

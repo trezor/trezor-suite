@@ -322,4 +322,13 @@ export type SuiteAnalyticsEvent =
           payload: {
               type: 'hidden' | 'standard';
           };
+      }
+    | {
+          type: EventType.FirmwareValidateHashError;
+          payload: {
+              error: string;
+          };
+      }
+    | {
+          type: EventType.FirmwareValidateHashMismatch;
       };
