@@ -22,7 +22,8 @@ export type FirmwareAction =
     | { type: typeof FIRMWARE.SET_INTERMEDIARY_INSTALLED; payload: boolean }
     | { type: typeof FIRMWARE.SET_ERROR; payload?: string }
     | { type: typeof FIRMWARE.TOGGLE_HAS_SEED }
-    | { type: typeof FIRMWARE.REMEMBER_PREVIOUS_DEVICE; payload: Device };
+    | { type: typeof FIRMWARE.REMEMBER_PREVIOUS_DEVICE; payload: Device }
+    | { type: typeof FIRMWARE.SET_IS_CUSTOM; payload: boolean };
 
 export const resetReducer = (): FirmwareAction => ({
     type: FIRMWARE.RESET_REDUCER,
@@ -47,6 +48,10 @@ const firmwareInstall =
     (fwBinary?: ArrayBuffer) => async (dispatch: Dispatch, getState: GetState) => {
         const { device } = getState().suite;
         const { targetRelease, prevDevice } = getState().firmware;
+
+        if (fwBinary) {
+            dispatch({ type: FIRMWARE.SET_IS_CUSTOM, payload: true });
+        }
 
         if (!device || !device.connected || !device.features) {
             dispatch({ type: FIRMWARE.SET_ERROR, payload: 'no device connected' });
@@ -164,40 +169,42 @@ export const firmwareUpdate = () => firmwareInstall();
 export const validateFirmwareHash =
     (device: Device) => async (dispatch: Dispatch, getState: GetState) => {
         const { app: prevApp } = getState().router;
-        const { firmwareChallenge, firmwareHash } = getState().firmware;
+        const { firmwareChallenge, firmwareHash, isCustom } = getState().firmware;
 
-        dispatch(setStatus('validation'));
-        const fwHash = await TrezorConnect.getFirmwareHash({
-            device: {
-                path: device.path,
-            },
-            challenge: firmwareChallenge,
-        });
-        if (!fwHash.success) {
-            dispatch({
-                type: FIRMWARE.SET_ERROR,
-                payload: 'Unable to validate firmware hash. Please reinstall firmware again',
-            });
-            analytics.report({
-                type: EventType.FirmwareValidateHashError,
-                payload: {
-                    error: fwHash.payload.error,
+        if (!isCustom) {
+            dispatch(setStatus('validation'));
+            const fwHash = await TrezorConnect.getFirmwareHash({
+                device: {
+                    path: device.path,
                 },
+                challenge: firmwareChallenge,
             });
-            return;
-        }
+            if (!fwHash.success) {
+                dispatch({
+                    type: FIRMWARE.SET_ERROR,
+                    payload: 'Unable to validate firmware hash. Please reinstall firmware again',
+                });
+                analytics.report({
+                    type: EventType.FirmwareValidateHashError,
+                    payload: {
+                        error: fwHash.payload.error,
+                    },
+                });
+                return;
+            }
 
-        if (fwHash.payload.hash !== firmwareHash) {
-            dispatch({
-                type: FIRMWARE.SET_HASH_INVALID,
-                // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
-                payload: device.id!,
-            });
-            dispatch({ type: FIRMWARE.SET_ERROR, payload: 'Invalid hash' });
-            analytics.report({
-                type: EventType.FirmwareValidateHashMismatch,
-            });
-            return;
+            if (fwHash.payload.hash !== firmwareHash) {
+                dispatch({
+                    type: FIRMWARE.SET_HASH_INVALID,
+                    // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
+                    payload: device.id!,
+                });
+                dispatch({ type: FIRMWARE.SET_ERROR, payload: 'Invalid hash' });
+                analytics.report({
+                    type: EventType.FirmwareValidateHashMismatch,
+                });
+                return;
+            }
         }
 
         // last version of firmware or custom firmware version was installed
