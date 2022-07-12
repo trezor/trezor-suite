@@ -90,8 +90,8 @@ transport layer (Trezor Bridge/WebUSB).
 
 **Note** With the newest Trezor Connect API, the iframe element ensures that the communication after authentification with PIN and/or Passphrase persists until
 
-* application is closed or reloaded
-* device is unplugged or used in another application
-* ten minutes of being idle
+-   application is closed or reloaded
+-   device is unplugged or used in another application
+-   ten minutes of being idle
 
 The advantages are that the session carries on, it is not necessary to re-enter your PIN and/or Passphrase and, furthermore, it is sending events to application when the device is connected, disconnected or used in another window (application). This feature makes it easier to use the Trezor device with applications.
