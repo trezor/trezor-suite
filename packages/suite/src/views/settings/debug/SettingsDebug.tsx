@@ -8,6 +8,7 @@ import { TranslationMode } from './TranslationMode';
 import { GithubIssue } from './GithubIssue';
 import { WipeData } from './WipeData';
 import { InvityApi } from './InvityApi';
+import { OAuthApi } from './OAuthApi';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -22,6 +23,9 @@ export const SettingsDebug = () => (
         </SettingsSection>
         <SettingsSection title="Invity">
             <InvityApi />
+        </SettingsSection>
+        <SettingsSection title="OAuth">
+            <OAuthApi />
         </SettingsSection>
     </SettingsLayout>
 );

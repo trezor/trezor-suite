@@ -35,6 +35,7 @@ export const enum SettingsAnchor {
     GithubIssue = '@debug-settings/github-issue',
     WipeData = '@debug-settings/wipe-data',
     InvityApi = '@debug-settings/invity-api',
+    OAuthApi = '@debug-settings/oauth-api',
 }
 
 export const AccountTransactionBaseAnchor = '@account/transaction';
