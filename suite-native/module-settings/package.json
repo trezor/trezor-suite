@@ -21,7 +21,7 @@
         "@trezor/styles": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2",
-        "react-redux": "^8.0.2",
+        "react-redux": "7.2.2",
         "@trezor/theme": "*",
         "@trezor/icons": "*"
     }
