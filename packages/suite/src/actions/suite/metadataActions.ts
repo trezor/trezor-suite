@@ -11,6 +11,7 @@ import {
     Tokens,
     DeviceMetadata,
     Error as MetadataProviderError,
+    OAuthServerEnvironment,
     ProviderErrorAction,
 } from '@suite-types/metadata';
 import { Account } from '@wallet-types';
@@ -47,12 +48,16 @@ export type MetadataAction =
 let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-const createProvider = (type: MetadataProvider['type'], tokens: Tokens = {}) => {
+const createProvider = (
+    type: MetadataProvider['type'],
+    tokens: Tokens = {},
+    environment: OAuthServerEnvironment = 'production',
+) => {
     switch (type) {
         case 'dropbox':
             return new DropboxProvider(tokens?.refreshToken);
         case 'google':
-            return new GoogleProvider(tokens);
+            return new GoogleProvider(tokens, environment);
         case 'fileSystem':
             return new FileSystemProvider();
         default:
@@ -198,17 +203,22 @@ const handleProviderError =
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
 const getProvider = () => (_dispatch: Dispatch, getState: GetState) => {
-    const state = getState().metadata.provider;
-    if (!state) return;
+    const state = getState();
+    const { provider } = state.metadata;
+    if (!provider) return;
 
     // instance already exists but user did not finish log in and decided to use another provider;
-    if (providerInstance && providerInstance.type !== state.type) {
+    if (providerInstance && providerInstance.type !== provider.type) {
         providerInstance = undefined;
     }
 
     if (providerInstance) return providerInstance;
 
-    providerInstance = createProvider(state.type, state.tokens);
+    providerInstance = createProvider(
+        provider.type,
+        provider.tokens,
+        state.suite.settings.debug.oauthServerEnvironment,
+    );
 
     return providerInstance;
 };
@@ -410,42 +420,46 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
     // keys sooner when enabling labeling on device;
 };
 
-export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
-    let provider = dispatch(getProvider());
-
-    if (!provider) {
-        provider = createProvider(type);
-    }
-
-    const isConnected = await provider.isConnected();
-    if (!isConnected) {
-        const connectionResult = await provider.connect();
-        if ('error' in connectionResult) {
-            return connectionResult.error;
+export const connectProvider =
+    (type: MetadataProviderType) => async (dispatch: Dispatch, getState: GetState) => {
+        let provider = dispatch(getProvider());
+        if (!provider) {
+            provider = createProvider(
+                type,
+                {},
+                getState().suite.settings.debug.oauthServerEnvironment,
+            );
         }
-    }
 
-    const result = await provider.getProviderDetails();
+        const isConnected = await provider.isConnected();
+        if (!isConnected) {
+            const connectionResult = await provider.connect();
+            if ('error' in connectionResult) {
+                return connectionResult.error;
+            }
+        }
 
-    if (!result.success) {
-        dispatch(handleProviderError(result, ProviderErrorAction.CONNECT));
-        return;
-    }
+        const result = await provider.getProviderDetails();
 
-    dispatch({
-        type: METADATA.SET_PROVIDER,
-        payload: result.payload,
-    });
+        if (!result.success) {
+            dispatch(handleProviderError(result, ProviderErrorAction.CONNECT));
+            return;
+        }
 
-    analytics.report({
-        type: EventType.SettingsGeneralLabelingProvider,
-        payload: {
-            provider: result.payload.type,
-        },
-    });
+        dispatch({
+            type: METADATA.SET_PROVIDER,
+            payload: result.payload,
+        });
 
-    return true;
-};
+        analytics.report({
+            type: EventType.SettingsGeneralLabelingProvider,
+            payload: {
+                provider: result.payload.type,
+            },
+        });
+
+        return true;
+    };
 
 export const addDeviceMetadata =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>

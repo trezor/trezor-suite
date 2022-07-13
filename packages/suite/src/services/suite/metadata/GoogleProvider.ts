@@ -1,12 +1,12 @@
-import { AbstractMetadataProvider, Tokens } from '@suite-types/metadata';
+import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from '@suite-types/metadata';
 import GoogleClient from '@suite/services/google';
 
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     isCloud = true;
-    constructor(tokens: Tokens) {
+    constructor(tokens: Tokens, environment: OAuthServerEnvironment) {
         super('google');
-        GoogleClient.init(tokens);
+        GoogleClient.init(tokens, environment);
     }
 
     async connect() {

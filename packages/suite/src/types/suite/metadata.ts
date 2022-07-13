@@ -169,3 +169,5 @@ export interface MetadataState {
     editing?: string;
     initiating?: boolean;
 }
+
+export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';
