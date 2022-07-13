@@ -27,7 +27,7 @@ export const AUTH_WINDOW_HEIGHT = 720;
 export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
 
 // server holding client_secret used in Google OAuth authorization code flow - set to 'http://localhost:3005' for development
-export const AUTH_SERVER_URL = 'https://oauth.trezor.io';
+export const AUTH_SERVER_URL = 'https://suite-auth.trezor.io';
 
 // used when auth-server is running - generate testing credentials for development
 export const GOOGLE_CODE_FLOW_CLIENT_ID =
