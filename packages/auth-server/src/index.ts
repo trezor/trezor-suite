@@ -8,10 +8,10 @@ app.use(express.json());
 
 const corsOptions: CorsOptions = {
     origin: [
-        'trezor.io', // production web
-        'sldev.cz', // staging web
-        'localhost', // development web + all desktop
-        'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion', // onion address for production web (Suite does not work here now)
+        'https://suite.trezor.io', // production web
+        /\.sldev\.cz$/, // staging web
+        'http://localhost:8000', // development web
+        'http://trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion', // onion address for production web (Suite does not work here now)
     ],
 };
 app.use(cors(corsOptions));
@@ -22,10 +22,17 @@ const { GOOGLE_CLIENT_SECRET } = process.env; // generate testing credentials fo
 const checkResponse = (responseBody: object, expectedProperties: string[]) => {
     expectedProperties.forEach(property => {
         if (!Object.prototype.hasOwnProperty.call(responseBody, property)) {
-            throw new Error('Unexpected response from authentiacation server.');
+            throw new Error('Unexpected response from authentication server.');
         }
     });
 };
+
+/**
+ * Root URL should return 200 for health check.
+ */
+app.get('/', (_req, res) => {
+    res.send();
+});
 
 /**
  * Is server alive?
@@ -51,7 +58,7 @@ app.post('/google-oauth-init', async (req, res) => {
             method: 'POST',
         });
         const json = await response.json();
-        checkResponse(json, ['refresh_token', 'access_token', 'expires_in']);
+        checkResponse(json, ['refresh_token', 'access_token']);
         res.status(response.status).send(json);
     } catch (error) {
         res.status(401).json(`Authorization failed: ${error}`);
@@ -73,7 +80,7 @@ app.post('/google-oauth-refresh', async (req, res) => {
             method: 'POST',
         });
         const json = await response.json();
-        checkResponse(json, ['access_token', 'expires_in']);
+        checkResponse(json, ['access_token']);
         res.status(response.status).send(json);
     } catch (error) {
         res.status(401).json(`Refresh failed: ${error}`);
