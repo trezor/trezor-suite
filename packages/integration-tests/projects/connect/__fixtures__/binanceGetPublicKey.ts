@@ -1,3 +1,11 @@
+const legacyResults = [
+    {
+        // not supported below this version
+        rules: ['<2.3.0', '1'],
+        success: false,
+    },
+];
+
 export default {
     method: 'binanceGetPublicKey',
     setup: {
@@ -14,6 +22,7 @@ export default {
             result: {
                 publicKey: '029729a52e4e3c2b4a4e52aa74033eedaf8ba1df5ab6d1f518fd69e67bbd309b0e',
             },
+            legacyResults,
         },
     ],
 };
