@@ -485,7 +485,7 @@ const cardanoSignTransaction = [
     {
         device: initializedDevice,
         url: 'cardanoSignTransaction',
-        views: [followDevice, followDevice],
+        views: [followDevice, followDevice, followDevice],
     },
 ];
 
