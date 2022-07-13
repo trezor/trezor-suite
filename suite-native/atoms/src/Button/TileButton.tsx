@@ -1,10 +1,11 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
+import { Icon, IconName } from '@trezor/icons';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { Box } from '../Box';
 import { Text } from '../Text';
-import { Icon, IconName } from '@trezor/icons';
 
 type TileButtonProps = {
     iconName: IconName;

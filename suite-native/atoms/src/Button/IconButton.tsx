@@ -3,6 +3,7 @@ import { TouchableOpacity } from 'react-native';
 
 import { Icon, IconName } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
 import { ButtonColorScheme, ButtonSize } from './Button';
 
 type Props = {

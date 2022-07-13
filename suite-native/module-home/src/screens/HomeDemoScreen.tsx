@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { TextInput } from 'react-native';
+
 import {
     Text,
     Box,
@@ -23,10 +24,11 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
 import { Screen, StackProps } from '@suite-native/navigation';
 import { TypographyStyle } from '@trezor/theme';
 import { CryptoIcon, Icon } from '@trezor/icons';
+
+import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,
@@ -88,19 +90,10 @@ export const HomeDemoScreen = ({
                             size="small"
                             colorScheme="gray"
                             iconName="check"
-                            onPress={() => console.log('press icon button')}
+                            onPress={() => {}}
                         />
-                        <IconButton
-                            iconName="check"
-                            isRounded
-                            onPress={() => console.log('press icon button')}
-                        />
-                        <IconButton
-                            size="large"
-                            iconName="check"
-                            isRounded
-                            onPress={() => console.log('press icon button')}
-                        />
+                        <IconButton iconName="check" isRounded onPress={() => {}} />
+                        <IconButton size="large" iconName="check" isRounded onPress={() => {}} />
                     </Box>
                     <Box marginTop="medium">
                         <Select
@@ -249,7 +242,7 @@ export const HomeDemoScreen = ({
                     <NumPadButton
                         value={5}
                         onPress={value =>
-                            console.log('Press num pad button. No implementation yet.', value)
+                            console.warn('Press num pad button. No implementation yet.', value)
                         }
                     />
                     <Box marginVertical="medium">

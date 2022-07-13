@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Canvas, ImageSVG, useSVG } from '@shopify/react-native-skia';
+
 import { CryptoIconName, cryptoIcons } from '../icons';
 
 type CryptoIconProps = {

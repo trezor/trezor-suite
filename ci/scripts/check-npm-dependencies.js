@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-
 /**
  * node check-npm-dependencies.js <package_name>
  */
@@ -24,7 +23,6 @@ if (!packages.includes(packageName)) {
 const ROOT = path.join(__dirname, '..', '..');
 
 const updateNeeded = [];
-const ok = [];
 
 const checkPackageDependencies = packageName => {
     const rawPackageJSON = fs.readFileSync(

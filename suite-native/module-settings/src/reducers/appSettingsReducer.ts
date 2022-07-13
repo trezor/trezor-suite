@@ -1,12 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { ThemeColorVariant } from '@trezor/theme';
-import { RootState } from '@suite-native/state';
 
 export type AppColorScheme = ThemeColorVariant | 'system';
 
 export interface AppSettingsState {
     colorScheme: AppColorScheme;
 }
+
+type SliceState = {
+    appSettings: AppSettingsState;
+};
 
 const initialState: AppSettingsState = {
     colorScheme: 'system',
@@ -22,7 +26,7 @@ export const appSettingsSlice = createSlice({
     },
 });
 
-export const selectThemeVariant = (state: RootState) => state.appSettings.colorScheme;
+export const selectThemeVariant = (state: SliceState) => state.appSettings.colorScheme;
 
 export const { setColorScheme } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

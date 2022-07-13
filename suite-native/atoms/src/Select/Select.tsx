@@ -10,8 +10,8 @@ import {
 } from '@trezor/icons';
 
 import { BottomModal } from '../Modal/BottomModal';
-import { SelectTrigger } from './SelectTrigger';
 import { SelectItem, SelectValue } from './SelectItem';
+import { SelectTrigger } from './SelectTrigger';
 
 export type SelectItemType = {
     label: string;

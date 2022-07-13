@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 import { Platform, TouchableHighlight } from 'react-native';
 
-import { Text } from './Text';
 import { useNativeStyles, NativeStyleObject, prepareNativeStyle } from '@trezor/styles';
+
+import { Text } from './Text';
 
 export interface NumPadButtonProps {
     value: number;

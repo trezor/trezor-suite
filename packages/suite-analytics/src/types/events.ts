@@ -1,5 +1,4 @@
 import { EventType } from '../constants';
-
 import type { AppUpdateEvent, OnboardingAnalytics } from './definitions';
 
 export type SuiteAnalyticsEvent =

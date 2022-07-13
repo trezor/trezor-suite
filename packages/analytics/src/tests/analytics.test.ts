@@ -1,6 +1,5 @@
 import fixtures from './fixtures/encodeDataToQueryString';
 import { encodeDataToQueryString, getRandomId } from '../utils';
-
 import { Analytics } from '../analytics';
 
 describe('analytics', () => {

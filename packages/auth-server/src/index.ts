@@ -81,5 +81,6 @@ app.post('/google-oauth-refresh', async (req, res) => {
 });
 
 app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
     console.log(`OAuth app listening on port ${PORT}`);
 });

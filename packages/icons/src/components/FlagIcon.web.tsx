@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { FlagIconName } from '../icons';
 
 type FlagIconProps = {

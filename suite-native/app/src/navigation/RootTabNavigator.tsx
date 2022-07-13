@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { TabBar } from '@suite-native/navigation';

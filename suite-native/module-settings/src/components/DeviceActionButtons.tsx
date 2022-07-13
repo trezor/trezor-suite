@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Box, TileButton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -26,13 +26,13 @@ export const DeviceActionButtons = () => {
             <TileButton
                 iconName="eject"
                 title="eject device"
-                onPress={() => console.log('eject')}
+                onPress={() => {}}
                 style={applyStyle(leftButtonStyle)}
             />
             <TileButton
                 iconName="lock"
                 title="lock app"
-                onPress={() => console.log('lock')}
+                onPress={() => {}}
                 style={applyStyle(rightButtonStyle)}
             />
         </Box>

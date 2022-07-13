@@ -1,10 +1,13 @@
-import type * as CSS from 'csstype';
 import type * as RN from 'react-native';
+
+import type * as CSS from 'csstype';
 import type { darken, lighten, transparentize } from 'polished';
+
 // TODO: In the future, we might want to move the `theme` to a standalone module and instead
 // use an ambient module declaration instead of importing it here, just like Emotion does.
 // https://emotion.sh/docs/typescript#define-a-theme
 import type { Theme, NativeTheme } from '@trezor/theme';
+
 import type { multiply, getValueAndUnit, sum, negative } from './utils';
 import type { mediaQueries } from './mediaQueries';
 

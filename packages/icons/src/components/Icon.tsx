@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
     Canvas,
     ImageSVG,
@@ -8,9 +9,11 @@ import {
     BlendColor,
     usePaintRef,
 } from '@shopify/react-native-skia';
-import { IconName, icons } from '../icons';
+
 import { useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+
+import { IconName, icons } from '../icons';
 
 type IconProps = {
     name: IconName;

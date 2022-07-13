@@ -1,10 +1,10 @@
 import React from 'react';
 import { useColorScheme } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { AppColorScheme, selectThemeVariant } from '@suite-native/module-settings';
 import { createRenderer, StylesProvider as StylesStyleProvider } from '@trezor/styles';
 import { prepareNativeTheme, ThemeColorVariant } from '@trezor/theme';
-import { useSelector } from 'react-redux';
 
 type StylesProviderProps = {
     children: React.ReactNode;

@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+
 import { isAscii, isHex } from '@trezor/utils';
 
 yup.setLocale({

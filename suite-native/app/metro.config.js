@@ -1,7 +1,6 @@
 /* eslint-disable require-await */
-const path = require('path');
-
 const nodejs = require('node-libs-browser');
+const path = require('path');
 
 module.exports = {
     projectRoot: path.resolve(__dirname, '../../'),

@@ -1,7 +1,8 @@
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@trezor/icons';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
+
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Icon } from '@trezor/icons';
 
 const actionTabItemStyle = prepareNativeStyle(utils => ({
     marginTop: -40,
@@ -17,10 +18,7 @@ export const ActionTabItem = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity
-            style={applyStyle(actionTabItemStyle)}
-            onPress={() => console.log('Show actions')}
-        >
+        <TouchableOpacity style={applyStyle(actionTabItemStyle)} onPress={() => {}}>
             <Icon name="actionHorizontal" color="white" />
         </TouchableOpacity>
     );

@@ -1,7 +1,10 @@
 import React, { ReactNode } from 'react';
-import { IRenderer } from 'fela';
 import { RendererProvider, ThemeProvider } from 'react-fela';
+
+import { IRenderer } from 'fela';
+
 import { NativeTheme, Theme } from '@trezor/theme';
+
 import { Direction } from './types';
 import { DirectionContext } from './contexts';
 

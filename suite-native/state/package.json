@@ -10,7 +10,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "^1.8.2",
-        "@trezor/styles": "*"
+        "@reduxjs/toolkit": "^1.8.3",
+        "@trezor/styles": "*",
+        "@suite-native/module-settings": "*"
     }
 }

@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import { appSettingsReducer } from '@suite-native/module-settings';
 
 export const store = configureStore({

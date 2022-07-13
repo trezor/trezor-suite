@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { useNavigation } from '@react-navigation/core';
-import { SettingsSection } from './SettingsSection';
 
+import { SettingsSection } from './SettingsSection';
 import { SettingsStackRoutes, SettingsScreenProp } from '../navigation/routes';
 import { SettingsSectionItem } from './SettingsSectionItem';
 

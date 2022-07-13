@@ -20,6 +20,7 @@
         "react-native": "0.68.2"
     },
     "devDependencies": {
-        "svgo": "2.8.0"
+        "svgo": "2.8.0",
+        "prettier": "^2.7.1"
     }
 }

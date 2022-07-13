@@ -1,6 +1,10 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { RendererContext, ThemeContext } from 'react-fela';
+
 import { darken, lighten, transparentize } from 'polished';
+
+import { Theme, NativeTheme } from '@trezor/theme';
+
 import { breakpointMediaQueries } from './breakpoints';
 import {
     NativeStyle,
@@ -11,7 +15,6 @@ import {
     StyleOrStylesParam,
     StyleUtils,
 } from './types';
-import { Theme, NativeTheme } from '@trezor/theme';
 import { multiply, getValueAndUnit, sum, negative } from './utils';
 import { processStyles, processNativeStyles } from './processStyles';
 import { mediaQueries } from './mediaQueries';

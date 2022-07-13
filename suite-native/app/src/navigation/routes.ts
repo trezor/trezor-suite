@@ -1,4 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
+
 import { HomeStackParamList } from '@suite-native/module-home';
 import { SettingsStackParamList } from '@suite-native/module-settings';
 import { TabsOptions } from '@suite-native/navigation';

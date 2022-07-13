@@ -1,9 +1,10 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
-import { TouchableOpacity } from 'react-native';
 import { Icon } from '@trezor/icons';
 
 type ScreenHeaderProps = {

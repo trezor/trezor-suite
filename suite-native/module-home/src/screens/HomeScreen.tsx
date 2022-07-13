@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { Box, Button } from '@suite-native/atoms';
-import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
 import { StackProps, Screen } from '@suite-native/navigation';
+
+import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
 
 export const HomeScreen = ({
     navigation,

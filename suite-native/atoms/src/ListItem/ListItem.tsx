@@ -1,11 +1,13 @@
 import React from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
-import { BaseListItem } from './listItemTypes';
+
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { Box } from '../Box';
 import { ListItemIcon } from './ListItemIcon';
 import { ListItemText } from './ListItemText';
-import { Box } from '../Box';
+import { BaseListItem } from './listItemTypes';
 
 export interface ListItemProps
     extends BaseListItem,
