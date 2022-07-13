@@ -1,3 +1,11 @@
+const legacyResults = [
+    {
+        // not supported below this version
+        rules: ['<2.3.0', '1'],
+        success: false,
+    },
+];
+
 export default {
     method: 'binanceGetAddress',
     setup: {
@@ -14,6 +22,7 @@ export default {
             result: {
                 address: 'bnb1hgm0p7khfk85zpz5v0j8wnej3a90w709vhkdfu',
             },
+            legacyResults,
         },
         // https://github.com/trezor/trezor-firmware/blob/master/tests/device_tests/binance/test_get_address.py
         {
@@ -24,6 +33,7 @@ export default {
             result: {
                 address: 'bnb1egswqkszzfc2uq78zjslc6u2uky4pw46x4rstd',
             },
+            legacyResults,
         },
     ],
 };
