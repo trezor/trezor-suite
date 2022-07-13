@@ -57,12 +57,18 @@ export const getInitialState = (state?: InitialState) => {
         ? state.device
         : { state: 'device-state', connected: true, metadata: { status: 'disabled' } };
     const accounts = state ? state.accounts || [] : [];
+    const settings = suite?.settings || { debug: {} };
+    const debug = settings?.debug || {};
     const initAction: any = { type: STORAGE.LOADED, payload: { metadata } };
     return {
         metadata: metadataReducer(metadata, initAction),
         devices: device ? [device] : [], // device is needed for notification/event
         suite: {
             ...suite,
+            settings: {
+                ...settings,
+                debug, // debug settings are needed for OAuth API
+            },
             device, // device is needed for notification/event
         },
         wallet: {

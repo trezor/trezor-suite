@@ -8,7 +8,7 @@
  */
 
 import { METADATA } from '@suite-actions/constants';
-import { Tokens } from '@suite-types/metadata';
+import { OAuthServerEnvironment, Tokens } from '@suite-types/metadata';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { getCodeChallenge } from '@suite-utils/random';
 
@@ -95,10 +95,21 @@ class Client {
     static initPromise: Promise<Client> | undefined;
     static accessToken: string;
     static refreshToken: string;
+    static authServerUrl: string;
+    static servers = {
+        production: 'https://suite-auth.trezor.io',
+        staging: 'https://staging-suite-auth.trezor.io',
+        localhost: 'http://localhost:3005',
+    };
 
-    static init({ accessToken, refreshToken }: Tokens) {
+    public static setEnvironment(environment: OAuthServerEnvironment) {
+        Client.authServerUrl = Client.servers[environment];
+    }
+
+    static init({ accessToken, refreshToken }: Tokens, environment: OAuthServerEnvironment) {
         Client.initPromise = new Promise(resolve => {
             Client.nameIdMap = {};
+            Client.setEnvironment(environment);
             Client.isAuthServerAvailable().then(result => {
                 // if our server providing the refresh token is not available, fallback to a flow with access tokens only (authorization for a limited time)
                 Client.flow = result ? 'code' : 'implicit';
@@ -123,24 +134,20 @@ class Client {
         await Client.initPromise;
         if (!Client.accessToken && Client.refreshToken && Client.flow === 'code') {
             try {
-                const res = await fetch(`${METADATA.AUTH_SERVER_URL}/google-oauth-refresh`, {
+                const res = await fetch(`${Client.authServerUrl}/google-oauth-refresh`, {
                     method: 'POST',
                     body: JSON.stringify({
                         clientId: Client.clientId,
                         refreshToken: Client.refreshToken,
                     }),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                 });
                 const json = await res.json();
                 if (!json?.access_token) {
                     throw new Error('Could not refresh access token.');
-                } else {
-                    Client.accessToken = json.access_token;
                 }
+                Client.accessToken = json.access_token;
             } catch {
-                Client.authServerAvailable = false;
+                await Client.forceImplicitFlow();
             }
         }
         return Client.accessToken;
@@ -148,7 +155,7 @@ class Client {
 
     static async isAuthServerAvailable() {
         try {
-            Client.authServerAvailable = (await fetch(`${METADATA.AUTH_SERVER_URL}/status`)).ok;
+            Client.authServerAvailable = (await fetch(`${Client.authServerUrl}/status`)).ok;
         } catch (err) {
             Client.authServerAvailable = false;
         }
@@ -188,13 +195,14 @@ class Client {
         ).toString()}`;
         const response = await extractCredentialsFromAuthorizationFlow(url);
         const { access_token, code } = response;
+
         if (access_token) {
             // implicit flow returns short lived access_token directly
             Client.accessToken = access_token;
         } else {
             // authorization code flow retrieves code, then refresh_token, which can generate access_token on demand
             try {
-                const res = await fetch(`${METADATA.AUTH_SERVER_URL}/google-oauth-init`, {
+                const res = await fetch(`${Client.authServerUrl}/google-oauth-init`, {
                     method: 'POST',
                     body: JSON.stringify({
                         clientId: Client.clientId,
@@ -208,11 +216,24 @@ class Client {
                 });
 
                 const json = await res.json();
+                if (!json?.access_token || !json?.refresh_token) {
+                    throw new Error('Could not retrieve the tokens.');
+                }
                 Client.accessToken = json.access_token;
                 Client.refreshToken = json.refresh_token;
             } catch {
-                Client.authServerAvailable = false;
+                await Client.forceImplicitFlow();
             }
+        }
+    }
+
+    // when auth server is running, but returns an unexpected response, fall back to implicit flow
+    // TODO: this does not work if browser blocks pop-up windows and it opens two tabs/windows, there could be a better solution
+    static async forceImplicitFlow() {
+        if (Client.flow === 'code') {
+            Client.flow = 'implicit';
+            Client.clientId = METADATA.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
+            await Client.authorize();
         }
     }
 

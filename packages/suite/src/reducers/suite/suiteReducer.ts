@@ -9,10 +9,12 @@ import type { Locale } from '@suite-config/languages';
 import { isWeb, getWindowWidth } from '@suite-utils/env';
 import { ensureLocale } from '@suite-utils/l10n';
 import { getNumberFromPixelString } from '@trezor/utils';
+import type { OAuthServerEnvironment } from '@suite-types/metadata';
 import type { InvityServerEnvironment } from '@wallet-types/invity';
 
 export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
+    oauthServerEnvironment?: OAuthServerEnvironment;
     showDebugMenu: boolean;
 }
 
