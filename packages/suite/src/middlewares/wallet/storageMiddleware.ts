@@ -179,21 +179,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SEND.REMOVE_DRAFT:
                     storageActions.removeDraft(action.key);
                     break;
-                case COINMARKET_COMMON.SAVE_TRADE:
-                    storageActions.saveCoinmarketTrade(
-                        action.data,
-                        {
-                            descriptor: action.account.descriptor,
-                            symbol: action.account.symbol,
-                            accountType: action.account.accountType,
-                            accountIndex: action.account.accountIndex,
-                        },
-                        action.date,
-                        action.tradeType,
-                        action.key,
-                    );
+                case COINMARKET_COMMON.SAVE_TRADE: {
+                    const { type, ...trade } = action;
+                    storageActions.saveCoinmarketTrade(trade);
                     break;
-
+                }
                 case METADATA.ACCOUNT_ADD:
                 case METADATA.ACCOUNT_LOADED: {
                     const device = accountUtils.findAccountDevice(

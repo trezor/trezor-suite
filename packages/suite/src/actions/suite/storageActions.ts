@@ -11,7 +11,7 @@ import type { Account, Network } from '@wallet-types';
 import type { GraphData } from '@wallet-types/graph';
 import type { Discovery } from '@wallet-reducers/discoveryReducer';
 import type { FormState } from '@wallet-types/sendForm';
-import type { Trade, TradeType } from '@wallet-types/coinmarketCommonTypes';
+import type { Trade } from '@wallet-types/coinmarketCommonTypes';
 import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
 import type { PreloadStoreAction } from '@suite-support/preloadStore';
 
@@ -119,38 +119,9 @@ export const saveAccounts = async (accounts: Account[]) => {
     return db.addItems('accounts', accounts, true);
 };
 
-interface AccountPart {
-    symbol: Account['symbol'];
-    accountType: Account['accountType'];
-    accountIndex: Account['index'];
-    descriptor: Account['descriptor'];
-}
-
-export const saveCoinmarketTrade = async (
-    trade: Trade['data'],
-    account: AccountPart,
-    date: string,
-    tradeType: TradeType,
-    key?: string,
-) => {
+export const saveCoinmarketTrade = async (trade: Trade) => {
     if (!(await db.isAccessible())) return;
-    return db.addItem(
-        'coinmarketTrades',
-        {
-            key,
-            tradeType,
-            date,
-            data: trade,
-            account: {
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                accountType: account.accountType,
-                accountIndex: account.accountIndex,
-            },
-        },
-        undefined,
-        true,
-    );
+    return db.addItem('coinmarketTrades', trade, undefined, true);
 };
 
 export const saveDiscovery = async (discoveries: Discovery[]) => {
