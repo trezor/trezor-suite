@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { ANALYTICS } from '@suite-actions/constants';
+import { ANALYTICS, STORAGE } from '@suite-actions/constants';
 
 import { Action } from '@suite-types';
 
@@ -20,9 +20,8 @@ export const initialState: AnalyticsState = {
 const analyticsReducer = (state: AnalyticsState = initialState, action: Action): AnalyticsState =>
     produce(state, draft => {
         switch (action.type) {
-            // NOTE: storage loaded was not used here before?
-            // case 'STO':
-            //     return action.payload?.analytics || state;
+            case STORAGE.LOAD:
+                return action.payload.analytics || state;
             case ANALYTICS.INIT:
                 draft.enabled = action.payload.enabled;
                 draft.confirmed = action.payload.confirmed;
