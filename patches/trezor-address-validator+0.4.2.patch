@@ -1,0 +1,36 @@
+diff --git a/node_modules/trezor-address-validator/src/bitcoin_validator.js b/node_modules/trezor-address-validator/src/bitcoin_validator.js
+index 2479ab8..0413059 100644
+--- a/node_modules/trezor-address-validator/src/bitcoin_validator.js
++++ b/node_modules/trezor-address-validator/src/bitcoin_validator.js
+@@ -67,11 +67,11 @@ function getOutputIndex(address, currency, networkType) {
+     let correctAddressTypes;
+     const addressType = getAddressType(address, currency);
+     if (addressType) {
+-        if (networkType === 'prod' || networkType === 'testnet') {
+-            correctAddressTypes = currency.addressTypes[networkType]
+-        } else {
+-            correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
+-        }
++        const correctAddressTypes =
++            currency.addressTypes[networkType] ||
++            Object.keys(currency.addressTypes).reduce((all, key) => {
++                return all.concat(currency.addressTypes[key]);
++            }, []);
+         return correctAddressTypes.indexOf(addressType);
+     }
+     return null;
+diff --git a/node_modules/trezor-address-validator/src/currencies.js b/node_modules/trezor-address-validator/src/currencies.js
+index 509ebbd..710dd48 100644
+--- a/node_modules/trezor-address-validator/src/currencies.js
++++ b/node_modules/trezor-address-validator/src/currencies.js
+@@ -30,8 +30,8 @@ var CURRENCIES = [
+     {
+         name: 'Bitcoin',
+         symbol: 'btc',
+-        segwitHrp: { prod: 'bc', testnet: 'tb' },
+-        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
++        segwitHrp: { prod: 'bc', testnet: 'tb', regtest: 'bcrt' },
++        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'], regtest: ['6f', 'c4', '3c', '26'] },
+         validator: BTCValidator,
+     }, {
+         name: 'BitcoinCash',
