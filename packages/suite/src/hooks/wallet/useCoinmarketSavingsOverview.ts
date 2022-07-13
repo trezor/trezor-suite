@@ -37,12 +37,9 @@ export const useSavingsOverview = ({
         fiat: state.wallet.fiat,
     }));
 
-    const savingsTradeItemCompletedExists = trades.some(
-        trade => trade.tradeType === 'savings' && trade.data.status === 'Completed',
-    );
-
     const savingsCryptoSum = trades.reduce((previous: BigNumber, current: Trade) => {
         if (
+            current.account.descriptor === account.descriptor &&
             current.tradeType === 'savings' &&
             current.data.receiveStringAmount &&
             current.data.status === 'Completed'
@@ -51,6 +48,8 @@ export const useSavingsOverview = ({
         }
         return previous;
     }, new BigNumber(0));
+
+    const savingsTradeItemCompletedExists = savingsCryptoSum.isGreaterThan(0);
 
     let savingsFiatSum = new BigNumber(0);
     const fiatRates = fiat.coins.find(item => item.symbol === account.symbol);
