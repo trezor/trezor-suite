@@ -1,14 +1,16 @@
 import addressValidator from 'trezor-address-validator';
 import { Account } from '@wallet-types';
 
-const isTestnet = (symbol: Account['symbol']): boolean => {
+const getNetworkType = (symbol: Account['symbol']) => {
+    if (symbol === 'regtest') return symbol;
     const testnets = ['test', 'txrp', 'trop', 'tada'];
-    return testnets.includes(symbol);
+    return testnets.includes(symbol) ? 'testnet' : 'prod';
 };
 
 const getCoinFromTestnet = (symbol: Account['symbol']) => {
     switch (symbol) {
         case 'test':
+        case 'regtest':
             return 'btc';
         case 'txrp':
             return 'xrp';
@@ -22,7 +24,7 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
 };
 
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
-    const networkType = isTestnet(symbol) ? 'testnet' : 'prod';
+    const networkType = getNetworkType(symbol);
     const updatedSymbol = getCoinFromTestnet(symbol);
     return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
 };
@@ -40,7 +42,7 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
 };
 
 export const isTaprootAddress = (address: string, symbol: Account['symbol']) => {
-    const networkType = isTestnet(symbol) ? 'testnet' : 'prod';
+    const networkType = getNetworkType(symbol);
     const updatedSymbol = getCoinFromTestnet(symbol);
     return (
         addressValidator.getAddressType(address, updatedSymbol.toUpperCase(), networkType) ===
