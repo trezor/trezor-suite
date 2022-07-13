@@ -1,4 +1,3 @@
-import type { BuyTrade, ExchangeTrade, SellVoucherTrade as SpendTrade } from 'invity-api';
 import type { DBSchema } from 'idb';
 
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
@@ -10,7 +9,7 @@ import type { FormState } from '@wallet-types/sendForm';
 import type { AcquiredDevice } from '@suite-types';
 import type { MetadataState } from '@suite-types/metadata';
 import type { GraphData } from '@wallet-types/graph';
-import type { TradeType } from '@wallet-types/coinmarketCommonTypes';
+import type { Trade } from '@wallet-types/coinmarketCommonTypes';
 import type { MessageSystem } from '@suite-types/messageSystem';
 import type { MessageState } from '@suite/reducers/suite/messageSystemReducer';
 import type { FormDraft } from '@wallet-types/form';
@@ -21,7 +20,6 @@ import type {
     CoinFiatRates,
     WalletAccountTransaction,
 } from '@wallet-types';
-import type { SavingsTradeItem } from '@suite-services/invityAPI';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -92,18 +90,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     coinmarketTrades: {
         key: string;
-        value: {
-            key?: string;
-            date: string;
-            tradeType: TradeType;
-            data: BuyTrade | ExchangeTrade | SpendTrade | SavingsTradeItem;
-            account: {
-                descriptor?: Account['descriptor'];
-                symbol: Account['symbol'];
-                accountIndex: Account['index'];
-                accountType: Account['accountType'];
-            };
-        };
+        value: Trade;
     };
     metadata: {
         key: 'state';
