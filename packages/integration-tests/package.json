@@ -4,11 +4,11 @@
     "private": true,
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:transport": "jest --verbose -c ./projects/transport/jest.config.js --runInBand",
-        "test:desktop": "DEBUG=pw:browser xvfb-maybe playwright test --config=./projects/suite-desktop/playwright.config.ts",
-        "test:connect-popup": "xvfb-maybe -- playwright test --config=./projects/connect-popup/playwright.config.ts",
-        "test:connect:node": "jest --runInBand --verbose -c projects/connect/jest.config.js",
-        "test:connect:web": "karma start projects/connect/karma.config.js",
+        "test:transport": "node ./wait-for-env.js && jest --verbose -c ./projects/transport/jest.config.js --runInBand",
+        "test:desktop": "node ./wait-for-env.js && DEBUG=pw:browser xvfb-maybe playwright test --config=./projects/suite-desktop/playwright.config.ts",
+        "test:connect-popup": "node ./wait-for-env.js && xvfb-maybe -- playwright test --config=./projects/connect-popup/playwright.config.ts",
+        "test:connect:node": "TESTS_FIRMWARE=$(node ./wait-for-env.js) jest --runInBand --verbose -c projects/connect/jest.config.js",
+        "test:connect:web": "TESTS_FIRMWARE=$(node ./wait-for-env.js) karma start projects/connect/karma.config.js",
         "test:connect:webextension": "node ./projects/connect-webextension/test.js"
     },
     "dependencies": {

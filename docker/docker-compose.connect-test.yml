@@ -11,6 +11,7 @@ services:
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     environment:
       - TESTS_FIRMWARE=$TESTS_FIRMWARE
+      - TESTS_FIRMWARE_URL=$TESTS_FIRMWARE_URL
       - TESTS_INCLUDED_METHODS=$TESTS_INCLUDED_METHODS
       - TESTS_EXCLUDED_METHODS=$TESTS_EXCLUDED_METHODS
       - TESTS_USE_TX_CACHE=false
@@ -19,6 +20,6 @@ services:
       - trezor-user-env-unix
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
-    command: bash -c "TESTS_FIRMWARE=$$(node ./packages/integration-tests/get-latest-firmware.js) && $TESTS_SCRIPT $TESTS_PATTERN"
+    command: bash -c "$TESTS_SCRIPT $TESTS_PATTERN"
     volumes:
       - ../:/trezor-suite

@@ -13,10 +13,8 @@ const MNEMONICS = {
         'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
 };
 
+const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
 const firmware = process.env.TESTS_FIRMWARE;
-if (!firmware) {
-    throw new Error('TEST_FIRMWARE not set');
-}
 
 const wait = ms =>
     new Promise(resolve => {
@@ -33,6 +31,7 @@ const getController = name => {
     controller.on('disconnect', () => {
         console.error('Controller WS disconnected');
     });
+
     controller.state = {};
     return controller;
 };
@@ -47,55 +46,63 @@ const setup = async (controller, options) => {
 
     if (!options.mnemonic) return true; // skip setup if test is not using the device (composeTransaction)
 
-    try {
-        await controller.connect();
-        // after bridge is stopped, trezor-user-env automatically resolves to use udp transport.
-        // this is actually good as we avoid possible race conditions when setting up emulator for
-        // the test using the same transport
-        await controller.send({ type: 'bridge-stop' });
-
-        const emulatorStartOpts = { type: 'emulator-start', wipe: true };
-        if (firmware) {
-            Object.assign(emulatorStartOpts, { version: firmware });
-        }
-        if (options.firmware) {
-            Object.assign(emulatorStartOpts, { version: options.firmware });
-        }
-
-        await controller.send(emulatorStartOpts);
-
-        const mnemonic =
-            typeof options.mnemonic === 'string' && options.mnemonic.indexOf(' ') > 0
-                ? options.mnemonic
-                : MNEMONICS[options.mnemonic];
-        await controller.send({
-            type: 'emulator-setup',
-            mnemonic,
-            pin: options.pin || '',
-            passphrase_protection: !!options.passphrase_protection,
-            label: options.label || 'TrezorT',
-            needs_backup: false,
-            options,
-        });
-
-        if (options.settings) {
-            // allow apply-settings to fail, older FW may not know some flags yet
-            try {
-                await controller.send({ type: 'emulator-apply-settings', ...options.settings });
-            } catch (e) {
-                console.warn('Setup apply settings failed', options.settings, e.message);
-            }
-        }
-
-        controller.state = options;
-
-        // after all is done, start bridge again
-        await controller.send({ type: 'bridge-start' });
-    } catch (err) {
-        // this means that something in trezor-user-env got wrong.
-        console.log(err);
-        // process.exit(1)
+    await controller.connect();
+    if (!firmware && !firmwareUrl) {
+        throw new Error('no firmware set');
     }
+
+    // after bridge is stopped, trezor-user-env automatically resolves to use udp transport.
+    // this is actually good as we avoid possible race conditions when setting up emulator for
+    // the test using the same transport
+    await controller.send({ type: 'bridge-stop' });
+
+    let emulatorStartOpts = { type: 'emulator-start', wipe: true };
+    if (firmware) {
+        Object.assign(emulatorStartOpts, { version: firmware });
+    }
+    if (options.firmware) {
+        Object.assign(emulatorStartOpts, { version: options.firmware });
+    }
+
+    if (firmwareUrl) {
+        emulatorStartOpts = {
+            type: 'emulator-start-from-url',
+            url: firmwareUrl,
+            // only model 2 is now supported to be run from url
+            model: '2',
+            wipe: true,
+        };
+    }
+
+    await controller.send(emulatorStartOpts);
+
+    const mnemonic =
+        typeof options.mnemonic === 'string' && options.mnemonic.indexOf(' ') > 0
+            ? options.mnemonic
+            : MNEMONICS[options.mnemonic];
+    await controller.send({
+        type: 'emulator-setup',
+        mnemonic,
+        pin: options.pin || '',
+        passphrase_protection: !!options.passphrase_protection,
+        label: options.label || 'TrezorT',
+        needs_backup: false,
+        options,
+    });
+
+    if (options.settings) {
+        // allow apply-settings to fail, older FW may not know some flags yet
+        try {
+            await controller.send({ type: 'emulator-apply-settings', ...options.settings });
+        } catch (e) {
+            console.warn('Setup apply settings failed', options.settings, e.message);
+        }
+    }
+
+    controller.state = options;
+
+    // after all is done, start bridge again
+    await controller.send({ type: 'bridge-start' });
 };
 
 const initTrezorConnect = async (controller, options) => {

@@ -6,26 +6,7 @@ const fetch = require('node-fetch');
 const { test, expect } = require('@playwright/test');
 const { Controller } = require('../../../websocket-client');
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-test.beforeAll(async () => {
-    // todo: wait for trezor-user-env. to be part of trezor-user-env-link package
-    await new Promise(async resolve => {
-        for (let i = 0; i < 60; i++) {
-            await delay(1000);
-
-            try {
-                const res = await fetch('http://localhost:9002');
-                if (res.ok) {
-                    resolve();
-                }
-            } catch (err) {
-                console.log('waiting for trezor-user-env...');
-            }
-        }
-        resolve();
-    });
-
+test.beforeAll(() => {
     // todo: some problems with path in dev and production and tests. tldr tests are expecting
     // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
     // better solution later

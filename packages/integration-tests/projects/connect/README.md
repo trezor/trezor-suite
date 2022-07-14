@@ -8,6 +8,15 @@ Testing `@trezor/connect` npm package in nodejs environment.
 ./docker/docker-connect-test.sh
 ```
 
+you may use the following params:
+
+```
+-f <semver string such as 2.5.2>
+-u <url of unix-frozen-debug-build, such as https://gitlab.com/satoshilabs/trezor/trezor-firmware/-/jobs/2730055101/artifacts/file/core/build/unix/trezor-emu-core>
+-p <pattern to match tests files>
+-i <in case -p methods, use -i to filter one connect method, such as -i binanceGetAddress>
+```
+
 or
 
 ```

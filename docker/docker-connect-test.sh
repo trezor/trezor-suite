@@ -37,10 +37,12 @@ show_usage() {
   echo "  -f       Use specific firmware version, example: 2.1.4, 1.8.0 default: 2-master"
   echo "  -i       Included methods only, example: applySettings,signTransaction"
   echo "  -s       actual test script. default: 'yarn test:integration'"
+  echo "  -u       Firmware url"
 }
 
 # default options
 FIRMWARE=""
+FIRMWARE_URL=""
 INCLUDED_METHODS=""
 EXCLUDED_METHODS=""
 DOCKER=true
@@ -51,7 +53,7 @@ PATTERN=""
 
 # user options
 OPTIND=2
-while getopts ":p:i:e:f:D:hdc" opt; do
+while getopts ":p:i:e:f:u:D:hdc" opt; do
   case $opt in
   d)
     DOCKER=false
@@ -65,6 +67,9 @@ while getopts ":p:i:e:f:D:hdc" opt; do
     ;;
   f)
     FIRMWARE=$OPTARG
+    ;;
+  u)
+    FIRMWARE_URL=$OPTARG
     ;;
   i)
     INCLUDED_METHODS=$OPTARG
@@ -102,19 +107,17 @@ export TESTS_USE_TX_CACHE=$USE_TX_CACHE
 export TESTS_USE_WS_CACHE=$USE_WS_CACHE
 export TESTS_PATTERN=$PATTERN
 export TESTS_SCRIPT=$SCRIPT
+export TESTS_FIRMWARE_URL=$FIRMWARE_URL
 
 runDocker() {
   docker-compose -f ./docker/docker-compose.connect-test.yml up --abort-on-container-exit
-}
-
-getLatestFirmware() {
-  TESTS_FIRMWARE=${TESTS_FIRMWARE:=$(node ./packages/integration-tests/get-latest-firmware.js)}
 }
 
 run() {
 
   echo "Testing env: ${ENVIRONEMT}. Using: ${SCRIPT} ${PATTERN}"
   echo "  Firmware: ${TESTS_FIRMWARE}"
+  echo "  Firmware from url: ${FIRMWARE_URL}"
   echo "  Test pattern: $PATTERN"
   echo "  Included methods: ${INCLUDED_METHODS}"
   echo "  Excluded methods: ${EXCLUDED_METHODS}"
@@ -124,7 +127,6 @@ run() {
   if [ $DOCKER = true ]; then
     runDocker
   else
-    getLatestFirmware
     $SCRIPT $PATTERN
   fi
   
