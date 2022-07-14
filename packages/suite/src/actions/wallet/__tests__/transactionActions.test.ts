@@ -1,9 +1,8 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import transactionReducer from '@wallet-reducers/transactionReducer';
-import { getAccountKey, getAccountTransactions } from '@wallet-utils/accountUtils';
+import { getAccountTransactions } from '@wallet-utils/transactionUtils';
 import * as transactionActions from '../transactionActions';
-import { Account } from '@wallet-types';
 
 type transactionsState = ReturnType<typeof transactionReducer>;
 const { getWalletTransaction } = global.JestMocks;
@@ -37,44 +36,35 @@ describe('Transaction Actions', () => {
     it('Add transaction for first page (used on account create)', () => {
         const store = initStore(getInitialState());
         const account = global.JestMocks.getWalletAccount();
-        store.dispatch(transactionActions.add([getWalletTransaction()], account as Account, 1));
+        store.dispatch(transactionActions.add([getWalletTransaction()], account, 1));
         expect(
-            getAccountTransactions(
-                store.getState().wallet.transactions.transactions,
-                account as Account,
-            ).length,
+            getAccountTransactions(account.key, store.getState().wallet.transactions.transactions)
+                .length,
         ).toEqual(1);
     });
 
     it('Remove txs for a given account', () => {
         const account1 = global.JestMocks.getWalletAccount({ descriptor: 'xpub1' });
         const account2 = global.JestMocks.getWalletAccount({ descriptor: 'xpub2' });
-        const key1 = getAccountKey(account1.descriptor, account1.symbol, account1.deviceState);
-        const key2 = getAccountKey(account2.descriptor, account2.symbol, account2.deviceState);
         const store = initStore(
             getInitialState({
                 transactions: {
-                    [key1]: [getWalletTransaction()],
-                    [key2]: [getWalletTransaction()],
+                    [account1.key]: [getWalletTransaction()],
+                    [account2.key]: [getWalletTransaction()],
                 },
                 isLoading: false,
                 error: null,
             }),
         );
-        store.dispatch(transactionActions.reset(account1 as Account));
+        store.dispatch(transactionActions.reset(account1));
         // removed txs for acc1
         expect(
-            getAccountTransactions(
-                store.getState().wallet.transactions.transactions,
-                account1 as Account,
-            ),
+            getAccountTransactions(account1.key, store.getState().wallet.transactions.transactions),
         ).toEqual([]);
         // txs for acc2 are still there
         expect(
-            getAccountTransactions(
-                store.getState().wallet.transactions.transactions,
-                account2 as Account,
-            ).length,
+            getAccountTransactions(account2.key, store.getState().wallet.transactions.transactions)
+                .length,
         ).toEqual(1);
     });
 });

@@ -5,7 +5,11 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as tokenActions from '@wallet-actions/tokenActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { analyzeTransactions, isPending } from '@wallet-utils/transactionUtils';
+import {
+    analyzeTransactions,
+    getAccountTransactions,
+    isPending,
+} from '@wallet-utils/transactionUtils';
 import { NETWORKS } from '@wallet-config';
 import { SETTINGS } from '@suite-config';
 import type { Account } from '@wallet-types';
@@ -28,7 +32,7 @@ export const create = (
         index: discoveryItem.index,
         path: discoveryItem.path,
         descriptor: accountInfo.descriptor,
-        key: `${accountInfo.descriptor}-${discoveryItem.coin}-${deviceState}`,
+        key: accountUtils.getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
         empty: accountInfo.empty,
@@ -137,9 +141,9 @@ export const fetchAndUpdateAccount =
         if (!basic.success) return;
 
         const accountOutdated = accountUtils.isAccountOutdated(account, basic.payload);
-        const accountTxs = accountUtils.getAccountTransactions(
+        const accountTxs = getAccountTransactions(
+            account.key,
             getState().wallet.transactions.transactions,
-            account,
         );
         // stop here if account is not outdated and there are no pending transactions
         if (!accountOutdated && !accountTxs.find(isPending)) return;

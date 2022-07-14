@@ -1,7 +1,11 @@
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { saveAs } from 'file-saver';
-import { getAccountTransactions, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { enhanceTransaction, findTransactions } from '@wallet-utils/transactionUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import {
+    enhanceTransaction,
+    findTransactions,
+    getAccountTransactions,
+} from '@wallet-utils/transactionUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
 import { Account, WalletAccountTransaction } from '@wallet-types';
@@ -128,7 +132,7 @@ export const fetchTransactions =
     (account: Account, page: number, perPage: number, noLoading = false, recursive = false) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const { transactions } = getState().wallet.transactions;
-        const reducerTxs = getAccountTransactions(transactions, account);
+        const reducerTxs = getAccountTransactions(account.key, transactions);
 
         const startIndex = (page - 1) * perPage;
         const stopIndex = startIndex + perPage;
@@ -194,8 +198,8 @@ export const exportTransactions =
     async (_: Dispatch, getState: GetState) => {
         // Get state of transactions
         const transactions = getAccountTransactions(
+            account.key,
             getState().wallet.transactions.transactions,
-            account,
             // add metadata directly to transactions
         ).map(transaction => ({
             ...transaction,

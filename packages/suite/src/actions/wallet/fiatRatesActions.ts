@@ -6,7 +6,8 @@ import {
     fetchLastWeekRates,
     fetchCurrentTokenFiatRates,
 } from '@suite/services/fiat';
-import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
+import { isTestnet } from '@wallet-utils/accountUtils';
+import { getAccountTransactions } from '@wallet-utils/transactionUtils';
 import { getBlockbookSafeTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
@@ -315,7 +316,7 @@ const updateMissingTxRates =
             if (symbol && account.symbol !== symbol) {
                 return;
             }
-            const accountTxs = getAccountTransactions(transactions.transactions, account);
+            const accountTxs = getAccountTransactions(account.key, transactions.transactions);
             // fetch rates for all txs without 'rates' field
             dispatch(
                 updateTxsRates(

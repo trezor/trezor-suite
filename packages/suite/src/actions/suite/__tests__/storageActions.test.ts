@@ -19,7 +19,8 @@ import graphReducer from '@wallet-reducers/graphReducer';
 import transactionsReducer from '@wallet-reducers/transactionReducer';
 import fiatRatesReducer from '@wallet-reducers/fiatRatesReducer';
 import storageMiddleware from '@wallet-middlewares/storageMiddleware';
-import { getAccountTransactions, getAccountIdentifier } from '@wallet-utils/accountUtils';
+import { getAccountTransactions } from '@wallet-utils/transactionUtils';
+import { getAccountIdentifier } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
 import { SETTINGS } from '@suite/config/suite';
 
@@ -277,7 +278,7 @@ describe('Storage actions', () => {
         ).toStrictEqual(['btc', 'ltc']);
 
         // stored txs
-        const acc1Txs = getAccountTransactions(load1.wallet.transactions.transactions, acc1);
+        const acc1Txs = getAccountTransactions(acc1.key, load1.wallet.transactions.transactions);
 
         // stored drafts
         expect(load1.wallet.send.drafts).toEqual({
@@ -293,7 +294,7 @@ describe('Storage actions', () => {
         // stored device2
         expect(load1.devices[1].state).toEqual(dev2.state);
         // stored txs
-        const acc2Txs = getAccountTransactions(load1.wallet.transactions.transactions, acc2);
+        const acc2Txs = getAccountTransactions(acc2.key, load1.wallet.transactions.transactions);
 
         expect(acc2Txs.length).toEqual(1);
         expect(acc2Txs[0].deviceState).toEqual(tx2.deviceState);
@@ -316,7 +317,10 @@ describe('Storage actions', () => {
         ).toBeUndefined();
 
         // txs deleted
-        const deletedAcc1Txs = getAccountTransactions(load2.wallet.transactions.transactions, acc1);
+        const deletedAcc1Txs = getAccountTransactions(
+            acc1.key,
+            load2.wallet.transactions.transactions,
+        );
         expect(deletedAcc1Txs.length).toEqual(0);
         // send form deleted
         expect(load2.wallet.send.drafts).toEqual({});
@@ -357,11 +361,11 @@ describe('Storage actions', () => {
         const state = store.getState();
 
         // acc1 txs should be deleted
-        const acc1Txs = getAccountTransactions(state.wallet.transactions.transactions, acc1);
+        const acc1Txs = getAccountTransactions(acc1.key, state.wallet.transactions.transactions);
         expect(acc1Txs.length).toEqual(0);
 
         // acc2 txs are still there
-        const acc2Txs = getAccountTransactions(state.wallet.transactions.transactions, acc2);
+        const acc2Txs = getAccountTransactions(acc2.key, state.wallet.transactions.transactions);
         expect(acc2Txs.length).toEqual(1);
         await store.dispatch(storageActions.forgetDevice(dev1));
         await store.dispatch(storageActions.forgetDevice(dev2));

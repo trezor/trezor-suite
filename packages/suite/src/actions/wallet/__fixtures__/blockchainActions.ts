@@ -7,6 +7,7 @@ const DEFAULT_ACCOUNT = {
     symbol: 'btc',
     networkType: 'bitcoin',
     descriptor: 'xpub',
+    key: 'xpub-btc-deviceState',
     history: {
         total: 0,
     },
@@ -128,9 +129,9 @@ const analyzeTransactionsExtended = [
         result: [TRANSACTION.REMOVE, TRANSACTION.ADD, ACCOUNT.UPDATE, BLOCKCHAIN.SYNCED],
         resultTxs: {
             'xpub-btc-deviceState': [
-                { blockHeight: undefined, blockHash: '4', txid: '4' },
-                { blockHeight: 3, blockHash: '3', txid: '3' },
-                { blockHeight: 2, blockHash: '2', txid: '2' },
+                { blockHeight: undefined, blockHash: undefined, txid: '0500' },
+                { blockHeight: 4, blockHash: '04', txid: '0400' },
+                { blockHeight: 3, blockHash: '03', txid: '0300' },
             ],
         },
     },
@@ -138,12 +139,12 @@ const analyzeTransactionsExtended = [
         result: [TRANSACTION.REMOVE, TRANSACTION.ADD, ACCOUNT.UPDATE, BLOCKCHAIN.SYNCED],
         resultTxs: {
             'xpub-btc-deviceState': [
-                { blockHeight: undefined, blockHash: '4', txid: '4' },
-                { blockHeight: 3, blockHash: '3', txid: '3' },
-                { blockHeight: 2, blockHash: '2a', txid: '2a' },
-                { blockHeight: 1, blockHash: '1b', txid: '1b' },
-                { blockHeight: 1, blockHash: '1a', txid: '1a' },
-                { blockHeight: 0, blockHash: '0', txid: '0' },
+                { blockHeight: undefined, blockHash: '04aa', txid: '04aa01' },
+                { blockHeight: 4, blockHash: '04', txid: '0400' },
+                { blockHeight: 3, blockHash: '03aa', txid: '03aa00' },
+                { blockHeight: 2, blockHash: '02', txid: '0202' },
+                { blockHeight: 2, blockHash: '02', txid: '0201' },
+                { blockHeight: 1, blockHash: '01', txid: '0100' },
             ],
         },
     },
@@ -151,9 +152,9 @@ const analyzeTransactionsExtended = [
         result: [TRANSACTION.REMOVE, TRANSACTION.ADD, ACCOUNT.UPDATE, BLOCKCHAIN.SYNCED],
         resultTxs: {
             'xpub-btc-deviceState': [
-                { blockHeight: 3, blockHash: '3a', txid: '3a' },
-                { blockHeight: 2, blockHash: '2b', txid: '2b' },
-                { blockHeight: 2, blockHash: '2a', txid: '2a' },
+                { blockHeight: 4, blockHash: '04aa', txid: '04aa00' },
+                { blockHeight: 3, blockHash: '03aa', txid: '03aa01' },
+                { blockHeight: 3, blockHash: '03aa', txid: '03aa00' },
             ],
         },
     },

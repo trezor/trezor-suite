@@ -29,7 +29,7 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
         devices: state.devices,
         currentDevice: state.suite.device,
         accounts: state.wallet.accounts,
-        transactions: state.wallet.transactions,
+        transactions: state.wallet.transactions.transactions,
         blockchain: state.wallet.blockchain,
     }));
 
@@ -39,7 +39,7 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
     if (!found.length) return <View {...props} />;
 
     const account = found[0];
-    const accountTxs = accountUtils.getAccountTransactions(transactions.transactions, account);
+    const accountTxs = transactionUtils.getAccountTransactions(account.key, transactions);
     const tx = transactionUtils.findTransaction(txid, accountTxs);
     const accountDevice = accountUtils.findAccountDevice(account, devices);
     const confirmations = tx

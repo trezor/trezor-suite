@@ -1,7 +1,6 @@
 import produce from 'immer';
 import { AccountTransaction, AccountUtxo, AccountAddress } from '@trezor/connect';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
-import { getAccountKey } from '@wallet-utils/accountUtils';
 import { findTransaction } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction, Network } from '@wallet-types';
@@ -69,9 +68,8 @@ const update = (
     txid: string,
     updateObject: Partial<WalletAccountTransaction>,
 ) => {
-    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    initializeAccount(draft, accountHash);
-    const accountTxs = draft.transactions[accountHash];
+    initializeAccount(draft, account.key);
+    const accountTxs = draft.transactions[account.key];
     if (!accountTxs) return;
 
     const index = accountTxs.findIndex(t => t && t.txid === txid);
@@ -94,9 +92,8 @@ const add = (
     page?: number,
 ) => {
     if (transactions.length < 1) return;
-    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    initializeAccount(draft, accountHash);
-    const accountTxs = draft.transactions[accountHash];
+    initializeAccount(draft, account.key);
+    const accountTxs = draft.transactions[account.key];
     if (!accountTxs) return;
 
     transactions.forEach((tx, i) => {
@@ -128,8 +125,7 @@ const add = (
 };
 
 const remove = (draft: State, account: Account, txs: WalletAccountTransaction[]) => {
-    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    const transactions = draft.transactions[accountHash] || [];
+    const transactions = draft.transactions[account.key] || [];
     txs.forEach(tx => {
         const index = transactions.findIndex(t => t.txid === tx.txid);
         transactions.splice(index, 1);
@@ -143,7 +139,7 @@ const transactionReducer = (state: State = initialState, action: Action | Wallet
                 return action.payload.wallet.transactions;
             case ACCOUNT.REMOVE:
                 action.payload.forEach(a => {
-                    delete draft.transactions[getAccountKey(a.descriptor, a.symbol, a.deviceState)];
+                    delete draft.transactions[a.key];
                 });
                 break;
             case TRANSACTION.ADD:
@@ -153,13 +149,7 @@ const transactionReducer = (state: State = initialState, action: Action | Wallet
                 remove(draft, action.account, action.txs);
                 break;
             case TRANSACTION.RESET:
-                delete draft.transactions[
-                    getAccountKey(
-                        action.account.descriptor,
-                        action.account.symbol,
-                        action.account.deviceState,
-                    )
-                ];
+                delete draft.transactions[action.account.key];
                 break;
             case FIAT_RATES.TX_FIAT_RATE_UPDATE:
                 action.payload.forEach(u => {
