@@ -21,3 +21,4 @@ export * from './Select/SelectItem';
 export * from './VStack';
 export * from './HStack';
 export * from './Divider';
+export * from './TransactionItem';
