@@ -21,8 +21,11 @@ export const dispose = (): SelectedAccountAction => ({
 const getAccountStateWithMode =
     (selectedAccount?: State) => (_dispatch: Dispatch, getState: GetState) => {
         const state = getState();
-        const { device, loaded } = state.suite;
-        if (!device || !loaded) return;
+        const {
+            device,
+            lifecycle: { status },
+        } = state.suite;
+        if (!device || status !== 'ready') return;
 
         // From this point there could be multiple loaders
         const mode: AccountWatchOnlyMode[] = [];

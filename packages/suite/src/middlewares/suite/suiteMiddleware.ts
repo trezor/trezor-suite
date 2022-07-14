@@ -1,23 +1,15 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE } from '@trezor/connect';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { BLOCKCHAIN } from '@wallet-actions/constants';
-import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import * as blockchainActions from '@wallet-actions/blockchainActions';
-import * as analyticsActions from '@suite-actions/analyticsActions';
-import * as messageSystemActions from '@suite-actions/messageSystemActions';
-import * as languageActions from '@settings-actions/languageActions';
-import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { sortByTimestamp } from '@suite-utils/device';
 import { handleProtocolRequest } from '@suite-actions/protocolActions';
 import { addToast } from '@suite-actions/notificationActions';
 
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
-    async (action: Action): Promise<Action> => {
+    (action: Action): Action => {
         const prevApp = api.getState().router.app;
         if (action.type === ROUTER.LOCATION_CHANGE && action.payload.app !== prevApp) {
             api.dispatch({ type: SUITE.APP_CHANGED, payload: action.payload.app });
@@ -46,57 +38,6 @@ const suite =
                     );
                 }
                 break;
-            case SUITE.INIT: {
-                // select first device from storage
-                const {
-                    suite: {
-                        device,
-                        settings: { language },
-                    },
-                    devices,
-                    analytics,
-                } = api.getState();
-                if (!device && devices && devices[0]) {
-                    // if there are force remember devices, forget them and pick the first one of them as selected device
-                    const forcedDevices = devices.filter(d => d.forceRemember && d.remember);
-                    forcedDevices.forEach(d => {
-                        api.dispatch(suiteActions.toggleRememberDevice(d));
-                    });
-                    api.dispatch(
-                        suiteActions.selectDevice(
-                            forcedDevices.length
-                                ? forcedDevices[0]
-                                : sortByTimestamp([...devices])[0],
-                        ),
-                    );
-                }
-                // right after storage is loaded, we might start:
-                // 1. init analytics
-                api.dispatch(analyticsActions.init(analytics));
-                // 2. fetching locales
-                // 3. fetch message system config
-                // 4. redirecting user into welcome screen (if needed)
-                await Promise.all([
-                    api.dispatch(languageActions.setLanguage(language)),
-                    api.dispatch(messageSystemActions.init()),
-                    api.dispatch(routerActions.initialRedirection()),
-                ]);
-                // 5. init connect;
-                api.dispatch(trezorConnectActions.init());
-                break;
-            }
-            case SUITE.CONNECT_INITIALIZED:
-                // @trezor/connect init successfully
-                api.dispatch(blockchainActions.init());
-                break;
-            case BLOCKCHAIN.READY: {
-                // dispatch initial location change
-                api.dispatch(routerActions.init());
-                // backend connected, suite is ready to use
-                api.dispatch(suiteActions.onSuiteReady());
-                break;
-            }
-
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
                 api.dispatch(suiteActions.handleDeviceConnect(action.payload));

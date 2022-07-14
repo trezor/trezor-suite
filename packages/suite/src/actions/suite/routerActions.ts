@@ -89,7 +89,6 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
         const url = history.location.pathname + history.location.hash;
-
         dispatch(onLocationChange(url));
     }
 };
@@ -168,15 +167,15 @@ export const closeModalApp =
  * Called from `@suite-middlewares/suiteMiddleware`
  * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
-export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
+export const initialRedirection = () => (dispatch: Dispatch, getState: GetState) => {
     const route = findRoute(history.location.pathname + history.location.hash);
     const { initialRun } = getState().suite.flags;
 
     if (route && route.isForegroundApp) {
-        await dispatch(goto(route.name));
+        dispatch(goto(route.name));
     } else if (route && initialRun) {
         // only do initial redirection of route is valid
-        await dispatch(goto('onboarding-index'));
+        dispatch(goto('onboarding-index'));
     }
     // otherwise do nothing -> just show 404 page
 };
