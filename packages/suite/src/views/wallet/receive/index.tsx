@@ -8,6 +8,7 @@ import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
 
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
+import { Coinjoin } from './components/Coinjoin';
 
 const Receive = () => {
     const { selectedAccount, receive, device } = useSelector(state => ({
@@ -38,6 +39,7 @@ const Receive = () => {
     return (
         <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_RECEIVE" />
+            <Coinjoin />
             <FreshAddress
                 account={account}
                 addresses={receive}
