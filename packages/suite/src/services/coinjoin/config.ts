@@ -1,4 +1,4 @@
-const REGTEST_URL = 'https://dev-coinjoin.trezor.io/'; // 'https://coinjoin-dev.sldev.cz/'; // 'http://localhost:8081/';
+export const REGTEST_URL = 'https://dev-coinjoin.trezor.io/'; // 'https://coinjoin-dev.sldev.cz/'; // 'http://localhost:8081/';
 
 export const COINJOIN_NETWORKS: Record<string, any> = {
     regtest: {
