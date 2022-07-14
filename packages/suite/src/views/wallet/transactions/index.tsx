@@ -1,6 +1,6 @@
 import React from 'react';
 import { WalletLayout } from '@wallet-components';
-import { getAccountTransactions } from '@wallet-utils/accountUtils';
+import { getAccountTransactions } from '@wallet-utils/transactionUtils';
 import { useSelector } from '@suite-hooks';
 import { AppState } from '@suite-types';
 
@@ -51,7 +51,7 @@ const Transactions = () => {
 
     const { account } = selectedAccount;
 
-    const accountTransactions = getAccountTransactions(transactions.transactions, account);
+    const accountTransactions = getAccountTransactions(account.key, transactions.transactions);
 
     if (accountTransactions.length > 0 || transactions.isLoading) {
         return (

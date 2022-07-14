@@ -7,6 +7,7 @@ const DEFAULT_ACCOUNT = {
     symbol: 'btc',
     networkType: 'bitcoin',
     descriptor: 'xpub',
+    key: 'xpub-btc-deviceState',
     history: {
         total: 0,
     },

@@ -1,4 +1,3 @@
-import { State as TransactionsState } from '@wallet-reducers/transactionReducer';
 import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
 import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
 import BigNumber from 'bignumber.js';
@@ -274,14 +273,6 @@ export const isNetworkSymbol = (symbol: string): symbol is Network['symbol'] =>
  */
 export const getAccountKey = (descriptor: string, symbol: string, deviceState: string) =>
     `${descriptor}-${symbol}-${deviceState}`;
-
-export const getAccountTransactions = (
-    transactions: TransactionsState['transactions'],
-    account: Account,
-) => {
-    const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    return transactions[accountHash] || [];
-};
 
 export const countUniqueCoins = (accounts: Account[]) => {
     const coins = new Set();

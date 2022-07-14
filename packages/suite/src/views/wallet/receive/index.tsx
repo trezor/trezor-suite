@@ -4,8 +4,7 @@ import { useDevice, useSelector, useActions } from '@suite-hooks';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
-import { isPending } from '@wallet-utils/transactionUtils';
-import { getAccountTransactions } from '@wallet-utils/accountUtils';
+import { isPending, getAccountTransactions } from '@wallet-utils/transactionUtils';
 
 const Receive = () => {
     const { selectedAccount, receive, device, transactions } = useSelector(state => ({
@@ -28,7 +27,7 @@ const Receive = () => {
     const { account } = selectedAccount;
     const disabled = !!device.authConfirm;
 
-    const pendingTxs = getAccountTransactions(transactions, account).filter(isPending);
+    const pendingTxs = getAccountTransactions(account.key, transactions).filter(isPending);
     const pendingAddresses: string[] = [];
     pendingTxs.forEach(t =>
         t.targets.forEach(target => target.addresses?.forEach(a => pendingAddresses.unshift(a))),

@@ -7,7 +7,7 @@ import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { getUnixTime } from 'date-fns';
-import { isPending } from '@wallet-utils/transactionUtils';
+import { isPending, getAccountTransactions } from '@wallet-utils/transactionUtils';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@wallet-constants/sendForm';
 
 export type CardanoStakingAction =
@@ -66,9 +66,10 @@ export const validatePendingTxOnBlock =
             // just to make ts happy, filtering is already done above
             if (account.networkType !== 'cardano') return;
 
-            const accountPendingTransactions = accountUtils
-                .getAccountTransactions(getState().wallet.transactions.transactions, account)
-                .filter(tx => isPending(tx));
+            const accountPendingTransactions = getAccountTransactions(
+                account.key,
+                getState().wallet.transactions.transactions,
+            ).filter(tx => isPending(tx));
 
             accountPendingTransactions.forEach(tx => {
                 if (tx.blockTime && ts - tx.blockTime > CARDANO_DEFAULT_TTL_OFFSET) {

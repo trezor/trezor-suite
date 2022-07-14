@@ -80,4 +80,12 @@ describe('transaction utils', () => {
             }
         });
     });
+
+    fixtures.getAccountTransactions.forEach(f => {
+        it(`getAccountTransactions${f.testName}`, () => {
+            expect(utils.getAccountTransactions(f.account.key, f.transactions as any)).toEqual(
+                f.result,
+            );
+        });
+    });
 });

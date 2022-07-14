@@ -17,6 +17,15 @@ export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountT
     return blockB - blockA;
 };
 
+export const getAccountTransactions = (
+    accountKey: string,
+    transactions: Record<string, WalletAccountTransaction[]>,
+) => {
+    const txs = transactions[accountKey] || [];
+    // clone array (read-only from reducer) and sort by blockHeight
+    return txs.slice(0).sort(sortByBlockHeight);
+};
+
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
  * Pending txs are assigned to key 'pending'.

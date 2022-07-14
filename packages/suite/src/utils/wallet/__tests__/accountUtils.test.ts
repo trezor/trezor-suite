@@ -87,18 +87,6 @@ describe('account utils', () => {
         );
     });
 
-    fixtures.getAccountTransactions.forEach(f => {
-        it(`getAccountTransactions${f.testName}`, () => {
-            expect(
-                accountUtils.getAccountTransactions(
-                    // @ts-ignore TODO: Missing isAddress on TransactionTarget coming from connect/blockbook?
-                    f.transactions as TransactionsState['transactions'],
-                    f.account as Account,
-                ),
-            ).toEqual(f.result);
-        });
-    });
-
     it('getSelectedAccount null', () => {
         const res = accountUtils.getSelectedAccount(undefined, [], undefined);
         expect(res).toBeNull();
