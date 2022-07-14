@@ -23,6 +23,7 @@ import { getAccountTransactions } from '@wallet-utils/transactionUtils';
 import { getAccountIdentifier } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
 import { SETTINGS } from '@suite/config/suite';
+import { preloadStore } from '@suite-support/preloadStore';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
 
@@ -172,8 +173,7 @@ describe('Storage actions', () => {
         // change local currency in the reducer, changes should be synced to the db via storageMiddleware
         await store.dispatch(walletSettingsActions.setLocalCurrency('czk'));
         const { settings } = store.getState().wallet;
-        // triggers SUITE.LOADED action with objects from the DB inside the payload prop
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
 
         // check if stored local currency is 'czk'
         expect(store.getState().wallet.settings.localCurrency).toEqual('czk');
@@ -190,7 +190,7 @@ describe('Storage actions', () => {
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
         await store.dispatch(suiteActions.initialRunCompleted());
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
 
         expect(store.getState().suite.flags.initialRun).toEqual(false);
         // @ts-ignore
@@ -198,26 +198,28 @@ describe('Storage actions', () => {
     });
 
     it('should store, override and remove send form', async () => {
-        const store = mockStore(getInitialState());
+        let store = mockStore(getInitialState());
         updateStore(store);
 
         // @ts-ignore partial params
         await storageActions.saveDraft({ address: 'a' }, 'account-key');
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
         expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'a' } });
 
         // @ts-ignore partial params
         await storageActions.saveDraft({ address: 'b' }, 'account-key');
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
         expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'b' } });
 
         await storageActions.removeDraft('account-key');
-        await store.dispatch(storageActions.loadStorage());
+        store = mockStore(getInitialState());
+        updateStore(store);
+        store.dispatch(await preloadStore());
         expect(store.getState().wallet.send.drafts).toEqual({});
     });
 
     it('should store remembered device', async () => {
-        const store = mockStore(
+        let store = mockStore(
             getInitialState({
                 devices: [dev1, dev2, dev2Instance1],
                 wallet: {
@@ -255,7 +257,7 @@ describe('Storage actions', () => {
             }),
         );
 
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
 
         // stored devices
         const load1 = store.getState();
@@ -303,7 +305,9 @@ describe('Storage actions', () => {
 
         // forget dev1
         await store.dispatch(storageActions.forgetDevice(dev1));
-        await store.dispatch(storageActions.loadStorage());
+        store = mockStore(getInitialState());
+        updateStore(store);
+        store.dispatch(await preloadStore());
 
         const load2 = store.getState();
         // device deleted, dev2 and dev2Instance1 should still be there
@@ -330,12 +334,12 @@ describe('Storage actions', () => {
         // forget device dev1 along with its instances
         await store.dispatch(storageActions.rememberDevice(dev2, false));
         await store.dispatch(storageActions.rememberDevice(dev2Instance1, false));
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
         expect(store.getState().devices.length).toEqual(0);
     });
 
     it('should remove all txs for the acc', async () => {
-        const store = mockStore(
+        let store = mockStore(
             getInitialState({
                 devices: [dev1, dev2],
                 wallet: {
@@ -355,8 +359,9 @@ describe('Storage actions', () => {
 
         // remove txs for acc 1
         await storageActions.removeAccountTransactions(acc1);
-
-        await store.dispatch(storageActions.loadStorage());
+        store = mockStore(getInitialState());
+        updateStore(store);
+        store.dispatch(await preloadStore());
 
         const state = store.getState();
 
@@ -397,7 +402,7 @@ describe('Storage actions', () => {
             },
         });
 
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
         expect(store.getState().devices[0].label).toBe('New Label');
     });
 
@@ -443,7 +448,7 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.rememberDevice(dev1, true));
 
         // verify that graph data are stored
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
         expect(store.getState().wallet.graph.data.length).toBe(2);
 
         // disable btc network, enable ltc
@@ -452,7 +457,7 @@ describe('Storage actions', () => {
         await store.dispatch(accountActions.disableAccounts());
 
         // verify that graph data for acc1 were removed
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
         expect(store.getState().wallet.graph.data.length).toBe(1);
         expect(store.getState().wallet.graph.data[0].account.symbol).toBe('ltc');
     });
@@ -467,7 +472,7 @@ describe('Storage actions', () => {
 
         // store in db
         await store.dispatch(storageActions.rememberDevice(devNotRemembered, true, true));
-        await store.dispatch(storageActions.loadStorage());
+        store.dispatch(await preloadStore());
         expect(store.getState().devices[0].remember).toBe(true);
         expect(store.getState().devices[0].forceRemember).toBe(true);
     });
