@@ -32,7 +32,7 @@ export const create = (
         index: discoveryItem.index,
         path: discoveryItem.path,
         descriptor: accountInfo.descriptor,
-        key: `${accountInfo.descriptor}-${discoveryItem.coin}-${deviceState}`,
+        key: accountUtils.getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
         empty: accountInfo.empty,

@@ -27,16 +27,11 @@ export const getPendingStakeTx =
 
 export const setPendingStakeTx =
     (account: Account, payload: string | null) => (dispatch: Dispatch) => {
-        const accountKey = accountUtils.getAccountKey(
-            account.descriptor,
-            account.symbol,
-            account.deviceState,
-        );
         if (payload) {
             dispatch({
                 type: CARDANO_STAKING.ADD_PENDING_STAKE_TX,
                 pendingStakeTx: {
-                    accountKey,
+                    accountKey: account.key,
                     txid: payload,
                     ts: getUnixTime(new Date()),
                 },
@@ -44,7 +39,7 @@ export const setPendingStakeTx =
         } else {
             dispatch({
                 type: CARDANO_STAKING.REMOVE_PENDING_STAKE_TX,
-                accountKey,
+                accountKey: account.key,
             });
         }
     };
