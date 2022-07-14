@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 
-import { SUITE } from '@suite-actions/constants';
 import { SuiteLayout } from '@suite-components';
 import InitialLoading from './components/InitialLoading';
 import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
@@ -10,6 +9,7 @@ import { Onboarding } from '@onboarding-views';
 import { getPrerequisites } from '@suite-utils/prerequisites';
 import ErrorPage from '@suite-views/error';
 import { useGuideKeyboard } from '@guide-hooks';
+import { init } from '@suite-actions/initAction';
 
 import type { AppState } from '@suite-types';
 
@@ -29,15 +29,12 @@ interface PreloaderProps {
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
 const Preloader = ({ children }: PreloaderProps) => {
-    const { suiteInit } = useActions({
-        suiteInit: () => ({ type: SUITE.INIT } as const),
+    const { initSuite } = useActions({
+        initSuite: init,
     });
 
-    const { loading, loaded, error, dbError, router, transport } = useSelector(state => ({
-        loading: state.suite.loading,
-        loaded: state.suite.loaded,
-        error: state.suite.error,
-        dbError: state.suite.dbError,
+    const { lifecycle, router, transport } = useSelector(state => ({
+        lifecycle: state.suite.lifecycle,
         transport: state.suite.transport,
         router: state.router,
     }));
@@ -45,20 +42,18 @@ const Preloader = ({ children }: PreloaderProps) => {
     const { device } = useDiscovery();
 
     useEffect(() => {
-        if (!loading && !loaded && !error && !dbError) {
-            suiteInit();
-        }
-    }, [loaded, loading, error, dbError, suiteInit]);
+        initSuite();
+    }, [initSuite]);
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
 
-    if (error) {
-        // @trezor/connect initialization failed
-        // throw error to <ErrorBoundary /> in _app.tsx
-        throw new Error(error);
-    } else if (dbError) {
-        return <DatabaseUpgradeModal variant={dbError} />;
+    if (lifecycle.status === 'error') {
+        throw new Error(lifecycle.error);
+    }
+
+    if (lifecycle.status === 'db-error') {
+        return <DatabaseUpgradeModal variant={lifecycle.error} />;
     }
 
     // check prerequisites for requested app
@@ -75,8 +70,8 @@ const Preloader = ({ children }: PreloaderProps) => {
 
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     // display Loader as full page view
-    if (!router.loaded || !loaded || !transport) {
-        return <InitialLoading />;
+    if (lifecycle.status !== 'ready' || !router.loaded || !transport) {
+        return <InitialLoading timeout={90} />;
     }
 
     // display prerequisite for regular application as page view

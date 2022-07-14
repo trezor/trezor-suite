@@ -43,8 +43,9 @@ jest.mock('@suite-components/Translation', () => ({
 
 export const getInitialState = ({ suite, router }: any = {}) => ({
     suite: {
-        loading: false,
-        loaded: true,
+        lifecycle: {
+            status: 'ready',
+        },
         transport: { type: undefined },
         settings: { debug: {}, theme: { variant: 'light' } },
         online: true,
@@ -102,8 +103,9 @@ describe('Preloader component', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    loading: true,
-                    loaded: false,
+                    lifecycle: {
+                        status: 'loading',
+                    },
                 },
             }),
         );

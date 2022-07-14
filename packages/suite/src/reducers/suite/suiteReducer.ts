@@ -23,6 +23,16 @@ export interface AutodetectSettings {
     theme: boolean;
 }
 
+export type SuiteLifecycle =
+    | { status: 'initial' }
+    | { status: 'loading' }
+    | { status: 'ready' }
+    // errors set from connect, should be renamed
+    | { status: 'error'; error: string }
+    // blocked if the instance cannot upgrade due to older version running,
+    // blocking in case instance is running older version thus blocking other instance
+    | { status: 'db-error'; error: 'blocking' | 'blocked' };
+
 export interface Flags {
     initialRun: boolean; // true on very first launch of Suite, will switch to false after completing onboarding process
     // is not saved to storage at the moment, so for simplicity of types set to be optional now
@@ -50,10 +60,7 @@ export interface SuiteSettings {
 export interface SuiteState {
     online: boolean;
     torStatus: TorStatus;
-    loading: boolean;
-    loaded: boolean;
-    error?: string; // errors set from connect, should be renamed
-    dbError?: 'blocking' | 'blocked' | undefined; // blocked if the instance cannot upgrade due to older version running, blocking in case instance is running older version thus blocking other instance
+    lifecycle: SuiteLifecycle;
     transport?: Partial<TransportInfo>;
     device?: TrezorDevice;
     locks: Lock[];
@@ -64,8 +71,7 @@ export interface SuiteState {
 const initialState: SuiteState = {
     online: true,
     torStatus: TorStatus.Disabled,
-    loading: false,
-    loaded: false,
+    lifecycle: { status: 'initial' },
     locks: [],
     flags: {
         initialRun: true,
@@ -124,20 +130,17 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 };
                 break;
             case STORAGE.ERROR:
-                draft.dbError = action.payload;
+                draft.lifecycle = { status: 'db-error', error: action.payload };
                 break;
             case SUITE.INIT:
-                draft.loading = true;
+                draft.lifecycle = { status: 'loading' };
                 break;
             case SUITE.READY:
-                draft.loading = false;
-                draft.loaded = true;
+                draft.lifecycle = { status: 'ready' };
                 break;
 
             case SUITE.ERROR:
-                draft.loading = false;
-                draft.loaded = false;
-                draft.error = action.error;
+                draft.lifecycle = { status: 'error', error: action.error };
                 break;
 
             case SUITE.SELECT_DEVICE:

@@ -4,7 +4,6 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     BLOCKCHAIN_EVENT,
 } from '@trezor/connect';
-import { SUITE } from '@suite-actions/constants';
 import { lockDevice } from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import { isWeb } from '@suite-utils/env';
@@ -135,10 +134,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
                 appUrl: '@trezor/suite',
             },
         });
-
-        dispatch({
-            type: SUITE.CONNECT_INITIALIZED,
-        });
     } catch (error) {
         let formattedError: string;
         if (typeof error === 'string') {
@@ -146,9 +141,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         } else {
             formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
         }
-        dispatch({
-            type: SUITE.ERROR,
-            error: formattedError,
-        });
+        throw new Error(formattedError);
     }
 };

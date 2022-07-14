@@ -78,25 +78,18 @@ const initStore = (state: State) => {
 };
 
 describe('TrezorConnect Actions', () => {
-    it('Success', async () => {
+    it('Success', () => {
         const state = getInitialState();
         const store = initStore(state);
-        await store.dispatch(init());
-        const action = store.getActions().pop();
-        expect(action.type).toEqual(SUITE.CONNECT_INITIALIZED);
+        expect(() => store.dispatch(init())).not.toThrow();
     });
 
     it('Error', async () => {
         require('@trezor/connect').setTestFixtures(() => new Error('Iframe error'));
         const state = getInitialState();
         const store = initStore(state);
-        await store.dispatch(init());
+        await expect(() => store.dispatch(init())).rejects.toThrow('Iframe error');
         require('@trezor/connect').setTestFixtures(undefined);
-        const action = store.getActions().pop();
-        expect(action).toEqual({
-            type: SUITE.ERROR,
-            error: 'Iframe error',
-        });
     });
 
     it('TypedError', async () => {
@@ -106,36 +99,26 @@ describe('TrezorConnect Actions', () => {
         }));
         const state = getInitialState();
         const store = initStore(state);
-        await store.dispatch(init());
+        await expect(() => store.dispatch(init())).rejects.toThrow('SomeCode: Iframe error');
         require('@trezor/connect').setTestFixtures(undefined);
-        const action = store.getActions().pop();
-        expect(action).toEqual({
-            type: SUITE.ERROR,
-            error: 'SomeCode: Iframe error',
-        });
     });
 
     it('Error as string', async () => {
         require('@trezor/connect').setTestFixtures(() => 'Iframe error');
         const state = getInitialState();
         const store = initStore(state);
-        await store.dispatch(init());
+        await expect(() => store.dispatch(init())).rejects.toThrow('Iframe error');
         require('@trezor/connect').setTestFixtures(undefined);
-        const action = store.getActions().pop();
-        expect(action).toEqual({
-            type: SUITE.ERROR,
-            error: 'Iframe error',
-        });
     });
 
-    it('Events', async () => {
+    it('Events', () => {
         const defaultSuiteType = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState();
         const store = initStore(state);
-        await store.dispatch(init());
+        expect(() => store.dispatch(init())).not.toThrow();
+
         const actions = store.getActions();
-        expect(actions.pop().type).toEqual(SUITE.CONNECT_INITIALIZED);
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { emit } = require('@trezor/connect');
 

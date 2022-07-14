@@ -6,7 +6,6 @@ import receiveReducer from '@wallet-reducers/receiveReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import { init } from '@suite-actions/trezorConnectActions';
-import { SUITE } from '@suite-actions/constants';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import fixtures from '../__fixtures__/receiveActions';
 
@@ -118,7 +117,7 @@ const initStore = (state: State) => {
         const { receive } = store.getState().wallet;
         store.getState().wallet.receive = receiveReducer(receive, action);
         // add action back to stack
-        if (action.type !== SUITE.CONNECT_INITIALIZED) store.getActions().push(action);
+        store.getActions().push(action);
     });
     return store;
 };

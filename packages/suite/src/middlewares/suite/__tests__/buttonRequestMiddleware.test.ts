@@ -108,8 +108,6 @@ describe('buttonRequest middleware', () => {
         // not interested in the last action (its from changePin mock);
         store.getActions().pop();
         expect(store.getActions()).toMatchObject([
-            { type: SUITE.CONNECT_INITIALIZED },
-            { type: 'mocked' }, // we don't care about this one, it is from middleware flow
             { type: SUITE.LOCK_DEVICE, payload: true },
             { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             {

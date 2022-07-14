@@ -80,8 +80,6 @@ describe('Backup Actions', () => {
         await store.dispatch(init());
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
-        // discard @suite/trezor-connect-initialized action we don't care about it in this test
-        store.getActions().shift();
 
         expect(store.getActions().shift()).toEqual({
             type: BACKUP.SET_STATUS,
@@ -106,8 +104,6 @@ describe('Backup Actions', () => {
         await store.dispatch(init());
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
-        // discard @suite/trezor-connect-initialized action we don't care about it in this test
-        store.getActions().shift();
 
         expect(store.getActions().shift()).toEqual({
             type: BACKUP.SET_STATUS,

@@ -33,9 +33,6 @@ const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 
 export type BlockchainAction =
     | {
-          type: typeof BLOCKCHAIN.READY;
-      }
-    | {
           type: typeof BLOCKCHAIN.CONNECTED;
           payload: Network['symbol'];
       }
@@ -226,9 +223,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) {
         // continue suite initialization
-        dispatch({
-            type: BLOCKCHAIN.READY,
-        });
         return;
     }
 
@@ -243,9 +237,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await Promise.all(promises);
 
     // continue suite initialization
-    dispatch({
-        type: BLOCKCHAIN.READY,
-    });
 };
 
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action

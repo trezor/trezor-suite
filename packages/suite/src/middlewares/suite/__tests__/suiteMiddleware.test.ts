@@ -7,11 +7,9 @@ import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
 import analyticsReducer from '@suite-reducers/analyticsReducer';
-import * as routerActions from '@suite-actions/routerActions';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 
-import routes from '@suite-constants/routes';
-import { Action } from '@suite-types';
+import type { Action } from '@suite-types';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
@@ -140,76 +138,6 @@ describe('suite middleware', () => {
                 payload,
             });
             expect(store.getActions()).toEqual([{ type: ROUTER.LOCATION_CHANGE, payload }]);
-        });
-    });
-
-    describe('redirection on initial run', () => {
-        it('if initialRun is true, should redirect to onboarding screen after SUITE.INIT action', () => {
-            // eslint-disable-next-line global-require
-            require('@suite/support/history').default.location.pathname = '/accounts';
-
-            // @ts-ignore
-            const store = initStore(getInitialState(undefined, { flags: { initialRun: true } }));
-
-            store.dispatch({ type: SUITE.INIT });
-
-            // redirect to suite-welcome called once
-            const locationChangedAction = store
-                .getActions()
-                .filter(a => a.type === ROUTER.LOCATION_CHANGE);
-            expect(locationChangedAction.length).toBe(1);
-            expect(locationChangedAction[0].payload.url).toBe(
-                routes.find(r => r.name === 'onboarding-index')?.pattern,
-            );
-        });
-
-        it('if route is modal window, should not redirect and show modal directly', () => {
-            // eslint-disable-next-line global-require
-            require('@suite/support/history').default.location.pathname = '/version';
-
-            // @ts-ignore
-            const store = initStore(getInitialState(undefined, { flags: { initialRun: true } }));
-
-            store.dispatch({ type: SUITE.INIT });
-
-            // redirect to suite-version called once
-            const locationChangedAction = store
-                .getActions()
-                .filter(a => a.type === ROUTER.LOCATION_CHANGE);
-            expect(locationChangedAction.length).toBe(1);
-            expect(locationChangedAction[0].payload.url).toBe(
-                routes.find(r => r.name === 'suite-version')?.pattern,
-            );
-        });
-
-        it('if route is 404, should not redirect and show modal directly', () => {
-            const goto = jest.spyOn(routerActions, 'goto');
-            // eslint-disable-next-line global-require
-            require('@suite/support/history').default.location.pathname = '/foo-bar';
-
-            // @ts-ignore
-            const store = initStore(getInitialState(undefined, { flags: { initialRun: true } }));
-
-            store.dispatch({ type: SUITE.INIT });
-
-            expect(goto).toHaveBeenCalledTimes(0);
-
-            goto.mockClear();
-        });
-
-        it('if initialRun is false should NOT redirect to onboarding after SUITE.INIT action', () => {
-            // eslint-disable-next-line global-require
-            require('@suite/support/history').default.location.pathname = '/';
-
-            // @ts-ignore
-            const store = initStore(getInitialState(undefined, { flags: { initialRun: false } }));
-
-            store.dispatch({ type: SUITE.INIT });
-
-            const locationChangedAction = store
-                .getActions()
-                .filter(a => a.type === ROUTER.LOCATION_CHANGE);
-            expect(locationChangedAction.length).toBe(0);
         });
     });
 });

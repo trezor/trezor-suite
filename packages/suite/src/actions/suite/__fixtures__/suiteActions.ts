@@ -16,12 +16,17 @@ const CONNECT_DEVICE = getConnectDevice({ path: '1' });
 
 const reducerActions = [
     {
-        description: `onSuiteReady`,
-        actions: [suiteActions.onSuiteReady()],
+        description: `SUITE.READY`,
+        actions: [
+            {
+                type: SUITE.READY,
+            },
+        ],
         result: [
             {
-                loading: false,
-                loaded: true,
+                lifecycle: {
+                    status: 'ready',
+                },
             },
         ],
     },
@@ -35,9 +40,10 @@ const reducerActions = [
         ],
         result: [
             {
-                loading: false,
-                loaded: false,
-                error: 'Error',
+                lifecycle: {
+                    status: 'error',
+                    error: 'Error',
+                },
             },
         ],
     },
@@ -50,8 +56,9 @@ const reducerActions = [
         ],
         result: [
             {
-                loading: true,
-                loaded: false,
+                lifecycle: {
+                    status: 'loading',
+                },
             },
         ],
     },
@@ -752,7 +759,6 @@ const acquireDevice = [
     {
         description: `without device`,
         state: {},
-        result: SUITE.CONNECT_INITIALIZED,
     },
 ];
 
