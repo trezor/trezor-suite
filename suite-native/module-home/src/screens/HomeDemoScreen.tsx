@@ -22,6 +22,7 @@ import {
     InputWrapper,
     Input,
     VStack,
+    TransactionItem,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, StackProps } from '@suite-native/navigation';
@@ -272,6 +273,18 @@ export const HomeDemoScreen = ({
                             isChecked={radioChecked === 'firstSelectable'}
                         />
                     </Box>
+                    <TransactionItem
+                        cryptoCurrencySymbol="BTC"
+                        amountInCrypto={0.07812302}
+                        amountInFiat={23250}
+                        transactionStatus="received"
+                    />
+                    <TransactionItem
+                        cryptoCurrencySymbol="ETH"
+                        amountInCrypto={123}
+                        amountInFiat={23250}
+                        transactionStatus="sent"
+                    />
                 </Box>
             </Box>
         </Screen>

@@ -19,6 +19,7 @@ export const HomeScreen = ({
             >
                 See Component Demo
             </Button>
+            <Box marginVertical="small" />
         </Box>
     </Screen>
 );
