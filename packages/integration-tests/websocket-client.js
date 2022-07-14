@@ -1,5 +1,8 @@
+/* eslint-disable no-await-in-loop,no-async-promise-executor */
+
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
+
 const { createDeferred } = require('@trezor/utils');
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
@@ -111,7 +114,12 @@ class Controller extends EventEmitter {
             const dfd = this.messages.find(m => m.id === id);
 
             if (resp.type === 'client') {
-                this.emit('firmwares', resp.firmwares);
+                const { firmwares } = resp;
+                if (!firmwares['1'] || !firmwares['2'] || !firmwares.R) {
+                    throw new Error('unexpected response in firmwares event');
+                }
+
+                this.emit('firmwares', firmwares);
             }
 
             if (dfd) {
@@ -153,24 +161,25 @@ class Controller extends EventEmitter {
         // it will be be cancelled by this.init or this.dispose after the error
         this.setConnectionTimeout();
 
-        // create deferred promise
-        const dfd = createDeferred(-1);
+        const firmwaresEventPromise = createDeferred();
 
         // initialize connection
         const ws = new WebSocket(url);
         ws.once('error', error => {
             this.dispose();
-            dfd.reject(new Error('websocket_runtime_error: ', error.message));
+            firmwaresEventPromise.reject(new Error('websocket_runtime_error: ', error.message));
         });
         ws.on('open', () => {
             this.init();
-            dfd.resolve();
+        });
+        this.on('firmwares', firmwares => {
+            firmwaresEventPromise.resolve(firmwares);
         });
 
         this.ws = ws;
 
         // wait for onopen event
-        return dfd.promise;
+        return firmwaresEventPromise.promise;
     }
 
     init() {

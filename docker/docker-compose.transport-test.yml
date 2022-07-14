@@ -10,6 +10,6 @@ services:
     image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:latest
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
-    command: bash -c "docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:transport"
+    command: bash -c "yarn workspace @trezor/integration-tests test:transport"
     volumes:
       - ../:/trezor-suite

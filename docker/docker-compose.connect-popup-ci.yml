@@ -21,6 +21,6 @@ services:
       - CI_COMMIT_BRANCH=$CI_COMMIT_BRANCH
       - CI_JOB_NAME=$CI_JOB_NAME
     working_dir: /e2e
-    command: bash -c "npx playwright install && docker/wait-for-env.sh && yarn workspace @trezor/integration-tests test:connect-popup"
+    command: bash -c "npx playwright install && yarn workspace @trezor/integration-tests test:connect-popup"
     volumes:
       - ../:/e2e
