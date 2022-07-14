@@ -2,7 +2,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { SUITE, ROUTER, STORAGE, ANALYTICS } from '@suite-actions/constants';
+import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
@@ -144,26 +144,14 @@ describe('suite middleware', () => {
     });
 
     describe('redirection on initial run', () => {
-        it('if initialRun is true, should redirect to onboarding screen after STORAGE.LOADED action', () => {
+        it('if initialRun is true, should redirect to onboarding screen after SUITE.INIT action', () => {
             // eslint-disable-next-line global-require
             require('@suite/support/history').default.location.pathname = '/accounts';
 
-            const store = initStore(getInitialState());
+            // @ts-ignore
+            const store = initStore(getInitialState(undefined, { flags: { initialRun: true } }));
 
-            store.dispatch({
-                type: STORAGE.LOADED,
-                payload: {
-                    suite: {
-                        settings: {
-                            language: 'cs',
-                        },
-                        flags: {
-                            initialRun: true,
-                        },
-                    },
-                    analytics: {},
-                },
-            });
+            store.dispatch({ type: SUITE.INIT });
 
             // redirect to suite-welcome called once
             const locationChangedAction = store
@@ -179,22 +167,10 @@ describe('suite middleware', () => {
             // eslint-disable-next-line global-require
             require('@suite/support/history').default.location.pathname = '/version';
 
-            const store = initStore(getInitialState());
+            // @ts-ignore
+            const store = initStore(getInitialState(undefined, { flags: { initialRun: true } }));
 
-            store.dispatch({
-                type: STORAGE.LOADED,
-                payload: {
-                    suite: {
-                        settings: {
-                            language: 'cs',
-                        },
-                        flags: {
-                            initialRun: true,
-                        },
-                    },
-                    analytics: {},
-                },
-            });
+            store.dispatch({ type: SUITE.INIT });
 
             // redirect to suite-version called once
             const locationChangedAction = store
@@ -211,49 +187,29 @@ describe('suite middleware', () => {
             // eslint-disable-next-line global-require
             require('@suite/support/history').default.location.pathname = '/foo-bar';
 
-            const store = initStore(getInitialState());
+            // @ts-ignore
+            const store = initStore(getInitialState(undefined, { flags: { initialRun: true } }));
 
-            store.dispatch({
-                type: STORAGE.LOADED,
-                payload: {
-                    suite: {
-                        settings: {
-                            language: 'cs',
-                        },
-                        flags: {
-                            initialRun: true,
-                        },
-                    },
-                    analytics: {},
-                },
-            });
+            store.dispatch({ type: SUITE.INIT });
+
             expect(goto).toHaveBeenCalledTimes(0);
 
             goto.mockClear();
         });
 
-        it('if initialRun is false should NOT redirect to onboarding after STORAGE.LOADED action', () => {
-            const goto = jest.spyOn(routerActions, 'goto');
+        it('if initialRun is false should NOT redirect to onboarding after SUITE.INIT action', () => {
             // eslint-disable-next-line global-require
             require('@suite/support/history').default.location.pathname = '/';
 
-            const store = initStore(getInitialState());
-            store.dispatch({
-                type: STORAGE.LOADED,
-                payload: {
-                    suite: {
-                        settings: {
-                            language: 'cs',
-                        },
-                        flags: {
-                            initialRun: false,
-                        },
-                    },
-                    analytics: {},
-                },
-            });
-            expect(goto).toHaveBeenCalledTimes(0);
-            goto.mockClear();
+            // @ts-ignore
+            const store = initStore(getInitialState(undefined, { flags: { initialRun: false } }));
+
+            store.dispatch({ type: SUITE.INIT });
+
+            const locationChangedAction = store
+                .getActions()
+                .filter(a => a.type === ROUTER.LOCATION_CHANGE);
+            expect(locationChangedAction.length).toBe(0);
         });
     });
 });

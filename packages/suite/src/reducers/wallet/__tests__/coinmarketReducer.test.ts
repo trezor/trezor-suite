@@ -27,14 +27,12 @@ describe('settings reducer', () => {
         ).toEqual(initialState);
     });
 
-    it('STORAGE.LOADED', () => {
+    it('STORAGE.LOAD', () => {
         expect(
             reducer(undefined, {
-                type: STORAGE.LOADED,
+                type: STORAGE.LOAD,
                 payload: {
-                    wallet: {
-                        settings: initialState,
-                    },
+                    coinmarketTrades: initialState.trades,
                 },
             } as any),
         ).toEqual(initialState);
