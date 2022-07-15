@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "rootDir": "../../../"
+    },
+    "references": [
+        { "path": "../../packages/type-utils" }
+    ],
+    "include": [
+        "suite-common/intl-types/**/*",
+        "packages/suite/src/components/suite/Translation/components/BaseTranslation/**/*"
+    ]
+}

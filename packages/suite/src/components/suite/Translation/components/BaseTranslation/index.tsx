@@ -1,6 +1,9 @@
 import React from 'react';
-import { FormattedMessage, MessageDescriptor } from 'react-intl';
-import messages from '@suite/support/messages';
+import { FormattedMessage } from 'react-intl';
+// We cannot use aliases here because this file is directly imported by the @suite-common/intl-types
+// It's little hacky by this will be solved when PR for refactor intl will be merged.
+import messages from '../../../../../support/messages';
+import { ExtendedMessageDescriptor as CommonExtendedMessageDescriptor } from '@suite-common/intl-types';
 
 export type TranslationKey = keyof typeof messages;
 interface TooltipProps {
@@ -17,19 +20,7 @@ type OwnProps = {
 
 type PrimitiveType = string | number | boolean | Date | null | undefined;
 
-// Add MessageDescriptor type to values entry
-// eslint-disable-next-line @typescript-eslint/ban-types
-type FormatXMLElementFn = (...args: any[]) => string | object;
-export interface ExtendedMessageDescriptor extends MessageDescriptor {
-    id: TranslationKey;
-    values?: {
-        [key: string]:
-            | PrimitiveType
-            | React.ReactElement
-            | ExtendedMessageDescriptor
-            | FormatXMLElementFn;
-    };
-}
+export type ExtendedMessageDescriptor = CommonExtendedMessageDescriptor;
 type MsgType = OwnProps & ExtendedMessageDescriptor;
 
 export const isMsgType = (props: MsgType | React.ReactNode): props is MsgType =>

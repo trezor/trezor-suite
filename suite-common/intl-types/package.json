@@ -1,0 +1,17 @@
+{
+    "name": "@suite-common/intl-types",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@trezor/type-utils": "*",
+        "react": "17.0.2",
+        "react-intl": "^6.0.4"
+    }
+}
