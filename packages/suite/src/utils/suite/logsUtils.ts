@@ -2,7 +2,6 @@ import { Account, Discovery } from '@wallet-types';
 import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import { DEVICE, Device } from '@trezor/connect';
-import { DeepPartial } from '@suite/types/utils';
 import { LogEntry } from '@suite-reducers/logsReducer';
 import { AppState } from '@suite-types';
 import { getCustomBackends } from '@suite-utils/backend';
@@ -19,6 +18,7 @@ import {
     getWindowWidth,
 } from '@suite-utils/env';
 import { getIsTorEnabled } from '@suite-utils/tor';
+import { DeepPartial } from '@trezor/type-utils';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 

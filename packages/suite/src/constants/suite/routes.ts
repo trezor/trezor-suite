@@ -1,4 +1,4 @@
-import { ArrayElement, ConstWithOptionalFields } from '@suite/types/utils';
+import { ArrayElement, ConstWithOptionalFields } from '@trezor/type-utils';
 import { Network } from '@wallet-types';
 import routes from '@suite-config/routes';
 import { RouteParams } from '@suite-utils/router';

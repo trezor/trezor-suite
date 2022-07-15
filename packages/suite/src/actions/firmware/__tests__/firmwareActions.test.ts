@@ -6,7 +6,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import firmwareReducer from '@firmware-reducers/firmwareReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
-import { ArrayElement } from '@suite/types/utils';
+import { ArrayElement } from '@trezor/type-utils';
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';
 import { TrezorDevice } from '@suite-types';
 

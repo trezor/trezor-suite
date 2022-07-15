@@ -11,7 +11,7 @@ import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
 import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
 
-import type { Timeout } from '@suite/types/utils';
+import type { Timeout } from '@trezor/type-utils';
 
 const LabelDefaultValue = styled.div`
     width: 0;

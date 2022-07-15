@@ -2,7 +2,7 @@ import produce from 'immer';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { Deferred, createDeferred } from '@trezor/utils';
-import { ObjectValues } from '@suite/types/utils';
+import { ObjectValues } from '@trezor/type-utils';
 import { Action as SuiteAction } from '@suite-types';
 import { WalletAction, Network } from '@wallet-types';
 

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Dropdown } from '@trezor/components';
 import { ExtendedProps } from './definitions';
-import { RequiredKey } from '@suite/types/utils';
+import { RequiredKey } from '@trezor/type-utils';
 
 const StyledDropdown = styled(Dropdown)`
     display: flex;
