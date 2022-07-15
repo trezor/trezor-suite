@@ -1,13 +1,13 @@
 /* eslint camelcase: 0 */
 
 /**
- * This is a custom implementation of Google OAuth authorization code flow with a fallback to an implicit flow. The documentation and packages
- * (we originally used google-auth-library-nodejs) recommend using one way or the other, but since we had to implement the authorization code
- * flow for the desktop app anyway, we enabled it for the web app as well for users' convenience. We also use the implicit flow as a backup if
- *  our authorization server (which holds a client secret necessary for the authorization code flow) is not available.
+ * This is a custom implementation of Google OAuth authorization code flow with loopback IP address and implicit flow.
+ * The authorization code flow is default for desktop, while the implicit flow is used on web and as a fallback for desktop
+ * in case our authorization server (which holds a client secret necessary for the authorization code flow) is not available.
  */
 
 import { METADATA } from '@suite-actions/constants';
+import { isDesktop } from '@suite-utils/env';
 import { OAuthServerEnvironment, Tokens } from '@suite-types/metadata';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { getCodeChallenge } from '@suite-utils/random';
@@ -110,23 +110,31 @@ class Client {
         Client.initPromise = new Promise(resolve => {
             Client.nameIdMap = {};
             Client.setEnvironment(environment);
-            Client.isAuthServerAvailable().then(result => {
-                // if our server providing the refresh token is not available, fallback to a flow with access tokens only (authorization for a limited time)
-                Client.flow = result ? 'code' : 'implicit';
-                // the app has two sets of credentials to enable both OAuth flows
-                Client.clientId =
-                    Client.flow === 'code'
-                        ? METADATA.GOOGLE_CODE_FLOW_CLIENT_ID
-                        : METADATA.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
-                if (refreshToken) {
-                    Client.refreshToken = refreshToken;
-                }
-                if (accessToken) {
-                    Client.accessToken = accessToken;
-                }
 
+            if (refreshToken) {
+                Client.refreshToken = refreshToken;
+            }
+            if (accessToken) {
+                Client.accessToken = accessToken;
+            }
+
+            if (isDesktop()) {
+                Client.isAuthServerAvailable().then(result => {
+                    // if our server providing the refresh token is not available, fallback to a flow with access tokens only (authorization for a limited time)
+                    Client.flow = result ? 'code' : 'implicit';
+                    // the app has two sets of credentials to enable both OAuth flows
+                    Client.clientId =
+                        Client.flow === 'code'
+                            ? METADATA.GOOGLE_CODE_FLOW_CLIENT_ID
+                            : METADATA.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
+                    resolve(Client);
+                });
+            } else {
+                // code flow with loopback IP address does not work unless redirect_uri is localhost (Google returns redirect_uri_mismatch)
+                Client.flow = 'implicit';
+                Client.clientId = METADATA.GOOGLE_IMPLICIT_FLOW_CLIENT_ID;
                 resolve(Client);
-            });
+            }
         });
     }
 
@@ -140,6 +148,9 @@ class Client {
                         clientId: Client.clientId,
                         refreshToken: Client.refreshToken,
                     }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 });
                 const json = await res.json();
                 if (!json?.access_token) {
