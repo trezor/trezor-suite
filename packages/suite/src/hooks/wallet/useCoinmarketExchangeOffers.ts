@@ -12,7 +12,7 @@ import {
 } from '@wallet-types/coinmarketExchangeOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { splitToQuoteCategories } from '@wallet-utils/coinmarket/exchangeUtils';
-import networks from '@wallet-config/networks';
+import { networksCompatibility as networks } from '@suite-common/wallet-networks-config';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
