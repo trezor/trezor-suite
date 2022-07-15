@@ -182,7 +182,7 @@ export const validateFirmwareHash =
             if (!fwHash.success) {
                 dispatch({
                     type: FIRMWARE.SET_ERROR,
-                    payload: 'Unable to validate firmware hash. Please reinstall firmware again',
+                    payload: `${fwHash.payload.error}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
                 });
                 analytics.report({
                     type: EventType.FirmwareValidateHashError,
