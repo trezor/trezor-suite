@@ -36,7 +36,7 @@ var TrezorConnect = window.TrezorConnect;
 
 Starting with Trezor Connect 7, we have implemented a new feature — Trezor Connect Manifest — which requires that you as a Trezor Connect integrator, to share your e-mail and application url with us.
 This provides us with the **ability to reach you in case of any required maintenance.**
-This subscription is mandatory. Trezor Connect raises an error that reads "Manifest not set. Read more at https://github.com/trezor/connect/blob/develop/docs/index.md" if manifest is not provided.
+This subscription is mandatory. Trezor Connect raises an error that reads "Manifest not set. Read more at https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md" if manifest is not provided.
 
 ```javascript
 TrezorConnect.manifest({
