@@ -12,6 +12,7 @@
         "packages": [
             "packages/*",
             "suite-native/*",
+            "suite-common/*",
             "scripts"
         ],
         "nohoist": [

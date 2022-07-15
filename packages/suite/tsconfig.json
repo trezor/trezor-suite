@@ -20,6 +20,9 @@
         { "path": "../type-utils" },
         { "path": "../urls" },
         { "path": "../utils" },
-        { "path": "../validation" }
+        { "path": "../validation" },
+        {
+            "path": "../../suite-common/intl-types"
+        }
     ]
 }
