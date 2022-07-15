@@ -22,7 +22,7 @@ import { BLOCKCHAIN } from './constants';
 import { getCustomBackends, getBackendFromSettings } from '@suite-utils/backend';
 import type { Dispatch, GetState } from '@suite-types';
 import type { Account, Network, CustomBackend, BackendType } from '@wallet-types';
-import type { Timeout } from '@suite/types/utils';
+import type { Timeout } from '@trezor/type-utils';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 

@@ -11,7 +11,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
 import { DeviceStatus } from './DeviceStatus';
 import { transparentize } from 'polished';
-import type { Timeout } from '@suite/types/utils';
+import type { Timeout } from '@trezor/type-utils';
 
 const ArrowDown = styled(Icon)`
     margin-left: 4px;

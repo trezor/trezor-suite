@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { createDeferred } from '@trezor/utils';
-import type { Timeout } from '@suite/types/utils';
+import type { Timeout } from '@trezor/type-utils';
 
 // composeTransaction should be debounced from both sides
 // `timeout` prevents from calling '@trezor/connect' method to many times (inputs mad-clicking)

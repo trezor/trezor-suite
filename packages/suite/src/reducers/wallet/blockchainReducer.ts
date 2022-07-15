@@ -6,7 +6,7 @@ import { getNetwork } from '@wallet-utils/accountUtils';
 import { NETWORKS } from '@wallet-config';
 import type { Network, BackendType } from '@wallet-types';
 import type { Action } from '@suite-types';
-import type { Timeout } from '@suite/types/utils';
+import type { Timeout } from '@trezor/type-utils';
 
 export type BackendSettings = Partial<{
     selected: BackendType;

@@ -1,5 +1,5 @@
 import type { ExtendedMessageDescriptor } from '@suite-types';
-import type { Keys, Without } from '@suite/types/utils';
+import type { Keys, Without } from '@trezor/type-utils';
 
 const networks = {
     // Bitcoin

@@ -19,7 +19,7 @@ import { FormDraftAction } from '@wallet-actions/formDraftActions';
 import { CardanoStakingAction } from '@wallet-actions/cardanoStakingActions';
 import { PollingAction } from '@wallet-actions/pollingActions';
 import { NETWORKS } from '@wallet-config';
-import { ArrayElement } from '../utils';
+import { ArrayElement } from '@trezor/type-utils';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 // reexport
