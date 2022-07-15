@@ -48,7 +48,7 @@ export interface State {
     error: string | null;
 }
 
-const initialState: State = {
+export const initialState: State = {
     transactions: {},
     isLoading: false,
     error: null,
