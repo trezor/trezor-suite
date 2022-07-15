@@ -26,11 +26,11 @@ export const AUTH_WINDOW_WIDTH = 600;
 export const AUTH_WINDOW_HEIGHT = 720;
 export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
 
-// used when auth-server is running - generate testing credentials for development
+// used for desktop app when auth-server is running - generate testing credentials for development
 export const GOOGLE_CODE_FLOW_CLIENT_ID =
     '705190185912-m4mrh55knjbg6gqhi72fr906a6n0b0u1.apps.googleusercontent.com';
 
-// used as a fallback from authorization code flow
+// used in web app or as a fallback from authorization code flow
 export const GOOGLE_IMPLICIT_FLOW_CLIENT_ID =
     '705190185912-nejegm4dbdecdaiumncbaa4ulrfnpk82.apps.googleusercontent.com';
 
