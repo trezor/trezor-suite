@@ -1,7 +1,7 @@
 import { CaptureConsole, Dedupe } from '@sentry/integrations';
 import { isDev } from '@suite-utils/build';
 
-import type { Options, Event } from '@sentry/types';
+import type { Options } from '@sentry/types';
 
 export const allowReportTag = 'allowReport';
 
@@ -9,30 +9,16 @@ export const allowReportTag = 'allowReport';
  * From paths like /Users/username/, C:\Users\username\, this matches /Users/ or \Users\ as first group
  * and text (supposed to be a username) between that and the next slash as second group.
  */
-const startOfUserPathRegex = /([/\\][Uu]sers[/\\])([^/^\\]*)/g;
+const startOfUserPathRegex = /([/\\][Uu]sers[/\\]{1,2})([^/^\\]*)/;
 
 /**
  * Full user path could be part of reported error in some cases and we want to actively filter username out.
- * The user path could appear on multiple places in Sentry event (event.message, event.extra.arguments,
- * exception.values[0].value, breadcrumb.message). To filter it on all possible places, Sentry event
- * is stringified first, then username is redacted in the whole string and event is parsed back.
- *
- * In case of any issue during parsing, original error is reported just with extra redactUserPathFailed tag
- * to be able to see in Sentry if there are any issues in this approach.
  */
-const redactUserPath = (event: Event) => {
-    try {
-        const eventAsString = JSON.stringify(event);
-        const redactedString = eventAsString.replace(startOfUserPathRegex, '$1[redacted]');
-        return JSON.parse(redactedString);
-    } catch (error) {
-        console.warn('Redacting user path failed', error);
-        event.tags = {
-            redactUserPathFailed: true, // to be able to see in Sentry if there are such an errors
-            ...event.tags,
-        };
-        return event;
+const redactUserPath = (value?: string) => {
+    if (value && typeof value === 'string') {
+        return value.replace(startOfUserPathRegex, '$1[redacted]');
     }
+    return value;
 };
 
 const beforeSend: Options['beforeSend'] = event => {
@@ -46,7 +32,9 @@ const beforeSend: Options['beforeSend'] = event => {
         delete event.breadcrumbs;
     }
 
-    return redactUserPath(event);
+    event.message = redactUserPath(event.message);
+
+    return event;
 };
 
 const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
@@ -60,6 +48,8 @@ const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     if (isAnalytics || isImageFetch) {
         return null;
     }
+    breadcrumb.message = redactUserPath(breadcrumb.message);
+
     return breadcrumb;
 };
 
