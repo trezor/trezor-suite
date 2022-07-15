@@ -4,7 +4,7 @@ export const ERROR_CODES = {
     Init_IframeBlocked: 'Iframe blocked', // iframe injection blocked (ad-blocker)
     Init_IframeTimeout: 'Iframe timeout', // iframe didn't load in specified time
     Init_ManifestMissing:
-        'Manifest not set. Read more at https://github.com/trezor/connect/blob/develop/docs/index.md', // manifest is not set
+        'Manifest not set. Read more at https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md', // manifest is not set
 
     Popup_ConnectionMissing: 'Unable to establish connection with iframe', // thrown by popup
 
