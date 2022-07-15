@@ -32,37 +32,11 @@ describe('Add-account-types', () => {
         //
         // Test preparation
         //
-        const coin = 'btc';
-        const AccsArray = [
-            ['normal', 'Bitcoin'],
-            ['taproot', 'Bitcoin (Taproot)'],
-            ['segwit', 'Bitcoin (Legacy Segwit)'],
-            ['legacy', 'Bitcoin (Legacy)'],
-        ];
         //
         // Test execution
         //
-        cy.getTestElement('@suite/menu/wallet-index', { timeout: 30000 }).click();
-        cy.getTestElement('@account-menu/arrow').click({ multiple: true });
-
-        AccsArray.forEach(accountarray =>
-            cy
-                .get(
-                    `[type="${accountarray[0]}"] > [data-test^="@account-menu/${coin}/${accountarray[0]}/"]`,
-                )
-                .then(specificAccounts => {
-                    const numberOfAccounts1 = specificAccounts.length;
-
-                    cy.createAccount(coin, accountarray[1]);
-
-                    cy.get(
-                        `[type="${accountarray[0]}"] > [data-test^="@account-menu/${coin}/${accountarray[0]}/"]`,
-                    ).then(specificAccounts => {
-                        const numberOfAccounts2 = specificAccounts.length;
-
-                        expect(numberOfAccounts2).to.be.equal(numberOfAccounts1 + 1);
-                    });
-                }),
-        );
+        //
+        // Assert
+        //
     });
 });

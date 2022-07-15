@@ -110,13 +110,3 @@ export const enableRegtestAndGetCoins = ({ payments = [] }) => {
     });
     cy.task('mineBlocks', { block_amount: 1 });
 };
-
-export const createAccount = (coin: string, accountNameAdd: string) => {
-    cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should('not.exist');
-    cy.getTestElement('@accounts/add-account').should('be.visible').click();
-    cy.getTestElement('@modal').should('be.visible');
-    cy.get(`[data-test="@settings/wallet/network/${coin}"]`).should('be.visible').click();
-    cy.getTestElement('@add-account-type/select/input').click();
-    cy.get(`[data-test="@add-account-type/select/option/${accountNameAdd}"]`).click();
-    cy.getTestElement('@add-account').click();
-};
