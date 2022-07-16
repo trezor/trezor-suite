@@ -1,6 +1,6 @@
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
-import { DEFAULT_PAYMENT } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FIAT } from '@suite-config';
 import { fromFiatCurrency, toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { UseSendFormState, Output } from '@wallet-types/sendForm';

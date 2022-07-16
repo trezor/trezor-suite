@@ -1,65 +1,11 @@
 import produce from 'immer';
-import { AccountInfo } from '@trezor/connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { STORAGE, METADATA } from '@suite-actions/constants';
-import { WalletAction, Network } from '@wallet-types';
+import { WalletAction } from '@wallet-types';
 import { Action as SuiteAction } from '@suite-types';
-import { AccountMetadata } from '@suite-types/metadata';
+import { Account as CommonAccount } from '@suite-common/wallet-types';
 
-type AccountNetworkSpecific =
-    | {
-          networkType: 'bitcoin';
-          misc: undefined;
-          marker: undefined;
-          page: AccountInfo['page'];
-      }
-    | {
-          networkType: 'ripple';
-          misc: { sequence: number; reserve: string };
-          marker: AccountInfo['marker'];
-          page: undefined;
-      }
-    | {
-          networkType: 'cardano';
-          marker: undefined;
-          misc: {
-              staking: {
-                  address: string;
-                  isActive: boolean;
-                  rewards: string;
-                  poolId: string | null;
-              };
-          };
-          page: AccountInfo['page'];
-      }
-    | {
-          networkType: 'ethereum';
-          misc: { nonce: string };
-          marker: undefined;
-          page: AccountInfo['page'];
-      };
-
-export type Account = {
-    deviceState: string;
-    key: string;
-    index: number;
-    path: string;
-    descriptor: string;
-    accountType: NonNullable<Network['accountType']>;
-    symbol: Network['symbol'];
-    empty: boolean;
-    visible: boolean;
-    imported?: boolean;
-    failed?: boolean;
-    balance: string;
-    availableBalance: string;
-    formattedBalance: string;
-    tokens: AccountInfo['tokens'];
-    addresses: AccountInfo['addresses'];
-    utxo: AccountInfo['utxo'];
-    history: AccountInfo['history'];
-    metadata: AccountMetadata;
-} & AccountNetworkSpecific;
+export type Account = CommonAccount;
 
 const initialState: Account[] = [];
 

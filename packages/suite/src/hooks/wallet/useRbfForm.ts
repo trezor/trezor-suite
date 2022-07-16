@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from '@suite-hooks';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { FormState, FeeInfo } from '@wallet-types/sendForm';
 import { useFees } from './form/useFees';

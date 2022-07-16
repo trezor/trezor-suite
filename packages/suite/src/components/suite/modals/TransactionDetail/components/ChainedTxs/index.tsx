@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrezorLink from '@suite-components/TrezorLink';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import TransactionItem from '@wallet-components/TransactionItem';
 
 const Wrapper = styled.div`

@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getBitcoinComposeOutputs, restoreOrigOutputsOrder } from '@wallet-utils/sendFormUtils';
-import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@wallet-constants/sendForm';
+import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
 import {
     FormState,
     UseSendFormState,

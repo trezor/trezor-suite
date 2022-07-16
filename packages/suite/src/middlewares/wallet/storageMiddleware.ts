@@ -19,7 +19,7 @@ import { FIRMWARE } from '@firmware-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
-import { FormDraftPrefixKeyValues } from '@wallet-constants/formDraft';
+import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';

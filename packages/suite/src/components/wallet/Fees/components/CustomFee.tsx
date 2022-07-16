@@ -8,7 +8,7 @@ import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
 import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
-import { ETH_DEFAULT_GAS_LIMIT } from '@wallet-constants/sendForm';
+import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { Account } from '@wallet-types';
 import { FeeInfo } from '@wallet-types/sendForm';
 import { TypedValidationRules } from '@wallet-types/form';

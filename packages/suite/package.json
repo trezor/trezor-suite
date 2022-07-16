@@ -38,6 +38,8 @@
         "@trezor/validation": "*",
         "@suite-common/intl-types": "*",
         "@suite-common/wallet-networks-config": "*",
+        "@suite-common/wallet-types": "*",
+        "@suite-common/wallet-constants": "*",
         "bignumber.js": "^9.0.2",
         "date-fns": "^2.28.0",
         "dropbox": "^10.30.0",

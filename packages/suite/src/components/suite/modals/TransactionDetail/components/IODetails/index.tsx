@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, useTheme, variables } from '@trezor/components';
-import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getNetwork } from '@wallet-utils/accountUtils';
 import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from '@suite-components';
 

@@ -7,7 +7,7 @@ import {
     getExternalComposeOutput,
 } from '@wallet-utils/sendFormUtils';
 import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { XRP_FLAG } from '@wallet-constants/sendForm';
+import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
     FormState,
     UseSendFormState,

@@ -26,6 +26,12 @@
         },
         {
             "path": "../../suite-common/wallet-networks-config"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-constants"
         }
     ]
 }
