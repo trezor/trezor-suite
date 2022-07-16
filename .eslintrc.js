@@ -64,6 +64,7 @@ module.exports = {
                 pathGroups: [
                     { pattern: '@trezor/**', group: 'internal' }, // Translates to /packages/** */
                     { pattern: '@suite-native/**', group: 'internal' },
+                    { pattern: '@suite-common/**', group: 'internal' },
                     { pattern: 'react*', group: 'external', position: 'before' },
                 ],
                 pathGroupsExcludedImportTypes: ['internal', 'react'],
