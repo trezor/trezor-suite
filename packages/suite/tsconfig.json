@@ -25,6 +25,9 @@
             "path": "../../suite-common/intl-types"
         },
         {
+            "path": "../../suite-common/metadata-types"
+        },
+        {
             "path": "../../suite-common/wallet-networks-config"
         },
         {
