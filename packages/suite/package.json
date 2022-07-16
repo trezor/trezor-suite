@@ -37,6 +37,7 @@
         "@trezor/utils": "*",
         "@trezor/validation": "*",
         "@suite-common/intl-types": "*",
+        "@suite-common/metadata-types": "*",
         "@suite-common/wallet-networks-config": "*",
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-constants": "*",
