@@ -8,7 +8,7 @@ import {
     CardanoOutput,
 } from '@trezor/connect';
 
-import { AppState, ExtendedMessageDescriptor } from '@suite-types';
+import { ExtendedMessageDescriptor } from '@suite-types';
 import { Account, Network, CoinFiatRates, RbfTransactionParams } from '@wallet-types';
 import { TypedValidationRules } from './form';
 
@@ -176,21 +176,6 @@ export type PrecomposedTransactionCardano =
 
 export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
 export type PrecomposedLevelsCardano = { [key: string]: PrecomposedTransactionCardano };
-
-// Props of @wallet-views/send/index
-export interface SendFormProps {
-    selectedAccount: AppState['wallet']['selectedAccount'];
-    fiat: AppState['wallet']['fiat'];
-    localCurrency: AppState['wallet']['settings']['localCurrency'];
-    fees: AppState['wallet']['fees'];
-    online: boolean;
-    sendRaw?: boolean;
-    metadataEnabled: boolean;
-}
-// Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
-export interface UseSendFormProps extends SendFormProps {
-    selectedAccount: Extract<SendFormProps['selectedAccount'], { status: 'loaded' }>;
-}
 
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
