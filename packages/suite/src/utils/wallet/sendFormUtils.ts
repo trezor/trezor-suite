@@ -5,7 +5,7 @@ import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
-import { DEFAULT_PAYMENT, DEFAULT_VALUES, ERC20_TRANSFER } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES, ERC20_TRANSFER } from '@suite-common/wallet-constants';
 import { amountToSatoshi, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 

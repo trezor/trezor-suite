@@ -15,7 +15,7 @@ import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { isDesktop } from '@suite-utils/env';
 import { useCompose } from './form/useCompose';
 import { useForm } from 'react-hook-form';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import type { AppState } from '@suite-types';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);

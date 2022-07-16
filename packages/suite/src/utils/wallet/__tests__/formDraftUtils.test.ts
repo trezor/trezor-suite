@@ -1,4 +1,4 @@
-import { FormDraftPrefixKeyValues } from '@wallet-constants/formDraft';
+import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import * as formDraftUtils from '../formDraftUtils';
 
 describe('form draft utils', () => {

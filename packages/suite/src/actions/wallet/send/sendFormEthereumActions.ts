@@ -13,7 +13,7 @@ import {
 } from '@wallet-utils/sendFormUtils';
 import { isPending } from '@wallet-utils/transactionUtils';
 import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
-import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
+import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     FormState,
     UseSendFormState,

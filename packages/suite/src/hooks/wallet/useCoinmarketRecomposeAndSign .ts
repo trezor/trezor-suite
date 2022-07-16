@@ -3,7 +3,7 @@ import { AppState } from '@suite-types';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@wallet-constants/sendForm';
+import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState, UseSendFormState } from '@wallet-types/sendForm';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 

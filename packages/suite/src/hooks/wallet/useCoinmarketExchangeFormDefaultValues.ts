@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { Account } from '@wallet-types';
 import { ExchangeFormState } from '@wallet-types/coinmarketExchangeForm';

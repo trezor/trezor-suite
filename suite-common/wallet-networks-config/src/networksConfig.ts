@@ -370,7 +370,7 @@ type Networks = typeof networks;
 type NetworkKey = keyof Networks;
 type NetworkValue = Networks[NetworkKey];
 type AccountType = Keys<NetworkValue['accountTypes']>;
-type Network = Without<NetworkValue, 'accountTypes'> & {
+export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkKey;
     accountType?: 'normal' | AccountType;
     testnet?: boolean;

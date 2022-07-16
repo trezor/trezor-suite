@@ -2,7 +2,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Translation } from '@suite-components';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@wallet-utils/accountUtils';
-import { BTC_LOCKTIME_VALUE } from '@wallet-constants/sendForm';
+import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { Network } from '@wallet-types';
 import { TokenInfo } from '@trezor/connect';
 import Indicator, { Props as IndicatorProps } from './Indicator';

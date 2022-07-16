@@ -1,7 +1,7 @@
 import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
 import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
 import BigNumber from 'bignumber.js';
-import { ACCOUNT_TYPE } from '@wallet-constants/account';
+import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
 import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
 import {
     PrecomposedTransactionFinal,

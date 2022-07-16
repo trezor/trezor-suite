@@ -1,4 +1,4 @@
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 
 export const BTC_ACCOUNT = {
     status: 'loaded',
