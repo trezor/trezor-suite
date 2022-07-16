@@ -5,13 +5,8 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as protocolActions from '@suite-actions/protocolActions';
-import {
-    UseSendFormProps,
-    UseSendFormState,
-    FormState,
-    SendContextValues,
-    Output,
-} from '@wallet-types/sendForm';
+import { UseSendFormState, FormState, SendContextValues, Output } from '@wallet-types/sendForm';
+import { AppState } from '@suite-types';
 
 import { getFeeLevels, getDefaultValues } from '@wallet-utils/sendFormUtils';
 import { useSendFormOutputs } from './useSendFormOutputs';
@@ -23,6 +18,21 @@ import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
+
+// Props of @wallet-views/send/index
+export interface SendFormProps {
+    selectedAccount: AppState['wallet']['selectedAccount'];
+    fiat: AppState['wallet']['fiat'];
+    localCurrency: AppState['wallet']['settings']['localCurrency'];
+    fees: AppState['wallet']['fees'];
+    online: boolean;
+    sendRaw?: boolean;
+    metadataEnabled: boolean;
+}
+// Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
+export interface UseSendFormProps extends SendFormProps {
+    selectedAccount: Extract<SendFormProps['selectedAccount'], { status: 'loaded' }>;
+}
 
 // convert UseSendFormProps to UseSendFormState
 const getStateFromProps = (props: UseSendFormProps) => {
