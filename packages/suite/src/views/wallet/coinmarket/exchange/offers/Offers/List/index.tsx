@@ -6,7 +6,7 @@ import { ExchangeTrade } from 'invity-api';
 import { FiatValue, FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { useSelector } from '@suite-hooks';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;

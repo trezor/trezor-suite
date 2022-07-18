@@ -6,7 +6,7 @@ import {
     isBech32AddressUppercase,
     isAddressDeprecated,
     isHexValid,
-} from '../validation';
+} from '@suite-common/wallet-utils';
 
 describe('validation', () => {
     // fixtures from https://github.com/trezor/trezor-address-validator/blob/master/test/wallet_address_validator.js

@@ -4,12 +4,8 @@ import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as tokenActions from '@wallet-actions/tokenActions';
-import * as accountUtils from '@wallet-utils/accountUtils';
-import {
-    analyzeTransactions,
-    getAccountTransactions,
-    isPending,
-} from '@wallet-utils/transactionUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
+import { analyzeTransactions, getAccountTransactions, isPending } from '@suite-common/wallet-utils';
 import { NETWORKS } from '@wallet-config';
 import { SETTINGS } from '@suite-config';
 import type { Account } from '@wallet-types';

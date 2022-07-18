@@ -3,7 +3,7 @@ import { Button } from '@trezor/components';
 import { AccountExceptionLayout } from '@wallet-components';
 import { Translation, TrezorLink } from '@suite-components';
 import { Account } from '@wallet-types';
-import { getNetwork } from '@wallet-utils/accountUtils';
+import { getNetwork } from '@suite-common/wallet-utils';
 
 interface Props {
     account: Account;

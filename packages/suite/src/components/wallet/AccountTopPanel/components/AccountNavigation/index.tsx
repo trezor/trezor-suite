@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import { useActions, useSelector } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { hasNetworkFeatures } from '@wallet-utils/accountUtils';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dot } from './components/Dot';
 
 interface AccountNavigationProps {

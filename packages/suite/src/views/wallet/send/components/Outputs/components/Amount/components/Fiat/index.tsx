@@ -8,9 +8,13 @@ import { InputError } from '@wallet-components';
 import { Translation } from '@suite-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { FIAT } from '@suite-config';
-import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { getInputState, getFiatRate, findToken } from '@wallet-utils/sendFormUtils';
-import { isDecimalsValid } from '@wallet-utils/validation';
+import {
+    fromFiatCurrency,
+    isDecimalsValid,
+    getInputState,
+    getFiatRate,
+    findToken,
+} from '@suite-common/wallet-utils';
 import { CurrencyOption, Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';

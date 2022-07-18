@@ -9,8 +9,7 @@ import {
     FormattedCryptoAmount,
     FormattedFiatAmount,
 } from '@suite-components';
-import { parseKey } from '@wallet-utils/transactionUtils';
-import { isTestnet } from '@wallet-utils/accountUtils';
+import { parseKey, isTestnet } from '@suite-common/wallet-utils';
 import { Network } from '@wallet-types';
 import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
 

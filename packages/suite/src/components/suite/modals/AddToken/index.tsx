@@ -8,7 +8,7 @@ import * as tokenActions from '@wallet-actions/tokenActions';
 import { Modal } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
-import { isAddressValid } from '@wallet-utils/validation';
+import { isAddressValid } from '@suite-common/wallet-utils';
 import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`

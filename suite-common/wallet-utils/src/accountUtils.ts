@@ -1,15 +1,20 @@
-import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
-import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
 import BigNumber from 'bignumber.js';
-import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
-import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
+
+import { networksCompatibility as NETWORKS, Network } from '@suite-common/wallet-networks-config';
 import {
+    Account,
+    CoinFiatRates,
+    WalletParams,
+    Discovery,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
     TxFinalCardano,
-} from '@wallet-types/sendForm';
-import { AppState } from '@suite-types';
-import { NETWORKS } from '@wallet-config';
+} from '@suite-common/wallet-types';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
+import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
+import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
+
 import { toFiatCurrency } from './fiatConverterUtils';
 import { NetworkFeature } from '@suite-common/wallet-config';
 
@@ -242,7 +247,7 @@ export const findAccountsByAddress = (address: string, accounts: Account[]) =>
         return a.descriptor === address;
     });
 
-export const findAccountDevice = (account: Account, devices: AppState['devices']) =>
+export const findAccountDevice = (account: Account, devices: TrezorDevice[]) =>
     devices.find(d => d.state === account.deviceState);
 
 export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) => {

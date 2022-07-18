@@ -4,8 +4,7 @@ import { Textarea, Icon } from '@trezor/components';
 import { QuestionTooltip } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
-import { getInputState } from '@wallet-utils/sendFormUtils';
-import { isHexValid } from '@wallet-utils/validation';
+import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`

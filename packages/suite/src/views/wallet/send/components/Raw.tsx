@@ -8,8 +8,7 @@ import { InputError } from '@wallet-components';
 import { Textarea, Button, Icon, Tooltip, variables } from '@trezor/components';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { getInputState } from '@wallet-utils/sendFormUtils';
-import { isHexValid } from '@wallet-utils/validation';
+import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Network } from '@wallet-types';
 import { OpenGuideFromTooltip } from '@guide-components';
 

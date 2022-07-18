@@ -4,7 +4,7 @@ import type { AccountAddress } from '@trezor/connect';
 import { Translation, HiddenPlaceholder, FiatValue } from '@suite-components';
 import { variables, Select } from '@trezor/components';
 import { UseFormMethods, Control, Controller } from 'react-hook-form';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { Account } from '@wallet-types';
 import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
 import type { MenuPlacement } from 'react-select';

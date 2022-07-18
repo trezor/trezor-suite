@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { variables } from '@trezor/components';
-import { isTestnet } from '@wallet-utils/accountUtils';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { Network, WalletAccountTransaction } from '@wallet-types';
 import AmountDetails from '../AmountDetails';
 import IODetails from '../IODetails';

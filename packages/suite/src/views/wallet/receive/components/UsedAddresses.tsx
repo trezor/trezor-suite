@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { AccountAddress } from '@trezor/connect';
 import { variables, Button } from '@trezor/components';
 import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Network } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { MetadataAddPayload } from '@suite-types/metadata';

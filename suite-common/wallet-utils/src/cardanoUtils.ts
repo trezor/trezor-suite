@@ -1,20 +1,24 @@
-import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
 import type { types } from '@fivebinaries/coin-selection';
+import BigNumber from 'bignumber.js';
+
+import {
+    Account,
+    Output,
+    PrecomposedTransactionFinal,
+    PrecomposedTransactionFinalCardano,
+    PoolsResponse,
+    StakePool,
+} from '@suite-common/wallet-types';
+import { Network } from '@suite-common/wallet-networks-config';
+import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
+import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
+
 import {
     amountToSatoshi,
     formatAmount,
     formatNetworkAmount,
     networkAmountToSatoshi,
-} from '@wallet-utils/accountUtils';
-import { Account, Network } from '@wallet-types';
-import {
-    Output,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalCardano,
-} from '@wallet-types/sendForm';
-import BigNumber from 'bignumber.js';
-import { PoolsResponse, StakePool } from '@suite/types/wallet/cardanoStaking';
-import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
+} from './accountUtils';
 
 export const loadCardanoLib = async () => {
     const lib = await import(

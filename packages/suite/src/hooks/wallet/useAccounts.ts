@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSelector } from '@suite-hooks';
 import type { AccountAddress } from '@trezor/connect';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 import type { Account, Discovery } from '@wallet-types';
 
 export const useAccounts = (discovery?: Discovery) => {

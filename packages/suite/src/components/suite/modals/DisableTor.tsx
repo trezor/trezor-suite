@@ -5,7 +5,7 @@ import { Modal, Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { isOnionUrl } from '@suite-utils/tor';
 import { useCustomBackends } from '@settings-hooks/backends';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { setBackend } from '@wallet-actions/blockchainActions';
 import { AdvancedCoinSettings } from './AdvancedCoinSettings';
 import type { Network } from '@wallet-types';

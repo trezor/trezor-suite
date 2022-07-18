@@ -9,7 +9,7 @@ import { Translation } from '@suite-components';
 import { Account } from '@wallet-types';
 import invityAPI from '@suite-services/invityAPI';
 import { symbolToInvityApiSymbol } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
-import { getInputState } from '@suite/utils/wallet/sendFormUtils';
+import { getInputState } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`
     display: flex;

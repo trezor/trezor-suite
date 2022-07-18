@@ -1,7 +1,7 @@
 import React, { useRef, useLayoutEffect } from 'react';
 import { useTheme } from '@trezor/components';
 import { FormattedFiatAmount, FormattedCryptoAmount } from '@suite-components';
-import { formatCoinBalance } from '@wallet-utils/balanceUtils';
+import { formatCoinBalance } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
 import { NetworkSymbol } from '@wallet-types';
 

@@ -4,7 +4,7 @@ import {
     FLAGS_DESKTOP,
     FLAGS_LANDING,
     FeatureFlags,
-} from '@suite-config/features';
+} from '@suite-common/suite-features-config';
 
 const getFlagsForEnv = (env?: string) => {
     switch (env) {

@@ -12,7 +12,7 @@ import {
 } from '@suite-components';
 import { Stack, SkeletonCircle, SkeletonRectangle } from '@suite-components/Skeleton';
 import { useSelector } from '@suite-hooks';
-import { isTestnet } from '@wallet-utils/accountUtils';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountNavigation } from './components/AccountNavigation';
 
 const Balance = styled(H1)`

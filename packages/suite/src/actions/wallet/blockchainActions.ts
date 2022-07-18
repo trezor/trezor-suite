@@ -14,7 +14,7 @@ import {
     findAccountDevice,
     formatAmount,
     formatNetworkAmount,
-} from '@wallet-utils/accountUtils';
+} from '@suite-common/wallet-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { NETWORKS } from '@wallet-config';

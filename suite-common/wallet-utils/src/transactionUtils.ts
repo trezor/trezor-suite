@@ -1,10 +1,16 @@
 import BigNumber from 'bignumber.js';
-import { AccountTransaction, AccountAddress } from '@trezor/connect';
 import { fromWei } from 'web3-utils';
-import { Account, WalletAccountTransaction, RbfTransactionParams } from '@wallet-types';
-import { AccountMetadata } from '@suite-types/metadata';
-import { toFiatCurrency } from './fiatConverterUtils';
+
+import {
+    Account,
+    WalletAccountTransaction,
+    RbfTransactionParams,
+} from '@suite-common/wallet-types';
+import { AccountMetadata } from '@suite-common/metadata-types';
+import { AccountTransaction, AccountAddress } from '@trezor/connect';
+
 import { formatAmount, formatNetworkAmount, amountToSatoshi } from './accountUtils';
+import { toFiatCurrency } from './fiatConverterUtils';
 
 export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
     // if both are missing the blockHeight don't change their order

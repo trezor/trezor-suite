@@ -6,8 +6,7 @@ import {
     fetchLastWeekRates,
     fetchCurrentTokenFiatRates,
 } from '@suite/services/fiat';
-import { isTestnet } from '@wallet-utils/accountUtils';
-import { getAccountTransactions } from '@wallet-utils/transactionUtils';
+import { isTestnet, getAccountTransactions } from '@suite-common/wallet-utils';
 import { getBlockbookSafeTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { NETWORKS } from '@wallet-config';

@@ -8,8 +8,13 @@ import {
     FormattedDateWithBullet,
 } from '@suite-components';
 import { WalletAccountTransaction, Network } from '@wallet-types';
-import { getFeeRate, isTxFinal, getTxIcon, isPending } from '@wallet-utils/transactionUtils';
-import { getFeeUnits } from '@wallet-utils/sendFormUtils';
+import {
+    getFeeRate,
+    isTxFinal,
+    getTxIcon,
+    isPending,
+    getFeeUnits,
+} from '@suite-common/wallet-utils';
 import TransactionHeader from '@suite/components/wallet/TransactionItem/components/TransactionHeader';
 
 const Wrapper = styled.div`

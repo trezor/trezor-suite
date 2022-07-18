@@ -10,7 +10,7 @@ import {
     getNetworkId,
     getAddressType,
     getDerivationType,
-} from '@wallet-utils/cardanoUtils';
+} from '@wallet-utils/../../../../../suite-common/wallet-utils/src/cardanoUtils';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }

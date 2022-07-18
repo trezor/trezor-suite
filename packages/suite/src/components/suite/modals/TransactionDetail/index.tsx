@@ -6,12 +6,12 @@ import { WalletAccountTransaction } from '@wallet-types';
 import BasicDetails from './components/BasicDetails';
 import AdvancedDetails, { TabID } from './components/AdvancedDetails';
 import ChangeFee from './components/ChangeFee';
-import { getNetwork } from '@wallet-utils/accountUtils';
 import {
+    getNetwork,
     getConfirmations,
     isPending,
     findChainedTransactions,
-} from '@wallet-utils/transactionUtils';
+} from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 
 const StyledModal = styled(Modal)`

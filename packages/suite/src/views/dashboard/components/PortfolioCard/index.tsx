@@ -8,7 +8,7 @@ import { useFastAccounts, useFiatValue } from '@wallet-hooks';
 import { SkeletonTransactionsGraph } from '@suite-components/TransactionsGraph';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 
 import { Header } from './components/Header';
 import { Exception } from './components/Exception';

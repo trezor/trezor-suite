@@ -5,10 +5,9 @@ import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Icon, Input, Switch, variables } from '@trezor/components';
-import { getInputState } from '@wallet-utils/sendFormUtils';
-import { isInteger } from '@wallet-utils/validation';
+import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
+import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
 
 const Wrapper = styled.div`
     margin-bottom: 25px;

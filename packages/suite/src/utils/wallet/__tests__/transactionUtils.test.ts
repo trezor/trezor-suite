@@ -1,4 +1,4 @@
-import * as utils from '../transactionUtils';
+import * as utils from '@suite-common/wallet-utils';
 import * as fixtures from '../__fixtures__/transactionUtils';
 import stMock from '../__fixtures__/searchTransactions.json';
 import { WalletAccountTransaction } from '@wallet-types';

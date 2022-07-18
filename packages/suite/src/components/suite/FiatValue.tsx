@@ -4,7 +4,7 @@ import { HiddenPlaceholder } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import { Network } from '@wallet-types';
 import { TimestampedRates } from '@wallet-types/fiatRates';
-import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { FormattedFiatAmount } from './FormattedFiatAmount';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`

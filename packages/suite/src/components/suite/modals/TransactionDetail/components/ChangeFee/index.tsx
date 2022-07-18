@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Card, Icon, variables } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 import { useRbf, RbfContext, Props } from '@wallet-hooks/useRbfForm';
-import { getFeeUnits } from '@wallet-utils/sendFormUtils';
+import { getFeeUnits } from '@suite-common/wallet-utils';
 import Fees from './components/Fees';
 import AffectedTransactions from './components/AffectedTransactions';
 import DecreasedOutputs from './components/DecreasedOutputs';

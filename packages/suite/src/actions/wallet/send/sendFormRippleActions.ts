@@ -5,8 +5,9 @@ import {
     calculateTotal,
     calculateMax,
     getExternalComposeOutput,
-} from '@wallet-utils/sendFormUtils';
-import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+    networkAmountToSatoshi,
+    formatNetworkAmount,
+} from '@suite-common/wallet-utils';
 import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
     FormState,

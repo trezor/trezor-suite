@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import type { BlockchainAccountBalanceHistory } from '@trezor/connect';
 import { startOfMonth, getUnixTime, fromUnixTime, differenceInMonths } from 'date-fns';
-import { toFiatCurrency } from './fiatConverterUtils';
+import { toFiatCurrency, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { CoinFiatRates, Account } from '@wallet-types';
 import {
     AggregatedDashboardHistory,
@@ -11,7 +11,6 @@ import {
     CommonAggregatedHistory,
     GraphScale,
 } from '@wallet-types/graph';
-import { formatNetworkAmount } from './accountUtils';
 import { resetTime } from '@suite-utils/date';
 import { getFiatRatesForTimestamps, getTickerConfig } from '@suite/services/fiat';
 

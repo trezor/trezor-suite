@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import {

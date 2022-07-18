@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Button, Icon, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { HiddenPlaceholder } from '@suite-components/HiddenPlaceholder';

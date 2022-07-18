@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, variables, Icon, Tooltip } from '@trezor/components';
 import { getReasonForDisabledAction, useCardanoStaking } from '@wallet-hooks/useCardanoStaking';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-components/Translation';
 import ActionInProgress from '../ActionInProgress';
 import { Account } from '@suite/types/wallet';

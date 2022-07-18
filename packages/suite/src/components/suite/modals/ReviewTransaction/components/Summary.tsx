@@ -1,14 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { getFeeUnits } from '@wallet-utils/sendFormUtils';
+import {
+    getFeeUnits,
+    getTitleForNetwork,
+    formatNetworkAmount,
+    formatAmount,
+} from '@suite-common/wallet-utils';
 import { Icon, useTheme, CoinLogo, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount } from '@suite-components';
-import { getTitleForNetwork, formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { Account, Network } from '@wallet-types';
 import { formatDuration } from '@suite-utils/date';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
-import { isEnabled } from '@suite-utils/features';
+import { isEnabled } from '@suite-common/suite-utils';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;

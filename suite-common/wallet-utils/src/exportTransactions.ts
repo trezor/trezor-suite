@@ -1,8 +1,8 @@
-import { AccountTransaction, TransactionTarget } from '@trezor/connect';
-import { Network } from '@wallet-types';
-import { trezorLogo } from '@suite-constants/b64images';
-
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
+
+import { trezorLogo } from '@suite-common/suite-constants';
+import { AccountTransaction, TransactionTarget } from '@trezor/connect';
+import { Network } from '@suite-common/wallet-networks-config';
 
 type AccountTransactionForExports = Omit<AccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];

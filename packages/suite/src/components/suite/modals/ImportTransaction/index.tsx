@@ -5,7 +5,7 @@ import { DropZone } from '@suite-components/DropZone';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { DelimiterForm } from './components/DelimiterForm';
 import { ExampleCSV } from './components/ExampleCSV';
-import { parseCSV } from '@wallet-utils/csvParser';
+import { parseCSV } from '@suite-common/wallet-utils';
 
 type Props = {
     onCancel: () => any;

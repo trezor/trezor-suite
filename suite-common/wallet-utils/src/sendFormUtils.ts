@@ -1,15 +1,14 @@
-import BigNumber from 'bignumber.js';
 import { FieldError, UseFormMethods } from 'react-hook-form';
-import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
+
+import BigNumber from 'bignumber.js';
 import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
+import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
+import { Network } from '@suite-common/wallet-networks-config';
+import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES, ERC20_TRANSFER } from '@suite-common/wallet-constants';
-import { amountToSatoshi, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
-
-import type { Network, Account, CoinFiatRates, RbfTransactionParams } from '@wallet-types';
 import type {
     FormState,
     FeeInfo,
@@ -17,7 +16,13 @@ import type {
     ExternalOutput,
     Output,
     UseSendFormState,
-} from '@wallet-types/sendForm';
+    RbfTransactionParams,
+    CoinFiatRates,
+    Account,
+} from '@suite-common/wallet-types';
+
+import { amountToSatoshi, networkAmountToSatoshi } from './accountUtils';
+import { sanitizeHex } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -49,14 +54,6 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
 };
 
 // ETH SPECIFIC
-
-const padLeftEven = (hex: string): string => (hex.length % 2 !== 0 ? `0${hex}` : hex);
-
-export const sanitizeHex = ($hex: string): string => {
-    const hex = $hex.toLowerCase().substring(0, 2) === '0x' ? $hex.substring(2) : $hex;
-    if (hex === '') return '';
-    return `0x${padLeftEven(hex)}`;
-};
 
 /*
     Calculate fee from gas price and gas limit

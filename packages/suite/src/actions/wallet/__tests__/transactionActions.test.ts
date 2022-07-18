@@ -1,7 +1,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import transactionReducer from '@wallet-reducers/transactionReducer';
-import { getAccountTransactions } from '@wallet-utils/transactionUtils';
+import { getAccountTransactions } from '@suite-common/wallet-utils';
 import * as transactionActions from '../transactionActions';
 
 type transactionsState = ReturnType<typeof transactionReducer>;

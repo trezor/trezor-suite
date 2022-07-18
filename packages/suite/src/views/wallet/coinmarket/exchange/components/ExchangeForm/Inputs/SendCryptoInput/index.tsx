@@ -1,9 +1,13 @@
 import { Input } from '@trezor/components';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import {
+    formatNetworkAmount,
+    isDecimalsValid,
+    isInteger,
+    getInputState,
+} from '@suite-common/wallet-utils';
 import { FIAT } from '@suite-config';
-import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { Translation } from '@suite-components';
 import SendCryptoSelect from './SendCryptoSelect';
@@ -12,7 +16,6 @@ import Bignumber from 'bignumber.js';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
-import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 export const buildCurrencyOptions = () => {
     const result: { value: string; label: string }[] = [];

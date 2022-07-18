@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation } from '@suite-components';
 import { Account as WalletAccount } from '@wallet-types';

@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../metadata-types" },
+        { "path": "../suite-constants" },
+        { "path": "../suite-types" },
+        { "path": "../suite-utils" },
+        { "path": "../wallet-constants" },
+        { "path": "../wallet-networks-config" },
+        { "path": "../wallet-types" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
+    ]
+}
