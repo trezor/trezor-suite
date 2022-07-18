@@ -283,4 +283,23 @@ describe('account utils', () => {
             ),
         ).toBe(true);
     });
+
+    it('hasNetworkFeatures', () => {
+        const btcAcc = global.JestMocks.getWalletAccount({
+            networkType: 'bitcoin',
+            symbol: 'btc',
+        });
+
+        const ethAcc = global.JestMocks.getWalletAccount();
+
+        expect(accountUtils.hasNetworkFeatures(btcAcc, 'amount-unit')).toEqual(true);
+        expect(accountUtils.hasNetworkFeatures(btcAcc, ['amount-unit', 'sign-verify'])).toEqual(
+            true,
+        );
+        expect(accountUtils.hasNetworkFeatures(ethAcc, 'tokens')).toEqual(true);
+        expect(accountUtils.hasNetworkFeatures(ethAcc, 'amount-unit')).toEqual(false);
+        expect(accountUtils.hasNetworkFeatures(ethAcc, ['amount-unit', 'sign-verify'])).toEqual(
+            false,
+        );
+    });
 });

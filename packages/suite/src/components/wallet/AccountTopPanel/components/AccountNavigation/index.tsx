@@ -5,7 +5,7 @@ import { Translation } from '@suite-components/Translation';
 import { useActions, useSelector } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { hasSignVerify } from '@wallet-utils/accountUtils';
+import { hasNetworkFeatures } from '@wallet-utils/accountUtils';
 import { Dot } from './components/Dot';
 
 interface AccountNavigationProps {
@@ -126,7 +126,7 @@ export const AccountNavigation = ({
             icon: 'SIGN',
             position: 'secondary',
             extra: true,
-            isHidden: !account || !hasSignVerify(account),
+            isHidden: !account || !hasNetworkFeatures(account, 'sign-verify'),
         },
     ];
 
