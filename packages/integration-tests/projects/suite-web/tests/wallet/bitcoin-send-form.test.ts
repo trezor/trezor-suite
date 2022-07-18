@@ -50,6 +50,23 @@ describe('Send form for bitcoin', () => {
         // assert final state of form using screenshot
         cy.getTestElement('@wallet/send/outputs-and-options').matchImageSnapshot('bitcoin-send');
     });
+
+    it('switch display units to satoshis, fill a form in satoshis and send', () => {
+        cy.getTestElement('amount-unit-switch/btc').click();
+
+        // test adding and removing outputs
+        cy.getTestElement('outputs[0].amount', { scrollBehavior: 'center' }).type(600);
+        cy.getTestElement('add-output').click();
+        cy.getTestElement('outputs[1].amount', { scrollBehavior: false }).type(800);
+        cy.getTestElement('outputs[0].remove').click();
+        cy.wait(10); // wait for animation
+        cy.getTestElement('outputs[0].amount').should('be.visible'); // 1 output is visible
+
+        // assert final state of form using screenshot
+        cy.getTestElement('@wallet/send/outputs-and-options').matchImageSnapshot(
+            'bitcoin-send-sats',
+        );
+    });
 });
 
 // todo: send tx

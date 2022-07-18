@@ -1,6 +1,7 @@
 export const enum SettingsAnchor {
     Language = '@general-settings/language',
     Fiat = '@general-settings/fiat',
+    BitcoinAmountUnit = '@general-settings/btc-amount-unit',
     Labeling = '@general-settings/labeling',
     LabelingDisconnect = '@general-settings/labeling-disconnect',
     LabelingConnect = '@general-settings/labeling-connect',

@@ -8,25 +8,22 @@ import {
     AppNavigationPanel,
     FormattedCryptoAmount,
     MetadataLabeling,
+    AmountUnitSwitchWrapper,
 } from '@suite-components';
 import { Stack, SkeletonCircle, SkeletonRectangle } from '@suite-components/Skeleton';
 import { useSelector } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { AccountNavigation } from './components/AccountNavigation';
 
-const BalanceWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-`;
-
 const Balance = styled(H1)`
+    height: 32px;
     white-space: nowrap;
-    margin-left: 6px;
+    margin-left: 8px;
 `;
 
 const FiatBalanceWrapper = styled(H3)`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    height: 24px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     margin-left: 1ch;
 `;
 
@@ -47,8 +44,10 @@ const AccountTopPanelSkeleton = (props: { animate?: boolean }) => (
 
 export const AccountTopPanel = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded')
+
+    if (selectedAccount.status !== 'loaded') {
         return <AccountTopPanelSkeleton animate={selectedAccount.loader === 'account-loading'} />;
+    }
 
     const { account } = selectedAccount;
     const { symbol, formattedBalance } = account;
@@ -72,11 +71,13 @@ export const AccountTopPanel = () => {
                 !isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined
             }
         >
-            <BalanceWrapper>
+            <AmountUnitSwitchWrapper symbol={symbol}>
                 <CoinLogo size={24} symbol={symbol} />
+
                 <Balance noMargin>
                     <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                 </Balance>
+
                 <FiatValue
                     amount={account.formattedBalance}
                     symbol={symbol}
@@ -86,7 +87,7 @@ export const AccountTopPanel = () => {
                         value ? <FiatBalanceWrapper noMargin>{value}</FiatBalanceWrapper> : null
                     }
                 </FiatValue>
-            </BalanceWrapper>
+            </AmountUnitSwitchWrapper>
         </AppNavigationPanel>
     );
 };

@@ -185,11 +185,28 @@ export const formatNetworkAmount = (
     amount: string,
     symbol: Account['symbol'],
     withSymbol = false,
+    isSatoshis?: boolean,
 ) => {
     const network = NETWORKS.find(n => n.symbol === symbol);
-    if (!network) return amount;
-    if (withSymbol) return `${formatAmount(amount, network.decimals)} ${symbol.toUpperCase()}`;
-    return formatAmount(amount, network.decimals);
+
+    if (!network) {
+        return amount;
+    }
+
+    let formattedAmount = formatAmount(amount, network.decimals);
+
+    if (withSymbol) {
+        let formattedSymbol = symbol?.toUpperCase();
+
+        if (isSatoshis) {
+            formattedAmount = amount;
+            formattedSymbol = symbol === 'btc' ? 'sat' : `sat ${symbol?.toUpperCase()}`;
+        }
+
+        return `${formattedAmount} ${formattedSymbol}`;
+    }
+
+    return formattedAmount;
 };
 
 export const sortByCoin = (accounts: Account[]) =>

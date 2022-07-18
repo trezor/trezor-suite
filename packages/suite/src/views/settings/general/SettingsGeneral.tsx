@@ -20,18 +20,27 @@ import { ClearStorage } from './ClearStorage';
 import { VersionWithUpdate } from './VersionWithUpdate';
 import { EarlyAccess } from './EarlyAccess';
 import { getIsTorEnabled } from '@suite-utils/tor';
+import { BitcoinAmountUnit } from './BitcoinAmountUnit';
+import { NETWORKS } from '@wallet-config';
 
 export const SettingsGeneral = () => {
-    const { desktopUpdate, isTorEnabled } = useSelector(state => ({
+    const { desktopUpdate, isTorEnabled, enabledNetworks } = useSelector(state => ({
         desktopUpdate: state.desktopUpdate,
         isTorEnabled: getIsTorEnabled(state.suite.torStatus),
+        enabledNetworks: state.wallet.settings.enabledNetworks,
     }));
+
+    const hasBitcoinNetworks = NETWORKS.some(
+        ({ symbol, features }) =>
+            enabledNetworks.includes(symbol) && features?.includes('amount-unit'),
+    );
 
     return (
         <SettingsLayout data-test="@settings/index">
             <SettingsSection title={<Translation id="TR_LOCALIZATION" />} icon="FLAG">
                 <Language />
                 <Fiat />
+                {hasBitcoinNetworks && <BitcoinAmountUnit />}
             </SettingsSection>
 
             <SettingsSection title={<Translation id="TR_LABELING" />} icon="TAG_MINIMAL">
