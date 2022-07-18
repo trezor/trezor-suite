@@ -49,6 +49,7 @@ import CharacterCount from './CharacterCount';
 import CloseButton from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
+import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 
 import { SuiteLayout } from './SuiteLayout';
 
@@ -108,5 +109,6 @@ export {
     CloseButton,
     TooltipSymbol,
     StatusLight,
+    AmountUnitSwitchWrapper,
 };
 export type { ImageProps, ModalProps };

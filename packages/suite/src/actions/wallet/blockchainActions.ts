@@ -23,6 +23,7 @@ import { getCustomBackends, getBackendFromSettings } from '@suite-utils/backend'
 import type { Dispatch, GetState } from '@suite-types';
 import type { Account, Network, CustomBackend, BackendType } from '@wallet-types';
 import type { Timeout } from '@trezor/type-utils';
+import { getAreSatoshisUsed } from '@wallet-utils/settingsUtils';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 
@@ -367,10 +368,13 @@ export const onNotification =
         // dispatch only recv notifications
         if (tx.type === 'recv' && !tx.blockHeight) {
             const accountDevice = findAccountDevice(account, getState().devices);
+
             const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+            const areSatoshisUsed = getAreSatoshisUsed(getState());
+
             const formattedAmount = token
                 ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
-                : formatNetworkAmount(tx.amount, account.symbol, true);
+                : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
 
             dispatch(
                 notificationActions.addEvent({

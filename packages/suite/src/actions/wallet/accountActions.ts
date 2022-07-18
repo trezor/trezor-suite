@@ -14,6 +14,7 @@ import { NETWORKS } from '@wallet-config';
 import { SETTINGS } from '@suite-config';
 import type { Account } from '@wallet-types';
 import type { Dispatch, GetState } from '@suite-types';
+import { getAreSatoshisUsed } from '@wallet-utils/settingsUtils';
 
 export type AccountAction =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
@@ -183,12 +184,21 @@ export const fetchAndUpdateAccount =
             const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
             analyze.newTransactions.forEach(tx => {
                 const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+
+                const areSatoshisUsed = getAreSatoshisUsed(getState());
+
                 const formattedAmount = token
                     ? `${accountUtils.formatAmount(
                           token.amount,
                           token.decimals,
                       )} ${token.symbol.toUpperCase()}`
-                    : accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
+                    : accountUtils.formatNetworkAmount(
+                          tx.amount,
+                          account.symbol,
+                          true,
+                          areSatoshisUsed,
+                      );
+
                 dispatch(
                     notificationActions.addEvent({
                         type: 'tx-confirmed',
