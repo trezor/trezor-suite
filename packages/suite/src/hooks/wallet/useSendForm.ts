@@ -8,7 +8,7 @@ import * as protocolActions from '@suite-actions/protocolActions';
 import { UseSendFormState, FormState, SendContextValues, Output } from '@wallet-types/sendForm';
 import { AppState } from '@suite-types';
 
-import { getFeeLevels, getDefaultValues } from '@wallet-utils/sendFormUtils';
+import { getFeeLevels, getDefaultValues } from '@suite-common/wallet-utils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';

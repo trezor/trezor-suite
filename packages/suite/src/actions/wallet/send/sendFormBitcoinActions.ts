@@ -1,8 +1,11 @@
 import TrezorConnect, { FeeLevel, SignTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getBitcoinComposeOutputs, restoreOrigOutputsOrder } from '@wallet-utils/sendFormUtils';
+import {
+    formatNetworkAmount,
+    getBitcoinComposeOutputs,
+    restoreOrigOutputsOrder,
+} from '@suite-common/wallet-utils';
 import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
 import {
     FormState,

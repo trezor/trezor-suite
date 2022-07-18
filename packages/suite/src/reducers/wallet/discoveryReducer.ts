@@ -1,35 +1,12 @@
 import produce from 'immer';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
-import { Deferred, createDeferred } from '@trezor/utils';
-import { ObjectValues } from '@trezor/type-utils';
+import { createDeferred } from '@trezor/utils';
 import { Action as SuiteAction } from '@suite-types';
-import { WalletAction, Network } from '@wallet-types';
+import { WalletAction } from '@wallet-types';
+import { Discovery as CommonDiscovery } from '@suite-common/wallet-types';
 
-export interface Discovery {
-    deviceState: string;
-    authConfirm: boolean;
-    index: number;
-    total: number;
-    loaded: number;
-    bundleSize: number;
-    status: ObjectValues<typeof DISCOVERY.STATUS>;
-    // coins which failed to load
-    failed: {
-        symbol: Network['symbol'];
-        index: number;
-        accountType: NonNullable<Network['accountType']>;
-        error: string;
-        fwException?: string;
-    }[];
-    networks: Network['symbol'][];
-    running?: Deferred<void>;
-    error?: string;
-    errorCode?: string | number;
-    // Array of account types which should be discovered for given device.
-    // It will be set during discovery process if cardano network is enabled.
-    availableCardanoDerivations?: ('normal' | 'legacy' | 'ledger')[];
-}
+export type Discovery = CommonDiscovery;
 
 export type PartialDiscovery = { deviceState: string } & Partial<Discovery>;
 

@@ -4,8 +4,7 @@ import type { ExchangeTradeQuoteRequest } from 'invity-api';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
-import { toFiatCurrency, fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { getFeeLevels } from '@wallet-utils/sendFormUtils';
+import { toFiatCurrency, fromFiatCurrency, getFeeLevels } from '@suite-common/wallet-utils';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import {

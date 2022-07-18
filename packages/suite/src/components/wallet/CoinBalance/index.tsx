@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Account } from '@wallet-types';
-import { formatCoinBalance } from '@wallet-utils/balanceUtils';
+import { formatCoinBalance } from '@suite-common/wallet-utils';
 import { HiddenPlaceholder } from '@suite-components';
 
 const Wrapper = styled.div``;

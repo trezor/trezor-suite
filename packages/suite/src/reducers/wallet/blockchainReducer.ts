@@ -2,7 +2,7 @@ import produce, { Draft } from 'immer';
 import type { BlockchainInfo, BlockchainBlock } from '@trezor/connect';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
-import { getNetwork } from '@wallet-utils/accountUtils';
+import { getNetwork } from '@suite-common/wallet-utils';
 import { NETWORKS } from '@wallet-config';
 import type { Network, BackendType } from '@wallet-types';
 import type { Action } from '@suite-types';

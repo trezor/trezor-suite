@@ -1,4 +1,4 @@
-import { getLocalCurrency } from '../settingsUtils';
+import { getLocalCurrency } from '@suite-common/wallet-utils';
 
 describe('settings utils', () => {
     it('get local currency value', () => {

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Account } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
-import { getShortFingerprint } from '@wallet-utils/cardanoUtils';
+import { getShortFingerprint } from '@wallet-utils/../../../../../../../../../../../../suite-common/wallet-utils/src/cardanoUtils';
 
 interface Option {
     label: string;

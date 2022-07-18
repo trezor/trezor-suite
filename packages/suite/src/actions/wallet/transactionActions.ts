@@ -1,17 +1,17 @@
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { saveAs } from 'file-saver';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import {
+    formatNetworkAmount,
     enhanceTransaction,
     findTransactions,
     getAccountTransactions,
-} from '@wallet-utils/transactionUtils';
+    formatData,
+} from '@suite-common/wallet-utils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
-import { formatData } from '@wallet-utils/exportTransactions';
 
 export type TransactionAction =
     | {

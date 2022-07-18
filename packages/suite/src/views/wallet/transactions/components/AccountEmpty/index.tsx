@@ -10,7 +10,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import Bech32Banner from './components/Bech32Banner';
 import TaprootBanner from './components/TaprootBanner';
-import { getBip43Type } from '@wallet-utils/accountUtils';
+import { getBip43Type } from '@suite-common/wallet-utils';
 
 const Wrapper = styled.div`
     display: flex;

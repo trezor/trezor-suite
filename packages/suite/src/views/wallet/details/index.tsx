@@ -11,7 +11,7 @@ import {
     getAccountTypeTech,
     getAccountTypeUrl,
     getAccountTypeDesc,
-} from '@wallet-utils/accountUtils';
+} from '@suite-common/wallet-utils';
 import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import { NETWORKS } from '@wallet-config';

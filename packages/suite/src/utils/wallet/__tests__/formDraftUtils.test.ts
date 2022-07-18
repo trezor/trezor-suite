@@ -1,5 +1,5 @@
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import * as formDraftUtils from '../formDraftUtils';
+import * as formDraftUtils from '@suite-common/wallet-utils';
 
 describe('form draft utils', () => {
     it('getFormDraftKey', () => {

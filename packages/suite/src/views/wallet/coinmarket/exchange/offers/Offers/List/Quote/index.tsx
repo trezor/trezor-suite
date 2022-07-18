@@ -8,7 +8,7 @@ import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { CoinmarketProviderInfo } from '@wallet-components';
 import { useSelector, useTranslation } from '@suite-hooks';
-import { toFiatCurrency } from '@suite/utils/wallet/fiatConverterUtils';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`

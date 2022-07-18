@@ -1,6 +1,6 @@
 import React from 'react';
 import { NotificationCard, Translation, ReadMoreLink } from '@suite-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 interface Props {
     reserve: string;

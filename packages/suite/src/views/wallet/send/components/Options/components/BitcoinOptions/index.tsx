@@ -4,7 +4,7 @@ import { Translation } from '@suite-components';
 import { OnOffSwitcher } from '@wallet-components';
 import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
-import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
+import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
 import { OpenGuideFromTooltip } from '@guide-components';
 import Locktime from './components/Locktime';
 

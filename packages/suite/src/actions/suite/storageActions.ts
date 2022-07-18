@@ -1,11 +1,10 @@
 import { mergeObject } from '@trezor/utils';
 import { db } from '@suite/storage';
-import { getAccountKey } from '@wallet-utils/accountUtils';
+import { getAccountKey, getFormDraftKey } from '@suite-common/wallet-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
-import { getFormDraftKey } from '@wallet-utils/formDraftUtils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { STORAGE } from './constants';
 

@@ -25,7 +25,7 @@ import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
 } from '@wallet-hooks/sign-verify/useSignVerifyForm';
-import { getInputState } from '@suite/utils/wallet/sendFormUtils';
+import { getInputState } from '@suite-common/wallet-utils';
 import { Account } from '@suite/types/wallet';
 
 const SwitchWrapper = styled.label`

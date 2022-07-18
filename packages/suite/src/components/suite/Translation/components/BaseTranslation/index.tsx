@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+// FIXME: We cannot use aliases in this file because of temporary hack @suite-common/intl-types until #5647 will be merged.
 import messages from '../../../../../support/messages';
 import { ExtendedMessageDescriptor as CommonExtendedMessageDescriptor } from '@suite-common/intl-types';
 

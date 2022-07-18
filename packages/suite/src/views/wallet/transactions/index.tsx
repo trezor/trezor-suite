@@ -1,6 +1,6 @@
 import React from 'react';
 import { WalletLayout } from '@wallet-components';
-import { getAccountTransactions } from '@wallet-utils/transactionUtils';
+import { getAccountTransactions } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 import { AppState } from '@suite-types';
 

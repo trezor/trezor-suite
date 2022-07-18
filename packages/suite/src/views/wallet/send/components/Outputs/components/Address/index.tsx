@@ -14,8 +14,8 @@ import {
     isAddressDeprecated,
     isTaprootAddress,
     isBech32AddressUppercase,
-} from '@wallet-utils/validation';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+    getInputState,
+} from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { ConvertAddress } from './components/ConvertAddress';
 import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';

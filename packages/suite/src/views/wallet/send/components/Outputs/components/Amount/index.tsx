@@ -4,9 +4,13 @@ import styled from 'styled-components';
 import { Input, Icon, Button, variables, useTheme } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getInputState, findToken } from '@wallet-utils/sendFormUtils';
-import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
+import {
+    formatNetworkAmount,
+    isDecimalsValid,
+    isInteger,
+    getInputState,
+    findToken,
+} from '@suite-common/wallet-utils';
 import { useSendFormContext } from '@wallet-hooks';
 import { Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';

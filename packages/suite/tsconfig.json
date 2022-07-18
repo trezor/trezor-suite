@@ -28,6 +28,12 @@
             "path": "../../suite-common/metadata-types"
         },
         {
+            "path": "../../suite-common/suite-features-config"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
             "path": "../../suite-common/wallet-networks-config"
         },
         {
@@ -35,6 +41,9 @@
         },
         {
             "path": "../../suite-common/wallet-constants"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
         }
     ]
 }

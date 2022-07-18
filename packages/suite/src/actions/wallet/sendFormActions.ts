@@ -8,8 +8,8 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { SEND } from '@wallet-actions/constants';
-import { formatAmount, formatNetworkAmount, getPendingAccount } from '@wallet-utils/accountUtils';
-import { isCardanoTx } from '@wallet-utils/cardanoUtils';
+import { formatAmount, formatNetworkAmount, getPendingAccount } from '@suite-common/wallet-utils';
+import { isCardanoTx } from '@wallet-utils/../../../../../suite-common/wallet-utils/src/cardanoUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import {

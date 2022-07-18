@@ -1,5 +1,6 @@
 export * from './backend';
 export * from './cardanoStaking';
+export * from './discovery';
 export * from './fiatRates';
 export * from './account';
 export * from './polling';

@@ -1,4 +1,4 @@
-import * as utils from '../ethUtils';
+import * as utils from '@suite-common/wallet-utils';
 
 describe('eth utils', () => {
     it('decimalToHex', () => {

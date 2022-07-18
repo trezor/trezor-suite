@@ -1,4 +1,4 @@
-import * as accountUtils from '../accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 import * as fixtures from '../__fixtures__/accountUtils';
 import { Account } from '@wallet-types';
 

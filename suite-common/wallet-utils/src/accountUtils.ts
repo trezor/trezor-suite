@@ -1,15 +1,20 @@
-import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
-import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
 import BigNumber from 'bignumber.js';
-import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
-import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
+
+import { networksCompatibility, Network } from '@suite-common/wallet-networks-config';
 import {
+    Account,
+    CoinFiatRates,
+    WalletParams, // FIXME
+    Discovery,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
     TxFinalCardano,
-} from '@wallet-types/sendForm';
-import { AppState } from '@suite-types';
-import { NETWORKS } from '@wallet-config';
+} from '@suite-common/wallet-types';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
+import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
+import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
+
 import { toFiatCurrency } from './fiatConverterUtils';
 
 export const isUtxoBased = (account: Account) =>
@@ -174,7 +179,7 @@ export const amountToSatoshi = (amount: string, decimals: number) => {
 };
 
 export const networkAmountToSatoshi = (amount: string | null, symbol: Account['symbol']) => {
-    const network = NETWORKS.find(n => n.symbol === symbol);
+    const network = networksCompatibility.find(n => n.symbol === symbol);
     if (!amount) return '0';
     if (!network) return amount;
     return amountToSatoshi(amount, network.decimals);
@@ -185,7 +190,7 @@ export const formatNetworkAmount = (
     symbol: Account['symbol'],
     withSymbol = false,
 ) => {
-    const network = NETWORKS.find(n => n.symbol === symbol);
+    const network = networksCompatibility.find(n => n.symbol === symbol);
     if (!network) return amount;
     if (withSymbol) return `${formatAmount(amount, network.decimals)} ${symbol.toUpperCase()}`;
     return formatAmount(amount, network.decimals);
@@ -193,11 +198,11 @@ export const formatNetworkAmount = (
 
 export const sortByCoin = (accounts: Account[]) =>
     accounts.sort((a, b) => {
-        const aIndex = NETWORKS.findIndex(n => {
+        const aIndex = networksCompatibility.findIndex(n => {
             const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
             return accountType === a.accountType && n.symbol === a.symbol;
         });
-        const bIndex = NETWORKS.findIndex(n => {
+        const bIndex = networksCompatibility.findIndex(n => {
             const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
             return accountType === b.accountType && n.symbol === b.symbol;
         });
@@ -224,7 +229,7 @@ export const findAccountsByAddress = (address: string, accounts: Account[]) =>
         return a.descriptor === address;
     });
 
-export const findAccountDevice = (account: Account, devices: AppState['devices']) =>
+export const findAccountDevice = (account: Account, devices: TrezorDevice[]) =>
     devices.find(d => d.state === account.deviceState);
 
 export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) => {
@@ -258,7 +263,7 @@ export const getSelectedAccount = (
 };
 
 export const getNetwork = (symbol: string): Network | null =>
-    NETWORKS.find(c => c.symbol === symbol) || null;
+    networksCompatibility.find(c => c.symbol === symbol) || null;
 
 export const isNetworkSymbol = (symbol: string): symbol is Network['symbol'] =>
     !!getNetwork(symbol);
@@ -397,7 +402,7 @@ export const getTotalFiatBalance = (
 };
 
 export const isTestnet = (symbol: Account['symbol']) => {
-    const net = NETWORKS.find(n => n.symbol === symbol);
+    const net = networksCompatibility.find(n => n.symbol === symbol);
     return net?.testnet ?? false;
 };
 
@@ -705,7 +710,7 @@ export const getPendingAccount = (
 };
 
 export const hasSignVerify = (account: Account) =>
-    !!NETWORKS.find(
+    !!networksCompatibility.find(
         ({ networkType, symbol, accountType, features }) =>
             networkType === account.networkType &&
             symbol === account.symbol &&

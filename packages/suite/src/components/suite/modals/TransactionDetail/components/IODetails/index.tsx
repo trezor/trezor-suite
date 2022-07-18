@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon, useTheme, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getNetwork } from '@wallet-utils/accountUtils';
+import { getNetwork } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div`

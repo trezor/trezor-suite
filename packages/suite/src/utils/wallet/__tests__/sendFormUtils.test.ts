@@ -13,7 +13,7 @@ import {
     getBitcoinComposeOutputs,
     getExternalComposeOutput,
     restoreOrigOutputsOrder,
-} from '../sendFormUtils';
+} from '@suite-common/wallet-utils';
 import { NETWORKS } from '@wallet-config';
 
 const { getWalletAccount } = global.JestMocks;

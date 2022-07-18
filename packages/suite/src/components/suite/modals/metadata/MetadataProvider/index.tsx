@@ -7,7 +7,7 @@ import { useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import type { Deferred } from '@trezor/utils';
 import { MetadataProviderType } from '@suite-types/metadata';
-import { isEnabled } from '@suite-utils/features';
+import { isEnabled } from '@suite-common/suite-utils';
 
 const { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } = variables;
 

@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
-import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { toFiatCurrency } from '@suite-common/wallet-utils';
 import {
     FormState,
     FormOptions,
     UseSendFormState,
     SendContextValues,
 } from '@wallet-types/sendForm';
-import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
+import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
 
 type Props = UseFormMethods<FormState> & {
     fiatRates: UseSendFormState['fiatRates'];

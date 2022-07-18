@@ -1,4 +1,4 @@
-import * as utils from '../fiatConverterUtils';
+import * as utils from '@suite-common/wallet-utils';
 
 const ratesETH = {
     symbol: 'eth',

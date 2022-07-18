@@ -6,7 +6,7 @@ import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { SUITE } from '@suite-actions/constants';
 import { ACCOUNT, TRANSACTION, DISCOVERY } from '@wallet-actions/constants';
 import { getUserAgent } from '@suite-utils/env';
-import { getAccountIdentifier } from '@suite/utils/wallet/accountUtils';
+import { getAccountIdentifier } from '@suite-common/wallet-utils';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

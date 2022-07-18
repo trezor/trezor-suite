@@ -4,7 +4,7 @@ import { NETWORKS } from '@wallet-config';
 
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 
 import { Action, Dispatch, GetState } from '@suite-types';
 import { State, AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';

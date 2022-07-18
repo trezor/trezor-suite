@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { useActions, useAsyncDebounce } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { findComposeErrors } from '@wallet-utils/sendFormUtils';
+import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
     FeeInfo,

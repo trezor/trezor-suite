@@ -1,6 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components';
-import { getTxHeaderSymbol, isTxUnknown } from '@wallet-utils/transactionUtils';
+import { getTxHeaderSymbol, isTxUnknown } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@wallet-types';
 
 interface Props {

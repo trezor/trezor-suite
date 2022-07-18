@@ -1,5 +1,5 @@
 import React from 'react';
-import { findAccountsByAddress } from '@wallet-utils/accountUtils';
+import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
 import { AccountLabeling } from './AccountLabeling';
 

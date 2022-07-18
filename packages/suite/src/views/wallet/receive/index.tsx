@@ -4,7 +4,7 @@ import { useDevice, useSelector, useActions } from '@suite-hooks';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
-import { isPending, getAccountTransactions } from '@wallet-utils/transactionUtils';
+import { isPending, getAccountTransactions } from '@suite-common/wallet-utils';
 
 const Receive = () => {
     const { selectedAccount, receive, device, transactions } = useSelector(state => ({

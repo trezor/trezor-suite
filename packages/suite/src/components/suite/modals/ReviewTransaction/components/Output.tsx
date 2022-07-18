@@ -1,7 +1,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Translation } from '@suite-components';
-import { formatNetworkAmount, formatAmount, isTestnet } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { Network } from '@wallet-types';
 import { TokenInfo } from '@trezor/connect';

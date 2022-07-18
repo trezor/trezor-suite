@@ -1,0 +1,36 @@
+{
+    "name": "@suite-common/wallet-utils",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@ethereumjs/common": "^2.6.4",
+        "@ethereumjs/tx": "^3.5.2",
+        "@fivebinaries/coin-selection": "2.0.0-beta.10",
+        "@suite-common/metadata-types": "*",
+        "@suite-common/suite-constants": "*",
+        "@suite-common/suite-types": "*",
+        "@suite-common/suite-utils": "*",
+        "@suite-common/wallet-constants": "*",
+        "@suite-common/wallet-networks-config": "*",
+        "@suite-common/wallet-types": "*",
+        "@trezor/connect": "9.0.0-beta.4",
+        "@trezor/urls": "*",
+        "@trezor/utils": "*",
+        "bignumber.js": "^9.0.2",
+        "ethereumjs-util": "^7.1.5",
+        "pdfmake": "^0.2.5",
+        "react-hook-form": "6.15.7",
+        "trezor-address-validator": "^0.4.2",
+        "web3-utils": "^1.7.3"
+    },
+    "devDependencies": {
+        "@types/pdfmake": "^0.1.21"
+    }
+}

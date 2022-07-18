@@ -3,8 +3,14 @@ import styled from 'styled-components';
 import { AccountLabeling, HiddenPlaceholder } from '@suite-components';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
-import * as accountUtils from '@wallet-utils/accountUtils';
-import * as transactionUtils from '@wallet-utils/transactionUtils';
+import {
+    findAccountsByNetwork,
+    findAccountsByDescriptor,
+    findAccountDevice,
+    getAccountTransactions,
+    findTransaction,
+    getConfirmations,
+} from '@suite-common/wallet-utils';
 import { useActions, useSelector } from '@suite-hooks';
 import { getTxAnchor } from '@suite-utils/anchor';
 
@@ -33,18 +39,16 @@ const TransactionRenderer = ({ render: View, ...props }: TransactionRendererProp
         blockchain: state.wallet.blockchain,
     }));
 
-    const networkAccounts = accountUtils.findAccountsByNetwork(symbol, accounts);
-    const found = accountUtils.findAccountsByDescriptor(descriptor, networkAccounts);
+    const networkAccounts = findAccountsByNetwork(symbol, accounts);
+    const found = findAccountsByDescriptor(descriptor, networkAccounts);
     // fallback: account not found, it should never happen tho
     if (!found.length) return <View {...props} />;
 
     const account = found[0];
-    const accountTxs = transactionUtils.getAccountTransactions(account.key, transactions);
-    const tx = transactionUtils.findTransaction(txid, accountTxs);
-    const accountDevice = accountUtils.findAccountDevice(account, devices);
-    const confirmations = tx
-        ? transactionUtils.getConfirmations(tx, blockchain[account.symbol].blockHeight)
-        : 0;
+    const accountTxs = getAccountTransactions(account.key, transactions);
+    const tx = findTransaction(txid, accountTxs);
+    const accountDevice = findAccountDevice(account, devices);
+    const confirmations = tx ? getConfirmations(tx, blockchain[account.symbol].blockHeight) : 0;
 
     return (
         <View

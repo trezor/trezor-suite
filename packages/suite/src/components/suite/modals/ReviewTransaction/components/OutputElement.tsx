@@ -4,7 +4,7 @@ import { Truncate } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
 import { Network, Account } from '@wallet-types';
 import { TokenInfo } from '@trezor/connect';
-import { amountToSatoshi } from '@wallet-utils/accountUtils';
+import { amountToSatoshi } from '@suite-common/wallet-utils';
 
 const OutputWrapper = styled.div`
     display: flex;

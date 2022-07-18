@@ -1,4 +1,4 @@
-import { parseCSV } from '../csvParser';
+import { parseCSV } from '@suite-common/wallet-utils';
 
 const FIXTURES = [
     {

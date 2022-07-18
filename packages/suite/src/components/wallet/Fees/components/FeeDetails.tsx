@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { getFeeUnits } from '@wallet-utils/sendFormUtils';
+import { getFeeUnits } from '@suite-common/wallet-utils';
 import { formatDuration } from '@suite-utils/date';
 import { Network } from '@wallet-types';
 import {

@@ -1,5 +1,6 @@
 import addressValidator from 'trezor-address-validator';
-import { Account } from '@wallet-types';
+
+import { Account } from '@suite-common/wallet-types';
 
 const getNetworkType = (symbol: Account['symbol']) => {
     if (symbol === 'regtest') return symbol;

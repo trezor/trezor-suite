@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, Icon, useTheme } from '@trezor/components';
 import { HiddenPlaceholder, Sign } from '@suite-components';
-import { getTargetAmount, getTxHeaderSymbol, getTxOperation } from '@wallet-utils/transactionUtils';
+import { getTargetAmount, getTxHeaderSymbol, getTxOperation } from '@suite-common/wallet-utils';
 import TransactionHeader from '../TransactionHeader';
 import { WalletAccountTransaction } from '@wallet-types';
 
