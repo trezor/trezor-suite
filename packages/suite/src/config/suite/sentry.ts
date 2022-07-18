@@ -6,10 +6,12 @@ import type { Options, Event } from '@sentry/types';
 export const allowReportTag = 'allowReport';
 
 /**
- * From paths like /Users/username/, C:\Users\username\, this matches /Users/ or \Users\ as first group
- * and text (supposed to be a username) between that and the next slash as second group.
+ * From paths like /Users/username/, C:\Users\username\, C:\\Users\\username\\,
+ * this matches /Users/, \Users\ or \Users\\ as first group
+ * and text (supposed to be a username) before the next slash (or special character not allowed in username)
+ * as second group.
  */
-const startOfUserPathRegex = /([/\\][Uu]sers[/\\])([^/^\\]*)/g;
+const startOfUserPathRegex = /([/\\][Uu]sers[/\\]{1,4})([^"^'^[^\]^/^\\]*)/g;
 
 /**
  * Full user path could be part of reported error in some cases and we want to actively filter username out.
