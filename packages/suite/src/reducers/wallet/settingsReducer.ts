@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { FeeLevel } from '@trezor/connect';
+import { FeeLevel, PROTO } from '@trezor/connect';
 import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { Action } from '@suite-types';
@@ -9,6 +9,7 @@ export interface State {
     localCurrency: string;
     discreetMode: boolean;
     enabledNetworks: Network['symbol'][];
+    bitcoinAmountUnit: PROTO.AmountUnit;
     lastUsedFeeLevel: {
         [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']
     };
@@ -18,6 +19,7 @@ export const initialState: State = {
     localCurrency: 'usd',
     discreetMode: false,
     enabledNetworks: ['btc'],
+    bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     lastUsedFeeLevel: {},
 };
 
@@ -45,6 +47,9 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                 } else {
                     delete draft.lastUsedFeeLevel[action.symbol];
                 }
+                break;
+            case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
+                draft.bitcoinAmountUnit = action.payload;
                 break;
 
             // no default
