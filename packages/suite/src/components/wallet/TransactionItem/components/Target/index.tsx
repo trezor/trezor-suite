@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { HiddenPlaceholder, FiatValue, Translation, MetadataLabeling } from '@suite-components';
+import { variables } from '@trezor/components';
+import { FiatValue, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
 import { ArrayElement } from '@trezor/type-utils';
 import { getTxOperation, getTargetAmount } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { WalletAccountTransaction } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useActions } from '@suite-hooks';
-import Sign from '@suite-components/Sign';
 import TokenTransferAddressLabel from '../TokenTransferAddressLabel';
 import TargetAddressLabel from '../TargetAddressLabel';
 import BaseTargetLayout from '../BaseTargetLayout';
@@ -15,12 +15,12 @@ import { copyToClipboard } from '@suite-utils/dom';
 import { AccountMetadata } from '@suite-types/metadata';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
-const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
-    /* padding: 8px 0px; row padding */
-    display: block;
-    overflow: hidden;
+const StyledCryptoAmount = styled(FormattedCryptoAmount)`
+    width: 100%;
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
-    text-overflow: ellipsis;
 `;
 
 interface TokenTransferProps {
@@ -39,16 +39,18 @@ export const TokenTransfer = ({
     ...baseLayoutProps
 }: TokenTransferProps) => {
     const operation = getTxOperation(transfer);
+
     return (
         <BaseTargetLayout
             {...baseLayoutProps}
             addressLabel={<TokenTransferAddressLabel transfer={transfer} type={transaction.type} />}
             amount={
                 !baseLayoutProps.singleRowLayout && (
-                    <StyledHiddenPlaceholder>
-                        {operation && <Sign value={operation} />}
-                        {transfer.amount} {transfer.symbol}
-                    </StyledHiddenPlaceholder>
+                    <StyledCryptoAmount
+                        value={transfer.amount}
+                        symbol={transfer.symbol}
+                        signValue={operation}
+                    />
                 )
             }
         />
@@ -125,10 +127,11 @@ export const Target = ({
             }
             amount={
                 targetAmount && !baseLayoutProps.singleRowLayout ? (
-                    <StyledHiddenPlaceholder>
-                        {operation && <Sign value={operation} />}
-                        {targetAmount} {transaction.symbol}
-                    </StyledHiddenPlaceholder>
+                    <StyledCryptoAmount
+                        value={targetAmount}
+                        symbol={transaction.symbol}
+                        signValue={operation}
+                    />
                 ) : undefined
             }
             fiatAmount={
@@ -165,12 +168,7 @@ export const CustomRow = ({
     <BaseTargetLayout
         {...baseLayoutProps}
         addressLabel={<Translation id={title} />}
-        amount={
-            <StyledHiddenPlaceholder>
-                <Sign value={sign} />
-                {amount} {transaction.symbol}
-            </StyledHiddenPlaceholder>
-        }
+        amount={<StyledCryptoAmount value={amount} symbol={transaction.symbol} signValue={sign} />}
         fiatAmount={
             useFiatValues ? (
                 <FiatValue

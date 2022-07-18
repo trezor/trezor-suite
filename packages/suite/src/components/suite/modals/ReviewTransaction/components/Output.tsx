@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { Translation } from '@suite-components';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@wallet-utils/accountUtils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { Network } from '@wallet-types';
+import { Network, NetworkSymbol } from '@wallet-types';
 import { TokenInfo } from '@trezor/connect';
 import Indicator, { Props as IndicatorProps } from './Indicator';
 import OutputElement, { OutputElementLine } from './OutputElement';
@@ -136,7 +136,7 @@ const Output = (props: Props) => {
             indicator={<Indicator state={state} size={16} />}
             lines={outputLines}
             token={token}
-            cryptoSymbol={outputSymbol}
+            cryptoSymbol={outputSymbol as NetworkSymbol}
             fiatSymbol={symbol}
             hasExpansion={hasExpansion}
             fiatVisible={fiatVisible}

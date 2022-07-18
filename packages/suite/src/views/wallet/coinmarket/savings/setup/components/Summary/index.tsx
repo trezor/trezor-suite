@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedCryptoAmount, FormattedNumber, Translation } from '@suite-components';
+import { FormattedCryptoAmount, FormattedFiatAmount, Translation } from '@suite-components';
+import { NetworkSymbol } from '@wallet-types';
 
 const SummaryWrapper = styled.div`
     display: flex;
@@ -43,7 +44,7 @@ interface Props {
     fiatCurrency?: string;
     annualSavingsFiatAmount: number;
     annualSavingsCryptoAmount: string;
-    accountSymbol: string;
+    accountSymbol: NetworkSymbol;
 }
 
 const Summary = ({
@@ -58,7 +59,7 @@ const Summary = ({
         </Left>
         <Right>
             <Fiat>
-                <FormattedNumber currency={fiatCurrency} value={annualSavingsFiatAmount} />
+                <FormattedFiatAmount currency={fiatCurrency} value={annualSavingsFiatAmount} />
             </Fiat>
             <Crypto>
                 ≈&nbsp;

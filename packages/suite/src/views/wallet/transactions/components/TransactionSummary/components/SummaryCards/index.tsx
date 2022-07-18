@@ -2,7 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
-import { Translation, HiddenPlaceholder, FormattedNumber, FormattedDate } from '@suite-components';
+import {
+    Translation,
+    HiddenPlaceholder,
+    FormattedFiatAmount,
+    FormattedDate,
+} from '@suite-components';
 import { sumFiatValueMap } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountHistory } from '@wallet-types/graph';
@@ -102,7 +107,7 @@ const SummaryCards = ({
                 value={totalReceivedAmount.toFixed()}
                 secondaryValue={
                     totalReceivedFiatMap[localCurrency] ? (
-                        <FormattedNumber
+                        <FormattedFiatAmount
                             value={totalReceivedFiatMap[localCurrency]!}
                             currency={localCurrency}
                         />
@@ -117,7 +122,7 @@ const SummaryCards = ({
                 value={totalSentAmount.negated().toFixed()}
                 secondaryValue={
                     totalSentFiatMap[localCurrency] ? (
-                        <FormattedNumber
+                        <FormattedFiatAmount
                             value={totalSentFiatMap[localCurrency]!}
                             currency={localCurrency}
                         />

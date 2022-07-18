@@ -9,7 +9,7 @@ import { useSavingsPaymentInfo } from '@wallet-hooks/useCoinmarketSavingsPayment
 import { Button } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedNumber, Translation } from '@suite-components';
+import { FormattedFiatAmount, Translation } from '@suite-components';
 
 const Header = styled.div`
     font-size: 24px;
@@ -107,7 +107,7 @@ const PaymentInfo = (props: WithCoinmarketProps) => {
             <Setup>
                 <Values>
                     {savingsTrade.paymentFrequency},{' '}
-                    <FormattedNumber
+                    <FormattedFiatAmount
                         value={savingsTrade?.fiatStringAmount || 0}
                         currency={savingsTrade?.fiatCurrency}
                         minimumFractionDigits={0}

@@ -8,7 +8,7 @@ import {
 } from '@wallet-components';
 import styled from 'styled-components';
 import { Icon } from '@trezor/components';
-import { FormattedCryptoAmount, FormattedNumber, Translation } from '@suite-components';
+import { FormattedCryptoAmount, FormattedFiatAmount, Translation } from '@suite-components';
 import { PaymentDetail } from './components/PaymentDetail';
 import {
     SavingsOverviewContext,
@@ -21,6 +21,7 @@ import type {
 } from '@suite/services/suite/invityAPI';
 import WaitingForFirstPayment from './components/WaitingForFirstPayment';
 import { darken } from 'polished';
+import { NetworkSymbol } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -137,7 +138,7 @@ function renderSavingsStatus(
                 <SoFarSaved>
                     <Fiat>
                         ≈&nbsp;
-                        <FormattedNumber
+                        <FormattedFiatAmount
                             currency={savingsTrade?.fiatCurrency}
                             value={savingsFiatSum}
                         />
@@ -145,7 +146,7 @@ function renderSavingsStatus(
                     <Crypto>
                         <FormattedCryptoAmount
                             value={savingsCryptoSum}
-                            symbol={savingsTrade?.cryptoCurrency}
+                            symbol={savingsTrade?.cryptoCurrency as NetworkSymbol}
                         />
                     </Crypto>
                 </SoFarSaved>
@@ -184,7 +185,7 @@ const Overview = (props: WithCoinmarketProps) => {
                         <Setup>
                             <SetupValues>
                                 <FiatPayment>
-                                    <FormattedNumber
+                                    <FormattedFiatAmount
                                         value={savingsTrade?.fiatStringAmount || 0}
                                         currency={savingsTrade?.fiatCurrency}
                                         maximumFractionDigits={2}

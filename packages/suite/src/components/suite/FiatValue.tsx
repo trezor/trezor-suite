@@ -5,8 +5,7 @@ import { useSelector } from '@suite-hooks';
 import { Network } from '@wallet-types';
 import { TimestampedRates } from '@wallet-types/fiatRates';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-
-import FormattedNumber from '../FormattedNumber';
+import { FormattedFiatAmount } from './FormattedFiatAmount';
 
 const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     font-variant-numeric: tabular-nums;
@@ -42,7 +41,7 @@ interface CustomSourceProps extends CommonOwnProps {
     useCustomSource: boolean;
 }
 
-type Props = DefaultSourceProps | CustomSourceProps;
+type FiatValueProps = DefaultSourceProps | CustomSourceProps;
 
 /**
  * If used without children prop it returns a value of an crypto assets in fiat currency.
@@ -56,7 +55,7 @@ type Props = DefaultSourceProps | CustomSourceProps;
  * @param {Props} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
-const FiatValue = ({
+export const FiatValue = ({
     children,
     amount,
     symbol,
@@ -66,7 +65,7 @@ const FiatValue = ({
     useCustomSource,
     showApproximationIndicator,
     disableHiddenPlaceholder,
-}: Props) => {
+}: FiatValueProps) => {
     const { fiat, settings } = useSelector(state => ({
         fiat: state.wallet.fiat,
         settings: state.wallet.settings,
@@ -86,14 +85,14 @@ const FiatValue = ({
         const fiatValueComponent = (
             <WrapperComponent>
                 {showApproximationIndicator && <>≈ </>}
-                <FormattedNumber currency={targetCurrency} value={fiatAmount} />
+                <FormattedFiatAmount currency={targetCurrency} value={fiatAmount} />
             </WrapperComponent>
         );
 
         const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
         const fiatRateComponent = fiatRateValue ? (
             <SameWidthNums>
-                <FormattedNumber currency={targetCurrency} value={fiatRateValue} />
+                <FormattedFiatAmount currency={targetCurrency} value={fiatRateValue} />
             </SameWidthNums>
         ) : null;
         if (!children) return fiatValueComponent;
@@ -106,5 +105,3 @@ const FiatValue = ({
     if (!children) return null;
     return children({ value: null, rate: null, timestamp: null });
 };
-
-export default FiatValue;

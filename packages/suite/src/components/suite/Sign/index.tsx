@@ -9,8 +9,28 @@ const StyledSign = styled.span<{ color: string }>`
     margin-right: 0.3ch;
 `;
 
-interface Props {
-    value: string | BigNumber | number | 'pos' | 'neg';
+export const isValuePositive = (value: SignValue) => {
+    let isValuePos;
+
+    if (!value) {
+        return;
+    }
+
+    if (value === 'pos') {
+        isValuePos = true;
+    } else if (value === 'neg') {
+        isValuePos = false;
+    } else {
+        isValuePos = new BigNumber(value).gte(0);
+    }
+
+    return isValuePos;
+};
+
+export type SignValue = string | BigNumber | number | 'pos' | 'neg' | null;
+
+interface SignProps {
+    value: SignValue;
     placeholderOnly?: boolean;
     grayscale?: boolean;
     showMinusSign?: boolean;
@@ -22,22 +42,15 @@ const Sign = ({
     grayscale,
     showMinusSign = true,
     grayscaleColor,
-}: Props) => {
+}: SignProps) => {
     const theme = useTheme();
     const defaultColor = grayscaleColor ?? theme.TYPE_DARK_GREY;
-    let isValuePos = false;
 
     if (value === undefined || value === null) {
         return null;
     }
 
-    if (value === 'pos') {
-        isValuePos = true;
-    } else if (value === 'neg') {
-        isValuePos = false;
-    } else {
-        isValuePos = new BigNumber(value).gte(0);
-    }
+    const isValuePos = isValuePositive(value);
 
     if (placeholderOnly) {
         return <StyledSign color="transparent">+</StyledSign>;

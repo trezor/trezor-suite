@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from '@suite-components';
 import AmountRow from '../AmountRow';
-import { WalletAccountTransaction } from '@wallet-types';
+import { NetworkSymbol, WalletAccountTransaction } from '@wallet-types';
 import { getNetwork } from '@wallet-utils/accountUtils';
 
 // define these attributes as a constant because we will use the same values in two different styled components
@@ -267,7 +267,12 @@ const AmountDetails = ({ tx, isTestnet }: Props) => {
                         firstColumn={
                             tx.targets.length === 0 ? <Translation id="AMOUNT" /> : undefined
                         }
-                        secondColumn={<FormattedCryptoAmount value={t.amount} symbol={t.symbol} />}
+                        secondColumn={
+                            <FormattedCryptoAmount
+                                value={t.amount}
+                                symbol={t.symbol as NetworkSymbol}
+                            />
+                        }
                         thirdColumn={
                             showHistoricalRates && (
                                 <FiatValue

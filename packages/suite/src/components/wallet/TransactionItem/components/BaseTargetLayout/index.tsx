@@ -7,16 +7,6 @@ import { ANIMATION } from '@suite-config';
 
 export const MIN_ROW_HEIGHT = '23px';
 
-const CryptoAmount = styled.span`
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    /* line-height: 1.5; */
-    text-transform: uppercase;
-    white-space: nowrap;
-    width: 100%;
-`;
-
 const FiatAmount = styled.span`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -135,7 +125,7 @@ const BaseTargetLayout = ({
                 <StyledHiddenPlaceholder>{addressLabel}</StyledHiddenPlaceholder>
             </TargetAddress>
             <TargetAmountsWrapper paddingBottom={!isLast}>
-                {amount && !singleRowLayout && <CryptoAmount>{amount}</CryptoAmount>}
+                {amount && !singleRowLayout && amount}
                 {fiatAmount && <FiatAmount>{fiatAmount}</FiatAmount>}
             </TargetAmountsWrapper>
         </TargetWrapper>

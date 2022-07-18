@@ -2,7 +2,7 @@ import DeviceIcon from './images/DeviceIcon';
 import { Image, ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
-import FormattedNumber from './FormattedNumber';
+import { FormattedFiatAmount } from './FormattedFiatAmount';
 import WelcomeLayout from './WelcomeLayout';
 
 import { CardWithHeader } from './CardWithHeader';
@@ -13,7 +13,7 @@ import WordInput from './WordInput';
 import WordInputAdvanced from './WordInputAdvanced';
 import Loading from './Loading';
 import BundleLoader from './BundleLoader';
-import FiatValue from './FiatValue';
+import { FiatValue } from './FiatValue';
 import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
@@ -25,7 +25,7 @@ import { AppNavigation } from './AppNavigation';
 import Ticker from './Ticker';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './Labeling';
-import FormattedCryptoAmount from './FormattedCryptoAmount';
+import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
 import ToastContainer from './ToastContainer';
@@ -57,7 +57,7 @@ export {
     CheckItem,
     DeviceInvalidModeLayout,
     PrerequisitesGuide,
-    FormattedNumber,
+    FormattedFiatAmount,
     WelcomeLayout,
     SuiteLayout,
     CardWithHeader as Card,

@@ -46,6 +46,7 @@ describe('Dashboard', () => {
         //
         cy.getTestElement('@wallet/coin-balance/value-btc')
             .parent()
+            .parent()
             .invoke('attr', 'class')
             .then(className => {
                 expect(className).to.contain(discreetPartialClass);
