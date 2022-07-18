@@ -12,4 +12,5 @@ This directory contains description of various Trezor Suite features.
 -   [messaging system](./message-system.md)
 -   [feature flags](./feature-flags.md)
 -   [desktop logger](./desktop-logger.md)
+-   [application log](./application-log.md)
 -   [onboarding](./onboarding/onboarding.md)
