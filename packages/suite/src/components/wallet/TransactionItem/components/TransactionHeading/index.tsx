@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, Icon, useTheme } from '@trezor/components';
-import { HiddenPlaceholder, Sign } from '@suite-components';
+import { FormattedCryptoAmount } from '@suite-components';
 import { getTargetAmount, getTxHeaderSymbol, getTxOperation } from '@wallet-utils/transactionUtils';
 import TransactionHeader from '../TransactionHeader';
 import { WalletAccountTransaction } from '@wallet-types';
@@ -33,22 +33,12 @@ const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
     }
 `;
 
-const CryptoAmount = styled.span`
+const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    /* line-height: 1.5; */
-    text-transform: uppercase;
     white-space: nowrap;
     flex: 0;
-`;
-
-const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
-    /* padding: 8px 0px; row padding */
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 `;
 
 interface Props {
@@ -75,7 +65,7 @@ const TransactionHeading = ({
     const isSingleTokenTransaction = nTokens === 1;
     const target = transaction.targets[0];
     const transfer = transaction.tokens[0];
-    const targetSymbol = transaction.type === 'self' ? transaction.symbol.toUpperCase() : symbol;
+    const targetSymbol = transaction.type === 'self' ? transaction.symbol : symbol;
     let amount = null;
 
     const [headingIsHovered, setHeadingIsHovered] = useState(false);
@@ -90,26 +80,18 @@ const TransactionHeading = ({
         const operation = !isTokenTransaction
             ? getTxOperation(transaction)
             : getTxOperation(transfer);
-        amount = (
-            <CryptoAmount>
-                {targetAmount && (
-                    <StyledHiddenPlaceholder>
-                        {operation && <Sign value={operation} />}
-                        {targetAmount} {targetSymbol}
-                    </StyledHiddenPlaceholder>
-                )}
-            </CryptoAmount>
+        amount = targetAmount && (
+            <StyledCryptoAmount value={targetAmount} symbol={targetSymbol} signValue={operation} />
         );
     }
 
     if (transaction.type === 'failed') {
         amount = (
-            <CryptoAmount>
-                <StyledHiddenPlaceholder>
-                    <Sign value="neg" />
-                    {transaction.fee} {transaction.symbol.toUpperCase()}
-                </StyledHiddenPlaceholder>
-            </CryptoAmount>
+            <StyledCryptoAmount
+                value={transaction.fee}
+                symbol={transaction.symbol}
+                signValue="neg"
+            />
         );
     }
 
@@ -123,6 +105,7 @@ const TransactionHeading = ({
                 <HeadingWrapper>
                     <TransactionHeader transaction={transaction} isPending={isPending} />
                 </HeadingWrapper>
+
                 <ChevronIconWrapper
                     show={txItemIsHovered}
                     animate={nestedItemIsHovered || headingIsHovered}
@@ -134,6 +117,7 @@ const TransactionHeading = ({
                     />
                 </ChevronIconWrapper>
             </Wrapper>
+
             {amount}
         </>
     );

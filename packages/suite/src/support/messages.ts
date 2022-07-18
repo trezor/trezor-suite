@@ -6683,4 +6683,16 @@ export default defineMessages({
         defaultMessage:
             'Your Trezor is running unofficial firmware. Please contact help@trezor.io immediately.',
     },
+    TR_TO_SATOSHIS: {
+        id: 'TR_TO_SATOSHIS',
+        defaultMessage: 'To sat',
+    },
+    TR_TO_BTC: {
+        id: 'TR_TO_BTC',
+        defaultMessage: 'To BTC',
+    },
+    TR_BTC_UNITS: {
+        id: 'TR_BTC_UNITS',
+        defaultMessage: 'Bitcoin units',
+    },
 });

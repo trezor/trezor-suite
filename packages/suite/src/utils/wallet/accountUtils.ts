@@ -720,13 +720,9 @@ export const hasNetworkFeatures = (
         return false;
     }
 
-    let areFeaturesPresent: boolean;
-
-    if (Array.isArray(features)) {
-        areFeaturesPresent = features.every(feature => !!networkConfig.features?.includes(feature));
-    } else {
-        areFeaturesPresent = !!networkConfig.features?.includes(features);
-    }
+    const areFeaturesPresent = ([] as NetworkFeature[])
+        .concat(features)
+        .every(feature => networkConfig.features?.includes(feature));
 
     return areFeaturesPresent;
 };

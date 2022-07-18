@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Translation, FormattedDate, HiddenPlaceholder } from '@suite-components';
+import { Translation, FormattedDate } from '@suite-components';
+import { variables } from '@trezor/components';
 import { TooltipProps } from 'recharts';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps } from '../../definitions';
@@ -32,10 +33,12 @@ const getTooltipArrowXPosition = (x: number, width: number): string => {
     return x >= width - OFFSET_LIMIT_HORIZONTAL ? `left: calc(75% + 1px);` : `left: 50%;`;
 };
 
-const CustomTooltipWrapper = styled.div<{
+interface WrapperProps {
     positionX: number;
     boxWidth: number;
-}>`
+}
+
+const CustomTooltipWrapper = styled.div<WrapperProps>`
     display: flex;
     flex-direction: column;
     color: ${props => props.theme.TYPE_WHITE};
@@ -79,11 +82,12 @@ const Row = styled.div<{ noBottomMargin?: boolean }>`
 `;
 
 const Title = styled.span`
-    font-weight: 500;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-right: 20px;
 `;
+
 const Value = styled.span`
-    font-weight: 600;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const ColsWrapper = styled.div`
@@ -111,7 +115,15 @@ const Sign = styled.span<{ color: string }>`
     margin-right: 4px;
 `;
 
-interface Props extends TooltipProps<number, any> {
+const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
+    if (dateFormat === 'day') {
+        return <FormattedDate value={date} date month="long" />;
+    }
+
+    return <FormattedDate value={date} date day={undefined} />;
+};
+
+interface CustomTooltipBaseProps extends TooltipProps<number, any> {
     selectedRange: GraphProps['selectedRange'];
     receivedAmount: JSX.Element;
     sentAmount: JSX.Element;
@@ -120,97 +132,85 @@ interface Props extends TooltipProps<number, any> {
     extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
-const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
-    if (dateFormat === 'day') {
-        return <FormattedDate value={date} date month="long" />;
-    }
-    return <FormattedDate value={date} date day={undefined} />;
-};
-
-const CustomTooltipBase = (props: Props) => {
+export const CustomTooltipBase = (props: CustomTooltipBaseProps) => {
     useEffect(() => {
-        if (props.onShow && props.extendedDataForInterval) {
-            props.onShow(
-                props.extendedDataForInterval.findIndex(
-                    item => item.time === props.payload![0].payload.time,
-                ),
-            );
+        if (!props.onShow || !props.extendedDataForInterval) {
+            return;
         }
+
+        props.onShow(
+            props.extendedDataForInterval.findIndex(
+                item => item.time === props.payload?.[0].payload.time,
+            ),
+        );
     }, [props]);
 
-    if (props.active && props.payload) {
-        const date = new Date(props.payload[0].payload.time * 1000);
-        const dateFormat =
-            props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all'
-                ? 'month'
-                : 'day';
-
-        return (
-            <CustomTooltipWrapper
-                data-test="@dashboard/customtooltip"
-                positionX={props.coordinate!.x!}
-                boxWidth={props.viewBox!.width!}
-            >
-                <Row>
-                    <Title>{date && formatDate(date, dateFormat)}</Title>
-                </Row>
-
-                <ColsWrapper>
-                    <Col>
-                        {props.balance && (
-                            <Row>
-                                <Title>
-                                    <Translation id="TR_BALANCE" />
-                                </Title>
-                            </Row>
-                        )}
-                        <HighlightedAreaLeft>
-                            <Row>
-                                <Title>
-                                    <Translation id="TR_RECEIVED" />
-                                </Title>
-                            </Row>
-                            <Row noBottomMargin>
-                                <Title>
-                                    <Translation id="TR_SENT" />
-                                </Title>
-                            </Row>
-                        </HighlightedAreaLeft>
-                    </Col>
-                    <Col>
-                        {props.balance && (
-                            <Row>
-                                <Value>
-                                    <Sign color="transparent">+</Sign>
-                                    {props.balance}
-                                </Value>
-                            </Row>
-                        )}
-                        <HighlightedAreaRight>
-                            <Row>
-                                <HiddenPlaceholder>
-                                    <Value>
-                                        <Sign color="#55d92a">+</Sign>
-                                        {props.receivedAmount}
-                                    </Value>
-                                </HiddenPlaceholder>
-                            </Row>
-                            <Row noBottomMargin>
-                                <HiddenPlaceholder>
-                                    <Value>
-                                        <Sign color="#ff3838">-</Sign>
-                                        {props.sentAmount}
-                                    </Value>
-                                </HiddenPlaceholder>
-                            </Row>
-                        </HighlightedAreaRight>
-                    </Col>
-                </ColsWrapper>
-            </CustomTooltipWrapper>
-        );
+    if (!props.active || !props.payload) {
+        return null;
     }
 
-    return null;
-};
+    const date = new Date(props.payload[0].payload.time * 1000);
+    const dateFormat =
+        props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all'
+            ? 'month'
+            : 'day';
 
-export default CustomTooltipBase;
+    return (
+        <CustomTooltipWrapper
+            positionX={props.coordinate!.x!}
+            boxWidth={props.viewBox!.width!}
+            data-test="@dashboard/customtooltip"
+        >
+            <Row>
+                <Title>{date && formatDate(date, dateFormat)}</Title>
+            </Row>
+
+            <ColsWrapper>
+                <Col>
+                    {props.balance && (
+                        <Row>
+                            <Title>
+                                <Translation id="TR_BALANCE" />
+                            </Title>
+                        </Row>
+                    )}
+
+                    <HighlightedAreaLeft>
+                        <Row>
+                            <Title>
+                                <Translation id="TR_RECEIVED" />
+                            </Title>
+                        </Row>
+
+                        <Row noBottomMargin>
+                            <Title>
+                                <Translation id="TR_SENT" />
+                            </Title>
+                        </Row>
+                    </HighlightedAreaLeft>
+                </Col>
+
+                <Col>
+                    {props.balance && (
+                        <Row>
+                            <Value>
+                                <Sign color="transparent">+</Sign>
+                                {props.balance}
+                            </Value>
+                        </Row>
+                    )}
+
+                    <HighlightedAreaRight>
+                        <Row>
+                            <Value>{props.receivedAmount}</Value>
+                        </Row>
+
+                        <Row noBottomMargin>
+                            <Value>{props.sentAmount}</Value>
+                        </Row>
+                    </HighlightedAreaRight>
+                </Col>
+            </ColsWrapper>
+        </CustomTooltipWrapper>
+    );
+};

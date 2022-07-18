@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { PROTO } from '@trezor/connect';
 import { useSelector } from '@suite-hooks/useSelector';
 import { useActions } from '@suite-hooks/useActions';
@@ -24,17 +23,11 @@ export const useBitcoinAmountUnit = () => {
         setBitcoinAmountUnits: walletSettingsActions.setBitcoinAmountUnits,
     });
 
-    const areSatsDisplayed = useMemo(
-        () => bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI,
-        [bitcoinAmountUnit],
-    );
+    const areSatsDisplayed = bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
 
-    const isSupportedByCurrentNetwork = useMemo(
-        () =>
-            selectedAccount.status === 'loaded' &&
-            hasNetworkFeatures(selectedAccount.account, 'amount-unit'),
-        [selectedAccount],
-    );
+    const isSupportedByCurrentNetwork =
+        selectedAccount.status === 'loaded' &&
+        hasNetworkFeatures(selectedAccount.account, 'amount-unit');
 
     return {
         bitcoinAmountUnit,

@@ -22,6 +22,7 @@ import { NETWORKS } from '@wallet-config';
 import { ArrayElement } from '@trezor/type-utils';
 
 export type Network = ArrayElement<typeof NETWORKS>;
+export type NetworkSymbol = Network['symbol'];
 // reexport
 export type { Icon } from './iconTypes';
 export type { BackendType, CustomBackend } from './backend';

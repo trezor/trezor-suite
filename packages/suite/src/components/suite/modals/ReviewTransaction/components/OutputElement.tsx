@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Truncate } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
-import { Network, Account } from '@wallet-types';
+import { Network, Account, NetworkSymbol } from '@wallet-types';
 import { TokenInfo } from '@trezor/connect';
 import { amountToSatoshi } from '@wallet-utils/accountUtils';
 
@@ -115,7 +115,7 @@ export type OutputElementLine = {
 export type Props = {
     indicator?: JSX.Element;
     lines: OutputElementLine[];
-    cryptoSymbol?: string;
+    cryptoSymbol?: NetworkSymbol;
     fiatSymbol: Network['symbol'];
     hasExpansion?: boolean;
     fiatVisible?: boolean;

@@ -7,7 +7,7 @@ import {
     Translation,
     HiddenPlaceholder,
     FormattedCryptoAmount,
-    FormattedNumber,
+    FormattedFiatAmount,
 } from '@suite-components';
 import { parseKey } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
@@ -103,7 +103,7 @@ const DayHeader = ({
                             <HiddenPlaceholder>
                                 {/* {<>≈ </>} */}
                                 {totalFiatAmountPerDay.gte(0) && <span>+</span>}
-                                <FormattedNumber
+                                <FormattedFiatAmount
                                     currency={localCurrency}
                                     value={totalFiatAmountPerDay.toFixed()}
                                 />

@@ -53,14 +53,13 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     display: flex;
 `;
 
-const AmountWrapper = styled.span`
-    flex: 0 1 auto;
-    text-overflow: ellipsis;
-    overflow: hidden;
-`;
-const SymbolWrapper = styled.span`
-    flex: 0;
-    margin-left: 0.5ch;
+const StyledFormattedValue = styled(FormattedCryptoAmount)`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    white-space: nowrap;
+    line-height: 1.5;
 `;
 
 type Props = {
@@ -88,14 +87,10 @@ const InfoCard = (props: Props) => {
                 {!props.isLoading && (
                     <>
                         {bigValue && props.symbol && (
-                            <FormattedCryptoAmount
-                                value={
-                                    <Value>
-                                        <Sign value={bigValue} />
-                                        <AmountWrapper>{bigValue.abs().toFixed()}</AmountWrapper>
-                                        <SymbolWrapper>{props.symbol.toUpperCase()}</SymbolWrapper>
-                                    </Value>
-                                }
+                            <StyledFormattedValue
+                                signValue={bigValue}
+                                value={bigValue.abs().toFixed()}
+                                symbol={props.symbol}
                             />
                         )}
                         {!bigValue && <Value>{props.value}</Value>}

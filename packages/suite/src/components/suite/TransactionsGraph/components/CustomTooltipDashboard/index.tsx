@@ -1,11 +1,11 @@
 import React from 'react';
-import { FormattedNumber } from '@suite-components';
+import { FormattedFiatAmount } from '@suite-components';
 import { TooltipProps } from 'recharts';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps, FiatGraphProps } from '../../definitions';
-import CustomTooltipBase from '../CustomTooltipBase';
+import { CustomTooltipBase } from '../CustomTooltipBase';
 
-interface Props extends TooltipProps<number, any> {
+interface CustomTooltipDashboardProps extends TooltipProps<number, any> {
     selectedRange: GraphProps['selectedRange'];
     localCurrency: string;
     sentValueFn: FiatGraphProps['sentValueFn'];
@@ -15,38 +15,30 @@ interface Props extends TooltipProps<number, any> {
     extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
-const CustomTooltipDashboard = (props: Props) => {
-    if (props.active && props.payload) {
-        const receivedAmountString = props.receivedValueFn(props.payload[0].payload);
-        const sentAmountString = props.sentValueFn(props.payload[0].payload);
-        // const balanceString = props.balanceValueFn(props.payload[0].payload);
-
-        const receivedAmount = (
-            <FormattedNumber currency={props.localCurrency} value={receivedAmountString ?? '0'} />
-        );
-
-        const sentAmount = (
-            <FormattedNumber currency={props.localCurrency} value={sentAmountString ?? '0'} />
-        );
-
-        // const balanceAmount = (
-        //     <FormattedNumber currency={props.localCurrency} value={balanceString ?? '0'} />
-        // );
-
-        return (
-            <CustomTooltipBase
-                {...props}
-                selectedRange={props.selectedRange}
-                sentAmount={sentAmount}
-                receivedAmount={receivedAmount}
-                onShow={props.onShow}
-                extendedDataForInterval={props.extendedDataForInterval}
-                // balance={balanceAmount}
-            />
-        );
+export const CustomTooltipDashboard = (props: CustomTooltipDashboardProps) => {
+    if (!props.active || !props.payload) {
+        return null;
     }
 
-    return null;
-};
+    const receivedAmountString = props.receivedValueFn(props.payload[0].payload);
+    const sentAmountString = props.sentValueFn(props.payload[0].payload);
 
-export default CustomTooltipDashboard;
+    const receivedAmount = (
+        <FormattedFiatAmount currency={props.localCurrency} value={receivedAmountString ?? '0'} />
+    );
+
+    const sentAmount = (
+        <FormattedFiatAmount currency={props.localCurrency} value={sentAmountString ?? '0'} />
+    );
+
+    return (
+        <CustomTooltipBase
+            {...props}
+            selectedRange={props.selectedRange}
+            sentAmount={sentAmount}
+            receivedAmount={receivedAmount}
+            onShow={props.onShow}
+            extendedDataForInterval={props.extendedDataForInterval}
+        />
+    );
+};

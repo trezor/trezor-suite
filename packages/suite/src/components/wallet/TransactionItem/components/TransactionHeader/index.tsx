@@ -12,7 +12,7 @@ const TransactionHeader = ({ transaction, isPending }: Props) => {
     let heading = null;
     const nTokens = transaction.tokens.length;
     const isMultiTokenTransaction = nTokens > 1;
-    const symbol = getTxHeaderSymbol(transaction);
+    const symbol = getTxHeaderSymbol(transaction).toUpperCase();
     const transfer = transaction.tokens[0];
 
     // We have types: sent, recv, self, failed. We miss approve, swap, ...

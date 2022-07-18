@@ -7,7 +7,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import {
-    FormattedNumber,
+    FormattedFiatAmount,
     WalletLabeling,
     Translation,
     MetadataLabeling,
@@ -178,7 +178,7 @@ export const WalletInstance = ({
                             accountsCount,
                             fiatValue: (
                                 <HiddenPlaceholder>
-                                    <FormattedNumber
+                                    <FormattedFiatAmount
                                         value={instanceBalance.toString()}
                                         currency={localCurrency}
                                     />

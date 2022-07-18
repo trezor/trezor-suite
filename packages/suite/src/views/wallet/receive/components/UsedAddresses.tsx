@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AccountAddress } from '@trezor/connect';
 import { variables, Button } from '@trezor/components';
-import { Card, Translation, HiddenPlaceholder, MetadataLabeling } from '@suite-components';
+import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
 import { AppState } from '@suite-types';
@@ -121,7 +121,7 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
     // Currently used addresses are always partially hidden
     // The only place where full address is shown is confirm-addr modal
     const [isHovered, setIsHovered] = React.useState(false);
-    const amount = formatNetworkAmount(addr.received || '0', symbol, true);
+    const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const address = addr.address.substring(0, 20);
 
@@ -149,7 +149,7 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                {!fresh && <HiddenPlaceholder>{amount}</HiddenPlaceholder>}
+                {!fresh && <FormattedCryptoAmount value={amount} symbol={symbol} />}
                 {fresh && (
                     <Gray>
                         <Translation id="RECEIVE_TABLE_NOT_USED" />

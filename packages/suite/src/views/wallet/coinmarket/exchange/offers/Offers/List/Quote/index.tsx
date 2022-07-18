@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
-import { FormattedNumber, QuestionTooltip, Translation } from '@suite-components';
+import { FormattedFiatAmount, QuestionTooltip, Translation } from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';
@@ -275,7 +275,7 @@ const Quote = ({ className, quote }: Props) => {
                                 symbol: account.symbol.toUpperCase(),
                                 approvalFee: formatCryptoAmount(approvalFee),
                                 approvalFeeFiat: approvalFeeFiat ? (
-                                    <FormattedNumber
+                                    <FormattedFiatAmount
                                         value={approvalFeeFiat}
                                         currency={localCurrency}
                                     />
@@ -284,7 +284,10 @@ const Quote = ({ className, quote }: Props) => {
                                 ),
                                 swapFee: formatCryptoAmount(swapFee),
                                 swapFeeFiat: swapFeeFiat ? (
-                                    <FormattedNumber value={swapFeeFiat} currency={localCurrency} />
+                                    <FormattedFiatAmount
+                                        value={swapFeeFiat}
+                                        currency={localCurrency}
+                                    />
                                 ) : (
                                     ''
                                 ),

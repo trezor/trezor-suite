@@ -880,9 +880,7 @@ export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
     const isSingleTokenTransaction = transaction.tokens.length === 1;
     const transfer = transaction.tokens[0];
     // In case of single token transactions show the token symbol instead of symbol of a main network
-    const symbol =
-        !isSingleTokenTransaction || !transfer
-            ? transaction.symbol.toUpperCase()
-            : transfer.symbol.toUpperCase();
+    const symbol = !isSingleTokenTransaction || !transfer ? transaction.symbol : transfer.symbol;
+
     return symbol;
 };
