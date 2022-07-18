@@ -11,6 +11,7 @@ import {
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 import { toFiatCurrency } from './fiatConverterUtils';
+import { NetworkFeature } from '@suite-common/wallet-config';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
@@ -704,11 +705,28 @@ export const getPendingAccount = (
     };
 };
 
-export const hasSignVerify = (account: Account) =>
-    !!NETWORKS.find(
-        ({ networkType, symbol, accountType, features }) =>
+export const hasNetworkFeatures = (
+    account: Account,
+    features: NetworkFeature | Array<NetworkFeature>,
+) => {
+    const networkConfig = NETWORKS.find(
+        ({ networkType, symbol, accountType }) =>
             networkType === account.networkType &&
             symbol === account.symbol &&
-            (accountType || 'normal') === account.accountType &&
-            (features || []).includes('sign-verify'),
+            (accountType || 'normal') === account.accountType,
     );
+
+    if (!networkConfig) {
+        return false;
+    }
+
+    let areFeaturesPresent: boolean;
+
+    if (Array.isArray(features)) {
+        areFeaturesPresent = features.every(feature => !!networkConfig.features?.includes(feature));
+    } else {
+        areFeaturesPresent = !!networkConfig.features?.includes(features);
+    }
+
+    return areFeaturesPresent;
+};

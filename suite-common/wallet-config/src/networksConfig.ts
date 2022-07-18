@@ -12,13 +12,13 @@ export const networks = {
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             taproot: {
                 name: 'Bitcoin (Taproot)',
                 bip43Path: "m/86'/0'/i'",
-                features: ['rbf'],
+                features: ['rbf', 'amount-unit'],
             },
             segwit: {
                 name: 'Bitcoin (Legacy Segwit)',
@@ -64,7 +64,7 @@ export const networks = {
             tx: 'https://eth1.trezor.io/tx/',
             account: 'https://eth1.trezor.io/address/',
         },
-        features: ['sign-verify'],
+        features: ['sign-verify', 'tokens'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
         tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
         customBackends: ['blockbook'],
@@ -80,7 +80,7 @@ export const networks = {
             tx: 'https://etc1.trezor.io/tx/',
             account: 'https://etc1.trezor.io/address/',
         },
-        features: ['sign-verify'],
+        features: ['sign-verify', 'tokens'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },
@@ -232,13 +232,13 @@ export const networks = {
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             taproot: {
                 name: 'Bitcoin Testnet (taproot)',
                 bip43Path: "m/86'/1'/i'",
-                features: ['rbf'],
+                features: ['rbf', 'amount-unit'],
             },
             segwit: {
                 name: 'Bitcoin Testnet (segwit)',
@@ -261,13 +261,13 @@ export const networks = {
             tx: 'http://localhost:19121/tx/',
             account: 'http://localhost:19121/xpub/',
         },
-        features: ['rbf', 'sign-verify'],
+        features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
             taproot: {
                 name: 'Bitcoin Regtest (taproot)',
                 bip43Path: "m/86'/1'/i'",
-                features: ['rbf'],
+                features: ['rbf', 'amount-unit'],
             },
             segwit: {
                 name: 'Bitcoin Regtest (segwit)',
@@ -291,7 +291,7 @@ export const networks = {
             tx: 'https://ropsten1.trezor.io/tx/',
             account: 'https://ropsten1.trezor.io/address/',
         },
-        features: ['sign-verify'],
+        features: ['sign-verify', 'tokens'],
         customBackends: ['blockbook'],
         accountTypes: {},
     },
@@ -316,6 +316,7 @@ export const networks = {
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
+        features: ['tokens'],
         explorer: {
             tx: 'https://explorer.blockfrost.dev/transaction/',
             account: 'https://explorer.blockfrost.dev/account/',
@@ -370,13 +371,14 @@ type Networks = typeof networks;
 type NetworkKey = keyof Networks;
 type NetworkValue = Networks[NetworkKey];
 type AccountType = Keys<NetworkValue['accountTypes']>;
+export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkKey;
     accountType?: 'normal' | AccountType;
     testnet?: boolean;
     isHidden?: boolean;
     chainId?: number;
-    features?: string[];
+    features?: NetworkFeature[];
     label?: ExtendedMessageDescriptor['id'];
     tooltip?: ExtendedMessageDescriptor['id'];
     support?: {
