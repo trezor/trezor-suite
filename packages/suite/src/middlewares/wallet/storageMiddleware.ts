@@ -122,6 +122,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
                 case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
+                case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
                     api.dispatch(storageActions.saveWalletSettings());
                     break;
