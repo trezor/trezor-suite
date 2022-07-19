@@ -44,12 +44,12 @@ const InputWrapper = styled.div`
     position: relative;
 `;
 
-const InputAddon = styled.div<{ align: AddonAlignment }>`
+const InputAddon = styled.div<{ align: AddonAlignment; variant: InputVariant }>`
     position: absolute;
     top: 1px;
     bottom: 1px;
-    right: ${({ align }) => align === 'right' && '10px'};
-    left: ${({ align }) => align === 'left' && '10px'};
+    right: ${({ align, variant }) => align === 'right' && (variant === 'small' ? '10px' : '16px')};
+    left: ${({ align, variant }) => align === 'left' && (variant === 'small' ? '10px' : '16px')};
     display: flex;
     align-items: center;
 `;
@@ -196,13 +196,13 @@ export const Input = ({
             <Row errorPosition={errorPosition}>
                 <InputWrapper>
                     {innerAddon && addonAlign === 'left' && (
-                        <InputAddon align="left" ref={measureLeftAddon}>
+                        <InputAddon align="left" ref={measureLeftAddon} variant={variant}>
                             {React.cloneElement(innerAddon, { inputHovered: isHovered })}
                         </InputAddon>
                     )}
 
                     {((innerAddon && addonAlign === 'right') || clearButton) && (
-                        <InputAddon align="right" ref={measureRightAddon}>
+                        <InputAddon align="right" ref={measureRightAddon} variant={variant}>
                             {addonAlign === 'right' &&
                                 innerAddon &&
                                 React.cloneElement(innerAddon, { inputHovered: isHovered })}

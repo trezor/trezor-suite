@@ -8,7 +8,7 @@ import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { aggregateBalanceHistory, getMinMaxValueFromData } from '@wallet-utils/graphUtils';
 import { useSelector, useActions } from '@suite-hooks';
 import * as graphActions from '@wallet-actions/graphActions';
-import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
+import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
 import TransactionSummaryDropdown from './components/TransactionSummaryDropdown';
 import SummaryCards from './components/SummaryCards';
 

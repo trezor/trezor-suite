@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { variables, Icon, useTheme } from '@trezor/components';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
+import { variables, Icon, useTheme } from '@trezor/components';
 import { useGraph } from '@suite-hooks';
 import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
 
 import { Props } from './definitions';
-import RangeSelector from './components/RangeSelector';
-import CustomResponsiveContainer from './components/CustomResponsiveContainer';
-import CustomXAxisTick from './components/CustomXAxisTick';
-import CustomYAxisTick from './components/CustomYAxisTick';
-import CustomBar from './components/CustomBar';
+import { RangeSelector } from './components/RangeSelector';
+import { CustomResponsiveContainer } from './components/CustomResponsiveContainer';
+import { CustomXAxisTick } from './components/CustomXAxisTick';
+import { CustomYAxisTick } from './components/CustomYAxisTick';
+import { CustomBar } from './components/CustomBar';
 import { CustomTooltipDashboard } from './components/CustomTooltipDashboard';
 import { CustomTooltipAccount } from './components/CustomTooltipAccount';
-import SkeletonTransactionsGraph from './components/SkeletonTransactionsGraph';
+import { SkeletonTransactionsGraph } from './components/SkeletonTransactionsGraph';
 
 const Wrapper = styled.div`
     display: flex;
@@ -40,15 +40,16 @@ const Description = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     flex: 1;
 `;
 
 const TransactionsGraph = React.memo((props: Props) => {
     const { isLoading, data, selectedRange, xTicks } = props;
+    const [maxYTickWidth, setMaxYTickWidth] = useState(20);
+
     const theme = useTheme();
     const { selectedView } = useGraph();
-    const [maxYTickWidth, setMaxYTickWidth] = useState(20);
     const yDomain = calcYDomain(
         props.variant === 'all-assets' ? 'fiat' : 'crypto',
         selectedView,
@@ -88,6 +89,7 @@ const TransactionsGraph = React.memo((props: Props) => {
             )}
             <Description>
                 {isLoading && <SkeletonTransactionsGraph animate />}
+
                 {!isLoading && data && (
                     <CustomResponsiveContainer height="100%" width="100%">
                         <ComposedChart

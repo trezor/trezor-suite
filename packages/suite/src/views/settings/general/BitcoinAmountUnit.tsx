@@ -12,9 +12,8 @@ export const BitcoinAmountUnit = () => {
         useBitcoinAmountUnit();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.BitcoinAmountUnit);
 
-    const handleUnitsChange = ({ value }: { value: PROTO.AmountUnit }) => {
+    const handleUnitsChange = ({ value }: { value: PROTO.AmountUnit }) =>
         setBitcoinAmountUnits(value);
-    };
 
     return (
         <SectionItem
