@@ -12,6 +12,7 @@
         "build": "run-s copy-files build:app"
     },
     "dependencies": {
+        "@suite-common/suite-utils": "*",
         "@trezor/components": "*",
         "@trezor/react-utils": "*",
         "@trezor/suite": "*",

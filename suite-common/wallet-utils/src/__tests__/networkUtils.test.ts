@@ -1,4 +1,4 @@
-import { httpRequest } from '@suite-common/wallet-utils';
+import { httpRequest } from '../networkUtils';
 
 const setMock = (mock: any) => {
     // @ts-ignore

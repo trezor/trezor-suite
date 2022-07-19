@@ -4,7 +4,7 @@ import { Translation } from '@suite-components/Translation';
 import { Modal } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { isWebUsb } from '@suite-utils/transport';
-import { getBackgroundRoute } from '@suite-common/suite-utils';
+import { getBackgroundRoute } from '@suite-utils/router';
 import DeviceItem from './components/DeviceItem';
 import { ForegroundAppProps } from '@suite-types';
 import { useSelector } from '@suite-hooks';

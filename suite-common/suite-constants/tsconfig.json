@@ -1,8 +1,5 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [
-        { "path": "../suite-config" },
-        { "path": "../suite-types" }
-    ]
+    "references": []
 }

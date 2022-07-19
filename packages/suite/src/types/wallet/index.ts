@@ -43,11 +43,8 @@ export type DiscoveryStatus =
               | 'discovery-failed'
               | 'device-unavailable';
       };
-export type {
-    WalletAccountTransaction,
-    RbfTransactionParams,
-    WalletParams,
-} from '@suite-common/wallet-types';
+export type { WalletAccountTransaction, RbfTransactionParams } from '@suite-common/wallet-types';
+export type { WalletParams } from '@suite-utils/router';
 export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 
 export type WalletAction =

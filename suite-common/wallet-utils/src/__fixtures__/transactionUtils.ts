@@ -1,4 +1,4 @@
-import TXS from './transactions';
+import { TXS } from './transactions';
 
 export const analyzeTransactions = [
     {

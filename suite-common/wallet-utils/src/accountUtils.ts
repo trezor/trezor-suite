@@ -4,7 +4,6 @@ import { networksCompatibility as NETWORKS, Network } from '@suite-common/wallet
 import {
     Account,
     CoinFiatRates,
-    WalletParams,
     Discovery,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
@@ -253,31 +252,6 @@ export const findAccountDevice = (account: Account, devices: TrezorDevice[]) =>
 export const getAllAccounts = (deviceState: string | typeof undefined, accounts: Account[]) => {
     if (!deviceState) return [];
     return accounts.filter(a => a.deviceState === deviceState && a.visible);
-};
-
-export const getSelectedAccount = (
-    deviceState: string | typeof undefined,
-    accounts: Account[],
-    routerParams: WalletParams | undefined,
-) => {
-    if (!deviceState || !routerParams) return null;
-
-    // TODO: imported accounts
-    // imported account index has 'i' prefix
-    // const isImported = /^i\d+$/i.test(routerParams.accountIndex);
-    // const index: number = isImported
-    //     ? parseInt(routerParams.accountIndex.substr(1), 10)
-    //     : parseInt(routerParams.accountIndex, 10);
-
-    return (
-        accounts.find(
-            a =>
-                a.index === routerParams.accountIndex &&
-                a.symbol === routerParams.symbol &&
-                a.accountType === routerParams.accountType &&
-                a.deviceState === deviceState,
-        ) || null
-    );
 };
 
 export const getNetwork = (symbol: string): Network | null =>

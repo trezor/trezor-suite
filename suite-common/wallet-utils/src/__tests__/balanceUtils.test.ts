@@ -1,4 +1,4 @@
-import { formatCoinBalance } from '@suite-common/wallet-utils';
+import { formatCoinBalance } from '../balanceUtils';
 
 test('formatBalanceUtils', () => {
     // @ts-ignore

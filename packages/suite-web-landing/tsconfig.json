@@ -11,6 +11,9 @@
         "**/*.json"
     ],
     "references": [
+        {
+            "path": "../../suite-common/suite-utils"
+        },
         { "path": "../components" },
         { "path": "../react-utils" },
         { "path": "../suite" },

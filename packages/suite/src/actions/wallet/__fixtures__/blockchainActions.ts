@@ -1,6 +1,6 @@
 import { NOTIFICATION } from '@suite-actions/constants';
 import { TRANSACTION, ACCOUNT, BLOCKCHAIN } from '@wallet-actions/constants';
-import { analyzeTransactions } from '@wallet-utils/__fixtures__/transactionUtils';
+import { analyzeTransactionsFixtures as analyzeTransactions } from '@suite-common/wallet-utils';
 
 const DEFAULT_ACCOUNT = {
     deviceState: 'deviceState',

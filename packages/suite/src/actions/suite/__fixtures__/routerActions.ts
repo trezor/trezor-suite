@@ -1,4 +1,4 @@
-import { findRouteByName } from '@suite-common/suite-utils';
+import { findRouteByName } from '@suite-utils/router';
 
 export const init = [
     {

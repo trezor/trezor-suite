@@ -1,16 +1,26 @@
-import * as utils from '@suite-common/wallet-utils';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { AccountMetadata } from '@suite-common/metadata-types';
+
 import * as fixtures from '../__fixtures__/transactionUtils';
 import stMock from '../__fixtures__/searchTransactions.json';
-import { WalletAccountTransaction } from '@wallet-types';
-import { AccountMetadata } from '@suite-types/metadata';
+import {
+    advancedSearchTransactions,
+    analyzeTransactions,
+    enhanceTransaction,
+    findChainedTransactions,
+    getAccountTransactions,
+    getRbfParams,
+    groupTransactionsByDate,
+    parseKey,
+} from '../transactionUtils';
 
 describe('transaction utils', () => {
     it('parseKey', () => {
-        expect(utils.parseKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
+        expect(parseKey('2019-10-05')).toEqual(new Date(2019, 9, 5));
     });
 
     it('groupTransactionsByDate', () => {
-        const groupedTxs = utils.groupTransactionsByDate([
+        const groupedTxs = groupTransactionsByDate([
             global.JestMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
             global.JestMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             global.JestMocks.getWalletTransaction({ blockHeight: 0 }),
@@ -38,25 +48,25 @@ describe('transaction utils', () => {
 
     fixtures.analyzeTransactions.forEach(f => {
         it(`analyzeTransactions: ${f.description}`, () => {
-            expect(utils.analyzeTransactions(f.fresh as any, f.known as any)).toEqual(f.result);
+            expect(analyzeTransactions(f.fresh as any, f.known as any)).toEqual(f.result);
         });
     });
 
     fixtures.enhanceTransaction.forEach(f => {
         it('enhanceTransaction', () => {
-            expect(utils.enhanceTransaction(f.tx as any, f.account)).toEqual(f.result);
+            expect(enhanceTransaction(f.tx as any, f.account)).toEqual(f.result);
         });
     });
 
     fixtures.getRbfParams.forEach(f => {
         it(`getRbfParams: ${f.description}`, () => {
-            expect(utils.getRbfParams(f.tx as any, f.account as any)).toEqual(f.result);
+            expect(getRbfParams(f.tx as any, f.account as any)).toEqual(f.result);
         });
     });
 
     fixtures.findChainedTransactions.forEach(f => {
         it(`findChainedTransactions: ${f.description}`, () => {
-            expect(utils.findChainedTransactions(f.txid, f.transactions as any)).toEqual(f.result);
+            expect(findChainedTransactions(f.txid, f.transactions as any)).toEqual(f.result);
         });
     });
 
@@ -64,7 +74,7 @@ describe('transaction utils', () => {
     const metadata = stMock.metadata as AccountMetadata;
     fixtures.searchTransactions.forEach(f => {
         it(`searchTransactions - ${f.description}`, () => {
-            const search = utils.advancedSearchTransactions(transactions, metadata, f.search);
+            const search = advancedSearchTransactions(transactions, metadata, f.search);
 
             if (f.result) {
                 // expect(search.length).toBe(f.result.length);
@@ -83,9 +93,7 @@ describe('transaction utils', () => {
 
     fixtures.getAccountTransactions.forEach(f => {
         it(`getAccountTransactions${f.testName}`, () => {
-            expect(utils.getAccountTransactions(f.account.key, f.transactions as any)).toEqual(
-                f.result,
-            );
+            expect(getAccountTransactions(f.account.key, f.transactions as any)).toEqual(f.result);
         });
     });
 });

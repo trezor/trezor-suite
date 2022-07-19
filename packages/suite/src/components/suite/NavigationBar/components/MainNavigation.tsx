@@ -2,7 +2,7 @@ import React from 'react';
 import { transparentize } from 'polished';
 import styled, { css } from 'styled-components';
 
-import { findRouteByName } from '@suite-common/suite-utils';
+import { findRouteByName } from '@suite-utils/router';
 import { variables, HoverAnimation } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';

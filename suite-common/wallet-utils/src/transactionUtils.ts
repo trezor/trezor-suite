@@ -52,6 +52,7 @@ export const groupTransactionsByDate = (
                 // YYYY-MM-DD format
                 key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
             } else {
+                // eslint-disable-next-line no-console
                 console.log(
                     `Error during grouping transaction by date. Failed timestamp conversion (${t})`,
                 );
