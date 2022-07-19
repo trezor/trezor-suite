@@ -39,8 +39,8 @@ jobs:
 
       - name: Install dependecies
         run: |
-          yarn install
-          lerna run build:lib
+          yarn --cwd ../../ install
+          yarn --cwd ../../ build:libs
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
@@ -80,8 +80,8 @@ jobs:
 
       - name: Install dependecies
         run: |
-          yarn install
-          lerna run build:lib
+          yarn --cwd ../../ install
+          yarn --cwd ../../ build:libs
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
