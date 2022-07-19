@@ -4,7 +4,7 @@ import { DEVICE, Features, Device } from '@trezor/connect';
 import {
     getConnectDevice,
     getDeviceFeatures,
-} from '../../../../../suite/src/support/tests/setupJest';
+} from '../../../../../../suite-common/test-utils/src/setupJest/setupJest';
 
 /**
  * Helper method to dispatch DEVICE.CONNECT action.

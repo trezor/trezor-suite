@@ -7,6 +7,7 @@
         { "path": "../wallet-constants" },
         { "path": "../intl-types" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
 }

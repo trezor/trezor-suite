@@ -3,12 +3,18 @@
 /* eslint-disable require-await */
 
 import { Device, Features } from '@trezor/connect';
-import { TrezorDevice } from '@suite-types';
-import { Account, WalletAccountTransaction } from '@wallet-types';
+import {
+    TrezorDevice,
+    Node,
+    Page,
+    GuideCategory,
+    MessageSystem,
+    Action,
+} from '@suite-common/suite-types';
+import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
-import { MessageSystem, Action } from '@suite/types/suite/messageSystem';
-import { Node, Page, GuideCategory } from '@suite-common/suite-types';
 /**
  * Generate wallet account
  * @param {Partial<Account>} [account]
@@ -260,8 +266,6 @@ const getTrezorConnect = <M>(methods?: M) => {
         return fixtures;
     };
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
-
     return {
         __esModule: true, // export as module
         default: {
@@ -380,7 +384,6 @@ const getTrezorConnect = <M>(methods?: M) => {
             REQUEST_PIN: 'ui-request_pin',
             REQUEST_BUTTON: 'ui-request_button',
         },
-        PROTO,
     };
 };
 

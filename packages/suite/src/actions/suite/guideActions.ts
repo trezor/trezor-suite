@@ -4,12 +4,18 @@ import { GUIDE } from './constants';
 import { Dispatch } from '@suite-types';
 import { addToast } from '@suite-actions/notificationActions';
 
-import type { ActiveView, Feedback, FeedbackType, Category, Node } from '@suite-types/guide';
+import type {
+    ActiveView,
+    Feedback,
+    FeedbackType,
+    GuideCategory,
+    Node,
+} from '@suite-common/suite-types';
 
 export type GuideAction =
     | { type: typeof GUIDE.OPEN }
     | { type: typeof GUIDE.CLOSE }
-    | { type: typeof GUIDE.SET_INDEX_NODE; payload: Category }
+    | { type: typeof GUIDE.SET_INDEX_NODE; payload: GuideCategory }
     | { type: typeof GUIDE.SET_VIEW; payload: ActiveView }
     | { type: typeof GUIDE.UNSET_NODE }
     | { type: typeof GUIDE.OPEN_NODE; payload: Node };
@@ -28,7 +34,7 @@ export const close = (): GuideAction => ({
     type: GUIDE.CLOSE,
 });
 
-export const setIndexNode = (payload: Category) => ({
+export const setIndexNode = (payload: GuideCategory) => ({
     type: GUIDE.SET_INDEX_NODE,
     payload,
 });

@@ -44,6 +44,7 @@
         "@suite-common/suite-support": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
+        "@suite-common/test-utils": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-constants": "*",

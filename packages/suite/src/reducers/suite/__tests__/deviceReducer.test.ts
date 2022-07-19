@@ -1,7 +1,7 @@
 import deviceReducer, { isUnlocked } from '@suite-reducers/deviceReducer';
 
 import { Action } from '@suite-types';
-import { getDeviceFeatures } from '@suite/support/tests/setupJest';
+import { getDeviceFeatures } from '@suite-common/test-utils';
 import fixtures from '../__fixtures__/deviceReducer';
 
 type State = ReturnType<typeof deviceReducer>;
