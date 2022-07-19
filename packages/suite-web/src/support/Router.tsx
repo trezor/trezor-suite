@@ -1,7 +1,7 @@
 import React, { lazy, memo, Suspense } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import routes from '@suite-constants/../../../../suite-common/suite-constants/src/routes';
+import routes from '@suite-constants/routes';
 import { BundleLoader } from '@suite-components';
 
 const components: { [key: string]: React.LazyExoticComponent<any> } = {

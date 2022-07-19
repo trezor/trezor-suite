@@ -23,7 +23,8 @@ import type { ObjectValues } from '@trezor/type-utils';
 import type { SUITE } from '@suite-actions/constants';
 import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
-import type { Route, EnvironmentType } from '@suite-common/suite-types';
+import type { EnvironmentType } from '@suite-common/suite-types';
+import type { Route } from '@suite-constants/routes';
 
 // reexport
 export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';

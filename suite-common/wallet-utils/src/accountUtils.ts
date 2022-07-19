@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js';
 
-import { networksCompatibility, Network } from '@suite-common/wallet-networks-config';
+import { networksCompatibility as NETWORKS, Network } from '@suite-common/wallet-networks-config';
 import {
     Account,
     CoinFiatRates,
-    WalletParams,
     Discovery,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
@@ -179,7 +178,7 @@ export const amountToSatoshi = (amount: string, decimals: number) => {
 };
 
 export const networkAmountToSatoshi = (amount: string | null, symbol: Account['symbol']) => {
-    const network = networksCompatibility.find(n => n.symbol === symbol);
+    const network = NETWORKS.find(n => n.symbol === symbol);
     if (!amount) return '0';
     if (!network) return amount;
     return amountToSatoshi(amount, network.decimals);
@@ -190,7 +189,7 @@ export const formatNetworkAmount = (
     symbol: Account['symbol'],
     withSymbol = false,
 ) => {
-    const network = networksCompatibility.find(n => n.symbol === symbol);
+    const network = NETWORKS.find(n => n.symbol === symbol);
     if (!network) return amount;
     if (withSymbol) return `${formatAmount(amount, network.decimals)} ${symbol.toUpperCase()}`;
     return formatAmount(amount, network.decimals);
@@ -198,11 +197,11 @@ export const formatNetworkAmount = (
 
 export const sortByCoin = (accounts: Account[]) =>
     accounts.sort((a, b) => {
-        const aIndex = networksCompatibility.findIndex(n => {
+        const aIndex = NETWORKS.findIndex(n => {
             const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
             return accountType === a.accountType && n.symbol === a.symbol;
         });
-        const bIndex = networksCompatibility.findIndex(n => {
+        const bIndex = NETWORKS.findIndex(n => {
             const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
             return accountType === b.accountType && n.symbol === b.symbol;
         });
@@ -237,33 +236,8 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
     return accounts.filter(a => a.deviceState === deviceState && a.visible);
 };
 
-export const getSelectedAccount = (
-    deviceState: string | typeof undefined,
-    accounts: Account[],
-    routerParams: WalletParams | undefined,
-) => {
-    if (!deviceState || !routerParams) return null;
-
-    // TODO: imported accounts
-    // imported account index has 'i' prefix
-    // const isImported = /^i\d+$/i.test(routerParams.accountIndex);
-    // const index: number = isImported
-    //     ? parseInt(routerParams.accountIndex.substr(1), 10)
-    //     : parseInt(routerParams.accountIndex, 10);
-
-    return (
-        accounts.find(
-            a =>
-                a.index === routerParams.accountIndex &&
-                a.symbol === routerParams.symbol &&
-                a.accountType === routerParams.accountType &&
-                a.deviceState === deviceState,
-        ) || null
-    );
-};
-
 export const getNetwork = (symbol: string): Network | null =>
-    networksCompatibility.find(c => c.symbol === symbol) || null;
+    NETWORKS.find(c => c.symbol === symbol) || null;
 
 export const isNetworkSymbol = (symbol: string): symbol is Network['symbol'] =>
     !!getNetwork(symbol);
@@ -402,7 +376,7 @@ export const getTotalFiatBalance = (
 };
 
 export const isTestnet = (symbol: Account['symbol']) => {
-    const net = networksCompatibility.find(n => n.symbol === symbol);
+    const net = NETWORKS.find(n => n.symbol === symbol);
     return net?.testnet ?? false;
 };
 
@@ -710,7 +684,7 @@ export const getPendingAccount = (
 };
 
 export const hasSignVerify = (account: Account) =>
-    !!networksCompatibility.find(
+    !!NETWORKS.find(
         ({ networkType, symbol, accountType, features }) =>
             networkType === account.networkType &&
             symbol === account.symbol &&

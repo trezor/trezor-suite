@@ -1,10 +1,11 @@
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import * as formDraftUtils from '@suite-common/wallet-utils';
+
+import { getFormDraftKey } from '../formDraftUtils';
 
 describe('form draft utils', () => {
     it('getFormDraftKey', () => {
         FormDraftPrefixKeyValues.forEach(prefix => {
-            expect(formDraftUtils.getFormDraftKey(prefix, 'key')).toEqual(`${prefix}/key`);
+            expect(getFormDraftKey(prefix, 'key')).toEqual(`${prefix}/key`);
         });
     });
 });

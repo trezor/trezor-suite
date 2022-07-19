@@ -1,7 +1,6 @@
-import { history } from '@suite-common/suite-support';
-import { networksCompatibility as NETWORKS } from '@suite-common/wallet-networks-config';
-import { routes } from '@suite-common/suite-constants';
-import { RouteParams, Route, RouterAppWithParams } from '@suite-common/suite-types';
+import routes, { Route, RouterAppWithParams } from '@suite-constants/routes';
+import history from '@suite/support/history';
+import { NETWORKS } from '@wallet-config';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
@@ -39,7 +38,7 @@ export const getApp = (url: string) => {
     return route ? route.app : 'unknown';
 };
 
-export const validateWalletParams = (url: string) => {
+const validateWalletParams = (url: string) => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
     const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
@@ -59,7 +58,7 @@ export const validateWalletParams = (url: string) => {
     };
 };
 
-export const validateModalAppParams = (url: string) => {
+const validateModalAppParams = (url: string) => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
     const [cancelable] = hash.split('/').filter(p => p.length > 0);
@@ -103,6 +102,10 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
         params: undefined,
     } as RouterAppWithParams;
 };
+
+export type WalletParams = NonNullable<ReturnType<typeof validateWalletParams>>;
+export type ModalAppParams = NonNullable<ReturnType<typeof validateModalAppParams>>;
+export type RouteParams = WalletParams | ModalAppParams;
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
     const route = findRouteByName(name);

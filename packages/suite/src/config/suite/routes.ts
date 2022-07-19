@@ -2,7 +2,7 @@
 // 1. add params order here (example: wallet or suite-bridge)
 // 2. go to @suite-utils/router and create params validation function (example: validateWalletParams or validateModalAppParams)
 // 3. implement validation function in @suite-utils/router:getAppWithParams
-// 4. add params types to RouteParamsTypes (@suite-common/suite-types)
+// 4. add params types to RouteParamsTypes (@suite-constants/routes)
 
 const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 const modalAppParams = ['cancelable'] as const;

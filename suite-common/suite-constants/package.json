@@ -8,9 +8,5 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build"
-    },
-    "dependencies": {
-        "@suite-common/suite-config": "*",
-        "@suite-common/suite-types": "*"
     }
 }

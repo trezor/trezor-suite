@@ -3,7 +3,7 @@ import React from 'react';
 import { resolveStaticPath } from '@trezor/utils/lib/resolveStaticPath';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '../support/styles';
-import { isEnabled } from '@suite-utils/../../../suite-common/suite-utils/src/features';
+import { isEnabled } from '@suite-common/suite-utils';
 import { TOR_URLS } from '@suite-constants/tor';
 
 const isOnionLocation = isEnabled('ONION_LOCATION_META');

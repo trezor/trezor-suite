@@ -21,6 +21,7 @@
         "@cypress/skip-test": "^2.6.1",
         "@cypress/webpack-preprocessor": "^5.11.1",
         "@playwright/test": "^1.22.2",
+        "@suite-common/test-utils": "*",
         "@trezor/suite-analytics": "*",
         "@trezor/transport": "*",
         "@trezor/utils": "*",

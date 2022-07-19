@@ -11,7 +11,7 @@ import {
     ProgressInfo,
 } from 'electron-updater';
 import { bytesToHumanReadable } from '@trezor/utils';
-import { isEnabled } from '@suite-utils/../../../../suite-common/suite-utils/src/features';
+import { isEnabled } from '@suite-common/suite-utils';
 import { isDev } from '@suite-utils/build';
 import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';

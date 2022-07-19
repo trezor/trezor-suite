@@ -1,11 +1,5 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [
-        { "path": "../suite-config" },
-        { "path": "../suite-constants" },
-        { "path": "../suite-support" },
-        { "path": "../suite-types" },
-        { "path": "../wallet-networks-config" }
-    ]
+    "references": [{ "path": "../suite-config" }]
 }

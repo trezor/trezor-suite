@@ -3,7 +3,7 @@
  */
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE, ROUTER } from '@suite-actions/constants';
-import { RouterAppWithParams, SettingsBackRoute, RouteParams } from '@suite-common/suite-types';
+import { RouterAppWithParams, SettingsBackRoute } from '@suite-constants/routes';
 import {
     getAppWithParams,
     getPrefixedURL,
@@ -11,9 +11,10 @@ import {
     getBackgroundRoute,
     findRoute,
     findRouteByName,
-} from '@suite-common/suite-utils';
+    RouteParams,
+} from '@suite-utils/router';
 import { Dispatch, GetState, Route } from '@suite-types';
-import { history } from '@suite-common/suite-support';
+import history from '@suite/support/history';
 
 import type { AnchorType } from '@suite-constants/anchors';
 

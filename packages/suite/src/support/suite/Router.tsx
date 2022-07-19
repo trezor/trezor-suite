@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useActions } from '@suite-hooks/useActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { history } from '@suite-common/suite-support';
+import history from '@suite/support/history';
 import { useSelector } from '@suite-hooks';
 import { useDidUpdate } from '@suite-hooks/useDidUpdate';
 

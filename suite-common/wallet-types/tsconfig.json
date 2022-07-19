@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../intl-types" },
-        { "path": "../suite-utils" },
         { "path": "../wallet-constants" },
         { "path": "../wallet-networks-config" },
         { "path": "../../packages/connect" },

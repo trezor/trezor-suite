@@ -6,7 +6,7 @@ import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as accountActions from '@wallet-actions/accountActions';
-import { getApp } from '@suite-common/suite-utils';
+import { getApp } from '@suite-utils/router';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const discoveryMiddleware =

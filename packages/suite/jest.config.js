@@ -12,8 +12,8 @@ const babelConfig = {
 module.exports = {
     roots: ['./src'],
     setupFiles: [
-        '../../suite-common/test-utils/src/setupJest.ts',
-        '../../suite-common/test-utils/src/npmMocks.tsx',
+        '<rootDir>/../../suite-common/test-utils/src/setupJest.ts',
+        '<rootDir>/../../suite-common/test-utils/src/npmMocks.tsx',
     ],
     moduleNameMapper: {
         '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',

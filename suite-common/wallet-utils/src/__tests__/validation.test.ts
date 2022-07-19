@@ -1,12 +1,12 @@
 import {
+    isAddressDeprecated,
     isAddressValid,
+    isBech32AddressUppercase,
     isDecimalsValid,
+    isHexValid,
     isInteger,
     isTaprootAddress,
-    isBech32AddressUppercase,
-    isAddressDeprecated,
-    isHexValid,
-} from '@suite-common/wallet-utils';
+} from '../validation';
 
 describe('validation', () => {
     // fixtures from https://github.com/trezor/trezor-address-validator/blob/master/test/wallet_address_validator.js

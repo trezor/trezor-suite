@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FiatValue, FormattedCryptoAmount, AccountLabeling, Translation } from '@suite-components';
 import { CoinLogo, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
-import { Route } from '@suite-common/suite-types';
+import { Route } from '@suite-constants/routes';
 
 const Main = styled.div`
     align-items: center;

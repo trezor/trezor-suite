@@ -1,20 +1,22 @@
 import { Transaction } from '@ethereumjs/tx';
 import { sha3 } from 'web3-utils';
+
+import { networksCompatibility as NETWORKS } from '@suite-common/wallet-networks-config';
+
 import * as fixtures from '../__fixtures__/sendFormUtils';
 import {
-    prepareEthereumTransaction,
-    serializeEthereumTx,
-    getInputState,
-    calculateTotal,
-    calculateMax,
-    findComposeErrors,
     calculateEthFee,
-    getFiatRate,
+    calculateMax,
+    calculateTotal,
+    findComposeErrors,
     getBitcoinComposeOutputs,
     getExternalComposeOutput,
+    getFiatRate,
+    getInputState,
+    prepareEthereumTransaction,
     restoreOrigOutputsOrder,
-} from '@suite-common/wallet-utils';
-import { NETWORKS } from '@wallet-config';
+    serializeEthereumTx,
+} from '../sendFormUtils';
 
 const { getWalletAccount } = global.JestMocks;
 

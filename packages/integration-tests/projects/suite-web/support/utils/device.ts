@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { DEVICE, Features, Device } from '@trezor/connect';
-import {
-    getConnectDevice,
-    getDeviceFeatures,
-} from '../../../../../../suite-common/test-utils/src/setupJest/setupJest';
+import { getConnectDevice, getDeviceFeatures } from '@suite-common/test-utils';
 
 /**
  * Helper method to dispatch DEVICE.CONNECT action.
