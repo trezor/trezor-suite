@@ -9,10 +9,7 @@ import {
 } from '@trezor/connect';
 import { DeviceMetadata } from '@suite-common/metadata-types';
 
-// actionBlockerMiddleware serves one purpose only, to block certain actions based on activated device's processMode.
-// processMode is set via suiteActions.setProcessMode func
-
-// TODO former type was from suite Action['type'][] - check this if correct
+// TODO former type was from suite Action['type'][] - check if this is correct
 const blockedActions: string[] = [UI.CLOSE_UI_WINDOW];
 
 // definition of blocked actions for each process mode

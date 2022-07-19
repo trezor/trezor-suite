@@ -1,6 +1,7 @@
 import * as EthereumjsUtil from 'ethereumjs-util';
-import { hasUppercaseLetter } from '@trezor/utils';
 import BigNumber from 'bignumber.js';
+
+import { hasUppercaseLetter } from '@trezor/utils';
 
 export const decimalToHex = (dec: number): string => new BigNumber(dec).toString(16);
 

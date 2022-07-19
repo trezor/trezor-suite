@@ -1,4 +1,4 @@
-import { RouterAppWithParams, SettingsBackRoute } from '@suite-constants/routes';
+import { RouterAppWithParams, SettingsBackRoute } from '@suite-common/suite-types';
 import { ROUTER } from '@suite-actions/constants';
 import { Action } from '@suite-types';
 

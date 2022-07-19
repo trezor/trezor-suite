@@ -1,2 +1,2 @@
 // TODO: remove this reexport and pass path directly in suite-build
-export * from '@suite-common/suite-features-config';
+export * from 'suite-common/suite-config';

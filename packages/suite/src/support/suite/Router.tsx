@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useDidUpdate } from '@trezor/react-utils';
 import { useActions } from '@suite-hooks/useActions';
 import * as routerActions from '@suite-actions/routerActions';
-import history from '@suite/support/history';
+import { history } from '@suite-common/suite-support';
 import { useSelector } from '@suite-hooks';
 
 const RouterComponent = () => {

@@ -7,3 +7,4 @@ export * from './polling';
 export * from './form';
 export * from './transaction';
 export * from './sendForm';
+export * from './routes';

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
-import { findRouteByName } from '@suite-utils/router';
+import { findRouteByName } from '@suite-common/suite-utils';
 import { useActions, useSelector } from '@suite-hooks';
 import { useCustomBackends } from '@settings-hooks/backends';
 import { ActionItem } from './components/ActionItem';

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import routes from '@suite-constants/routes';
+import routes from '@suite-constants/../../../../suite-common/suite-constants/src/routes';
 
 import Index from '@suite/views/dashboard';
 import Notification from '@suite-views/notifications';

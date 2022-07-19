@@ -1,2 +1,2 @@
-export * from './b64images';
+export * from './features';
 export { default as routes } from './routes';

@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/suite-constants",
+    "name": "@suite-common/suite-config",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -8,9 +8,5 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build"
-    },
-    "dependencies": {
-        "@suite-common/suite-config": "*",
-        "@suite-common/suite-types": "*"
     }
 }
