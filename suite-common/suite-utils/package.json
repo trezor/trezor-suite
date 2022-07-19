@@ -10,6 +10,10 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@suite-common/suite-features-config": "*"
+        "@suite-common/suite-config": "*",
+        "@suite-common/suite-constants": "*",
+        "@suite-common/suite-support": "*",
+        "@suite-common/suite-types": "*",
+        "@suite-common/wallet-networks-config": "*"
     }
 }

@@ -1,7 +1,9 @@
+import { ModalAppParams, WalletParams } from '@suite-common/wallet-types';
+import { Network } from '@suite-common/wallet-networks-config';
 import { ArrayElement, ConstWithOptionalFields } from '@trezor/type-utils';
-import { Network } from '@wallet-types';
-import routes from '@suite-config/routes';
-import { RouteParams } from '@suite-utils/router';
+import { routes } from '@suite-common/suite-config';
+
+export type RouteParams = WalletParams | ModalAppParams;
 
 type RouteKeys =
     | keyof ArrayElement<typeof routes>
@@ -41,5 +43,3 @@ export type RouterAppWithParams =
           params: undefined;
           route: undefined;
       };
-
-export default [...routes] as Route[];

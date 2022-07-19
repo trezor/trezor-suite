@@ -28,7 +28,16 @@
             "path": "../../suite-common/metadata-types"
         },
         {
-            "path": "../../suite-common/suite-features-config"
+            "path": "../../suite-common/suite-config"
+        },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-support"
+        },
+        {
+            "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/suite-utils"

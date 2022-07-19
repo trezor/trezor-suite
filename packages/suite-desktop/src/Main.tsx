@@ -23,7 +23,7 @@ import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
 import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
 import { ErrorScreen } from '@suite-support/screens/ErrorScreen';
 import { ModulesLoadingScreen } from './support/screens/ModulesLoadingScreen';
-import history from '@suite/support/history';
+import history from '@suite/../../../suite-common/suite-support/src/history';
 import AppRouter from './support/Router';
 import DesktopUpdater from './support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite/config/suite';

@@ -20,7 +20,7 @@ import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import RouterHandler from '@suite-support/Router';
 import { ConnectedThemeProvider } from '@suite-support/ConnectedThemeProvider';
-import history from '@suite/support/history';
+import history from '@suite/../../../suite-common/suite-support/src/history';
 import { ModalContextProvider } from '@suite-support/ModalContext';
 
 import AppRouter from './support/Router';

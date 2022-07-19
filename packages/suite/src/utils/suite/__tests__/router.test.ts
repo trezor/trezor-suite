@@ -6,7 +6,7 @@ import {
     getPrefixedURL,
     stripPrefixedPathname,
     getTopLevelRoute,
-} from '../router';
+} from '@suite-common/suite-utils';
 
 const OLD_ENV = { ...process.env };
 

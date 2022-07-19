@@ -4,7 +4,7 @@ const MOCK_FLAGS = {
     FLAG: false,
 };
 
-jest.mock('@suite-common/suite-features-config', () => ({
+jest.mock('@suite-common/suite-config', () => ({
     get FLAGS() {
         return MOCK_FLAGS;
     },

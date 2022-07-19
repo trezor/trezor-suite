@@ -4,7 +4,7 @@ import { networksCompatibility, Network } from '@suite-common/wallet-networks-co
 import {
     Account,
     CoinFiatRates,
-    WalletParams, // FIXME
+    WalletParams,
     Discovery,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,

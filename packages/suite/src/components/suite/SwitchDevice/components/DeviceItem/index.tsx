@@ -16,7 +16,7 @@ import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
 
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from '@suite-types';
-import type { getBackgroundRoute } from '@suite-utils/router';
+import type { getBackgroundRoute } from '@suite-common/suite-utils';
 
 const DeviceWrapper = styled.div`
     display: flex;
