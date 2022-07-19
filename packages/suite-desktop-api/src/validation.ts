@@ -34,6 +34,7 @@ const validChannels: UnionToTuple<keyof RendererChannels> = [
     'update/allow-prerelease',
     'spend/message',
     'tor/status',
+    'tor/bootstrap',
     'protocol/open',
     'handshake/event',
 ];

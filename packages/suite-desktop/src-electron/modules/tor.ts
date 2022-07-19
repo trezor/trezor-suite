@@ -56,7 +56,21 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
 
         if (shouldEnableTor === true) {
             setProxy(`socks5://${host}:${port}`);
+            mainWindow.webContents.send('tor/bootstrap', {
+                type: 'progress',
+                process: {
+                    current: 0,
+                    total: 1,
+                },
+            });
             await tor.start();
+            mainWindow.webContents.send('tor/bootstrap', {
+                type: 'progress',
+                process: {
+                    current: 1,
+                    total: 1,
+                },
+            });
         } else {
             setProxy('');
             await tor.stop();
@@ -154,8 +168,7 @@ const init: Module = dependencies => {
     return () => {
         if (loaded) return;
         loaded = true;
-        // TODO intentionally not awaited to mimic previous behavior, resolve later!
-        load(dependencies);
+        return load(dependencies);
     };
 };
 

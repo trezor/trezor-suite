@@ -1,21 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import React, { useState } from 'react';
+import { desktopApi, BootstrapTorEvent } from '@trezor/suite-desktop-api';
 import { LoadingScreen } from '@suite-support/screens/LoadingScreen';
 
 export const ModulesLoadingScreen = () => {
-    const [message, _setMessage] = useState<string>();
+    enum TorBootstrapStatus {
+        Enabled,
+        Enabeling,
+        Error,
+    }
+    const [torBootstrapStatus, setTorBootstrapStatus] = useState<TorBootstrapStatus>(
+        TorBootstrapStatus.Enabeling,
+    );
 
-    useEffect(() => {
-        if (!desktopApi.available) return;
+    desktopApi.on('tor/bootstrap', (bootstrapEvent: BootstrapTorEvent) => {
+        if (bootstrapEvent.type === 'error') {
+            setTorBootstrapStatus(TorBootstrapStatus.Error);
+        }
 
-        desktopApi.on('handshake/event', _e => {
-            // TODO do we want to show the progress messages?
-            // _setMessage(_e.message);
-        });
-        return () => {
-            desktopApi.removeAllListeners('handshake/event');
-        };
-    }, []);
+        if (bootstrapEvent.type !== 'progress') return;
+        if (bootstrapEvent.progress.current === bootstrapEvent.progress.total) {
+            desktopApi.removeAllListeners('tor/bootstrap');
+            setTorBootstrapStatus(TorBootstrapStatus.Enabled);
+        } else {
+            setTorBootstrapStatus(TorBootstrapStatus.Enabeling);
+        }
+    });
+
+    let message = '';
+
+    if (torBootstrapStatus === TorBootstrapStatus.Enabeling) {
+        message = 'Enabling TOR';
+    } else if (torBootstrapStatus === TorBootstrapStatus.Error) {
+        message = 'Enabling TOR Failed';
+    }
 
     return <LoadingScreen message={message} />;
 };
