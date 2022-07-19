@@ -62,7 +62,7 @@ export class WabiSabiHttpClient extends EventEmitter {
         });
     }
 
-    async analyzeBlockFiters(params: any) {
+    async analyzeBlockFilters(params: any) {
         console.warn('Analyze', params.filters.length);
         const res: ReturnType<typeof search> = [];
         for (let i = 0; i < params.filters.length; i++) {

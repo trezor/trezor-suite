@@ -25,7 +25,7 @@ type SearchResult = {
 };
 
 export const search = (data: any, addresses: any[]) => {
-    console.warn('search', data, addresses);
+    // console.warn('search', data, addresses);
     const { blockHeight, blockHash, filter: filterHex } = data;
     const filter = createFilter(Buffer.from(filterHex, 'hex'));
     // const gfilter = GCSFilter.fromBytes(20, 0, blockFilter);

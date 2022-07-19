@@ -25,7 +25,7 @@ const onRequest = async (request: Request<Message>): Promise<any> => {
         case MESSAGES.ANALYZE_BLOCK_FILTERS:
             return {
                 type: RESPONSES.ANALYZE_BLOCK_FLITERS,
-                payload: await api.analyzeBlockFiters(request.payload),
+                payload: await api.analyzeBlockFilters(request.payload),
             };
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
