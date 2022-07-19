@@ -125,12 +125,13 @@ const Tooltip = ({
     content,
     guideAnchor,
     title,
+    disabled,
     ...rest
 }: TooltipProps) => {
     const [isShown, setIsShown] = useState(false);
 
     const config = { tension: 400, friction: 26, mass: 1 };
-    const animationStartOffset = 20;
+    const animationStartOffset = 10;
     const getTranslateStyle = () => {
         if (placement === 'top') return `translate(0px, ${animationStartOffset}px)`;
         if (placement === 'bottom') return `translate(0px, -${animationStartOffset}px)`;
@@ -138,7 +139,7 @@ const Tooltip = ({
         if (placement === 'right') return `translate(-${animationStartOffset}px, 0px)`;
         return '';
     };
-    const initialStyles = { opacity: 0, transform: `scale(0.8) ${getTranslateStyle()}` };
+    const initialStyles = { opacity: 0, transform: `scale(0.9) ${getTranslateStyle()}` };
     const [spring, setSpring] = useSpring(() => initialStyles);
     const tooltipRef = useRef<Element>(null);
 
@@ -182,6 +183,7 @@ const Tooltip = ({
                 appendTo={() => document.body}
                 onCreate={onCreate}
                 reference={tooltipRef}
+                disabled={disabled}
                 {...rest}
                 render={(attrs, _content, instance) =>
                     rich ? (
@@ -209,7 +211,7 @@ const Tooltip = ({
                     )
                 }
             >
-                <Content dashed={dashed} cursor={cursor}>
+                <Content dashed={dashed} cursor={disabled ? 'default' : cursor}>
                     {children}
                 </Content>
             </Tippy>

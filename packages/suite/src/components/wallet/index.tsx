@@ -6,7 +6,7 @@ import {
     WalletLayoutNavigation,
     WalletLayoutNavLink,
 } from './WalletLayout/components/WalletLayoutNavigation';
-import CoinBalance from './CoinBalance';
+import { CoinBalance } from './CoinBalance';
 import OnOffSwitcher from './OnOffSwitcher';
 import InputError from './InputError';
 import AccountExceptionLayout from './AccountExceptionLayout';

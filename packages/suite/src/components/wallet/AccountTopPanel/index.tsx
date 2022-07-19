@@ -35,6 +35,7 @@ const AccountTopPanelSkeleton = (props: { animate?: boolean }) => (
     >
         <Stack margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
             <SkeletonCircle size="24px" />
+
             <Balance noMargin>
                 <SkeletonRectangle width="160px" height="24px" />
             </Balance>

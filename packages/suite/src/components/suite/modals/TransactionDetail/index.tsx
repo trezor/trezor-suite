@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
 import { variables, Button } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-types';
-import BasicDetails from './components/BasicDetails';
-import AdvancedDetails, { TabID } from './components/AdvancedDetails';
+import { BasicDetails } from './components/BasicDetails';
+import { AdvancedDetails, TabID } from './components/AdvancedDetails';
 import ChangeFee from './components/ChangeFee';
 import {
     getNetwork,
@@ -16,6 +16,7 @@ import { useSelector } from '@suite-hooks';
 
 const StyledModal = styled(Modal)`
     width: 755px;
+
     ${Modal.Body} {
         padding: 10px;
     }
@@ -34,7 +35,7 @@ const SectionActions = styled.div`
 `;
 
 const SectionTitle = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
@@ -47,9 +48,11 @@ const Col = styled.div`
 const Middle = styled(Col)`
     justify-content: center;
 `;
+
 const Right = styled(Col)`
     justify-content: flex-end;
-    & > * + * {
+
+    > * + * {
         margin-left: 12px;
     }
 `;
@@ -65,6 +68,13 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
         blockchain: state.wallet.blockchain[tx.symbol],
         transactions: state.wallet.transactions.transactions,
     }));
+
+    const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
+        rbfForm ? 'CHANGE_FEE' : 'DETAILS',
+    );
+    const [tab, setTab] = useState<TabID | undefined>(undefined);
+    const [finalize, setFinalize] = useState<boolean>(false);
+
     const confirmations = getConfirmations(tx, blockchain.blockHeight);
     // TODO: replace this part will be refactored after blockbook implementation:
     // https://github.com/trezor/blockbook/issues/555
@@ -81,12 +91,6 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
 
     const network = getNetwork(tx.symbol);
 
-    const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
-        rbfForm ? 'CHANGE_FEE' : 'DETAILS',
-    );
-    const [tab, setTab] = useState<TabID | undefined>(undefined);
-    const [finalize, setFinalize] = useState<boolean>(false);
-
     return (
         <StyledModal
             isCancelable
@@ -100,6 +104,7 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
                     network={network!}
                     confirmations={confirmations}
                 />
+
                 <SectionActions>
                     {tx.rbfParams && (
                         <>
@@ -119,6 +124,7 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
                                             <Translation id="TR_BACK" />
                                         </Button>
                                     </Col>
+
                                     <Middle>
                                         <SectionTitle>
                                             <Translation
@@ -142,6 +148,7 @@ export const TransactionDetail = ({ tx, rbfForm, onCancel }: TransactionDetailPr
                                         >
                                             <Translation id="TR_BUMP_FEE" />
                                         </Button>
+
                                         {network?.networkType === 'bitcoin' && (
                                             // finalize button only possible in BTC rbf
                                             <Button

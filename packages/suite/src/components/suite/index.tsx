@@ -26,7 +26,7 @@ import Ticker from './Ticker';
 import { Translation } from './Translation';
 import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './Labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
-import Sign from './Sign';
+import { Sign } from './Sign';
 import AddAccountButton from './AddAccountButton';
 import ToastContainer from './ToastContainer';
 import TrezorLink from './TrezorLink';

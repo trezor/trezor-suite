@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { H2, Button, LoadingContent } from '@trezor/components';
 import { Translation, FormattedFiatAmount, HiddenPlaceholder } from '@suite-components';
-import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
+import { RangeSelector } from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { updateGraphData } from '@wallet-actions/graphActions';
 import { useFastAccounts } from '@wallet-hooks';
 import { GraphRange } from '@wallet-types/graph';

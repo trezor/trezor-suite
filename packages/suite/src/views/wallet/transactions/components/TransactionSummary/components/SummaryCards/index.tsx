@@ -11,7 +11,7 @@ import {
 import { sumFiatValueMap } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountHistory } from '@wallet-types/graph';
-import InfoCard from './components/InfoCard';
+import { InfoCard } from './components/InfoCard';
 
 const InfoCardsWrapper = styled.div`
     display: grid;

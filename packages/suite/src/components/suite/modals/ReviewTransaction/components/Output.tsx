@@ -73,7 +73,7 @@ const Output = (props: Props) => {
     let fiatVisible = false;
     if (token) {
         outputValue = formatAmount(value, token.decimals);
-        outputSymbol = token.symbol;
+        outputSymbol = token.symbol as NetworkSymbol;
     } else if (type === 'regular' || type === 'fee') {
         outputValue = formatNetworkAmount(value, symbol);
         outputSymbol = symbol;

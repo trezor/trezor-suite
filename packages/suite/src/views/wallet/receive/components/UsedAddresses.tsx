@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { AccountAddress } from '@trezor/connect';
 import { variables, Button } from '@trezor/components';
 import { Card, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
@@ -11,7 +11,6 @@ import { MetadataAddPayload } from '@suite-types/metadata';
 const StyledCard = styled(Card)`
     flex-direction: column;
     margin-bottom: 40px;
-    /* padding: 25px; */
     padding: 0px;
     overflow: hidden;
 `;
@@ -19,7 +18,7 @@ const StyledCard = styled(Card)`
 const GridTable = styled.div`
     display: grid;
     grid-template-columns: 0.65fr 0.35fr auto;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -31,26 +30,21 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: () => void }>`
     justify-content: space-between;
     white-space: nowrap;
     padding: 16px 0px 12px 0px;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     font-variant-numeric: tabular-nums;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: 500;
+    cursor: ${({ onClick }) => onClick && 'pointer'};
 
-    &:nth-child(1n) {
+    :nth-child(1n) {
         padding-left: 25px;
     }
-    &:nth-child(3n) {
+    :nth-child(3n) {
         padding-right: 25px;
     }
-    &:nth-last-child(-n + 3) {
+    :nth-last-child(-n + 3) {
         border: 0;
     }
-
-    ${props =>
-        props.onClick &&
-        css`
-            cursor: pointer;
-        `};
 `;
 
 const GridItemAddress = styled(GridItem)`
@@ -62,20 +56,20 @@ const GridItemAddress = styled(GridItem)`
 `;
 
 const AddressActions = styled.div<{ hide?: boolean }>`
-    opacity: ${props => (props.hide ? '0' : '1')};
+    opacity: ${({ hide }) => (hide ? '0' : '1')};
 `;
 
 const Gray = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
 const HeaderItem = styled(GridItem)`
     position: sticky;
     top: 0;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: 500;
     padding: 12px 0px;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const Actions = styled.div`
@@ -103,7 +97,7 @@ const Overlay = styled.div`
     background-image: linear-gradient(
         to right,
         rgba(0, 0, 0, 0) 0%,
-        ${props => props.theme.BG_WHITE} 120px
+        ${({ theme }) => theme.BG_WHITE} 120px
     );
 `;
 
@@ -145,17 +139,20 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
                     }
                 />
             </GridItemAddress>
+
             <GridItem
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
                 {!fresh && <FormattedCryptoAmount value={amount} symbol={symbol} />}
+
                 {fresh && (
                     <Gray>
                         <Translation id="RECEIVE_TABLE_NOT_USED" />
                     </Gray>
                 )}
             </GridItem>
+
             <GridItem
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -191,13 +188,17 @@ export const UsedAddresses = ({
 }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
 
-    if (!account) return null;
+    if (!account) {
+        return null;
+    }
 
     if (
         (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||
         !account.addresses
-    )
+    ) {
         return null;
+    }
+
     const { used, unused } = account.addresses;
     const { addressLabels } = account.metadata;
     // find revealed addresses in `unused` list
@@ -210,7 +211,10 @@ export const UsedAddresses = ({
     // TODO: add skipped addresses?
     // add revealed addresses to `used` list
     const list = revealed.concat(used.slice().reverse());
-    if (list.length < 1) return null;
+
+    if (list.length < 1) {
+        return null;
+    }
 
     const actionButtonsVisible = list.length > DEFAULT_LIMIT;
     const actionShowVisible = limit < list.length;
@@ -222,9 +226,11 @@ export const UsedAddresses = ({
                 <HeaderItem>
                     <Translation id="RECEIVE_TABLE_ADDRESS" />
                 </HeaderItem>
+
                 <HeaderItem>
                     <Translation id="RECEIVE_TABLE_RECEIVED" />
                 </HeaderItem>
+
                 <HeaderItem />
                 {list.slice(0, limit).map((addr, index) => (
                     <Item
@@ -242,6 +248,7 @@ export const UsedAddresses = ({
                     />
                 ))}
             </GridTable>
+
             {actionButtonsVisible && (
                 <Actions>
                     {actionShowVisible && (
@@ -254,6 +261,7 @@ export const UsedAddresses = ({
                             <Translation id="TR_SHOW_MORE" />
                         </Button>
                     )}
+
                     {actionHideVisible && (
                         <Button
                             variant="tertiary"

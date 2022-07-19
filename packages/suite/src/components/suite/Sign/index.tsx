@@ -4,27 +4,25 @@ import { useTheme } from '@trezor/components';
 import BigNumber from 'bignumber.js';
 
 const StyledSign = styled.span<{ color: string }>`
-    color: ${props => props.color};
+    color: ${({ color }) => color};
     width: 1ch;
     margin-right: 0.3ch;
 `;
 
 export const isValuePositive = (value: SignValue) => {
-    let isValuePos;
-
     if (!value) {
         return;
     }
 
     if (value === 'pos') {
-        isValuePos = true;
-    } else if (value === 'neg') {
-        isValuePos = false;
-    } else {
-        isValuePos = new BigNumber(value).gte(0);
+        return true;
     }
 
-    return isValuePos;
+    if (value === 'neg') {
+        return false;
+    }
+
+    return new BigNumber(value).gte(0);
 };
 
 export type SignValue = string | BigNumber | number | 'pos' | 'neg' | null;
@@ -36,7 +34,8 @@ interface SignProps {
     showMinusSign?: boolean;
     grayscaleColor?: string;
 }
-const Sign = ({
+
+export const Sign = ({
     value,
     placeholderOnly,
     grayscale,
@@ -65,5 +64,3 @@ const Sign = ({
     }
     return null;
 };
-
-export default Sign;

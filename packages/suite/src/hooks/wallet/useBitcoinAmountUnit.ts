@@ -1,5 +1,4 @@
 import { PROTO } from '@trezor/connect';
-
 import { useSelector } from '@suite-hooks/useSelector';
 import { useActions } from '@suite-hooks/useActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
