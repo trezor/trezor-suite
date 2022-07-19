@@ -7,4 +7,5 @@ export interface TorConnectionOptions {
 
 export type BootstrapEvent = {
     progress: string | undefined;
+    summary: string | undefined;
 };

@@ -6,7 +6,11 @@ const clientStatusGroupParser = (message: string): RegExpMatchArray | null =>
     message.trim().match(/^(^650 STATUS_CLIENT NOTICE BOOTSTRAP PROGRESS=.*)+/gm);
 
 const statusParser = (status: string): RegExpMatchArray | null =>
-    status.trim().match(/^650 STATUS_CLIENT NOTICE BOOTSTRAP (PROGRESS=(?<progress>\d+)?.*)?/);
+    status
+        .trim()
+        .match(
+            /^650 STATUS_CLIENT NOTICE BOOTSTRAP (PROGRESS=(?<progress>\d+)?)? TAG=(?:[\w\s]+) (SUMMARY="(?<summary>.+)")?/,
+        );
 
 export const bootstrapParser = (message: string): BootstrapEvent[] => {
     const clientStatusGroups = clientStatusGroupParser(message);
@@ -18,6 +22,7 @@ export const bootstrapParser = (message: string): BootstrapEvent[] => {
         const clientStatusParsed = statusParser(clientStatus);
         return {
             progress: clientStatusParsed?.groups?.progress ?? '',
+            summary: clientStatusParsed?.groups?.summary ?? '',
         };
     });
 };

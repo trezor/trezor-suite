@@ -21,9 +21,11 @@ export class TorController extends EventEmitter {
 
     onMessageReceived(message: string) {
         const bootstrap: BootstrapEvent[] = bootstrapParser(message);
-        this.isCircuitEstablished = bootstrap.some(
-            (event: BootstrapEvent) => event.progress === BootstrapEventProgress.Done,
-        );
+        bootstrap.forEach(event => {
+            if (!event || !event.progress) return;
+            this.isCircuitEstablished = event.progress === BootstrapEventProgress.Done;
+            this.emit('bootstrap/event', event);
+        });
     }
 
     waitUntilAlive(): Promise<void> {
