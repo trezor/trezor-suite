@@ -16,4 +16,5 @@ export type {
     HandshakeClient,
     HandshakeElectron,
     HandshakeEvent,
+    BootstrapTorEvent,
 } from './messages';

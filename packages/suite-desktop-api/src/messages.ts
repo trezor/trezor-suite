@@ -2,6 +2,20 @@ import { ExtractUndefined } from './methods';
 
 export type SuiteThemeVariant = 'light' | 'dark' | 'system';
 
+export type BootstrapTorEvent =
+    | {
+          type: 'progress';
+          message?: string;
+          progress: {
+              current: number;
+              total: number;
+          };
+      }
+    | {
+          type: 'error';
+          message: string;
+      };
+
 export type HandshakeEvent =
     | {
           type: 'progress';

@@ -71,9 +71,9 @@ export const initModules = async (dependencies: Dependencies) => {
     logger.info('modules', 'All modules initialized');
 
     const modulesToLoad = modules.filter(isNotUndefined);
-    let loaded = 0;
-    return (handshake: HandshakeClient) =>
-        Promise.all(
+    return (handshake: HandshakeClient) => {
+        let loaded = 0;
+        return Promise.all(
             modulesToLoad.map(async ([module, loadModule]) => {
                 logger.debug('modules', `Loading ${module}`);
                 try {
@@ -112,4 +112,5 @@ export const initModules = async (dependencies: Dependencies) => {
                     urls: { httpReceiver },
                 }),
             );
+    };
 };

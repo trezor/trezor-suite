@@ -7,6 +7,7 @@ import {
     UpdateInfo,
     UpdateProgress,
     InvokeResult,
+    BootstrapTorEvent,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -45,6 +46,7 @@ export interface RendererChannels {
 
     // tor
     'tor/status': boolean;
+    'tor/bootstrap': BootstrapTorEvent;
 
     // custom protocol
     'protocol/open': string;
