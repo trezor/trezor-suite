@@ -146,7 +146,7 @@ describe('suite middleware', () => {
     describe('redirection on initial run', () => {
         it('if initialRun is true, should redirect to onboarding screen after STORAGE.LOADED action', () => {
             // eslint-disable-next-line global-require
-            require('@suite-common/suite-support').history.default.location.pathname = '/accounts';
+            require('@suite-common/suite-support').history.location.pathname = '/accounts';
 
             const store = initStore(getInitialState());
 
@@ -177,7 +177,7 @@ describe('suite middleware', () => {
 
         it('if route is modal window, should not redirect and show modal directly', () => {
             // eslint-disable-next-line global-require
-            require('@suite-common/suite-support').history.default.location.pathname = '/version';
+            require('@suite-common/suite-support').history.location.pathname = '/version';
 
             const store = initStore(getInitialState());
 
@@ -209,7 +209,7 @@ describe('suite middleware', () => {
         it('if route is 404, should not redirect and show modal directly', () => {
             const goto = jest.spyOn(routerActions, 'goto');
             // eslint-disable-next-line global-require
-            require('@suite-common/suite-support').history.default.location.pathname = '/foo-bar';
+            require('@suite-common/suite-support').history.location.pathname = '/foo-bar';
 
             const store = initStore(getInitialState());
 
@@ -235,7 +235,7 @@ describe('suite middleware', () => {
         it('if initialRun is false should NOT redirect to onboarding after STORAGE.LOADED action', () => {
             const goto = jest.spyOn(routerActions, 'goto');
             // eslint-disable-next-line global-require
-            require('@suite-common/suite-support').history.default.location.pathname = '/';
+            require('@suite-common/suite-support').history.location.pathname = '/';
 
             const store = initStore(getInitialState());
             store.dispatch({

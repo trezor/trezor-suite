@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Node } from '@suite-types/guide';
+import type { Node } from '@suite-common/suite-types';
 import type { Locale } from '@suite-config/languages';
 
 export const loadPageMarkdownFile = async (id: string, language = 'en'): Promise<string> => {

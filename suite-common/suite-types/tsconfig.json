@@ -7,6 +7,7 @@
         { "path": "../wallet-networks-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/suite-data" },
         { "path": "../../packages/type-utils" }
     ]
 }

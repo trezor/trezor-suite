@@ -1,4 +1,4 @@
-import * as cardanoUtils from '../../../../../../suite-common/wallet-utils/src/cardanoUtils';
+import * as cardanoUtils from '@suite-common/wallet-utils';
 import { CARDANO, PROTO } from '@trezor/connect';
 import * as fixtures from '../__fixtures__/cardanoUtils';
 

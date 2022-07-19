@@ -18,8 +18,8 @@ import {
     getTtl,
     loadCardanoLib,
     getDerivationType,
-} from '@wallet-utils/../../../../../suite-common/wallet-utils/src/cardanoUtils';
-import { isTestnet } from '@suite-common/wallet-utils';
+    isTestnet,
+} from '@suite-common/wallet-utils';
 import { AppState } from '@suite-types';
 
 const getDeviceAvailability = (

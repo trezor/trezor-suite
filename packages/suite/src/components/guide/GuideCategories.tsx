@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { Category } from '@suite-types/guide';
+import { GuideCategory } from '@suite-common/suite-types';
 import { GuideNode } from '@guide-components';
 
 const Section = styled.section`
@@ -23,7 +23,7 @@ const Nodes = styled.div`
 `;
 
 type GuideCategoriesProps = {
-    node: Category | null;
+    node: GuideCategory | null;
     label: string | ReactNode;
 };
 

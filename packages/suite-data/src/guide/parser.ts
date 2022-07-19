@@ -8,7 +8,7 @@ import { GITBOOK_ASSETS_DIR_PREFIX } from './constants';
  * Can contain other Pages or Categories.
  * Cannot contain content on its own except the title.
  */
-export interface Category {
+export interface GuideCategory {
     type: 'category';
     /** Serves both as unique identifier and relative path to the directory. */
     id: string;
@@ -33,7 +33,7 @@ export interface Page {
     };
 }
 
-export type Node = Category | Page;
+export type Node = GuideCategory | Page;
 
 /** @returns true if given path is a directory. */
 const isDirectory = (path: string): boolean => fs.lstatSync(path).isDirectory();
@@ -190,9 +190,9 @@ export class Parser {
         }
 
         return {
-            ...(common as Category),
+            ...(common as GuideCategory),
             children: left.children.map(leftChild => {
-                const rightChild = (right as Category).children.find(candidate =>
+                const rightChild = (right as GuideCategory).children.find(candidate =>
                     match(leftChild, candidate),
                 );
 

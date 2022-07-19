@@ -23,14 +23,14 @@ import type { ObjectValues } from '@trezor/type-utils';
 import type { SUITE } from '@suite-actions/constants';
 import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
-import type { Route } from '@suite-common/suite-types';
+import type { Route, EnvironmentType } from '@suite-common/suite-types';
 
 // reexport
 export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
 export type { AppState } from '@suite/reducers/store';
 export type { SuiteThemeColors } from '@trezor/components';
 export type { PrerequisiteType } from '@suite-utils/prerequisites';
-export type { Route };
+export type { Route, EnvironmentType };
 export type {
     ButtonRequest,
     ExtendedDevice,
@@ -91,7 +91,6 @@ export type ForegroundAppProps = {
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
-export type EnvironmentType = 'web' | 'desktop' | 'mobile' | '';
 
 export enum TorStatus {
     Disabled = 'Disabled',

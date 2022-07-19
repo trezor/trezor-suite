@@ -43,6 +43,9 @@
             "path": "../../suite-common/suite-utils"
         },
         {
+            "path": "../../suite-common/test-utils"
+        },
+        {
             "path": "../../suite-common/wallet-networks-config"
         },
         {
