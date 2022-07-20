@@ -6,11 +6,15 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../connect" },
         { "path": "../suite-analytics" },
-        { "path": "../suite" },
         { "path": "../suite-desktop-api" },
         { "path": "../urls" },
         { "path": "../utils" },
-        { "path": "../request-manager" }
+        { "path": "../request-manager" },
+        { "path": "../connect-common" }
     ]
 }
