@@ -105,10 +105,7 @@ const SetPinStep = () => {
     return (
         <>
             {showSkipConfirmation && (
-                <SkipStepConfirmation
-                    onCancel={() => setShowSkipConfirmation(false)}
-                    variant="pin"
-                />
+                <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
             <PinStepBox
                 heading={
