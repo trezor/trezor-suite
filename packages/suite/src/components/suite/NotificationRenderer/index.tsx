@@ -78,6 +78,10 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return success(render, notification, 'TOAST_RAW_TX_SENT', 'SEND', {
                 txid: notification.txid,
             });
+        case 'coinjoin-round-complete':
+            return info(render, notification, 'TOAST_COINJOIN_ROUND_COMPLETE');
+        case 'coinjoin-complete':
+            return info(render, notification, 'TOAST_COINJOIN_COMPLETE');
         case 'cardano-delegate-error':
             return error(render, notification, 'TR_ERROR_CARDANO_DELEGATE');
         case 'cardano-withdrawal-error':
