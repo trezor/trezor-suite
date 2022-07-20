@@ -11,7 +11,7 @@
     "description": "trezor suite build",
     "scripts": {
         "patch": "yarn patch-package",
-        "base": "TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack.config.ts",
+        "base": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack.config.ts",
         "web": "PROJECT=web yarn run base",
         "dev:web": "yarn run web",
         "build:web": "NODE_ENV=production yarn run web",

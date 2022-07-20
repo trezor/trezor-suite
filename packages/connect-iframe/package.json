@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack/prod.webpack.config.ts",
+        "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack/prod.webpack.config.ts",
         "___NOTE__": "iframe build is one of the prerequisites of suite-web. build:lib script provides it together with other libraries",
         "build:lib": "yarn build",
         "type-check": "tsc --build tsconfig.json"
