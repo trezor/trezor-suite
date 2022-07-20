@@ -44,7 +44,7 @@ const config: webpack.Configuration = {
         modules: ['node_modules'],
         alias,
         fallback: {
-            // Polyfills API for NodeJS libraries in the browser. Google OAuth and JWS libs require it
+            // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
             crypto: require.resolve('crypto-browserify'),
             stream: require.resolve('stream-browserify'),
             // Not required
