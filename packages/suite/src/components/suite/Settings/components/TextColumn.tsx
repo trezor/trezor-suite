@@ -30,7 +30,11 @@ const Description = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
-    &:last-child {
+    :first-child {
+        margin-top: 0px;
+    }
+
+    :last-child {
         margin-bottom: 0px;
     }
 `;

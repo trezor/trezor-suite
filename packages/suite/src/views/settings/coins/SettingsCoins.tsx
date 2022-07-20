@@ -1,12 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { SettingsLayout } from '@settings-components';
 import { CoinsGroup, Translation } from '@suite-components';
-import { SettingsSection, SectionItem, DeviceBanner } from '@suite-components/Settings';
+import { DeviceBanner, SettingsSection, SectionItem } from '@suite-components/Settings';
 import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
 import { useAnchor } from '@suite-hooks/useAnchor';
-import { useDevice } from '@suite-hooks';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { useDevice, useSelector } from '@suite-hooks';
+import { isBitcoinOnly } from '@suite-utils/device';
+import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 
 const StyledSettingsLayout = styled(SettingsLayout)`
     & > * + * {
@@ -15,6 +18,8 @@ const StyledSettingsLayout = styled(SettingsLayout)`
 `;
 
 export const SettingsCoins = () => {
+    const { firmwareTypeBannerClosed } = useSelector(state => state.suite.flags);
+
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
 
     const { anchorRef: anchorRefCrypto, shouldHighlight: shouldHighlightCrypto } = useAnchor(
@@ -25,16 +30,26 @@ export const SettingsCoins = () => {
 
     const { device } = useDevice();
 
+    const bitcoinOnlyFirmware = device && isBitcoinOnly(device);
+    const onlyBitcoinEnabled = enabledNetworks.every(coin =>
+        ['btc', 'regtest', 'test'].includes(coin),
+    );
+    const showDeviceBanner = device?.connected === false; // device is remembered and disconnected
+    const showFirmwareTypeBanner =
+        !firmwareTypeBannerClosed &&
+        device &&
+        (bitcoinOnlyFirmware || (!bitcoinOnlyFirmware && onlyBitcoinEnabled));
+
     return (
         <StyledSettingsLayout>
-            {device?.connected === false && (
+            {showDeviceBanner && (
                 <DeviceBanner
                     title={
                         <Translation id="TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED" />
                     }
                 />
             )}
-
+            {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
             <SettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
                 <SectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
                     <CoinsGroup

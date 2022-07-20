@@ -41,6 +41,7 @@ export interface Flags {
     // passphraseCompleted: boolean;
     bech32BannerClosed: boolean; // banner in account view informing about advantages of using Bech32
     taprootBannerClosed: boolean; // banner in account view informing about advantages of using Taproot
+    firmwareTypeBannerClosed: boolean; // banner in Crypto settings suggesting switching firmware type
     discreetModeCompleted: boolean; // dashboard UI, user tried discreet mode
     securityStepsHidden: boolean; // dashboard UI
     dashboardGraphHidden: boolean; // dashboard UI
@@ -82,6 +83,7 @@ const initialState: SuiteState = {
         discreetModeCompleted: false,
         bech32BannerClosed: false,
         taprootBannerClosed: false,
+        firmwareTypeBannerClosed: false,
         securityStepsHidden: false,
         dashboardGraphHidden: false,
         dashboardAssetsGridMode:
