@@ -56,6 +56,7 @@ export type SuiteAction =
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
+    | { type: typeof SUITE.BTC_ONLY_FIRMWARE; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -83,9 +84,7 @@ export type SuiteAction =
           type: typeof SUITE.SET_AUTODETECT;
           payload: Partial<AutodetectSettings>;
       }
-    | {
-          type: typeof SUITE.REQUEST_DEVICE_RECONNECT;
-      };
+    | { type: typeof SUITE.REQUEST_DEVICE_RECONNECT };
 
 export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     type: SUITE.DESKTOP_HANDSHAKE,
@@ -215,6 +214,28 @@ export const toggleTor =
 export const setOnionLinks = (payload: boolean): SuiteAction => ({
     type: SUITE.ONION_LINKS,
     payload,
+});
+
+/**
+ * Triggered by user action in:
+ * - Device Settings
+ * Set `btcOnlyFirmware` field in suite reducer
+ * This reflects firmware type set by the user, not necessarily the one installed
+ * @param {boolean} payload
+ * @returns {SuiteAction}
+ */
+export const switchFirmwareType = (toBtcOnly: boolean): SuiteAction => ({
+    type: SUITE.BTC_ONLY_FIRMWARE,
+    payload: toBtcOnly,
+});
+
+/**
+ * Called from `suiteMiddleware`
+ * Set `loaded` field in suite reducer
+ * @returns {SuiteAction}
+ */
+export const onSuiteReady = (): SuiteAction => ({
+    type: SUITE.READY,
 });
 
 /**

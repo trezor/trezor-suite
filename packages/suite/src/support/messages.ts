@@ -2108,15 +2108,22 @@ export default defineMessages({
         id: 'TR_FIRMWARE_INSTALLED_TEXT',
     },
     TR_INSTALL_FIRMWARE: {
-        defaultMessage: 'Install firmware',
-        description: 'sub heading in onboarding when user is about to install a new firmware',
+        defaultMessage: 'Firmware installation',
+        description: 'Sub heading in onboarding when user is about to install a new firmware',
         id: 'TR_INSTALL_FIRMWARE',
     },
-    TR_FIRMWARE_SUBHEADING: {
+    TR_FIRMWARE_SUBHEADING_NONE: {
         defaultMessage:
-            'Your Trezor is shipped without any firmware, so you can install the latest version directly by clicking the button below. When your device starts up, it will confirm that the firmware is authentic or display a warning.',
-        description: 'Main text on firmware page for devices without firmware.',
-        id: 'TR_FIRMWARE_SUBHEADING',
+            'Your Trezor is shipped without any firmware. You can install the latest version directly by clicking the <i>Install universal firmware</i> button. If you only require Bitcoin wallet operations, you can install the dedicated <button>Bitcoin firmware</button>. When your device starts up, it will confirm that the firmware is authentic or display a warning.',
+        description: 'Main text on firmware page for devices without firmware',
+        id: 'TR_FIRMWARE_SUBHEADING_NONE',
+    },
+    TR_FIRMWARE_SUBHEADING_UNKNOWN: {
+        defaultMessage:
+            'You can install the latest version directly by clicking the <i>Install universal firmware</i> button. If you only require Bitcoin wallet operations, you can install the dedicated <button>Bitcoin firmware</button>. When your device starts up, it will confirm that the firmware is authentic or display a warning.',
+        description:
+            'Main text on firmware page for devices in bootloader mode, i.e. when Suite cannot determine current firmware type',
+        id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN',
     },
     TR_FIRMWARE_VERSION: {
         defaultMessage: 'Firmware version',
@@ -2225,6 +2232,11 @@ export default defineMessages({
         defaultMessage: 'Install firmware',
         description: 'Install button',
         id: 'TR_INSTALL',
+    },
+    TR_INSTALL_UNIVERSAL: {
+        defaultMessage: 'Install full-featured firmware',
+        description: 'Install button for universal firmware',
+        id: 'TR_INSTALL_UNIVERSAL',
     },
     TR_DO_NOT_DISCONNECT: {
         defaultMessage: 'Do not disconnect your Trezor.',

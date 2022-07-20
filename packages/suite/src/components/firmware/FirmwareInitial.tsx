@@ -1,15 +1,27 @@
 import React, { useEffect } from 'react';
+import styled from 'styled-components';
+
 import { Button } from '@trezor/components';
 import {
     ConnectDevicePromptManager,
     OnboardingStepBox,
     OnboardingButtonSkip,
 } from '@onboarding-components';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components';
-import { useDevice, useFirmware, useOnboarding } from '@suite-hooks';
+import { useActions, useDevice, useFirmware, useOnboarding, useSelector } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import { TrezorDevice } from '@suite/types/suite';
-import { getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
+import { getFwVersion, getFwUpdateVersion, isBitcoinOnly } from '@suite-utils/device';
+
+const StyledButton = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    text-decoration: underline;
+`;
 
 interface FirmwareInitialProps {
     cachedDevice?: TrezorDevice;
@@ -24,12 +36,20 @@ const getDescription = ({
     required,
     standaloneFwUpdate,
     reinstall,
+    switchType,
 }: {
     required: boolean;
     standaloneFwUpdate: boolean;
     reinstall: boolean;
+    switchType: boolean;
 }) => {
-    if (required) return 'TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED';
+    if (switchType) {
+        return 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION';
+    }
+
+    if (required) {
+        return 'TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED';
+    }
 
     if (standaloneFwUpdate) {
         return reinstall
@@ -39,22 +59,26 @@ const getDescription = ({
     return 'TR_ONBOARDING_NEW_FW_DESCRIPTION';
 };
 
-const FirmwareInitial = ({
+export const FirmwareInitial = ({
     cachedDevice,
     setCachedDevice,
     onInstall,
     standaloneFwUpdate = false,
 }: FirmwareInitialProps) => {
+    const { switchFirmwareType } = useActions({
+        switchFirmwareType: suiteActions.switchFirmwareType,
+    });
     const { device: liveDevice } = useDevice();
     const { setStatus, status } = useFirmware();
     const { goToNextStep, updateAnalytics } = useOnboarding();
+    const { btcOnlyFirmware } = useSelector(state => state.suite.settings);
 
     useEffect(() => {
         // When user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
         // This prompt (to reconnect a device in bootloader mode) is shown in modal which is visually layer above the content.
         // We are caching the device in order to preserve the background content (screen with fw update offer) when user
         // disconnects the device and reconnects it in bl mode.
-        // (Device in BL mode doesn't provide us all the details and we don't want any flickering o reacting in general while user is just following our instructions)
+        // (Device in BL mode doesn't provide us all the details and we don't want any flickering or reacting in general while user is just following our instructions)
         if (liveDevice?.connected && liveDevice?.mode !== 'bootloader' && liveDevice.features) {
             // we never store state of the device while it is in bootloader, we want just "normal" mode
             setCachedDevice(liveDevice);
@@ -86,13 +110,28 @@ const FirmwareInitial = ({
         // Device without firmware is already in bootloader mode even if it doesn't report it
         content = {
             heading: <Translation id="TR_INSTALL_FIRMWARE" />,
-            description:
-                device.firmware === 'none' ? (
-                    <Translation id="TR_FIRMWARE_SUBHEADING" />
-                ) : undefined,
-            body: cachedDevice?.firmwareRelease ? (
-                <FirmwareOffer device={cachedDevice} />
-            ) : undefined,
+            description: (
+                <Translation
+                    id={
+                        device.firmware === 'none'
+                            ? 'TR_FIRMWARE_SUBHEADING_NONE'
+                            : 'TR_FIRMWARE_SUBHEADING_UNKNOWN'
+                    }
+                    values={{
+                        i: chunks => <i>{chunks}</i>,
+                        button: chunks => (
+                            <StyledButton
+                                onClick={() => {
+                                    switchFirmwareType(true);
+                                    onInstall();
+                                }}
+                            >
+                                {chunks}
+                            </StyledButton>
+                        ),
+                    }}
+                />
+            ),
             innerActions: (
                 <InstallButton
                     onClick={() => {
@@ -132,6 +171,7 @@ const FirmwareInitial = ({
                         required: device.firmware === 'required',
                         standaloneFwUpdate,
                         reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
+                        switchType: isBitcoinOnly(device) !== btcOnlyFirmware,
                     })}
                 />
             ),
@@ -198,5 +238,3 @@ const FirmwareInitial = ({
     }
     return null;
 };
-
-export { FirmwareInitial };

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, Icon, Tooltip, variables } from '@trezor/components';
 import { GITHUB_FW_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
+import { useSelector } from '@suite-hooks';
 import {
     getFwUpdateVersion,
     getFwVersion,
@@ -92,6 +93,8 @@ interface Props {
 }
 
 const FirmwareOffer = ({ device, customFirmware }: Props) => {
+    const { btcOnlyFirmware } = useSelector(state => state.suite.settings);
+
     const currentVersion = device.firmware !== 'none' ? getFwVersion(device) : undefined;
 
     const newVersion = customFirmware ? (
@@ -103,7 +106,11 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
     const parsedChangelog =
         !customFirmware && parseFirmwareChangelog(device.features, device.firmwareRelease);
 
-    const bitcoinOnlyVersion = isBitcoinOnly(device) && ' (bitcoin-only)';
+    const getFirmwareTypeName = (btcOnly: boolean) => (btcOnly ? 'Bitcoin-only ' : 'Universal ');
+
+    const currentFirmwareType =
+        device.firmware === 'unknown' ? '' : getFirmwareTypeName(isBitcoinOnly(device));
+    const targetFirmwareType = getFirmwareTypeName(btcOnlyFirmware);
 
     return (
         <FwVersionWrapper>
@@ -115,8 +122,8 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                         </Label>
                         <VersionWrapper>
                             <Version>
+                                {currentFirmwareType}
                                 {currentVersion}
-                                {bitcoinOnlyVersion}
                             </Version>
                         </VersionWrapper>
                     </FwVersion>
@@ -174,14 +181,14 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                             placement="top"
                         >
                             <Version new data-test="@firmware/offer-version/new">
+                                {targetFirmwareType}
                                 {newVersion}
-                                {bitcoinOnlyVersion}
                             </Version>
                         </Tooltip>
                     ) : (
                         <Version new>
+                            {!customFirmware && targetFirmwareType}
                             {newVersion}
-                            {!customFirmware && bitcoinOnlyVersion}
                         </Version>
                     )}
                 </VersionWrapper>
