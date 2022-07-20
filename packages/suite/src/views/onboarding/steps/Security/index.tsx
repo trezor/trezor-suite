@@ -14,10 +14,7 @@ const SecurityStep = () => {
     return (
         <>
             {showSkipConfirmation && (
-                <SkipStepConfirmation
-                    onCancel={() => setShowSkipConfirmation(false)}
-                    variant="backup"
-                />
+                <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
             <OnboardingStepBox
                 image="FOLDER"

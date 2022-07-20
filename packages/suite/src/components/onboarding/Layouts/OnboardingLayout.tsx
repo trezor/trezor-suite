@@ -99,36 +99,33 @@ const Content = styled.div`
     padding-bottom: 48px;
 `;
 
+const progressBarSteps = [
+    {
+        key: 'fw',
+        label: <Translation id="TR_ONBOARDING_STEP_FIRMWARE" />,
+    },
+    {
+        key: 'wallet',
+        label: <Translation id="TR_ONBOARDING_STEP_WALLET" />,
+    },
+    {
+        key: 'pin',
+        label: <Translation id="TR_ONBOARDING_STEP_PIN" />,
+    },
+    {
+        key: 'coins',
+        label: <Translation id="TR_ONBOARDING_STEP_COINS" />,
+    },
+    {
+        key: 'final',
+    },
+];
+
 export const OnboardingLayout: React.FC = ({ children }) => {
     const { banner } = useMessageSystem();
     const { activeStepId } = useOnboarding();
 
     const activeStep = useMemo(() => steps.find(step => step.id === activeStepId)!, [activeStepId]);
-
-    const progressBarSteps = useMemo(
-        () => [
-            {
-                key: 'fw',
-                label: <Translation id="TR_ONBOARDING_STEP_FIRMWARE" />,
-            },
-            {
-                key: 'wallet',
-                label: <Translation id="TR_ONBOARDING_STEP_WALLET" />,
-            },
-            {
-                key: 'pin',
-                label: <Translation id="TR_ONBOARDING_STEP_PIN" />,
-            },
-            {
-                key: 'coins',
-                label: <Translation id="TR_ONBOARDING_STEP_COINS" />,
-            },
-            {
-                key: 'final',
-            },
-        ],
-        [],
-    );
 
     return (
         <Wrapper>

@@ -43,10 +43,7 @@ export const BackupStep = () => {
     return (
         <>
             {showSkipConfirmation && (
-                <SkipStepConfirmation
-                    onCancel={() => setShowSkipConfirmation(false)}
-                    variant="backup"
-                />
+                <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
             )}
             {backup.status === 'initial' && (
                 <OnboardingStepBox
