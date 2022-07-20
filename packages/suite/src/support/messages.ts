@@ -2129,6 +2129,10 @@ export default defineMessages({
         defaultMessage: 'Firmware version',
         id: 'TR_FIRMWARE_VERSION',
     },
+    TR_FIRMWARE_TYPE: {
+        defaultMessage: 'Firmware type',
+        id: 'TR_FIRMWARE_TYPE',
+    },
     TR_FIRMWARE_VALIDATION_UNRECOGNIZED_FORMAT: {
         defaultMessage: 'Unrecognized firmware image type',
         id: 'TR_FIRMWARE_VALIDATION_UNRECOGNIZED_FORMAT',
@@ -2756,10 +2760,6 @@ export default defineMessages({
         defaultMessage: "You can't change device settings in this state",
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
-    TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
-        defaultMessage: 'Connect device to change Crypto Settings',
-        id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
-    },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
         defaultMessage: 'Other settings unavailable in bootloader mode',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
@@ -3089,8 +3089,20 @@ export default defineMessages({
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
     TR_YOUR_CURRENT_FIRMWARE: {
-        defaultMessage: 'Your current firmware version is {version}',
+        defaultMessage: 'Your current version is {version}',
         id: 'TR_YOUR_CURRENT_FIRMWARE',
+    },
+    TR_YOUR_CURRENT_FIRMWARE_TYPE: {
+        defaultMessage: 'Your firmware type is {version}',
+        id: 'TR_YOUR_CURRENT_FIRMWARE_TYPE',
+    },
+    TR_SWITCH_TO_BITCOIN: {
+        defaultMessage: 'Switch to Bitcoin',
+        id: 'TR_SWITCH_TO_BITCOIN',
+    },
+    TR_SWITCH_TO_UNIVERSAL: {
+        defaultMessage: 'Switch to Universal',
+        id: 'TR_SWITCH_TO_UNIVERSAL',
     },
     TR_YOUR_CURRENT_FIRMWARE_UNKNOWN: {
         defaultMessage:
@@ -4435,6 +4447,10 @@ export default defineMessages({
         id: 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION',
         defaultMessage:
             'Your device is already updated to latest firmware. You may reinstall the firmware if needed.',
+    },
+    TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION: {
+        id: 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION',
+        defaultMessage: 'You are going to install a different type of firmware.',
     },
     TR_EXPERIMENTAL_FEATURES: {
         id: 'TR_EXPERIMENTAL_FEATURES',
