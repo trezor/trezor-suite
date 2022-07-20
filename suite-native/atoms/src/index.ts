@@ -24,3 +24,4 @@ export * from './Divider';
 export * from './TransactionItem';
 export * from './AssetItem';
 export * from './ProgressBar';
+export * from './Card';

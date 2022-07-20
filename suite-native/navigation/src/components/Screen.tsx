@@ -10,13 +10,11 @@ type ScreenProps = {
     header?: ReactNode;
 };
 
-const screenStyle = prepareNativeStyle<{ insetTop: number }>(
-    ({ spacings, colors }, { insetTop }) => ({
-        flex: 1,
-        backgroundColor: colors.white,
-        paddingTop: Math.max(insetTop, spacings.medium),
-    }),
-);
+const screenStyle = prepareNativeStyle<{ insetTop: number }>(({ spacings }, { insetTop }) => ({
+    flex: 1,
+    backgroundColor: '#E5E5E5',
+    paddingTop: Math.max(insetTop, spacings.medium),
+}));
 
 export const Screen = ({ children, header }: ScreenProps) => {
     const { applyStyle } = useNativeStyles();

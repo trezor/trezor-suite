@@ -1,15 +1,20 @@
 import React from 'react';
 
-import { AssetItem, Box, Button } from '@suite-native/atoms';
+import { Button, VStack } from '@suite-native/atoms';
 import { StackProps, Screen } from '@suite-native/navigation';
 
 import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
+import { Assets } from '../components/Assets';
+import { Transactions } from '../components/Transactions';
+import { PortfolioGraph } from '../components/PortfolioGraph';
+import { DashboardHeader } from '../components/DashboardHeader';
 
 export const HomeScreen = ({
     navigation,
 }: StackProps<HomeStackParamList, HomeStackRoutes.Home>) => (
     <Screen>
-        <Box padding="medium">
+        <VStack spacing={40} padding="medium">
+            <DashboardHeader />
             <Button
                 onPress={() =>
                     navigation.navigate(HomeStackRoutes.HomeDemo, {
@@ -19,17 +24,9 @@ export const HomeScreen = ({
             >
                 See Component Demo
             </Button>
-            <Box marginVertical="small" />
-            <Box style={{ backgroundColor: 'white' }}>
-                <AssetItem
-                    iconName="btc"
-                    cryptoCurrencyName="Bitcoin"
-                    cryptoCurrencySymbol="BTC"
-                    cryptoCurrencyValue={0.00005122}
-                    portfolioPercentage={60}
-                    fiatCurrencyValue={3123}
-                />
-            </Box>
-        </Box>
+            <PortfolioGraph />
+            <Assets />
+            <Transactions />
+        </VStack>
     </Screen>
 );

@@ -8,14 +8,15 @@ type ProgressBarProps = {
     value: number; // Percentage value
 };
 
+const PROGRESS_BAR_WIDTH = 82;
 const progressBarStyle = prepareNativeStyle(utils => ({
     height: 3,
-    width: 82,
+    width: PROGRESS_BAR_WIDTH,
     backgroundColor: utils.colors.gray200,
 }));
 
 const progressFillStyle = prepareNativeStyle<{ width: number }>((utils, { width }) => ({
-    width,
+    width: (width / 100) * PROGRESS_BAR_WIDTH,
     height: 3,
     backgroundColor: utils.colors.green,
 }));
