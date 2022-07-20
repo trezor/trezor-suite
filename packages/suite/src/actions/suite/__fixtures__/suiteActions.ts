@@ -227,6 +227,7 @@ const initialRun = [
                 discreetModeCompleted: false,
                 bech32BannerClosed: false,
                 taprootBannerClosed: false,
+                firmwareTypeBannerClosed: false,
                 dashboardGraphHidden: false,
                 securityStepsHidden: false,
                 dashboardAssetsGridMode: false,
