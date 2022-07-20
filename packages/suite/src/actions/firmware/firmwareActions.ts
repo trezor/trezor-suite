@@ -2,13 +2,13 @@ import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import { getBootloaderVersion, getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { getBootloaderVersion, getFwVersion } from '@suite-utils/device';
 import { isDesktop } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
 import { addToast } from '@suite-actions/notificationActions';
 
-import type { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
-import type { Await } from '@trezor/type-utils';
+import { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
+import type { Await } from '@suite/types/utils';
 
 export type FirmwareAction =
     | {
@@ -47,7 +47,7 @@ export const setTargetRelease = (payload: AcquiredDevice['firmwareRelease']): Fi
  */
 const firmwareInstall =
     (fwBinary?: ArrayBuffer) => async (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
+        const { device, settings } = getState().suite;
         const { targetRelease, prevDevice } = getState().firmware;
 
         if (fwBinary) {
@@ -99,9 +99,6 @@ const firmwareInstall =
 
             if (!toRelease) return;
 
-            // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device)
-            const isBtcOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);
-
             const intermediary = model === 1 && !toRelease.isLatest;
             if (intermediary) {
                 console.warn(
@@ -113,14 +110,13 @@ const firmwareInstall =
 
             analyticsPayload = {
                 toFwVersion: toRelease.release.version.join('.'),
-                toBtcOnly: isBtcOnlyFirmware,
+                toBtcOnly: settings.btcOnlyFirmware,
             };
 
             // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
             const baseUrl = isDesktop()
                 ? getState().desktop?.paths.binDir
                 : resolveStaticPath('connect/data');
-
             updateResponse = await TrezorConnect.firmwareUpdate({
                 keepSession: false,
                 skipFinalReload: true,
@@ -128,7 +124,7 @@ const firmwareInstall =
                     path: device.path,
                 },
                 baseUrl,
-                btcOnly: isBtcOnlyFirmware,
+                btcOnly: settings.btcOnlyFirmware,
                 version: toRelease.release.version,
                 // if we detect latest firmware may not be used right away, we should use intermediary instead
                 intermediary,

@@ -18,6 +18,7 @@ export const SET_FLAG = '@suite/set-flag';
 export const ONLINE_STATUS = '@suite/online-status';
 export const TOR_STATUS = '@suite/tor-status';
 export const ONION_LINKS = '@suite/onion-links';
+export const BTC_ONLY_FIRMWARE = '@suite/btc-only-firmware';
 export const APP_CHANGED = '@suite/app-changed';
 export const ADD_BUTTON_REQUEST = '@suite/add-button-request';
 export const SET_PROCESS_MODE = '@suite/set-process-mode';
