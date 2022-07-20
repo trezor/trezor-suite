@@ -12,6 +12,7 @@ import { BackupRecoverySeed } from './BackupRecoverySeed';
 import { BackupFailed } from './BackupFailed';
 import { CheckRecoverySeed } from './CheckRecoverySeed';
 import { FirmwareVersion } from './FirmwareVersion';
+import { FirmwareType } from './FirmwareType';
 import { PinProtection } from './PinProtection';
 import { ChangePin } from './ChangePin';
 import { Passphrase } from './Passphrase';
@@ -117,6 +118,7 @@ export const SettingsDevice = () => {
 
                 {!bootloaderMode && (
                     <>
+                        <FirmwareType isDeviceLocked={isDeviceLocked} />
                         <PinProtection isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
                         <Passphrase isDeviceLocked={isDeviceLocked} />

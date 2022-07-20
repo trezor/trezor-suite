@@ -8,6 +8,7 @@ import {
     FirmwareInitial,
     FirmwareInstallation,
 } from '@firmware-components';
+import { isBitcoinOnly } from '@suite-utils/device';
 import { DeviceAcquire } from '@suite-views/device-acquire';
 import { DeviceUnknown } from '@suite-views/device-unknown';
 import { DeviceUnreadable } from '@suite-views/device-unreadable';
@@ -52,9 +53,10 @@ export const Firmware = () => {
     const { device } = useSelector(state => ({
         device: state.suite.device,
     }));
-    const { closeModalApp, acquireDevice } = useActions({
+    const { closeModalApp, acquireDevice, switchFirmwareType } = useActions({
         closeModalApp: routerActions.closeModalApp,
         acquireDevice: suiteActions.acquireDevice,
+        switchFirmwareType: suiteActions.switchFirmwareType,
     });
 
     const onClose = () => {
@@ -63,6 +65,10 @@ export const Firmware = () => {
         }
         closeModalApp();
         resetReducer();
+        // sync firmware type in case the modal is closed or installation fails
+        if (device) {
+            switchFirmwareType(isBitcoinOnly(device));
+        }
     };
 
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
