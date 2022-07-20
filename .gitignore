@@ -108,6 +108,8 @@ buck-out/
 **/fastlane/screenshots
 
 *.cer
+*.certSigningRequest
+*.p12
 *.mobileprovision
 
 # scan temporary files

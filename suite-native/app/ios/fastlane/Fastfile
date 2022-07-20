@@ -9,8 +9,18 @@ platform :ios do
   before_all do |lane|
     puts "Running lane #{lane}..."
 
-    # setup a temporary keychain
-    setup_ci
+    # creates temporary keychain
+    keychain_name = ENV['TMP_KEYCHAIN_NAME']
+    keychain_password = ENV['TMP_KEYCHAIN_PASSWORD']
+    ensure_temp_keychain(keychain_name, keychain_password)
+
+    # import certificate to temporary keychain
+    import_certificate(
+      keychain_name: ENV['TMP_KEYCHAIN_NAME'],
+      keychain_password: ENV['TMP_KEYCHAIN_PASSWORD'],
+      certificate_path: "TrezorDistributionCertificate.p12",
+      certificate_password: ENV["APPSTORE_CERTIFICATE_PASSWORD"] || "default"
+    )
 
     if lane == :develop
       PROVISIONING_NAME = "AppStore io.trezor.suite.develop"
@@ -20,6 +30,26 @@ platform :ios do
       PROVISIONING_NAME = "AppStore io.trezor.suite"
     end
   end
+
+    # temporary keychain database
+    def delete_temp_keychain(name)
+      delete_keychain(
+        name: name
+      ) if File.exist? File.expand_path("~/Library/Keychains/#{name}-db")
+    end
+    def create_temp_keychain(name, password)
+      create_keychain(
+        name: name,
+        password: password,
+        unlock: true,
+        add_to_search_list: true,
+        timeout: 0
+        )
+    end
+    def ensure_temp_keychain(name, password)
+      delete_temp_keychain(name)
+      create_temp_keychain(name, password)
+    end
 
   desc "Load Appstore Connect API Key information to use in subsequent lanes"
   private_lane :load_appstore_connect_api_key do |options|
@@ -38,11 +68,10 @@ platform :ios do
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
-    # path and password are set by setup_ci (https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/actions/setup_ci.rb)
     cert(
       api_key: api_key,
-      keychain_path: "~/Library/Keychains/#{ENV["MATCH_KEYCHAIN_NAME"]}",
-      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+      keychain_path: "~/Library/Keychains/#{ENV['TMP_KEYCHAIN_NAME']}-db",
+      keychain_password: ENV["TMP_KEYCHAIN_PASSWORD"]
     )
 
     sigh(
@@ -88,7 +117,10 @@ platform :ios do
      build_configurations: [build_scheme], # only toggle code signing settings for Release configurations
      path: IOS_PROJECT
    )
-
+    unlock_keychain(
+      path: "#{ENV['TMP_KEYCHAIN_NAME']}-db",
+      password: ENV["TMP_KEYCHAIN_PASSWORD"]
+    )
     build_app(
       scheme: build_scheme,
       output_name: "#{build_scheme}-TrezorSuite",
@@ -103,7 +135,7 @@ platform :ios do
 
     upload_to_testflight(
         api_key: api_key,
-        changelog: CHANGELOG
+        skip_waiting_for_build_processing: true
     )
   end
 
@@ -112,7 +144,7 @@ platform :ios do
     load_appstore_connect_api_key
     prepare_signing
     fetch_and_bump_versions
-    build_testing(options[:scheme])
+    build_testing(scheme: options[:scheme])
     upload_testing
   end
 
