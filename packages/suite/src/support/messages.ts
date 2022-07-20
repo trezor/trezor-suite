@@ -3685,6 +3685,14 @@ export default defineMessages({
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',
     },
+    TOAST_COINJOIN_ROUND_COMPLETE: {
+        id: 'TOAST_COINJOIN_ROUND_COMPLETE',
+        defaultMessage: 'Coinjoin round completed',
+    },
+    TOAST_COINJOIN_COMPLETE: {
+        id: 'TOAST_COINJOIN_COMPLETE',
+        defaultMessage: 'Coinjoin process completed',
+    },
     REFRESH: {
         id: 'REFRESH',
         defaultMessage: 'Refresh',

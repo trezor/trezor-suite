@@ -112,6 +112,9 @@ export type ToastPayload = (
           type: 'tor-toggle-error';
           error: TranslationKey;
       }
+    | {
+          type: 'coinjoin-round-complete' | 'coinjoin-complete';
+      }
 ) &
     NotificationOptions;
 
