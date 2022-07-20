@@ -6,7 +6,7 @@ import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import { getFwVersion, isBitcoinOnly, getFwUpdateVersion } from '@suite-utils/device';
+import { getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
 import { Button, Tooltip } from '@trezor/components';
 import { AcquiredDevice } from '@suite-types';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -69,6 +69,16 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const currentFwVersion = getFwVersion(device);
     const availableFwVersion = getFwUpdateVersion(device);
     const { revision } = device.features;
+    const githubUrl = GITHUB_FW_COMMIT_URL + revision;
+    const githubButtonIcon = revision ? 'EXTERNAL_LINK' : undefined;
+
+    const handleUpdate = () => goto('firmware-index', { params: { cancelable: true } });
+
+    const GithubButton = () => (
+        <Button variant="tertiary" icon={githubButtonIcon} alignIcon="right" disabled={!revision}>
+            {currentFwVersion}
+        </Button>
+    );
 
     return (
         <SectionItem
@@ -86,20 +96,14 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                                 values={{
                                     version: (
                                         <VersionTooltip content={revision} disabled={!revision}>
-                                            <TrezorLink
-                                                href={GITHUB_FW_COMMIT_URL + revision}
-                                                variant="nostyle"
-                                            >
-                                                <Button
-                                                    variant="tertiary"
-                                                    icon={revision ? 'EXTERNAL_LINK' : undefined}
-                                                    alignIcon="right"
-                                                    disabled={!revision}
-                                                >
-                                                    {currentFwVersion}
-                                                    {isBitcoinOnly(device) && ' (bitcoin-only)'}
-                                                </Button>
-                                            </TrezorLink>
+                                            {revision ? (
+                                                <TrezorLink href={githubUrl} variant="nostyle">
+                                                    <GithubButton />
+                                                </TrezorLink>
+                                            ) : (
+                                                // remove the link if revision is unknown (in bootloader mode)
+                                                <GithubButton />
+                                            )}
                                         </VersionTooltip>
                                     ),
                                 }}
@@ -113,7 +117,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
             <ActionColumn>
                 <ActionButton
                     variant="secondary"
-                    onClick={() => goto('firmware-index', { params: { cancelable: true } })}
+                    onClick={handleUpdate}
                     data-test="@settings/device/update-button"
                     isDisabled={isDeviceLocked}
                 >
