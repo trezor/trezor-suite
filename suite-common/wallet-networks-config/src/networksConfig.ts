@@ -1,5 +1,4 @@
 import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-
 import type { Keys, Without } from '@trezor/type-utils';
 
 export const networks = {
@@ -378,8 +377,8 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     isHidden?: boolean;
     chainId?: number;
     features?: string[];
-    label?: ExtendedMessageDescriptor<string>['id'];
-    tooltip?: ExtendedMessageDescriptor<string>['id'];
+    label?: ExtendedMessageDescriptor['id'];
+    tooltip?: ExtendedMessageDescriptor['id'];
     support?: {
         [key: number]: string;
     };
