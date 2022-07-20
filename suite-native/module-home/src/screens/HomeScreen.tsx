@@ -15,15 +15,6 @@ export const HomeScreen = ({
     <Screen>
         <VStack spacing={40} padding="medium">
             <DashboardHeader />
-            <Button
-                onPress={() =>
-                    navigation.navigate(HomeStackRoutes.HomeDemo, {
-                        message: 'Component Demo',
-                    })
-                }
-            >
-                See Component Demo
-            </Button>
             <PortfolioGraph />
             <Assets />
             <Transactions />

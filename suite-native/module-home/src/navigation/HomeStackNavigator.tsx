@@ -4,7 +4,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { stackNavigationOptionsConfig } from '@suite-native/navigation';
 
-import { HomeDemoScreen } from '../screens/HomeDemoScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { HomeStackParamList, HomeStackRoutes } from './routes';
 
@@ -19,11 +18,6 @@ export const HomeStackNavigator = () => (
             options={{ title: HomeStackRoutes.Home }}
             name={HomeStackRoutes.Home}
             component={HomeScreen}
-        />
-        <HomeStack.Screen
-            options={{ title: HomeStackRoutes.HomeDemo }}
-            name={HomeStackRoutes.HomeDemo}
-            component={HomeDemoScreen}
         />
     </HomeStack.Navigator>
 );

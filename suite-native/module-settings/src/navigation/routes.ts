@@ -8,6 +8,7 @@ export enum SettingsStackRoutes {
     SettingsCustomization = 'SettingsCustomization',
     SettingsSecurity = 'SettingsSecurity',
     SettingsDangerArea = 'SettingsDangerArea',
+    Demo = 'Demo',
 }
 
 export type SettingsStackParamList = {
@@ -18,6 +19,7 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsCustomization]: undefined;
     [SettingsStackRoutes.SettingsSecurity]: undefined;
     [SettingsStackRoutes.SettingsDangerArea]: undefined;
+    [SettingsStackRoutes.Demo]: undefined;
 };
 
 export type SettingsScreenProp = StackNavigationProp<

@@ -28,7 +28,7 @@ import { Screen, StackProps } from '@suite-native/navigation';
 import { TypographyStyle } from '@trezor/theme';
 import { CryptoIcon, Icon } from '@trezor/icons';
 
-import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
+import { SettingsStackParamList, SettingsStackRoutes } from '../navigation/routes';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,
@@ -52,9 +52,9 @@ const selectItems: SelectItemType[] = [
     { label: 'Armenian Republic of Kongo', value: 'arm', iconName: 'cz' },
 ];
 
-export const HomeDemoScreen = ({
+export const DemoScreen = ({
     route,
-}: StackProps<HomeStackParamList, HomeStackRoutes.HomeDemo>) => {
+}: StackProps<SettingsStackParamList, SettingsStackRoutes.Demo>) => {
     const { applyStyle } = useNativeStyles();
     const [input2Text, setInput2Text] = useState<string>('');
     const [input3Text, setInput3Text] = useState<string>('sf51s4afsfwfs8f4');
@@ -78,7 +78,6 @@ export const HomeDemoScreen = ({
     return (
         <Screen>
             <Box padding="small">
-                <Text>{route.params.message}</Text>
                 <Box>
                     <SearchInput
                         value={inputText}
