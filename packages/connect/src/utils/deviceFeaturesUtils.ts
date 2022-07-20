@@ -58,7 +58,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     // 2. check if current firmware have enabled capabilities
     const unavailable = supported.filter(info => {
         if (info.type === 'bitcoin') {
-            if (info.name === 'Bitcoin' || info.name === 'Testnet') {
+            if (info.name === 'Bitcoin' || info.name === 'Testnet' || info.name === 'Regtest') {
                 return !capabilities.includes('Capability_Bitcoin');
             }
             return !capabilities.includes('Capability_Bitcoin_like');
