@@ -174,7 +174,6 @@ const config: webpack.Configuration = {
             Buffer: ['buffer', 'Buffer'],
             process: 'process',
         }),
-        // @ts-ignore - @types/webpack-bundle-analyzer depends on @types/webpack@4
         ...(isAnalyzing
             ? [
                   new BundleAnalyzerPlugin({

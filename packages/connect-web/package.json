@@ -30,8 +30,8 @@
         "type-check": "tsc --build",
         "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json",
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/dev.webpack.config.ts",
-        "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" wp --config ./webpack/inline.webpack.config.ts",
-        "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\"  wp --config ./webpack/prod.webpack.config.ts",
+        "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
+        "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\"  webpack --config ./webpack/prod.webpack.config.ts",
         "build": "rimraf build && yarn build:inline && yarn build:webextension"
     },
     "dependencies": {
