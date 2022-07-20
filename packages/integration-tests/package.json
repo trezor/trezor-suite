@@ -14,7 +14,7 @@
     "dependencies": {
         "cypress": "9.5.4",
         "express": "^4.17.3",
-        "ts-loader": "^9.3.0",
+        "ts-loader": "^9.3.1",
         "webpack": "^5.73.0"
     },
     "devDependencies": {
