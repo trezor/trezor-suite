@@ -9,7 +9,7 @@ import {
     isFlagIconType,
 } from '@trezor/icons';
 
-import { BottomModal } from '../Modal/BottomModal';
+import { BottomModal } from '../Modal/BottomSheet';
 import { SelectItem, SelectValue } from './SelectItem';
 import { SelectTrigger } from './SelectTrigger';
 

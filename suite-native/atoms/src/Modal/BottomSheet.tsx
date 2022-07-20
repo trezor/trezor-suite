@@ -9,10 +9,10 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
 import { Text } from '../Text';
-import { BottomModalContainer } from './BottomModalContainer';
-import { useBottomModalAnimation } from './useBottomModalAnimation';
+import { BottomSheetContainer } from './BottomSheetContainer';
+import { useBottomSheetAnimation } from './useBottomSheetAnimation';
 
-type BottomModalProps = {
+type BottomSheetProps = {
     isVisible: boolean;
     onVisibilityChange: (isVisible: boolean) => void;
     children: ReactNode;
@@ -24,7 +24,7 @@ type WrapperStyleProps = {
     insetBottom: number;
 };
 
-const modalWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
+const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.gray100,
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
@@ -42,7 +42,7 @@ const closeButtonStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-const modalHeaderStyle = prepareNativeStyle(utils => ({
+const sheetHeaderStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -50,53 +50,53 @@ const modalHeaderStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.medium,
 }));
 
-const modalWithOverlayStyle = prepareNativeStyle(_ => ({
+const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
     flex: 1,
     justifyContent: 'flex-end',
 }));
 
-export const BottomModal = ({
+export const BottomSheet = ({
     isVisible,
     onVisibilityChange,
     title,
     onBackArrowClick,
     children,
-}: BottomModalProps) => {
+}: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
     const {
-        animatedModalWithOverlayStyle,
-        animatedModalWrapperStyle,
-        closeModalAnimated,
-        resetModalAnimated,
+        animatedSheetWithOverlayStyle,
+        animatedSheetWrapperStyle,
+        closeSheetAnimated,
+        resetSheetAnimated,
         panGestureEvent,
-    } = useBottomModalAnimation({ onVisibilityChange, isVisible });
+    } = useBottomSheetAnimation({ onVisibilityChange, isVisible });
 
     useEffect(() => {
         if (isVisible) {
-            resetModalAnimated();
+            resetSheetAnimated();
         }
-    }, [isVisible, resetModalAnimated]);
+    }, [isVisible, resetSheetAnimated]);
 
-    const handleCloseModal = () => {
-        closeModalAnimated();
+    const handleCloseSheet = () => {
+        closeSheetAnimated();
     };
 
     return (
-        <BottomModalContainer isVisible={isVisible} onClose={handleCloseModal}>
+        <BottomSheetContainer isVisible={isVisible} onClose={handleCloseSheet}>
             <Animated.View
-                style={[animatedModalWithOverlayStyle, applyStyle(modalWithOverlayStyle)]}
+                style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
                 <PanGestureHandler onGestureEvent={panGestureEvent}>
                     <Animated.View
                         style={[
-                            animatedModalWrapperStyle,
-                            applyStyle(modalWrapperStyle, {
+                            animatedSheetWrapperStyle,
+                            applyStyle(sheetWrapperStyle, {
                                 insetBottom: insets.bottom,
                             }),
                         ]}
                     >
-                        <Box style={applyStyle(modalHeaderStyle)}>
+                        <Box style={applyStyle(sheetHeaderStyle)}>
                             {onBackArrowClick && (
                                 <TouchableOpacity onPress={onBackArrowClick}>
                                     <Icon name="chevronLeft" />
@@ -104,7 +104,7 @@ export const BottomModal = ({
                             )}
                             <Text variant="titleSmall">{title}</Text>
                             <TouchableOpacity
-                                onPress={handleCloseModal}
+                                onPress={handleCloseSheet}
                                 style={applyStyle(closeButtonStyle)}
                             >
                                 <Icon name="close" />
@@ -114,6 +114,6 @@ export const BottomModal = ({
                     </Animated.View>
                 </PanGestureHandler>
             </Animated.View>
-        </BottomModalContainer>
+        </BottomSheetContainer>
     );
 };

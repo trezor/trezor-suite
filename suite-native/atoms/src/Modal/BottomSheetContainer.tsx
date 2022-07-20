@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { Modal as RNModal } from 'react-native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
-type ModalProps = {
+type SheetProps = {
     children: ReactNode;
     isVisible: boolean;
     onClose: () => void;
@@ -13,12 +13,12 @@ type ModalProps = {
  * To fix that, components need to be wrapped with gestureHandlerRootHOC (it's no-op on iOS and web).
  * See more details: https://docs.swmansion.com/react-native-gesture-handler/docs/installation/#usage-with-modals-on-android
  */
-const BottomModalGestureHandler = gestureHandlerRootHOC(({ children }: { children: ReactNode }) => (
+const BottomSheetGestureHandler = gestureHandlerRootHOC(({ children }: { children: ReactNode }) => (
     <>{children}</>
 ));
 
-export const BottomModalContainer = ({ children, isVisible, onClose }: ModalProps) => (
+export const BottomSheetContainer = ({ children, isVisible, onClose }: SheetProps) => (
     <RNModal transparent visible={isVisible} onRequestClose={onClose}>
-        <BottomModalGestureHandler>{children}</BottomModalGestureHandler>
+        <BottomSheetGestureHandler>{children}</BottomSheetGestureHandler>
     </RNModal>
 );

@@ -13,7 +13,7 @@ import {
     Switch,
     ListItem,
     SelectableListItem,
-    BottomModal,
+    BottomSheet,
     TipToast,
     IconButton,
     Select,
@@ -24,11 +24,9 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Screen, StackProps } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { TypographyStyle } from '@trezor/theme';
 import { CryptoIcon, Icon } from '@trezor/icons';
-
-import { SettingsStackParamList, SettingsStackRoutes } from '../navigation/routes';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray100,
@@ -52,9 +50,7 @@ const selectItems: SelectItemType[] = [
     { label: 'Armenian Republic of Kongo', value: 'arm', iconName: 'cz' },
 ];
 
-export const DemoScreen = ({
-    route,
-}: StackProps<SettingsStackParamList, SettingsStackRoutes.Demo>) => {
+export const DemoScreen = () => {
     const { applyStyle } = useNativeStyles();
     const [input2Text, setInput2Text] = useState<string>('');
     const [input3Text, setInput3Text] = useState<string>('sf51s4afsfwfs8f4');
@@ -76,7 +72,7 @@ export const DemoScreen = ({
     };
 
     return (
-        <Screen>
+        <Screen header={<ScreenHeader />}>
             <Box padding="small">
                 <Box>
                     <SearchInput
@@ -163,7 +159,7 @@ export const DemoScreen = ({
                         isDisabled
                     />
                     <Button onPress={() => setIsModalVisible(true)}>Show Typograhy</Button>
-                    <BottomModal
+                    <BottomSheet
                         isVisible={isModalVisible}
                         onVisibilityChange={setIsModalVisible}
                         title="Typography Demo"
@@ -174,7 +170,7 @@ export const DemoScreen = ({
                                 <Text variant={item}>{item}</Text>
                             </Box>
                         ))}
-                    </BottomModal>
+                    </BottomSheet>
                     <Box marginVertical="medium">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" color="black" />
