@@ -28,8 +28,7 @@ export const SettingsScreen = ({
                 <DeviceSettings />
                 <CoinsSettings />
             </VStack>
-            {/* Only show this button in development mode */}
-            {(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') && (
+            {process.env.NODE_ENV === 'development' && (
                 <Button onPress={() => navigation.navigate(SettingsStackRoutes.Demo)}>
                     See Component Demo
                 </Button>

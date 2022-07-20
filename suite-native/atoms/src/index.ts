@@ -11,7 +11,7 @@ export * from './Chip';
 export * from './Switch';
 export * from './ListItem/ListItem';
 export * from './ListItem/SelectableListItem';
-export * from './Modal/BottomSheet';
+export * from './Sheet/BottomSheet';
 export * from './TipToast';
 export * from './Button/Button';
 export * from './Button/IconButton';
