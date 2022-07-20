@@ -3,7 +3,7 @@ import * as jws from 'jws';
 import { MESSAGE_SYSTEM } from '@suite-actions/constants';
 
 import type { Dispatch, GetState } from '@suite-types';
-import type { Category, MessageSystem } from '@suite-types/messageSystem';
+import type { Category, MessageSystem } from '@suite-common/suite-types';
 
 export type MessageSystemAction =
     | { type: typeof MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS }

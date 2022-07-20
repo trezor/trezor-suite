@@ -8,7 +8,7 @@ import { useActions, useSelector } from '@suite-hooks';
 import { getIsTorEnabled, getTorUrlIfAvailable } from '@suite-utils/tor';
 import { Banner } from './Banner';
 
-import type { Message } from '@suite-types/messageSystem';
+import type { Message } from '@suite-common/suite-types';
 
 const BannerOnTop = styled(Banner)`
     position: relative;
