@@ -78,10 +78,17 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Decode files
+        env:
+          APPSTORE_CERTIFICATE_CONTENT: ${{ secrets.APPSTORE_CERTIFICATE_CONTENT }}
+        run: |
+          echo $APPSTORE_CERTIFICATE_CONTENT | base64 -di > TrezorDistributionCertificate.p12
+
       - name: Install dependecies
         run: |
           yarn --cwd ../../ install
           yarn --cwd ../../ build:libs
+          yarn pods
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
@@ -96,6 +103,10 @@ jobs:
           APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
           APPSTORE_KEY_ISSUER_ID: ${{ secrets.APPSTORE_KEY_ISSUER_ID }}
           APPSTORE_KEY_FILE_CONTENT: ${{ secrets.APPSTORE_KEY_FILE_CONTENT }}
+          APPSTORE_CERTIFICATE_PASSWORD: ${{ secrets.APPSTORE_CERTIFICATE_PASSWORD }}
+          TMP_KEYCHAIN_NAME: ${{ secrets.TMP_KEYCHAIN_NAME }}
+          TMP_KEYCHAIN_PASSWORD: ${{ secrets.TMP_KEYCHAIN_PASSWORD }}
+
         # builds and publishes the app
         run: |
           bundle install
