@@ -58,7 +58,7 @@
     },
     "devDependencies": {
         "@trezor/connect": "beta",
-        "babel-loader": "^8.2.2",
+        "babel-loader": "^8.2.5",
         "concurrently": "^7.2.1",
         "copy-webpack-plugin": "^10.2.4",
         "electron": "18.3.5",
