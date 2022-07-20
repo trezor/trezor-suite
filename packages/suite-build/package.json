@@ -45,10 +45,10 @@
         "worker-loader": "^3.0.8"
     },
     "devDependencies": {
-        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0",
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
         "@types/copy-webpack-plugin": "^10.1.0",
         "@types/webpack-bundle-analyzer": "^4.4.1",
         "@types/webpack-plugin-serve": "^1.4.2",
-        "react-refresh": "^0.9.0"
+        "react-refresh": "^0.14.0"
     }
 }
