@@ -14,6 +14,7 @@ import MessageSystemBanner from './MessageSystemBanner';
 import SafetyChecksBanner from './SafetyChecks';
 import TranslationMode from './TranslationMode';
 import FirmwareHashMismatch from './FirmwareHashMismatch';
+import { Coinjoin } from './Coinjoin';
 
 const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
@@ -93,6 +94,7 @@ const Banners = () => {
             <OnlineStatus isOnline={online} />
             {!useMessageSystemBanner && banner}
             {/* TODO: add Pin not set */}
+            <Coinjoin />
         </Wrapper>
     );
 };

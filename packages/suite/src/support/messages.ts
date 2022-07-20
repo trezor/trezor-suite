@@ -2914,6 +2914,10 @@ export default defineMessages({
         defaultMessage: 'Improved privacy for all Bitcoin transactions',
         id: 'TR_TAPROOT_BANNER_POINT_2',
     },
+    TR_COINJOIN_CRITICAL_PHASE: {
+        defaultMessage: 'Coinjoin critical phase. Do not disconnect now!',
+        id: 'TR_COINJOIN_CRITICAL_PHASE',
+    },
     TR_GOT_IT: {
         defaultMessage: 'Got it!',
         id: 'TR_GOT_IT',
