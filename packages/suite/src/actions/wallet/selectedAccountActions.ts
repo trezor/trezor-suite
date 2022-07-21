@@ -4,7 +4,7 @@ import { NETWORKS } from '@wallet-config';
 
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
-import * as accountUtils from '@suite-common/wallet-utils';
+import { getSelectedAccount } from '@wallet-utils/accountUtils';
 
 import { Action, Dispatch, GetState } from '@suite-types';
 import { State, AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';
@@ -143,7 +143,7 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState) => {
     }
 
     // get selected account
-    const account = accountUtils.getSelectedAccount(device.state, state.wallet.accounts, params);
+    const account = getSelectedAccount(device.state, state.wallet.accounts, params);
 
     // account does exist
     if (account && account.visible) {
