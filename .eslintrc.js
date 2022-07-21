@@ -175,6 +175,12 @@ module.exports = {
             'error',
             { vars: 'all', args: 'none', ignoreRestSiblings: true, varsIgnorePattern: '^_' },
         ],
+        '@typescript-eslint/no-restricted-imports': [
+            'error',
+            {
+                paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
+            },
+        ],
     },
     overrides: [
         {
@@ -229,6 +235,7 @@ module.exports = {
                 'no-console': 'off',
                 'react/jsx-no-undef': 'off',
                 'no-catch-shadow': 'off',
+                '@typescript-eslint/no-restricted-imports': 'off',
             },
         },
     ],
