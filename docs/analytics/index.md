@@ -26,11 +26,11 @@ Data are logged in the form of HTTPS requests to an AWS S3 bucket. Those data lo
 
 ## Error tracking using Sentry
 
-To catch errors quickly and deliver you the best experience with your Trezor, we use [Sentry.io](https://sentry.io/), a tool for error tracking and performance monitoring. Data is only available to Sentry when usage data tracking is enabled. See our page about [Sentry](sentry.md) for more information on how it works.
+To catch errors quickly and deliver you the best experience with your Trezor, we use [Sentry.io](https://sentry.io/), a tool for error tracking and performance monitoring. Data is only available to Sentry when usage data tracking is enabled. See our page about [Sentry](./sentry.md) for more information on how it works.
 
 ## Retention period
 
-By principle, the logs collected are destroyed without delay once the purpose of use is met. However, the minimum retention period equals to 90 days when the data is processed to improve Trezor Suite. 90 days are related to the data concerning any errors occurring in Trezor Suite. Performance related data may be stored for longer periods of time. When the retention period ends, all event data and most metadata is eradicated from the storage and from the servers without additional archiving in order to prevent the threat of intrusion.
+By principle, the logs collected are destroyed without delay once the purpose of use is met. However, the minimum retention period equals to 90 days when the data is processed to improve Trezor Suite. The 90 days are related to the data concerning any errors occurring in Trezor Suite. Performance related data may be stored for longer periods of time. When the retention period ends, all event data and most metadata is eradicated from the storage and from the servers without additional archiving in order to prevent the threat of intrusion.
 
 ## Security of data
 
