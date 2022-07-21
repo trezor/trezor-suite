@@ -68,7 +68,7 @@ jobs:
         working-directory: suite-native/app
     runs-on: macos-latest
     environment: develop
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
