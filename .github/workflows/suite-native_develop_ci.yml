@@ -34,7 +34,7 @@ jobs:
           ENCODED_STRING_KEYSTORE: ${{ secrets.DEVELOP_KEYSTORE_FILE }}
           ENCODED_STRING_JSON_FILE: ${{secrets.GOOGLE_PLAY_JSON_KEY}}
         run: |
-          echo $ENCODED_STRING_KEYSTORE | base64 -di > android/app/release.keystore
+          echo $ENCODED_STRING_KEYSTORE | base64 -d > android/app/release.keystore
           echo $ENCODED_STRING_JSON_FILE > android/firebase_key.json
 
       - name: Install dependecies
@@ -82,7 +82,7 @@ jobs:
         env:
           APPSTORE_CERTIFICATE_CONTENT: ${{ secrets.APPSTORE_CERTIFICATE_CONTENT }}
         run: |
-          echo $APPSTORE_CERTIFICATE_CONTENT | base64 -di > TrezorDistributionCertificate.p12
+          echo $APPSTORE_CERTIFICATE_CONTENT | base64 -d > TrezorDistributionCertificate.p12
 
       - name: Install dependecies
         run: |
