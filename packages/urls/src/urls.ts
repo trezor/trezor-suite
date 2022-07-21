@@ -12,7 +12,7 @@ export const TREZOR_TROUBLESHOOTING_URL = 'https://trezor.io/support/#technical-
 export const TREZOR_WALLET_ACCESS_URL =
     'https://trezor.io/support/technical/i-cannot-access-the-wallet/';
 
-export const DATA_URL = 'https://data.trezor.io';
+export const DATA_URL = 'https://data.trezor.io/';
 export const DATA_TOS_URL = 'https://data.trezor.io/legal/wallet-terms.pdf';
 export const DATA_TOS_INVITY_URL = 'https://data.trezor.io/legal/invity-terms-of-use.pdf';
 
