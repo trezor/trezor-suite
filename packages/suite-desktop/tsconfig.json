@@ -9,12 +9,11 @@
         {
             "path": "../../suite-common/suite-utils"
         },
-        { "path": "../connect" },
+        { "path": "../suite" },
         { "path": "../suite-analytics" },
         { "path": "../suite-desktop-api" },
         { "path": "../urls" },
         { "path": "../utils" },
-        { "path": "../request-manager" },
-        { "path": "../connect-common" }
+        { "path": "../request-manager" }
     ]
 }
