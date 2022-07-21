@@ -1,13 +1,9 @@
 # Summary
 
--   [Introduction](index.md)
-    -   [Analytics](analytics/index.md)
+-   [Introduction](./index.md)
+    -   [Analytics](./analytics/index.md)
     -   [AWS](./analytics/aws.md)
     -   [Sentry](./analytics/sentry.md)
-    <!-- todo: looks like links outside docs folder don't work -->
-    -   [Generic analytics package](../packages/analytics/README.md)
-    -   [Suite analytics package](../packages/suite-analytics/README.md)
-    -   [Events changelog](../packages/suite-analytics/CHANGELOG.md)
 -   [Releases](./releases/index.md)
     -   [adding new firmwares](./releases/adding-new-firmwares.md)
     -   [desktop updates](./releases/desktop_updates.md)
