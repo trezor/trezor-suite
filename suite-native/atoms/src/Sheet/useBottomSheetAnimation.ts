@@ -20,7 +20,7 @@ type GestureHandlerContext = {
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
-export const useBottomModalAnimation = ({
+export const useBottomSheetAnimation = ({
     onVisibilityChange,
     isVisible,
 }: {
@@ -40,7 +40,7 @@ export const useBottomModalAnimation = ({
         });
     }, [transparency, animatedTransparency]);
 
-    const animatedModalWithOverlayStyle = useAnimatedStyle(
+    const animatedSheetWithOverlayStyle = useAnimatedStyle(
         () => ({
             backgroundColor: interpolateColor(
                 animatedTransparency.value,
@@ -51,11 +51,11 @@ export const useBottomModalAnimation = ({
         [transparency, animatedTransparency],
     );
 
-    const animatedModalWrapperStyle = useAnimatedStyle(() => ({
+    const animatedSheetWrapperStyle = useAnimatedStyle(() => ({
         top: interpolate(translatePanY.value, [-1, 0, 1], [0, 0, 1]),
     }));
 
-    const closeModalAnimated = useCallback(() => {
+    const closeSheetAnimated = useCallback(() => {
         'worklet';
 
         translatePanY.value = withTiming(SCREEN_HEIGHT, {
@@ -74,7 +74,7 @@ export const useBottomModalAnimation = ({
         );
     }, [translatePanY, animatedTransparency, onVisibilityChange]);
 
-    const resetModalAnimated = useCallback(() => {
+    const resetSheetAnimated = useCallback(() => {
         'worklet';
 
         translatePanY.value = withTiming(0, {
@@ -97,18 +97,18 @@ export const useBottomModalAnimation = ({
         onEnd: event => {
             const { translationY, velocityY } = event;
             if (translationY > 50 && velocityY > 2) {
-                closeModalAnimated();
+                closeSheetAnimated();
             } else {
-                resetModalAnimated();
+                resetSheetAnimated();
             }
         },
     });
 
     return {
-        animatedModalWithOverlayStyle,
-        animatedModalWrapperStyle,
-        closeModalAnimated,
-        resetModalAnimated,
+        animatedSheetWithOverlayStyle,
+        animatedSheetWrapperStyle,
+        closeSheetAnimated,
+        resetSheetAnimated,
         panGestureEvent,
     };
 };

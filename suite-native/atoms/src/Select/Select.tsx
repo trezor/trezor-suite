@@ -9,7 +9,7 @@ import {
     isFlagIconType,
 } from '@trezor/icons';
 
-import { BottomModal } from '../Modal/BottomModal';
+import { BottomSheet } from '../Sheet/BottomSheet';
 import { SelectItem, SelectValue } from './SelectItem';
 import { SelectTrigger } from './SelectTrigger';
 
@@ -48,7 +48,7 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
     return (
         <>
             {isOpen && (
-                <BottomModal
+                <BottomSheet
                     isVisible={isOpen}
                     onVisibilityChange={setIsOpen}
                     title={selectLabel}
@@ -65,7 +65,7 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
                             onSelect={() => handleSelectItem(value)}
                         />
                     ))}
-                </BottomModal>
+                </BottomSheet>
             )}
             <SelectTrigger
                 icon={getIcon(selectedItem?.iconName)}
