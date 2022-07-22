@@ -28,6 +28,9 @@
             "path": "../../suite-common/metadata-types"
         },
         {
+            "path": "../../suite-common/suite-config"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {
