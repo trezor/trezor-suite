@@ -39,6 +39,7 @@
         "@trezor/validation": "*",
         "@suite-common/intl-types": "*",
         "@suite-common/metadata-types": "*",
+        "@suite-common/suite-config": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
         "@suite-common/test-utils": "*",
