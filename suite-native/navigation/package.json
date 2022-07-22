@@ -19,7 +19,7 @@
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "react": "^17.0.2",
-        "react-native": "0.68.2",
+        "react-native": "0.69.2",
         "react-native-safe-area-context": "^4.3.1"
     }
 }
