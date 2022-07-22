@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { Button, Icon, Tooltip, variables } from '@trezor/components';
 import { GITHUB_FW_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
-import { useSelector } from '@suite-hooks';
 import {
     getFwUpdateVersion,
     getFwVersion,
     isBitcoinOnly,
     parseFirmwareChangelog,
 } from '@suite-utils/device';
-import { AcquiredDevice } from '@suite-types';
+import { useFirmware } from '@suite-hooks';
+import { AcquiredDevice, FirmwareType } from '@suite-types';
 
 const FwVersionWrapper = styled.div`
     display: flex;
@@ -90,10 +90,11 @@ const ChangesUl = styled.ul`
 interface Props {
     device: AcquiredDevice;
     customFirmware?: boolean;
+    targetFirmwareType?: FirmwareType;
 }
 
-const FirmwareOffer = ({ device, customFirmware }: Props) => {
-    const { btcOnlyFirmware } = useSelector(state => state.suite.settings);
+const FirmwareOffer = ({ device, customFirmware, targetFirmwareType }: Props) => {
+    const { targetType } = useFirmware();
 
     const currentVersion = device.firmware !== 'none' ? getFwVersion(device) : undefined;
 
@@ -108,9 +109,11 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
 
     const getFirmwareTypeName = (btcOnly: boolean) => (btcOnly ? 'Bitcoin-only ' : 'Universal ');
 
-    const currentFirmwareType =
+    const previousFirmwareType =
         device.firmware === 'unknown' ? '' : getFirmwareTypeName(isBitcoinOnly(device));
-    const targetFirmwareType = getFirmwareTypeName(btcOnlyFirmware);
+    const nextFirmwareType = getFirmwareTypeName(
+        [targetFirmwareType, targetType].includes(FirmwareType.BitcoinOnly),
+    );
 
     return (
         <FwVersionWrapper>
@@ -122,7 +125,7 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                         </Label>
                         <VersionWrapper>
                             <Version>
-                                {currentFirmwareType}
+                                {previousFirmwareType}
                                 {currentVersion}
                             </Version>
                         </VersionWrapper>
@@ -181,13 +184,13 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                             placement="top"
                         >
                             <Version new data-test="@firmware/offer-version/new">
-                                {targetFirmwareType}
+                                {nextFirmwareType}
                                 {newVersion}
                             </Version>
                         </Tooltip>
                     ) : (
                         <Version new>
-                            {!customFirmware && targetFirmwareType}
+                            {!customFirmware && nextFirmwareType}
                             {newVersion}
                         </Version>
                     )}

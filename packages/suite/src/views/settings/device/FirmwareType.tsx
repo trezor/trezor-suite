@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { GITHUB_FW_COMMIT_URL } from '@trezor/urls';
 
+import { GITHUB_FW_COMMIT_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import * as suiteActions from '@suite-actions/suiteActions';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { Button, Tooltip } from '@trezor/components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
+import { ModalVariant } from '@suite-types';
 
 const Version = styled.div`
     span {
@@ -33,9 +33,8 @@ interface FirmwareTypeProps {
 
 export const FirmwareType = ({ isDeviceLocked }: FirmwareTypeProps) => {
     const { device } = useDevice();
-    const { goto, switchFirmwareType } = useActions({
+    const { goto } = useActions({
         goto: routerActions.goto,
-        switchFirmwareType: suiteActions.switchFirmwareType,
     });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareType);
 
@@ -50,8 +49,9 @@ export const FirmwareType = ({ isDeviceLocked }: FirmwareTypeProps) => {
     const actionButtonId = btcOnly ? 'TR_SWITCH_TO_UNIVERSAL' : 'TR_SWITCH_TO_BITCOIN';
 
     const handleAction = () => {
-        switchFirmwareType(!btcOnly);
-        goto('firmware-index', { params: { cancelable: true } });
+        goto('firmware-index', {
+            params: { cancelable: true, variant: ModalVariant.SwitchFirmwareType },
+        });
     };
 
     return (

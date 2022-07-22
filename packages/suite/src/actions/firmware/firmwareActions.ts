@@ -2,12 +2,12 @@ import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import { getBootloaderVersion, getFwVersion } from '@suite-utils/device';
+import { getBootloaderVersion, getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { isDesktop } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
 import { addToast } from '@suite-actions/notificationActions';
 
-import { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
+import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from '@suite-types';
 import type { Await } from '@suite/types/utils';
 
 export type FirmwareAction =
@@ -21,6 +21,7 @@ export type FirmwareAction =
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
     | { type: typeof FIRMWARE.SET_INTERMEDIARY_INSTALLED; payload: boolean }
+    | { type: typeof FIRMWARE.SET_TARGET_TYPE; payload: FirmwareType }
     | { type: typeof FIRMWARE.SET_ERROR; payload?: string }
     | { type: typeof FIRMWARE.TOGGLE_HAS_SEED }
     | { type: typeof FIRMWARE.REMEMBER_PREVIOUS_DEVICE; payload: Device }
@@ -46,8 +47,9 @@ export const setTargetRelease = (payload: AcquiredDevice['firmwareRelease']): Fi
  * directly exported due to type safety.
  */
 const firmwareInstall =
-    (fwBinary?: ArrayBuffer) => async (dispatch: Dispatch, getState: GetState) => {
-        const { device, settings } = getState().suite;
+    (fwBinary?: ArrayBuffer, firmwareType?: FirmwareType) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
         const { targetRelease, prevDevice } = getState().firmware;
 
         if (fwBinary) {
@@ -108,10 +110,23 @@ const firmwareInstall =
                 console.warn(`Installing firmware ${toRelease.release.version}`);
             }
 
+            // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device),
+            // unless the user wants to switch firmware type
+            let toBitcoinOnlyFirmware = firmwareType === FirmwareType.BitcoinOnly;
+            if (!firmwareType) {
+                toBitcoinOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);
+            }
+
             analyticsPayload = {
                 toFwVersion: toRelease.release.version.join('.'),
-                toBtcOnly: settings.btcOnlyFirmware,
+                toBtcOnly: toBitcoinOnlyFirmware,
             };
+
+            // temporarily save target firmware type so that it can be displayed during installation and restart
+            // the value resets to undefined on firmwareActions.resetReducer() - doing it here would be too early because wee need to keep it during the restart
+            if (firmwareType) {
+                dispatch({ type: FIRMWARE.SET_TARGET_TYPE, payload: firmwareType });
+            }
 
             // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
             const baseUrl = isDesktop()
@@ -124,12 +139,11 @@ const firmwareInstall =
                     path: device.path,
                 },
                 baseUrl,
-                btcOnly: settings.btcOnlyFirmware,
+                btcOnly: toBitcoinOnlyFirmware,
                 version: toRelease.release.version,
                 // if we detect latest firmware may not be used right away, we should use intermediary instead
                 intermediary,
             });
-
             if (updateResponse.success && intermediary) {
                 dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true });
             }
@@ -161,7 +175,8 @@ const firmwareInstall =
         );
     };
 
-export const firmwareUpdate = () => firmwareInstall();
+export const firmwareUpdate = (firmwareType?: FirmwareType) =>
+    firmwareInstall(undefined, firmwareType);
 
 const handleFwHashError = (dispatch: Dispatch, getFirmwareHashResponse: Unsuccessful) => {
     dispatch({

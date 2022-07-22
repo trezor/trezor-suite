@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
-import { TrezorDevice } from '@suite-types';
+import { ModalVariant, TrezorDevice } from '@suite-types';
 import {
     CheckSeedStep,
     CloseButton,
     FirmwareInitial,
     FirmwareInstallation,
 } from '@firmware-components';
-import { isBitcoinOnly } from '@suite-utils/device';
 import { DeviceAcquire } from '@suite-views/device-acquire';
 import { DeviceUnknown } from '@suite-views/device-unknown';
 import { DeviceUnreadable } from '@suite-views/device-unreadable';
@@ -47,16 +46,19 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-export const Firmware = () => {
+type FirmwareProps = {
+    variant?: ModalVariant;
+};
+
+export const Firmware = ({ variant }: FirmwareProps) => {
     const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
         useFirmware();
     const { device } = useSelector(state => ({
         device: state.suite.device,
     }));
-    const { closeModalApp, acquireDevice, switchFirmwareType } = useActions({
+    const { closeModalApp, acquireDevice } = useActions({
         closeModalApp: routerActions.closeModalApp,
         acquireDevice: suiteActions.acquireDevice,
-        switchFirmwareType: suiteActions.switchFirmwareType,
     });
 
     const onClose = () => {
@@ -65,10 +67,6 @@ export const Firmware = () => {
         }
         closeModalApp();
         resetReducer();
-        // sync firmware type in case the modal is closed or installation fails
-        if (device) {
-            switchFirmwareType(isBitcoinOnly(device));
-        }
     };
 
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
@@ -125,6 +123,7 @@ export const Firmware = () => {
                         cachedDevice={cachedDevice}
                         setCachedDevice={setCachedDevice}
                         standaloneFwUpdate
+                        switchType={variant === ModalVariant.SwitchFirmwareType}
                         onInstall={firmwareUpdate}
                     />
                 );

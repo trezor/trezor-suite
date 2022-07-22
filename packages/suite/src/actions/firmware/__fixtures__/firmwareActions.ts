@@ -3,6 +3,7 @@ import { UI } from '@trezor/connect';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
+import { FirmwareType } from '@suite-types';
 
 const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;
 
@@ -41,6 +42,32 @@ export const actions = [
         result: {
             actions: [
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_HASH, payload: firmwareUpdateResponsePayload },
+                // todo: waiting-for-confirmation and installing is not tested
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'wait-for-reboot' },
+            ],
+            state: { firmware: { status: 'wait-for-reboot' } },
+        },
+    },
+    {
+        description: 'Success T2 - install Bitcoin-only firmware',
+        action: () => firmwareActions.firmwareUpdate(FirmwareType.BitcoinOnly),
+        mocks: {
+            connect: {
+                success: true,
+                payload: firmwareUpdateResponsePayload,
+            },
+        },
+        initialState: {
+            devices: [bootloaderDevice],
+            suite: {
+                device: bootloaderDevice,
+            },
+        },
+        result: {
+            actions: [
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_TARGET_TYPE, payload: FirmwareType.BitcoinOnly },
                 { type: FIRMWARE.SET_HASH, payload: firmwareUpdateResponsePayload },
                 // todo: waiting-for-confirmation and installing is not tested
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'wait-for-reboot' },

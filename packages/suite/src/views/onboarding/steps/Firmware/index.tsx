@@ -26,6 +26,13 @@ const FirmwareStep = () => {
         firmwareHashInvalid,
     } = useFirmware();
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
+
+    const onSuccess = () => {
+        // reset target firmware type
+        resetReducer();
+        goToNextStep();
+    };
+
     // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
         return (
@@ -56,7 +63,7 @@ const FirmwareStep = () => {
                 image="FIRMWARE"
                 heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
                 description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                innerActions={<RetryButton onClick={firmwareUpdate} />}
+                innerActions={<RetryButton onClick={() => firmwareUpdate()} />}
                 outerActions={
                     <OnboardingButtonBack onClick={() => resetReducer()}>
                         <Translation id="TR_BACK" />
@@ -111,7 +118,7 @@ const FirmwareStep = () => {
         case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
         case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
         case 'done':
-            return <FirmwareInstallation cachedDevice={cachedDevice} onSuccess={goToNextStep} />;
+            return <FirmwareInstallation cachedDevice={cachedDevice} onSuccess={onSuccess} />;
         default:
             // 'ensure' type completeness
             throw new Error(`state "${status}" is not handled here`);
