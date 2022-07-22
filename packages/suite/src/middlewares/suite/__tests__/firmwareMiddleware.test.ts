@@ -64,6 +64,8 @@ describe('firmware middleware', () => {
             getInitialState(undefined, {
                 status: 'unplug',
                 error: undefined,
+                firmwareChallenge: '123',
+                firmwareHash: '345',
             }),
         );
         await store.dispatch({ type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined });
@@ -80,6 +82,8 @@ describe('firmware middleware', () => {
             getInitialState(undefined, {
                 status: 'unplug',
                 error: undefined,
+                firmwareChallenge: '123',
+                firmwareHash: '345',
             }),
         );
         await store.dispatch({
@@ -100,6 +104,8 @@ describe('firmware middleware', () => {
                 status: 'wait-for-reboot',
                 error: undefined,
                 intermediaryInstalled: true,
+                firmwareChallenge: '123',
+                firmwareHash: '345',
             }),
         );
 
@@ -126,6 +132,8 @@ describe('firmware middleware', () => {
             getInitialState(undefined, {
                 status: 'wait-for-reboot',
                 error: undefined,
+                firmwareChallenge: '123',
+                firmwareHash: '345',
             }),
         );
 
@@ -150,6 +158,8 @@ describe('firmware middleware', () => {
             getInitialState(undefined, {
                 status: 'wait-for-reboot',
                 error: undefined,
+                firmwareChallenge: '123',
+                firmwareHash: '345',
             }),
         );
 
@@ -166,6 +176,8 @@ describe('firmware middleware', () => {
                 {
                     status: 'check-seed',
                     error: undefined,
+                    firmwareChallenge: '123',
+                    firmwareHash: '345',
                 },
                 {
                     device: getSuiteDevice(),
@@ -176,6 +188,8 @@ describe('firmware middleware', () => {
         await store.dispatch({
             type: FIRMWARE.SET_UPDATE_STATUS,
             payload: 'waiting-for-bootloader',
+            firmwareChallenge: '123',
+            firmwareHash: '345',
         });
 
         const result = store.getActions();

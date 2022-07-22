@@ -171,6 +171,12 @@ export const validateFirmwareHash =
         const { app: prevApp } = getState().router;
         const { firmwareChallenge, firmwareHash, isCustom } = getState().firmware;
 
+        if (!firmwareChallenge || !firmwareHash) {
+            // prevent false positives of invalid firmware hash. this should never happen though
+            console.error('firmwareChallenge or firmwareHash is missing');
+            return;
+        }
+
         if (!isCustom) {
             dispatch(setStatus('validation'));
             const fwHash = await TrezorConnect.getFirmwareHash({
