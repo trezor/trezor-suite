@@ -1,6 +1,7 @@
 import routes, { Route, RouterAppWithParams } from '@suite-constants/routes';
 import history from '@suite/support/history';
 import { NETWORKS } from '@wallet-config';
+import { ModalVariant } from '@suite-types';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
@@ -61,11 +62,12 @@ const validateWalletParams = (url: string) => {
 const validateModalAppParams = (url: string) => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
-    const [cancelable] = hash.split('/').filter(p => p.length > 0);
+    const [cancelable, variant] = hash.split('/').filter(p => p.length > 0);
     if (cancelable !== 'true') return;
     return {
         cancelable: true,
-    };
+        variant,
+    } as { cancelable: boolean; variant?: ModalVariant };
 };
 
 // Used in routerReducer

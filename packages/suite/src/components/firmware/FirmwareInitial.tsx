@@ -7,11 +7,10 @@ import {
     OnboardingStepBox,
     OnboardingButtonSkip,
 } from '@onboarding-components';
-import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components';
-import { useActions, useDevice, useFirmware, useOnboarding, useSelector } from '@suite-hooks';
+import { useDevice, useFirmware, useOnboarding } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
-import { TrezorDevice } from '@suite/types/suite';
+import { FirmwareType, TrezorDevice } from '@suite-types';
 import { getFwVersion, getFwUpdateVersion, isBitcoinOnly } from '@suite-utils/device';
 
 const StyledButton = styled.button`
@@ -29,7 +28,8 @@ interface FirmwareInitialProps {
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
-    onInstall: () => void;
+    onInstall: (firmwareType?: FirmwareType) => void;
+    switchType?: boolean;
 }
 
 const getDescription = ({
@@ -41,7 +41,7 @@ const getDescription = ({
     required: boolean;
     standaloneFwUpdate: boolean;
     reinstall: boolean;
-    switchType: boolean;
+    switchType?: boolean;
 }) => {
     if (switchType) {
         return 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION';
@@ -64,14 +64,11 @@ export const FirmwareInitial = ({
     setCachedDevice,
     onInstall,
     standaloneFwUpdate = false,
+    switchType,
 }: FirmwareInitialProps) => {
-    const { switchFirmwareType } = useActions({
-        switchFirmwareType: suiteActions.switchFirmwareType,
-    });
     const { device: liveDevice } = useDevice();
     const { setStatus, status } = useFirmware();
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const { btcOnlyFirmware } = useSelector(state => state.suite.settings);
 
     useEffect(() => {
         // When user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
@@ -104,6 +101,8 @@ export const FirmwareInitial = ({
         currentFwVersion &&
         availableFwVersion === currentFwVersion
     );
+    const targetType =
+        isBitcoinOnly(device) === !!switchType ? FirmwareType.Universal : FirmwareType.BitcoinOnly;
 
     if (['none', 'unknown'].includes(device.firmware)) {
         // No firmware installed
@@ -120,12 +119,7 @@ export const FirmwareInitial = ({
                     values={{
                         i: chunks => <i>{chunks}</i>,
                         button: chunks => (
-                            <StyledButton
-                                onClick={() => {
-                                    switchFirmwareType(true);
-                                    onInstall();
-                                }}
-                            >
+                            <StyledButton onClick={() => onInstall(FirmwareType.BitcoinOnly)}>
                                 {chunks}
                             </StyledButton>
                         ),
@@ -135,7 +129,7 @@ export const FirmwareInitial = ({
             innerActions: (
                 <InstallButton
                     onClick={() => {
-                        onInstall();
+                        onInstall(FirmwareType.Universal);
                         updateAnalytics({ firmware: 'install' });
                     }}
                 />
@@ -171,11 +165,11 @@ export const FirmwareInitial = ({
                         required: device.firmware === 'required',
                         standaloneFwUpdate,
                         reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
-                        switchType: isBitcoinOnly(device) !== btcOnlyFirmware,
+                        switchType,
                     })}
                 />
             ),
-            body: <FirmwareOffer device={device} />,
+            body: <FirmwareOffer device={device} targetFirmwareType={targetType} />,
             innerActions: (
                 <Button
                     onClick={() => {
@@ -213,7 +207,7 @@ export const FirmwareInitial = ({
                     <ReconnectDevicePrompt
                         expectedDevice={device}
                         requestedMode="bootloader"
-                        onSuccess={onInstall}
+                        onSuccess={() => onInstall(targetType)}
                     />
                 )}
 

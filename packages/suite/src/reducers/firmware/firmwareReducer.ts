@@ -4,7 +4,7 @@ import { UI, Device } from '@trezor/connect';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 
-import type { Action, AcquiredDevice } from '@suite-types';
+import type { Action, AcquiredDevice, FirmwareType } from '@suite-types';
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;
@@ -14,6 +14,8 @@ type FirmwareUpdateCommon = {
     // we actually can do it even in bl mode, but cant guarantee we will really get the
     // same firmware as was initially offered in 'firmware' mode.
     targetRelease: AcquiredDevice['firmwareRelease'];
+    // Stores firmware type currently being installed so that it can be displayed to the user during installation
+    targetType?: FirmwareType;
     // cached device for the purpose of fw update
     prevDevice?: Device;
     // Fresh unpacked T1 comes with 1.4.0 bootloader and will install intermediary fw, after the installation is complete it is set to true
@@ -58,6 +60,7 @@ const initialState: FirmwareUpdateState = {
     installingProgress: undefined,
     error: undefined,
     targetRelease: undefined,
+    targetType: undefined,
     hasSeed: false,
     prevDevice: undefined,
     intermediaryInstalled: false,
@@ -118,7 +121,9 @@ const firmwareUpdate = (
                     draft.targetRelease.isLatest = true;
                 }
                 break;
-
+            case FIRMWARE.SET_TARGET_TYPE:
+                draft.targetType = action.payload;
+                break;
             case SUITE.ADD_BUTTON_REQUEST:
                 if (action.payload?.code === 'ButtonRequest_FirmwareUpdate') {
                     draft.status = 'waiting-for-confirmation';

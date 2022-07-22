@@ -9,7 +9,7 @@ import { InstallBridge } from '@suite-views/bridge';
 import { UdevRules } from '@suite-views/udev';
 import { Version } from '@suite-views/version';
 import { SwitchDevice } from '@suite-components/SwitchDevice';
-import type { ForegroundAppRoute } from '@suite-types';
+import type { ForegroundAppRoute, ModalVariant } from '@suite-types';
 
 const getForegroundApp = (app: ForegroundAppRoute['app']) => {
     switch (app) {
@@ -37,10 +37,11 @@ const getForegroundApp = (app: ForegroundAppRoute['app']) => {
 type ForegroundAppModalProps = {
     app: ForegroundAppRoute['app'];
     cancelable: boolean;
+    variant?: ModalVariant;
 };
 
 /** Modals (foreground applications) initiated by redux state.router.route */
-export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
+export const ForegroundAppModal = ({ app, cancelable, variant }: ForegroundAppModalProps) => {
     const actions = useActions({
         closeModalApp,
     });
@@ -51,6 +52,12 @@ export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps)
     // every app is dealing with "prerequisites" and other params (like action modals) on they own.
     const ForegroundApp = getForegroundApp(app);
     return (
-        ForegroundApp && <ForegroundApp cancelable={cancelable} onCancel={actions.closeModalApp} />
+        ForegroundApp && (
+            <ForegroundApp
+                cancelable={cancelable}
+                variant={variant}
+                onCancel={actions.closeModalApp}
+            />
+        )
     );
 };

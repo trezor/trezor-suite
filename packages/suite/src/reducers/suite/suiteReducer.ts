@@ -53,7 +53,6 @@ export interface SuiteSettings {
         variant: Exclude<SuiteThemeVariant, 'system'>;
     };
     language: Locale;
-    btcOnlyFirmware: boolean;
     torOnionLinks: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
@@ -94,7 +93,6 @@ const initialState: SuiteState = {
             variant: 'light',
         },
         language: ensureLocale('en'),
-        btcOnlyFirmware: false,
         torOnionLinks: isWeb(),
         debug: {
             invityServerEnvironment: undefined,
@@ -196,10 +194,6 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.ONION_LINKS:
                 draft.settings.torOnionLinks = action.payload;
-                break;
-
-            case SUITE.BTC_ONLY_FIRMWARE:
-                draft.settings.btcOnlyFirmware = action.payload;
                 break;
 
             case SUITE.LOCK_UI:
