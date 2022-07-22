@@ -4,7 +4,6 @@ import { versionUtils } from '@trezor/utils';
 import { httpRequest } from '../../utils/assets';
 import { isStrictFeatures } from '../../utils/firmwareUtils';
 import { getInfo, GetInfoProps } from '../../data/firmwareInfo';
-import { modifyFirmware } from './modifyFirmware';
 
 interface GetBinaryProps extends GetInfoProps {
     baseUrl: string;
@@ -33,7 +32,7 @@ export const getBinary = async ({
 
     if (intermediary && features.major_version !== 2) {
         const fw = await httpRequest(`${baseUrl}/firmware/1/trezor-inter-1.10.0.bin`, 'binary');
-        return { binary: modifyFirmware({ fw, features }) };
+        return { binary: fw };
     }
 
     // we get info here again, but only as a sanity check.
@@ -66,6 +65,6 @@ export const getBinary = async ({
     );
     return {
         ...infoByBootloader,
-        binary: modifyFirmware({ fw, features }),
+        binary: fw,
     };
 };
