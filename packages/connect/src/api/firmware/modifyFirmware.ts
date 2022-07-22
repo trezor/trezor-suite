@@ -1,17 +1,17 @@
 /* eslint-disable camelcase */
 import { versionUtils } from '@trezor/utils';
 
-import type { StrictFeatures } from '../../types';
+import type { Features } from '../../types';
 
 /**
- * Returns firmware binary after necessary modifications. Should be ok to install.
+ * Returns whether TRZR header should be stripped from the firmware binary
  */
-export const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: StrictFeatures }) => {
+export const shouldStripFwHeaders = (features: Features) => {
     // ---------------------
     // Model T modifications
     // ---------------------
     // there are currently none.
-    if (features.major_version === 2) return fw;
+    if (features.major_version === 2) return false;
 
     // -----------------------
     // Model One modifications
@@ -21,20 +21,23 @@ export const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: St
     // unluckily, we don't know the actual bootloader of connected device, but we can assume it is 1.8.0 in case
     // getInfo() returns firmware with version 1.8.1 or greater as it has bootloader version 1.8.0 (see releases.json)
     // this should be temporary until special bootloader updating firmware are ready
+    return versionUtils.isNewerOrEqual(
+        [features.major_version, features.minor_version, features.patch_version],
+        [1, 8, 0],
+    );
+};
+
+/**
+ * Strips TRZR header from the binary if present
+ */
+export const stripFwHeaders = (fw: ArrayBuffer) => {
+    const fwView = new Uint8Array(fw);
+    // this condition was added in order to upload firmware process being equivalent as in trezorlib python code
     if (
-        versionUtils.isNewerOrEqual(
-            [features.major_version, features.minor_version, features.patch_version],
-            [1, 8, 0],
-        )
+        String.fromCharCode(...Array.from(fwView.slice(0, 4))) === 'TRZR' &&
+        String.fromCharCode(...Array.from(fwView.slice(256, 260))) === 'TRZF'
     ) {
-        const fwView = new Uint8Array(fw);
-        // this condition was added in order to upload firmware process being equivalent as in trezorlib python code
-        if (
-            String.fromCharCode(...Array.from(fwView.slice(0, 4))) === 'TRZR' &&
-            String.fromCharCode(...Array.from(fwView.slice(256, 260))) === 'TRZF'
-        ) {
-            return fw.slice(256);
-        }
+        return fw.slice(256);
     }
     return fw;
 };
