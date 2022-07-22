@@ -4,10 +4,15 @@ import randombytes from 'randombytes';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
-import { getBinary, modifyFirmware, uploadFirmware, calculateFirmwareHash } from './firmware';
+import {
+    getBinary,
+    shouldStripFwHeaders,
+    stripFwHeaders,
+    uploadFirmware,
+    calculateFirmwareHash,
+} from './firmware';
 import { validateParams } from './common/paramsValidator';
 import { getReleases } from '../data/firmwareInfo';
-import { isStrictFeatures } from '../utils/firmwareUtils';
 
 type Params = {
     binary?: ArrayBuffer;
@@ -84,14 +89,7 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
         let binary: ArrayBuffer;
         try {
             if (params.binary) {
-                if (!isStrictFeatures(device.features)) {
-                    throw new Error('Features of unexpected shape provided');
-                }
-
-                binary = modifyFirmware({
-                    fw: params.binary,
-                    features: device.features,
-                });
+                binary = params.binary;
             } else {
                 const firmware = await getBinary({
                     // features and releases are used for sanity checking
@@ -112,13 +110,16 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
             );
         }
 
+        // Might not be installed, but needed for calculateFirmwareHash anyway
+        const stripped = stripFwHeaders(binary);
+
         await uploadFirmware(
             this.device.getCommands().typedCall.bind(this.device.getCommands()),
             this.postMessage,
             device,
-            { payload: binary },
+            { payload: shouldStripFwHeaders(device.features) ? stripped : binary },
         );
 
-        return calculateFirmwareHash(device.features.major_version, binary, randombytes(32));
+        return calculateFirmwareHash(device.features.major_version, stripped, randombytes(32));
     }
 }
