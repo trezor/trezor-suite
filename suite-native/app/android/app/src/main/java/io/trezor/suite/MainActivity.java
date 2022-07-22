@@ -1,6 +1,8 @@
 package io.trezor.suite;
 
 import android.os.Bundle;
+import androidx.core.splashscreen.SplashScreen;
+
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
@@ -21,6 +23,9 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    // Handle the splash screen transition (https://developer.android.com/guide/topics/ui/splash-screen/migrate#java).
+    SplashScreen.installSplashScreen(this);
+
     super.onCreate(null);
   }
 

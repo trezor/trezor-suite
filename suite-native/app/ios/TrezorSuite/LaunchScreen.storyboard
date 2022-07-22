@@ -22,8 +22,8 @@
                                 <color key="backgroundColor" red="0.07843" green="0.07843" blue="0.07843" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" red="0.07843" green="0.07843" blue="0.07843" alpha="1" colorSpace="calibratedRGB"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="JOm-zt-Hwa">
-                                <rect key="frame" x="144" y="387" width="102" height="70"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="4ly-c2-5Pl">
+                                <rect key="frame" x="160" y="370" width="70" height="104"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -47,7 +47,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Splash" width="17.333333969116211" height="25.333333969116211"/>
+        <image name="Splash" width="100" height="146"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
