@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 
-import { app, BrowserWindow, RelaunchOptions, session } from 'electron';
+import { app, BrowserWindow, session } from 'electron';
 import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
 import { ipcMain } from './typed-electron';
 
@@ -12,6 +12,7 @@ import { APP_NAME } from './libs/constants';
 import * as store from './libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { getBuildInfo, getComputerInfo } from './libs/info';
+import { restartApp } from './libs/app-utils';
 import { initModules } from './modules';
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
@@ -110,15 +111,7 @@ const init = async () => {
 
     ipcMain.on('app/restart', () => {
         logger.info('main', 'App restart requested');
-        const options: RelaunchOptions = {};
-        options.args = process.argv.slice(1).concat(['--relaunch']);
-        options.execPath = process.execPath;
-        if (process.env.APPIMAGE) {
-            options.execPath = process.env.APPIMAGE;
-            options.args.unshift('--appimage-extract-and-run');
-        }
-        app.relaunch(options);
-        app.quit();
+        restartApp();
     });
 
     await app.whenReady();
@@ -184,8 +177,7 @@ const init = async () => {
         await clearAppCache().catch(err =>
             logger.error('hang-detect', `Couldn't clear cache: ${err.message}`),
         );
-        app.relaunch();
-        app.quit();
+        restartApp();
     }
 };
 

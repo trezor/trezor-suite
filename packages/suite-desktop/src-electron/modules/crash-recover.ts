@@ -1,5 +1,6 @@
 import { app, dialog } from 'electron';
 import { Module } from './index';
+import { restartApp } from '../libs/app-utils';
 
 // Reasons for prompting a restart
 const unexpectedReasons = [
@@ -21,10 +22,10 @@ const init: Module = ({ mainWindow }) => {
 
             // Restart
             if (result === 1) {
-                app.relaunch();
+                restartApp();
+            } else {
+                app.quit();
             }
-
-            app.quit();
         }
     });
 };
