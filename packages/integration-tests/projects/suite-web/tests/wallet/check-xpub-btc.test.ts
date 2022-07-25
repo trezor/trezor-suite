@@ -1,4 +1,4 @@
-// @group:suite
+// @group:wallet
 // @retry=2
 
 describe('Check Bitcoin XPUB', () => {
