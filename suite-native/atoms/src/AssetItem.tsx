@@ -16,6 +16,7 @@ type AssetItemProps = {
     iconName: CryptoIconName;
 };
 
+// TODO this config should be in some shared package for constants etc
 export const assetColorConfig: Record<string, string> = {
     BTC: '#F29937',
     ETH: '#454A75',

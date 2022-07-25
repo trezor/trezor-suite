@@ -1,4 +1,4 @@
-export type TimeFrameValues = 'hour' | 'day' | 'week' | 'month' | 'year';
+export type TimeFrameValues = 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
 
 export type TimeFrameItem = {
     shortcut: string;

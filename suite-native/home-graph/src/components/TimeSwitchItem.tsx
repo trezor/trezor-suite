@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { getSelectedTimeFrame, setSelectedTimeFrame } from '../reducers/appGraphReducer';
+import { getSelectedTimeFrame, setSelectedTimeFrame } from '../slice';
 import { TimeFrameValues } from '../reducers/types';
 
 type TimeSwitchItemProps = {
@@ -23,9 +23,9 @@ const textStyle = prepareNativeStyle<TextStyleProps>((utils, { isSelected }) => 
 }));
 
 export const TimeSwitchItem = ({ value, shortcut }: TimeSwitchItemProps) => {
+    const selectedTimeFrame = useSelector(getSelectedTimeFrame);
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
-    const selectedTimeFrame = useSelector(getSelectedTimeFrame);
 
     const handleSelectTimeFrame = (timeFrame: TimeFrameValues) => {
         dispatch(setSelectedTimeFrame(timeFrame));

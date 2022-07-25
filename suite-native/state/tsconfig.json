@@ -4,6 +4,6 @@
     "references": [
         { "path": "../../packages/styles" },
         { "path": "../module-settings" },
-        { "path": "../graph" }
+        { "path": "../home-graph" }
     ]
 }
