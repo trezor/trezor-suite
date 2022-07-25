@@ -114,14 +114,19 @@ const analyticsMiddleware =
                 break;
             }
             case ROUTER.LOCATION_CHANGE:
-                analytics.report({
-                    type: EventType.RouterLocationChange,
-                    payload: {
-                        prevRouterUrl,
-                        nextRouterUrl: action.payload.url,
-                        anchor: redactTransactionIdFromAnchor(action.payload.anchor),
-                    },
-                });
+                if (
+                    state.suite.lifecycle.status !== 'initial' &&
+                    state.suite.lifecycle.status !== 'loading'
+                ) {
+                    analytics.report({
+                        type: EventType.RouterLocationChange,
+                        payload: {
+                            prevRouterUrl,
+                            nextRouterUrl: action.payload.url,
+                            anchor: redactTransactionIdFromAnchor(action.payload.anchor),
+                        },
+                    });
+                }
                 break;
             case ROUTER.ANCHOR_CHANGE:
                 if (action.payload) {
