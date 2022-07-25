@@ -5,12 +5,16 @@ import type { Module } from './index';
 const init: Module = ({ mainWindow }) => {
     const { logger } = global;
 
-    // Register more shortcuts for opening dev tools
-    const openDevToolsShortcuts = ['CommandOrControl+Shift+I', 'CommandOrControl+Alt+I'];
+    const openDevToolsShortcuts = ['F12', 'CommandOrControl+Shift+I', 'CommandOrControl+Alt+I'];
     openDevToolsShortcuts.forEach(shortcut => {
         electronLocalshortcut.register(mainWindow, shortcut, () => {
-            logger.info('shortcuts', `${shortcut} pressed`);
-            mainWindow.webContents.openDevTools();
+            logger.info('shortcuts', `${shortcut} pressed to open/close DevTools`);
+
+            if (mainWindow.webContents.isDevToolsOpened()) {
+                mainWindow.webContents.closeDevTools();
+            } else {
+                mainWindow.webContents.openDevTools();
+            }
         });
     });
 
