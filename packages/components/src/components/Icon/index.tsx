@@ -35,19 +35,27 @@ const chooseIconAnimationType = (canAnimate?: boolean, isActive?: boolean) => {
     return null;
 };
 
-const SvgWrapper = styled.div<WrapperProps>`
+const SvgWrapper = styled.div<{
+    $canAnimate: WrapperProps['canAnimate'];
+    $color: WrapperProps['color'];
+    $isActive: WrapperProps['isActive'];
+    $isHollow: WrapperProps['isHollow'];
+    $hoverColor: WrapperProps['hoverColor'];
+    $size: WrapperProps['size'];
+    $useCursorPointer: WrapperProps['useCursorPointer'];
+}>`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: ${props => props.size}px;
-    width: ${props => props.size}px;
-    animation: ${props => chooseIconAnimationType(props.canAnimate, props.isActive)} 0.2s linear 1
-        forwards;
+    height: ${({ $size }) => $size}px;
+    width: ${({ $size }) => $size}px;
+    animation: ${({ $canAnimate, $isActive }) => chooseIconAnimationType($canAnimate, $isActive)}
+        0.2s linear 1 forwards;
 
     div {
         display: flex;
-        height: ${props => props.size}px;
-        line-height: ${props => props.size}px;
+        height: ${({ $size }) => $size}px;
+        line-height: ${({ $size }) => $size}px;
         align-items: center;
         justify-content: center;
     }
@@ -59,18 +67,18 @@ const SvgWrapper = styled.div<WrapperProps>`
     }
 
     path {
-        stroke: ${({ color, isHollow }) => isHollow && color};
-        fill: ${({ color, isHollow }) => !isHollow && color};
+        stroke: ${({ $color, $isHollow }) => $isHollow && $color};
+        fill: ${({ $color, $isHollow }) => !$isHollow && $color};
     }
 
     :hover {
         path {
-            fill: ${props => props.hoverColor};
+            fill: ${({ $hoverColor }) => $hoverColor};
         }
     }
 
-    ${props =>
-        props.useCursorPointer &&
+    ${({ $useCursorPointer }) =>
+        $useCursorPointer &&
         css`
             cursor: pointer;
         `}
@@ -87,9 +95,10 @@ export interface IconProps extends React.SVGAttributes<HTMLDivElement> {
     canAnimate?: boolean;
     hoverColor?: string;
     useCursorPointer?: boolean;
+    'data-test'?: string;
 }
 
-const Icon = React.forwardRef(
+export const Icon = React.forwardRef(
     (
         {
             icon,
@@ -105,7 +114,7 @@ const Icon = React.forwardRef(
             onMouseEnter,
             onMouseLeave,
             onFocus,
-            ...rest
+            'data-test': dataTest,
         }: IconProps,
         ref?: React.Ref<HTMLDivElement>,
     ) => {
@@ -114,19 +123,19 @@ const Icon = React.forwardRef(
         return (
             <SvgWrapper
                 className={className}
-                canAnimate={canAnimate}
-                hoverColor={hoverColor}
+                $canAnimate={canAnimate}
+                $hoverColor={hoverColor}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 onFocus={onFocus}
-                isActive={isActive}
-                size={size}
-                isHollow={isHollow}
+                $isActive={isActive}
+                $size={size}
+                $isHollow={isHollow}
                 ref={ref}
-                useCursorPointer={onClick !== undefined || useCursorPointer}
-                color={defaultColor}
-                {...rest}
+                $useCursorPointer={onClick !== undefined || useCursorPointer}
+                $color={defaultColor}
+                data-test={dataTest}
             >
                 <ReactSVG
                     src={ICONS[icon]}
@@ -141,5 +150,3 @@ const Icon = React.forwardRef(
         );
     },
 );
-
-export { Icon };
