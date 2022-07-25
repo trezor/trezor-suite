@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import SplashScreen from 'react-native-splash-screen';
 import { Provider } from 'react-redux';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -49,9 +50,13 @@ export const App = () => {
             });
     }, [getAccountInfo]);
 
+    const handleNavigationReady = () => {
+        SplashScreen.hide();
+    };
+
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer>
+            <NavigationContainer onReady={handleNavigationReady}>
                 <Provider store={store}>
                     <SafeAreaProvider>
                         <StylesProvider>
