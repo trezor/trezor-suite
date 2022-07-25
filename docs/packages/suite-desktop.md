@@ -50,8 +50,11 @@ More technical information can be found on the [Desktop Logger page](../misc/des
 
 ## Shortcuts
 
-_TODO_
+Available shortcuts:
 
+| name                  | commands                                             |
+| --------------------- | ---------------------------------------------------- |
+| Open DevTools         | F12, Cmd+Shift+I,Ctrl+Shift+I, Cmd+Alt+I, Ctrl+Alt+I |
 ## Runtime flags
 
 Runtime flags can be used when running the Suite Desktop executable, enabling or disabling certain features. For example: `./Trezor-Suite-22.7.2.AppImage --open-devtools` will run with this flag turned on, which will result in opening DevTools on app launch.
