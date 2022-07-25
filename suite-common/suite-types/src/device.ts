@@ -9,7 +9,6 @@ import {
 } from '@trezor/connect';
 import { DeviceMetadata } from '@suite-common/metadata-types';
 
-// TODO former type was from suite Action['type'][] - check if this is correct
 const blockedActions: string[] = [UI.CLOSE_UI_WINDOW];
 
 // definition of blocked actions for each process mode
