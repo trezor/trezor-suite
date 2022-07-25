@@ -30,8 +30,9 @@ const MODULES = [
     'udev-install',
     'user-data',
     'trezor-connect-ipc',
+    'dev-tools',
     // Modules used only in dev/prod mode
-    ...(isDev ? ['dev-tools'] : ['csp', 'file-protocol']),
+    ...(isDev ? [] : ['csp', 'file-protocol']),
 ];
 
 export type Dependencies = {
