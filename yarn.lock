@@ -19823,7 +19823,7 @@ react-native-codegen@^0.0.17:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
-react-native-gesture-handler@^2.5.0:
+react-native-gesture-handler@^2.4.1, react-native-gesture-handler@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.5.0.tgz#61385583570ed0a45a9ed142425e35f8fe8274fb"
   integrity sha512-djZdcprFf08PZC332D+AeG5wcGeAPhzfCJtB3otUgOgTlvjVXmg/SLFdPJSpzLBqkRAmrC77tM79QgKbuLxkfw==
@@ -19838,6 +19838,11 @@ react-native-gradle-plugin@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.0.6.tgz#b61a9234ad2f61430937911003cddd7e15c72b45"
   integrity sha512-eIlgtsmDp1jLC24dRn43hB3kEcZVqx6DUQbR0N1ABXGnMEafm9I3V3dUUeD1vh+Dy5WqijSoEwLNUPLgu5zDMg==
+
+react-native-graph@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-graph/-/react-native-graph-0.1.1.tgz#093563ae0d52bd5401c80f5c0a41ecccef1fcecf"
+  integrity sha512-GAoqxm2znM9UFVuJaJ6urTIC33SJF0CNogpwG/qVd8x2HRlnEKAJqQE2wYKdhjBdmjltLWah+bNxGX0T2SdKrA==
 
 react-native-reanimated@^2.8.0:
   version "2.8.0"
