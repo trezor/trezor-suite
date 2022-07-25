@@ -40,3 +40,50 @@ export const encodeDataToQueryString = <T extends Event>(
 
     return params.toString();
 };
+
+const reportEventError = (
+    type: ReportEventProps['type'],
+    retry: ReportEventProps['retry'],
+    err: any,
+) => {
+    let errorMessage = err?.error?.message || err?.message;
+
+    if (typeof errorMessage !== 'string') {
+        // this should never happen
+        errorMessage = 'Unknown error.';
+    }
+
+    // to circumvent sentry inbound filter
+    if (errorMessage.includes('Failed to fetch')) {
+        errorMessage = 'Failed to analytics fetch.';
+    }
+
+    const reportedMessage = `Analytics report failed. Reporting '${type}' ${
+        retry ? 'again' : 'was unsuccessful'
+    }. ${errorMessage}`;
+
+    console.error(reportedMessage);
+};
+
+interface ReportEventProps {
+    type: Event['type'];
+    url: string;
+    options: RequestInit;
+    retry: boolean;
+}
+
+export const reportEvent = async ({ type, url, options, retry }: ReportEventProps) => {
+    try {
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            console.error(`Analytics response not ok. Response status: ${response.status}.`);
+        }
+    } catch (err) {
+        reportEventError(type, retry, err);
+
+        if (retry) {
+            setTimeout(() => reportEvent({ type, url, options, retry: false }), 1000);
+        }
+    }
+};
