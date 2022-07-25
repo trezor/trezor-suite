@@ -47,8 +47,6 @@ const createMainWindow = (winBounds: WinBounds) => {
         webPreferences: {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
-            nodeIntegration: false,
-            contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
         },
         icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
