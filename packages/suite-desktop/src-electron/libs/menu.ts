@@ -1,6 +1,7 @@
 import { app, shell, Menu, MenuItemConstructorOptions } from 'electron';
 
 import { isDev } from '@suite-utils/build';
+import { restartApp } from './app-utils';
 
 const isMac = process.platform === 'darwin';
 
@@ -17,7 +18,10 @@ const mainMenuTemplate: MenuItem[] = [
     // { role: 'fileMenu' }
     {
         label: 'File',
-        submenu: [isMac ? { role: 'close' } : { role: 'quit' }],
+        submenu: [
+            { label: 'Restart', click: restartApp },
+            isMac ? { role: 'close' } : { role: 'quit' },
+        ],
     },
     // { role: 'editMenu' }
     {

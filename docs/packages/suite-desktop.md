@@ -56,6 +56,7 @@ Available shortcuts:
 | --------------- | ---------------------------------------------------- |
 | Reload app      | F5, Ctrl+R, Cmd+R                                    |
 | Hard Reload app | Shift+F5, Shift+Ctrl+R, Shift+Cmd+R                  |
+| Restart app     | Alt+F5, Option+F5, Alt+Shift+R, Option+Shift+R       |
 | Open DevTools   | F12, Cmd+Shift+I,Ctrl+Shift+I, Cmd+Alt+I, Ctrl+Alt+I |
 
 ## Runtime flags
