@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@suite-common/suite-utils": "*",
+        "@suite-common/suite-config": "*",
         "@trezor/components": "*",
         "@trezor/suite": "*",
         "@trezor/urls": "*",

@@ -9,7 +9,7 @@ const { dependencies } = require('./package.json');
 
 // we definitely want to transpile all our local packages
 const localPackages = Object.keys(dependencies).filter(packageName =>
-    packageName.match(/^@trezor/),
+    packageName.match(/^(@trezor|@suite-common)/),
 );
 // react-spring library is not transpiled to ES5 by default
 const reactSpringPath = path.join(__dirname, '..', '..', 'node_modules', '@react-spring');
