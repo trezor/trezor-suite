@@ -16,6 +16,11 @@ type AssetItemProps = {
     iconName: CryptoIconName;
 };
 
+export const assetColorConfig: Record<string, string> = {
+    BTC: '#F29937',
+    ETH: '#454A75',
+};
+
 const assetItemWrapperStyle = prepareNativeStyle(() => ({
     flexDirection: 'row',
     alignItems: 'center',
@@ -60,7 +65,10 @@ export const AssetItem = ({
                     justifyContent="space-between"
                     alignItems="center"
                 >
-                    <ProgressBar value={portfolioPercentage} />
+                    <ProgressBar
+                        value={portfolioPercentage}
+                        color={assetColorConfig[cryptoCurrencySymbol]}
+                    />
                     <Text variant="hint" color="gray600">
                         {cryptoCurrencyValue} {cryptoCurrencySymbol}
                     </Text>

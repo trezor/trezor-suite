@@ -35,7 +35,7 @@ export const PortfolioGraph = () => {
     const { applyStyle } = useNativeStyles();
     return (
         <Box>
-            <Text variant="titleSmall">$3,720</Text>
+            <Text variant="titleLarge">$3,720</Text>
             <Box flexDirection="row" alignItems="center">
                 <Box marginRight="small">
                     <Text variant="hint" color="gray600">
