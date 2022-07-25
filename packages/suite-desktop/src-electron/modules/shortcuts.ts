@@ -1,5 +1,5 @@
 import electronLocalshortcut from 'electron-localshortcut';
-import { APP_SRC } from '../libs/constants';
+
 import type { Module } from './index';
 
 const init: Module = ({ mainWindow }) => {
@@ -23,6 +23,14 @@ const init: Module = ({ mainWindow }) => {
         electronLocalshortcut.register(mainWindow, shortcut, () => {
             logger.info('shortcuts', `${shortcut} pressed to reload app`);
             mainWindow.webContents.reload();
+        });
+    });
+
+    const hardReloadAppShortcuts = ['Shift+F5', 'CommandOrControl+Shift+R'];
+    hardReloadAppShortcuts.forEach(shortcut => {
+        electronLocalshortcut.register(mainWindow, shortcut, () => {
+            logger.info('shortcuts', `${shortcut} pressed to hard reload app`);
+            mainWindow.webContents.reloadIgnoringCache();
         });
     });
 };
