@@ -1,13 +1,10 @@
-import { app, RelaunchOptions } from 'electron';
+import { app } from 'electron';
 
 export const restartApp = () => {
-    const options: RelaunchOptions = {};
-    options.args = process.argv.slice(1).concat(['--relaunch']);
-    options.execPath = process.execPath;
-    if (process.env.APPIMAGE) {
-        options.execPath = process.env.APPIMAGE;
-        options.args.unshift('--appimage-extract-and-run');
-    }
-    app.relaunch(options);
+    const { logger } = global;
+
+    logger.info('app', `Relaunching app with ${process.argv.slice(1).join(', ')} arguments.`);
+
+    app.relaunch();
     app.quit();
 };
