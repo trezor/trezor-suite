@@ -35,7 +35,7 @@ const analyticsMiddleware =
         const state = api.getState();
 
         switch (action.type) {
-            case ANALYTICS.INIT:
+            case SUITE.READY:
                 // reporting can start when analytics is properly initialized and enabled
                 analytics.report({
                     type: EventType.SuiteReady,
