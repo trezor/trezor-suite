@@ -12,6 +12,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
         "@trezor/styles": "*",
-        "@suite-native/module-settings": "*"
+        "@suite-native/module-settings": "*",
+        "@suite-native/graph": "*"
     }
 }

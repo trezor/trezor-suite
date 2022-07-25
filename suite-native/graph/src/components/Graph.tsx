@@ -19,7 +19,6 @@ const dummyData = [
 
 const graphWrapperStyle = prepareNativeStyle(() => ({
     width: '100%',
-    padding: 20,
 }));
 
 const graphStyle = prepareNativeStyle(() => ({
