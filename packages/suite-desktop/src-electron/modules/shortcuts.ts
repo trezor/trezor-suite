@@ -18,14 +18,12 @@ const init: Module = ({ mainWindow }) => {
         });
     });
 
-    electronLocalshortcut.register(mainWindow, 'F5', () => {
-        logger.info('shortcuts', 'F5 pressed');
-        mainWindow.loadURL(APP_SRC);
-    });
-
-    electronLocalshortcut.register(mainWindow, 'CommandOrControl+R', () => {
-        logger.info('shortcuts', 'CTRL+R pressed');
-        mainWindow.loadURL(APP_SRC);
+    const reloadAppShortcuts = ['F5', 'CommandOrControl+R'];
+    reloadAppShortcuts.forEach(shortcut => {
+        electronLocalshortcut.register(mainWindow, shortcut, () => {
+            logger.info('shortcuts', `${shortcut} pressed to reload app`);
+            mainWindow.webContents.reload();
+        });
     });
 };
 
