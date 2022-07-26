@@ -264,6 +264,12 @@ export const networks = {
         features: ['rbf', 'sign-verify', 'amount-unit'],
         customBackends: ['blockbook', 'electrum'],
         accountTypes: {
+            coinjoin: {
+                name: 'Bitcoin Regtest (PEA)',
+                bip43Path: "m/10025'/1'/i'",
+                backendType: 'coinjoin', // use non-standard backend
+                features: [], // no rbf, no sign-verify
+            },
             taproot: {
                 name: 'Bitcoin Regtest (taproot)',
                 bip43Path: "m/86'/1'/i'",
@@ -367,6 +373,13 @@ export const networks = {
     },
 } as const;
 
+export const TREZOR_CONNECT_BACKENDS = ['blockbook', 'electrum', 'ripple', 'blockfrost'] as const;
+export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;
+
+export type BackendType =
+    | typeof TREZOR_CONNECT_BACKENDS[number]
+    | typeof NON_STANDARD_BACKENDS[number];
+
 type Networks = typeof networks;
 type NetworkKey = keyof Networks;
 type NetworkValue = Networks[NetworkKey];
@@ -375,6 +388,7 @@ export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkKey;
     accountType?: 'normal' | AccountType;
+    backendType?: BackendType;
     testnet?: boolean;
     isHidden?: boolean;
     chainId?: number;

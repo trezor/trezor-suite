@@ -1,4 +1,4 @@
-import { Network } from '@suite-common/wallet-config';
+import { Network, BackendType } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
 
 export type MetadataItem = string;
@@ -65,4 +65,5 @@ export type Account = {
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountMetadata;
+    backendType?: BackendType; // decides if account is using TrezorConnect/blockchain-link or other non-standard api
 } & AccountNetworkSpecific;
