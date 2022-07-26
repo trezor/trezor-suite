@@ -18,6 +18,7 @@ import {
     deviceGraphDataFilterFn,
     enhanceBlockchainAccountHistory,
 } from '@wallet-utils/graphUtils';
+import { isTrezorConnectBackendType } from '@suite-utils/backend';
 
 export type GraphAction =
     | {
@@ -136,15 +137,16 @@ export const updateGraphData =
         const { graph } = getState().wallet;
 
         // TODO: default behaviour should be fetch only new data (since last timestamp)
-        let filteredAccounts: Account[] = accounts;
+        // exclude accounts with unsupported backend type
+        let filteredAccounts = accounts.filter(a => isTrezorConnectBackendType(a.backendType));
         if (options?.newAccountsOnly) {
             // add only accounts for which we don't have any data for given interval
-            filteredAccounts = accounts.filter(
+            filteredAccounts = filteredAccounts.filter(
                 account => !graph.data.find(d => accountGraphDataFilterFn(d, account)),
             );
-            if (filteredAccounts.length === 0) {
-                return;
-            }
+        }
+        if (filteredAccounts.length === 0) {
+            return;
         }
 
         dispatch({

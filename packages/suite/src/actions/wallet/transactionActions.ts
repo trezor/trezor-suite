@@ -1,5 +1,6 @@
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { saveAs } from 'file-saver';
+import { isTrezorConnectBackendType } from '@suite-utils/backend';
 import {
     formatNetworkAmount,
     enhanceTransaction,
@@ -131,6 +132,7 @@ export const replaceTransaction =
 export const fetchTransactions =
     (account: Account, page: number, perPage: number, noLoading = false, recursive = false) =>
     async (dispatch: Dispatch, getState: GetState) => {
+        if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
         const { transactions } = getState().wallet.transactions;
         const reducerTxs = getAccountTransactions(account.key, transactions);
 

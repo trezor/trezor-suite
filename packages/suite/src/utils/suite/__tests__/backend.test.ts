@@ -17,4 +17,15 @@ describe('backend utils', () => {
         expect(utils.isElectrumUrl('https://google.com')).toBe(false);
         expect(utils.isElectrumUrl('')).toBe(false);
     });
+
+    test('isTrezorConnectBackendType', () => {
+        const { isTrezorConnectBackendType } = utils;
+        expect(isTrezorConnectBackendType()).toBe(true);
+        expect(isTrezorConnectBackendType('blockbook')).toBe(true);
+        expect(isTrezorConnectBackendType('coinjoin')).toBe(false);
+        // @ts-expect-error
+        expect(isTrezorConnectBackendType('gibberish')).toBe(false);
+        // @ts-expect-error
+        expect(isTrezorConnectBackendType({})).toBe(false);
+    });
 });
