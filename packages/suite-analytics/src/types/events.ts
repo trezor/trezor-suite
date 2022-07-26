@@ -300,7 +300,7 @@ export type SuiteAnalyticsEvent =
           type: EventType.SettingsCoinsBackend;
           payload: {
               symbol: string;
-              type: 'blockbook' | 'electrum' | 'ripple' | 'blockfrost' | 'default';
+              type: 'blockbook' | 'electrum' | 'ripple' | 'blockfrost' | 'coinjoin' | 'default';
               totalRegular: number;
               totalOnion: number;
           };
