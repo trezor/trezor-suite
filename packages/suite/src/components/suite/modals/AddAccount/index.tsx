@@ -153,6 +153,7 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
                 selectedNetwork &&
                 (selectedNetworkEnabled ? (
                     <AddAccountButton
+                        network={selectedNetwork}
                         emptyAccounts={emptyAccounts}
                         onEnableAccount={onEnableAccount}
                     />
