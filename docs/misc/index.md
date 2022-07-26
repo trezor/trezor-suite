@@ -8,6 +8,5 @@ At any time, information stored here might be restructured or moved to a differe
 location, so as to ensure that the documentation is well structured overall.
 
 -   [build](./build.md)
--   [notes](./notes.md)
 -   [review](./review.md)
 -   [videos](./videos.md)
