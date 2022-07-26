@@ -1,4 +1,4 @@
-import { networksCompatibility } from '@suite-common/wallet-networks-config';
+import { networksCompatibility } from '@suite-common/wallet-config';
 
 /**
  * @deprecated

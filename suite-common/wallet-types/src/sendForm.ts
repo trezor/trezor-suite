@@ -1,6 +1,6 @@
 import { UseFormMethods } from 'react-hook-form';
 
-import { Network } from '@suite-common/wallet-networks-config';
+import { Network } from '@suite-common/wallet-config';
 import { FeeLevel } from '@trezor/connect';
 
 import { TypedValidationRules } from './form';

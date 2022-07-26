@@ -1,4 +1,4 @@
-import { Network } from '@suite-common/wallet-networks-config';
+import { Network } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
 
 export type MetadataItem = string;

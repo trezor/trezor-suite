@@ -28,7 +28,7 @@
             "path": "../../suite-common/metadata-types"
         },
         {
-            "path": "../../suite-common/wallet-networks-config"
+            "path": "../../suite-common/wallet-config"
         },
         {
             "path": "../../suite-common/wallet-types"

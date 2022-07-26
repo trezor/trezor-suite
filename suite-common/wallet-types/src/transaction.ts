@@ -9,7 +9,7 @@ import {
     CardanoInput,
     CardanoOutput,
 } from '@trezor/connect';
-import { Network } from '@suite-common/wallet-networks-config';
+import { Network } from '@suite-common/wallet-config';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 
 import { TimestampedRates } from './fiatRates';
