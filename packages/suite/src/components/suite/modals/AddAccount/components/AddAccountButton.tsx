@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
-
 import { Button, Tooltip } from '@trezor/components';
-import { Account } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { useAccountSearch } from '@suite-hooks';
+import { AddCoinJoinAccountButton } from './AddCoinJoinAccountButton';
 
-const verifyAvailibility = ({
+const verifyAvailability = ({
     emptyAccounts,
     account,
 }: {
@@ -68,16 +68,22 @@ const AddButton = ({ account, isDisabled, onEnableAccount }: ButtonProps) => {
     );
 };
 
-interface Props {
+interface AddAccountButtonProps {
+    network: Network;
     emptyAccounts: Account[];
     onEnableAccount: (account: Account) => void;
 }
 
-export const AddAccountButton = ({ emptyAccounts, onEnableAccount }: Props) => {
+export const AddAccountButton = ({
+    network,
+    emptyAccounts,
+    onEnableAccount,
+}: AddAccountButtonProps) => {
+    if (network.accountType === 'coinjoin') return <AddCoinJoinAccountButton network={network} />;
     if (emptyAccounts.length === 0) return null;
     const account = emptyAccounts[emptyAccounts.length - 1];
 
-    const disabledMessage = verifyAvailibility({ emptyAccounts, account });
+    const disabledMessage = verifyAvailability({ emptyAccounts, account });
 
     return (
         <Tooltip maxWidth={285} content={disabledMessage}>

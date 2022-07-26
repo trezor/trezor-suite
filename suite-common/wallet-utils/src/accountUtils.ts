@@ -112,6 +112,8 @@ export const getBip43Type = (path: string) => {
             return 'bip44';
         case `1852'`:
             return 'shelley';
+        case `10025'`:
+            return 'slip25';
         default:
             return 'unknown';
     }
@@ -123,6 +125,7 @@ export const getAccountTypeName = (path: string) => {
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_NAME';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_NAME';
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
+    if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_NAME';
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
 };
 
@@ -132,6 +135,7 @@ export const getAccountTypeTech = (path: string) => {
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_TECH';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_TECH';
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
+    if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_TECH';
     return 'TR_ACCOUNT_TYPE_BIP44_TECH';
 };
 
@@ -141,6 +145,7 @@ export const getAccountTypeDesc = (path: string) => {
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_DESC';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_DESC';
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY_DESC';
+    if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_DESC';
     return 'TR_ACCOUNT_TYPE_BIP44_DESC';
 };
 
@@ -150,6 +155,7 @@ export const getAccountTypeUrl = (path: string) => {
     if (bip43 === 'bip84') return WIKI_BIP84_URL;
     if (bip43 === 'bip49') return WIKI_BIP49_URL;
     if (bip43 === 'shelley') return undefined;
+    if (bip43 === 'slip25') return undefined;
     return WIKI_BIP44_URL;
 };
 
