@@ -39,6 +39,7 @@ interface Props {
 }
 
 const getGroupLabel = (type: Props['type']) => {
+    if (type === 'coinjoin') return 'TR_COINJOIN_ACCOUNTS';
     if (type === 'taproot') return 'TR_TAPROOT_ACCOUNTS';
     if (type === 'legacy') return 'TR_LEGACY_ACCOUNTS';
     if (type === 'ledger') return 'TR_CARDANO_LEDGER_ACCOUNTS';
