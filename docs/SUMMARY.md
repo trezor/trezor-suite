@@ -1,7 +1,8 @@
 # Summary
 
--   [Introduction](./index.md)
-    -   [Analytics](./analytics/index.md)
+[Introduction](./index.md)
+
+-   [Analytics](./analytics/index.md)
     -   [AWS](./analytics/aws.md)
     -   [Sentry](./analytics/sentry.md)
 -   [Releases](./releases/index.md)
