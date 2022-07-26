@@ -35,7 +35,7 @@ const npmInfoRaw = child_process.spawnSync('npm', ['view', '--json'], {
 }).stdout;
 
 const npmInfo = JSON.parse(npmInfoRaw);
-const npmVersion = npmInfo['dist-tags'][distTag];
+const npmVersion = npmInfo[packageJSON.name]['dist-tags'][distTag];
 
 const PRODUCTION = ['npm-release'];
 

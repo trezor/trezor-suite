@@ -75,7 +75,7 @@ const checkPackageDependencies = packageName => {
             return;
         }
 
-        const remoteChecksum = viewResultJSON.dist.shasum;
+        const remoteChecksum = viewResultJSON[dependency].dist.shasum;
 
         console.log('remote checksum: ', remoteChecksum);
 
