@@ -4,6 +4,7 @@ import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as tokenActions from '@wallet-actions/tokenActions';
+import { isTrezorConnectBackendType } from '@suite-utils/backend';
 import {
     analyzeTransactions,
     getAccountTransactions,
@@ -132,6 +133,7 @@ export const changeAccountVisibility = (payload: Account, visible = true): Accou
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
+        if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
         // first basic check, traffic optimization
         // basic check returns only small amount of data without full transaction history
         const basic = await TrezorConnect.getAccountInfo({

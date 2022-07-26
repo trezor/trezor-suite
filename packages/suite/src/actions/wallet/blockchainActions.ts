@@ -20,7 +20,11 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { NETWORKS } from '@wallet-config';
 import { BLOCKCHAIN } from './constants';
-import { getCustomBackends, getBackendFromSettings } from '@suite-utils/backend';
+import {
+    isTrezorConnectBackendType,
+    getCustomBackends,
+    getBackendFromSettings,
+} from '@suite-utils/backend';
 import type { Dispatch, GetState } from '@suite-types';
 import type { Account, Network, CustomBackend, BackendType } from '@wallet-types';
 import type { Timeout } from '@trezor/type-utils';
@@ -269,7 +273,10 @@ export const subscribe =
 
         // do NOT subscribe if there are no accounts
         // it leads to websocket disconnection
-        const accountsToSubscribe = findAccountsByNetwork(symbol, getState().wallet.accounts);
+        const accountsToSubscribe = findAccountsByNetwork(
+            symbol,
+            getState().wallet.accounts,
+        ).filter(a => isTrezorConnectBackendType(a.backendType)); // do not subscribe accounts with unsupported backend type
         if (!accountsToSubscribe.length) return;
         return TrezorConnect.blockchainSubscribe({
             accounts: accountsToSubscribe,
@@ -284,7 +291,9 @@ export const unsubscribe = (removedAccounts: Account[]) => (_: Dispatch, getStat
 
     const { accounts } = getState().wallet;
     const promises = symbols.map(symbol => {
-        const accountsToSubscribe = findAccountsByNetwork(symbol, accounts);
+        const accountsToSubscribe = findAccountsByNetwork(symbol, accounts).filter(a =>
+            isTrezorConnectBackendType(a.backendType),
+        ); // do not unsubscribe accounts with unsupported backend type
         if (accountsToSubscribe.length) {
             // there are some accounts left, update subscription
             return TrezorConnect.blockchainSubscribe({
