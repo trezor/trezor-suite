@@ -181,6 +181,9 @@ const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
     const normalAccounts = filteredAccounts.filter(
         a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
     );
+    const coinjoinAccounts = filteredAccounts.filter(
+        a => a.accountType === 'coinjoin' && (!a.empty || a.visible),
+    );
     const taprootAccounts = filteredAccounts.filter(
         a => a.accountType === 'taproot' && (!a.empty || a.visible),
     );
@@ -240,6 +243,7 @@ const AccountsMenu = ({ isMenuInline }: AccountsMenuProps) => {
         listedAccountsLength > 0 || !searchString ? (
             <>
                 {buildGroup('normal', normalAccounts)}
+                {buildGroup('coinjoin', coinjoinAccounts)}
                 {buildGroup('taproot', taprootAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}
