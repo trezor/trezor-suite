@@ -24,3 +24,5 @@
 -   `getOwnershipId` method
 -   `getOwnershipProof` method
 -   `authorizeCoinJoin` method
+-   `getFirmwareHash` method
+-   [support for babbage features in cardano](https://github.com/trezor/trezor-suite/commit/efe9c78a2f74a1b7653b3fddf6cca35ba38d3ae9)
