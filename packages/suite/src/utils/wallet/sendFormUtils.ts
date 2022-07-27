@@ -275,7 +275,7 @@ export const getBitcoinComposeOutputs = (
             }
         } else if (output.amount) {
             const amount = isSatoshis
-                ? output.amount || '0'
+                ? output.amount
                 : networkAmountToSatoshi(output.amount, symbol);
 
             if (address) {

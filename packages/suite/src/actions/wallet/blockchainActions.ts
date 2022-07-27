@@ -370,7 +370,7 @@ export const onNotification =
             const accountDevice = findAccountDevice(account, getState().devices);
 
             const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
-            const areSatoshisUsed = getAreSatoshisUsed(getState());
+            const areSatoshisUsed = getAreSatoshisUsed(getState().wallet.settings);
 
             const formattedAmount = token
                 ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`

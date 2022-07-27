@@ -324,12 +324,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
         const conversionToUse = areSatsUsed ? amountToSatoshi : formatAmount;
 
-        outputs.forEach((output, index) =>
-            sendFormUtils.setAmount(
-                index,
-                conversionToUse(output.amount || '0', state.network.decimals),
-            ),
-        );
+        outputs.forEach((output, index) => {
+            if (!output.amount) {
+                return;
+            }
+
+            sendFormUtils.setAmount(index, conversionToUse(output.amount, state.network.decimals));
+        });
 
         composeRequest();
     }, [areSatsUsed]);

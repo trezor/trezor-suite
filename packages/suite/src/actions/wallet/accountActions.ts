@@ -185,7 +185,7 @@ export const fetchAndUpdateAccount =
             analyze.newTransactions.forEach(tx => {
                 const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
 
-                const areSatoshisUsed = getAreSatoshisUsed(getState());
+                const areSatoshisUsed = getAreSatoshisUsed(getState().wallet.settings);
 
                 const formattedAmount = token
                     ? `${accountUtils.formatAmount(
