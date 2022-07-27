@@ -7,7 +7,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import {
-    isBitcoinOnly,
+    isDeviceBitcoinOnly,
     getPhysicalDeviceCount,
     getFwVersion,
     isDeviceInBootloader,
@@ -77,7 +77,7 @@ const analyticsMiddleware =
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
                             totalInstances: state.devices.length,
-                            isBitcoinOnly: isBitcoinOnly(action.payload),
+                            isBitcoinOnly: isDeviceBitcoinOnly(action.payload),
                             totalDevices: getPhysicalDeviceCount(state.devices),
                             language: features.language,
                             model: features.model,

@@ -13,7 +13,7 @@ import {
     MODAL,
     PROTOCOL,
 } from '@suite-actions/constants';
-import { getFwVersion, getBootloaderVersion, isBitcoinOnly } from '@suite-utils/device';
+import { getFwVersion, getBootloaderVersion, isDeviceBitcoinOnly } from '@suite-utils/device';
 import { getSuiteReadyPayload } from '@suite-utils/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from '@suite-utils/sentry';
 
@@ -90,7 +90,7 @@ const sentryMiddleware =
                 setSentryContext(deviceContextName, {
                     mode,
                     firmware: getFwVersion(action.payload),
-                    isBitcoinOnly: isBitcoinOnly(action.payload),
+                    isBitcoinOnly: isDeviceBitcoinOnly(action.payload),
                     bootloader: getBootloaderVersion(action.payload),
                     model: features.model,
                 });

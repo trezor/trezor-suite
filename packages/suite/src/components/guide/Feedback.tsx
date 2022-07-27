@@ -15,7 +15,7 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@suite-utils/env';
-import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { getFwType, getFwVersion } from '@suite-utils/device';
 
 const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
@@ -177,8 +177,8 @@ export const Feedback = ({ type }: FeedbackProps) => {
     }, [description]);
 
     let firmwareType = '';
-    if (device) {
-        firmwareType = isBitcoinOnly(device) ? 'bitcoin-only' : 'regular';
+    if (device?.features) {
+        firmwareType = getFwType(device);
     }
 
     const onSubmit = useCallback(() => {

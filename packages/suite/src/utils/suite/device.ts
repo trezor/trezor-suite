@@ -1,5 +1,5 @@
 import { Device, KnownDevice, UnavailableCapability } from '@trezor/connect';
-import { TrezorDevice, AcquiredDevice } from '@suite-types';
+import { TrezorDevice, AcquiredDevice, FirmwareType } from '@suite-types';
 
 /**
  * Used in Welcome step in Onboarding
@@ -132,6 +132,16 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
 
 export const isDeviceInBootloader = (device?: KnownDevice) => !!device?.features.bootloader_mode;
 
+export const isDeviceBitcoinOnly = (device: TrezorDevice | Device) => {
+    const { features } = device;
+    return !!(
+        features &&
+        features.capabilities &&
+        features.capabilities.length > 0 &&
+        !features.capabilities.includes('Capability_Bitcoin_like')
+    );
+};
+
 export const getDeviceModel = (device: TrezorDevice): 'T' | '1' => {
     const { features } = device;
     return features && features.major_version > 1 ? 'T' : '1';
@@ -167,6 +177,13 @@ export const getFwVersion = (device?: KnownDevice) => {
     }
 
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
+};
+
+export const getFwType = (device: KnownDevice) => {
+    if (isDeviceInBootloader(device)) {
+        return '';
+    }
+    return isDeviceBitcoinOnly(device) ? FirmwareType.BitcoinOnly : FirmwareType.Universal;
 };
 
 export const supportIntermediary = (features: TrezorDevice['features']) =>
@@ -371,16 +388,6 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) =>
             return result.concat(instances[0]);
         }, [] as TrezorDevice[])
         .sort(sortByPriority);
-
-export const isBitcoinOnly = (device: TrezorDevice | Device) => {
-    const { features } = device;
-    return !!(
-        features &&
-        features.capabilities &&
-        features.capabilities.length > 0 &&
-        !features.capabilities.includes('Capability_Bitcoin_like')
-    );
-};
 
 export const getPhysicalDeviceCount = (devices: Device[]) => {
     const uniqueIds = new Set(devices.map(d => d.id));

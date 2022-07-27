@@ -12,7 +12,7 @@ import {
     getDeviceModel,
     getFwRevision,
     getFwVersion,
-    isBitcoinOnly,
+    isDeviceBitcoinOnly,
 } from './device';
 
 import type { TransportInfo } from '@trezor/connect';
@@ -133,7 +133,7 @@ export const validateDeviceCompatibility = (
     const deviceFwVersion = getFwVersion(device);
     const deviceBootloaderVersion = getBootloaderVersion(device);
     const deviceFwRevision = getFwRevision(device);
-    const deviceFwVariant = isBitcoinOnly(device) ? 'bitcoin-only' : 'regular';
+    const deviceFwVariant = isDeviceBitcoinOnly(device) ? 'bitcoin-only' : 'regular';
     const deviceModel = getDeviceModel(device).toLowerCase();
     const deviceVendor = device.features.vendor.toLowerCase();
 

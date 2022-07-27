@@ -6,7 +6,7 @@ import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { getFwType, getFwVersion, isDeviceBitcoinOnly } from '@suite-utils/device';
 import { Button, Tooltip } from '@trezor/components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -31,7 +31,7 @@ interface FirmwareTypeProps {
     isDeviceLocked: boolean;
 }
 
-export const FirmwareType = ({ isDeviceLocked }: FirmwareTypeProps) => {
+export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
     const { device } = useDevice();
     const { goto } = useActions({
         goto: routerActions.goto,
@@ -42,11 +42,12 @@ export const FirmwareType = ({ isDeviceLocked }: FirmwareTypeProps) => {
         return null;
     }
 
-    const currentFwVersion = getFwVersion(device);
     const { revision } = device.features;
-    const btcOnly = isBitcoinOnly(device);
-    const githubButtonText = btcOnly ? 'Bitcoin-only' : 'Universal';
-    const actionButtonId = btcOnly ? 'TR_SWITCH_TO_UNIVERSAL' : 'TR_SWITCH_TO_BITCOIN';
+    const currentFwVersion = getFwVersion(device);
+    const currentFwType = getFwType(device);
+    const actionButtonId = isDeviceBitcoinOnly(device)
+        ? 'TR_SWITCH_TO_UNIVERSAL'
+        : 'TR_SWITCH_TO_BITCOIN';
 
     const handleAction = () => {
         goto('firmware-index', {
@@ -80,7 +81,7 @@ export const FirmwareType = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                                     alignIcon="right"
                                                     disabled={!revision}
                                                 >
-                                                    {githubButtonText}
+                                                    {currentFwType}
                                                 </Button>
                                             </TrezorLink>
                                         </VersionTooltip>

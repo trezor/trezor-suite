@@ -21,7 +21,7 @@ export const ContinueButton = (props: ButtonProps) => (
 
 export const InstallButton = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@firmware/install-button">
-        <Translation id="TR_INSTALL_UNIVERSAL" />
+        <Translation id="TR_INSTALL" />
     </StyledButton>
 );
 

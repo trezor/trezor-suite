@@ -10,7 +10,7 @@ import {
 } from '@firmware-components';
 import { useSelector, useFirmware, useOnboarding } from '@suite-hooks';
 import { TrezorDevice } from '@suite-types';
-import { getFwVersion } from '@suite-utils/device';
+import { getFwType, getFwVersion } from '@suite-utils/device';
 
 const FirmwareStep = () => {
     const { device } = useSelector(state => ({
@@ -83,7 +83,7 @@ const FirmwareStep = () => {
                 description={
                     <Translation
                         id="TR_FIRMWARE_INSTALLED_TEXT"
-                        values={{ version: getFwVersion(device) }}
+                        values={{ type: getFwType(device), version: getFwVersion(device) }}
                     />
                 }
                 innerActions={
