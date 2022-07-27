@@ -2,13 +2,13 @@ import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import { getBootloaderVersion, getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { getBootloaderVersion, getFwVersion, isDeviceBitcoinOnly } from '@suite-utils/device';
 import { isDesktop } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
 import { addToast } from '@suite-actions/notificationActions';
 
 import { Dispatch, GetState, AppState, AcquiredDevice, FirmwareType } from '@suite-types';
-import type { Await } from '@suite/types/utils';
+import type { Await } from '@trezor/type-utils';
 
 export type FirmwareAction =
     | {
@@ -101,29 +101,31 @@ const firmwareInstall =
 
             if (!toRelease) return;
 
-            const intermediary = model === 1 && !toRelease.isLatest;
-            if (intermediary) {
-                console.warn(
-                    'Cannot install latest firmware. Will install intermediary fw instead.',
-                );
-            } else {
-                console.warn(`Installing firmware ${toRelease.release.version}`);
-            }
-
             // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device),
             // unless the user wants to switch firmware type
             let toBitcoinOnlyFirmware = firmwareType === FirmwareType.BitcoinOnly;
             if (!firmwareType) {
-                toBitcoinOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);
+                toBitcoinOnlyFirmware = !prevDevice ? false : isDeviceBitcoinOnly(prevDevice);
             }
 
+            const intermediary = model === 1 && !toRelease.isLatest;
+            const targetFirmwareVersion = toRelease.release.version.join('.');
+
+            console.warn(
+                intermediary
+                    ? 'Cannot install latest firmware. Will install intermediary fw instead.'
+                    : `Installing ${
+                          toBitcoinOnlyFirmware ? FirmwareType.BitcoinOnly : FirmwareType.Universal
+                      } firmware ${targetFirmwareVersion}.`,
+            );
+
             analyticsPayload = {
-                toFwVersion: toRelease.release.version.join('.'),
+                toFwVersion: targetFirmwareVersion,
                 toBtcOnly: toBitcoinOnlyFirmware,
             };
 
             // temporarily save target firmware type so that it can be displayed during installation and restart
-            // the value resets to undefined on firmwareActions.resetReducer() - doing it here would be too early because wee need to keep it during the restart
+            // the value resets to undefined on firmwareActions.resetReducer() - doing it here would be too early because we need to keep it during the restart
             if (firmwareType) {
                 dispatch({ type: FIRMWARE.SET_TARGET_TYPE, payload: firmwareType });
             }

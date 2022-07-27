@@ -8,7 +8,7 @@ import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 import { useDevice, useSelector } from '@suite-hooks';
-import { isBitcoinOnly } from '@suite-utils/device';
+import { isDeviceBitcoinOnly } from '@suite-utils/device';
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 
 const StyledSettingsLayout = styled(SettingsLayout)`
@@ -30,7 +30,7 @@ export const SettingsCoins = () => {
 
     const { device } = useDevice();
 
-    const bitcoinOnlyFirmware = device && isBitcoinOnly(device);
+    const bitcoinOnlyFirmware = device && isDeviceBitcoinOnly(device);
     const onlyBitcoinEnabled = enabledNetworks.every(coin =>
         ['btc', 'regtest', 'test'].includes(coin),
     );

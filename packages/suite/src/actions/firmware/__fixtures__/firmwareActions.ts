@@ -135,6 +135,41 @@ export const actions = [
         },
     },
     {
+        description: 'Success T1 (without intermediary) - install Universal firmware',
+        action: () => firmwareActions.firmwareUpdate(FirmwareType.Universal),
+        mocks: {
+            connect: {
+                success: true,
+                payload: firmwareUpdateResponsePayload,
+            },
+        },
+        initialState: {
+            suite: {
+                device: getSuiteDevice({
+                    connected: true,
+                    mode: 'bootloader',
+                    features: getDeviceFeatures({ major_version: 1 }),
+                }),
+            },
+            devices: [
+                getSuiteDevice({
+                    connected: true,
+                    mode: 'bootloader',
+                    features: getDeviceFeatures({ major_version: 1 }),
+                }),
+            ],
+        },
+        result: {
+            actions: [
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_TARGET_TYPE, payload: FirmwareType.Universal },
+                { type: FIRMWARE.SET_HASH, payload: firmwareUpdateResponsePayload },
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'unplug' },
+            ],
+            state: { firmware: { status: 'unplug', error: undefined } },
+        },
+    },
+    {
         description: 'Fails for missing device',
         action: () => firmwareActions.firmwareUpdate(),
         initialState: {
