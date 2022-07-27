@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { getSelectedTimeFrame, setSelectedTimeFrame } from '../appGraphReducer';
-import { TimeFrameValues } from '../reducers/types';
+import { getSelectedTimeFrame, setSelectedTimeFrame } from '../slice';
+import { TimeFrameValues } from '../types';
 
 type TimeSwitchItemProps = {
     value: TimeFrameValues;
