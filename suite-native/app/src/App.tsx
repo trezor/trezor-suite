@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 
 import { NavigationContainer } from '@react-navigation/native';
 
+import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { store } from '@suite-native/state';
 import TrezorConnect from '@trezor/connect';
 
@@ -21,6 +22,8 @@ const connectOptions = {
 };
 
 export const App = () => {
+    const [onBoarding, setOnBoarding] = useState(true);
+
     const getAccountInfo = useCallback(() => {
         TrezorConnect.getAccountInfo({
             coin: 'btc',
@@ -50,6 +53,10 @@ export const App = () => {
             });
     }, [getAccountInfo]);
 
+    const handleOnboardingCompleted = () => {
+        setOnBoarding(false);
+    };
+
     const handleNavigationReady = () => {
         SplashScreen.hide();
     };
@@ -60,7 +67,13 @@ export const App = () => {
                 <Provider store={store}>
                     <SafeAreaProvider>
                         <StylesProvider>
-                            <RootTabNavigator />
+                            {onBoarding ? (
+                                <OnboardingStackNavigator
+                                    onOnboardingCompleted={handleOnboardingCompleted}
+                                />
+                            ) : (
+                                <RootTabNavigator />
+                            )}
                         </StylesProvider>
                     </SafeAreaProvider>
                 </Provider>

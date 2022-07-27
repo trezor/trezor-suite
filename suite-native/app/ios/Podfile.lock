@@ -436,6 +436,10 @@ PODS:
   - SocketRocket (0.6.0)
   - trezor-transport-native (1.0.0):
     - React-Core
+  - VisionCamera (2.14.0):
+    - React
+    - React-callinvoker
+    - React-Core
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -505,6 +509,7 @@ DEPENDENCIES:
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
   - trezor-transport-native (from `../../../packages/transport-native`)
+  - VisionCamera (from `../../../node_modules/react-native-vision-camera`)
   - Yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -603,6 +608,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-screens"
   trezor-transport-native:
     :path: "../../../packages/transport-native"
+  VisionCamera:
+    :path: "../../../node_modules/react-native-vision-camera"
   Yoga:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
@@ -660,6 +667,7 @@ SPEC CHECKSUMS:
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   trezor-transport-native: 04d29d47d79fa07e4b02a70b87eeabd0f6199b0b
+  VisionCamera: 0545b4d3ed83299af898cec4ee2bf9a6ca98fc7a
   Yoga: 99652481fcd320aefa4a7ef90095b95acd181952
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 

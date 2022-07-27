@@ -3,29 +3,47 @@ import { SafeAreaView, ScrollView, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box } from '@suite-native/atoms';
+import { Color } from '@trezor/theme';
 
 type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
+    hasStatusBar?: boolean;
+    backgroundColor?: Color;
 };
 
-const screenStyle = prepareNativeStyle<{ insetTop: number }>((utils, { insetTop }) => ({
-    flex: 1,
-    backgroundColor: '#E5E5E5',
-    paddingTop: Math.max(insetTop, utils.spacings.medium),
+const screenContainerStyle = prepareNativeStyle<{ insetTop: number; backgroundColor: Color }>(
+    (utils, { insetTop, backgroundColor }) => ({
+        flex: 1,
+        backgroundColor,
+        paddingTop: Math.max(insetTop, utils.spacings.medium),
+    }),
+);
+
+const screenContentStyle = prepareNativeStyle(_ => ({
+    flexGrow: 1,
 }));
 
-export const Screen = ({ children, header }: ScreenProps) => {
+export const Screen = ({
+    children,
+    header,
+    hasStatusBar = true,
+    backgroundColor = 'gray100',
+}: ScreenProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
     return (
-        <SafeAreaView style={applyStyle(screenStyle, { insetTop: insets.top })}>
-            <StatusBar barStyle="dark-content" />
+        <SafeAreaView
+            style={[applyStyle(screenContainerStyle, { insetTop: insets.top, backgroundColor })]}
+        >
+            <StatusBar barStyle="dark-content" hidden={!hasStatusBar} />
             {header && header}
-            <ScrollView contentInsetAdjustmentBehavior="automatic">
-                <Box>{children}</Box>
+            <ScrollView
+                contentInsetAdjustmentBehavior="automatic"
+                contentContainerStyle={applyStyle(screenContentStyle)}
+            >
+                {children}
             </ScrollView>
         </SafeAreaView>
     );

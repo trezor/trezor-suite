@@ -7,7 +7,7 @@ import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/
 import { Text } from '../Text';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
-export type ButtonColorScheme = 'primary' | 'gray';
+export type ButtonColorScheme = 'primary' | 'gray' | 'white';
 
 export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
     colorScheme?: ButtonColorScheme;
@@ -49,10 +49,14 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorSc
         gray: {
             backgroundColor: utils.colors.gray300,
         },
+        white: {
+            backgroundColor: utils.colors.white,
+        },
     };
 
     return {
         flexDirection: 'row',
+        justifyContent: 'center',
         ...buttonSizeStyles[size],
         ...buttonColorSchemeStyles[colorScheme],
     };
@@ -60,7 +64,8 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorSc
 
 const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
     primary: 'white',
-    gray: 'gray700',
+    gray: 'gray800',
+    white: 'black',
 };
 
 export const Button = ({

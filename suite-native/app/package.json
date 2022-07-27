@@ -19,6 +19,7 @@
         "@shopify/react-native-skia": "0.1.137",
         "@suite-native/atoms": "*",
         "@suite-native/module-home": "*",
+        "@suite-native/module-onboarding": "*",
         "@suite-native/module-settings": "*",
         "@suite-native/navigation": "*",
         "@suite-native/state": "*",
@@ -34,7 +35,8 @@
         "react-native-reanimated": "^2.8.0",
         "react-native-safe-area-context": "^4.3.1",
         "react-native-screens": "^3.13.1",
-        "react-native-splash-screen": "^3.3.0"
+        "react-native-splash-screen": "^3.3.0",
+        "react-native-vision-camera": "^2.14.0"
     },
     "devDependencies": {
         "@babel/core": "^7.12.9",
