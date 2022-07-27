@@ -147,6 +147,13 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState) => {
 
     // account does exist
     if (account && account.visible) {
+        if (typeof account?.lastKnownState?.progress === 'number') {
+            return {
+                status: 'loading',
+                loader: 'account-loading',
+                account,
+            };
+        }
         // Success!
         const loadedState = {
             status: 'loaded',
@@ -235,6 +242,7 @@ export const getStateForAction = (action: Action) => (dispatch: Dispatch, getSta
             'addresses',
             'visible',
             'utxo',
+            'lastKnownState',
         ],
         discovery: [
             'status',
