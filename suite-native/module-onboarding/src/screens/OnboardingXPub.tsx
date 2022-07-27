@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import { TouchableOpacity } from 'react-native';
 
+import { useScanBarcodes, BarcodeFormat } from 'vision-camera-code-scanner';
+
 import { Screen } from '@suite-native/navigation';
 import { Box, Input, InputWrapper, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { useXPubScanner } from '../useXPubScanner';
 
 const qrScannerStyles = prepareNativeStyle(utils => ({
     height: 329,
@@ -31,7 +31,9 @@ export const OnboardingXPub = () => {
     const { applyStyle } = useNativeStyles();
     const devices = useCameraDevices();
 
-    const { frameProcessor, barcodes } = useXPubScanner();
+    const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
+        checkInverted: true,
+    });
 
     const device = devices.back;
 
