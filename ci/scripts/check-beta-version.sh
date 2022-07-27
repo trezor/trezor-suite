@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=$(jq -r .version package.json)
+VERSION=$(jq -r .version packages/connect/package.json)
 
 [[ "$VERSION" != *"beta"* ]]
 
