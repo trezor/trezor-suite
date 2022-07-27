@@ -20,9 +20,9 @@ export const DashboardHeader = () => {
             <DashboardHeaderDeviceChip />
             <Box flexDirection="row">
                 <Box marginRight="medium">
-                    <Icon name="eyeSlash" />
+                    <Icon name="eyeSlash" color="gray600" />
                 </Box>
-                <Icon name="notifications" />
+                <Icon name="notifications" color="gray600" />
             </Box>
         </Box>
     );

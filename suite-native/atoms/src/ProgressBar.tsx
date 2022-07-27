@@ -6,6 +6,7 @@ import { Box } from './Box';
 
 type ProgressBarProps = {
     value: number; // Percentage value
+    color: string;
 };
 
 const PROGRESS_BAR_WIDTH = 82;
@@ -15,18 +16,20 @@ const progressBarStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.gray200,
 }));
 
-const progressFillStyle = prepareNativeStyle<{ width: number }>((utils, { width }) => ({
-    width: (width / 100) * PROGRESS_BAR_WIDTH,
-    height: 3,
-    backgroundColor: utils.colors.green,
-}));
+const progressFillStyle = prepareNativeStyle<{ width: number; color: string }>(
+    (_, { width, color }) => ({
+        width: (width / 100) * PROGRESS_BAR_WIDTH,
+        height: 3,
+        backgroundColor: color,
+    }),
+);
 
-export const ProgressBar = ({ value }: ProgressBarProps) => {
+export const ProgressBar = ({ value, color }: ProgressBarProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Box style={applyStyle(progressBarStyle)}>
-            <Box style={applyStyle(progressFillStyle, { width: value })} />
+            <Box style={applyStyle(progressFillStyle, { width: value, color })} />
         </Box>
     );
 };

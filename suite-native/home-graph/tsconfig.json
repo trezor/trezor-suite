@@ -2,8 +2,8 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../atoms" },
         { "path": "../../packages/styles" },
-        { "path": "../module-settings" },
-        { "path": "../home-graph" }
+        { "path": "../../packages/theme" }
     ]
 }

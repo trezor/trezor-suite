@@ -1,10 +1,9 @@
 {
-    "name": "@suite-native/module-home",
+    "name": "@suite-native/home-graph",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "type": "module",
     "main": "src/index",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
@@ -12,16 +11,16 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "^6.0.11",
-        "@react-navigation/stack": "^6.2.2",
-        "@suite-native/navigation": "*",
+        "@shopify/react-native-skia": "0.1.123",
         "@suite-native/atoms": "*",
-        "@suite-native/home-graph": "*",
         "@trezor/styles": "*",
+        "@trezor/theme": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2",
-        "react-redux": "7.2.2",
-        "@trezor/theme": "*",
-        "@trezor/icons": "*"
+        "react-native-gesture-handler": "^2.4.1",
+        "react-native-graph": "^0.1.1",
+        "react-native-reanimated": "^2.8.0",
+        "@reduxjs/toolkit": "^1.8.3",
+        "react-redux": "7.2.2"
     }
 }
