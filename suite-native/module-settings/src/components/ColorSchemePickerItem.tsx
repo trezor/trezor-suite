@@ -1,25 +1,26 @@
 import React from 'react';
 import { ColorValue, TouchableOpacity } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants, ThemeColorVariant } from '@trezor/theme';
-import { Box, Text } from '@suite-native/atoms';
+
+import { selectIsColorSchemeActive, setColorScheme } from '../slice';
 
 type ColorSchemePickerItemProps = {
-    isSelected?: boolean;
-    onPress: () => void;
     colorScheme: ThemeColorVariant;
 };
 
-const pickerItemWrapperStyle = prepareNativeStyle<{ isSelected: boolean }>(
-    (utils, { isSelected }) => ({
+const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean }>(
+    (utils, { isColorSchemeActive }) => ({
         backgroundColor: utils.colors.gray100,
         borderRadius: utils.borders.radii.medium,
         height: 114,
         flex: 1,
         paddingTop: 33,
         borderWidth: utils.borders.widths.medium,
-        borderColor: isSelected ? utils.colors.green : utils.colors.gray100,
+        borderColor: isColorSchemeActive ? utils.colors.green : utils.colors.gray100,
     }),
 );
 
@@ -49,16 +50,20 @@ const textStyle = prepareNativeStyle(utils => ({
     textTransform: 'capitalize',
 }));
 
-export const ColorSchemePickerItem = ({
-    onPress,
-    colorScheme,
-    isSelected = false,
-}: ColorSchemePickerItemProps) => {
+export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const dispatch = useDispatch();
+
+    const isColorSchemeActive = useSelector(selectIsColorSchemeActive(colorScheme));
+
+    const handleSchemePress = () => {
+        dispatch(setColorScheme(colorScheme));
+    };
+
     return (
         <TouchableOpacity
-            onPress={onPress}
-            style={applyStyle(pickerItemWrapperStyle, { isSelected })}
+            onPress={handleSchemePress}
+            style={applyStyle(pickerItemWrapperStyle, { isColorSchemeActive })}
         >
             <Box flexDirection="row" justifyContent="center">
                 <Box
@@ -80,7 +85,7 @@ export const ColorSchemePickerItem = ({
                     })}
                 />
             </Box>
-            <Text style={applyStyle(textStyle)} color={isSelected ? 'green' : 'gray600'}>
+            <Text style={applyStyle(textStyle)} color={isColorSchemeActive ? 'green' : 'gray600'}>
                 {colorScheme}
             </Text>
         </TouchableOpacity>

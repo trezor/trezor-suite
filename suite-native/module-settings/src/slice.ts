@@ -26,7 +26,9 @@ export const appSettingsSlice = createSlice({
     },
 });
 
-export const selectThemeVariant = (state: SliceState) => state.appSettings.colorScheme;
+export const selectColorScheme = (state: SliceState) => state.appSettings.colorScheme;
+export const selectIsColorSchemeActive = (colorScheme: AppColorScheme) => (state: SliceState) =>
+    state.appSettings.colorScheme === colorScheme;
 
 export const { setColorScheme } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

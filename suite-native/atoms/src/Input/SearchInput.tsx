@@ -55,11 +55,10 @@ const inputWrapperStyle = prepareNativeStyle<InputStyleProps>((utils, { isFocuse
 }));
 
 export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }: InputProps) => {
-    const { applyStyle } = useNativeStyles();
+    const { applyStyle, utils } = useNativeStyles();
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const searchInputRef = useRef<TextInput | null>(null);
     const isClearButtonVisible = !!value.length;
-
     const handleClear = () => {
         onChange('');
     };
@@ -79,6 +78,7 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
                     value={value}
                     onChangeText={onChange}
                     placeholder={placeholder}
+                    placeholderTextColor={utils.colors.gray700}
                     editable={!isDisabled}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
