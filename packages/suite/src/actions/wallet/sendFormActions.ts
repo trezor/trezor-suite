@@ -151,7 +151,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         ? new BigNumber(precomposedTx.totalSpent).minus(precomposedTx.fee).toString()
         : '0';
 
-    const areSatoshisUsed = getAreSatoshisUsed(getState());
+    const areSatoshisUsed = getAreSatoshisUsed(getState().wallet.settings);
 
     // get total amount without fee OR token amount
     const formattedAmount = token

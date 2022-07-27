@@ -6,5 +6,5 @@ export const getLocalCurrency = (localCurrency: string) => ({
     label: localCurrency.toUpperCase(),
 });
 
-export const getAreSatoshisUsed = (state: AppState) =>
-    state.wallet.settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
+export const getAreSatoshisUsed = (settings: AppState['wallet']['settings']) =>
+    settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
