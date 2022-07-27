@@ -279,7 +279,7 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.SettingsGeneralLabelingProvider;
           payload: {
-              provider: 'dropbox' | 'google' | 'fileSystem' | 'sdCard' | '';
+              provider: 'dropbox' | 'google' | 'fileSystem' | 'sdCard' | 'missing-provider' | '';
           };
       }
     | {
