@@ -111,45 +111,6 @@ suite web 2-master manual:
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io
 
-# @trezor/suite-desktop
-.e2e desktop:
-  stage: integration testing
-  dependencies:
-    - install
-  variables:
-    COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
-  before_script:
-    - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
-  script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
-    # 3 next steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
-    # but since this is run only in nightly builds it can be probably built inside the job for now..
-    - yarn workspace @trezor/suite-data msg-system-sign-config
-    - yarn workspace @trezor/suite-desktop build:linux
-    - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix
-    - docker-compose run test-run
-  after_script:
-    - docker-compose down
-    - docker network prune -f
-  artifacts:
-    expire_in: 7 days
-    when: always
-    paths:
-      - ./packages/integration-tests/projects/suite-desktop/screenshots
-  interruptible: true
-
-suite desktop:
-  extends: .e2e desktop
-  only:
-    <<: *run_everything_rules
-
-suite desktop manual:
-  extends: .e2e desktop
-  except:
-    <<: *run_everything_rules
-  when: manual
-
 # @trezor/transport
 .e2e transport:
   stage: integration testing

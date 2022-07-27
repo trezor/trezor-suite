@@ -1,0 +1,40 @@
+name: "@trezor/suite-desktop"
+
+on:
+  push:
+    paths:
+      - ".github"
+      - "packages/blockchain-link"
+      - "packages/utxo-lib"
+      - "packages/utils"
+      - "packages/suite"
+      - "packages/suite-desktop"
+      - "packages/connect"
+      # todo: more of them should be listed. maybe blacklist would server better
+      # also monorepo structure will be changing to allow easier setup fort this
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # todo: we probably don't need matrix for node versions
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+        # not sure about this yarn install command, copied from gitlab setup
+      - run: yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+      - run: yarn build:libs
+        # next 2 steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
+      - run: yarn workspace @trezor/suite-data msg-system-sign-config
+      - run: yarn workspace @trezor/suite-desktop build:linux
+      - run: "./docker/docker-blockchain-link-test.sh"
