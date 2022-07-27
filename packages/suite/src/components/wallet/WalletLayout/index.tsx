@@ -53,7 +53,11 @@ export const WalletLayout = ({
                     width="100%"
                     height="300px"
                     animate={account.loader === 'account-loading'}
-                />
+                >
+                    {account.account?.lastKnownState && (
+                        <>TODO: Display progress {account.account?.lastKnownState.progress}</>
+                    )}
+                </SkeletonRectangle>
             </Wrapper>
         );
     }

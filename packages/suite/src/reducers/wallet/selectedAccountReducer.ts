@@ -20,7 +20,7 @@ export interface AccountLoading {
         | 'auth' // Waiting for device.state
         | 'account-loading'; // Waiting for account
     mode?: undefined;
-    account?: undefined;
+    account?: Account;
     network?: Network;
     discovery?: Discovery;
     params?: undefined;
