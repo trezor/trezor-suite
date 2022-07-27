@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-analytics",
-    "version": "0.1.21",
+    "version": "0.1.22",
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,

@@ -2,6 +2,13 @@
 
 This changelog lists changes in suite events.
 
+### 1.22
+
+Added:
+
+-   suite-ready
+    -   labeling: 'missing-provider' (in case labeling is enabled, but no provider set)
+
 ### 1.21
 
 Added:

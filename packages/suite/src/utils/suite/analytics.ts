@@ -44,7 +44,7 @@ export const getSuiteReadyPayload = (state: AppState) => ({
     screenHeight: getScreenHeight(),
     platformLanguages: getPlatformLanguages().join(','),
     tor: getIsTorEnabled(state.suite.torStatus),
-    labeling: state.metadata.enabled ? state.metadata.provider?.type || '' : '',
+    labeling: state.metadata.enabled ? state.metadata.provider?.type || 'missing-provider' : '',
     rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase).length,
     rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
     theme: state.suite.settings.theme.variant,
