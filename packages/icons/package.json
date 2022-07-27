@@ -13,7 +13,7 @@
         "run-script": "babel-node --experimental-specifier-resolution=node --"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.123",
+        "@shopify/react-native-skia": "0.1.137",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "^17.0.2",

@@ -1,3 +1,5 @@
+const config = require('../../jest.config.native');
+
 module.exports = {
-    preset: '../../jest.config.base.js',
+    ...config,
 };

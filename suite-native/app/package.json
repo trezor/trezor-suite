@@ -17,7 +17,7 @@
     "dependencies": {
         "@react-navigation/bottom-tabs": "^6.3.1",
         "@react-navigation/native": "^6.0.11",
-        "@shopify/react-native-skia": "0.1.123",
+        "@shopify/react-native-skia": "0.1.137",
         "@suite-native/atoms": "*",
         "@suite-native/module-home": "*",
         "@suite-native/module-settings": "*",

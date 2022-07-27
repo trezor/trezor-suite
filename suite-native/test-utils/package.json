@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/home-graph",
+    "name": "@suite-native/test-utils",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -7,20 +7,16 @@
     "main": "src/index",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest --passWithNoTests",
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "^1.8.3",
-        "@suite-native/atoms": "*",
-        "@suite-native/test-utils": "*",
+        "react": "^17.0.2",
+        "react-redux": "7.2.2",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
-        "react": "^17.0.2",
-        "react-native": "0.68.2",
-        "react-native-gesture-handler": "^2.4.1",
-        "react-native-graph": "^0.1.1",
+        "@suite-native/state": "*",
+        "react-native-gesture-handler": "^2.5.0",
         "react-native-reanimated": "^2.8.0",
-        "react-redux": "7.2.2"
+        "@testing-library/react-native": "^11.0.0"
     }
 }
