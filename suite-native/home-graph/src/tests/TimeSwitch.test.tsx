@@ -5,7 +5,7 @@ import { fireEvent, render } from '@suite-native/test-utils';
 
 import { TimeSwitch, timeSwitchItems } from '../components/TimeSwitch';
 
-test('examples of some things', () => {
+test('time switch correctly changes values in redux from component', () => {
     const { getByTestId } = render(<TimeSwitch />);
 
     const all = getByTestId(timeSwitchItems.all.value);
