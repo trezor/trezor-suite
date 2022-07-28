@@ -16,6 +16,7 @@ module.exports = {
         '<rootDir>/src/support/tests/npmMocks.tsx',
     ],
     moduleNameMapper: {
+        '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
         '^@suite/(.+)': '<rootDir>/src/$1',
         '^@(.+)-views/(.+)': '<rootDir>/src/views/$1/$2',
         '^@(.+)-views': '<rootDir>/src/views/$1/index',

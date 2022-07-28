@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { HiddenPlaceholder, FiatValue, Translation, MetadataLabeling } from '@suite-components';
-import { ArrayElement } from '@suite/types/utils';
+import { ArrayElement } from '@trezor/type-utils';
 import { getTxOperation, getTargetAmount } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { WalletAccountTransaction } from '@wallet-types';

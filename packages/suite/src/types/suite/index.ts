@@ -30,7 +30,7 @@ import type { WalletAction } from '@wallet-types';
 import type { BackupAction } from '@backup-actions/backupActions';
 import type { RecoveryAction } from '@recovery-actions/recoveryActions';
 import type { DeviceMetadata } from '@suite-types/metadata';
-import type { ObjectValues } from '@suite/types/utils';
+import type { ObjectValues } from '@trezor/type-utils';
 import type { SUITE } from '@suite-actions/constants';
 import type { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
 import type { MessageSystemAction } from '@suite-actions/messageSystemActions';

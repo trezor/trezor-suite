@@ -8,7 +8,7 @@ import { resolveStaticPath } from '@trezor/utils';
 import { addToast } from '@suite-actions/notificationActions';
 
 import type { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
-import type { Await } from '@suite/types/utils';
+import type { Await } from '@trezor/type-utils';
 
 export type FirmwareAction =
     | {

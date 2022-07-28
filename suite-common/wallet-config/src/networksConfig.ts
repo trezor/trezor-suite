@@ -1,7 +1,7 @@
-import type { ExtendedMessageDescriptor } from '@suite-types';
-import type { Keys, Without } from '@suite/types/utils';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { Keys, Without } from '@trezor/type-utils';
 
-const networks = {
+export const networks = {
     // Bitcoin
     btc: {
         name: 'Bitcoin',
@@ -370,7 +370,7 @@ type Networks = typeof networks;
 type NetworkKey = keyof Networks;
 type NetworkValue = Networks[NetworkKey];
 type AccountType = Keys<NetworkValue['accountTypes']>;
-type Network = Without<NetworkValue, 'accountTypes'> & {
+export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkKey;
     accountType?: 'normal' | AccountType;
     testnet?: boolean;
@@ -387,14 +387,14 @@ type Network = Without<NetworkValue, 'accountTypes'> & {
 // Transforms the network object into the previously used format so we don't have to change
 // every occurence. We could gradually start to use the network object directly and in the end
 // this could be removed.
-const compatibility = Object.entries(networks).flatMap(([symbol, { accountTypes, ...network }]) => [
-    { symbol, ...network },
-    ...Object.entries(accountTypes).map(([accountType, networkOverride]) => ({
-        symbol,
-        accountType,
-        ...network,
-        ...networkOverride,
-    })),
-]);
-
-export default compatibility as Network[];
+export const networksCompatibility: Network[] = Object.entries(networks).flatMap(
+    ([symbol, { accountTypes, ...network }]) => [
+        { symbol, ...network },
+        ...Object.entries(accountTypes).map(([accountType, networkOverride]) => ({
+            symbol,
+            accountType,
+            ...network,
+            ...networkOverride,
+        })),
+    ],
+);

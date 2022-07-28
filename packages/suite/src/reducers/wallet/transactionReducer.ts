@@ -1,47 +1,12 @@
 import produce from 'immer';
-import { AccountTransaction, AccountUtxo, AccountAddress } from '@trezor/connect';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { findTransaction } from '@wallet-utils/transactionUtils';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { SETTINGS } from '@suite-config';
-import { Account, WalletAction, Network } from '@wallet-types';
+import { Account, WalletAction } from '@wallet-types';
 import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
-import { TimestampedRates } from '@wallet-types/fiatRates';
-
-export interface RbfTransactionParams {
-    txid: string;
-    utxo: AccountUtxo[]; // original utxo used by this transaction
-    outputs: Array<
-        | {
-              type: 'payment' | 'change';
-              address: string;
-              amount: string;
-              formattedAmount: string;
-              token?: string;
-          }
-        | {
-              type: 'opreturn';
-              dataHex: string;
-              dataAscii: string;
-          }
-    >;
-    changeAddress?: AccountAddress; // original change address
-    feeRate: string; // original fee rate
-    baseFee: number; // original fee
-    ethereumNonce?: number;
-    ethereumData?: string;
-}
-
-export interface WalletAccountTransaction extends AccountTransaction {
-    id?: number;
-    page?: number;
-    deviceState: string;
-    descriptor: string;
-    symbol: Network['symbol'];
-    rates?: TimestampedRates['rates'];
-    rbfParams?: RbfTransactionParams;
-}
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 
 export interface State {
     transactions: { [key: string]: WalletAccountTransaction[] }; // object where a key is accountHash and a value is sparse array of fetched txs

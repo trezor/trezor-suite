@@ -1,5 +1,5 @@
 {
-    "packages": ["packages/*", "suite-native/*", "scripts"],
+    "packages": ["packages/*", "suite-native/*", "suite-common/*", "scripts"],
     "npmClient": "yarn",
     "useWorkspaces": true,
     "version": "independent"

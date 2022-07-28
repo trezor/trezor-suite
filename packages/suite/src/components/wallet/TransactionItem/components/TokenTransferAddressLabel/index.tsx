@@ -1,7 +1,7 @@
 import React from 'react';
 import { Translation, AddressLabeling } from '@suite-components';
 import { WalletAccountTransaction } from '@wallet-types';
-import { ArrayElement } from '@suite/types/utils';
+import { ArrayElement } from '@trezor/type-utils';
 
 interface Props {
     transfer: ArrayElement<WalletAccountTransaction['tokens']>;

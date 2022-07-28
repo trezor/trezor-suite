@@ -14,7 +14,7 @@ import {
 } from '@wallet-types/sendForm';
 import BigNumber from 'bignumber.js';
 import { PoolsResponse, StakePool } from '@suite/types/wallet/cardanoStaking';
-import { CARDANO_DEFAULT_TTL_OFFSET } from '@wallet-constants/sendForm';
+import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
 
 export const loadCardanoLib = async () => {
     const lib = await import(

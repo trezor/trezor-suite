@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Card } from '@suite-components';
 import { WalletLayout } from '@wallet-components';
-import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
+import { useSendForm, SendContext, UseSendFormProps } from '@wallet-hooks/useSendForm';
 import { useSelector } from '@suite-hooks';
 
 import { Header } from './components/Header';
@@ -12,7 +12,6 @@ import { SendFees } from './components/Fees';
 import { TotalSent } from './components/TotalSent';
 import { ReviewButton } from './components/ReviewButton';
 import Raw from './components/Raw';
-import { UseSendFormProps } from '@wallet-types/sendForm';
 
 const StyledCard = styled(Card)`
     display: flex;

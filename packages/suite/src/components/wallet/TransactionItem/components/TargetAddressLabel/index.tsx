@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { WalletAccountTransaction } from '@wallet-types';
-import { ArrayElement } from '@suite/types/utils';
+import { ArrayElement } from '@trezor/type-utils';
 import { Translation, AddressLabeling } from '@suite-components';
 import { AccountMetadata } from '@suite-types/metadata';
 

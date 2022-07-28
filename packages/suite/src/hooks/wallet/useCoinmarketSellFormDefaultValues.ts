@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import regional from '@wallet-constants/coinmarket/regional';
 import { SellInfo } from '@wallet-actions/coinmarketSellActions';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { Account } from '@wallet-types';
 import { SellFormState } from '@wallet-types/coinmarketSellForm';

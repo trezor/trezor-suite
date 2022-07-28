@@ -6,7 +6,7 @@ import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isInteger } from '@wallet-utils/validation';
-import { U_INT_32 } from '@wallet-constants/sendForm';
+import { U_INT_32 } from '@suite-common/wallet-constants';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 interface Props {

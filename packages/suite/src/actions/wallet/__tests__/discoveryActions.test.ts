@@ -12,7 +12,7 @@ import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY, ACCOUNT } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { ArrayElement } from '@suite/types/utils';
+import { ArrayElement } from '@trezor/type-utils';
 import * as discoveryActions from '../discoveryActions';
 import {
     paramsError,

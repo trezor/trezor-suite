@@ -19,11 +19,10 @@ import { FormDraftAction } from '@wallet-actions/formDraftActions';
 import { CardanoStakingAction } from '@wallet-actions/cardanoStakingActions';
 import { PollingAction } from '@wallet-actions/pollingActions';
 import { NETWORKS } from '@wallet-config';
-import { ArrayElement } from '../utils';
+import { ArrayElement } from '@trezor/type-utils';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 // reexport
-export type { NetworkToken, Token } from './tokenTypes';
 export type { Icon } from './iconTypes';
 export type { BackendType, CustomBackend } from './backend';
 export type { Account } from '@wallet-reducers/accountsReducer';
@@ -44,10 +43,7 @@ export type DiscoveryStatus =
               | 'device-unavailable';
       };
 export type { WalletParams } from '@suite-utils/router';
-export type {
-    WalletAccountTransaction,
-    RbfTransactionParams,
-} from '@wallet-reducers/transactionReducer';
+export type { WalletAccountTransaction, RbfTransactionParams } from '@suite-common/wallet-types';
 export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 
 export type WalletAction =

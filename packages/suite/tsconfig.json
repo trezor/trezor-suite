@@ -17,8 +17,24 @@
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
         { "path": "../suite-storage" },
+        { "path": "../type-utils" },
         { "path": "../urls" },
         { "path": "../utils" },
-        { "path": "../validation" }
+        { "path": "../validation" },
+        {
+            "path": "../../suite-common/intl-types"
+        },
+        {
+            "path": "../../suite-common/metadata-types"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-constants"
+        }
     ]
 }
