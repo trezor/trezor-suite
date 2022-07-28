@@ -74,225 +74,225 @@ import { verifyMessage } from './verifyMessage';
 import { wipeDevice } from './wipeDevice';
 
 export interface TrezorConnect {
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/applyFlags.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/applyFlags.md
     applyFlags: typeof applyFlags;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/applySettings.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/applySettings.md
     applySettings: typeof applySettings;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/authorizeCoinJoin.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/authorizeCoinJoin.md
     authorizeCoinJoin: typeof authorizeCoinJoin;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/backupDevice.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/backupDevice.md
     backupDevice: typeof backupDevice;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/binanceGetAddress.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/binanceGetAddress.md
     binanceGetAddress: typeof binanceGetAddress;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/binanceGetPublicKey.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/binanceGetPublicKey.md
     binanceGetPublicKey: typeof binanceGetPublicKey;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/binanceSignTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/binanceSignTransaction.md
     binanceSignTransaction: typeof binanceSignTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainDisconnect.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainDisconnect.md
     blockchainDisconnect: typeof blockchainDisconnect;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainEstimateFee.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainEstimateFee.md
     blockchainEstimateFee: typeof blockchainEstimateFee;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainGetAccountBalanceHistory.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainGetAccountBalanceHistory.md
     blockchainGetAccountBalanceHistory: typeof blockchainGetAccountBalanceHistory;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainGetCurrentFiatRates.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainGetCurrentFiatRates.md
     blockchainGetCurrentFiatRates: typeof blockchainGetCurrentFiatRates;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainGetFiatRatesForTimestamps.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainGetFiatRatesForTimestamps.md
     blockchainGetFiatRatesForTimestamps: typeof blockchainGetFiatRatesForTimestamps;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainGetTransactions.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainGetTransactions.md
     blockchainGetTransactions: typeof blockchainGetTransactions;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainSetCustomBackend.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainSetCustomBackend.md
     blockchainSetCustomBackend: typeof blockchainSetCustomBackend;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainSubscribe.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainSubscribe.md
     blockchainSubscribe: typeof blockchainSubscribe;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainSubscribeFiatRates.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainSubscribeFiatRates.md
     blockchainSubscribeFiatRates: typeof blockchainSubscribeFiatRates;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainUnsubscribe.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainUnsubscribe.md
     blockchainUnsubscribe: typeof blockchainUnsubscribe;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/blockchainUnsubscribeFiatRates.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/blockchainUnsubscribeFiatRates.md
     blockchainUnsubscribeFiatRates: typeof blockchainUnsubscribeFiatRates;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/cancel.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cancel.md
     cancel: typeof cancel;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/cardanoGetAddress.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cardanoGetAddress.md
     cardanoGetAddress: typeof cardanoGetAddress;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/cardanoGetNativeScriptHash.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cardanoGetNativeScriptHash.md
     cardanoGetNativeScriptHash: typeof cardanoGetNativeScriptHash;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/cardanoGetPublicKey.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cardanoGetPublicKey.md
     cardanoGetPublicKey: typeof cardanoGetPublicKey;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/cardanoSignTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cardanoSignTransaction.md
     cardanoSignTransaction: typeof cardanoSignTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/changePin.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/changePin.md
     changePin: typeof changePin;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/cipherKeyValue.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/cipherKeyValue.md
     cipherKeyValue: typeof cipherKeyValue;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/composeTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/composeTransaction.md
     composeTransaction: typeof composeTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/customMessage.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/customMessage.md
     customMessage: typeof customMessage;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/disableWebUSB.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/disableWebUSB.md
     disableWebUSB: typeof disableWebUSB;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/dispose.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/dispose.md
     dispose: typeof dispose;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/eosGetPublicKey.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/eosGetPublicKey.md
     eosGetPublicKey: typeof eosGetPublicKey;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/eosSignTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/eosSignTransaction.md
     eosSignTransaction: typeof eosSignTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/ethereumGetAddress.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/ethereumGetAddress.md
     ethereumGetAddress: typeof ethereumGetAddress;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/ethereumGetPublicKey.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/ethereumGetPublicKey.md
     ethereumGetPublicKey: typeof ethereumGetPublicKey;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/ethereumSignMessage.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/ethereumSignMessage.md
     ethereumSignMessage: typeof ethereumSignMessage;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/ethereumSignTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/ethereumSignTransaction.md
     ethereumSignTransaction: typeof ethereumSignTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/ethereumSignTypedData.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/ethereumSignTypedData.md
     ethereumSignTypedData: typeof ethereumSignTypedData;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/ethereumVerifyMessage.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/ethereumVerifyMessage.md
     ethereumVerifyMessage: typeof ethereumVerifyMessage;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/firmwareUpdate.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/firmwareUpdate.md
     firmwareUpdate: typeof firmwareUpdate;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getAccountInfo.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getAccountInfo.md
     getAccountInfo: typeof getAccountInfo;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getAddress.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getAddress.md
     getAddress: typeof getAddress;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getCoinInfo.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getCoinInfo.md
     getCoinInfo: typeof getCoinInfo;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getDeviceState.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getDeviceState.md
     getDeviceState: typeof getDeviceState;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getFeatures.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getFeatures.md
     getFeatures: typeof getFeatures;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getFirmwareHash.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getFirmwareHash.md
     getFirmwareHash: typeof getFirmwareHash;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getOwnershipId.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getOwnershipId.md
     getOwnershipId: typeof getOwnershipId;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getOwnershipProof.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getOwnershipProof.md
     getOwnershipProof: typeof getOwnershipProof;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getPublicKey.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getPublicKey.md
     getPublicKey: typeof getPublicKey;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/getSettings.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getSettings.md
     getSettings: typeof getSettings;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/init.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/init.md
     init: typeof init;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/manifest.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/manifest.md
     manifest: typeof manifest;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/nemGetAddress.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/nemGetAddress.md
     nemGetAddress: typeof nemGetAddress;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/nemSignTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/nemSignTransaction.md
     nemSignTransaction: typeof nemSignTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/off.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/off.md
     off: typeof off;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/on.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/on.md
     on: typeof on;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/pushTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/pushTransaction.md
     pushTransaction: typeof pushTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/rebootToBootloader.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/rebootToBootloader.md
     rebootToBootloader: typeof rebootToBootloader;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/recoveryDevice.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/recoveryDevice.md
     recoveryDevice: typeof recoveryDevice;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/removeAllListeners.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/removeAllListeners.md
     removeAllListeners: typeof removeAllListeners;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/renderWebUSBButton.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/renderWebUSBButton.md
     renderWebUSBButton: typeof renderWebUSBButton;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/requestLogin.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/requestLogin.md
     requestLogin: typeof requestLogin;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/resetDevice.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/resetDevice.md
     resetDevice: typeof resetDevice;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/rippleGetAddress.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/rippleGetAddress.md
     rippleGetAddress: typeof rippleGetAddress;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/rippleSignTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/rippleSignTransaction.md
     rippleSignTransaction: typeof rippleSignTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/setProxy.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/setProxy.md
     setProxy: typeof setProxy;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/signMessage.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/signMessage.md
     signMessage: typeof signMessage;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/signTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/signTransaction.md
     signTransaction: typeof signTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/stellarGetAddress.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/stellarGetAddress.md
     stellarGetAddress: typeof stellarGetAddress;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/stellarSignTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/stellarSignTransaction.md
     stellarSignTransaction: typeof stellarSignTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/tezosGetAddress.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/tezosGetAddress.md
     tezosGetAddress: typeof tezosGetAddress;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/tezosGetPublicKey.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/tezosGetPublicKey.md
     tezosGetPublicKey: typeof tezosGetPublicKey;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/tezosSignTransaction.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/tezosSignTransaction.md
     tezosSignTransaction: typeof tezosSignTransaction;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/uiResponse.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/uiResponse.md
     uiResponse: typeof uiResponse;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/verifyMessage.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/verifyMessage.md
     verifyMessage: typeof verifyMessage;
 
-    // https://github.com/trezor/trezor-suite/tree/develop/packages/connect/docs/methods/wipeDevice.md
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/wipeDevice.md
     wipeDevice: typeof wipeDevice;
 }
