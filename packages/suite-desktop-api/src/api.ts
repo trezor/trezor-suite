@@ -8,6 +8,7 @@ import {
     UpdateProgress,
     InvokeResult,
     BootstrapTorEvent,
+    HandshakeTorModule,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -60,6 +61,7 @@ export interface RendererChannels {
 export interface InvokeChannels {
     'handshake/client': () => void;
     'handshake/load-modules': (payload: HandshakeClient) => InvokeResult<HandshakeElectron>;
+    'handshake/load-tor-module': () => HandshakeTorModule;
     'metadata/read': (options: { file: string }) => InvokeResult<string>;
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
     'server/request-address': (route: string) => string | undefined;
@@ -94,6 +96,7 @@ export interface DesktopApi {
     // Handshake
     handshake: DesktopApiInvoke<'handshake/client'>;
     loadModules: DesktopApiInvoke<'handshake/load-modules'>;
+    loadTorModule: DesktopApiInvoke<'handshake/load-tor-module'>;
     // Metadata
     metadataWrite: DesktopApiInvoke<'metadata/write'>;
     metadataRead: DesktopApiInvoke<'metadata/read'>;
