@@ -17,10 +17,15 @@
         "@react-navigation/stack": "^6.2.2",
         "@suite-native/atoms": "*",
         "@suite-native/navigation": "*",
+        "@reduxjs/toolkit": "^1.8.3",
+        "@trezor/connect": "9.0.0-beta.5",
+        "@trezor/icons": "*",
         "@trezor/styles": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2",
         "react-native-reanimated": "^2.8.0",
-        "react-native-vision-camera": "^2.14.0"
+        "react-native-vision-camera": "^2.14.0",
+        "react-redux": "7.2.2",
+        "vision-camera-code-scanner": "^0.2.0"
     }
 }

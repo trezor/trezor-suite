@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Color } from '@trezor/theme';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Text } from '../Text';
+import { Box } from '../Box';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
 export type ButtonColorScheme = 'primary' | 'gray' | 'white';
 
 export interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
+    leftIcon?: ReactNode;
     colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
@@ -68,7 +70,14 @@ const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
     white: 'black',
 };
 
+const leftIconStyle = prepareNativeStyle(() => ({
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 3,
+}));
+
 export const Button = ({
+    leftIcon,
     style,
     children,
     colorScheme = 'primary',
@@ -82,6 +91,7 @@ export const Button = ({
             style={[applyStyle(buttonStyle, { size, colorScheme }), style]}
             {...props}
         >
+            {leftIcon && <Box style={applyStyle(leftIconStyle)}>{leftIcon}</Box>}
             <Text variant="highlight" color={buttonColorSchemeFontColor[colorScheme]}>
                 {children}
             </Text>
