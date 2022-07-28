@@ -10,7 +10,6 @@ import { getFwType, getFwVersion, isDeviceBitcoinOnly } from '@suite-utils/devic
 import { Button, Tooltip } from '@trezor/components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
-import { ModalVariant } from '@suite-types';
 
 const Version = styled.div`
     span {
@@ -50,8 +49,8 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
         : 'TR_SWITCH_TO_BITCOIN';
 
     const handleAction = () => {
-        goto('firmware-index', {
-            params: { cancelable: true, variant: ModalVariant.SwitchFirmwareType },
+        goto('firmware-type', {
+            params: { cancelable: true },
         });
     };
 

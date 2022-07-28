@@ -104,7 +104,3 @@ export enum FirmwareType {
     BitcoinOnly = 'Bitcoin-only',
     Universal = 'Universal',
 }
-
-export enum ModalVariant {
-    SwitchFirmwareType = 'switchFirmwareType',
-}

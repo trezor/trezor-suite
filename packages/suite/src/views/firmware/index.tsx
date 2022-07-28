@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
-import { ModalVariant, TrezorDevice } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 import {
     CheckSeedStep,
     CloseButton,
@@ -47,10 +47,10 @@ const StyledModal = styled(Modal)`
 `;
 
 type FirmwareProps = {
-    variant?: ModalVariant;
+    shouldSwitchFirmwareType?: boolean;
 };
 
-export const Firmware = ({ variant }: FirmwareProps) => {
+export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
     const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
         useFirmware();
     const { device } = useSelector(state => ({
@@ -123,7 +123,7 @@ export const Firmware = ({ variant }: FirmwareProps) => {
                         cachedDevice={cachedDevice}
                         setCachedDevice={setCachedDevice}
                         standaloneFwUpdate
-                        switchType={variant === ModalVariant.SwitchFirmwareType}
+                        shouldSwitchFirmwareType={shouldSwitchFirmwareType}
                         onInstall={firmwareUpdate}
                     />
                 );

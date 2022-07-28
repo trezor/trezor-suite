@@ -47,7 +47,7 @@ interface FirmwareInitialProps {
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
     onInstall: (firmwareType?: FirmwareType) => void;
-    switchType?: boolean;
+    shouldSwitchFirmwareType?: boolean;
 }
 
 const getDescription = ({
@@ -82,7 +82,7 @@ export const FirmwareInitial = ({
     setCachedDevice,
     onInstall,
     standaloneFwUpdate = false,
-    switchType,
+    shouldSwitchFirmwareType,
 }: FirmwareInitialProps) => {
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const { device: liveDevice } = useDevice();
@@ -91,11 +91,11 @@ export const FirmwareInitial = ({
     const theme = useTheme();
 
     useEffect(() => {
-        // When user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
+        // When the user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
         // This prompt (to reconnect a device in bootloader mode) is shown in modal which is visually layer above the content.
-        // We are caching the device in order to preserve the background content (screen with fw update offer) when user
+        // We are caching the device in order to preserve the background content (screen with fw update offer) when the user
         // disconnects the device and reconnects it in bl mode.
-        // (Device in BL mode doesn't provide us all the details and we don't want any flickering or reacting in general while user is just following our instructions)
+        // (Device in BL mode doesn't provide us all the details and we don't want any flickering or reacting in general while the user is just following our instructions)
         if (liveDevice?.connected && liveDevice?.mode !== 'bootloader' && liveDevice.features) {
             // we never store state of the device while it is in bootloader, we want just "normal" mode
             setCachedDevice(liveDevice);
@@ -224,11 +224,11 @@ export const FirmwareInitial = ({
                         required: device.firmware === 'required',
                         standaloneFwUpdate,
                         reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
-                        switchType,
+                        switchType: shouldSwitchFirmwareType,
                     })}
                 />
             ),
-            body: <FirmwareOffer device={device} targetFirmwareType={targetType} />,
+            body: <FirmwareOffer device={device} targetFirmwareType={targetFirmwareType} />,
             innerActions: (
                 <Button
                     onClick={() => {
@@ -266,7 +266,7 @@ export const FirmwareInitial = ({
                     <ReconnectDevicePrompt
                         expectedDevice={device}
                         requestedMode="bootloader"
-                        onSuccess={() => onInstall(targetType)}
+                        onSuccess={() => onInstall(targetFirmwareType)}
                     />
                 )}
 
