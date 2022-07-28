@@ -197,6 +197,10 @@ const networks = {
         features: ['sign-verify'],
         customBackends: ['blockbook'],
         accountTypes: {
+            taproot: {
+                name: 'Vertcoin (Taproot)',
+                bip43Path: "m/86'/28'/i'",
+            },
             segwit: {
                 name: 'Vertcoin (segwit)',
                 bip43Path: "m/49'/28'/i'",
