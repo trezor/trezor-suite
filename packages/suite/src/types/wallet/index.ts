@@ -18,6 +18,7 @@ import { SelectedAccountAction } from '@wallet-actions/selectedAccountActions';
 import { FormDraftAction } from '@wallet-actions/formDraftActions';
 import { CardanoStakingAction } from '@wallet-actions/cardanoStakingActions';
 import { PollingAction } from '@wallet-actions/pollingActions';
+import { CoinjoinAccountAction } from '@wallet-actions/coinjoinAccountActions';
 import { NETWORKS } from '@wallet-config';
 import { ArrayElement } from '@trezor/type-utils';
 
@@ -67,4 +68,5 @@ export type WalletAction =
     | AccountSearchAction
     | FormDraftAction
     | CardanoStakingAction
-    | PollingAction;
+    | PollingAction
+    | CoinjoinAccountAction;
