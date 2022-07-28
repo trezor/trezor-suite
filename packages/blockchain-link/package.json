@@ -28,7 +28,8 @@
     "typings": "lib/index.d.ts",
     "browser": {
         "ws": "./lib/utils/ws.js",
-        "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js"
+        "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js",
+        "better-sqlite3": false
     },
     "react-native": {
         "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
@@ -49,6 +50,8 @@
         "type-check": "tsc --build tsconfig.json"
     },
     "devDependencies": {
+        "@types/better-sqlite3": "^7.5.0",
+        "@types/web": "^0.0.51",
         "html-webpack-plugin": "^5.5.0",
         "tiny-worker": "^2.3.0",
         "ts-loader": "^9.3.1",
@@ -61,8 +64,12 @@
         "@trezor/utils": "^9.0.2",
         "@trezor/utxo-lib": "^1.0.0",
         "@types/web": "^0.0.51",
+        "better-sqlite3": "^7.6.2",
         "bignumber.js": "^9.0.2",
+        "cross-fetch": "^2.2.6",
         "events": "^3.3.0",
+        "golomb": "1.2.0",
+        "n64": "^0.2.10",
         "ripple-lib": "1.10.0",
         "socks-proxy-agent": "6.1.1",
         "ws": "7.4.6"

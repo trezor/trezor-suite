@@ -17,7 +17,7 @@ type AddressInfo = Omit<AddressHistory, 'scripthash'> & {
 
 const isNonNegative = (n: number | undefined): n is number => (n ?? -1) >= 0;
 
-const sortTxsFromLatest = (
+export const sortTxsFromLatest = (
     { blockHeight: a }: { blockHeight?: number },
     { blockHeight: b }: { blockHeight?: number },
 ) =>
