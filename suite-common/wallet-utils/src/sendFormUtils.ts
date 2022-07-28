@@ -6,7 +6,7 @@ import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
-import { Network } from '@suite-common/wallet-networks-config';
+import { Network } from '@suite-common/wallet-config';
 import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES, ERC20_TRANSFER } from '@suite-common/wallet-constants';
 import type {

@@ -2,7 +2,7 @@ import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { AccountTransaction, TransactionTarget } from '@trezor/connect';
-import { Network } from '@suite-common/wallet-networks-config';
+import { Network } from '@suite-common/wallet-config';
 
 type AccountTransactionForExports = Omit<AccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];

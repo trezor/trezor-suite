@@ -9,7 +9,7 @@ import {
     PoolsResponse,
     StakePool,
 } from '@suite-common/wallet-types';
-import { Network } from '@suite-common/wallet-networks-config';
+import { Network } from '@suite-common/wallet-config';
 import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
 

@@ -1,7 +1,7 @@
 import { Transaction } from '@ethereumjs/tx';
 import { sha3 } from 'web3-utils';
 
-import { networksCompatibility as NETWORKS } from '@suite-common/wallet-networks-config';
+import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
 import {

@@ -13,7 +13,7 @@ import {
     SUITE,
 } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
-import { getAccountIdentifier } from '@suite/utils/wallet/accountUtils';
+import { getAccountIdentifier } from '@suite-common/wallet-utils';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 

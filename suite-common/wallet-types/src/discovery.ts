@@ -1,6 +1,6 @@
 import { ObjectValues } from '@trezor/type-utils';
 import { STATUS as discoveryStatus } from '@suite-common/wallet-constants';
-import { Network } from '@suite-common/wallet-networks-config';
+import { Network } from '@suite-common/wallet-config';
 import { Deferred } from '@trezor/utils';
 
 export interface Discovery {

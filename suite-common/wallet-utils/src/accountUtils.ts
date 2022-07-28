@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { networksCompatibility as NETWORKS, Network } from '@suite-common/wallet-networks-config';
+import { networksCompatibility as NETWORKS, Network } from '@suite-common/wallet-config';
 import {
     Account,
     CoinFiatRates,
