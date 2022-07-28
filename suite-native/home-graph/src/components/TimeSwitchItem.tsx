@@ -32,7 +32,7 @@ export const TimeSwitchItem = ({ value, shortcut }: TimeSwitchItemProps) => {
     };
 
     return (
-        <TouchableOpacity onPress={() => handleSelectTimeFrame(value)}>
+        <TouchableOpacity onPress={() => handleSelectTimeFrame(value)} testID={value}>
             <Text
                 style={applyStyle(textStyle, {
                     isSelected: selectedTimeFrame === value,

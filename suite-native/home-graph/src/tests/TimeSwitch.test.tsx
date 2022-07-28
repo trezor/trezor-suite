@@ -1,10 +1,16 @@
 import React from 'react';
 
-import { render } from '@suite-native/test-utils';
+import { store } from '@suite-native/state';
+import { fireEvent, render } from '@suite-native/test-utils';
 
-import { TimeSwitch } from '../components/TimeSwitch';
+import { TimeSwitch, timeSwitchItems } from '../components/TimeSwitch';
 
 test('examples of some things', () => {
-    render(<TimeSwitch />);
-    expect(2).toEqual(2);
+    const { getByTestId } = render(<TimeSwitch />);
+
+    const all = getByTestId(timeSwitchItems.all.value);
+    fireEvent.press(all);
+
+    const { selectedTimeFrame } = store.getState().appGraph;
+    expect(selectedTimeFrame).toBe(timeSwitchItems.all.value);
 });

@@ -14,6 +14,7 @@
         "@reduxjs/toolkit": "^1.8.3",
         "@suite-native/atoms": "*",
         "@suite-native/test-utils": "*",
+        "@suite-native/state": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "^17.0.2",
