@@ -38,7 +38,9 @@ export interface DiscoveryItem {
     index: number;
     accountType: Account['accountType'];
     networkType: Account['networkType'];
+    backendType?: Account['backendType'];
     derivationType?: 0 | 1 | 2;
+    lastKnownState?: Account['lastKnownState'];
 }
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];

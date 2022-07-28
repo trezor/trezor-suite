@@ -7,6 +7,7 @@ import graphMiddleware from './graphMiddleware';
 import coinmarketMiddleware from './coinmarketMiddleware';
 import coinmarketSavingsMiddleware from './coinmarketSavingsMiddleware';
 import pollingMiddleware from './pollingMiddleware';
+import { coinjoinMiddleware } from './coinjoinMiddleware';
 
 export default [
     blockchainMiddleware,
@@ -18,4 +19,5 @@ export default [
     coinmarketMiddleware,
     coinmarketSavingsMiddleware,
     pollingMiddleware,
+    coinjoinMiddleware,
 ];

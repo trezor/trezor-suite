@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
+import { createCoinjoinAccount } from '@wallet-actions/coinjoinAccountActions';
 import type { Network } from '@wallet-types';
 
 interface AddCoinJoinAccountProps {
@@ -9,6 +10,7 @@ interface AddCoinJoinAccountProps {
 }
 
 export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) => {
+    const action = useActions({ createCoinjoinAccount });
     const { device, accounts } = useSelector(state => ({
         device: state.suite.device,
         accounts: state.wallet.accounts,
@@ -30,7 +32,12 @@ export const AddCoinJoinAccountButton = ({ network }: AddCoinJoinAccountProps) =
             maxWidth={285}
             content={isDisabled ? <Translation id="MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED" /> : null}
         >
-            <Button icon="PLUS" variant="primary" isDisabled={isDisabled} onClick={() => {}}>
+            <Button
+                icon="PLUS"
+                variant="primary"
+                isDisabled={isDisabled}
+                onClick={() => action.createCoinjoinAccount(network)}
+            >
                 <Translation id="TR_ADD_ACCOUNT" />
             </Button>
         </Tooltip>
