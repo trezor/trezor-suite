@@ -277,6 +277,16 @@ const getTrezorConnect = <M>(methods?: M) => {
                 listeners[event] = cb;
             },
             off: () => {},
+            applySettings: jest.fn(async _params => ({
+                success: true,
+                ...getFixture(),
+                _params,
+            })),
+            authorizeCoinJoin: jest.fn(async _params => ({
+                success: false,
+                ...getFixture(),
+                _params,
+            })),
             blockchainSetCustomBackend: jest.fn(async _params => ({
                 success: true,
                 ...getFixture(),
@@ -316,6 +326,11 @@ const getTrezorConnect = <M>(methods?: M) => {
             })),
             getAccountInfo: jest.fn(async _params => ({
                 success: false,
+                ...getFixture(),
+                _params,
+            })),
+            getPublicKey: jest.fn(async _params => ({
+                success: true,
                 ...getFixture(),
                 _params,
             })),
