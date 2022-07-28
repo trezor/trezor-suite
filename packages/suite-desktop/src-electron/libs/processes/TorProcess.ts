@@ -31,7 +31,6 @@ class TorProcess extends BaseProcess {
             controlPort: this.controlPort,
             authFilePath: this.authFilePath,
         });
-        this.listenToEvents();
     }
 
     async status(): Promise<Status> {
@@ -94,17 +93,6 @@ class TorProcess extends BaseProcess {
             `${electronProcessId}`,
         ]);
         return this.torController.waitUntilAlive();
-    }
-
-    listenToEvents() {
-        this.torController.on(
-            'bootstrap/event',
-            (bootstrapEvent: { progress: string; summary: string }) => {
-                if (bootstrapEvent && bootstrapEvent.summary) {
-                    this.logger.debug(this.logTopic, `Tor bootstraping: ${bootstrapEvent.summary}`);
-                }
-            },
-        );
     }
 }
 

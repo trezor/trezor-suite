@@ -23,7 +23,6 @@ const MODULES = [
     'http-receiver',
     'metadata',
     'bridge',
-    'tor',
     'custom-protocols',
     'auto-updater',
     'store',

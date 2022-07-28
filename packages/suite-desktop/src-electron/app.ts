@@ -14,6 +14,8 @@ import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { restartApp } from './libs/app-utils';
 import { initModules } from './modules';
+import initTorModule from './modules/tor';
+
 import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
 import { createLogger } from './logger';
@@ -160,6 +162,16 @@ const init = async () => {
 
     // repeated during app lifecycle (e.g. Ctrl+R)
     ipcMain.handle('handshake/load-modules', (_, payload) => loadModulesResponse(payload));
+
+    // Tor module initializes separated from general `initModules` because Tor is different
+    // since it is allowed to fail and then the user decides whether to `try again` or `disable`.
+    const loadTorModule = initTorModule({
+        mainWindow,
+        store,
+        interceptor,
+    });
+
+    ipcMain.handle('handshake/load-tor-module', () => loadTorModule());
 
     // load and wait for handshake message from renderer
     const handshake = await hangDetect(mainWindow);

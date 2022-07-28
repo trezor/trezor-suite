@@ -5,7 +5,7 @@ export type SuiteThemeVariant = 'light' | 'dark' | 'system';
 export type BootstrapTorEvent =
     | {
           type: 'progress';
-          message?: string;
+          summary: string;
           progress: {
               current: number;
               total: number;
@@ -35,6 +35,10 @@ export type HandshakeEvent =
       };
 
 export type HandshakeClient = any;
+
+export type HandshakeTorModule = {
+    shouldRunTor: boolean;
+};
 
 export type HandshakeElectron = {
     protocol?: string;

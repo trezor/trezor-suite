@@ -8,7 +8,8 @@ import { onionDomain } from '../config';
 import { app, ipcMain } from '../typed-electron';
 import { getFreePort } from '../libs/getFreePort';
 import TrezorConnect from '@trezor/connect';
-import type { Module, Dependencies } from './index';
+import type { Dependencies } from './index';
+import { HandshakeTorModule } from 'packages/suite-desktop-api/lib/messages';
 
 const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
     const { logger } = global;
@@ -56,23 +57,45 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
 
         if (shouldEnableTor === true) {
             setProxy(`socks5://${host}:${port}`);
-            mainWindow.webContents.send('tor/bootstrap', {
-                type: 'progress',
-                process: {
-                    current: 0,
-                    total: 1,
+            tor.torController.on(
+                'bootstrap/event',
+                (bootstrapEvent: { progress: string; summary: string }) => {
+                    if (bootstrapEvent && bootstrapEvent.summary && bootstrapEvent.progress) {
+                        logger.info(
+                            'tor',
+                            `Bootstrap - ${bootstrapEvent.progress || ''}% - ${
+                                bootstrapEvent.summary || ''
+                            }`,
+                        );
+
+                        mainWindow.webContents.send('tor/bootstrap', {
+                            type: 'progress',
+                            summary: bootstrapEvent.summary,
+                            progress: {
+                                current: Number(bootstrapEvent.progress),
+                                total: 100,
+                            },
+                        });
+                    }
                 },
-            });
-            await tor.start();
-            mainWindow.webContents.send('tor/bootstrap', {
-                type: 'progress',
-                process: {
-                    current: 1,
-                    total: 1,
-                },
-            });
+            );
+            try {
+                await tor.start();
+            } catch (error) {
+                mainWindow.webContents.send('tor/bootstrap', {
+                    type: 'error',
+                    message: error.message,
+                });
+                // When there is error does not mean that the process is stop,
+                // so we make sure to stop it so we are able to restart it.
+                tor.stop();
+                throw error;
+            } finally {
+                tor.torController.removeAllListeners();
+            }
         } else {
             setProxy('');
+            tor.torController.stopWhileLoading();
             await tor.stop();
         }
 
@@ -117,6 +140,8 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
             return { success: false, error: errorMessage };
         }
 
+        // Once Tor is toggled it renderer should know the new status.
+        mainWindow.webContents.send('tor/status', store.getTorSettings().running);
         return { success: true };
     });
 
@@ -158,17 +183,21 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
         logger.info('tor', 'Tor enabled by command line option.');
         persistSettings({ running: true });
     }
-
-    await setupTor(store.getTorSettings());
-    mainWindow.webContents.send('tor/status', store.getTorSettings().running);
 };
 
-const init: Module = dependencies => {
+type TorModule = (dependencies: Dependencies) => () => Promise<HandshakeTorModule>;
+
+const init: TorModule = dependencies => {
     let loaded = false;
-    return () => {
-        if (loaded) return;
+    return async () => {
+        if (loaded) return { shouldRunTor: false };
+
         loaded = true;
-        return load(dependencies);
+        await load(dependencies);
+        const torSettings = dependencies.store.getTorSettings();
+        return {
+            shouldRunTor: torSettings.running,
+        };
     };
 };
 
