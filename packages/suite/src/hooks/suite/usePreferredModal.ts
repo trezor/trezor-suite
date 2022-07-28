@@ -13,6 +13,7 @@ const hasPriority = (route: ForegroundAppRoute) => {
     switch (route.app) {
         case 'bridge':
         case 'firmware':
+        case 'firmware-type':
         case 'firmware-custom':
         case 'recovery':
         case 'udev':
@@ -23,6 +24,16 @@ const hasPriority = (route: ForegroundAppRoute) => {
     }
 };
 
+const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<ModalAppParams>) =>
+    ({
+        type: 'foreground-app',
+        payload: {
+            app: route.app,
+            // params are undefined when the user goes directly to the URL
+            cancelable: !!params?.cancelable,
+        },
+    } as const);
+
 export const usePreferredModal = () => {
     const { getDiscoveryStatus } = useDiscovery();
     const { route, params, modal } = useSelector(state => ({
@@ -31,18 +42,8 @@ export const usePreferredModal = () => {
         modal: state.modal,
     }));
 
-    const foregroundAppAction = {
-        type: 'foreground-app',
-        payload: {
-            app: route?.app,
-            // params are undefined when the user goes directly to the URL
-            cancelable: !!params?.cancelable,
-            variant: params?.variant,
-        },
-    } as const;
-
     if (route && isForegroundApp(route) && hasPriority(route)) {
-        return foregroundAppAction;
+        return getForegroundAppAction(route, params);
     }
 
     if (modal.context !== MODAL.CONTEXT_NONE) {
@@ -62,7 +63,7 @@ export const usePreferredModal = () => {
     }
 
     if (route && isForegroundApp(route)) {
-        return foregroundAppAction;
+        return getForegroundAppAction(route, params);
     }
 
     return {

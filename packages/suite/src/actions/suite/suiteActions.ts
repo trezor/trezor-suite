@@ -393,7 +393,7 @@ export const handleDeviceDisconnect =
          * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)
          * This is not the case in firmware update and onboarding; In this case we simply wan't suite.device to be empty until user reconnects a device again
          */
-        if (['onboarding', 'firmware'].includes(router.app)) {
+        if (['onboarding', 'firmware', 'firmware-type'].includes(router.app)) {
             dispatch({ type: SUITE.SELECT_DEVICE, payload: undefined });
             return;
         }

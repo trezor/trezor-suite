@@ -77,7 +77,7 @@ const firmware =
                 break;
             case SUITE.APP_CHANGED:
                 // leaving firmware update context
-                if (prevApp === 'firmware' || prevApp === 'onboarding') {
+                if (['firmware', 'firmware-type', 'onboarding'].includes(prevApp)) {
                     api.dispatch(firmwareActions.resetReducer());
                 }
 

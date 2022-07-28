@@ -97,6 +97,13 @@ const routes = [
         params: modalAppParams,
     },
     {
+        name: 'firmware-type',
+        pattern: '/firmware-type',
+        app: 'firmware-type',
+        isForegroundApp: true,
+        params: modalAppParams,
+    },
+    {
         name: 'firmware-custom',
         pattern: '/firmware-custom',
         app: 'firmware-custom',
