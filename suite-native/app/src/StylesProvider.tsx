@@ -2,7 +2,7 @@ import React from 'react';
 import { useColorScheme } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { AppColorScheme, selectThemeVariant } from '@suite-native/module-settings';
+import { AppColorScheme, selectColorScheme } from '@suite-native/module-settings';
 import { createRenderer, StylesProvider as StylesStyleProvider } from '@trezor/styles';
 import { prepareNativeTheme, ThemeColorVariant } from '@trezor/theme';
 
@@ -34,9 +34,9 @@ const getColorVariant = (
 
 export const StylesProvider = ({ children }: StylesProviderProps) => {
     const systemColorScheme = useColorScheme();
-    const userThemeVariant = useSelector(selectThemeVariant);
+    const userColorScheme = useSelector(selectColorScheme);
 
-    const colorVariant = getColorVariant(systemColorScheme, userThemeVariant);
+    const colorVariant = getColorVariant(systemColorScheme, userColorScheme);
     const theme = prepareNativeTheme({ colorVariant });
 
     return (

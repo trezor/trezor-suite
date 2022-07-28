@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { VStack, Text, HStack } from '@suite-native/atoms';
-import { ThemeColorVariant } from '@trezor/theme';
+import { HStack, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ColorSchemePickerItem } from './ColorSchemePickerItem';
@@ -13,31 +12,14 @@ const stackStyle = prepareNativeStyle(() => ({
 
 export const ColorSchemePicker = () => {
     const { applyStyle } = useNativeStyles();
-    const [selectedColorScheme, setSelectedColorScheme] = useState<ThemeColorVariant>('chill');
-
-    const handlePress = (colorScheme: ThemeColorVariant) => {
-        setSelectedColorScheme(colorScheme);
-    };
 
     return (
         <VStack spacing={11}>
             <Text>Color Scheme</Text>
             <HStack style={applyStyle(stackStyle)} spacing="small">
-                <ColorSchemePickerItem
-                    onPress={() => handlePress('standard')}
-                    isSelected={selectedColorScheme === 'standard'}
-                    colorScheme="standard"
-                />
-                <ColorSchemePickerItem
-                    onPress={() => handlePress('chill')}
-                    isSelected={selectedColorScheme === 'chill'}
-                    colorScheme="chill"
-                />
-                <ColorSchemePickerItem
-                    onPress={() => handlePress('dark')}
-                    isSelected={selectedColorScheme === 'dark'}
-                    colorScheme="dark"
-                />
+                <ColorSchemePickerItem colorScheme="standard" />
+                <ColorSchemePickerItem colorScheme="chill" />
+                <ColorSchemePickerItem colorScheme="dark" />
             </HStack>
         </VStack>
     );

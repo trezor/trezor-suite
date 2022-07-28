@@ -53,7 +53,7 @@ export const colorVariants = {
         gray900: '#161716',
         gray800: '#1C1E1C',
         gray700: '#242524',
-        gray600: '373938',
+        gray600: '#373938',
         gray500: '#4E504F',
         gray400: '#8F9190',
         gray300: '#C2C2C2',

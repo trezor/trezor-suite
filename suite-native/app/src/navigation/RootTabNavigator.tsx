@@ -18,7 +18,7 @@ export const RootTabNavigator = () => (
         initialRouteName={RouteTabs.HomeStack}
         screenOptions={{
             headerShown: false,
-            unmountOnBlur: true,
+            unmountOnBlur: false,
         }}
         tabBar={props => <TabBar tabItemOptions={rootTabsOptions} {...props} />}
     >
