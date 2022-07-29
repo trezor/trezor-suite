@@ -15,6 +15,7 @@ const babelConfig = {
 };
 
 module.exports = {
+    rootDir: process.cwd(),
     moduleFileExtensions,
     testMatch,
     testPathIgnorePatterns,
