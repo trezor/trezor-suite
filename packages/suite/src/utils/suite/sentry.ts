@@ -4,6 +4,10 @@ import { Dispatch, GetState } from '@suite-types';
 import { redactDevice, redactDiscovery, getApplicationLog } from '@suite-utils/logsUtils';
 import type { Options, Event } from '@sentry/types';
 
+export const setSentryContext = Sentry.setContext;
+
+export const setSentryTag = Sentry.setTag;
+
 const allowReportTag = 'allowReport';
 
 /**
