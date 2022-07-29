@@ -9,6 +9,7 @@ import actionBlocker from './actionBlockerMiddleware';
 import messageSystem from './messageSystemMiddleware';
 import protocol from './protocolMiddleware';
 import router from './routerMiddleware';
+import sentry from './sentryMiddleware';
 
 export default [
     log,
@@ -22,4 +23,5 @@ export default [
     messageSystem,
     protocol,
     router,
+    sentry,
 ];
