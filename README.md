@@ -45,6 +45,7 @@
 Before you start make sure you have downloaded and installed [NVM](https://github.com/nvm-sh/nvm), [Yarn](https://yarnpkg.com/lang/en/docs/install/) and git with [git lfs](https://git-lfs.github.com/).
 
 -   `git clone git@github.com:trezor/trezor-suite.git`
+-   `git submodule update --init --recursive`
 -   `git lfs pull`
 -   `nvm install`
 -   `yarn`
