@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../state" }
+        { "path": "../../packages/theme" }
     ]
 }

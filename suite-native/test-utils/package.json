@@ -14,7 +14,6 @@
         "react-redux": "7.2.2",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
-        "@suite-native/state": "*",
         "react-native-gesture-handler": "^2.5.0",
         "react-native-reanimated": "^2.8.0",
         "@testing-library/react-native": "^11.0.0"
