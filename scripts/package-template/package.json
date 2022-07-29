@@ -8,6 +8,6 @@
     "scripts": {
         "type-check": "tsc --build",
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest --passWithNoTests"
+        "test:unit": "jest -c ../../jest.config.base.js --passWithNoTests"
     }
 }

@@ -7,6 +7,7 @@ const babelConfig = {
 };
 
 module.exports = {
+    rootDir: process.cwd(),
     // An array of file extensions your modules use
     moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
 
