@@ -21,6 +21,9 @@ export const ColorSchemePicker = () => {
                 <ColorSchemePickerItem colorScheme="chill" />
                 <ColorSchemePickerItem colorScheme="dark" />
             </HStack>
+            <HStack style={applyStyle(stackStyle)} spacing="small">
+                <ColorSchemePickerItem colorScheme="system" />
+            </HStack>
         </VStack>
     );
 };

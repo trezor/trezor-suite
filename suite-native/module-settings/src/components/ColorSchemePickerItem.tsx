@@ -1,15 +1,15 @@
 import React from 'react';
-import { ColorValue, TouchableOpacity } from 'react-native';
+import { ColorValue, TouchableOpacity, useColorScheme } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants, ThemeColorVariant } from '@trezor/theme';
 
-import { selectIsColorSchemeActive, setColorScheme } from '../slice';
+import { selectIsColorSchemeActive, setColorScheme, AppColorScheme } from '../slice';
 
 type ColorSchemePickerItemProps = {
-    colorScheme: ThemeColorVariant;
+    colorScheme: AppColorScheme;
 };
 
 const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean }>(
@@ -50,11 +50,22 @@ const textStyle = prepareNativeStyle(utils => ({
     textTransform: 'capitalize',
 }));
 
+// TODO: this default color variants for dark/light mode should be probably defined in some config
+const useGetSystemColorVariant = (): ThemeColorVariant => {
+    const colorScheme = useColorScheme();
+    if (colorScheme === 'dark') {
+        return 'dark';
+    }
+    return 'chill';
+};
+
 export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProps) => {
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
 
     const isColorSchemeActive = useSelector(selectIsColorSchemeActive(colorScheme));
+    const systemColorVariant = useGetSystemColorVariant();
+    const colorVariant = colorScheme === 'system' ? systemColorVariant : colorScheme;
 
     const handleSchemePress = () => {
         dispatch(setColorScheme(colorScheme));
@@ -68,19 +79,19 @@ export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProp
             <Box flexDirection="row" justifyContent="center">
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorScheme].gray400,
+                        backgroundColor: colorVariants[colorVariant].gray400,
                         isFirstItem: true,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorScheme].gray500,
+                        backgroundColor: colorVariants[colorVariant].gray500,
                         isFirstItem: false,
                     })}
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorScheme].black,
+                        backgroundColor: colorVariants[colorVariant].black,
                         isFirstItem: false,
                     })}
                 />
