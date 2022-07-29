@@ -16,7 +16,6 @@ import { resetDb, dispatch } from './utils/test-env';
 import {
     toggleDeviceMenu,
     toggleDebugModeInSettings,
-    goToOnboarding,
     passThroughInitialRun,
     passThroughBackup,
     passThroughBackupShamir,
@@ -29,8 +28,11 @@ const command = require('cypress-image-snapshot/command');
 const { skipOn, onlyOn } = require('@cypress/skip-test');
 
 const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
+    const baseUrl = Cypress.config('baseUrl');
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
-    cy.visit(assetPrefix + route, options);
+    const testUrl = Cypress.env('TEST_URLS')[0];
+
+    cy.visit(baseUrl + testUrl + assetPrefix + route, options);
     return cy.document().its('fonts.status').should('equal', 'loaded');
 };
 
@@ -106,7 +108,6 @@ declare global {
             passThroughBackupShamir: (shares: number, threshold: number) => Chainable<Subject>;
             passThroughSetPin: () => Chainable<Subject>;
             passThroughInitMetadata: (provider: 'dropbox' | 'google') => Chainable<Subject>;
-            goToOnboarding: () => Chainable<Subject>;
             enableRegtestAndGetCoins: (params: {
                 payments: { address: string; amount: number }[];
             }) => Chainable<Subject>;
@@ -149,7 +150,6 @@ Cypress.Commands.add('hoverTestElement', hoverTestElement);
 // various shortcuts
 Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
 Cypress.Commands.add('toggleDebugModeInSettings', toggleDebugModeInSettings);
-Cypress.Commands.add('goToOnboarding', goToOnboarding);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
 Cypress.Commands.add('passThroughBackup', passThroughBackup);
 Cypress.Commands.add('passThroughBackupShamir', passThroughBackupShamir);
