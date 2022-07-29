@@ -16,6 +16,8 @@ export { useRecovery } from './useRecovery';
 export { useExternalLink } from './useExternalLink';
 export { useFilteredModal } from './useFilteredModal';
 export { usePreferredModal } from './usePreferredModal';
+export { useKeyPress } from './useKeyPress';
+export { useOnClickOutside } from './useOnClickOutside';
 
 // replaced in suite-native
 export { useLocales } from '@suite-hooks/useLocales';

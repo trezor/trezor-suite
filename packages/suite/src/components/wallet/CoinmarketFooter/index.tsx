@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { CoinmarketProvidedByInvity } from '@wallet-components';
-import { useOnClickOutside } from '@suite-utils/dom';
+import { useOnClickOutside } from '@suite-hooks/useOnClickOutside';
 import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@trezor/utils';
 

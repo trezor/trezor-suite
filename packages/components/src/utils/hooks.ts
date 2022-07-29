@@ -3,6 +3,7 @@ import { ThemeContext } from '../support/ThemeProvider';
 import { platform } from './env';
 import { useTheme as useSCTheme } from 'styled-components';
 
+// todo: duplicity
 export const useKeyPress = (targetKey: string) => {
     // State for keeping track of whether key is pressed
     const [keyPressed, setKeyPressed] = useState(false);
