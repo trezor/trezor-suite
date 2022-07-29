@@ -1,10 +1,12 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from './Box';
 import { Text } from './Text';
+
+export type ChipColorScheme = 'primary' | 'darkGray';
 
 type ChipProps = {
     title: string;
@@ -12,42 +14,85 @@ type ChipProps = {
     description?: string;
     icon: ReactNode;
     isSelected?: boolean;
+    style?: NativeStyleObject;
+    colorScheme?: ChipColorScheme;
 };
 
 type ChipStyleProps = {
     isSelected: boolean;
+    colorScheme: ChipColorScheme;
 };
-const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    height: 44,
-    backgroundColor: utils.colors.gray100,
-    borderWidth: utils.borders.widths.small,
-    borderRadius: utils.borders.radii.round,
-    borderColor: utils.colors.gray400,
-    paddingHorizontal: 10,
-    extend: {
-        condition: isSelected,
-        style: {
+const chipStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected, colorScheme }) => {
+    const chipColorSchemeStyles: Record<ChipColorScheme, NativeStyleObject> = {
+        darkGray: {
+            backgroundColor: utils.colors.gray800,
+        },
+        primary: {
+            backgroundColor: utils.colors.gray100,
+            borderColor: utils.colors.gray400,
+        },
+    };
+
+    const selectedChipColorSchemeStyles: Record<ChipColorScheme, NativeStyleObject> = {
+        darkGray: {
+            backgroundColor: utils.colors.white,
+        },
+        primary: {
             borderColor: utils.colors.forest,
             borderWidth: utils.borders.widths.medium,
         },
-    },
-}));
+    };
 
-const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected }) => ({
-    ...utils.typography.hint,
-    color: utils.colors.gray800,
-    extend: {
-        condition: isSelected,
-        style: {
-            ...utils.typography.callout,
+    return {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        height: 44,
+        borderWidth: utils.borders.widths.small,
+        borderRadius: utils.borders.radii.round,
+        paddingHorizontal: 10,
+        ...chipColorSchemeStyles[colorScheme],
+        extend: {
+            condition: isSelected,
+            style: {
+                ...selectedChipColorSchemeStyles[colorScheme],
+            },
+        },
+    };
+});
+
+const chipTitleStyle = prepareNativeStyle<ChipStyleProps>((utils, { isSelected, colorScheme }) => {
+    const chipTitleColorSchemeStyles: Record<ChipColorScheme, NativeStyleObject> = {
+        darkGray: {
+            color: utils.colors.white,
+        },
+        primary: {
+            color: utils.colors.gray800,
+        },
+    };
+
+    const selectedChipTitleColorSchemeStyles: Record<ChipColorScheme, NativeStyleObject> = {
+        darkGray: {
+            color: utils.colors.black,
+        },
+        primary: {
             color: utils.colors.forest,
         },
-    },
-}));
+    };
+
+    return {
+        ...utils.typography.hint,
+        ...chipTitleColorSchemeStyles[colorScheme],
+        extend: {
+            condition: isSelected,
+            style: {
+                ...utils.typography.callout,
+                ...selectedChipTitleColorSchemeStyles[colorScheme],
+            },
+        },
+    };
+});
 
 const chipDescriptionStyle = prepareNativeStyle(utils => ({
     ...utils.typography.label,
@@ -59,14 +104,25 @@ const textWrapperStyle = prepareNativeStyle(utils => ({
     marginLeft: utils.spacings.small,
 }));
 
-export const Chip = ({ title, onSelect, description, icon, isSelected = false }: ChipProps) => {
+export const Chip = ({
+    title,
+    onSelect,
+    description,
+    icon,
+    isSelected = false,
+    style,
+    colorScheme = 'primary',
+}: ChipProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity onPress={onSelect} style={applyStyle(chipStyle, { isSelected })}>
+        <TouchableOpacity
+            onPress={onSelect}
+            style={[applyStyle(chipStyle, { isSelected, colorScheme }), style]}
+        >
             <Box>{icon}</Box>
             <Box style={applyStyle(textWrapperStyle)}>
-                <Text style={applyStyle(chipTitleStyle, { isSelected })}>{title}</Text>
+                <Text style={applyStyle(chipTitleStyle, { isSelected, colorScheme })}>{title}</Text>
                 {description && <Text style={applyStyle(chipDescriptionStyle)}>{description}</Text>}
             </Box>
         </TouchableOpacity>

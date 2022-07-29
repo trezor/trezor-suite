@@ -10,10 +10,12 @@ import Animated, {
 
 import { D } from '@mobily/ts-belt';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { nativeSpacings } from '@trezor/theme';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { nativeSpacings, defaultColorVariant } from '@trezor/theme';
 
 import { Box } from '../Box';
+
+export type InputColorScheme = 'white' | 'gray' | 'darkGray';
 
 type InputProps = {
     value: string;
@@ -22,6 +24,7 @@ type InputProps = {
     hasError?: boolean;
     hasWarning?: boolean;
     leftIcon?: ReactNode;
+    colorScheme?: InputColorScheme;
 };
 
 const INPUT_WRAPPER_PADDING_HORIZONTAL = 14;
@@ -33,66 +36,95 @@ type InputWrapperStyleProps = {
     hasWarning: boolean;
     hasError: boolean;
     isLabelMinimized: boolean;
+    colorScheme: InputColorScheme;
 };
+
+const inputTextColorSchemeStyles: Record<InputColorScheme, NativeStyleObject> = {
+    gray: {
+        color: defaultColorVariant.gray900,
+    },
+    darkGray: {
+        color: defaultColorVariant.white,
+    },
+    white: {
+        color: defaultColorVariant.gray700,
+    },
+};
+
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
-    (utils, { hasError, hasWarning, isLabelMinimized }) => ({
-        borderWidth: utils.borders.widths.small,
-        borderColor: utils.colors.gray300,
-        backgroundColor: utils.colors.gray300,
-        borderRadius: utils.borders.radii.small,
-        paddingVertical: INPUT_WRAPPER_PADDING_VERTICAL,
-        paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
-        height: 58,
-        justifyContent: 'flex-end',
-        extend: [
-            {
-                condition: hasWarning,
-                style: {
-                    borderColor: utils.colors.yellow,
-                    borderWidth: utils.borders.widths.large,
-                },
+    (utils, { hasError, hasWarning, isLabelMinimized, colorScheme }) => {
+        const inputColorSchemeStyles: Record<InputColorScheme, NativeStyleObject> = {
+            gray: {
+                backgroundColor: utils.colors.gray100,
             },
-            {
-                condition: hasError,
-                style: {
-                    borderColor: utils.colors.red,
-                    backgroundColor: utils.transparentize(0.95, utils.colors.red),
-                },
+            darkGray: {
+                backgroundColor: utils.colors.gray800,
             },
-            {
-                condition: isLabelMinimized,
-                style: {
-                    paddingVertical: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
-                },
+            white: {
+                borderWidth: utils.borders.widths.small,
+                borderColor: utils.colors.gray300,
+                backgroundColor: utils.colors.white,
             },
-        ],
+        };
+        return {
+            borderRadius: utils.borders.radii.small,
+            paddingVertical: INPUT_WRAPPER_PADDING_VERTICAL,
+            paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
+            height: 58,
+            justifyContent: 'flex-end',
+            ...inputColorSchemeStyles[colorScheme],
+            extend: [
+                {
+                    condition: hasWarning,
+                    style: {
+                        borderColor: utils.colors.yellow,
+                        borderWidth: utils.borders.widths.large,
+                    },
+                },
+                {
+                    condition: hasError,
+                    style: {
+                        borderColor: utils.colors.red,
+                        backgroundColor: utils.transparentize(0.95, utils.colors.red),
+                    },
+                },
+                {
+                    condition: isLabelMinimized,
+                    style: {
+                        paddingVertical: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
+                    },
+                },
+            ],
+        };
+    },
+);
+
+const inputStyle = prepareNativeStyle<Pick<InputWrapperStyleProps, 'colorScheme'>>(
+    (utils, { colorScheme }) => ({
+        ...utils.typography.body,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: INPUT_TEXT_HEIGHT,
+        lineHeight: 0,
+        padding: 0,
+        ...inputTextColorSchemeStyles[colorScheme],
     }),
 );
 
-const inputStyle = prepareNativeStyle(utils => ({
-    ...utils.typography.body,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: INPUT_TEXT_HEIGHT,
-    color: utils.colors.gray700,
-    lineHeight: 0,
-    padding: 0,
-}));
-
-const inputLabelStyle = prepareNativeStyle(
-    (utils, { isLabelMinimized }: Pick<InputWrapperStyleProps, 'isLabelMinimized'>) => ({
-        ...D.deleteKey(utils.typography.body, 'fontSize'),
-        color: utils.colors.gray600,
-        position: 'absolute',
-        left: INPUT_WRAPPER_PADDING_HORIZONTAL,
-        extend: {
-            condition: isLabelMinimized,
-            style: {
-                ...D.deleteKey(utils.typography.label, 'fontSize'),
-            },
+const inputLabelStyle = prepareNativeStyle<
+    Pick<InputWrapperStyleProps, 'isLabelMinimized' | 'colorScheme'>
+>((utils, { isLabelMinimized, colorScheme }) => ({
+    ...D.deleteKey(utils.typography.body, 'fontSize'),
+    position: 'absolute',
+    left: INPUT_WRAPPER_PADDING_HORIZONTAL,
+    ...inputTextColorSchemeStyles[colorScheme],
+    extend: {
+        condition: isLabelMinimized,
+        style: {
+            ...D.deleteKey(utils.typography.label, 'fontSize'),
         },
-    }),
-);
+    },
+}));
 
 const leftIconStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
@@ -140,7 +172,15 @@ const useAnimationStyles = ({
 
 export const Input = React.forwardRef<TextInput, InputProps>(
     (
-        { value, onChange, label, leftIcon, hasError = false, hasWarning = false }: InputProps,
+        {
+            value,
+            onChange,
+            label,
+            leftIcon,
+            hasError = false,
+            hasWarning = false,
+            colorScheme = 'white',
+        }: InputProps,
         ref,
     ) => {
         const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -161,6 +201,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
                         hasError,
                         hasWarning,
                         isLabelMinimized,
+                        colorScheme,
                     })}
                 >
                     <Animated.Text
@@ -171,7 +212,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
                             in both places (native and animated style).
                             */
                             animatedInputLabelStyle,
-                            applyStyle(inputLabelStyle, { isLabelMinimized }),
+                            applyStyle(inputLabelStyle, { isLabelMinimized, colorScheme }),
                         ]}
                         numberOfLines={1}
                     >
@@ -183,7 +224,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
                             ref={ref ?? inputRef}
                             value={value}
                             onChangeText={onChange}
-                            style={applyStyle(inputStyle)}
+                            style={applyStyle(inputStyle, { colorScheme })}
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setIsFocused(false)}
                         />

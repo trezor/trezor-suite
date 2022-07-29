@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react';
 import SplashScreen from 'react-native-splash-screen';
+import { useEffect } from 'react';
 
 export const useSplashScreen = (): void => {
-    const [hideSplash, setHideSplash] = React.useState(false);
-
     useEffect(() => {
         const splashTimerId = setTimeout(() => {
-            setHideSplash(true);
+            SplashScreen.hide();
         }, 800);
 
         return () => clearTimeout(splashTimerId);
     }, []);
-
-    useEffect(() => {
-        if (hideSplash) {
-            SplashScreen.hide();
-        }
-    }, [hideSplash]);
 };

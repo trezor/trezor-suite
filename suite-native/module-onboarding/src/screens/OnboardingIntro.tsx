@@ -7,25 +7,25 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
 
-const introStyles = prepareNativeStyle(_ => ({
+const introStyle = prepareNativeStyle(_ => ({
     flex: 1,
     justifyContent: 'flex-end',
 }));
 
-const introHeadlineStyles = prepareNativeStyle(utils => ({
+const introHeadlineStyle = prepareNativeStyle(utils => ({
     paddingLeft: 71,
     paddingRight: 71,
     marginBottom: utils.spacings.large,
 }));
 
-const introDescriptionStyles = prepareNativeStyle(_ => ({
+const introDescriptionStyle = prepareNativeStyle(_ => ({
     paddingLeft: 79,
     paddingRight: 79,
     marginBottom: 52,
     alignItems: 'center',
 }));
 
-const introImagePreviewStyles = prepareNativeStyle(utils => ({
+const introImagePreviewStyle = prepareNativeStyle(utils => ({
     width: 387,
     height: 297,
     backgroundColor: utils.colors.green,
@@ -33,7 +33,7 @@ const introImagePreviewStyles = prepareNativeStyle(utils => ({
     justifyContent: 'center',
 }));
 
-const introButtonStyles = prepareNativeStyle(_ => ({
+const introButtonStyle = prepareNativeStyle(_ => ({
     position: 'relative',
     bottom: 10,
     paddingLeft: 29,
@@ -48,11 +48,11 @@ export const OnboardingIntro = ({
 
     return (
         <Screen backgroundColor="black" hasStatusBar={false}>
-            <View style={applyStyle(introStyles)}>
-                <Text variant="titleMedium" color="white" style={applyStyle(introHeadlineStyles)}>
+            <View style={applyStyle(introStyle)}>
+                <Text variant="titleMedium" color="white" style={applyStyle(introHeadlineStyle)}>
                     Import only shits
                 </Text>
-                <View style={applyStyle(introDescriptionStyles)}>
+                <View style={applyStyle(introDescriptionStyle)}>
                     <Text variant="body" color="gray600">
                         To add that shit, navigate to:
                     </Text>
@@ -60,12 +60,12 @@ export const OnboardingIntro = ({
                         Account {'>'} Details {'>'} Show xPUB
                     </Text>
                 </View>
-                <View style={applyStyle(introImagePreviewStyles)}>
+                <View style={applyStyle(introImagePreviewStyle)}>
                     <Text variant="body" color="white">
                         TODO screenshot from Suite
                     </Text>
                 </View>
-                <View style={applyStyle(introButtonStyles)}>
+                <View style={applyStyle(introButtonStyle)}>
                     <Button
                         colorScheme="white"
                         onPress={() => {
