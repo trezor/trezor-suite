@@ -1,10 +1,18 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
+import { configureStore, Store } from '@reduxjs/toolkit';
+
 import { fireEvent, render } from '@suite-native/test-utils';
 
-import { graphStore } from '../slice';
+import { appGraphReducer } from '../slice';
 import { TimeSwitch, timeSwitchItems } from '../components/TimeSwitch';
+
+export const graphStore: Store = configureStore({
+    reducer: {
+        appGraph: appGraphReducer,
+    },
+});
 
 test('time switch correctly changes values in redux from component', () => {
     const { getByTestId } = render(

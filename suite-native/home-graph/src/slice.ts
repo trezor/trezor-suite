@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, Store, configureStore } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TimeFrameValues } from './types';
 
@@ -28,9 +28,3 @@ export const getSelectedTimeFrame = (state: SliceState) => state.appGraph.select
 
 export const { setSelectedTimeFrame } = appGraphSlice.actions;
 export const appGraphReducer = appGraphSlice.reducer;
-
-export const graphStore: Store = configureStore({
-    reducer: {
-        appGraph: appGraphReducer,
-    },
-});
