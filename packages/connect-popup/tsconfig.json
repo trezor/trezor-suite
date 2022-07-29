@@ -6,6 +6,8 @@
     },
     "references": [
         { "path": "../connect" },
+        { "path": "../components" },
+        { "path": "../connect-ui" },
         { "path": "../urls" }
     ],
     "ts-node": {

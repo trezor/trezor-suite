@@ -9,6 +9,12 @@ export const firmwareRequiredUpdate = (device: UiRequestUnexpectedDeviceMode['pa
     if (!device.features) return;
     if (!device.firmwareRelease) return;
 
+    // showView return type has undefined in union (if react component is available);
+    if (!view) {
+        console.error('view does not exist!');
+        return;
+    }
+
     const button = view.getElementsByClassName('confirm')[0];
 
     button.setAttribute('href', SUITE_FIRMWARE_URL);

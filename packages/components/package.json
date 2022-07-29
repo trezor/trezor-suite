@@ -5,6 +5,7 @@
     "main": "src/index",
     "author": "SatoshiLabs s.r.o.",
     "license": "SEE LICENSE IN LICENSE.md",
+    "sideEffects": false,
     "scripts": {
         "lint": "run-s lint:*",
         "lint:js": "eslint '**/*.{ts,tsx,js}'",

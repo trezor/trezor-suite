@@ -5,6 +5,13 @@ import { showView, postMessage, getState } from './common';
 
 export const firmwareNotCompatible = (device: UiRequestUnexpectedDeviceMode['payload']) => {
     const view = showView('firmware-not-compatible');
+
+    // showView return type has undefined in union (if react component is available);
+    if (!view) {
+        console.error('view does not exist!');
+        return;
+    }
+
     if (!device.features) return;
     const { features } = device;
 
