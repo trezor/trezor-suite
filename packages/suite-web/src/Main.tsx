@@ -4,7 +4,6 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 import { init as initSentry } from '@sentry/browser';
 
-import { isDev } from '@suite-utils/build';
 import { initStore } from '@suite/reducers/store';
 import { preloadStore } from '@suite-support/preloadStore';
 import { SENTRY_CONFIG } from '@suite-config';
@@ -57,7 +56,7 @@ const Main = () => {
 };
 
 export const init = async (root: HTMLElement) => {
-    if (!window.Cypress && !isDev) {
+    if (!window.Cypress) {
         initSentry(SENTRY_CONFIG);
     }
 

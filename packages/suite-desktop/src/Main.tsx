@@ -7,7 +7,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { initStore } from '@suite/reducers/store';
 import { preloadStore } from '@suite-support/preloadStore';
-import { isDev } from '@suite-utils/build';
 
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
@@ -61,9 +60,7 @@ const Main = () => {
 };
 
 export const init = async (root: HTMLElement) => {
-    if (!isDev) {
-        initSentry(SENTRY_CONFIG);
-    }
+    initSentry(SENTRY_CONFIG);
 
     // render simple loader with theme provider without redux, wait for indexedDB
     render(<LoadingScreen />, root);
