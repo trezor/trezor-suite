@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
-import { useTimer } from '@suite-hooks/useTimeInterval';
+import { useTimer } from '@trezor/react-utils';
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 import { processQuotes, createQuoteLink } from '@wallet-utils/coinmarket/sellUtils';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';

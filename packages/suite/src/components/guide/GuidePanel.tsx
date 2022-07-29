@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FreeFocusInside } from 'react-focus-lock';
 
 import { variables, Backdrop } from '@trezor/components';
-import { useOnce, useSelector } from '@suite-hooks';
+import { useOnce } from '@trezor/react-utils';
+import { useSelector } from '@suite-hooks';
 import {
     SupportFeedbackSelection,
     GuideDefault,

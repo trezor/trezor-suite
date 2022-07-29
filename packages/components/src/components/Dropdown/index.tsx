@@ -8,8 +8,9 @@ import React, {
 } from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
+import { useOnClickOutside } from '@trezor/react-utils';
 import { FONT_WEIGHT, Z_INDEX, FONT_SIZE } from '../../config/variables';
-import { useOnClickOutside, useTheme } from '../../utils/hooks';
+import { useTheme } from '../../utils/hooks';
 import { Icon, IconProps } from '../Icon';
 
 const Wrapper = styled.div<{ absolutePosition: boolean }>`

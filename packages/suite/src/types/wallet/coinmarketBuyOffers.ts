@@ -1,7 +1,7 @@
 import type { AppState } from '@suite-types';
 import type { Account } from '@wallet-types';
 import type { BuyTrade } from 'invity-api';
-import type { Timer } from '@suite-hooks/useTimeInterval';
+import type { Timer } from '@trezor/react-utils';
 import type { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import type { WithSelectedAccountLoadedProps } from '@wallet-components';
 
