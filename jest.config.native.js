@@ -1,3 +1,10 @@
+const {
+    moduleFileExtensions,
+    testMatch,
+    testPathIgnorePatterns,
+    watchPathIgnorePatterns,
+} = require('./jest.config.base');
+
 const babelConfig = {
     presets: [
         'module:metro-react-native-babel-preset',
@@ -8,27 +15,12 @@ const babelConfig = {
 };
 
 module.exports = {
+    moduleFileExtensions,
+    testMatch,
+    testPathIgnorePatterns,
+    watchPathIgnorePatterns,
+
     preset: 'react-native',
-    // An array of file extensions your modules use
-    moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
-
-    // The glob patterns Jest uses to detect test files
-    testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
-
-    // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-    testPathIgnorePatterns: [
-        '/node_modules/',
-        '/libDev/',
-        '/lib/',
-        '/dist/',
-        '/build/',
-        '/build-electron/',
-        '/coverage/',
-        '/public/',
-    ],
-
-    // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
-    watchPathIgnorePatterns: ['libDev', 'lib'],
 
     transform: {
         '\\.(js|jsx|ts|tsx)$': ['babel-jest', babelConfig],

@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest --passWithNoTests",
+        "test:unit": "jest",
         "type-check": "tsc --build"
     },
     "dependencies": {

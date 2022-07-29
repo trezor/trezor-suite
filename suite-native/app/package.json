@@ -8,7 +8,6 @@
         "android:clean": "cd android && ./gradlew clean",
         "ios": "react-native run-ios --no-packager",
         "start": "react-native start --reset-cache",
-        "test": "jest",
         "lint": "eslint .",
         "type-check": "tsc -b",
         "build:android": "cd android && ./gradlew assembleDevDebug",
