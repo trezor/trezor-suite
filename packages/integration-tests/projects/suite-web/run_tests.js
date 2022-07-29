@@ -63,6 +63,7 @@ const runTests = async () => {
         // CI_RUNNER_ID,
         CI_RUNNER_DESCRIPTION,
         CYPRESS_updateSnapshots,
+        CYPRESS_TEST_URLS,
     } = process.env;
 
     const { group } = argv;
@@ -106,10 +107,6 @@ const runTests = async () => {
             .substr(testFile.lastIndexOf('/tests/') + 7)
             .replace('.test.ts', '');
 
-        let testRunNumber = 0;
-
-        const userAgent = grepForValue('@user-agent', testFile);
-
         console.log('');
         console.log(`[run_tests.js] testing next file ${testFile}`);
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
@@ -128,18 +125,24 @@ const runTests = async () => {
             trashAssetsBeforeRuns: false,
             defaultCommandTimeout: 15000,
             env: {
-                emuVersionT1: '1-master',
-                emuVersionT2: '2-master',
+                TEST_URLS: CYPRESS_TEST_URLS.split(' '),
             },
         };
+
+        const userAgent = grepForValue('@user-agent', testFile);
 
         if (userAgent) {
             console.log('[run_tests.js] using custom user agent', userAgent);
             Object.assign(config, { userAgent });
         }
 
+        let testRunNumber = 0;
+
         while (testRunNumber < allowedRuns) {
             testRunNumber++;
+
+            console.log(`[run_tests.js] config.baseUrl: ${config.baseUrl}`);
+
             try {
                 // eslint-disable-next-line no-await-in-loop
                 const runResult = await cypress.run({

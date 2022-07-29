@@ -6,16 +6,13 @@ import { Action } from '@suite-types';
  * @example cy.resetDb()
  */
 export const resetDb = () => {
-    cy.log('deleting database');
     const request = indexedDB.deleteDatabase('trezor-suite');
 
     request.onerror = function () {
-        cy.log('deleting database error');
         return cy;
     };
 
     request.onsuccess = function () {
-        cy.log('deleting database error success');
         return cy;
     };
 };
