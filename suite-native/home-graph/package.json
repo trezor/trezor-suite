@@ -7,12 +7,13 @@
     "main": "src/index",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest --passWithNoTests",
+        "test:unit": "jest -c=../../jest.config.native.js",
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "0.1.123",
+        "@reduxjs/toolkit": "^1.8.3",
         "@suite-native/atoms": "*",
+        "@suite-native/test-utils": "*",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "react": "^17.0.2",
@@ -20,7 +21,6 @@
         "react-native-gesture-handler": "^2.4.1",
         "react-native-graph": "^0.1.1",
         "react-native-reanimated": "^2.8.0",
-        "@reduxjs/toolkit": "^1.8.3",
         "react-redux": "7.2.2"
     }
 }

@@ -40,6 +40,7 @@
         "**/coverage",
         "**/public",
         "**/protobuf-patches",
-        "**/trezor-common"
+        "**/trezor-common",
+        "**/jest.config.js"
     ]
 }

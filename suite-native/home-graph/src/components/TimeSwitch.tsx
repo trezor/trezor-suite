@@ -6,7 +6,7 @@ import { Box } from '@suite-native/atoms';
 import { TimeFrameItems } from '../types';
 import { TimeSwitchItem } from './TimeSwitchItem';
 
-const timeSwitchItems: TimeFrameItems = {
+export const timeSwitchItems: TimeFrameItems = {
     hour: {
         shortcut: '1h',
         value: 'hour',
