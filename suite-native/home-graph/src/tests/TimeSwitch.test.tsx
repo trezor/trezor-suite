@@ -13,7 +13,7 @@ test('time switch correctly changes values in redux from component', () => {
         </Provider>,
     );
 
-    const all = getByTestId(timeSwitchItems.all.value);
+    const all = getByTestId(`TimeSwitchItem_${timeSwitchItems.all.value}`);
     fireEvent.press(all);
 
     const { selectedTimeFrame } = graphStore.getState().appGraph;
