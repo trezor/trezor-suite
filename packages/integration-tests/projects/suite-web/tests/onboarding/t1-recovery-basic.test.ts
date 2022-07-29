@@ -11,7 +11,9 @@ describe.skip('Onboarding - recover wallet T1', () => {
 
         cy.viewport(1080, 1440).resetDb();
         cy.prefixedVisit('/');
-        cy.goToOnboarding();
+        cy.task('startEmu', { wipe: true });
+        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@onboarding/continue-button').click();
         cy.onboardingShouldLoad();
         // common steps - navigation through onboarding
         cy.getTestElement('@onboarding/begin-button').click();
