@@ -1,6 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/common.js
 
 import { POPUP, ERRORS, PopupInit, CoreMessage, ConnectSettings } from '@trezor/connect';
+import React from 'react';
+import * as ReactDOM from 'react-dom';
+
+import { ThemeWrapper } from '@trezor/connect-ui';
+import { StyleSheetWrapper } from './react/StylesSheetWrapper';
 
 export const header: HTMLElement = document.getElementsByTagName('header')[0];
 export const container: HTMLElement = document.getElementById('container')!;
@@ -44,11 +49,53 @@ export const createTooltip = (text: string) => {
 };
 
 export const clearView = () => {
-    container.innerHTML = '';
+    // clear and hide legacy views
+    const container = document.getElementById('container');
+    if (container) {
+        container.innerHTML = '';
+        container.style.display = 'none';
+    }
+
+    // clear and hide react views
+    const reactContainer = document.getElementById('react');
+    if (reactContainer) {
+        reactContainer.shadowRoot?.getElementById('reactRenderIn')?.remove();
+        reactContainer.style.display = 'none';
+    }
 };
 
-export const showView = (className: string) => {
-    clearView();
+let reactRenderIn;
+
+// todo: type
+const renderReactView = (component: any) => {
+    const reactSlot = document.getElementById('react');
+
+    reactSlot!.style.display = 'flex';
+
+    if (!reactSlot!.shadowRoot) {
+        reactSlot!.attachShadow({ mode: 'open' });
+    }
+
+    reactRenderIn = document.createElement('div');
+    reactRenderIn.setAttribute('id', 'reactRenderIn');
+    reactRenderIn.style.display = 'flex';
+    reactRenderIn.style.flexDirection = 'column';
+    reactRenderIn.style.flex = '1';
+
+    // append the renderIn element inside the styleSlot
+    reactSlot!.shadowRoot!.appendChild(reactRenderIn);
+
+    const Component = (
+        <StyleSheetWrapper>
+            <ThemeWrapper>{component}</ThemeWrapper>
+        </StyleSheetWrapper>
+    );
+
+    ReactDOM.render(Component, reactRenderIn);
+};
+
+const renderLegacyView = (className: string) => {
+    container!.style.display = 'flex';
 
     const view = views.getElementsByClassName(className);
     if (view) {
@@ -64,6 +111,18 @@ export const showView = (className: string) => {
         }
     }
     return container;
+};
+
+export const showView = (component: string | React.ReactElement) => {
+    clearView();
+
+    // is view available in react?
+    if (typeof component !== 'string') {
+        renderReactView(component);
+    } else {
+        // else continue in the old way
+        return renderLegacyView(component);
+    }
 };
 
 export const getIframeElement = () => {
