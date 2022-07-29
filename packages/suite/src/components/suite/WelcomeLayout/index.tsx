@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
+import { useOnce } from '@trezor/react-utils';
 import { Translation } from '@suite-components';
-import { useOnce } from '@suite-hooks';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';

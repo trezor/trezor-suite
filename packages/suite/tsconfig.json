@@ -13,6 +13,7 @@
     "references": [
         { "path": "../components" },
         { "path": "../connect" },
+        { "path": "../react-utils" },
         { "path": "../suite-analytics" },
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },

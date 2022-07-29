@@ -2,7 +2,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { useKeyPress, useTheme } from '../../utils/hooks';
+import { useKeyPress } from '@trezor/react-utils';
+import { useTheme } from '../../utils/hooks';
 import { Icon } from '../Icon';
 import { H1 } from '../typography/Heading';
 import { variables } from '../../config';

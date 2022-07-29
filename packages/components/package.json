@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@tippyjs/react": "^4.2.6",
+        "@trezor/react-utils": "*",
         "date-fns": "^2.28.0",
         "lottie-react": "^2.2.1",
         "polished": "^4.2.2",

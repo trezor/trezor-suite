@@ -12,6 +12,7 @@
     ],
     "references": [
         { "path": "../components" },
+        { "path": "../react-utils" },
         { "path": "../suite" },
         { "path": "../urls" },
         { "path": "../utils" }
