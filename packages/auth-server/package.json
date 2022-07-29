@@ -7,7 +7,6 @@
     "main": "src/index",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest --passWithNoTests",
         "type-check": "tsc --build",
         "dev": "npx nodemon --exec 'ts-node' ./src/index.ts",
         "build": "rimraf ./lib && tsc --build tsconfig.lib.json",

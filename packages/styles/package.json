@@ -8,7 +8,7 @@
     "scripts": {
         "type-check": "tsc --build",
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "jest"
+        "test:unit": "jest -c ../../jest.config.base.js"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.11.0",
