@@ -7,6 +7,7 @@ import { isWeb } from '@suite-utils/env';
 import { TranslationMode } from './TranslationMode';
 import { GithubIssue } from './GithubIssue';
 import { WipeData } from './WipeData';
+import { ThrowTestingError } from './ThrowTestingError';
 import { InvityApi } from './InvityApi';
 import { OAuthApi } from './OAuthApi';
 
@@ -26,6 +27,9 @@ export const SettingsDebug = () => (
         </SettingsSection>
         <SettingsSection title="OAuth">
             <OAuthApi />
+        </SettingsSection>
+        <SettingsSection title="Testing">
+            <ThrowTestingError />
         </SettingsSection>
     </SettingsLayout>
 );
