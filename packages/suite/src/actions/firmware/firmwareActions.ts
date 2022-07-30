@@ -1,4 +1,4 @@
-import TrezorConnect, { Device } from '@trezor/connect';
+import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIRMWARE } from '@firmware-actions/constants';
@@ -167,6 +167,31 @@ const firmwareInstall =
 
 export const firmwareUpdate = () => firmwareInstall();
 
+const handleFwHashError = (dispatch: Dispatch, getFirmwareHashResponse: Unsuccessful) => {
+    dispatch({
+        type: FIRMWARE.SET_ERROR,
+        payload: `${getFirmwareHashResponse.payload.error}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
+    });
+    analytics.report({
+        type: EventType.FirmwareValidateHashError,
+        payload: {
+            error: getFirmwareHashResponse.payload.error,
+        },
+    });
+};
+
+const handleFwHashMismatch = (dispatch: Dispatch, device: Device) => {
+    dispatch({
+        type: FIRMWARE.SET_HASH_INVALID,
+        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
+        payload: device.id!,
+    });
+    dispatch({ type: FIRMWARE.SET_ERROR, payload: 'Invalid hash' });
+    analytics.report({
+        type: EventType.FirmwareValidateHashMismatch,
+    });
+};
+
 /**
  * After installing a new firmware validate its hash (already saved into application state) with the result of
  * TrezorConnect.getFirmwareHash call
@@ -190,30 +215,36 @@ export const validateFirmwareHash =
                 },
                 challenge: firmwareChallenge,
             });
+
+            // TODO: move this logic partially into TrezorConnect as described here:
+            // https://github.com/trezor/trezor-suite/issues/5896
+            // we don't want to have false negatives but more importantly false positives.
+            // Cases that should not lead to the big red error:
+            // - device disconnected, broken cable
+            // - errors from TrezorConnect in general
+            // Cases that should lead to the big red error:
+            // - device was unable to process 'GetFirmwareHash' message ('Unknown message')
+            // - errors from device in general
             if (!fwHash.success) {
-                dispatch({
-                    type: FIRMWARE.SET_ERROR,
-                    payload: `${fwHash.payload.error}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
-                });
-                analytics.report({
-                    type: EventType.FirmwareValidateHashError,
-                    payload: {
-                        error: fwHash.payload.error,
-                    },
-                });
+                // Device error
+                // todo: add a more generic way how to handle all device errors
+                if (
+                    [
+                        'Unknown message', // model 1
+                        'Unexpected message', // model T
+                    ].includes(fwHash.payload.error)
+                ) {
+                    handleFwHashMismatch(dispatch, device);
+                } else {
+                    // TrezorConnect error. Only 'softly' inform user that we were not able to
+                    // validate firmware hash
+                    handleFwHashError(dispatch, fwHash);
+                }
                 return;
             }
 
             if (fwHash.payload.hash !== firmwareHash) {
-                dispatch({
-                    type: FIRMWARE.SET_HASH_INVALID,
-                    // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
-                    payload: device.id!,
-                });
-                dispatch({ type: FIRMWARE.SET_ERROR, payload: 'Invalid hash' });
-                analytics.report({
-                    type: EventType.FirmwareValidateHashMismatch,
-                });
+                handleFwHashMismatch(dispatch, device);
                 return;
             }
         }
