@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { ThemeColorVariant } from '@trezor/theme';
-
-export type AppColorScheme = ThemeColorVariant | 'system';
+import { currencies } from './constants';
+import { AppColorScheme, Currency, CurrencyType } from './types';
 
 export interface AppSettingsState {
     colorScheme: AppColorScheme;
+    currency: Currency;
 }
 
 type SliceState = {
@@ -14,6 +14,7 @@ type SliceState = {
 
 const initialState: AppSettingsState = {
     colorScheme: 'system',
+    currency: currencies.usd,
 };
 
 export const appSettingsSlice = createSlice({
@@ -23,12 +24,16 @@ export const appSettingsSlice = createSlice({
         setColorScheme: (state, action: PayloadAction<AppColorScheme>) => {
             state.colorScheme = action.payload;
         },
+        setCurrency: (state, { payload }: PayloadAction<CurrencyType>) => {
+            state.currency = currencies[payload];
+        },
     },
 });
 
 export const selectColorScheme = (state: SliceState) => state.appSettings.colorScheme;
 export const selectIsColorSchemeActive = (colorScheme: AppColorScheme) => (state: SliceState) =>
     state.appSettings.colorScheme === colorScheme;
+export const selectCurrency = (state: SliceState) => state.appSettings.currency;
 
-export const { setColorScheme } = appSettingsSlice.actions;
+export const { setColorScheme, setCurrency } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

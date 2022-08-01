@@ -24,9 +24,10 @@ type SelectProps = {
     selectLabel: string;
     value: SelectValue;
     onSelectItem: (value: SelectValue) => void;
+    valueLabel?: string;
 };
 
-export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps) => {
+export const Select = ({ items, selectLabel, value, valueLabel, onSelectItem }: SelectProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const selectedItem = useMemo(() => items.find(item => item.value === value), [value, items]);
 
@@ -71,6 +72,7 @@ export const Select = ({ items, selectLabel, value, onSelectItem }: SelectProps)
                 icon={getIcon(selectedItem?.iconName)}
                 value={selectedItem?.label ?? null}
                 label={selectLabel}
+                valueLabel={valueLabel}
                 handlePress={() => setIsOpen(true)}
             />
         </>
