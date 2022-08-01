@@ -18,7 +18,7 @@ const config: Options = {
     release: process.env.SENTRY_RELEASE,
     environment: process.env.SUITE_TYPE,
     normalizeDepth: 4,
-    maxBreadcrumbs: 30,
+    maxBreadcrumbs: 40,
     beforeBreadcrumb,
     initialScope: {
         tags: {
