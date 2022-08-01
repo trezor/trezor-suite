@@ -22,6 +22,7 @@ export const ICONS = {
     DEVICE: require('../../images/icons/device.svg'),
     EXPERIMENTAL_FEATURES: require('../../images/icons/experimental-features.svg'),
     EXCHANGE: require('../../images/icons/exchange.svg'),
+    FIRMWARE: require('../../images/icons/firmware.svg'),
     INFO: require('../../images/icons/info.svg'),
     INFO_ACTIVE: require('../../images/icons/info_active.svg'),
     LOG: require('../../images/icons/log.svg'),

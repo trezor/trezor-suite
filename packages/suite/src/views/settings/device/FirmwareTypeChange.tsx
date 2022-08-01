@@ -66,7 +66,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                     currentFwVersion ? (
                         <Version>
                             <Translation
-                                id="TR_YOUR_CURRENT_FIRMWARE_TYPE"
+                                id="TR_YOUR_FIRMWARE_TYPE"
                                 values={{
                                     version: (
                                         <VersionTooltip content={revision} disabled={!revision}>
