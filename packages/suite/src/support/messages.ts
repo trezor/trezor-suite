@@ -3012,6 +3012,11 @@ export default defineMessages({
         description: 'Info what is happening with users device.',
         id: 'TR_WAIT_FOR_REBOOT',
     },
+    TR_VALIDATION: {
+        defaultMessage: 'Validating firmware',
+        description: 'Info what is happening with users device.',
+        id: 'TR_VALIDATION',
+    },
     TR_WALLET_DUPLICATE_DESC: {
         defaultMessage: 'The Hidden wallet you are trying to add has been already discovered.',
         id: 'TR_WALLET_DUPLICATE_DESC',

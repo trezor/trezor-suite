@@ -26,7 +26,6 @@ const FirmwareStep = () => {
         firmwareHashInvalid,
     } = useFirmware();
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
-
     // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
         return (
@@ -67,8 +66,9 @@ const FirmwareStep = () => {
         );
     }
 
-    // // edge case 2 - user has reconnected device that is already up to date
-    if (status !== 'done' && device?.firmware === 'valid') {
+    // edge case 2 - user has reconnected device that is already up to date
+    // include "validation" status to prevent displaying this during installation
+    if (!['validation', 'done'].includes(status) && device?.firmware === 'valid') {
         return (
             <OnboardingStepBox
                 image="FIRMWARE"
@@ -106,6 +106,7 @@ const FirmwareStep = () => {
         case 'started': // called from firmwareUpdate()
         case 'installing':
         case 'wait-for-reboot':
+        case 'validation':
         case 'unplug': // only relevant for T1, TT auto restarts itself
         case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
         case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
