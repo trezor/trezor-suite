@@ -14,7 +14,7 @@ import { testMocks } from '@suite-common/test-utils';
 3. use it
 
 ```javascript
-jestMocks.getWalletAccount({
+testMocks.getWalletAccount({
     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
     descriptor:
         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
