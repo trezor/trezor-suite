@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { MiddlewareAPI } from 'redux';
-import { DEVICE } from '@trezor/connect';
+import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { getFwVersion, getBootloaderVersion, isBitcoinOnly } from '@suite-utils/device';
 import { getSuiteReadyPayload } from '@suite-utils/analytics';
 import { setSentryContext, setSentryTag } from '@suite-utils/sentry';
 
-import type { AppState, Action, Dispatch } from '@suite-types';
+import { AppState, Action, Dispatch } from '@suite-types';
 
 const deviceContextName = 'trezor-device';
 
@@ -48,7 +48,14 @@ const sentryMiddleware =
             case SUITE.TOR_STATUS:
                 setSentryTag('torStatus', action.payload);
                 break;
-
+            case TRANSPORT.START: {
+                const { type, version } = action.payload;
+                setSentryContext('transport', {
+                    name: type /* type key is used internally by Sentry so it's not allowed */,
+                    version: version || 'not-available',
+                });
+                break;
+            }
             default:
                 break;
         }

@@ -82,17 +82,6 @@ export const unsetSentryUser = () => {
     Sentry.setUser(null);
 };
 
-type SetSentryTransportProps = {
-    type: string;
-    version: string;
-};
-export const setSentryTransport = ({ type, version }: SetSentryTransportProps) => {
-    Sentry.setContext('transport', {
-        name: type /* type key is used internally by Sentry so it's not allowed */,
-        version: version || 'not-available',
-    });
-};
-
 export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) => {
     const { analytics, wallet, suite, logs } = getState();
 
