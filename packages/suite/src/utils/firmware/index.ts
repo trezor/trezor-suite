@@ -17,13 +17,15 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
         case 'started':
         case 'installing':
             return 'TR_INSTALLING';
+        case 'wait-for-reboot':
+            return 'TR_WAIT_FOR_REBOOT';
+        case 'validation':
+            return 'TR_VALIDATION';
         case 'unplug':
         case 'reconnect-in-normal':
         case 'done':
         case 'partially-done':
             return 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED';
-        case 'wait-for-reboot':
-            return 'TR_WAIT_FOR_REBOOT';
         default:
             return null;
     }

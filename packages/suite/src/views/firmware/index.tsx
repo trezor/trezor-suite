@@ -27,7 +27,7 @@ const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
     position: relative;
 
     ${variables.SCREEN_QUERY.ABOVE_TABLET} {
-        padding-top: ${({ isWithTopPadding }) => isWithTopPadding && '40px'};
+        padding-top: ${({ isWithTopPadding }) => isWithTopPadding && '44px'};
     }
 `;
 
