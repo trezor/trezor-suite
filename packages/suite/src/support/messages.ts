@@ -2141,11 +2141,11 @@ export default defineMessages({
         id: 'TR_CHANGE_FIRMWARE_TYPE_ANYTIME',
     },
     TR_FIRMWARE_VERSION: {
-        defaultMessage: 'Firmware version',
+        defaultMessage: 'Version',
         id: 'TR_FIRMWARE_VERSION',
     },
     TR_FIRMWARE_TYPE: {
-        defaultMessage: 'Firmware type',
+        defaultMessage: 'Type',
         id: 'TR_FIRMWARE_TYPE',
     },
     TR_FIRMWARE_VALIDATION_UNRECOGNIZED_FORMAT: {
@@ -3121,13 +3121,13 @@ export default defineMessages({
         defaultMessage: 'You were disconnected.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
-    TR_YOUR_CURRENT_FIRMWARE: {
-        defaultMessage: 'Your current version is {version}',
-        id: 'TR_YOUR_CURRENT_FIRMWARE',
+    TR_YOUR_FIRMWARE_VERSION: {
+        defaultMessage: 'Your firmware version is {version}',
+        id: 'TR_YOUR_FIRMWARE_VERSION',
     },
-    TR_YOUR_CURRENT_FIRMWARE_TYPE: {
+    TR_YOUR_FIRMWARE_TYPE: {
         defaultMessage: 'Your firmware type is {version}',
-        id: 'TR_YOUR_CURRENT_FIRMWARE_TYPE',
+        id: 'TR_YOUR_FIRMWARE_TYPE',
     },
     TR_SWITCH_TO_BITCOIN: {
         defaultMessage: 'Switch to Bitcoin',

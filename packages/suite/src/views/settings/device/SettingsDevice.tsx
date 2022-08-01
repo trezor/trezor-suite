@@ -113,27 +113,32 @@ export const SettingsDevice = () => {
                 </SettingsSection>
             )}
 
-            <SettingsSection title={<Translation id="TR_DEVICE_SECURITY" />} icon="SHIELD_CHECK">
+            <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="FIRMWARE">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
+                {!bootloaderMode && <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />}
+            </SettingsSection>
 
-                {!bootloaderMode && (
-                    <>
-                        <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />
+            {!bootloaderMode && (
+                <>
+                    <SettingsSection
+                        title={<Translation id="TR_DEVICE_SECURITY" />}
+                        icon="SHIELD_CHECK"
+                    >
                         <PinProtection isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
                         <Passphrase isDeviceLocked={isDeviceLocked} />
                         {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
-                    </>
-                )}
-            </SettingsSection>
-            {!bootloaderMode && (
-                <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
-                    <DeviceLabel isDeviceLocked={isDeviceLocked} />
-                    <Homescreen isDeviceLocked={isDeviceLocked} />
-                    {deviceModel === 'T' && <DisplayRotation isDeviceLocked={isDeviceLocked} />}
-                    {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
-                </SettingsSection>
+                    </SettingsSection>
+
+                    <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
+                        <DeviceLabel isDeviceLocked={isDeviceLocked} />
+                        <Homescreen isDeviceLocked={isDeviceLocked} />
+                        {deviceModel === 'T' && <DisplayRotation isDeviceLocked={isDeviceLocked} />}
+                        {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
+                    </SettingsSection>
+                </>
             )}
+
             <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="GHOST">
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
                 <CustomFirmware isDeviceLocked={isDeviceLocked} />
