@@ -44,7 +44,7 @@ export const currencies: CurrencyMap = {
     vef: { label: 'vef', value: 'Venezuelan bolívar' },
     vnd: { label: 'vnd', value: 'Vietnamese dong' },
     zar: { label: 'zar', value: 'South African rand' },
-    xdr: { label: 'xdr', value: '' },
-    xag: { label: 'xag', value: '' },
-    xau: { label: 'xau', value: '' },
+    xdr: { label: 'xdr', value: 'XDR' },
+    xag: { label: 'xag', value: 'XAG' },
+    xau: { label: 'xau', value: 'XAU' },
 };
