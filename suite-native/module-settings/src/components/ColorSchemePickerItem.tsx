@@ -6,7 +6,8 @@ import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants, ThemeColorVariant } from '@trezor/theme';
 
-import { selectIsColorSchemeActive, setColorScheme, AppColorScheme } from '../slice';
+import { selectIsColorSchemeActive, setColorScheme } from '../slice';
+import { AppColorScheme } from '../types';
 
 type ColorSchemePickerItemProps = {
     colorScheme: AppColorScheme;
