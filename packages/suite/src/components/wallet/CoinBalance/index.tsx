@@ -1,6 +1,5 @@
 import React from 'react';
 import { Account } from '@wallet-types';
-import { formatCoinBalance } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount } from '@suite-components';
 
 interface CoinBalanceProps {
@@ -10,8 +9,9 @@ interface CoinBalanceProps {
 
 export const CoinBalance = ({ value, symbol }: CoinBalanceProps) => (
     <FormattedCryptoAmount
-        value={formatCoinBalance(value)}
+        value={value}
         symbol={symbol}
+        isBalance
         data-test={`@wallet/coin-balance/value-${symbol}`}
     />
 );

@@ -1,12 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { HiddenPlaceholder, Sign } from '@suite-components';
-import { formatCurrencyAmount } from '@wallet-utils/formatCurrencyAmount';
-import { networkAmountToSatoshi } from '@suite-common/wallet-utils';
+import {
+    localizeNumber,
+    networkAmountToSatoshi,
+    formatCoinBalance,
+} from '@suite-common/wallet-utils';
 import { isValuePositive, SignValue } from '@suite-components/Sign';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 import { NETWORKS } from '@wallet-config';
 import { NetworkSymbol } from '@wallet-types';
+import { useSelector } from '@suite-hooks/useSelector';
 
 const Container = styled.span`
     max-width: 100%;
@@ -25,6 +30,7 @@ const Symbol = styled.span`
 interface FormattedCryptoAmountProps {
     value: string | number | undefined;
     symbol: string | undefined;
+    isBalance?: boolean;
     signValue?: SignValue;
     disableHiddenPlaceholder?: boolean;
     isRawString?: boolean;
@@ -35,12 +41,15 @@ interface FormattedCryptoAmountProps {
 export const FormattedCryptoAmount = ({
     value,
     symbol,
+    isBalance,
     signValue,
     disableHiddenPlaceholder,
     isRawString,
     'data-test': dataTest,
     className,
 }: FormattedCryptoAmountProps) => {
+    const locale = useSelector(state => state.suite.settings.language);
+
     const { areSatsDisplayed } = useBitcoinAmountUnit();
 
     if (!value) {
@@ -57,21 +66,25 @@ export const FormattedCryptoAmount = ({
 
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 
+    // convert to satohsis if needed
     if (isSatoshis) {
-        formattedValue = formatCurrencyAmount(
-            Number(networkAmountToSatoshi(String(value), symbol as NetworkSymbol)),
-        ) as string;
+        formattedValue = networkAmountToSatoshi(String(value), symbol as NetworkSymbol);
 
         formattedSymbol = isTestnet ? `sat ${symbol?.toUpperCase()}` : 'sat';
     }
 
+    // format truncation + locale (used for balances) or just locale
+    if (isBalance) {
+        formattedValue = formatCoinBalance(String(formattedValue), locale);
+    } else {
+        formattedValue = localizeNumber(Number(formattedValue), locale);
+    }
+
+    // output as a string, mostly for compatability with graphs
     if (isRawString) {
-        return (
-            <>
-                {`${signValue ? `${isValuePositive(signValue) ? '+' : '-'}` : ''} ${formattedValue}
-                ${formattedSymbol}`}
-            </>
-        );
+        const displayedSignValue = signValue ? `${isValuePositive(signValue) ? '+' : '-'}` : '';
+
+        return <>{`${displayedSignValue} ${formattedValue} ${formattedSymbol}`}</>;
     }
 
     const content = (
