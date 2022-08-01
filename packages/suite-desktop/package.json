@@ -194,7 +194,7 @@
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^8.0.2",
         "electron-updater": "5.0.5",
-        "node-fetch": "^2.6.7",
+        "node-fetch": "^3.2.10",
         "openpgp": "^5.2.1",
         "systeminformation": "^5.11.22"
     },
