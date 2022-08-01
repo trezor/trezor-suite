@@ -1014,6 +1014,11 @@ export default defineMessages({
         defaultMessage: 'Select your country',
         id: 'TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL',
     },
+    TR_SAVINGS_OVERVIEW_PERIOD_DAILY: {
+        defaultMessage: 'daily',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_DAILY',
+        dynamic: true,
+    },
     TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY: {
         defaultMessage: 'weekly',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY',
@@ -1127,6 +1132,46 @@ export default defineMessages({
     TR_SAVINGS_SETUP_WAITING_BUTTON_LABEL: {
         defaultMessage: 'Go to Invity',
         id: 'TR_SAVINGS_SETUP_WAITING_BUTTON_LABEL',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_HEADER: {
+        defaultMessage: 'Bank account',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_HEADER',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_TYPE_LABEL: {
+        defaultMessage: 'Type',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_TYPE_LABEL',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_TYPE_NOTE: {
+        defaultMessage: "Please take note that many savings accounts don't allow ACH payments.",
+        id: 'TR_SAVINGS_BANK_ACCOUNT_TYPE_NOTE',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_NAME_LABEL: {
+        defaultMessage: 'Name',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_NAME_LABEL',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_ROUTING_NUMBER_LABEL: {
+        defaultMessage: 'Routing number',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_ROUTING_NUMBER_LABEL',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_ROUTING_NUMBER_REQUIRED: {
+        defaultMessage: 'Routing number is required.',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_ROUTING_NUMBER_REQUIRED',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_ACCOUNT_NUMBER_LABEL: {
+        defaultMessage: 'Account number',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_ACCOUNT_NUMBER_LABEL',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_ACCOUNT_NUMBER_REQUIRED: {
+        defaultMessage: 'Account number is required.',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_ACCOUNT_NUMBER_REQUIRED',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_OWNER_LABEL: {
+        defaultMessage: 'Owner',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_OWNER_LABEL',
+    },
+    TR_SAVINGS_BANK_ACCOUNT_OWNER_REQUIRED: {
+        defaultMessage: 'Owner is required.',
+        id: 'TR_SAVINGS_BANK_ACCOUNT_OWNER_REQUIRED',
     },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:

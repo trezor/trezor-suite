@@ -2,6 +2,8 @@ import { Account, Network } from '@wallet-types';
 import { NETWORKS } from '@wallet-config';
 import TrezorConnect from '@trezor/connect';
 import { TrezorDevice } from '@suite-types';
+import type { UsBankAccountTypes } from '@wallet-constants/coinmarket/savings';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 const suiteToInvitySymbols = [
     {
@@ -13,6 +15,11 @@ const suiteToInvitySymbols = [
 export const buildOption = (currency: string) => ({
     value: currency,
     label: currency.toUpperCase(),
+});
+
+export const buildUsBankAccountType = (type: typeof UsBankAccountTypes[number]) => ({
+    value: type,
+    label: capitalizeFirstLetter(type),
 });
 
 export const invityApiSymbolToSymbol = (symbol?: string) => {

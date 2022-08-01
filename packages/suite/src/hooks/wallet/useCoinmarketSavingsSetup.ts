@@ -73,6 +73,7 @@ export const useSavingsSetup = ({
         navigateToSavingsOverview,
         navigateToSavingsPaymentInfo,
         navigateToSavingsSetupWaiting,
+        navigateToSavingsBankAccount,
     } = useCoinmarketNavigation(account);
 
     useEffect(() => {
@@ -93,6 +94,9 @@ export const useSavingsSetup = ({
                 case 'SetSavingsParameters':
                     navigateToSavingsSetupContinue();
                     break;
+                case 'SubmitBankAccount':
+                    navigateToSavingsBankAccount();
+                    break;
                 case 'Active':
                     navigateToSavingsOverview();
                     break;
@@ -105,6 +109,7 @@ export const useSavingsSetup = ({
         }
     }, [
         isSavingsTradeLoadingEffective,
+        navigateToSavingsBankAccount,
         navigateToSavingsOverview,
         navigateToSavingsPaymentInfo,
         navigateToSavingsSetupContinue,

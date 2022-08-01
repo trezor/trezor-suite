@@ -77,6 +77,12 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
                 /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/payment-info'
             ),
     ),
+    'wallet-coinmarket-savings-bank-account': lazy(
+        () =>
+            import(
+                /* webpackChunkName: "coinmarket" */ '@wallet-views/coinmarket/savings/bank-account'
+            ),
+    ),
     'wallet-coinmarket-savings-overview': lazy(
         () =>
             import(

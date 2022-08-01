@@ -27,7 +27,6 @@ import {
     SellFiatTradeRequest,
     SellFiatTradeResponse,
     WatchSellTradeResponse,
-    BankAccount,
 } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
 import type { InvityServerEnvironment, InvityServers } from '@wallet-types/invity';
@@ -229,7 +228,7 @@ export type SavingsAMLStatus =
     /** AML process passed successfully. */
     | 'Verified';
 
-export type PaymentFrequency = 'Weekly' | 'Biweekly' | 'Monthly' | 'Quarterly';
+export type PaymentFrequency = 'Daily' | 'Weekly' | 'Biweekly' | 'Monthly' | 'Quarterly';
 
 export interface SavingsTradePlannedPayment {
     /** Our id. */
@@ -286,6 +285,17 @@ export interface SavingsTradeAMLQuestion {
     key: string;
     label: string;
     answerOptions: string[];
+}
+
+export interface BankAccount {
+    bankAccount?: string; // IBAN
+    bic?: string;
+    holder?: string;
+    verified?: boolean;
+    routingNumber?: string; // For ACH (US)
+    accountNumber?: string; // For ACH (US)
+    name?: string;
+    type?: string;
 }
 
 export interface SavingsTrade {

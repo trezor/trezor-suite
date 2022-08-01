@@ -233,6 +233,13 @@ const routes = [
         exact: true,
     },
     {
+        name: 'wallet-coinmarket-savings-bank-account',
+        pattern: '/accounts/coinmarket/savings/bank-account',
+        app: 'wallet',
+        params: walletParams,
+        exact: true,
+    },
+    {
         name: 'wallet-coinmarket-savings-overview',
         pattern: '/accounts/coinmarket/savings/overview',
         app: 'wallet',
