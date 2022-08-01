@@ -12,7 +12,7 @@ import TokenTransferAddressLabel from '../TokenTransferAddressLabel';
 import TargetAddressLabel from '../TargetAddressLabel';
 import BaseTargetLayout from '../BaseTargetLayout';
 import { copyToClipboard } from '@suite-utils/dom';
-import { AccountMetadata } from '@suite-types/metadata';
+import { AccountMetadata, MetadataAddPayload } from '@suite-types/metadata';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
 const StyledCryptoAmount = styled(FormattedCryptoAmount)`
@@ -23,11 +23,14 @@ const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     white-space: nowrap;
 `;
 
-interface TokenTransferProps {
+interface MetadataProps {
+    isMetadataDisabled: boolean;
+    metadataPayload: MetadataAddPayload;
+}
+interface TokenTransferProps extends MetadataProps {
     transfer: ArrayElement<WalletAccountTransaction['tokens']>;
     transaction: WalletAccountTransaction;
     singleRowLayout?: boolean;
-    useAnimation?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
 }
@@ -35,7 +38,8 @@ interface TokenTransferProps {
 export const TokenTransfer = ({
     transfer,
     transaction,
-
+    metadataPayload,
+    isMetadataDisabled,
     ...baseLayoutProps
 }: TokenTransferProps) => {
     const operation = getTxOperation(transfer);
@@ -43,7 +47,36 @@ export const TokenTransfer = ({
     return (
         <BaseTargetLayout
             {...baseLayoutProps}
-            addressLabel={<TokenTransferAddressLabel transfer={transfer} type={transaction.type} />}
+            addressLabel={
+                <MetadataLabeling
+                    isDisabled={isMetadataDisabled}
+                    defaultVisibleValue={
+                        <TokenTransferAddressLabel transfer={transfer} type={transaction.type} />
+                    }
+                    // todo: items in dropdown?
+                    // dropdownOptions={[
+                    //     {
+                    //         callback: () => {
+                    //             if (!target?.addresses) {
+                    //                 // probably should not happen?
+                    //                 return addNotification({
+                    //                     type: 'error',
+                    //                     error: 'There is nothing to copy',
+                    //                 });
+                    //             }
+                    //             const result = copyToClipboard(target.addresses.join(), null);
+                    //             if (typeof result === 'string') {
+                    //                 return addNotification({ type: 'error', error: result });
+                    //             }
+                    //             return addNotification({ type: 'copy-to-clipboard' });
+                    //         },
+                    //         label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
+                    //         key: 'copy-address',
+                    //     },
+                    // ]}
+                    payload={metadataPayload}
+                />
+            }
             amount={
                 !baseLayoutProps.singleRowLayout && (
                     <StyledCryptoAmount
@@ -57,11 +90,10 @@ export const TokenTransfer = ({
     );
 };
 
-interface TargetProps {
+interface TargetProps extends MetadataProps {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     transaction: WalletAccountTransaction;
     singleRowLayout?: boolean;
-    useAnimation?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
     accountKey: string;
@@ -73,21 +105,20 @@ export const Target = ({
     target,
     transaction,
     accountMetadata,
-    accountKey,
-    isActionDisabled,
+    metadataPayload,
+    isMetadataDisabled,
     ...baseLayoutProps
 }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction);
     const { addNotification } = useActions({ addNotification: notificationActions.addToast });
-    const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];
 
     return (
         <BaseTargetLayout
             {...baseLayoutProps}
             addressLabel={
                 <MetadataLabeling
-                    isDisabled={isActionDisabled}
+                    isDisabled={isMetadataDisabled}
                     defaultVisibleValue={
                         <TargetAddressLabel
                             accountMetadata={accountMetadata}
@@ -115,14 +146,7 @@ export const Target = ({
                             key: 'copy-address',
                         },
                     ]}
-                    payload={{
-                        type: 'outputLabel',
-                        accountKey,
-                        txid: transaction.txid,
-                        outputIndex: target.n,
-                        defaultValue: `${transaction.txid}-${target.n}`,
-                        value: targetMetadata,
-                    }}
+                    payload={metadataPayload}
                 />
             }
             amount={

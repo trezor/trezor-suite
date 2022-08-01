@@ -1,7 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { AnimatePresence } from 'framer-motion';
 import { variables, Button } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import { useActions } from '@suite-hooks';
@@ -284,66 +283,51 @@ const TransactionItem = React.memo(
                                                         } // if list of targets is expanded we won't get last item here
                                                         accountMetadata={accountMetadata}
                                                         accountKey={accountKey}
-                                                        isActionDisabled={isActionDisabled}
+                                                        isMetadataDisabled={!!isActionDisabled}
+                                                        metadataPayload={{
+                                                            type: 'outputLabel',
+                                                            accountKey,
+                                                            txid: transaction.txid,
+                                                            outputIndex: t.payload.n,
+                                                            defaultValue: `${transaction.txid}-${t.payload.n}`,
+                                                            value: accountMetadata?.outputLabels?.[
+                                                                transaction.txid
+                                                            ]?.[t.payload.n],
+                                                        }}
                                                     />
                                                 ) : (
-                                                    <TokenTransfer
-                                                        transfer={t.payload}
-                                                        transaction={transaction}
-                                                        singleRowLayout={useSingleRowLayout}
-                                                        isFirst={i === 0}
-                                                        isLast={
-                                                            limit > 0
-                                                                ? false
-                                                                : i === previewTargets.length - 1
-                                                        }
-                                                    />
+                                                    <>
+                                                        <TokenTransfer
+                                                            transfer={t.payload}
+                                                            transaction={transaction}
+                                                            singleRowLayout={useSingleRowLayout}
+                                                            isFirst={i === 0}
+                                                            isLast={
+                                                                limit > 0
+                                                                    ? false
+                                                                    : i ===
+                                                                      previewTargets.length - 1
+                                                            }
+                                                            isMetadataDisabled={!!isActionDisabled}
+                                                            metadataPayload={{
+                                                                // todo: outputLabel or create a new category 'tokenLabel' ?
+                                                                type: 'outputLabel',
+                                                                accountKey,
+                                                                txid: transaction.txid,
+                                                                // or maybe compose transferId here? instead of polluting blockchain-link?
+                                                                // @ts-expect-error temp. remove
+                                                                outputIndex: t.payload.transferId,
+                                                                defaultValue: `${transaction.txid}-${t.payload.transferId}`,
+                                                                value: accountMetadata
+                                                                    ?.outputLabels?.[
+                                                                    transaction.txid
+                                                                ]?.[t.payload.transferId!],
+                                                            }}
+                                                        />
+                                                    </>
                                                 )}
                                             </React.Fragment>
                                         ))}
-                                        <AnimatePresence initial={false}>
-                                            {limit > 0 &&
-                                                allOutputs
-                                                    .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                                    .map((t, i) => (
-                                                        <React.Fragment key={i}>
-                                                            {t.type === 'target' ? (
-                                                                <Target
-                                                                    target={t.payload}
-                                                                    transaction={transaction}
-                                                                    useAnimation
-                                                                    isLast={
-                                                                        // if list is not fully expanded, an index of last is limit (num of currently showed items) - 1,
-                                                                        // otherwise the index is calculated as num of all targets - num of targets that are always shown (DEFAULT_LIMIT) - 1
-                                                                        allOutputs.length >
-                                                                        limit + DEFAULT_LIMIT
-                                                                            ? i === limit - 1
-                                                                            : i ===
-                                                                              allOutputs.length -
-                                                                                  DEFAULT_LIMIT -
-                                                                                  1
-                                                                    }
-                                                                    accountMetadata={
-                                                                        accountMetadata
-                                                                    }
-                                                                    accountKey={accountKey}
-                                                                />
-                                                            ) : (
-                                                                <TokenTransfer
-                                                                    transfer={t.payload}
-                                                                    transaction={transaction}
-                                                                    useAnimation
-                                                                    isLast={
-                                                                        i ===
-                                                                        allOutputs.length -
-                                                                            DEFAULT_LIMIT -
-                                                                            1
-                                                                    }
-                                                                />
-                                                            )}
-                                                        </React.Fragment>
-                                                    ))}
-                                        </AnimatePresence>
                                     </>
                                 ) : null}
 

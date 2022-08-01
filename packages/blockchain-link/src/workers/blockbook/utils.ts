@@ -1,3 +1,4 @@
+// import crypto from 'crypto';
 import BigNumber from 'bignumber.js';
 import { Addresses, filterTargets, sumVinVout, transformTarget } from '../utils';
 import type {
@@ -32,13 +33,19 @@ export const transformServerInfo = (payload: ServerInfo) => ({
 
 export const filterTokenTransfers = (
     addresses: Addresses,
-    transfers: BlockbookTransaction['tokenTransfers'],
+    tx: BlockbookTransaction,
 ): TokenTransfer[] => {
+    const { tokenTransfers } = tx;
     if (typeof addresses === 'string') {
         addresses = [addresses];
     }
     // neither addresses or transfers are missing
-    if (!addresses || !Array.isArray(addresses) || !transfers || !Array.isArray(transfers))
+    if (
+        !addresses ||
+        !Array.isArray(addresses) ||
+        !tokenTransfers ||
+        !Array.isArray(tokenTransfers)
+    )
         return [];
 
     const all: (string | null)[] = addresses.map(a => {
@@ -47,7 +54,7 @@ export const filterTokenTransfers = (
         return null;
     });
 
-    return transfers
+    return tokenTransfers
         .filter(tr => {
             if (tr && typeof tr === 'object') {
                 return (tr.from && all.indexOf(tr.from) >= 0) || (tr.to && all.indexOf(tr.to) >= 0);
@@ -77,8 +84,22 @@ export const filterTokenTransfers = (
                 amount: tr.value,
                 from: tr.from,
                 to: tr.to,
+                /**
+                 * Synthetic transferId
+                 * We might need a unique identifier for a transfer. There are basically 2 options how to do it:
+                 * 1] ensure that tokenTransfers array is sorted deterministically and use index
+                 * 2] assign an id based on other object properties
+                 * As doing deterministic sorting would need to be based on object properties as well, we decided to go
+                 * with option 2.
+                 *
+                 * Usecases for transferId:
+                 * - metadata (labeling) module for labeling token transfers in transactions list. Unlike with outputs labeling in btc like coins we don't have anything deterministic here by default.
+                 */
+                transferId: `address:${tr.token}:value:${tr.value}:from:${tr.from}:to:${tr.to}`,
             };
         });
+    // or maybe sort instead of creating synthetic id and use index as id?
+    // .sort((a, b) => {});
 };
 
 export const transformTransaction = (
@@ -86,6 +107,7 @@ export const transformTransaction = (
     addresses: AccountAddresses | undefined,
     tx: BlockbookTransaction,
 ): Transaction => {
+    console.log('transform transaction', tx);
     // combine all addresses into array
     const myAddresses = addresses
         ? addresses.change.concat(addresses.used, addresses.unused)
@@ -96,7 +118,7 @@ export const transformTransaction = (
     const outgoing = filterTargets(myAddresses, tx.vin);
     const incoming = filterTargets(myAddresses, tx.vout);
     const internal = addresses ? filterTargets(addresses.change, tx.vout) : [];
-    const tokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
+    const tokens = filterTokenTransfers(myAddresses, tx);
     let type: Transaction['type'];
     let targets: VinVout[] = [];
     let amount = tx.value;
@@ -201,6 +223,7 @@ export const transformTransaction = (
 export const transformTokenInfo = (
     tokens: BlockbookAccountInfo['tokens'],
 ): TokenInfo[] | undefined => {
+    console.log('transformTokenInfo', tokens);
     if (!tokens || !Array.isArray(tokens)) return undefined;
     const info = tokens.reduce((arr, t) => {
         if (t.type !== 'ERC20') return arr;
@@ -247,7 +270,10 @@ export const transformAddresses = (
     };
 };
 
+console.log('utils');
+
 export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo => {
+    console.log('transformAccountInfo', payload);
     let page;
     if (typeof payload.page === 'number') {
         page = {

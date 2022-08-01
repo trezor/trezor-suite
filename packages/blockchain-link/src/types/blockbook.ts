@@ -129,6 +129,7 @@ export interface Transaction {
         name: string;
         symbol: string;
         decimals?: number;
+        transferId: string;
     }[];
 }
 
