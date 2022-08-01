@@ -1,4 +1,5 @@
 import { Account } from '@suite-common/wallet-types';
+import { testMocks } from '@suite-common/test-utils';
 
 import {
     accountSearchFn,
@@ -69,6 +70,7 @@ describe('account utils', () => {
         expect(formatNetworkAmount('1', 'xrp', true)).toEqual('0.000001 XRP');
         expect(formatNetworkAmount('1', 'eth')).toEqual('0.000000000000000001');
         expect(formatNetworkAmount('1', 'btc', true)).toEqual('0.00000001 BTC');
+        expect(formatNetworkAmount('1', 'btc', true, true)).toEqual('1 sat');
         expect(formatNetworkAmount('aaa', 'eth')).toEqual('-1');
     });
 
@@ -82,23 +84,23 @@ describe('account utils', () => {
     it('findAccountDevice', () => {
         expect(
             findAccountDevice(
-                global.JestMocks.getWalletAccount({
+                testMocks.getWalletAccount({
                     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                     descriptor:
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                     symbol: 'btc',
                 }),
                 [
-                    global.JestMocks.getSuiteDevice({
+                    testMocks.getSuiteDevice({
                         state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                     }),
-                    global.JestMocks.getSuiteDevice({
+                    testMocks.getSuiteDevice({
                         state: '20f91883604899768ba21ffd38d0f5f35b07f14e65355f342e4442547c0ce45e',
                     }),
                 ],
             ),
         ).toEqual(
-            global.JestMocks.getSuiteDevice({
+            testMocks.getSuiteDevice({
                 state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             }),
         );
@@ -131,7 +133,7 @@ describe('account utils', () => {
     it('getAccountIdentifier', () => {
         expect(
             getAccountIdentifier(
-                global.JestMocks.getWalletAccount({
+                testMocks.getWalletAccount({
                     deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
                     descriptor:
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -147,7 +149,7 @@ describe('account utils', () => {
     });
 
     it('accountSearchFn', () => {
-        const btcAcc = global.JestMocks.getWalletAccount({
+        const btcAcc = testMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -192,12 +194,12 @@ describe('account utils', () => {
     });
 
     it('hasNetworkFeatures', () => {
-        const btcAcc = global.JestMocks.getWalletAccount({
+        const btcAcc = testMocks.getWalletAccount({
             networkType: 'bitcoin',
             symbol: 'btc',
         });
 
-        const ethAcc = global.JestMocks.getWalletAccount();
+        const ethAcc = testMocks.getWalletAccount();
 
         expect(hasNetworkFeatures(btcAcc, 'amount-unit')).toEqual(true);
         expect(hasNetworkFeatures(btcAcc, ['amount-unit', 'sign-verify'])).toEqual(true);

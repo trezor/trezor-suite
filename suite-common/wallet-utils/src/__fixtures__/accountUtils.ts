@@ -1,3 +1,5 @@
+import { testMocks } from '@suite-common/test-utils';
+
 const DISCOVERIES = [
     {
         deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
@@ -16,7 +18,7 @@ export const getDiscoveryProcess = [
         testName:
             'Discovery for 7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f device',
         discoveries: DISCOVERIES,
-        device: global.JestMocks.getSuiteDevice({
+        device: testMocks.getSuiteDevice({
             state: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
         }),
         result: {
@@ -34,7 +36,7 @@ export const getDiscoveryProcess = [
         testName:
             'Discovery for 1dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f device',
         discoveries: DISCOVERIES,
-        device: global.JestMocks.getSuiteDevice({
+        device: testMocks.getSuiteDevice({
             state: '1dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
         }),
         result: null,

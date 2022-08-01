@@ -1,4 +1,3 @@
-const setupFiles = require('@suite-common/test-utils/src/setupFiles');
 // all tests have same UTC timezone
 process.env.TZ = 'UTC';
 
@@ -12,7 +11,10 @@ const babelConfig = {
 
 module.exports = {
     roots: ['./src'],
-    setupFiles,
+    setupFiles: [
+        '<rootDir>/src/support/tests/setupJest.ts',
+        '<rootDir>/src/support/tests/npmMocks.tsx',
+    ],
     moduleNameMapper: {
         '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
         '^@trezor/(.+)': '<rootDir>/../$1',

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { DEVICE, Features, Device } from '@trezor/connect';
-import { getConnectDevice, getDeviceFeatures } from '@suite-common/test-utils';
+import { testMocks } from '@suite-common/test-utils';
 
 /**
  * Helper method to dispatch DEVICE.CONNECT action.
@@ -9,6 +9,8 @@ import { getConnectDevice, getDeviceFeatures } from '@suite-common/test-utils';
  * @param device
  * @param features
  */
+
+const { getConnectDevice, getDeviceFeatures } = testMocks;
 
 export const connectDevice = (device?: Partial<Device>, features?: Partial<Features>) =>
     cy

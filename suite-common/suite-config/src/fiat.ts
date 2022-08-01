@@ -1,4 +1,4 @@
-export default {
+export const FIAT = {
     tickers: [
         { symbol: 'eth', coingeckoId: 'ethereum' },
         { symbol: 'etc', coingeckoId: 'ethereum-classic' },

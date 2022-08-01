@@ -1,3 +1,5 @@
+import { testMocks } from '@suite-common/test-utils';
+
 import { TXS } from './transactions';
 
 export const analyzeTransactions = [
@@ -337,7 +339,7 @@ export const enhanceTransaction = [
                 totalOutput: '80719868',
             },
         },
-        account: global.JestMocks.getWalletAccount({
+        account: testMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -429,7 +431,7 @@ export const enhanceTransaction = [
                 size: 255,
             },
         },
-        account: global.JestMocks.getWalletAccount({
+        account: testMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -492,7 +494,7 @@ export const enhanceTransaction = [
                 size: 255,
             },
         },
-        account: global.JestMocks.getWalletAccount({
+        account: testMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -1117,7 +1119,7 @@ export const getAccountTransactions = [
     {
         testName: 'BTC account, 2txs',
         transactions: TXS,
-        account: global.JestMocks.getWalletAccount({
+        account: testMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -1165,7 +1167,7 @@ export const getAccountTransactions = [
     {
         testName: 'XRP testnet account, 2',
         transactions: TXS,
-        account: global.JestMocks.getWalletAccount({
+        account: testMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
             symbol: 'txrp',
@@ -1216,7 +1218,7 @@ export const getAccountTransactions = [
     {
         testName: 'eth account, 5 txs',
         transactions: TXS,
-        account: global.JestMocks.getWalletAccount({
+        account: testMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
             symbol: 'eth',
@@ -1364,7 +1366,7 @@ export const getAccountTransactions = [
     {
         testName: 'eth account, 0 txs',
         transactions: TXS,
-        account: global.JestMocks.getWalletAccount({
+        account: testMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             descriptor: '0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2',
             symbol: 'eth',

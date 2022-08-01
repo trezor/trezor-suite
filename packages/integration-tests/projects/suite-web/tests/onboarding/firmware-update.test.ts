@@ -1,8 +1,6 @@
 // @group:onboarding
 // @retry=2
 
-const { getSuiteDevice } = global.JestMocks;
-
 describe('Onboarding - firmware update', () => {
     beforeEach(() => {
         cy.task('startBridge');

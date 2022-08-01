@@ -1,6 +1,10 @@
 import BigNumber from 'bignumber.js';
 
-import { networksCompatibility as NETWORKS, Network } from '@suite-common/wallet-config';
+import {
+    networksCompatibility as NETWORKS,
+    Network,
+    NetworkFeature,
+} from '@suite-common/wallet-config';
 import {
     Account,
     CoinFiatRates,
@@ -15,7 +19,6 @@ import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '
 import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
 
 import { toFiatCurrency } from './fiatConverterUtils';
-import { NetworkFeature } from '@suite-common/wallet-config';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';

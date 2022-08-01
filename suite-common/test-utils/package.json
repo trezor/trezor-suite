@@ -10,13 +10,10 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@fivebinaries/coin-selection": "2.0.0-beta.10",
         "@suite-common/suite-types": "*",
         "@suite-common/wallet-types": "*",
         "@trezor/connect": "9.0.0-beta.5",
         "dropbox": "^10.30.0",
-        "fake-indexeddb": "^3.1.7",
-        "react": "17.0.2",
-        "react-markdown": "^8.0.3"
+        "fake-indexeddb": "^3.1.7"
     }
 }

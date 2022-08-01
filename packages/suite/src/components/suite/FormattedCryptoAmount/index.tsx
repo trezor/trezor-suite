@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { HiddenPlaceholder, Sign } from '@suite-components';
 import { formatCurrencyAmount } from '@wallet-utils/formatCurrencyAmount';
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { networkAmountToSatoshi } from '@suite-common/wallet-utils';
 import { isValuePositive, SignValue } from '@suite-components/Sign';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 import { NETWORKS } from '@wallet-config';

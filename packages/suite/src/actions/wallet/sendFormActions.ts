@@ -13,6 +13,7 @@ import {
     formatNetworkAmount,
     getPendingAccount,
     isCardanoTx,
+    getAreSatoshisUsed,
 } from '@suite-common/wallet-utils';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -27,7 +28,6 @@ import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
 import { MetadataAddPayload } from '@suite/types/suite/metadata';
 import * as sendFormCardanoActions from './send/sendFormCardanoActions';
-import { getAreSatoshisUsed } from '@wallet-utils/settingsUtils';
 
 export type SendFormAction =
     | {
@@ -155,7 +155,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         ? new BigNumber(precomposedTx.totalSpent).minus(precomposedTx.fee).toString()
         : '0';
 
-    const areSatoshisUsed = getAreSatoshisUsed(getState().wallet.settings);
+    const areSatoshisUsed = getAreSatoshisUsed(getState().wallet.settings.bitcoinAmountUnit);
 
     // get total amount without fee OR token amount
     const formattedAmount = token

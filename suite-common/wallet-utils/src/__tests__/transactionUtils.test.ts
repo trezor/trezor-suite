@@ -1,5 +1,6 @@
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { AccountMetadata } from '@suite-common/metadata-types';
+import { testMocks } from '@suite-common/test-utils';
 
 import * as fixtures from '../__fixtures__/transactionUtils';
 import stMock from '../__fixtures__/searchTransactions.json';
@@ -21,27 +22,27 @@ describe('transaction utils', () => {
 
     it('groupTransactionsByDate', () => {
         const groupedTxs = groupTransactionsByDate([
-            global.JestMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
-            global.JestMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
-            global.JestMocks.getWalletTransaction({ blockHeight: 0 }),
-            global.JestMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
-            global.JestMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
-            global.JestMocks.getWalletTransaction({ blockHeight: undefined }),
+            testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+            testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
+            testMocks.getWalletTransaction({ blockHeight: 0 }),
+            testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
+            testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
+            testMocks.getWalletTransaction({ blockHeight: undefined }),
         ]);
         expect(groupedTxs).toEqual({
             pending: [
-                global.JestMocks.getWalletTransaction({ blockHeight: 0 }),
-                global.JestMocks.getWalletTransaction({ blockHeight: undefined }),
+                testMocks.getWalletTransaction({ blockHeight: 0 }),
+                testMocks.getWalletTransaction({ blockHeight: undefined }),
             ],
             '2019-10-4': [
-                global.JestMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
+                testMocks.getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
             ],
             '2019-10-3': [
-                global.JestMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
+                testMocks.getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
             ],
             '2019-8-14': [
-                global.JestMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
-                global.JestMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
+                testMocks.getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
+                testMocks.getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
         });
     });

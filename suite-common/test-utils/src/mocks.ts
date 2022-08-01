@@ -52,7 +52,7 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
  * device.firmwareRelease property
  * note that values don't make much sense.
  */
-export const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
+const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
     isLatest: true,
     isRequired: false,
     isNewer: false,
@@ -96,7 +96,7 @@ export const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => 
  * @param {Partial<Features>} [feat]
  * @returns {Features}
  */
-export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
+const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     vendor: 'trezor.io',
     major_version: 2,
     minor_version: 1,
@@ -143,7 +143,7 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
  * @param {Partial<Features>} [feat]
  * @returns {Device}
  */
-export const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Device => {
+const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Device => {
     if (dev && typeof dev.type === 'string' && dev.type !== 'acquired') {
         return {
             type: dev.type,
@@ -603,68 +603,20 @@ const getGuideNode = (type: string, id?: string): Node => {
     return result;
 };
 
-class BroadcastChannel {
-    name: string;
-    constructor(name: string) {
-        this.name = name;
-    }
-
-    get onmessage() {
-        return undefined;
-    } // getter method
-    set onmessage(_handler) {
-        // do nothing
-    }
-
-    postMessage = (_message: any) => {
-        // do nothing
-    };
-}
-
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace NodeJS {
-        interface Global {
-            JestMocks: {
-                getFirmwareRelease: typeof getFirmwareRelease;
-                getDeviceFeatures: typeof getDeviceFeatures;
-                getConnectDevice: typeof getConnectDevice;
-                getSuiteDevice: typeof getSuiteDevice;
-                getWalletAccount: typeof getWalletAccount;
-                getWalletTransaction: typeof getWalletTransaction;
-                getTrezorConnect: typeof getTrezorConnect;
-                getMessageSystemConfig: typeof getMessageSystemConfig;
-                getGuideNode: typeof getGuideNode;
-                intlMock: typeof intlMock;
-            };
-            BroadcastChannel: typeof BroadcastChannel;
-        }
-    }
-}
-
 const intlMock = {
     // @ts-ignore
     formatMessage: (s: any) => s.defaultMessage,
 };
 
-global.JestMocks = {
+export const testMocks = {
+    getWalletAccount,
     getFirmwareRelease,
     getDeviceFeatures,
     getConnectDevice,
     getSuiteDevice,
-    getWalletAccount,
     getWalletTransaction,
     getTrezorConnect,
     getMessageSystemConfig,
     getGuideNode,
     intlMock,
 };
-
-// @ts-ignore
-global.BroadcastChannel = BroadcastChannel;
-
-// this helps with debugging - find unhandled promise rejections in jest
-
-// process.on('unhandledRejection', (reason, p) => {
-//     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-// });

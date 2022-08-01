@@ -9,7 +9,12 @@ import * as protocolActions from '@suite-actions/protocolActions';
 import { UseSendFormState, FormState, SendContextValues, Output } from '@wallet-types/sendForm';
 import { AppState } from '@suite-types';
 
-import { getFeeLevels, getDefaultValues } from '@suite-common/wallet-utils';
+import {
+    getFeeLevels,
+    getDefaultValues,
+    amountToSatoshi,
+    formatAmount,
+} from '@suite-common/wallet-utils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';
@@ -17,7 +22,6 @@ import { useSendFormImport } from './useSendFormImport';
 import { useFees } from './form/useFees';
 import { PROTOCOL_TO_NETWORK } from '@suite-constants/protocol';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';

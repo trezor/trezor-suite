@@ -1,1 +1,1 @@
-export * from './setupJest';
+export * from './mocks';

@@ -2,6 +2,7 @@ import { Transaction } from '@ethereumjs/tx';
 import { sha3 } from 'web3-utils';
 
 import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
+import { testMocks } from '@suite-common/test-utils';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
 import {
@@ -18,7 +19,7 @@ import {
     serializeEthereumTx,
 } from '../sendFormUtils';
 
-const { getWalletAccount } = global.JestMocks;
+const { getWalletAccount } = testMocks;
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {

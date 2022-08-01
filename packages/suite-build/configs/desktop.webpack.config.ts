@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-import { FLAGS } from '../../suite/src/config/suite/features';
+import { FLAGS } from '@suite-common/suite-config';
 
 import { assetPrefix, isDev, launchElectron } from '../utils/env';
 import { getPathForProject } from '../utils/path';

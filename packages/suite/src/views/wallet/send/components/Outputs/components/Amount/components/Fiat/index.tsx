@@ -14,11 +14,11 @@ import {
     getInputState,
     getFiatRate,
     findToken,
+    amountToSatoshi,
 } from '@suite-common/wallet-utils';
 import { CurrencyOption, Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
-import { amountToSatoshi } from '@wallet-utils/accountUtils';
 
 const Wrapper = styled.div`
     display: flex;

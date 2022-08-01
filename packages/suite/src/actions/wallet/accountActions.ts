@@ -17,12 +17,12 @@ import {
     enhanceTokens,
     enhanceAddresses,
     enhanceUtxo,
+    getAreSatoshisUsed,
 } from '@suite-common/wallet-utils';
 import { NETWORKS } from '@wallet-config';
 import { SETTINGS } from '@suite-config';
 import type { Account } from '@wallet-types';
 import type { Dispatch, GetState } from '@suite-types';
-import { getAreSatoshisUsed } from '@wallet-utils/settingsUtils';
 
 export type AccountAction =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
@@ -185,7 +185,9 @@ export const fetchAndUpdateAccount =
             analyze.newTransactions.forEach(tx => {
                 const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
 
-                const areSatoshisUsed = getAreSatoshisUsed(getState().wallet.settings);
+                const areSatoshisUsed = getAreSatoshisUsed(
+                    getState().wallet.settings.bitcoinAmountUnit,
+                );
 
                 const formattedAmount = token
                     ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`

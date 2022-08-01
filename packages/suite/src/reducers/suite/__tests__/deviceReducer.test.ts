@@ -1,10 +1,12 @@
 import deviceReducer, { isUnlocked } from '@suite-reducers/deviceReducer';
 
 import { Action } from '@suite-types';
-import { getDeviceFeatures } from '@suite-common/test-utils';
+import { testMocks } from '@suite-common/test-utils';
 import fixtures from '../__fixtures__/deviceReducer';
 
 type State = ReturnType<typeof deviceReducer>;
+
+const { getDeviceFeatures } = testMocks;
 
 describe('isUnlocked', () => {
     it('when unlocked is present it is used', () => {

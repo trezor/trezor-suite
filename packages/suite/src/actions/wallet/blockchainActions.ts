@@ -14,6 +14,7 @@ import {
     findAccountDevice,
     formatAmount,
     formatNetworkAmount,
+    getAreSatoshisUsed,
 } from '@suite-common/wallet-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
@@ -23,7 +24,6 @@ import { getCustomBackends, getBackendFromSettings } from '@suite-utils/backend'
 import type { Dispatch, GetState } from '@suite-types';
 import type { Account, Network, CustomBackend, BackendType } from '@wallet-types';
 import type { Timeout } from '@trezor/type-utils';
-import { getAreSatoshisUsed } from '@wallet-utils/settingsUtils';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 
@@ -370,7 +370,9 @@ export const onNotification =
             const accountDevice = findAccountDevice(account, getState().devices);
 
             const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
-            const areSatoshisUsed = getAreSatoshisUsed(getState().wallet.settings);
+            const areSatoshisUsed = getAreSatoshisUsed(
+                getState().wallet.settings.bitcoinAmountUnit,
+            );
 
             const formattedAmount = token
                 ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`

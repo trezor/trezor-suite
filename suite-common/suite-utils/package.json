@@ -5,7 +5,6 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
-    "type": "module",
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",

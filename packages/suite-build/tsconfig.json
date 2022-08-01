@@ -5,5 +5,10 @@
         "outDir": "./libDev"
     },
     "include": ["."],
-    "references": [{ "path": "../suite" }]
+    "references": [
+        {
+            "path": "../../suite-common/suite-config"
+        },
+        { "path": "../suite" }
+    ]
 }
