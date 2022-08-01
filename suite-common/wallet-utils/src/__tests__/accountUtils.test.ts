@@ -11,6 +11,7 @@ import {
     getNetwork,
     getTitleForNetwork,
     getUtxoFromSignedTransaction,
+    hasNetworkFeatures,
     isTestnet,
     networkAmountToSatoshi,
     parseBIP44Path,
@@ -188,5 +189,20 @@ describe('account utils', () => {
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
         ).toBe(true);
+    });
+
+    it('hasNetworkFeatures', () => {
+        const btcAcc = global.JestMocks.getWalletAccount({
+            networkType: 'bitcoin',
+            symbol: 'btc',
+        });
+
+        const ethAcc = global.JestMocks.getWalletAccount();
+
+        expect(hasNetworkFeatures(btcAcc, 'amount-unit')).toEqual(true);
+        expect(hasNetworkFeatures(btcAcc, ['amount-unit', 'sign-verify'])).toEqual(true);
+        expect(hasNetworkFeatures(ethAcc, 'tokens')).toEqual(true);
+        expect(hasNetworkFeatures(ethAcc, 'amount-unit')).toEqual(false);
+        expect(hasNetworkFeatures(ethAcc, ['amount-unit', 'sign-verify'])).toEqual(false);
     });
 });

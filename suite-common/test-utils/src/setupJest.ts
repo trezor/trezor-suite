@@ -266,6 +266,8 @@ const getTrezorConnect = <M>(methods?: M) => {
         return fixtures;
     };
 
+    const { PROTO } = jest.requireActual('@trezor/connect');
+
     return {
         __esModule: true, // export as module
         default: {
@@ -384,6 +386,7 @@ const getTrezorConnect = <M>(methods?: M) => {
             REQUEST_PIN: 'ui-request_pin',
             REQUEST_BUTTON: 'ui-request_button',
         },
+        PROTO,
     };
 };
 
