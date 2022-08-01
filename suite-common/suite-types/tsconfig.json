@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../metadata-types" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/suite-data" }
+    ]
+}

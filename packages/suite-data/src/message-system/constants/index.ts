@@ -17,6 +17,7 @@ export const SUITE_CONFIG_FILENAME = 'config.json';
 export const PROJECT_ROOT = resolve(__dirname, '..'); // suite-data/src/message-system
 export const PACKAGE_ROOT = resolve(PROJECT_ROOT, '../..'); // suite-data
 export const PACKAGES_ROOT = resolve(PROJECT_ROOT, '../../..');
+export const MONOREPO_ROOT = resolve(PROJECT_ROOT, '../../../..');
 
 export const SCHEMA_PATH = join(PROJECT_ROOT, 'schema', SCHEMA_FILENAME);
 export const CONFIG_PATH = join(PROJECT_ROOT, 'config', CONFIG_FILENAME);

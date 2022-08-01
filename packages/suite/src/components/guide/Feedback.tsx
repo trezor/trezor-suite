@@ -7,7 +7,7 @@ import { Textarea, Select, variables, Button } from '@trezor/components';
 import { useActions, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
-import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-types/guide';
+import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
 import {
     getUserAgent,
     getEnvironment,

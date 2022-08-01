@@ -28,7 +28,7 @@ import type {
     Transport,
     Device,
     Environment,
-} from '@suite-types/messageSystem';
+} from '@suite-common/suite-types';
 
 type CurrentSettings = {
     tor: boolean;

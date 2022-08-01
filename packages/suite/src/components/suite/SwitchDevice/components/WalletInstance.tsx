@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import {
@@ -116,13 +116,9 @@ export const WalletInstance = ({
     const theme = useTheme();
 
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
-    const deviceAccounts = accountUtils.getAllAccounts(instance.state, accounts);
+    const deviceAccounts = getAllAccounts(instance.state, accounts);
     const accountsCount = deviceAccounts.length;
-    const instanceBalance = accountUtils.getTotalFiatBalance(
-        deviceAccounts,
-        localCurrency,
-        fiat.coins,
-    );
+    const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, fiat.coins);
     const isSelected = enabled && selected && !!discoveryProcess;
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;

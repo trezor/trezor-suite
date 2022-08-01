@@ -10,7 +10,7 @@ import { Translation } from '@suite-components';
 import TrezorLink from '@suite-components/TrezorLink';
 import { findAncestorNodes, getNodeTitle } from '@suite-utils/guide';
 
-import type { Category } from '@suite-types/guide';
+import type { GuideCategory } from '@suite-common/suite-types';
 
 const BreadcrumbWrapper = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -68,11 +68,11 @@ export const HeaderBreadcrumb = () => {
 
     const parentNodes = findAncestorNodes(currentNode, indexNode).filter(
         node => node.type === 'category',
-    ) as Category[];
+    ) as GuideCategory[];
 
     if (!parentNodes.length) return FallbackBreadcrumb;
 
-    const navigateToCategory = (node: Category) => {
+    const navigateToCategory = (node: GuideCategory) => {
         openNode(node);
         analytics.report({
             type: EventType.GuideHeaderNavigation,

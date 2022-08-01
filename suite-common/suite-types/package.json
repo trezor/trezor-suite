@@ -1,0 +1,17 @@
+{
+    "name": "@suite-common/suite-types",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/metadata-types": "*",
+        "@trezor/connect": "9.0.0-beta.5",
+        "@trezor/suite-data": "*"
+    }
+}

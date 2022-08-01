@@ -2,12 +2,11 @@ import { BlockchainBlock } from '@trezor/connect';
 import { CARDANO_STAKE_POOL_TESTNET_URL, CARDANO_STAKE_POOL_MAINNET_URL } from '@trezor/urls';
 import { CARDANO_STAKING } from '@wallet-actions/constants';
 import { PendingStakeTx, PoolsResponse } from '@wallet-types/cardanoStaking';
-import * as accountUtils from '@wallet-utils/accountUtils';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { getUnixTime } from 'date-fns';
-import { isPending, getAccountTransactions } from '@wallet-utils/transactionUtils';
+import { isPending, getAccountTransactions, getNetwork } from '@suite-common/wallet-utils';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
 
 export type CardanoStakingAction =
@@ -50,7 +49,7 @@ export const validatePendingTxOnBlock =
         // After sending staking tx (delegation or withdrawal) user needs to wait few blocks til the tx appears on the blockchain.
         // To prevent the user from sending multiple staking tx we need to track that we are waiting for confirmation for the tx that was already sent.
         // As a failsafe, we will reset `pendingStakeTx` after tx expires (ttl is set to 2 hours), allowing user to retry the action.
-        const network = accountUtils.getNetwork(block.coin.shortcut.toLowerCase());
+        const network = getNetwork(block.coin.shortcut.toLowerCase());
         if (!network || network.networkType !== 'cardano') return;
 
         const accounts = getState().wallet.accounts.filter(

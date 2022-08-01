@@ -9,10 +9,9 @@ import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
 import { Select, Input, CoinLogo } from '@trezor/components';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
-import { isDecimalsValid } from '@wallet-utils/validation';
+import { isDecimalsValid, getInputState } from '@suite-common/wallet-utils';
 import { InputError } from '@wallet-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
 
 const Option = styled.div`

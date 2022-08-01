@@ -8,9 +8,11 @@ import {
     amountToSatoshi,
     formatNetworkAmount,
     hasNetworkFeatures,
-} from '@wallet-utils/accountUtils';
-import { getInputState, findToken } from '@wallet-utils/sendFormUtils';
-import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
+    isDecimalsValid,
+    isInteger,
+    getInputState,
+    findToken,
+} from '@suite-common/wallet-utils';
 import { useSendFormContext } from '@wallet-hooks';
 import { Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';

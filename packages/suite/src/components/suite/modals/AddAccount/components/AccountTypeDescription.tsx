@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { P } from '@trezor/components';
 import { Network } from '@wallet-types';
 import { Translation, TrezorLink } from '@suite-components';
-import { getAccountTypeDesc, getAccountTypeUrl } from '@wallet-utils/accountUtils';
+import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 
 const Info = styled(P)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};

@@ -1,7 +1,7 @@
 import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
 import { Account } from '@wallet-types';
 import { Dispatch } from '@suite-types';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as accountActions from '@wallet-actions/accountActions';
 

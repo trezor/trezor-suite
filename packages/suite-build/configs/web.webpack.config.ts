@@ -5,7 +5,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 import routes from '../../suite/src/config/suite/routes';
-import { FLAGS } from '../../suite/src/config/suite/features';
+import { FLAGS } from '@suite-common/suite-config';
 
 import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';

@@ -4,7 +4,7 @@ Feature flags allow us to enable and disable certain features at build time, hel
 
 ## Work flow
 
-All feature flags are located in `packages/suite/config/features.ts`. To add a new flag, start by doing the following:
+All feature flags are located in `suite-common/suite-config/src/features.ts`. To add a new flag, start by doing the following:
 
 1. Add your flag to the `FLAGS` constant and set its defautl value. When naming your flag, bear in mind the following conventions:
     1. Always explain what the flag is about using a comment next to it.

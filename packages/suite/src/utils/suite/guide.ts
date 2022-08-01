@@ -1,4 +1,4 @@
-import { Category, Node } from '@suite-types/guide';
+import { GuideCategory, Node } from '@suite-common/suite-types';
 
 /** @returns title in given language or in english if not available. */
 export const getNodeTitle = (node: Node, language: string): string =>
@@ -33,7 +33,7 @@ export const getAncestorIds = (id: string): string[] =>
         }, []);
 
 /** @returns ancestors nodes for node. */
-export const findAncestorNodes = (node: Node, root: Category): Node[] => {
+export const findAncestorNodes = (node: Node, root: GuideCategory): Node[] => {
     const ancestorIds = getAncestorIds(node.id);
 
     return (

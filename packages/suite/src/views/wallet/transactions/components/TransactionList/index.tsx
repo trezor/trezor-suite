@@ -8,10 +8,7 @@ import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import {
-    groupTransactionsByDate,
-    advancedSearchTransactions,
-} from '@wallet-utils/transactionUtils';
+import { groupTransactionsByDate, advancedSearchTransactions } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
 import Actions from './components/Actions';

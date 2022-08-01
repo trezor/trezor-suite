@@ -4,7 +4,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { formatNetworkAmount, isTestnet } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { copyToClipboard, download } from '@suite-utils/dom';
 import { useActions } from '@suite-hooks';

@@ -2,9 +2,15 @@ import * as fs from 'fs';
 import { join } from 'path';
 import * as json2ts from 'json-schema-to-typescript';
 
-import { PACKAGES_ROOT, SCHEMA_PATH, SUITE_TYPES_FILENAME } from '../constants';
+import { SCHEMA_PATH, SUITE_TYPES_FILENAME, MONOREPO_ROOT } from '../constants';
 
-const suiteTypesPath = join(PACKAGES_ROOT, 'suite', 'src', 'types', 'suite', SUITE_TYPES_FILENAME);
+const suiteTypesPath = join(
+    MONOREPO_ROOT,
+    'suite-common',
+    'suite-types',
+    'src',
+    SUITE_TYPES_FILENAME,
+);
 
 const options = {
     style: { singleQuote: true, tabWidth: 4 },

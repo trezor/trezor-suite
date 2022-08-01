@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+
 import { createDeferred } from '@trezor/utils';
 import type { Timeout } from '@trezor/type-utils';
 

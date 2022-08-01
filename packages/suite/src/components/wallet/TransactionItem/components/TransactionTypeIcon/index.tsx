@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import { Icon, useTheme, IconProps } from '@trezor/components';
-import { getTxIcon } from '@wallet-utils/transactionUtils';
+import { getTxIcon } from '@suite-common/wallet-utils';
 
 const IconsWrapper = styled.div`
     position: relative;

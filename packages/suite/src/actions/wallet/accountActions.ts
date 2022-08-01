@@ -4,17 +4,25 @@ import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as tokenActions from '@wallet-actions/tokenActions';
-import * as accountUtils from '@wallet-utils/accountUtils';
 import {
     analyzeTransactions,
     getAccountTransactions,
     isPending,
-} from '@wallet-utils/transactionUtils';
+    isAccountOutdated,
+    findAccountDevice,
+    getAccountKey,
+    formatAmount,
+    formatNetworkAmount,
+    getAccountSpecific,
+    enhanceTokens,
+    enhanceAddresses,
+    enhanceUtxo,
+    getAreSatoshisUsed,
+} from '@suite-common/wallet-utils';
 import { NETWORKS } from '@wallet-config';
 import { SETTINGS } from '@suite-config';
 import type { Account } from '@wallet-types';
 import type { Dispatch, GetState } from '@suite-types';
-import { getAreSatoshisUsed } from '@wallet-utils/settingsUtils';
 
 export type AccountAction =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
@@ -33,7 +41,7 @@ export const create = (
         index: discoveryItem.index,
         path: discoveryItem.path,
         descriptor: accountInfo.descriptor,
-        key: accountUtils.getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
+        key: getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
         empty: accountInfo.empty,
@@ -42,24 +50,20 @@ export const create = (
             (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
         balance: accountInfo.balance,
         availableBalance: accountInfo.availableBalance,
-        formattedBalance: accountUtils.formatNetworkAmount(
+        formattedBalance: formatNetworkAmount(
             // xrp `availableBalance` is reduced by reserve, use regular balance
             discoveryItem.networkType === 'ripple'
                 ? accountInfo.balance
                 : accountInfo.availableBalance,
             discoveryItem.coin,
         ),
-        tokens: accountUtils.enhanceTokens(accountInfo.tokens),
-        addresses: accountUtils.enhanceAddresses(
+        tokens: enhanceTokens(accountInfo.tokens),
+        addresses: enhanceAddresses(
             accountInfo.addresses,
             discoveryItem.networkType,
             discoveryItem.index,
         ),
-        utxo: accountUtils.enhanceUtxo(
-            accountInfo.utxo,
-            discoveryItem.networkType,
-            discoveryItem.index,
-        ),
+        utxo: enhanceUtxo(accountInfo.utxo, discoveryItem.networkType, discoveryItem.index),
         history: accountInfo.history,
         metadata: {
             key: accountInfo.legacyXpub || accountInfo.descriptor,
@@ -68,7 +72,7 @@ export const create = (
             outputLabels: {},
             addressLabels: {},
         },
-        ...accountUtils.getAccountSpecific(accountInfo, discoveryItem.networkType),
+        ...getAccountSpecific(accountInfo, discoveryItem.networkType),
     },
 });
 
@@ -80,19 +84,15 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         path: account.path,
         empty: accountInfo.empty,
         visible: account.visible || !accountInfo.empty,
-        formattedBalance: accountUtils.formatNetworkAmount(
+        formattedBalance: formatNetworkAmount(
             // xrp `availableBalance` is reduced by reserve, use regular balance
             account.networkType === 'ripple' ? accountInfo.balance : accountInfo.availableBalance,
             account.symbol,
         ),
-        utxo: accountUtils.enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
-        addresses: accountUtils.enhanceAddresses(
-            accountInfo.addresses,
-            account.networkType,
-            account.index,
-        ),
-        tokens: accountUtils.enhanceTokens(accountInfo.tokens),
-        ...accountUtils.getAccountSpecific(accountInfo, account.networkType),
+        utxo: enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
+        addresses: enhanceAddresses(accountInfo.addresses, account.networkType, account.index),
+        tokens: enhanceTokens(accountInfo.tokens),
+        ...getAccountSpecific(accountInfo, account.networkType),
     },
 });
 
@@ -141,7 +141,7 @@ export const fetchAndUpdateAccount =
         });
         if (!basic.success) return;
 
-        const accountOutdated = accountUtils.isAccountOutdated(account, basic.payload);
+        const accountOutdated = isAccountOutdated(account, basic.payload);
         const accountTxs = getAccountTransactions(
             account.key,
             getState().wallet.transactions.transactions,
@@ -181,24 +181,17 @@ export const fetchAndUpdateAccount =
                 dispatch(transactionActions.add(analyze.add.reverse(), account));
             }
 
-            const accountDevice = accountUtils.findAccountDevice(account, getState().devices);
+            const accountDevice = findAccountDevice(account, getState().devices);
             analyze.newTransactions.forEach(tx => {
                 const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
 
-                const areSatoshisUsed = getAreSatoshisUsed(getState().wallet.settings);
+                const areSatoshisUsed = getAreSatoshisUsed(
+                    getState().wallet.settings.bitcoinAmountUnit,
+                );
 
                 const formattedAmount = token
-                    ? `${accountUtils.formatAmount(
-                          token.amount,
-                          token.decimals,
-                      )} ${token.symbol.toUpperCase()}`
-                    : accountUtils.formatNetworkAmount(
-                          tx.amount,
-                          account.symbol,
-                          true,
-                          areSatoshisUsed,
-                      );
-
+                    ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
+                    : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
                 dispatch(
                     notificationActions.addEvent({
                         type: 'tx-confirmed',
@@ -221,7 +214,7 @@ export const fetchAndUpdateAccount =
             if (
                 analyze.remove.length > 0 ||
                 analyze.add.length > 0 ||
-                accountUtils.isAccountOutdated(account, payload) ||
+                isAccountOutdated(account, payload) ||
                 customTokens.length > 0
             ) {
                 dispatch(update(account, payload));

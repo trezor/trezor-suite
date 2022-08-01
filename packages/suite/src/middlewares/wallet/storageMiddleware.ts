@@ -14,7 +14,7 @@ import {
     BLOCKCHAIN,
 } from '@wallet-actions/constants';
 import * as storageActions from '@suite-actions/storageActions';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';

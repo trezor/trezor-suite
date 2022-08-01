@@ -11,7 +11,7 @@ import {
     Translation,
 } from '@suite-components';
 import { CoinBalance } from '@wallet-components';
-import { isTestnet } from '@wallet-utils/accountUtils';
+import { isTestnet } from '@suite-common/wallet-utils';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useAccountSearch, useLoadingSkeleton } from '@suite-hooks';
 

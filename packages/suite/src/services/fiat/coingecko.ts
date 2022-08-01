@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { LastWeekRates, TickerId } from '@wallet-types/fiatRates';
-import FIAT_CONFIG from '@suite-config/fiat';
+import { FIAT as FIAT_CONFIG } from '@suite-common/suite-config';
 import { RateLimiter } from './limiter';
 
 // a proxy for https://api.coingecko.com/api/v3

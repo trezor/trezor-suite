@@ -11,7 +11,7 @@ import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
 import FiatAmount from './components/FiatAmount';
 import Summary from './components/Summary';
 import { NoProviders, StyledSelectBar } from '@wallet-views/coinmarket';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { getTitleForNetwork } from '@suite-common/wallet-utils';
 
 const Header = styled.div`
     font-weight: 500;

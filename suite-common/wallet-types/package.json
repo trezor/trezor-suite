@@ -13,7 +13,10 @@
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-constants": "*",
         "@suite-common/intl-types": "*",
+        "@suite-common/suite-utils": "*",
         "@trezor/connect": "9.0.0-beta.5",
+        "@trezor/type-utils": "*",
+        "@trezor/utils": "*",
         "react": "17.0.2",
         "react-hook-form": "6.15.7"
     }

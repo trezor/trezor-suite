@@ -6,7 +6,7 @@ import { useTranslation } from '@suite-hooks';
 import { GuideNode } from '@guide-components';
 import { useGuideSearch } from '@guide-hooks';
 
-import type { Category } from '@suite-types/guide';
+import type { GuideCategory } from '@suite-common/suite-types';
 
 const Wrapper = styled.div`
     margin-bottom: 40px;
@@ -63,7 +63,7 @@ const Preview: React.FC<PreviewProps> = ({ content, from, length }) => (
 );
 
 type GuideSearchProps = {
-    pageRoot: Category | null;
+    pageRoot: GuideCategory | null;
     setSearchActive: (active: boolean) => void;
 };
 

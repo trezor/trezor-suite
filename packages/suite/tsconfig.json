@@ -29,6 +29,18 @@
             "path": "../../suite-common/metadata-types"
         },
         {
+            "path": "../../suite-common/suite-config"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -36,6 +48,9 @@
         },
         {
             "path": "../../suite-common/wallet-constants"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
         }
     ]
 }

@@ -2,7 +2,7 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FIAT } from '@suite-config';
-import { fromFiatCurrency, toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
+import { fromFiatCurrency, toFiatCurrency } from '@suite-common/wallet-utils';
 import { UseSendFormState, Output } from '@wallet-types/sendForm';
 
 type Props = {

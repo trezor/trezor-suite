@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "@sentry/webpack-plugin": "^1.18.3",
+        "@suite-common/suite-config": "*",
         "@trezor/suite": "*",
         "babel-loader": "^8.2.5",
         "babel-plugin-styled-components": "^2.0.7",

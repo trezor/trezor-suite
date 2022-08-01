@@ -4,7 +4,7 @@ import { variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { useSelector, useActions } from '@suite-hooks';
 import { WalletLayoutNavigation, WalletLayoutNavLink } from '@wallet-components';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-components';
 
 const SavingsWalletLayoutNavLinkWrapper = styled.div`

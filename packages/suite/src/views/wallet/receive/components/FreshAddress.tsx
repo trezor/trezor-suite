@@ -4,7 +4,7 @@ import { AccountAddress } from '@trezor/connect';
 import { Button, Card, variables, H2 } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import { AppState } from '@suite-types';
-import { isUtxoBased } from '@suite/utils/wallet/accountUtils';
+import { isUtxoBased } from '@suite-common/wallet-utils';
 
 const StyledCard = styled(Card)`
     width: 100%;

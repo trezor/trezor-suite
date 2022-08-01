@@ -3,7 +3,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
-import { getFormDraftKey } from '@wallet-utils/formDraftUtils';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { Dispatch, GetState, TrezorDevice } from '@suite-types';

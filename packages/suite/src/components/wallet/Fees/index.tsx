@@ -5,7 +5,7 @@ import { UseFormMethods } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SelectBar, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useLayoutSize } from '@suite-hooks';
 import { ANIMATION } from '@suite-config';
 import { InputError } from '@wallet-components';

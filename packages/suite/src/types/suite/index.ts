@@ -1,16 +1,6 @@
 import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
-import type {
-    UiEvent,
-    DeviceEvent,
-    TransportEvent,
-    BlockchainEvent,
-    KnownDevice,
-    UnknownDevice as UnknownDeviceBase,
-    UnreadableDevice as UnreadableDeviceBase,
-    PROTO,
-    DeviceButtonRequest,
-} from '@trezor/connect';
+import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import type { RouterAction } from '@suite-actions/routerActions';
 import type { AppState } from '@suite/reducers/store';
 import type { StorageAction } from '@suite-actions/storageActions';
@@ -29,12 +19,11 @@ import type { FirmwareAction } from '@firmware-actions/firmwareActions';
 import type { WalletAction } from '@wallet-types';
 import type { BackupAction } from '@backup-actions/backupActions';
 import type { RecoveryAction } from '@recovery-actions/recoveryActions';
-import type { DeviceMetadata } from '@suite-types/metadata';
 import type { ObjectValues } from '@trezor/type-utils';
 import type { SUITE } from '@suite-actions/constants';
-import type { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
 import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
+import type { EnvironmentType } from '@suite-common/suite-types';
 import type { Route } from '@suite-constants/routes';
 
 // reexport
@@ -42,7 +31,15 @@ export type { ExtendedMessageDescriptor } from '@suite-components/Translation/co
 export type { AppState } from '@suite/reducers/store';
 export type { SuiteThemeColors } from '@trezor/components';
 export type { PrerequisiteType } from '@suite-utils/prerequisites';
-export type { Route };
+export type { Route, EnvironmentType };
+export type {
+    ButtonRequest,
+    ExtendedDevice,
+    AcquiredDevice,
+    UnknownDevice,
+    UnreadableDevice,
+    TrezorDevice,
+} from '@suite-common/suite-types';
 
 type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEvent;
 
@@ -80,48 +77,6 @@ export interface Dispatch extends ThunkDispatch<AppState, any, Action> {
 
 export type GetState = () => AppState;
 
-// Extend original ButtonRequestMessage from @trezor/connect
-// suite (deviceReducer) stores them in slightly different shape:
-// - device field from @trezor/connect is excluded
-// - code field (ButtonRequestType) is extended/combined with PinMatrixRequestType and WordRequestType (from DeviceMessage)
-// - code field also uses two custom ButtonRequests - 'ui-request_pin' and 'ui-invalid_pin' (TODO: it shouldn't)
-
-// TODO: Suite should not define its own type for ButtonRequest. There should be
-// sufficient type exported from @trezor/connect;
-export type ButtonRequest = Omit<DeviceEvent['payload'], 'device' | 'code'> & {
-    code?:
-        | 'ui-request_pin'
-        | 'ui-invalid_pin'
-        | DeviceButtonRequest['payload']['code']
-        | NonNullable<PROTO.PinMatrixRequest>['type'];
-};
-
-export interface ExtendedDevice {
-    useEmptyPassphrase: boolean;
-    passphraseOnDevice?: boolean;
-    remember?: boolean; // device should be remembered
-    forceRemember?: true; // device was forced to be remembered
-    connected: boolean; // device is connected
-    available: boolean; // device cannot be used because of features.passphrase_protection is different then expected
-    authConfirm?: boolean; // device cannot be used because passphrase was not confirmed
-    authFailed?: boolean; // device cannot be used because authorization process failed
-    instance?: number;
-    ts: number;
-    buttonRequests: ButtonRequest[];
-    metadata: DeviceMetadata;
-    processMode?: keyof typeof PROCESS_MODE;
-    walletNumber?: number; // number of hidden wallet intended to be used in UI
-    reconnectRequested?: boolean; // currently only after wipeDevice
-}
-
-export type AcquiredDevice = KnownDevice & ExtendedDevice;
-
-export type UnknownDevice = UnknownDeviceBase & ExtendedDevice;
-
-export type UnreadableDevice = UnreadableDeviceBase & ExtendedDevice;
-
-export type TrezorDevice = AcquiredDevice | UnknownDevice | UnreadableDevice;
-
 export type Store = ReduxStore<AppState, Action>;
 
 export type Lock = ObjectValues<typeof SUITE.LOCK_TYPE>;
@@ -137,7 +92,6 @@ export type ForegroundAppProps = {
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
-export type EnvironmentType = 'web' | 'desktop' | 'mobile' | '';
 
 export enum TorStatus {
     Disabled = 'Disabled',

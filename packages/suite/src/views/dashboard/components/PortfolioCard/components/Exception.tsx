@@ -8,7 +8,7 @@ import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions'
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
-import * as accountUtils from '@wallet-utils/accountUtils';
+import * as accountUtils from '@suite-common/wallet-utils';
 import type { Discovery, DiscoveryStatus } from '@wallet-types';
 
 const Wrapper = styled.div`

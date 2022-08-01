@@ -6,7 +6,7 @@ import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
-import { isDecimalsValid } from '@wallet-utils/validation';
+import { isDecimalsValid, getInputState } from '@suite-common/wallet-utils';
 import { InputError } from '@wallet-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import {
@@ -14,7 +14,6 @@ import {
     FIAT_CURRENCY_SELECT,
     FIAT_INPUT,
 } from '@suite/types/wallet/coinmarketSellForm';
-import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 interface Props {
     activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;

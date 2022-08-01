@@ -12,7 +12,7 @@ import {
 import { useAsyncDebounce } from '@trezor/react-utils';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { findComposeErrors } from '@wallet-utils/sendFormUtils';
+import { findComposeErrors } from '@suite-common/wallet-utils';
 
 type Props = UseFormMethods<FormState> & {
     state: UseSendFormState;

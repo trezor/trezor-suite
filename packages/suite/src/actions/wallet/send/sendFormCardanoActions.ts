@@ -9,7 +9,9 @@ import {
     formatMaxOutputAmount,
     loadCardanoLib,
     getDerivationType,
-} from '@wallet-utils/cardanoUtils';
+    formatNetworkAmount,
+    isTestnet,
+} from '@suite-common/wallet-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import {
     FormState,
@@ -18,7 +20,6 @@ import {
     PrecomposedTransactionFinalCardano,
 } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
-import { formatNetworkAmount, isTestnet } from '@wallet-utils/accountUtils';
 
 export const composeTransaction =
     (formValues: FormState, formState: UseSendFormState) =>

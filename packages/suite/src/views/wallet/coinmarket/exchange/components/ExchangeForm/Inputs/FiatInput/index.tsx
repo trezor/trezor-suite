@@ -2,14 +2,13 @@ import { Input } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 import { InputError } from '@wallet-components';
-import { isDecimalsValid } from '@wallet-utils/validation';
+import { isDecimalsValid, getInputState } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { Translation } from '@suite-components';
 import FiatSelect from './FiatSelect';
 import BigNumber from 'bignumber.js';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { CRYPTO_INPUT, FIAT_INPUT } from '@suite/types/wallet/coinmarketExchangeForm';
-import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 const StyledInput = styled(Input)`
     border-left: 0;

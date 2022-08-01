@@ -1,7 +1,6 @@
 import produce from 'immer';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
-import { findTransaction } from '@wallet-utils/transactionUtils';
-import { getAccountKey } from '@wallet-utils/accountUtils';
+import { getAccountKey, findTransaction } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction } from '@wallet-types';
 import { Action } from '@suite-types';

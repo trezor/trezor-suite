@@ -4,7 +4,7 @@ import { Button, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from '@suite-components';
 import AmountRow from '../AmountRow';
 import { NetworkSymbol, WalletAccountTransaction } from '@wallet-types';
-import { getNetwork } from '@wallet-utils/accountUtils';
+import { getNetwork } from '@suite-common/wallet-utils';
 
 // define these attributes as a constant because we will use the same values in two different styled components
 const ROW_HEIGHT = '36px';
@@ -40,8 +40,8 @@ const ShowFiatButtonWrapper = styled.div`
     align-items: center;
     justify-content: flex-end;
 
-    /* NOTE about the following two properties: 
-    It's important to use the same values as in <AmountWrapper> because we want the height of 
+    /* NOTE about the following two properties:
+    It's important to use the same values as in <AmountWrapper> because we want the height of
     <ShowFiatButtonWrapper> to be the same as the height of a row in <AmountWrapper>. This is because we don't want to component
     jump in height when we click "show fiat" button (the button is replaced with dates) */
     height: ${ROW_HEIGHT};

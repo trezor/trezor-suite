@@ -7,7 +7,7 @@ import { Input, variables, DeviceImage, Button } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { TypedValidationRules } from '@wallet-types/form';
-import { isHexValid, isInteger } from '@wallet-utils/validation';
+import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { AddressOptions } from '@wallet-views/coinmarket/common/AddressOptions';
 import { useAccountAddressDictionary } from '@wallet-hooks/useAccounts';
 import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';

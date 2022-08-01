@@ -7,8 +7,8 @@ import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
-import { isEnabled } from '@suite-utils/features';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { isEnabled } from '@suite-common/suite-utils';
+import { getTitleForNetwork } from '@suite-common/wallet-utils';
 
 export interface Props {
     account: Account;

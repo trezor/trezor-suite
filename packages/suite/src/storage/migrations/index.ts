@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { isDesktop } from '@suite-utils/env';
-import { enhanceTransactionDetails } from '@suite/utils/wallet/transactionUtils';
+import { enhanceTransactionDetails } from '@suite-common/wallet-utils';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import type { SuiteDBSchema } from '../definitions';
 import type { State } from '@wallet-reducers/settingsReducer';

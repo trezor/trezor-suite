@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { Translation, FiatValue } from '@suite-components';
 import { SkeletonCircle, SkeletonRectangle, Stack } from '@suite-components/Skeleton';
 import { useLoadingSkeleton, useActions } from '@suite-hooks';
