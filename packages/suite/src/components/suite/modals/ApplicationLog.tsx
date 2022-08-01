@@ -1,11 +1,10 @@
 import React, { createRef, useState } from 'react';
 import styled from 'styled-components';
 import { Switch, Button, variables } from '@trezor/components';
+
 import { Translation, Modal } from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { useSelector } from '@suite-hooks';
 import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Settings';
-import { copyToClipboard } from '@suite-utils/dom';
 import { getApplicationInfo, getApplicationLog, prettifyLog } from '@suite-utils/logsUtils';
 
 const LogWrapper = styled.pre`
@@ -27,19 +26,11 @@ export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
 
     const { state, logs } = useSelector(state => ({ state, logs: state.logs }));
-    const { addToast } = useActions({ addToast: notificationActions.addToast });
 
     const actionLog = getApplicationLog(logs, hideSensitiveInfo);
     const applicationInfo = getApplicationInfo(state);
 
     const log = prettifyLog([applicationInfo, ...actionLog]);
-
-    const copy = () => {
-        const result = copyToClipboard(log, htmlElement.current);
-        if (typeof result !== 'string') {
-            addToast({ type: 'copy-to-clipboard' });
-        }
-    };
 
     const download = () => {
         const element = document.createElement('a');
@@ -62,14 +53,9 @@ export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
             description={<Translation id="LOG_DESCRIPTION" />}
             data-test="@modal/application-log"
             bottomBar={
-                <>
-                    <Button variant="secondary" onClick={copy} data-test="@log/copy-button">
-                        <Translation id="TR_COPY_TO_CLIPBOARD" />
-                    </Button>
-                    <Button variant="secondary" onClick={download} data-test="@log/export-button">
-                        <Translation id="TR_EXPORT_TO_FILE" />
-                    </Button>
-                </>
+                <Button variant="secondary" onClick={download} data-test="@log/export-button">
+                    <Translation id="TR_EXPORT_TO_FILE" />
+                </Button>
             }
         >
             <LogWrapper ref={htmlElement} data-test="@log/content">

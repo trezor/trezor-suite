@@ -18,12 +18,12 @@ describe('ApplicationLog', () => {
         cy.getTestElement('@settings/show-log-button').click({
             scrollBehavior: 'bottom',
         });
-        cy.getTestElement('@log/copy-button');
+        cy.getTestElement('@log/export-button');
         // cypress open todo: implement match-image snapshot. blackout stopped working properly
         cy.getTestElement('@modal/application-log').screenshot('log-modal', {
             blackout: ['[data-test="@log/content"]'],
         });
 
-        // todo: check that we really copied something;
+        // todo: check it really exports something;
     });
 });
