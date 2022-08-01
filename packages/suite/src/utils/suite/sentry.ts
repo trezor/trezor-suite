@@ -8,6 +8,8 @@ export const setSentryContext = Sentry.setContext;
 
 export const setSentryTag = Sentry.setTag;
 
+export const addSentryBreadcrumb = Sentry.addBreadcrumb;
+
 const allowReportTag = 'allowReport';
 
 /**
