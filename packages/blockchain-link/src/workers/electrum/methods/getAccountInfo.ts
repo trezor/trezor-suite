@@ -17,7 +17,7 @@ type AddressInfo = Omit<AddressHistory, 'scripthash'> & {
 
 const isNonNegative = (n: number | undefined): n is number => (n ?? -1) >= 0;
 
-const sortTxsFromLatest = (
+export const sortTxsFromLatest = (
     { blockHeight: a }: { blockHeight?: number },
     { blockHeight: b }: { blockHeight?: number },
 ) =>
@@ -52,6 +52,19 @@ const getPagination = (perPage: number, txs: Transaction[]) => ({
     size: perPage,
     total: Math.ceil(txs.length / perPage),
 });
+
+export const sumAddressValues = <T>(
+    transactions: T[],
+    address: string,
+    getVinVouts: (tr: T) => VinVout[],
+) =>
+    transactions
+        .flatMap(tx =>
+            getVinVouts(tx)
+                .filter(({ addresses }) => addresses?.includes(address))
+                .map(({ value }) => (value ? Number.parseFloat(value) : 0)),
+        )
+        .reduce((a, b) => a + b, 0);
 
 const getAccountInfo: Api<Req, Res> = async (client, payload) => {
     const { descriptor, details = 'basic', pageSize = PAGE_SIZE_DEFAULT } = payload;
@@ -127,18 +140,6 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
           )
         : [];
 
-    const sumAddressValues = (
-        address: string,
-        getVinVouts: (tr: ReturnType<typeof transformTransaction>) => VinVout[],
-    ) =>
-        transactions
-            .flatMap(tx =>
-                getVinVouts(tx)
-                    .filter(({ addresses }) => addresses?.includes(address))
-                    .map(({ value }) => (value ? Number.parseFloat(value) : 0)),
-            )
-            .reduce((a, b) => a + b, 0);
-
     const extendAddressInfo = ({ address, path, transfers, balance }: Address): Address => ({
         address,
         path,
@@ -146,8 +147,12 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         ...(['tokenBalances', 'txids', 'txs'].includes(details) && transfers
             ? {
                   balance,
-                  sent: sumAddressValues(address, tx => tx.details.vin).toString(),
-                  received: sumAddressValues(address, tx => tx.details.vout).toString(),
+                  sent: sumAddressValues(transactions, address, tx => tx.details.vin).toString(),
+                  received: sumAddressValues(
+                      transactions,
+                      address,
+                      tx => tx.details.vout,
+                  ).toString(),
               }
             : {}),
     });
