@@ -102,6 +102,7 @@
   "OP_RETURN": "OP RETURN",
   "OP_RETURN_ADD": "OP Return hozzáadása",
   "OP_RETURN_TOOLTIP": "Az opcode szkriptet használták korábban arra, hogy a tranzakció kimenetét érvénytelennek jelöljék. Mivel minden OP_RETURN kimenet bizonyítottan elkölthetetlen, az OP_RETURN kimenet használható bitcoinok elégetésére.",
+  "RAW_TRANSACTION": "Nyers tranzakció",
   "RAW_TX_NOT_SET": "Tranzakció nincs beállítva",
   "RBF": "RBF",
   "RBF_DESCRIPTION": "Az RBF lehetővé teszi, hogy utólag megnöveld a tranzakciós díjat, ha azt szeretnéd hogy gyorsabban blokkba kerüljön a tranzakció.",
