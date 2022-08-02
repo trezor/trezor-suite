@@ -15,6 +15,11 @@ export type AccountsRootState = {
     };
 };
 
+const findCoinjoinAccount =
+    (key: string) =>
+    (account: Account): account is Extract<Account, { backendType: 'coinjoin' }> =>
+        account.key === key && account.backendType === 'coinjoin';
+
 const accountEqualTo = (b: Account) => (a: Account) =>
     a.deviceState === b.deviceState && a.descriptor === b.descriptor && a.symbol === b.symbol;
 
@@ -73,6 +78,19 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             })
             .addCase(accountsActions.changeAccountVisibility, (state, action) => {
                 update(state, action.payload);
+            })
+            .addCase(accountsActions.startCoinjoinAccountSync, (state, action) => {
+                const account = state.find(findCoinjoinAccount(action.payload.accountKey));
+                if (account) {
+                    account.syncing = true;
+                }
+            })
+            .addCase(accountsActions.endCoinjoinAccountSync, (state, action) => {
+                const account = state.find(findCoinjoinAccount(action.payload.accountKey));
+                if (account) {
+                    account.syncing = undefined;
+                    account.status = action.payload.status;
+                }
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
             .addMatcher(

@@ -27,10 +27,18 @@ export interface CoinjoinSession extends CoinjoinSessionParameters {
     signedRounds: string[]; // already signed rounds
 }
 
+export interface CoinjoinDiscoveryCheckpoint {
+    blockHash: string;
+    blockHeight: number;
+    receiveCount: number;
+    changeCount: number;
+}
+
 export interface CoinjoinAccount {
     key: string; // reference to wallet Account.key
     symbol: NetworkSymbol;
     targetAnonymity: number; // anonymity set by the user
     session?: CoinjoinSession; // current/active authorized session
     previousSessions: CoinjoinSession[]; // history
+    checkpoint?: CoinjoinDiscoveryCheckpoint;
 }

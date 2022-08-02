@@ -52,8 +52,14 @@ const createAccount = createAction(
             accountType: discoveryItem.accountType,
             symbol: discoveryItem.coin,
             empty: accountInfo.empty,
-            backendType: discoveryItem.backendType,
-            lastKnownState: discoveryItem.lastKnownState,
+            ...(discoveryItem.backendType === 'coinjoin'
+                ? {
+                      backendType: 'coinjoin',
+                      status: discoveryItem.status,
+                  }
+                : {
+                      backendType: discoveryItem.backendType,
+                  }),
             visible:
                 !accountInfo.empty ||
                 discoveryItem.accountType === 'coinjoin' ||
@@ -123,6 +129,28 @@ const updateAccount = createAction(
     },
 );
 
+const startCoinjoinAccountSync = createAction(
+    `${actionPrefix}/startCoinjoinAccountSync`,
+    (account: Extract<Account, { backendType: 'coinjoin' }>) => ({
+        payload: {
+            accountKey: account.key,
+        },
+    }),
+);
+
+const endCoinjoinAccountSync = createAction(
+    `${actionPrefix}/endCoinjoinAccountSync`,
+    (
+        account: Extract<Account, { backendType: 'coinjoin' }>,
+        status: Extract<Account, { backendType: 'coinjoin' }>['status'],
+    ) => ({
+        payload: {
+            accountKey: account.key,
+            status,
+        },
+    }),
+);
+
 const changeAccountVisibility = createAction(
     `${actionPrefix}/changeAccountVisibility`,
     (account: Account, visible = true): { payload: Account } => ({
@@ -140,4 +168,6 @@ export const accountsActions = {
     updateAccount,
     updateSelectedAccount,
     changeAccountVisibility,
+    startCoinjoinAccountSync,
+    endCoinjoinAccountSync,
 } as const;

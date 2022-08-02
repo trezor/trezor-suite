@@ -5,6 +5,7 @@ export const ACCOUNT_AUTHORIZE = '@coinjoin/account-authorize';
 export const ACCOUNT_AUTHORIZE_SUCCESS = '@coinjoin/account-authorize-success';
 export const ACCOUNT_AUTHORIZE_FAILED = '@coinjoin/account-authorize-failed';
 export const ACCOUNT_UNREGISTER = '@coinjoin/account-unregister';
+export const ACCOUNT_DISCOVERY_PROGRESS = '@coinjoin/account-discovery-progress';
 
 export const CLIENT_ENABLE = '@coinjoin/client-enable';
 export const CLIENT_DISABLE = '@coinjoin/client-disable';
