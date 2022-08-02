@@ -10,7 +10,7 @@ import {
 } from 'react-native-reanimated';
 import { useCallback, useEffect } from 'react';
 import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import { Dimensions } from 'react-native';
+import { Dimensions, NativeScrollEvent } from 'react-native';
 
 import { useNativeStyles } from '@trezor/styles';
 
@@ -23,9 +23,13 @@ const SCREEN_HEIGHT = Dimensions.get('screen').height;
 export const useBottomSheetAnimation = ({
     onVisibilityChange,
     isVisible,
+    enable,
+    handleEnabled,
 }: {
     onVisibilityChange: (isVisible: boolean) => void;
     isVisible: boolean;
+    enable: boolean;
+    handleEnabled: (enabled: boolean) => void;
 }) => {
     const { utils } = useNativeStyles();
     const transparency = isVisible ? 1 : 0;
@@ -70,9 +74,10 @@ export const useBottomSheetAnimation = ({
             },
             () => {
                 runOnJS(onVisibilityChange)(false);
+                runOnJS(handleEnabled)(true);
             },
         );
-    }, [translatePanY, animatedTransparency, onVisibilityChange]);
+    }, [translatePanY, animatedTransparency, onVisibilityChange, handleEnabled]);
 
     const resetSheetAnimated = useCallback(() => {
         'worklet';
@@ -82,6 +87,15 @@ export const useBottomSheetAnimation = ({
             easing: Easing.out(Easing.cubic),
         });
     }, [translatePanY]);
+
+    const scrollEvent = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
+        if (nativeEvent.contentOffset.y <= 0 && !enable) {
+            handleEnabled(true);
+        }
+        if (nativeEvent.contentOffset.y > 0 && enable) {
+            handleEnabled(false);
+        }
+    };
 
     const panGestureEvent = useAnimatedGestureHandler<
         PanGestureHandlerGestureEvent,
@@ -110,5 +124,6 @@ export const useBottomSheetAnimation = ({
         closeSheetAnimated,
         resetSheetAnimated,
         panGestureEvent,
+        scrollEvent,
     };
 };

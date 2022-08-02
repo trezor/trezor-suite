@@ -1,8 +1,8 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
 
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -64,13 +64,24 @@ export const BottomSheet = ({
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
+    const [enable, setEnable] = useState(true);
     const {
         animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
         closeSheetAnimated,
         resetSheetAnimated,
         panGestureEvent,
-    } = useBottomSheetAnimation({ onVisibilityChange, isVisible });
+        scrollEvent,
+    } = useBottomSheetAnimation({
+        onVisibilityChange,
+        isVisible,
+        enable,
+        handleEnabled: (enabled: boolean) => {
+            setEnable(enabled);
+        },
+    });
+    const ref = useRef();
+    const scrollRef = useRef();
 
     useEffect(() => {
         if (isVisible) {
@@ -87,32 +98,40 @@ export const BottomSheet = ({
             <Animated.View
                 style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
-                <PanGestureHandler onGestureEvent={panGestureEvent}>
-                    <Animated.View
-                        style={[
-                            animatedSheetWrapperStyle,
-                            applyStyle(sheetWrapperStyle, {
-                                insetBottom: insets.bottom,
-                            }),
-                        ]}
+                <Box style={applyStyle(sheetHeaderStyle)}>
+                    {onBackArrowClick && (
+                        <TouchableOpacity onPress={onBackArrowClick}>
+                            <Icon name="chevronLeft" />
+                        </TouchableOpacity>
+                    )}
+                    <Text variant="titleSmall">{title}</Text>
+                    <TouchableOpacity
+                        onPress={handleCloseSheet}
+                        style={applyStyle(closeButtonStyle)}
                     >
-                        <Box style={applyStyle(sheetHeaderStyle)}>
-                            {onBackArrowClick && (
-                                <TouchableOpacity onPress={onBackArrowClick}>
-                                    <Icon name="chevronLeft" />
-                                </TouchableOpacity>
-                            )}
-                            <Text variant="titleSmall">{title}</Text>
-                            <TouchableOpacity
-                                onPress={handleCloseSheet}
-                                style={applyStyle(closeButtonStyle)}
-                            >
-                                <Icon name="close" />
-                            </TouchableOpacity>
-                        </Box>
-                        <Box paddingHorizontal="medium">{children}</Box>
-                    </Animated.View>
-                </PanGestureHandler>
+                        <Icon name="close" />
+                    </TouchableOpacity>
+                </Box>
+                <ScrollView
+                    ref={scrollRef.current}
+                    waitFor={enable ? ref.current : scrollRef.current}
+                    onScroll={scrollEvent}
+                    style={applyStyle(sheetWrapperStyle, {
+                        insetBottom: insets.bottom,
+                    })}
+                >
+                    <PanGestureHandler
+                        enabled={enable}
+                        ref={ref.current}
+                        activeOffsetY={5}
+                        failOffsetY={-5}
+                        onGestureEvent={panGestureEvent}
+                    >
+                        <Animated.View style={[animatedSheetWrapperStyle]}>
+                            <Box paddingHorizontal="medium">{children}</Box>
+                        </Animated.View>
+                    </PanGestureHandler>
+                </ScrollView>
             </Animated.View>
         </BottomSheetContainer>
     );
