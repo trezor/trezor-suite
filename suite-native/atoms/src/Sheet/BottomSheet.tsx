@@ -1,16 +1,14 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
 import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
 
-import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
-import { Text } from '../Text';
 import { BottomSheetContainer } from './BottomSheetContainer';
 import { useBottomSheetAnimation } from './useBottomSheetAnimation';
+import { BottomSheetHeader } from './BottomSheetHeader';
 
 type BottomSheetProps = {
     isVisible: boolean;
@@ -23,31 +21,12 @@ type BottomSheetProps = {
 type WrapperStyleProps = {
     insetBottom: number;
 };
-
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.gray100,
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
     paddingBottom: Math.max(insetBottom, utils.spacings.medium),
     height: 600,
-}));
-
-const CLOSE_BUTTON_SIZE = 40;
-
-const closeButtonStyle = prepareNativeStyle(utils => ({
-    borderRadius: utils.borders.radii.round,
-    height: CLOSE_BUTTON_SIZE,
-    width: CLOSE_BUTTON_SIZE,
-    justifyContent: 'center',
-    alignItems: 'center',
-}));
-
-const sheetHeaderStyle = prepareNativeStyle(utils => ({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: utils.spacings.medium,
-    paddingVertical: utils.spacings.medium,
 }));
 
 const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
@@ -64,7 +43,7 @@ export const BottomSheet = ({
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
-    const [enable, setEnable] = useState(true);
+    const [isCloseScrollEnabled, setIsCloseScrollEnabled] = useState(true);
     const {
         animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
@@ -75,13 +54,13 @@ export const BottomSheet = ({
     } = useBottomSheetAnimation({
         onVisibilityChange,
         isVisible,
-        enable,
-        handleEnabled: (enabled: boolean) => {
-            setEnable(enabled);
+        isCloseScrollEnabled,
+        onIsCloseScrollEnabled: (isCloseScrollEnabled: boolean) => {
+            setIsCloseScrollEnabled(isCloseScrollEnabled);
         },
     });
-    const ref = useRef();
-    const scrollRef = useRef();
+    const panGestureRef = useRef();
+    const scrollViewRef = useRef();
 
     useEffect(() => {
         if (isVisible) {
@@ -106,28 +85,21 @@ export const BottomSheet = ({
                         }),
                     ]}
                 >
-                    <View style={applyStyle(sheetHeaderStyle)}>
-                        {onBackArrowClick && (
-                            <TouchableOpacity onPress={onBackArrowClick}>
-                                <Icon name="chevronLeft" />
-                            </TouchableOpacity>
-                        )}
-                        <Text variant="titleSmall">{title}</Text>
-                        <TouchableOpacity
-                            onPress={handleCloseSheet}
-                            style={applyStyle(closeButtonStyle)}
-                        >
-                            <Icon name="close" />
-                        </TouchableOpacity>
-                    </View>
+                    <BottomSheetHeader
+                        title={title}
+                        onBackArrowClick={onBackArrowClick}
+                        onCloseSheet={closeSheetAnimated}
+                    />
                     <ScrollView
-                        ref={scrollRef.current}
-                        waitFor={enable ? ref.current : scrollRef.current}
+                        ref={scrollViewRef.current}
+                        waitFor={
+                            isCloseScrollEnabled ? panGestureRef.current : scrollViewRef.current
+                        }
                         onScroll={scrollEvent}
                     >
                         <PanGestureHandler
-                            enabled={enable}
-                            ref={ref.current}
+                            enabled={isCloseScrollEnabled}
+                            ref={panGestureRef.current}
                             activeOffsetY={5}
                             failOffsetY={-5}
                             onGestureEvent={panGestureEvent}

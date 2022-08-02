@@ -23,13 +23,13 @@ const SCREEN_HEIGHT = Dimensions.get('screen').height;
 export const useBottomSheetAnimation = ({
     onVisibilityChange,
     isVisible,
-    enable,
-    handleEnabled,
+    isCloseScrollEnabled,
+    onIsCloseScrollEnabled,
 }: {
     onVisibilityChange: (isVisible: boolean) => void;
     isVisible: boolean;
-    enable: boolean;
-    handleEnabled: (enabled: boolean) => void;
+    isCloseScrollEnabled: boolean;
+    onIsCloseScrollEnabled: (isCloseScrollEnabled: boolean) => void;
 }) => {
     const { utils } = useNativeStyles();
     const transparency = isVisible ? 1 : 0;
@@ -74,10 +74,10 @@ export const useBottomSheetAnimation = ({
             },
             () => {
                 runOnJS(onVisibilityChange)(false);
-                runOnJS(handleEnabled)(true);
+                runOnJS(onIsCloseScrollEnabled)(true);
             },
         );
-    }, [translatePanY, animatedTransparency, onVisibilityChange, handleEnabled]);
+    }, [translatePanY, animatedTransparency, onVisibilityChange, onIsCloseScrollEnabled]);
 
     const resetSheetAnimated = useCallback(() => {
         'worklet';
@@ -89,11 +89,11 @@ export const useBottomSheetAnimation = ({
     }, [translatePanY]);
 
     const scrollEvent = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
-        if (nativeEvent.contentOffset.y <= 0 && !enable) {
-            handleEnabled(true);
+        if (nativeEvent.contentOffset.y <= 0 && !isCloseScrollEnabled) {
+            onIsCloseScrollEnabled(true);
         }
-        if (nativeEvent.contentOffset.y > 0 && enable) {
-            handleEnabled(false);
+        if (nativeEvent.contentOffset.y > 0 && isCloseScrollEnabled) {
+            onIsCloseScrollEnabled(false);
         }
     };
 
