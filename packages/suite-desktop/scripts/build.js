@@ -54,8 +54,16 @@ console.log('[Electron Build] Starting...');
 console.log(`[Electron Build] Mode: ${isDev ? 'development' : 'production'}`);
 console.log(`[Electron Build] Using mocks: ${useMocks}`);
 
-// we want to bundle this
-delete pkg.dependencies['@trezor/utils'];
+// All local packages that doesn't have "build:libs" and used in packages/suite-desktop/src-electron
+// must be builded and not included in electron node_modules, because they are in TS.
+// Normal src/ folder is fine, because it's builded by webpack.
+const dependencies = Object.keys(pkg.dependencies).filter(
+    name => !(name.startsWith('@suite-common/') || name === '@trezor/utils'),
+);
+const devDependencies = Object.keys(pkg.devDependencies);
+
+const electronExternalDependencies = [...dependencies, ...devDependencies];
+
 // TODO: maybe desktop-api could be build too?
 
 build({
@@ -63,11 +71,7 @@ build({
     platform: 'node',
     bundle: true,
     target: 'node16.13.2', // Electron 18
-    external: Object.keys({
-        // do we need all of these as external? isn't just electron enough?
-        ...pkg.dependencies,
-        ...pkg.devDependencies,
-    }),
+    external: electronExternalDependencies,
     tsconfig: path.join(electronSource, 'tsconfig.json'),
     sourcemap: isDev,
     minify: !isDev,
