@@ -12,14 +12,12 @@ const LoadingWrapper = styled.div`
 const LoaderCell = styled.div<Required<Omit<LoadingContentProps, 'isSuccessful'>>>`
     width: ${({ size }) => 1.5 * size}px;
     transition: all 0.25s ease-out 0.5s;
-
     ${({ isLoading }) =>
         !isLoading &&
         css`
             width: 0;
             opacity: 0;
         `}
-
     svg {
         fill: ${({ theme }) => theme.TYPE_GREEN};
     }
@@ -43,7 +41,7 @@ export const LoadingContent: React.FC<LoadingContentProps> = ({
         <LoadingWrapper>
             <LoaderCell isLoading={isLoading} size={size}>
                 {isLoading ? (
-                    <Loader size={size} />
+                    <Loader size={size} data-test="@loading-content/loader" />
                 ) : (
                     <Icon
                         icon={isSuccessful ? 'CHECK' : 'CROSS'}

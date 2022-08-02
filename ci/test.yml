@@ -85,8 +85,8 @@ suite web migrations:
       - TEST_GROUP: "@group:migrations"
         CONTAINERS: "trezor-user-env-unix"
 
-suite web:
-  extends: .suite web base
+# suite web:
+#   extends: .suite web base
 
 suite web snapshots:
   extends: .suite web base
@@ -131,9 +131,10 @@ suite web 2-master manual:
     # but since this is run only in nightly builds it can be probably built inside the job for now..
     - yarn workspace @trezor/suite-data msg-system-sign-config
     - yarn workspace @trezor/suite-desktop build:linux
-    - docker-compose pull
-    - docker-compose up -d trezor-user-env-unix
-    - docker-compose run test-run
+    # - docker-compose pull
+    # - docker-compose up -d trezor-user-env-unix
+    # - docker-compose run test-run
+    - docker-compose -f ./docker/docker-compose.suite-desktop-ci.yml up --build --abort-on-container-exit --force-recreate
   after_script:
     - docker-compose down
     - docker network prune -f
@@ -143,11 +144,17 @@ suite web 2-master manual:
     paths:
       - ./packages/integration-tests/projects/suite-desktop/screenshots
   interruptible: true
+  # todo: can not run multiple jobs:
+  # ERROR: for docker_trezor-user-env-unix_1  Cannot create container for service trezor-user-env-unix:
+  # Conflict. The container name "/docker_trezor-user-env-unix_1" is already in use by container
+  parallel:
+    matrix:
+      - TEST_FILE: ["spawn-tor.test.js"]
 
 suite desktop:
   extends: .e2e desktop
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
 
 suite desktop manual:
   extends: .e2e desktop
