@@ -1,4 +1,5 @@
 import TrezorConnect from '@trezor/connect';
+import type { ScanAccountProgress } from '@trezor/coinjoin/src/backend/types';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { addToast } from '../suite/notificationActions';
@@ -8,6 +9,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
+import { isAccountOutdated, getAccountTransactions } from '@suite-common/wallet-utils';
 
 const coinjoinAccountCreate = (account: Account, targetAnonymity: number) =>
     ({
@@ -49,34 +51,44 @@ const coinjoinAccountUnregister = (account: Account) =>
         account,
     } as const);
 
+const coinjoinAccountDiscoveryProgress = (account: Account, progress: ScanAccountProgress) =>
+    ({
+        type: COINJOIN.ACCOUNT_DISCOVERY_PROGRESS,
+        account,
+        progress,
+    } as const);
+
 export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountCreate>
     | ReturnType<typeof coinjoinAccountUpdateAnonymity>
     | ReturnType<typeof coinjoinAccountAuthorize>
     | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>
-    | ReturnType<typeof coinjoinAccountUnregister>;
+    | ReturnType<typeof coinjoinAccountUnregister>
+    | ReturnType<typeof coinjoinAccountDiscoveryProgress>;
+
+const getCheckpoint = (
+    account: Extract<Account, { backendType: 'coinjoin' }>,
+    getState: GetState,
+) => getState().wallet.coinjoin.accounts.find(a => a.key === account.key)?.checkpoint;
 
 export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
-        if (account.backendType !== 'coinjoin') return;
+        if (account.backendType !== 'coinjoin' || account.discoveryStatus === 'syncing') return;
 
-        const lastKnownState = {
-            time: Date.now(),
-            blockHash: account.lastKnownState?.blockHash || '',
-            progress: 0,
-        };
+        const isInitialUpdate = account.discoveryStatus !== 'ready';
+        dispatch(accountsActions.updateCoinjoinAccountStatus(account, 'syncing'));
 
-        const onProgress = (progressState: any) => {
-            dispatch(
-                accountsActions.updateAccount({
-                    ...account,
-                    lastKnownState: {
-                        ...progressState,
-                        time: Date.now(),
-                    },
-                }),
-            );
+        const onProgress = (progress: ScanAccountProgress) => {
+            if (progress.transactions.length) {
+                dispatch(
+                    transactionsActions.addTransaction({
+                        account,
+                        transactions: progress.transactions,
+                    }),
+                );
+            }
+            dispatch(coinjoinAccountDiscoveryProgress(account, progress));
         };
 
         const api = CoinjoinBackendService.getInstance(account.symbol);
@@ -84,49 +96,39 @@ export const fetchAndUpdateAccount =
 
         try {
             api.on('progress', onProgress);
-            // @ts-expect-error, method is...
-            const accountInfo: any = await api.getAccountInfo({
+
+            const { pending, checkpoint } = await api.scanAccount({
                 descriptor: account.descriptor,
-                lastKnownState: {
-                    balance: account.balance,
-                    blockHash: lastKnownState.blockHash,
-                },
-                symbol: account.symbol,
+                checkpoint: getCheckpoint(account, getState),
             });
 
-            if (accountInfo) {
-                // get fresh info from reducer
-                const updatedAccount = getState().wallet.accounts.find(a => a.key === account.key);
-                if (updatedAccount && updatedAccount.lastKnownState) {
-                    // finalize
-                    dispatch(
-                        accountsActions.updateAccount(
-                            {
-                                ...updatedAccount,
-                                lastKnownState: {
-                                    time: Date.now(),
-                                    blockHash: updatedAccount.lastKnownState.blockHash,
-                                },
-                            },
-                            accountInfo,
-                        ),
-                    );
-                    // add account transactions
-                    if (accountInfo.history.transactions) {
-                        dispatch(
-                            transactionsActions.addTransaction({
-                                transactions: accountInfo.history.transactions,
-                                account,
-                            }),
-                        );
-                    }
-                }
-            } else {
-                // TODO: no accountInfo
+            onProgress({ checkpoint, transactions: pending });
+
+            const transactions = getAccountTransactions(
+                account.key,
+                getState().wallet.transactions.transactions,
+            );
+
+            const accountInfo = api.getAccountInfo(account.descriptor, transactions, checkpoint);
+
+            // TODO add isPending check?
+            if (isAccountOutdated(account, accountInfo) || isInitialUpdate) {
+                dispatch(accountsActions.updateAccount(account, accountInfo));
             }
+
+            // TODO remove invalid transactions
+
+            // TODO notify about new transactions
+
+            dispatch(accountsActions.updateCoinjoinAccountStatus(account, 'ready'));
         } catch (error) {
-            // TODO
             console.warn('fetchAndUpdateAccount', error);
+            dispatch(
+                accountsActions.updateCoinjoinAccountStatus(
+                    account,
+                    isInitialUpdate ? 'error' : 'ready',
+                ),
+            );
         } finally {
             api.off('progress', onProgress);
         }
@@ -199,11 +201,7 @@ export const createCoinjoinAccount =
                     backendType: 'coinjoin',
                     coin: network.symbol,
                     derivationType: 0,
-                    lastKnownState: {
-                        time: 0,
-                        blockHash: '',
-                        progress: 0,
-                    },
+                    discoveryStatus: 'initial',
                 },
                 {
                     addresses: { change: [], used: [], unused: [] },
