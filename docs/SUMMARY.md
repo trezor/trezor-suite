@@ -20,6 +20,7 @@
         -   [coins support](./packages/connect/supported-coins.md)
         -   [events](./packages/connect/events.md)
         -   [methods](./packages/connect/methods.md)
+            -   [common parameters](./packages/connect/methods/commonParams.md)
             -   [getPublicKey](./packages/connect/methods/getPublicKey.md)
             -   [requestLogin](./packages/connect/methods/requestLogin.md)
             -   [cipherKeyValue](./packages/connect/methods/cipherKeyValue.md)

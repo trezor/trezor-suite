@@ -22,6 +22,6 @@ TrezorConnect.on(DEVICE_EVENT, event => {
 Full list of events is unfortunately beyond the scope of this documentation
 but you may refer to the source code for:
 
--   [device events](../src/events/device.ts)
--   [transport events](../src/events/transport.ts)
--   [blockchain events](../src/events/blockchain.ts)
+-   [device events](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/events/device.ts)
+-   [transport events](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/events/transport.ts)
+-   [blockchain events](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/events/blockchain.ts)
