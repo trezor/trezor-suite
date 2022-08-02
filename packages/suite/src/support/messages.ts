@@ -4053,6 +4053,16 @@ export default defineMessages({
         defaultMessage: 'NZ Bank Transfer',
         dynamic: true,
     },
+    TR_PAYMENT_METHOD_PIX: {
+        id: 'TR_PAYMENT_METHOD_PIX',
+        defaultMessage: 'Pix',
+        dynamic: true,
+    },
+    TR_PAYMENT_METHOD_PAY4FUN: {
+        id: 'TR_PAYMENT_METHOD_PAY4FUN',
+        defaultMessage: 'Pay4Fun',
+        dynamic: true,
+    },
     TR_OFFER_FEE_INFO: {
         id: 'TR_OFFER_FEE_INFO',
         defaultMessage:
