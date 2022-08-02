@@ -9,10 +9,14 @@ export type AddressResult<T> = T & {
     empty: boolean;
 };
 
-const countUnusedFromEnd = <T>(array: AddressResult<T>[], lookout: number): number => {
+export const countUnusedFromEnd = <T>(
+    array: T[],
+    isUnused: (t: T) => boolean,
+    lookout: number,
+): number => {
     const boundary = array.length > lookout ? array.length - lookout : 0;
     for (let i = array.length; i > boundary; --i) {
-        if (!array[i - 1].empty) {
+        if (!isUnused(array[i - 1])) {
             return array.length - i;
         }
     }
@@ -30,7 +34,7 @@ export const discovery = <T>(
         from: number,
         prev: AddressResult<T>[],
     ): Promise<AddressResult<T>[]> => {
-        const unused = countUnusedFromEnd(prev, lookout);
+        const unused = countUnusedFromEnd(prev, a => a.empty, lookout);
         if (unused >= lookout) return prev;
         const moreCount = lookout - unused;
         const addresses = deriveAddresses(xpub, type, from, moreCount, network);
