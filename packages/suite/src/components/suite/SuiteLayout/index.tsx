@@ -88,9 +88,10 @@ type SuiteLayoutProps = {
 };
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
-    const { url, anchor } = useSelector(state => ({
+    const { url, anchor, initialRun } = useSelector(state => ({
         url: state.router.url,
         anchor: state.router.anchor,
+        initialRun: state.suite.flags.initialRun,
     }));
 
     const { isMobileLayout, layoutSize } = useLayoutSize();
@@ -110,7 +111,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
     // Setting screens are available even if the device is not connected in normal mode
     // but then we need to hide NavigationBar so user can't navigate to Dashboard and Accounts.
-    const isNavigationBarVisible = device?.mode === 'normal';
+    const isNavigationBarVisible = device?.mode === 'normal' && !initialRun;
 
     const isGuideFullHeight = isMobileLayout || isModalOpen;
 
