@@ -8,7 +8,7 @@
 
     `@trezor/connect` is hosted at `[url]/build/static/connect` and injected as an iframe into DOM.
 
-    `@trezor/connect` imports from `@trezor/suite` are replaced to `@trezor/connect-web` see [webpack config](../../packages/suite-build/configs/web.webpack.config.ts)
+    `@trezor/connect` imports from `@trezor/suite` are replaced to `@trezor/connect-web` see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-build/configs/web.webpack.config.ts)
 
     `iframe.postMessage/iframe.onmessage` interface is used as communication channel between suite and connect API.
 
@@ -18,7 +18,7 @@
 
     `@trezor/connect` files are **not** hosted on the electron renderer side, there is no iframe or /build/static/connect dir.
 
-    on the renderer side `@trezor/connect` imports from `@trezor/suite` are replaced to custom module `packages/suite-desktop/src/support/trezor-connect-ipc-wrapper` (future @trezor/connect-electron package) see [webpack config](../../packages/suite-build/configs/desktop.webpack.config.ts)
+    On the renderer side `@trezor/connect`, imports from `@trezor/suite` are replaced to custom module `packages/suite-desktop/src/support/trezor-connect-ipc-wrapper` (future @trezor/connect-electron package) see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-build/configs/desktop.webpack.config.ts)
 
     `Electron.IpcRenderer.send/Electron.IpcRenderer.on` interface is used as communication channel between suite (electron renderer) and connect API (electron main). see @trezor/suite-desktop/src-electron/trezor-connect-preload.ts
 
@@ -46,7 +46,7 @@ Known issue: The devtools might blank out at launch. If this happens, simply clo
 
 Logging can be enabled by running Suite with the command line flag `--log-level=LEVEL` (replace _LEVEL_ with _error_, _warn_, _info_ or _debug_ based on the logging you wish to display). Additional command line flags can be found [below](#runtime-flags).
 
-More technical information can be found on the [Desktop Logger page](../misc/desktop_logger.md).
+More technical information can be found on the [Desktop Logger page](../features/desktop-logger.md).
 
 ## Shortcuts
 

@@ -4,7 +4,7 @@
 
 ## Fixtures
 
-Fixtures are located in [packages/integration-tsts](../../packages/integration-tests/projects/connect-explorer/tests)
+Fixtures are located in [packages/integration-tests](https://github.com/trezor/trezor-suite/tree/develop/packages/integration-tests/projects/connect-popup/tests/__fixtures__)
 
 ## Test results
 
