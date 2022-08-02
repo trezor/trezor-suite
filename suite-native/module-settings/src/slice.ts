@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { currencies } from './constants';
-import { AppColorScheme, Currency, CurrencyType } from './types';
+import { fiatCurrenciesMap, Currency, CurrencyType } from '@suite-common/suite-config';
+
+import { AppColorScheme } from './types';
 
 export interface AppSettingsState {
     colorScheme: AppColorScheme;
@@ -14,7 +15,7 @@ type SliceState = {
 
 const initialState: AppSettingsState = {
     colorScheme: 'system',
-    currency: currencies.usd,
+    currency: fiatCurrenciesMap.usd,
 };
 
 export const appSettingsSlice = createSlice({
@@ -25,7 +26,7 @@ export const appSettingsSlice = createSlice({
             state.colorScheme = action.payload;
         },
         setCurrency: (state, { payload }: PayloadAction<CurrencyType>) => {
-            state.currency = currencies[payload];
+            state.currency = fiatCurrenciesMap[payload];
         },
     },
 });

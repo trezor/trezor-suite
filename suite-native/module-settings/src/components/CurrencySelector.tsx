@@ -2,11 +2,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Select, SelectValue } from '@suite-native/atoms';
+import { CurrencyType, fiatCurrenciesMap } from '@suite-common/suite-config';
 
 import { selectCurrency, setCurrency } from '../slice';
-import { currencies } from '../constants';
 import { transformFiatCurrencyToSelectItem } from '../utils';
-import { CurrencyType } from '../types';
 
 export const CurrencySelector = () => {
     const selectedCurrency = useSelector(selectCurrency);
@@ -16,7 +15,7 @@ export const CurrencySelector = () => {
         dispatch(setCurrency(value as CurrencyType));
     };
 
-    const fiatCurrencies = Object.values(currencies).map(transformFiatCurrencyToSelectItem);
+    const fiatCurrencies = Object.values(fiatCurrenciesMap).map(transformFiatCurrencyToSelectItem);
 
     return (
         <Select
