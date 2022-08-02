@@ -52,8 +52,14 @@ const createAccount = createAction(
             accountType: discoveryItem.accountType,
             symbol: discoveryItem.coin,
             empty: accountInfo.empty,
-            backendType: discoveryItem.backendType,
-            lastKnownState: discoveryItem.lastKnownState,
+            ...(discoveryItem.backendType === 'coinjoin'
+                ? {
+                      backendType: 'coinjoin',
+                      discoveryStatus: discoveryItem.discoveryStatus,
+                  }
+                : {
+                      backendType: discoveryItem.backendType,
+                  }),
             visible:
                 !accountInfo.empty ||
                 discoveryItem.accountType === 'coinjoin' ||
@@ -123,6 +129,19 @@ const updateAccount = createAction(
     },
 );
 
+const updateCoinjoinAccountStatus = createAction(
+    `${actionPrefix}/updateCoinjoinAccountStatus`,
+    (
+        account: Extract<Account, { backendType: 'coinjoin' }>,
+        discoveryStatus: Extract<Account, { backendType: 'coinjoin' }>['discoveryStatus'],
+    ) => ({
+        payload: {
+            ...account,
+            discoveryStatus,
+        },
+    }),
+);
+
 const changeAccountVisibility = createAction(
     `${actionPrefix}/changeAccountVisibility`,
     (account: Account, visible = true): { payload: Account } => ({
@@ -139,5 +158,6 @@ export const accountsActions = {
     createAccount,
     updateAccount,
     updateSelectedAccount,
+    updateCoinjoinAccountStatus,
     changeAccountVisibility,
 } as const;

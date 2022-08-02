@@ -539,7 +539,7 @@ export const getRbfParams = (
     getBitcoinRbfParams(tx, account) || getEthereumRbfParams(tx, account);
 
 /**
- * Formats amounts and attaches fields from the account (descriptor, deviceState, symbol) to the tx object
+ * Attaches fields from the account (descriptor, deviceState, symbol) to the tx object
  *
  * @param {AccountTransaction} tx
  * @param {Account} account
@@ -566,6 +566,15 @@ export const enhanceTransaction = (
         rbfParams: getRbfParams(tx, account),
     };
 };
+
+export const getOriginalTransaction = ({
+    descriptor,
+    deviceState,
+    symbol,
+    rbfParams,
+    rates,
+    ...tx
+}: WalletAccountTransaction): AccountTransaction => tx;
 
 const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) => {
     const addresses: { [address: string]: string[] } = {};

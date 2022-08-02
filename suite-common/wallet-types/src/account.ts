@@ -50,12 +50,15 @@ export interface AddressesWithAnonymity extends NonNullable<AccountInfo['address
     anonymitySet?: Record<string, number | undefined>; // key -> address, value -> anonymity
 }
 
-export interface AccountLastKnownState {
-    time: number;
-    blockHash: string;
-    progress?: number;
-    progressMessage?: string;
-}
+// decides if account is using TrezorConnect/blockchain-link or other non-standard api
+export type AccountBackendSpecific =
+    | {
+          backendType?: Exclude<BackendType, 'coinjoin'>;
+      }
+    | {
+          backendType: Extract<BackendType, 'coinjoin'>;
+          discoveryStatus: 'initial' | 'syncing' | 'ready' | 'error';
+      };
 
 export type Account = {
     deviceState: string;
@@ -78,9 +81,8 @@ export type Account = {
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountMetadata;
-    backendType?: BackendType; // decides if account is using TrezorConnect/blockchain-link or other non-standard api
-    lastKnownState?: AccountLastKnownState;
-} & AccountNetworkSpecific;
+} & AccountBackendSpecific &
+    AccountNetworkSpecific;
 
 export type WalletParams =
     | NonNullable<{

@@ -71,6 +71,9 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.updateAccount, (state, action) => {
                 update(state, action.payload);
             })
+            .addCase(accountsActions.updateCoinjoinAccountStatus, (state, action) => {
+                update(state, action.payload);
+            })
             .addCase(accountsActions.changeAccountVisibility, (state, action) => {
                 update(state, action.payload);
             })
