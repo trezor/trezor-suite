@@ -1,8 +1,8 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
 
 import { Icon } from '@trezor/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -29,6 +29,7 @@ const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetB
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
     paddingBottom: Math.max(insetBottom, utils.spacings.medium),
+    height: 500,
 }));
 
 const CLOSE_BUTTON_SIZE = 40;
@@ -64,13 +65,25 @@ export const BottomSheet = ({
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
+    const [enable, setEnable] = useState(true);
     const {
         animatedSheetWithOverlayStyle,
         animatedSheetWrapperStyle,
         closeSheetAnimated,
         resetSheetAnimated,
         panGestureEvent,
-    } = useBottomSheetAnimation({ onVisibilityChange, isVisible });
+        scrollEvent,
+    } = useBottomSheetAnimation({
+        onVisibilityChange,
+        isVisible,
+        enable,
+        handleEnabled: (enabled: boolean) => {
+            console.log('enabled: ', enabled);
+            setEnable(enabled);
+        },
+    });
+    const ref = useRef();
+    const scrollRef = useRef();
 
     useEffect(() => {
         if (isVisible) {
@@ -87,7 +100,13 @@ export const BottomSheet = ({
             <Animated.View
                 style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
-                <PanGestureHandler onGestureEvent={panGestureEvent}>
+                <PanGestureHandler
+                    enabled={enable}
+                    ref={ref.current}
+                    activeOffsetY={100}
+                    failOffsetY={-100}
+                    onGestureEvent={panGestureEvent}
+                >
                     <Animated.View
                         style={[
                             animatedSheetWrapperStyle,
@@ -110,7 +129,14 @@ export const BottomSheet = ({
                                 <Icon name="close" />
                             </TouchableOpacity>
                         </Box>
-                        <Box paddingHorizontal="medium">{children}</Box>
+                        <ScrollView
+                            ref={scrollRef.current}
+                            waitFor={enable ? ref.current : scrollRef.current}
+                            style={{ paddingHorizontal: 16, overflow: 'hidden' }}
+                            onScroll={scrollEvent}
+                        >
+                            {children}
+                        </ScrollView>
                     </Animated.View>
                 </PanGestureHandler>
             </Animated.View>

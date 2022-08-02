@@ -23,9 +23,13 @@ const SCREEN_HEIGHT = Dimensions.get('screen').height;
 export const useBottomSheetAnimation = ({
     onVisibilityChange,
     isVisible,
+    enable,
+    handleEnabled,
 }: {
     onVisibilityChange: (isVisible: boolean) => void;
     isVisible: boolean;
+    enable: boolean;
+    handleEnabled: (enabled: boolean) => void;
 }) => {
     const { utils } = useNativeStyles();
     const transparency = isVisible ? 1 : 0;
@@ -83,6 +87,16 @@ export const useBottomSheetAnimation = ({
         });
     }, [translatePanY]);
 
+    const scrollEvent = ({ nativeEvent }: any) => {
+        console.log('nativeEvent.contentOffset.y: ', nativeEvent.contentOffset.y);
+        if (nativeEvent.contentOffset.y <= 0 && !enable) {
+            handleEnabled(true);
+        }
+        if (nativeEvent.contentOffset.y > 0 && enable) {
+            handleEnabled(false);
+        }
+    };
+
     const panGestureEvent = useAnimatedGestureHandler<
         PanGestureHandlerGestureEvent,
         GestureHandlerContext
@@ -110,5 +124,6 @@ export const useBottomSheetAnimation = ({
         closeSheetAnimated,
         resetSheetAnimated,
         panGestureEvent,
+        scrollEvent,
     };
 };
