@@ -29,7 +29,6 @@ const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetB
     borderTopLeftRadius: utils.borders.radii.large,
     borderTopRightRadius: utils.borders.radii.large,
     paddingBottom: Math.max(insetBottom, utils.spacings.medium),
-    height: 500,
 }));
 
 const CLOSE_BUTTON_SIZE = 40;
@@ -78,7 +77,6 @@ export const BottomSheet = ({
         isVisible,
         enable,
         handleEnabled: (enabled: boolean) => {
-            console.log('enabled: ', enabled);
             setEnable(enabled);
         },
     });
@@ -100,45 +98,44 @@ export const BottomSheet = ({
             <Animated.View
                 style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
             >
-                <PanGestureHandler
-                    enabled={enable}
-                    ref={ref.current}
-                    activeOffsetY={100}
-                    failOffsetY={-100}
-                    onGestureEvent={panGestureEvent}
+                <ScrollView
+                    ref={scrollRef.current}
+                    waitFor={enable ? ref.current : scrollRef.current}
+                    onScroll={scrollEvent}
                 >
-                    <Animated.View
-                        style={[
-                            animatedSheetWrapperStyle,
-                            applyStyle(sheetWrapperStyle, {
-                                insetBottom: insets.bottom,
-                            }),
-                        ]}
+                    <PanGestureHandler
+                        enabled={enable}
+                        ref={ref.current}
+                        activeOffsetY={5}
+                        failOffsetY={-5}
+                        onGestureEvent={panGestureEvent}
                     >
-                        <Box style={applyStyle(sheetHeaderStyle)}>
-                            {onBackArrowClick && (
-                                <TouchableOpacity onPress={onBackArrowClick}>
-                                    <Icon name="chevronLeft" />
-                                </TouchableOpacity>
-                            )}
-                            <Text variant="titleSmall">{title}</Text>
-                            <TouchableOpacity
-                                onPress={handleCloseSheet}
-                                style={applyStyle(closeButtonStyle)}
-                            >
-                                <Icon name="close" />
-                            </TouchableOpacity>
-                        </Box>
-                        <ScrollView
-                            ref={scrollRef.current}
-                            waitFor={enable ? ref.current : scrollRef.current}
-                            style={{ paddingHorizontal: 16, overflow: 'hidden' }}
-                            onScroll={scrollEvent}
+                        <Animated.View
+                            style={[
+                                animatedSheetWrapperStyle,
+                                applyStyle(sheetWrapperStyle, {
+                                    insetBottom: insets.bottom,
+                                }),
+                            ]}
                         >
-                            {children}
-                        </ScrollView>
-                    </Animated.View>
-                </PanGestureHandler>
+                            <Box style={applyStyle(sheetHeaderStyle)}>
+                                {onBackArrowClick && (
+                                    <TouchableOpacity onPress={onBackArrowClick}>
+                                        <Icon name="chevronLeft" />
+                                    </TouchableOpacity>
+                                )}
+                                <Text variant="titleSmall">{title}</Text>
+                                <TouchableOpacity
+                                    onPress={handleCloseSheet}
+                                    style={applyStyle(closeButtonStyle)}
+                                >
+                                    <Icon name="close" />
+                                </TouchableOpacity>
+                            </Box>
+                            <Box paddingHorizontal="medium">{children}</Box>
+                        </Animated.View>
+                    </PanGestureHandler>
+                </ScrollView>
             </Animated.View>
         </BottomSheetContainer>
     );

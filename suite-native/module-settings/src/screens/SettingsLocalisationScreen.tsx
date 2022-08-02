@@ -8,7 +8,21 @@ const screenStyle = prepareNativeStyle(() => ({
     padding: 15,
 }));
 
-const currencies = ['usd', 'eur', 'gbp', 'aed', 'ars', 'aud', 'bdt', 'bhd'];
+const currencies = [
+    'usd',
+    'eur',
+    'gbp',
+    'aed',
+    'ars',
+    'aud',
+    'bdt',
+    'bhd',
+    'kbt',
+    'llh',
+    'mha',
+    'kut',
+    'bar',
+];
 
 export const SettingsLocalisationScreen = () => {
     const { applyStyle } = useNativeStyles();

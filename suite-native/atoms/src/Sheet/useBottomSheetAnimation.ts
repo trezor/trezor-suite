@@ -10,7 +10,7 @@ import {
 } from 'react-native-reanimated';
 import { useCallback, useEffect } from 'react';
 import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import { Dimensions } from 'react-native';
+import { Dimensions, NativeScrollEvent } from 'react-native';
 
 import { useNativeStyles } from '@trezor/styles';
 
@@ -74,6 +74,7 @@ export const useBottomSheetAnimation = ({
             },
             () => {
                 runOnJS(onVisibilityChange)(false);
+                runOnJS(handleEnabled)(true);
             },
         );
     }, [translatePanY, animatedTransparency, onVisibilityChange]);
@@ -87,8 +88,7 @@ export const useBottomSheetAnimation = ({
         });
     }, [translatePanY]);
 
-    const scrollEvent = ({ nativeEvent }: any) => {
-        console.log('nativeEvent.contentOffset.y: ', nativeEvent.contentOffset.y);
+    const scrollEvent = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
         if (nativeEvent.contentOffset.y <= 0 && !enable) {
             handleEnabled(true);
         }
