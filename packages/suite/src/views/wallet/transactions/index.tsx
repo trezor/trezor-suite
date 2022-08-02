@@ -8,6 +8,7 @@ import NoTransactions from './components/NoTransactions';
 import AccountEmpty from './components/AccountEmpty';
 import TransactionList from './components/TransactionList';
 import TransactionSummary from './components/TransactionSummary';
+import { CoinjoinSummary } from '@wallet-components/CoinjoinSummary';
 
 interface ContentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -31,8 +32,11 @@ const Content = ({
             account={selectedAccount}
             showEmptyHeaderPlaceholder={showEmptyHeaderPlaceholder}
         >
-            {showSummary && account.networkType !== 'ripple' && (
-                <TransactionSummary account={account} />
+            {showSummary &&
+                account.networkType !== 'ripple' &&
+                account.accountType !== 'coinjoin' && <TransactionSummary account={account} />}
+            {showSummary && account.accountType === 'coinjoin' && (
+                <CoinjoinSummary account={account} />
             )}
             {children}
         </WalletLayout>
