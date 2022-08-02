@@ -141,7 +141,7 @@ const SecurityCheck = () => {
                     {initialized ? (
                         <OnboardingButtonCta
                             data-test="@onboarding/exit-app-button"
-                            onClick={() => goToSuite(true)}
+                            onClick={() => goToSuite()}
                         >
                             <Translation id="TR_GO_TO_SUITE" />
                         </OnboardingButtonCta>

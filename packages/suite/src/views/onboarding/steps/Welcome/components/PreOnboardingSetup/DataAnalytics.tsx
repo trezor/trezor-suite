@@ -113,7 +113,7 @@ export const DataAnalytics = () => {
     };
 
     return (
-        <Box variant="small">
+        <Box variant="small" data-test="@analytics/consent">
             <Wrapper>
                 <Heading>
                     <Translation id="TR_ONBOARDING_DATA_COLLECTION_HEADING" />

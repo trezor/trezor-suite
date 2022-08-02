@@ -85,37 +85,5 @@ describe('onboardingMiddleware', () => {
                 { type: '@onboarding/enable-onboarding-reducer', payload: true },
             ]);
         });
-
-        it('from onboarding', async () => {
-            const store = initStore(
-                getInitialState({
-                    loaded: true,
-                    url: '/onboarding',
-                    pathname: '/',
-                    hash: undefined,
-                    app: 'onboarding',
-                    params: undefined,
-                    route: {
-                        name: 'onboarding-index',
-                        pattern: '/onboarding',
-                        app: 'onboarding',
-                        isForegroundApp: true,
-                        isFullscreenApp: true,
-                        params: undefined,
-                        exact: undefined,
-                    },
-                    settingsBackRoute: {
-                        name: 'suite-index',
-                    },
-                }),
-            );
-            await store.dispatch({ type: SUITE.APP_CHANGED, payload: 'wallet' });
-            const result = store.getActions();
-            expect(result).toEqual([
-                { type: SUITE.APP_CHANGED, payload: 'wallet' },
-                { type: '@suite/set-flag', key: 'initialRun', value: false },
-                { type: '@onboarding/reset-onboarding' },
-            ]);
-        });
     });
 });
