@@ -77,7 +77,7 @@ export const useBottomSheetAnimation = ({
                 runOnJS(handleEnabled)(true);
             },
         );
-    }, [translatePanY, animatedTransparency, onVisibilityChange]);
+    }, [translatePanY, animatedTransparency, onVisibilityChange, handleEnabled]);
 
     const resetSheetAnimated = useCallback(() => {
         'worklet';
