@@ -10,7 +10,7 @@ import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
+import { init as connectInit } from '@suite-actions/trezorConnectActions';
 
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 import buttonRequestMiddleware from '@suite-middlewares/buttonRequestMiddleware';
@@ -96,7 +96,7 @@ describe('buttonRequest middleware', () => {
         require('@wallet-actions/blockchainActions');
         const store = initStore(getInitialState());
         // @ts-ignore
-        await store.dispatch(trezorConnectActions.init());
+        await store.dispatch(connectInit());
         // @ts-ignore
         const call = store.dispatch(deviceSettingsActions.changePin({ remove: false }));
         // fake few ui events, just like when user is changing PIN
@@ -112,6 +112,8 @@ describe('buttonRequest middleware', () => {
         // not interested in the last action (its from changePin mock);
         store.getActions().pop();
         expect(store.getActions()).toMatchObject([
+            { type: connectInit.pending.type, payload: undefined },
+            { type: connectInit.fulfilled.type, payload: undefined },
             { type: SUITE.LOCK_DEVICE, payload: true },
             { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
             {

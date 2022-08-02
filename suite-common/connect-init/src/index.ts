@@ -1,1 +1,1 @@
-export * from './actions/prepareConnectInit';
+export * from './slice';

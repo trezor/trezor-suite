@@ -28,7 +28,6 @@ export type SuiteAction =
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
     | { type: typeof SUITE.DESKTOP_HANDSHAKE; payload: HandshakeElectron }
-    | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
     | {
@@ -100,10 +99,6 @@ export const addButtonRequest = (device: TrezorDevice | undefined, payload: Butt
     type: SUITE.ADD_BUTTON_REQUEST,
     device,
     payload,
-});
-
-export const onConnectInitialized = (): SuiteAction => ({
-    type: SUITE.CONNECT_INITIALIZED,
 });
 
 export const setTheme = (

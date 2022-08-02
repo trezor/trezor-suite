@@ -1,5 +1,5 @@
 import { lockDevice } from '@suite-actions/suiteActions';
-import { prepareConnectInit } from '@suite-common/connect-init';
+import { prepareConnectInitThunk } from '@suite-common/connect-init';
 import { isWeb } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
 import { selectEnabledNetworks } from '@wallet-reducers/settingsReducer';
@@ -21,16 +21,15 @@ const initSettings = {
     },
 };
 
-export const init = () =>
-    prepareConnectInit({
-        actions: {
-            lockDevice,
-        },
-        selectors: {
-            selectEnabledNetworks,
-            selectIsPendingTransportEvent,
-        },
-        initSettings: {
-            ...initSettings,
-        },
-    });
+export const init = prepareConnectInitThunk({
+    actions: {
+        lockDevice,
+    },
+    selectors: {
+        selectEnabledNetworks,
+        selectIsPendingTransportEvent,
+    },
+    initSettings: {
+        ...initSettings,
+    },
+});

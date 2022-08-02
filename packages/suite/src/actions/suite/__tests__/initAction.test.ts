@@ -14,12 +14,13 @@ import messageSystemReducer from '@suite-reducers/messageSystemReducer';
 import walletReducers from '@wallet-reducers';
 
 import { init } from '@suite-actions/initAction';
+import { init as connectInit } from '@suite-actions/trezorConnectActions';
 
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 
 import { validJws, DEV_JWS_PUBLIC_KEY } from '@suite-actions/__fixtures__/messageSystemActions';
 
-import type { Action, AppState } from '@suite-types';
+import type { AppState } from '@suite-types';
 
 process.env.PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
@@ -49,7 +50,7 @@ const getInitialState = (initialRun?: boolean) => ({
 
 type Fixture = {
     description: string;
-    actions: Action['type'][];
+    actions: string[];
     options: {
         initialPath?: string;
         expectedApp?: AppState['router']['app'];
@@ -73,6 +74,8 @@ const fixtures: Fixture[] = [
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
+            connectInit.pending.type,
+            connectInit.fulfilled.type,
             BLOCKCHAIN.UPDATE_FEE,
             SUITE.READY,
         ],
@@ -89,6 +92,8 @@ const fixtures: Fixture[] = [
             ANALYTICS.INIT,
             SUITE.SET_LANGUAGE,
             MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+            connectInit.pending.type,
+            connectInit.fulfilled.type,
             BLOCKCHAIN.UPDATE_FEE,
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
@@ -106,6 +111,8 @@ const fixtures: Fixture[] = [
             ANALYTICS.INIT,
             SUITE.SET_LANGUAGE,
             MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
+            connectInit.pending.type,
+            connectInit.fulfilled.type,
             BLOCKCHAIN.UPDATE_FEE,
             ROUTER.LOCATION_CHANGE,
             SUITE.READY,
@@ -126,6 +133,8 @@ const fixtures: Fixture[] = [
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
+            connectInit.pending.type,
+            connectInit.rejected.type,
             SUITE.ERROR,
         ],
     },
@@ -159,7 +168,12 @@ describe('Suite init action', () => {
                 jest.spyOn(TrezorConnect, 'init').mockImplementation(() => {
                     throw new Error(options.trezorConnectError);
                 });
-                await expect(store.dispatch(init())).rejects.toThrow(options.trezorConnectError);
+
+                try {
+                    await store.dispatch(init());
+                } catch (err) {
+                    expect(err.message).toEqual(options.trezorConnectError);
+                }
             } else {
                 await expect(store.dispatch(init())).resolves.not.toThrow();
             }

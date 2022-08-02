@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-default-export
-export default {
+module.exports = {
     preset: '../../jest.config.base.js',
 };

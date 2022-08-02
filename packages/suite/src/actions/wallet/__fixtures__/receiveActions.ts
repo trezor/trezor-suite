@@ -1,6 +1,7 @@
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { RECEIVE } from '../constants';
 import { NOTIFICATION, MODAL, SUITE } from '@suite-actions/constants';
+import { init as connectInit } from '@suite-actions/trezorConnectActions';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -85,6 +86,8 @@ export default [
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
             actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.SET_PROCESS_MODE, payload: 'confirm-addr' },
                 { type: MODAL.OPEN_USER_CONTEXT },

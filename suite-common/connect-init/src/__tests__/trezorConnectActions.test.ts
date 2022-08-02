@@ -6,7 +6,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
 
-import { prepareConnectInit } from '../prepareConnectInit';
+import { prepareConnectInitThunk } from '../slice';
 
 const initSettings = {
     transportReconnect: true,
@@ -18,31 +18,20 @@ const initSettings = {
     },
 };
 
-const MOCK_CONNECT_INIT_ERROR_ACTION = 'MOCK_CONNECT_INIT_ERROR_ACTION';
 const MOCK_LOCK_DEVICE_ACTION = 'MOCK_LOCK_DEVICE_ACTION';
-const MOCK_CONNECT_INITIALIZED_ACTION = 'MOCK_CONNECT_INITIALIZED_ACTION';
 
-const init = () =>
-    prepareConnectInit({
-        actions: {
-            lockDevice: createAction<boolean>(MOCK_LOCK_DEVICE_ACTION),
-            setInitConnectError: createAction<
-                (payload: string) => { payload: undefined; error: string },
-                string
-            >(MOCK_CONNECT_INIT_ERROR_ACTION, (payload: string) => ({
-                payload: undefined,
-                error: payload,
-            })),
-            onConnectInitialized: createAction(MOCK_CONNECT_INITIALIZED_ACTION),
-        },
-        selectors: {
-            selectEnabledNetworks: () => [],
-            selectIsPendingTransportEvent: () => true,
-        },
-        initSettings: {
-            ...initSettings,
-        },
-    });
+const init = prepareConnectInitThunk({
+    actions: {
+        lockDevice: createAction<boolean>(MOCK_LOCK_DEVICE_ACTION),
+    },
+    selectors: {
+        selectEnabledNetworks: () => [],
+        selectIsPendingTransportEvent: () => true,
+    },
+    initSettings: {
+        ...initSettings,
+    },
+});
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -95,13 +84,10 @@ describe('TrezorConnect Actions', () => {
         await store.dispatch(init());
         const expectedActions = [
             {
-                type: prepareConnectInit.pending.type,
+                type: init.pending.type,
             },
             {
-                type: MOCK_CONNECT_INITIALIZED_ACTION,
-            },
-            {
-                type: prepareConnectInit.fulfilled.type,
+                type: init.fulfilled.type,
             },
         ];
         expect(
@@ -112,76 +98,70 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Error', async () => {
-        require('@trezor/connect').setTestFixtures(() => new Error('Iframe error'));
+        const errorFixture = new Error('Iframe error');
+        require('@trezor/connect').setTestFixtures(() => errorFixture);
         await store.dispatch(init());
         require('@trezor/connect').setTestFixtures(undefined);
         const expectedActions = [
             {
-                type: prepareConnectInit.pending.type,
+                type: init.pending.type,
             },
             {
-                type: MOCK_CONNECT_INIT_ERROR_ACTION,
-                error: 'Iframe error',
-            },
-            {
-                type: prepareConnectInit.fulfilled.type,
+                type: init.rejected.type,
+                error: errorFixture.message,
             },
         ];
         expect(
             store.getActions().map(action => ({
                 type: action.type,
-                error: action.error,
+                error: action?.error?.message,
             })),
         ).toEqual(expectedActions);
     });
 
     it('TypedError', async () => {
-        require('@trezor/connect').setTestFixtures(() => ({
+        const errorFixture = {
             message: 'Iframe error',
             code: 'SomeCode',
-        }));
+        };
+        require('@trezor/connect').setTestFixtures(() => errorFixture);
         await store.dispatch(init());
         require('@trezor/connect').setTestFixtures(undefined);
         const expectedActions = [
             {
-                type: prepareConnectInit.pending.type,
+                type: init.pending.type,
             },
             {
-                type: MOCK_CONNECT_INIT_ERROR_ACTION,
-                error: 'SomeCode: Iframe error',
-            },
-            {
-                type: prepareConnectInit.fulfilled.type,
+                type: init.rejected.type,
+                error: `${errorFixture.code}: ${errorFixture.message}`,
             },
         ];
         expect(
             store.getActions().map(action => ({
                 type: action.type,
-                error: action.error,
+                error: action?.error?.message,
             })),
         ).toEqual(expectedActions);
     });
 
     it('Error as string', async () => {
-        require('@trezor/connect').setTestFixtures(() => 'Iframe error');
+        const errorFixture = 'Iframe error';
+        require('@trezor/connect').setTestFixtures(() => errorFixture);
         await store.dispatch(init());
         require('@trezor/connect').setTestFixtures(undefined);
         const expectedActions = [
             {
-                type: prepareConnectInit.pending.type,
+                type: init.pending.type,
             },
             {
-                type: MOCK_CONNECT_INIT_ERROR_ACTION,
-                error: 'Iframe error',
-            },
-            {
-                type: prepareConnectInit.fulfilled.type,
+                type: init.rejected.type,
+                error: errorFixture,
             },
         ];
         expect(
             store.getActions().map(action => ({
                 type: action.type,
-                error: action.error,
+                error: action?.error?.message,
             })),
         ).toEqual(expectedActions);
     });
@@ -190,15 +170,13 @@ describe('TrezorConnect Actions', () => {
         const defaultSuiteType = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
         await store.dispatch(init());
+
         const expectedActions = [
             {
-                type: prepareConnectInit.pending.type,
+                type: init.pending.type,
             },
             {
-                type: MOCK_CONNECT_INITIALIZED_ACTION,
-            },
-            {
-                type: prepareConnectInit.fulfilled.type,
+                type: init.fulfilled.type,
             },
         ];
         expect(
