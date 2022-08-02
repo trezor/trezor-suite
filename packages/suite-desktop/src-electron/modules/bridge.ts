@@ -27,6 +27,22 @@ const load = async () => {
         } else {
             await bridge.start();
         }
+
+        await new Promise<void>((resolve, reject) => {
+            let attempts = 0;
+            const checkService = async () => {
+                attempts++;
+                const status = await bridge.status();
+                if (status.service) {
+                    resolve();
+                } else if (attempts >= 20) {
+                    reject(new Error('Max attempts'));
+                } else {
+                    setTimeout(checkService, 250);
+                }
+            };
+            checkService();
+        });
     } catch (err) {
         logger.error('bridge', `Start failed: ${err.message}`);
     }
@@ -37,8 +53,7 @@ const init: Module = () => {
     return () => {
         if (loaded) return;
         loaded = true;
-        // TODO intentionally not awaited to mimic previous behavior, resolve later!
-        load();
+        return load();
     };
 };
 
