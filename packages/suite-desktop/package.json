@@ -179,7 +179,10 @@
                 "AppImage"
             ]
         },
-        "afterSign": "scripts/notarize.js"
+        "afterSign": "scripts/notarize.js",
+        "releaseInfo": {
+            "releaseNotes": "### **TESTING BUILD**"
+        }
     },
     "dependencies": {
         "@sentry/electron": "3.0.0",
