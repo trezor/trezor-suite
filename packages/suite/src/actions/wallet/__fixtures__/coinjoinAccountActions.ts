@@ -98,7 +98,8 @@ export const createCoinjoinAccount = [
             actions: [
                 accountsActions.createAccount.type,
                 '@coinjoin/account-create',
-                accountsActions.updateAccount.type,
+                accountsActions.startCoinjoinAccountSync.type,
+                accountsActions.endCoinjoinAccountSync.type,
             ],
         },
     },

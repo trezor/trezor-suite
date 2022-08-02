@@ -84,6 +84,15 @@ const stopSession = (
     }
 };
 
+const saveCheckpoint = (
+    draft: CoinjoinState,
+    action: Extract<Action, { type: typeof COINJOIN.ACCOUNT_DISCOVERY_PROGRESS }>,
+) => {
+    const account = draft.accounts.find(a => a.key === action.payload.account.key);
+    if (!account) return;
+    account.checkpoint = action.payload.progress.checkpoint;
+};
+
 const createClient = (
     draft: CoinjoinState,
     action: Extract<Action, { type: typeof COINJOIN.CLIENT_ENABLE_SUCCESS }>,
@@ -126,6 +135,9 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.ACCOUNT_UNREGISTER:
                 stopSession(draft, action);
+                break;
+            case COINJOIN.ACCOUNT_DISCOVERY_PROGRESS:
+                saveCheckpoint(draft, action);
                 break;
 
             case COINJOIN.CLIENT_ENABLE_SUCCESS:
