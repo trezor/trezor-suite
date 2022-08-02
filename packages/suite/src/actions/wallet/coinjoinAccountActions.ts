@@ -8,6 +8,12 @@ import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
+import {
+    isAccountOutdated,
+    analyzeTransactions,
+    getAccountTransactions,
+    getOriginalTransaction,
+} from '@suite-common/wallet-utils';
 
 const coinjoinAccountCreate = (account: Account) =>
     ({
@@ -48,67 +54,78 @@ export type CoinjoinAccountAction =
     | ReturnType<typeof coinjoinAccountAuthorizeFailed>
     | ReturnType<typeof coinjoinAccountUnregister>;
 
+const getKnownState = (
+    account: Extract<Account, { backendType: 'coinjoin' }>,
+    getState: GetState,
+) =>
+    account.discoveryCheckpoint && {
+        blockHash: account.discoveryCheckpoint.blockHash,
+        receiveCount: account.addresses
+            ? account.addresses.unused.length + account.addresses.used.length
+            : 0,
+        changeCount: account.addresses?.change.length ?? 0,
+        transactions: getAccountTransactions(
+            account.key,
+            getState().wallet.transactions.transactions,
+        ).map(getOriginalTransaction),
+    };
+
 export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
-        if (account.backendType !== 'coinjoin') return;
+        if (account.backendType !== 'coinjoin' || account.discoveryStatus === 'syncing') return;
 
-        const lastKnownState = {
-            time: Date.now(),
-            blockHash: account.lastKnownState?.blockHash || '',
-            progress: 0,
-        };
+        const knownState = getKnownState(account, getState);
 
         try {
             const api = CoinjoinBackendService.getInstance(account.symbol);
-            const accountInfo = await api.getAccountInfo({
+            const { checkpoint, ...accountInfo } = await api.getAccountInfo({
                 descriptor: account.descriptor,
-                lastKnownState: {
-                    balance: account.balance,
-                    blockHash: lastKnownState.blockHash,
-                },
-                onProgress: (progressState: any) => {
-                    dispatch(
-                        accountsActions.updateAccount({
-                            ...account,
-                            lastKnownState: {
-                                ...progressState,
-                                time: Date.now(),
-                            },
-                        }),
-                    );
-                },
-                symbol: account.symbol,
+                knownState,
             });
 
-            if (accountInfo) {
-                // get fresh info from reducer
-                const updatedAccount = getState().wallet.accounts.find(a => a.key === account.key);
-                if (updatedAccount && updatedAccount.lastKnownState) {
-                    // finalize
+            // TODO add isPending check?
+            if (!isAccountOutdated(account, accountInfo)) {
+                if (account.discoveryStatus === 'initial') {
                     dispatch(
-                        accountsActions.updateAccount(
-                            {
-                                ...updatedAccount,
-                                lastKnownState: {
-                                    time: Date.now(),
-                                    blockHash: updatedAccount.lastKnownState.blockHash,
-                                },
-                            },
-                            accountInfo,
-                        ),
+                        accountsActions.updateAccount({ ...account, discoveryStatus: 'ready' }),
                     );
-                    // add account transactions
-                    if (accountInfo.history.transactions) {
-                        dispatch(
-                            transactionsActions.addTransaction({
-                                transactions: accountInfo.history.transactions,
-                                account,
-                            }),
-                        );
-                    }
                 }
-            } else {
-                // TODO: no accountInfo
+                return;
+            }
+
+            const analyze = analyzeTransactions(
+                accountInfo.history.transactions || [],
+                knownState?.transactions || [],
+            );
+
+            if (analyze.remove.length > 0) {
+                dispatch(transactionsActions.removeTransaction({ txs: analyze.remove, account }));
+            }
+            if (analyze.add.length > 0) {
+                dispatch(
+                    transactionsActions.addTransaction({
+                        transactions: analyze.add.reverse(),
+                        account,
+                    }),
+                );
+            }
+
+            // TODO notify about analyze.newTransactions
+
+            // get fresh info from reducer
+            const updatedAccount = getState().wallet.accounts.find(a => a.key === account.key);
+            if (updatedAccount?.backendType === 'coinjoin') {
+                // finalize
+                dispatch(
+                    accountsActions.updateAccount(
+                        {
+                            ...updatedAccount,
+                            discoveryStatus: 'ready',
+                            discoveryCheckpoint: checkpoint,
+                        },
+                        accountInfo,
+                    ),
+                );
             }
         } catch (error) {
             // TODO
@@ -172,11 +189,7 @@ export const createCoinjoinAccount =
                     backendType: 'coinjoin',
                     coin: network.symbol,
                     derivationType: 0,
-                    lastKnownState: {
-                        time: 0,
-                        blockHash: '',
-                        progress: 0,
-                    },
+                    discoveryStatus: 'initial',
                 },
                 {
                     addresses: { change: [], used: [], unused: [] },

@@ -144,7 +144,7 @@ const getAccountState =
 
         // account does exist
         if (account && account.visible) {
-            if (typeof account?.lastKnownState?.progress === 'number') {
+            if (account.backendType === 'coinjoin' && account.discoveryStatus !== 'ready') {
                 return {
                     status: 'loading',
                     loader: 'account-loading',
@@ -239,7 +239,8 @@ export const getStateForAction = (action: Action) => (dispatch: Dispatch, getSta
             'addresses',
             'visible',
             'utxo',
-            'lastKnownState',
+            'discoveryStatus',
+            'discoveryCheckpoint',
         ],
         discovery: [
             'status',

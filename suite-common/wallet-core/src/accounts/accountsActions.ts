@@ -45,8 +45,15 @@ const createAccount = createAction(
             accountType: discoveryItem.accountType,
             symbol: discoveryItem.coin,
             empty: accountInfo.empty,
-            backendType: discoveryItem.backendType,
-            lastKnownState: discoveryItem.lastKnownState,
+            ...(discoveryItem.backendType === 'coinjoin'
+                ? {
+                      backendType: 'coinjoin',
+                      discoveryStatus: discoveryItem.discoveryStatus,
+                      discoveryCheckpoint: discoveryItem.discoveryCheckpoint,
+                  }
+                : {
+                      backendType: discoveryItem.backendType,
+                  }),
             visible:
                 !accountInfo.empty ||
                 discoveryItem.accountType === 'coinjoin' ||

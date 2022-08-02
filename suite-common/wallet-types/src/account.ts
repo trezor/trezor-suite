@@ -46,12 +46,21 @@ type AccountNetworkSpecific =
           page: AccountInfo['page'];
       };
 
-export interface AccountLastKnownState {
+export interface AccountDiscoveryCheckpoint {
     time: number;
     blockHash: string;
-    progress?: number;
-    progressMessage?: string;
 }
+
+// decides if account is using TrezorConnect/blockchain-link or other non-standard api
+export type AccountBackendSpecific =
+    | {
+          backendType?: Exclude<BackendType, 'coinjoin'>;
+      }
+    | {
+          backendType: Extract<BackendType, 'coinjoin'>;
+          discoveryStatus: 'initial' | 'syncing' | 'ready';
+          discoveryCheckpoint?: AccountDiscoveryCheckpoint;
+      };
 
 export type Account = {
     deviceState: string;
@@ -73,9 +82,8 @@ export type Account = {
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountMetadata;
-    backendType?: BackendType; // decides if account is using TrezorConnect/blockchain-link or other non-standard api
-    lastKnownState?: AccountLastKnownState;
-} & AccountNetworkSpecific;
+} & AccountBackendSpecific &
+    AccountNetworkSpecific;
 
 export type WalletParams =
     | NonNullable<{
