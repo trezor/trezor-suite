@@ -196,13 +196,7 @@ export const DeviceSelector = () => {
 
                         {selectedDevice.state && (
                             <WalletNameWrapper>
-                                {selectedDevice.metadata.status === 'enabled' &&
-                                selectedDevice.metadata.walletLabel ? (
-                                    selectedDevice.metadata.walletLabel
-                                ) : (
-                                    <WalletLabeling device={selectedDevice} />
-                                )}
-
+                                <WalletLabeling device={selectedDevice} />
                                 <ArrowDown icon="ARROW_DOWN" size={16} />
                             </WalletNameWrapper>
                         )}
