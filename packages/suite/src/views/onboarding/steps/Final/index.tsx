@@ -6,11 +6,10 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { Button, Icon, variables, Input, Dropdown, DropdownRef } from '@trezor/components';
 import { Translation, HomescreenGallery } from '@suite-components';
 import { DeviceAnimation, OnboardingStepBox } from '@onboarding-components';
-import { useActions, useDevice, useSelector } from '@suite-hooks';
+import { useActions, useDevice, useOnboarding, useSelector } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { DEFAULT_LABEL, MAX_LABEL_LENGTH } from '@suite-constants/device';
 import { getDeviceModel } from '@suite-utils/device';
-import * as routerActions from '@suite-actions/routerActions';
 
 const Option = styled.div`
     display: flex;
@@ -125,10 +124,11 @@ const Wrapper = styled.div<{ shouldWrap?: boolean }>`
 `;
 
 export const FinalStep = () => {
+    const { goToSuite } = useOnboarding();
+
     const dropdownRef = useRef<DropdownRef>();
-    const { applySettings, goToSuite } = useActions({
+    const { applySettings } = useActions({
         applySettings: deviceSettingsActions.applySettings,
-        goToSuite: routerActions.closeModalApp,
     });
 
     const { isLocked, device } = useDevice();

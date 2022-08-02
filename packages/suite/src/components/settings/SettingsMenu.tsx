@@ -24,16 +24,16 @@ const CloseButtonSticky = styled(CloseButton)<{ isAppNavigationPanelInView?: boo
             position: fixed;
         `}
 `;
-
 export const SettingsMenu = () => {
     const { setDebugMode, goto } = useActions({
         goto: routerActions.goto,
         setDebugMode: suiteActions.setDebugMode,
     });
 
-    const { settingsBackRoute, showDebugMenu } = useSelector(state => ({
+    const { settingsBackRoute, showDebugMenu, initialRun } = useSelector(state => ({
         settingsBackRoute: state.router.settingsBackRoute,
         showDebugMenu: state.suite.settings.debug.showDebugMenu,
+        initialRun: state.suite.flags.initialRun,
     }));
 
     // show debug menu item after 5 clicks on "Settings" heading
@@ -99,7 +99,9 @@ export const SettingsMenu = () => {
                     <CloseButtonSticky
                         isAppNavigationPanelInView={isAppNavigationPanelInView}
                         onClick={() =>
-                            goto(settingsBackRoute.name, { params: settingsBackRoute.params })
+                            initialRun
+                                ? goto('onboarding-index')
+                                : goto(settingsBackRoute.name, { params: settingsBackRoute.params })
                         }
                         data-test="@settings/menu/close"
                     />

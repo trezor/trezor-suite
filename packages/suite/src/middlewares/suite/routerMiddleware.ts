@@ -12,8 +12,8 @@ const router = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
         case ROUTER.LOCATION_CHANGE:
             /**
              * Store back route for navigation when closing the settings.
-             * Exclude settings routes – we want to close the settings and not just switch the settigns tab...
-             * Exculde foreground apps – to prevent going back to modals and other unexpected states.
+             * Exclude settings routes – we want to close the settings and not just switch the settings tab...
+             * Exclude foreground apps – to prevent going back to modals and other unexpected states.
              */
             if (router.app !== 'settings' && !router.route?.isForegroundApp) {
                 return next({
