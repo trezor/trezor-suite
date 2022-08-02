@@ -15,15 +15,28 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "browser": {
+        "./src/controller": "./src/controller.browser",
+        "better-sqlite3": false
+    },
     "scripts": {
         "lint": "eslint '**/*.{ts,js}'",
         "test:unit": "jest",
         "type-check": "tsc --build",
         "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
     },
+    "devDependencies": {
+        "@types/better-sqlite3": "^7.5.0"
+    },
     "dependencies": {
+        "@trezor/blockchain-link": "*",
         "@trezor/utils": "*",
         "@trezor/utxo-lib": "*",
-        "cross-fetch": "^3.1.5"
+        "better-sqlite3": "^7.6.2",
+        "bignumber.js": "^9.0.2",
+        "cross-fetch": "^3.1.5",
+        "events": "^3.3.0",
+        "golomb": "1.2.0",
+        "n64": "^0.2.10"
     }
 }
