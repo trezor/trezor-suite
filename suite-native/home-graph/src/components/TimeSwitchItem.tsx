@@ -22,6 +22,12 @@ const textStyle = prepareNativeStyle<TextStyleProps>((utils, { isSelected }) => 
     textTransform: 'uppercase',
 }));
 
+const switchItemStyle = prepareNativeStyle(utils => ({
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: utils.spacings.small,
+}));
+
 export const TimeSwitchItem = ({ value, shortcut }: TimeSwitchItemProps) => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
@@ -35,6 +41,7 @@ export const TimeSwitchItem = ({ value, shortcut }: TimeSwitchItemProps) => {
         <TouchableOpacity
             onPress={() => handleSelectTimeFrame(value)}
             testID={`TimeSwitchItem_${value}`}
+            style={applyStyle(switchItemStyle)}
         >
             <Text
                 style={applyStyle(textStyle, {

@@ -15,6 +15,7 @@
         "@suite-native/atoms": "*",
         "@suite-native/test-utils": "*",
         "@trezor/styles": "*",
+        "@trezor/icons": "*",
         "@trezor/theme": "*",
         "react": "^17.0.2",
         "react-native": "0.68.2",

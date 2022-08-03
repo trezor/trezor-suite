@@ -2,8 +2,9 @@ import React from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
-import { Graph } from '@suite-native/home-graph';
 import { Icon } from '@trezor/icons';
+
+import { Graph } from './Graph';
 
 const arrowStyle = prepareNativeStyle(() => ({
     marginRight: 4,
