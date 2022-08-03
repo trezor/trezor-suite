@@ -138,7 +138,7 @@ const Amount = ({ output, outputId }: Props) => {
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const symbolToUse = areSatsDisplayed ? 'sats' : symbol.toUpperCase();
+    const symbolToUse = areSatsDisplayed ? 'sat' : symbol.toUpperCase();
 
     const handleInputChange = useCallback(
         event => {
@@ -204,7 +204,7 @@ const Amount = ({ output, outputId }: Props) => {
                     <Translation
                         key="AMOUNT_IS_BELOW_DUST"
                         id="AMOUNT_IS_BELOW_DUST"
-                        values={{ dust: `${dust} ${areSatsUsed ? 'sats' : symbol.toUpperCase()}` }}
+                        values={{ dust: `${dust} ${areSatsUsed ? 'sat' : symbol.toUpperCase()}` }}
                     />
                 );
             }
