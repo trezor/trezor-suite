@@ -1,2 +1,2 @@
-export * from './components/Graph';
+export * from './components/PortfolioGraph';
 export * from './slice';
