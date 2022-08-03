@@ -1,125 +1,4 @@
-export const FIAT = {
-    tickers: [
-        { symbol: 'eth', coingeckoId: 'ethereum' },
-        { symbol: 'etc', coingeckoId: 'ethereum-classic' },
-        { symbol: 'xrp', coingeckoId: 'ripple' },
-        { symbol: 'ada', coingeckoId: 'cardano' },
-        { symbol: 'btc', coingeckoId: 'bitcoin' },
-        { symbol: 'ltc', coingeckoId: 'litecoin' },
-        { symbol: 'bch', coingeckoId: 'bitcoin-cash' },
-        { symbol: 'btg', coingeckoId: 'bitcoin-gold' },
-        { symbol: 'dash', coingeckoId: 'dash' },
-        { symbol: 'dgb', coingeckoId: 'digibyte' },
-        { symbol: 'doge', coingeckoId: 'dogecoin' },
-        { symbol: 'vtc', coingeckoId: 'vertcoin' },
-        { symbol: 'nmc', coingeckoId: 'namecoin' },
-        { symbol: 'zec', coingeckoId: 'zcash' },
-    ],
-    currencies: [
-        'usd',
-        'eur',
-        'gbp',
-        'aed',
-        'ars',
-        'aud',
-        'bdt',
-        'bhd',
-        'bmd',
-        'brl',
-        'cad',
-        'chf',
-        'clp',
-        'cny',
-        'czk',
-        'dkk',
-        'hkd',
-        'huf',
-        'idr',
-        'ils',
-        'inr',
-        'jpy',
-        'krw',
-        'kwd',
-        'lkr',
-        'mmk',
-        'mxn',
-        'myr',
-        'nok',
-        'nzd',
-        'php',
-        'pkr',
-        'pln',
-        'rub',
-        'sar',
-        'sek',
-        'sgd',
-        'thb',
-        'try',
-        'twd',
-        'vef',
-        'vnd',
-        'zar',
-        'xdr',
-        'xag',
-        'xau',
-    ],
-} as const;
-
-export type CurrencyType =
-    | 'usd'
-    | 'eur'
-    | 'gbp'
-    | 'aed'
-    | 'ars'
-    | 'aud'
-    | 'bdt'
-    | 'bhd'
-    | 'bmd'
-    | 'brl'
-    | 'cad'
-    | 'chf'
-    | 'clp'
-    | 'cny'
-    | 'czk'
-    | 'dkk'
-    | 'hkd'
-    | 'huf'
-    | 'idr'
-    | 'ils'
-    | 'inr'
-    | 'jpy'
-    | 'krw'
-    | 'kwd'
-    | 'lkr'
-    | 'mmk'
-    | 'mxn'
-    | 'myr'
-    | 'nok'
-    | 'nzd'
-    | 'php'
-    | 'pkr'
-    | 'pln'
-    | 'rub'
-    | 'sar'
-    | 'sek'
-    | 'sgd'
-    | 'thb'
-    | 'try'
-    | 'twd'
-    | 'vef'
-    | 'vnd'
-    | 'zar'
-    | 'xdr'
-    | 'xag'
-    | 'xau';
-
-export type Currency = {
-    label: CurrencyType;
-    value: string;
-};
-export type CurrencyMap = Record<CurrencyType, Currency>;
-
-export const fiatCurrenciesMap: CurrencyMap = {
+export const fiatCurrencies = {
     usd: { label: 'usd', value: 'United States Dollar' },
     eur: { label: 'eur', value: 'Euro' },
     gbp: { label: 'gbp', value: 'Pound Sterling' },
@@ -167,3 +46,31 @@ export const fiatCurrenciesMap: CurrencyMap = {
     xag: { label: 'xag', value: 'XAG' },
     xau: { label: 'xau', value: 'XAU' },
 };
+export type CurrencyType = keyof typeof fiatCurrencies;
+
+export type Currency = {
+    label: string;
+    value: string;
+};
+
+export type CurrencyMap = Record<CurrencyType, Currency>;
+
+export const FIAT = {
+    tickers: [
+        { symbol: 'eth', coingeckoId: 'ethereum' },
+        { symbol: 'etc', coingeckoId: 'ethereum-classic' },
+        { symbol: 'xrp', coingeckoId: 'ripple' },
+        { symbol: 'ada', coingeckoId: 'cardano' },
+        { symbol: 'btc', coingeckoId: 'bitcoin' },
+        { symbol: 'ltc', coingeckoId: 'litecoin' },
+        { symbol: 'bch', coingeckoId: 'bitcoin-cash' },
+        { symbol: 'btg', coingeckoId: 'bitcoin-gold' },
+        { symbol: 'dash', coingeckoId: 'dash' },
+        { symbol: 'dgb', coingeckoId: 'digibyte' },
+        { symbol: 'doge', coingeckoId: 'dogecoin' },
+        { symbol: 'vtc', coingeckoId: 'vertcoin' },
+        { symbol: 'nmc', coingeckoId: 'namecoin' },
+        { symbol: 'zec', coingeckoId: 'zcash' },
+    ],
+    currencies: Object.keys(fiatCurrencies),
+} as const;

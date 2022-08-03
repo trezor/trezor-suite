@@ -1,28 +1,32 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Select, SelectValue } from '@suite-native/atoms';
-import { CurrencyType, fiatCurrenciesMap } from '@suite-common/suite-config';
+import { Select, SelectItemType, SelectValue } from '@suite-native/atoms';
+import { Currency, CurrencyType, fiatCurrencies } from '@suite-common/suite-config';
 
-import { selectCurrency, setCurrency } from '../slice';
-import { transformFiatCurrencyToSelectItem } from '../utils';
+import { selectFiatCurrency, setFiatCurrency } from '../slice';
+
+export const transformFiatCurrencyToSelectItem = (fiatCurrency: Currency): SelectItemType => ({
+    label: fiatCurrency.value,
+    value: fiatCurrency.label,
+});
+
+const fiatCurrencyItems = Object.values(fiatCurrencies).map(transformFiatCurrencyToSelectItem);
 
 export const CurrencySelector = () => {
-    const selectedCurrency = useSelector(selectCurrency);
+    const selectedFiatCurrency = useSelector(selectFiatCurrency);
     const dispatch = useDispatch();
 
     const handleSelectCurrency = (value: SelectValue) => {
-        dispatch(setCurrency(value as CurrencyType));
+        dispatch(setFiatCurrency(value as CurrencyType));
     };
-
-    const fiatCurrencies = Object.values(fiatCurrenciesMap).map(transformFiatCurrencyToSelectItem);
 
     return (
         <Select
-            items={fiatCurrencies}
+            items={fiatCurrencyItems}
             selectLabel="Currency"
-            value={selectedCurrency.label}
-            valueLabel={selectedCurrency.label.toUpperCase()}
+            value={selectedFiatCurrency.label}
+            valueLabel={selectedFiatCurrency.label.toUpperCase()}
             onSelectItem={handleSelectCurrency}
         />
     );

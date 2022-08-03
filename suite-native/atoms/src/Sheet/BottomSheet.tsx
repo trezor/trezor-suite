@@ -15,7 +15,6 @@ type BottomSheetProps = {
     onVisibilityChange: (isVisible: boolean) => void;
     children: ReactNode;
     title: string;
-    onBackArrowClick?: () => void;
 };
 
 type WrapperStyleProps = {
@@ -38,7 +37,6 @@ export const BottomSheet = ({
     isVisible,
     onVisibilityChange,
     title,
-    onBackArrowClick,
     children,
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
@@ -85,11 +83,7 @@ export const BottomSheet = ({
                         }),
                     ]}
                 >
-                    <BottomSheetHeader
-                        title={title}
-                        onBackArrowClick={onBackArrowClick}
-                        onCloseSheet={closeSheetAnimated}
-                    />
+                    <BottomSheetHeader title={title} onCloseSheet={closeSheetAnimated} />
                     <ScrollView
                         ref={scrollViewRef.current}
                         waitFor={

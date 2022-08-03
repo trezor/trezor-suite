@@ -8,7 +8,6 @@ import { Text } from '../Text';
 
 type BottomSheetHeaderProps = {
     title: string;
-    onBackArrowClick?: () => void;
     onCloseSheet: () => void;
 };
 
@@ -30,19 +29,12 @@ const sheetHeaderStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.medium,
 }));
 
-export const BottomSheetHeader = ({
-    onBackArrowClick,
-    title,
-    onCloseSheet,
-}: BottomSheetHeaderProps) => {
+export const BottomSheetHeader = ({ title, onCloseSheet }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     return (
         <View style={applyStyle(sheetHeaderStyle)}>
-            {onBackArrowClick && (
-                <TouchableOpacity onPress={onBackArrowClick}>
-                    <Icon name="chevronLeft" />
-                </TouchableOpacity>
-            )}
+            {/* To center the title */}
+            <View style={{ width: CLOSE_BUTTON_SIZE }} />
             <Text variant="titleSmall">{title}</Text>
             <TouchableOpacity onPress={onCloseSheet} style={applyStyle(closeButtonStyle)}>
                 <Icon name="close" />

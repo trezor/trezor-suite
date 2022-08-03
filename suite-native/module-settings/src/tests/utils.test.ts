@@ -1,4 +1,4 @@
-import { transformFiatCurrencyToSelectItem } from '../utils';
+import { transformFiatCurrencyToSelectItem } from '../components/CurrencySelector';
 
 test('transformFiatCurrencyToSelectItem returns correct value', () => {
     expect(

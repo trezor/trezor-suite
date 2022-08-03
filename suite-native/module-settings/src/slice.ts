@@ -1,21 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { fiatCurrenciesMap, Currency, CurrencyType } from '@suite-common/suite-config';
+import { fiatCurrencies, Currency, CurrencyType } from '@suite-common/suite-config';
 
 import { AppColorScheme } from './types';
 
 export interface AppSettingsState {
     colorScheme: AppColorScheme;
-    currency: Currency;
+    fiatCurrency: Currency;
 }
 
-type SliceState = {
+type SettingsSliceRootState = {
     appSettings: AppSettingsState;
 };
 
-const initialState: AppSettingsState = {
+export const initialState: AppSettingsState = {
     colorScheme: 'system',
-    currency: fiatCurrenciesMap.usd,
+    fiatCurrency: fiatCurrencies.usd,
 };
 
 export const appSettingsSlice = createSlice({
@@ -25,16 +25,17 @@ export const appSettingsSlice = createSlice({
         setColorScheme: (state, action: PayloadAction<AppColorScheme>) => {
             state.colorScheme = action.payload;
         },
-        setCurrency: (state, { payload }: PayloadAction<CurrencyType>) => {
-            state.currency = fiatCurrenciesMap[payload];
+        setFiatCurrency: (state, { payload }: PayloadAction<CurrencyType>) => {
+            state.fiatCurrency = fiatCurrencies[payload];
         },
     },
 });
 
-export const selectColorScheme = (state: SliceState) => state.appSettings.colorScheme;
-export const selectIsColorSchemeActive = (colorScheme: AppColorScheme) => (state: SliceState) =>
-    state.appSettings.colorScheme === colorScheme;
-export const selectCurrency = (state: SliceState) => state.appSettings.currency;
+export const selectColorScheme = (state: SettingsSliceRootState) => state.appSettings.colorScheme;
+export const selectIsColorSchemeActive =
+    (colorScheme: AppColorScheme) => (state: SettingsSliceRootState) =>
+        state.appSettings.colorScheme === colorScheme;
+export const selectFiatCurrency = (state: SettingsSliceRootState) => state.appSettings.fiatCurrency;
 
-export const { setColorScheme, setCurrency } = appSettingsSlice.actions;
+export const { setColorScheme, setFiatCurrency } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;

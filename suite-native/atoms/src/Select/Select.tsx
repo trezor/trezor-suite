@@ -49,12 +49,7 @@ export const Select = ({ items, selectLabel, value, valueLabel, onSelectItem }: 
     return (
         <>
             {isOpen && (
-                <BottomSheet
-                    isVisible={isOpen}
-                    onVisibilityChange={setIsOpen}
-                    title={selectLabel}
-                    onBackArrowClick={() => setIsOpen(false)}
-                >
+                <BottomSheet isVisible={isOpen} onVisibilityChange={setIsOpen} title={selectLabel}>
                     {items.map(({ value, label, iconName }, index) => (
                         <SelectItem
                             key={value}

@@ -4,7 +4,6 @@ import { TextInput } from 'react-native';
 import {
     Text,
     Box,
-    Button,
     NumPadButton,
     Hint,
     SearchInput,
@@ -13,7 +12,6 @@ import {
     Switch,
     ListItem,
     SelectableListItem,
-    BottomSheet,
     TipToast,
     IconButton,
     Select,
@@ -25,7 +23,6 @@ import {
 } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { TypographyStyle } from '@trezor/theme';
 import { CryptoIcon, Icon } from '@trezor/icons';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
@@ -34,16 +31,6 @@ const inputStackStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.small,
 }));
 
-const typographyItems: TypographyStyle[] = [
-    'titleLarge',
-    'titleMedium',
-    'titleSmall',
-    'highlight',
-    'body',
-    'callout',
-    'hint',
-    'label',
-];
 const selectItems: SelectItemType[] = [
     { label: 'Czech Republic', value: 'cz', iconName: 'cz' },
     { label: 'Slovak Republic', value: 'sk', iconName: 'btc' },
@@ -61,7 +48,6 @@ export const DemoScreen = () => {
     const [isCheckBox4Checked, setIsCheckBox4Checked] = useState(true);
     const [isSwitchActive, setIsSwitchActive] = useState<boolean>(true);
     const [isSwitch2Active, setIsSwitch2Active] = useState<boolean>(false);
-    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const [isTipToastVisible, setIsTipToastVisible] = useState<boolean>(true);
     const [selectedItem, setSelectedItem] = useState<SelectValue>(null);
     const [inputText, setInputText] = useState<string>('');
@@ -158,19 +144,6 @@ export const DemoScreen = () => {
                         onChange={() => setIsSwitch2Active(!isSwitch2Active)}
                         isDisabled
                     />
-                    <Button onPress={() => setIsModalVisible(true)}>Show Typograhy</Button>
-                    <BottomSheet
-                        isVisible={isModalVisible}
-                        onVisibilityChange={setIsModalVisible}
-                        title="Typography Demo"
-                        onBackArrowClick={() => setIsModalVisible(!isModalVisible)}
-                    >
-                        {typographyItems.map(item => (
-                            <Box marginTop="small" key={item}>
-                                <Text variant={item}>{item}</Text>
-                            </Box>
-                        ))}
-                    </BottomSheet>
                     <Box marginVertical="medium">
                         <Text>Icon:</Text>
                         <Icon name="warningCircle" size="large" color="black" />
