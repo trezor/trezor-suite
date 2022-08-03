@@ -37,7 +37,12 @@ export const Screen = ({
         <SafeAreaView
             style={[applyStyle(screenContainerStyle, { insetTop: insets.top, backgroundColor })]}
         >
-            <StatusBar barStyle="dark-content" hidden={!hasStatusBar} />
+            <StatusBar
+                barStyle="dark-content"
+                hidden={!hasStatusBar}
+                translucent={!hasStatusBar}
+                backgroundColor="transparent"
+            />
             {header && header}
             <ScrollView
                 contentInsetAdjustmentBehavior="automatic"

@@ -5,7 +5,7 @@ export const useSplashScreen = (): void => {
     useEffect(() => {
         const splashTimerId = setTimeout(() => {
             SplashScreen.hide();
-        }, 800);
+        }, 300);
 
         return () => clearTimeout(splashTimerId);
     }, []);

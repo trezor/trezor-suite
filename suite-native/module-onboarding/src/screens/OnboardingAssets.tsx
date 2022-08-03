@@ -1,26 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-import { CryptoIcon, Icon } from '@trezor/icons';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { Screen, StackProps } from '@suite-native/navigation';
-import {
-    Box,
-    Button,
-    Text,
-    Card,
-    InputWrapper,
-    Input,
-    Select,
-    SelectableListItem,
-    VStack,
-} from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
 import { AssetsLoader } from '../components/AssetsLoader';
 import { setOnboardingFinished } from '../slice';
+import { AssetsHeader } from '../components/AssetsHeader';
+import { AssetsOverview } from '../components/AssetsOverview';
 
 const assetsStyle = prepareNativeStyle(utils => ({
     flex: 1,
@@ -29,34 +20,53 @@ const assetsStyle = prepareNativeStyle(utils => ({
 }));
 
 export const OnboardingAssets = ({
+    navigation,
     route,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.OnboardingAssets>) => {
     const dispatch = useDispatch();
-    const [radioChecked, setRadioChecked] = useState<string>('firstSelectable');
-    const [inputText, setInputText] = useState<string>('');
+    const [accountInfoLoaded, setAccountInfoLoaded] = useState<boolean>(false);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
     const { applyStyle } = useNativeStyles();
 
-    const { xpubAddress, coin } = route.params;
+    const { xpubAddress, currencySymbol } = route.params;
 
     const getAccountInfo = useCallback(() => {
+        const showAccountInfoAlert = ({ title, message }: { title: string; message: string }) => {
+            Alert.alert(title, message, [
+                {
+                    text: "Doesn't matter, show me assets",
+                    onPress: () => setAccountInfoLoaded(true),
+                },
+                { text: 'OK, will fix it', onPress: () => navigation.goBack() },
+            ]);
+        };
+
         TrezorConnect.getAccountInfo({
-            coin,
+            coin: currencySymbol,
             descriptor: xpubAddress,
         })
             .then(accountInfo => {
                 if (accountInfo?.success) {
                     setAccountInfo(accountInfo.payload);
+                    setAccountInfoLoaded(true);
+                } else {
+                    showAccountInfoAlert({
+                        title: 'Account info failed',
+                        message: accountInfo.payload?.error ?? '',
+                    });
                 }
-                // TODO error?
             })
             .catch(error => {
-                // eslint-disable-next-line no-console
-                console.log('getAccountInfo failed: ', JSON.stringify(error));
+                showAccountInfoAlert({
+                    title: 'Account info failed',
+                    message: error?.message ?? '',
+                });
             });
-    }, [xpubAddress, coin]);
+    }, [xpubAddress, currencySymbol, navigation]);
 
     useEffect(() => {
+        // FIXME: setTimeout is present only to allow for loading screen to be visible for 800ms.
+        // It will be handled by extra builders from redux toolkit when it's implemented in thunks (pending, fulfilled..)
         const fetchingTimerId = setTimeout(() => {
             getAccountInfo();
         }, 800);
@@ -68,77 +78,15 @@ export const OnboardingAssets = ({
         dispatch(setOnboardingFinished(true));
     };
 
-    const handleRadioPress = (value: string | number) => {
-        setRadioChecked(value.toString());
-    };
-
     return (
         <Screen>
-            {!accountInfo ? (
+            {!accountInfoLoaded ? (
                 <AssetsLoader />
             ) : (
                 <View style={[applyStyle(assetsStyle)]}>
                     <View>
-                        <Box flexDirection="row" justifyContent="space-between">
-                            <Text variant="titleMedium" color="black">
-                                Import assets
-                            </Text>
-                            <Icon name="close" />
-                        </Box>
-                        <Card>
-                            <Box marginTop="large" marginBottom="medium">
-                                <Box
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    marginBottom="medium"
-                                >
-                                    <CryptoIcon name="btc" size="large" />
-                                    <Box marginTop="large" marginBottom="small">
-                                        <Text variant="titleSmall" color="black">
-                                            123 321,22 Kč
-                                        </Text>
-                                    </Box>
-                                    <Text variant="label" color="black">
-                                        ≈ 0.0003333 BTC
-                                    </Text>
-                                </Box>
-                                <Box marginBottom="large">
-                                    <InputWrapper>
-                                        <Input
-                                            value={inputText}
-                                            onChange={setInputText}
-                                            label="bitcoines #1"
-                                            colorScheme="gray"
-                                        />
-                                    </InputWrapper>
-                                </Box>
-                                <InputWrapper label="Device">
-                                    <VStack spacing="small">
-                                        <SelectableListItem
-                                            iconName="trezorT"
-                                            title="Model T"
-                                            onPress={handleRadioPress}
-                                            value="firstSelectable"
-                                            isChecked={radioChecked === 'firstSelectable'}
-                                        />
-                                        <SelectableListItem
-                                            iconName="trezorT"
-                                            title="Model One"
-                                            onPress={handleRadioPress}
-                                            value="secondSelectable"
-                                            isChecked={radioChecked === 'secondSelectable'}
-                                        />
-                                        <SelectableListItem
-                                            iconName="placeholder"
-                                            title="Other"
-                                            onPress={handleRadioPress}
-                                            value="thirdSelectable"
-                                            isChecked={radioChecked === 'thirdSelectable'}
-                                        />
-                                    </VStack>
-                                </InputWrapper>
-                            </Box>
-                        </Card>
+                        <AssetsHeader />
+                        <AssetsOverview accountInfo={accountInfo} />
                     </View>
                     <Button onPress={handleConfirmAssets} size="large">
                         Confirm

@@ -6,7 +6,7 @@ import { stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { OnboardingStackParamList, OnboardingStackRoutes } from './routes';
 import { OnboardingIntro } from '../screens/OnboardingIntro';
-import { OnboardingXPub } from '../screens/OnboardingXPub';
+import { OnboardingXpubScan } from '../screens/OnboardingXpubScan';
 import { OnboardingAssets } from '../screens/OnboardingAssets';
 
 export const OnboardingStack = createStackNavigator<OnboardingStackParamList>();
@@ -21,8 +21,8 @@ export const OnboardingStackNavigator = () => (
             component={OnboardingIntro}
         />
         <OnboardingStack.Screen
-            name={OnboardingStackRoutes.OnboardingXPub}
-            component={OnboardingXPub}
+            name={OnboardingStackRoutes.OnboardingXpubScan}
+            component={OnboardingXpubScan}
         />
         <OnboardingStack.Screen
             name={OnboardingStackRoutes.OnboardingAssets}

@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Camera as RNCamera, useCameraDevices } from 'react-native-vision-camera';
-import { Dimensions, Linking, View } from 'react-native';
+import { Linking, View } from 'react-native';
 
 import { BarcodeFormat, useScanBarcodes } from 'vision-camera-code-scanner';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { XpubAddress } from '@suite-common/wallet-types';
+import { Text } from '@suite-native/atoms';
 
 export interface CameraProps {
-    onResult: (value?: string) => void;
+    onResult: (xpubAddress?: XpubAddress) => void;
 }
+
+export const CAMERA_HEIGHT = 329;
 
 const cameraWrapperStyle = prepareNativeStyle<{ isCameraAllowed: boolean }>(
     (utils, { isCameraAllowed }) => ({
-        height: 329,
+        height: CAMERA_HEIGHT,
         borderRadius: utils.borders.radii.medium,
         extend: [
             {
@@ -34,8 +38,9 @@ const cameraWrapperStyle = prepareNativeStyle<{ isCameraAllowed: boolean }>(
 );
 
 const cameraStyle = prepareNativeStyle(_ => ({
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
+    flex: 1,
+    height: '100%',
+    width: '100%',
 }));
 
 export const Camera = ({ onResult }: CameraProps) => {
@@ -75,7 +80,7 @@ export const Camera = ({ onResult }: CameraProps) => {
 
     return (
         <View style={applyStyle(cameraWrapperStyle, { isCameraAllowed })}>
-            {isCameraAllowed && (
+            {isCameraAllowed ? (
                 <RNCamera
                     style={applyStyle(cameraStyle)}
                     device={device}
@@ -83,6 +88,10 @@ export const Camera = ({ onResult }: CameraProps) => {
                     frameProcessorFps={5}
                     isActive
                 />
+            ) : (
+                <Text variant="body" color="white">
+                    Camera access is denied
+                </Text>
             )}
         </View>
     );

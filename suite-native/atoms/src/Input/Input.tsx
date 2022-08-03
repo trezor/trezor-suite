@@ -1,5 +1,10 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { TextInput, Pressable } from 'react-native';
+import React, { ReactNode, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import {
+    TextInput,
+    Pressable,
+    NativeSyntheticEvent,
+    TextInputSubmitEditingEventData,
+} from 'react-native';
 import Animated, {
     Easing,
     interpolate,
@@ -10,21 +15,19 @@ import Animated, {
 
 import { D } from '@mobily/ts-belt';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { nativeSpacings, defaultColorVariant } from '@trezor/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { nativeSpacings } from '@trezor/theme';
 
 import { Box } from '../Box';
-
-export type InputColorScheme = 'white' | 'gray' | 'darkGray';
 
 type InputProps = {
     value: string;
     label: string;
     onChange: (value: string) => void;
+    onSubmitEditing?: (value: string) => void;
     hasError?: boolean;
     hasWarning?: boolean;
     leftIcon?: ReactNode;
-    colorScheme?: InputColorScheme;
 };
 
 const INPUT_WRAPPER_PADDING_HORIZONTAL = 14;
@@ -36,95 +39,67 @@ type InputWrapperStyleProps = {
     hasWarning: boolean;
     hasError: boolean;
     isLabelMinimized: boolean;
-    colorScheme: InputColorScheme;
-};
-
-const inputTextColorSchemeStyles: Record<InputColorScheme, NativeStyleObject> = {
-    gray: {
-        color: defaultColorVariant.gray900,
-    },
-    darkGray: {
-        color: defaultColorVariant.white,
-    },
-    white: {
-        color: defaultColorVariant.gray700,
-    },
 };
 
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
-    (utils, { hasError, hasWarning, isLabelMinimized, colorScheme }) => {
-        const inputColorSchemeStyles: Record<InputColorScheme, NativeStyleObject> = {
-            gray: {
-                backgroundColor: utils.colors.gray100,
-            },
-            darkGray: {
-                backgroundColor: utils.colors.gray800,
-            },
-            white: {
-                borderWidth: utils.borders.widths.small,
-                borderColor: utils.colors.gray300,
-                backgroundColor: utils.colors.white,
-            },
-        };
-        return {
-            borderRadius: utils.borders.radii.small,
-            paddingVertical: INPUT_WRAPPER_PADDING_VERTICAL,
-            paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
-            height: 58,
-            justifyContent: 'flex-end',
-            ...inputColorSchemeStyles[colorScheme],
-            extend: [
-                {
-                    condition: hasWarning,
-                    style: {
-                        borderColor: utils.colors.yellow,
-                        borderWidth: utils.borders.widths.large,
-                    },
+    (utils, { hasError, hasWarning, isLabelMinimized }) => ({
+        borderWidth: utils.borders.widths.small,
+        borderColor: utils.colors.gray300,
+        backgroundColor: utils.colors.gray300,
+        borderRadius: utils.borders.radii.small,
+        paddingVertical: INPUT_WRAPPER_PADDING_VERTICAL,
+        paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
+        height: 58,
+        justifyContent: 'flex-end',
+        extend: [
+            {
+                condition: hasWarning,
+                style: {
+                    borderColor: utils.colors.yellow,
+                    borderWidth: utils.borders.widths.large,
                 },
-                {
-                    condition: hasError,
-                    style: {
-                        borderColor: utils.colors.red,
-                        backgroundColor: utils.transparentize(0.95, utils.colors.red),
-                    },
+            },
+            {
+                condition: hasError,
+                style: {
+                    borderColor: utils.colors.red,
+                    backgroundColor: utils.transparentize(0.95, utils.colors.red),
                 },
-                {
-                    condition: isLabelMinimized,
-                    style: {
-                        paddingVertical: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
-                    },
+            },
+            {
+                condition: isLabelMinimized,
+                style: {
+                    paddingVertical: INPUT_WRAPPER_PADDING_VERTICAL_MINIMIZED,
                 },
-            ],
-        };
-    },
-);
-
-const inputStyle = prepareNativeStyle<Pick<InputWrapperStyleProps, 'colorScheme'>>(
-    (utils, { colorScheme }) => ({
-        ...utils.typography.body,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: INPUT_TEXT_HEIGHT,
-        lineHeight: 0,
-        padding: 0,
-        ...inputTextColorSchemeStyles[colorScheme],
+            },
+        ],
     }),
 );
 
-const inputLabelStyle = prepareNativeStyle<
-    Pick<InputWrapperStyleProps, 'isLabelMinimized' | 'colorScheme'>
->((utils, { isLabelMinimized, colorScheme }) => ({
-    ...D.deleteKey(utils.typography.body, 'fontSize'),
-    position: 'absolute',
-    left: INPUT_WRAPPER_PADDING_HORIZONTAL,
-    ...inputTextColorSchemeStyles[colorScheme],
-    extend: {
-        condition: isLabelMinimized,
-        style: {
-            ...D.deleteKey(utils.typography.label, 'fontSize'),
-        },
-    },
+const inputStyle = prepareNativeStyle(utils => ({
+    ...utils.typography.body,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: INPUT_TEXT_HEIGHT,
+    color: utils.colors.gray700,
+    lineHeight: 0,
+    padding: 0,
 }));
+
+const inputLabelStyle = prepareNativeStyle(
+    (utils, { isLabelMinimized }: Pick<InputWrapperStyleProps, 'isLabelMinimized'>) => ({
+        ...D.deleteKey(utils.typography.body, 'fontSize'),
+        color: utils.colors.gray600,
+        position: 'absolute',
+        left: INPUT_WRAPPER_PADDING_HORIZONTAL,
+        extend: {
+            condition: isLabelMinimized,
+            style: {
+                ...D.deleteKey(utils.typography.label, 'fontSize'),
+            },
+        },
+    }),
+);
 
 const leftIconStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
@@ -170,16 +145,18 @@ const useAnimationStyles = ({
     };
 };
 
-export const Input = React.forwardRef<TextInput, InputProps>(
+type InputRef = Pick<TextInput, 'focus' | 'clear' | 'blur'>;
+
+export const Input = React.forwardRef<InputRef, InputProps>(
     (
         {
             value,
             onChange,
+            onSubmitEditing,
             label,
             leftIcon,
             hasError = false,
             hasWarning = false,
-            colorScheme = 'white',
         }: InputProps,
         ref,
     ) => {
@@ -192,7 +169,25 @@ export const Input = React.forwardRef<TextInput, InputProps>(
             isLabelMinimized,
         });
 
-        const handleInputFocus = () => inputRef?.current?.focus();
+        useImperativeHandle(ref, () => ({
+            focus: () => inputRef.current?.focus(),
+            clear: () => inputRef.current?.clear(),
+            blur: () => inputRef.current?.blur(),
+        }));
+
+        const handleInputFocus = () => {
+            inputRef?.current?.focus();
+        };
+
+        const handleOnSubmitEditing = (
+            event: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+        ) => {
+            setIsFocused(false);
+            const {
+                nativeEvent: { text },
+            } = event;
+            onSubmitEditing?.(text);
+        };
 
         return (
             <Pressable onPress={handleInputFocus}>
@@ -201,7 +196,6 @@ export const Input = React.forwardRef<TextInput, InputProps>(
                         hasError,
                         hasWarning,
                         isLabelMinimized,
-                        colorScheme,
                     })}
                 >
                     <Animated.Text
@@ -212,7 +206,7 @@ export const Input = React.forwardRef<TextInput, InputProps>(
                             in both places (native and animated style).
                             */
                             animatedInputLabelStyle,
-                            applyStyle(inputLabelStyle, { isLabelMinimized, colorScheme }),
+                            applyStyle(inputLabelStyle, { isLabelMinimized }),
                         ]}
                         numberOfLines={1}
                     >
@@ -221,12 +215,13 @@ export const Input = React.forwardRef<TextInput, InputProps>(
                     <Box flexDirection="row" alignItems="center">
                         {leftIcon && <Box style={applyStyle(leftIconStyle)}>{leftIcon}</Box>}
                         <TextInput
-                            ref={ref ?? inputRef}
+                            ref={inputRef}
                             value={value}
                             onChangeText={onChange}
-                            style={applyStyle(inputStyle, { colorScheme })}
+                            style={applyStyle(inputStyle)}
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setIsFocused(false)}
+                            onSubmitEditing={handleOnSubmitEditing}
                         />
                     </Box>
                 </Box>

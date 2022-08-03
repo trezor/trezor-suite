@@ -28,7 +28,7 @@ const introDescriptionStyle = prepareNativeStyle(_ => ({
 const introImagePreviewStyle = prepareNativeStyle(utils => ({
     width: 387,
     height: 297,
-    backgroundColor: utils.colors.green,
+    backgroundColor: utils.colors.white,
     alignItems: 'center',
     justifyContent: 'center',
 }));
@@ -61,15 +61,14 @@ export const OnboardingIntro = ({
                     </Text>
                 </View>
                 <View style={applyStyle(introImagePreviewStyle)}>
-                    <Text variant="body" color="white">
+                    <Text variant="body" color="black">
                         TODO screenshot from Suite
                     </Text>
                 </View>
                 <View style={applyStyle(introButtonStyle)}>
                     <Button
-                        colorScheme="white"
                         onPress={() => {
-                            navigation.navigate(OnboardingStackRoutes.OnboardingXPub);
+                            navigation.navigate(OnboardingStackRoutes.OnboardingXpubScan);
                         }}
                         size="large"
                     >

@@ -1,17 +1,20 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 
+import { NetworkKey } from '@suite-common/wallet-config';
+import { XpubAddress } from '@suite-common/wallet-types';
+
 export enum OnboardingStackRoutes {
     Onboarding = 'Onboarding',
-    OnboardingXPub = 'OnboardingXPub',
+    OnboardingXpubScan = 'OnboardingXpubScan',
     OnboardingAssets = 'OnboardingAssets',
 }
 
 export type OnboardingStackParamList = {
     [OnboardingStackRoutes.Onboarding]: undefined;
-    [OnboardingStackRoutes.OnboardingXPub]: undefined;
+    [OnboardingStackRoutes.OnboardingXpubScan]: undefined;
     [OnboardingStackRoutes.OnboardingAssets]: {
-        xpubAddress: string;
-        coin: string;
+        xpubAddress: XpubAddress;
+        currencySymbol: NetworkKey;
     };
 };
 

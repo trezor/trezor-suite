@@ -15,6 +15,8 @@
         "@react-navigation/core": "^6.2.2",
         "@react-navigation/native": "^6.0.11",
         "@react-navigation/stack": "^6.2.2",
+        "@suite-common/wallet-config": "*",
+        "@suite-common/wallet-types": "*",
         "@suite-native/atoms": "*",
         "@suite-native/navigation": "*",
         "@reduxjs/toolkit": "^1.8.3",

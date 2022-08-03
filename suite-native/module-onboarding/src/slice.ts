@@ -1,29 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface OnboardingState {
-    isFinished: boolean;
+    isOnboardingFinished: boolean;
 }
 
 type OnboardingSlice = {
-    appOnboarding: OnboardingState;
+    onboarding: OnboardingState;
 };
 
 const initialState: OnboardingState = {
-    isFinished: false,
+    isOnboardingFinished: false,
 };
 
-export const appOnboardingSlice = createSlice({
-    name: 'appOnboarding',
+export const onboardingSlice = createSlice({
+    name: 'onboarding',
     initialState,
     reducers: {
         setOnboardingFinished: (state, action: PayloadAction<boolean>) => {
-            state.isFinished = action.payload;
+            state.isOnboardingFinished = action.payload;
         },
     },
 });
 
 export const selectIsOnboardingFinished = (state: OnboardingSlice) =>
-    state.appOnboarding.isFinished;
+    state.onboarding.isOnboardingFinished;
 
-export const { setOnboardingFinished } = appOnboardingSlice.actions;
-export const appOnboardingReducer = appOnboardingSlice.reducer;
+export const { setOnboardingFinished } = onboardingSlice.actions;
+export const onboardingReducer = onboardingSlice.reducer;
