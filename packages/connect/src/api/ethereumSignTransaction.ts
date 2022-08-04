@@ -7,10 +7,7 @@ import { getEthereumNetwork } from '../data/coinInfo';
 import { getNetworkLabel } from '../utils/ethereumUtils';
 import { stripHexPrefix } from '../utils/formatUtils';
 import * as helper from './ethereum/ethereumSignTx';
-import type {
-    EthereumTransaction,
-    EthereumTransactionEIP1559,
-} from '../types/api/ethereumSignTransaction';
+import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../types/api/ethereum';
 
 type Params = {
     path: number[];

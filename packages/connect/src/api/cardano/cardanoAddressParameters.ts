@@ -4,7 +4,7 @@ import { validateParams } from '../common/paramsValidator';
 import { validatePath } from '../../utils/pathUtils';
 import { PROTO, ERRORS } from '../../constants';
 import type { Device } from '../../device/Device';
-import type { CardanoAddressParameters } from '../../types/api/cardanoGetAddress';
+import type { CardanoAddressParameters } from '../../types/api/cardano';
 
 export const validateAddressParameters = (addressParameters: CardanoAddressParameters) => {
     validateParams(addressParameters, [

@@ -2,7 +2,7 @@
 
 import * as bs58check from 'bs58check';
 import { PROTO, ERRORS } from '../../constants';
-import type { TezosOperation } from '../../types/api/tezosSignTransaction';
+import type { TezosOperation } from '../../types/api/tezos';
 import { validateParams } from '../common/paramsValidator';
 
 const PREFIX = {

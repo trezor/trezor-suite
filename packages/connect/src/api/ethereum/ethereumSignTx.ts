@@ -2,7 +2,7 @@
 
 import { PROTO, ERRORS } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
-import type { EthereumAccessList } from '../../types/api/ethereumSignTransaction';
+import type { EthereumAccessList } from '../../types/api/ethereum';
 
 const splitString = (str?: string, len?: number) => {
     if (str == null) {

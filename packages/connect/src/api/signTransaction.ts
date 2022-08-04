@@ -24,7 +24,7 @@ import {
     verifyTicketTx,
 } from './bitcoin';
 import type { BitcoinNetworkInfo, AccountAddresses } from '../types';
-import type { RefTransaction, TransactionOptions } from '../types/api/signTransaction';
+import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
 
 type Params = {
     inputs: PROTO.TxInputType[];

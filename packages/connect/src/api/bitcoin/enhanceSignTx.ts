@@ -1,6 +1,6 @@
 import { findBackend } from '../../backend/BlockchainLink';
 import type { BitcoinNetworkInfo } from '../../types';
-import type { TransactionOptions } from '../../types/api/signTransaction';
+import type { TransactionOptions } from '../../types/api/bitcoin';
 
 // enhance TransactionOptions with default values if they are not provided
 // in case of network upgrade/fork those values should be updated as well

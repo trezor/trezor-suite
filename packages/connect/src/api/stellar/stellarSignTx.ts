@@ -7,7 +7,7 @@ import type {
     StellarTransaction,
     StellarOperation,
     StellarOperationMessage,
-} from '../../types/api/stellarSignTransaction';
+} from '../../types/api/stellar';
 
 const processTxRequest = async (
     typedCall: TypedCall,

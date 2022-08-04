@@ -2,7 +2,7 @@
 
 import { validateParams } from '../common/paramsValidator';
 import type { PROTO } from '../../constants';
-import type { CardanoAssetGroup, CardanoToken } from '../../types/api/cardanoSignTransaction';
+import type { CardanoAssetGroup, CardanoToken } from '../../types/api/cardano';
 
 export type AssetGroupWithTokens = {
     policyId: string;

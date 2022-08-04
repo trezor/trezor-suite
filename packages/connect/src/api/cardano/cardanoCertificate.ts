@@ -10,7 +10,7 @@ import type {
     CardanoPoolOwner,
     CardanoPoolRelay,
     CardanoPoolMetadata,
-} from '../../types/api/cardanoSignTransaction';
+} from '../../types/api/cardano';
 
 const ipv4AddressToHex = (ipv4Address: string) =>
     Buffer.from(ipv4Address.split('.').map(ipPart => parseInt(ipPart, 10))).toString('hex');
