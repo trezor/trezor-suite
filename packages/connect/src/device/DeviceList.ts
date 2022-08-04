@@ -101,7 +101,11 @@ export class DeviceList extends EventEmitter {
             const { signal } = this.fetchController;
             // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
             const fetchWithSignal = (args, options = {}) => fetch(args, { ...options, signal });
-            BridgeV2.setFetch(fetchWithSignal, typeof window === 'undefined');
+
+            // detection of environment browser/node
+            // todo: code should not be detecting environment itself. imho it should be built with this information passed from build process maybe?
+            const isNode = process?.release?.name?.search(/node|io\.js/) !== -1;
+            BridgeV2.setFetch(fetchWithSignal, isNode);
 
             // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
             transports.push(bridge);
