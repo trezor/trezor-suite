@@ -50,16 +50,6 @@ export class TorControlPort {
                 })();
             });
 
-            this.socket.on('close', () => {
-                this.isSocketConnected = false;
-                reject();
-            });
-
-            this.socket.on('timeout', () => {
-                this.isSocketConnected = false;
-                reject();
-            });
-
             this.socket.on('data', async data => {
                 const message = data.toString();
                 this.onMessageReceived(message);
@@ -91,15 +81,31 @@ export class TorControlPort {
                 }
             });
 
+            this.socket.on('close', () => {
+                this.close();
+                reject();
+            });
+
+            this.socket.on('timeout', () => {
+                this.close();
+                reject();
+            });
+
             this.socket.on('end', () => {
+                this.close();
                 reject();
             });
 
             this.socket.on('error', error => {
-                this.socket.removeAllListeners();
+                this.close();
                 reject(error);
             });
         });
+    }
+
+    close() {
+        this.isSocketConnected = false;
+        this.socket.removeAllListeners();
     }
 
     ping() {
