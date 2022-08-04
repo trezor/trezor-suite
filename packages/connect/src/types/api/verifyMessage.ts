@@ -5,13 +5,6 @@
 
 import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
-
-export interface VerifyMessage {
-    address: string;
-    signature: string;
-    message: string;
-    coin: string;
-    hex?: boolean;
-}
+import type { VerifyMessage } from './bitcoin';
 
 export declare function verifyMessage(params: Params<VerifyMessage>): Response<PROTO.Success>;
