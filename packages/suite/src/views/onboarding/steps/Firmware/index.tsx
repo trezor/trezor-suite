@@ -24,6 +24,7 @@ const FirmwareStep = () => {
         firmwareUpdate,
         showFingerprintCheck,
         firmwareHashInvalid,
+        targetType,
     } = useFirmware();
     const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
 
@@ -57,7 +58,7 @@ const FirmwareStep = () => {
                 image="FIRMWARE"
                 heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
                 description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                innerActions={<RetryButton onClick={() => firmwareUpdate()} />}
+                innerActions={<RetryButton onClick={() => firmwareUpdate(targetType)} />}
                 outerActions={
                     <OnboardingButtonBack onClick={() => resetReducer()}>
                         <Translation id="TR_BACK" />
