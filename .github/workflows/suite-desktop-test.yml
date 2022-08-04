@@ -1,18 +1,19 @@
 name: "@trezor/suite-desktop"
 
-on:
-  push:
-    paths:
-      - ".github"
-      - "packages/blockchain-link"
-      - "packages/utxo-lib"
-      - "packages/utils"
-      - "packages/suite"
-      - "packages/suite-desktop"
-      - "packages/connect"
-      # todo: more of them should be listed. maybe blacklist would server better
-      # also monorepo structure will be changing to allow easier setup fort this
-  workflow_dispatch:
+on: push
+# on:
+#   push:
+#     paths:
+#       - ".github"
+#       - "packages/blockchain-link"
+#       - "packages/utxo-lib"
+#       - "packages/utils"
+#       - "packages/suite"
+#       - "packages/suite-desktop"
+#       - "packages/connect"
+#       # todo: more of them should be listed. maybe blacklist would server better
+#       # also monorepo structure will be changing to allow easier setup fort this
+#   workflow_dispatch:
 
 jobs:
   test:
