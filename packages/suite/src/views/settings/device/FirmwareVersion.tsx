@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { GITHUB_FW_COMMIT_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import { getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
+import { getDeviceModel, getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
 import { Button, Tooltip } from '@trezor/components';
 import { AcquiredDevice } from '@suite-types';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -69,7 +68,10 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const currentFwVersion = getFwVersion(device);
     const availableFwVersion = getFwUpdateVersion(device);
     const { revision } = device.features;
-    const githubUrl = GITHUB_FW_COMMIT_URL + revision;
+    const githubUrl = `https://github.com/trezor/trezor-firmware/blob/${revision}/${
+        getDeviceModel(device) === '1' ? 'legacy/firmware' : 'core'
+    }/CHANGELOG.md
+    `;
     const githubButtonIcon = revision ? 'EXTERNAL_LINK' : undefined;
 
     const handleUpdate = () => goto('firmware-index', { params: { cancelable: true } });
