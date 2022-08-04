@@ -35,6 +35,9 @@ jest.mock('@trezor/connect', () => {
             },
         };
     };
+
+    const { PROTO } = jest.requireActual('@trezor/connect');
+
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -63,6 +66,7 @@ jest.mock('@trezor/connect', () => {
         UI: {
             REQUEST_BUTTON: 'ui-button',
         },
+        PROTO,
     };
 });
 

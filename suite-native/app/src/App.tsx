@@ -17,6 +17,24 @@ import TrezorConnect from '@trezor/connect';
 import { RootTabNavigator } from './navigation/RootTabNavigator';
 import { StylesProvider } from './StylesProvider';
 
+const noOperation = createAction('noOperation');
+const initConnectThunk = prepareConnectInitThunk({
+    actions: {
+        lockDevice: noOperation,
+    },
+    selectors: {
+        selectEnabledNetworks: () => [],
+        selectIsPendingTransportEvent: () => false,
+    },
+    initSettings: {
+        debug: true,
+        manifest: {
+            email: 'info@trezor.io',
+            appUrl: '@trezor/suite-native',
+        },
+    },
+});
+
 const AppComponent = () => {
     const dispatch = useDispatch();
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
@@ -38,27 +56,8 @@ const AppComponent = () => {
     }, []);
 
     useEffect(() => {
-        const noOperation = createAction('noOperation');
-
         // TODO handle possible error
-        dispatch(
-            prepareConnectInitThunk({
-                actions: {
-                    lockDevice: noOperation,
-                },
-                selectors: {
-                    selectEnabledNetworks: () => [],
-                    selectIsPendingTransportEvent: () => false,
-                },
-                initSettings: {
-                    debug: true,
-                    manifest: {
-                        email: 'info@trezor.io',
-                        appUrl: '@trezor/suite-native',
-                    },
-                },
-            }),
-        );
+        dispatch(initConnectThunk);
 
         // FIXME: remove later - only for testing purposes if we can get account info result.
         getAccountInfo();

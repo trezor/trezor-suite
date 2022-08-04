@@ -29,7 +29,5 @@ export const init = prepareConnectInitThunk({
         selectEnabledNetworks,
         selectIsPendingTransportEvent,
     },
-    initSettings: {
-        ...initSettings,
-    },
+    initSettings,
 });

@@ -28,9 +28,7 @@ const init = prepareConnectInitThunk({
         selectEnabledNetworks: () => [],
         selectIsPendingTransportEvent: () => true,
     },
-    initSettings: {
-        ...initSettings,
-    },
+    initSettings,
 });
 
 jest.mock('@trezor/connect', () => {
@@ -166,36 +164,24 @@ describe('TrezorConnect Actions', () => {
         ).toEqual(expectedActions);
     });
 
-    it('Events', async () => {
+    it('Events', () => {
         const defaultSuiteType = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
-        await store.dispatch(init());
+        expect(() => store.dispatch(init())).not.toThrow();
 
-        const expectedActions = [
-            {
-                type: init.pending.type,
-            },
-            {
-                type: init.fulfilled.type,
-            },
-        ];
-        expect(
-            store.getActions().map(action => ({
-                type: action.type,
-            })),
-        ).toEqual(expectedActions);
-
+        const actions = store.getActions();
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { emit } = require('@trezor/connect');
 
+        expect(actions.pop()).toMatchObject({ type: init.pending.type });
         emit(DEVICE_EVENT, { type: DEVICE_EVENT });
-        expect(store.getActions().pop()).toEqual({ type: DEVICE_EVENT });
+        expect(actions.pop()).toEqual({ type: DEVICE_EVENT });
         emit(UI_EVENT, { type: UI_EVENT });
-        expect(store.getActions().pop()).toEqual({ type: UI_EVENT });
+        expect(actions.pop()).toEqual({ type: UI_EVENT });
         emit(TRANSPORT_EVENT, { type: TRANSPORT_EVENT });
-        expect(store.getActions().pop()).toEqual({ type: TRANSPORT_EVENT });
+        expect(actions.pop()).toEqual({ type: TRANSPORT_EVENT });
         emit(BLOCKCHAIN_EVENT, { type: BLOCKCHAIN_EVENT });
-        expect(store.getActions().pop()).toEqual({ type: BLOCKCHAIN_EVENT });
+        expect(actions.pop()).toEqual({ type: BLOCKCHAIN_EVENT });
 
         process.env.SUITE_TYPE = defaultSuiteType;
     });

@@ -18,6 +18,8 @@ export default [
         action: () => receiveActions.showUnverifiedAddress(PATH, ADDRESS),
         result: {
             actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
                 { type: MODAL.OPEN_USER_CONTEXT },
                 {
                     type: RECEIVE.SHOW_UNVERIFIED_ADDRESS,
@@ -37,7 +39,10 @@ export default [
         mocks: {},
         action: () => receiveActions.showUnverifiedAddress(PATH, ADDRESS),
         result: {
-            actions: [],
+            actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
+            ],
         },
     },
     {
@@ -58,6 +63,8 @@ export default [
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
             actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.SET_PROCESS_MODE, payload: 'confirm-addr' },
                 { type: MODAL.OPEN_USER_CONTEXT },
@@ -116,6 +123,8 @@ export default [
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
             actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.SET_PROCESS_MODE, payload: 'confirm-addr' },
                 { type: MODAL.OPEN_USER_CONTEXT },
@@ -144,6 +153,8 @@ export default [
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
             actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
                 {
                     type: NOTIFICATION.TOAST,
                     payload: {
@@ -166,6 +177,8 @@ export default [
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
             actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
                 {
                     type: MODAL.OPEN_USER_CONTEXT,
                     payload: { device: UNAVAILABLE_DEVICE, addressPath: PATH },
@@ -183,7 +196,10 @@ export default [
         mocks: {},
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
-            actions: [],
+            actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
+            ],
         },
     },
     {
@@ -206,6 +222,8 @@ export default [
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
             actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
                 {
@@ -228,6 +246,8 @@ export default [
         action: () => receiveActions.showAddress(PATH, ADDRESS),
         result: {
             actions: [
+                { type: connectInit.pending.type, payload: undefined },
+                { type: connectInit.fulfilled.type, payload: undefined },
                 { type: SUITE.LOCK_DEVICE, payload: true },
                 { type: SUITE.LOCK_DEVICE, payload: false },
             ],

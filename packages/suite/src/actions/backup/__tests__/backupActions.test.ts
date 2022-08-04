@@ -15,6 +15,8 @@ jest.mock('@trezor/connect', () => {
     const backupDevice = () => fixture;
     const callbacks: { [key: string]: () => any } = {};
 
+    const { PROTO } = jest.requireActual('@trezor/connect');
+
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -32,6 +34,7 @@ jest.mock('@trezor/connect', () => {
         setTestFixtures: (f: any) => {
             fixture = f;
         },
+        PROTO,
     };
 });
 
@@ -80,6 +83,14 @@ describe('Backup Actions', () => {
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
 
+        expect(store.getActions().shift()).toMatchObject({
+            type: init.pending.type,
+            payload: undefined,
+        });
+        expect(store.getActions().shift()).toMatchObject({
+            type: init.fulfilled.type,
+            payload: undefined,
+        });
         expect(store.getActions().shift()).toEqual({
             type: BACKUP.SET_STATUS,
             payload: 'in-progress',
@@ -104,6 +115,14 @@ describe('Backup Actions', () => {
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
 
+        expect(store.getActions().shift()).toMatchObject({
+            type: init.pending.type,
+            payload: undefined,
+        });
+        expect(store.getActions().shift()).toMatchObject({
+            type: init.fulfilled.type,
+            payload: undefined,
+        });
         expect(store.getActions().shift()).toEqual({
             type: BACKUP.SET_STATUS,
             payload: 'in-progress',

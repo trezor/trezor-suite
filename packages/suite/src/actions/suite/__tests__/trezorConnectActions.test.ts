@@ -11,6 +11,9 @@ import { init } from '../trezorConnectActions';
 jest.mock('@trezor/connect', () => {
     let fixture: any;
     const callbacks: { [key: string]: (e: any) => any } = {};
+
+    const { PROTO } = jest.requireActual('@trezor/connect');
+
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -33,6 +36,7 @@ jest.mock('@trezor/connect', () => {
         DEVICE: {},
         TRANSPORT: {},
         BLOCKCHAIN: {},
+        PROTO,
         // custom method for test purpose
         setTestFixtures: (f: any) => {
             fixture = f;
@@ -88,7 +92,11 @@ describe('TrezorConnect Actions', () => {
         require('@trezor/connect').setTestFixtures(() => new Error('Iframe error'));
         const state = getInitialState();
         const store = initStore(state);
-        await expect(() => store.dispatch(init())).rejects.toThrow('Iframe error');
+        try {
+            await store.dispatch(init()).unwrap();
+        } catch (error) {
+            expect(error.message).toEqual('Iframe error');
+        }
         require('@trezor/connect').setTestFixtures(undefined);
     });
 
@@ -99,7 +107,11 @@ describe('TrezorConnect Actions', () => {
         }));
         const state = getInitialState();
         const store = initStore(state);
-        await expect(() => store.dispatch(init())).rejects.toThrow('SomeCode: Iframe error');
+        try {
+            await store.dispatch(init()).unwrap();
+        } catch (error) {
+            expect(error.message).toEqual('SomeCode: Iframe error');
+        }
         require('@trezor/connect').setTestFixtures(undefined);
     });
 
@@ -107,7 +119,11 @@ describe('TrezorConnect Actions', () => {
         require('@trezor/connect').setTestFixtures(() => 'Iframe error');
         const state = getInitialState();
         const store = initStore(state);
-        await expect(() => store.dispatch(init())).rejects.toThrow('Iframe error');
+        try {
+            await store.dispatch(init()).unwrap();
+        } catch (error) {
+            expect(error.message).toEqual('Iframe error');
+        }
         require('@trezor/connect').setTestFixtures(undefined);
     });
 
