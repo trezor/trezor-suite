@@ -6,13 +6,6 @@
 
 import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
-
-export interface SignMessage {
-    path: string | number[];
-    coin: string;
-    message: string;
-    hex?: boolean;
-    no_script_type?: boolean;
-}
+import type { SignMessage } from './bitcoin';
 
 export declare function signMessage(params: Params<SignMessage>): Response<PROTO.MessageSignature>;

@@ -6,11 +6,18 @@ export * from './firmware';
 export * from './params';
 export * from './settings';
 
-export type { RipplePayment } from './api/rippleSignTransaction';
+// altcoin related types. these exports should satisfy needs of 3rd party apps
+export * from './api/cardano';
+export * from './api/binance';
+export * from './api/bitcoin';
+export * from './api/eos';
+export * from './api/ripple';
+export * from './api/ethereum';
+export * from './api/stellar';
+export * from './api/tezos';
+
+// types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
 export type { ComposeOutput, PrecomposedTransaction } from './api/composeTransaction';
-export type { SignTransaction } from './api/signTransaction';
-export type { EthereumTransaction } from './api/ethereumSignTransaction';
-export type { CardanoOutput, CardanoInput, CardanoCertificate } from './api/cardanoSignTransaction';
 export type { RecoveryDevice } from './api/recoveryDevice';
 export type {
     TokenInfo,

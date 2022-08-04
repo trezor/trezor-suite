@@ -1,12 +1,6 @@
 import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
-
-export interface EthereumVerifyMessage {
-    address: string;
-    message: string;
-    hex?: boolean;
-    signature: string;
-}
+import type { EthereumVerifyMessage } from './ethereum';
 
 export declare function ethereumVerifyMessage(
     params: Params<EthereumVerifyMessage>,
