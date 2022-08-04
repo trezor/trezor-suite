@@ -6,7 +6,7 @@ import { getMiscNetwork } from '../data/coinInfo';
 import { validatePath } from '../utils/pathUtils';
 import * as helper from './binance/binanceSignTx';
 
-import type { BinancePreparedTransaction } from '../types/api/binanceSignTransaction';
+import type { BinancePreparedTransaction } from '../types/api/binance';
 
 type Params = {
     path: number[];

@@ -31,7 +31,7 @@ import type {
     PrecomposeParams,
     PrecomposedTransaction,
 } from '../types/api/composeTransaction';
-import type { RefTransaction, TransactionOptions } from '../types/api/signTransaction';
+import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
 
 type Params = {
     outputs: ComposeOutput[];

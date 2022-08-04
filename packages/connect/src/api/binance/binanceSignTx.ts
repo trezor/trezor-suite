@@ -6,7 +6,7 @@ import type {
     BinanceSDKTransaction,
     BinancePreparedMessage,
     BinancePreparedTransaction,
-} from '../../types/api/binanceSignTransaction';
+} from '../../types/api/binance';
 import type { TypedCall } from '../../device/DeviceCommands';
 
 const processTxRequest = async (

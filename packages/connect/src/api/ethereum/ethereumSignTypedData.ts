@@ -3,7 +3,7 @@
 import BigNumber from 'bignumber.js';
 import { PROTO, ERRORS } from '../../constants';
 import { messageToHex } from '../../utils/formatUtils';
-import type { EthereumSignTypedDataTypes } from '../../types/api/ethereumSignTypedData';
+import type { EthereumSignTypedDataTypes } from '../../types/api/ethereum';
 
 // Copied from https://github.com/ethers-io/ethers.js/blob/v5.5.2/packages/abi/src.ts/fragments.ts#L249
 const paramTypeArray = new RegExp(/^(.*)\[([0-9]*)\]$/);

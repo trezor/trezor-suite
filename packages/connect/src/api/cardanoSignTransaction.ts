@@ -28,7 +28,7 @@ import type {
     CardanoAuxiliaryDataSupplement,
     CardanoSignedTxData,
     CardanoSignedTxWitness,
-} from '../types/api/cardanoSignTransaction';
+} from '../types/api/cardano';
 import { gatherWitnessPaths } from './cardano/cardanoWitnesses';
 import type { AssetGroupWithTokens } from './cardano/cardanoTokenBundle';
 import { tokenBundleToProto } from './cardano/cardanoTokenBundle';

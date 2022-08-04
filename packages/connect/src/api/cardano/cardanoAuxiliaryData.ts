@@ -12,7 +12,7 @@ import type { PROTO } from '../../constants';
 import type {
     CardanoAuxiliaryData,
     CardanoCatalystRegistrationParameters,
-} from '../../types/api/cardanoSignTransaction';
+} from '../../types/api/cardano';
 
 const transformCatalystRegistrationParameters = (
     catalystRegistrationParameters: CardanoCatalystRegistrationParameters,

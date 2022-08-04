@@ -6,7 +6,7 @@ import { getMiscNetwork } from '../data/coinInfo';
 import { validatePath } from '../utils/pathUtils';
 import * as helper from './stellar/stellarSignTx';
 import { ERRORS } from '../constants';
-import { StellarTransaction } from '../types/api/stellarSignTransaction';
+import { StellarTransaction } from '../types/api/stellar';
 
 type Params = {
     path: number[];

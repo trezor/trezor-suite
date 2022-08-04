@@ -7,7 +7,7 @@ import type {
     RefTransaction,
     TransactionOptions,
     SignedTransaction,
-} from '../../types/api/signTransaction';
+} from '../../types/api/bitcoin';
 
 export interface SignTxHelperProps {
     typedCall: TypedCall;

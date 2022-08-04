@@ -7,7 +7,7 @@ import type {
     EosSDKTransaction,
     EosTxAction as $EosTxAction,
     EosAuthorization as $EosAuthorization,
-} from '../../types/api/eosSignTransaction';
+} from '../../types/api/eos';
 import type { TypedCall, TypedResponseMessage } from '../../device/DeviceCommands';
 
 type Action = $EosTxAction; // | $EosActionCommon & { name: string; data: string };

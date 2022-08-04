@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/nemSignTx.js
 
 import { PROTO, ERRORS, NEM } from '../../constants';
-import * as $T from '../../types/api/nemSignTransaction';
+import * as $T from '../../types/api/nem';
 
 const getCommon = (tx: $T.NEMTransaction, address_n?: number[]): PROTO.NEMTransactionCommon => ({
     address_n,

@@ -14,7 +14,7 @@ import type {
     TxOutput as BitcoinJsOutput,
 } from '@trezor/utxo-lib/lib/transaction/base';
 import type { CoinInfo, AccountAddresses } from '../../types';
-import type { RefTransaction, TransactionOptions } from '../../types/api/signTransaction';
+import type { RefTransaction, TransactionOptions } from '../../types/api/bitcoin';
 import type { PROTO } from '../../constants';
 
 // Referenced transactions are not required if:

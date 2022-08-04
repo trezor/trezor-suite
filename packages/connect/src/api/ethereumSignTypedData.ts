@@ -12,7 +12,7 @@ import type {
     EthereumSignTypedDataTypes,
     EthereumSignTypedData as EthereumSignTypedDataParams,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
-} from '../types/api/ethereumSignTypedData';
+} from '../types/api/ethereum';
 import { getFieldType, parseArrayType, encodeData } from './ethereum/ethereumSignTypedData';
 import { messageToHex } from '../utils/formatUtils';
 

@@ -5,7 +5,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import { getMiscNetwork } from '../data/coinInfo';
 import { validatePath } from '../utils/pathUtils';
-import type { CardanoNativeScript } from '../types/api/cardanoGetNativeScriptHash';
+import type { CardanoNativeScript } from '../types/api/cardano';
 
 export default class CardanoGetNativeScriptHash extends AbstractMethod<
     'cardanoGetNativeScriptHash',
