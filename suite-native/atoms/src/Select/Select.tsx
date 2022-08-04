@@ -33,7 +33,6 @@ export const Select = ({ items, selectLabel, value, valueLabel, onSelectItem }: 
 
     const handleSelectItem = (value: SelectValue) => {
         onSelectItem(value);
-        setIsOpen(false);
     };
 
     const getIcon = (iconName?: CryptoIconName | FlagIconName, isSelectItem = false): ReactNode => {

@@ -99,7 +99,19 @@ export const BottomSheet = ({
                             onGestureEvent={panGestureEvent}
                         >
                             <Animated.View>
-                                <Box paddingHorizontal="medium">{children}</Box>
+                                <Box paddingHorizontal="medium">
+                                    {React.Children.map(children, child => {
+                                        if (!React.isValidElement(child)) return child;
+                                        const { onSelect } = child.props;
+                                        const newChild = React.cloneElement(child, {
+                                            onSelect: () => {
+                                                onSelect();
+                                                closeSheetAnimated();
+                                            },
+                                        });
+                                        return newChild;
+                                    })}
+                                </Box>
                             </Animated.View>
                         </PanGestureHandler>
                     </ScrollView>

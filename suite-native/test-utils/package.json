@@ -12,8 +12,10 @@
     "dependencies": {
         "react": "^17.0.2",
         "react-redux": "7.2.2",
+        "react-native-safe-area-context": "^4.3.1",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
+        "@suite-native/atoms": "*",
         "react-native-gesture-handler": "^2.5.0",
         "react-native-reanimated": "^2.8.0",
         "@testing-library/react-native": "^11.0.0"

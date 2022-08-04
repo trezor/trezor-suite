@@ -1,4 +1,5 @@
 import React from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { createRenderer, StylesProvider } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
@@ -10,7 +11,9 @@ const renderer = createRenderer();
 const theme = prepareNativeTheme({ colorVariant: 'chill' });
 
 export const Provider = ({ children }: ProviderProps) => (
-    <StylesProvider theme={theme} renderer={renderer}>
-        {children}
-    </StylesProvider>
+    <SafeAreaProvider>
+        <StylesProvider theme={theme} renderer={renderer}>
+            {children}
+        </StylesProvider>
+    </SafeAreaProvider>
 );
