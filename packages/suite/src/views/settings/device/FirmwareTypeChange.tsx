@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { GITHUB_FW_COMMIT_URL } from '@trezor/urls';
-import { Translation, TrezorLink } from '@suite-components';
+import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { getFwType, getFwVersion, isDeviceBitcoinOnly } from '@suite-utils/device';
-import { Button, Tooltip } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
@@ -20,10 +19,6 @@ const Version = styled.div`
             margin-left: 6px;
         }
     }
-`;
-
-const VersionTooltip = styled(Tooltip)`
-    display: inline-flex;
 `;
 
 interface FirmwareTypeProps {
@@ -41,7 +36,6 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
         return null;
     }
 
-    const { revision } = device.features;
     const currentFwVersion = getFwVersion(device);
     const currentFwType = getFwType(device);
     const actionButtonId = isDeviceBitcoinOnly(device)
@@ -69,21 +63,14 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                 id="TR_YOUR_FIRMWARE_TYPE"
                                 values={{
                                     version: (
-                                        <VersionTooltip content={revision} disabled={!revision}>
-                                            <TrezorLink
-                                                href={GITHUB_FW_COMMIT_URL + revision}
-                                                variant="nostyle"
-                                            >
-                                                <Button
-                                                    variant="tertiary"
-                                                    icon={revision ? 'EXTERNAL_LINK' : undefined}
-                                                    alignIcon="right"
-                                                    disabled={!revision}
-                                                >
-                                                    {currentFwType}
-                                                </Button>
-                                            </TrezorLink>
-                                        </VersionTooltip>
+                                        <Button
+                                            variant="tertiary"
+                                            // icon={revision ? 'EXTERNAL_LINK' : undefined}
+                                            // alignIcon="right"
+                                            disabled // TODO: this should link to an article in knowledge base or guide in the future
+                                        >
+                                            {currentFwType}
+                                        </Button>
                                     ),
                                 }}
                             />
