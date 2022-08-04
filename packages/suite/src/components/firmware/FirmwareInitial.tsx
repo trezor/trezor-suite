@@ -54,15 +54,19 @@ const getDescription = ({
     required,
     standaloneFwUpdate,
     reinstall,
-    switchType,
+    shouldSwitchFirmwareType,
+    isBitcoinOnlyAvailable,
 }: {
     required: boolean;
     standaloneFwUpdate: boolean;
     reinstall: boolean;
-    switchType?: boolean;
+    shouldSwitchFirmwareType?: boolean;
+    isBitcoinOnlyAvailable?: boolean;
 }) => {
-    if (switchType) {
-        return 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION';
+    if (shouldSwitchFirmwareType) {
+        return isBitcoinOnlyAvailable
+            ? 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION'
+            : 'TR_BITCOIN_ONLY_UNAVAILABLE';
     }
 
     if (required) {
@@ -114,6 +118,8 @@ export const FirmwareInitial = ({
         return <ConnectDevicePromptManager device={device} />;
     }
 
+    // Bitcoin-only firmware is only available on T2 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
+    const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
     const currentFwVersion = getFwVersion(device);
     const availableFwVersion = getFwUpdateVersion(device);
     const hasLatestAvailableFw = !!(
@@ -123,8 +129,12 @@ export const FirmwareInitial = ({
     );
     const isCurrentlyBitcoinOnly = isDeviceBitcoinOnly(device);
     const targetFirmwareType =
+        // switching to Universal
         (isCurrentlyBitcoinOnly && shouldSwitchFirmwareType) ||
-        (!isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType)
+        // updating Universal
+        (!isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
+        // attempting to switch to Bitcoin-only from old firmware
+        (!isCurrentlyBitcoinOnly && shouldSwitchFirmwareType && !isBitcoinOnlyAvailable)
             ? FirmwareType.Universal
             : FirmwareType.BitcoinOnly;
 
@@ -167,11 +177,7 @@ export const FirmwareInitial = ({
         // No firmware installed
         // Device without firmware is already in bootloader mode even if it doesn't report it
         content = {
-            heading: (
-                <Translation
-                    id={bitcoinOnlyOffer ? 'TR_INSTALL_BITCOIN_FW' : 'TR_INSTALL_FIRMWARE'}
-                />
-            ),
+            heading: <Translation id="TR_INSTALL_FIRMWARE" />,
             description: (
                 <Translation
                     id={
@@ -224,7 +230,8 @@ export const FirmwareInitial = ({
                         required: device.firmware === 'required',
                         standaloneFwUpdate,
                         reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
-                        switchType: shouldSwitchFirmwareType,
+                        shouldSwitchFirmwareType,
+                        isBitcoinOnlyAvailable,
                     })}
                 />
             ),
