@@ -8,7 +8,7 @@ const firmware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        const { app: prevApp } = api.getState().router;
+        const { firmware, router } = api.getState();
 
         // pass action
         next(action);
@@ -44,7 +44,7 @@ const firmware =
                 // 2. I use special intermediary firmware instead of using normal one (see @trezor/connect/src/api/firmware)
                 // 3. Intermediary firmware updates bootloader to the latest and keeps device in bootloader mode after reconnect
                 // 4. This point happens here. After I reconnect the device, firmware middleware finds that the newly connected
-                // 4. device does not have the latest firmware, proceed with subsequent updated automatically
+                // device does not have the latest firmware, proceed with subsequent updated automatically
                 // todo: this is a 'client side' implementation. It would be nicer to have it in @trezor/connect
                 // todo: but this would require reworking the entire TRAKTOR
 
@@ -60,7 +60,7 @@ const firmware =
                     console.warn(
                         'Device with intermediary firmware detected. Installing the latest update.',
                     );
-                    api.dispatch(firmwareActions.firmwareUpdate());
+                    api.dispatch(firmwareActions.firmwareUpdate(firmware.targetType));
                     break;
                 }
 
@@ -77,7 +77,7 @@ const firmware =
                 break;
             case SUITE.APP_CHANGED:
                 // leaving firmware update context
-                if (['firmware', 'firmware-type', 'onboarding'].includes(prevApp)) {
+                if (['firmware', 'firmware-type', 'onboarding'].includes(router.app)) {
                     api.dispatch(firmwareActions.resetReducer());
                 }
 
