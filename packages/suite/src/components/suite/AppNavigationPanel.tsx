@@ -46,11 +46,11 @@ const Row = styled.div`
     display: flex;
     width: 100%;
     align-items: center;
-    justify-content: space-between;
     position: relative;
 `;
 
 const TitleRow = styled(Row)`
+    justify-content: space-between;
     margin-bottom: 6px;
 `;
 
