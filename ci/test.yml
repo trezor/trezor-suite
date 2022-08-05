@@ -17,8 +17,7 @@
     CYPRESS_ASSET_PREFIX: /web
     CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/
     ## should tests do snapshot testing
-    # cypress open todo. temporarily turned off (messaging system)
-    CYPRESS_SNAPSHOT: 0
+    CYPRESS_SNAPSHOT: 1
     ## reporter url
     TRACK_SUITE_URL: https://track-suite.herokuapp.com
     ## when debugging or developing tests it does not make sense to have retries,
