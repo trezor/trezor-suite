@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
@@ -34,7 +34,7 @@ const rootReducer = combineReducers({
 
 export type AppState = ReturnType<typeof rootReducer>;
 
-const middlewares = [
+const middleware = [
     thunkMiddleware,
     toastMiddleware,
     ...suiteMiddlewares,
@@ -45,8 +45,8 @@ const middlewares = [
     ...recoveryMiddlewares,
 ];
 
-const enhancers: any[] = [];
 const excludedActions = ['@log/add'];
+
 if (!process.env.CODESIGN_BUILD) {
     const excludeLogger = (_getState: any, action: any): boolean => {
         const pass = excludedActions.filter(act => action.type === act);
@@ -58,23 +58,27 @@ if (!process.env.CODESIGN_BUILD) {
         predicate: excludeLogger,
         collapsed: true,
     });
-    middlewares.push(logger);
+    middleware.push(logger);
 }
 
-const composeEnhancers =
+const devTools =
     typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ actionsBlacklist: excludedActions })
-        : compose;
-/* eslint-enable no-underscore-dangle */
-
-const enhancer = composeEnhancers(applyMiddleware(...middlewares), ...enhancers);
+        ? {
+              actionsBlacklist: excludedActions,
+          }
+        : false;
 
 export const initStore = (preloadStoreAction?: PreloadStoreAction) => {
     // get initial state by calling STORAGE.LOAD action with optional payload
     // payload will be processed in each reducer explicitly
-    const initialState = preloadStoreAction
+    const preloadedState = preloadStoreAction
         ? rootReducer(undefined, preloadStoreAction)
         : undefined;
-    // use initialState while creating storage
-    return createStore(rootReducer, initialState, enhancer);
+
+    return configureStore({
+        reducer: rootReducer,
+        preloadedState,
+        middleware,
+        devTools,
+    });
 };
