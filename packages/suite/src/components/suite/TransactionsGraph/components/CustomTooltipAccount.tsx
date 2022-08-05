@@ -74,6 +74,8 @@ export const CustomTooltipAccount = ({
     return (
         <CustomTooltipBase
             {...props}
+            active={active}
+            payload={payload}
             sentAmount={formatAmount(sentAmountString, symbol, sentFiat, localCurrency, 'neg')}
             receivedAmount={formatAmount(
                 receivedAmountString,
