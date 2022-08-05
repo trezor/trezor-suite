@@ -138,7 +138,7 @@ const Amount = ({ output, outputId }: Props) => {
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const symbolToUse = areSatsDisplayed ? 'sat' : symbol.toUpperCase();
+    const symbolToUse = areSatsUsed ? 'sat' : symbol.toUpperCase();
 
     const handleInputChange = useCallback(
         event => {
@@ -192,8 +192,7 @@ const Amount = ({ output, outputId }: Props) => {
             const rawDust = feeInfo?.dustLimit?.toString();
 
             // amounts below dust are not allowed
-            let dust =
-                rawDust && (areSatsDisplayed ? rawDust : formatNetworkAmount(rawDust, symbol));
+            let dust = rawDust && (areSatsUsed ? rawDust : formatNetworkAmount(rawDust, symbol));
 
             if (dust && amountBig.lte(dust)) {
                 if (areSatsUsed) {
@@ -214,7 +213,7 @@ const Amount = ({ output, outputId }: Props) => {
             if (token) {
                 formattedAvailableBalance = token.balance || '0';
             } else {
-                formattedAvailableBalance = areSatsDisplayed
+                formattedAvailableBalance = areSatsUsed
                     ? availableBalance
                     : formatNetworkAmount(availableBalance, symbol);
             }

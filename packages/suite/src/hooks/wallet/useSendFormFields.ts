@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import {
     FormState,
     FormOptions,
@@ -8,6 +8,7 @@ import {
     SendContextValues,
 } from '@wallet-types/sendForm';
 import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
+import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
 type Props = UseFormMethods<FormState> & {
     fiatRates: UseSendFormState['fiatRates'];
@@ -24,6 +25,10 @@ export const useSendFormFields = ({
     fiatRates,
     network,
 }: Props) => {
+    const { areSatsDisplayed, areUnitsSupportedByNetwork, areUnitsSupportedByDevice } =
+        useBitcoinAmountUnit(network.symbol);
+    const areSatsUsed = areSatsDisplayed && areUnitsSupportedByNetwork && areUnitsSupportedByDevice;
+
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
             const { outputs } = getValues();
@@ -41,12 +46,21 @@ export const useSendFormFields = ({
             }
             // calculate Fiat value
             if (!fiatRates || !fiatRates.current) return;
-            const fiatValue = toFiatCurrency(amount, currency.value, fiatRates.current.rates);
+
+            const formattedAmount = areSatsUsed // toFiatCurrency always works with BTC, not satoshis
+                ? formatNetworkAmount(amount, network.symbol)
+                : amount;
+
+            const fiatValue = toFiatCurrency(
+                formattedAmount,
+                currency.value,
+                fiatRates.current.rates,
+            );
             if (fiatValue) {
                 setValue(inputName, fiatValue, { shouldValidate: true });
             }
         },
-        [getValues, setValue, fiatRates],
+        [getValues, setValue, fiatRates, areSatsUsed, network.symbol],
     );
 
     const setAmount = useCallback(
