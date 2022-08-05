@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 30
+
+-   added the `bitcoinAmountUnit` field to `walletSettings`
+
 ## 29
 
 -   split to `token` property for storing OAuth tokens into `tokens.accessToken` and `tokens.refreshToken`
