@@ -492,4 +492,27 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return cursor.continue().then(update);
         });
     }
+
+    if (oldVersion < 30) {
+        const walletSettingsStore = transaction.objectStore('walletSettings');
+
+        walletSettingsStore
+            .openCursor()
+            .then(function addAmountUnits(cursor): Promise<void> | undefined {
+                if (!cursor) {
+                    return;
+                }
+
+                const walletSettings = cursor.value;
+
+                if (walletSettings.bitcoinAmountUnit || !walletSettings) {
+                    return;
+                }
+
+                walletSettings.bitcoinAmountUnit = 0;
+                cursor.update(walletSettings);
+
+                return cursor.continue().then(addAmountUnits);
+            });
+    }
 };
