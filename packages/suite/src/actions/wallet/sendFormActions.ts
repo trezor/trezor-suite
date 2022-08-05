@@ -12,9 +12,9 @@ import {
     formatAmount,
     formatNetworkAmount,
     getPendingAccount,
-    isCardanoTx,
     getAreSatoshisUsed,
 } from '@suite-common/wallet-utils';
+import { isCardanoTx } from '@wallet-utils/cardanoUtils';
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
 import {

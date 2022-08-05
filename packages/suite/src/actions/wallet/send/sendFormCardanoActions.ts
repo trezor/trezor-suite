@@ -1,4 +1,5 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
+import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import {
     getChangeAddressParameters,
     getTtl,
@@ -9,9 +10,7 @@ import {
     formatMaxOutputAmount,
     loadCardanoLib,
     getDerivationType,
-    formatNetworkAmount,
-    isTestnet,
-} from '@suite-common/wallet-utils';
+} from '@wallet-utils/cardanoUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import {
     FormState,

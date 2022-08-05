@@ -6,6 +6,7 @@ import { useActions, useSelector } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
+import { isTestnet } from '@suite-common/wallet-utils';
 import {
     getStakingPath,
     getProtocolMagic,
@@ -18,8 +19,7 @@ import {
     getTtl,
     loadCardanoLib,
     getDerivationType,
-    isTestnet,
-} from '@suite-common/wallet-utils';
+} from '@wallet-utils/cardanoUtils';
 import { AppState } from '@suite-types';
 
 const getDeviceAvailability = (
