@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState, useRef } from 'react';
 
 import {
     CryptoIcon,
@@ -30,7 +30,7 @@ type SelectProps = {
 export const Select = ({ items, selectLabel, value, valueLabel, onSelectItem }: SelectProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const selectedItem = useMemo(() => items.find(item => item.value === value), [value, items]);
-
+    const bottomSheetRef = useRef(null);
     const handleSelectItem = (value: SelectValue) => {
         onSelectItem(value);
     };
@@ -48,7 +48,12 @@ export const Select = ({ items, selectLabel, value, valueLabel, onSelectItem }: 
     return (
         <>
             {isOpen && (
-                <BottomSheet isVisible={isOpen} onVisibilityChange={setIsOpen} title={selectLabel}>
+                <BottomSheet
+                    isVisible={isOpen}
+                    onVisibilityChange={setIsOpen}
+                    title={selectLabel}
+                    ref={bottomSheetRef}
+                >
                     {items.map(({ value, label, iconName }, index) => (
                         <SelectItem
                             key={value}
@@ -57,7 +62,10 @@ export const Select = ({ items, selectLabel, value, valueLabel, onSelectItem }: 
                             icon={getIcon(iconName, true)}
                             isSelected={value === selectedItem?.value}
                             isLastChild={index === items.length - 1}
-                            onSelect={() => handleSelectItem(value)}
+                            onSelect={() => {
+                                handleSelectItem(value);
+                                bottomSheetRef.current.close();
+                            }}
                         />
                     ))}
                 </BottomSheet>

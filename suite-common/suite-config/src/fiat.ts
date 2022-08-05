@@ -45,15 +45,13 @@ export const fiatCurrencies = {
     xdr: { label: 'xdr', value: 'XDR' },
     xag: { label: 'xag', value: 'XAG' },
     xau: { label: 'xau', value: 'XAU' },
-};
-export type CurrencyType = keyof typeof fiatCurrencies;
+} as const;
 
-export type Currency = {
-    label: string;
-    value: string;
-};
+export type FiatCurrencyCode = keyof typeof fiatCurrencies;
+export type FiatCurrency = typeof fiatCurrencies[FiatCurrencyCode];
+export type FiatCurrencies = Record<FiatCurrencyCode, FiatCurrency>;
 
-export type CurrencyMap = Record<CurrencyType, Currency>;
+export const fiatCurrenciesCode = Object.keys(fiatCurrencies);
 
 export const FIAT = {
     tickers: [

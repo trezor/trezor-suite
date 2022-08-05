@@ -2,11 +2,11 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Select, SelectItemType, SelectValue } from '@suite-native/atoms';
-import { Currency, CurrencyType, fiatCurrencies } from '@suite-common/suite-config';
+import { FiatCurrency, FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
 
 import { selectFiatCurrency, setFiatCurrency } from '../slice';
 
-export const transformFiatCurrencyToSelectItem = (fiatCurrency: Currency): SelectItemType => ({
+export const transformFiatCurrencyToSelectItem = (fiatCurrency: FiatCurrency): SelectItemType => ({
     label: fiatCurrency.value,
     value: fiatCurrency.label,
 });
@@ -18,7 +18,7 @@ export const CurrencySelector = () => {
     const dispatch = useDispatch();
 
     const handleSelectCurrency = (value: SelectValue) => {
-        dispatch(setFiatCurrency(value as CurrencyType));
+        dispatch(setFiatCurrency(value as FiatCurrencyCode));
     };
 
     return (
