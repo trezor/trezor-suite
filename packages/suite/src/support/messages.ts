@@ -4899,7 +4899,7 @@ export default defineMessages({
     },
     AMOUNT_SEND_MAX: {
         id: 'AMOUNT_SEND_MAX',
-        defaultMessage: 'Send Max',
+        defaultMessage: 'Send max',
     },
     AMOUNT_IS_NOT_ENOUGH: {
         defaultMessage: 'Not enough funds',
@@ -5202,6 +5202,10 @@ export default defineMessages({
         id: 'IMPORT_CSV',
         description: 'item in dropdown menu',
         defaultMessage: 'Import',
+    },
+    TR_COIN_CONTROL: {
+        id: 'TR_COIN_CONTROL',
+        defaultMessage: 'Coin control',
     },
     TR_CONNECTED_TO_PROVIDER: {
         defaultMessage: 'Connected to {provider} as {user}',
