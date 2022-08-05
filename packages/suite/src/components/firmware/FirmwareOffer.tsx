@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, Tooltip, variables } from '@trezor/components';
-import { GITHUB_FW_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from '@suite-components';
 import {
+    getChangelogUrl,
     getFwType,
     getFwUpdateVersion,
     getFwVersion,
@@ -109,6 +109,7 @@ const FirmwareOffer = ({ device, customFirmware, targetFirmwareType }: Props) =>
     const previousFirmwareType = `${getFwType(device)} `;
     const nextFirmwareType = targetFirmwareType || targetType;
     const formattedNextFirmwareType = nextFirmwareType ? `${nextFirmwareType} ` : '';
+    const changelogUrl = getChangelogUrl(device);
 
     return (
         <FwVersionWrapper>
@@ -153,7 +154,7 @@ const FirmwareOffer = ({ device, customFirmware, targetFirmwareType }: Props) =>
                                                 href={
                                                     parsedChangelog.notes
                                                         ? parsedChangelog.notes
-                                                        : GITHUB_FW_CHANGELOG_URL
+                                                        : changelogUrl
                                                 }
                                             >
                                                 <Button

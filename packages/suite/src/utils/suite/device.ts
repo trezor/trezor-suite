@@ -290,6 +290,14 @@ export const getSelectedDevice = (
     });
 };
 
+export const getChangelogUrl = (
+    device: TrezorDevice,
+    revision?: string | null,
+) => `https://github.com/trezor/trezor-firmware/blob/${revision || 'master'}/${
+    getDeviceModel(device) === '1' ? 'legacy/firmware' : 'core'
+}/CHANGELOG.md
+    `;
+
 /**
  * Used by suiteActions
  * Sort devices by "ts" (timestamp) field

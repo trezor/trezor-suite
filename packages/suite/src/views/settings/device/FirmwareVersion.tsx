@@ -5,7 +5,7 @@ import { Translation, TrezorLink } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import { getDeviceModel, getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
+import { getChangelogUrl, getFwVersion, getFwUpdateVersion } from '@suite-utils/device';
 import { Button, Tooltip } from '@trezor/components';
 import { AcquiredDevice } from '@suite-types';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -68,10 +68,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const currentFwVersion = getFwVersion(device);
     const availableFwVersion = getFwUpdateVersion(device);
     const { revision } = device.features;
-    const githubUrl = `https://github.com/trezor/trezor-firmware/blob/${revision}/${
-        getDeviceModel(device) === '1' ? 'legacy/firmware' : 'core'
-    }/CHANGELOG.md
-    `;
+    const changelogUrl = getChangelogUrl(device, revision);
     const githubButtonIcon = revision ? 'EXTERNAL_LINK' : undefined;
 
     const handleUpdate = () => goto('firmware-index', { params: { cancelable: true } });
@@ -99,7 +96,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                                     version: (
                                         <VersionTooltip content={revision} disabled={!revision}>
                                             {revision ? (
-                                                <TrezorLink href={githubUrl} variant="nostyle">
+                                                <TrezorLink href={changelogUrl} variant="nostyle">
                                                     <GithubButton />
                                                 </TrezorLink>
                                             ) : (
