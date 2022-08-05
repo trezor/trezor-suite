@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 const Container = styled.div<{ isChecked: boolean; isDisabled?: boolean; isSmall?: boolean }>`
@@ -69,6 +69,7 @@ const CheckboxInput = styled.input`
 `;
 
 export interface SwitchProps {
+    id?: string;
     isChecked: boolean;
     onChange: (isChecked?: boolean) => void;
     isDisabled?: boolean;
@@ -79,6 +80,7 @@ export interface SwitchProps {
 
 export const Switch = ({
     onChange,
+    id,
     isDisabled,
     isSmall,
     dataTest,
@@ -98,6 +100,7 @@ export const Switch = ({
     >
         <Handle isSmall={isSmall} isChecked={isChecked} type="button" />
         <CheckboxInput
+            id={id}
             type="checkbox"
             role="switch"
             checked={isChecked}
