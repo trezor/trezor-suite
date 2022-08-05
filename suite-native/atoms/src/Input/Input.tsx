@@ -1,5 +1,10 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { TextInput, Pressable } from 'react-native';
+import React, { ReactNode, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import {
+    TextInput,
+    Pressable,
+    NativeSyntheticEvent,
+    TextInputSubmitEditingEventData,
+} from 'react-native';
 import Animated, {
     Easing,
     interpolate,
@@ -19,6 +24,7 @@ type InputProps = {
     value: string;
     label: string;
     onChange: (value: string) => void;
+    onSubmitEditing?: (value: string) => void;
     hasError?: boolean;
     hasWarning?: boolean;
     leftIcon?: ReactNode;
@@ -34,6 +40,7 @@ type InputWrapperStyleProps = {
     hasError: boolean;
     isLabelMinimized: boolean;
 };
+
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
     (utils, { hasError, hasWarning, isLabelMinimized }) => ({
         borderWidth: utils.borders.widths.small,
@@ -138,9 +145,19 @@ const useAnimationStyles = ({
     };
 };
 
-export const Input = React.forwardRef<TextInput, InputProps>(
+type InputRef = Pick<TextInput, 'focus' | 'clear' | 'blur'>;
+
+export const Input = React.forwardRef<InputRef, InputProps>(
     (
-        { value, onChange, label, leftIcon, hasError = false, hasWarning = false }: InputProps,
+        {
+            value,
+            onChange,
+            onSubmitEditing,
+            label,
+            leftIcon,
+            hasError = false,
+            hasWarning = false,
+        }: InputProps,
         ref,
     ) => {
         const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -152,7 +169,25 @@ export const Input = React.forwardRef<TextInput, InputProps>(
             isLabelMinimized,
         });
 
-        const handleInputFocus = () => inputRef?.current?.focus();
+        useImperativeHandle(ref, () => ({
+            focus: () => inputRef.current?.focus(),
+            clear: () => inputRef.current?.clear(),
+            blur: () => inputRef.current?.blur(),
+        }));
+
+        const handleInputFocus = () => {
+            inputRef?.current?.focus();
+        };
+
+        const handleOnSubmitEditing = (
+            event: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+        ) => {
+            setIsFocused(false);
+            const {
+                nativeEvent: { text },
+            } = event;
+            onSubmitEditing?.(text);
+        };
 
         return (
             <Pressable onPress={handleInputFocus}>
@@ -180,12 +215,13 @@ export const Input = React.forwardRef<TextInput, InputProps>(
                     <Box flexDirection="row" alignItems="center">
                         {leftIcon && <Box style={applyStyle(leftIconStyle)}>{leftIcon}</Box>}
                         <TextInput
-                            ref={ref ?? inputRef}
+                            ref={inputRef}
                             value={value}
                             onChangeText={onChange}
                             style={applyStyle(inputStyle)}
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setIsFocused(false)}
+                            onSubmitEditing={handleOnSubmitEditing}
                         />
                     </Box>
                 </Box>

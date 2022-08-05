@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -12,6 +12,7 @@ type ChipProps = {
     description?: string;
     icon: ReactNode;
     isSelected?: boolean;
+    style?: NativeStyleObject;
 };
 
 type ChipStyleProps = {
@@ -59,11 +60,18 @@ const textWrapperStyle = prepareNativeStyle(utils => ({
     marginLeft: utils.spacings.small,
 }));
 
-export const Chip = ({ title, onSelect, description, icon, isSelected = false }: ChipProps) => {
+export const Chip = ({
+    title,
+    onSelect,
+    description,
+    icon,
+    isSelected = false,
+    style,
+}: ChipProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity onPress={onSelect} style={applyStyle(chipStyle, { isSelected })}>
+        <TouchableOpacity onPress={onSelect} style={[applyStyle(chipStyle, { isSelected }), style]}>
             <Box>{icon}</Box>
             <Box style={applyStyle(textWrapperStyle)}>
                 <Text style={applyStyle(chipTitleStyle, { isSelected })}>{title}</Text>

@@ -53,6 +53,7 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorSc
 
     return {
         flexDirection: 'row',
+        justifyContent: 'center',
         ...buttonSizeStyles[size],
         ...buttonColorSchemeStyles[colorScheme],
     };
@@ -60,7 +61,7 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorSc
 
 const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
     primary: 'white',
-    gray: 'gray700',
+    gray: 'gray800',
 };
 
 export const Button = ({

@@ -4,6 +4,7 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../../packages/icons" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ]
 }

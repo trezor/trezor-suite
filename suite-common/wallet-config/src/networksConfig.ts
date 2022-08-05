@@ -381,7 +381,7 @@ export type BackendType =
     | typeof NON_STANDARD_BACKENDS[number];
 
 type Networks = typeof networks;
-type NetworkKey = keyof Networks;
+export type NetworkKey = keyof Networks;
 type NetworkValue = Networks[NetworkKey];
 type AccountType = Keys<NetworkValue['accountTypes']>;
 export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';

@@ -10,11 +10,13 @@ export const ListItemText = ({ isTextTruncated = false, title, subtitle }: ListI
     const numberOfLines = !isTextTruncated ? 0 : 1;
 
     return (
-        <Box flexDirection="column" flex={2}>
+        <Box justifyContent="center" flexDirection="column" flex={2}>
             <Text numberOfLines={numberOfLines}>{title}</Text>
-            <Text numberOfLines={numberOfLines} variant="hint" color="gray600">
-                {subtitle}
-            </Text>
+            {subtitle && (
+                <Text numberOfLines={numberOfLines} variant="hint" color="gray600">
+                    {subtitle}
+                </Text>
+            )}
         </Box>
     );
 };

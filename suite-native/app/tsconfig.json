@@ -4,6 +4,7 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../module-home" },
+        { "path": "../module-onboarding" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../state" },

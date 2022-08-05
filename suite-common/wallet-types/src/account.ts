@@ -2,6 +2,7 @@ import { Network, BackendType } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
 
 export type MetadataItem = string;
+export type XpubAddress = string;
 
 export interface AccountMetadata {
     key: string; // legacy xpub format (btc-like coins) or account descriptor (other coins)
