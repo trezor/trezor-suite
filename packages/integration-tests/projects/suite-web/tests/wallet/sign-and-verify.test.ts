@@ -21,6 +21,7 @@ describe('Sign and verify', () => {
         cy.passThroughInitialRun();
 
         cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.discoveryShouldFinish();
         cy.getTestElement('@wallet/menu/extra-dropdown').click();
         cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
     });
@@ -40,7 +41,6 @@ describe('Sign and verify', () => {
         cy.getTestElement('@sign-verify/sign-address/input').click();
         cy.getTestElement(`@sign-verify/sign-address/option/${PATH}`).click();
         cy.getTestElement('@sign-verify/sign-address/input').should('contain', ADDRESS);
-        cy.discoveryShouldFinish();
         cy.getTestElement('@sign-verify/submit').click();
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getConfirmActionOnDeviceModal().task('pressYes');
@@ -55,7 +55,6 @@ describe('Sign and verify', () => {
         cy.getTestElement('@sign-verify/format').within(() =>
             cy.getTestElement(`select-bar/${true}`).click(),
         );
-        cy.discoveryShouldFinish();
         cy.getTestElement('@sign-verify/submit').click();
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getConfirmActionOnDeviceModal().task('pressYes');
@@ -67,7 +66,6 @@ describe('Sign and verify', () => {
         cy.getTestElement('@sign-verify/message').type(MESSAGE);
         cy.getTestElement('@sign-verify/select-address').type(ADDRESS);
         cy.getTestElement('@sign-verify/signature').type(SIGNATURE);
-        cy.discoveryShouldFinish();
         cy.getTestElement('@sign-verify/submit').click();
         cy.getConfirmActionOnDeviceModal().task('pressYes');
         cy.getConfirmActionOnDeviceModal().task('pressYes');
