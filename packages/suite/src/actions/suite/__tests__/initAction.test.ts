@@ -14,7 +14,7 @@ import messageSystemReducer from '@suite-reducers/messageSystemReducer';
 import walletReducers from '@wallet-reducers';
 
 import { init } from '@suite-actions/initAction';
-import { init as connectInit } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-actions/trezorConnectActions';
 
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 
@@ -74,8 +74,8 @@ const fixtures: Fixture[] = [
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
-            connectInit.pending.type,
-            connectInit.fulfilled.type,
+            connectInitThunk.pending.type,
+            connectInitThunk.fulfilled.type,
             BLOCKCHAIN.UPDATE_FEE,
             SUITE.READY,
         ],
@@ -92,8 +92,8 @@ const fixtures: Fixture[] = [
             ANALYTICS.INIT,
             SUITE.SET_LANGUAGE,
             MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
-            connectInit.pending.type,
-            connectInit.fulfilled.type,
+            connectInitThunk.pending.type,
+            connectInitThunk.fulfilled.type,
             BLOCKCHAIN.UPDATE_FEE,
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
@@ -111,8 +111,8 @@ const fixtures: Fixture[] = [
             ANALYTICS.INIT,
             SUITE.SET_LANGUAGE,
             MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
-            connectInit.pending.type,
-            connectInit.fulfilled.type,
+            connectInitThunk.pending.type,
+            connectInitThunk.fulfilled.type,
             BLOCKCHAIN.UPDATE_FEE,
             ROUTER.LOCATION_CHANGE,
             SUITE.READY,
@@ -133,8 +133,8 @@ const fixtures: Fixture[] = [
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
             SUITE.LOCK_ROUTER,
-            connectInit.pending.type,
-            connectInit.rejected.type,
+            connectInitThunk.pending.type,
+            connectInitThunk.rejected.type,
             SUITE.ERROR,
         ],
     },

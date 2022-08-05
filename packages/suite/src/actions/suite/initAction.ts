@@ -44,7 +44,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     try {
         // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
         // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
-        await dispatch(trezorConnectActions.init()).unwrap();
+        await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
     } catch (err) {
         dispatch({ type: SUITE.ERROR, error: err.message });
         throw err;

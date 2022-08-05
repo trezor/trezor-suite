@@ -21,7 +21,7 @@ const initSettings = {
     },
 };
 
-export const init = prepareConnectInitThunk({
+export const connectInitThunk = prepareConnectInitThunk({
     actions: {
         lockDevice,
     },

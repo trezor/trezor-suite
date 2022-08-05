@@ -13,7 +13,7 @@ import modalReducer from '@suite-reducers/modalReducer';
 import firmwareReducer from '@firmware-reducers/firmwareReducer';
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
-import { init } from '../trezorConnectActions';
+import { connectInitThunk } from '../trezorConnectActions';
 import fixtures from '../__fixtures__/suiteActions';
 import { discardMockedConnectInitActions } from '@suite-utils/storage';
 
@@ -220,7 +220,7 @@ describe('Suite Actions', () => {
             require('@trezor/connect').setTestFixtures(f.getFeatures);
             const state = getInitialState(f.state);
             const store = initStore(state);
-            store.dispatch(init()); // trezorConnectActions.init needs to be called in order to wrap "getFeatures" with lockUi action
+            store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
             await store.dispatch(suiteActions.acquireDevice(f.requestedDevice));
             // we are not interested in thunk state here
             const expectedActions = discardMockedConnectInitActions(store.getActions());

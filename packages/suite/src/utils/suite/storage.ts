@@ -1,6 +1,6 @@
 import { AcquiredDevice } from '@suite-types';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
-import { init } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-actions/trezorConnectActions';
 
 /**
  * Strip unserializable fields from Discovery (eg. promises)
@@ -35,5 +35,9 @@ export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) =>
 export const discardMockedConnectInitActions = (actions: any[]) =>
     actions.filter(
         action =>
-            ![init.pending.type, init.fulfilled.type, init.rejected.type].includes(action.type),
+            ![
+                connectInitThunk.pending.type,
+                connectInitThunk.fulfilled.type,
+                connectInitThunk.rejected.type,
+            ].includes(action.type),
     );

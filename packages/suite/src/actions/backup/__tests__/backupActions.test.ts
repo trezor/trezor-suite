@@ -4,7 +4,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { mergeObject } from '@trezor/utils';
-import { init } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
 import * as backupActions from '@backup-actions/backupActions';
@@ -79,16 +79,16 @@ describe('Backup Actions', () => {
 
         const state = getInitialState({});
         const store = mockStore(state);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
 
         expect(store.getActions().shift()).toMatchObject({
-            type: init.pending.type,
+            type: connectInitThunk.pending.type,
             payload: undefined,
         });
         expect(store.getActions().shift()).toMatchObject({
-            type: init.fulfilled.type,
+            type: connectInitThunk.fulfilled.type,
             payload: undefined,
         });
         expect(store.getActions().shift()).toEqual({
@@ -111,16 +111,16 @@ describe('Backup Actions', () => {
 
         const state = getInitialState({});
         const store = mockStore(state);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
 
         expect(store.getActions().shift()).toMatchObject({
-            type: init.pending.type,
+            type: connectInitThunk.pending.type,
             payload: undefined,
         });
         expect(store.getActions().shift()).toMatchObject({
-            type: init.fulfilled.type,
+            type: connectInitThunk.fulfilled.type,
             payload: undefined,
         });
         expect(store.getActions().shift()).toEqual({

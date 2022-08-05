@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import receiveReducer from '@wallet-reducers/receiveReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
-import { init } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-actions/trezorConnectActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import fixtures from '../__fixtures__/receiveActions';
 
@@ -134,7 +134,7 @@ describe('ReceiveActions', () => {
             require('@trezor/connect').setTestFixtures(f.mocks);
             const state = getInitialState(f.initialState as any);
             const store = initStore(state);
-            await store.dispatch(init());
+            await store.dispatch(connectInitThunk());
             await store.dispatch(f.action());
 
             if (f.result && f.result.actions) {
@@ -160,7 +160,7 @@ describe('ReceiveActions', () => {
             },
         });
         const store = initStore(state);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
 
         const VERIFIED = [{ path: 'a', address: 'b', isVerified: true }];
         const UNVERIFIED = [{ path: 'a', address: 'b', isVerified: false }];

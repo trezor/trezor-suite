@@ -6,7 +6,7 @@ import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trez
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import { SUITE } from '@suite-actions/constants';
-import { init } from '../trezorConnectActions';
+import { connectInitThunk } from '../trezorConnectActions';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -85,7 +85,7 @@ describe('TrezorConnect Actions', () => {
     it('Success', () => {
         const state = getInitialState();
         const store = initStore(state);
-        expect(() => store.dispatch(init())).not.toThrow();
+        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
     });
 
     it('Error', async () => {
@@ -93,7 +93,7 @@ describe('TrezorConnect Actions', () => {
         const state = getInitialState();
         const store = initStore(state);
         try {
-            await store.dispatch(init()).unwrap();
+            await store.dispatch(connectInitThunk()).unwrap();
         } catch (error) {
             expect(error.message).toEqual('Iframe error');
         }
@@ -108,7 +108,7 @@ describe('TrezorConnect Actions', () => {
         const state = getInitialState();
         const store = initStore(state);
         try {
-            await store.dispatch(init()).unwrap();
+            await store.dispatch(connectInitThunk()).unwrap();
         } catch (error) {
             expect(error.message).toEqual('SomeCode: Iframe error');
         }
@@ -120,7 +120,7 @@ describe('TrezorConnect Actions', () => {
         const state = getInitialState();
         const store = initStore(state);
         try {
-            await store.dispatch(init()).unwrap();
+            await store.dispatch(connectInitThunk()).unwrap();
         } catch (error) {
             expect(error.message).toEqual('Iframe error');
         }
@@ -132,7 +132,7 @@ describe('TrezorConnect Actions', () => {
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState();
         const store = initStore(state);
-        expect(() => store.dispatch(init())).not.toThrow();
+        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
 
         const actions = store.getActions();
         const { emit } = require('@trezor/connect');
@@ -152,7 +152,7 @@ describe('TrezorConnect Actions', () => {
     it('Wrapped method', async () => {
         const state = getInitialState();
         const store = initStore(state);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
         await require('@trezor/connect').default.getFeatures();
         const actions = store.getActions();
         // check actions in reversed order
