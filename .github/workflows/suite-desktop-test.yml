@@ -38,4 +38,4 @@ jobs:
         # next 2 steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
       - run: yarn workspace @trezor/suite-data msg-system-sign-config
       - run: yarn workspace @trezor/suite-desktop build:linux
-      - run: "./docker/docker-suite-desktop-test.sh"
+      - run: docker-compose -f ./docker/docker-compose.suite-desktop-test.yml up --build --abort-on-container-exit --force-recreate
