@@ -6,7 +6,7 @@ import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { OpenGuideFromTooltip } from '@guide-components';
-import Locktime from './components/Locktime';
+import { Locktime } from './components/Locktime';
 import { UtxoSelection } from './components/UtxoSelection';
 
 const Wrapper = styled.div`
@@ -41,11 +41,12 @@ const StyledButton = styled(Button)`
     margin: 4px 8px 4px 0px;
 `;
 
-const BitcoinOptions = () => {
+export const BitcoinOptions = () => {
     const {
         network,
         addOutput,
         getDefaultValue,
+        isCoinControlEnabled,
         toggleOption,
         composeTransaction,
         resetDefaultValue,
@@ -134,30 +135,6 @@ const BitcoinOptions = () => {
                                 </StyledButton>
                             </Tooltip>
                         )}
-                    {!utxoSelectionEnabled && (
-                        <Tooltip
-                            guideAnchor={instance => (
-                                <OpenGuideFromTooltip
-                                    id="/suite-basics/send/coin-selection.md"
-                                    instance={instance}
-                                />
-                            )}
-                            content={<span>Coin selection tooltip...</span>}
-                            cursor="pointer"
-                        >
-                            <StyledButton
-                                variant="tertiary"
-                                icon="CREDIT_CARD"
-                                onClick={() => {
-                                    // open additional form
-                                    toggleOption('utxoSelection');
-                                    composeTransaction();
-                                }}
-                            >
-                                Coin selection
-                            </StyledButton>
-                        </Tooltip>
-                    )}
                     <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                         <StyledButton
                             variant="tertiary"
@@ -172,6 +149,31 @@ const BitcoinOptions = () => {
                             <OnOffSwitcher isOn={broadcastEnabled} />
                         </StyledButton>
                     </Tooltip>
+                    {!utxoSelectionEnabled && (
+                        // <Tooltip
+                        //     guideAnchor={instance => (
+                        //         <OpenGuideFromTooltip
+                        //             id="/suite-basics/send/coin-selection.md"
+                        //             instance={instance}
+                        //         />
+                        //     )}
+                        //     content={<span>Coin selection tooltip...</span>}
+                        //     cursor="pointer"
+                        // >
+                        <StyledButton
+                            variant="tertiary"
+                            icon="COIN_CONTROL"
+                            onClick={() => {
+                                // open additional form
+                                toggleOption('utxoSelection');
+                                composeTransaction();
+                            }}
+                        >
+                            <Translation id="TR_COIN_CONTROL" />
+                            {isCoinControlEnabled && <OnOffSwitcher isOn />}
+                        </StyledButton>
+                        // </Tooltip>
+                    )}
                 </Left>
                 <Right>
                     <AddRecipientButton
@@ -187,5 +189,3 @@ const BitcoinOptions = () => {
         </Wrapper>
     );
 };
-
-export default BitcoinOptions;

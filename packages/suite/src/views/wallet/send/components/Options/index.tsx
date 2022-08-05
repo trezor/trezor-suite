@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { variables } from '@trezor/components';
 
-import BitcoinOptions from './components/BitcoinOptions';
+import { BitcoinOptions } from './components/BitcoinOptions';
 import EthereumOptions from './components/EthereumOptions';
 import RippleOptions from './components/RippleOptions';
 import CardanoOptions from './components/CardanoOptions';

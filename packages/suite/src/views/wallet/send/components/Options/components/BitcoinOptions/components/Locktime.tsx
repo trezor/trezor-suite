@@ -60,7 +60,7 @@ interface Props {
     close: () => void;
 }
 
-const Locktime = ({ close }: Props) => {
+export const Locktime = ({ close }: Props) => {
     const {
         network,
         register,
@@ -154,5 +154,3 @@ const Locktime = ({ close }: Props) => {
         </Wrapper>
     );
 };
-
-export default Locktime;
