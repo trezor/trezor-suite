@@ -15,6 +15,7 @@ import {
     getFiatRate,
     findToken,
     amountToSatoshi,
+    formatAmount,
 } from '@suite-common/wallet-utils';
 import { CurrencyOption, Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
@@ -27,11 +28,17 @@ const Wrapper = styled.div`
     justify-content: flex-start;
 `;
 
-export const buildCurrencyOptions = () => {
+const buildCurrencyOptions = (selected: CurrencyOption) => {
     const result: CurrencyOption[] = [];
-    FIAT.currencies.forEach(currency =>
-        result.push({ value: currency, label: currency.toUpperCase() }),
-    );
+
+    FIAT.currencies.forEach(currency => {
+        if (selected.value === currency) {
+            return;
+        }
+
+        result.push({ value: currency, label: currency.toUpperCase() });
+    });
+
     return result;
 };
 
@@ -142,6 +149,58 @@ const Fiat = ({ output, outputId }: Props) => {
         ],
     );
 
+    const renderCurrencySelect = useCallback(
+        ({ onChange, value }) => (
+            <Select
+                options={buildCurrencyOptions(value)}
+                value={value}
+                isClearable={false}
+                isSearchable
+                hideTextCursor
+                minWidth="58px"
+                isClean
+                data-test={currencyInputName}
+                onChange={(selected: CurrencyOption) => {
+                    // propagate changes to FormState
+                    onChange(selected);
+                    // calculate Amount value
+                    const rate = getFiatRate(fiatRates, selected.value);
+                    const amountValue = getDefaultValue(amountInputName, '');
+
+                    const formattedAmount = new BigNumber(
+                        areSatsUsed ? formatAmount(amountValue, network.decimals) : amountValue,
+                    );
+
+                    if (
+                        rate &&
+                        formattedAmount &&
+                        !formattedAmount.isNaN() &&
+                        formattedAmount.gt(0) // formatAmount() returns '-1' on error
+                    ) {
+                        const fiatValueBigNumber = formattedAmount.multipliedBy(rate);
+
+                        setValue(inputName, fiatValueBigNumber.toFixed(2), {
+                            shouldValidate: true,
+                        });
+                        // call compose to store draft, precomposedTx should be the same
+                        composeTransaction(amountInputName);
+                    }
+                }}
+            />
+        ),
+        [
+            currencyInputName,
+            fiatRates,
+            amountInputName,
+            composeTransaction,
+            getDefaultValue,
+            inputName,
+            setValue,
+            areSatsUsed,
+            network.decimals,
+        ],
+    );
+
     return (
         <Wrapper>
             <Input
@@ -179,35 +238,7 @@ const Fiat = ({ output, outputId }: Props) => {
                         control={control}
                         name={currencyInputName}
                         defaultValue={currencyValue}
-                        render={({ onChange, value }) => (
-                            <Select
-                                options={buildCurrencyOptions()}
-                                value={value}
-                                isClearable={false}
-                                isSearchable
-                                hideTextCursor
-                                minWidth="58px"
-                                isClean
-                                data-test={currencyInputName}
-                                onChange={(selected: CurrencyOption) => {
-                                    // propagate changes to FormState
-                                    onChange(selected);
-                                    // calculate Amount value
-                                    const rate = getFiatRate(fiatRates, selected.value);
-                                    const amountValue = new BigNumber(
-                                        getDefaultValue(amountInputName, ''),
-                                    );
-                                    if (rate && amountValue && !amountValue.isNaN()) {
-                                        const fiatValueBigNumber = amountValue.multipliedBy(rate);
-                                        setValue(inputName, fiatValueBigNumber.toFixed(2), {
-                                            shouldValidate: true,
-                                        });
-                                        // call compose to store draft, precomposedTx should be the same
-                                        composeTransaction(amountInputName);
-                                    }
-                                }}
-                            />
-                        )}
+                        render={renderCurrencySelect}
                     />
                 }
             />
