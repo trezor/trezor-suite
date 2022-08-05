@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import { Input, Icon, Button, variables, useTheme } from '@trezor/components';
+
+import { Input, Icon, Switch, variables, useTheme } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import {
@@ -16,7 +17,6 @@ import {
 import { useSendFormContext } from '@wallet-hooks';
 import { Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-
 import TokenSelect from './components/TokenSelect';
 import Fiat from './components/Fiat';
 import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
@@ -32,6 +32,17 @@ const Wrapper = styled.div`
 
 const Text = styled.div`
     margin-right: 3px;
+`;
+
+const SwitchWrapper = styled.div`
+    align-items: center;
+    display: flex;
+    gap: 4px;
+`;
+
+const SwitchLabel = styled.label`
+    font-size: 14px;
+    font-weight: 500;
 `;
 
 const StyledInput = styled(Input)`
@@ -116,7 +127,8 @@ const Amount = ({ output, outputId }: Props) => {
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
-    const isSetMaxVisible = isSetMaxActive || error || Object.keys(errors).length === 0;
+    const isSetMaxVisible = isSetMaxActive && !error && !Object.keys(errors).length;
+    const maxSwitchId = `outputs[${outputId}].setMax`;
 
     const amountValue = getDefaultValue(inputName, output.amount || '');
     const tokenValue = getDefaultValue(tokenInputName, output.token);
@@ -242,21 +254,23 @@ const Amount = ({ output, outputId }: Props) => {
                 <StyledInput
                     inputState={getInputState(error, amountValue)}
                     isMonospace
-                    labelAddonIsVisible={isSetMaxActive}
+                    labelAddonIsVisible={isSetMaxVisible}
                     labelAddon={
-                        isSetMaxVisible ? (
-                            <Button
-                                icon={isSetMaxActive ? 'CHECK' : 'SEND'}
-                                data-test={`outputs[${outputId}].setMax`}
-                                onClick={() => {
+                        <SwitchWrapper>
+                            <Switch
+                                isSmall
+                                isChecked={isSetMaxActive}
+                                id={maxSwitchId}
+                                dataTest={maxSwitchId}
+                                onChange={() => {
                                     setMax(outputId, isSetMaxActive);
                                     composeTransaction(inputName);
                                 }}
-                                variant="tertiary"
-                            >
+                            />
+                            <SwitchLabel htmlFor={maxSwitchId}>
                                 <Translation id="AMOUNT_SEND_MAX" />
-                            </Button>
-                        ) : undefined
+                            </SwitchLabel>
+                        </SwitchWrapper>
                     }
                     label={
                         <Label>

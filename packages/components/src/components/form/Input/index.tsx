@@ -186,8 +186,7 @@ export const Input = ({
                 <Label>
                     <LabelLeft>{label}</LabelLeft>
                     <LabelRight>
-                        {labelAddonIsVisible && <div>{labelAddon}</div>}
-                        {isHovered && !labelAddonIsVisible && <div>{labelAddon}</div>}
+                        {(labelAddonIsVisible || isHovered) && labelAddon}
                         {labelRight && <RightLabel>{labelRight}</RightLabel>}
                     </LabelRight>
                 </Label>
