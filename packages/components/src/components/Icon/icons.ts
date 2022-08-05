@@ -13,6 +13,7 @@ export const ICONS = {
     CHECK: require('../../images/icons/check.svg'),
     CHECK_ACTIVE: require('../../images/icons/check_active.svg'),
     COIN: require('../../images/icons/coin.svg'),
+    COIN_CONTROL: require('../../images/icons/coin_control.svg'),
     COINS: require('../../images/icons/coins.svg'),
     CLEAR: require('../../images/icons/clear.svg'),
     COPY: require('../../images/icons/copy.svg'),
