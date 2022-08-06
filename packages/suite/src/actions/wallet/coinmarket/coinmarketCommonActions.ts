@@ -18,7 +18,7 @@ import {
     getNetworkId,
     getAddressType,
     getDerivationType,
-} from '@suite-common/wallet-utils';
+} from '@wallet-utils/cardanoUtils';
 
 import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
 

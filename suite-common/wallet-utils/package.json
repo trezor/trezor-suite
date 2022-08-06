@@ -15,7 +15,6 @@
     "dependencies": {
         "@ethereumjs/common": "^2.6.4",
         "@ethereumjs/tx": "^3.5.2",
-        "@fivebinaries/coin-selection": "2.0.0-beta.10",
         "@suite-common/metadata-types": "*",
         "@suite-common/suite-constants": "*",
         "@suite-common/suite-types": "*",

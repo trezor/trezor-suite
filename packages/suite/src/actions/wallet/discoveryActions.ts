@@ -10,7 +10,7 @@ import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
-import { getDerivationType } from '@suite-common/wallet-utils';
+import { getDerivationType } from '@wallet-utils/cardanoUtils';
 import { isTrezorConnectBackendType } from '@suite-utils/backend';
 
 export type DiscoveryAction =
