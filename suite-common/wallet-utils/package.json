@@ -19,6 +19,7 @@
         "@suite-common/suite-constants": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
+        "@suite-common/suite-config": "*",
         "@suite-common/test-utils": "*",
         "@suite-common/wallet-constants": "*",
         "@suite-common/wallet-config": "*",

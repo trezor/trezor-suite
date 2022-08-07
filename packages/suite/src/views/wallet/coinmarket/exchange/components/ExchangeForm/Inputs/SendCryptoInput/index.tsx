@@ -7,7 +7,6 @@ import {
     isInteger,
     getInputState,
 } from '@suite-common/wallet-utils';
-import { FIAT } from '@suite-config';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { Translation } from '@suite-components';
 import SendCryptoSelect from './SendCryptoSelect';
@@ -16,14 +15,6 @@ import Bignumber from 'bignumber.js';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
-
-export const buildCurrencyOptions = () => {
-    const result: { value: string; label: string }[] = [];
-    FIAT.currencies.forEach(currency =>
-        result.push({ value: currency, label: currency.toUpperCase() }),
-    );
-    return result;
-};
 
 const StyledInput = styled(Input)<{ isToken: boolean }>`
     ${props =>
