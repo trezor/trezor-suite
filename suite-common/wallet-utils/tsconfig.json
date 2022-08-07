@@ -7,6 +7,7 @@
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
+        { "path": "../suite-config" },
         { "path": "../test-utils" },
         { "path": "../wallet-constants" },
         { "path": "../wallet-config" },
