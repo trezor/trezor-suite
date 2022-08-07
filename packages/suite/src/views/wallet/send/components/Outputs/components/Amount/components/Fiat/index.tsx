@@ -7,7 +7,6 @@ import { Input, Select } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { Translation } from '@suite-components';
 import { useSendFormContext } from '@wallet-hooks';
-import { FIAT } from '@suite-config';
 import {
     fromFiatCurrency,
     isDecimalsValid,
@@ -16,6 +15,7 @@ import {
     findToken,
     amountToSatoshi,
     formatAmount,
+    buildCurrencyOptions,
 } from '@suite-common/wallet-utils';
 import { CurrencyOption, Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
@@ -27,20 +27,6 @@ const Wrapper = styled.div`
     flex-direction: row;
     justify-content: flex-start;
 `;
-
-const buildCurrencyOptions = (selected: CurrencyOption) => {
-    const result: CurrencyOption[] = [];
-
-    FIAT.currencies.forEach(currency => {
-        if (selected.value === currency) {
-            return;
-        }
-
-        result.push({ value: currency, label: currency.toUpperCase() });
-    });
-
-    return result;
-};
 
 interface Props {
     output: Partial<Output>;

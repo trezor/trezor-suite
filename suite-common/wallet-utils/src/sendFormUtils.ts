@@ -5,6 +5,7 @@ import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import { Transaction, TxData } from '@ethereumjs/tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
+import { FIAT } from '@suite-common/suite-config';
 import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
 import { Network } from '@suite-common/wallet-config';
 import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
@@ -19,6 +20,7 @@ import type {
     RbfTransactionParams,
     CoinFiatRates,
     Account,
+    CurrencyOption,
 } from '@suite-common/wallet-types';
 
 import { amountToSatoshi, networkAmountToSatoshi } from './accountUtils';
@@ -401,3 +403,17 @@ export const getDefaultValues = (
             : ['broadcast'],
     outputs: [{ ...DEFAULT_PAYMENT, currency }],
 });
+
+export const buildCurrencyOptions = (selected: CurrencyOption) => {
+    const result: CurrencyOption[] = [];
+
+    FIAT.currencies.forEach(currency => {
+        if (selected.value === currency) {
+            return;
+        }
+
+        result.push({ value: currency, label: currency.toUpperCase() });
+    });
+
+    return result;
+};
