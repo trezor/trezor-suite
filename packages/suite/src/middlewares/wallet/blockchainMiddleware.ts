@@ -19,10 +19,10 @@ const blockchainMiddleware =
 
                 // once suite connects to blockchain, fetch additional data required
                 // for cardano staking if applicable
-                if (['ADA', 'TADA'].includes(action.payload.coin.shortcut)) {
+                if (['ADA', 'tADA'].includes(action.payload.coin.shortcut)) {
                     api.dispatch(
                         cardanoStakingActions.fetchTrezorPools(
-                            action.payload.coin.shortcut as 'ADA' | 'TADA',
+                            action.payload.coin.shortcut as 'ADA' | 'tADA',
                         ),
                     );
                 }

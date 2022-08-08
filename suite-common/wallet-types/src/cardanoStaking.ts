@@ -45,6 +45,7 @@ export type CardanoStaking = {
     deposit?: string;
     registeredPoolId: string | null;
     isStakingOnTrezorPool: boolean | null;
+    isFetchError: boolean;
     isCurrentPoolOversaturated: boolean;
     trezorPools: PoolsResponse | undefined;
     isActive: boolean;
