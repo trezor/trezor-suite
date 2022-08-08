@@ -52,6 +52,7 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
         case 'ButtonRequest_ConfirmOutput':
+        case 'ButtonRequest_FeeOverThreshold':
         case 'ButtonRequest_SignTx': {
             return <ReviewTransaction type="sign-transaction" />;
         }
