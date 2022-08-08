@@ -1,7 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-continue */
 
-import { spawnSync } from 'child_process';
+import { execSync } from 'child_process';
+import path from 'path';
 import messages from '@trezor/suite/src/support/messages';
 
 console.log('unused messages: ');
@@ -16,25 +17,37 @@ for (const message in messages) {
             continue;
         }
 
-        // list of patterns to search
-        const path = '**/(suite|validation)*/**';
-        // possible paths:
-        // suite, suite-desktop, suite-web
-        // 'suite-web-landing/components',
-        // 'suite-web-landing/pages',
-        // 'suite-web-landing/scripts',
-        // 'suite-web-landing/utils',
+        const ignore = [
+            'docs',
+            'node_modules',
+            'lib',
+            'libDev',
+            'build',
+            'build-electron',
+            '.next',
+            '__fixtures__',
+            'test',
+            'tests',
+            '__test__',
+            '__tests__',
+            'coverage',
+            '.git',
+            'suite-data',
+            'integration-tests',
+            'connect-common',
+        ];
 
-        const { stdout } = spawnSync(
-            'bash',
-            ['suite-data/src/translations/find-unused.sh', path, message],
-            {
-                encoding: 'utf-8',
-                cwd: '../',
-            },
-        );
-
-        if (!stdout) {
+        try {
+            execSync(
+                `grep ${ignore
+                    .map(folder => `--exclude-dir="${folder}"`)
+                    .join(' ')} --exclude=messages.ts -r "${message}" ./`,
+                {
+                    encoding: 'utf-8',
+                    cwd: path.join(__dirname, '..', '..', '..', '..'),
+                },
+            );
+        } catch (err) {
             console.log(message);
             unused.push(message);
         }
