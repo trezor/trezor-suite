@@ -51,7 +51,7 @@ describe('Send form for bitcoin', () => {
         cy.getTestElement('@wallet/send/outputs-and-options').matchImageSnapshot('bitcoin-send');
     });
 
-    it('switch display units to satoshis, fill a form in satoshis and send', () => {
+    it.skip('switch display units to satoshis, fill a form in satoshis and send', () => {
         cy.getTestElement('amount-unit-switch/regtest').click();
 
         // test adding and removing outputs
@@ -66,7 +66,7 @@ describe('Send form for bitcoin', () => {
         cy.getTestElement('@wallet/send/outputs-and-options').matchImageSnapshot(
             'bitcoin-send-sats',
         );
-    });
+    }); // TEMPORARY SOLUTION!
 });
 
 // todo: send tx
