@@ -40,3 +40,4 @@ jobs:
       - run: yarn workspace @trezor/suite-data msg-system-sign-config
       - run: yarn workspace @trezor/suite-desktop build:linux
       - run: docker-compose -f ./docker/docker-compose.suite-desktop-ci.yml up --build --abort-on-container-exit --force-recreate
+      - run: echo "everything done"
