@@ -52,6 +52,7 @@ export const BottomSheet = forwardRef<any, BottomSheetProps>(
             resetSheetAnimated,
             panGestureEvent,
             scrollEvent,
+            isAnimationInProgress,
         } = useBottomSheetAnimation({
             onVisibilityChange,
             isVisible,
@@ -78,7 +79,10 @@ export const BottomSheet = forwardRef<any, BottomSheetProps>(
         };
 
         return (
-            <BottomSheetContainer isVisible={isVisible} onClose={handleCloseSheet}>
+            <BottomSheetContainer
+                isVisible={isVisible || isAnimationInProgress}
+                onClose={handleCloseSheet}
+            >
                 <Animated.View
                     style={[animatedSheetWithOverlayStyle, applyStyle(sheetWithOverlayStyle)]}
                 >

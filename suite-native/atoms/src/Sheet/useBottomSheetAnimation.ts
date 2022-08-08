@@ -8,7 +8,7 @@ import {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { Dimensions, NativeScrollEvent } from 'react-native';
 
@@ -36,6 +36,7 @@ export const useBottomSheetAnimation = ({
     const colorOverlay = utils.transparentize(0.3, utils.colors.black);
     const translatePanY = useSharedValue(SCREEN_HEIGHT);
     const animatedTransparency = useSharedValue(transparency);
+    const [isAnimationInProgress, setIsAnimationInProgress] = useState(false);
 
     useEffect(() => {
         animatedTransparency.value = withTiming(transparency, {
@@ -62,6 +63,8 @@ export const useBottomSheetAnimation = ({
     const closeSheetAnimated = useCallback(() => {
         'worklet';
 
+        runOnJS(setIsAnimationInProgress)(true);
+
         translatePanY.value = withTiming(SCREEN_HEIGHT, {
             duration: 300,
             easing: Easing.out(Easing.cubic),
@@ -74,6 +77,7 @@ export const useBottomSheetAnimation = ({
             },
             () => {
                 runOnJS(onVisibilityChange)(false);
+                runOnJS(setIsAnimationInProgress)(false);
                 runOnJS(onIsCloseScrollEnabled)(true);
             },
         );
@@ -125,5 +129,6 @@ export const useBottomSheetAnimation = ({
         resetSheetAnimated,
         panGestureEvent,
         scrollEvent,
+        isAnimationInProgress,
     };
 };
