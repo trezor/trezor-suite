@@ -13,6 +13,7 @@ const Redelegate = () => {
         deviceAvailable,
         pendingStakeTx,
         isCurrentPoolOversaturated,
+        isFetchError,
     } = useCardanoStaking();
 
     useEffect(() => {
@@ -30,7 +31,9 @@ const Redelegate = () => {
         </Button>
     );
 
-    const reasonMessageId = getReasonForDisabledAction(delegatingAvailable?.reason);
+    const reasonMessageId = getReasonForDisabledAction(
+        isFetchError ? 'POOL_ID_FETCH_FAIL' : delegatingAvailable?.reason,
+    );
 
     return (
         <StyledCard>
@@ -58,7 +61,7 @@ const Redelegate = () => {
                 </Text>
 
                 <Actions>
-                    {deviceAvailable.status && delegatingAvailable.status ? (
+                    {deviceAvailable.status && delegatingAvailable.status && !isFetchError ? (
                         actionButton
                     ) : (
                         <Tooltip

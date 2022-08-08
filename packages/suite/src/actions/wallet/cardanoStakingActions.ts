@@ -93,7 +93,7 @@ export const validatePendingStakeTxOnTx =
         }
     };
 
-export const fetchTrezorPools = (network: 'ADA' | 'TADA') => async (dispatch: Dispatch) => {
+export const fetchTrezorPools = (network: 'ADA' | 'tADA') => async (dispatch: Dispatch) => {
     dispatch({
         type: CARDANO_STAKING.SET_FETCH_LOADING,
         loading: true,
@@ -101,7 +101,7 @@ export const fetchTrezorPools = (network: 'ADA' | 'TADA') => async (dispatch: Di
 
     // Fetch ID of Trezor stake pool that will be used in delegation transaction
     const url =
-        network === 'TADA' ? CARDANO_STAKE_POOL_TESTNET_URL : CARDANO_STAKE_POOL_MAINNET_URL;
+        network === 'tADA' ? CARDANO_STAKE_POOL_TESTNET_URL : CARDANO_STAKE_POOL_MAINNET_URL;
 
     try {
         const response = await fetch(url, { credentials: 'same-origin' });

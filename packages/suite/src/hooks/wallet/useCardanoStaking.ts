@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { ActionAvailability, CardanoStaking } from '@wallet-types/cardanoStaking';
 import { SUITE } from '@suite-actions/constants';
 import trezorConnect, { PROTO } from '@trezor/connect';
@@ -92,15 +92,6 @@ export const useCardanoStaking = (): CardanoStaking => {
     const [error, setError] = useState<string | undefined>(undefined);
     const stakingPath = getStakingPath(account);
     const pendingStakeTx = pendingStakeTxs.find(tx => tx.accountKey === account.key);
-
-    useEffect(() => {
-        if (isFetchError) {
-            setDelegatingAvailable({
-                status: false,
-                reason: 'POOL_ID_FETCH_FAIL',
-            });
-        }
-    }, [isFetchError]);
 
     const {
         rewards: rewardsAmount,
@@ -312,6 +303,7 @@ export const useCardanoStaking = (): CardanoStaking => {
         withdrawingAvailable,
         registeredPoolId,
         isActive: isStakingActive,
+        isFetchError,
         rewards: rewardsAmount,
         address: stakeAddress,
         isStakingOnTrezorPool,
