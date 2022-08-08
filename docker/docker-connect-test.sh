@@ -32,7 +32,7 @@ show_usage() {
   echo "Options:"
   echo "  -c       Disable backend cache. default: enabled"
   echo "  -d       Disable docker. Useful when running own instance of trezor-user-env. default: enabled"
-  echo "  -D PATH  Set path to docker executable. Can be replaced with `podman`. default: docker"
+  echo "  -D PATH  Set path to docker executable. Can be replaced with \`podman\`. default: docker"
   echo "  -e       All methods except excluded, example: applySettings,signTransaction"
   echo "  -f       Use specific firmware version, example: 2.1.4, 1.8.0 default: 2-master"
   echo "  -i       Included methods only, example: applySettings,signTransaction"
@@ -46,6 +46,7 @@ FIRMWARE_URL=""
 INCLUDED_METHODS=""
 EXCLUDED_METHODS=""
 DOCKER=true
+# TODO: DOCKER_PATH appears unused. Remove or export?
 DOCKER_PATH="docker"
 USE_TX_CACHE=true
 USE_WS_CACHE=true
@@ -95,7 +96,7 @@ shift $((OPTIND - 1))
 if [[ $ENVIRONEMT == "node" ]];
   then
     SCRIPT="yarn workspace @trezor/integration-tests test:connect:node"
-  else 
+  else
     SCRIPT="yarn workspace @trezor/integration-tests test:connect:web"
 fi
 
@@ -127,9 +128,9 @@ run() {
   if [ $DOCKER = true ]; then
     runDocker
   else
-    $SCRIPT $PATTERN
+    $SCRIPT "$PATTERN"
   fi
-  
+
 }
 
 run
