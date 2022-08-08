@@ -6,10 +6,12 @@ Retrieves current selected exchange rates for selected coin.
 const result = await TrezorConnect.blockchainGetCurrentFiatRates(params);
 ```
 ### Params
+```javascript
 { 
     currencies: ['currency1','currency2','currency3',...],
     coin: 'coin'
-    }
+}
+```
 
 ### Example
 
