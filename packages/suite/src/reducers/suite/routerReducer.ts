@@ -4,7 +4,7 @@ import { Action } from '@suite-types';
 
 import type { AnchorType } from '@suite-constants/anchors';
 
-type State = {
+export type RouterState = {
     loaded: boolean;
     url: string;
     pathname: string;
@@ -13,7 +13,7 @@ type State = {
     anchor?: AnchorType;
 } & RouterAppWithParams;
 
-const initialState: State = {
+const initialState: RouterState = {
     loaded: false,
     url: '/',
     pathname: '/',
@@ -25,7 +25,7 @@ const initialState: State = {
     },
 };
 
-const routerReducer = (state: State = initialState, action: Action): State => {
+const routerReducer = (state: RouterState = initialState, action: Action): RouterState => {
     switch (action.type) {
         case ROUTER.LOCATION_CHANGE: {
             return {

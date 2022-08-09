@@ -1,4 +1,4 @@
-import { Network, BackendType } from '@suite-common/wallet-config';
+import { Network, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
 
 export type MetadataItem = string;
@@ -60,7 +60,7 @@ export type Account = {
     path: string;
     descriptor: string;
     accountType: NonNullable<Network['accountType']>;
-    symbol: Network['symbol'];
+    symbol: NetworkSymbol;
     empty: boolean;
     visible: boolean;
     imported?: boolean;

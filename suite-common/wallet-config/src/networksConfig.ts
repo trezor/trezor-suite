@@ -381,12 +381,12 @@ export type BackendType =
     | typeof NON_STANDARD_BACKENDS[number];
 
 type Networks = typeof networks;
-export type NetworkKey = keyof Networks;
-type NetworkValue = Networks[NetworkKey];
+export type NetworkSymbol = keyof Networks;
+type NetworkValue = Networks[NetworkSymbol];
 type AccountType = Keys<NetworkValue['accountTypes']>;
 export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
-    symbol: NetworkKey;
+    symbol: NetworkSymbol;
     accountType?: 'normal' | AccountType;
     backendType?: BackendType;
     testnet?: boolean;

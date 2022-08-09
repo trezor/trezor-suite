@@ -1,5 +1,7 @@
 import type { MiddlewareAPI } from 'redux';
+
 import { SUITE, ROUTER } from '@suite-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { ACCOUNT, TRANSACTION, BLOCKCHAIN } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
@@ -94,6 +96,10 @@ const walletMiddleware =
             api.dispatch(sendFormActions.dispose());
             api.dispatch(receiveActions.dispose());
             api.dispatch(coinmarketBuyActions.dispose());
+        }
+
+        if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
+            api.dispatch(sendFormActions.convertDrafts());
         }
 
         api.dispatch(selectedAccountActions.getStateForAction(action));

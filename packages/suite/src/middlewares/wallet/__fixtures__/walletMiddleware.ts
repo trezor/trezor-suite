@@ -1,4 +1,10 @@
-import { ACCOUNT } from '@wallet-actions/constants';
+import { PROTO } from '@trezor/connect';
+import { ACCOUNT, SEND } from '@wallet-actions/constants';
+import { Account } from 'suite-common/wallet-types/src';
+import { FormState as SendFormState, Output } from '@wallet-types/sendForm';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
+import { RouterState } from '@suite-reducers/routerReducer';
+import { State as SelectedAccountState } from '@wallet-reducers/selectedAccountReducer';
 
 export const blockchainSubscription = [
     {
@@ -84,6 +90,112 @@ export const blockchainSubscription = [
             disconnect: {
                 called: 1,
                 coin: 'ltc',
+            },
+        },
+    },
+];
+
+export const draftsFixtures = [
+    {
+        initialState: {
+            router: {
+                route: {
+                    name: 'wallet-send',
+                },
+            } as RouterState,
+            settings: { bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN },
+            accounts: [
+                {
+                    key: 'one',
+                    networkType: 'bitcoin',
+                    symbol: 'btc',
+                    accountType: 'normal',
+                } as Account,
+                {
+                    key: 'two',
+                    networkType: 'bitcoin',
+                    symbol: 'regtest',
+                    accountType: 'normal',
+                } as Account,
+            ],
+            selectedAccount: {
+                status: 'loaded',
+                account: {
+                    key: 'one',
+                    networkType: 'bitcoin',
+                    symbol: 'btc',
+                    accountType: 'normal',
+                },
+            } as SelectedAccountState,
+            send: {
+                drafts: {
+                    one: {
+                        outputs: [
+                            {
+                                amount: '0.00001',
+                            } as Output,
+                            {
+                                amount: '0.00002',
+                            } as Output,
+                        ],
+                    } as SendFormState,
+                    two: {
+                        outputs: [
+                            {
+                                amount: '0.00003',
+                            } as Output,
+                            {
+                                amount: '0.00004',
+                            } as Output,
+                        ],
+                    } as SendFormState,
+                },
+            },
+        },
+        action: {
+            type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
+            payload: PROTO.AmountUnit.SATOSHI,
+        },
+        expectedActions: [
+            {
+                type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,
+                payload: PROTO.AmountUnit.SATOSHI,
+            },
+            {
+                type: SEND.STORE_DRAFT,
+                key: 'two',
+                formState: {
+                    outputs: [
+                        {
+                            amount: '3000',
+                        },
+                        {
+                            amount: '4000',
+                        },
+                    ],
+                },
+            },
+        ],
+        expectedDrafts: {
+            one: {
+                outputs: [
+                    {
+                        amount: '0.00001',
+                    },
+                    {
+                        amount: '0.00002',
+                    },
+                ],
+            },
+            two: {
+                outputs: [
+                    {
+                        amount: '3000',
+                    },
+                    {
+                        amount: '4000',
+                    },
+                ],
             },
         },
     },

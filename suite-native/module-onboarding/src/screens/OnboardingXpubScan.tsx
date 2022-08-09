@@ -7,7 +7,7 @@ import { Screen, StackProps } from '@suite-native/navigation';
 import { Box, Chip, Input, InputWrapper, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
-import { NetworkKey } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
 import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
@@ -45,7 +45,7 @@ export const OnboardingXpubScan = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.OnboardingXpubScan>) => {
     const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
-        useState<NetworkKey>(DEFAULT_CURRENCY_SYMBOL);
+        useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
     const [inputText, setInputText] = useState<string>(DEFAULT_XPUB_INPUT_TEXT);
     const [cameraRequested, setCameraRequested] = useState<boolean>(false);
     const { applyStyle } = useNativeStyles();
@@ -58,7 +58,7 @@ export const OnboardingXpubScan = ({
 
     useFocusEffect(resetToDefaultValues);
 
-    const handleSelectCurrency = (currencySymbol: NetworkKey) => {
+    const handleSelectCurrency = (currencySymbol: NetworkSymbol) => {
         setSelectedCurrencySymbol(currencySymbol);
     };
 

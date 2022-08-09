@@ -13,6 +13,7 @@ const bitcoinNetworks: BitcoinNetworkInfo[] = [];
 const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
 
+// TODO: replace by structuredClone() after updating TS
 export function cloneCoinInfo<T>(info: T): T {
     const jsonString = JSON.stringify(info);
     if (jsonString === undefined) {
