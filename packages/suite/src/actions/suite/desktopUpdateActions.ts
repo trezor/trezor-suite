@@ -80,21 +80,27 @@ export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetSta
     });
 };
 
-export const installUpdate = () => (_: Dispatch, getState: GetState) => {
-    const { desktopUpdate } = getState();
+export const installUpdate =
+    (shouldInstallOnQuit?: boolean) => (_: Dispatch, getState: GetState) => {
+        const { desktopUpdate } = getState();
 
-    const payload = getAppUpdatePayload(
-        AppUpdateEventStatus.InstallAndRestart,
-        desktopUpdate.allowPrerelease,
-        desktopUpdate.latest,
-    );
-    analytics.report({
-        type: EventType.AppUpdate,
-        payload,
-    });
+        const payload = getAppUpdatePayload(
+            shouldInstallOnQuit
+                ? AppUpdateEventStatus.InstallOnQuit
+                : AppUpdateEventStatus.InstallAndRestart,
+            desktopUpdate.allowPrerelease,
+            desktopUpdate.latest,
+        );
+        analytics.report({
+            type: EventType.AppUpdate,
+            payload,
+        });
 
-    desktopApi.installUpdate();
-};
+        // auto-updater is by default configured to update on quit 'autoUpdater.autoInstallOnAppQuit = true'
+        if (!shouldInstallOnQuit) {
+            desktopApi.installUpdate();
+        }
+    };
 
 export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) => {
     // TODO: Properly display error

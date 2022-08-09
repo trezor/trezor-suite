@@ -29,17 +29,22 @@ const Ready = ({ hideWindow }: ReadyProps) => {
         installUpdate: desktopUpdateActions.installUpdate,
     });
 
+    const installOnQuit = () => {
+        installUpdate(true);
+        hideWindow();
+    };
+
     return (
         <StyledModal
             heading={<Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />}
             isCancelable
-            onCancel={hideWindow}
+            onCancel={installOnQuit}
             bottomBar={
                 <>
-                    <Button onClick={hideWindow} variant="secondary">
-                        <Translation id="TR_UPDATE_MODAL_INSTALL_LATER" />
+                    <Button onClick={installOnQuit} variant="secondary">
+                        <Translation id="TR_UPDATE_MODAL_UPDATE_ON_QUIT" />
                     </Button>
-                    <Button onClick={installUpdate} variant="primary">
+                    <Button onClick={() => installUpdate()} variant="primary">
                         <Translation id="TR_UPDATE_MODAL_INSTALL_AND_RESTART" />
                     </Button>
                 </>

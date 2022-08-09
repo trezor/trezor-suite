@@ -116,7 +116,7 @@ export const VersionWithUpdate = () => {
                         </ActionButton>
                     )}
                     {desktopUpdate.state === UpdateState.Ready && (
-                        <ActionButton onClick={installUpdate} variant="secondary">
+                        <ActionButton onClick={() => installUpdate()} variant="secondary">
                             <Translation id="SETTINGS_UPDATE_READY" />
                         </ActionButton>
                     )}
