@@ -29,7 +29,8 @@ export const composeTransaction =
 
         const isSatoshis =
             bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI &&
-            !device?.unavailableCapabilities?.amountUnit;
+            !device?.unavailableCapabilities?.amountUnit &&
+            hasNetworkFeatures(account, 'amount-unit');
 
         if (!account.addresses || !account.utxo) return;
 
