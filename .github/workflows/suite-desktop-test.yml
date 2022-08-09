@@ -59,3 +59,11 @@ jobs:
           name: screenshots
           path: packages/integration-tests/projects/suite-desktop/screenshots
           retention-days: 7
+
+      - name: Archive test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: packages/integration-tests/test-results
+          retention-days: 7
