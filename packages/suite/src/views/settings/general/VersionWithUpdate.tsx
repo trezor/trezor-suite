@@ -32,8 +32,9 @@ const Version = styled.div`
 `;
 
 export const VersionWithUpdate = () => {
-    const { setUpdateWindow } = useActions({
+    const { setUpdateWindow, installUpdate } = useActions({
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
+        installUpdate: desktopUpdateActions.installUpdate,
     });
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.VersionWithUpdate);
 
@@ -42,7 +43,6 @@ export const VersionWithUpdate = () => {
     }));
 
     const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
-    const installRestart = useCallback(() => desktopApi.installUpdate(), []);
     const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);
 
     return (
@@ -116,7 +116,7 @@ export const VersionWithUpdate = () => {
                         </ActionButton>
                     )}
                     {desktopUpdate.state === UpdateState.Ready && (
-                        <ActionButton onClick={installRestart} variant="secondary">
+                        <ActionButton onClick={installUpdate} variant="secondary">
                             <Translation id="SETTINGS_UPDATE_READY" />
                         </ActionButton>
                     )}

@@ -4,7 +4,10 @@ import pkg from '../package.json';
 export const VERSION = pkg.version.replace(/0./, '');
 
 export enum AppUpdateEventStatus {
+    Available = 'available',
+    Download = 'download',
     Downloaded = 'downloaded',
+    InstallAndRestart = 'install-and-restart',
     Closed = 'closed',
     Error = 'error',
 }

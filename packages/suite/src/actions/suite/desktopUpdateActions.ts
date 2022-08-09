@@ -6,7 +6,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { UpdateState, UpdateWindow } from '@suite-reducers/desktopUpdateReducer';
 import { getAppUpdatePayload } from '@suite-utils/analytics';
 
-import type { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
+import { desktopApi, UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 
 export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.CHECKING }
@@ -22,10 +22,17 @@ export type DesktopUpdateAction =
 
 export const checking = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.CHECKING });
 
-export const available = (info: UpdateInfo): DesktopUpdateAction => ({
-    type: DESKTOP_UPDATE.AVAILABLE,
-    payload: info,
-});
+export const available = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState) => {
+    const { allowPrerelease } = getState().desktopUpdate;
+
+    const payload = getAppUpdatePayload(AppUpdateEventStatus.Available, allowPrerelease, info);
+    analytics.report({
+        type: EventType.AppUpdate,
+        payload,
+    });
+
+    dispatch({ type: DESKTOP_UPDATE.AVAILABLE, payload: info });
+};
 
 export const notAvailable = (info: UpdateInfo) => (dispatch: Dispatch) => {
     if (info.isManualCheck) {
@@ -38,9 +45,19 @@ export const notAvailable = (info: UpdateInfo) => (dispatch: Dispatch) => {
     });
 };
 
-export const download = (): DesktopUpdateAction => ({
-    type: DESKTOP_UPDATE.DOWNLOAD,
-});
+export const download = () => (dispatch: Dispatch, getState: GetState) => {
+    const { latest, allowPrerelease } = getState().desktopUpdate;
+
+    const payload = getAppUpdatePayload(AppUpdateEventStatus.Download, allowPrerelease, latest);
+    analytics.report({
+        type: EventType.AppUpdate,
+        payload,
+    });
+
+    dispatch({
+        type: DESKTOP_UPDATE.DOWNLOAD,
+    });
+};
 
 export const downloading = (progress: UpdateProgress): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.DOWNLOADING,
@@ -61,6 +78,22 @@ export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetSta
         type: DESKTOP_UPDATE.READY,
         payload: info,
     });
+};
+
+export const installUpdate = () => (_: Dispatch, getState: GetState) => {
+    const { desktopUpdate } = getState();
+
+    const payload = getAppUpdatePayload(
+        AppUpdateEventStatus.InstallAndRestart,
+        desktopUpdate.allowPrerelease,
+        desktopUpdate.latest,
+    );
+    analytics.report({
+        type: EventType.AppUpdate,
+        payload,
+    });
+
+    desktopApi.installUpdate();
 };
 
 export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) => {

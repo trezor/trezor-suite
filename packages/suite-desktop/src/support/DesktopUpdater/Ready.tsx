@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { Button, H2, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
+import { useActions } from '@suite-hooks';
+import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
 const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -19,12 +20,14 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-interface Props {
+interface ReadyProps {
     hideWindow: () => void;
 }
 
-const Ready = ({ hideWindow }: Props) => {
-    const installRestart = useCallback(() => desktopApi.installUpdate(), []);
+const Ready = ({ hideWindow }: ReadyProps) => {
+    const { installUpdate } = useActions({
+        installUpdate: desktopUpdateActions.installUpdate,
+    });
 
     return (
         <StyledModal
@@ -36,7 +39,7 @@ const Ready = ({ hideWindow }: Props) => {
                     <Button onClick={hideWindow} variant="secondary">
                         <Translation id="TR_UPDATE_MODAL_INSTALL_LATER" />
                     </Button>
-                    <Button onClick={installRestart} variant="primary">
+                    <Button onClick={installUpdate} variant="primary">
                         <Translation id="TR_UPDATE_MODAL_INSTALL_AND_RESTART" />
                     </Button>
                 </>

@@ -2,6 +2,13 @@
 
 This changelog lists changes in suite events.
 
+### 1.23
+
+Added:
+
+-   app-update
+    -   status: available | download | install-and-restart | downloaded | closed | error
+
 ### 1.22
 
 Added:
