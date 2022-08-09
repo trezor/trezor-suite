@@ -5599,9 +5599,9 @@ export default defineMessages({
         id: 'TR_UPDATE_MODAL_INSTALL_AND_RESTART',
         defaultMessage: 'Restart & Update',
     },
-    TR_UPDATE_MODAL_INSTALL_LATER: {
-        id: 'TR_UPDATE_MODAL_INSTALL_LATER',
-        defaultMessage: 'Update on next launch',
+    TR_UPDATE_MODAL_UPDATE_ON_QUIT: {
+        id: 'TR_UPDATE_MODAL_UPDATE_ON_QUIT',
+        defaultMessage: 'Update on quit',
     },
     TR_MANAGE: {
         id: 'TR_MANAGE',

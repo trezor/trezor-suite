@@ -1,7 +1,3 @@
-/**
- * Auto Updater feature (notify, download, install)
- */
-
 import { unlinkSync } from 'fs';
 import {
     autoUpdater,
@@ -45,15 +41,10 @@ const init: Module = ({ mainWindow, store }) => {
 
     let isManualCheck = false;
     let updateCancellationToken: CancellationToken;
-    let shouldInstallUpdateOnQuit = false;
     let errorHappened = false;
 
     // Prevent downloading an update unless user explicitly asks for it.
     autoUpdater.autoDownload = false;
-    // Manually force install based on `shouldInstallUpdateOnQuit` var instead to have more control over the process.
-    // This is useful for cases when we want to cancel update after it has started. It seems to work in the current version
-    // of electron-updater only until update-downloaded event is emitted.
-    autoUpdater.autoInstallOnAppQuit = false;
 
     const updateSettings = store.getUpdateSettings();
     autoUpdater.allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
@@ -64,17 +55,6 @@ const init: Module = ({ mainWindow, store }) => {
         autoUpdater.setFeedURL(feedURL);
         logger.warn('auto-updater', [`Feed url: ${feedURL}`]);
     }
-
-    const quitAndInstall = () => {
-        setImmediate(() => {
-            // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
-            app.removeAllListeners('window-all-closed');
-            mainWindow.removeAllListeners('close');
-            mainWindow.close();
-
-            autoUpdater.quitAndInstall();
-        });
-    };
 
     logger.info(
         'auto-updater',
@@ -154,7 +134,7 @@ const init: Module = ({ mainWindow, store }) => {
         mainWindow.webContents.send('update/downloading', progressObj);
     });
 
-    autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent) => {
+    autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile, releaseNotes } = info;
 
         if (errorHappened) {
@@ -172,40 +152,34 @@ const init: Module = ({ mainWindow, store }) => {
 
         mainWindow.webContents.send('update/downloading', { verifying: true });
 
-        verifySignature({
-            version,
-            downloadedFile,
-            feedURL,
-        })
-            .then(() => {
-                logger.info('auto-updater', 'Signature of update is valid');
-
-                mainWindow.webContents.send('update/downloaded', {
-                    version,
-                    releaseDate,
-                    downloadedFile,
-                });
-
-                shouldInstallUpdateOnQuit = true;
-            })
-            .catch(err => {
-                logger.error('auto-updater', `Signature check failed: ${err.message}`);
-
-                mainWindow.webContents.send('update/error', err);
-
-                logger.info('auto-updater', `Unlink downloaded file ${downloadedFile}`);
-
-                // Delete file so we are sure it's not accidentally installed
-                unlinkSync(downloadedFile);
-
-                shouldInstallUpdateOnQuit = false;
-            })
-            .finally(() => {
-                logger.info(
-                    'auto-updater',
-                    `Is configured to auto update after app quit? ${shouldInstallUpdateOnQuit}`,
-                );
+        try {
+            // check downloaded file
+            await verifySignature({
+                version,
+                downloadedFile,
+                feedURL,
             });
+
+            logger.info('auto-updater', 'Signature of update file is valid');
+
+            mainWindow.webContents.send('update/downloaded', {
+                version,
+                releaseDate,
+                downloadedFile,
+            });
+        } catch (err) {
+            autoUpdater.autoInstallOnAppQuit = false;
+            unlinkSync(downloadedFile);
+            mainWindow.webContents.send('update/error', err);
+
+            logger.error('auto-updater', `Signature check of update file failed: ${err.message}`);
+            logger.info('auto-updater', `Unlink downloaded file ${downloadedFile}`);
+        }
+
+        logger.info(
+            'auto-updater',
+            `Is configured to auto update after app quit? ${autoUpdater.autoInstallOnAppQuit}`,
+        );
     });
 
     ipcMain.on('update/check', (_, isManual) => {
@@ -217,7 +191,7 @@ const init: Module = ({ mainWindow, store }) => {
         autoUpdater.checkForUpdates();
     });
 
-    ipcMain.on('update/download', () => {
+    ipcMain.on('update/download', async () => {
         logger.info('auto-updater', 'Download requested');
 
         mainWindow.webContents.send('update/downloading', {
@@ -228,18 +202,27 @@ const init: Module = ({ mainWindow, store }) => {
         });
 
         updateCancellationToken = new CancellationToken();
-        autoUpdater
-            .downloadUpdate(updateCancellationToken)
-            .then(() => logger.info('auto-updater', 'Update downloaded'))
-            .catch(() => {
-                logger.info('auto-updater', 'Update cancelled');
-            });
+
+        try {
+            await autoUpdater.downloadUpdate(updateCancellationToken);
+            logger.info('auto-updater', 'Update downloaded');
+        } catch {
+            logger.info('auto-updater', 'Update cancelled');
+        }
     });
 
     ipcMain.on('update/install', () => {
-        logger.info('auto-updater', 'Installation request');
+        logger.info('auto-updater', 'Restart and update request');
 
-        quitAndInstall();
+        setImmediate(() => {
+            // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
+            app.removeAllListeners('window-all-closed');
+            mainWindow.removeAllListeners('close');
+            mainWindow.close();
+
+            // Silent install on Windows to match on "Update on quit" and MacOS behavior
+            autoUpdater.quitAndInstall(true, true);
+        });
     });
 
     ipcMain.on('update/cancel', () => {
@@ -261,12 +244,6 @@ const init: Module = ({ mainWindow, store }) => {
         autoUpdater.allowPrerelease = value;
     });
 
-    app.on('before-quit', () => {
-        if (shouldInstallUpdateOnQuit) {
-            quitAndInstall();
-        }
-    });
-
     // Enable feature on FE once it's ready
     return () => {
         // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
@@ -277,7 +254,7 @@ const init: Module = ({ mainWindow, store }) => {
         const currentVersion = app.getVersion();
         logger.debug(
             'auto-updater',
-            `version of application before this launch: ${savedCurrentVersion}, current app version: ${currentVersion}`,
+            `Version of application before this launch: ${savedCurrentVersion}, current app version: ${currentVersion}`,
         );
 
         // save current app version so that after app is relaunched we can show info about transition to the new version

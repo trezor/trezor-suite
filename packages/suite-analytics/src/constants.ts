@@ -8,6 +8,7 @@ export enum AppUpdateEventStatus {
     Download = 'download',
     Downloaded = 'downloaded',
     InstallAndRestart = 'install-and-restart',
+    InstallOnQuit = 'install-on-quit',
     Closed = 'closed',
     Error = 'error',
 }
