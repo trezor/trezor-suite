@@ -14,7 +14,7 @@
         "@suite-common/wallet-constants": "*",
         "@suite-common/intl-types": "*",
         "@suite-common/suite-utils": "*",
-        "@trezor/connect": "9.0.0-beta.5",
+        "@trezor/connect": "9.0.0-beta.6",
         "@trezor/type-utils": "*",
         "@trezor/utils": "*",
         "react": "17.0.2",
