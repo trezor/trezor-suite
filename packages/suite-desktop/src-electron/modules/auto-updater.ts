@@ -203,7 +203,7 @@ const init: Module = ({ mainWindow, store }) => {
             .finally(() => {
                 logger.info(
                     'auto-updater',
-                    `Is configured to auto update after app quit ${shouldInstallUpdateOnQuit}`,
+                    `Is configured to auto update after app quit? ${shouldInstallUpdateOnQuit}`,
                 );
             });
     });
