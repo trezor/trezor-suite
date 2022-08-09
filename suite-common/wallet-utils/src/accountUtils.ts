@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js';
 
+import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
 import {
     networksCompatibility as NETWORKS,
     Network,
     NetworkFeature,
+    NetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
     Account,
@@ -16,7 +18,6 @@ import {
 import { TrezorDevice } from '@suite-common/suite-types';
 import { ACCOUNT_TYPE } from '@suite-common/wallet-constants';
 import { WIKI_BIP84_URL, WIKI_BIP86_URL, WIKI_BIP49_URL, WIKI_BIP44_URL } from '@trezor/urls';
-import { AccountInfo, AccountAddresses, AccountAddress } from '@trezor/connect';
 
 import { toFiatCurrency } from './fiatConverterUtils';
 
@@ -46,7 +47,7 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
     return fiatValue;
 };
 
-export const getTitleForNetwork = (symbol: Account['symbol']) => {
+export const getTitleForNetwork = (symbol: NetworkSymbol) => {
     switch (symbol.toLowerCase()) {
         case 'btc':
             return 'TR_NETWORK_BITCOIN';
@@ -159,6 +160,12 @@ export const getAccountTypeUrl = (path: string) => {
     return WIKI_BIP44_URL;
 };
 
+export const getAccountDecimals = (symbol: NetworkSymbol) => {
+    const network = NETWORKS.find(n => n.symbol === symbol);
+
+    return network?.decimals;
+};
+
 export const stripNetworkAmount = (amount: string, decimals: number) =>
     new BigNumber(amount).toFixed(decimals, 1);
 
@@ -187,26 +194,27 @@ export const amountToSatoshi = (amount: string, decimals: number) => {
     }
 };
 
-export const networkAmountToSatoshi = (amount: string | null, symbol: Account['symbol']) => {
-    const network = NETWORKS.find(n => n.symbol === symbol);
+export const networkAmountToSatoshi = (amount: string | null, symbol: NetworkSymbol) => {
     if (!amount) return '0';
-    if (!network) return amount;
-    return amountToSatoshi(amount, network.decimals);
+
+    const decimals = getAccountDecimals(symbol);
+
+    if (!decimals) return amount;
+
+    return amountToSatoshi(amount, decimals);
 };
 
 export const formatNetworkAmount = (
     amount: string,
-    symbol: Account['symbol'],
+    symbol: NetworkSymbol,
     withSymbol = false,
     isSatoshis?: boolean,
 ) => {
-    const network = NETWORKS.find(n => n.symbol === symbol);
+    const decimals = getAccountDecimals(symbol);
 
-    if (!network) {
-        return amount;
-    }
+    if (!decimals) return amount;
 
-    let formattedAmount = formatAmount(amount, network.decimals);
+    let formattedAmount = formatAmount(amount, decimals);
 
     if (withSymbol) {
         let formattedSymbol = symbol?.toUpperCase();
@@ -236,7 +244,7 @@ export const sortByCoin = (accounts: Account[]) =>
         return aIndex - bIndex;
     });
 
-export const findAccountsByNetwork = (symbol: Network['symbol'], accounts: Account[]) =>
+export const findAccountsByNetwork = (symbol: NetworkSymbol, accounts: Account[]) =>
     accounts.filter(a => a.symbol === symbol);
 
 export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
@@ -266,8 +274,7 @@ export const getAllAccounts = (deviceState: string | typeof undefined, accounts:
 export const getNetwork = (symbol: string): Network | null =>
     NETWORKS.find(c => c.symbol === symbol) || null;
 
-export const isNetworkSymbol = (symbol: string): symbol is Network['symbol'] =>
-    !!getNetwork(symbol);
+export const isNetworkSymbol = (symbol: string): symbol is NetworkSymbol => !!getNetwork(symbol);
 
 /**
  * Returns a string used as an index to separate txs for given account inside a transactions reducer
@@ -402,7 +409,7 @@ export const getTotalFiatBalance = (
     return instanceBalance;
 };
 
-export const isTestnet = (symbol: Account['symbol']) => {
+export const isTestnet = (symbol: NetworkSymbol) => {
     const net = NETWORKS.find(n => n.symbol === symbol);
     return net?.testnet ?? false;
 };
@@ -549,7 +556,7 @@ export const getAccountIdentifier = (account: Account) => ({
 export const accountSearchFn = (
     account: Account,
     rawSearchString?: string,
-    coinFilter?: Account['symbol'],
+    coinFilter?: NetworkSymbol,
 ) => {
     // if coin filter is active and account symbol doesn't match return false and don't continue the search
     const coinFilterMatch = coinFilter ? account.symbol === coinFilter : true;

@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { NetworkKey } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { XpubAddress } from '@suite-common/wallet-types';
 
 export enum OnboardingStackRoutes {
@@ -14,7 +14,7 @@ export type OnboardingStackParamList = {
     [OnboardingStackRoutes.OnboardingXpubScan]: undefined;
     [OnboardingStackRoutes.OnboardingAssets]: {
         xpubAddress: XpubAddress;
-        currencySymbol: NetworkKey;
+        currencySymbol: NetworkSymbol;
     };
 };
 

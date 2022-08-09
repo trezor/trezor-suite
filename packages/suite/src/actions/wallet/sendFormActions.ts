@@ -1,4 +1,4 @@
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
@@ -9,10 +9,13 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { SEND } from '@wallet-actions/constants';
 import {
-    formatAmount,
     formatNetworkAmount,
     getPendingAccount,
     getAreSatoshisUsed,
+    amountToSatoshi,
+    formatAmount,
+    getAccountDecimals,
+    hasNetworkFeatures,
 } from '@suite-common/wallet-utils';
 import { isCardanoTx } from '@wallet-utils/cardanoUtils';
 import { Dispatch, GetState } from '@suite-types';
@@ -94,6 +97,70 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
             key,
         });
     }
+};
+
+// TODO: replace by structuredClone() after updating TS
+const clone = <T>(info: T): T => {
+    const jsonString = JSON.stringify(info);
+
+    if (jsonString === undefined) {
+        // jsonString === undefined IF and only IF obj === undefined
+        // therefore no need to clone
+        return info;
+    }
+
+    return JSON.parse(jsonString);
+};
+
+export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
+    const { route } = getState().router;
+
+    const {
+        settings,
+        accounts,
+        selectedAccount,
+        send: { drafts },
+    } = getState().wallet;
+
+    const draftEntries = Object.entries(drafts);
+
+    if (!draftEntries.length) {
+        return;
+    }
+
+    // draft will be saved after leaving the form anyways – don't interfere with the logic
+    const isOnSendPage = route?.name === 'wallet-send';
+
+    draftEntries.forEach(([key, draft]) => {
+        const relatedAccount = accounts.find(({ key: accountKey }) => accountKey === key);
+
+        const isSelectedAccount = selectedAccount.account?.key === relatedAccount?.key;
+
+        if ((isSelectedAccount && isOnSendPage) || !relatedAccount) {
+            return;
+        }
+
+        const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
+        const areSatsSupported = hasNetworkFeatures(relatedAccount, 'amount-unit');
+
+        const conversionToUse =
+            areSatsSelected && areSatsSupported ? amountToSatoshi : formatAmount;
+
+        const updatedDraft = clone(draft);
+        const decimals = getAccountDecimals(relatedAccount.symbol)!;
+
+        updatedDraft.outputs.forEach(output => {
+            if (output.amount && areSatsSupported) {
+                output.amount = conversionToUse(output.amount, decimals);
+            }
+        });
+
+        dispatch({
+            type: SEND.STORE_DRAFT,
+            key,
+            formState: updatedDraft,
+        });
+    });
 };
 
 export const composeTransaction =

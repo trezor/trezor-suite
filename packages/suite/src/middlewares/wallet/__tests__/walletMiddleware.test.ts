@@ -7,8 +7,14 @@ import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import blockchainReducer from '@wallet-reducers/blockchainReducer';
 import walletMiddleware from '@wallet-middlewares/walletMiddleware';
 import blockchainMiddleware from '@wallet-middlewares/blockchainMiddleware';
-import { Action } from '@suite-types';
 import * as fixtures from '../__fixtures__/walletMiddleware';
+import selectedAccountReducer, {
+    State as SelectedAccountState,
+} from '@wallet-reducers/selectedAccountReducer';
+import sendFormReducer, { SendState } from '@wallet-reducers/sendFormReducer';
+
+import { RouterState } from '@suite-reducers/routerReducer';
+import { Action } from '@suite-types';
 
 const { getWalletAccount } = global.JestMocks;
 
@@ -18,13 +24,23 @@ const TrezorConnect = require('@trezor/connect').default;
 type AccountsState = ReturnType<typeof accountsReducer>;
 type SettingsState = ReturnType<typeof walletSettingsReducer>;
 interface Args {
+    router?: Partial<RouterState>;
     accounts?: AccountsState;
     settings?: Partial<SettingsState>;
+    selectedAccount?: Partial<SelectedAccountState>;
+    send?: Partial<SendState>;
 }
 
-export const getInitialState = ({ accounts, settings }: Args = {}) => ({
+export const getInitialState = ({
+    router,
+    accounts,
+    settings,
+    selectedAccount,
+    send,
+}: Args = {}) => ({
     router: {
         app: 'wallet',
+        ...router,
     },
     suite: {
         device: true, // device is irrelevant in this test
@@ -36,6 +52,12 @@ export const getInitialState = ({ accounts, settings }: Args = {}) => ({
             ...walletSettingsReducer(undefined, { type: 'foo' } as any),
             ...settings,
         },
+        selectedAccount: {
+            ...selectedAccountReducer(undefined, { type: 'foo' } as any),
+            ...selectedAccount,
+            status: 'loaded',
+        },
+        send: { ...sendFormReducer(undefined, { type: 'foo' } as any), ...send },
     },
 });
 
@@ -47,11 +69,13 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { accounts, blockchain, settings } = store.getState().wallet;
+        const { accounts, blockchain, settings, selectedAccount, send } = store.getState().wallet;
         store.getState().wallet = {
             accounts: accountsReducer(accounts, action),
             blockchain: blockchainReducer(blockchain, action),
             settings: walletSettingsReducer(settings, action),
+            selectedAccount: selectedAccountReducer(selectedAccount as any, action),
+            send: sendFormReducer(send, action),
         };
         // add action back to stack
         store.getActions().push(action);
@@ -100,5 +124,18 @@ describe('walletMiddleware', () => {
                 expect(TrezorConnect.blockchainDisconnect).toBeCalledTimes(disconnect.called);
             }
         });
+    });
+
+    it('have send form drafts, change amount units, return to a form', () => {
+        fixtures.draftsFixtures.forEach(
+            ({ initialState, action, expectedActions, expectedDrafts }) => {
+                const store = initStore(getInitialState(initialState));
+
+                store.dispatch(action);
+
+                expect(store.getActions()).toEqual(expectedActions);
+                expect(store.getState().wallet.send?.drafts).toEqual(expectedDrafts);
+            },
+        );
     });
 });
