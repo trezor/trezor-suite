@@ -14,7 +14,7 @@ describe('Onboarding - create wallet', () => {
     it('Success (no shamir capability)', () => {
         cy.task('startEmu', { wipe: true, version: '2.1.1' });
 
-        cy.getTestElement('@onboarding/box-animated').should('have.css', 'opacity', '1');
+        cy.getTestElement('@analytics/consent').should('have.css', 'opacity', '1');
         cy.getTestElement('@welcome-layout/body').matchImageSnapshot('1-onboarding-create-wallet');
         cy.getTestElement('@onboarding/continue-button').click();
 

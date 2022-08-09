@@ -31,7 +31,7 @@ const { skipOn, onlyOn } = require('@cypress/skip-test');
 const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
     const baseUrl = Cypress.config('baseUrl');
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
-    const testUrl = Cypress.env('TEST_URLS')[0];
+    const testUrl = Cypress.env('TEST_URLS')?.[0] || '';
 
     cy.visit(baseUrl + testUrl + assetPrefix + route, options);
     return cy.document().its('fonts.status').should('equal', 'loaded');
