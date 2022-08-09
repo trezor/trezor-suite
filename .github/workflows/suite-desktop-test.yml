@@ -39,4 +39,23 @@ jobs:
         # next 2 steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
       - run: yarn workspace @trezor/suite-data msg-system-sign-config
       - run: yarn workspace @trezor/suite-desktop build:linux
+      - run: docker-compose version
+      - run: docker version
+      - run: docker-compose -f ./docker/docker-compose.suite-desktop-ci.yml pull
       - run: docker-compose -f ./docker/docker-compose.suite-desktop-ci.yml up --build --abort-on-container-exit --force-recreate
+      - run: docker ps
+      - run: docker network inspect docker_default
+      - run: docker compose -f ./docker/docker-compose.suite-desktop-ci.yml ps
+      - run: sudo lsof -i -P -n | grep LISTEN
+      #- run: curl 'http://localhost:21325/status/'
+      #- run: curl 'http://127.0.0.1:21325/status/'
+      - run: docker-compose -f ./docker/docker-compose.suite-desktop-ci.yml run test-run
+      - run: echo "everything done"
+
+      - name: Archive screenshots
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: screenshots
+          path: packages/integration-tests/projects/suite-desktop/screenshots
+          retention-days: 7
