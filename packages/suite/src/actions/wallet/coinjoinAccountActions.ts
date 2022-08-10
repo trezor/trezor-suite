@@ -8,14 +8,50 @@ import {
     update as updateAccountInfo,
     updateAccount,
 } from './accountActions';
+import { initCoinjoinClient, getCoinjoinClient } from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
-import type { Dispatch, GetState } from '@suite-types';
-import type { Account, Network } from '@wallet-types';
+import { Dispatch, GetState } from '@suite-types';
+import { Network } from '@suite-common/wallet-config';
+import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
 
-export type CoinjoinAccountAction = {
-    type: typeof COINJOIN.ACCOUNT_CREATE;
-    payload: Account;
-};
+const coinjoinAccountCreate = (account: Account) =>
+    ({
+        type: COINJOIN.ACCOUNT_CREATE,
+        account,
+    } as const);
+
+const coinjoinAccountAuthorize = (account: Account) =>
+    ({
+        type: COINJOIN.ACCOUNT_AUTHORIZE,
+        account,
+    } as const);
+
+const coinjoinAccountAuthorizeSuccess = (account: Account, params: CoinjoinSessionParameters) =>
+    ({
+        type: COINJOIN.ACCOUNT_AUTHORIZE_SUCCESS,
+        account,
+        params,
+    } as const);
+
+const coinjoinAccountAuthorizeFailed = (account: Account, error: string) =>
+    ({
+        type: COINJOIN.ACCOUNT_AUTHORIZE_FAILED,
+        account,
+        error,
+    } as const);
+
+const coinjoinAccountUnregister = (account: Account) =>
+    ({
+        type: COINJOIN.ACCOUNT_UNREGISTER,
+        account,
+    } as const);
+
+export type CoinjoinAccountAction =
+    | ReturnType<typeof coinjoinAccountCreate>
+    | ReturnType<typeof coinjoinAccountAuthorize>
+    | ReturnType<typeof coinjoinAccountAuthorizeSuccess>
+    | ReturnType<typeof coinjoinAccountAuthorizeFailed>
+    | ReturnType<typeof coinjoinAccountUnregister>;
 
 export const fetchAndUpdateAccount =
     (account: Account) => async (dispatch: Dispatch, getState: GetState) => {
@@ -82,7 +118,16 @@ export const fetchAndUpdateAccount =
 
 export const createCoinjoinAccount =
     (network: Network) => async (dispatch: Dispatch, getState: GetState) => {
-        if (network.accountType !== 'coinjoin') return;
+        if (network.accountType !== 'coinjoin') {
+            throw new Error('createCoinjoinAccount: invalid account type');
+        }
+
+        // initialize @trezor/coinjoin client
+        const client = await dispatch(initCoinjoinClient(network.symbol));
+        if (!client) {
+            return;
+        }
+
         const { device } = getState().suite;
 
         // TODO: Disable safety_checks until Trezor FW will implement slip-0025
@@ -146,10 +191,7 @@ export const createCoinjoinAccount =
                 },
             ),
         );
-        dispatch({
-            type: COINJOIN.ACCOUNT_CREATE,
-            payload: account.payload,
-        });
+        dispatch(coinjoinAccountCreate(account.payload));
 
         // switch to account
         dispatch(
@@ -165,3 +207,82 @@ export const createCoinjoinAccount =
         // start discovery
         dispatch(fetchAndUpdateAccount(account.payload));
     };
+
+const authorizeCoinjoin =
+    (account: Account, params: CoinjoinSessionParameters & { coordinator: string }) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        // initialize @trezor/coinjoin client
+        const client = await dispatch(initCoinjoinClient(account.symbol));
+        if (!client) {
+            return;
+        }
+
+        const { device } = getState().suite;
+
+        // authorize coinjoin session on Trezor
+        dispatch(coinjoinAccountAuthorize(account));
+
+        const auth = await TrezorConnect.authorizeCoinJoin({
+            device,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
+            path: account.path,
+            coin: account.symbol,
+            ...params,
+        });
+
+        if (auth.success) {
+            dispatch(coinjoinAccountAuthorizeSuccess(account, params));
+            return true;
+        }
+
+        dispatch(coinjoinAccountAuthorizeFailed(account, auth.payload.error));
+
+        dispatch(
+            addToast({
+                type: 'error',
+                error: `Coinjoin not authorized: ${auth.payload.error}`,
+            }),
+        );
+    };
+
+// called from coinjoin account UI
+export const startCoinjoinSession =
+    (account: Account, params: CoinjoinSessionParameters) => async (dispatch: Dispatch) => {
+        if (account.accountType !== 'coinjoin') {
+            throw new Error('startCoinjoinSession: invalid account type');
+        }
+
+        // initialize @trezor/coinjoin client
+        const client = await dispatch(initCoinjoinClient(account.symbol));
+        if (!client) {
+            return;
+        }
+
+        // authorize CoinjoinSession on Trezor
+        const authResult = await dispatch(
+            authorizeCoinjoin(account, {
+                ...params,
+                coordinator: client.settings.coordinatorName,
+            }),
+        );
+
+        // register authorized account
+        if (authResult) {
+            client.registerAccount(account);
+        }
+    };
+
+// called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
+export const stopCoinjoinSession = (account: Account) => (dispatch: Dispatch) => {
+    // get @trezor/coinjoin client if available
+    const client = dispatch(getCoinjoinClient(account.symbol));
+    if (!client) {
+        return;
+    }
+
+    // unregister account in @trezor/coinjoin
+    client.unregisterAccount(account.key);
+
+    // dispatch data to reducer
+    dispatch(coinjoinAccountUnregister(account));
+};
