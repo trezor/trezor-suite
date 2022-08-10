@@ -7,6 +7,8 @@ export const oauthUrls = [
     'https://www.dropbox.com/oauth2/authorize',
 ];
 
+export const allowedProtocols = ['http:', 'https:'];
+
 export const allowedDomains = [
     'localhost',
     '127.0.0.1',

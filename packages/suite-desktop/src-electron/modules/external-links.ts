@@ -12,6 +12,13 @@ const init: Module = ({ mainWindow, store }) => {
 
     mainWindow.webContents.setWindowOpenHandler((details: HandlerDetails) => {
         const { url } = details;
+        const { protocol } = new URL(url);
+
+        // https://benjamin-altpeter.de/shell-openexternal-dangers/
+        if (!config.allowedProtocols.includes(protocol)) {
+            logger.error('external-links', `Protocol '${protocol}' not allowed`);
+            return { action: 'deny' };
+        }
 
         if (config.oauthUrls.some(u => url.startsWith(u))) {
             logger.info('external-links', `${url} was allowed (OAuth list)`);
