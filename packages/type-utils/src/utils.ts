@@ -48,3 +48,10 @@ export type DeepPartial<T> = T extends () => any
 export type PrimitiveType = string | number | boolean | Date | null | undefined;
 
 export type Timeout = ReturnType<typeof setTimeout>;
+
+// Record<K, T> with optional key and required value.
+// example of using partial union as keys:
+// const p: PartialRecord<'a' | 'b' | 'c', string>; = { b: 'value' };
+export type PartialRecord<K extends keyof any, T> = {
+    [P in K]?: T;
+};
