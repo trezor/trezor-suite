@@ -4,7 +4,7 @@
 export const toggleDeviceMenu = () => cy.getTestElement('@menu/switch-device').click();
 
 export const passThroughInitialRun = () => {
-    cy.getTestElement('@onboarding/continue-button')
+    cy.getTestElement('@onboarding/continue-button', { timeout: 40000 })
         .click()
         .getTestElement('@onboarding/exit-app-button')
         .click()
