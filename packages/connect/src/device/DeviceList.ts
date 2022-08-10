@@ -104,9 +104,9 @@ export class DeviceList extends EventEmitter {
 
             // detection of environment browser/node
             // todo: code should not be detecting environment itself. imho it should be built with this information passed from build process maybe?
-            const isNode = process?.release?.name?.search(/node|io\.js/) !== -1;
+            const isNode =
+                !!process?.release?.name && process.release.name.search(/node|io\.js/) !== -1;
             BridgeV2.setFetch(fetchWithSignal, isNode);
-
             // @ts-expect-error TODO: https://github.com/trezor/trezor-suite/issues/5332
             transports.push(bridge);
         }
