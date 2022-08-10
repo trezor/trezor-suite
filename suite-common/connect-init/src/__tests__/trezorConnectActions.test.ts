@@ -170,7 +170,6 @@ describe('TrezorConnect Actions', () => {
         expect(() => store.dispatch(init())).not.toThrow();
 
         const actions = store.getActions();
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { emit } = require('@trezor/connect');
 
         expect(actions.pop()).toMatchObject({ type: init.pending.type });

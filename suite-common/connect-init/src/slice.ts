@@ -47,7 +47,7 @@ export const prepareConnectInitThunk = ({
         const { selectEnabledNetworks, selectIsPendingTransportEvent } = selectors;
         const { lockDevice } = actions;
 
-        const enabledNetworks = selectEnabledNetworks(getState());
+        const getEnabledNetworks = () => selectEnabledNetworks(getState());
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...action }) => {
@@ -100,7 +100,7 @@ export const prepareConnectInitThunk = ({
             };
         });
 
-        cardanoConnectPatch(enabledNetworks);
+        cardanoConnectPatch(getEnabledNetworks);
 
         try {
             await TrezorConnect.init({

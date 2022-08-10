@@ -33,7 +33,7 @@ const blacklist: ConnectKey[] = [
     'disableWebUSB',
 ];
 
-export const cardanoConnectPatch = (enabledNetworks: string[]) => {
+export const cardanoConnectPatch = (getEnabledNetworks: () => string[]) => {
     // Pass additional parameter `useCardanoDerivation` to Trezor Connect methods
     // in order to enable cardano derivation on a device
     // https://github.com/trezor/trezor-firmware/blob/master/core/src/apps/cardano/README.md#seed-derivation-schemes
@@ -44,6 +44,7 @@ export const cardanoConnectPatch = (enabledNetworks: string[]) => {
             const original: any = TrezorConnect[key as ConnectKey];
             if (!original) return;
             (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
+                const enabledNetworks = getEnabledNetworks();
                 const cardanoEnabled = !!enabledNetworks.find(a => a === 'ada' || a === 'tada');
                 const result = await original({
                     ...params,
