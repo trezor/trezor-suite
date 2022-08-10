@@ -42,7 +42,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // 5. init connect (could throw an error,
     // then the error is caught in <ErrorBoundary /> in Main.tsx
     try {
-        await dispatch(trezorConnectActions.init());
+        // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
+        // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
+        await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
     } catch (err) {
         dispatch({ type: SUITE.ERROR, error: err.message });
         throw err;

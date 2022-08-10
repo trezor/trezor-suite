@@ -4,7 +4,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { mergeObject } from '@trezor/utils';
-import { init } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
 import * as backupActions from '@backup-actions/backupActions';
@@ -14,6 +14,8 @@ jest.mock('@trezor/connect', () => {
 
     const backupDevice = () => fixture;
     const callbacks: { [key: string]: () => any } = {};
+
+    const { PROTO } = jest.requireActual('@trezor/connect');
 
     return {
         __esModule: true, // this property makes it work
@@ -32,6 +34,7 @@ jest.mock('@trezor/connect', () => {
         setTestFixtures: (f: any) => {
             fixture = f;
         },
+        PROTO,
     };
 });
 
@@ -76,10 +79,18 @@ describe('Backup Actions', () => {
 
         const state = getInitialState({});
         const store = mockStore(state);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
 
+        expect(store.getActions().shift()).toMatchObject({
+            type: connectInitThunk.pending.type,
+            payload: undefined,
+        });
+        expect(store.getActions().shift()).toMatchObject({
+            type: connectInitThunk.fulfilled.type,
+            payload: undefined,
+        });
         expect(store.getActions().shift()).toEqual({
             type: BACKUP.SET_STATUS,
             payload: 'in-progress',
@@ -100,10 +111,18 @@ describe('Backup Actions', () => {
 
         const state = getInitialState({});
         const store = mockStore(state);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
 
         await store.dispatch(backupActions.backupDevice({ device: store.getState().suite.device }));
 
+        expect(store.getActions().shift()).toMatchObject({
+            type: connectInitThunk.pending.type,
+            payload: undefined,
+        });
+        expect(store.getActions().shift()).toMatchObject({
+            type: connectInitThunk.fulfilled.type,
+            payload: undefined,
+        });
         expect(store.getActions().shift()).toEqual({
             type: BACKUP.SET_STATUS,
             payload: 'in-progress',

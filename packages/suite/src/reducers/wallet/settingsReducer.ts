@@ -2,7 +2,7 @@ import produce from 'immer';
 import { FeeLevel, PROTO } from '@trezor/connect';
 import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { Action } from '@suite-types';
+import { Action, AppState } from '@suite-types';
 import { Network } from '@wallet-types';
 
 export interface State {
@@ -55,5 +55,7 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
             // no default
         }
     });
+
+export const selectEnabledNetworks = (state: AppState) => state.wallet.settings.enabledNetworks;
 
 export default settingsReducer;

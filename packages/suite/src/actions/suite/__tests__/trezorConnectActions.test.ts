@@ -6,11 +6,14 @@ import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trez
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import { SUITE } from '@suite-actions/constants';
-import { init } from '../trezorConnectActions';
+import { connectInitThunk } from '../trezorConnectActions';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
     const callbacks: { [key: string]: (e: any) => any } = {};
+
+    const { PROTO } = jest.requireActual('@trezor/connect');
+
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -33,6 +36,7 @@ jest.mock('@trezor/connect', () => {
         DEVICE: {},
         TRANSPORT: {},
         BLOCKCHAIN: {},
+        PROTO,
         // custom method for test purpose
         setTestFixtures: (f: any) => {
             fixture = f;
@@ -81,14 +85,18 @@ describe('TrezorConnect Actions', () => {
     it('Success', () => {
         const state = getInitialState();
         const store = initStore(state);
-        expect(() => store.dispatch(init())).not.toThrow();
+        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
     });
 
     it('Error', async () => {
         require('@trezor/connect').setTestFixtures(() => new Error('Iframe error'));
         const state = getInitialState();
         const store = initStore(state);
-        await expect(() => store.dispatch(init())).rejects.toThrow('Iframe error');
+        try {
+            await store.dispatch(connectInitThunk()).unwrap();
+        } catch (error) {
+            expect(error.message).toEqual('Iframe error');
+        }
         require('@trezor/connect').setTestFixtures(undefined);
     });
 
@@ -99,7 +107,11 @@ describe('TrezorConnect Actions', () => {
         }));
         const state = getInitialState();
         const store = initStore(state);
-        await expect(() => store.dispatch(init())).rejects.toThrow('SomeCode: Iframe error');
+        try {
+            await store.dispatch(connectInitThunk()).unwrap();
+        } catch (error) {
+            expect(error.message).toEqual('SomeCode: Iframe error');
+        }
         require('@trezor/connect').setTestFixtures(undefined);
     });
 
@@ -107,7 +119,11 @@ describe('TrezorConnect Actions', () => {
         require('@trezor/connect').setTestFixtures(() => 'Iframe error');
         const state = getInitialState();
         const store = initStore(state);
-        await expect(() => store.dispatch(init())).rejects.toThrow('Iframe error');
+        try {
+            await store.dispatch(connectInitThunk()).unwrap();
+        } catch (error) {
+            expect(error.message).toEqual('Iframe error');
+        }
         require('@trezor/connect').setTestFixtures(undefined);
     });
 
@@ -116,7 +132,7 @@ describe('TrezorConnect Actions', () => {
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState();
         const store = initStore(state);
-        expect(() => store.dispatch(init())).not.toThrow();
+        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
 
         const actions = store.getActions();
         const { emit } = require('@trezor/connect');
@@ -136,7 +152,7 @@ describe('TrezorConnect Actions', () => {
     it('Wrapped method', async () => {
         const state = getInitialState();
         const store = initStore(state);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
         await require('@trezor/connect').default.getFeatures();
         const actions = store.getActions();
         // check actions in reversed order

@@ -30,6 +30,7 @@
         "@trezor/connect": "9.0.0-beta.6",
         "@trezor/react-utils": "*",
         "@trezor/suite-analytics": "*",
+        "@suite-common/connect-init": "*",
         "@trezor/suite-data": "*",
         "@trezor/suite-desktop-api": "*",
         "@trezor/suite-storage": "*",
@@ -89,6 +90,7 @@
     "devDependencies": {
         "@crowdin/cli": "^3.7.8",
         "@formatjs/cli": "^3.0.5",
+        "@reduxjs/toolkit": "^1.8.3",
         "@sentry/types": "6.17.2",
         "@testing-library/react": "12.1.5",
         "@testing-library/user-event": "12.8.3",
