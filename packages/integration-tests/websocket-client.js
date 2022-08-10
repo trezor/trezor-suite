@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop,no-async-promise-executor */
-
 const WebSocket = require('ws');
 const { EventEmitter } = require('events');
 

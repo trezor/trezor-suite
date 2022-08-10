@@ -1,7 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/PopupManager.js
 
-/* eslint-disable no-underscore-dangle */
-
 import EventEmitter from 'events';
 import { createDeferred, Deferred } from '@trezor/utils';
 import { POPUP, IFRAME, UI, ConnectSettings, CoreMessage } from '@trezor/connect/lib/index';
@@ -322,11 +320,9 @@ export class PopupManager extends EventEmitter {
         if (this._window) {
             if (this.settings.env === 'webextension') {
                 // @ts-ignore
-                // eslint-disable-next-line no-unused-vars
                 let _e = chrome.runtime.lastError;
 
                 chrome.tabs.remove(this._window.id, () => {
-                    // eslint-disable-next-line no-unused-vars
                     _e = chrome.runtime.lastError;
                 });
             } else {

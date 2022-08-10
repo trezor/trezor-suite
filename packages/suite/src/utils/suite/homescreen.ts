@@ -1,5 +1,4 @@
 /* eslint-disable no-bitwise */
-/* eslint-disable prefer-spread */ // to be refactored
 import * as pako from 'pako';
 
 type TrezorModelNumber = 1 | 2;

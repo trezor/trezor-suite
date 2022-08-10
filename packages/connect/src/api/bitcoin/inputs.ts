@@ -52,7 +52,6 @@ export const validateTrezorInputs = (
 export const enhanceTrezorInputs = (inputs: PROTO.TxInputType[], rawTxs: TypedRawTransaction[]) => {
     inputs.forEach(input => {
         if (!input.amount) {
-            // eslint-disable-next-line no-console
             console.warn('TrezorConnect.singTransaction deprecation: missing input amount.');
             const refTx = rawTxs.find(t => 'txid' in t.tx && t.tx.txid === input.prev_hash);
             if (refTx && refTx.type === 'blockbook' && refTx.tx.vout[input.prev_index]) {

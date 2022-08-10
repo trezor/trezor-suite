@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { MiddlewareAPI } from 'redux';
 import { ROUTER } from '@suite-actions/constants';
 

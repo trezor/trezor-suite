@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { DEVICE, Features, Device } from '@trezor/connect';
 import { testMocks } from '@suite-common/test-utils';
 

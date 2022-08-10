@@ -12,7 +12,6 @@ import type { TranslationKey as SuiteTranslationKey } from '../../../packages/su
 export type TranslationKey = SuiteTranslationKey;
 
 // Add MessageDescriptor type to values entry
-// eslint-disable-next-line @typescript-eslint/ban-types
 type FormatXMLElementFn = (...args: any[]) => string | object;
 export interface ExtendedMessageDescriptor extends MessageDescriptor {
     id: TranslationKey;

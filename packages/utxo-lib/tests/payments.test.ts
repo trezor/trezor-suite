@@ -85,7 +85,6 @@ import * as utils from './payments.utils';
                 if (key in disabled) continue;
                 const dependencies = depends[key];
 
-                // eslint-disable-next-line no-loop-func
                 dependencies.forEach((dependency: any) => {
                     if (!Array.isArray(dependency)) dependency = [dependency];
 

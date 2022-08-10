@@ -1,4 +1,4 @@
-/* eslint-disable camelcase, no-bitwise */
+/* eslint-disable camelcase */
 
 import TrezorConnect from '@trezor/connect';
 import * as versionUtils from '@trezor/utils/src/versionUtils'; // NOTE: only this module is required

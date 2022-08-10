@@ -1,4 +1,4 @@
-/* eslint-disable camelcase, no-underscore-dangle */
+/* eslint-disable no-underscore-dangle */
 
 import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/stellar/sign_tx.json';
 import { Messages } from '@trezor/transport';

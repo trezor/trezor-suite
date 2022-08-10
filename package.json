@@ -34,7 +34,7 @@
         "type-check": "yarn lerna run type-check",
         "type-check:force": "rimraf -rf **/libDev && yarn type-check",
         "test:unit": "yarn lerna run test:unit",
-        "lint:js": "eslint --cache --ignore-path .gitignore --ext .js,.ts,.tsx ./",
+        "lint:js": "eslint --report-unused-disable-directives --cache --ignore-path .gitignore --ext .js,.ts,.tsx ./",
         "lint": "yarn lerna run lint:styles && yarn lint:js",
         "lint-staged": "npx lint-staged",
         "_______ Commands _______": "Useful commands and scripts.",

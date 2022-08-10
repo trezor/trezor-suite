@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
 import { versionUtils } from '@trezor/utils';

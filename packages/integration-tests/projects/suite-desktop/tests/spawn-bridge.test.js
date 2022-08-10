@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires, no-await-in-loop, no-async-promise-executor */
 const { _electron: electron } = require('playwright');
 const fs = require('fs');
 const path = require('path');

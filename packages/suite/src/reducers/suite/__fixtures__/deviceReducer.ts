@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { DEVICE } from '@trezor/connect';
 import { SUITE } from '@suite-actions/constants';
 

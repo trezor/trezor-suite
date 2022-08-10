@@ -90,7 +90,6 @@ export class ElectrumClient extends BatchingJsonRpcClient implements ElectrumAPI
                 new Date().getTime() > this.timeLastCall + KEEP_ALIVE_INTERVAL / 2
             ) {
                 await (this as ElectrumAPI).request('server.ping').catch(err => {
-                    // eslint-disable-next-line no-console
                     console.error(`Ping to server failed: [${err}]`);
                     this.close();
                 });

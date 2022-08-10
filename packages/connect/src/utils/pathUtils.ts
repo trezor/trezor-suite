@@ -1,7 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
 
-/* eslint-disable no-bitwise */
-
 import { PROTO, ERRORS } from '../constants';
 import type { CoinInfo } from '../types';
 

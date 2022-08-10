@@ -1,6 +1,4 @@
-/* eslint-disable no-await-in-loop */
-
-import { NativeModules } from 'react-native'; // eslint-disable-line import/no-unresolved
+import { NativeModules } from 'react-native';
 
 type TrezorDeviceInfoDebug = {
     path: string;

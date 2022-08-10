@@ -205,7 +205,6 @@ export class DeviceList extends EventEmitter {
         });
 
         stream.on(TRANSPORT.UPDATE, (diff: DeviceDescriptorDiff) => {
-            // eslint-disable-next-line no-use-before-define
             new DiffHandler(this, diff).handle();
         });
 
@@ -247,7 +246,6 @@ export class DeviceList extends EventEmitter {
 
     async _createAndSaveDevice(descriptor: DeviceDescriptor) {
         _log.debug('Creating Device', descriptor);
-        // eslint-disable-next-line no-use-before-define
         await new CreateDeviceHandler(descriptor, this).handle();
     }
 

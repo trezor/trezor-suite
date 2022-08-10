@@ -7,7 +7,6 @@ export interface PendingStakeTx {
 export interface StakePool {
     hex: string;
     bech32: string;
-    // eslint-disable-next-line camelcase
     live_stake: string;
     saturation: string;
 }

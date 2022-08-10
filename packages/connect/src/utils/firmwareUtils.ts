@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { createHash } from 'crypto';
 import { versionUtils } from '@trezor/utils';
 import type { Features, StrictFeatures, FirmwareRelease, VersionArray } from '../types';

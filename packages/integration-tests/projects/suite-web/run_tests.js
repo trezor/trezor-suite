@@ -52,7 +52,7 @@ const getTestFiles = () => {
 const runTests = async () => {
     const {
         BROWSER = 'chrome',
-        CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
+        CYPRESS_baseUrl,
         TRACK_SUITE_URL,
         ALLOW_RETRY,
         CI_JOB_URL,
@@ -112,7 +112,7 @@ const runTests = async () => {
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
 
         const config = {
-            baseUrl: CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
+            baseUrl: CYPRESS_baseUrl,
             supportFile: `${__dirname}/support/index.ts`,
             pluginsFile: `${__dirname}/plugins/index.js`,
             fixturesFolder: `${__dirname}/fixtures`,

@@ -1,6 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/builder.js
 
-/* eslint-disable no-underscore-dangle */
 import { createDeferred, Deferred } from '@trezor/utils';
 import { IFRAME, ERRORS, ConnectSettings } from '@trezor/connect/lib/index';
 import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
@@ -34,7 +33,6 @@ const handleIframeBlocked = () => {
     window.clearTimeout(timeout);
 
     error = ERRORS.TypedError('Init_IframeBlocked');
-    // eslint-disable-next-line no-use-before-define
     dispose();
     initPromise.reject(error);
 };
@@ -150,7 +148,6 @@ export const init = async (settings: ConnectSettings) => {
     // inject iframe into host document body
     if (document.body) {
         document.body.appendChild(instance);
-        // eslint-disable-next-line no-use-before-define
         injectStyleSheet();
     }
 

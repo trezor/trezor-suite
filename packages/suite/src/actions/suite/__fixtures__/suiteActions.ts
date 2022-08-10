@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { SUITE, NOTIFICATION, MODAL } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';

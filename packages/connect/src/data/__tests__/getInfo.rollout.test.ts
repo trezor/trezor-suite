@@ -1,7 +1,5 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
-/* eslint-disable camelcase */
 import { getInfo } from '../firmwareInfo';
 
 const { getReleasesT2, getDeviceFeatures } = global.JestMocks;

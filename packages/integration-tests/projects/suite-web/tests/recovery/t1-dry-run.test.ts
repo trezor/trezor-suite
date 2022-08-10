@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 // @group:device-management
 
 describe.skip('Recovery - dry run', () => {

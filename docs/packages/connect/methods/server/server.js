@@ -36,5 +36,4 @@ const pubKey = '023a472219ad3327b07c18273717bb3a40b39b743756bf287fbd5fa9d263237f
 const signature =
     '20f2d1a42d08c3a362be49275c3ffeeaa415fc040971985548b9f910812237bb41770bf2c8d488428799fbb7e52c11f1a3404011375e4080e077e0e42ab7a5ba02';
 
-// eslint-disable-next-line no-console
 console.log(verify(hidden, visual, pubKey, signature, 2));

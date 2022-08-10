@@ -34,7 +34,6 @@ export const ResetDeviceStep = () => {
             r => r.code === 'ButtonRequest_ResetDevice' || r.code === 'ButtonRequest_ProtectCall',
         ) && !submitted; // ButtonRequest_ResetDevice is for TT, ButtonRequest_ProtectCall for T1
 
-    // eslint-disable-next-line camelcase
     const onResetDevice = async (params?: { backup_type?: 0 | 1 | undefined }) => {
         setSubmitted(false);
 

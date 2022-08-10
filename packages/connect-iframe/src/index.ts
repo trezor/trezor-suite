@@ -49,9 +49,7 @@ const handleMessage = (event: PostMessageEvent) => {
     const id = typeof data.id === 'number' ? data.id : 0;
 
     const fail = (error: string) => {
-        // eslint-disable-next-line no-use-before-define
         postMessage(createResponseMessage(id, false, { error }));
-        // eslint-disable-next-line no-use-before-define
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
     };
 
@@ -64,7 +62,6 @@ const handleMessage = (event: PostMessageEvent) => {
 
     // catch first message from window.opener
     if (data.type === IFRAME.INIT) {
-        // eslint-disable-next-line no-use-before-define
         init(data.payload, event.origin);
         return;
     }
@@ -85,7 +82,6 @@ const handleMessage = (event: PostMessageEvent) => {
         }
 
         const method = _core.getCurrentMethod()[0];
-        // eslint-disable-next-line no-use-before-define
         postMessage(
             createPopupMessage(POPUP.HANDSHAKE, {
                 settings: DataManager.getSettings(),
@@ -150,7 +146,6 @@ const postMessage = (message: CoreMessage) => {
         return;
     }
     // check if permissions to read from device is granted
-    // eslint-disable-next-line no-use-before-define
     if (!trustedHost && message.event === DEVICE_EVENT && !filterDeviceEvent(message)) {
         return;
     }
@@ -161,7 +156,6 @@ const postMessage = (message: CoreMessage) => {
         message.payload.udev = suggestUdevInstaller();
     }
 
-    // eslint-disable-next-line no-use-before-define
     if (usingPopup && targetUiEvent(message)) {
         if (_popupMessagePort) {
             _popupMessagePort.postMessage(message);

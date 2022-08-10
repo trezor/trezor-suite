@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import TrezorConnect, { UI, RecoveryDevice } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 

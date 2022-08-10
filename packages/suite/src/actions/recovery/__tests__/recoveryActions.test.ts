@@ -24,7 +24,6 @@ export const getInitialState = (custom?: any): any => ({
     suite: {
         device: {
             features: {
-                // eslint-disable-next-line
                 major_version: 2,
             },
         },

@@ -28,7 +28,6 @@ export const removeDraft = async (accountKey: string) => {
     return db.removeItemByPK('sendFormDrafts', accountKey);
 };
 
-// eslint-disable-next-line require-await
 export const saveAccountDraft = (account: Account) => async (_: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
     const { drafts } = getState().wallet.send;

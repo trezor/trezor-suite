@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 

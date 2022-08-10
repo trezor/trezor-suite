@@ -69,7 +69,7 @@ export const actionSequence = async <A extends UserAction[]>(
             const { value } = action;
             if (!value) {
                 userEvent.clear(element);
-                // eslint-disable-next-line no-await-in-loop, no-loop-func
+                // eslint-disable-next-line no-await-in-loop
                 await waitFor(() => {
                     expect(element).toBeTruthy();
                 });

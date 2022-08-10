@@ -11,7 +11,6 @@ jest.mock('dropbox', () => {
         usersGetCurrentAccount() {
             return {
                 result: {
-                    // eslint-disable-next-line
                     name: { given_name: 'haf' },
                 },
             };

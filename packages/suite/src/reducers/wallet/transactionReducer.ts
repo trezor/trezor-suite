@@ -77,7 +77,6 @@ const add = (
         } else {
             // update the transaction if conditions are met
             const existingTxIndex = accountTxs.findIndex(t => t && t.txid === existingTx.txid);
-            // eslint-disable-next-line no-lonely-if
             if (
                 (!existingTx.blockHeight && tx.blockHeight) ||
                 (!existingTx.blockTime && tx.blockTime)

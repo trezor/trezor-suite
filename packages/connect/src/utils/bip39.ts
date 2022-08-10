@@ -1,6 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/bip39.js
 
-/* eslint-disable prettier/prettier */
 export default [
     'abandon',
     'ability',

@@ -77,7 +77,6 @@ const getXpubInfo = (xpub: string, network: Network) => {
     const coinType = BIP32_COIN_TYPES[version];
     const purpose = BIP32_PURPOSES[paymentType];
     const node = getBip32Node(xpub, version, network);
-    // eslint-disable-next-line
     const account = `${(node.index << 1) >>> 1}'`; // Unsigned to signed conversion
     return {
         purpose,

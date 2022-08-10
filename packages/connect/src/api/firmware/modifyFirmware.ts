@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { versionUtils } from '@trezor/utils';
 
 import type { Features } from '../../types';
