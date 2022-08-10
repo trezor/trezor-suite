@@ -100,7 +100,7 @@ const createServer = async (type: keyof typeof DEFAULT_RESPONSES) => {
             if (fid >= 0) {
                 data = fixtures[fid].response;
                 if (typeof fixtures[fid].delay === 'number') {
-                    delay = fixtures[fid].delay; // eslint-disable-line
+                    delay = fixtures[fid].delay;
                 }
                 // remove from list
                 fixtures.splice(fid, 1);

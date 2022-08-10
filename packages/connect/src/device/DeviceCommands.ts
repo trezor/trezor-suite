@@ -547,7 +547,6 @@ export class DeviceCommands {
                     }
                 });
             } else {
-                // eslint-disable-next-line no-console
                 console.warn(
                     '[DeviceCommands] [call] PIN callback not configured, cancelling request',
                 );
@@ -573,7 +572,6 @@ export class DeviceCommands {
                     },
                 );
             } else {
-                // eslint-disable-next-line no-console
                 console.warn(
                     '[DeviceCommands] [call] Passphrase callback not configured, cancelling request',
                 );

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { MiddlewareAPI } from 'redux';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { WALLET_SETTINGS } from '@settings-actions/constants';

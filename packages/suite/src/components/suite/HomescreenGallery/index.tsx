@@ -69,7 +69,6 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                             key={image}
                             id={image}
                             // 2 eslint rules clashing
-                            // eslint-disable-next-line require-await
                             onClick={() => {
                                 setHomescreen(image);
                                 analytics.report({
@@ -92,7 +91,6 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                             key={image}
                             id={image}
                             // 2 eslint rules clashing
-                            // eslint-disable-next-line require-await
                             onClick={() => {
                                 setHomescreen(image);
                                 analytics.report({

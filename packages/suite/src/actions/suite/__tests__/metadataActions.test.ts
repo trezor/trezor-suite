@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 import fs from 'fs';

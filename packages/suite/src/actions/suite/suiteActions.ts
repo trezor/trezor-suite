@@ -332,7 +332,6 @@ export const createDeviceInstance =
         if (!device.features.passphrase_protection) {
             const response = await TrezorConnect.applySettings({
                 device,
-                // eslint-disable-next-line @typescript-eslint/naming-convention
                 use_passphrase: true,
             });
 

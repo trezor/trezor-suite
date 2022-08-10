@@ -39,7 +39,6 @@ export const ConfirmUnverifiedAddress = ({
 
     const verifyAddress = async () => {
         if (!device.available) {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             const result = await applySettings({ use_passphrase: true });
             if (!result || !result.success) return;
         }

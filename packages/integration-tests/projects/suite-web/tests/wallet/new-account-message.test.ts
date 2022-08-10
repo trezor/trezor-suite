@@ -9,7 +9,6 @@ describe('New accounts', () => {
         cy.task('setupEmu', { needs_backup: false, passphrase_protection: true });
         cy.task('startBridge');
 
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         cy.task('applySettings', { passphrase_always_on_device: false });
 
         cy.viewport(1080, 1440).resetDb();

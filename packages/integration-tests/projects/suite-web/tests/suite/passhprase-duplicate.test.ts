@@ -7,7 +7,6 @@ describe('Passphrase', () => {
         cy.task('setupEmu', { passphrase_protection: true });
         cy.task('startBridge');
 
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         cy.task('applySettings', { passphrase_always_on_device: false });
 
         cy.viewport(1080, 1440).resetDb();

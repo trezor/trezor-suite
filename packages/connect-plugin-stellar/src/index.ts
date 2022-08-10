@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 import StellarSdk, { Signer, Asset, Memo, Transaction } from 'stellar-sdk';
 import BigNumber from 'bignumber.js';
 

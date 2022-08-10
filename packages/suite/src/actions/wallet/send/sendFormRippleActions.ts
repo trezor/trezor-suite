@@ -74,7 +74,6 @@ const calculate = (
                     {
                         address: output.address,
                         amount,
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         script_type: 'PAYTOADDRESS',
                     },
                 ],

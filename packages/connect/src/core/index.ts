@@ -37,7 +37,6 @@ import type { ConnectSettings, CommonParams, Device as DeviceTyped } from '../ty
 type AbstractMethod = ReturnType<typeof getMethod>;
 
 // Public variables
-// eslint-disable-next-line no-use-before-define
 let _core: Core; // Class with event emitter
 let _deviceList: DeviceList | undefined; // Instance of DeviceList
 let _popupPromise: Deferred<void> | undefined; // Waiting for popup handshake
@@ -89,7 +88,6 @@ const getPopupPromise = (requestWindow = true) => {
  */
 const interactionTimeout = () =>
     _interactionTimeout.start(() => {
-        // eslint-disable-next-line no-use-before-define
         onPopupClosed('Interaction timeout');
     });
 
@@ -151,7 +149,6 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
             getPopupPromise(false).resolve();
             break;
         case POPUP.CLOSED:
-            // eslint-disable-next-line no-use-before-define
             onPopupClosed(message.payload ? message.payload.error : null);
             break;
 
@@ -160,7 +157,6 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
         //     break;
 
         case TRANSPORT.DISABLE_WEBUSB:
-            // eslint-disable-next-line no-use-before-define
             disableWebUSBTransport();
             break;
 
@@ -186,7 +182,6 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
 
         // message from index
         case IFRAME.CALL:
-            // eslint-disable-next-line no-use-before-define
             onCall(message).catch(error => {
                 _log.error('onCall', error);
             });
@@ -332,7 +327,6 @@ export const onCall = async (message: CoreMessage) => {
 
     if (!_deviceList && !DataManager.getSettings('transportReconnect')) {
         // transport is missing try to initialize it once again
-        // eslint-disable-next-line no-use-before-define
         await initTransport(DataManager.getSettings());
     }
 
@@ -417,7 +411,6 @@ export const onCall = async (message: CoreMessage) => {
 
     // device is available
     // set public variables, listeners and run method
-    /* eslint-disable no-use-before-define */
     device.on(DEVICE.BUTTON, (d, code) => {
         onDeviceButtonHandler(d, code, method);
     });
@@ -432,7 +425,6 @@ export const onCall = async (message: CoreMessage) => {
             createUiMessage(UI.REQUEST_PASSPHRASE_ON_DEVICE, { device: device.toMessageObject() }),
         );
     });
-    /* eslint-enable no-use-before-define */
 
     // try to reconfigure messages before Initialize
     if (_deviceList) {
@@ -652,9 +644,7 @@ export const onCall = async (message: CoreMessage) => {
             }
             await device.cleanup();
 
-            // eslint-disable-next-line no-use-before-define
             closePopup();
-            // eslint-disable-next-line no-use-before-define
             cleanup();
 
             if (method) {

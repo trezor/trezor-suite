@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { LastWeekRates, TickerId } from '@wallet-types/fiatRates';
 import { FIAT as FIAT_CONFIG } from '@suite-common/suite-config';
 import { RateLimiter } from './limiter';

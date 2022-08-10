@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import * as NEM from '@trezor/connect/lib/constants/nem';
 
 export default {

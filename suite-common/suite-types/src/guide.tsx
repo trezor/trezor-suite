@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Page, GuideCategory, Node } from '@trezor/suite-data/src/guide/parser';
 
 import type { EnvironmentType } from './environment';

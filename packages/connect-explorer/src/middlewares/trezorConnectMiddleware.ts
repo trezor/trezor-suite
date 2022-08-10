@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import { MiddlewareAPI } from 'redux';
 
 import { Dispatch, AppState, Action } from '../types';

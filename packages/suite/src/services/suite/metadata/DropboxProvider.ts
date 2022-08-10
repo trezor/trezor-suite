@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { Dropbox, DropboxAuth } from 'dropbox';
 import type { users } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-types/metadata';

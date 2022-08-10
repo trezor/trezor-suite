@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';

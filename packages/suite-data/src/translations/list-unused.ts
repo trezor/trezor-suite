@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-continue */
 

@@ -1,5 +1,4 @@
 /* WARNING! This file should be imported ONLY in tests! */
-/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable require-await */
 
 import { Device, Features } from '@trezor/connect';

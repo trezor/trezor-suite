@@ -96,7 +96,6 @@ export default class EthereumSignTransaction extends AbstractMethod<
         // TODO: this should be removed after next major/minor version (or after few months)
         // TODO: add "required: true" to chainId validation
         if (typeof tx.chainId !== 'number') {
-            // eslint-disable-next-line no-console
             console.warn('TrezorConnect.ethereumSignTransaction: Missing chainId parameter!');
         }
 

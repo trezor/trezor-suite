@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { TrezorDevice } from '@suite/types/suite';
 
 const { getSuiteDevice } = global.JestMocks;

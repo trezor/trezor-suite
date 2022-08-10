@@ -107,7 +107,6 @@ export const initPinView = (payload: UiRequestDeviceAction['payload']) => {
 
     deviceName.innerText = payload.device.label;
 
-    // eslint-disable-next-line no-loop-func
     for (let i = 0; i < buttons.length; i++) {
         buttons.item(i).addEventListener('click', event => {
             if (event.target instanceof HTMLElement) {

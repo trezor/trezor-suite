@@ -119,7 +119,6 @@ describe('TrezorConnect Actions', () => {
         expect(() => store.dispatch(init())).not.toThrow();
 
         const actions = store.getActions();
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { emit } = require('@trezor/connect');
 
         emit(DEVICE_EVENT, { type: DEVICE_EVENT });

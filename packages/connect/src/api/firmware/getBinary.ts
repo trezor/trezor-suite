@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { versionUtils } from '@trezor/utils';
 
 import { httpRequest } from '../../utils/assets';
