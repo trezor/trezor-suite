@@ -1,11 +1,24 @@
+const ACCOUNT = {
+    accountType: 'coinjoin',
+    backendType: 'coinjoin',
+    symbol: 'btc',
+    deviceState: 'device-state',
+};
+
 export const createCoinjoinAccount = [
     {
-        description: 'invalid accountType',
+        description: 'unsupported Coinjoin client',
         params: {
-            accountType: 'segwit',
+            symbol: 'ltc', // only btc is supported in tests
+            networkType: 'bitcoin',
+            accountType: 'coinjoin',
         },
         result: {
-            actions: 0,
+            actions: [
+                '@coinjoin/client-enable',
+                '@coinjoin/client-enable-failed',
+                '@notification/toast',
+            ],
         },
     },
     {
@@ -14,10 +27,16 @@ export const createCoinjoinAccount = [
             success: false,
         },
         params: {
+            symbol: 'btc',
+            networkType: 'bitcoin',
             accountType: 'coinjoin',
         },
         result: {
-            actions: 1, // notification
+            actions: [
+                '@coinjoin/client-enable',
+                '@coinjoin/client-enable-success',
+                '@notification/toast',
+            ],
         },
     },
     {
@@ -31,10 +50,12 @@ export const createCoinjoinAccount = [
             },
         ],
         params: {
+            symbol: 'btc',
+            networkType: 'bitcoin',
             accountType: 'coinjoin',
         },
         result: {
-            actions: 1, // notification
+            actions: ['@notification/toast'],
         },
     },
     {
@@ -64,7 +85,74 @@ export const createCoinjoinAccount = [
             accountType: 'coinjoin',
         },
         result: {
-            actions: 3, // @account/create + @coinjoin/account-create + @account/account-update actions
+            actions: ['@account/create', '@coinjoin/account-create', '@account/update'],
+        },
+    },
+];
+
+export const startCoinjoinSession = [
+    {
+        description: 'client not found',
+        params: {
+            ...ACCOUNT,
+            symbol: 'ltc', // only btc is supported in tests
+        },
+        result: {
+            actions: [
+                '@coinjoin/client-enable',
+                '@coinjoin/client-enable-failed',
+                '@notification/toast',
+            ],
+        },
+    },
+    {
+        description: 'authorizeCoinjoin cancelled',
+        connect: {
+            success: false,
+            payload: {
+                error: 'Cancelled',
+            },
+        },
+        params: ACCOUNT,
+        result: {
+            actions: [
+                '@coinjoin/account-authorize',
+                '@coinjoin/account-authorize-failed',
+                '@notification/toast',
+            ],
+        },
+    },
+    {
+        description: 'success',
+        connect: {
+            success: true,
+            payload: {
+                message: 'Authorized',
+            },
+        },
+        params: ACCOUNT,
+        result: {
+            actions: ['@coinjoin/account-authorize', '@coinjoin/account-authorize-success'], // authorize, success
+        },
+    },
+];
+
+export const stopCoinjoinSession = [
+    {
+        description: 'client not found',
+        params: {
+            ...ACCOUNT,
+            symbol: 'ltc', // only btc is supported in tests
+        },
+        result: {
+            actions: [],
+        },
+    },
+    {
+        description: 'success',
+        params: ACCOUNT,
+        result: {
+            actions: ['@coinjoin/account-unregister'],
         },
     },
 ];
