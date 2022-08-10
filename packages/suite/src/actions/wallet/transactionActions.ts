@@ -205,9 +205,9 @@ export const exportTransactions =
             // add metadata directly to transactions
         ).map(transaction => ({
             ...transaction,
-            targets: transaction.targets.map((target, index) => ({
+            targets: transaction.targets.map(target => ({
                 ...target,
-                metadataLabel: account.metadata?.outputLabels?.[transaction.txid]?.[index],
+                metadataLabel: account.metadata?.outputLabels?.[transaction.txid]?.[target.n],
             })),
         }));
 
