@@ -128,7 +128,11 @@ export const DeviceStatus = ({
     // otherwise show dot icon (green/orange/red)
     return (
         <>
-            <StatusText status={status} isShown={showTextStatus}>
+            <StatusText
+                status={status}
+                data-test={`@deviceStatus-${status}`}
+                isShown={showTextStatus}
+            >
                 {getTextForStatus(status)}
             </StatusText>
 
