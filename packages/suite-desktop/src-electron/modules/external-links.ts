@@ -48,7 +48,12 @@ const init: Module = ({ mainWindow, store }) => {
         }
 
         // open URL in the user's default browser instead of headless browser window
-        shell.openExternal(url);
+        shell.openExternal(url).catch(err =>
+            dialog.showMessageBoxSync(mainWindow, {
+                type: 'error',
+                message: `${err} ${url}`,
+            }),
+        );
 
         // do not open headless browser window
         return { action: 'deny' };
