@@ -1,6 +1,20 @@
 [
     {
         "required": false,
+        "version": [1, 11, 2],
+        "bootloader_version": [1, 11, 0],
+        "min_bridge_version": [2, 0, 25],
+        "min_firmware_version": [1, 6, 2],
+        "min_bootloader_version": [1, 5, 0],
+        "url": "firmware/1/trezor-1.11.2.bin",
+        "url_bitcoinonly": "firmware/1/trezor-1.11.2-bitcoinonly.bin",
+        "fingerprint": "d8b55b68dfe8a8449ce7391e841073ef5d29349638d85b750508bbef5d2de5ec",
+        "fingerprint_bitcoinonly": "7e51546f4411ecf44688c681ada72a18495fd08e91f3a0429ab91bc4415b362a",
+        "notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-august-2022-a4e3d76214c1",
+        "changelog": "* Show the fee rate on the signing confirmation screen. \n* Show thousands separator when displaying large amounts \n* Fix potential security issues in recovery workflow. \n* Fix key extraction vulnerability in Cothority Collective Signing (CoSi). \n* Fix nonce bias in CoSi signing."
+    },
+    {
+        "required": false,
         "version": [1, 11, 1],
         "bootloader_version": [1, 11, 0],
         "min_bridge_version": [2, 0, 25],
