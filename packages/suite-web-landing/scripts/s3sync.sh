@@ -44,7 +44,7 @@ if [ "x$1" == "xsuite" ]; then
 fi
 
 set -e
-cd `dirname $0`
+cd "$(dirname "$0")"
 
 if [ "x$2" == "x-clear" ]; then
     aws s3 sync --delete --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET$DESTDIR
