@@ -41,6 +41,9 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
     });
     const window = await electronApp.firstWindow();
     const title = await window.title();
+
+    await window.waitForTimeout(60 * 1000);
+
     expect(title).toBe('Trezor Suite');
 
     const controller = new Controller();
@@ -50,13 +53,15 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
     });
 
     await getTestElement(window, '@welcome/title');
-    await window.screenshot({ path: './projects/suite-desktop/screenshots/intro.png' });
 
-    // bridge is running
-    // await expect(bridgeRes1).toBeOK();
+    // await window.pause();
+
+    await window.screenshot({ path: './projects/suite-desktop/screenshots/intro.png' });
 
     await getTestElement(window, '@onboarding/continue-button');
     await window.screenshot({ path: './projects/suite-desktop/screenshots/analytics.png' });
+
+    // await window.pause();
 
     try {
         const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
@@ -73,6 +78,9 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
     } catch (err) {
         console.log('err3', err);
     }
+
+    // bridge is running
+    // await expect(bridgeRes1).toBeOK();
 
     await electronApp.close();
 
