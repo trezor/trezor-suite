@@ -1,6 +1,19 @@
 [
     {
         "required": false,
+        "version": [2, 5, 2],
+        "min_bridge_version": [2, 0, 7],
+        "min_firmware_version": [2, 0, 8],
+        "min_bootloader_version": [2, 0, 0],
+        "url": "firmware/2/trezor-2.5.2.bin",
+        "url_bitcoinonly": "firmware/2/trezor-2.5.2-bitcoinonly.bin",
+        "fingerprint": "659b1b698546fa63f24200e148b6f9a7044df31d11a0a5ec7c044f2dd83f4a27",
+        "fingerprint_bitcoinonly": "76aa25f9602cfb03cd3e07a82ac09226344eb355355aec216295e43b675eedf7",
+        "notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-august-2022-a4e3d76214c1",
+        "changelog": "* Add support for Monero HF15 features. \n* Show the fee rate on the signing confirmation screen. \n* Support for Cardano Babbage era transaction items \n* Add \"Show All\"/\"Show Simple\" choice to Cardano transaction signing \n* Show thousands separator when displaying large amounts. \n* Fix Decred transaction weight calculation."
+    },
+    {
+        "required": false,
         "version": [2, 5, 1],
         "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 0, 8],
