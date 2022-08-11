@@ -6,9 +6,11 @@ const config: PlaywrightTestConfig = {
     retries: 0,
     workers: 1, // to disable parallelism between test files
     use: {
+        // ?
         headless: process.env.HEADLESS === 'true',
         ignoreHTTPSErrors: true,
-        trace: 'retain-on-failure',
+        // trace: 'retain-on-failure',
+        trace: 'on',
     },
 };
 export default config;
