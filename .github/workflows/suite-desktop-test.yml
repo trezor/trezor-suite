@@ -43,6 +43,7 @@ jobs:
       - run: docker version
       #- run: curl 'http://localhost:21325/status/'
       #- run: curl 'http://127.0.0.1:21325/status/'
+      - run: cat /etc/hosts
       - run: docker-compose -f ./docker/docker-compose.suite-ci.yml up --build --abort-on-container-exit --force-recreate
 
       - run: echo "everything done"
