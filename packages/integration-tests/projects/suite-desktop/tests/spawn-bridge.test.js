@@ -51,6 +51,13 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
 
     await getTestElement(window, '@welcome/title');
     await window.screenshot({ path: './projects/suite-desktop/screenshots/intro.png' });
+
+    // bridge is running
+    // await expect(bridgeRes1).toBeOK();
+
+    await getTestElement(window, '@onboarding/continue-button');
+    await window.screenshot({ path: './projects/suite-desktop/screenshots/analytics.png' });
+
     try {
         const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
     } catch (err) {
@@ -66,11 +73,6 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
     } catch (err) {
         console.log('err3', err);
     }
-    // bridge is running
-    // await expect(bridgeRes1).toBeOK();
-
-    await getTestElement(window, '@onboarding/continue-button');
-    await window.screenshot({ path: './projects/suite-desktop/screenshots/analytics.png' });
 
     await electronApp.close();
 
