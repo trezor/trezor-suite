@@ -10,7 +10,7 @@ const StyledContainer = styled(BaseToastContainer)`
     /* stylelint-disable no-duplicate-selectors */
     & {
         min-width: 330px;
-        max-width: 450px;
+        max-width: 430px;
         z-index: ${variables.Z_INDEX.TOOLTIP};
         position: fixed;
         padding: 4px;
@@ -31,7 +31,7 @@ const StyledContainer = styled(BaseToastContainer)`
     /* stylelint-enable no-duplicate-selectors */
 
     .Toastify__toast {
-        border-radius: 4px;
+        border-radius: 8px;
         box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
         color: ${props => props.theme.TYPE_DARK_GREY};
         background: ${props => props.theme.BG_WHITE};
@@ -94,11 +94,15 @@ const StyledContainer = styled(BaseToastContainer)`
     }
 
     .Toastify__slide-enter--top-right {
-        animation-name: Toastify__slideInRight;
+        /* animation-name: Toastify__slideInRight; */
+
+        animation: Toastify__slideInRight 0.4s cubic-bezier(0.24, 0.4, 0.3, 1.12) both;
     }
 
     .Toastify__slide-exit--top-right {
-        animation-name: Toastify__slideOutRight;
+        animation: Toastify__slideOutRight 0.4s cubic-bezier(0.24, 0.4, 0.3, 1.12) both;
+
+        /* animation-name: Toastify__slideOutRight; */
     }
 
     @keyframes Toastify__trackProgress {

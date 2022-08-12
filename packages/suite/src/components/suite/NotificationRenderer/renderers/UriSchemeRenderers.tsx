@@ -16,7 +16,7 @@ const Row = styled.span`
     display: flex;
 `;
 
-const getIcon = (symbol?: Network['symbol']) => symbol && <CoinLogo symbol={symbol} size={20} />;
+const getIcon = (symbol?: Network['symbol']) => symbol && <CoinLogo symbol={symbol} size={24} />;
 
 const useActionAllowed = (path: string, network?: Network['symbol']) => {
     const { selectedAccount } = useSelector(state => ({
