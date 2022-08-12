@@ -3,9 +3,8 @@ import { ACCOUNT } from '@wallet-actions/constants';
 import { STORAGE, METADATA } from '@suite-actions/constants';
 import { WalletAction } from '@wallet-types';
 import { Action as SuiteAction } from '@suite-types';
-import { Account as CommonAccount } from '@suite-common/wallet-types';
 
-export type Account = CommonAccount;
+import { Account } from '@suite-common/wallet-types';
 
 const initialState: Account[] = [];
 

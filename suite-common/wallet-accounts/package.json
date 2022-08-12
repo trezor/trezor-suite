@@ -12,6 +12,8 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
-        "@suite-common/wallet-types": "*"
+        "@suite-common/wallet-types": "*",
+        "@suite-common/wallet-utils": "*",
+        "@trezor/connect": "9.0.0-beta.6"
     }
 }

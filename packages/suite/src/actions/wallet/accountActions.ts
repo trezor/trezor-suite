@@ -1,4 +1,4 @@
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -10,13 +10,8 @@ import {
     isPending,
     isAccountOutdated,
     findAccountDevice,
-    getAccountKey,
     formatAmount,
     formatNetworkAmount,
-    getAccountSpecific,
-    enhanceTokens,
-    enhanceAddresses,
-    enhanceUtxo,
     getAreSatoshisUsed,
     isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
@@ -31,6 +26,7 @@ export type AccountAction =
     | { type: typeof ACCOUNT.CHANGE_VISIBILITY; payload: Account }
     | { type: typeof ACCOUNT.UPDATE; payload: Account };
 
+/*
 export const create = (
     deviceState: string,
     discoveryItem: DiscoveryItem,
@@ -79,7 +75,9 @@ export const create = (
         ...getAccountSpecific(accountInfo, discoveryItem.networkType),
     },
 });
+ */
 
+/*
 export const update = (account: Account, accountInfo: AccountInfo) => ({
     type: ACCOUNT.UPDATE,
     payload: {
@@ -99,11 +97,14 @@ export const update = (account: Account, accountInfo: AccountInfo) => ({
         ...getAccountSpecific(accountInfo, account.networkType),
     },
 });
+ */
 
+/*
 export const updateAccount = (payload: Account) => ({
     type: ACCOUNT.UPDATE,
     payload,
 });
+ */
 
 export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) => {
     const { enabledNetworks } = getState().wallet.settings;
@@ -124,6 +125,7 @@ export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) =>
     }
 };
 
+/*
 export const changeAccountVisibility = (payload: Account, visible = true): AccountAction => ({
     type: ACCOUNT.CHANGE_VISIBILITY,
     payload: {
@@ -131,6 +133,7 @@ export const changeAccountVisibility = (payload: Account, visible = true): Accou
         visible,
     },
 });
+ */
 
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once

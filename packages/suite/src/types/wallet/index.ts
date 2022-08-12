@@ -28,7 +28,6 @@ export type NetworkSymbol = Network['symbol'];
 // reexport
 export type { Icon } from './iconTypes';
 export type { BackendType, CustomBackend } from './backend';
-export type { Account } from '@wallet-reducers/accountsReducer';
 export type { CoinFiatRates, TickerId } from '@wallet-types/fiatRates';
 export type { Discovery } from '@wallet-reducers/discoveryReducer';
 export type DiscoveryStatus =
@@ -45,7 +44,11 @@ export type DiscoveryStatus =
               | 'discovery-failed'
               | 'device-unavailable';
       };
-export type { WalletAccountTransaction, RbfTransactionParams } from '@suite-common/wallet-types';
+export type {
+    Account,
+    WalletAccountTransaction,
+    RbfTransactionParams,
+} from '@suite-common/wallet-types';
 export type { WalletParams } from '@suite-utils/router';
 export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 
