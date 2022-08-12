@@ -65,7 +65,7 @@ Run a dev build:
 Trezor Connect is a platform for easy integration of Trezor hardware wallets into 3rd party applications.
 Historically, Trezor Connect had its [own repository](https://github.com/trezor/connect). This repository is still active and accepts hotfixes for trezor-connect version 8.
 
-@trezor/connect version 9 is developed in this repository only.
+@trezor/connect version 9 is developed in this repository only. For documentation proceed to this [page](./docs/packages/connect/index.md)
 
 ## Contribute
 
