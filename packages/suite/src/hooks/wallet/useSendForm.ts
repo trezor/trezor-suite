@@ -268,7 +268,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             const outputIndex = 0;
 
             if (protocol.sendForm.amount) {
-                sendFormUtils.setAmount(outputIndex, protocol.sendForm.amount.toString());
+                const protocolAmount = protocol.sendForm.amount.toString();
+
+                const formattedAmount = areSatsUsed
+                    ? amountToSatoshi(protocolAmount, state.network.decimals)
+                    : protocolAmount;
+
+                sendFormUtils.setAmount(outputIndex, formattedAmount);
             }
             setValue(
                 `outputs[${outputIndex}]`,
@@ -288,6 +294,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         updateContext,
         sendFormUtils,
         composeRequest,
+        areSatsUsed,
+        state.network.decimals,
     ]);
 
     // load draft from reducer
