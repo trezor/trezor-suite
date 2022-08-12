@@ -42,6 +42,11 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
     const window = await electronApp.firstWindow();
     const title = await window.title();
 
+    await window.screenshot({ path: './projects/suite-desktop/screenshots/1.png' });
+    await window.waitForTimeout(60 * 1000);
+    await window.screenshot({ path: './projects/suite-desktop/screenshots/2.png' });
+    await window.waitForTimeout(60 * 1000);
+    await window.screenshot({ path: './projects/suite-desktop/screenshots/3.png' });
     await window.waitForTimeout(60 * 1000);
 
     expect(title).toBe('Trezor Suite');
@@ -53,6 +58,8 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
     });
 
     await getTestElement(window, '@welcome/title');
+
+    await window.screenshot({ path: './projects/suite-desktop/screenshots/4.png' });
 
     // await window.pause();
 
