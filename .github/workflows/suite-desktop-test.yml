@@ -63,3 +63,11 @@ jobs:
           name: test-results
           path: packages/integration-tests/test-results
           retention-days: 7
+
+      - name: Archive test logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: packages/integration-tests/log.txt
+          retention-days: 7

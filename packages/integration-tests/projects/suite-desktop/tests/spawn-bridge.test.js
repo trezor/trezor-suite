@@ -37,7 +37,14 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
     // Launch Electron app.
     const electronApp = await electron.launch({
         cwd: '../suite-desktop',
-        args: ['./dist/app.js', '--log-level=DEBUG', '--bridge-test'],
+        args: [
+            './dist/app.js',
+            '--log-level=debug',
+            '--log-write',
+            '--log-path=./packages/integration-tests/',
+            '--log-file=log.txt',
+            '--bridge-test',
+        ],
     });
 
     // logs?
