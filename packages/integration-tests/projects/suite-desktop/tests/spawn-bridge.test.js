@@ -48,8 +48,8 @@ test('App spawns bundled bridge and stops it after app quit', async ({ request }
     });
 
     // logs?
-    electronApp.process().stdout.on('data', data => console.log(`stdout: ${data}`));
-    electronApp.process().stderr.on('data', error => console.log(`stderr: ${error}`));
+    // electronApp.process().stdout.on('data', data => console.log(`stdout: ${data}`));
+    // electronApp.process().stderr.on('data', error => console.log(`stderr: ${error}`));
 
     const window = await electronApp.firstWindow();
     const title = await window.title();
