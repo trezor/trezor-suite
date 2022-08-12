@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { Button, Icon, variables } from '@trezor/components';
+import { Button, Icon, useTheme, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useActions } from '@suite-hooks';
@@ -10,44 +10,45 @@ import NotificationRenderer, {
     NotificationViewProps,
 } from '@suite-components/NotificationRenderer';
 
-const Wrapper = styled.div<Pick<NotificationViewProps, 'variant'>>`
+const Wrapper = styled.div<Pick<NotificationViewProps, 'variant'> & { isTall: boolean }>`
     display: flex;
-    align-items: center;
+    align-items: ${({ isTall }) => (isTall ? 'start' : 'center')};
     font-size: ${variables.FONT_SIZE.SMALL};
     height: 100%;
-    padding: 6px 12px;
-    border-left: 4px solid ${props => getVariantColor(props.variant)};
+    padding: ${({ isTall }) => (isTall ? '16px 16px 12px 12px' : '12px 16px 12px 12px')};
+    border-left: 4px solid ${({ variant }) => getVariantColor(variant)};
     word-break: break-word;
-    max-width: 450px;
+    max-width: 430px;
 `;
 
-const BodyWrapper = styled.div`
+const BodyWrapper = styled.div<{ isTall: boolean }>`
     flex: 1;
-    margin-left: 10px;
+    margin-top: ${({ isTall }) => isTall && '-4px'};
+    margin-left: 14px;
 `;
 
 const Message = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const StyledButton = styled(Button)<{ $action: NotificationViewProps['action'] }>`
-    ${props =>
-        (!props.$action?.position || props.$action.position === 'right') &&
+    ${({ $action }) =>
+        (!$action?.position || $action.position === 'right') &&
         css`
-            margin-left: 10px;
+            margin-left: 16px;
         `};
-    ${props =>
-        props.$action?.position === 'bottom' &&
+
+    ${({ $action }) =>
+        $action?.position === 'bottom' &&
         css`
-            margin-top: 8px;
-            font-weight: ${variables.FONT_SIZE.NORMAL};
+            margin-top: 12px;
             height: 32px;
         `};
 `;
 
 const StyledCancelIcon = styled(Icon)`
-    margin-left: 10px;
+    margin-left: 18px;
 `;
 
 const ToastNotification = ({
@@ -60,13 +61,31 @@ const ToastNotification = ({
     onCancel,
     notification: { type, id },
 }: NotificationViewProps) => {
-    const defaultIcon = icon ?? getNotificationIcon(variant);
+    const [isTall, setIsTall] = useState(false);
 
     const { closeNotification } = useActions({
         closeNotification: notificationActions.close,
     });
 
+    const theme = useTheme();
+    const wrapperRef = useRef<HTMLDivElement>(null);
+
+    useLayoutEffect(() => {
+        const height = wrapperRef.current?.getBoundingClientRect().height ?? 0;
+
+        // more than 2 lines of text
+        if (height > 70) {
+            setIsTall(true);
+        }
+    }, []);
+
     const dataTestBase = `@toast/${type}`;
+    const defaultIcon = icon ?? getNotificationIcon(variant);
+
+    const handleCancelClick = () => {
+        closeNotification(id);
+        onCancel?.();
+    };
 
     const actionButton = action && (
         <StyledButton
@@ -80,13 +99,13 @@ const ToastNotification = ({
     );
 
     return (
-        <Wrapper data-test={dataTestBase} variant={variant}>
+        <Wrapper data-test={dataTestBase} variant={variant} isTall={isTall} ref={wrapperRef}>
             {defaultIcon && typeof defaultIcon === 'string' ? (
-                <Icon icon={defaultIcon} size={20} color={getVariantColor(variant)} />
+                <Icon icon={defaultIcon} size={24} color={getVariantColor(variant)} />
             ) : (
                 defaultIcon
             )}
-            <BodyWrapper>
+            <BodyWrapper isTall={isTall}>
                 <Message>
                     <Translation id={message} values={messageValues} />
                 </Message>
@@ -97,12 +116,8 @@ const ToastNotification = ({
                 <StyledCancelIcon
                     size={16}
                     icon="CROSS"
-                    onClick={() => {
-                        closeNotification(id);
-                        if (onCancel) {
-                            onCancel();
-                        }
-                    }}
+                    hoverColor={theme.TYPE_LIGHTER_GREY}
+                    onClick={handleCancelClick}
                     data-test={`${dataTestBase}/close`}
                 />
             )}
@@ -113,5 +128,3 @@ const ToastNotification = ({
 export const renderToast = (payload: NotificationEntry) => (
     <NotificationRenderer notification={payload} render={ToastNotification} />
 );
-
-export default ToastNotification;
