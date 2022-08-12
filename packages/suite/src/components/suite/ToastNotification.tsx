@@ -109,9 +109,12 @@ const ToastNotification = ({
                 <Message>
                     <Translation id={message} values={messageValues} />
                 </Message>
+
                 {action?.position === 'bottom' && actionButton}
             </BodyWrapper>
+
             {(action?.position === 'right' || !action?.position) && actionButton}
+
             {cancelable && (
                 <StyledCancelIcon
                     size={16}

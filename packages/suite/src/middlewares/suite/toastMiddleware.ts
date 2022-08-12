@@ -2,7 +2,7 @@ import { MiddlewareAPI } from 'redux';
 import { toast } from 'react-toastify';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { close } from '@suite-actions/notificationActions';
-import { renderToast } from '@suite-components/ToastNotification';
+import { renderToast } from '@suite-components';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 /*

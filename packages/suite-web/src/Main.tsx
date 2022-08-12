@@ -10,7 +10,7 @@ import { SENTRY_CONFIG } from '@suite-config';
 
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
-import ToastContainer from '@suite-components/ToastContainer';
+import { ToastContainer } from '@suite-components';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
 import Protocol from '@suite-support/Protocol';

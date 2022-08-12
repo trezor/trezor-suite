@@ -118,7 +118,7 @@ const StyledContainer = styled(BaseToastContainer)`
     }
 `;
 
-const ToastContainer = () => (
+export const ToastContainer = () => (
     <StyledContainer
         draggable={false}
         closeButton={false}
@@ -128,5 +128,3 @@ const ToastContainer = () => (
         transition={Slide}
     />
 );
-
-export default ToastContainer;
