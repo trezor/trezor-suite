@@ -10,7 +10,7 @@ import { preloadStore } from '@suite-support/preloadStore';
 
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
-import ToastContainer from '@suite-components/ToastContainer';
+import { ToastContainer } from '@suite-components/ToastContainer';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
 import Autodetect from '@suite-support/Autodetect';

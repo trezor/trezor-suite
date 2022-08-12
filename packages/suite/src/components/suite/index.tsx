@@ -28,7 +28,7 @@ import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } fr
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { Sign } from './Sign';
 import AddAccountButton from './AddAccountButton';
-import ToastContainer from './ToastContainer';
+import { ToastContainer } from './ToastContainer';
 import TrezorLink from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import { Modal, ModalProps } from './Modal';
@@ -50,7 +50,7 @@ import CloseButton from './CloseButton';
 import TooltipSymbol from './TooltipSymbol';
 import StatusLight from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
-
+import { renderToast } from './ToastNotification';
 import { SuiteLayout } from './SuiteLayout';
 
 export {
@@ -110,5 +110,6 @@ export {
     TooltipSymbol,
     StatusLight,
     AmountUnitSwitchWrapper,
+    renderToast,
 };
 export type { ImageProps, ModalProps };
