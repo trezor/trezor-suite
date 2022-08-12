@@ -11,6 +11,7 @@ const config: PlaywrightTestConfig = {
         // ignoreHTTPSErrors: true,
         // trace: 'retain-on-failure',
         trace: 'on',
+        video: 'on',
     },
 };
 export default config;
