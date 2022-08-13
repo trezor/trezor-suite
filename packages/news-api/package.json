@@ -12,8 +12,8 @@
         "build": "rimraf ./build && tsc",
         "type-check": "tsc --noEmit",
         "lint": "eslint '**/*.{ts,tsx,js}'",
-        "start": "yarn build && ts-node ./build/src/server.js",
-        "dev": "ts-node-dev ./src/server.ts --respawn --transpileOnly"
+        "start": "yarn build && tsx ./build/src/server.js",
+        "dev": "tsx watch ./src/server.ts"
     },
     "dependencies": {
         "cors": "2.8.5",
@@ -22,7 +22,6 @@
     "devDependencies": {
         "@types/cors": "2.8.12",
         "@types/express": "4.17.13",
-        "rimraf": "3.0.2",
-        "ts-node-dev": "1.1.8"
+        "rimraf": "3.0.2"
     }
 }

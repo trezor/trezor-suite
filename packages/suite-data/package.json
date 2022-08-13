@@ -12,12 +12,11 @@
     "scripts": {
         "build:lib": "yarn browser-detection && yarn msg-system-types && yarn guide-pull-content",
         "browser-detection": "webpack --config ./browser-detection.webpack.ts",
-        "copy-static-files": "ts-node ./index.ts",
-        "test-same-svgs": "ts-node ./test/test-same-svgs.ts",
-        "msg-system-types": "ts-node ./src/message-system/scripts/generate-types.ts",
-        "msg-system-validate-config": "ts-node ./src/message-system/scripts/validate-config.ts",
-        "msg-system-sign-config": "ts-node ./src/message-system/scripts/sign-config.ts",
-        "guide-pull-content": "ts-node ./src/guide/index.ts",
+        "copy-static-files": "tsx ./index.ts",
+        "msg-system-types": "tsx ./src/message-system/scripts/generate-types.ts",
+        "msg-system-validate-config": "tsx ./src/message-system/scripts/validate-config.ts",
+        "msg-system-sign-config": "tsx ./src/message-system/scripts/sign-config.ts",
+        "guide-pull-content": "tsx ./src/guide/index.ts",
         "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {
