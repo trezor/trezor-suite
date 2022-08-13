@@ -2,7 +2,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import accountsReducer from '@wallet-reducers/accountsReducer';
+import { accountsReducer } from '@wallet-reducers';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import blockchainReducer from '@wallet-reducers/blockchainReducer';
 import walletMiddleware from '@wallet-middlewares/walletMiddleware';

@@ -1,19 +1,11 @@
 import produce from 'immer';
-import { FeeLevel, PROTO } from '@trezor/connect';
+import { PROTO } from '@trezor/connect';
 import { STORAGE } from '@suite-actions/constants';
+import { WalletSettings } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { Action, AppState } from '@suite-types';
-import { Network } from '@wallet-types';
 
-export interface State {
-    localCurrency: string;
-    discreetMode: boolean;
-    enabledNetworks: Network['symbol'][];
-    bitcoinAmountUnit: PROTO.AmountUnit;
-    lastUsedFeeLevel: {
-        [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']
-    };
-}
+export type State = WalletSettings;
 
 export const initialState: State = {
     localCurrency: 'usd',

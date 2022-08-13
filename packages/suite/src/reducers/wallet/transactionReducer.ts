@@ -1,11 +1,12 @@
 import produce from 'immer';
-import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
+import { TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getAccountKey, findTransaction } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction } from '@wallet-types';
 import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { accountActions } from '@suite-common/wallet-core';
 
 export interface State {
     transactions: { [key: string]: WalletAccountTransaction[] }; // object where a key is accountHash and a value is sparse array of fetched txs
@@ -98,54 +99,59 @@ const remove = (draft: State, account: Account, txs: WalletAccountTransaction[])
 
 const transactionReducer = (state: State = initialState, action: Action | WalletAction): State =>
     produce(state, draft => {
-        switch (action.type) {
-            case STORAGE.LOAD: {
-                action.payload.txs.forEach(item => {
-                    const k = getAccountKey(
-                        item.tx.descriptor,
-                        item.tx.symbol,
-                        item.tx.deviceState,
-                    );
-                    if (!draft.transactions[k]) {
-                        draft.transactions[k] = [];
-                    }
-                    draft.transactions[k][item.order] = item.tx;
-                });
-                break;
+        if (accountActions.removeAccount.match(action)) {
+            action.payload.forEach(a => {
+                delete draft.transactions[a.key];
+            });
+        } else {
+            switch (action.type) {
+                case STORAGE.LOAD: {
+                    action.payload.txs.forEach(item => {
+                        const k = getAccountKey(
+                            item.tx.descriptor,
+                            item.tx.symbol,
+                            item.tx.deviceState,
+                        );
+                        if (!draft.transactions[k]) {
+                            draft.transactions[k] = [];
+                        }
+                        draft.transactions[k][item.order] = item.tx;
+                    });
+                    break;
+                }
+                case TRANSACTION.ADD: {
+                    const { account, transactions, page } = action.payload;
+                    add(draft, transactions, account, page);
+                    break;
+                }
+                case TRANSACTION.REMOVE: {
+                    const { account, txs } = action.payload;
+                    remove(draft, account, txs);
+                    break;
+                }
+                case TRANSACTION.RESET:
+                    delete draft.transactions[action.account.key];
+                    break;
+                case FIAT_RATES.TX_FIAT_RATE_UPDATE:
+                    action.payload.forEach(u => {
+                        update(draft, u.account, u.txid, u.updateObject);
+                    });
+                    break;
+                case TRANSACTION.REPLACE:
+                    replace(draft, action.key, action.txid, action.tx);
+                    break;
+                case TRANSACTION.FETCH_INIT:
+                    draft.isLoading = true;
+                    break;
+                case TRANSACTION.FETCH_SUCCESS:
+                    draft.isLoading = false;
+                    break;
+                case TRANSACTION.FETCH_ERROR:
+                    draft.error = action.error;
+                    draft.isLoading = false;
+                    break;
+                // no default
             }
-            case ACCOUNT.REMOVE:
-                action.payload.forEach(a => {
-                    delete draft.transactions[a.key];
-                });
-                break;
-            case TRANSACTION.ADD:
-                add(draft, action.transactions, action.account, action.page);
-                break;
-            case TRANSACTION.REMOVE:
-                remove(draft, action.account, action.txs);
-                break;
-            case TRANSACTION.RESET:
-                delete draft.transactions[action.account.key];
-                break;
-            case FIAT_RATES.TX_FIAT_RATE_UPDATE:
-                action.payload.forEach(u => {
-                    update(draft, u.account, u.txid, u.updateObject);
-                });
-                break;
-            case TRANSACTION.REPLACE:
-                replace(draft, action.key, action.txid, action.tx);
-                break;
-            case TRANSACTION.FETCH_INIT:
-                draft.isLoading = true;
-                break;
-            case TRANSACTION.FETCH_SUCCESS:
-                draft.isLoading = false;
-                break;
-            case TRANSACTION.FETCH_ERROR:
-                draft.error = action.error;
-                draft.isLoading = false;
-                break;
-            // no default
         }
     });
 

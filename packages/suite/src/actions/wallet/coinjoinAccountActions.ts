@@ -3,11 +3,7 @@ import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { addToast } from '../suite/notificationActions';
 import { add as addTransaction } from './transactionActions';
-import {
-    create as createAccount,
-    update as updateAccountInfo,
-    updateAccount,
-} from './accountActions';
+import { accountActions } from '@suite-common/wallet-core';
 import { initCoinjoinClient, getCoinjoinClient } from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import { Dispatch, GetState } from '@suite-types';
@@ -73,7 +69,7 @@ export const fetchAndUpdateAccount =
                 },
                 onProgress: (progressState: any) => {
                     dispatch(
-                        updateAccount({
+                        accountActions.updateAccount({
                             ...account,
                             lastKnownState: {
                                 ...progressState,
@@ -91,7 +87,7 @@ export const fetchAndUpdateAccount =
                 if (updatedAccount && updatedAccount.lastKnownState) {
                     // finalize
                     dispatch(
-                        updateAccountInfo(
+                        accountActions.updateAccount(
                             {
                                 ...updatedAccount,
                                 lastKnownState: {
@@ -162,7 +158,7 @@ export const createCoinjoinAccount =
 
         // create empty account
         const account = dispatch(
-            createAccount(
+            accountActions.createAccount(
                 device!.state!,
                 {
                     index: 0,

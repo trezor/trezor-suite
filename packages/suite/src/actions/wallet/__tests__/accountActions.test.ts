@@ -1,8 +1,8 @@
-import accountsReducer from '@wallet-reducers/accountsReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
-import * as accountActions from '../accountActions';
+import { accountActions, disableAccountsThunk } from '@suite-common/wallet-core';
 import { Account } from '@wallet-types';
 import { configureMockStore } from '@suite-common/test-utils';
+import { accountsReducer } from '@wallet-reducers';
 
 type AccountsState = ReturnType<typeof accountsReducer>;
 type SettingsState = ReturnType<typeof walletSettingsReducer>;
@@ -50,12 +50,12 @@ const getAccount = (a?: Partial<Account>) => ({
 });
 
 describe('Account Actions', () => {
-    // accountActions.create function is already tested by "discoveryActions"
+    // accountActions.createAccount function is already tested by "discoveryActions"
     // it's pointless to write a complex tests for it
     it('Create account', () => {
         const store = initStore(getInitialState());
         store.dispatch(
-            accountActions.create(
+            accountActions.createAccount(
                 'device-state',
                 {
                     index: 0,
@@ -91,7 +91,7 @@ describe('Account Actions', () => {
                 },
             }),
         );
-        store.dispatch(accountActions.disableAccounts());
+        store.dispatch(disableAccountsThunk());
         expect(store.getState().wallet.accounts.length).toEqual(0);
     });
 
@@ -104,7 +104,7 @@ describe('Account Actions', () => {
                 },
             }),
         );
-        store.dispatch(accountActions.disableAccounts());
+        store.dispatch(disableAccountsThunk());
         expect(store.getState().wallet.accounts.length).toEqual(1);
     });
 

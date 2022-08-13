@@ -19,6 +19,7 @@ import {
 } from '@suite-utils/env';
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { DeepPartial } from '@trezor/type-utils';
+import { accountActions } from '@suite-common/wallet-core';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
@@ -88,39 +89,39 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
 
 export const redactAction = (action: LogEntry) => {
     let payload;
-    switch (action.type) {
-        case SUITE.AUTH_DEVICE:
-            payload = {
-                state: REDACTED_REPLACEMENT,
-                ...redactDevice(action.payload),
-            };
-            break;
-        case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
-            payload = {
-                ...action.payload,
-                account: redactAccount(action.payload?.account),
-                network: undefined,
-                discovery: undefined,
-            };
-            break;
-        case DEVICE.CONNECT:
-        case DEVICE.DISCONNECT:
-        case SUITE.UPDATE_SELECTED_DEVICE:
-        case SUITE.REMEMBER_DEVICE:
-            payload = redactDevice(action.payload);
-            break;
 
-        case ACCOUNT.CREATE:
-        case ACCOUNT.UPDATE:
-            payload = redactAccount(action.payload);
-            break;
-
-        case DISCOVERY.COMPLETE:
-            payload = redactDiscovery(action.payload);
-            break;
-        default:
-            return action;
+    if (accountActions.createAccount.match(action) || accountActions.updateAccount.match(action)) {
+        payload = redactAccount(action.payload);
+    } else {
+        switch (action.type) {
+            case SUITE.AUTH_DEVICE:
+                payload = {
+                    state: REDACTED_REPLACEMENT,
+                    ...redactDevice(action.payload),
+                };
+                break;
+            case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
+                payload = {
+                    ...action.payload,
+                    account: redactAccount(action.payload?.account),
+                    network: undefined,
+                    discovery: undefined,
+                };
+                break;
+            case DEVICE.CONNECT:
+            case DEVICE.DISCONNECT:
+            case SUITE.UPDATE_SELECTED_DEVICE:
+            case SUITE.REMEMBER_DEVICE:
+                payload = redactDevice(action.payload);
+                break;
+            case DISCOVERY.COMPLETE:
+                payload = redactDiscovery(action.payload);
+                break;
+            default:
+                return action;
+        }
     }
+
     return {
         ...action,
         payload,

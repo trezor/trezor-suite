@@ -1,4 +1,5 @@
 import { ACCOUNT } from '@wallet-actions/constants';
+import { accountActions } from '@suite-common/wallet-core';
 import type { Action } from '@suite-types';
 import type { Network, Account, Discovery, WalletParams } from '@wallet-types';
 
@@ -81,7 +82,7 @@ export const initialState: State = {
 
 const selectedAccountReducer = (state: State = initialState, action: Action): State => {
     if (action.type === ACCOUNT.UPDATE_SELECTED_ACCOUNT) return action.payload;
-    if (action.type === ACCOUNT.DISPOSE) return initialState;
+    if (accountActions.disposeAccount.match(action)) return initialState;
     return state;
 };
 

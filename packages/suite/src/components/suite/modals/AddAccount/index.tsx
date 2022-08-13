@@ -6,7 +6,7 @@ import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { TrezorDevice } from '@suite-types';
 import { useSelector, useActions } from '@suite-hooks';
-import * as accountActions from '@wallet-actions/accountActions';
+import { accountActions } from '@suite-common/wallet-core';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { arrayPartition } from '@trezor/utils';
@@ -15,6 +15,7 @@ import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { SelectNetwork } from './components/SelectNetwork';
 import { EnableNetwork } from './components/EnableNetwork';
 import { AddAccountButton } from './components/AddAccountButton';
+import { useDispatch } from 'react-redux';
 
 const StyledModal = styled(Modal)`
     min-height: 550px;
@@ -33,8 +34,8 @@ interface Props {
 }
 
 export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
-    const { changeAccountVisibility, changeCoinVisibility, goto } = useActions({
-        changeAccountVisibility: accountActions.changeAccountVisibility,
+    const dispatch = useDispatch();
+    const { changeCoinVisibility, goto } = useActions({
         changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
         goto: routerActions.goto,
     });
@@ -129,7 +130,7 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
 
     const onEnableAccount = (account: Account) => {
         onCancel();
-        changeAccountVisibility(account);
+        dispatch(accountActions.changeAccountVisibility(account));
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             goto('wallet-index', {

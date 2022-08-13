@@ -12,7 +12,7 @@ import * as metadataActions from '../metadataActions';
 import * as fixtures from '../__fixtures__/metadataActions';
 import DropboxProvider from '@suite-services/metadata/DropboxProvider';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import accountsReducer from '@wallet-reducers/accountsReducer';
+import { accountsReducer } from '@wallet-reducers';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;

@@ -10,7 +10,9 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "^1.8.3",
         "@suite-common/metadata-types": "*",
+        "@suite-common/wallet-config": "*",
         "@trezor/connect": "9.0.0-beta.7",
         "@trezor/suite-data": "*"
     },

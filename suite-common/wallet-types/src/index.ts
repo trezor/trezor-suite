@@ -7,4 +7,5 @@ export * from './fiatRates';
 export * from './form';
 export * from './polling';
 export * from './sendForm';
+export * from './settings';
 export * from './transaction';

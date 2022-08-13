@@ -7,7 +7,6 @@ import { CoinMarketSpendAction } from '@wallet-actions/coinmarketSpendActions';
 import { CoinmarketSavingsAction } from '@wallet-actions/coinmarketSavingsActions';
 import { CoinmarketCommonAction } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { DiscoveryAction } from '@wallet-actions/discoveryActions';
-import { AccountAction } from '@wallet-actions/accountActions';
 import { FiatRatesAction } from '@wallet-actions/fiatRatesActions';
 import { GraphAction } from '@wallet-actions/graphActions';
 import { BlockchainAction } from '@wallet-actions/blockchainActions';
@@ -60,7 +59,6 @@ export type WalletAction =
     | FiatRatesAction
     | GraphAction
     | DiscoveryAction
-    | AccountAction
     | SelectedAccountAction
     | CoinmarketExchangeAction
     | CoinmarketBuyAction

@@ -1,14 +1,14 @@
 import { MiddlewareAPI } from 'redux';
 import * as metadataActions from '@suite-actions/metadataActions';
-import { ACCOUNT } from '@wallet-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { ROUTER, SUITE } from '@suite-actions/constants';
+import { accountActions } from '@suite-common/wallet-core';
 
 const metadata =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        if (action.type === ACCOUNT.CREATE) {
+        if (accountActions.createAccount.match(action)) {
             action.payload = api.dispatch(metadataActions.setAccountMetadataKey(action.payload));
         }
 

@@ -19,6 +19,7 @@ import { AppState, Action, Dispatch } from '@suite-types';
 import { ACCOUNT, BLOCKCHAIN, DISCOVERY } from '@wallet-actions/constants';
 
 import { Severity } from '@sentry/types';
+import { accountActions } from '@suite-common/wallet-core';
 
 const deviceContextName = 'trezor-device';
 
@@ -41,8 +42,8 @@ const breadcrumbActions = [
     SUITE.AUTH_DEVICE,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
-    ACCOUNT.CREATE,
-    ACCOUNT.UPDATE,
+    accountActions.createAccount.type,
+    accountActions.updateAccount.type,
     DISCOVERY.COMPLETE,
     SUITE.UPDATE_SELECTED_DEVICE,
     SUITE.REMEMBER_DEVICE,

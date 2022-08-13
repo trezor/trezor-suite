@@ -40,21 +40,25 @@ export const mockReducer = (name: string) => (_state: any, action: any) => {
 
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
-        fetchAndUpdateAccount: mockThunk('fetchAndUpdateAccount'),
         notificationsAddEvent: mockThunk('notificationsAddEvent'),
     },
     selectors: {
         selectFeeInfo: (networkSymbol: any) =>
             mockSelector('selectFeeInfo', testMocks.fee, { networkSymbol }),
-        selectAccounts: mockSelector('selectAccounts', []),
         selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
     },
-    actions: {},
+    actions: {
+        addTransaction: mockAction('addTransaction'),
+        removeTransaction: mockAction('removeTransaction'),
+    },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
+        metadataAccountLoaded: mockActionType('metadataAccountLoaded'),
+        metadataAccountAdd: mockActionType('metadataAccountAdd'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
+        storageLoadAccounts: mockReducer('storageLoadAccounts'),
     },
 };

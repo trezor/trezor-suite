@@ -2,10 +2,11 @@ import type { MiddlewareAPI } from 'redux';
 
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { ACCOUNT, TRANSACTION, BLOCKCHAIN } from '@wallet-actions/constants';
+import { TRANSACTION, BLOCKCHAIN } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as modalActions from '@suite-actions/modalActions';
+import { accountActions } from '@suite-common/wallet-core';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -24,35 +25,31 @@ const walletMiddleware =
             const accounts = api
                 .getState()
                 .wallet.accounts.filter(a => a.deviceState === deviceState);
-            api.dispatch({
-                type: ACCOUNT.REMOVE,
-                payload: accounts,
-            });
+            api.dispatch(accountActions.removeAccount(accounts));
         }
 
-        if (action.type === ACCOUNT.CREATE) {
-            const account = action.payload;
+        if (accountActions.createAccount.match(action)) {
             // gather transactions from account.create action
+            const account = action.payload;
             api.dispatch(transactionActions.add(account.history.transactions || [], account, 1));
         }
 
         if (action.type === TRANSACTION.ADD) {
-            api.dispatch(
-                cardanoStakingActions.validatePendingStakeTxOnTx(
-                    action.account,
-                    action.transactions,
-                ),
-            );
+            const { account, transactions } = action.payload;
+            api.dispatch(cardanoStakingActions.validatePendingStakeTxOnTx(account, transactions));
         }
 
         // propagate action to reducers
         next(action);
 
-        if (action.type === ACCOUNT.CREATE || action.type === ACCOUNT.UPDATE) {
+        if (
+            accountActions.createAccount.match(action) ||
+            accountActions.updateAccount.match(action)
+        ) {
             api.dispatch(blockchainActions.subscribe(action.payload.symbol));
         }
 
-        if (action.type === ACCOUNT.REMOVE) {
+        if (accountActions.removeAccount.match(action)) {
             api.dispatch(blockchainActions.unsubscribe(action.payload));
         }
 
@@ -92,7 +89,7 @@ const walletMiddleware =
                 (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
         }
         if (resetReducers) {
-            api.dispatch(selectedAccountActions.dispose());
+            api.dispatch(accountActions.disposeAccount());
             api.dispatch(sendFormActions.dispose());
             api.dispatch(receiveActions.dispose());
             api.dispatch(coinmarketBuyActions.dispose());

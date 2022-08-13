@@ -1,25 +1,29 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { STORAGE } from '../actions/suite/constants';
+import { STORAGE, METADATA } from '../actions/suite/constants';
 import { addEvent } from '../actions/suite/notificationActions';
 import { StorageLoadAction } from '../actions/suite/storageActions';
-import { fetchAndUpdateAccount } from '../actions/wallet/accountActions';
 import type { BlockchainState } from '../reducers/wallet/blockchainReducer';
 import { AppState } from '../types/suite';
+import * as transactionActions from '@wallet-actions/transactionActions';
 
 export const extraDependencies: ExtraDependencies = {
-    thunks: { fetchAndUpdateAccount, notificationsAddEvent: addEvent },
+    thunks: { notificationsAddEvent: addEvent },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
-        selectAccounts: (state: AppState) => state.wallet.accounts,
         selectDevices: (state: AppState) => state.devices,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
     },
-    actions: {},
+    actions: {
+        addTransaction: transactionActions.add,
+        removeTransaction: transactionActions.remove,
+    },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
+        metadataAccountLoaded: METADATA.ACCOUNT_LOADED,
+        metadataAccountAdd: METADATA.ACCOUNT_ADD,
     },
     reducers: {
         // @TODO - use BlockchainState from @suite-common/wallet-blockchain after redux-utils will be merged
@@ -28,5 +32,6 @@ export const extraDependencies: ExtraDependencies = {
                 state[backend.key].backends = backend.value;
             });
         },
+        storageLoadAccounts: (_, { payload }: StorageLoadAction) => payload.accounts,
     },
 };

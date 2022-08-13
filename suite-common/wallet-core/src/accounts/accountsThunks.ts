@@ -1,0 +1,171 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
+
+import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
+import { Account, WalletSettings } from '@suite-common/wallet-types';
+import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
+import {
+    analyzeTransactions,
+    findAccountDevice,
+    formatAmount,
+    formatNetworkAmount,
+    getAccountTransactions,
+    getAreSatoshisUsed,
+    isAccountOutdated,
+    isPending,
+    isTrezorConnectBackendType,
+} from '@suite-common/wallet-utils';
+import { settingsCommonConfig } from '@suite-common/suite-config';
+import { createThunk } from '@suite-common/redux-utils';
+
+import { AccountsSliceState, accountActions } from './accountsSlice';
+import { modulePrefix } from './constants';
+
+export const disableAccountsThunk = createAsyncThunk<
+    void,
+    void,
+    {
+        state: { wallet: { settings: WalletSettings; accounts: AccountsSliceState } };
+    }
+>(`${modulePrefix}/disableAccountsThunk`, (_, { dispatch, getState }) => {
+    const { settings, accounts } = getState().wallet;
+    const { enabledNetworks } = settings;
+    // find disabled networks
+    const disabledNetworks = NETWORKS.filter(
+        n => !enabledNetworks.includes(n.symbol) || n.isHidden,
+    ).map(n => n.symbol);
+    // find accounts for disabled networks
+    const accountsToRemove = accounts.filter(a => disabledNetworks.includes(a.symbol));
+
+    if (accountsToRemove.length) {
+        dispatch(accountActions.removeAccount(accountsToRemove));
+    }
+});
+
+const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
+    const tokens: TokenInfo[] = [];
+    // get list of tokens that are not included in default response, their balances need to be fetched
+    const customTokens =
+        account.tokens?.filter(t => !payloadTokens?.find(p => p.address === t.address)) ?? [];
+
+    const promises = customTokens.map(t =>
+        TrezorConnect.getAccountInfo({
+            coin: account.symbol,
+            descriptor: account.descriptor,
+            details: 'tokenBalances',
+            contractFilter: t.address,
+        }),
+    );
+
+    const results = await Promise.all(promises);
+
+    results.forEach(res => {
+        if (res.success && res.payload.tokens) {
+            tokens.push(...res.payload.tokens);
+        }
+    });
+
+    return tokens;
+};
+
+// Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
+// as we usually want to update all accounts for a single coin at once
+export const fetchAndUpdateAccountThunk = createThunk(
+    `${modulePrefix}/fetchAndUpdateAccountThunk`,
+    async (account: Account, { dispatch, extra, getState }) => {
+        const {
+            actions: { addTransaction, removeTransaction },
+            thunks: { notificationsAddEvent },
+        } = extra;
+
+        if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
+        // first basic check, traffic optimization
+        // basic check returns only small amount of data without full transaction history
+        const basic = await TrezorConnect.getAccountInfo({
+            coin: account.symbol,
+            descriptor: account.descriptor,
+            details: 'basic',
+        });
+        if (!basic.success) return;
+
+        const accountOutdated = isAccountOutdated(account, basic.payload);
+        const accountTxs = getAccountTransactions(
+            account.key,
+            getState().wallet.transactions.transactions,
+        );
+        // stop here if account is not outdated and there are no pending transactions
+        if (!accountOutdated && !accountTxs.find(isPending)) return;
+
+        // we need to fetch at least the number of unconfirmed txs
+        const pageSize =
+            (account.history.unconfirmed || 0) > settingsCommonConfig.TXS_PER_PAGE
+                ? account.history.unconfirmed
+                : settingsCommonConfig.TXS_PER_PAGE;
+
+        const response = await TrezorConnect.getAccountInfo({
+            coin: account.symbol,
+            descriptor: account.descriptor,
+            details: 'txs',
+            page: 1, // useful for every network except ripple
+            pageSize,
+        });
+
+        if (response.success) {
+            const { payload } = response;
+
+            const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
+
+            if (account.networkType === 'cardano') {
+                // filter out cardano pending tx as they are added manually and backend never returns them
+                // if tx got confirmed then it will be added as part of analyze.add array and replaced in reducer
+                // (TRANSACTION.ADD will replace the tx if tx with same txid already exists)
+                analyze.remove = analyze.remove.filter(tx => !!tx.blockHeight);
+            }
+
+            if (analyze.remove.length > 0) {
+                dispatch(removeTransaction(account, analyze.remove));
+            }
+            if (analyze.add.length > 0) {
+                dispatch(addTransaction(analyze.add.reverse(), account));
+            }
+
+            const accountDevice = findAccountDevice(account, getState().devices);
+            analyze.newTransactions.forEach(tx => {
+                const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
+
+                const areSatoshisUsed = getAreSatoshisUsed(
+                    getState().wallet.settings.bitcoinAmountUnit,
+                );
+
+                const formattedAmount = token
+                    ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
+                    : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+                dispatch(
+                    notificationsAddEvent({
+                        type: 'tx-confirmed',
+                        formattedAmount,
+                        device: accountDevice,
+                        descriptor: account.descriptor,
+                        symbol: account.symbol,
+                        txid: tx.txid,
+                    }),
+                );
+            });
+
+            // add custom tokens into the account.tokens
+            const customTokens = await fetchAccountTokens(account, payload.tokens);
+            payload.tokens =
+                customTokens.length > 0
+                    ? (payload.tokens || []).concat(customTokens)
+                    : payload.tokens;
+
+            if (
+                analyze.remove.length > 0 ||
+                analyze.add.length > 0 ||
+                isAccountOutdated(account, payload) ||
+                customTokens.length > 0
+            ) {
+                dispatch(accountActions.updateAccount(account, payload));
+            }
+        }
+    },
+);

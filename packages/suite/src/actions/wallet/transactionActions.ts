@@ -7,20 +7,26 @@ import {
     formatData,
     isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
-import * as accountActions from '@wallet-actions/accountActions';
+import { accountActions } from '@suite-common/wallet-core';
 import { TRANSACTION } from '@wallet-actions/constants';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
+import { createAction } from '@reduxjs/toolkit';
 
 export type TransactionAction =
     | {
           type: typeof TRANSACTION.ADD;
-          transactions: WalletAccountTransaction[];
-          account: Account;
-          page?: number;
+          payload: {
+              transactions: WalletAccountTransaction[];
+              account: Account;
+              page?: number;
+          };
       }
-    | { type: typeof TRANSACTION.REMOVE; account: Account; txs: WalletAccountTransaction[] }
+    | {
+          type: typeof TRANSACTION.REMOVE;
+          payload: { account: Account; txs: WalletAccountTransaction[] };
+      }
     | { type: typeof TRANSACTION.RESET; account: Account }
     | {
           type: typeof TRANSACTION.REPLACE;
@@ -34,16 +40,16 @@ export type TransactionAction =
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
 
-export const add = (
-    transactions: AccountTransaction[],
-    account: Account,
-    page?: number,
-): TransactionAction => ({
-    type: TRANSACTION.ADD,
-    transactions: transactions.map(tx => enhanceTransaction(tx, account)),
-    account,
-    page,
-});
+export const add = createAction(
+    TRANSACTION.ADD,
+    (transactions: AccountTransaction[], account: Account, page?: number) => ({
+        payload: {
+            transactions: transactions.map(tx => enhanceTransaction(tx, account)),
+            account,
+            page,
+        },
+    }),
+);
 
 /**
  * Remove all transactions for a given account
@@ -61,11 +67,15 @@ export const reset = (account: Account): TransactionAction => ({
  * @param {Account} account
  * @param {WalletAccountTransaction[]} txs
  */
-export const remove = (account: Account, txs: WalletAccountTransaction[]): TransactionAction => ({
-    type: TRANSACTION.REMOVE,
-    account,
-    txs,
-});
+export const remove = createAction(
+    TRANSACTION.REMOVE,
+    (account: Account, txs: WalletAccountTransaction[]) => ({
+        payload: {
+            account,
+            txs,
+        },
+    }),
+);
 
 /**
  * Replace existing transaction in the reducer.
@@ -167,7 +177,7 @@ export const fetchTransactions =
         });
 
         if (result && result.success) {
-            const updateAction = accountActions.update(account, result.payload);
+            const updateAction = accountActions.updateAccount(account, result.payload);
             const updatedAccount = updateAction.payload as Account;
             const transactions = result.payload.history.transactions || [];
             const totalPages = result.payload.page?.total || 0;

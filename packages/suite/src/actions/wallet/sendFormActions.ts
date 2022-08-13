@@ -1,6 +1,6 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
-import * as accountActions from '@wallet-actions/accountActions';
+import { accountActions } from '@suite-common/wallet-core';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as suiteActions from '@suite-actions/suiteActions';

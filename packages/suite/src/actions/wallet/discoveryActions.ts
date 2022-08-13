@@ -3,7 +3,7 @@ import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
-import { create as createAccount } from '@wallet-actions/accountActions';
+import { accountActions } from '@suite-common/wallet-core';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
@@ -128,7 +128,7 @@ const handleProgress =
                 },
             ]);
         } else {
-            dispatch(createAccount(deviceState, item, response));
+            dispatch(accountActions.createAccount(deviceState, item, response));
         }
         // calculate progress
         const progress = dispatch(

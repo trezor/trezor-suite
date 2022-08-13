@@ -19,7 +19,8 @@ const graphMiddleware =
                 break;
 
             case TRANSACTION.ADD: {
-                if (action.page) {
+                const { account, transactions, page } = action.payload;
+                if (page) {
                     // don't run while fetching txs pages in transactions tab
                     break;
                 }
@@ -28,10 +29,10 @@ const graphMiddleware =
                 const discovery = api.dispatch(getDiscoveryForDevice());
                 if (
                     discovery?.status === DISCOVERY.STATUS.COMPLETED &&
-                    action.transactions.some(t => (t.blockHeight ?? 0) > 0)
+                    transactions.some(t => (t.blockHeight ?? 0) > 0)
                 ) {
                     api.dispatch(
-                        graphActions.updateGraphData([action.account], { newAccountsOnly: false }),
+                        graphActions.updateGraphData([account], { newAccountsOnly: false }),
                     );
                 }
                 break;

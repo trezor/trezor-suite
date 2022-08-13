@@ -3,7 +3,6 @@ import { db } from '@suite/storage';
 
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import {
-    ACCOUNT,
     DISCOVERY,
     TRANSACTION,
     FIAT_RATES,
@@ -24,6 +23,7 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
+import { accountActions } from '@suite-common/wallet-core';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -32,6 +32,31 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
         (action: SuiteAction | WalletAction): SuiteAction | WalletAction => {
             // pass action
             next(action);
+
+            if (
+                accountActions.createAccount.match(action) ||
+                accountActions.changeAccountVisibility.match(action) ||
+                accountActions.updateAccount.match(action)
+            ) {
+                const { payload } = action;
+                const device = accountUtils.findAccountDevice(payload, api.getState().devices);
+                // update only transactions for remembered device
+                if (isDeviceRemembered(device)) {
+                    storageActions.saveAccounts([payload]);
+                }
+            }
+
+            if (accountActions.removeAccount.match(action)) {
+                action.payload.forEach(account => {
+                    FormDraftPrefixKeyValues.map(prefix =>
+                        storageActions.removeAccountFormDraft(prefix, account.key),
+                    );
+                    storageActions.removeAccountDraft(account);
+                    storageActions.removeAccountTransactions(account);
+                    storageActions.removeAccountGraph(account);
+                    storageActions.removeAccount(account);
+                });
+            }
 
             switch (action.type) {
                 case SUITE.REMEMBER_DEVICE:
@@ -48,43 +73,14 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.forgetDevice(action.payload));
                     break;
 
-                case ACCOUNT.CREATE:
-                case ACCOUNT.CHANGE_VISIBILITY:
-                case ACCOUNT.UPDATE: {
-                    const device = accountUtils.findAccountDevice(
-                        action.payload,
-                        api.getState().devices,
-                    );
-                    // update only transactions for remembered device
-                    if (isDeviceRemembered(device)) {
-                        storageActions.saveAccounts([action.payload]);
-                    }
-                    break;
-                }
-
-                case ACCOUNT.REMOVE: {
-                    action.payload.forEach(account => {
-                        FormDraftPrefixKeyValues.map(prefix =>
-                            storageActions.removeAccountFormDraft(prefix, account.key),
-                        );
-                        storageActions.removeAccountDraft(account);
-                        storageActions.removeAccountTransactions(account);
-                        storageActions.removeAccountGraph(account);
-                        storageActions.removeAccount(account);
-                    });
-                    break;
-                }
-
                 case TRANSACTION.ADD:
                 case TRANSACTION.REMOVE: {
-                    const device = accountUtils.findAccountDevice(
-                        action.account,
-                        api.getState().devices,
-                    );
+                    const { account } = action.payload;
+                    const device = accountUtils.findAccountDevice(account, api.getState().devices);
                     // update only transactions for remembered device
                     if (isDeviceRemembered(device)) {
-                        storageActions.removeAccountTransactions(action.account);
-                        api.dispatch(storageActions.saveAccountTransactions(action.account));
+                        storageActions.removeAccountTransactions(account);
+                        api.dispatch(storageActions.saveAccountTransactions(account));
                     }
                     break;
                 }

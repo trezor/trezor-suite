@@ -5,17 +5,15 @@ import { NETWORKS } from '@wallet-config';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { getSelectedAccount } from '@wallet-utils/accountUtils';
+import { accountActions } from '@suite-common/wallet-core';
 
 import { Action, Dispatch, GetState } from '@suite-types';
 import { State, AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';
 
-export type SelectedAccountAction =
-    | { type: typeof ACCOUNT.DISPOSE }
-    | { type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT; payload: State };
-
-export const dispose = (): SelectedAccountAction => ({
-    type: ACCOUNT.DISPOSE,
-});
+export type SelectedAccountAction = {
+    type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT;
+    payload: State;
+};
 
 // Add notification to loaded SelectedAccountState
 const getAccountStateWithMode =
@@ -210,7 +208,9 @@ const actions = [
     METADATA.ACCOUNT_ADD,
     ...Object.values(ACCOUNT).filter(
         v =>
-            typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE,
+            typeof v === 'string' &&
+            v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT &&
+            v !== accountActions.disposeAccount.type,
     ), // exported values got unwanted "__esModule: true" as first element
     ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
     ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),

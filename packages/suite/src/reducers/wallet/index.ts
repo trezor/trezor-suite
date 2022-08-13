@@ -4,7 +4,8 @@ import fiatRateReducer from './fiatRatesReducer';
 import graphReducer from './graphReducer';
 import transactionReducer from './transactionReducer';
 import discoveryReducer from './discoveryReducer';
-import accountsReducer from './accountsReducer';
+import { extraDependencies } from '../../support/extraDependencies';
+import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';
@@ -16,6 +17,8 @@ import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
 import pollingReducer from './pollingReducer';
 import { coinjoinReducer } from './coinjoinReducer';
+
+export const accountsReducer = prepareAccountsReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
     fiat: fiatRateReducer,

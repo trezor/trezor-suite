@@ -233,7 +233,7 @@ const middleware = [
 This is simple matcher can be used in redux-toolkit reducers builder to simplify matching action types.
 
 ```typescript
-const someSlice = createSlice({
+const someSlice = createSliceWithExtraDependencies({
     extraReducers: (builder, extra) => {
         builder
             // this is how it looks without it

@@ -1,8 +1,7 @@
 import type { DBSchema } from 'idb';
 
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
-import type { State as WalletSettings } from '@wallet-reducers/settingsReducer';
-import type { BackendSettings } from '@suite-common/wallet-types';
+import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import type { SuiteState } from '@suite-reducers/suiteReducer';
 import type { AnalyticsState } from '@suite-reducers/analyticsReducer';
 import type { FormState } from '@wallet-types/sendForm';

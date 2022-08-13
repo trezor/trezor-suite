@@ -5,7 +5,7 @@ import TrezorConnect, {
     BlockchainError,
 } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
-import * as accountActions from '@wallet-actions/accountActions';
+import { fetchAndUpdateAccountThunk } from '@suite-common/wallet-core';
 import {
     getNetwork,
     isNetworkSymbol,
@@ -318,7 +318,7 @@ export const syncAccounts =
 
         await Promise.all(
             findAccountsByNetwork(symbol, accounts).map(a =>
-                dispatch(accountActions.fetchAndUpdateAccount(a)),
+                dispatch(fetchAndUpdateAccountThunk(a)),
             ),
         );
 

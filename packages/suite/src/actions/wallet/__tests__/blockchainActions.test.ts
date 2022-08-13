@@ -2,7 +2,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { PROTO } from '@trezor/connect';
-import accountsReducer from '@wallet-reducers/accountsReducer';
+import { accountsReducer } from '@wallet-reducers';
 import transactionReducer from '@wallet-reducers/transactionReducer';
 import blockchainReducer from '@wallet-reducers/blockchainReducer';
 import feesReducer from '@wallet-reducers/feesReducer';

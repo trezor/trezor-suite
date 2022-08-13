@@ -15,6 +15,7 @@ import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
+import { accountActions } from '@suite-common/wallet-core';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -25,6 +26,17 @@ const log =
         // avoid endless loops, see default in switch
         // also do not log any log related actions
         if (action.type.startsWith('@log')) return action;
+
+        if (
+            accountActions.createAccount.match(action) ||
+            accountActions.updateAccount.match(action)
+        ) {
+            const payload = action.payload as ReturnType<
+                typeof accountActions.createAccount | typeof accountActions.updateAccount
+            >['payload'];
+            api.dispatch(logActions.addAction(action, { ...payload }));
+            return action;
+        }
 
         switch (action.type) {
             case SUITE.SET_LANGUAGE:
@@ -52,8 +64,6 @@ const log =
             case SUITE.AUTH_DEVICE:
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
-            case ACCOUNT.CREATE:
-            case ACCOUNT.UPDATE:
             case DISCOVERY.COMPLETE:
             case SUITE.UPDATE_SELECTED_DEVICE:
             case SUITE.REMEMBER_DEVICE:

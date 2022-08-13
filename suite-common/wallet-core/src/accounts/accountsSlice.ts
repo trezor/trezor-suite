@@ -1,7 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createAction, PayloadAction } from '@reduxjs/toolkit';
 
 import { AccountInfo } from '@trezor/connect';
+import {
+    createSliceWithExtraDependencies,
+    matchesActionType,
+    matchesAnyOfActionType,
+} from '@suite-common/redux-utils';
 import { Account, DiscoveryItem } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
@@ -11,20 +15,23 @@ import {
     getAccountKey,
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
-import { ACCOUNT } from '@trezor/suite/libDev/src/actions/wallet/constants';
 
-export type AccountsState = Account;
+import { modulePrefix } from './constants';
 
-type SliceState = {
-    accounts: Account[];
+export type AccountsSliceState = Account[];
+
+const initialState = [] as AccountsSliceState;
+
+type AccountsSliceRootState = {
+    wallet: {
+        accounts: AccountsSliceState;
+    };
 };
-
-const initialState: Account[] = [];
 
 const accountEqualTo = (b: Account) => (a: Account) =>
     a.deviceState === b.deviceState && a.descriptor === b.descriptor && a.symbol === b.symbol;
 
-const update = (state: AccountsState[], account: Account) => {
+const update = (state: AccountsSliceState, account: Account) => {
     const accountIndex = state.findIndex(accountEqualTo(account));
 
     if (accountIndex !== -1) {
@@ -41,11 +48,29 @@ const update = (state: AccountsState[], account: Account) => {
     }
 };
 
-export const accountsSlice = createSlice({
-    name: 'accounts',
+const remove = (state: AccountsSliceState, accounts: Account[]) => {
+    accounts.forEach(a => {
+        const index = state.findIndex(accountEqualTo(a));
+        state.splice(index, 1);
+    });
+};
+
+const setMetadata = (state: AccountsSliceState, account: Account) => {
+    const index = state.findIndex(a => a.key === account.key);
+    if (!state[index]) return;
+    state[index].metadata = account.metadata;
+};
+
+export const disposeAccount = createAction(`${modulePrefix}/dispose`);
+
+export const accountsSlice = createSliceWithExtraDependencies({
+    name: modulePrefix,
     initialState,
     reducers: {
-        create: {
+        removeAccount: (state, action: PayloadAction<Account[]>) => {
+            remove(state, action.payload);
+        },
+        createAccount: {
             reducer: (state, action: PayloadAction<Account>) => {
                 // TODO: check if account already exist, for example 2 device instances with same passphrase
                 // remove "transactions" field, they are stored in "transactionReducer"
@@ -59,7 +84,7 @@ export const accountsSlice = createSlice({
                 deviceState: string,
                 discoveryItem: DiscoveryItem,
                 accountInfo: AccountInfo,
-            ) => ({
+            ): { payload: Account } => ({
                 payload: {
                     deviceState,
                     index: discoveryItem.index,
@@ -107,11 +132,14 @@ export const accountsSlice = createSlice({
                 },
             }),
         },
-        update: {
+        updateAccount: {
             reducer: (state, action: PayloadAction<Account>) => {
                 update(state, action.payload);
             },
-            prepare: (account: Account, accountInfo: AccountInfo | null = null) => {
+            prepare: (
+                account: Account,
+                accountInfo: AccountInfo | null = null,
+            ): { payload: Account } => {
                 if (accountInfo) {
                     return {
                         payload: {
@@ -139,17 +167,15 @@ export const accountsSlice = createSlice({
                     };
                 }
                 return {
-                    payload: {
-                        ...account,
-                    },
+                    payload: account,
                 };
             },
         },
-        changeVisibility: {
+        changeAccountVisibility: {
             reducer: (state, action: PayloadAction<Account>) => {
                 update(state, action.payload);
             },
-            prepare: (account: Account, visible = true) => ({
+            prepare: (account: Account, visible = true): { payload: Account } => ({
                 payload: {
                     ...account,
                     visible,
@@ -157,7 +183,23 @@ export const accountsSlice = createSlice({
             }),
         },
     },
+    extraReducers: (builder, extra) => {
+        builder
+            .addMatcher(
+                matchesActionType(extra.actionTypes.storageLoad),
+                extra.reducers.storageLoadAccounts,
+            )
+            .addMatcher(
+                matchesAnyOfActionType(
+                    extra.actionTypes.metadataAccountLoaded,
+                    extra.actionTypes.metadataAccountAdd,
+                ),
+                (state: AccountsSliceState, { payload }) => setMetadata(state, payload),
+            );
+    },
 });
 
-export const { create, update } = accountsSlice.actions;
-export const accountsReducer = accountsSlice.reducer;
+export const accountActions = { ...accountsSlice.actions, disposeAccount };
+export const prepareAccountsReducer = accountsSlice.prepareReducer;
+
+export const selectAccounts = (state: AccountsSliceRootState) => state.wallet.accounts;

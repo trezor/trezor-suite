@@ -6,10 +6,10 @@ import * as suiteActions from '../suiteActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import * as accountActions from '@wallet-actions/accountActions';
+import { disableAccountsThunk } from '@suite-common/wallet-core';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 
-import accountsReducer from '@wallet-reducers/accountsReducer';
+import { accountsReducer } from '@wallet-reducers';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
@@ -450,7 +450,7 @@ describe('Storage actions', () => {
         // disable btc network, enable ltc
         await store.dispatch(walletSettingsActions.changeNetworks(['ltc']));
         // remove accounts belonging to disabled coins, triggering ACCOUNT.REMOVE
-        await store.dispatch(accountActions.disableAccounts());
+        await store.dispatch(disableAccountsThunk());
 
         // verify that graph data for acc1 were removed
         store.dispatch(await preloadStore());
