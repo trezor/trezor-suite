@@ -8,6 +8,7 @@ import { Account, WalletAccountTransaction } from '@wallet-types';
 import { FormState, FeeInfo } from '@wallet-types/sendForm';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
+import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
 export type Props = {
     tx: WalletAccountTransaction;
@@ -60,6 +61,9 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
         fees: state.wallet.fees,
         transactions: state.wallet.transactions.transactions,
     }));
+
+    const { areSatsDisplayed } = useBitcoinAmountUnit();
+
     // do not calculate if currentState is already set (prevent re-renders)
     if (state.selectedAccount.status !== 'loaded' || !tx.rbfParams || currentState) return;
 
@@ -97,7 +101,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
         return {
             ...DEFAULT_PAYMENT,
             address: o.address,
-            amount: o.formattedAmount,
+            amount: areSatsDisplayed ? o.amount : o.formattedAmount,
             token: o.token,
         };
     });
