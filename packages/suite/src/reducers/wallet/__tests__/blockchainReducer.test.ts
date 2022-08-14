@@ -1,6 +1,7 @@
-import reducer, { initialState, BackendSettings } from '@wallet-reducers/blockchainReducer';
+import reducer, { initialState } from '@wallet-reducers/blockchainReducer';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import type { BlockchainAction } from '@wallet-actions/blockchainActions';
+import { BackendSettings } from '@suite-common/wallet-types';
 
 const urls = ['http://a, http://b, http://c'];
 

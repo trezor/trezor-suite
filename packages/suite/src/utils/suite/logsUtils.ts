@@ -4,7 +4,7 @@ import { SUITE } from '@suite-actions/constants';
 import { DEVICE, Device } from '@trezor/connect';
 import { LogEntry } from '@suite-reducers/logsReducer';
 import { AppState } from '@suite-types';
-import { getCustomBackends } from '@suite-utils/backend';
+import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getBrowserName,
     getBrowserVersion,

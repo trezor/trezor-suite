@@ -11,7 +11,7 @@ import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 import { getDerivationType } from '@wallet-utils/cardanoUtils';
-import { isTrezorConnectBackendType } from '@suite-utils/backend';
+import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 
 export type DiscoveryAction =
     | { type: typeof DISCOVERY.CREATE; payload: Discovery }

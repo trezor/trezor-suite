@@ -6,7 +6,7 @@ import type { SuiteDBSchema } from '../definitions';
 import type { State } from '@wallet-reducers/settingsReducer';
 import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
 import type { Network, Account, Discovery } from '@wallet-types';
-import type { BackendSettings } from '@wallet-reducers/blockchainReducer';
+import type { BackendSettings } from '@suite-common/wallet-types';
 import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/definitions';
 import type { GraphData } from '@wallet-types/graph';
 

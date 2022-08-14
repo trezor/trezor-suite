@@ -4,43 +4,10 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { getNetwork } from '@suite-common/wallet-utils';
 import { NETWORKS } from '@wallet-config';
-import type { Network, BackendType } from '@wallet-types';
 import type { Action } from '@suite-types';
-import type { Timeout } from '@trezor/type-utils';
+import { BlockchainNetworks } from '@suite-common/wallet-types';
 
-export type BackendSettings = Partial<{
-    selected: BackendType;
-    urls: Partial<{
-        [type in BackendType]: string[];
-    }>;
-}>;
-
-interface BlockchainReconnection {
-    id: Timeout; // setTimeout id
-    time: number; // timestamp when it will be resolved
-    count: number; // number of tries
-}
-
-export interface Blockchain {
-    url?: string;
-    explorer: {
-        tx: string;
-        account: string;
-    };
-    connected: boolean;
-    subscribed?: boolean;
-    error?: string;
-    blockHash: string;
-    blockHeight: number;
-    version: string;
-    reconnection?: BlockchainReconnection;
-    syncTimeout?: Timeout;
-    backends: BackendSettings;
-}
-
-export type BlockchainState = {
-    [key in Network['symbol']]: Blockchain;
-};
+export type BlockchainState = BlockchainNetworks;
 
 /*
   get url suffix from default network and generate url for selected network

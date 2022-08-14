@@ -5,7 +5,7 @@ import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { baseFetch, getIsTorLoading, isOnionUrl, torFetch } from '@suite-utils/tor';
-import { getCustomBackends } from '@suite-utils/backend';
+import { getCustomBackends } from '@suite-common/wallet-utils';
 import { sortByTimestamp } from '@suite-utils/device';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
