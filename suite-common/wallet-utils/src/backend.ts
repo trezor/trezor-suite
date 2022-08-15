@@ -1,8 +1,11 @@
-import { TREZOR_CONNECT_BACKENDS, BackendType } from '@suite-common/wallet-config';
-import type { Network, CustomBackend } from '@wallet-types';
-import type { BlockchainState, BackendSettings } from '@wallet-reducers/blockchainReducer';
+import type {
+    CustomBackend,
+    BlockchainNetworks,
+    BackendSettings,
+} from '@suite-common/wallet-types';
+import { TREZOR_CONNECT_BACKENDS, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
-export const getDefaultBackendType = (coin: Network['symbol']) => {
+export const getDefaultBackendType = (coin: NetworkSymbol) => {
     if (coin === 'ada' || coin === 'tada') {
         return 'blockfrost';
     }
@@ -10,7 +13,7 @@ export const getDefaultBackendType = (coin: Network['symbol']) => {
 };
 
 export const getBackendFromSettings = (
-    coin: Network['symbol'],
+    coin: NetworkSymbol,
     settings?: BackendSettings,
 ): CustomBackend => {
     const type = settings?.selected ?? getDefaultBackendType(coin);
@@ -24,10 +27,10 @@ export const getBackendFromSettings = (
 const isBackend = (backend: Partial<CustomBackend>): backend is CustomBackend =>
     !!(backend.type && backend.urls?.length);
 
-export const getCustomBackends = (blockchains: BlockchainState): CustomBackend[] =>
+export const getCustomBackends = (blockchains: BlockchainNetworks): CustomBackend[] =>
     Object.entries(blockchains)
         .map(([coin, { backends }]) => ({
-            coin: coin as Network['symbol'],
+            coin: coin as NetworkSymbol,
             type: backends.selected,
             urls: backends.selected && backends.urls?.[backends.selected],
         }))

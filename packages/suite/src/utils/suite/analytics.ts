@@ -12,7 +12,7 @@ import {
     getWindowHeight,
     getPlatformLanguages,
 } from '@suite-utils/env';
-import { getCustomBackends } from '@suite-utils/backend';
+import { getCustomBackends } from '@suite-common/wallet-utils';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 import { getIsTorEnabled } from './tor';
 import { UNIT_ABBREVIATIONS } from '@wallet-hooks/useBitcoinAmountUnit';

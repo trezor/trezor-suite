@@ -15,16 +15,14 @@ import {
     formatAmount,
     formatNetworkAmount,
     getAreSatoshisUsed,
+    isTrezorConnectBackendType,
+    getCustomBackends,
+    getBackendFromSettings,
 } from '@suite-common/wallet-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { NETWORKS } from '@wallet-config';
 import { BLOCKCHAIN } from './constants';
-import {
-    isTrezorConnectBackendType,
-    getCustomBackends,
-    getBackendFromSettings,
-} from '@suite-utils/backend';
 import type { Dispatch, GetState } from '@suite-types';
 import type { Account, Network, CustomBackend, BackendType } from '@wallet-types';
 import type { Timeout } from '@trezor/type-utils';

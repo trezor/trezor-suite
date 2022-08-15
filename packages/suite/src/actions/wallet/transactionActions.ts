@@ -1,12 +1,12 @@
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { saveAs } from 'file-saver';
-import { isTrezorConnectBackendType } from '@suite-utils/backend';
 import {
     formatNetworkAmount,
     enhanceTransaction,
     findTransactions,
     getAccountTransactions,
     formatData,
+    isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';

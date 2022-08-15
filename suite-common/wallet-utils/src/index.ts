@@ -11,4 +11,6 @@ export * from './settingsUtils';
 export * from './transactionUtils';
 export * from './exportTransactions';
 export * from './localizeNumber';
+export * from './backend';
+
 export { analyzeTransactions as analyzeTransactionsFixtures } from './__fixtures__/transactionUtils';

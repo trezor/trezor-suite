@@ -18,7 +18,7 @@ import {
     deviceGraphDataFilterFn,
     enhanceBlockchainAccountHistory,
 } from '@wallet-utils/graphUtils';
-import { isTrezorConnectBackendType } from '@suite-utils/backend';
+import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 
 export type GraphAction =
     | {

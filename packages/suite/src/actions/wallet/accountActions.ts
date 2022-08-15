@@ -4,7 +4,6 @@ import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as tokenActions from '@wallet-actions/tokenActions';
-import { isTrezorConnectBackendType } from '@suite-utils/backend';
 import {
     analyzeTransactions,
     getAccountTransactions,
@@ -19,6 +18,7 @@ import {
     enhanceAddresses,
     enhanceUtxo,
     getAreSatoshisUsed,
+    isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
 import { NETWORKS } from '@wallet-config';
 import { SETTINGS } from '@suite-config';

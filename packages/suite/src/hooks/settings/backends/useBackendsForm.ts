@@ -6,9 +6,9 @@ import { useActions, useSelector, useTranslation } from '@suite-hooks';
 import { isUrl } from '@trezor/utils';
 import { isOnionUrl } from '@suite-utils/tor';
 import { setBackend, resetBackend } from '@wallet-actions/blockchainActions';
-import { isElectrumUrl } from '@suite-utils/backend';
+import { isElectrumUrl } from '@suite-common/wallet-utils';
 import type { Network, BackendType } from '@wallet-types';
-import type { BackendSettings } from '@wallet-reducers/blockchainReducer';
+import { BackendSettings } from '@suite-common/wallet-types';
 
 export type BackendOption = BackendType | 'default';
 
