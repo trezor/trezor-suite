@@ -9,7 +9,7 @@ import {
     CardanoInput,
     CardanoOutput,
 } from '@trezor/connect';
-import { Network } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 
 import { TimestampedRates } from './fiatRates';
@@ -56,6 +56,10 @@ export interface FeeInfo {
     feeLimit?: number; // eth gas limit
     levels: FeeLevel[]; // fee levels are predefined in @trezor/connect > trezor-firmware/common
 }
+
+export type NetworksFeeInfo = {
+    [key in NetworkSymbol]: FeeInfo;
+};
 
 export type EthTransactionData = {
     token?: TokenInfo;

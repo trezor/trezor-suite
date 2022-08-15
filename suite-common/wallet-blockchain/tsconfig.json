@@ -1,0 +1,13 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../wallet-config" },
+        { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
+        { "path": "../redux-utils" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/connect" }
+    ]
+}

@@ -1,13 +1,11 @@
 import produce from 'immer';
-import { FeeInfo } from '@wallet-types/sendForm';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
-import { Network, WalletAction } from '@wallet-types';
+import { WalletAction } from '@wallet-types';
+import { NetworksFeeInfo } from '@suite-common/wallet-types';
 
 // type Symbol = Network['symbol'] | 'erc20';
-export type State = {
-    [key in Network['symbol']]: FeeInfo;
-};
+export type State = NetworksFeeInfo;
 
 const initialStatePredefined: Partial<State> = {
     // erc20: {
