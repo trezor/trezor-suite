@@ -12,6 +12,6 @@
     "dependencies": {
         "@trezor/type-utils": "*",
         "react": "17.0.2",
-        "react-intl": "^6.0.4"
+        "react-intl": "^6.0.5"
     }
 }
