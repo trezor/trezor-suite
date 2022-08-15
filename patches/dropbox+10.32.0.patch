@@ -1,5 +1,5 @@
 diff --git a/node_modules/dropbox/types/dropbox_types.d.ts b/node_modules/dropbox/types/dropbox_types.d.ts
-index d0361ab..1066ff5 100644
+index 4cb2b82..dd87ae6 100644
 --- a/node_modules/dropbox/types/dropbox_types.d.ts
 +++ b/node_modules/dropbox/types/dropbox_types.d.ts
 @@ -2383,6 +2383,7 @@
@@ -11,7 +11,7 @@ index d0361ab..1066ff5 100644
  
      /**
 diff --git a/node_modules/dropbox/types/index.d.ts b/node_modules/dropbox/types/index.d.ts
-index fbe4bb4..754d875 100644
+index e8b740c..8d540f2 100644
 --- a/node_modules/dropbox/types/index.d.ts
 +++ b/node_modules/dropbox/types/index.d.ts
 @@ -51,7 +51,10 @@ export class DropboxAuth {

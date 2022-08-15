@@ -30,7 +30,7 @@
         "stellar-sdk": "^10.1.0"
     },
     "dependencies": {
-        "bignumber.js": "^9.0.2"
+        "bignumber.js": "^9.1.0"
     },
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",

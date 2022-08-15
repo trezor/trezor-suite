@@ -19,14 +19,14 @@
     "dependencies": {
         "@tippyjs/react": "^4.2.6",
         "@trezor/react-utils": "*",
-        "date-fns": "^2.28.0",
+        "date-fns": "^2.29.1",
         "lottie-react": "^2.2.1",
         "polished": "^4.2.2",
         "react-date-range": "^1.4.0",
         "react-is": "16.13.1",
-        "react-select": "^5.3.2",
+        "react-select": "^5.4.0",
         "react-spring": "^9.3.2",
-        "react-svg": "^15.0.2",
+        "react-svg": "^15.1.6",
         "react-truncate": "^2.4.0"
     },
     "devDependencies": {
