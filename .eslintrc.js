@@ -209,7 +209,6 @@ module.exports = {
                 'packages/connect-plugin-ethereum/**/*',
                 'packages/connect-plugin-stellar/**/*',
                 'packages/integration-tests/**/*',
-                'packages/news-api/**/*',
                 'packages/request-manager/**/*',
                 'packages/rollout/**/*',
                 'packages/suite/**/*',
