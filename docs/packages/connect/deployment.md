@@ -1,6 +1,7 @@
 # Version 9
 
-[Described here](../../releases/connect.md)
+[release to npm](../../releases/connect-npm.md)
+[release to trezor.io](../../releases/connect-trezor.io.md)
 
 # Version 8 and lower
 
