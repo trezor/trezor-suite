@@ -8,8 +8,7 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "generate-icons": "yarn run-script generateIcons.js",
-        "run-script": "babel-node --experimental-specifier-resolution=node --"
+        "generate-icons": "yarn tsx generateIcons.js"
     },
     "dependencies": {
         "@shopify/react-native-skia": "0.1.137",

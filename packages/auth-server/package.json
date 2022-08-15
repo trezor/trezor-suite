@@ -8,7 +8,7 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "dev": "npx nodemon --exec 'ts-node' ./src/index.ts",
+        "dev": "tsx watch ./src/index.ts",
         "build": "rimraf ./lib && tsc --build tsconfig.lib.json",
         "start": "node ./lib/index.js"
     },
