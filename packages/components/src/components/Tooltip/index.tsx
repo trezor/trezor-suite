@@ -1,16 +1,14 @@
 import styled from 'styled-components';
-import React, { ReactNode, useRef, useState } from 'react';
-import { useSpring, animated } from 'react-spring';
+import React, { ReactNode, useMemo, useRef, useState } from 'react';
+import { motion, Variants } from 'framer-motion';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
-import { Instance, Props as TProps } from 'tippy.js';
+import { Instance } from 'tippy.js';
 import { transparentize } from 'polished';
 import { Link } from '../typography/Link';
 
 import * as variables from '../../config/variables';
 
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
-
-const Wrapper = styled.div``;
 
 const OpenGuideInner = styled.span`
     float: right;
@@ -28,7 +26,7 @@ const OpenGuideInner = styled.span`
     position: relative;
 `;
 
-const BoxDefault = styled(animated.div)<{ $maxWidth: string | number }>`
+const BoxDefault = styled(motion.div)<{ $maxWidth: string | number }>`
     padding: 8px;
     background: ${props => props.theme.BG_TOOLTIP};
     color: ${props => props.theme.TYPE_WHITE};
@@ -53,7 +51,7 @@ const BoxDefault = styled(animated.div)<{ $maxWidth: string | number }>`
     }
 `;
 
-const BoxRich = styled(animated.div)<{ $maxWidth: string | number }>`
+const BoxRich = styled(motion.div)<{ $maxWidth: string | number }>`
     padding: 24px;
     background: ${props => props.theme.BG_WHITE_ALT};
     color: ${props => props.theme.TYPE_DARK_GREY};
@@ -97,6 +95,15 @@ const StyledContent = styled.div`
     text-align: left;
 `;
 
+const animationStartOffset = 10;
+const getTranslateStyle = (placement: TippyProps['placement']) => {
+    if (placement === 'top') return `translate(0px, ${animationStartOffset}px)`;
+    if (placement === 'bottom') return `translate(0px, -${animationStartOffset}px)`;
+    if (placement === 'left') return `translate(${animationStartOffset}px, 0px)`;
+    if (placement === 'right') return `translate(-${animationStartOffset}px, 0px)`;
+    return '';
+};
+
 export type TooltipProps = Omit<TippyProps, 'offset'> & {
     children: ReactNode | JSX.Element | JSX.Element[] | string;
     readMore?: { link: string; text: ReactNode } | null;
@@ -130,36 +137,7 @@ const Tooltip = ({
 }: TooltipProps) => {
     const [isShown, setIsShown] = useState(false);
 
-    const config = { tension: 400, friction: 26, mass: 1 };
-    const animationStartOffset = 10;
-    const getTranslateStyle = () => {
-        if (placement === 'top') return `translate(0px, ${animationStartOffset}px)`;
-        if (placement === 'bottom') return `translate(0px, -${animationStartOffset}px)`;
-        if (placement === 'left') return `translate(${animationStartOffset}px, 0px)`;
-        if (placement === 'right') return `translate(-${animationStartOffset}px, 0px)`;
-        return '';
-    };
-    const initialStyles = { opacity: 0, transform: `scale(0.9) ${getTranslateStyle()}` };
-    const [spring, setSpring] = useSpring(() => initialStyles);
     const tooltipRef = useRef<Element>(null);
-
-    const onMount = () => {
-        setSpring({
-            opacity: 1,
-            transform: 'scale(1) translate(0px, 0px)',
-            onRest: () => {},
-            config,
-        });
-    };
-
-    const onHide = ({ unmount }: Instance<TProps>) => {
-        setIsShown(false);
-        setSpring({
-            ...initialStyles,
-            onRest: unmount,
-            config: { ...config, clamp: true },
-        });
-    };
 
     // set data-test attribute to Tippy https://github.com/atomiks/tippyjs-react/issues/89
     const onCreate = (instance: any) => {
@@ -167,32 +145,59 @@ const Tooltip = ({
         content.setAttribute('data-test', '@tooltip');
     };
 
+    const animationVariants = useMemo<Variants>(
+        () => ({
+            shown: { opacity: 1, transform: 'scale(1) translate(0px, 0px)' },
+            hidden: { opacity: 0, transform: `scale(0.9) ${getTranslateStyle(placement)}` },
+        }),
+        [placement],
+    );
+
     return content && children ? (
-        <Wrapper className={className}>
+        <div className={className}>
             <Tippy
                 zIndex={variables.Z_INDEX.TOOLTIP}
                 placement={placement}
                 animation={!(guideAnchor && isShown) && animation}
-                onMount={onMount}
                 onShow={() => setIsShown(true)}
-                onHide={onHide}
+                onHide={() => setIsShown(false)}
                 duration={duration}
                 delay={delay}
                 offset={[0, offset]}
                 interactive={interactive}
                 appendTo={() => document.body}
                 onCreate={onCreate}
-                reference={tooltipRef}
+                ref={tooltipRef}
                 disabled={disabled}
                 {...rest}
                 render={(attrs, _content, instance) =>
                     rich ? (
-                        <BoxRich $maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
+                        <BoxRich
+                            $maxWidth={maxWidth}
+                            tabIndex={-1}
+                            variants={animationVariants}
+                            animate={isShown ? 'shown' : 'hidden'}
+                            onAnimationComplete={
+                                // @ts-expect-error
+                                isShown ? () => {} : tooltipRef.current?._tippy?.unmount //  eslint-disable-line no-underscore-dangle
+                            }
+                            {...attrs}
+                        >
                             {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
                             <StyledContent>{content}</StyledContent>
                         </BoxRich>
                     ) : (
-                        <BoxDefault $maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
+                        <BoxDefault
+                            $maxWidth={maxWidth}
+                            tabIndex={-1}
+                            variants={animationVariants}
+                            animate={isShown ? 'shown' : 'hidden'}
+                            onAnimationComplete={
+                                // @ts-expect-error
+                                isShown ? () => {} : tooltipRef.current?._tippy?.unmount //  eslint-disable-line no-underscore-dangle
+                            }
+                            {...attrs}
+                        >
                             {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
                             {guideAnchor && instance && (
                                 <OpenGuideInner>{guideAnchor(instance)}</OpenGuideInner>
@@ -215,7 +220,7 @@ const Tooltip = ({
                     {children}
                 </Content>
             </Tippy>
-        </Wrapper>
+        </div>
     ) : (
         <>{children}</>
     );

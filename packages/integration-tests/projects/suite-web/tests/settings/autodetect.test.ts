@@ -16,13 +16,13 @@ describe('Language and theme detection', () => {
     it('Dark Spanish', () => {
         cy.prefixedVisit('/', {
             onBeforeLoad(win) {
-                cy.stub(win, 'matchMedia')
-                    .withArgs('(prefers-color-scheme: dark)')
-                    .returns({
-                        matches: true,
-                        addEventListener: () => {},
-                        removeEventListener: () => {},
-                    });
+                cy.stub(win, 'matchMedia').callsFake(arg => ({
+                    matches: arg === '(prefers-color-scheme: dark)',
+                    addListener: () => {},
+                    addEventListener: () => {},
+                    removeEventListener: () => {},
+                }));
+
                 Object.defineProperty(win.navigator, 'languages', {
                     value: ['es-ES'],
                 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSpring, config, animated } from 'react-spring';
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Translation, TroubleshootingTips, WebUsbButton } from '@suite-components';
@@ -12,8 +12,9 @@ import {
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
     TROUBLESHOOTING_TIP_UDEV,
 } from '@suite-components/TroubleshootingTips/tips';
+import { enterEase } from '@suite-config/animation';
 
-const Wrapper = styled(animated.div)`
+const Wrapper = styled(motion.div)`
     display: flex;
 `;
 
@@ -22,13 +23,6 @@ interface DeviceConnectProps {
 }
 
 const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
-    const fadeStyles = useSpring({
-        config: { ...config.default },
-        delay: 1000,
-        from: { opacity: 0 },
-        to: { opacity: 1 },
-    });
-
     const items = isWebUsbTransport
         ? [
               TROUBLESHOOTING_TIP_UDEV,
@@ -45,7 +39,11 @@ const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
           ];
 
     return (
-        <Wrapper style={fadeStyles}>
+        <Wrapper
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.5, ease: enterEase }}
+        >
             <TroubleshootingTips
                 label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
                 items={items}

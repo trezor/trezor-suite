@@ -31,15 +31,6 @@ jest.mock('@suite-components/Translation', () => ({
 //     __esModule: true, // export as module
 //     default: () => ['ref', { height: 0 }],
 // }));
-// jest.mock('react-spring', () => ({
-//     config: {
-//         default: {},
-//     },
-//     animated: {
-//         div: (props: any) => <div data-test={props['data-test']}>{props.children}</div>,
-//     },
-//     useSpring: () => ({}),
-// }));
 
 export const getInitialState = ({ suite, router }: any = {}) => ({
     suite: {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSpring, config, animated } from 'react-spring';
 import styled from 'styled-components';
 
 import { variables, Icon, Button, useTheme } from '@trezor/components';
@@ -8,8 +7,10 @@ import { Translation } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import type { PrerequisiteType } from '@suite-types';
+import { motion } from 'framer-motion';
+import { enterEase } from '@suite-config/animation';
 
-const Wrapper = styled(animated.div)`
+const Wrapper = styled(motion.div)`
     display: flex;
     height: 122px;
     min-height: 122px;
@@ -87,19 +88,14 @@ const ConnectDevicePrompt = ({
     const { goto } = useActions({
         goto: routerActions.goto,
     });
-    const fadeStyles = useSpring({
-        config: config.default,
-        transform: 'translate(0px, 0px)',
-        from: { opacity: 0, transform: 'translate(0px, -50px)' },
-        to: {
-            opacity: 1,
-            transform: 'translate(0px, 0px)',
-        },
-        delay: 200,
-    });
 
     return (
-        <Wrapper style={fadeStyles} data-test="@connect-device-prompt">
+        <Wrapper
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: -0 }}
+            transition={{ delay: 0.2, duration: 0.6, ease: enterEase }}
+            data-test="@connect-device-prompt"
+        >
             <ImageWrapper>
                 <DeviceAnimation
                     type="CONNECT"

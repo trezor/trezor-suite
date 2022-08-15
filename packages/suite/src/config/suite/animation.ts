@@ -16,3 +16,7 @@ export default {
         transition: { duration: 0.24, ease: 'easeInOut' },
     },
 };
+
+export const transitionEase = [0.65, 0, 0.35, 1];
+export const enterEase = [0.33, 1, 0.68, 1];
+export const exitEase = [0.32, 0, 0.67, 0];

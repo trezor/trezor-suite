@@ -11,17 +11,8 @@ const { dependencies } = require('./package.json');
 const localPackages = Object.keys(dependencies).filter(packageName =>
     packageName.match(/^(@trezor|@suite-.*)/),
 );
-// react-spring library is not transpiled to ES5 by default
-const reactSpringPath = path.join(__dirname, '..', '..', 'node_modules', '@react-spring');
-const reactSpringPackages = fs
-    .readdirSync(reactSpringPath, { withFileTypes: true })
-    .filter(package => package.isDirectory())
-    .map(package => `@react-spring/${package.name}`);
 
-const withTranspileModules = require('next-transpile-modules')([
-    ...reactSpringPackages,
-    ...localPackages,
-]);
+const withTranspileModules = require('next-transpile-modules')([...localPackages]);
 
 module.exports = withTranspileModules(
     withOptimizedImages({
