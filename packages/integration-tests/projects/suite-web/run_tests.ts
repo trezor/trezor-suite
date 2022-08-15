@@ -5,21 +5,25 @@
     Heavily inspired by Mattermost,
     https://github.com/mattermost/mattermost-webapp/blob/master/e2e/run_tests.js good job guys.
 */
-const cypress = require('cypress');
-const shell = require('shelljs');
-const { argv } = require('yargs');
-const fetch = require('node-fetch');
-const path = require('path');
-const fs = require('fs');
+import cypress from 'cypress';
+import child_process from 'child_process';
+import yargs from 'yargs/yargs';
+import fetch from 'node-fetch';
+import path from 'path';
+import fs from 'fs';
 
-const TEST_DIR = './packages/integration-tests/projects/suite-web';
+const TEST_DIR = './packages/integration-tests/projects';
+
+const { argv } = yargs(process.argv.slice(2)).options({
+    group: { type: 'string' },
+});
 
 const getGrepCommand = (word = '', args = '-rlIw', path = TEST_DIR) =>
     // -r, recursive search on subdirectories
     // -I, ignore binary
     // -l, only names of files to stdout/return
     // -w, expression is searched for as a word
-    `grep ${args} '${word}' ${path}`;
+    [args, word, path];
 
 /**
  * get value of labels, for example there is
@@ -27,13 +31,20 @@ const getGrepCommand = (word = '', args = '-rlIw', path = TEST_DIR) =>
  * grepForValue('@retry', './tests/backup.test.ts');
  * will return 3
  */
-const grepForValue = (word, path) => {
-    const gc = getGrepCommand(word, '-rIw', path);
-    const result = shell.exec(gc, { silent: true }).stdout;
-    return result.replace(`// ${word}=`, '');
+const grepForValue = (word: string, path: string) => {
+    const command = getGrepCommand(word, '-rIw', path);
+    const res = child_process.spawnSync('grep', command, {
+        encoding: 'utf-8',
+    });
+
+    if (res.stderr) {
+        throw new Error(res.stderr);
+    }
+
+    return res.stdout.replace(`// ${word}=`, '');
 };
 
-const getTestFiles = () => {
+const getTestFiles = (): string[] => {
     const { group } = argv;
     let command;
     if (group) {
@@ -43,10 +54,16 @@ const getTestFiles = () => {
     } else {
         command = getGrepCommand();
     }
-    return shell
-        .exec(command, { silent: true })
-        .stdout.split('\n')
-        .filter(f => f.includes('.test.'));
+
+    const res = child_process.spawnSync('grep', command, {
+        encoding: 'utf-8',
+    });
+
+    if (res.error) {
+        throw new Error(res.error.message);
+    }
+
+    return res.stdout.split('\n').filter((f: string) => f.includes('.test.'));
 };
 
 const runTests = async () => {
@@ -66,6 +83,10 @@ const runTests = async () => {
         CYPRESS_TEST_URLS,
     } = process.env;
 
+    if (!CYPRESS_TEST_URLS) {
+        throw new Error('CYPRESS_TEST_URLS is not set');
+    }
+
     const { group } = argv;
 
     if (!TRACK_SUITE_URL || CYPRESS_updateSnapshots) {
@@ -73,7 +94,7 @@ const runTests = async () => {
             '[run_tests.js] TRACK_SUITE_URL env not specified or CYPRESS_updateSnapshots is set. No logs will be uploaded',
         );
     }
-    const finalTestFiles = getTestFiles().sort((a, b) => a.localeCompare(b));
+    const finalTestFiles = getTestFiles().sort((a: string, b: string) => a.localeCompare(b));
 
     if (!finalTestFiles.length) {
         console.log('[run_tests.js] nothing to test!');
@@ -84,7 +105,19 @@ const runTests = async () => {
 
     let failedTests = 0;
 
-    const log = {
+    interface Log {
+        jobUrl?: string;
+        jobId?: string;
+        branch?: string;
+        commitMessage?: string;
+        commitSha?: string;
+        runnerDescription?: string;
+        duration: number;
+        stage?: string;
+        records: { [key: string]: 'success' | 'failed' | 'retried' | 'skipped' };
+        tests: CypressCommandLine.TestResult[];
+    }
+    const log: Log = {
         jobUrl: CI_JOB_URL,
         jobId: CI_JOB_ID,
         branch: CI_COMMIT_BRANCH,
@@ -217,8 +250,9 @@ const runTests = async () => {
             body: JSON.stringify(log),
         });
         console.log(`[run_tests.js] response.status: ${response.status}`);
-        if (response.error) {
-            console.log('[run_tests.js] response.error', response.error);
+
+        if (!response.ok) {
+            console.log('[run_tests.js] response.error', response);
         }
     }
 

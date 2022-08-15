@@ -1,39 +1,53 @@
 /* eslint-disable no-await-in-loop,no-async-promise-executor */
 
-const fetch = require('cross-fetch');
-const { Controller } = require('./websocket-client');
+import fetch from 'cross-fetch';
+import { Controller } from './websocket-client';
 
 const controller = new Controller();
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const filterFirmwares = firmwares => {
+// todo: move this type into websocket-client.js once it will be turned into ts
+type FirmwaresEvent = {
+    '1': string[];
+    '2': string[];
+    R: string[];
+};
+
+const filterFirmwares = (firmwares: FirmwaresEvent) => {
     const firmwareArg = process.env.TESTS_FIRMWARE;
     const latest2 = firmwares['2'].find(fw => !fw.includes('-'));
+    const latest1 = firmwares['1'].find(fw => !fw.includes('-'));
+
+    if (!latest2 || !latest1) {
+        // should never happen
+        throw new Error('could not translate n-latest into specific firmware version');
+    }
 
     if (firmwareArg === '2-latest') {
         return latest2;
     }
     if (firmwareArg === '1-latest') {
-        return firmwares['1'].filter(fw => !fw.includes('-'));
+        return latest1;
     }
+
     return firmwareArg || latest2;
 };
 
-const writeOut = data => {
+const writeOut = (data: string) => {
     process.stdout.write(data);
 };
 
 const wait = async () => {
     try {
-        await new Promise(async resolve => {
-            const limit = 60;
+        await new Promise<void>(async resolve => {
+            const limit = 90;
             let error = '';
             process.stderr.write('waiting for trezor-user-env');
 
             for (let i = 0; i < limit; i++) {
                 if (i === limit - 1) {
-                    process.stderr.write(`cant connect to trezor-user-env: ${error.message}\n`);
+                    process.stderr.write(`cant connect to trezor-user-env: ${error}\n`);
                 }
                 await delay(1000);
 
@@ -43,7 +57,7 @@ const wait = async () => {
                         break;
                     }
                 } catch (err) {
-                    error = err;
+                    error = err.message;
                     process.stderr.write('.');
                 }
             }
@@ -70,7 +84,9 @@ const wait = async () => {
 
 // consume all unexpected outputs so that they do not go to stdout
 Object.keys(console).forEach(k => {
+    // @ts-ignore
     if (typeof console[k] === 'function') {
+        // @ts-ignore
         console[k] = () => {};
     }
 });
