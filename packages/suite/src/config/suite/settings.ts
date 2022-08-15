@@ -1,4 +1,5 @@
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
+import { settingsCommonConfig } from '@suite-common/suite-config';
 
 const IMPORTANT_NOTIFICATION_TYPES: Array<NotificationEntry['type']> = [
     'tx-sent',
@@ -12,9 +13,7 @@ const IMPORTANT_NOTIFICATION_TYPES: Array<NotificationEntry['type']> = [
 ];
 
 export default {
-    MAX_ACCOUNTS: 10,
-    FRESH_ADDRESS_LIMIT: 20,
-    TXS_PER_PAGE: 25,
+    ...settingsCommonConfig,
     DEFAULT_GRAPH_RANGE: {
         label: 'all',
         startDate: null,
