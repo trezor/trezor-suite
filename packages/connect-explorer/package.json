@@ -33,7 +33,7 @@
         "@types/markdown-it-link-attributes": "3.0.1",
         "@types/react-router": "^5.1.11",
         "@types/react-router-dom": "^5.1.7",
-        "@types/styled-components": "^5.1.25",
+        "@types/styled-components": "^5.1.26",
         "babel-loader": "^8.2.5",
         "html-webpack-plugin": "^5.5.0",
         "ts-loader": "^9.3.1",
