@@ -21,6 +21,7 @@ import { desktopReducer } from './desktop';
 // it's not included into `@suite-middlewares` index
 import toastMiddleware from '@suite-middlewares/toastMiddleware';
 import type { PreloadStoreAction } from '@suite-support/preloadStore';
+import { extraDependencies } from '../support/extraDependecies';
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -35,7 +36,7 @@ const rootReducer = combineReducers({
 export type AppState = ReturnType<typeof rootReducer>;
 
 const middleware = [
-    thunkMiddleware,
+    thunkMiddleware.withExtraArgument(extraDependencies),
     toastMiddleware,
     ...suiteMiddlewares,
     ...walletMiddlewares,

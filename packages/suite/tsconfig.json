@@ -41,6 +41,9 @@
             "path": "../../suite-common/suite-utils"
         },
         {
+            "path": "../../suite-common/notifications"
+        },
+        {
             "path": "../../suite-common/test-utils"
         },
         {
@@ -54,6 +57,9 @@
         },
         {
             "path": "../../suite-common/wallet-utils"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
         }
     ]
 }

@@ -10,7 +10,7 @@ import {
     MessageSystem,
     Action,
 } from '@suite-common/suite-types';
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Account, FeeInfo, WalletAccountTransaction } from '@suite-common/wallet-types';
 
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
@@ -617,6 +617,14 @@ const getGuideNode = (type: string, id?: string): Node => {
     return result;
 };
 
+const fee: FeeInfo = {
+    blockTime: 1565797979,
+    blockHeight: 590093,
+    minFee: 1,
+    maxFee: 100,
+    levels: [{ label: 'normal', feePerUnit: '10', blocks: 1 }],
+};
+
 const intlMock = {
     // @ts-ignore
     formatMessage: (s: any) => s.defaultMessage,
@@ -632,5 +640,6 @@ export const testMocks = {
     getTrezorConnect,
     getMessageSystemConfig,
     getGuideNode,
+    fee,
     intlMock,
 };

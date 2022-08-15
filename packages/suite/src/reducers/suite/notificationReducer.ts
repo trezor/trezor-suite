@@ -1,17 +1,11 @@
 import produce from 'immer';
-import { DEVICE } from '@trezor/connect';
-import { NOTIFICATION, SUITE } from '@suite-actions/constants';
+import { NOTIFICATION } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 import { Network } from '@wallet-types';
 import { UpdateState } from '@suite-reducers/desktopUpdateReducer';
 import type { PROTOCOL_SCHEME } from '@suite-constants/protocol';
 import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
-
-interface Options {
-    seen?: boolean;
-    resolved?: boolean;
-    autoClose?: number | false;
-}
+import { NotificationEventPayload, NotificationOptions } from '@suite-common/notifications';
 
 export type ToastPayload = (
     | {
@@ -118,7 +112,7 @@ export type ToastPayload = (
           error: TranslationKey;
       }
 ) &
-    Options;
+    NotificationOptions;
 
 interface Common {
     id: number; // programmer provided, might be used to find and close notification programmatically
@@ -127,25 +121,7 @@ interface Common {
     error?: string;
 }
 
-export type EventPayload = (
-    | {
-          type: typeof SUITE.AUTH_DEVICE;
-      }
-    | {
-          type: 'tx-received' | 'tx-confirmed';
-          formattedAmount: string;
-          device?: TrezorDevice;
-          descriptor: string;
-          symbol: Network['symbol'];
-          txid: string;
-      }
-    | {
-          type: typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
-          device: TrezorDevice;
-          needAttention?: boolean;
-      }
-) &
-    Options;
+export type EventPayload = NotificationEventPayload;
 
 export type ToastNotification = { context: 'toast' } & Common & ToastPayload;
 export type EventNotification = { context: 'event' } & Common & EventPayload;
