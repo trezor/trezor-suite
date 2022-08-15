@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, Image } from '@suite-components';
+import { Translation } from '@suite-components';
 import { CoinmarketRefreshTime } from '@wallet-components';
-import { Button } from '@trezor/components';
+import { Button, Image } from '@trezor/components';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 
 interface Props {

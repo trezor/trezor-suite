@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { SUITE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Button } from '@trezor/components';
-import { Translation, Modal, Image, TrezorLink } from '@suite-components';
+import { Button, Image } from '@trezor/components';
+import { Translation, Modal, TrezorLink } from '@suite-components';
 import styled from 'styled-components';
 import { ImageWrapper, Description, Title } from './styles';
 

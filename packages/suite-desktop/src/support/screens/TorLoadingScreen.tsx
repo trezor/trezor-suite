@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 import { desktopApi, BootstrapTorEvent } from '@trezor/suite-desktop-api';
-import { P, Button, Progress, variables } from '@trezor/components';
-import { Image } from '@suite-components';
+import { P, Button, Progress, Image, variables } from '@trezor/components';
 import { ThemeProvider } from '@suite-support/ThemeProvider';
 import { TorStatus } from '@suite-types';
 

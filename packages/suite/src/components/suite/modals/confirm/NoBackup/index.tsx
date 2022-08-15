@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
-import { Translation, Image, Modal, ModalProps } from '@suite-components';
+import { Button, Image } from '@trezor/components';
+import { Translation, Modal, ModalProps } from '@suite-components';
 
 const ImageWrapper = styled.div`
     padding: 60px 0px;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { WIKI_RECOVERY_SEED_URL } from '@trezor/urls';
+import { Image } from '@trezor/components';
 
 import {
     OnboardingButtonCta,
@@ -9,7 +10,7 @@ import {
     OnboardingStepBox,
     SkipStepConfirmation,
 } from '@onboarding-components';
-import { Translation, Image, TrezorLink } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { BackupSeedCards } from '@backup-components';
 import { canContinue } from '@backup-utils';
 import { useSelector, useActions } from '@suite-hooks';

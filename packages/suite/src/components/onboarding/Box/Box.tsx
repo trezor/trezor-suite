@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import Text from '@onboarding-components/Text';
-import { Image, ImageProps, Translation } from '@suite-components';
-import { H1, variables, Button, useTheme } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { H1, variables, Button, Image, ImageProps, useTheme } from '@trezor/components';
 import useMeasure from 'react-use/lib/useMeasure';
 
 const BoxWrapper = styled(
@@ -143,7 +143,7 @@ const CloseButton = styled(Button)`
 `;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    image?: ImageProps['image'];
+    image?: Extract<ImageProps, { image: any }>['image'];
     variant?: 'small' | 'large';
     expandable?: boolean;
     expanded?: boolean;

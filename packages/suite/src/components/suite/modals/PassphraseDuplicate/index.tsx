@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
-import { Translation, Image, Modal } from '@suite-components';
+import { Button, Image } from '@trezor/components';
+import { Translation, Modal } from '@suite-components';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useActions } from '@suite-hooks';
 import { TrezorDevice } from '@suite-types';

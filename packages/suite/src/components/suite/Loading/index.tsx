@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Image } from '@suite-components';
+import { Image } from '@trezor/components';
 
 const LoaderWrapper = styled.div`
     margin: auto;

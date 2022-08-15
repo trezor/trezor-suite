@@ -1,5 +1,4 @@
 import DeviceIcon from './images/DeviceIcon';
-import { Image, ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide';
 import { FormattedFiatAmount } from './FormattedFiatAmount';
@@ -77,7 +76,6 @@ export {
     AddressLabeling,
     WalletLabeling,
     MetadataLabeling,
-    Image,
     QuestionTooltip,
     TransactionsGraph,
     AppNavigationPanel,
@@ -111,4 +109,4 @@ export {
     StatusLight,
     AmountUnitSwitchWrapper,
 };
-export type { ImageProps, ModalProps };
+export type { ModalProps };

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Image } from '@suite-components';
+import { Image } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 // displaying of a loader is delayed to avoid displaying to users with fast internet

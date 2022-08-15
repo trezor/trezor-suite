@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, H2, Button, Card, ButtonProps } from '@trezor/components';
-import { Image, ImageProps } from '@suite-components';
+import { variables, H2, Button, Card, ButtonProps, Image, ImageProps } from '@trezor/components';
 
 const StyledCard = styled(Card)`
     width: 100%;
@@ -53,7 +52,7 @@ const Divider = styled.div`
 interface Props {
     title: JSX.Element | string;
     description?: JSX.Element | string;
-    image?: ImageProps['image'];
+    image?: Extract<ImageProps, { image: any }>['image'];
     imageComponent?: JSX.Element;
     actions?: ({ key: React.ReactText } & ButtonProps)[];
     actionComponent?: JSX.Element;

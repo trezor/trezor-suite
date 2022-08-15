@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Button } from '@trezor/components';
-import { Image, Translation } from '@suite-components';
+import { Button, Image, ImageProps } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import { Modal } from '../Modal';
@@ -11,6 +11,7 @@ const StyledImage = styled(Image)`
     margin: 20px 0;
 
     ${props =>
+        'image' in props &&
         props.image === 'UNI_WARNING' &&
         css`
             max-height: 160px;
@@ -36,7 +37,7 @@ const StyledModal = styled(Modal)`
 type Props = {
     title: React.ReactNode;
     text?: React.ReactNode;
-    image?: React.ComponentProps<typeof Image>['image'];
+    image?: Extract<ImageProps, { image: any }>['image'];
     allowSwitchDevice?: boolean;
     resolveButton?: React.ReactNode;
     ['data-test']?: string;

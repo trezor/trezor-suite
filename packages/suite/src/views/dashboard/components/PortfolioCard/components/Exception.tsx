@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Button, IconProps, H3 } from '@trezor/components';
-import { Image, Translation } from '@suite-components';
+import { variables, Button, IconProps, H3, Image } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DATA_URL, WIKI_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
-import { Translation, Image, TrezorLink, Modal, Metadata } from '@suite-components';
-import { Button, P, Link, Select, useTheme, variables, Loader } from '@trezor/components';
+import { Translation, TrezorLink, Modal, Metadata } from '@suite-components';
+import { Button, P, Link, Select, Image, useTheme, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { isDesktop, isWeb } from '@suite-utils/env';
 import { useSelector, useActions } from '@suite-hooks';
