@@ -11,7 +11,7 @@ CKSUM_AFTER=$(cksum yarn.lock)
 echo "checksum after $CKSUM_AFTER"
 
 
-if [[ $CKSUM_BEFORE != $CKSUM_AFTER ]]; then
+if [[ "$CKSUM_BEFORE" != "$CKSUM_AFTER" ]]; then
   echo "check-lockfile.sh: yarn.lock was modified unexpectedly - terminating"
   exit 1
 fi
