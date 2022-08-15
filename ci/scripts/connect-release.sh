@@ -7,7 +7,7 @@ set -e -o pipefail
 # @DESTINATION: required, destination directory (connect major version)
 
 # Validate params
-while [[ "$#" > 0 ]]; do case $1 in
+while [[ "$#" -gt 0 ]]; do case $1 in
     9)
         latest_version="9"
         current_version=$(jq -r .version packages/connect/package.json)
@@ -33,8 +33,8 @@ cp -r packages/connect-web/build/* $tmp_folder/.
 cp -r packages/connect-explorer/build/* $tmp_folder/.
 
 # sync the files to aws
-aws s3 sync --delete --cache-control 'public, max-age=3600' $tmp_folder/ s3://connect.trezor.io/$latest_version/
-aws s3 sync --delete --cache-control 'public, max-age=3600' $tmp_folder/ s3://connect.trezor.io/$current_version/
+aws s3 sync --delete --cache-control 'public, max-age=3600' "$tmp_folder/" "s3://connect.trezor.io/$latest_version/"
+aws s3 sync --delete --cache-control 'public, max-age=3600' "$tmp_folder/" "s3://connect.trezor.io/$current_version/"
 aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
 
 # cleaning up

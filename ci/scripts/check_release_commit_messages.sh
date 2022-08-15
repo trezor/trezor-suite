@@ -7,16 +7,16 @@ git fetch origin develop
 # list all commits between HEAD and develop
 for commit in $(git rev-list origin/develop..)
 do
-    message=$(git log -n1 --format=%B $commit)
+    message=$(git log -n1 --format=%B "$commit")
     echo "Checking $commit"
 
     # The commit message must contain either
     # 1. "cherry-picked from [some commit in develop]"
     if [[ $message =~ "(cherry picked from commit" ]]; then
       # remove last ")" and extract commit hash
-      develop_commit=$(echo ${message:0:-1} | tr ' ' '\n' | tail -1)
+      develop_commit=$(echo "${message:0:-1}" | tr ' ' '\n' | tail -1)
       # check if develop really contains this commit hash
-      if [[ $(git branch -a --contains $develop_commit | grep --only-matching "remotes/origin/develop") == "remotes/origin/develop" ]]; then
+      if [[ $(git branch -a --contains "$develop_commit" | grep --only-matching "remotes/origin/develop") == "remotes/origin/develop" ]]; then
         continue
       fi
     fi
