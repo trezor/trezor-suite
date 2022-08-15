@@ -12,6 +12,7 @@ do
 
     # The commit message must contain either
     # 1. "cherry-picked from [some commit in develop]"
+    # shellcheck disable=SC2076
     if [[ $message =~ "(cherry picked from commit" ]]; then
       # remove last ")" and extract commit hash
       develop_commit=$(echo "${message:0:-1}" | tr ' ' '\n' | tail -1)
@@ -22,6 +23,7 @@ do
     fi
 
     # 2. [RELEASE ONLY] substring
+    # shellcheck disable=SC2076
     if [[ $message =~ "[RELEASE ONLY]" ]]; then
       continue
     fi
