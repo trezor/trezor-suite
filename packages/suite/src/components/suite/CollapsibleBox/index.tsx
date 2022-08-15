@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { animated, useSpring } from 'react-spring';
+import { motion, Variants } from 'framer-motion';
 import useMeasure from 'react-use/lib/useMeasure';
 import { Icon, variables } from '@trezor/components';
+import { transitionEase } from '@suite-config/animation';
 
 const Wrapper = styled.div<Pick<Props, 'variant'>>`
     display: flex;
@@ -86,7 +87,7 @@ const Heading = styled.span<Pick<Props, 'variant'>>`
         `}
 `;
 
-const Content = styled(animated.div)<{ variant: Props['variant']; $noContentPadding?: boolean }>`
+const Content = styled.div<{ variant: Props['variant']; $noContentPadding?: boolean }>`
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -144,31 +145,38 @@ const CollapsibleBox = ({
 }: Props) => {
     const [collapsed, setCollapsed] = useState(!opened);
     const [animatedIcon, setAnimatedIcon] = useState(false);
+
     const [heightRef, { height }] = useMeasure<HTMLDivElement>();
 
     useEffect(() => {
         setCollapsed(!opened);
     }, [opened]);
 
-    const slideInStyles = useSpring({
-        from: { opacity: 0, height: 0 },
-        to: {
-            opacity: !collapsed ? 1 : 0,
-            height: !collapsed ? height : 0,
-        },
-    });
+    const handleHeaderClick = useCallback(() => {
+        setCollapsed(!collapsed);
+        setAnimatedIcon(true);
+    }, [collapsed]);
+
+    const animationVariants = useMemo<Variants>(
+        () => ({
+            closed: { opacity: 0, height: 0 },
+            opened: {
+                opacity: 1,
+                height,
+            },
+        }),
+        [height],
+    );
 
     return (
         <Wrapper variant={variant} {...rest}>
             <Header
                 variant={variant}
                 headerJustifyContent={headerJustifyContent}
-                onClick={() => {
-                    setCollapsed(!collapsed);
-                    setAnimatedIcon(true);
-                }}
+                onClick={handleHeaderClick}
             >
                 <Heading variant={variant}>{heading ?? iconLabel}</Heading>
+
                 {headingButton ? (
                     headingButton({ collapsed, animatedIcon })
                 ) : (
@@ -183,8 +191,13 @@ const CollapsibleBox = ({
                     </IconWrapper>
                 )}
             </Header>
-            <animated.div
-                style={{ ...slideInStyles, overflow: 'hidden' }}
+
+            <motion.div
+                animate={collapsed ? 'closed' : 'opened'}
+                initial="closed"
+                variants={animationVariants}
+                transition={{ duration: 0.35, ease: transitionEase }}
+                style={{ overflow: 'hidden' }}
                 data-test="@collapsible-box/body"
             >
                 {/* This div is here because of the ref, ref on styled-component (Content) will result with unnecessary re-render */}
@@ -193,7 +206,7 @@ const CollapsibleBox = ({
                         {children}
                     </Content>
                 </div>
-            </animated.div>
+            </motion.div>
         </Wrapper>
     );
 };
