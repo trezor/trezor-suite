@@ -14,8 +14,10 @@ import type { FormState } from '@wallet-types/sendForm';
 import type { Trade } from '@wallet-types/coinmarketCommonTypes';
 import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
 import type { PreloadStoreAction } from '@suite-support/preloadStore';
+import { STORAGE } from './constants';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
+export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
 
 // send form drafts start
 export const saveDraft = async (formState: FormState, accountKey: string) => {

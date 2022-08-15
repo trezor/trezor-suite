@@ -3,6 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../packages/styles" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
         { "path": "../module-onboarding" },
         { "path": "../module-settings" },
         { "path": "../home-graph" }

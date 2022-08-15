@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/state",
+    "name": "@suite-common/redux-utils",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,12 +11,11 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
-        "@trezor/styles": "*",
+        "@suite-common/suite-types": "*",
+        "@suite-common/wallet-types": "*",
+        "@suite-common/wallet-config": "*",
+        "@suite-common/notifications": "*",
         "@trezor/connect": "9.0.0-beta.6",
-        "@suite-common/redux-utils": "*",
-        "@suite-common/test-utils": "*",
-        "@suite-native/module-onboarding": "*",
-        "@suite-native/module-settings": "*",
-        "@suite-native/home-graph": "*"
+        "redux": "^4.2.0"
     }
 }
