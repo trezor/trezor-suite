@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1078,SC1079,SC2027,SC2086 # TODO: the multiline string in TRX should be rewritten but I'm afraid to touch it
+
 set -e
 shopt -s expand_aliases
 

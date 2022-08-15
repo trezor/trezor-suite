@@ -32,7 +32,7 @@
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
         "_______ Testing _______": "Testing, linting, type checking...",
         "type-check": "yarn lerna run type-check",
-        "type-check:force": "rimraf -rf **/libDev && yarn type-check",
+        "type-check:force": "rimraf -rf -- **/libDev && yarn type-check",
         "test:unit": "yarn lerna run test:unit",
         "lint:js": "eslint --report-unused-disable-directives --cache --ignore-path .gitignore --ext .js,.ts,.tsx ./",
         "lint": "yarn lerna run lint:styles && yarn lint:js",
