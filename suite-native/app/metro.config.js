@@ -13,7 +13,7 @@ module.exports = {
         }),
     },
     resolver: {
-        blockList: [/libDev/, /news-api\/build/],
+        blockList: [/libDev/],
         extraNodeModules: {
             // modules needed for trezor-connect
             crypto: nodejs.crypto,

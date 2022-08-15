@@ -21,7 +21,6 @@
 | [@trezor/connect-popup](./packages/connect-popup)                     | UI for 3rd party implementations             |
 | [@trezor/connect-web](./packages/connect-web)                         | 3rd party interface entrypoint for browser   |
 | [@trezor/integration-tests](./packages/integration-tests)             | cross-packages e2e tests                     |
-| [@trezor/news-api](./packages/news-api)                               | medium proxy providing allow-origin headers  |
 | [@trezor/request-manager](./packages/request-manager)                 | improved communication with Tor              |
 | [@trezor/styles](./packages/styles)                                   | custom styling library for native app        |
 | [@trezor/suite-analytics](./packages/suite-analytics)                 | analytics for Suite                          |
