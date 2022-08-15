@@ -1,4 +1,4 @@
-name: Connect v9 release
+name: Connect v9 release init
 
 on: [workflow_dispatch]
 
