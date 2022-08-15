@@ -32,9 +32,19 @@ const cmd = [
     './src/data/version.ts',
     '../connect-web/package.json',
     '../connect-web/src/webextension/trezor-usb-permissions.js',
+    '../connect-popup/package.json',
+    '../connect-iframe/package.json',
+    '../connect-explorer/package.json',
+    '../suite-common/connect-init/package.json',
+    '../suite-common/wallet-utils/package.json',
+    '../suite-common/wallet-types/package.json',
+    '../suite-common/test-utils/package.json',
+    '../suite-common/suite-types/package.json',
+    '../suite-common/suite-desktop/package.json',
+    '../suite-common/suite/package.json',
+    '../suite-native/app/package.json',
 
     // todo: add examples package.jsons
-    // todo: consider adding all suite/package.json
 ];
 
 const res = child_process.spawnSync('yarn', cmd, {
