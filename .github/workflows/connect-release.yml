@@ -3,7 +3,7 @@ name: Connect npm release
 on: [workflow_dispatch]
 
 jobs:
-  release:
+  release_npm:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -13,7 +13,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Run @trezor/connect release
+      - name: Run @trezor/connect release npm
         run: |
           npm install -g yarn && yarn install
           git config --global user.name "trezor-ci"
@@ -22,6 +22,26 @@ jobs:
           yarn workspace @trezor/connect version:beta
           git add . && git commit -m "release: @trezor/connect" && git push origin npm-release/connect -f
           gh config set prompt disabled
-          gh pr create --repo trezor/trezor-suite --title "npm-release @trezor/connect" --body "- [ ] checkbox 1 \n - checkbox 2 [ ]" --base develop
+          gh pr create --repo trezor/trezor-suite --title "npm-release @trezor/connect" --body-file "../../docs/releases/connect-npm.md" --base develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+
+  release_trezor-io:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Run @trezor/connect release trezor.io
+        run: |
+          npm install -g yarn && yarn install
+          git config --global user.name "trezor-ci"
+          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+          gh config set prompt disabled
+          gh pr create --repo trezor/trezor-suite --title "release connect.trezor.io/9" --body "<ul><li>- [ ] npm packages are have been released</li><li>- [ ] @trezor/qa acknowledged</li><li>- [ ] no breaking changes</li></ul>" --base release/connect-9
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
