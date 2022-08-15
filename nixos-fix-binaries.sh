@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2230 # TODO: 'which' is not posix, should be replaced by 'command -v' builtin instead
 
 if [ -f /etc/NIXOS ] ; then
   if [ -z "$IN_NIX_SHELL" ] ; then

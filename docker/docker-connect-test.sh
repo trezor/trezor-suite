@@ -18,9 +18,9 @@ set -euo pipefail
 # 21326 - trezord proxy. beacuse of trezord CORS check
 # 21325 - original trezord port redirected to trezor-user-env proxy
 
-ENVIRONEMT=$1
+ENVIRONMENT=$1
 
-if [[ "$ENVIRONEMT" != "web" && "$ENVIRONEMT" != "node" ]];
+if [[ "$ENVIRONMENT" != "web" && "$ENVIRONMENT" != "node" ]];
     then
         echo "either 'web' or 'node' must be specified as the first argument"
         exit 1
@@ -93,7 +93,9 @@ while getopts ":p:i:e:f:u:D:hdc" opt; do
 done
 shift $((OPTIND - 1))
 
-if [[ $ENVIRONEMT == "node" ]];
+export DOCKER_PATH
+
+if [[ $ENVIRONMENT == "node" ]];
   then
     SCRIPT="yarn workspace @trezor/integration-tests test:connect:node"
   else
@@ -116,7 +118,7 @@ runDocker() {
 
 run() {
 
-  echo "Testing env: ${ENVIRONEMT}. Using: ${SCRIPT} ${PATTERN}"
+  echo "Testing env: ${ENVIRONMENT}. Using: ${SCRIPT} ${PATTERN}"
   echo "  Firmware: ${TESTS_FIRMWARE}"
   echo "  Firmware from url: ${FIRMWARE_URL}"
   echo "  Test pattern: $PATTERN"
