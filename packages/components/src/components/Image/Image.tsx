@@ -22,7 +22,7 @@ const buildSrcSet = <
     imageKey: ImageKey,
 ) => {
     const imageFile1x = imageObject[imageKey];
-    const hiRes = `${imageKey}_2x`;
+    const hiRes = `${String(imageKey)}_2x`;
     const imageFile2x = hiRes in imageObject ? imageObject[hiRes as ImageKey] : undefined;
 
     if (!imageFile2x) {
@@ -36,32 +36,45 @@ const buildSrcSet = <
 
 export type ImageType = PngImage | SvgImage;
 
-export type ImageProps = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> & {
-    image: ImageType;
-};
+export type ImageProps = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> &
+    (
+        | {
+              image: ImageType;
+          }
+        | {
+              imageSrc: string;
+          }
+    );
 
 const isPNG = (image: ImageType): image is PngImage => image in PNG_IMAGES;
 const isSVG = (image: ImageType): image is SvgImage => image in SVG_IMAGES;
 
-export const Image = ({ image, ...props }: ImageProps) => {
-    if (isPNG(image)) {
-        return (
-            <StyledImage
-                src={resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES[image]}`)}
-                srcSet={buildSrcSet(PNG_PATH, PNG_IMAGES, image)}
-                {...props}
-            />
-        );
+export const Image = (props: ImageProps) => {
+    if ('image' in props) {
+        const { image } = props;
+        if (isPNG(image)) {
+            return (
+                <StyledImage
+                    src={resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES[image]}`)}
+                    srcSet={buildSrcSet(PNG_PATH, PNG_IMAGES, image)}
+                    {...props}
+                />
+            );
+        }
+
+        if (isSVG(image)) {
+            return (
+                <StyledImage
+                    src={resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES[image]}`)}
+                    srcSet={buildSrcSet(SVG_PATH, SVG_IMAGES, image)}
+                    {...props}
+                />
+            );
+        }
     }
 
-    if (isSVG(image)) {
-        return (
-            <StyledImage
-                src={resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES[image]}`)}
-                srcSet={buildSrcSet(SVG_PATH, SVG_IMAGES, image)}
-                {...props}
-            />
-        );
+    if ('imageSrc' in props) {
+        return <StyledImage src={props.imageSrc} {...props} />;
     }
 
     return null;

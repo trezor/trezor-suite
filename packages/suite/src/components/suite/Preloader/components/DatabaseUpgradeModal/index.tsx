@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Modal, Image, Translation } from '@suite-components';
+import { Image } from '@trezor/components';
+import { Modal, Translation } from '@suite-components';
 
 const ImageWrapper = styled.div`
     display: flex;

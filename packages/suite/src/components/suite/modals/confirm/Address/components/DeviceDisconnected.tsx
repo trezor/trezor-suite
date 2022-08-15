@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { P, variables } from '@trezor/components';
-import { Translation, Image } from '@suite-components';
+import { P, Image, variables } from '@trezor/components';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;

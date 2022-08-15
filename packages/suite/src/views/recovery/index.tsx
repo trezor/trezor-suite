@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { WIKI_DRY_RUN_URL } from '@trezor/urls';
-import { Button, H2, P, variables } from '@trezor/components';
+import { Button, H2, P, Image, variables } from '@trezor/components';
 import { SelectWordCount, SelectRecoveryType } from '@recovery-components';
-import { Loading, Translation, CheckItem, TrezorLink, Image, Modal } from '@suite-components';
+import { Loading, Translation, CheckItem, TrezorLink, Modal } from '@suite-components';
 import { RawRenderer } from '@suite-components/Modal/RawRenderer';
 import { ReduxModal } from '@suite-components/ModalSwitcher/ReduxModal';
 import * as recoveryActions from '@recovery-actions/recoveryActions';

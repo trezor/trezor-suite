@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, Button } from '@trezor/components';
+import { P, Button, Image } from '@trezor/components';
 import { WIKI_FAILED_BACKUP_URL } from '@trezor/urls';
 import { useSelector, useActions } from '@suite-hooks';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { Loading, Image, Translation, TrezorLink, Modal } from '@suite-components';
+import { Loading, Translation, TrezorLink, Modal } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 

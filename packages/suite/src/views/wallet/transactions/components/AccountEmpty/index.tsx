@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { variables, H2, Button, Card } from '@trezor/components';
-import { Translation, Image } from '@suite-components';
+import { variables, H2, Button, Card, Image } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import * as suiteActions from '@suite-actions/suiteActions';

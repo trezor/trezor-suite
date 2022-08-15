@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Button, P, Tooltip } from '@trezor/components';
-import { CheckItem, Translation, Modal, Image } from '@suite-components';
+import { Button, P, Tooltip, Image } from '@trezor/components';
+import { CheckItem, Translation, Modal } from '@suite-components';
 import { ImageWrapper, Description, Divider, Title } from './styles';
 
 const DescriptionWrapper = styled.div`

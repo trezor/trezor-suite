@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { Translation, Image, Modal } from '@suite-components';
-import { Button } from '@trezor/components';
+import { Translation, Modal } from '@suite-components';
+import { Button, Image } from '@trezor/components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
 const ImageWrapper = styled.div`

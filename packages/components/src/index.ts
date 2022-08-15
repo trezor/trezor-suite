@@ -43,6 +43,7 @@ export * from './components/Truncate';
 export * from './components/form/SelectBar';
 export * from './components/HoverAnimation';
 export * from './components/Fade';
+export * from './components/Image/Image';
 
 export * from './constants/keyboardEvents';
 
