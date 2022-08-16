@@ -277,9 +277,7 @@ export const BasicDetails = ({ tx, confirmations, network, explorerUrl }: BasicD
                             <Translation id="TR_FEE_RATE" />
                         </Title>
 
-                        <Value>{`${getFeeRate(tx, network.decimals)} ${getFeeUnits(
-                            'bitcoin',
-                        )}`}</Value>
+                        <Value>{`${getFeeRate(tx)} ${getFeeUnits('bitcoin')}`}</Value>
 
                         {/* RBF Status */}
                         <Title>

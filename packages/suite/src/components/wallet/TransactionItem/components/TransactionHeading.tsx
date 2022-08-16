@@ -4,6 +4,7 @@ import { variables, Icon, useTheme } from '@trezor/components';
 import { FormattedCryptoAmount } from '@suite-components';
 import {
     formatAmount,
+    formatNetworkAmount,
     getTargetAmount,
     getTxHeaderSymbol,
     getTxOperation,
@@ -93,7 +94,7 @@ export const TransactionHeading = ({
     if (transaction.type === 'failed') {
         amount = (
             <StyledCryptoAmount
-                value={transaction.fee}
+                value={formatNetworkAmount(transaction.fee, transaction.symbol)}
                 symbol={transaction.symbol}
                 signValue="neg"
             />

@@ -75,6 +75,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const showHistoricalRates = showFiat && !tokenTransfer;
     const totalInput = formatNetworkAmount(tx.details.totalInput, tx.symbol);
     const totalOutput = formatNetworkAmount(tx.details.totalOutput, tx.symbol);
+    const fee = formatNetworkAmount(tx.fee, tx.symbol);
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
 
@@ -295,18 +296,18 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 {/* TX FEE */}
                 <AmountRow
                     firstColumn={<Translation id="TR_TX_FEE" />}
-                    secondColumn={<FormattedCryptoAmount value={tx.fee} symbol={tx.symbol} />}
+                    secondColumn={<FormattedCryptoAmount value={fee} symbol={tx.symbol} />}
                     thirdColumn={
                         showHistoricalRates && (
                             <FiatValue
-                                amount={tx.fee}
+                                amount={fee}
                                 symbol={tx.symbol}
                                 source={tx.rates}
                                 useCustomSource
                             />
                         )
                     }
-                    fourthColumn={showFiat && <FiatValue amount={tx.fee} symbol={tx.symbol} />}
+                    fourthColumn={showFiat && <FiatValue amount={fee} symbol={tx.symbol} />}
                     color="light"
                 />
             </AmountWrapper>

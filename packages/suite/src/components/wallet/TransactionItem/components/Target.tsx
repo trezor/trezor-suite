@@ -189,10 +189,12 @@ export const CustomRow = ({
 );
 
 export const FeeRow = ({
+    fee,
     transaction,
     useFiatValues,
     ...baseLayoutProps
 }: {
+    fee: string;
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
     isFirst?: boolean;
@@ -203,7 +205,7 @@ export const FeeRow = ({
         {...baseLayoutProps}
         title="FEE"
         sign="neg"
-        amount={transaction.fee}
+        amount={fee}
         transaction={transaction}
         useFiatValues={useFiatValues}
     />
