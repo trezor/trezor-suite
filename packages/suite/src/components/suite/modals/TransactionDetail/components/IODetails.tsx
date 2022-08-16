@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon, useTheme, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getNetwork } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, getNetwork } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -71,7 +71,10 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                                     // consider faking it by showing the same value os the output
                                     <CryptoAmountWrapper>
                                         <FormattedCryptoAmount
-                                            value={input.value}
+                                            value={
+                                                input.value &&
+                                                formatNetworkAmount(input.value, tx.symbol)
+                                            }
                                             symbol={tx.symbol}
                                         />
                                         <Circle>&bull;</Circle>
@@ -94,7 +97,10 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                             <IORow key={output.n}>
                                 <CryptoAmountWrapper>
                                     <FormattedCryptoAmount
-                                        value={output.value}
+                                        value={
+                                            output.value &&
+                                            formatNetworkAmount(output.value, tx.symbol)
+                                        }
                                         symbol={tx.symbol}
                                     />
                                     <Circle>&bull;</Circle>

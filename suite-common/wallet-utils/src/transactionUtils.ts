@@ -587,7 +587,6 @@ export const enhanceTransaction = (
             return tr;
         }),
         rbfParams: getRbfParams(tx, account),
-        details: enhanceTransactionDetails(tx, account.symbol),
         ethereumSpecific: tx.ethereumSpecific
             ? {
                   ...tx.ethereumSpecific,
