@@ -66,6 +66,16 @@ export const groupTransactionsByDate = (
     return r;
 };
 
+export const formatCardanoWithdrawal = (tx: WalletAccountTransaction) =>
+    tx.cardanoSpecific?.withdrawal
+        ? formatNetworkAmount(tx.cardanoSpecific.withdrawal, tx.symbol)
+        : undefined;
+
+export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
+    tx.cardanoSpecific?.deposit
+        ? formatNetworkAmount(tx.cardanoSpecific.deposit, tx.symbol)
+        : undefined;
+
 /**
  * Returns a sum of sent/recv txs amounts as a BigNumber.
  * Amounts of sent transactions are added, amounts of recv transactions are subtracted
@@ -80,12 +90,14 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
             // (tx.amount is set to the fee in blockchain-link)
             totalAmount = totalAmount.minus(tx.fee);
 
-            if (tx.cardanoSpecific?.withdrawal) {
-                totalAmount = totalAmount.plus(tx.cardanoSpecific?.withdrawal);
+            const cardanoWithdrawal = formatCardanoWithdrawal(tx);
+            if (cardanoWithdrawal) {
+                totalAmount = totalAmount.plus(cardanoWithdrawal);
             }
 
-            if (tx.cardanoSpecific?.deposit) {
-                totalAmount = totalAmount.minus(tx.cardanoSpecific?.deposit);
+            const cardanoDeposit = formatCardanoDeposit(tx);
+            if (cardanoDeposit) {
+                totalAmount = totalAmount.minus(cardanoDeposit);
             }
         }
 
@@ -116,15 +128,17 @@ export const sumTransactionsFiat = (
                 toFiatCurrency(tx.fee, fiatCurrency, tx.rates, -1) ?? 0,
             );
 
-            if (tx.cardanoSpecific?.withdrawal) {
+            const cardanoWithdrawal = formatCardanoWithdrawal(tx);
+            if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(
-                    toFiatCurrency(tx.cardanoSpecific.withdrawal, fiatCurrency, tx.rates, -1) ?? 0,
+                    toFiatCurrency(cardanoWithdrawal, fiatCurrency, tx.rates, -1) ?? 0,
                 );
             }
 
-            if (tx.cardanoSpecific?.deposit) {
+            const cardanoDeposit = formatCardanoDeposit(tx);
+            if (cardanoDeposit) {
                 totalAmount = totalAmount.minus(
-                    toFiatCurrency(tx.cardanoSpecific.deposit, fiatCurrency, tx.rates, -1) ?? 0,
+                    toFiatCurrency(cardanoDeposit, fiatCurrency, tx.rates, -1) ?? 0,
                 );
             }
         }
@@ -576,23 +590,6 @@ export const enhanceTransaction = (
         fee: formatNetworkAmount(tx.fee, account.symbol),
         totalSpent: formatNetworkAmount(tx.totalSpent, account.symbol),
         rbfParams: getRbfParams(tx, account),
-        ethereumSpecific: tx.ethereumSpecific
-            ? {
-                  ...tx.ethereumSpecific,
-                  gasPrice: fromWei(tx.ethereumSpecific.gasPrice, 'gwei'),
-              }
-            : undefined,
-        cardanoSpecific: tx.cardanoSpecific
-            ? {
-                  ...tx.cardanoSpecific,
-                  withdrawal: tx.cardanoSpecific.withdrawal
-                      ? formatNetworkAmount(tx.cardanoSpecific.withdrawal, account.symbol)
-                      : undefined,
-                  deposit: tx.cardanoSpecific.deposit
-                      ? formatNetworkAmount(tx.cardanoSpecific.deposit, account.symbol)
-                      : undefined,
-              }
-            : undefined,
     };
 };
 

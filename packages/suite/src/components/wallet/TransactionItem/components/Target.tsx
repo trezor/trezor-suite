@@ -8,6 +8,8 @@ import {
     getTargetAmount,
     isTestnet,
     formatAmount,
+    formatCardanoWithdrawal,
+    formatCardanoDeposit,
 } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -222,7 +224,7 @@ export const WithdrawalRow = ({
         {...baseLayoutProps}
         title="TR_TX_WITHDRAWAL"
         sign="pos"
-        amount={transaction.cardanoSpecific?.withdrawal ?? '0'}
+        amount={formatCardanoWithdrawal(transaction) ?? '0'}
         transaction={transaction}
         useFiatValues={useFiatValues}
     />
@@ -243,7 +245,7 @@ export const DepositRow = ({
         {...baseLayoutProps}
         title="TR_TX_DEPOSIT"
         sign="neg"
-        amount={transaction.cardanoSpecific?.deposit ?? '0'}
+        amount={formatCardanoDeposit(transaction) ?? '0'}
         transaction={transaction}
         useFiatValues={useFiatValues}
     />
