@@ -3,7 +3,12 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { FiatValue, Translation, MetadataLabeling, FormattedCryptoAmount } from '@suite-components';
 import { ArrayElement } from '@trezor/type-utils';
-import { getTxOperation, getTargetAmount, isTestnet } from '@suite-common/wallet-utils';
+import {
+    getTxOperation,
+    getTargetAmount,
+    isTestnet,
+    formatAmount,
+} from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useActions } from '@suite-hooks';
@@ -46,7 +51,7 @@ export const TokenTransfer = ({
             amount={
                 !baseLayoutProps.singleRowLayout && (
                     <StyledCryptoAmount
-                        value={transfer.amount}
+                        value={formatAmount(transfer.amount, transfer.decimals)}
                         symbol={transfer.symbol}
                         signValue={operation}
                     />

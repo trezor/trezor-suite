@@ -4,7 +4,7 @@ import { Button, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from '@suite-components';
 import { AmountRow } from './AmountRow';
 import { NetworkSymbol, WalletAccountTransaction } from '@wallet-types';
-import { formatNetworkAmount, getNetwork } from '@suite-common/wallet-utils';
+import { formatAmount, formatNetworkAmount, getNetwork } from '@suite-common/wallet-utils';
 
 // define these attributes as a constant because we will use the same values in two different styled components
 const ROW_HEIGHT = '36px';
@@ -57,7 +57,9 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const [showFiat, setShowFiat] = useState(false);
 
     const tokenTransfer = tx.tokens.length > 0 ? tx.tokens[0] : undefined;
-    const amount = tokenTransfer ? tokenTransfer.amount : tx.amount;
+    const amount = tokenTransfer
+        ? formatAmount(tokenTransfer.amount, tokenTransfer.decimals)
+        : tx.amount;
     const assetSymbol = tokenTransfer ? tokenTransfer.symbol : tx.symbol;
 
     const network = getNetwork(tx.symbol);
@@ -268,7 +270,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         }
                         secondColumn={
                             <FormattedCryptoAmount
-                                value={t.amount}
+                                value={formatAmount(t.amount, t.decimals)}
                                 symbol={t.symbol as NetworkSymbol}
                             />
                         }
