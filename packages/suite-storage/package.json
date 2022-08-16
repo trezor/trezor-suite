@@ -18,8 +18,8 @@
     "react-native": "./src/native/index.ts",
     "browser": "./src/web/index.ts",
     "dependencies": {
-        "broadcast-channel": "^3.0.5",
-        "idb": "^6.1.2"
+        "broadcast-channel": "^4.14.0",
+        "idb": "^7.0.2"
     },
     "devDependencies": {}
 }
