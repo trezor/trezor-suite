@@ -45,7 +45,6 @@ export const Basic = ({ ...args }) => {
     const [{ option }, updateArgs] = useArgs();
     const setOption = (option: { label: string; value: 'string' }) => updateArgs({ option });
 
-    console.log(option);
     return (
         <Select
             isSearchable={args.isSearchable}

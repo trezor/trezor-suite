@@ -1,12 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Flag, variables, types } from '../../index';
-import { storiesOf } from '@storybook/react';
-import randomColor from 'randomcolor';
+
+import { Flag } from '../../index';
 import { FLAGS } from './flags';
 import { FlagType } from '../../support/types';
-
-const color = randomColor({ luminosity: 'light' });
 
 const Wrapper = styled.div`
     display: grid;
@@ -23,7 +20,7 @@ const FlagWrapper = styled.div`
     align-items: center;
 
     &:hover {
-        border: 1px dashed ${color};
+        border: 1px dashed #f2ae7b;
     }
 `;
 
@@ -31,27 +28,28 @@ const Text = styled.div`
     padding-bottom: 10px;
 `;
 
-storiesOf('Flags', module).add(
-    'All',
-    () => {
-        const flags = Object.keys(FLAGS) as FlagType[];
-        return (
-            <Wrapper>
-                {flags.map(country => (
-                    <FlagWrapper key={country}>
-                        <Text>{country}</Text>
-                        <Flag
-                            country={country}
-                            data-test={`icon-${country.toLowerCase().replace('_', '-')}`}
-                        />
-                    </FlagWrapper>
-                ))}
-            </Wrapper>
-        );
-    },
-    {
+export default {
+    title: 'Misc/Flags',
+    parameters: {
         options: {
             showPanel: false,
         },
     },
-);
+};
+
+export const Basic = () => {
+    const flags = Object.keys(FLAGS) as FlagType[];
+    return (
+        <Wrapper>
+            {flags.map(country => (
+                <FlagWrapper key={country}>
+                    <Text>{country}</Text>
+                    <Flag
+                        country={country}
+                        data-test={`icon-${country.toLowerCase().replace('_', '-')}`}
+                    />
+                </FlagWrapper>
+            ))}
+        </Wrapper>
+    );
+};
