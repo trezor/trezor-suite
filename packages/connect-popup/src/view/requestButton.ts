@@ -3,7 +3,7 @@
 import { UiRequestButton } from '@trezor/connect';
 import { container, showView } from './common';
 
-let toastTimeout: number | undefined;
+let toastTimeout: NodeJS.Timeout | undefined;
 
 const showToast = () => {
     const toast = container.querySelectorAll('.toast')[0];

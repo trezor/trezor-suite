@@ -1,15 +1,6 @@
 // Include suite globals (as some dependencies from @suite can rely on them)
 /// <reference path="../../suite/global.d.ts" />
 
-// Globals
-declare namespace NodeJS {
-    export interface Global {
-        logger: ILogger;
-        resourcesPath: string;
-        customProtocolUrl: string;
-    }
-}
-
 declare interface ILogger {
     /**
      * Exit the Logger (will correctly end the log file)
@@ -43,6 +34,16 @@ declare interface ILogger {
      * Log Level getter
      */
     level: LogLevel;
+}
+
+// Globals
+declare namespace globalThis {
+    // eslint-disable-next-line no-var, vars-on-top
+    var logger: ILogger;
+    // eslint-disable-next-line no-var, vars-on-top
+    var resourcesPath: string;
+    // eslint-disable-next-line no-var, vars-on-top
+    var customProtocolUrl: string;
 }
 
 declare type BeforeRequestListener = (

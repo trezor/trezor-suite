@@ -70,22 +70,19 @@ const getReleasesT1 = (releases: Partial<FirmwareRelease>[]) => releases.map(r =
 const getReleasesT2 = (releases: Partial<FirmwareRelease>[]) => releases.map(r => getReleaseT2(r));
 
 declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace NodeJS {
-        interface Global {
-            JestMocks: {
-                getDeviceFeatures: typeof getDeviceFeatures;
-                getReleaseT1: typeof getReleaseT1;
-                getReleaseT2: typeof getReleaseT2;
-                getReleasesT1: typeof getReleasesT1;
-                getReleasesT2: typeof getReleasesT2;
-            };
-        }
-        interface ProcessEnv {
-            RELEASES_T1: string;
-            RELEASES_T2: string;
-            BASE_FW_URL: string;
-        }
+    // eslint-disable-next-line no-var, vars-on-top
+    var JestMocks: {
+        getDeviceFeatures: typeof getDeviceFeatures;
+        getReleaseT1: typeof getReleaseT1;
+        getReleaseT2: typeof getReleaseT2;
+        getReleasesT1: typeof getReleasesT1;
+        getReleasesT2: typeof getReleasesT2;
+    };
+
+    interface ProcessEnv {
+        RELEASES_T1: string;
+        RELEASES_T2: string;
+        BASE_FW_URL: string;
     }
 }
 
