@@ -63,9 +63,10 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const [showFiat, setShowFiat] = useState(false);
 
     const tokenTransfer = tx.tokens.length > 0 ? tx.tokens[0] : undefined;
+    const txAmount = formatNetworkAmount(tx.amount, tx.symbol);
     const amount = tokenTransfer
         ? formatAmount(tokenTransfer.amount, tokenTransfer.decimals)
-        : tx.amount;
+        : txAmount;
     const assetSymbol = tokenTransfer ? tokenTransfer.symbol : tx.symbol;
 
     const network = getNetwork(tx.symbol);
@@ -185,9 +186,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 {tx.targets.length > 0 && (
                     <AmountRow
                         firstColumn={<Translation id="AMOUNT" />}
-                        secondColumn={
-                            <FormattedCryptoAmount value={tx.amount} symbol={tx.symbol} />
-                        }
+                        secondColumn={<FormattedCryptoAmount value={txAmount} symbol={tx.symbol} />}
                         thirdColumn={
                             showHistoricalRates && (
                                 <FiatValue
