@@ -286,7 +286,7 @@ export const analyzeTransactions = [
 export const enhanceTransaction = [
     {
         tx: {
-            amount: 123,
+            amount: '123',
             blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
             blockHeight: 590093,
             blockTime: 1565797979,
@@ -347,21 +347,21 @@ export const enhanceTransaction = [
             networkType: 'bitcoin',
         }),
         result: {
-            amount: '0.00000123',
+            amount: '123',
             blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
             blockHeight: 590093,
             blockTime: 1565797979,
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-            fee: '0.0000000000002929',
-            totalSpent: '0.0000012300002929',
+            fee: '0.00002929',
+            totalSpent: '123.00002929',
             symbol: 'btc',
             targets: [],
             tokens: [
                 {
                     address: '0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
-                    amount: '0.00000000000000001',
+                    amount: '10',
                     decimals: 18,
                     from: '0x75e68d3b6acd23e79e395fa627ae5cae605c03d3',
                     name: 'Decentraland MANA',
@@ -380,7 +380,7 @@ export const enhanceTransaction = [
                         n: 0,
                         sequence: 4294967294,
                         txid: 'c894b064beb2f9be4b0d64cffcd89da2e8dc6decac399f5617323a303e07e4e1',
-                        value: '0.80720012',
+                        value: '80720012',
                     },
                 ],
                 vout: [
@@ -389,19 +389,19 @@ export const enhanceTransaction = [
                         hex: '0014ac29a7e5c78bb0dd7f1247b96e141f3543a43afe',
                         isAddress: true,
                         n: 0,
-                        value: '0.80718868',
+                        value: '80718868',
                     },
                     {
                         addresses: ['mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q'],
                         hex: '76a914a579388225827d9f2fe9014add644487808c695d88ac',
                         isAddress: true,
                         n: 1,
-                        value: '0.00001',
+                        value: '1000',
                     },
                 ],
                 size: 225,
-                totalInput: '0.80720012',
-                totalOutput: '0.80719868',
+                totalInput: '80720012',
+                totalOutput: '80719868',
             },
         },
     },
@@ -439,21 +439,21 @@ export const enhanceTransaction = [
             networkType: 'bitcoin',
         }),
         result: {
-            amount: '0.0000000000006497',
+            amount: '0.00006497',
             blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
             blockHeight: 590093,
             blockTime: 1565797979,
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-            fee: '0.0000000000002929',
-            totalSpent: '0.0000000000009426',
+            fee: '0.00002929',
+            totalSpent: '0.00009426',
             symbol: 'btc',
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
                     isAddress: true,
-                    amount: '0.00001234',
+                    amount: '1234',
                 },
             ],
             tokens: [],
@@ -462,8 +462,8 @@ export const enhanceTransaction = [
             details: {
                 vin: [],
                 vout: [],
-                totalInput: '0.1',
-                totalOutput: '0.1',
+                totalInput: '10000000',
+                totalOutput: '10000000',
                 size: 255,
             },
         },
@@ -502,15 +502,15 @@ export const enhanceTransaction = [
             networkType: 'bitcoin',
         }),
         result: {
-            amount: '0.0000000000006497',
+            amount: '0.00006497',
             blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
             blockHeight: 590093,
             blockTime: 1565797979,
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
-            fee: '0.0000000000002929',
-            totalSpent: '0.0000000000009426',
+            fee: '0.00002929',
+            totalSpent: '0.00009426',
             symbol: 'btc',
             targets: [
                 {
@@ -525,8 +525,8 @@ export const enhanceTransaction = [
             details: {
                 vin: [],
                 vout: [],
-                totalInput: '0.1',
-                totalOutput: '0.1',
+                totalInput: '10000000',
+                totalOutput: '10000000',
                 size: 255,
             },
         },
@@ -648,7 +648,9 @@ export const searchTransactions = [
     },
     {
         description: 'Higher than amount search',
-        search: '> 0.07',
+        // TODO amounts in searchTransactions.json are wrongly in BTC instead of sats,
+        // but it's simpler to adjust it here than in the json
+        search: '> 0.0000000007',
         result: [
             'f457a1b85f84dcdaadc06f5dffb1436034bf6fa69a271a08d005f0a65aea7693', // 0.0794905 TEST
             '121afe39eaeacd0f38ff1ed4ab34dbd34aa1239a82465a112dbcde1646b01ec7', // 0.07806848 TEST
@@ -657,7 +659,7 @@ export const searchTransactions = [
     },
     {
         description: 'Lower than amount search',
-        search: '< -0.1',
+        search: '< -000000000.1',
         result: [
             'a59a1761ad3fad987258c79850e397398ab8559f157bc6868a7ed4e8b742ef01', // -0.22667356 TEST
             'b4fc775f2bace65b68ba8c43423fab2f96c8743c54d5468b92923f70ca20ae2e', // -1.19999084 TEST
@@ -666,7 +668,7 @@ export const searchTransactions = [
     },
     {
         description: 'Exclude amount search',
-        search: '!= -0.00999888',
+        search: '!= -0.0000000000999888',
         notResult: [
             '62431e78bb13a4fdd9c87517db1ea70b4cb5763227327da35748c96497c6ea9a', // -0.00999888 TEST
         ],
