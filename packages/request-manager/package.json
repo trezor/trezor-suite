@@ -16,7 +16,8 @@
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json"
     },
     "dependencies": {
-        "@trezor/utils": "*"
+        "@trezor/utils": "*",
+        "socks-proxy-agent": "^7.0.0"
     },
     "devDependencies": {
         "jest": "^26.6.3",
