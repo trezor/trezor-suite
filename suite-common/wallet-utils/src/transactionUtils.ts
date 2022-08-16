@@ -570,10 +570,6 @@ export const enhanceTransaction = (
             account.networkType === 'ripple' && tx.blockTime
                 ? tx.blockTime + 946684800
                 : tx.blockTime,
-        tokens: tx.tokens.map(tok => ({
-            ...tok,
-            amount: formatAmount(tok.amount, tok.decimals),
-        })),
         amount: formatNetworkAmount(tx.amount, account.symbol),
         fee: formatNetworkAmount(tx.fee, account.symbol),
         totalSpent: formatNetworkAmount(tx.totalSpent, account.symbol),

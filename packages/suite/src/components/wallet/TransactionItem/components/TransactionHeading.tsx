@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, Icon, useTheme } from '@trezor/components';
 import { FormattedCryptoAmount } from '@suite-components';
-import { getTargetAmount, getTxHeaderSymbol, getTxOperation } from '@suite-common/wallet-utils';
+import {
+    formatAmount,
+    getTargetAmount,
+    getTxHeaderSymbol,
+    getTxOperation,
+} from '@suite-common/wallet-utils';
 import { TransactionHeader } from './TransactionHeader';
 import { WalletAccountTransaction } from '@wallet-types';
 
@@ -76,7 +81,7 @@ export const TransactionHeading = ({
         const targetAmount =
             !isSingleTokenTransaction || transaction.type === 'self'
                 ? getTargetAmount(target, transaction)
-                : transfer.amount;
+                : formatAmount(transfer.amount, transfer.decimals);
         const operation = !isTokenTransaction
             ? getTxOperation(transaction)
             : getTxOperation(transfer);
