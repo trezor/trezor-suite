@@ -13,23 +13,27 @@ import { withDropdown } from './withDropdown';
 
 import type { Timeout } from '@trezor/type-utils';
 
-const LabelDefaultValue = styled.div`
-    width: 0;
-    display: inline-block;
-    transition: width 0.6s, visibility 0.3s, opacity 0.3s;
-    visibility: hidden;
-    opacity: 0;
-
-    &::before {
-        content: ': ';
-    }
-`;
-
 const LabelValue = styled.div`
-    display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding-left: 1px;
+`;
+
+const LabelDefaultValue = styled(LabelValue)`
+    /* do not shrink when the expanded label does not fit the contener - shrink only the label value */
+    flex-shrink: 0;
+    max-width: 0;
+    /* transition max-width because it does not work with auto value */
+    transition: max-width 0.25s, opacity 0.25s;
+    transition-timing-function: ease-out;
+    opacity: 0;
+
+    ::before {
+        content: '|';
+        font-size: 14px;
+        line-height: 12px;
+        margin: 0 6px;
+        opacity: 0.25;
+    }
 `;
 
 const Label = styled.div`
@@ -41,8 +45,6 @@ const Label = styled.div`
 `;
 
 const LabelButton = styled(Button)`
-    justify-content: flex-start;
-    text-align: left;
     overflow: hidden;
 `;
 
@@ -59,7 +61,7 @@ const SuccessButton = styled(Button)`
     margin-left: 14px;
     background-color: ${props => props.theme.BG_LIGHT_GREEN};
     color: ${props => props.theme.BG_GREEN};
-    &:hover {
+    :hover {
         color: ${props => props.theme.BG_GREEN};
         background-color: ${props => props.theme.BG_LIGHT_GREEN};
     }
@@ -72,16 +74,17 @@ const LabelContainer = styled.div`
     justify-content: flex-start;
     overflow: hidden;
 
-    &:hover {
+    :hover {
         ${ActionButton} {
             visibility: visible;
             width: auto;
         }
 
         ${LabelDefaultValue} {
-            width: 200px;
-            visibility: visible;
+            max-width: 300px;
             opacity: 1;
+            /* the right side of the transition process cannot be reliably animated because we animate max-width while the width can vary  */
+            transition-timing-function: ease-in;
         }
     }
 `;
@@ -116,13 +119,11 @@ const ButtonLikeLabel = (props: ExtendedProps) => {
     if (props.payload.value) {
         return (
             <LabelButton variant="tertiary" icon="TAG" data-test={props['data-test']}>
-                <LabelValue>
-                    {props.payload.value}
-                    {props.defaultVisibleValue && (
-                        <LabelDefaultValue>{props.defaultVisibleValue}</LabelDefaultValue>
-                    )}
-                </LabelValue>
-                {/* This is the defaultVisibleValue which shows up after you hover over the label name */}
+                <LabelValue>{props.payload.value} </LabelValue>
+                {/* This is the defaultVisibleValue which shows up after you hover over the label name: */}
+                {props.defaultVisibleValue && (
+                    <LabelDefaultValue>{props.defaultVisibleValue}</LabelDefaultValue>
+                )}
             </LabelButton>
         );
     }
@@ -201,7 +202,7 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
  * - This component shows defaultVisibleValue and "Add label" button if no metadata is present.
  * - Otherwise it shows metadata value and provides way to edit it.
  */
-const MetadataLabeling = (props: Props) => {
+export const MetadataLabeling = (props: Props) => {
     const metadata = useSelector(state => state.metadata);
     const { isDiscoveryRunning, device } = useDiscovery();
     const [showSuccess, setShowSuccess] = useState(false);
@@ -395,5 +396,3 @@ const MetadataLabeling = (props: Props) => {
         </LabelContainer>
     );
 };
-
-export default MetadataLabeling;
