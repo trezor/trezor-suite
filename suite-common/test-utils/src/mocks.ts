@@ -211,7 +211,7 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
     targets: [
         {
             addresses: ['mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q'],
-            amount: '0.00001',
+            amount: '1000',
             isAccountTarget: true,
             isAddress: true,
             n: 1,

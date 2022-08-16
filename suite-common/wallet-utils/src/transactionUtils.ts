@@ -356,10 +356,12 @@ export const getTargetAmount = (
 
     const sentToSelfTarget =
         (transaction.type === 'sent' || transaction.type === 'self') && target.isAccountTarget;
-    const validTargetAmount = typeof target.amount === 'string' && target.amount !== '0';
+
+    const amount = target.amount && formatNetworkAmount(target.amount, transaction.symbol);
+    const validTargetAmount = amount && amount !== '0';
     if (!sentToSelfTarget && validTargetAmount) {
         // show target amount for all non "sent to myself" targets
-        return target.amount;
+        return amount;
     }
 
     if (
@@ -573,15 +575,6 @@ export const enhanceTransaction = (
         amount: formatNetworkAmount(tx.amount, account.symbol),
         fee: formatNetworkAmount(tx.fee, account.symbol),
         totalSpent: formatNetworkAmount(tx.totalSpent, account.symbol),
-        targets: tx.targets.map(tr => {
-            if (typeof tr.amount === 'string') {
-                return {
-                    ...tr,
-                    amount: formatNetworkAmount(tr.amount, account.symbol),
-                };
-            }
-            return tr;
-        }),
         rbfParams: getRbfParams(tx, account),
         ethereumSpecific: tx.ethereumSpecific
             ? {
