@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { Button, Icon, useTheme } from '@trezor/components';
 import { useActions, useDiscovery, useSelector } from '@suite-hooks';
@@ -49,12 +49,22 @@ const LabelButton = styled(Button)`
 `;
 
 const ActionButton = styled(Button)<{ isVisible?: boolean }>`
-    visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
+    visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
     /* hack to keep button in place to prevent vertical jumping (if used display: none) */
     width: ${props => (props.isVisible ? 'auto' : '0')};
-    margin-left: 14px;
-`;
+    ${({ isVisible }) =>
+        isVisible
+            ? css`
+                  background: none;
 
+                  :not(:hover) {
+                      opacity: 0.7;
+                  }
+              `
+            : css`
+                  margin-left: 14px;
+              `}
+`;
 const SuccessButton = styled(Button)`
     cursor: wait;
     width: auto;
