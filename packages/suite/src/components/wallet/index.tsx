@@ -31,6 +31,8 @@ import { DiscoveryProgress } from './DiscoveryProgress';
 import KYCInProgress from './KYCInProgress';
 import KYCFailed from './KYCFailed';
 import KYCError from './KYCError';
+import { Pagination } from './Pagination';
+import { TransactionTimestamp } from './TransactionTimestamp';
 import { withCoinmarket, withSelectedAccountLoaded } from './hocs';
 import type { WithCoinmarketProps, WithSelectedAccountLoadedProps } from './hocs';
 
@@ -65,5 +67,7 @@ export {
     KYCInProgress,
     KYCFailed,
     KYCError,
+    Pagination,
+    TransactionTimestamp,
 };
 export type { WithCoinmarketProps, WithSelectedAccountLoadedProps };
