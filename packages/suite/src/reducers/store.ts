@@ -21,7 +21,7 @@ import { desktopReducer } from './desktop';
 // it's not included into `@suite-middlewares` index
 import toastMiddleware from '@suite-middlewares/toastMiddleware';
 import type { PreloadStoreAction } from '@suite-support/preloadStore';
-import { extraDependencies } from '../support/extraDependecies';
+import { extraDependencies } from '../support/extraDependencies';
 
 const rootReducer = combineReducers({
     ...suiteReducers,
