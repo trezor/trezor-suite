@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@trezor/utils": "*",
+        "@types/node-fetch": "^2.6.2",
         "socks-proxy-agent": "^7.0.0"
     },
     "devDependencies": {

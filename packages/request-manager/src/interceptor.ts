@@ -3,10 +3,33 @@ import http from 'http';
 import https from 'https';
 import tls from 'tls';
 import { InterceptedEvent } from './types';
+import { TorIdentities } from './torIdentities';
 
-type Listener = (event: InterceptedEvent) => void;
+type InterceptorOptions = {
+    handler: (event: InterceptedEvent) => void;
+    getIsTorEnabled: () => boolean;
+};
 
-const interceptNetSocketConnect = (listener: Listener) => {
+const getIdentityName = (userAgent: string) => {
+    const identity = userAgent[0];
+    if (Array.isArray(userAgent)) {
+        const identityName = identity.match(/identity:(.*)/);
+        // Only return identity name if it is explicitly defined.
+        return identityName ? identityName[1] : undefined;
+    }
+    return undefined;
+};
+
+const getAgent = (options: any) => {
+    const url = new URL(options.href);
+    const userAgent = options.headers['User-Agent'];
+    const identityName = getIdentityName(userAgent);
+    const shouldIntercept = url.hostname !== '127.0.0.1';
+
+    return shouldIntercept ? TorIdentities.getIdentity(identityName || 'default') : undefined;
+};
+
+const interceptNetSocketConnect = (interceptorOptions: InterceptorOptions) => {
     const originalSocketConnect = net.Socket.prototype.connect;
 
     net.Socket.prototype.connect = function (options: any, connectionListener: any) {
@@ -18,12 +41,12 @@ const interceptNetSocketConnect = (listener: Listener) => {
             // When Tor is used options is object with host and port that is used to connect to SocksPort.
             details = `${options.host}:${options.port}`;
         } else if (typeof options === 'number') {
-            // When stablishing conneciton to Tor control port `connectionListener` is Tor control port and
+            // When establishing connection to Tor control port `connectionListener` is Tor control port and
             // `options` is Tor control port host, most likely 127.0.0.1.
             details = `${connectionListener}:${options}`;
         }
 
-        listener({
+        interceptorOptions.handler({
             method: 'net.Socket.connect',
             details,
         });
@@ -31,44 +54,68 @@ const interceptNetSocketConnect = (listener: Listener) => {
     };
 };
 
-const interceptNetConnect = (listener: Listener) => {
+const interceptNetConnect = (interceptorOptions: InterceptorOptions) => {
     const originalConnect = net.connect;
     net.connect = (connectArguments, connectionListener) => {
-        listener({ method: 'net.connect', details: (connectArguments as any).host });
+        interceptorOptions.handler({
+            method: 'net.connect',
+            details: (connectArguments as any).host,
+        });
         return originalConnect.call(this, connectArguments as any, connectionListener as any);
     };
 };
 
-const interceptHttp = (listener: Listener) => {
+const interceptHttp = (interceptorOptions: InterceptorOptions) => {
     const originalHttpRequest = http.request;
 
     http.request = function (options: any, callback) {
-        listener({ method: 'http.request', details: options.href });
-        return originalHttpRequest.call(this, options, callback as any);
+        interceptorOptions.handler({ method: 'http.request', details: options.href });
+        const isTorEnabled = interceptorOptions.getIsTorEnabled();
+        const agent = isTorEnabled ? getAgent(options) : undefined;
+
+        return originalHttpRequest.call(
+            this,
+            {
+                ...options,
+                agent,
+            },
+            callback as any,
+        );
     };
 };
 
-const interceptHttps = (listener: Listener) => {
+const interceptHttps = (interceptorOptions: InterceptorOptions) => {
     const originalHttpsRequest = https.request;
+
     https.request = function (options: any, callback) {
-        listener({ method: 'https.request', details: options.href });
-        return originalHttpsRequest.call(this, options, callback as any);
+        interceptorOptions.handler({ method: 'https.request', details: options.href });
+        const isTorEnabled = interceptorOptions.getIsTorEnabled();
+        const agent = isTorEnabled ? getAgent(options) : undefined;
+
+        return originalHttpsRequest.call(
+            this,
+            {
+                ...options,
+                agent,
+            },
+            callback as any,
+        );
     };
 };
 
-const interceptTlsConnect = (listener: Listener) => {
-    const orginalTlsConnect = tls.connect;
+const interceptTlsConnect = (interceptorOptions: InterceptorOptions) => {
+    const originalTlsConnect = tls.connect;
 
     tls.connect = function (options: any, secureConnectListener) {
-        listener({ method: 'tls.connect', details: options.servername });
-        return orginalTlsConnect.call(this, options as any, secureConnectListener as any);
+        interceptorOptions.handler({ method: 'tls.connect', details: options.servername });
+        return originalTlsConnect.call(this, options as any, secureConnectListener as any);
     };
 };
 
-export const createInterceptor = (listener: Listener) => {
-    interceptNetSocketConnect(listener);
-    interceptNetConnect(listener);
-    interceptHttp(listener);
-    interceptHttps(listener);
-    interceptTlsConnect(listener);
+export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
+    interceptNetSocketConnect(interceptorOptions);
+    interceptNetConnect(interceptorOptions);
+    interceptHttp(interceptorOptions);
+    interceptHttps(interceptorOptions);
+    interceptTlsConnect(interceptorOptions);
 };
