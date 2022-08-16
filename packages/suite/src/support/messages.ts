@@ -5207,6 +5207,15 @@ export default defineMessages({
         id: 'TR_COIN_CONTROL',
         defaultMessage: 'Coin control',
     },
+    TR_SELECTED: {
+        id: 'TR_SELECTED',
+        defaultMessage: '{amount} selected',
+    },
+    TR_CHANGE_ADDRESS: {
+        id: 'TR_CHANGE_ADDRESS',
+        defaultMessage: 'change address',
+        description: 'Address type',
+    },
     TR_CONNECTED_TO_PROVIDER: {
         defaultMessage: 'Connected to {provider} as {user}',
         id: 'TR_CONNECTED_TO_PROVIDER',

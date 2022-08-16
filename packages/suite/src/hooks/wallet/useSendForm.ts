@@ -197,7 +197,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     });
 
     // sub-hook
-    const { toggleUtxoSelection } = useUtxoSelection({
+    const { selectedUtxos, toggleUtxoSelection } = useUtxoSelection({
         composeRequest,
         ...useFormMethods,
     });
@@ -361,6 +361,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         updateContext,
         resetContext,
         changeFeeLevel,
+        selectedUtxos,
         toggleUtxoSelection,
         composeTransaction: composeRequest,
         loadTransaction,

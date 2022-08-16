@@ -14,7 +14,6 @@ const Wrapper = styled.div`
 `;
 
 const Content = styled.div`
-    display: flex;
     padding: 32px 42px;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {

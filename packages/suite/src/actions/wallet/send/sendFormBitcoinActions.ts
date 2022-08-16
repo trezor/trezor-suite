@@ -70,14 +70,12 @@ export const composeTransaction =
         }
 
         const baseFee = formValues.rbfParams ? formValues.rbfParams.baseFee : 0;
-        const selectedUtxos =
-            formValues.options.includes('utxoSelection') &&
-            formValues.selectedUtxos?.map(u => ({ ...u, required: true }));
+        const selectedUtxos = formValues.selectedUtxos?.map(u => ({ ...u, required: true }));
         const params = {
             account: {
                 path: account.path,
                 addresses: account.addresses,
-                utxo: selectedUtxos || account.utxo,
+                utxo: selectedUtxos?.length ? selectedUtxos : account.utxo,
             },
             feeLevels: predefinedLevels,
             baseFee,

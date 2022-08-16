@@ -83,6 +83,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         calculateFiat: (outputIndex: number, amount?: string) => void;
         setAmount: (outputIndex: number, amount: string) => void;
         changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
+        selectedUtxos: AccountUtxo[];
         toggleUtxoSelection: (utxo: AccountUtxo) => void;
         resetDefaultValue: (field: string) => void;
         setMax: (index: number, active: boolean) => void;
