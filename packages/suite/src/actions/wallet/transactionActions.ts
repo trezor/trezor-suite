@@ -99,7 +99,7 @@ export const replaceTransaction =
                 tx: {
                     ...t.tx,
                     txid: newTxid,
-                    fee: newFee,
+                    fee: tx.fee,
                     rbf: !!tx.rbf,
                     blockTime: Math.round(new Date().getTime() / 1000),
                     // TODO: details: {}, is it worth it?

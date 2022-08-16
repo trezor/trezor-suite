@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from '@suite-hooks';
-import { getFeeLevels, networkAmountToSatoshi } from '@suite-common/wallet-utils';
+import { getFeeLevels } from '@suite-common/wallet-utils';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { FormState, FeeInfo } from '@wallet-types/sendForm';
@@ -109,11 +109,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
     let { baseFee } = tx.rbfParams;
     if (chainedTxs.length > 0) {
         // increase baseFee, pay for all child chained transactions
-        baseFee = chainedTxs.reduce((f, ctx) => {
-            // TODO: transformation to satoshi should not be here, refactor of "enhanceTransaction" required
-            const fee = networkAmountToSatoshi(ctx.fee, account.symbol);
-            return f + parseInt(fee, 10);
-        }, baseFee);
+        baseFee = chainedTxs.reduce((f, ctx) => f + parseInt(ctx.fee, 10), baseFee);
     }
 
     const rbfParams = {

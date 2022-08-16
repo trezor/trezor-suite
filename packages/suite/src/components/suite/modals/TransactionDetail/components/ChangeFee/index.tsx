@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Card, Icon, variables } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 import { useRbf, RbfContext, Props } from '@wallet-hooks/useRbfForm';
-import { getFeeUnits } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
 import Fees from './components/Fees';
 import AffectedTransactions from './components/AffectedTransactions';
 import DecreasedOutputs from './components/DecreasedOutputs';
@@ -106,6 +106,7 @@ const ChangeFee: React.FC<Props & { showChained: () => void }> = props => {
     const { networkType } = contextValues.account;
     const feeRate =
         networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
+    const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
     return (
         <RbfContext.Provider value={contextValues}>
@@ -122,14 +123,14 @@ const ChangeFee: React.FC<Props & { showChained: () => void }> = props => {
                                     <StyledCryptoAmount>
                                         <FormattedCryptoAmount
                                             disableHiddenPlaceholder
-                                            value={tx.fee}
+                                            value={fee}
                                             symbol={tx.symbol}
                                         />
                                     </StyledCryptoAmount>
                                     <StyledFiatValue>
                                         <FiatValue
                                             disableHiddenPlaceholder
-                                            amount={tx.fee}
+                                            amount={fee}
                                             symbol={tx.symbol}
                                         />
                                     </StyledFiatValue>

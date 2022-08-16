@@ -6,7 +6,7 @@ import { variables, Button } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
-import { isTestnet, isTxUnknown } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isTestnet, isTxUnknown } from '@suite-common/wallet-utils';
 import { AccountMetadata } from '@suite-types/metadata';
 import { WalletAccountTransaction } from '@wallet-types';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
@@ -182,7 +182,8 @@ const TransactionItem = React.memo(
             transaction.cardanoSpecific?.subtype !== 'withdrawal' &&
             transaction.cardanoSpecific?.subtype !== 'stake_registration';
 
-        const showFeeRow = !isUnknown && type !== 'recv' && transaction.fee !== '0';
+        const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
+        const showFeeRow = !isUnknown && type !== 'recv' && fee !== '0';
 
         const [txItemIsHovered, setTxItemIsHovered] = useState(false);
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
@@ -366,6 +367,7 @@ const TransactionItem = React.memo(
 
                                 {showFeeRow && (
                                     <StyledFeeRow
+                                        fee={fee}
                                         transaction={transaction}
                                         useFiatValues={useFiatValues}
                                         $isFailed={type !== 'failed'}

@@ -9,7 +9,7 @@ import {
 import { AccountMetadata } from '@suite-common/metadata-types';
 import { AccountTransaction, AccountAddress } from '@trezor/connect';
 
-import { formatAmount, formatNetworkAmount, amountToSatoshi } from './accountUtils';
+import { formatAmount, formatNetworkAmount } from './accountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 
 export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
@@ -85,10 +85,12 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
 export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
+        const fee = formatNetworkAmount(tx.fee, tx.symbol);
+
         if (tx.type === 'self') {
             // in sent to self tx all we spent is just a fee
             // (tx.amount is set to the fee in blockchain-link)
-            totalAmount = totalAmount.minus(tx.fee);
+            totalAmount = totalAmount.minus(fee);
 
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
             if (cardanoWithdrawal) {
@@ -103,13 +105,13 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 
         if (tx.type === 'sent') {
             totalAmount = totalAmount.minus(tx.amount);
-            totalAmount = totalAmount.minus(tx.fee);
+            totalAmount = totalAmount.minus(fee);
         }
         if (tx.type === 'recv') {
             totalAmount = totalAmount.plus(tx.amount);
         }
         if (tx.type === 'failed') {
-            totalAmount = totalAmount.minus(tx.fee);
+            totalAmount = totalAmount.minus(fee);
         }
     });
     return totalAmount;
@@ -121,12 +123,12 @@ export const sumTransactionsFiat = (
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
+        const fee = formatNetworkAmount(tx.fee, tx.symbol);
+
         if (tx.type === 'self') {
             // in sent to self tx all we spent is just a fee
             // (tx.amount is set to the fee in blockchain-link)
-            totalAmount = totalAmount.minus(
-                toFiatCurrency(tx.fee, fiatCurrency, tx.rates, -1) ?? 0,
-            );
+            totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
 
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
             if (cardanoWithdrawal) {
@@ -146,9 +148,7 @@ export const sumTransactionsFiat = (
             totalAmount = totalAmount.minus(
                 toFiatCurrency(tx.amount, fiatCurrency, tx.rates, -1) ?? 0,
             );
-            totalAmount = totalAmount.minus(
-                toFiatCurrency(tx.fee, fiatCurrency, tx.rates, -1) ?? 0,
-            );
+            totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
         }
         if (tx.type === 'recv') {
             totalAmount = totalAmount.plus(
@@ -156,9 +156,7 @@ export const sumTransactionsFiat = (
             );
         }
         if (tx.type === 'failed') {
-            totalAmount = totalAmount.minus(
-                toFiatCurrency(tx.fee, fiatCurrency, tx.rates, -1) ?? 0,
-            );
+            totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
         }
     });
     return totalAmount;
@@ -406,11 +404,9 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
 export const isTxFailed = (tx: AccountTransaction | WalletAccountTransaction) =>
     !isPending(tx) && tx.ethereumSpecific?.status === 0;
 
-export const getFeeRate = (tx: AccountTransaction, decimals?: number) => {
+export const getFeeRate = (tx: AccountTransaction) =>
     // calculate fee rate, TODO: add this to blockchain-link tx details
-    const fee = typeof decimals === 'number' ? amountToSatoshi(tx.fee, decimals) : tx.fee;
-    return new BigNumber(fee).div(tx.details.size).integerValue(BigNumber.ROUND_CEIL).toString();
-};
+    new BigNumber(tx.fee).div(tx.details.size).integerValue(BigNumber.ROUND_CEIL).toString();
 
 const getEthereumRbfParams = (
     tx: AccountTransaction,
@@ -587,7 +583,6 @@ export const enhanceTransaction = (
                 ? tx.blockTime + 946684800
                 : tx.blockTime,
         amount: formatNetworkAmount(tx.amount, account.symbol),
-        fee: formatNetworkAmount(tx.fee, account.symbol),
         totalSpent: formatNetworkAmount(tx.totalSpent, account.symbol),
         rbfParams: getRbfParams(tx, account),
     };
