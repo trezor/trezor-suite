@@ -583,7 +583,6 @@ export const enhanceTransaction = (
                 ? tx.blockTime + 946684800
                 : tx.blockTime,
         amount: formatNetworkAmount(tx.amount, account.symbol),
-        totalSpent: formatNetworkAmount(tx.totalSpent, account.symbol),
         rbfParams: getRbfParams(tx, account),
     };
 };
