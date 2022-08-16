@@ -16,6 +16,7 @@ import {
     getFeeUnits,
 } from '@suite-common/wallet-utils';
 import { TransactionHeader } from '@suite/components/wallet/TransactionItem/components/TransactionHeader';
+import { fromWei } from 'web3-utils';
 
 const Wrapper = styled.div`
     background-color: ${({ theme }) => theme.BG_GREY};
@@ -320,7 +321,7 @@ export const BasicDetails = ({ tx, confirmations, network, explorerUrl }: BasicD
                             <StyledIcon icon="GAS" size={10} />
                             <Translation id="TR_GAS_PRICE" />
                         </Title>
-                        <Value>{`${tx.ethereumSpecific.gasPrice} ${getFeeUnits(
+                        <Value>{`${fromWei(tx.ethereumSpecific.gasPrice, 'gwei')} ${getFeeUnits(
                             'ethereum',
                         )}`}</Value>
 
