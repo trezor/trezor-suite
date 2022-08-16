@@ -37,7 +37,13 @@ try {
 To run the tests use the command below:
 
 ```bash
-yarn test:unit
+yarn test:e2e
+```
+
+You might want to run the tests with a different Tor binary, it is possible to use the env variable `TOR_BINARY_PATH` for that, like:
+
+```bash
+TOR_PROCESS_DIR=/path/to/torbinary yarn test:e2e
 ```
 
 ## Build

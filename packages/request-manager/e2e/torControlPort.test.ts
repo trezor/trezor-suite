@@ -3,8 +3,8 @@ import path from 'path';
 import fs from 'fs';
 import net, { Socket } from 'net';
 
-import type { TorConnectionOptions } from '../types';
-import { createHmacSignature, getCookieString, TorControlPort } from '../torControlPort';
+import type { TorConnectionOptions } from '../src/types';
+import { createHmacSignature, getCookieString, TorControlPort } from '../src/torControlPort';
 
 const writeFile = util.promisify(fs.writeFile);
 const existsDirectory = util.promisify(fs.exists);
@@ -12,6 +12,8 @@ const mkdir = util.promisify(fs.mkdir);
 const unlinkFile = util.promisify(fs.unlink);
 
 const authFilePath = path.join(__dirname, 'tmp');
+// Because control_auth_cookie is shared by other tests, this test should not run in parallel
+// using `--runInBand` option with jest.
 const controlAuthCookiePath = `${authFilePath}/control_auth_cookie`;
 const host = 'localhost';
 const port = 9998;
