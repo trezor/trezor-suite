@@ -13,11 +13,11 @@ import { TransactionTypeIcon } from './components/TransactionTypeIcon';
 import { TransactionHeading } from './components/TransactionHeading';
 import { MIN_ROW_HEIGHT } from './components/BaseTargetLayout';
 import { Target, TokenTransfer, FeeRow, WithdrawalRow, DepositRow } from './components/Target';
-import { TransactionTimestamp } from './components/TransactionTimestamp';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
 import { anchorOutlineStyles } from '@suite-utils/anchor';
+import { TransactionTimestamp } from '@wallet-components/TransactionTimestamp';
 
 const Wrapper = styled.div<{
     chainedTxMode?: boolean;
