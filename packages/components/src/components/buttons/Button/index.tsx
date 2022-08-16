@@ -50,10 +50,9 @@ const getFontSize = (variant: ButtonVariant) => {
 interface WrapperProps {
     variant: ButtonVariant;
     hasLabel: boolean;
-    isDisabled: boolean;
     disabled: boolean;
     fullWidth: boolean;
-    color: string | undefined;
+    $color: string | undefined;
 }
 
 const Wrapper = styled.button<WrapperProps>`
@@ -63,7 +62,7 @@ const Wrapper = styled.button<WrapperProps>`
     justify-content: center;
     border: none;
     white-space: nowrap;
-    cursor: ${({ isDisabled }) => (isDisabled ? 'default' : 'pointer')};
+    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
     border-radius: 8px;
     font-size: ${({ variant }) => getFontSize(variant)};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -71,7 +70,8 @@ const Wrapper = styled.button<WrapperProps>`
     padding: ${({ variant, hasLabel }) => getPadding(variant, hasLabel)};
     transition: ${({ theme }) =>
         `background ${theme.HOVER_TRANSITION_TIME} ${theme.HOVER_TRANSITION_EFFECT}`};
-    color: ${({ variant, isDisabled, theme }) => getColor(variant, isDisabled, theme)};
+    color: ${({ $color, variant, disabled, theme }) =>
+        $color || getColor(variant, disabled, theme)};
     pointer-events: ${({ disabled }) => disabled && 'none'};
 
     ${({ variant, theme }) =>
@@ -126,8 +126,8 @@ const Wrapper = styled.button<WrapperProps>`
             }
         `}
 
-    ${({ isDisabled, theme }) =>
-        isDisabled &&
+    ${({ disabled, theme }) =>
+        disabled &&
         css`
             background: ${theme.BG_GREY};
 
@@ -234,10 +234,9 @@ export const Button = React.forwardRef(
                 variant={variant}
                 hasLabel={hasLabel}
                 onChange={onChange}
-                isDisabled={isDisabled}
                 disabled={isDisabled || isLoading}
                 fullWidth={fullWidth}
-                color={color}
+                $color={color}
                 ref={ref}
                 {...rest}
             >
