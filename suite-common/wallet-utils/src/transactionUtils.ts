@@ -85,6 +85,7 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
 export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
+        const amount = formatNetworkAmount(tx.amount, tx.symbol);
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
         if (tx.type === 'self') {
@@ -104,11 +105,11 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
         }
 
         if (tx.type === 'sent') {
-            totalAmount = totalAmount.minus(tx.amount);
+            totalAmount = totalAmount.minus(amount);
             totalAmount = totalAmount.minus(fee);
         }
         if (tx.type === 'recv') {
-            totalAmount = totalAmount.plus(tx.amount);
+            totalAmount = totalAmount.plus(amount);
         }
         if (tx.type === 'failed') {
             totalAmount = totalAmount.minus(fee);
@@ -123,6 +124,7 @@ export const sumTransactionsFiat = (
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
+        const amount = formatNetworkAmount(tx.amount, tx.symbol);
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
         if (tx.type === 'self') {
@@ -146,14 +148,12 @@ export const sumTransactionsFiat = (
         }
         if (tx.type === 'sent') {
             totalAmount = totalAmount.minus(
-                toFiatCurrency(tx.amount, fiatCurrency, tx.rates, -1) ?? 0,
+                toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
             );
             totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
         }
         if (tx.type === 'recv') {
-            totalAmount = totalAmount.plus(
-                toFiatCurrency(tx.amount, fiatCurrency, tx.rates, -1) ?? 0,
-            );
+            totalAmount = totalAmount.plus(toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0);
         }
         if (tx.type === 'failed') {
             totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
@@ -361,9 +361,10 @@ export const getTargetAmount = (
     target: WalletAccountTransaction['targets'][number] | undefined,
     transaction: WalletAccountTransaction,
 ) => {
-    const validTxAmount = typeof transaction.amount === 'string' && transaction.amount !== '0';
+    const txAmount = formatNetworkAmount(transaction.amount, transaction.symbol);
+    const validTxAmount = txAmount && txAmount !== '0';
     if (!target) {
-        return validTxAmount ? transaction.amount : null;
+        return validTxAmount ? txAmount : null;
     }
 
     const sentToSelfTarget =
@@ -382,7 +383,7 @@ export const getTargetAmount = (
         validTxAmount
     ) {
         // "sent to self" target, if it is first of its type and there are no other non-self targets show a fee
-        return transaction.amount;
+        return txAmount;
     }
 
     // "sent to self" target while other non-self targets are also present
@@ -582,7 +583,6 @@ export const enhanceTransaction = (
             account.networkType === 'ripple' && tx.blockTime
                 ? tx.blockTime + 946684800
                 : tx.blockTime,
-        amount: formatNetworkAmount(tx.amount, account.symbol),
         rbfParams: getRbfParams(tx, account),
     };
 };
@@ -653,7 +653,7 @@ const groupAddressesByLabel = (accountMetadata: AccountMetadata) => {
 
 const getTargetAmounts = (transaction: WalletAccountTransaction) =>
     transaction.targets.length === 0
-        ? [transaction.amount]
+        ? [formatNetworkAmount(transaction.amount, transaction.symbol)]
         : transaction.targets.flatMap(target => getTargetAmount(target, transaction) || []);
 
 const searchOperators = ['<', '>', '=', '!='] as const;

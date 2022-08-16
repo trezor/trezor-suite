@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, Button, useTheme, variables } from '@trezor/components';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Sign, Translation, FormattedDate } from '@suite-components';
 import { useRbfContext } from '@wallet-hooks/useRbfForm';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
@@ -80,38 +81,43 @@ const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {
                 <Translation id="TR_AFFECTED_TXS" />
             </WarnHeader>
             <ChainedTxs>
-                {chainedTxs.map(tx => (
-                    <TxRow key={tx.txid}>
-                        {!isMobileLayout && (
-                            <IconWrapper>
-                                <Icon
-                                    size={16}
-                                    color={theme.TYPE_LIGHT_GREY}
-                                    icon={tx.type === 'recv' ? 'RECEIVE' : 'SEND'}
+                {chainedTxs.map(tx => {
+                    const amount = formatNetworkAmount(tx.amount, tx.symbol);
+                    return (
+                        <TxRow key={tx.txid}>
+                            {!isMobileLayout && (
+                                <IconWrapper>
+                                    <Icon
+                                        size={16}
+                                        color={theme.TYPE_LIGHT_GREY}
+                                        icon={tx.type === 'recv' ? 'RECEIVE' : 'SEND'}
+                                    />
+                                </IconWrapper>
+                            )}
+
+                            {tx.blockTime && (
+                                <>
+                                    <Timestamp>
+                                        <FormattedDate value={new Date(tx.blockTime * 1000)} time />
+                                    </Timestamp>
+                                    <Bullet>&bull;</Bullet>
+                                </>
+                            )}
+
+                            <Txid>
+                                {truncateMiddle(tx.txid, shownTxidChars, shownTxidChars + 2)}
+                            </Txid>
+                            <Amount>
+                                <Sign
+                                    value={amount}
+                                    grayscale
+                                    grayscaleColor={theme.TYPE_LIGHT_GREY}
                                 />
-                            </IconWrapper>
-                        )}
-
-                        {tx.blockTime && (
-                            <>
-                                <Timestamp>
-                                    <FormattedDate value={new Date(tx.blockTime * 1000)} time />
-                                </Timestamp>
-                                <Bullet>&bull;</Bullet>
-                            </>
-                        )}
-
-                        <Txid>{truncateMiddle(tx.txid, shownTxidChars, shownTxidChars + 2)}</Txid>
-                        <Amount>
-                            <Sign
-                                value={tx.amount}
-                                grayscale
-                                grayscaleColor={theme.TYPE_LIGHT_GREY}
-                            />
-                            <FormattedCryptoAmount value={tx.amount} symbol={network.symbol} />
-                        </Amount>
-                    </TxRow>
-                ))}
+                                <FormattedCryptoAmount value={amount} symbol={network.symbol} />
+                            </Amount>
+                        </TxRow>
+                    );
+                })}
             </ChainedTxs>
         </GreyCard>
     );

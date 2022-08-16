@@ -1,7 +1,6 @@
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { saveAs } from 'file-saver';
 import {
-    formatNetworkAmount,
     enhanceTransaction,
     findTransactions,
     getAccountTransactions,
@@ -78,7 +77,7 @@ export const remove = (account: Account, txs: WalletAccountTransaction[]): Trans
  * @param {string} newTxid
  */
 export const replaceTransaction =
-    (account: Account, tx: PrecomposedTransactionFinal, newTxid: string) =>
+    (_account: Account, tx: PrecomposedTransactionFinal, newTxid: string) =>
     (dispatch: Dispatch, getState: GetState) => {
         if (!tx.prevTxid) return; // ignore if it's not replacement tx
 
@@ -87,7 +86,6 @@ export const replaceTransaction =
             tx.prevTxid,
             getState().wallet.transactions.transactions,
         );
-        const newFee = formatNetworkAmount(tx.fee, account.symbol);
         const newBaseFee = parseInt(tx.fee, 10);
 
         // prepare replace actions for txs
@@ -112,7 +110,7 @@ export const replaceTransaction =
             }
 
             if (action.tx.type === 'self') {
-                action.tx.amount = newFee;
+                action.tx.amount = tx.fee;
             }
             // update tx rbfParams
             if (action.tx.rbfParams) {
