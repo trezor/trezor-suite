@@ -4,7 +4,7 @@ import { Button, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from '@suite-components';
 import { AmountRow } from './AmountRow';
 import { NetworkSymbol, WalletAccountTransaction } from '@wallet-types';
-import { getNetwork } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, getNetwork } from '@suite-common/wallet-utils';
 
 // define these attributes as a constant because we will use the same values in two different styled components
 const ROW_HEIGHT = '36px';
@@ -65,6 +65,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
         network?.networkType === 'ripple' || network?.networkType === 'ethereum'; // don't show for eth, xrp
 
     const showHistoricalRates = showFiat && !tokenTransfer;
+    const totalInput = formatNetworkAmount(tx.details.totalInput, tx.symbol);
+    const totalOutput = formatNetworkAmount(tx.details.totalOutput, tx.symbol);
 
     return (
         <MainContainer>
@@ -122,16 +124,13 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         <AmountRow
                             firstColumn={<Translation id="TR_TOTAL_INPUT" />}
                             secondColumn={
-                                <FormattedCryptoAmount
-                                    value={tx.details.totalInput}
-                                    symbol={tx.symbol}
-                                />
+                                <FormattedCryptoAmount value={totalInput} symbol={tx.symbol} />
                             }
                             thirdColumn={
                                 showHistoricalRates &&
-                                tx.details.totalInput && (
+                                totalInput && (
                                     <FiatValue
-                                        amount={tx.details.totalInput}
+                                        amount={totalInput}
                                         symbol={tx.symbol}
                                         source={tx.rates}
                                         useCustomSource
@@ -140,9 +139,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             }
                             fourthColumn={
                                 showFiat &&
-                                tx.details.totalInput && (
-                                    <FiatValue amount={tx.details.totalInput} symbol={tx.symbol} />
-                                )
+                                totalInput && <FiatValue amount={totalInput} symbol={tx.symbol} />
                             }
                             color="dark"
                         />
@@ -151,16 +148,13 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         <AmountRow
                             firstColumn={<Translation id="TR_TOTAL_OUTPUT" />}
                             secondColumn={
-                                <FormattedCryptoAmount
-                                    value={tx.details.totalOutput}
-                                    symbol={tx.symbol}
-                                />
+                                <FormattedCryptoAmount value={totalOutput} symbol={tx.symbol} />
                             }
                             thirdColumn={
                                 showHistoricalRates &&
-                                tx.details.totalOutput && (
+                                totalOutput && (
                                     <FiatValue
-                                        amount={tx.details.totalOutput}
+                                        amount={totalOutput}
                                         symbol={tx.symbol}
                                         source={tx.rates}
                                         useCustomSource
@@ -169,9 +163,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             }
                             fourthColumn={
                                 showFiat &&
-                                tx.details.totalOutput && (
-                                    <FiatValue amount={tx.details.totalOutput} symbol={tx.symbol} />
-                                )
+                                totalOutput && <FiatValue amount={totalOutput} symbol={tx.symbol} />
                             }
                             color="dark"
                         />
