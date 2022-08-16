@@ -19,24 +19,19 @@ class BroadcastChannel {
 }
 
 declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace NodeJS {
-        interface Global {
-            JestMocks: {
-                getFirmwareRelease: typeof testMocks.getFirmwareRelease;
-                getDeviceFeatures: typeof testMocks.getDeviceFeatures;
-                getConnectDevice: typeof testMocks.getConnectDevice;
-                getSuiteDevice: typeof testMocks.getSuiteDevice;
-                getWalletAccount: typeof testMocks.getWalletAccount;
-                getWalletTransaction: typeof testMocks.getWalletTransaction;
-                getTrezorConnect: typeof testMocks.getTrezorConnect;
-                getMessageSystemConfig: typeof testMocks.getMessageSystemConfig;
-                getGuideNode: typeof testMocks.getGuideNode;
-                intlMock: typeof testMocks.intlMock;
-            };
-            BroadcastChannel: typeof BroadcastChannel;
-        }
-    }
+    // eslint-disable-next-line no-var, vars-on-top
+    var JestMocks: {
+        getFirmwareRelease: typeof testMocks.getFirmwareRelease;
+        getDeviceFeatures: typeof testMocks.getDeviceFeatures;
+        getConnectDevice: typeof testMocks.getConnectDevice;
+        getSuiteDevice: typeof testMocks.getSuiteDevice;
+        getWalletAccount: typeof testMocks.getWalletAccount;
+        getWalletTransaction: typeof testMocks.getWalletTransaction;
+        getTrezorConnect: typeof testMocks.getTrezorConnect;
+        getMessageSystemConfig: typeof testMocks.getMessageSystemConfig;
+        getGuideNode: typeof testMocks.getGuideNode;
+        intlMock: typeof testMocks.intlMock;
+    };
 }
 
 global.JestMocks = {
