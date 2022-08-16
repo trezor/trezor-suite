@@ -1,9 +1,6 @@
 import React from 'react';
-import randomColor from 'randomcolor';
 import styled, { ThemeProvider } from 'styled-components';
 import { THEME, P } from '../index';
-
-const color = randomColor({ luminosity: 'light' });
 
 const Wrapper = styled.div`
     padding: 20px;
@@ -38,7 +35,7 @@ const Col = styled.div<StoryColumnProps>`
     padding: 10px;
     flex: 1;
     border-radius: 10px;
-    border: 1px dashed ${color};
+    border: 1px dashed #f2ae7b;
     margin: 5px;
     min-width: ${props => props.minWidth}px;
     max-width: ${props => props.maxWidth}px;

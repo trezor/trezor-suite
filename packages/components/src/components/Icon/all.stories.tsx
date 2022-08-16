@@ -2,9 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon, variables, colors, types } from '../../index';
 import { storiesOf } from '@storybook/react';
-import randomColor from 'randomcolor';
-
-const color = randomColor({ luminosity: 'light' });
 
 const Wrapper = styled.div`
     display: grid;
@@ -21,7 +18,7 @@ const IconWrapper = styled.div`
     align-items: center;
 
     &:hover {
-        border: 1px dashed ${color};
+        border: 1px dashed #f2ae7b;
     }
 `;
 
