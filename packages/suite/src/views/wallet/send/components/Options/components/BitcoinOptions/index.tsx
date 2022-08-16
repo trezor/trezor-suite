@@ -7,7 +7,7 @@ import { useSendFormContext } from '@wallet-hooks';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { OpenGuideFromTooltip } from '@guide-components';
 import { Locktime } from './components/Locktime';
-import { UtxoSelection } from './components/UtxoSelection';
+import { UtxoSelectionList } from './components/UtxoSelectionList';
 
 const Wrapper = styled.div`
     display: flex;
@@ -61,7 +61,7 @@ export const BitcoinOptions = () => {
     return (
         <Wrapper>
             {utxoSelectionEnabled && (
-                <UtxoSelection
+                <UtxoSelectionList
                     close={() => {
                         resetDefaultValue('utxoSelection');
                         toggleOption('utxoSelection');
