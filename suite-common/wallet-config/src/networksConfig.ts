@@ -312,6 +312,7 @@ export const networks = {
             tx: 'https://test.bithomp.com/explorer/',
             account: 'https://test.bithomp.com/explorer/',
         },
+        features: ['tokens'],
         customBackends: [],
         accountTypes: {},
     },
@@ -351,6 +352,7 @@ export const networks = {
         label: 'TR_TESTNET_COINS_LABEL',
         decimals: 6,
         testnet: true,
+        features: ['tokens'],
         explorer: {
             tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
             account: 'https://testnet-explorer.blockfrost.dev/account/',
