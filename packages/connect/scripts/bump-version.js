@@ -54,8 +54,10 @@ const res = child_process.spawnSync('yarn', cmd, {
 });
 
 if (res.stderr) {
+    // eslint-disable-next-line no-console
     console.log(res.stderr);
     process.exit(1);
 } else {
+    // eslint-disable-next-line no-console
     console.log(res.stdout);
 }
