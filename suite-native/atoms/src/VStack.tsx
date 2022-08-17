@@ -33,16 +33,14 @@ export const VStack = ({ children, style, spacing, ...rest }: VStackProps) => {
     return (
         <Box style={style} {...rest}>
             {React.Children?.map(children, (child, index) => (
-                <>
-                    <Box
-                        style={applyStyle(spacerStyle, {
-                            isLastChild: index === React.Children.count(children) - 1,
-                            spacing,
-                        })}
-                    >
-                        {child}
-                    </Box>
-                </>
+                <Box
+                    style={applyStyle(spacerStyle, {
+                        isLastChild: index === React.Children.count(children) - 1,
+                        spacing,
+                    })}
+                >
+                    {child}
+                </Box>
             ))}
         </Box>
     );

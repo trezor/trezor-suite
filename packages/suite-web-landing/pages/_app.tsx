@@ -7,11 +7,9 @@ class App extends NextApp {
     render() {
         const { Component, pageProps } = this.props;
         return (
-            <>
-                <ThemeProvider theme={THEME.light}>
-                    <Component {...pageProps} />
-                </ThemeProvider>
-            </>
+            <ThemeProvider theme={THEME.light}>
+                <Component {...pageProps} />
+            </ThemeProvider>
         );
     }
 }

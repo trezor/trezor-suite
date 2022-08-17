@@ -103,44 +103,42 @@ export const AddressOptions = ({
             name="address"
             defaultValue={value}
             render={({ ref, ...field }) => (
-                <>
-                    <Select
-                        {...field}
-                        onChange={handleChange}
-                        isClearable={false}
-                        value={value}
-                        options={buildOptions(addresses)}
-                        minWidth="70px"
-                        menuPlacement={menuPlacement}
-                        formatOptionLabel={(accountAddress: AccountAddress) => {
-                            if (!accountAddress) return null;
-                            const formattedCryptoAmount = formatNetworkAmount(
-                                accountAddress.balance || '0',
-                                receiveSymbol as Account['symbol'],
-                            );
-                            return (
-                                <Option>
-                                    <AddressWrapper>
-                                        <Address>{accountAddress.address}</Address>
-                                        <Amount>
-                                            <HiddenPlaceholder>
-                                                {formattedCryptoAmount}
-                                            </HiddenPlaceholder>{' '}
-                                            <UpperCase>{receiveSymbol}</UpperCase> •
-                                            <PathWrapper>{accountAddress.path}</PathWrapper> •
-                                            <FiatWrapper>
-                                                <FiatValue
-                                                    amount={formattedCryptoAmount}
-                                                    symbol={receiveSymbol || ''}
-                                                />
-                                            </FiatWrapper>
-                                        </Amount>
-                                    </AddressWrapper>
-                                </Option>
-                            );
-                        }}
-                    />
-                </>
+                <Select
+                    {...field}
+                    onChange={handleChange}
+                    isClearable={false}
+                    value={value}
+                    options={buildOptions(addresses)}
+                    minWidth="70px"
+                    menuPlacement={menuPlacement}
+                    formatOptionLabel={(accountAddress: AccountAddress) => {
+                        if (!accountAddress) return null;
+                        const formattedCryptoAmount = formatNetworkAmount(
+                            accountAddress.balance || '0',
+                            receiveSymbol as Account['symbol'],
+                        );
+                        return (
+                            <Option>
+                                <AddressWrapper>
+                                    <Address>{accountAddress.address}</Address>
+                                    <Amount>
+                                        <HiddenPlaceholder>
+                                            {formattedCryptoAmount}
+                                        </HiddenPlaceholder>{' '}
+                                        <UpperCase>{receiveSymbol}</UpperCase> •
+                                        <PathWrapper>{accountAddress.path}</PathWrapper> •
+                                        <FiatWrapper>
+                                            <FiatValue
+                                                amount={formattedCryptoAmount}
+                                                symbol={receiveSymbol || ''}
+                                            />
+                                        </FiatWrapper>
+                                    </Amount>
+                                </AddressWrapper>
+                            </Option>
+                        );
+                    }}
+                />
             )}
         />
     );

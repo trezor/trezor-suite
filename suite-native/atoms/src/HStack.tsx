@@ -33,17 +33,15 @@ export const HStack = ({ children, style, spacing, ...rest }: HStackProps) => {
     return (
         <Box flexDirection="row" style={style} {...rest}>
             {React.Children?.map(children, (child, index) => (
-                <>
-                    <Box
-                        flex={1}
-                        style={applyStyle(spacerStyle, {
-                            isLastChild: index === React.Children.count(children) - 1,
-                            spacing,
-                        })}
-                    >
-                        {child}
-                    </Box>
-                </>
+                <Box
+                    flex={1}
+                    style={applyStyle(spacerStyle, {
+                        isLastChild: index === React.Children.count(children) - 1,
+                        spacing,
+                    })}
+                >
+                    {child}
+                </Box>
             ))}
         </Box>
     );

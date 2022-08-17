@@ -50,28 +50,26 @@ storiesOf('Modals', module)
         const bottomBarButtonFlex = boolean('Flex buttons', false, 'Bottom bar');
 
         return (
-            <>
-                <Modal
-                    data-test="modal"
-                    heading={heading === '' ? undefined : heading}
-                    description={description === '' ? undefined : description}
-                    isCancelable={cancelable}
-                    bottomBar={
-                        bottomBarButtonCount ? (
-                            <Buttons
-                                prefix={bottomBarButtonPrefix}
-                                count={bottomBarButtonCount}
-                                fullWidth={bottomBarButtonFullWidth}
-                                flex={bottomBarButtonFlex}
-                            />
-                        ) : undefined
-                    }
-                    totalProgressBarSteps={useProgress ? totalProgressBarSteps : undefined}
-                    currentProgressBarStep={useProgress ? currentProgressBarStep : undefined}
-                >
-                    {children}
-                </Modal>
-            </>
+            <Modal
+                data-test="modal"
+                heading={heading === '' ? undefined : heading}
+                description={description === '' ? undefined : description}
+                isCancelable={cancelable}
+                bottomBar={
+                    bottomBarButtonCount ? (
+                        <Buttons
+                            prefix={bottomBarButtonPrefix}
+                            count={bottomBarButtonCount}
+                            fullWidth={bottomBarButtonFullWidth}
+                            flex={bottomBarButtonFlex}
+                        />
+                    ) : undefined
+                }
+                totalProgressBarSteps={useProgress ? totalProgressBarSteps : undefined}
+                currentProgressBarStep={useProgress ? currentProgressBarStep : undefined}
+            >
+                {children}
+            </Modal>
         );
     })
     .add(
