@@ -16,9 +16,14 @@ const Wrapper = styled.div<{ state: BoxProps['state'] }>`
 
     ${props =>
         props.state &&
-        css &&
-        `border-left: 6px solid ${getInputStateTextColor(props.state, props.theme)};`}
-    ${props => !props.state && css && `padding-left: 20px`}
+        css`
+            border-left: 6px solid ${getInputStateTextColor(props.state, props.theme)};
+        `}
+    ${props =>
+        !props.state &&
+        css`
+            padding-left: 20px;
+        `}
 `;
 
 const Box = ({ state, children, ...rest }: BoxProps) => (
