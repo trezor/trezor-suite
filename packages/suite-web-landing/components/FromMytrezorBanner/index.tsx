@@ -155,21 +155,19 @@ const StyledFromMytrezorBanner = () => (
                 </BoxCTA>
             )}
             heading={
-                <>
-                    <BannerWrap>
-                        <IconWrap>
-                            <Icon size={38} icon="TREZOR_LOGO" color="#fff" />
-                        </IconWrap>
-                        <InnerWrap>
-                            <BannerTitle>
-                                <Translation id="TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR" />
-                            </BannerTitle>
-                            <BannerDesc>
-                                <Translation id="TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR" />
-                            </BannerDesc>
-                        </InnerWrap>
-                    </BannerWrap>
-                </>
+                <BannerWrap>
+                    <IconWrap>
+                        <Icon size={38} icon="TREZOR_LOGO" color="#fff" />
+                    </IconWrap>
+                    <InnerWrap>
+                        <BannerTitle>
+                            <Translation id="TR_SUITE_WEB_LANDING_BANNER_HEADLINE_FROM_MYTREZOR" />
+                        </BannerTitle>
+                        <BannerDesc>
+                            <Translation id="TR_SUITE_WEB_LANDING_BANNER_DESC_FROM_MYTREZOR" />
+                        </BannerDesc>
+                    </InnerWrap>
+                </BannerWrap>
             }
         >
             <CollapsibleBoxContent>

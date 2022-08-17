@@ -10,9 +10,7 @@ export default {
 };
 
 export const Basic = ({ ...args }) => (
-    <>
-        <LoadingContent size={args.size} isLoading={args.isLoading}>
-            <H1 noMargin>$1337</H1>
-        </LoadingContent>
-    </>
+    <LoadingContent size={args.size} isLoading={args.isLoading}>
+        <H1 noMargin>$1337</H1>
+    </LoadingContent>
 );

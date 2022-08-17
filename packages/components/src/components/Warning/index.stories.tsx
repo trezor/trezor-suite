@@ -10,8 +10,4 @@ export default {
     },
 };
 
-export const Basic = () => (
-    <>
-        <Warning>Warning! Here dragons abound. 🐲</Warning>
-    </>
-);
+export const Basic = () => <Warning>Warning! Here dragons abound. 🐲</Warning>;

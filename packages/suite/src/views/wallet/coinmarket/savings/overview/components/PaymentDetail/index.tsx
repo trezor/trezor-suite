@@ -175,66 +175,64 @@ export const PaymentDetail = ({
                     </PaymentItemButton>
                 </Row>
                 {showDetail && (
-                    <>
-                        <DetailRow>
-                            <PaymentInfoItem>
-                                <PaymentInfoItemLabel>
-                                    <Translation id="TR_SAVINGS_PAYMENT_INFO_NAME_LABEL" />
-                                </PaymentInfoItemLabel>
-                                <PaymentInfoItemValue>
-                                    {savingsTradePayment.paymentInfo?.name}
-                                    <CopyButton
-                                        variant="tertiary"
-                                        onClick={() => copyPaymentInfo('name')}
-                                    >
-                                        <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                    </CopyButton>
-                                </PaymentInfoItemValue>
-                            </PaymentInfoItem>
-                            <PaymentInfoItem>
-                                <PaymentInfoItemLabel>
-                                    <Translation id="TR_SAVINGS_PAYMENT_INFO_IBAN_LABEL" />
-                                </PaymentInfoItemLabel>
-                                <PaymentInfoItemValue>
-                                    {savingsTradePayment.paymentInfo?.iban}{' '}
-                                    <CopyButton
-                                        variant="tertiary"
-                                        onClick={() => copyPaymentInfo('iban')}
-                                    >
-                                        <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                    </CopyButton>
-                                </PaymentInfoItemValue>
-                            </PaymentInfoItem>
-                            <PaymentInfoItem>
-                                <PaymentInfoItemLabel>
-                                    <Translation id="TR_SAVINGS_PAYMENT_INFO_BIC_LABEL" />
-                                </PaymentInfoItemLabel>
-                                <PaymentInfoItemValue>
-                                    {savingsTradePayment.paymentInfo?.bic}{' '}
-                                    <CopyButton
-                                        variant="tertiary"
-                                        onClick={() => copyPaymentInfo('bic')}
-                                    >
-                                        <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                    </CopyButton>
-                                </PaymentInfoItemValue>
-                            </PaymentInfoItem>
-                            <PaymentInfoItem>
-                                <PaymentInfoItemLabel>
-                                    <Translation id="TR_SAVINGS_PAYMENT_INFO_DESCRIPTION_LABEL" />
-                                </PaymentInfoItemLabel>
-                                <PaymentInfoItemValue>
-                                    {savingsTradePayment.paymentInfo?.description}{' '}
-                                    <CopyButton
-                                        variant="tertiary"
-                                        onClick={() => copyPaymentInfo('description')}
-                                    >
-                                        <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                    </CopyButton>
-                                </PaymentInfoItemValue>
-                            </PaymentInfoItem>
-                        </DetailRow>
-                    </>
+                    <DetailRow>
+                        <PaymentInfoItem>
+                            <PaymentInfoItemLabel>
+                                <Translation id="TR_SAVINGS_PAYMENT_INFO_NAME_LABEL" />
+                            </PaymentInfoItemLabel>
+                            <PaymentInfoItemValue>
+                                {savingsTradePayment.paymentInfo?.name}
+                                <CopyButton
+                                    variant="tertiary"
+                                    onClick={() => copyPaymentInfo('name')}
+                                >
+                                    <Translation id="TR_COPY_TO_CLIPBOARD" />
+                                </CopyButton>
+                            </PaymentInfoItemValue>
+                        </PaymentInfoItem>
+                        <PaymentInfoItem>
+                            <PaymentInfoItemLabel>
+                                <Translation id="TR_SAVINGS_PAYMENT_INFO_IBAN_LABEL" />
+                            </PaymentInfoItemLabel>
+                            <PaymentInfoItemValue>
+                                {savingsTradePayment.paymentInfo?.iban}{' '}
+                                <CopyButton
+                                    variant="tertiary"
+                                    onClick={() => copyPaymentInfo('iban')}
+                                >
+                                    <Translation id="TR_COPY_TO_CLIPBOARD" />
+                                </CopyButton>
+                            </PaymentInfoItemValue>
+                        </PaymentInfoItem>
+                        <PaymentInfoItem>
+                            <PaymentInfoItemLabel>
+                                <Translation id="TR_SAVINGS_PAYMENT_INFO_BIC_LABEL" />
+                            </PaymentInfoItemLabel>
+                            <PaymentInfoItemValue>
+                                {savingsTradePayment.paymentInfo?.bic}{' '}
+                                <CopyButton
+                                    variant="tertiary"
+                                    onClick={() => copyPaymentInfo('bic')}
+                                >
+                                    <Translation id="TR_COPY_TO_CLIPBOARD" />
+                                </CopyButton>
+                            </PaymentInfoItemValue>
+                        </PaymentInfoItem>
+                        <PaymentInfoItem>
+                            <PaymentInfoItemLabel>
+                                <Translation id="TR_SAVINGS_PAYMENT_INFO_DESCRIPTION_LABEL" />
+                            </PaymentInfoItemLabel>
+                            <PaymentInfoItemValue>
+                                {savingsTradePayment.paymentInfo?.description}{' '}
+                                <CopyButton
+                                    variant="tertiary"
+                                    onClick={() => copyPaymentInfo('description')}
+                                >
+                                    <Translation id="TR_COPY_TO_CLIPBOARD" />
+                                </CopyButton>
+                            </PaymentInfoItemValue>
+                        </PaymentInfoItem>
+                    </DetailRow>
                 )}
             </PaymentItem>
         </Wrapper>

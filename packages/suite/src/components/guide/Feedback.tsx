@@ -278,18 +278,14 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     </>
                 )}
                 {type === 'BUG' && (
-                    <>
-                        <Headline>
-                            <Translation id="TR_GUIDE_FEEDBACK_BUG_TEXT_HEADLINE" />
-                        </Headline>
-                    </>
+                    <Headline>
+                        <Translation id="TR_GUIDE_FEEDBACK_BUG_TEXT_HEADLINE" />
+                    </Headline>
                 )}
                 {type === 'SUGGESTION' && (
-                    <>
-                        <Headline>
-                            <Translation id="TR_GUIDE_FEEDBACK_SUGGESTION_TEXT_HEADLINE" />
-                        </Headline>
-                    </>
+                    <Headline>
+                        <Translation id="TR_GUIDE_FEEDBACK_SUGGESTION_TEXT_HEADLINE" />
+                    </Headline>
                 )}
 
                 <Textarea

@@ -38,12 +38,10 @@ export const View = (props: ViewPropsStrict | ViewPropsLoose) => (
         {'children' in props ? (
             props.children
         ) : (
-            <>
-                <Body>
-                    <StyledP>{props.description}</StyledP>
-                    {props.image}
-                </Body>
-            </>
+            <Body>
+                <StyledP>{props.description}</StyledP>
+                {props.image}
+            </Body>
         )}
         {props.buttons && <Buttons>{props.buttons}</Buttons>}
     </>
