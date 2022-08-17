@@ -3,13 +3,13 @@ name: release - connect v9 - staging
 on:
   pull_request:
     types:
-      - edited
+      - closed
     branches:
       - "release/connect-v9"
 
 jobs:
   approved:
-    if: github.event.review.state == 'approved'
+    if: github.event.pull_request.merged == 'true'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "This PR was approved"
+      - run: echo "This PR was merged"
