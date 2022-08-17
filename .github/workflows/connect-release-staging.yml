@@ -1,9 +1,9 @@
 name: release - connect v9 - staging
 
 on:
-  pull_request_review:
-    types: [submitted]
   pull_request:
+    types:
+      - edited
     branches:
       - "release/connect-v9"
 
