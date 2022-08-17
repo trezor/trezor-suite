@@ -321,8 +321,8 @@ export const calcXDomain = (
                 xPadding = 3600 * 24 * 14; // 14 days
             }
             break;
-        default:
-            xPadding = 3600 * 12; // 12 hours
+        default: // 12 hours
+            xPadding = 3600 * 12;
             break;
     }
 
