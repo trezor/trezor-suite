@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-popup",
-    "version": "9.0.0",
+    "version": "9.0.0-beta.7",
     "private": true,
     "sideEffects": false,
     "scripts": {
