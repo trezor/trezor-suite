@@ -40,7 +40,7 @@ export const isOnionUrl = (url: string) => {
 
 export const baseFetch = window.fetch;
 
-export const torFetch = (input: RequestInfo, init?: RequestInit | undefined) => {
+export const torFetch = (input: RequestInfo | URL, init?: RequestInit | undefined) => {
     if (typeof input === 'string') {
         input = toTorUrl(input);
     }
