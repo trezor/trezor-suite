@@ -112,6 +112,39 @@ export const exportTransactionsToFileThunk = createThunk(
 );
 ```
 
+## createReducerWithExtraDeps
+
+This functions has exact same signature as `createReducer` but it will inject extra dependencies from `extra` param after `builder`. It will generate `prepareReducer` instead of `reducer`. You should only use this function if you want to use extra dependencies in your reducer, otherwise you should use plain `createReducer` from redux-toolkit.
+
+```typescript
+const initialState = {
+    greetings: 'hello',
+    notificationGreetings: 'ciao',
+};
+const setGreetingsAction = createAction<string>('someAction');
+
+const prepareGreetingsReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
+    builder
+        .addCase(extra.actions.notificationsAddEvent, (state, action) => {
+            state.notificationGreetings = action.payload;
+        })
+        .addCase(setGreetingsAction, (state, action) => {
+            state.greetings = action.payload;
+        });
+});
+```
+
+Now if you want to use this reducer in app you need do it like this:
+
+```typescript
+import { prepareGreetingsReducer } from '@suite-common/greetings';
+import { extraDependencies } from '../support/extraDependencies';
+
+const rootReducer = combineReducers({
+    greetingsReducer: prepareGreetingsReducer(extraDependencies),
+});
+```
+
 ## createSliceWithExtraDependencies
 
 This functions has exact same signature as `createSlice` but it will inject extra dependencies from `extra` into `extraReducers` and generate `prepareReducer` instead of `reducer`. You should only use this function if you want to use extra dependencies in your slice, otherwise you should use `createSlice` from redux-toolkit.
@@ -149,7 +182,7 @@ const rootReducer = combineReducers({
 
 ## createMiddleware
 
-Helper function that will unify and simplify creating of middleware. You don't need to care about calling `next(action)` etc.
+Helper function that will unify and simplify creating of middleware. You don't need to care about calling `next(action)` etc. In case you need to handle `next` manually you can still use legacy way.
 
 ```typescript
 const someMiddleware = createMiddleware((action, { getState }) => {
