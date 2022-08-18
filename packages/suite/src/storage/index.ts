@@ -4,7 +4,7 @@ import { migrate } from './migrations';
 
 import type { SuiteDBSchema } from './definitions';
 
-const VERSION = 30; // don't forget to add migration and CHANGELOG when changing versions!
+const VERSION = 31; // don't forget to add migration and CHANGELOG when changing versions!
 
 /**
  *  If the object stores don't already exist then creates them.

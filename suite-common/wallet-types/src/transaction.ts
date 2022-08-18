@@ -177,8 +177,6 @@ export interface RbfTransactionParams {
 }
 
 export interface WalletAccountTransaction extends AccountTransaction {
-    id?: number;
-    page?: number;
     deviceState: string;
     descriptor: string;
     symbol: Network['symbol'];
