@@ -1,7 +1,7 @@
 import React from 'react';
 import { Translation, TroubleshootingTips } from '@suite-components';
 
-const DeviceDisconnectRequired = () => (
+export const DeviceDisconnectRequired = () => (
     <TroubleshootingTips
         label={<Translation id="TR_DISCONNECT_YOUR_DEVICE" />}
         items={[
@@ -13,5 +13,3 @@ const DeviceDisconnectRequired = () => (
         ]}
     />
 );
-
-export default DeviceDisconnectRequired;

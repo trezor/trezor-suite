@@ -13,7 +13,7 @@ interface DeviceConnectProps {
     isWebUsbTransport: boolean;
 }
 
-const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
+export const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
     const items = isWebUsbTransport
         ? [
               TROUBLESHOOTING_TIP_UDEV,
@@ -38,5 +38,3 @@ const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
         />
     );
 };
-
-export default DeviceConnect;

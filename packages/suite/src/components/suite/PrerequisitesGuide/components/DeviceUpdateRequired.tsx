@@ -5,7 +5,7 @@ import { Translation, TroubleshootingTips } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
-const DeviceUpdateRequired = () => {
+export const DeviceUpdateRequired = () => {
     const { goto } = useActions({ goto: routerActions.goto });
 
     return (
@@ -31,5 +31,3 @@ const DeviceUpdateRequired = () => {
         />
     );
 };
-
-export default DeviceUpdateRequired;

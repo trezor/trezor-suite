@@ -6,8 +6,8 @@ import OnboardingButtonCta from './Buttons/ButtonCta';
 import OnboardingButtonBack from './Buttons/ButtonBack';
 import OnboardingButtonSkip from './Buttons/ButtonSkip';
 
-import Box, { BoxProps } from './Box/Box';
-import ConnectDevicePromptManager from './ConnectDevicePromptManager';
+import { Box, BoxProps } from './Box';
+import { ConnectDevicePromptManager } from './ConnectDevicePromptManager';
 import { OnboardingLayout } from './Layouts/OnboardingLayout';
 import Hologram from './Hologram';
 import { DeviceAnimation, type DeviceAnimationType } from './DeviceAnimation';

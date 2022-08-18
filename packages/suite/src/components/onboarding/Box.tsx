@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { motion, Variants } from 'framer-motion';
 import Text from '@onboarding-components/Text';
 import { Translation } from '@suite-components';
-import { H1, variables, Button, Image, ImageProps, useTheme } from '@trezor/components';
+import { H1, variables, Button, Image, useTheme, ImageType } from '@trezor/components';
 import useMeasure from 'react-use/lib/useMeasure';
 import { transitionEase } from '@suite-config/animation';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
@@ -13,55 +13,52 @@ const BoxWrapper = styled(
         <motion.div {...rest} />
     ),
 )<{
-    variant?: Props['variant'];
+    variant?: BoxProps['variant'];
     withImage?: boolean;
-    expanded?: Props['expanded'];
-    expandable?: Props['expandable'];
+    expanded?: BoxProps['expanded'];
+    expandable?: BoxProps['expandable'];
 }>`
     position: relative;
-    padding: ${props => (props.variant === 'large' ? '40px 80px' : '20px 30px')};
-    width: ${props => (props.variant === 'large' ? '100%' : 'auto')};
+    padding: ${({ variant }) => (variant === 'large' ? '40px 80px' : '20px 30px')};
+    width: ${({ variant }) => (variant === 'large' ? '100%' : 'auto')};
     border-radius: 16px;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     z-index: ${variables.Z_INDEX.BASE};
     cursor: ${({ expanded }) => !expanded && 'pointer'};
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding-left: ${props => (props.variant === 'large' ? '40px' : '30px')};
-        padding-right: ${props => (props.variant === 'large' ? '40px' : '30px')};
-        padding-bottom: ${props => (props.variant === 'large' ? '40px' : '20px')};
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        padding-left: ${({ variant }) => (variant === 'large' ? '40px' : '30px')};
+        padding-right: ${({ variant }) => (variant === 'large' ? '40px' : '30px')};
+        padding-bottom: ${({ variant }) => (variant === 'large' ? '40px' : '20px')};
     }
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         padding-left: 20px;
         padding-right: 20px;
     }
 
-    ${props =>
-        !props.nested &&
+    ${({ nested, theme }) =>
+        !nested &&
         css`
-            box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+            box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
         `}
 
-    ${props =>
-        props.withImage &&
+    ${({ withImage }) =>
+        withImage &&
         css`
             margin-top: 50px;
             padding-top: 80px;
         `}
-    ${props =>
-        props.variant === 'small' &&
+
+    ${({ variant }) =>
+        variant === 'small' &&
         css`
             max-width: 550px;
         `}
 `;
 
 const BoxWrapperInner = styled.div<{ expandable: boolean }>`
-    ${props =>
-        props.expandable &&
-        css`
-            overflow: hidden;
-        `}
+    overflow: ${({ expandable }) => expandable && 'hidden'};
 `;
 
 const BoxImageWrapper = styled.div`
@@ -84,7 +81,7 @@ const ChildrenWrapper = styled.div`
 const Heading = styled(H1)<{ withDescription?: boolean }>`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: ${props => (props.withDescription ? '16px' : '36px')};
+    margin-bottom: ${({ withDescription }) => (withDescription ? '16px' : '36px')};
     text-align: center;
 `;
 
@@ -92,7 +89,7 @@ const Description = styled.div<{ hasChildren?: boolean }>`
     padding: 0px 60px 36px 60px;
     text-align: center;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+    ${variables.SCREEN_QUERY.BELOW_TABLET} {
         padding: 0px 0px 36px 0px;
     }
 `;
@@ -105,14 +102,14 @@ const ExpandableBox = styled(motion.div)`
 `;
 
 const HeadingExpandable = styled.div`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     flex: 1;
 `;
 
 const Tag = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     text-transform: uppercase;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
@@ -125,8 +122,8 @@ const CloseButton = styled(Button)`
     right: 16px;
 `;
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    image?: Extract<ImageProps, { image: any }>['image'];
+export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
+    image?: ImageType;
     variant?: 'small' | 'large';
     expandable?: boolean;
     expanded?: boolean;
@@ -138,7 +135,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children?: React.ReactNode;
 }
 
-const Box = ({
+export const Box = ({
     heading,
     description,
     image,
@@ -151,7 +148,7 @@ const Box = ({
     nested,
     onToggle = () => undefined,
     ...rest
-}: Props) => {
+}: BoxProps) => {
     const theme = useTheme();
     const [heightRef, { height }] = useMeasure<HTMLDivElement>();
     const { isMobileLayout, layoutSize } = useLayoutSize();
@@ -275,6 +272,3 @@ const Box = ({
         </BoxWrapper>
     );
 };
-
-export default Box;
-export type { Props as BoxProps };

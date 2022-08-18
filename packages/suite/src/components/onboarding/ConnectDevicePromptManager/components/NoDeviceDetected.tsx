@@ -10,11 +10,11 @@ import {
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
 } from '@suite-components/TroubleshootingTips/tips';
 
-interface Props {
+interface NoDeviceDetectedProps {
     offerWebUsb: boolean;
 }
 
-const NoDeviceDetected = ({ offerWebUsb }: Props) => (
+export const NoDeviceDetected = ({ offerWebUsb }: NoDeviceDetectedProps) => (
     <TroubleshootingTips
         label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
         items={[
@@ -28,5 +28,3 @@ const NoDeviceDetected = ({ offerWebUsb }: Props) => (
         offerWebUsb={offerWebUsb}
     />
 );
-
-export default NoDeviceDetected;

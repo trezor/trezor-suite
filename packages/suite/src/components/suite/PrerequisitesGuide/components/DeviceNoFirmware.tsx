@@ -1,12 +1,11 @@
 import React from 'react';
-
 import { Button } from '@trezor/components';
 
 import { Translation, TroubleshootingTips } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
-const DeviceNoFirmware = () => {
+export const DeviceNoFirmware = () => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -34,5 +33,3 @@ const DeviceNoFirmware = () => {
         />
     );
 };
-
-export default DeviceNoFirmware;

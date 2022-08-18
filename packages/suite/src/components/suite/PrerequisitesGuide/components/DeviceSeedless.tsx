@@ -2,7 +2,7 @@ import React from 'react';
 import { Translation, TroubleshootingTips } from '@suite-components';
 
 // Seedless devices are not supported by Trezor Suite
-const DeviceSeedless = () => (
+export const DeviceSeedless = () => (
     <TroubleshootingTips
         label={<Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />}
         items={[
@@ -14,5 +14,3 @@ const DeviceSeedless = () => (
         ]}
     />
 );
-
-export default DeviceSeedless;

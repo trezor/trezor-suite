@@ -4,7 +4,7 @@ import { Translation, TroubleshootingTips } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 
-const DeviceRecoveryMode = () => {
+export const DeviceRecoveryMode = () => {
     const recovery = useSelector(state => state.recovery);
     const { rerun } = useActions({ rerun: recoveryActions.rerun });
 
@@ -38,5 +38,3 @@ const DeviceRecoveryMode = () => {
         />
     );
 };
-
-export default DeviceRecoveryMode;

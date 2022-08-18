@@ -1,24 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { Translation, TrezorLink } from '@suite-components';
-import CollapsibleBox from '@suite-components/CollapsibleBox'; // build fails due if imported from suite-components
+import { CollapsibleBox } from '@suite-components/CollapsibleBox'; // build fails due if imported from suite-components
 import { variables, Button } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@suite-utils/env';
 
 const WhiteCollapsibleBox = styled(CollapsibleBox)`
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
 `;
 
 const ItemLabel = styled.span`
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const ItemDescription = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-top: 2px;
@@ -27,7 +27,7 @@ const ItemDescription = styled.span`
 const Bullet = styled.span`
     margin-right: 8px;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const Items = styled.div`
@@ -35,7 +35,7 @@ const Items = styled.div`
     flex-direction: column;
     padding: 20px 20px;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         padding: 20px 18px;
     }
 `;
@@ -64,17 +64,17 @@ const ItemAction = styled.div`
 const ContactSupport = styled.div`
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     padding: 18px 30px;
     align-items: center;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
         padding: 18px 20px;
     }
 `;
 
 const FooterText = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -88,7 +88,7 @@ interface Item {
     action?: React.ReactNode;
 }
 
-interface Props {
+interface TroubleshootingTipsProps {
     label: React.ReactNode;
     cta?: React.ReactNode;
     items: Item[];
@@ -97,60 +97,65 @@ interface Props {
     'data-test'?: string;
 }
 
-const TroubleshootingTips = ({
+export const TroubleshootingTips = ({
     label,
     items,
     cta,
     offerWebUsb,
     opened,
     'data-test': dataTest,
-}: Props) => (
-    <WhiteCollapsibleBox
-        variant="large"
-        heading={cta}
-        iconLabel={label}
-        noContentPadding
-        opened={opened}
-        data-test={dataTest || '@onboarding/expand-troubleshooting-tips'}
-    >
-        {items.length > 0 && (
-            <Items>
-                {items
-                    .filter(item => !item.hide)
-                    .map(item => (
-                        <Item key={item.key}>
-                            {!item.noBullet && <Bullet>&bull;</Bullet>}
-                            <ItemContent>
-                                <ItemLabel>{item.heading}</ItemLabel>
-                                <ItemDescription>{item.description}</ItemDescription>
-                            </ItemContent>
-                            {item.action && <ItemAction>{item.action}</ItemAction>}
-                        </Item>
-                    ))}
-            </Items>
-        )}
+}: TroubleshootingTipsProps) => {
+    const memoizedItems = useMemo(
+        () =>
+            items
+                .filter(item => !item.hide)
+                .map(item => (
+                    <Item key={item.key}>
+                        {!item.noBullet && <Bullet>&bull;</Bullet>}
 
-        {offerWebUsb && !isAndroid() && (
-            <Button
-                variant="secondary"
-                data-test="@onboarding/try-bridge-button"
-                onClick={() => TrezorConnect.disableWebUSB()}
-            >
-                <Translation id="TR_DISABLE_WEBUSB_TRY_BRIDGE" />
-            </Button>
-        )}
+                        <ItemContent>
+                            <ItemLabel>{item.heading}</ItemLabel>
+                            <ItemDescription>{item.description}</ItemDescription>
+                        </ItemContent>
 
-        <ContactSupport>
-            <FooterText>
-                <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
-            </FooterText>
-            <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_URL}>
-                <Button variant="tertiary">
-                    <Translation id="TR_CONTACT_SUPPORT" />
+                        {item.action && <ItemAction>{item.action}</ItemAction>}
+                    </Item>
+                )),
+        [items],
+    );
+
+    return (
+        <WhiteCollapsibleBox
+            variant="large"
+            heading={cta}
+            iconLabel={label}
+            noContentPadding
+            opened={opened}
+            data-test={dataTest || '@onboarding/expand-troubleshooting-tips'}
+        >
+            {items.length > 0 && <Items>{memoizedItems}</Items>}
+
+            {offerWebUsb && !isAndroid() && (
+                <Button
+                    variant="secondary"
+                    data-test="@onboarding/try-bridge-button"
+                    onClick={() => TrezorConnect.disableWebUSB()}
+                >
+                    <Translation id="TR_DISABLE_WEBUSB_TRY_BRIDGE" />
                 </Button>
-            </TrezorLink>
-        </ContactSupport>
-    </WhiteCollapsibleBox>
-);
+            )}
 
-export default TroubleshootingTips;
+            <ContactSupport>
+                <FooterText>
+                    <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
+                </FooterText>
+
+                <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_URL}>
+                    <Button variant="tertiary">
+                        <Translation id="TR_CONTACT_SUPPORT" />
+                    </Button>
+                </TrezorLink>
+            </ContactSupport>
+        </WhiteCollapsibleBox>
+    );
+};

@@ -17,9 +17,9 @@ const Wrapper = styled(motion.div)`
     width: 360px;
     border-radius: 61px;
     padding: 10px;
-    background: ${props => props.theme.BG_WHITE};
+    background: ${({ theme }) => theme.BG_WHITE};
     align-items: center;
-    box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    box-shadow: 0 2px 5px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
     margin-bottom: 60px;
 `;
 
@@ -27,6 +27,7 @@ const ImageWrapper = styled.div`
     display: flex;
     position: relative;
 `;
+
 const Checkmark = styled.div`
     display: flex;
     position: absolute;
@@ -39,7 +40,7 @@ const Text = styled.div`
     flex-direction: column;
     margin: 0px 32px;
     text-align: center;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: 20px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
@@ -47,13 +48,6 @@ const Text = styled.div`
         margin-top: 10px;
     }
 `;
-
-interface Props {
-    connected: boolean;
-    showWarning: boolean;
-    allowSwitchDevice?: boolean;
-    prerequisite?: PrerequisiteType;
-}
 
 const getMessageId = ({
     connected,
@@ -73,21 +67,31 @@ const getMessageId = ({
             if (connected) {
                 return !showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';
             }
+
             return 'TR_CONNECT_YOUR_DEVICE';
         }
     }
 };
-const ConnectDevicePrompt = ({
+
+interface ConnectDevicePromptProps {
+    connected: boolean;
+    showWarning: boolean;
+    allowSwitchDevice?: boolean;
+    prerequisite?: PrerequisiteType;
+}
+
+export const ConnectDevicePrompt = ({
     prerequisite,
     connected,
     showWarning,
     allowSwitchDevice,
-}: Props) => {
-    const theme = useTheme();
-    const { device } = useDevice();
+}: ConnectDevicePromptProps) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
+
+    const theme = useTheme();
+    const { device } = useDevice();
 
     return (
         <Wrapper
@@ -104,17 +108,21 @@ const ConnectDevicePrompt = ({
                     shape="CIRCLE"
                     size={100}
                 />
+
                 <Checkmark>
                     {connected && !showWarning && (
                         <Icon icon="CHECK_ACTIVE" size={24} color={theme.TYPE_GREEN} />
                     )}
+
                     {showWarning && (
                         <Icon icon="WARNING_ACTIVE" size={24} color={theme.TYPE_ORANGE} />
                     )}
                 </Checkmark>
             </ImageWrapper>
+
             <Text>
                 <Translation id={getMessageId({ connected, showWarning, prerequisite })} />
+
                 {allowSwitchDevice && (
                     <Button
                         variant="tertiary"
@@ -129,5 +137,3 @@ const ConnectDevicePrompt = ({
         </Wrapper>
     );
 };
-
-export default ConnectDevicePrompt;
