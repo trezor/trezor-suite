@@ -5,119 +5,120 @@ import useMeasure from 'react-use/lib/useMeasure';
 import { Icon, variables } from '@trezor/components';
 import { transitionEase } from '@suite-config/animation';
 
-const Wrapper = styled.div<Pick<Props, 'variant'>>`
+const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
     display: flex;
     flex-direction: column;
-    background: ${props => props.theme.BG_GREY};
+    background: ${({ theme }) => theme.BG_GREY};
     margin-bottom: 20px;
 
-    ${props =>
-        (props.variant === 'tiny' || props.variant === 'small') &&
+    ${({ variant }) =>
+        (variant === 'tiny' || variant === 'small') &&
         css`
             border-radius: 4px;
         `}
-    ${props =>
-        props.variant === 'large' &&
+
+    ${({ variant, theme }) =>
+        variant === 'large' &&
         css`
             border-radius: 16px;
-            box-shadow: 0 2px 5px 0 ${props.theme.BOX_SHADOW_BLACK_20};
+            box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
         `}
 `;
 
-const Header = styled.div<Pick<Props, 'variant' | 'headerJustifyContent'>>`
+const Header = styled.div<Pick<CollapsibleBoxProps, 'variant' | 'headerJustifyContent'>>`
     display: flex;
     width: 100%;
-    justify-content: ${props => props.headerJustifyContent};
+    justify-content: ${({ headerJustifyContent }) => headerJustifyContent};
     align-items: center;
     cursor: pointer;
 
-    ${props =>
-        props.variant === 'tiny' &&
+    ${({ variant }) =>
+        variant === 'tiny' &&
         css`
             padding: 8px 16px;
         `}
-    ${props =>
-        props.variant === 'small' &&
+
+    ${({ variant }) =>
+        variant === 'small' &&
         css`
             padding: 12px 16px;
         `}
-    ${props =>
-        props.variant === 'large' &&
+
+    ${({ variant }) =>
+        variant === 'large' &&
         css`
             padding: 24px 30px;
 
-            @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+            ${variables.SCREEN_QUERY.MOBILE} {
                 padding: 24px 18px;
             }
         `}
 `;
 
-const IconWrapper = styled.div<Pick<Props, 'headerJustifyContent'>>`
+const IconWrapper = styled.div<Pick<CollapsibleBoxProps, 'headerJustifyContent'>>`
     display: flex;
     align-items: center;
     margin-left: 24px;
-
-    ${props =>
-        props.headerJustifyContent === 'center' &&
-        css`
-            padding-left: 2px;
-        `}
+    padding-left: ${({ headerJustifyContent }) => headerJustifyContent === 'center' && '2px'};
 `;
 
 const IconLabel = styled.div`
     margin-right: 6px;
     margin-left: 28px;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const Heading = styled.span<Pick<Props, 'variant'>>`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+const Heading = styled.span<Pick<CollapsibleBoxProps, 'variant'>>`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
-    ${props =>
-        props.variant === 'tiny' &&
+    ${({ variant }) =>
+        variant === 'tiny' &&
         css`
             font-size: ${variables.NEUE_FONT_SIZE.NANO};
         `}
 
-    ${props =>
-        (props.variant === 'small' || props.variant === 'large') &&
+    ${({ variant }) =>
+        (variant === 'small' || variant === 'large') &&
         css`
             font-size: ${variables.NEUE_FONT_SIZE.SMALL};
         `}
 `;
 
-const Content = styled.div<{ variant: Props['variant']; $noContentPadding?: boolean }>`
+const Content = styled.div<{
+    variant: CollapsibleBoxProps['variant'];
+    $noContentPadding?: boolean;
+}>`
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
-    ${props =>
-        !props.$noContentPadding &&
-        props.variant === 'tiny' &&
+    ${({ $noContentPadding, variant }) =>
+        !$noContentPadding &&
+        variant === 'tiny' &&
         css`
             padding: 15px 16px;
         `}
 
-    ${props =>
-        !props.$noContentPadding &&
-        props.variant === 'small' &&
+    ${({ $noContentPadding, variant }) =>
+        !$noContentPadding &&
+        variant === 'small' &&
         css`
             padding: 20px 16px;
         `}
 
-    ${props =>
-        !props.$noContentPadding &&
-        props.variant === 'large' &&
+    ${({ $noContentPadding, variant }) =>
+        !$noContentPadding &&
+        variant === 'large' &&
         css`
             padding: 20px 30px;
         `}
 `;
 
-interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {
+interface CollapsibleBoxProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
     heading: React.ReactNode;
     variant: 'tiny' | 'small' | 'large';
     iconLabel?: React.ReactNode;
@@ -134,7 +135,7 @@ interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {
     }) => React.ReactNode;
 }
 
-const CollapsibleBox = ({
+export const CollapsibleBox = ({
     heading,
     iconLabel,
     children,
@@ -144,7 +145,7 @@ const CollapsibleBox = ({
     opened = false,
     headingButton,
     ...rest
-}: Props) => {
+}: CollapsibleBoxProps) => {
     const [collapsed, setCollapsed] = useState(!opened);
     const [animatedIcon, setAnimatedIcon] = useState(false);
 
@@ -212,5 +213,3 @@ const CollapsibleBox = ({
         </Wrapper>
     );
 };
-
-export default CollapsibleBox;

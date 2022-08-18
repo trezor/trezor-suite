@@ -1,7 +1,7 @@
 import React from 'react';
 import { Translation, TroubleshootingTips } from '@suite-components';
 
-const DeviceUnknown = () => (
+export const DeviceUnknown = () => (
     <TroubleshootingTips
         label={<Translation id="TR_UNKNOWN_DEVICE" />}
         items={[
@@ -13,5 +13,3 @@ const DeviceUnknown = () => (
         ]}
     />
 );
-
-export default DeviceUnknown;

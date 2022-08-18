@@ -8,7 +8,7 @@ import {
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
 } from '@suite-components/TroubleshootingTips/tips';
 
-const NoTransport = () => (
+export const NoTransport = () => (
     // No transport layer (bridge/webUSB) is available
     // On web it makes sense to offer downloading Trezor Bridge
     // Desktop app should have Bridge transport layer available as it is built-in, if it is not available we fucked up something.
@@ -22,5 +22,3 @@ const NoTransport = () => (
         ]}
     />
 );
-
-export default NoTransport;

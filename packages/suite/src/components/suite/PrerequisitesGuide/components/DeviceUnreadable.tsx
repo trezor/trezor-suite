@@ -37,10 +37,29 @@ const UdevWeb = () => (
 
 // linux desktop
 const UdevDesktop = () => {
+    const [response, setResponse] = useState(-1);
+
     const { addToast } = useActions({
         addToast: notificationActions.addToast,
     });
-    const [response, setResponse] = useState(-1);
+
+    const handleCtaClick = async (event: React.MouseEvent) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const resp = await desktopApi.installUdevRules();
+
+        if (resp?.success) {
+            setResponse(1);
+        } else {
+            addToast({
+                type: 'error',
+                error: resp?.error || 'desktopApi not available',
+            });
+
+            setResponse(0);
+        }
+    };
 
     if (response === 1) {
         return (
@@ -58,22 +77,7 @@ const UdevDesktop = () => {
             opened={response === 0}
             label={<Translation id="TR_TROUBLESHOOTING_UNREADABLE_UDEV" />}
             cta={
-                <Button
-                    onClick={async event => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        const resp = await desktopApi.installUdevRules();
-                        if (resp?.success) {
-                            setResponse(1);
-                        } else {
-                            addToast({
-                                type: 'error',
-                                error: resp?.error || 'desktopApi not available',
-                            });
-                            setResponse(0);
-                        }
-                    }}
-                >
+                <Button onClick={handleCtaClick}>
                     <Translation id="TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE" />
                 </Button>
             }
@@ -100,7 +104,7 @@ interface DeviceUnreadableProps {
 }
 
 // We don't really know what happened, show some generic help and provide link to contact a support
-const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadableProps) => {
+export const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadableProps) => {
     if (isWebUsbTransport) {
         // only install bridge will help (webusb + HID device)
         return (
@@ -112,6 +116,7 @@ const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadableProps) 
             />
         );
     }
+
     // this error is dispatched by trezord when udev rules are missing
     if (isLinux() && device?.error === 'LIBUSB_ERROR_ACCESS') {
         return <> {isDesktop() ? <UdevDesktop /> : <UdevWeb />}</>;
@@ -135,5 +140,3 @@ const DeviceUnreadable = ({ device, isWebUsbTransport }: DeviceUnreadableProps) 
         />
     );
 };
-
-export default DeviceUnreadable;

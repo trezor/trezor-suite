@@ -6,12 +6,15 @@ import {
 } from '@suite-components/TroubleshootingTips/tips';
 
 // todo: remove in favour of suite-components
-interface Props {
+interface UnexpectedDeviceStateProps {
     deviceStatus: any;
     trezorModel?: number;
 }
 
-const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
+export const UnexpectedDeviceState = ({
+    deviceStatus,
+    trezorModel,
+}: UnexpectedDeviceStateProps) => (
     <>
         {deviceStatus === 'unreadable' && (
             // User connected unreadable device
@@ -27,6 +30,7 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
                     </Button> */}
             </>
         )}
+
         {deviceStatus === 'bootloader' && (
             // User connected the device in bootloader mode, but in order to continue it needs to be in normal mode
             <TroubleshootingTips
@@ -45,6 +49,7 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
                 ]}
             />
         )}
+
         {deviceStatus === 'seedless' && (
             // Seedless devices are not supported by Trezor Suite
             <TroubleshootingTips
@@ -62,5 +67,3 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
         )}
     </>
 );
-
-export default UnexpectedDeviceState;
