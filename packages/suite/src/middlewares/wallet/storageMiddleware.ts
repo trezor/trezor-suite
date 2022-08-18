@@ -17,6 +17,7 @@ import * as accountUtils from '@suite-common/wallet-utils';
 import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
@@ -56,6 +57,20 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     storageActions.removeAccountGraph(account);
                     storageActions.removeAccount(account);
                 });
+            }
+
+            if (
+                metadataActions.setAccountLoaded.match(action) ||
+                metadataActions.setAccountAdd.match(action)
+            ) {
+                const device = accountUtils.findAccountDevice(
+                    action.payload,
+                    api.getState().devices,
+                );
+                // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
+                if (isDeviceRemembered(device)) {
+                    storageActions.saveAccounts([action.payload]);
+                }
             }
 
             switch (action.type) {
@@ -181,19 +196,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     storageActions.saveCoinmarketTrade(trade);
                     break;
                 }
-                case METADATA.ACCOUNT_ADD:
-                case METADATA.ACCOUNT_LOADED: {
-                    const device = accountUtils.findAccountDevice(
-                        action.payload,
-                        api.getState().devices,
-                    );
-                    // if device is remembered, and there is a change in account.metadata (METADATA.ACCOUNT_LOADED), update database
-                    if (isDeviceRemembered(device)) {
-                        storageActions.saveAccounts([action.payload]);
-                    }
-                    break;
-                }
-
                 case METADATA.ENABLE:
                 case METADATA.DISABLE:
                 case METADATA.SET_PROVIDER:

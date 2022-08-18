@@ -1,8 +1,9 @@
-import { ROUTER, SUITE, METADATA } from '@suite-actions/constants';
+import { ROUTER, SUITE } from '@suite-actions/constants';
 import { DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
 
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { getSelectedAccount } from '@wallet-utils/accountUtils';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -202,8 +203,8 @@ const actions = [
     ROUTER.LOCATION_CHANGE,
     SUITE.SELECT_DEVICE,
     SUITE.UPDATE_SELECTED_DEVICE,
-    METADATA.ACCOUNT_LOADED,
-    METADATA.ACCOUNT_ADD,
+    metadataActions.setAccountLoaded.type,
+    metadataActions.setAccountAdd.type,
     accountsActions.createAccount.type,
     accountsActions.removeAccount.type,
     accountsActions.updateAccount.type,

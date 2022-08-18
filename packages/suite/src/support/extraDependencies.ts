@@ -1,12 +1,13 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { STORAGE, METADATA } from '../actions/suite/constants';
+import { STORAGE } from '../actions/suite/constants';
 import { addEvent } from '../actions/suite/notificationActions';
 import { StorageLoadAction } from '../actions/suite/storageActions';
 import type { BlockchainState } from '../reducers/wallet/blockchainReducer';
 import { AppState } from '../types/suite';
 import * as transactionActions from '@wallet-actions/transactionActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 
 export const extraDependencies: ExtraDependencies = {
     thunks: { notificationsAddEvent: addEvent },
@@ -21,11 +22,11 @@ export const extraDependencies: ExtraDependencies = {
     actions: {
         addTransaction: transactionActions.add,
         removeTransaction: transactionActions.remove,
+        setAccountLoadedMetadata: metadataActions.setAccountLoaded,
+        setAccountAddMetadata: metadataActions.setAccountAdd,
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
-        metadataAccountLoaded: METADATA.ACCOUNT_LOADED,
-        metadataAccountAdd: METADATA.ACCOUNT_ADD,
     },
     reducers: {
         // @TODO - use BlockchainState from @suite-common/wallet-blockchain after redux-utils will be merged

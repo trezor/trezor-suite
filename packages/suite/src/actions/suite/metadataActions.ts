@@ -21,6 +21,15 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import DropboxProvider from '@suite-services/metadata/DropboxProvider';
 import GoogleProvider from '@suite-services/metadata/GoogleProvider';
 import FileSystemProvider from '@suite-services/metadata/FileSystemProvider';
+import { createAction } from '@reduxjs/toolkit';
+
+export const setAccountLoaded = createAction(METADATA.ACCOUNT_LOADED, (payload: Account) => ({
+    payload,
+}));
+
+export const setAccountAdd = createAction(METADATA.ACCOUNT_ADD, (payload: Account) => ({
+    payload,
+}));
 
 export type MetadataAction =
     | { type: typeof METADATA.ENABLE }
@@ -39,10 +48,8 @@ export type MetadataAction =
           type: typeof METADATA.WALLET_LOADED | typeof METADATA.WALLET_ADD;
           payload: { deviceState: string; walletLabel?: string };
       }
-    | {
-          type: typeof METADATA.ACCOUNT_LOADED | typeof METADATA.ACCOUNT_ADD;
-          payload: Account;
-      };
+    | ReturnType<typeof setAccountLoaded>
+    | ReturnType<typeof setAccountAdd>;
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
@@ -87,13 +94,12 @@ export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState
             updatedMetadata.aesKey = '';
         }
 
-        dispatch({
-            type: METADATA.ACCOUNT_ADD,
-            payload: {
+        dispatch(
+            setAccountAdd({
                 ...account,
                 metadata: updatedMetadata,
-            },
-        });
+            }),
+        );
     });
 
     getState().devices.forEach(device => {
@@ -341,9 +347,8 @@ export const fetchMetadata =
                 }
             }
 
-            dispatch({
-                type: METADATA.ACCOUNT_LOADED,
-                payload: {
+            dispatch(
+                setAccountLoaded({
                     ...account,
                     metadata: {
                         ...account.metadata,
@@ -351,8 +356,8 @@ export const fetchMetadata =
                         outputLabels: json.outputLabels,
                         addressLabels: json.addressLabels,
                     },
-                },
-            });
+                }),
+            );
         });
 
         const promises = [deviceFileContentP, ...accountPromises];
@@ -411,10 +416,7 @@ export const setAccountMetadataKey =
 const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
     getState().wallet.accounts.forEach(account => {
         const accountWithMetadata = dispatch(setAccountMetadataKey(account));
-        dispatch({
-            type: METADATA.ACCOUNT_ADD,
-            payload: accountWithMetadata,
-        });
+        dispatch(setAccountAdd(accountWithMetadata));
     });
     // note that devices are intentionally omitted here - device receives metadata
     // keys sooner when enabling labeling on device;
@@ -553,13 +555,12 @@ export const addAccountMetadata =
             }
         }
 
-        dispatch({
-            type: METADATA.ACCOUNT_ADD,
-            payload: {
+        dispatch(
+            setAccountAdd({
                 ...account,
                 metadata,
-            },
-        });
+            }),
+        );
 
         // we might intentionally skip saving metadata content to persistent storage.
         if (!save) return true;

@@ -1,8 +1,6 @@
-import {
-    createReducerWithExtraDeps,
-    matchesActionType,
-    matchesAnyOfActionType,
-} from '@suite-common/redux-utils';
+import { isAnyOf } from '@reduxjs/toolkit';
+
+import { createReducerWithExtraDeps, matchesActionType } from '@suite-common/redux-utils';
 import { Account } from '@suite-common/wallet-types';
 
 import { accountsActions } from './accountsActions';
@@ -71,15 +69,15 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(initialState, (
             update(state, action.payload);
         })
         .addMatcher(
-            matchesActionType(extra.actionTypes.storageLoad),
-            extra.reducers.storageLoadAccounts,
+            isAnyOf(extra.actions.setAccountLoadedMetadata, extra.actions.setAccountAddMetadata),
+            (state, action) => {
+                const { payload } = action;
+                setMetadata(state, payload);
+            },
         )
         .addMatcher(
-            matchesAnyOfActionType(
-                extra.actionTypes.metadataAccountLoaded,
-                extra.actionTypes.metadataAccountAdd,
-            ),
-            (state: AccountsSliceState, { payload }) => setMetadata(state, payload),
+            matchesActionType(extra.actionTypes.storageLoad),
+            extra.reducers.storageLoadAccounts,
         );
 });
 

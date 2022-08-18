@@ -55,11 +55,11 @@ export const extraDependenciesMock: ExtraDependencies = {
     actions: {
         addTransaction: mockAction('addTransaction'),
         removeTransaction: mockAction('removeTransaction'),
+        setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),
+        setAccountAddMetadata: mockAction('setAccountAddMetadata'),
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
-        metadataAccountLoaded: mockActionType('metadataAccountLoaded'),
-        metadataAccountAdd: mockActionType('metadataAccountAdd'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
