@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { formatNetworkAmount, getAccountTransactions } from '@suite-common/wallet-utils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
 import { Checkbox, Icon, Switch, variables } from '@trezor/components';
-import { UtxoSelection } from '@wallet-components/UtxoSelection';
+import type { AccountUtxo } from '@trezor/connect';
+import { UtxoSelectionList } from '@wallet-components/UtxoSelectionList';
 import { useSendFormContext } from '@wallet-hooks';
 
 const Row = styled.div`
@@ -18,6 +18,16 @@ const SecondRow = styled(Row)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     margin-top: 12px;
+`;
+
+const DustRow = styled.div`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    margin-top: 6px;
+`;
+
+const DustDescriptionRow = styled.div`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    margin: 6px 0 12px 0;
 `;
 
 const StyledSwitch = styled(Switch)`
@@ -39,19 +49,24 @@ interface Props {
     close: () => void;
 }
 
-export const UtxoSelectionList = ({ close }: Props) => {
-    const { transactions } = useSelector(state => ({
-        transactions: state.wallet.transactions,
-    }));
-    const { account, composedLevels, composeTransaction, selectedUtxos, setValue, watch } =
+export const CoinControl = ({ close }: Props) => {
+    const { account, composedLevels, composeTransaction, feeInfo, selectedUtxos, setValue, watch } =
         useSendFormContext();
 
+    const [spendableUtxos, dustUtxos]: [AccountUtxo[], AccountUtxo[]] = account.utxo
+        ? account.utxo.reduce(
+              ([previousSpendable, previousDust]: [AccountUtxo[], AccountUtxo[]], current) =>
+                  feeInfo.dustLimit && parseInt(current.amount, 10) >= feeInfo.dustLimit
+                      ? [[...previousSpendable, current], previousDust]
+                      : [previousSpendable, [...previousDust, current]],
+              [[], []],
+          )
+        : [[], []];
     const selectedFee = watch('selectedFee');
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
     const composedInputs = composedLevel?.type === 'final' ? composedLevel.transaction.inputs : [];
     const inputs = composedInputs.length ? composedInputs : selectedUtxos;
-    const allSelected = selectedUtxos.length === account.utxo?.length;
-    const accountTransactions = getAccountTransactions(account.key, transactions.transactions);
+    const allSelected = !!selectedUtxos.length && selectedUtxos.length === spendableUtxos.length;
 
     // TypeScript does not allow Array.prototype.reduce here (https://github.com/microsoft/TypeScript/issues/36390)
     let total = 0;
@@ -76,7 +91,7 @@ export const UtxoSelectionList = ({ close }: Props) => {
         composeTransaction();
     };
     const handleCheckbox = () => {
-        setValue('selectedUtxos', allSelected ? [] : account.utxo);
+        setValue('selectedUtxos', allSelected ? [] : spendableUtxos);
         composeTransaction();
     };
 
@@ -92,27 +107,32 @@ export const UtxoSelectionList = ({ close }: Props) => {
                 <Icon size={20} icon="CROSS" onClick={close} />
             </Row>
             <SecondRow>
-                <Checkbox isChecked={allSelected} onClick={handleCheckbox} />
+                <Checkbox
+                    isChecked={allSelected}
+                    isDisabled={!spendableUtxos.length}
+                    onClick={handleCheckbox}
+                />
                 <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
                 {!!total && <StyledCryptoAmount value={formattedTotal} symbol={account.symbol} />}
             </SecondRow>
             <Line />
-            {account.utxo?.map(utxo => (
-                <UtxoSelection
-                    key={`${utxo.txid}-${utxo.vout}`}
-                    isChecked={
-                        selectedUtxos.length
-                            ? selectedUtxos.some(u => u.txid === utxo.txid && u.vout === utxo.vout)
-                            : composedInputs.some(
-                                  u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout,
-                              )
-                    }
-                    transaction={accountTransactions.find(
-                        transaction => transaction.txid === utxo.txid,
-                    )}
-                    utxo={utxo}
-                />
-            ))}
+            {spendableUtxos.length ? (
+                <UtxoSelectionList utxos={spendableUtxos} composedInputs={composedInputs} />
+            ) : (
+                <Translation id="TR_NO_SPENDABLE_UTXOS" />
+            )}
+            {!!dustUtxos.length && (
+                <>
+                    <Line />
+                    <DustRow>
+                        <Translation id="TR_DUST" />
+                    </DustRow>
+                    <DustDescriptionRow>
+                        <Translation id="TR_DUST_DESCRIPTION" />
+                    </DustDescriptionRow>
+                    <UtxoSelectionList utxos={dustUtxos} composedInputs={composedInputs} />
+                </>
+            )}
             <Line />
         </>
     );
