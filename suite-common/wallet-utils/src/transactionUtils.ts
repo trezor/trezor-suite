@@ -533,34 +533,6 @@ export const getRbfParams = (
 ): WalletAccountTransaction['rbfParams'] =>
     getBitcoinRbfParams(tx, account) || getEthereumRbfParams(tx, account);
 
-export const enhanceTransactionDetails = (tx: AccountTransaction, symbol: Account['symbol']) => ({
-    ...tx.details,
-    vin: tx.details.vin.map(v => ({
-        ...v,
-        value: v.value ? formatNetworkAmount(v.value, symbol) : v.value,
-    })),
-    vout: tx.details.vout.map(v => ({
-        ...v,
-        value: v.value ? formatNetworkAmount(v.value, symbol) : v.value,
-    })),
-    totalInput: formatNetworkAmount(tx.details.totalInput, symbol),
-    totalOutput: formatNetworkAmount(tx.details.totalOutput, symbol),
-});
-
-const enhanceFailedTransaction = (
-    tx: AccountTransaction,
-    _account: Account,
-): AccountTransaction => {
-    if (!isTxFailed(tx)) return tx;
-    // const address = tx.targets[0].addresses![0];
-    // TODO: find failed token in account.tokens list?
-    // TODO: try to parse smart contract data to get values (destination, amount..)
-    return {
-        ...tx,
-        type: 'failed',
-    };
-};
-
 /**
  * Formats amounts and attaches fields from the account (descriptor, deviceState, symbol) to the tx object
  *
@@ -572,7 +544,10 @@ export const enhanceTransaction = (
     origTx: AccountTransaction,
     account: Account,
 ): WalletAccountTransaction => {
-    const tx = enhanceFailedTransaction(origTx, account);
+    const tx = {
+        ...origTx,
+        type: isTxFailed(origTx) ? 'failed' : origTx.type,
+    };
     return {
         descriptor: account.descriptor,
         deviceState: account.deviceState,

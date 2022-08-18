@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
+import { toWei } from 'web3-utils';
 import { isDesktop } from '@suite-utils/env';
-import { enhanceTransactionDetails } from '@suite-common/wallet-utils';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import type { SuiteDBSchema } from '../definitions';
 import type { State } from '@wallet-reducers/settingsReducer';
@@ -9,6 +9,11 @@ import type { Network, Account, Discovery } from '@wallet-types';
 import type { BackendSettings } from '@suite-common/wallet-types';
 import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/definitions';
 import type { GraphData } from '@wallet-types/graph';
+import {
+    formatNetworkAmount,
+    networkAmountToSatoshi,
+    amountToSatoshi,
+} from '@suite-common/wallet-utils';
 
 type WalletWithBackends = {
     backends?: Partial<{
@@ -153,7 +158,19 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         while (cursor) {
             const tx = cursor.value;
             if (tx.tx.details) {
-                tx.tx.details = enhanceTransactionDetails(tx.tx, tx.tx.symbol);
+                tx.tx.details = {
+                    ...tx.tx.details,
+                    vin: tx.tx.details.vin.map(v => ({
+                        ...v,
+                        value: v.value ? formatNetworkAmount(v.value, tx.tx.symbol) : v.value,
+                    })),
+                    vout: tx.tx.details.vout.map(v => ({
+                        ...v,
+                        value: v.value ? formatNetworkAmount(v.value, tx.tx.symbol) : v.value,
+                    })),
+                    totalInput: formatNetworkAmount(tx.tx.details.totalInput, tx.tx.symbol),
+                    totalOutput: formatNetworkAmount(tx.tx.details.totalOutput, tx.tx.symbol),
+                };
             }
 
             cursor.update(tx);
@@ -514,5 +531,61 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
                 return cursor.continue().then(addAmountUnits);
             });
+    }
+
+    if (oldVersion < 31) {
+        let cursor = await transaction.objectStore('txs').openCursor();
+        while (cursor) {
+            const { order, tx: origTx } = cursor.value;
+
+            const unformat = (amount: string) => networkAmountToSatoshi(amount, origTx.symbol);
+            const unformatIfDefined = (amount: string | undefined) =>
+                amount ? unformat(amount) : amount;
+
+            const unenhancedTx = {
+                ...origTx,
+                amount: unformat(origTx.amount),
+                fee: unformat(origTx.fee),
+                totalSpent: unformat(origTx.totalSpent),
+                tokens: origTx.tokens.map(tok => ({
+                    ...tok,
+                    amount: amountToSatoshi(tok.amount, tok.decimals),
+                })),
+                targets: origTx.targets.map(target => ({
+                    ...target,
+                    amount: unformatIfDefined(target.amount),
+                })),
+                ethereumSpecific: origTx.ethereumSpecific
+                    ? {
+                          ...origTx.ethereumSpecific,
+                          gasPrice: toWei(origTx.ethereumSpecific.gasPrice, 'gwei'),
+                      }
+                    : undefined,
+                cardanoSpecific: origTx.cardanoSpecific
+                    ? {
+                          ...origTx.cardanoSpecific,
+                          withdrawal: unformatIfDefined(origTx.cardanoSpecific.withdrawal),
+                          deposit: unformatIfDefined(origTx.cardanoSpecific.deposit),
+                      }
+                    : undefined,
+                details: {
+                    ...origTx.details,
+                    vin: origTx.details.vin.map(v => ({
+                        ...v,
+                        value: unformatIfDefined(v.value),
+                    })),
+                    vout: origTx.details.vout.map(v => ({
+                        ...v,
+                        value: unformatIfDefined(v.value),
+                    })),
+                    totalInput: unformat(origTx.details.totalInput),
+                    totalOutput: unformat(origTx.details.totalOutput),
+                },
+            };
+
+            cursor.update({ order, tx: unenhancedTx });
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
+        }
     }
 };
