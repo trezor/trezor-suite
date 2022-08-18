@@ -38,10 +38,10 @@
         "test:unit": "jest",
         "type-check": "tsc --build",
         "build:lib": "rimraf ./lib && tsc --build tsconfig.lib.json",
-        "version:beta": "node scripts/bump-version.js prerelease",
-        "version:patch": "node scripts/bump-version.js patch",
-        "version:minor": "node scripts/bump-version.js minor",
-        "version:major": "node scripts/bump-version.js major"
+        "version:beta": "tsx scripts/bump-version.ts prerelease",
+        "version:patch": "tsx scripts/bump-version.ts patch",
+        "version:minor": "tsx scripts/bump-version.ts minor",
+        "version:major": "tsx scripts/bump-version.ts major"
     },
     "dependencies": {
         "@trezor/blockchain-link": "^2.1.3",
