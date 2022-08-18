@@ -1,15 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Translation, TroubleshootingTips } from '@suite-components';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
 } from '@suite-components/TroubleshootingTips/tips';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
 
 // todo: remove in favour of suite-components
 interface Props {
@@ -18,7 +12,7 @@ interface Props {
 }
 
 const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
-    <Wrapper>
+    <>
         {deviceStatus === 'unreadable' && (
             // User connected unreadable device
             // We don't really know what happened, show some generic help and provide link to contact a support
@@ -66,7 +60,7 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
                 ]}
             />
         )}
-    </Wrapper>
+    </>
 );
 
 export default UnexpectedDeviceState;

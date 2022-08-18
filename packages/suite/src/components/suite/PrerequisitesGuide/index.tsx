@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import { ConnectDevicePrompt } from '@suite-components';
@@ -19,6 +19,8 @@ import DeviceBootloader from './components/DeviceBootloader';
 import DeviceNoFirmware from './components/DeviceNoFirmware';
 import DeviceUpdateRequired from './components/DeviceUpdateRequired';
 import DeviceDisconnectRequired from './components/DeviceDisconnectRequired';
+import { motion } from 'framer-motion';
+import { enterEase } from '@suite-config/animation';
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;
@@ -41,6 +43,10 @@ const Wrapper = styled.div<{ padded?: boolean }>`
         `}
 `;
 
+const TipsContainer = styled(motion.div)`
+    display: flex;
+`;
+
 interface PrerequisitesGuideProps {
     prerequisite: PrerequisiteType;
     padded?: boolean;
@@ -61,6 +67,43 @@ export const PrerequisitesGuide = ({
 
     const isWebUsbTransport = isWebUsb(transport);
 
+    const TipComponent = useMemo(
+        () => () => {
+            switch (prerequisite) {
+                case 'transport-bridge':
+                    return <Transport />;
+                case 'device-disconnect-required':
+                    return <DeviceDisconnectRequired />;
+                case 'device-disconnected':
+                    return <DeviceConnect isWebUsbTransport={isWebUsbTransport} />;
+                case 'device-unacquired':
+                    return <DeviceAcquire />;
+                case 'device-unreadable':
+                    return (
+                        <DeviceUnreadable device={device} isWebUsbTransport={isWebUsbTransport} />
+                    );
+                case 'device-unknown':
+                    return <DeviceUnknown />;
+                case 'device-seedless':
+                    return <DeviceSeedless />;
+                case 'device-recovery-mode':
+                    return <DeviceRecoveryMode />;
+                case 'device-initialize':
+                    return <DeviceInitialize />;
+                case 'device-bootloader':
+                    return <DeviceBootloader trezorModel={device?.features?.major_version} />;
+                case 'firmware-missing':
+                    return <DeviceNoFirmware />;
+                case 'firmware-required':
+                    return <DeviceUpdateRequired />;
+
+                default:
+                    return null;
+            }
+        },
+        [prerequisite, isWebUsbTransport, device],
+    );
+
     return (
         <Wrapper padded={padded}>
             <ConnectDevicePrompt
@@ -69,42 +112,14 @@ export const PrerequisitesGuide = ({
                 allowSwitchDevice={allowSwitchDevice && devices > 1}
                 prerequisite={prerequisite}
             />
-            {(() => {
-                switch (prerequisite) {
-                    case 'transport-bridge':
-                        return <Transport />;
-                    case 'device-disconnect-required':
-                        return <DeviceDisconnectRequired />;
-                    case 'device-disconnected':
-                        return <DeviceConnect isWebUsbTransport={isWebUsbTransport} />;
-                    case 'device-unacquired':
-                        return <DeviceAcquire />;
-                    case 'device-unreadable':
-                        return (
-                            <DeviceUnreadable
-                                device={device}
-                                isWebUsbTransport={isWebUsbTransport}
-                            />
-                        );
-                    case 'device-unknown':
-                        return <DeviceUnknown />;
-                    case 'device-seedless':
-                        return <DeviceSeedless />;
-                    case 'device-recovery-mode':
-                        return <DeviceRecoveryMode />;
-                    case 'device-initialize':
-                        return <DeviceInitialize />;
-                    case 'device-bootloader':
-                        return <DeviceBootloader trezorModel={device?.features?.major_version} />;
-                    case 'firmware-missing':
-                        return <DeviceNoFirmware />;
-                    case 'firmware-required':
-                        return <DeviceUpdateRequired />;
 
-                    default:
-                        return prerequisite;
-                }
-            })()}
+            <TipsContainer
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.5, ease: enterEase }}
+            >
+                <TipComponent />
+            </TipsContainer>
         </Wrapper>
     );
 };

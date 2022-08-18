@@ -55,6 +55,8 @@ const Header = styled.div<Pick<Props, 'variant' | 'headerJustifyContent'>>`
 const IconWrapper = styled.div<Pick<Props, 'headerJustifyContent'>>`
     display: flex;
     align-items: center;
+    margin-left: 24px;
+
     ${props =>
         props.headerJustifyContent === 'center' &&
         css`
