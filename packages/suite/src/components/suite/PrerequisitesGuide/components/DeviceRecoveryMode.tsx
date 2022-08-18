@@ -1,14 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { Translation, TroubleshootingTips } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
 
 const DeviceRecoveryMode = () => {
     const recovery = useSelector(state => state.recovery);
@@ -21,29 +15,27 @@ const DeviceRecoveryMode = () => {
     }
 
     return (
-        <Wrapper>
-            <TroubleshootingTips
-                label={<Translation id="TR_DEVICE_IN_RECOVERY_MODE" />}
-                cta={
-                    <Button
-                        isDisabled={isLocked()}
-                        onClick={e => {
-                            e.stopPropagation();
-                            rerun();
-                        }}
-                    >
-                        <Translation id="TR_CONTINUE" />
-                    </Button>
-                }
-                items={[
-                    {
-                        key: 'recovery-mode',
-                        heading: <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />,
-                        description: <Translation id="TR_DEVICE_IN_RECOVERY_MODE_DESC" />,
-                    },
-                ]}
-            />
-        </Wrapper>
+        <TroubleshootingTips
+            label={<Translation id="TR_DEVICE_IN_RECOVERY_MODE" />}
+            cta={
+                <Button
+                    isDisabled={isLocked()}
+                    onClick={e => {
+                        e.stopPropagation();
+                        rerun();
+                    }}
+                >
+                    <Translation id="TR_CONTINUE" />
+                </Button>
+            }
+            items={[
+                {
+                    key: 'recovery-mode',
+                    heading: <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />,
+                    description: <Translation id="TR_DEVICE_IN_RECOVERY_MODE_DESC" />,
+                },
+            ]}
+        />
     );
 };
 

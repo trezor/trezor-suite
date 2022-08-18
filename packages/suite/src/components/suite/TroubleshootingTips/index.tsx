@@ -94,16 +94,24 @@ interface Props {
     items: Item[];
     offerWebUsb?: boolean;
     opened?: boolean;
+    'data-test'?: string;
 }
 
-const TroubleshootingTips = ({ label, items, cta, offerWebUsb, opened }: Props) => (
+const TroubleshootingTips = ({
+    label,
+    items,
+    cta,
+    offerWebUsb,
+    opened,
+    'data-test': dataTest,
+}: Props) => (
     <WhiteCollapsibleBox
         variant="large"
         heading={cta}
         iconLabel={label}
         noContentPadding
         opened={opened}
-        data-test="@onboarding/expand-troubleshooting-tips"
+        data-test={dataTest || '@onboarding/expand-troubleshooting-tips'}
     >
         {items.length > 0 && (
             <Items>
