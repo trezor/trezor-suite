@@ -208,6 +208,8 @@ export const toggleTor =
                     error: ipcResponse.error as TranslationKey,
                 }),
             );
+
+            return Promise.reject();
         }
     };
 
