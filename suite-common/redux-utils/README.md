@@ -123,7 +123,7 @@ const initialState = {
 };
 const setGreetingsAction = createAction<string>('someAction');
 
-const prepareGreetingsReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
+export const prepareGreetingsReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
         .addCase(extra.actions.notificationsAddEvent, (state, action) => {
             state.notificationGreetings = action.payload;
@@ -145,12 +145,12 @@ const rootReducer = combineReducers({
 });
 ```
 
-## createSliceWithExtraDependencies
+## createSliceWithExtraDeps
 
 This functions has exact same signature as `createSlice` but it will inject extra dependencies from `extra` into `extraReducers` and generate `prepareReducer` instead of `reducer`. You should only use this function if you want to use extra dependencies in your slice, otherwise you should use `createSlice` from redux-toolkit.
 
 ```typescript
-const someSlice = createSliceWithExtraDependencies({
+const someSlice = createSliceWithExtraDeps({
     name: 'someSlice',
     initialState: {
         someState: 'someState',
@@ -233,7 +233,7 @@ const middleware = [
 This is simple matcher can be used in redux-toolkit reducers builder to simplify matching action types.
 
 ```typescript
-const someSlice = createSliceWithExtraDependencies({
+const someSlice = createSliceWithExtraDeps({
     extraReducers: (builder, extra) => {
         builder
             // this is how it looks without it

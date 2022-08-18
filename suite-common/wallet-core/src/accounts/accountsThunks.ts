@@ -17,8 +17,9 @@ import {
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { AccountsSliceState, accountActions } from './accountsSlice';
-import { modulePrefix } from './constants';
+import { AccountsSliceState } from './accountsReducer';
+import { accountsActions } from './accountsActions';
+import { actionPrefix } from './constants';
 
 export const disableAccountsThunk = createAsyncThunk<
     void,
@@ -26,7 +27,7 @@ export const disableAccountsThunk = createAsyncThunk<
     {
         state: { wallet: { settings: WalletSettings; accounts: AccountsSliceState } };
     }
->(`${modulePrefix}/disableAccountsThunk`, (_, { dispatch, getState }) => {
+>(`${actionPrefix}/disableAccountsThunk`, (_, { dispatch, getState }) => {
     const { settings, accounts } = getState().wallet;
     const { enabledNetworks } = settings;
     // find disabled networks
@@ -37,7 +38,7 @@ export const disableAccountsThunk = createAsyncThunk<
     const accountsToRemove = accounts.filter(a => disabledNetworks.includes(a.symbol));
 
     if (accountsToRemove.length) {
-        dispatch(accountActions.removeAccount(accountsToRemove));
+        dispatch(accountsActions.removeAccount(accountsToRemove));
     }
 });
 
@@ -70,7 +71,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
-    `${modulePrefix}/fetchAndUpdateAccountThunk`,
+    `${actionPrefix}/fetchAndUpdateAccountThunk`,
     async (account: Account, { dispatch, extra, getState }) => {
         const {
             actions: { addTransaction, removeTransaction },
@@ -164,7 +165,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 isAccountOutdated(account, payload) ||
                 customTokens.length > 0
             ) {
-                dispatch(accountActions.updateAccount(account, payload));
+                dispatch(accountsActions.updateAccount(account, payload));
             }
         }
     },

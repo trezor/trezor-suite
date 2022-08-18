@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { BLOCKCHAIN, TRANSACTION } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
@@ -13,7 +13,7 @@ const fiatRatesMiddleware =
         // pass action
         next(action);
 
-        if (accountActions.updateAccount.match(action)) {
+        if (accountsActions.updateAccount.match(action)) {
             // fetch rates for new tokens added on account update
             const account = action.payload;
             const prevAccount = prevState.wallet.accounts.find(
@@ -38,7 +38,7 @@ const fiatRatesMiddleware =
                     }
                 });
             }
-        } else if (accountActions.createAccount.match(action)) {
+        } else if (accountsActions.createAccount.match(action)) {
             // fetch current rates for account's tokens
             const account = action.payload;
             account.tokens?.forEach(token => {

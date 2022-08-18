@@ -3,7 +3,7 @@ import { STORAGE } from '@suite-actions/constants';
 import { SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export interface SendState {
     drafts: {
@@ -23,7 +23,7 @@ export const initialState: SendState = {
 
 const sendFormReducer = (state: SendState = initialState, action: Action): SendState =>
     produce(state, draft => {
-        if (accountActions.removeAccount.match(action)) {
+        if (accountsActions.removeAccount.match(action)) {
             action.payload.forEach(account => {
                 delete draft.drafts[account.key];
             });

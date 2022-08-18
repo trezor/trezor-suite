@@ -5,7 +5,7 @@ import { WalletAction, Account } from '@wallet-types';
 import { GraphRange, GraphScale, AccountIdentifier, GraphData } from '@wallet-types/graph';
 import { Action as SuiteAction } from '@suite-types';
 import { SETTINGS } from '@suite-config';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export interface State {
     data: GraphData[];
@@ -80,7 +80,7 @@ const remove = (draft: State, accounts: Account[]) => {
 
 const graphReducer = (state: State = initialState, action: WalletAction | SuiteAction): State =>
     produce(state, draft => {
-        if (accountActions.removeAccount.match(action)) {
+        if (accountsActions.removeAccount.match(action)) {
             remove(draft, action.payload);
             return;
         }

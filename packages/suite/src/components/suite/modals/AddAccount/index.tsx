@@ -6,7 +6,7 @@ import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
 import { TrezorDevice } from '@suite-types';
 import { useSelector, useActions } from '@suite-hooks';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { arrayPartition } from '@trezor/utils';
@@ -130,7 +130,7 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: Props) => {
 
     const onEnableAccount = (account: Account) => {
         onCancel();
-        dispatch(accountActions.changeAccountVisibility(account));
+        dispatch(accountsActions.changeAccountVisibility(account));
         if (app === 'wallet' && !noRedirect) {
             // redirect to account only if added from "wallet" app
             goto('wallet-index', {

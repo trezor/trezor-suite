@@ -5,7 +5,7 @@ import { FormState as SendFormState, Output } from '@wallet-types/sendForm';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { RouterState } from '@suite-reducers/routerReducer';
 import { State as SelectedAccountState } from '@wallet-reducers/selectedAccountReducer';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export const blockchainSubscription = [
     {
@@ -13,7 +13,7 @@ export const blockchainSubscription = [
         initialAccounts: [{ descriptor: '1', symbol: 'ltc' }],
         actions: [
             {
-                type: accountActions.createAccount.type,
+                type: accountsActions.createAccount.type,
                 payload: { descriptor: '1', symbol: 'btc' },
             },
         ],
@@ -30,7 +30,7 @@ export const blockchainSubscription = [
         initialAccounts: [{ descriptor: '1' }, { descriptor: '2' }],
         actions: [
             {
-                type: accountActions.removeAccount.type,
+                type: accountsActions.removeAccount.type,
                 payload: [{ descriptor: '1' }],
             },
         ],
@@ -50,7 +50,7 @@ export const blockchainSubscription = [
         initialAccounts: [{ descriptor: '1' }, { descriptor: '2' }],
         actions: [
             {
-                type: accountActions.removeAccount.type,
+                type: accountsActions.removeAccount.type,
                 payload: [{ descriptor: '1' }, { descriptor: '2' }],
             },
         ],
@@ -74,7 +74,7 @@ export const blockchainSubscription = [
         ],
         actions: [
             {
-                type: accountActions.removeAccount.type,
+                type: accountsActions.removeAccount.type,
                 payload: [
                     { descriptor: '1btc', symbol: 'btc' },
                     { descriptor: '1ltc', symbol: 'ltc' },

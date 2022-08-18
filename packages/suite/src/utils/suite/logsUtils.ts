@@ -19,7 +19,7 @@ import {
 } from '@suite-utils/env';
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { DeepPartial } from '@trezor/type-utils';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
@@ -90,7 +90,10 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
 export const redactAction = (action: LogEntry) => {
     let payload;
 
-    if (accountActions.createAccount.match(action) || accountActions.updateAccount.match(action)) {
+    if (
+        accountsActions.createAccount.match(action) ||
+        accountsActions.updateAccount.match(action)
+    ) {
         payload = redactAccount(action.payload);
     } else {
         switch (action.type) {

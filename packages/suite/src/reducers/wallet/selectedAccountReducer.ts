@@ -1,31 +1,8 @@
 import { ACCOUNT } from '@wallet-actions/constants';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 import type { Action } from '@suite-types';
 import type { Network, Account, Discovery, WalletParams } from '@wallet-types';
-
-// Context notifications view
-// Account is in "watch only" mode
-export type AccountWatchOnlyMode =
-    | 'account-loading-others'
-    | 'auth-confirm-failed' // Empty wallet confirmation failed
-    | 'device-disconnected'
-    | 'device-unavailable' // Device has passphrase_protection disabled
-    | 'backend-disconnected';
-
-// 100% view
-// // Account loaders
-export interface AccountLoading {
-    status: 'loading';
-    loader:
-        | 'waiting-for-device' // No selectedDevice
-        | 'auth' // Waiting for device.state
-        | 'account-loading'; // Waiting for account
-    mode?: undefined;
-    account?: Account;
-    network?: Network;
-    discovery?: Discovery;
-    params?: undefined;
-}
+import type { AccountLoading, AccountNone, AccountWatchOnlyMode } from '@suite-common/wallet-types';
 
 // 100% view
 // Account exception views
@@ -66,15 +43,7 @@ export type State =
       }
     | AccountLoading
     | AccountException
-    | {
-          status: 'none';
-          loader?: undefined;
-          mode?: undefined;
-          account?: undefined;
-          network?: undefined;
-          discovery?: undefined;
-          params?: undefined;
-      };
+    | AccountNone;
 
 export const initialState: State = {
     status: 'none',
@@ -82,7 +51,7 @@ export const initialState: State = {
 
 const selectedAccountReducer = (state: State = initialState, action: Action): State => {
     if (action.type === ACCOUNT.UPDATE_SELECTED_ACCOUNT) return action.payload;
-    if (accountActions.disposeAccount.match(action)) return initialState;
+    if (accountsActions.disposeAccount.match(action)) return initialState;
     return state;
 };
 

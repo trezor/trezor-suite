@@ -1,5 +1,5 @@
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
-import { accountActions, disableAccountsThunk } from '@suite-common/wallet-core';
+import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
 import { Account } from '@wallet-types';
 import { configureMockStore } from '@suite-common/test-utils';
 import { accountsReducer } from '@wallet-reducers';
@@ -55,7 +55,7 @@ describe('Account Actions', () => {
     it('Create account', () => {
         const store = initStore(getInitialState());
         store.dispatch(
-            accountActions.createAccount(
+            accountsActions.createAccount(
                 'device-state',
                 {
                     index: 0,
@@ -115,7 +115,7 @@ describe('Account Actions', () => {
             }),
         );
         store.dispatch(
-            accountActions.changeAccountVisibility(
+            accountsActions.changeAccountVisibility(
                 getAccount({
                     symbol: 'ltc',
                     path: '1',
@@ -132,7 +132,7 @@ describe('Account Actions', () => {
         const store = initStore(getInitialState());
         const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
         store.dispatch(
-            accountActions.changeAccountVisibility(
+            accountsActions.changeAccountVisibility(
                 getAccount({
                     symbol: 'ltc',
                     path: '1',

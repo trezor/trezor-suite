@@ -5,7 +5,7 @@ import { TRANSACTION } from '@wallet-actions/constants';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as deviceUtils from '@suite-utils/device';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 /*
  * Middleware for event notifications.
@@ -89,10 +89,11 @@ const eventsMiddleware =
         }
 
         if (action.type === TRANSACTION.REMOVE) {
-            api.dispatch(notificationActions.removeTransactionEvents(action.txs));
+            const { txs } = action.payload;
+            api.dispatch(notificationActions.removeTransactionEvents(txs));
         }
 
-        if (accountActions.removeAccount.match(action)) {
+        if (accountsActions.removeAccount.match(action)) {
             action.payload.forEach(account => {
                 api.dispatch(notificationActions.removeAccountEvents(account.descriptor));
             });

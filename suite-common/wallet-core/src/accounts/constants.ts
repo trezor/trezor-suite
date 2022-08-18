@@ -1,1 +1,1 @@
-export const modulePrefix = '@suite-common/wallet-core';
+export const actionPrefix = '@common/wallet-core/accounts';

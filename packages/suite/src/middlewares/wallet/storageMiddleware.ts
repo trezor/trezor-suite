@@ -23,7 +23,7 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -34,9 +34,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             next(action);
 
             if (
-                accountActions.createAccount.match(action) ||
-                accountActions.changeAccountVisibility.match(action) ||
-                accountActions.updateAccount.match(action)
+                accountsActions.createAccount.match(action) ||
+                accountsActions.changeAccountVisibility.match(action) ||
+                accountsActions.updateAccount.match(action)
             ) {
                 const { payload } = action;
                 const device = accountUtils.findAccountDevice(payload, api.getState().devices);
@@ -46,7 +46,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
-            if (accountActions.removeAccount.match(action)) {
+            if (accountsActions.removeAccount.match(action)) {
                 action.payload.forEach(account => {
                     FormDraftPrefixKeyValues.map(prefix =>
                         storageActions.removeAccountFormDraft(prefix, account.key),

@@ -13,9 +13,10 @@ import {
 } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
+import { Account } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -28,12 +29,10 @@ const log =
         if (action.type.startsWith('@log')) return action;
 
         if (
-            accountActions.createAccount.match(action) ||
-            accountActions.updateAccount.match(action)
+            accountsActions.createAccount.match(action) ||
+            accountsActions.updateAccount.match(action)
         ) {
-            const payload = action.payload as ReturnType<
-                typeof accountActions.createAccount | typeof accountActions.updateAccount
-            >['payload'];
+            const { payload }: { payload: Account } = action;
             api.dispatch(logActions.addAction(action, { ...payload }));
             return action;
         }

@@ -7,7 +7,7 @@ import {
     formatData,
     isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 import { TRANSACTION } from '@wallet-actions/constants';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -177,7 +177,7 @@ export const fetchTransactions =
         });
 
         if (result && result.success) {
-            const updateAction = accountActions.updateAccount(account, result.payload);
+            const updateAction = accountsActions.updateAccount(account, result.payload);
             const updatedAccount = updateAction.payload as Account;
             const transactions = result.payload.history.transactions || [];
             const totalPages = result.payload.page?.total || 0;

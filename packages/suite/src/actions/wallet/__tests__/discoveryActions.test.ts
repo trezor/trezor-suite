@@ -10,7 +10,7 @@ import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import { NOTIFICATION } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 import { accountsReducer } from '@wallet-reducers';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { ArrayElement } from '@trezor/type-utils';
@@ -243,7 +243,7 @@ describe('Discovery Actions', () => {
             store.subscribe(() => {
                 const actions = store.getActions();
                 const a = actions[actions.length - 1];
-                if (accountActions.createAccount.match(a)) {
+                if (accountsActions.createAccount.match(a)) {
                     // call "stop" if added account is a trigger from fixtures
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t) >= 0);
                     if (trigger) {
@@ -288,7 +288,7 @@ describe('Discovery Actions', () => {
             store.subscribe(() => {
                 const actions = store.getActions();
                 const a = actions[actions.length - 1];
-                if (accountActions.createAccount.match(a)) {
+                if (accountsActions.createAccount.match(a)) {
                     // call "updateNetworkSettings" if added account is a trigger from fixtures
                     const trigger = f.trigger.find(t => a.payload.path.indexOf(t.path) >= 0);
                     if (trigger) {

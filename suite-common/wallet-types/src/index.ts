@@ -8,4 +8,5 @@ export * from './form';
 export * from './polling';
 export * from './sendForm';
 export * from './settings';
+export * from './selectedAccount';
 export * from './transaction';

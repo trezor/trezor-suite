@@ -5,7 +5,7 @@ import { DISCOVERY } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { accountActions, disableAccountsThunk } from '@suite-common/wallet-core';
+import { accountsActions, disableAccountsThunk } from '@suite-common/wallet-core';
 import { getApp } from '@suite-utils/router';
 import { AppState, Action, Dispatch } from '@suite-types';
 
@@ -142,7 +142,7 @@ const discoveryMiddleware =
             action.type === SUITE.SELECT_DEVICE ||
             action.type === SUITE.AUTH_DEVICE ||
             action.type === WALLET_SETTINGS.CHANGE_NETWORKS ||
-            accountActions.changeAccountVisibility.match(action)
+            accountsActions.changeAccountVisibility.match(action)
         ) {
             const discovery = api.dispatch(discoveryActions.getDiscoveryForDevice());
             if (

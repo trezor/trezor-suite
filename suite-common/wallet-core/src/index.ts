@@ -1,2 +1,3 @@
-export * from './accounts/accountsSlice';
+export * from './accounts/accountsActions';
+export * from './accounts/accountsReducer';
 export * from './accounts/accountsThunks';

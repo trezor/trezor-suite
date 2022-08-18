@@ -5,7 +5,7 @@ import { NETWORKS } from '@wallet-config';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { getSelectedAccount } from '@wallet-utils/accountUtils';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 import { Action, Dispatch, GetState } from '@suite-types';
 import { State, AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';
@@ -210,7 +210,7 @@ const actions = [
         v =>
             typeof v === 'string' &&
             v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT &&
-            v !== accountActions.disposeAccount.type,
+            v !== accountsActions.disposeAccount.type,
     ), // exported values got unwanted "__esModule: true" as first element
     ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
     ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),

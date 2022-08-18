@@ -6,7 +6,7 @@ import { Account, WalletAction } from '@wallet-types';
 import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { accountActions } from '@suite-common/wallet-core';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export interface State {
     transactions: { [key: string]: WalletAccountTransaction[] }; // object where a key is accountHash and a value is sparse array of fetched txs
@@ -99,7 +99,7 @@ const remove = (draft: State, account: Account, txs: WalletAccountTransaction[])
 
 const transactionReducer = (state: State = initialState, action: Action | WalletAction): State =>
     produce(state, draft => {
-        if (accountActions.removeAccount.match(action)) {
+        if (accountsActions.removeAccount.match(action)) {
             action.payload.forEach(a => {
                 delete draft.transactions[a.key];
             });

@@ -7,7 +7,7 @@ type NotFunction<T> = T extends Function ? never : T;
 
 type ExtraDependenciesForReducer = Pick<ExtraDependencies, 'actionTypes' | 'actions' | 'reducers'>;
 
-export const createReducerWithExtraDependencies =
+export const createReducerWithExtraDeps =
     <S extends NotFunction<any>>(
         initialState: S | (() => S),
         builderCallback: (
