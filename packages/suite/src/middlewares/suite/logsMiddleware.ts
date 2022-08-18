@@ -11,7 +11,7 @@ import {
     ROUTER,
     SUITE,
 } from '@suite-actions/constants';
-import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
+import { DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
@@ -34,6 +34,23 @@ const log =
         ) {
             const { payload }: { payload: Account } = action;
             api.dispatch(logActions.addAction(action, { ...payload }));
+            return action;
+        }
+
+        if (accountsActions.updateSelectedAccount.match(action)) {
+            if (action.payload.account) {
+                api.dispatch(
+                    logActions.addAction(action, {
+                        account: {
+                            ...getAccountIdentifier(action.payload.account),
+                            index: action.payload.account.index,
+                            path: action.payload.account.path,
+                        },
+                    }),
+                );
+            } else {
+                api.dispatch(logActions.addAction(action, { ...action, type: undefined }));
+            }
             return action;
         }
 
@@ -97,22 +114,6 @@ const log =
                 break;
             case BLOCKCHAIN.SET_BACKEND:
                 api.dispatch(logActions.addAction(action, { ...action.payload, urls: undefined }));
-                break;
-            case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
-                if (action.payload.account) {
-                    api.dispatch(
-                        logActions.addAction(action, {
-                            account: {
-                                ...getAccountIdentifier(action.payload.account),
-                                index: action.payload.account.index,
-                                path: action.payload.account.path,
-                            },
-                        }),
-                    );
-                } else {
-                    api.dispatch(logActions.addAction(action, { ...action, type: undefined }));
-                }
-
                 break;
             case ROUTER.LOCATION_CHANGE:
                 api.dispatch(

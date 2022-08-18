@@ -1,4 +1,5 @@
 import routes, { Route, RouterAppWithParams } from '@suite-constants/routes';
+import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 import history from '@suite/support/history';
 import { NETWORKS } from '@wallet-config';
 
@@ -38,7 +39,7 @@ export const getApp = (url: string) => {
     return route ? route.app : 'unknown';
 };
 
-const validateWalletParams = (url: string) => {
+const validateWalletParams = (url: string): CommonWalletParams => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
     const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
@@ -103,7 +104,7 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
     } as RouterAppWithParams;
 };
 
-export type WalletParams = NonNullable<ReturnType<typeof validateWalletParams>>;
+export type WalletParams = CommonWalletParams;
 export type ModalAppParams = NonNullable<ReturnType<typeof validateModalAppParams>>;
 export type RouteParams = WalletParams | ModalAppParams;
 

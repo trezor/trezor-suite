@@ -1,8 +1,9 @@
 import { MiddlewareAPI } from 'redux';
-import { DISCOVERY, ACCOUNT, TRANSACTION } from '@wallet-actions/constants';
+import { DISCOVERY, TRANSACTION } from '@wallet-actions/constants';
 import * as graphActions from '@wallet-actions/graphActions';
 import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { AppState, Action, Dispatch } from '@suite-types';
+import { accountsActions } from '@suite-common/wallet-core/libDev/src';
 
 const graphMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -10,6 +11,18 @@ const graphMiddleware =
     (action: Action): Action => {
         next(action);
         const currentAccounts = api.getState().wallet.accounts;
+
+        if (accountsActions.updateSelectedAccount.match(action)) {
+            // fetch graph data for selected account and range if needed
+            if (action.payload.account) {
+                api.dispatch(
+                    graphActions.updateGraphData([action.payload.account], {
+                        newAccountsOnly: true,
+                    }),
+                );
+            }
+            return action;
+        }
 
         switch (action.type) {
             case DISCOVERY.COMPLETE:
@@ -37,17 +50,6 @@ const graphMiddleware =
                 }
                 break;
             }
-
-            case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
-                // fetch graph data for selected account and range if needed
-                if (action.payload.account) {
-                    api.dispatch(
-                        graphActions.updateGraphData([action.payload.account], {
-                            newAccountsOnly: true,
-                        }),
-                    );
-                }
-                break;
 
             default:
                 break;

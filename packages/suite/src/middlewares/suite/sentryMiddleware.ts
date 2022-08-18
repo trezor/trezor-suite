@@ -16,7 +16,7 @@ import { getSuiteReadyPayload } from '@suite-utils/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from '@suite-utils/sentry';
 
 import { AppState, Action, Dispatch } from '@suite-types';
-import { ACCOUNT, BLOCKCHAIN, DISCOVERY } from '@wallet-actions/constants';
+import { BLOCKCHAIN, DISCOVERY } from '@wallet-actions/constants';
 
 import { Severity } from '@sentry/types';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -52,7 +52,7 @@ const breadcrumbActions = [
     TRANSPORT.START,
     TRANSPORT.ERROR,
     BLOCKCHAIN.SET_BACKEND,
-    ACCOUNT.UPDATE_SELECTED_ACCOUNT,
+    accountsActions.updateSelectedAccount.type,
     ROUTER.LOCATION_CHANGE,
     DESKTOP_UPDATE.ALLOW_PRERELEASE,
     SUITE.TOR_STATUS,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';
+import { AccountWatchOnlyMode } from '@suite-common/wallet-types';
 
 import AuthConfirmFailed from './AuthConfirmFailed';
 import BackendDisconnected from './BackendDisconnected';

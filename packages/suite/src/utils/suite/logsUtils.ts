@@ -1,5 +1,5 @@
 import { Account, Discovery } from '@wallet-types';
-import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import { DEVICE, Device } from '@trezor/connect';
 import { LogEntry } from '@suite-reducers/logsReducer';
@@ -95,20 +95,19 @@ export const redactAction = (action: LogEntry) => {
         accountsActions.updateAccount.match(action)
     ) {
         payload = redactAccount(action.payload);
+    } else if (accountsActions.updateSelectedAccount.match(action)) {
+        payload = {
+            ...action.payload,
+            account: redactAccount(action.payload?.account),
+            network: undefined,
+            discovery: undefined,
+        };
     } else {
         switch (action.type) {
             case SUITE.AUTH_DEVICE:
                 payload = {
                     state: REDACTED_REPLACEMENT,
                     ...redactDevice(action.payload),
-                };
-                break;
-            case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
-                payload = {
-                    ...action.payload,
-                    account: redactAccount(action.payload?.account),
-                    network: undefined,
-                    discovery: undefined,
                 };
                 break;
             case DEVICE.CONNECT:

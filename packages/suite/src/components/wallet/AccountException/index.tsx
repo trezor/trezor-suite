@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H2 } from '@trezor/components';
-import { AccountException } from '@wallet-reducers/selectedAccountReducer';
+import { AccountException } from '@suite-common/wallet-types';
 
 import AuthFailed from './AuthFailed';
 import DiscoveryFailed from './DiscoveryFailed';

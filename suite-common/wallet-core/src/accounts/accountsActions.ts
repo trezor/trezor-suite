@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { AccountInfo } from '@trezor/connect';
-import { Account, DiscoveryItem } from '@suite-common/wallet-types';
+import { Account, AccountState, DiscoveryItem } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
     enhanceTokens,
@@ -14,6 +14,13 @@ import {
 import { actionPrefix } from './constants';
 
 const disposeAccount = createAction(`${actionPrefix}/disposeAccount`);
+
+const updateSelectedAccount = createAction(
+    `${actionPrefix}/updateSelectedAccount`,
+    (payload: AccountState): { payload: AccountState } => ({
+        payload,
+    }),
+);
 
 const removeAccount = createAction(
     `${actionPrefix}/removeAccount`,
@@ -123,6 +130,7 @@ export const accountsActions = {
     removeAccount,
     createAccount,
     updateAccount,
+    updateSelectedAccount,
     changeAccountVisibility,
 } as const;
 

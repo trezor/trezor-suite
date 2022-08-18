@@ -1,7 +1,7 @@
 import { Network } from '@suite-common/wallet-config';
 
 import { Discovery } from './discovery';
-import { Account } from './account';
+import { Account, WalletParams } from './account';
 
 // Context notifications view
 // Account is in "watch only" mode
@@ -27,7 +27,44 @@ export interface AccountLoading {
     params?: undefined;
 }
 
-export interface AccountNone {
+export interface AccountLoaded {
+    status: 'loaded';
+    loader?: undefined;
+    mode: AccountWatchOnlyMode[] | undefined;
+    account: Account;
+    network: Network;
+    discovery: Discovery;
+    params: WalletParams;
+    // blockchain?: any; // TODO:
+    // transactions?: any; // TODO:
+}
+
+// 100% view
+// Account exception views
+export type AccountException =
+    | {
+          status: 'exception';
+          loader: 'auth-failed' | 'discovery-error' | 'discovery-empty'; // No network enabled in settings
+          mode?: AccountWatchOnlyMode[];
+          account?: undefined;
+          network?: Network;
+          discovery?: Discovery;
+          params?: WalletParams;
+      }
+    | {
+          status: 'exception';
+          loader:
+              | 'account-not-loaded' // Account discovery failed
+              | 'account-not-enabled' // Requested account network is not enabled in settings
+              | 'account-not-exists'; // Requested account network is not listed in NETWORKS
+          mode?: AccountWatchOnlyMode[];
+          account?: undefined;
+          network: Network;
+          discovery: Discovery;
+          params: WalletParams;
+      };
+
+export type AccountNone = {
     status: 'none';
     loader?: undefined;
     mode?: undefined;
@@ -35,4 +72,6 @@ export interface AccountNone {
     network?: undefined;
     discovery?: undefined;
     params?: undefined;
-}
+};
+
+export type AccountState = AccountLoaded | AccountLoading | AccountException | AccountNone;
