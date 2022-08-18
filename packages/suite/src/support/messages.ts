@@ -5210,11 +5210,27 @@ export default defineMessages({
     TR_SELECTED: {
         id: 'TR_SELECTED',
         defaultMessage: '{amount} selected',
+        description: 'Number of list items selected',
+    },
+    TR_NO_SPENDABLE_UTXOS: {
+        id: 'TR_NO_SPENDABLE_UTXOS',
+        defaultMessage: 'There are no spendable UTXOs in your account.',
+        description: 'Message showing in Coin control section',
     },
     TR_CHANGE_ADDRESS: {
         id: 'TR_CHANGE_ADDRESS',
         defaultMessage: 'change address',
-        description: 'Address type',
+        description: 'Address type showing in Coin control section',
+    },
+    TR_DUST: {
+        id: 'TR_DUST',
+        defaultMessage: 'Unspendable outpusts (dust)',
+        description: 'Heading in Coin control section',
+    },
+    TR_DUST_DESCRIPTION: {
+        id: 'TR_DUST_DESCRIPTION',
+        defaultMessage: 'These outputs are likely smaller than the fee required to spend them.',
+        description: 'Sub-heading in Coin control section',
     },
     TR_CONNECTED_TO_PROVIDER: {
         defaultMessage: 'Connected to {provider} as {user}',
