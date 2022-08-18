@@ -11,7 +11,7 @@ import { ExtraDependencies } from './extraDependenciesType';
 This is nearly same function as createSlice from redux-toolkit, but instead of generating reducer it will generate
 prepareReducer function that will be used to generate reducer. This functions accepts one argument - extra dependencies.
 */
-export const createSliceWithExtraDependencies = <
+export const createSliceWithExtraDeps = <
     State,
     CaseReducers extends SliceCaseReducers<State>,
     Name extends string = string,
