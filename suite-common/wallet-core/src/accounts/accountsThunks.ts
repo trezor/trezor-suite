@@ -1,7 +1,5 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-
 import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
-import { Account, WalletSettings } from '@suite-common/wallet-types';
+import { Account } from '@suite-common/wallet-types';
 import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import {
     analyzeTransactions,
@@ -17,30 +15,30 @@ import {
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { AccountsSliceState } from './accountsReducer';
 import { accountsActions } from './accountsActions';
+import { selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
 
-export const disableAccountsThunk = createAsyncThunk<
-    void,
-    void,
-    {
-        state: { wallet: { settings: WalletSettings; accounts: AccountsSliceState } };
-    }
->(`${actionPrefix}/disableAccountsThunk`, (_, { dispatch, getState }) => {
-    const { settings, accounts } = getState().wallet;
-    const { enabledNetworks } = settings;
-    // find disabled networks
-    const disabledNetworks = NETWORKS.filter(
-        n => !enabledNetworks.includes(n.symbol) || n.isHidden,
-    ).map(n => n.symbol);
-    // find accounts for disabled networks
-    const accountsToRemove = accounts.filter(a => disabledNetworks.includes(a.symbol));
+export const disableAccountsThunk = createThunk(
+    `${actionPrefix}/disableAccountsThunk`,
+    (_, { dispatch, extra, getState }) => {
+        const {
+            selectors: { selectEnabledNetworks },
+        } = extra;
+        const accounts = selectAccounts(getState());
+        const enabledNetworks = selectEnabledNetworks(getState());
+        // find disabled networks
+        const disabledNetworks = NETWORKS.filter(
+            n => !enabledNetworks.includes(n.symbol) || n.isHidden,
+        ).map(n => n.symbol);
+        // find accounts for disabled networks
+        const accountsToRemove = accounts.filter(a => disabledNetworks.includes(a.symbol));
 
-    if (accountsToRemove.length) {
-        dispatch(accountsActions.removeAccount(accountsToRemove));
-    }
-});
+        if (accountsToRemove.length) {
+            dispatch(accountsActions.removeAccount(accountsToRemove));
+        }
+    },
+);
 
 const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
     const tokens: TokenInfo[] = [];
@@ -75,6 +73,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
     async (account: Account, { dispatch, extra, getState }) => {
         const {
             actions: { addTransaction, removeTransaction },
+            selectors: { selectDevices, selectBitcoinAmountUnit, selectAccountTransactions },
             thunks: { notificationsAddEvent },
         } = extra;
 
@@ -89,10 +88,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
         if (!basic.success) return;
 
         const accountOutdated = isAccountOutdated(account, basic.payload);
-        const accountTxs = getAccountTransactions(
-            account.key,
-            getState().wallet.transactions.transactions,
-        );
+        const accountTransactions = selectAccountTransactions(getState());
+        const accountTxs = getAccountTransactions(account.key, accountTransactions);
         // stop here if account is not outdated and there are no pending transactions
         if (!accountOutdated && !accountTxs.find(isPending)) return;
 
@@ -129,13 +126,13 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 dispatch(addTransaction(analyze.add.reverse(), account));
             }
 
-            const accountDevice = findAccountDevice(account, getState().devices);
+            const devices = selectDevices(getState());
+            const accountDevice = findAccountDevice(account, devices);
             analyze.newTransactions.forEach(tx => {
                 const token = tx.tokens && tx.tokens.length ? tx.tokens[0] : undefined;
 
-                const areSatoshisUsed = getAreSatoshisUsed(
-                    getState().wallet.settings.bitcoinAmountUnit,
-                );
+                const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
+                const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit);
 
                 const formattedAmount = token
                     ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`

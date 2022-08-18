@@ -47,6 +47,10 @@ export const extraDependenciesMock: ExtraDependencies = {
             mockSelector('selectFeeInfo', testMocks.fee, { networkSymbol }),
         selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
+        selectEnabledNetworks: mockSelector('selectEnabledNetworks', []),
+        selectAccountTransactions: mockSelector('selectAccountTransactions', {
+            mockedTransaction: [],
+        }),
     },
     actions: {
         addTransaction: mockAction('addTransaction'),

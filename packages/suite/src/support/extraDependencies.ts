@@ -15,6 +15,8 @@ export const extraDependencies: ExtraDependencies = {
             state.wallet.fees[networkSymbol],
         selectDevices: (state: AppState) => state.devices,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
+        selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
+        selectAccountTransactions: (state: AppState) => state.wallet.transactions.transactions,
     },
     actions: {
         addTransaction: transactionActions.add,

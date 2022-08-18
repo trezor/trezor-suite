@@ -123,15 +123,18 @@ const initialState = {
 };
 const setGreetingsAction = createAction<string>('someAction');
 
-export const prepareGreetingsReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
-    builder
-        .addCase(extra.actions.notificationsAddEvent, (state, action) => {
-            state.notificationGreetings = action.payload;
-        })
-        .addCase(setGreetingsAction, (state, action) => {
-            state.greetings = action.payload;
-        });
-});
+export const prepareGreetingsReducer = createReducerWithExtraDeps(
+    initialState,
+    (builder, extra) => {
+        builder
+            .addCase(extra.actions.notificationsAddEvent, (state, action) => {
+                state.notificationGreetings = action.payload;
+            })
+            .addCase(setGreetingsAction, (state, action) => {
+                state.greetings = action.payload;
+            });
+    },
+);
 ```
 
 Now if you want to use this reducer in app you need do it like this:
