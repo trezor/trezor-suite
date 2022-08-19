@@ -103,7 +103,7 @@ const ButtonLikeLabel = (props: ExtendedProps) => {
     if (props.editActive) {
         return (
             <EditableButton
-                // @ts-ignore todo: hm this needs some clever generic
+                // @ts-expect-error todo: hm this needs some clever generic
                 variant="tertiary"
                 icon="TAG"
                 data-test={props['data-test']}

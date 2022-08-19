@@ -10,7 +10,6 @@ export const WebUsbButton = (props: ButtonProps) => (
         onClick={async e => {
             e.stopPropagation();
             try {
-                // @ts-ignore navigator.usb not found
                 await navigator.usb.requestDevice({ filters: config.webusb });
             } catch (error) {
                 // empty

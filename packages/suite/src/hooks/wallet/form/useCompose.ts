@@ -188,7 +188,7 @@ export const useCompose = ({
                     composed = composedLevels[nearest];
                     setValue('selectedFee', nearest);
                     if (nearest === 'custom') {
-                        // @ts-ignore: type = error already filtered above
+                        // @ts-expect-error: type = error already filtered above
                         const { feePerByte, feeLimit } = composed;
                         setValue('feePerUnit', feePerByte);
                         setValue('feeLimit', feeLimit);

@@ -6,7 +6,7 @@ class BaseMockWorker {
     onmessage(_data: any) {}
     postMessage(_data: any) {}
     terminate() {
-        // @ts-ignore
+        // @ts-expect-error
         global.Worker = undefined;
     }
     onmessageerror() {}

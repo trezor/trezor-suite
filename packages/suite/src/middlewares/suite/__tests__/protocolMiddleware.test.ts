@@ -33,7 +33,7 @@ const initStore = (state: State) => {
         const { protocol, notifications } = store.getState();
 
         store.getState().protocol = protocolReducer(protocol, action);
-        // @ts-ignore
+        // @ts-expect-error
         store.getState().notifications = notificationReducer(notifications, action);
 
         store.getActions().push(action);
@@ -64,7 +64,7 @@ describe('Protocol middleware', () => {
             },
         ];
 
-        // @ts-ignore
+        // @ts-expect-error
         const store = initStore(getInitialState(notifications));
         await store.dispatch({
             type: PROTOCOL.SAVE_COIN_PROTOCOL,

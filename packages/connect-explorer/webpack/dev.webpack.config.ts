@@ -3,9 +3,7 @@ import path from 'path';
 import { merge } from 'webpack-merge';
 import { WebpackPluginServe } from 'webpack-plugin-serve';
 
-// @ts-ignore todo: https://github.com/trezor/trezor-suite/issues/5305
 import popup from '../../connect-popup/webpack/prod.webpack.config';
-// @ts-ignore todo: https://github.com/trezor/trezor-suite/issues/5305
 import iframe from '../../connect-iframe/webpack/prod.webpack.config';
 import prod from './prod.webpack.config';
 

@@ -40,7 +40,6 @@ describe('pollingMiddleware', () => {
     jest.useFakeTimers();
 
     it('start', () => {
-        // @ts-ignore
         const store = initStore(
             getInitialState({
                 pollings: initialState,
@@ -67,7 +66,6 @@ describe('pollingMiddleware', () => {
 
     it('request', () => {
         jest.spyOn(global, 'setTimeout');
-        // @ts-ignore
         const store = initStore(
             getInitialState({
                 pollings: {
@@ -94,7 +92,6 @@ describe('pollingMiddleware', () => {
     });
 
     it('stop', () => {
-        // @ts-ignore
         const store = initStore(
             getInitialState({
                 pollings: initialState,

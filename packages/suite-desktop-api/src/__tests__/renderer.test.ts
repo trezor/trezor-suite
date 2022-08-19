@@ -17,7 +17,7 @@ describe('Renderer', () => {
     it('api is defined', () => {
         const api = factory(ipcRenderer);
         process.env.SUITE_TYPE = 'desktop';
-        // @ts-ignore
+        // @ts-expect-error
         window.desktopApi = api;
         // getter returns API
         expect(getDesktopApi().available).toBe(true);

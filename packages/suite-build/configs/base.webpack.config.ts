@@ -182,7 +182,6 @@ const config: webpack.Configuration = {
                   }),
               ]
             : []),
-        // @ts-ignore - @sentry/webpack-plugin types depends on @types/webpack@4
         ...(!isDev && sentryAuthToken
             ? [
                   new SentryWebpackPlugin({

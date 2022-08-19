@@ -60,11 +60,11 @@ describe('coinmarket/buy utils', () => {
             accountType: 'normal',
             symbol: 'btc',
         };
-        // @ts-ignore
+        // @ts-expect-error
         expect(await createQuoteLink(QUOTE_REQUEST_FIAT, accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/BTC`,
         );
-        // @ts-ignore
+        // @ts-expect-error
         expect(await createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/BTC`,
         );
@@ -76,7 +76,7 @@ describe('coinmarket/buy utils', () => {
             accountType: 'normal',
             symbol: 'btc',
         };
-        // @ts-ignore
+        // @ts-expect-error
         expect(await createTxLink(MIN_MAX_QUOTES_OK[0], accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#detail/btc/normal/1/e709df77-ee9e-4d12-98c2-84004a19c546`,
         );

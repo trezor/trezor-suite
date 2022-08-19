@@ -25,12 +25,10 @@ const source: { [key in keyof typeof messages]: string } = JSON.parse(
 );
 
 Object.entries(source).forEach(([key, value]) => {
-    // @ts-ignore
     if (!messages[key]) {
         return;
     }
 
-    // @ts-ignore remove line break from the end of string. probably translators accident;
     messages[key].defaultMessage = value.replace(/\n$/, '');
 });
 
@@ -40,7 +38,7 @@ fs.writeFileSync(
 import { defineMessages } from 'react-intl';
 
 export default defineMessages(${JSON.stringify(messages, null, 2).replace(/"([^"]+)":/g, '$1:')})
-    
+
 `,
 );
 

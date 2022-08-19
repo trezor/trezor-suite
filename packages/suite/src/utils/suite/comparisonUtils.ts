@@ -35,9 +35,9 @@ export const isChanged = (prev?: any, current?: any, filter?: { [k: string]: str
                 const currentFiltered = {};
                 for (let i2 = 0; i2 < filter[key].length; i2++) {
                     const field = filter[key][i2];
-                    // @ts-ignore
+                    // @ts-expect-error
                     prevFiltered[field] = prev[key][field];
-                    // @ts-ignore
+                    // @ts-expect-error
                     currentFiltered[field] = current[key][field];
                 }
                 if (isChanged(prevFiltered, currentFiltered)) return true;

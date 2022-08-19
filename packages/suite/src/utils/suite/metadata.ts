@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-// @ts-ignore
 import * as base58check from 'bs58check';
 // note we only need base58 conversion fn from base58check, other functions from there might
 // be supplemented from crypto module
@@ -71,7 +70,6 @@ export const encrypt = async (input: Record<string, any>, aesKey: string | Buffe
     const iv = await getRandomIv();
     const stringified = JSON.stringify(input);
     const buffer = Buffer.from(stringified, 'utf8');
-    // @ts-ignore
     const cipher = crypto.createCipheriv(CIPHER_TYPE, aesKey, iv);
     const startCText = cipher.update(buffer);
     const endCText = cipher.final();

@@ -9,7 +9,7 @@ const init: Module = () => {
 
     process.on('unhandledRejection', e => {
         if (e) {
-            // @ts-ignore type is unknown
+            // @ts-expect-error type is unknown
             logger.warn('rejection', `Unhandled Rejection: ${e?.toString()}`);
         }
     });

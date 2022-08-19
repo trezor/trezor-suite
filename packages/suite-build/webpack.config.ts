@@ -26,7 +26,7 @@ switch (project) {
 }
 
 // Prevent "webpack: TypeError: Do not know how to serialize a BigInt"
-// @ts-ignore
+// @ts-expect-error
 BigInt.prototype.toJSON = function toJSON() {
     return this.toString();
 };

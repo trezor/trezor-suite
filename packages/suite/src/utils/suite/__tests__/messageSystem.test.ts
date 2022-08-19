@@ -29,7 +29,7 @@ describe('Message system utils', () => {
                 expect(
                     messageSystem.validateSettingsCompatibility(
                         f.settingsCondition,
-                        // @ts-ignore
+                        // @ts-expect-error
                         f.currentSettings,
                     ),
                 ).toEqual(f.result);
@@ -41,7 +41,6 @@ describe('Message system utils', () => {
         fixtures.validateVersionCompatibility.forEach(f => {
             it(f.description, () => {
                 expect(
-                    // @ts-ignore
                     messageSystem.validateVersionCompatibility(f.condition, f.type, f.version),
                 ).toEqual(f.result);
             });
@@ -61,10 +60,9 @@ describe('Message system utils', () => {
                 process.env.COMMITHASH = f.commitHash;
 
                 expect(
-                    // @ts-ignore
                     messageSystem.validateEnvironmentCompatibility(
                         f.condition,
-                        // @ts-ignore
+                        // @ts-expect-error
                         f.type,
                         f.version,
                         f.commitHash,
@@ -88,7 +86,7 @@ describe('Message system utils', () => {
         fixtures.validateDeviceCompatibility.forEach(f => {
             it(f.description, () => {
                 expect(
-                    // @ts-ignore
+                    // @ts-expect-error
                     messageSystem.validateDeviceCompatibility(f.deviceConditions, f.device),
                 ).toEqual(f.result);
             });
@@ -111,14 +109,14 @@ describe('Message system utils', () => {
         fixtures.getValidMessages.forEach(f => {
             it(f.description, () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
-                // @ts-ignore
+                // @ts-expect-error
                 jest.spyOn(env, 'getOsName').mockImplementation(() => f.osName);
                 userAgentGetter.mockReturnValue(f.userAgent);
-                // @ts-ignore
+                // @ts-expect-error
                 jest.spyOn(env, 'getEnvironment').mockImplementation(() => f.environment);
                 process.env.VERSION = f.suiteVersion;
 
-                // @ts-ignore
+                // @ts-expect-error
                 expect(messageSystem.getValidMessages(f.config, f.options)).toEqual(f.result);
             });
         });

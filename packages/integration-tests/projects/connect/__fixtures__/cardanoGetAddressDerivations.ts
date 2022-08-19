@@ -11,12 +11,12 @@ export default {
         description: name,
         params: {
             addressParameters: {
-                // @ts-ignore loading untyped json
+                // @ts-expect-error loading untyped json
                 addressType: CardanoAddressType[parameters.address_type.toUpperCase()],
                 path: parameters.path,
                 stakingPath: parameters.staking_path,
             },
-            // @ts-ignore loading untyped json
+            // @ts-expect-error loading untyped json
             derivationType: CardanoDerivationType[parameters.derivation_type],
             networkId: parameters.network_id,
             protocolMagic: parameters.protocol_magic,

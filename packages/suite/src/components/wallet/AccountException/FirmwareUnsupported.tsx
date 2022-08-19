@@ -25,7 +25,7 @@ const getInfoUrl = (symbol?: Props['symbol']) => {
     if (!symbol) {
         result = urls.default;
     } else if (symbol in urls) {
-        // @ts-ignore
+        // @ts-expect-error
         result = urls[symbol];
     } else {
         result = urls.default;

@@ -76,7 +76,6 @@ export const actionSequence = async <A extends UserAction[]>(
             } else {
                 // eslint-disable-next-line no-await-in-loop
                 await act(() =>
-                    // @ts-ignore: act => Promise
                     userEvent.type(
                         element,
                         value,

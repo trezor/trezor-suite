@@ -58,7 +58,7 @@ export const loadDocs = () => async (dispatch: Dispatch, getState: GetState) => 
     const response = await fetch(url, { credentials: 'same-origin' });
     if (response.ok) {
         const content = await response.text();
-        // @ts-ignore
+        // @ts-expect-error
         const markdown = new Markdown({
             replaceLink: (link: any, _env: any) => `${GITHUB}${link}`,
         });

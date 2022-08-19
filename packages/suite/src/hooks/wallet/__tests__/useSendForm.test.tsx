@@ -171,7 +171,7 @@ const actionCallback = (
         // expect(errors).toMatchObject(result.errors);
         Object.keys(result.errors).forEach(key => {
             const expectedError = result.errors[key];
-            // @ts-ignore key: string
+            // @ts-expect-error key: string
             const error = errors[key];
             if (expectedError) {
                 expect(error).toMatchObject(expectedError);

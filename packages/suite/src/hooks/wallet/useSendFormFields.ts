@@ -92,7 +92,7 @@ export const useSendFormFields = ({
             // they will set defaultValue from draft on every mount
             // to prevent that behavior reset defaultValue in `react-hook-form.control.defaultValuesRef`
             const { current } = control.defaultValuesRef;
-            // @ts-ignore: react-hook-form type returns "unknown" (bug?)
+            // @ts-expect-error: react-hook-form type returns "unknown" (bug?)
             if (current && current[fieldName]) current[fieldName] = '';
             // reset current value
             setValue(fieldName, '');

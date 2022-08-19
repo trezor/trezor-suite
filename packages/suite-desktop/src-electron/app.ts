@@ -5,7 +5,8 @@ import { app, BrowserWindow, session } from 'electron';
 import { init as initSentry, ElectronOptions, IPCMode } from '@sentry/electron';
 import { ipcMain } from './typed-electron';
 
-// @ts-ignore TODO fix
+// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+// @ts-ignore
 import { SENTRY_CONFIG } from '@suite-config';
 import { isDev } from '@suite-utils/build';
 import { APP_NAME } from './libs/constants';
@@ -21,7 +22,7 @@ import { hangDetect } from './hang-detect';
 import { createLogger } from './logger';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 
-// @ts-ignore using internal electron API to set suite version in dev mode correctly
+// @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDev) app.setVersion(process.env.VERSION);
 
 // Logger

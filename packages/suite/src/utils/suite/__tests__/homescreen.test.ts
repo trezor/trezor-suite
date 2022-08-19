@@ -144,7 +144,7 @@ describe('homescreen', () => {
 
         describe('returns false for null', () => {
             // defensively test a corner case violating type-checking
-            // @ts-ignore
+            // @ts-expect-error
             expect(homescreen.validateImageFormat(null)).toBe(
                 homescreen.ImageValidationError.InvalidFormat,
             );

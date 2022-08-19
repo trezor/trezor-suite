@@ -4,7 +4,7 @@ import { THEME } from '@trezor/components/src/config/colors';
 describe('theme', () => {
     describe('getThemeColors', () => {
         it('should return light theme if theme variant does not exists', () => {
-            // @ts-ignore
+            // @ts-expect-error
             expect(getThemeColors({ variant: 'purple' })).toBe(THEME.light);
         });
 

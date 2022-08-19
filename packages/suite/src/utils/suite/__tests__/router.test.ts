@@ -53,7 +53,7 @@ describe('router', () => {
 
     describe('getRoute', () => {
         it('should return the route for given name', () => {
-            // @ts-ignore: invalid params
+            // @ts-expect-error: invalid params
             expect(getRoute('unknown-route')).toEqual('/');
             expect(getRoute('wallet-index')).toEqual('/accounts');
             // tests below with intentionally mixed # params
@@ -79,7 +79,7 @@ describe('router', () => {
                 }),
             ).toEqual('/accounts#/btc/0');
             expect(
-                // @ts-ignore: invalid params
+                // @ts-expect-error: invalid params
                 getRoute('wallet-index', {
                     accountIndex: 1,
                     symbol: 'btc',
@@ -87,7 +87,7 @@ describe('router', () => {
             ).toEqual('/accounts#/btc/1');
             // route shouldn't have params
             expect(
-                // @ts-ignore: invalid params
+                // @ts-expect-error: invalid params
                 getRoute('onboarding-index', {
                     symbol: 'btc',
                 }),
@@ -182,7 +182,7 @@ describe('router', () => {
             expect(getTopLevelRoute('/accounts')).toEqual(undefined);
             expect(getTopLevelRoute('/accounts/receive')).toEqual('/accounts');
             expect(getTopLevelRoute('dummy-data-without-slash')).toEqual(undefined);
-            // @ts-ignore: intentional invalid param type
+            // @ts-expect-error: intentional invalid param type
             expect(getTopLevelRoute(1)).toEqual(undefined);
         });
 

@@ -28,7 +28,7 @@ const Protocol = () => {
             navigator.registerProtocolHandler(
                 'bitcoin',
                 `${window.location.origin}${process.env.ASSET_PREFIX ?? ''}/?uri=%s`,
-                // @ts-ignore deprecated but required for Firefox <= 78, Chrome <= 87
+                // @ts-expect-error deprecated but required for Firefox <= 78, Chrome <= 87
                 'Trezor Suite - Bitcoin',
             );
         }

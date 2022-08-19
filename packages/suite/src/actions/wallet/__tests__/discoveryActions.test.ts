@@ -62,7 +62,7 @@ jest.mock('@trezor/connect', () => {
             // error code is used in case where one of requested coins is not supported
             const { code, error } = connect.error;
             if (code) {
-                // @ts-ignore The operand of a 'delete' operator must be optional.
+                // @ts-expect-error The operand of a 'delete' operator must be optional.
                 delete connect.error; // reset this value, it shouldn't be used in next iteration
                 return scopedParamsError(error, code);
             }
@@ -347,7 +347,7 @@ describe('Discovery Actions', () => {
                 },
             },
         };
-        // @ts-ignore: invalid state (suite empty)
+        // @ts-expect-error: invalid state (suite empty)
         const store = initStore(state);
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
@@ -357,7 +357,6 @@ describe('Discovery Actions', () => {
     it('Start discovery with device without auth confirmation', async () => {
         const state = getInitialState();
         state.suite.device = getSuiteDevice({ authConfirm: true });
-        // @ts-ignore: invalid state (suite empty)
         const store = initStore(state);
         await store.dispatch(discoveryActions.start());
         const action = store.getActions().pop();
@@ -415,7 +414,7 @@ describe('Discovery Actions', () => {
                 discovery: [],
             },
         };
-        // @ts-ignore: invalid state (suite empty)
+        // @ts-expect-error: invalid state (suite empty)
         const store = initStore(state);
         await store.dispatch(discoveryActions.stop());
         expect(store.getActions()).toEqual([]);
@@ -646,7 +645,7 @@ describe('Discovery Actions', () => {
         store.dispatch(discoveryActions.remove('device-state'));
         expect(store.dispatch(fn())).toEqual(undefined);
 
-        // @ts-ignore remove device from state
+        // @ts-expect-error remove device from state
         store.getState().suite.device = undefined;
         expect(store.dispatch(fn())).toEqual(undefined);
     });

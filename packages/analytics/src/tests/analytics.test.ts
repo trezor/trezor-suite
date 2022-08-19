@@ -8,7 +8,7 @@ describe('analytics', () => {
             json: () => Promise.resolve({}),
         });
         global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
-        // @ts-ignore
+        // @ts-expect-error
         jest.spyOn(global, 'fetch').mockImplementation(() => mockFetchPromise);
 
         const timestamp = new Date().getTime();

@@ -151,7 +151,7 @@ const setAffectedValues = (state: MethodState, field: any) => {
     } else if (field.affect && typeof field.affect === 'string' && field.value) {
         const affectedField = state.fields.find(f => f.name === field.affect);
         if (affectedField) {
-            // @ts-ignore todo: what is this?
+            // @ts-expect-error todo: what is this?
             affectedField.value = field.value;
         }
     }

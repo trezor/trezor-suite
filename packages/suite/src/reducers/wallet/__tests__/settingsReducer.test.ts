@@ -6,7 +6,7 @@ describe('settings reducer', () => {
     it('test initial state', () => {
         expect(
             reducer(undefined, {
-                // @ts-ignore
+                // @ts-expect-error
                 type: 'none',
             }),
         ).toEqual(initialState);

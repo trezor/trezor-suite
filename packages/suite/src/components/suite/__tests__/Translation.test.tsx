@@ -31,7 +31,7 @@ describe('Translation component', () => {
 
     test('with message that holds string in value (passed via props)', () => {
         const component = createComponentWithIntl(
-            // @ts-ignore
+            // @ts-expect-error
             <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,
         );
         const tree = component.toJSON();
@@ -43,7 +43,7 @@ describe('Translation component', () => {
             <Translation
                 {...messages.TR_HELLO_NAME}
                 values={{
-                    // @ts-ignore
+                    // @ts-expect-error
                     TR_NAME: { ...messages.TR_NAME, values: { name: 'John' } },
                     TR_AGE: 100,
                 }}
@@ -55,11 +55,11 @@ describe('Translation component', () => {
 
     test('with message that holds another in values (passed via props)', () => {
         const component = createComponentWithIntl(
-            // @ts-ignore
+            // @ts-expect-error
             <Translation
                 {...messages.TR_HELLO_NAME}
                 values={{
-                    // @ts-ignore
+                    // @ts-expect-error
                     TR_NAME: <Translation {...messages.TR_NAME} values={{ name: 'John' }} />,
                     TR_AGE: 100,
                 }}

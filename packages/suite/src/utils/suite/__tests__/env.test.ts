@@ -21,7 +21,7 @@ describe.skip('isMacOs', () => {
 
     fixtures.isMacOs.forEach(f => {
         it(f.description, () => {
-            // @ts-ignore
+            // @ts-expect-error
             jest.spyOn(env, 'getProcessPlatform').mockImplementation(() => f.processPlatform);
 
             navigatorPlatformGetter.mockReturnValue(f.navigatorPlatform);
@@ -44,7 +44,7 @@ describe.skip('isWindows', () => {
 
     fixtures.isWindows.forEach(f => {
         it(f.description, () => {
-            // @ts-ignore
+            // @ts-expect-error
             jest.spyOn(env, 'getProcessPlatform').mockImplementation(() => f.processPlatform);
 
             navigatorPlatformGetter.mockReturnValue(f.navigatorPlatform);
@@ -69,7 +69,7 @@ describe.skip('isLinux', () => {
 
     fixtures.isLinux.forEach(f => {
         it(f.description, () => {
-            // @ts-ignore
+            // @ts-expect-error
             jest.spyOn(env, 'getProcessPlatform').mockImplementation(() => f.processPlatform);
 
             userAgentGetter.mockReturnValue(f.userAgent);
@@ -155,7 +155,7 @@ describe.skip('getOsName', () => {
 
     fixtures.getOsName.forEach(f => {
         it(f.description, () => {
-            // @ts-ignore
+            // @ts-expect-error
             jest.spyOn(env, 'getProcessPlatform').mockImplementation(() => f.processPlatform);
 
             userAgentGetter.mockReturnValue(f.userAgent);

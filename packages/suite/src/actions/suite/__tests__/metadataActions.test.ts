@@ -41,7 +41,7 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
-// @ts-ignore declare fetch (used in Dropbox constructor)
+// @ts-expect-error declare fetch (used in Dropbox constructor)
 global.fetch = () => {};
 
 type MetadataState = ReturnType<typeof metadataReducer>;
@@ -108,7 +108,7 @@ const initStore = (state: State) => {
         }
         const { metadata, suite, devices, wallet } = store.getState();
         store.getState().metadata = metadataReducer(metadata, action);
-        // @ts-ignore
+        // @ts-expect-error
         store.getState().suite = suiteReducer(suite, action);
         store.getState().wallet.accounts = accountsReducer(wallet.accounts, action);
         store.getState().devices = deviceReducer(devices, action);
@@ -122,7 +122,7 @@ describe('Metadata Actions', () => {
         it(`setDeviceMetadataKey - ${f.description}`, async () => {
             // set fixtures in @trezor/connect
             require('@trezor/connect').setTestFixtures(f.connect);
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
             await store.dispatch(metadataActions.setDeviceMetadataKey());
             if (!f.result) {
@@ -135,9 +135,9 @@ describe('Metadata Actions', () => {
 
     fixtures.setAccountMetadataKey.forEach(f => {
         it(`setAccountMetadataKey - ${f.description}`, async () => {
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-ignore Account is not complete
+            // @ts-expect-error Account is not complete
             const account = await store.dispatch(metadataActions.setAccountMetadataKey(f.account));
             expect(account).toMatchObject(f.result);
         });
@@ -145,9 +145,9 @@ describe('Metadata Actions', () => {
 
     fixtures.addDeviceMetadata.forEach(f => {
         it(`addDeviceMetadata - ${f.description}`, async () => {
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-ignore, params
+            // @ts-expect-error, params
             await store.dispatch(metadataActions.addDeviceMetadata(f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -157,9 +157,9 @@ describe('Metadata Actions', () => {
 
     fixtures.addAccountMetadata.forEach(f => {
         it(`addAccountMetadata - ${f.description}`, async () => {
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-ignore, params
+            // @ts-expect-error, params
             await store.dispatch(metadataActions.addAccountMetadata(f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -173,9 +173,9 @@ describe('Metadata Actions', () => {
             DropboxProvider.prototype.connect = () =>
                 Promise.resolve({ success: true, payload: undefined });
 
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-ignore, params
+            // @ts-expect-error, params
             const result = await store.dispatch(metadataActions.connectProvider(f.params));
 
             if (!f.result) {
@@ -219,10 +219,10 @@ describe('Metadata Actions', () => {
                 }
                 return { success: true, payload: undefined };
             };
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
 
-            // @ts-ignore, params
+            // @ts-expect-error, params
             const result = await store.dispatch(metadataActions.addMetadata(f.params));
 
             if (!f.result) {
@@ -235,9 +235,9 @@ describe('Metadata Actions', () => {
 
     fixtures.enableMetadata.forEach(f => {
         it(`enableMetadata - ${f.description}`, async () => {
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-ignore, params
+            // @ts-expect-error, params
             const result = await store.dispatch(metadataActions.enableMetadata());
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -249,9 +249,9 @@ describe('Metadata Actions', () => {
 
     fixtures.disableMetadata.forEach(f => {
         it(`disableMetadata - ${f.description}`, async () => {
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-ignore, params
+            // @ts-expect-error, params
             const result = await store.dispatch(metadataActions.disableMetadata());
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
@@ -264,9 +264,9 @@ describe('Metadata Actions', () => {
     fixtures.init.forEach(f => {
         it(`initMetadata - ${f.description}`, async () => {
             jest.mock('@suite-services/metadata/DropboxProvider');
-            // @ts-ignore
+            // @ts-expect-error
             const store = initStore(getInitialState(f.initialState));
-            // @ts-ignore, params
+            // @ts-expect-error, params
             const result = await store.dispatch(metadataActions.init(f.params));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);

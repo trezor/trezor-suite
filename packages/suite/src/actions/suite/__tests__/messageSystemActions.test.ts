@@ -42,7 +42,7 @@ describe('Message system actions', () => {
                 text: () => Promise.resolve(fixtures.validJws),
             });
             global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
-            // @ts-ignore
+            // @ts-expect-error
             jest.spyOn(global, 'fetch').mockImplementation(() => mockFetchPromise);
         });
 

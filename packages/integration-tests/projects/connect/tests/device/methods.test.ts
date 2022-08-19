@@ -80,7 +80,7 @@ describe(`TrezorConnect methods`, () => {
                         await setup(controller, t.setup || testCase.setup);
 
                         controller.options.name = t.description;
-                        // @ts-ignore, string + params union
+                        // @ts-expect-error, string + params union
                         const result = await TrezorConnect[testCase.method](t.params);
                         let expected = t.result
                             ? { success: true, payload: t.result }

@@ -10,7 +10,7 @@ export * from '@trezor/connect/lib/exports';
 // override each method of @trezor/connect
 // use ipcRenderer message instead of iframe.postMessage (see ./src-electron/modules/trezor-connect-preloader)
 Object.keys(TrezorConnect).forEach(method => {
-    // @ts-ignore
+    // @ts-expect-error
     TrezorConnect[method] = (...params: any[]) =>
         window.TrezorConnectIpcChannel
             ? window.TrezorConnectIpcChannel(method, ...params)

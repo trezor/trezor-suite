@@ -4,7 +4,6 @@
  * After the div is added, MutationObserver detects the change and adds React app to the DOM.
  */
 
-// @ts-ignore - Export not needed
 const observer = new MutationObserver(() => {
     const appElement = document.getElementById('app');
     if (appElement) {
@@ -19,3 +18,5 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, {
     childList: true,
 });
+
+export {};

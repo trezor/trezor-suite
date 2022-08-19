@@ -3,7 +3,7 @@ import type { Transport, AcquireInput, TrezorDeviceInfoWithSession } from './typ
 export default class FallbackTransport {
     _availableTransports: Array<Transport> = [];
     activeName = '';
-    // @ts-ignore
+    // @ts-expect-error
     activeTransport: Transport;
     configured = false;
     debug = false;

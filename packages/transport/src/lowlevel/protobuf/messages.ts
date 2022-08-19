@@ -3,7 +3,6 @@
 import * as protobuf from 'protobufjs/light';
 
 export function parseConfigure(data: protobuf.INamespace) {
-    // @ts-ignore [compatiblity]: connect is sending stringified json
     if (typeof data === 'string') {
         return protobuf.Root.fromJSON(JSON.parse(data));
     }

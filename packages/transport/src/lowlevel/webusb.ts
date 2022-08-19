@@ -148,7 +148,6 @@ export default class WebUsbPlugin {
             }
             return res.data.buffer.slice(1);
         } catch (e) {
-            // @ts-ignore
             if (e.message === 'Device unavailable.') {
                 throw new Error('Action was interrupted.');
             } else {

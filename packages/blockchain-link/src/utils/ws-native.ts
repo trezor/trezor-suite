@@ -16,7 +16,7 @@ class WSWrapper extends EventEmitter {
         this.setMaxListeners(Infinity);
 
         // React Native WebSocket is able to accept headers compared to the native browser `WebSocket`.
-        // @ts-ignore
+        // @ts-expect-error
         this._ws = new WebSocket(url, '', {
             headers: {
                 'User-Agent': 'Trezor Suite Native',

@@ -6,7 +6,7 @@ const DEFAULT_SEQUENCE = 0xffffffff;
 const EMPTY_SCRIPT = Buffer.allocUnsafe(0);
 
 // keyof typeof NETWORKS;
-// @ts-ignore expression of type string can't be used to index type
+// @ts-expect-error expression of type string can't be used to index type
 export const getNetwork = (name?: string) => (name ? NETWORKS[name] : undefined);
 // export const getNetwork = (name?: string) => {
 //     Object.keys(NETWORKS).forEach(network => {

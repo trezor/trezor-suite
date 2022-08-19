@@ -95,9 +95,9 @@ describe('buttonRequest middleware', () => {
         require('@trezor/connect');
         require('@wallet-actions/blockchainActions');
         const store = initStore(getInitialState());
-        // @ts-ignore
+        // @ts-expect-error
         await store.dispatch(connectInitThunk());
-        // @ts-ignore
+        // @ts-expect-error
         const call = store.dispatch(deviceSettingsActions.changePin({ remove: false }));
         // fake few ui events, just like when user is changing PIN
         const { emit } = require('@trezor/connect');

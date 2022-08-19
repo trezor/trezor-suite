@@ -30,7 +30,7 @@ describe('parse', () => {
     describe('isStrictFeatures()', () => {
         it('fail on not matching pattern', () => {
             expect(
-                // @ts-ignore
+                // @ts-expect-error
                 isStrictFeatures({ foo: 'bar' }),
             ).toEqual(false);
         });
@@ -38,10 +38,7 @@ describe('parse', () => {
 
     describe('isValidReleases()', () => {
         it('fail on not matching pattern', () => {
-            expect(
-                // @ts-ignore
-                isValidReleases({ foo: 'bar' }),
-            ).toEqual(false);
+            expect(isValidReleases({ foo: 'bar' })).toEqual(false);
         });
     });
 });

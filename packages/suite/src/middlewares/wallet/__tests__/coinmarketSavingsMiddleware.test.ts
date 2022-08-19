@@ -93,7 +93,6 @@ describe('coinmarketSavingsMiddleware', () => {
     });
 
     it('loadSavingsTrade', () => {
-        // @ts-ignore
         const store = initStore(
             getInitialState({
                 coinmarket: initialState,

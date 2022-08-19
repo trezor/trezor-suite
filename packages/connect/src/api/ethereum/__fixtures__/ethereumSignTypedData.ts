@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import BigNumber from 'bignumber.js';
 import { TrezorError } from '../../../constants/errors';
 import { PROTO } from '../../../constants';

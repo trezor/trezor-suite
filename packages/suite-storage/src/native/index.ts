@@ -52,7 +52,7 @@ class CommonDB<TDBStructure> {
         this.blocking = false;
         this.blocked = false;
 
-        // @ts-ignore
+        // @ts-expect-error
         this.db = null;
         // create global instance of broadcast channel
         this.broadcastChannel = null;
@@ -100,7 +100,7 @@ class CommonDB<TDBStructure> {
     onChange = (_handler: (event: StorageMessageEvent<TDBStructure>) => any) => {};
 
     getDB = (): Promise<IDBPDatabase<TDBStructure>> =>
-        // @ts-ignore
+        // @ts-expect-error
         Promise.resolve();
 
     addItem = <
@@ -113,7 +113,7 @@ class CommonDB<TDBStructure> {
         _key?: TKey,
         _upsert?: boolean,
     ): Promise<StoreKey<TDBStructure, TStoreName>> =>
-        // @ts-ignore
+        // @ts-expect-error
         Promise.resolve();
 
     addItems = <
@@ -132,7 +132,7 @@ class CommonDB<TDBStructure> {
         _store: TStoreName,
         _primaryKey: TKey,
     ): Promise<StoreValue<TDBStructure, TStoreName> | undefined> =>
-        // @ts-ignore
+        // @ts-expect-error
         Promise.resolve();
 
     getItemByIndex = <

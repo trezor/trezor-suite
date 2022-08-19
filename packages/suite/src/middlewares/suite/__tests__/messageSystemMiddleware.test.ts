@@ -67,7 +67,7 @@ describe('Message system middleware', () => {
             category: ['modal'],
         };
 
-        // @ts-ignore: all properties except category and id are not required for testing
+        // @ts-expect-error: all properties except category and id are not required for testing
         jest.spyOn(messageSystem, 'getValidMessages').mockImplementation(() => [
             message1,
             message2,

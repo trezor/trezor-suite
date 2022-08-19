@@ -10,7 +10,7 @@ import fixturesCrossCheck from './__fixtures__/compose.crosscheck';
 
 // keyof typeof NETWORKS;
 const getNetwork = (name?: string) =>
-    // @ts-ignore expression of type string can't be used to index type
+    // @ts-expect-error expression of type string can't be used to index type
     typeof name === 'string' && NETWORKS[name] ? NETWORKS[name] : NETWORKS.bitcoin;
 
 describe('composeTx', () => {

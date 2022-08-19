@@ -118,9 +118,9 @@ const onRequest = async <T extends Message>(
                 default:
                     throw new CustomError(`Subscription ${request.payload.type} not implemented`);
             }
-        // @ts-ignore this message is used in tests
+        // @ts-expect-error this message is used in tests
         case 'raw':
-            // @ts-ignore
+            // @ts-expect-error
             // eslint-disable-next-line
             const { method, params } = request.payload;
             return client

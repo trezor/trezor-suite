@@ -102,7 +102,6 @@ describe('coinmarketMiddleware', () => {
             'setInvityServersEnvironment',
         );
 
-        // @ts-ignore
         const store = initStore(
             getInitialState({
                 coinmarket: initialState,
@@ -130,7 +129,6 @@ describe('coinmarketMiddleware', () => {
             'setInvityServersEnvironment',
         );
 
-        // @ts-ignore
         const store = initStore(
             getInitialState({
                 coinmarket: { ...initialState, lastLoadedTimestamp: 0 },
@@ -158,7 +156,6 @@ describe('coinmarketMiddleware', () => {
             'setInvityServersEnvironment',
         );
 
-        // @ts-ignore
         const store = initStore(
             getInitialState({
                 coinmarket: {

@@ -1,7 +1,7 @@
 import { formatCoinBalance } from '../balanceUtils';
 
 test('formatBalanceUtils', () => {
-    // @ts-ignore
+    // @ts-expect-error
     expect(formatCoinBalance(undefined)).toEqual('0');
     expect(formatCoinBalance('ssssstring')).toEqual('0');
     expect(formatCoinBalance('0')).toEqual('0');

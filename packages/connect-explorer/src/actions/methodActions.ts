@@ -61,7 +61,6 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     const { method } = getState();
     if (!method?.name) throw new Error('method name not specified');
 
-    // @ts-ignore method name is string. can't be used to index TrezorConnect
     const connectMethod = TrezorConnect[method.name];
     if (typeof connectMethod !== 'function') {
         dispatch(
@@ -99,9 +98,7 @@ export const onVerify = () => (dispatch: Dispatch, getState: GetState) => {
 
     const verifyMethod = getState().method;
     verifyMethod?.fields.forEach((f: any) => {
-        // @ts-ignore
         if (verifyMethodValues[f.name]) {
-            // @ts-ignore
             dispatch(onFieldChange(f, verifyMethodValues[f.name]));
         }
     });

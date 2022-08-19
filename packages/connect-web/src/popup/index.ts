@@ -319,7 +319,7 @@ export class PopupManager extends EventEmitter {
 
         if (this._window) {
             if (this.settings.env === 'webextension') {
-                // @ts-ignore
+                // @ts-expect-error
                 let _e = chrome.runtime.lastError;
 
                 chrome.tabs.remove(this._window.id, () => {
