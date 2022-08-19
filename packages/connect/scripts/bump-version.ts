@@ -53,44 +53,25 @@ const afterPackageJSON = JSON.parse(
     fs.readFileSync(path.join(REPO_ROOT, 'packages/connect/package.json'), 'utf-8'),
 );
 
-// todo: make it find all package.jsons automatically
-const dependenciesPaths = [
-    './packages/connect-web/package.json',
-    './packages/connect-popup/package.json',
-    './packages/connect-explorer/package.json',
-    './packages/suite-desktop/package.json',
-    './packages/suite/package.json',
-    './packages/connect-iframe/package.json',
-    './suite-common/connect-init/package.json',
-    './suite-common/wallet-utils/package.json',
-    './suite-common/wallet-types/package.json',
-    './suite-common/test-utils/package.json',
-    './suite-common/suite-types/package.json',
-    './suite-native/app/package.json',
-];
-
 const dependenciesToBeBumped = ['@trezor/connect', '@trezor/connect-web'];
 
 dependenciesToBeBumped.forEach(dependency => {
-    dependenciesPaths.forEach(path => {
-        // note: update versions in package.json using sed. We could use yarn upgrade but sed is faster
-        const res = child_process.spawnSync(
-            'sed',
-            [
-                '-i',
-                `s|"${dependency}": "${prePackageJSON.version}"|"${dependency}": "${afterPackageJSON.version}"|g`,
-                path,
-            ],
-            {
-                encoding: 'utf-8',
-                cwd: REPO_ROOT,
-            },
-        );
-        if (res.stderr) {
-            console.log(res);
-            process.exit(1);
-        } else {
-            console.log('updated: ', path);
-        }
-    });
+    const res = child_process.spawnSync(
+        'sh',
+        [
+            '-c',
+            `grep -rl '"${dependency}": "${prePackageJSON.version}"' . | xargs sed -i 's|"${dependency}": "${prePackageJSON.version}"|"${dependency}": "${afterPackageJSON.version}"|g'`,
+        ],
+        {
+            encoding: 'utf-8',
+            cwd: REPO_ROOT,
+        },
+    );
+    console.log('res', res);
+    if (res.stderr) {
+        console.log(res);
+        process.exit(1);
+    } else {
+        console.log('dependencies updated ');
+    }
 });
