@@ -6,12 +6,21 @@ const Wrapper = styled.div`
     width: 100%;
 `;
 
-const Value = styled.div<{ $max: number; $value: number; isRed: boolean }>`
+type ValueProps = {
+    $max: number;
+    $value: number;
+    isRed: boolean;
+};
+
+const Value = styled.div.attrs<ValueProps>(({ $max, $value }) => ({
+    style: {
+        width: `${(100 / $max) * $value}%`,
+    },
+}))<ValueProps>`
     background: ${({ theme, isRed }) => (isRed ? theme.BG_RED : theme.BG_GREEN)};
     height: 4px;
     max-width: 100%;
     transition: width 0.5s;
-    width: ${({ $max, $value }) => (100 / $max) * $value}%;
 `;
 
 type ProgressProps = {
