@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies, import/extensions
+const { rules: airbnbRules } = require('eslint-config-airbnb-base/rules/style.js');
+
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
@@ -182,6 +185,32 @@ module.exports = {
                 paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
             },
         ],
+        'no-restricted-syntax': [
+            ...airbnbRules['no-restricted-syntax'],
+            {
+                message:
+                    "Please don't use createAsyncThunk. Use createThunk from @suite-common/redux-utils instead.",
+                selector: "CallExpression[callee.name='createAsyncThunk']",
+            },
+            {
+                message:
+                    'Please don\'t use getState directly. Always use strongly typed selector, because geState is typed as "any" and it\'s dangerous to use it directly.',
+                selector:
+                    'MemberExpression[property.type="Identifier"]:matches([object.callee.name="getState"])',
+            },
+            {
+                message:
+                    'Do not assign "getState" directly. Always use strongly typed selector, because geState is typed as "any" and it\'s dangerous to use it directly.',
+                selector:
+                    "VariableDeclarator[init.type='CallExpression']:matches([init.callee.name='getState'])",
+            },
+            {
+                message:
+                    'Please don\'t use "state" directly because it\'s typed as "any". Always use it only as parameter for strongly typed selector function.',
+                selector:
+                    "CallExpression[callee.name='useSelector'] MemberExpression[object.type='Identifier']:matches([property.type='Identifier'])",
+            },
+        ],
     },
     overrides: [
         {
@@ -236,6 +265,7 @@ module.exports = {
                 'react/jsx-no-undef': 'off',
                 'no-catch-shadow': 'off',
                 '@typescript-eslint/no-restricted-imports': 'off',
+                'no-restricted-syntax': airbnbRules['no-restricted-syntax'],
             },
         },
     ],

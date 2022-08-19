@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../redux-utils" },
         { "path": "../../suite-native/state" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/utils" }
