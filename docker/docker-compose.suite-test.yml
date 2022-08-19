@@ -31,6 +31,7 @@ services:
       - CYPRESS_updateSnapshots=$CYPRESS_updateSnapshots
       - CYPRESS_baseUrl=http://localhost:8000
       - CYPRESS_defaultCommandTimeout=60000 # on dev server, due to on-demand compilation nature of next.js, we need much longer timeout
+      - CYPRESS_USE_TREZOR_USER_ENV_BRIDGE=0
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
       - LOCAL_USER_ID=$LOCAL_USER_ID

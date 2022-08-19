@@ -56,26 +56,30 @@
   extends: .e2e web
   parallel:
     matrix:
-      - TEST_GROUP: [
+      - TEST_GROUP:
+          [
             "@group:suite",
             "@group:onboarding",
             "@group:device-management",
             "@group:settings",
             "@group:metadata",
             "@group:passphrase",
-            # todo: failing now
-            # "@group:fragile",
             "@group:browser",
           ]
         CONTAINERS: "trezor-user-env-unix"
+        CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
       - TEST_GROUP: "@group:wallet"
         CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+        CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
+      - TEST_GROUP: "@group:firmware-update"
+        CONTAINERS: "trezor-user-env-unix" # todo: this group should not need trezor-user-env
 
 suite web migrations:
   extends: .e2e web
   variables:
     # Each test file will be run for all urls in TEST_URLS array. Useful for migration tests
     CYPRESS_TEST_URLS: release/22.5 ${CI_BUILD_REF_NAME}
+    CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
   parallel:
     matrix:
       - TEST_GROUP: "@group:migrations"
