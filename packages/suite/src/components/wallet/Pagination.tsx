@@ -26,20 +26,23 @@ const Actions = styled.div<{ isActive: boolean }>`
 
 interface Props {
     currentPage: number;
-    totalPages?: number;
-    isOnLastPage?: boolean;
+    isLastPage?: boolean;
     hasPages?: boolean;
+    perPage: number;
+    totalItems: number;
     onPageSelected: (page: number) => void;
 }
 
 export const Pagination = ({
     currentPage,
-    totalPages,
     onPageSelected,
-    isOnLastPage,
     hasPages = true,
+    isLastPage,
+    perPage,
+    totalItems,
     ...rest
 }: Props) => {
+    const totalPages = Math.ceil(totalItems / perPage);
     const showPrevious = currentPage > 1;
     // array of int used for creating all page buttons
     const calculatedPages = useMemo(
@@ -55,7 +58,7 @@ export const Pagination = ({
                         ‹ <Translation id="TR_PAGINATION_NEWER" />
                     </PageItem>
                 </Actions>
-                <Actions isActive={!isOnLastPage}>
+                <Actions isActive={!isLastPage}>
                     <PageItem onClick={() => onPageSelected(currentPage + 1)}>
                         <Translation id="TR_PAGINATION_OLDER" /> ›
                     </PageItem>
