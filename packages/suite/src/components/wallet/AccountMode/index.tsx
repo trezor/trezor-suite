@@ -1,12 +1,12 @@
 import React from 'react';
-import { AccountWatchOnlyMode } from '@suite-common/wallet-types';
+import { SelectedAccountWatchOnlyMode } from '@suite-common/wallet-types';
 
 import AuthConfirmFailed from './AuthConfirmFailed';
 import BackendDisconnected from './BackendDisconnected';
 import DeviceUnavailable from './DeviceUnavailable';
 
 interface Props {
-    mode: AccountWatchOnlyMode[] | undefined;
+    mode: SelectedAccountWatchOnlyMode[] | undefined;
 }
 
 const AccountMode = (props: Props) => {

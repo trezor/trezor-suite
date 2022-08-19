@@ -5,7 +5,7 @@ import { Account, WalletParams } from './account';
 
 // Context notifications view
 // Account is in "watch only" mode
-export type AccountWatchOnlyMode =
+export type SelectedAccountWatchOnlyMode =
     | 'account-loading-others'
     | 'auth-confirm-failed' // Empty wallet confirmation failed
     | 'device-disconnected'
@@ -14,7 +14,7 @@ export type AccountWatchOnlyMode =
 
 // 100% view
 // // Account loaders
-export interface AccountLoading {
+export interface SelectedAccountLoading {
     status: 'loading';
     loader:
         | 'waiting-for-device' // No selectedDevice
@@ -27,10 +27,10 @@ export interface AccountLoading {
     params?: undefined;
 }
 
-export interface AccountLoaded {
+export interface SelectedAccountLoaded {
     status: 'loaded';
     loader?: undefined;
-    mode: AccountWatchOnlyMode[] | undefined;
+    mode: SelectedAccountWatchOnlyMode[] | undefined;
     account: Account;
     network: Network;
     discovery: Discovery;
@@ -41,11 +41,11 @@ export interface AccountLoaded {
 
 // 100% view
 // Account exception views
-export type AccountException =
+export type SelectedAccountException =
     | {
           status: 'exception';
           loader: 'auth-failed' | 'discovery-error' | 'discovery-empty'; // No network enabled in settings
-          mode?: AccountWatchOnlyMode[];
+          mode?: SelectedAccountWatchOnlyMode[];
           account?: undefined;
           network?: Network;
           discovery?: Discovery;
@@ -57,14 +57,14 @@ export type AccountException =
               | 'account-not-loaded' // Account discovery failed
               | 'account-not-enabled' // Requested account network is not enabled in settings
               | 'account-not-exists'; // Requested account network is not listed in NETWORKS
-          mode?: AccountWatchOnlyMode[];
+          mode?: SelectedAccountWatchOnlyMode[];
           account?: undefined;
           network: Network;
           discovery: Discovery;
           params: WalletParams;
       };
 
-export type AccountNone = {
+export type SelectedAccountNone = {
     status: 'none';
     loader?: undefined;
     mode?: undefined;
@@ -74,4 +74,8 @@ export type AccountNone = {
     params?: undefined;
 };
 
-export type AccountState = AccountLoaded | AccountLoading | AccountException | AccountNone;
+export type SelectedAccountStatus =
+    | SelectedAccountLoaded
+    | SelectedAccountLoading
+    | SelectedAccountException
+    | SelectedAccountNone;

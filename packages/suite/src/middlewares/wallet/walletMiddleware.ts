@@ -13,6 +13,7 @@ import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import type { AppState, Action, Dispatch } from '@suite-types';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -42,10 +43,7 @@ const walletMiddleware =
         // propagate action to reducers
         next(action);
 
-        if (
-            accountsActions.createAccount.match(action) ||
-            accountsActions.updateAccount.match(action)
-        ) {
+        if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
             api.dispatch(blockchainActions.subscribe(action.payload.symbol));
         }
 

@@ -20,6 +20,7 @@ import {
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { DeepPartial } from '@trezor/type-utils';
 import { accountsActions } from '@suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
@@ -90,38 +91,37 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
 export const redactAction = (action: LogEntry) => {
     let payload;
 
-    if (
-        accountsActions.createAccount.match(action) ||
-        accountsActions.updateAccount.match(action)
-    ) {
+    if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
         payload = redactAccount(action.payload);
-    } else if (accountsActions.updateSelectedAccount.match(action)) {
+    }
+
+    if (accountsActions.updateSelectedAccount.match(action)) {
         payload = {
             ...action.payload,
             account: redactAccount(action.payload?.account),
             network: undefined,
             discovery: undefined,
         };
-    } else {
-        switch (action.type) {
-            case SUITE.AUTH_DEVICE:
-                payload = {
-                    state: REDACTED_REPLACEMENT,
-                    ...redactDevice(action.payload),
-                };
-                break;
-            case DEVICE.CONNECT:
-            case DEVICE.DISCONNECT:
-            case SUITE.UPDATE_SELECTED_DEVICE:
-            case SUITE.REMEMBER_DEVICE:
-                payload = redactDevice(action.payload);
-                break;
-            case DISCOVERY.COMPLETE:
-                payload = redactDiscovery(action.payload);
-                break;
-            default:
-                return action;
-        }
+    }
+
+    switch (action.type) {
+        case SUITE.AUTH_DEVICE:
+            payload = {
+                state: REDACTED_REPLACEMENT,
+                ...redactDevice(action.payload),
+            };
+            break;
+        case DEVICE.CONNECT:
+        case DEVICE.DISCONNECT:
+        case SUITE.UPDATE_SELECTED_DEVICE:
+        case SUITE.REMEMBER_DEVICE:
+            payload = redactDevice(action.payload);
+            break;
+        case DISCOVERY.COMPLETE:
+            payload = redactDiscovery(action.payload);
+            break;
+        default:
+            return action;
     }
 
     return {

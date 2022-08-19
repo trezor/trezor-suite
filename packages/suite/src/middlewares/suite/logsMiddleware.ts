@@ -17,6 +17,7 @@ import { Account } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 import { accountsActions } from '@suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -28,13 +29,9 @@ const log =
         // also do not log any log related actions
         if (action.type.startsWith('@log')) return action;
 
-        if (
-            accountsActions.createAccount.match(action) ||
-            accountsActions.updateAccount.match(action)
-        ) {
+        if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
             const { payload }: { payload: Account } = action;
             api.dispatch(logActions.addAction(action, { ...payload }));
-            return action;
         }
 
         if (accountsActions.updateSelectedAccount.match(action)) {
@@ -51,7 +48,6 @@ const log =
             } else {
                 api.dispatch(logActions.addAction(action, { ...action, type: undefined }));
             }
-            return action;
         }
 
         switch (action.type) {

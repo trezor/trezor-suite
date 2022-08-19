@@ -1,24 +1,24 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps, matchesActionType } from '@suite-common/redux-utils';
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Account } from '@suite-common/wallet-types';
 
 import { accountsActions } from './accountsActions';
 
-export type AccountsSliceState = Account[];
+export type AccountsState = Account[];
 
-const initialState: AccountsSliceState = [];
+const initialState: AccountsState = [];
 
-type AccountsSliceRootState = {
+type AccountsRootState = {
     wallet: {
-        accounts: AccountsSliceState;
+        accounts: AccountsState;
     };
 };
 
 const accountEqualTo = (b: Account) => (a: Account) =>
     a.deviceState === b.deviceState && a.descriptor === b.descriptor && a.symbol === b.symbol;
 
-const update = (state: AccountsSliceState, account: Account) => {
+const update = (state: AccountsState, account: Account) => {
     const accountIndex = state.findIndex(accountEqualTo(account));
 
     if (accountIndex !== -1) {
@@ -35,14 +35,14 @@ const update = (state: AccountsSliceState, account: Account) => {
     }
 };
 
-const remove = (state: AccountsSliceState, accounts: Account[]) => {
+const remove = (state: AccountsState, accounts: Account[]) => {
     accounts.forEach(a => {
         const index = state.findIndex(accountEqualTo(a));
         state.splice(index, 1);
     });
 };
 
-const setMetadata = (state: AccountsSliceState, account: Account) => {
+const setMetadata = (state: AccountsState, account: Account) => {
     const index = state.findIndex(a => a.key === account.key);
     if (!state[index]) return;
     state[index].metadata = account.metadata;
@@ -68,17 +68,14 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(initialState, (
         .addCase(accountsActions.changeAccountVisibility, (state, action) => {
             update(state, action.payload);
         })
+        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
         .addMatcher(
             isAnyOf(extra.actions.setAccountLoadedMetadata, extra.actions.setAccountAddMetadata),
             (state, action) => {
                 const { payload } = action;
                 setMetadata(state, payload);
             },
-        )
-        .addMatcher(
-            matchesActionType(extra.actionTypes.storageLoad),
-            extra.reducers.storageLoadAccounts,
         );
 });
 
-export const selectAccounts = (state: AccountsSliceRootState) => state.wallet.accounts;
+export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;

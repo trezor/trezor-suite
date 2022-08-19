@@ -7,7 +7,7 @@ import * as metadataActions from '@suite-actions/metadataActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { getSelectedAccount } from '@wallet-utils/accountUtils';
 import { accountsActions } from '@suite-common/wallet-core';
-import { AccountState, AccountWatchOnlyMode } from '@suite-common/wallet-types';
+import { SelectedAccountStatus, SelectedAccountWatchOnlyMode } from '@suite-common/wallet-types';
 
 import { Action, Dispatch, GetState } from '@suite-types';
 import { State } from '@wallet-reducers/selectedAccountReducer';
@@ -23,7 +23,7 @@ const getAccountStateWithMode =
         if (!device || status !== 'ready') return;
 
         // From this point there could be multiple loaders
-        const mode: AccountWatchOnlyMode[] = [];
+        const mode: SelectedAccountWatchOnlyMode[] = [];
 
         if (selectedAccount && selectedAccount.status === 'loaded') {
             const { account, discovery, network } = selectedAccount;
@@ -56,7 +56,7 @@ const getAccountStateWithMode =
 
 const getAccountState =
     () =>
-    (dispatch: Dispatch, getState: GetState): AccountState => {
+    (dispatch: Dispatch, getState: GetState): SelectedAccountStatus => {
         const state = getState();
 
         const { device } = state.suite;

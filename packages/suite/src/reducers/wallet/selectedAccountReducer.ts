@@ -1,8 +1,8 @@
 import { accountsActions } from '@suite-common/wallet-core';
 import type { Action } from '@suite-types';
-import type { AccountState } from '@suite-common/wallet-types';
+import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
-export type State = AccountState;
+export type State = SelectedAccountStatus;
 
 export const initialState: State = {
     status: 'none',

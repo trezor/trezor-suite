@@ -18,9 +18,9 @@ import { CardanoStakingAction } from '@wallet-actions/cardanoStakingActions';
 import { PollingAction } from '@wallet-actions/pollingActions';
 import { CoinjoinAccountAction } from '@wallet-actions/coinjoinAccountActions';
 import { CoinjoinClientAction } from '@wallet-actions/coinjoinClientActions';
-import { AccountsAction } from '@suite-common/wallet-core';
 import { NETWORKS } from '@wallet-config';
 import { ArrayElement } from '@trezor/type-utils';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type NetworkSymbol = Network['symbol'];
@@ -50,6 +50,12 @@ export type {
 } from '@suite-common/wallet-types';
 export type { WalletParams } from '@suite-utils/router';
 export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
+
+/*
+this action union types are bad, we need it only for legacy reason.
+(old redux and redux/toolkit action type compatibility e.g. in middlewares)
+ */
+type AccountsAction = ReturnType<typeof accountsActions[keyof typeof accountsActions]>;
 
 export type WalletAction =
     | BlockchainAction

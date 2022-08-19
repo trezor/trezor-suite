@@ -21,7 +21,6 @@ const graphMiddleware =
                     }),
                 );
             }
-            return action;
         }
 
         switch (action.type) {

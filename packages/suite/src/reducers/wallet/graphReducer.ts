@@ -80,11 +80,6 @@ const remove = (draft: State, accounts: Account[]) => {
 
 const graphReducer = (state: State = initialState, action: WalletAction | SuiteAction): State =>
     produce(state, draft => {
-        if (accountsActions.removeAccount.match(action)) {
-            remove(draft, action.payload);
-            return;
-        }
-
         switch (action.type) {
             case STORAGE.LOAD:
                 loadFromStorage(draft, action.payload.graph);
@@ -110,6 +105,12 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
             case GRAPH.SET_SELECTED_VIEW:
                 draft.selectedView = action.payload;
                 break;
+            case accountsActions.removeAccount.type: {
+                if (accountsActions.removeAccount.match(action)) {
+                    remove(draft, action.payload);
+                }
+                break;
+            }
             // no default
         }
     });

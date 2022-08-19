@@ -25,6 +25,7 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
 import { accountsActions } from '@suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -35,9 +36,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             next(action);
 
             if (
-                accountsActions.createAccount.match(action) ||
-                accountsActions.changeAccountVisibility.match(action) ||
-                accountsActions.updateAccount.match(action)
+                isAnyOf(
+                    accountsActions.createAccount,
+                    accountsActions.changeAccountVisibility,
+                    accountsActions.updateAccount,
+                )(action)
             ) {
                 const { payload } = action;
                 const device = accountUtils.findAccountDevice(payload, api.getState().devices);
@@ -59,10 +62,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 });
             }
 
-            if (
-                metadataActions.setAccountLoaded.match(action) ||
-                metadataActions.setAccountAdd.match(action)
-            ) {
+            if (isAnyOf(metadataActions.setAccountLoaded, metadataActions.setAccountAdd)(action)) {
                 const device = accountUtils.findAccountDevice(
                     action.payload,
                     api.getState().devices,

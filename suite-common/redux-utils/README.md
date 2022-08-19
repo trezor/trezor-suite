@@ -230,25 +230,3 @@ const middleware = [
     ...otherMiddlewares,
 ];
 ```
-
-## matchesActionType
-
-This is simple matcher can be used in redux-toolkit reducers builder to simplify matching action types.
-
-```typescript
-const someSlice = createSliceWithExtraDeps({
-    extraReducers: (builder, extra) => {
-        builder
-            // this is how it looks without it
-            .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                extra.reducers.storageLoadBlockchain,
-            )
-            // and this is how it looks with matchesActionType matcher
-            .addMatcher(
-                matchesActionType(extra.actionTypes.storageLoad),
-                extra.reducers.storageLoadBlockchain,
-            );
-    },
-});
-```

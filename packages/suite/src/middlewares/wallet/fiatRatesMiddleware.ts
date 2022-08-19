@@ -38,7 +38,9 @@ const fiatRatesMiddleware =
                     }
                 });
             }
-        } else if (accountsActions.createAccount.match(action)) {
+        }
+
+        if (accountsActions.createAccount.match(action)) {
             // fetch current rates for account's tokens
             const account = action.payload;
             account.tokens?.forEach(token => {
@@ -53,30 +55,30 @@ const fiatRatesMiddleware =
                     }),
                 );
             });
-        } else {
-            switch (action.type) {
-                case BLOCKCHAIN.CONNECTED:
-                    api.dispatch(fiatRatesActions.initRates(action.payload));
-                    break;
-                case BLOCKCHAIN.FIAT_RATES_UPDATE:
-                    api.dispatch(fiatRatesActions.onUpdateRate(action.payload));
-                    break;
-                case TRANSACTION.ADD: {
-                    // fetch historical rates for each added transaction
-                    const { account, transactions } = action.payload;
-                    api.dispatch(fiatRatesActions.updateTxsRates(account, transactions));
-                    break;
-                }
-                case WALLET_SETTINGS.CHANGE_NETWORKS:
-                    api.dispatch(fiatRatesActions.removeRatesForDisabledNetworks());
-                    break;
-                case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
-                    // for coins relying on coingecko we only fetch rates for one fiat currency
-                    api.dispatch(fiatRatesActions.updateLastWeekRates());
-                    break;
-                default:
-                    break;
+        }
+
+        switch (action.type) {
+            case BLOCKCHAIN.CONNECTED:
+                api.dispatch(fiatRatesActions.initRates(action.payload));
+                break;
+            case BLOCKCHAIN.FIAT_RATES_UPDATE:
+                api.dispatch(fiatRatesActions.onUpdateRate(action.payload));
+                break;
+            case TRANSACTION.ADD: {
+                // fetch historical rates for each added transaction
+                const { account, transactions } = action.payload;
+                api.dispatch(fiatRatesActions.updateTxsRates(account, transactions));
+                break;
             }
+            case WALLET_SETTINGS.CHANGE_NETWORKS:
+                api.dispatch(fiatRatesActions.removeRatesForDisabledNetworks());
+                break;
+            case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
+                // for coins relying on coingecko we only fetch rates for one fiat currency
+                api.dispatch(fiatRatesActions.updateLastWeekRates());
+                break;
+            default:
+                break;
         }
 
         return action;

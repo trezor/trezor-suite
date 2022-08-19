@@ -14,32 +14,6 @@ import { Dispatch, GetState } from '@suite-types';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
 import { createAction } from '@reduxjs/toolkit';
 
-export type TransactionAction =
-    | {
-          type: typeof TRANSACTION.ADD;
-          payload: {
-              transactions: WalletAccountTransaction[];
-              account: Account;
-              page?: number;
-          };
-      }
-    | {
-          type: typeof TRANSACTION.REMOVE;
-          payload: { account: Account; txs: WalletAccountTransaction[] };
-      }
-    | { type: typeof TRANSACTION.RESET; account: Account }
-    | {
-          type: typeof TRANSACTION.REPLACE;
-          key: string;
-          txid: string;
-          tx: WalletAccountTransaction;
-      }
-    | { type: typeof TRANSACTION.FETCH_INIT }
-    | {
-          type: typeof TRANSACTION.FETCH_SUCCESS;
-      }
-    | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
-
 export const add = createAction(
     TRANSACTION.ADD,
     (transactions: AccountTransaction[], account: Account, page?: number) => ({
@@ -50,16 +24,6 @@ export const add = createAction(
         },
     }),
 );
-
-/**
- * Remove all transactions for a given account
- *
- * @param {Account} account
- */
-export const reset = (account: Account): TransactionAction => ({
-    type: TRANSACTION.RESET,
-    account,
-});
 
 /**
  * Remove certain transactions for a given account
@@ -76,6 +40,32 @@ export const remove = createAction(
         },
     }),
 );
+
+export type TransactionAction =
+    | ReturnType<typeof add>
+    | ReturnType<typeof remove>
+    | { type: typeof TRANSACTION.RESET; account: Account }
+    | {
+          type: typeof TRANSACTION.REPLACE;
+          key: string;
+          txid: string;
+          tx: WalletAccountTransaction;
+      }
+    | { type: typeof TRANSACTION.FETCH_INIT }
+    | {
+          type: typeof TRANSACTION.FETCH_SUCCESS;
+      }
+    | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
+
+/**
+ * Remove all transactions for a given account
+ *
+ * @param {Account} account
+ */
+export const reset = (account: Account): TransactionAction => ({
+    type: TRANSACTION.RESET,
+    account,
+});
 
 /**
  * Replace existing transaction in the reducer.
