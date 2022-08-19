@@ -32,7 +32,7 @@ interface Props {
     onPageSelected: (page: number) => void;
 }
 
-const Pagination = ({
+export const Pagination = ({
     currentPage,
     totalPages,
     onPageSelected,
@@ -103,5 +103,3 @@ const Pagination = ({
         </Wrapper>
     );
 };
-
-export default Pagination;
