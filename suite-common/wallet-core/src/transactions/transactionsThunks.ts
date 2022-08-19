@@ -187,7 +187,7 @@ export const fetchTransactionsThunk = createThunk(
             noLoading?: boolean;
             recursive?: boolean;
         },
-        { dispatch, getState },
+        { dispatch, getState, signal },
     ) => {
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
         const transactions = selectTransactions(getState());
@@ -202,8 +202,8 @@ export const fetchTransactionsThunk = createThunk(
             (page > 1 && txsForPage.length === perPage) ||
             txsForPage.length === account.history.total
         ) {
-            if (recursive) {
-                await dispatch(
+            if (recursive && !signal.aborted) {
+                const promise = dispatch(
                     fetchTransactionsThunk({
                         account,
                         page: page + 1,
@@ -212,12 +212,16 @@ export const fetchTransactionsThunk = createThunk(
                         recursive: true,
                     }),
                 );
+                signal.addEventListener('abort', () => {
+                    promise.abort();
+                });
+                await promise;
             }
 
             return;
         }
 
-        if (!noLoading) {
+        if (!noLoading && !signal.aborted) {
             dispatch(transactionsActions.fetchInit);
         }
 
@@ -230,6 +234,8 @@ export const fetchTransactionsThunk = createThunk(
             pageSize: perPage,
             ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
         });
+
+        if (signal.aborted) return;
 
         if (result && result.success) {
             // TODO why is this only accepting account now?
@@ -250,8 +256,12 @@ export const fetchTransactionsThunk = createThunk(
             dispatch(updateAction);
 
             // totalPages (blockbook + blockfrost), marker (ripple) if is undefined, no more pages are available
-            if (recursive && (page < totalPages || (marker && updatedAccount.marker))) {
-                await dispatch(
+            if (
+                recursive &&
+                (page < totalPages || (marker && updatedAccount.marker)) &&
+                !signal.aborted
+            ) {
+                const promise = dispatch(
                     fetchTransactionsThunk({
                         account: updatedAccount,
                         page: page + 1,
@@ -260,6 +270,10 @@ export const fetchTransactionsThunk = createThunk(
                         recursive: true,
                     }),
                 );
+                signal.addEventListener('abort', () => {
+                    promise.abort();
+                });
+                await promise;
             }
         } else {
             dispatch(

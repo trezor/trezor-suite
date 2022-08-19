@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
-import { Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { SETTINGS } from '@suite-config';
-import type { AccountUtxo } from '@trezor/connect';
+import { useActions } from '@suite-hooks';
+import { ExtendedMessageDescriptor } from '@suite-types';
 import { Pagination } from '@wallet-components';
+import { Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { UtxoSelectionList } from '@wallet-components/UtxoSelectionList';
 import { useSendFormContext } from '@wallet-hooks';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { TypedFieldError } from '@wallet-types/form';
 
 const Row = styled.div`
     align-items: center;
@@ -27,24 +31,38 @@ const DustRow = styled.div`
     margin-top: 6px;
 `;
 
-const DustDescriptionRow = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+const GreyText = styled.div`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+`;
+
+const DustDescriptionRow = styled(GreyText)`
     margin: 6px 0 12px 0;
 `;
 
 const StyledSwitch = styled(Switch)`
-    margin: 0 12px 0 auto;
+    margin: 0 14px 0 auto;
 `;
 
-const StyledCryptoAmount = styled(FormattedCryptoAmount)`
+const AmountWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
     margin-left: auto;
+    text-align: right;
+`;
+
+const MissingToInput = styled.div<{ isVisible: boolean }>`
+    visibility: ${({ isVisible }) => !isVisible && 'hidden'};
+`;
+
+const StyledPagination = styled(Pagination)`
+    margin-top: 20px;
 `;
 
 const Line = styled.div`
     width: 100%;
     height: 1px;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    margin: 16px 0;
+    margin: 12px 0 16px 0;
 `;
 
 interface Props {
@@ -54,35 +72,54 @@ interface Props {
 export const CoinControl = ({ close }: Props) => {
     const [currentPage, setSelectedPage] = useState(1);
 
-    const { account, composedLevels, composeTransaction, feeInfo, selectedUtxos, setValue, watch } =
-        useSendFormContext();
-
-    // separate dust UTXOs
-    const [spendableUtxos, dustUtxos]: [AccountUtxo[], AccountUtxo[]] = account.utxo
-        ? account.utxo.reduce(
-              ([previousSpendable, previousDust]: [AccountUtxo[], AccountUtxo[]], current) =>
-                  feeInfo.dustLimit && parseInt(current.amount, 10) >= feeInfo.dustLimit
-                      ? [[...previousSpendable, current], previousDust]
-                      : [previousSpendable, [...previousDust, current]],
-              [[], []],
-          )
-        : [[], []];
-
-    const selectedFee = watch('selectedFee');
-    const composedLevel = composedLevels?.[selectedFee || 'normal'];
-    const composedInputs = composedLevel?.type === 'final' ? composedLevel.transaction.inputs : [];
-    const inputs = composedInputs.length ? composedInputs : selectedUtxos;
-    const allSelected = !!selectedUtxos.length && selectedUtxos.length === spendableUtxos.length;
-
-    // calculate total
-    // TypeScript does not allow Array.prototype.reduce here (https://github.com/microsoft/TypeScript/issues/36390)
-    let total = 0;
-    inputs.forEach(input => {
-        if ('amount' in input) {
-            total += Number(input.amount);
-        }
+    const { fetchTransactions } = useActions({
+        fetchTransactions: fetchTransactionsThunk,
     });
-    const formattedTotal = formatNetworkAmount(total.toString(), account.symbol);
+
+    const {
+        account,
+        allUtxosSelected,
+        composedInputs,
+        dustUtxos,
+        errors,
+        getDefaultValue,
+        isCoinControlEnabled,
+        network,
+        outputs,
+        selectedUtxos,
+        spendableUtxos,
+        toggleCheckAllUtxos,
+        toggleCoinControl,
+    } = useSendFormContext();
+
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
+
+    const inputs = isCoinControlEnabled ? selectedUtxos : composedInputs;
+
+    const getTotal = (amounts: number[]) =>
+        amounts.reduce((previous, current) => previous + current, 0);
+    const getFormattedAmount = (amount: number) =>
+        formatNetworkAmount(amount.toString(), account.symbol);
+
+    // calculate and format amounts
+    const totalInputs = getTotal(inputs.map(input => Number(input.amount)));
+    const totalOutputs = getTotal(
+        outputs.map((_, i) => Number(getDefaultValue(`outputs[${i}].amount`, ''))),
+    );
+    const totalOutputsInSats = areSatsUsed ? totalOutputs : totalOutputs * 10 ** network.decimals;
+    const missingToInput = totalOutputsInSats - totalInputs;
+    const formattedTotal = getFormattedAmount(totalInputs);
+    const formattedMissing = getFormattedAmount(missingToInput);
+    const isMissingToAmount = missingToInput > 0;
+    const isMissingVisible =
+        isCoinControlEnabled &&
+        (isMissingToAmount ||
+            !!errors.outputs?.some(
+                error =>
+                    ((error?.amount as TypedFieldError)?.message as ExtendedMessageDescriptor)
+                        ?.id === 'TR_NOT_ENOUGH_SELECTED',
+            ));
+    const missingToInputId = isMissingToAmount ? 'TR_MISSING_TO_INPUT' : 'TR_MISSING_TO_FEE';
 
     // pagination
     const totalItems = account.utxo?.length || 0;
@@ -99,47 +136,51 @@ export const CoinControl = ({ close }: Props) => {
         lastDustUtxoIndex > 0 ? lastDustUtxoIndex : 0,
     );
 
-    const handleSwitch = () => {
-        setValue(
-            'selectedUtxos',
-            selectedUtxos.length
-                ? []
-                : account.utxo?.filter(utxo =>
-                      composedInputs.some(
-                          input => input.prev_hash === utxo.txid && input.prev_index === utxo.vout,
-                      ),
-                  ),
-        );
-        composeTransaction();
-    };
-    const handleCheckbox = () => {
-        setValue('selectedUtxos', allSelected ? [] : spendableUtxos);
-        composeTransaction();
+    useEffect(() => {
+        const promise = fetchTransactions({
+            account,
+            page: 2,
+            perPage: SETTINGS.TXS_PER_PAGE,
+            noLoading: true,
+            recursive: true,
+        });
+        return () => {
+            promise.abort();
+        };
+    }, [account, fetchTransactions]);
+
+    const missingToInputValues = {
+        amount: <FormattedCryptoAmount value={formattedMissing} symbol={account.symbol} />,
     };
 
     return (
         <>
             <Row>
                 <Translation id="TR_COIN_CONTROL" />
-                <StyledSwitch
-                    isChecked={!!selectedUtxos.length}
-                    isDisabled={!inputs.length}
-                    onChange={handleSwitch}
-                />
-                <Icon size={20} icon="CROSS" onClick={close} />
+                <StyledSwitch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
+                <Icon size={24} icon="ARROW_UP" onClick={close} />
             </Row>
             <SecondRow>
                 <Checkbox
-                    isChecked={allSelected}
+                    isChecked={allUtxosSelected}
                     isDisabled={!spendableUtxos.length}
-                    onClick={handleCheckbox}
+                    onClick={toggleCheckAllUtxos}
                 />
-                <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
-                {!!total && <StyledCryptoAmount value={formattedTotal} symbol={account.symbol} />}
+                <GreyText>
+                    <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
+                </GreyText>
+                <AmountWrapper>
+                    <GreyText>
+                        <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
+                    </GreyText>
+                    <MissingToInput isVisible={isMissingVisible}>
+                        <Translation id={missingToInputId} values={missingToInputValues} />
+                    </MissingToInput>
+                </AmountWrapper>
             </SecondRow>
             <Line />
             {spendableUtxos.length ? (
-                <UtxoSelectionList utxos={spendableUtxosOnPage} composedInputs={composedInputs} />
+                <UtxoSelectionList utxos={spendableUtxosOnPage} />
             ) : (
                 <Translation id="TR_NO_SPENDABLE_UTXOS" />
             )}
@@ -152,11 +193,11 @@ export const CoinControl = ({ close }: Props) => {
                     <DustDescriptionRow>
                         <Translation id="TR_DUST_DESCRIPTION" />
                     </DustDescriptionRow>
-                    <UtxoSelectionList utxos={dustOnPage} composedInputs={composedInputs} />
+                    <UtxoSelectionList utxos={dustOnPage} />
                 </>
             )}
             {showPagination && (
-                <Pagination
+                <StyledPagination
                     currentPage={currentPage}
                     totalItems={totalItems}
                     perPage={utxosPerPage}

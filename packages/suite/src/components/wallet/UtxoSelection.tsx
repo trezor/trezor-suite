@@ -5,7 +5,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useActions } from '@suite-hooks';
-import { Checkbox, variables } from '@trezor/components';
+import { useTheme, Checkbox, FluidSpinner, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp } from '@wallet-components/TransactionItem/components/TransactionTimestamp';
 import { useSendFormContext } from '@wallet-hooks';
@@ -32,6 +32,10 @@ const TopRow = styled(Row)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     justify-content: space-between;
     margin-bottom: 4px;
+`;
+
+const IconWrapper = styled.div`
+    margin-right: 8px;
 `;
 
 const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }>`
@@ -77,6 +81,8 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: Props) => {
         openModal: modalActions.openModal,
     });
 
+    const theme = useTheme();
+
     const isChangeAddress = utxo.path.split('/')[4] === '1';
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
@@ -97,7 +103,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: Props) => {
                     />
                 </TopRow>
                 <Row>
-                    {transaction && (
+                    {transaction ? (
                         <TransactionTimestamp
                             showDate
                             transaction={transaction}
@@ -108,6 +114,10 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: Props) => {
                                 })
                             }
                         />
+                    ) : (
+                        <IconWrapper>
+                            <FluidSpinner color={theme.TYPE_LIGHT_GREY} size={14} />
+                        </IconWrapper>
                     )}
                     <Dot />
                     <MetadataLabeling
