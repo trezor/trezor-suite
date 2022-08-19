@@ -8,6 +8,7 @@ import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
 import { Controller } from '../../../websocket-client';
 import googleMock from './google';
 import dropboxMock from './dropbox';
+import bridgeMock from './bridge';
 import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
 import config from '../cypress.json';
 import releasesT2 from '../../../../connect-common/files/firmware/2/releases.json';
@@ -146,6 +147,14 @@ module.exports = on => {
         },
         stopBridge: async () => {
             const response = await controller.send({ type: 'bridge-stop' });
+            return null;
+        },
+        startMockedBridge: async har => {
+            await bridgeMock.start(har);
+            return null;
+        },
+        stopMockedBridge: async () => {
+            await bridgeMock.stop();
             return null;
         },
         setupEmu: async options => {

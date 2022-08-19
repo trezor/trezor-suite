@@ -38,15 +38,24 @@ const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) =
 };
 
 beforeEach(() => {
+    console.log('Cypress.env', Cypress.env('USE_TREZOR_USER_ENV'));
     const suiteName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.parent.title;
     const testName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.title;
+
     cy.task('trezorUserEnvConnect');
     cy.task('logTestDetails', `New test case: ${suiteName} - ${testName}`);
-    cy.task('resetCRI');
+    cy.log('stop bridge before every test to make sure that there is no pending session');
+    cy.task('stopBridge');
+    cy.task('stopEmu');
+    cy.task('stopMockedBridge');
 
-    cy.intercept('*', { hostname: '127.0.0.1' }, req => {
-        req.url = req.url.replace('21325', '21326');
-    });
+    if (Cypress.env('USE_TREZOR_USER_ENV_BRIDGE')) {
+        cy.intercept('*', { hostname: '127.0.0.1' }, req => {
+            req.url = req.url.replace('21325', '21326');
+        });
+    }
+
+    cy.task('resetCRI');
 
     // disable messaging system on develop
     cy.intercept('https://data.trezor.io/config/develop/config.v1.jws', req => {
@@ -56,7 +65,6 @@ beforeEach(() => {
             res.send(mock);
         });
     });
-
     // disable messaging system in codesign build
     cy.intercept('https://data.trezor.io/config/stable/config.v1.jws', req => {
         const mock =
@@ -65,15 +73,12 @@ beforeEach(() => {
             res.send(mock);
         });
     });
-
     cy.visit('/');
-    cy.log('stop and start bridge before every test to make sure that there is no pending session');
-    cy.task('stopBridge');
-    cy.task('stopEmu');
 });
 
 afterEach(() => {
     cy.task('trezorUserEnvDisconnect');
+    cy.task('stopMockedBridge');
 });
 
 declare global {
