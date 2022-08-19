@@ -23,14 +23,15 @@ export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountT
     return blockB - blockA;
 };
 
+/**
+ * Returns transactions for the active account that have been fetched so far.
+ * The list is not sorted here because it may contain null values as placeholders
+ * for transactions that have not been fetched yet. (This affects pagination.)
+ */
 export const getAccountTransactions = (
     accountKey: string,
     transactions: Record<string, WalletAccountTransaction[]>,
-) => {
-    const txs = transactions[accountKey] || [];
-    // clone array (read-only from reducer) and sort by blockHeight
-    return txs.slice(0).sort(sortByBlockHeight);
-};
+) => transactions[accountKey] || [];
 
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
@@ -279,6 +280,9 @@ export const analyzeTransactions = (
         });
     }
 
+    // make sure the known transactions are sorted properly
+    const knownSorted = known.filter(tx => tx != null).sort(sortByBlockHeight);
+
     // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
@@ -288,10 +292,10 @@ export const analyzeTransactions = (
             addTxs.push(tx);
         } else {
             let index = firstKnownIndex;
-            const len = known.length;
+            const len = knownSorted.length;
             // use simple for loop to have possibility to `break`
             for (index; index < len; index++) {
-                const kTx = known[index];
+                const kTx = knownSorted[index];
                 // known tx is pending, it will be removed
                 // move sliceIndex, set firstKnownIndex
                 if (isPending(kTx)) {
@@ -327,7 +331,7 @@ export const analyzeTransactions = (
     return filterAnalyzeResult({
         newTransactions: newTxs,
         add: addTxs,
-        remove: known.slice(0, sliceIndex),
+        remove: knownSorted.slice(0, sliceIndex),
     });
 };
 
