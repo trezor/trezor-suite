@@ -89,9 +89,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
         setSelectedPage(startPage);
     }, [account.descriptor, account.symbol, startPage]);
 
-    const total = isSearching
-        ? Math.ceil(searchedTransactions.length / perPage)
-        : account?.page?.total ?? 1;
+    const totalItems = isSearching ? searchedTransactions.length : account.history.total;
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
@@ -118,13 +116,12 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
         [slicedTransactions],
     );
 
-    // if totalPages is 1 do not render pagination
-    // if totalPages is undefined check current page and number of txs (e.g. XRP)
-    // Edge case: if there is exactly 25 txs, pagination will be displayed
-    const isOnLastPage = slicedTransactions.length < SETTINGS.TXS_PER_PAGE;
-    const shouldShowRipplePagination = !(currentPage === 1 && isOnLastPage);
+    // if total pages cannot be determined check current page and number of txs (XRP)
+    // Edge case: if there is exactly 25 Ripple txs, pagination will be displayed
     const isRipple = account.networkType === 'ripple';
-    const showPagination = isRipple ? shouldShowRipplePagination : total > 1;
+    const isLastRipplePage = isRipple && slicedTransactions.length < perPage;
+    const showRipplePagination = !(isLastRipplePage && currentPage === 1);
+    const showPagination = isRipple ? showRipplePagination : totalItems > perPage;
 
     return (
         <StyledSection
@@ -185,8 +182,9 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
                     <Pagination
                         hasPages={!isRipple}
                         currentPage={currentPage}
-                        totalPages={total}
-                        isOnLastPage={isOnLastPage}
+                        isLastPage={isLastRipplePage}
+                        perPage={perPage}
+                        totalItems={totalItems}
                         onPageSelected={onPageSelected}
                     />
                 </PaginationWrapper>
