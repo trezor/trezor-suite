@@ -32,7 +32,7 @@ export const UtxoSelectionList = ({ composedInputs, utxos }: Props) => {
                     key={`${utxo.txid}-${utxo.vout}`}
                     isChecked={isChecked(utxo)}
                     transaction={accountTransactions.find(
-                        transaction => transaction.txid === utxo.txid,
+                        transaction => transaction?.txid === utxo.txid,
                     )}
                     utxo={utxo}
                 />
