@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
 import { Checkbox, Icon, Switch, variables } from '@trezor/components';
+import { SETTINGS } from '@suite-config';
 import type { AccountUtxo } from '@trezor/connect';
+import { Pagination } from '@wallet-components';
 import { UtxoSelectionList } from '@wallet-components/UtxoSelectionList';
 import { useSendFormContext } from '@wallet-hooks';
 
@@ -50,9 +52,12 @@ interface Props {
 }
 
 export const CoinControl = ({ close }: Props) => {
+    const [currentPage, setSelectedPage] = useState(1);
+
     const { account, composedLevels, composeTransaction, feeInfo, selectedUtxos, setValue, watch } =
         useSendFormContext();
 
+    // separate dust UTXOs
     const [spendableUtxos, dustUtxos]: [AccountUtxo[], AccountUtxo[]] = account.utxo
         ? account.utxo.reduce(
               ([previousSpendable, previousDust]: [AccountUtxo[], AccountUtxo[]], current) =>
@@ -62,12 +67,14 @@ export const CoinControl = ({ close }: Props) => {
               [[], []],
           )
         : [[], []];
+
     const selectedFee = watch('selectedFee');
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
     const composedInputs = composedLevel?.type === 'final' ? composedLevel.transaction.inputs : [];
     const inputs = composedInputs.length ? composedInputs : selectedUtxos;
     const allSelected = !!selectedUtxos.length && selectedUtxos.length === spendableUtxos.length;
 
+    // calculate total
     // TypeScript does not allow Array.prototype.reduce here (https://github.com/microsoft/TypeScript/issues/36390)
     let total = 0;
     inputs.forEach(input => {
@@ -76,6 +83,21 @@ export const CoinControl = ({ close }: Props) => {
         }
     });
     const formattedTotal = formatNetworkAmount(total.toString(), account.symbol);
+
+    // pagination
+    const totalItems = account.utxo?.length || 0;
+    const utxosPerPage = SETTINGS.TXS_PER_PAGE;
+    const showPagination = totalItems > utxosPerPage;
+    const lastSpendableUtxoIndex = currentPage * utxosPerPage;
+    const spendableUtxosOnPage = spendableUtxos.slice(
+        lastSpendableUtxoIndex - utxosPerPage,
+        lastSpendableUtxoIndex,
+    );
+    const lastDustUtxoIndex = currentPage * utxosPerPage - spendableUtxos.length;
+    const dustOnPage = dustUtxos.slice(
+        lastDustUtxoIndex - utxosPerPage,
+        lastDustUtxoIndex > 0 ? lastDustUtxoIndex : 0,
+    );
 
     const handleSwitch = () => {
         setValue(
@@ -117,11 +139,11 @@ export const CoinControl = ({ close }: Props) => {
             </SecondRow>
             <Line />
             {spendableUtxos.length ? (
-                <UtxoSelectionList utxos={spendableUtxos} composedInputs={composedInputs} />
+                <UtxoSelectionList utxos={spendableUtxosOnPage} composedInputs={composedInputs} />
             ) : (
                 <Translation id="TR_NO_SPENDABLE_UTXOS" />
             )}
-            {!!dustUtxos.length && (
+            {!!dustOnPage.length && (
                 <>
                     <Line />
                     <DustRow>
@@ -130,8 +152,16 @@ export const CoinControl = ({ close }: Props) => {
                     <DustDescriptionRow>
                         <Translation id="TR_DUST_DESCRIPTION" />
                     </DustDescriptionRow>
-                    <UtxoSelectionList utxos={dustUtxos} composedInputs={composedInputs} />
+                    <UtxoSelectionList utxos={dustOnPage} composedInputs={composedInputs} />
                 </>
+            )}
+            {showPagination && (
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={totalItems}
+                    perPage={utxosPerPage}
+                    onPageSelected={setSelectedPage}
+                />
             )}
             <Line />
         </>
