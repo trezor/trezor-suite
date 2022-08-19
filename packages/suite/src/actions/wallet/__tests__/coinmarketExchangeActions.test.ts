@@ -31,7 +31,6 @@ const initStore = (state: State) => {
 };
 
 const setFetchMock = (mocks: any) => {
-    // @ts-ignore
     global.fetch = jest.fn().mockImplementation(url => {
         const mock = mocks[url];
         if (!mock) return;

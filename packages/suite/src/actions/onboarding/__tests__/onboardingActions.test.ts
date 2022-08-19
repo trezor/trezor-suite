@@ -83,7 +83,6 @@ const updateStore = (store: ReturnType<typeof createStore>) => {
         const action = store.getActions().pop();
         const { onboarding } = store.getState();
 
-        // @ts-ignore
         store.getState().onboarding = onboardingReducer(onboarding, action);
         // add action back to stack
         store.getActions().push(action);

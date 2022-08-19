@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 
+// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
 // @ts-ignore
 import commonFixtures from '../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json';
 import { transformTypedData } from '../src/index';
@@ -16,7 +17,6 @@ describe('typedData', () => {
         .forEach((test: any) => {
             it('typedData to message_hash and domain_separator_hash', () => {
                 const transformed = transformTypedData(
-                    // @ts-ignore JSON..
                     test.parameters.data,
                     test.parameters.metamask_v4_compat,
                 );

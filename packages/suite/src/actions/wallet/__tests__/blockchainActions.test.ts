@@ -114,7 +114,7 @@ describe('Blockchain Actions', () => {
             const store = initStore(getInitialState(f.initialState as Args));
             await store.dispatch(
                 blockchainActions.onDisconnect({
-                    // @ts-ignore partial params
+                    // @ts-expect-error partial params
                     coin: { shortcut: f.symbol },
                 }),
             );
@@ -165,7 +165,7 @@ describe('Blockchain Actions', () => {
                 if (f.resultTxs) {
                     const txs = store.getState().wallet.transactions.transactions;
                     Object.keys(txs).forEach(key => {
-                        // @ts-ignore
+                        // @ts-expect-error
                         const resTxs = f.resultTxs[key];
                         expect(txs[key].length).toEqual(resTxs.length);
                         txs[key].forEach((t, i) => expect(t).toMatchObject(resTxs[i]));
@@ -189,11 +189,11 @@ describe('Blockchain Actions', () => {
         const store = initStore(
             getInitialState({
                 blockchain: {
-                    // @ts-ignore partial params
+                    // @ts-expect-error partial params
                     btc: { blockHeight: 109 },
                 },
                 fees: {
-                    // @ts-ignore partial params
+                    // @ts-expect-error partial params
                     btc: { blockHeight: 100 },
                 },
             }),

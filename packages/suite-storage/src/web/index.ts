@@ -189,7 +189,7 @@ class CommonDB<TDBStructure> {
         // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
         // and I couldn't figure out how to catch it. Maybe a bug in idb?
         // So instead of using idb wrapper I use indexedDB directly, wrapped in my own promise.
-        // @ts-ignore
+        // @ts-expect-error
         const db = unwrap(await this.getDB()) as IDBDatabase;
 
         const storeName = store as string;
@@ -199,10 +199,8 @@ class CommonDB<TDBStructure> {
                 const tx = db.transaction(storeName, 'readwrite');
                 const params: [TItem, TKey | undefined] = key ? [item, key] : [item, undefined];
                 const req: IDBRequest = upsert
-                    ? // @ts-ignore
-                      tx.objectStore(storeName).put(...params)
-                    : // @ts-ignore
-                      tx.objectStore(storeName).add(...params);
+                    ? tx.objectStore(storeName).put(...params)
+                    : tx.objectStore(storeName).add(...params);
                 req.onerror = _event => {
                     reject(req.error);
                 };

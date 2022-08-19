@@ -108,7 +108,7 @@ describe('Suite Actions', () => {
     });
 
     it('closeModalApp', () => {
-        // @ts-ignore this test is interested only in router.pathname, for better maintainability ignore other properties
+        // @ts-expect-error this test is interested only in router.pathname, for better maintainability ignore other properties
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const store = initStore(state);
         // eslint-disable-next-line global-require

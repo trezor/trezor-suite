@@ -47,9 +47,9 @@ const injectStyleSheet = () => {
     style.setAttribute('type', 'text/css');
     style.setAttribute('id', 'TrezorConnectStylesheet');
 
-    // @ts-ignore
+    // @ts-expect-error
     if (style.styleSheet) {
-        // @ts-ignore
+        // @ts-expect-error
         style.styleSheet.cssText = css;
         head.appendChild(style);
     } else {
@@ -138,9 +138,9 @@ export const init = async (settings: ConnectSettings) => {
     };
 
     // IE hack
-    // @ts-ignore
+    // @ts-expect-error
     if (instance.attachEvent) {
-        // @ts-ignore
+        // @ts-expect-error
         instance.attachEvent('onload', onLoad);
     } else {
         instance.onload = onLoad;

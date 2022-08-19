@@ -232,12 +232,12 @@ function handleMessage(
 
 // TODO:
 // proper ts configuration for lib webworker
-// @ts-ignore
+// @ts-expect-error
 if (typeof onconnect !== 'undefined') {
-    // @ts-ignore
+    // @ts-expect-error
     onconnect = function (e) {
         const port = e.ports[0];
-        // @ts-ignore
+        // @ts-expect-error
         port.onmessage = function (e) {
             handleMessage(e.data, port);
         };

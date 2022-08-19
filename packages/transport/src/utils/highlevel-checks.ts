@@ -53,7 +53,7 @@ export function devices(res: any): Array<TrezorDeviceInfoWithSession> {
             path: pathS,
             session: convertSession(o.session),
             debugSession: convertSession(o.debugSession),
-            // @ts-ignore
+            // @ts-expect-error
             product: o.product,
             vendor: o.vendor,
             debug: !!o.debug,

@@ -40,7 +40,7 @@ const MessageSystemBanner = ({ message }: Props) => {
 
         let onClick: () => Window | Promise<void> | null;
         if (action === 'internal-link') {
-            // @ts-ignore: impossible to add all href options to the message system config json schema
+            // @ts-expect-error: impossible to add all href options to the message system config json schema
             onClick = () => goto(link, { anchor });
         } else if (action === 'external-link') {
             onClick = () =>

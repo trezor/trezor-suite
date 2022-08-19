@@ -36,7 +36,7 @@ jest.mock('dropbox', () => {
     };
 });
 
-// @ts-ignore
+// @ts-expect-error
 jest.mock('react-markdown', () => props => <>{props.children}</>);
 
 jest.mock('@fivebinaries/coin-selection', () => ({

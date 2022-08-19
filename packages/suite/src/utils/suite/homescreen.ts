@@ -152,7 +152,7 @@ export const fileToDataUrl = (file: File): Promise<string> => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
         reader.onload = e =>
-            // @ts-ignore
+            // @ts-expect-error
             resolve(e.target.result);
         reader.onerror = err => {
             reject(err);

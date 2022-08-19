@@ -47,22 +47,22 @@ describe('cardano utils', () => {
     expect(getAddressType('normal')).toEqual(PROTO.CardanoAddressType.BASE);
     expect(getAddressType('legacy')).toEqual(PROTO.CardanoAddressType.BASE);
 
-    // @ts-ignore
+    // @ts-expect-error
     expect(getStakingPath({ index: 1, symbol: 'ada' })).toEqual(`m/1852'/1815'/1'/2/0`);
 
-    // @ts-ignore
+    // @ts-expect-error
     expect(getStakingPath({ index: 12, symbol: 'ada' })).toEqual(`m/1852'/1815'/12'/2/0`);
     expect(getShortFingerprint('asset1dffrfk79uxwq2a8yaslcfedycgga55tuv5dezd')).toEqual(
         'asset1dffr…55tuv5dezd',
     );
 
-    // @ts-ignore params are partial
+    // @ts-expect-error params are partial
     expect(isCardanoTx({ networkType: 'cardano' }, {})).toBe(true);
-    // @ts-ignore params are partial
+    // @ts-expect-error params are partial
     expect(isCardanoTx({ networkType: 'bitcoin' }, {})).toBe(false);
-    // @ts-ignore params are partial
+    // @ts-expect-error params are partial
     expect(isCardanoExternalOutput({ address: 'addr1' }, {})).toBe(true);
-    // @ts-ignore params are partial
+    // @ts-expect-error params are partial
     expect(isCardanoExternalOutput({ addressParameters: {} }, {})).toBe(false);
 
     it('composeTxPlan', async () => {
@@ -108,7 +108,7 @@ describe('cardano utils', () => {
 
     fixtures.getChangeAddressParameters.forEach(f => {
         it(`getChangeAddressParameters: ${f.description}`, () => {
-            // @ts-ignore params are partial
+            // @ts-expect-error params are partial
             expect(getChangeAddressParameters(f.account)).toMatchObject(f.result);
         });
     });
@@ -117,7 +117,7 @@ describe('cardano utils', () => {
         it(`transformUserOutputs: ${f.description}`, () => {
             expect(
                 transformUserOutputs(
-                    // @ts-ignore params are partial
+                    // @ts-expect-error params are partial
                     f.outputs,
                     f.accountTokens,
                     f.symbol,
@@ -130,7 +130,7 @@ describe('cardano utils', () => {
     fixtures.formatMaxOutputAmount.forEach(f => {
         it(`transformUserOutputs: ${f.description}`, () => {
             expect(
-                // @ts-ignore params are partial
+                // @ts-expect-error params are partial
                 formatMaxOutputAmount(f.maxAmount, f.maxOutput, f.account),
             ).toBe(f.result);
         });
@@ -156,7 +156,7 @@ describe('cardano utils', () => {
 
     fixtures.isPoolOverSaturated.forEach(f => {
         it(`isPoolOverSaturated: ${f.description}`, () => {
-            // @ts-ignore params are partial
+            // @ts-expect-error params are partial
             expect(isPoolOverSaturated(f.pool, f.additionalStake)).toBe(f.result);
         });
     });

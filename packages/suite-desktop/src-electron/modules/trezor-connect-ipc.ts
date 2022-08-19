@@ -35,7 +35,7 @@ const init: Module = ({ mainWindow, store }) => {
         async ({ reply }: Electron.IpcMainEvent, [method, responseEvent, ...params]: Call) => {
             logger.debug(SERVICE_NAME, `TrezorConnect.${method}`);
 
-            // @ts-ignore method name union
+            // @ts-expect-error method name union
             const response = await TrezorConnect[method](...params);
 
             if (method === 'init') {

@@ -201,7 +201,7 @@ describe('Graph utils', () => {
                 },
             ],
         );
-        // @ts-ignore
+        // @ts-expect-error
         expect(utils.aggregateBalanceHistory([graphData2, graphData3], 'day', 'account')).toEqual([
             {
                 received: '1.1',

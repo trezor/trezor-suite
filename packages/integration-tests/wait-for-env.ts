@@ -84,9 +84,9 @@ const wait = async () => {
 
 // consume all unexpected outputs so that they do not go to stdout
 Object.keys(console).forEach(k => {
-    // @ts-ignore
+    // @ts-expect-error
     if (typeof console[k] === 'function') {
-        // @ts-ignore
+        // @ts-expect-error
         console[k] = () => {};
     }
 });

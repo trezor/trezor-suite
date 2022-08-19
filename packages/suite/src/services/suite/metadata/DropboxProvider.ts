@@ -155,7 +155,7 @@ class DropboxProvider extends AbstractMetadataProvider {
             await this.client.filesUpload({
                 path: `/${file}.mtdt`,
                 contents: blob,
-                // @ts-ignore
+                // @ts-expect-error
                 mode: 'overwrite',
             });
 

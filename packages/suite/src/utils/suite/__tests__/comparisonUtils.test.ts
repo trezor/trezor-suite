@@ -4,7 +4,6 @@ import * as comparisonUtils from '../comparisonUtils';
 describe('reducer utils', () => {
     fixtures.isChanged.forEach(f => {
         it(`isChanged${f.testName}`, () => {
-            // @ts-ignore
             expect(comparisonUtils.isChanged(f.prev, f.current, f.filter)).toEqual(f.result);
         });
     });

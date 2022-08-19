@@ -9,7 +9,7 @@ export const isStepInPath = (step: Step, path: AnyPath[]) => {
         return true;
     }
     return path.every((pathMember: AnyPath) =>
-        // @ts-ignore
+        // @ts-expect-error
         step.path.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
     );
 };

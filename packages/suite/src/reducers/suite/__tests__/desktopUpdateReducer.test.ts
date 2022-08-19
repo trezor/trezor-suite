@@ -11,7 +11,7 @@ const fixtures: [Action, Partial<State>][] = [
     [
         {
             type: SUITE.DESKTOP_HANDSHAKE,
-            // @ts-ignore
+            // @ts-expect-error
             payload: {
                 desktopUpdate: {
                     allowPrerelease: true,
@@ -52,7 +52,6 @@ describe('desktopUpdateReducer', () => {
     it('DESKTOP_UPDATE actions', () => {
         let lastState: State | undefined;
         fixtures.forEach(([action, state]) => {
-            // @ts-ignore
             lastState = desktopUpdateReducer(lastState, action);
             expect(lastState).toMatchObject(state);
         });

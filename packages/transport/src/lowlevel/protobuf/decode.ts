@@ -48,7 +48,7 @@ function messageToJSON(Message: Message<Record<string, unknown>>, fields: Type['
 
     Object.keys(fields).forEach(key => {
         const field = fields[key];
-        // @ts-ignore
+        // @ts-expect-error
         const value = message[key];
 
         if (field.repeated) {

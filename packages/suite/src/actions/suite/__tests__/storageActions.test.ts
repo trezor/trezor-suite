@@ -183,16 +183,13 @@ describe('Storage actions', () => {
     it('should store suite settings in the db and update them automatically', async () => {
         const store = mockStore(getInitialState());
         updateStore(store);
-        // @ts-ignore
         const f = global.fetch;
-        // @ts-ignore
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
         await store.dispatch(suiteActions.initialRunCompleted());
         store.dispatch(await preloadStore());
 
         expect(store.getState().suite.flags.initialRun).toEqual(false);
-        // @ts-ignore
         global.fetch = f;
     });
 
@@ -200,12 +197,12 @@ describe('Storage actions', () => {
         let store = mockStore(getInitialState());
         updateStore(store);
 
-        // @ts-ignore partial params
+        // @ts-expect-error partial params
         await storageActions.saveDraft({ address: 'a' }, 'account-key');
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'a' } });
 
-        // @ts-ignore partial params
+        // @ts-expect-error partial params
         await storageActions.saveDraft({ address: 'b' }, 'account-key');
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'b' } });
@@ -225,7 +222,7 @@ describe('Storage actions', () => {
                     accounts: [acc1, acc2],
                     send: {
                         drafts: {
-                            // @ts-ignore partial params
+                            // @ts-expect-error partial params
                             'desc1-btc-state1': { address: 'A' },
                         },
                     },

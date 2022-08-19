@@ -12,7 +12,7 @@ describe('TrezorConnect.init', () => {
 
     beforeAll(() => {
         // use local build, not trezor connect version hosted on trezor.connect.io
-        // @ts-ignore
+        // @ts-expect-error
         global.__TREZOR_CONNECT_SRC = process.env.TREZOR_CONNECT_SRC;
     });
 

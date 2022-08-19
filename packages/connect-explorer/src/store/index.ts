@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'development') {
         collapsed: true,
     });
 
-    // @ts-ignore
+    // @ts-expect-error
     const { devToolsExtension } = window;
     if (typeof devToolsExtension === 'function') {
         enhancers.push(devToolsExtension());

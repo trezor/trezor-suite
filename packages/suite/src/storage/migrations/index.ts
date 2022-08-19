@@ -117,7 +117,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 16) {
         // object store for send form
-        // @ts-ignore sendForm doesn't exists anymore
+        // @ts-expect-error sendForm doesn't exists anymore
         db.deleteObjectStore('sendForm');
         db.createObjectStore('sendFormDrafts');
     }
@@ -476,16 +476,16 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 return;
             }
             const state = cursor.value;
-            // @ts-ignore (token property removed)
+            // @ts-expect-error (token property removed)
             if (state.provider?.token) {
                 if (isDesktop()) {
                     state.provider.tokens = {
                         accessToken: '',
-                        // @ts-ignore
+                        // @ts-expect-error
                         refreshToken: state.provider.token,
                     };
                 }
-                // @ts-ignore
+                // @ts-expect-error
                 delete state.provider.token;
                 cursor.update(state);
             }

@@ -55,7 +55,7 @@ const getStatus = [
         status: 'unreadable',
     },
     {
-        // @ts-ignore: invalid type
+        // @ts-expect-error: invalid type
         device: getSuiteDevice({ type: 'unknown' }),
         status: 'unknown',
     },

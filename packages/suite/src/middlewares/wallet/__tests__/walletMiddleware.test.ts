@@ -91,7 +91,6 @@ describe('walletMiddleware', () => {
 
     fixtures.blockchainSubscription.forEach(f => {
         it(f.description, () => {
-            // @ts-ignore
             const initialAccounts = f.initialAccounts.map((a: any) => getWalletAccount(a));
             const store = initStore(
                 getInitialState({
@@ -101,7 +100,7 @@ describe('walletMiddleware', () => {
 
             f.actions.forEach((action: any) => {
                 const payload = Array.isArray(action.payload)
-                    ? // @ts-ignore
+                    ? // @ts-expect-error
                       action.payload.map(a => getWalletAccount(a))
                     : getWalletAccount(action.payload);
                 store.dispatch({ ...action, payload });
@@ -111,7 +110,7 @@ describe('walletMiddleware', () => {
             if (subscribe) {
                 expect(TrezorConnect.blockchainSubscribe).toBeCalledTimes(subscribe.called);
                 if (subscribe.called) {
-                    // @ts-ignore
+                    // @ts-expect-error
                     const accounts = subscribe.accounts?.map(a => getWalletAccount(a));
                     expect(TrezorConnect.blockchainSubscribe).toHaveBeenLastCalledWith({
                         accounts,

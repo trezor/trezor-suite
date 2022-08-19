@@ -49,7 +49,7 @@ const initStore = (state: State) => {
     store.subscribe(() => {
         const action = store.getActions().pop();
         const { firmware, suite } = store.getState();
-        // @ts-ignore
+        // @ts-expect-error
         store.getState().firmware = firmwareReducer(firmware, action);
         store.getState().suite = suiteReducer(suite, action);
 

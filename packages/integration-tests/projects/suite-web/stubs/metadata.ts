@@ -2,9 +2,9 @@
 // Cypress can't touch other windows/tabs it so what we do here is that we replace implementation
 // of window.open to invoke only postMessage with data that satisfy application flow
 export const stubOpen = (win: Window) => {
-    // @ts-ignore
+    // @ts-expect-error
     win.Math.random = () => 0.4; // to make tests deterministic, this value ensures state YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-    // @ts-ignore
+    // @ts-expect-error
     return () =>
         win.postMessage({ search: '?code=chicken-cho-cha&state=YYYYYYYYYY', key: 'trezor-oauth' });
 };

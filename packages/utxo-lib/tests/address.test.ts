@@ -4,7 +4,7 @@ import * as bscript from '../src/script';
 import fixtures from './__fixtures__/address';
 
 // keyof typeof NETWORKS;
-// @ts-ignore expression of type string can't be used to index type
+// @ts-expect-error expression of type string can't be used to index type
 const getNetwork = (name?: any) => (name ? NETWORKS[name] : NETWORKS.bitcoin);
 
 describe('address', () => {

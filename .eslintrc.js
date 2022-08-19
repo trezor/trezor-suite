@@ -37,6 +37,7 @@ module.exports = {
         'packages/transport/scripts/protobuf-patches/*',
     ],
     rules: {
+        '@typescript-eslint/prefer-ts-expect-error': 'error',
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
         // Enforce arrow functions only is afaik not possible. But this helps.

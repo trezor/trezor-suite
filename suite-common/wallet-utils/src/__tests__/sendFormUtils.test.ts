@@ -85,13 +85,13 @@ describe('sendForm utils', () => {
 
     it('findComposeErrors', () => {
         expect(findComposeErrors({})).toEqual([]);
-        // @ts-ignore: params
+        // @ts-expect-error: params
         expect(findComposeErrors(null)).toEqual([]);
-        // @ts-ignore: params
+        // @ts-expect-error: params
         expect(findComposeErrors(true)).toEqual([]);
-        // @ts-ignore: params
+        // @ts-expect-error: params
         expect(findComposeErrors(1)).toEqual([]);
-        // @ts-ignore: params
+        // @ts-expect-error: params
         expect(findComposeErrors('A')).toEqual([]);
 
         expect(findComposeErrors({ someField: { type: 'validate' } })).toEqual([]);
@@ -115,13 +115,13 @@ describe('sendForm utils', () => {
     });
 
     it('getBitcoinComposeOutputs', () => {
-        // @ts-ignore: invalid params
+        // @ts-expect-error: invalid params
         expect(getBitcoinComposeOutputs(null, 'btc')).toEqual([]);
-        // @ts-ignore: invalid params
+        // @ts-expect-error: invalid params
         expect(getBitcoinComposeOutputs(true, 'btc')).toEqual([]);
-        // @ts-ignore: invalid params
+        // @ts-expect-error: invalid params
         expect(getBitcoinComposeOutputs(1, 'btc')).toEqual([]);
-        // @ts-ignore: invalid params
+        // @ts-expect-error: invalid params
         expect(getBitcoinComposeOutputs('A', 'btc')).toEqual([]);
 
         expect(getBitcoinComposeOutputs({ outputs: [] }, 'btc')).toEqual([]);
@@ -220,28 +220,28 @@ describe('sendForm utils', () => {
     });
 
     it('getExternalComposeOutput', () => {
-        // @ts-ignore: invalid params
+        // @ts-expect-error: invalid params
         expect(getExternalComposeOutput(null)).toEqual(undefined);
-        // @ts-ignore: invalid params
+        // @ts-expect-error: invalid params
         expect(getExternalComposeOutput(true)).toEqual(undefined);
-        // @ts-ignore: invalid params
+        // @ts-expect-error: invalid params
         expect(getExternalComposeOutput(1)).toEqual(undefined);
-        // @ts-ignore: invalid params
+        // @ts-expect-error: invalid params
         expect(getExternalComposeOutput('A')).toEqual(undefined);
         expect(
-            // @ts-ignore: invalid params
+            // @ts-expect-error: invalid params
             getExternalComposeOutput({ outputs: [null] }),
         ).toEqual(undefined);
         expect(
-            // @ts-ignore: invalid params
+            // @ts-expect-error: invalid params
             getExternalComposeOutput({ outputs: [1] }),
         ).toEqual(undefined);
         expect(
-            // @ts-ignore: invalid params
+            // @ts-expect-error: invalid params
             getExternalComposeOutput({ outputs: ['A'] }),
         ).toEqual(undefined);
         expect(
-            // @ts-ignore: invalid params
+            // @ts-expect-error: invalid params
             getExternalComposeOutput({ outputs: [{}] }),
         ).toEqual(undefined);
 
@@ -348,24 +348,24 @@ describe('sendForm utils', () => {
         expect(calculateEthFee('', '')).toEqual('0');
         expect(calculateEthFee('1', '')).toEqual('0');
         expect(calculateEthFee('0', '1')).toEqual('0');
-        // @ts-ignore invalid params
+        // @ts-expect-error invalid params
         expect(calculateEthFee({}, {})).toEqual('0');
-        // @ts-ignore invalid params
+        // @ts-expect-error invalid params
         expect(calculateEthFee(() => {}, {})).toEqual('0');
-        // @ts-ignore invalid params
+        // @ts-expect-error invalid params
         expect(calculateEthFee(null, true)).toEqual('0');
         expect(calculateEthFee('1', '2')).toEqual('2');
     });
 
     it('getFiatRate', () => {
         expect(getFiatRate(undefined, 'usd')).toBe(undefined);
-        // @ts-ignore invalid params
+        // @ts-expect-error invalid params
         expect(getFiatRate({}, 'usd')).toBe(undefined);
-        // @ts-ignore invalid params
+        // @ts-expect-error invalid params
         expect(getFiatRate({ current: {} }, 'usd')).toBe(undefined);
-        // @ts-ignore invalid params
+        // @ts-expect-error invalid params
         expect(getFiatRate({ current: { rates: {} } }, 'usd')).toBe(undefined);
-        // @ts-ignore invalid params
+        // @ts-expect-error invalid params
         expect(getFiatRate({ current: { rates: { usd: 1 } } }, 'usd')).toBe(1);
     });
 });

@@ -23,7 +23,7 @@ import * as fixtures from '../__fixtures__/accountUtils';
 describe('account utils', () => {
     fixtures.getUtxoFromSignedTransaction.forEach(f => {
         it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
-            // @ts-ignore params are partial
+            // @ts-expect-error params are partial
             expect(getUtxoFromSignedTransaction(...f.params)).toMatchObject(f.result);
         });
     });
@@ -51,7 +51,7 @@ describe('account utils', () => {
     describe('getBip43Type', () => {
         fixtures.getBip43Type.forEach(f => {
             it(f.description, () => {
-                // @ts-ignore intentional invalid params
+                // @ts-expect-error intentional invalid params
                 const bip43 = getBip43Type(f.path);
                 expect(bip43).toBe(f.result);
             });
