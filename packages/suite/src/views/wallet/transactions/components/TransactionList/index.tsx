@@ -12,7 +12,7 @@ import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
 import Actions from './components/Actions';
 import TransactionItem from '@wallet-components/TransactionItem';
-import Pagination from './components/Pagination';
+import { Pagination } from '@wallet-components';
 import TransactionsGroup from './components/TransactionsGroup';
 import SkeletonTransactionItem from './components/SkeletonTransactionItem';
 import NoSearchResults from './components/NoSearchResults';
