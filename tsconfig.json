@@ -23,7 +23,6 @@
         "isolatedModules": true,
         "types": ["jest", "node"],
         "esModuleInterop": true,
-
         "composite": true,
         "declaration": true,
         "declarationMap": true,
@@ -42,5 +41,6 @@
         "**/protobuf-patches",
         "**/trezor-common",
         "**/jest.config.js"
-    ]
+    ],
+    "references": []
 }

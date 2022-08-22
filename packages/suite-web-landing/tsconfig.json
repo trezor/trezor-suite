@@ -12,10 +12,10 @@
     ],
     "references": [
         {
-            "path": "../../suite-common/suite-utils"
+            "path": "../../suite-common/suite-config"
         },
         {
-            "path": "../../suite-common/suite-config"
+            "path": "../../suite-common/suite-utils"
         },
         { "path": "../components" },
         { "path": "../react-utils" },

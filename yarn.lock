@@ -3804,6 +3804,71 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@motionone/animation@npm:^10.12.0":
+  version: 10.14.0
+  resolution: "@motionone/animation@npm:10.14.0"
+  dependencies:
+    "@motionone/easing": ^10.14.0
+    "@motionone/types": ^10.14.0
+    "@motionone/utils": ^10.14.0
+    tslib: ^2.3.1
+  checksum: 664f7f036418e3604bdcb267636ed21057a2036a21cdff90f9fa49b62e788cdfc3149f6f9a27e9530ebfbee3a39d6e7dcd73adaa95d16af25bfcf1e01bd95cbb
+  languageName: node
+  linkType: hard
+
+"@motionone/dom@npm:10.12.0":
+  version: 10.12.0
+  resolution: "@motionone/dom@npm:10.12.0"
+  dependencies:
+    "@motionone/animation": ^10.12.0
+    "@motionone/generators": ^10.12.0
+    "@motionone/types": ^10.12.0
+    "@motionone/utils": ^10.12.0
+    hey-listen: ^1.0.8
+    tslib: ^2.3.1
+  checksum: 123356f28e44362c4f081aae3df22e576f46bfcb07e01257b2ac64a115668448f29b8de67e4b6e692c5407cffb78ffe7cf9fa1bc064007482bab5dd23a69d380
+  languageName: node
+  linkType: hard
+
+"@motionone/easing@npm:^10.14.0":
+  version: 10.14.0
+  resolution: "@motionone/easing@npm:10.14.0"
+  dependencies:
+    "@motionone/utils": ^10.14.0
+    tslib: ^2.3.1
+  checksum: c845b7a445d6dbfb6d9d830fe8c88050345988fb6e423e63c1962506995e99efe899d6e7b14a8960b7df27aa279dfdfb02202a20de01bc65dcbd416ec2315d37
+  languageName: node
+  linkType: hard
+
+"@motionone/generators@npm:^10.12.0":
+  version: 10.14.0
+  resolution: "@motionone/generators@npm:10.14.0"
+  dependencies:
+    "@motionone/types": ^10.14.0
+    "@motionone/utils": ^10.14.0
+    tslib: ^2.3.1
+  checksum: 14cb500441f7b19dd84672c00ebeda0380fa151922118ac7e1bd13bf7b7b6bd87f876454863f3acf0849bb9c7b83a496eb0fba8f7b4d720f99bf5fa2121f056f
+  languageName: node
+  linkType: hard
+
+"@motionone/types@npm:^10.12.0, @motionone/types@npm:^10.14.0":
+  version: 10.14.0
+  resolution: "@motionone/types@npm:10.14.0"
+  checksum: 2fbd65f925c786b190d99867010960ffb458beda5f9b5499eeb0822094871ecbeded1aae917c194b605d80f0c56a55a13ff1e0fa4f6bad3ad8ff32fe5a3201dc
+  languageName: node
+  linkType: hard
+
+"@motionone/utils@npm:^10.12.0, @motionone/utils@npm:^10.14.0":
+  version: 10.14.0
+  resolution: "@motionone/utils@npm:10.14.0"
+  dependencies:
+    "@motionone/types": ^10.14.0
+    hey-listen: ^1.0.8
+    tslib: ^2.3.1
+  checksum: eb4c0a50e458ba7e7944dba7d0b063665744fed60aef9b4670bbc26fe02bed43f26595e9515f8ca6e4899ff5f31e7d81708feb42c16bf6e91c871d310085bc48
+  languageName: node
+  linkType: hard
+
 "@mrmlnc/readdir-enhanced@npm:^2.2.1":
   version: 2.2.1
   resolution: "@mrmlnc/readdir-enhanced@npm:2.2.1"
@@ -4584,137 +4649,6 @@ __metadata:
     react-native-safe-area-context: ">= 3.0.0"
     react-native-screens: ">= 3.0.0"
   checksum: 27cb45e1493759be09c3b1e7ff0d6a7c6847d021d1ce48a1ccbf375d50145cde8fd7546a63c8136026c2d159d48bcdf27f1de7c8017354f16f411a091220c129
-  languageName: node
-  linkType: hard
-
-"@react-spring/animated@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/animated@npm:9.4.4"
-  dependencies:
-    "@react-spring/shared": ~9.4.4
-    "@react-spring/types": ~9.4.4
-  peerDependencies:
-    react: ^16.8.0  || ^17.0.0
-  checksum: 9f353dcece9239a3c93df06cd33587ddc397eb99d4c8fc4bbf704543b312fed99e3c11ae03f47c778c430645e6a1ff3a97e8b3d6031f602c1a40d8be93858431
-  languageName: node
-  linkType: hard
-
-"@react-spring/core@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/core@npm:9.4.4"
-  dependencies:
-    "@react-spring/animated": ~9.4.4
-    "@react-spring/rafz": ~9.4.4
-    "@react-spring/shared": ~9.4.4
-    "@react-spring/types": ~9.4.4
-  peerDependencies:
-    react: ^16.8.0  || ^17.0.0
-  checksum: d73d774d61b6e2b0e540bcddec05d38ca9d1f434b138a84a98e9c8069522ed5da033931d43c5781c4b2073de5a4f5b9267f4d93c6930d8ac45c3f4d85db0751f
-  languageName: node
-  linkType: hard
-
-"@react-spring/konva@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/konva@npm:9.4.4"
-  dependencies:
-    "@react-spring/animated": ~9.4.4
-    "@react-spring/core": ~9.4.4
-    "@react-spring/shared": ~9.4.4
-    "@react-spring/types": ~9.4.4
-  peerDependencies:
-    konva: ">=2.6"
-    react: ^16.8.0  || ^17.0.0
-    react-konva: ^16.8.0  || ^17.0.0
-  checksum: ba6bfc4091f2eb69984db7767d7176315a62b0438c755ce645fd1413b6dac3f5a7507fe9b114633d0a27f6d08e45fcf7ba0fcd249e109a467e08022933871f62
-  languageName: node
-  linkType: hard
-
-"@react-spring/native@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/native@npm:9.4.4"
-  dependencies:
-    "@react-spring/animated": ~9.4.4
-    "@react-spring/core": ~9.4.4
-    "@react-spring/shared": ~9.4.4
-    "@react-spring/types": ~9.4.4
-  peerDependencies:
-    react: ^16.8.0  || ^17.0.0
-    react-native: ">=0.58"
-  checksum: 2daa5d49a6857e6da3372494707494e8dddec23f3138b04ff4f4e9064c7aa90caa64c1e43717458ebdaf169e86e060735726a4cfc8ca2eb140e772e4e8ad9035
-  languageName: node
-  linkType: hard
-
-"@react-spring/rafz@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/rafz@npm:9.4.4"
-  checksum: 5019d984509071b8e92d41f6e29455d141d957ce7e40eb11b55859a13425fe70fad448738d400a669cd62005c451b1f83740e0ff64084331e098e377e8e844aa
-  languageName: node
-  linkType: hard
-
-"@react-spring/shared@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/shared@npm:9.4.4"
-  dependencies:
-    "@react-spring/rafz": ~9.4.4
-    "@react-spring/types": ~9.4.4
-  peerDependencies:
-    react: ^16.8.0  || ^17.0.0
-  checksum: a15e51410b114b0e9c95e636aa07b8c2b415d1247e27e2e0d417e429b239e1c39fad1cb71e1015c8ffbc31fee76080abafc231c3c2ea5dc10961f27757abbd0d
-  languageName: node
-  linkType: hard
-
-"@react-spring/three@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/three@npm:9.4.4"
-  dependencies:
-    "@react-spring/animated": ~9.4.4
-    "@react-spring/core": ~9.4.4
-    "@react-spring/shared": ~9.4.4
-    "@react-spring/types": ~9.4.4
-  peerDependencies:
-    "@react-three/fiber": ">=6.0"
-    react: ">=16.11"
-    three: ">=0.126"
-  checksum: 46912fd5bac53786cde5d29d2ed9d708d094040ddaf2ac4722b1a8c0147bfc30cab3e1c3d5ae6b73ac9541823a48fdb9f2c5b9e38a47dc955c35982c23027d4e
-  languageName: node
-  linkType: hard
-
-"@react-spring/types@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/types@npm:9.4.4"
-  checksum: 67588de3410857e27e2300f7c28c45dbaf602a2328483e50ecf56a46776e455d2c5cbfcf1bbb555ad2fa796830ea6c01f1d2ec52bdc995119ec38bf98b9a2958
-  languageName: node
-  linkType: hard
-
-"@react-spring/web@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/web@npm:9.4.4"
-  dependencies:
-    "@react-spring/animated": ~9.4.4
-    "@react-spring/core": ~9.4.4
-    "@react-spring/shared": ~9.4.4
-    "@react-spring/types": ~9.4.4
-  peerDependencies:
-    react: ^16.8.0  || ^17.0.0
-    react-dom: ^16.8.0  || ^17.0.0
-  checksum: 7ebe8b7b0e0468e39b8e627c059ea829af8d3f2a0c41068571e3c8526f07872d8c2e4dce6f9e89d6368f955e4cbd094af12180a340a4ae53924aeabbf0f589c6
-  languageName: node
-  linkType: hard
-
-"@react-spring/zdog@npm:~9.4.4":
-  version: 9.4.4
-  resolution: "@react-spring/zdog@npm:9.4.4"
-  dependencies:
-    "@react-spring/animated": ~9.4.4
-    "@react-spring/core": ~9.4.4
-    "@react-spring/shared": ~9.4.4
-    "@react-spring/types": ~9.4.4
-  peerDependencies:
-    react: ^16.8.0  || ^17.0.0
-    react-dom: ^16.8.0  || ^17.0.0
-    react-zdog: ">=1.0"
-    zdog: ">=1.0"
-  checksum: 06a17545626a602851196c40fc836fc5d27749cdb1bea4cc92ab70d472910bd3d2ab0ae9dc8d881a520f0793ef8fb9360fb3c9ccfd9c41251840fc9ffe3928ac
   languageName: node
   linkType: hard
 
@@ -5975,7 +5909,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     "@suite-common/redux-utils": "*"
     "@suite-native/state": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/utils": "*"
     redux-mock-store: ^1.5.4
     redux-thunk: ^2.3.0
@@ -6004,7 +5938,7 @@ __metadata:
   dependencies:
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
   languageName: unknown
   linkType: soft
 
@@ -6017,7 +5951,7 @@ __metadata:
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     redux: ^4.2.0
   languageName: unknown
   linkType: soft
@@ -6039,7 +5973,7 @@ __metadata:
   resolution: "@suite-common/suite-types@workspace:suite-common/suite-types"
   dependencies:
     "@suite-common/metadata-types": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/suite-data": "*"
   languageName: unknown
   linkType: soft
@@ -6056,11 +5990,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
   dependencies:
+    "@reduxjs/toolkit": ^1.8.3
+    "@suite-common/redux-utils": "*"
     "@suite-common/suite-types": "*"
     "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
+    "@trezor/utils": "*"
     dropbox: ^10.32.0
     fake-indexeddb: ^3.1.7
+    redux: ^4.2.0
+    redux-thunk: ^2.3.0
   languageName: unknown
   linkType: soft
 
@@ -6084,7 +6023,7 @@ __metadata:
     "@suite-common/suite-utils": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-constants": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/type-utils": "*"
     "@trezor/utils": "*"
     react: 17.0.2
@@ -6107,7 +6046,7 @@ __metadata:
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-constants": "*"
     "@suite-common/wallet-types": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/urls": "*"
     "@trezor/utils": "*"
     "@types/pdfmake": ^0.1.21
@@ -6186,7 +6125,7 @@ __metadata:
     "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
     "@suite-native/navigation": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/icons": "*"
     "@trezor/styles": "*"
     react: ^17.0.2
@@ -6244,7 +6183,7 @@ __metadata:
     "@suite-native/home-graph": "*"
     "@suite-native/module-onboarding": "*"
     "@suite-native/module-settings": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/styles": "*"
   languageName: unknown
   linkType: soft
@@ -6437,13 +6376,13 @@ __metadata:
     "@types/react-truncate": ^2.3.4
     "@types/styled-components": ^5.1.26
     date-fns: ^2.29.1
+    framer-motion: ^6.5.1
     lottie-react: ^2.3.1
     polished: ^4.2.2
     react: 17.0.2
     react-date-range: ^1.4.0
     react-dom: 17.0.2
     react-select: ^5.4.0
-    react-spring: ^9.3.2
     react-svg: ^15.1.6
     react-truncate: ^2.4.0
     styled-components: ^5.3.5
@@ -6471,7 +6410,7 @@ __metadata:
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:
     "@trezor/components": "*"
-    "@trezor/connect-web": 9.0.0-beta.6
+    "@trezor/connect-web": 9.0.0-beta.7
     "@types/markdown-it": 12.2.3
     "@types/markdown-it-link-attributes": 3.0.1
     "@types/react-router": ^5.1.11
@@ -6506,7 +6445,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     copy-webpack-plugin: ^11.0.0
     html-webpack-plugin: ^5.5.0
     terser-webpack-plugin: ^5.3.3
@@ -6543,7 +6482,7 @@ __metadata:
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
     "@trezor/components": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/connect-ui": "*"
     "@trezor/urls": "*"
     "@types/react": ^17.0.0
@@ -6566,11 +6505,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-web@9.0.0-beta.6, @trezor/connect-web@workspace:packages/connect-web":
+"@trezor/connect-web@9.0.0-beta.7, @trezor/connect-web@workspace:packages/connect-web":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/utils": ^9.0.2
     "@types/chrome": 0.0.181
     "@types/w3c-web-usb": ^1.0.5
@@ -6581,7 +6520,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect@9.0.0-beta.6, @trezor/connect@workspace:packages/connect":
+"@trezor/connect@9.0.0-beta.7, @trezor/connect@workspace:packages/connect":
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
@@ -6602,6 +6541,12 @@ __metadata:
     tslib: ^2.3.1
     tsx: ^3.8.2
     version-bump-prompt: ^6.1.0
+  languageName: unknown
+  linkType: soft
+
+"@trezor/dom-utils@*, @trezor/dom-utils@workspace:packages/dom-utils":
+  version: 0.0.0-use.local
+  resolution: "@trezor/dom-utils@workspace:packages/dom-utils"
   languageName: unknown
   linkType: soft
 
@@ -6674,6 +6619,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/scripts@workspace:scripts"
   dependencies:
+    "@mobily/ts-belt": ^3.11.0
     "@types/prettier": ^2.7.0
     chalk: ^4.1.2
     fs-extra: ^10.1.0
@@ -6786,7 +6732,7 @@ __metadata:
   dependencies:
     "@sentry/electron": 3.0.0
     "@suite-common/suite-utils": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/connect-common": "*"
     "@trezor/request-manager": "*"
     "@trezor/suite-analytics": "*"
@@ -6834,7 +6780,7 @@ __metadata:
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@suite-native/state": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
     "@trezor/styles": "*"
     "@trezor/theme": "*"
     "@trezor/transport-native": "*"
@@ -6940,7 +6886,8 @@ __metadata:
     "@testing-library/react": 12.1.5
     "@testing-library/user-event": 12.8.3
     "@trezor/components": "*"
-    "@trezor/connect": 9.0.0-beta.6
+    "@trezor/connect": 9.0.0-beta.7
+    "@trezor/dom-utils": "*"
     "@trezor/react-utils": "*"
     "@trezor/suite-analytics": "*"
     "@trezor/suite-data": "*"
@@ -6975,7 +6922,7 @@ __metadata:
     dropbox: ^10.32.0
     ethereumjs-util: ^7.1.5
     file-saver: ^2.0.5
-    framer-motion: ^5.6.0
+    framer-motion: ^6.5.1
     history: ^4.10.1
     immer: ^9.0.15
     jest-watch-typeahead: 0.6.5
@@ -6994,7 +6941,6 @@ __metadata:
     react-qr-reader: ^2.2.1
     react-redux: 7.2.2
     react-select: ^5.4.0
-    react-spring: ^9.3.2
     react-svg: ^15.1.6
     react-test-renderer: ^17.0.1
     react-toastify: ^9.0.8
@@ -13563,13 +13509,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debounce@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "debounce@npm:1.2.1"
-  checksum: 682a89506d9e54fb109526f4da255c5546102fbb8e3ae75eef3b04effaf5d4853756aee97475cd4650641869794e44f410eeb20ace2b18ea592287ab2038519e
-  languageName: node
-  linkType: hard
-
 "debug@npm:*, debug@npm:4, debug@npm:^4.0.0, debug@npm:^4.0.1, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4, debug@npm:~4.3.1, debug@npm:~4.3.2":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
@@ -16936,32 +16875,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "framer-motion@npm:5.6.0"
+"framer-motion@npm:^6.5.1":
+  version: 6.5.1
+  resolution: "framer-motion@npm:6.5.1"
   dependencies:
     "@emotion/is-prop-valid": ^0.8.2
+    "@motionone/dom": 10.12.0
     framesync: 6.0.1
     hey-listen: ^1.0.8
     popmotion: 11.0.3
-    react-merge-refs: ^1.1.0
-    react-use-measure: ^2.1.1
     style-value-types: 5.0.0
     tslib: ^2.1.0
   peerDependencies:
-    "@react-three/fiber": "*"
-    react: ">=16.8 || ^17.0.0"
-    react-dom: ">=16.8 || ^17.0.0"
-    three: ^0.135.0
+    react: ">=16.8 || ^17.0.0 || ^18.0.0"
+    react-dom: ">=16.8 || ^17.0.0 || ^18.0.0"
   dependenciesMeta:
     "@emotion/is-prop-valid":
       optional: true
-  peerDependenciesMeta:
-    "@react-three/fiber":
-      optional: true
-    three:
-      optional: true
-  checksum: 384374bebda443ea2a149951337c4f82b9c3611e138e8dd8db6439bbccc4523968deb72dde83d5686223ec78be58f8ae1f51b9e34b585e4c50df15266e586a60
+  checksum: 737959063137b4ccafe01e0ac0c9e5a9531bf3f729f62c34ca7a5d7955e6664f70affd22b044f7db51df41acb21d120a4f71a860e17a80c4db766ad66f2153a1
   languageName: node
   linkType: hard
 
@@ -27066,13 +26997,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-merge-refs@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "react-merge-refs@npm:1.1.0"
-  checksum: 90884352999002d868ab9f1bcfe3222fb0f2178ed629f1da7e98e5a9b02a2c96b4aa72800db92aabd69d2483211b4be57a2088e89a11a0b660e7ada744d4ddf7
-  languageName: node
-  linkType: hard
-
 "react-native-codegen@npm:^0.0.17":
   version: 0.0.17
   resolution: "react-native-codegen@npm:0.0.17"
@@ -27416,20 +27340,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-spring@npm:^9.3.2":
-  version: 9.4.4
-  resolution: "react-spring@npm:9.4.4"
-  dependencies:
-    "@react-spring/core": ~9.4.4
-    "@react-spring/konva": ~9.4.4
-    "@react-spring/native": ~9.4.4
-    "@react-spring/three": ~9.4.4
-    "@react-spring/web": ~9.4.4
-    "@react-spring/zdog": ~9.4.4
-  checksum: fb2b36580d61f3e70767635ffcdb5b3751a7f12c3c3a78171ad997076dfa032f2cf77cffc9befd13b8194934e083309906beae971a013d848cc46a702732a283
-  languageName: node
-  linkType: hard
-
 "react-svg@npm:^15.1.6":
   version: 15.1.6
   resolution: "react-svg@npm:15.1.6"
@@ -27518,18 +27428,6 @@ __metadata:
     react: "*"
     tslib: "*"
   checksum: 070a7e9e3cdd8b0ec91a2ac9ac0a8df6bcb3fd183d2775bf0f439b9870fc1faf5b4fa9fe9741abd5187f0a35be645cb4004e1c9ebda9ada7e5d0a624f94910cb
-  languageName: node
-  linkType: hard
-
-"react-use-measure@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "react-use-measure@npm:2.1.1"
-  dependencies:
-    debounce: ^1.2.1
-  peerDependencies:
-    react: ">=16.13"
-    react-dom: ">=16.13"
-  checksum: b8e8939229d463c3c505f7b617925c0228efae0cd6f651371f463846417b06c9170be57df51293a61027c41770f8a090fdb8a08717c4e36290ccb496e0318f1f
   languageName: node
   linkType: hard
 

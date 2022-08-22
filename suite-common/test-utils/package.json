@@ -10,12 +10,12 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "^1.8.3",
+        "@suite-common/redux-utils": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/wallet-types": "*",
-        "@suite-common/redux-utils": "*",
         "@trezor/connect": "9.0.0-beta.7",
         "@trezor/utils": "*",
-        "@reduxjs/toolkit": "^1.8.3",
         "dropbox": "^10.32.0",
         "fake-indexeddb": "^3.1.7",
         "redux": "^4.2.0",

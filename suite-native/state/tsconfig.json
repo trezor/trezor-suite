@@ -2,16 +2,16 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/test-utils"
         },
+        { "path": "../home-graph" },
         { "path": "../module-onboarding" },
         { "path": "../module-settings" },
-        { "path": "../home-graph" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/styles" }
     ]
 }

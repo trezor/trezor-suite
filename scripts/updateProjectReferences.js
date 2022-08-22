@@ -6,6 +6,27 @@ import minimatch from 'minimatch';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import chalk from 'chalk';
+import tsBelt from '@mobily/ts-belt';
+
+const { A, D, pipe } = tsBelt;
+
+const getWorkspaceList = () => {
+    const rawList = execSync('yarn workspaces list --json --verbose')
+        .toString()
+        .replaceAll('}', '},');
+    const indexOfLastComma = rawList.lastIndexOf(',');
+    const validJsonString = `[ ${
+        rawList.slice(0, indexOfLastComma) + rawList.slice(indexOfLastComma + 1)
+    } ]`;
+    const workspaces = pipe(
+        JSON.parse(validJsonString),
+        A.sortBy((current, next) => (current?.name > next?.name ? 1 : -1)),
+        A.map(workspace => [workspace.name, workspace]),
+        D.fromPairs,
+    );
+
+    return workspaces;
+};
 
 (async () => {
     const { argv } = yargs(hideBin(process.argv))
@@ -37,9 +58,7 @@ import chalk from 'chalk';
         }
     };
 
-    const workspaces = JSON.parse(
-        JSON.parse(execSync('yarn workspaces --json info').toString()).data,
-    );
+    const workspaces = getWorkspaceList();
 
     // NOTE: Workspace keys must be sorted due to file systems being a part of the equation.
     Object.keys(workspaces)
@@ -78,11 +97,8 @@ import chalk from 'chalk';
                 path: path.relative(workspacePath, path.resolve(process.cwd(), typingPath)),
             }));
 
-            Object.values(workspace.workspaceDependencies).forEach(dependencyName => {
-                const dependencyPath = path.resolve(
-                    process.cwd(),
-                    workspaces[dependencyName].location,
-                );
+            Object.values(workspace.workspaceDependencies).forEach(dependencyLocation => {
+                const dependencyPath = path.resolve(process.cwd(), dependencyLocation);
                 const relativeDependencyPath = path.relative(workspacePath, dependencyPath);
 
                 if (relativeDependencyPath) {
@@ -90,7 +106,7 @@ import chalk from 'chalk';
                 } else {
                     console.warn(
                         chalk.yellow(
-                            `${dependencyName} might be referencing itself in package.json#dependencies.`,
+                            `${dependencyLocation} might be referencing itself in package.json#dependencies.`,
                         ),
                     );
                 }
