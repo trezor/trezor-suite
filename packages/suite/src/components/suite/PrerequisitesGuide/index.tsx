@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables, motionEasing } from '@trezor/components';
 import { ConnectDevicePrompt } from '@suite-components';
 import { isWebUsb } from '@suite-utils/transport';
 import { getStatus, deviceNeedsAttention } from '@suite-utils/device';
@@ -20,7 +20,6 @@ import { DeviceNoFirmware } from './components/DeviceNoFirmware';
 import { DeviceUpdateRequired } from './components/DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './components/DeviceDisconnectRequired';
 import { motion } from 'framer-motion';
-import { enterEase } from '@suite-config/animation';
 
 const Wrapper = styled.div<{ padded?: boolean }>`
     display: flex;
@@ -116,7 +115,7 @@ export const PrerequisitesGuide = ({
             <TipsContainer
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.5, ease: enterEase }}
+                transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
             >
                 <TipComponent />
             </TipsContainer>

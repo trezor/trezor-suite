@@ -3,11 +3,10 @@ import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
 import { UseFormMethods } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
-import { SelectBar, variables } from '@trezor/components';
+import { SelectBar, variables, motionAnimation } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useLayoutSize } from '@suite-hooks';
-import { ANIMATION } from '@suite-config';
 import { InputError } from '@wallet-components';
 import { Account } from '@wallet-types';
 import { ExtendedMessageDescriptor } from '@suite-types';
@@ -204,7 +203,7 @@ export const Fees = ({
                 <FeeInfoWrapper>
                     <AnimatePresence initial={false}>
                         {isCustomLevel ? (
-                            <motion.div style={{ width: '100%' }} {...ANIMATION.EXPAND}>
+                            <motion.div style={{ width: '100%' }} {...motionAnimation.expand}>
                                 <CustomFee
                                     networkType={networkType}
                                     feeInfo={feeInfo}

@@ -1,5 +1,5 @@
-export default {
-    EXPAND: {
+export const motionAnimation = {
+    expand: {
         variants: {
             initial: {
                 overflow: 'unset',
@@ -17,6 +17,9 @@ export default {
     },
 };
 
-export const transitionEase = [0.65, 0, 0.35, 1];
-export const enterEase = [0.33, 1, 0.68, 1];
-export const exitEase = [0.32, 0, 0.67, 0];
+export const motionEasing = {
+    transition: [0.65, 0, 0.35, 1],
+    enter: [0.33, 1, 0.68, 1],
+    //  exit easy is not used anywhere?
+    exit: [0.32, 0, 0.67, 0],
+};

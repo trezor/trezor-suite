@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Icon, variables, RadioButton } from '@trezor/components';
+import { Icon, variables, RadioButton, motionAnimation } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, HiddenPlaceholder } from '@suite-components';
-import { ANIMATION } from '@suite-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useRbfContext } from '@wallet-hooks/useRbfForm';
 import GreyCard from '../GreyCard';
@@ -89,7 +88,7 @@ const DecreasedOutputs = () => {
 
     return (
         <AnimatePresence initial>
-            <motion.div {...ANIMATION.EXPAND}>
+            <motion.div {...motionAnimation.expand}>
                 <GreyCard>
                     <WarnHeader>
                         <Translation id="TR_DECREASE_TX" />
