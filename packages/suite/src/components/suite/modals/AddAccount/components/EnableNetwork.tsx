@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Icon, P, useTheme } from '@trezor/components';
+import { Icon, P, useTheme, motionAnimation } from '@trezor/components';
 
 import { CoinsList, Translation } from '@suite-components';
 import { Network } from '@wallet-types';
-import { ANIMATION } from '@suite-config';
+
 import { MoreCoins } from './MoreCoins';
 
 const TestnetCoinsTrigger = styled.div`
@@ -29,7 +29,7 @@ const Label = styled(
         isTestnetVisible ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY};
 `;
 
-const TestnetCoinsWrapper = styled(motion.div).attrs(() => ({ ...ANIMATION.EXPAND }))`
+const TestnetCoinsWrapper = styled(motion.div).attrs(() => ({ ...motionAnimation.expand }))`
     display: flex;
     flex-direction: column;
 `;

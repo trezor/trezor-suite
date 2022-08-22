@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Network } from '@wallet-types';
-import { CoinLogo, Icon, variables, useTheme } from '@trezor/components';
+import { CoinLogo, Icon, variables, useTheme, motionAnimation } from '@trezor/components';
 import {
     FiatValue,
     AmountUnitSwitchWrapper,
@@ -14,7 +14,6 @@ import { CoinBalance } from '@wallet-components';
 import { isTestnet } from '@suite-common/wallet-utils';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useAccountSearch, useLoadingSkeleton } from '@suite-hooks';
-import { ANIMATION } from '@suite-config';
 import { motion } from 'framer-motion';
 
 const LogoWrapper = styled.div`
@@ -60,7 +59,7 @@ const Col = (props: React.ComponentProps<typeof StyledCol>) => {
     const newProps = { ...props };
     delete newProps.isLastRow;
 
-    return <StyledCol {...ANIMATION.EXPAND} {...newProps} $isLastRow={props.isLastRow} />;
+    return <StyledCol {...motionAnimation.expand} {...newProps} $isLastRow={props.isLastRow} />;
 };
 
 const CoinNameWrapper = styled(Col)`

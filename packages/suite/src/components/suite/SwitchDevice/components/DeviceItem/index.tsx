@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { useTheme, variables, Icon, DeviceImage } from '@trezor/components';
+import { useTheme, variables, Icon, DeviceImage, motionAnimation } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
-import { ANIMATION } from '@suite-config';
 import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -246,7 +245,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
             {!needsAttention && (
                 <AnimatePresence initial={false}>
                     {!isUnknown && isExpanded && (
-                        <motion.div {...ANIMATION.EXPAND}>
+                        <motion.div {...motionAnimation.expand}>
                             <WalletsWrapper enabled>
                                 {instancesWithState.length > 0 && (
                                     <WalletsTooltips>

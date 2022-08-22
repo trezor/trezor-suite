@@ -15,7 +15,7 @@ import { NoTransport } from './components/NoTransport';
 import { NoDeviceDetected } from './components/NoDeviceDetected';
 import { UnexpectedDeviceState } from './components/UnexpectedDeviceState';
 import { motion } from 'framer-motion';
-import { enterEase } from '@suite-config/animation';
+import { motionEasing } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -87,7 +87,7 @@ export const ConnectDevicePromptManager = ({
             <ContentWrapper
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.5, ease: enterEase }}
+                transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
             >
                 {content ?? children}
             </ContentWrapper>

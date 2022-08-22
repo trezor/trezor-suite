@@ -2,11 +2,10 @@ import React, { useRef, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSendFormContext } from '@wallet-hooks';
-import { variables } from '@trezor/components';
+import { variables, motionAnimation } from '@trezor/components';
 import { Address } from './components/Address';
 import Amount from './components/Amount';
 import OpReturn from './components/OpReturn';
-import { ANIMATION } from '@suite-config';
 
 const Wrapper = styled.div``;
 
@@ -69,7 +68,7 @@ const Outputs = ({ disableAnim }: Props) => {
         }
     }, [outputs.length, renderedOutputs, setRenderedOutputs]);
 
-    const animation = outputs.length > 1 && !disableAnim ? ANIMATION.EXPAND : {}; // do not animate if there is only 1 output, prevents animation on clear
+    const animation = outputs.length > 1 && !disableAnim ? motionAnimation.expand : {}; // do not animate if there is only 1 output, prevents animation on clear
 
     return (
         <AnimatePresence initial={false}>

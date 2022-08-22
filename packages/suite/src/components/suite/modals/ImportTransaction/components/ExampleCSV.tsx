@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { P, Icon, variables } from '@trezor/components';
+import { P, Icon, variables, motionAnimation } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
-import { ANIMATION } from '@suite-config';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,7 +64,7 @@ export const ExampleCSV = () => {
 
             <AnimatePresence initial={false}>
                 {isExpanded && (
-                    <ExpandWrapper {...ANIMATION.EXPAND}>
+                    <ExpandWrapper {...motionAnimation.expand}>
                         {/* CSV keys shouldn't be translated */}
                         <P size="small">address,amount,currency</P>
                         <P size="small">

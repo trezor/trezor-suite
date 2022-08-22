@@ -3,9 +3,16 @@ import styled, { css } from 'styled-components';
 import { motion, Variants } from 'framer-motion';
 import Text from '@onboarding-components/Text';
 import { Translation } from '@suite-components';
-import { H1, variables, Button, Image, useTheme, ImageType } from '@trezor/components';
+import {
+    H1,
+    variables,
+    Button,
+    Image,
+    useTheme,
+    ImageType,
+    motionEasing,
+} from '@trezor/components';
 import useMeasure from 'react-use/lib/useMeasure';
-import { transitionEase } from '@suite-config/animation';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
 
 const BoxWrapper = styled(
@@ -217,7 +224,7 @@ export const Box = ({
             nested={nested}
             variants={expandable ? wrapperVariants : undefined}
             animate={expanded ? 'expanded' : 'closed'}
-            transition={{ duration: 0.4, ease: transitionEase }}
+            transition={{ duration: 0.4, ease: motionEasing.transition }}
             onClick={expandable && !expanded ? onToggle : undefined}
             data-test="@onboarding/box-animated"
             {...rest}
@@ -242,7 +249,7 @@ export const Box = ({
                 <motion.div
                     variants={expandable ? animationVariants : undefined}
                     animate={expanded ? 'expanded' : 'closed'}
-                    transition={{ duration: 0.4, ease: transitionEase }}
+                    transition={{ duration: 0.4, ease: motionEasing.transition }}
                 >
                     <div ref={heightRef}>
                         {expandable && expanded && (

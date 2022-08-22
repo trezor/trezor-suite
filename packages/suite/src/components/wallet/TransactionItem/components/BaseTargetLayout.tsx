@@ -2,8 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { HiddenPlaceholder } from '@suite-components';
-import { variables } from '@trezor/components';
-import { ANIMATION } from '@suite-config';
+import { variables, motionAnimation } from '@trezor/components';
 
 export const MIN_ROW_HEIGHT = '23px';
 
@@ -114,7 +113,7 @@ export const BaseTargetLayout = ({
     isLast,
     ...rest
 }: BaseTargetLayoutProps) => {
-    const animation = useAnimation ? ANIMATION.EXPAND : {};
+    const animation = useAnimation ? motionAnimation.expand : {};
 
     return (
         <TargetWrapper {...animation} {...rest}>

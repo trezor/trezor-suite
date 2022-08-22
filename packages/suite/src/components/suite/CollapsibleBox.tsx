@@ -2,8 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, Variants } from 'framer-motion';
 import useMeasure from 'react-use/lib/useMeasure';
-import { Icon, variables } from '@trezor/components';
-import { transitionEase } from '@suite-config/animation';
+import { Icon, variables, motionEasing } from '@trezor/components';
 
 const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
     display: flex;
@@ -199,7 +198,7 @@ export const CollapsibleBox = ({
                 animate={collapsed ? 'closed' : 'opened'}
                 initial="closed"
                 variants={animationVariants}
-                transition={{ duration: 0.35, ease: transitionEase }}
+                transition={{ duration: 0.35, ease: motionEasing.transition }}
                 style={{ overflow: 'hidden' }}
                 data-test="@collapsible-box/body"
             >

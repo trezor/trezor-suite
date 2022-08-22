@@ -1,14 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { variables, Icon, Button, useTheme } from '@trezor/components';
+import { variables, Icon, Button, useTheme, motionEasing } from '@trezor/components';
 import { DeviceAnimation } from '@onboarding-components';
 import { Translation } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import type { PrerequisiteType } from '@suite-types';
 import { motion } from 'framer-motion';
-import { enterEase } from '@suite-config/animation';
 
 const Wrapper = styled(motion.div)`
     display: flex;
@@ -97,7 +96,7 @@ export const ConnectDevicePrompt = ({
         <Wrapper
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: -0 }}
-            transition={{ delay: 0.2, duration: 0.6, ease: enterEase }}
+            transition={{ delay: 0.2, duration: 0.6, ease: motionEasing.enter }}
             data-test="@connect-device-prompt"
         >
             <ImageWrapper>
