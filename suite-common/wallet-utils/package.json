@@ -8,7 +8,6 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
-        "test": "run-s test:*",
         "test:unit": "jest",
         "test-unit:watch": "jest -o --watch"
     },

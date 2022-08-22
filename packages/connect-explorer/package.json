@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack/dev.webpack.config.ts",
-        "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack/prod.webpack.config.ts",
+        "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn wp --config ./webpack/dev.webpack.config.ts",
+        "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn wp --config ./webpack/prod.webpack.config.ts",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --build tsconfig.json"
     },

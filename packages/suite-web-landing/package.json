@@ -9,7 +9,7 @@
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "dev": "yarn workspace @trezor/suite-data copy-static-files && next",
         "build:app": "next build && next export -o build",
-        "build": "run-s copy-files build:app"
+        "build": "yarn copy-files && yarn build:app"
     },
     "dependencies": {
         "@suite-common/suite-config": "*",
