@@ -1,16 +1,8 @@
 // @group:migrations
 // @retry=2
 
-let firstTxLabel = '';
 const from = '/release/22.7/web';
 const to = '/develop/web';
-
-const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
-const testData = {
-    accPhrase: 'doggo je dobros',
-};
-// this test can be run only in sldev so we ignore baseUrl env variable
-const baseUrl = 'https://suite.corp.sldev.cz/suite-web';
 
 describe('Database migration', () => {
     /**
@@ -31,6 +23,14 @@ describe('Database migration', () => {
         //
         // Test data preparation
         //
+        const testData = {
+            accPhrase: 'doggo je dobros',
+            btcAddress: 'bc1qkmdl2z9u503r6r5s6kyrczje60e2ye7ne7q53e',
+        };
+        // this test can be run only in sldev so we ignore baseUrl env variable
+        const baseUrl = 'https://suite.corp.sldev.cz/suite-web';
+        const btcAddressInputSelector = 'outputs[0].address';
+        const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
         cy.viewport(1080, 1440);
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
@@ -70,18 +70,21 @@ describe('Database migration', () => {
         cy.getTestElement('@discovery/loader').should('not.exist');
         cy.discoveryShouldFinish();
 
-        // check and store address of first btc tx
         cy.getTestElement('@suite/menu/wallet-index').click();
-        cy.get('[data-test^="@metadata/outputLabel"]')
-            .first()
-            .first()
-            .should('be.visible')
-            .then(element => {
-                console.log(element);
-                firstTxLabel = element.text();
-                console.log('firstTxLabel', firstTxLabel);
-            });
 
+        // in the Send form, fill in a btc address
+        cy.getTestElement('@wallet/menu/wallet-send').click();
+        cy.getTestElement(btcAddressInputSelector).should('be.visible').type(testData.btcAddress);
+        cy.wait(500); // wait has to be for a state save to happen
+        cy.getTestElement('@wallet/menu/close-button').last().click();
+
+        // check and store address of first btc tx
+        cy.get('[data-test^="@metadata/outputLabel"] > span')
+            .should('be.visible')
+            .first()
+            .invoke('text')
+            .as('firstTxLabel');
+        // remember the walllet
         cy.getTestElement('@menu/switch-device').click();
         cy.contains(hiddenWalletSelector, 'Hidden wallet #1')
             .find('[data-test*="toggle-remember-switch"]')
@@ -103,15 +106,14 @@ describe('Database migration', () => {
 
         cy.get('[data-test^="@metadata/outputLabel"]').first().should('be.visible');
 
-        // check and store address of first btc tx
+        // check the first tx and verify it agains the stored one
         cy.get('[data-test^="@metadata/outputLabel"]')
             .first()
-            .first()
-            .then(element => {
-                // todo: this is weird, firstTxLabel contains some more chars: "add label"
-                if (!firstTxLabel.includes(element.text())) {
-                    throw new Error('tx does not match');
-                }
+            .invoke('text')
+            .then(readFirstTx => {
+                cy.get('@firstTxLabel').then(savedLabel => {
+                    expect(readFirstTx).to.be.eq(savedLabel);
+                });
             });
 
         // go to receive tab, trigger show address to make sure passphrase is properly cached
@@ -121,10 +123,20 @@ describe('Database migration', () => {
 
         // device not connected warning modal
         cy.getTestElement('@modal');
-        cy.getTestElement('@modal/close-button').click();
+        cy.getTestElement('@modal/close-button').click().should('not.exist');
 
         cy.task('startEmu');
         cy.getTestElement('@deviceStatus-connected').should('be.visible');
-        cy.getTestElement('@wallet/receive/reveal-address-button').click();
+        cy.getTestElement('@wallet/menu/close-button').last().click();
+
+        // checking the Send form
+        cy.getTestElement('@wallet/menu/wallet-send').click();
+        cy.getTestElement(btcAddressInputSelector)
+            .should('be.visible')
+            .invoke('attr', 'value')
+            .should('eq', testData.btcAddress);
+        cy.getTestElement('@wallet/menu/close-button').last().click();
+
+        cy.get('body').should('have.css', 'background-color', 'rgb(24, 25, 26)');
     });
 });
