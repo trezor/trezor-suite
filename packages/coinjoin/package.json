@@ -16,7 +16,8 @@
     "sideEffects": false,
     "main": "src/index",
     "browser": {
-        "./src/controller": "./src/controller.browser",
+        "./src/backend/CoinjoinFilterController": "./src/backend/CoinjoinFilterController.browser",
+        "./src/backend/CoinjoinStorage": false,
         "better-sqlite3": false
     },
     "scripts": {

@@ -1,13 +1,27 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable max-classes-per-file */
+
 declare module 'golomb' {
     class Golomb {
         constructor();
-        n: number;
-        p: number;
-        m: number;
+        n: Number;
+        p: Number;
+        m: Number;
         data: Buffer;
         match(key: Buffer, script: Buffer): boolean;
+        static fromItems(P: Number, key: Buffer, items: Buffer[]): Golomb;
+        static fromBytes(N: Number, P: Number, data: Buffer): Golomb;
+        static fromNBytes(P: Number, data: Buffer): Golomb;
+        static fromPBytes(N: Number, data: Buffer): Golomb;
+        static fromNPBytes(data: Buffer): Golomb;
+        static fromRaw(data: Buffer): Golomb;
     }
     export = Golomb;
 }
 
-declare module 'n64';
+declare module 'n64' {
+    class U64 extends Number {
+        constructor(n: Number);
+        mul(b: U64): U64;
+    }
+}
