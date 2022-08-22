@@ -21,8 +21,8 @@
     "main": "lib/index",
     "browser": {
         "./lib/index": "./lib/index-browser",
-        "./lib/workers/workers": "./lib/workers/workers-browser",
-        "./lib/utils/assets": "./lib/utils/assets-browser"
+        "./lib/utils/assets": "./lib/utils/assets-browser",
+        "./lib/workers/workers": "./lib/workers/workers-browser"
     },
     "react-native": {
         "./lib/index": "./lib/index",
@@ -61,6 +61,7 @@
     "devDependencies": {
         "@types/parse-uri": "^1.0.0",
         "@types/randombytes": "^2.0.0",
+        "tsx": "^3.8.2",
         "version-bump-prompt": "^6.1.0"
     }
 }

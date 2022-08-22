@@ -11,10 +11,11 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
-        "@suite-common/suite-types": "*",
-        "@suite-common/wallet-types": "*",
-        "@suite-common/wallet-config": "*",
         "@suite-common/notifications": "*",
+        "@suite-common/suite-types": "*",
+        "@suite-common/wallet-config": "*",
+
+        "@suite-common/wallet-types": "*",
         "@trezor/connect": "9.0.0-beta.7",
         "redux": "^4.2.0"
     }

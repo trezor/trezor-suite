@@ -11,8 +11,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@suite-common/wallet-config": "*",
         "@suite-common/suite-types": "*",
+        "@suite-common/wallet-config": "*",
         "@trezor/connect": "9.0.0-beta.7"
     }
 }

@@ -10,10 +10,10 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@suite-common/wallet-config": "*",
-        "@suite-common/wallet-constants": "*",
         "@suite-common/intl-types": "*",
         "@suite-common/suite-utils": "*",
+        "@suite-common/wallet-config": "*",
+        "@suite-common/wallet-constants": "*",
         "@trezor/connect": "9.0.0-beta.7",
         "@trezor/type-utils": "*",
         "@trezor/utils": "*",

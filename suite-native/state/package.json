@@ -11,12 +11,12 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
-        "@trezor/styles": "*",
-        "@trezor/utils": "*",
         "@suite-common/redux-utils": "*",
         "@suite-common/test-utils": "*",
+        "@suite-native/home-graph": "*",
         "@suite-native/module-onboarding": "*",
         "@suite-native/module-settings": "*",
-        "@suite-native/home-graph": "*"
+        "@trezor/connect": "9.0.0-beta.7",
+        "@trezor/styles": "*"
     }
 }

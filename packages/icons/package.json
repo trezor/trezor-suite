@@ -18,6 +18,7 @@
         "react-native": "0.68.2"
     },
     "devDependencies": {
-        "svgo": "2.8.0"
+        "svgo": "2.8.0",
+        "tsx": "^3.8.2"
     }
 }

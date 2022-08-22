@@ -20,6 +20,5 @@
     "dependencies": {
         "broadcast-channel": "^4.14.0",
         "idb": "^7.0.2"
-    },
-    "devDependencies": {}
+    }
 }

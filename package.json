@@ -18,7 +18,7 @@
     },
     "scripts": {
         "_______ Hooks _______": "Yarn hooks.",
-        "postinstall": "yarn run patch && yarn lerna run patch",
+        "postinstall": "yarn run patch",
         "_______ Library Scripts #####": "Some libraries have their own build scripts.",
         "build:libs": "lerna run build:lib",
         "suite:build:web": "yarn workspace @trezor/suite-web build",

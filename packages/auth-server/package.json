@@ -18,6 +18,7 @@
         "node-fetch": "^2.6.7"
     },
     "devDependencies": {
-        "@types/cors": "^2.8.12"
+        "@types/cors": "^2.8.12",
+        "tsx": "^3.8.2"
     }
 }

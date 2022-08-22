@@ -11,8 +11,8 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@trezor/utils": "*",
         "@trezor/type-utils": "*",
+        "@trezor/utils": "*",
         "react": "17.0.2"
     }
 }

@@ -37,6 +37,7 @@
         "karma-sourcemap-loader": "^0.3.8",
         "karma-webpack": "^5.0.0",
         "playwright": "^1.22.2",
+        "tsx": "^3.8.2",
         "ws": "^7.5.5",
         "xvfb-maybe": "^0.2.1"
     }
