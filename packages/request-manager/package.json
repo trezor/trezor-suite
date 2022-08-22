@@ -17,5 +17,8 @@
     },
     "dependencies": {
         "@trezor/utils": "*"
+    },
+    "devDependencies": {
+        "rimraf": "^3.0.2"
     }
 }

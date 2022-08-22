@@ -25,5 +25,8 @@
         "test:unit": "jest --verbose -c jest.config.js",
         "type-check": "tsc --build tsconfig.json",
         "build:lib": "rimraf lib && tsc --build ./tsconfig.lib.json"
+    },
+    "devDependencies": {
+        "rimraf": "^3.0.2"
     }
 }

@@ -27,6 +27,7 @@
         "stellar-sdk": "^10.1.0"
     },
     "devDependencies": {
+        "rimraf": "^3.0.2",
         "stellar-sdk": "^10.1.0"
     },
     "dependencies": {

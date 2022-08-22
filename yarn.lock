@@ -6327,6 +6327,7 @@ __metadata:
     cors: ^2.8.5
     express: ^4.18.1
     node-fetch: ^2.6.7
+    rimraf: ^3.0.2
     tsx: ^3.8.2
   languageName: unknown
   linkType: soft
@@ -6341,6 +6342,7 @@ __metadata:
     bignumber.js: ^9.1.0
     events: ^3.3.0
     html-webpack-plugin: ^5.5.0
+    rimraf: ^3.0.2
     ripple-lib: 1.10.0
     socks-proxy-agent: 6.1.1
     tiny-worker: ^2.3.0
@@ -6402,6 +6404,8 @@ __metadata:
 "@trezor/connect-common@*, @trezor/connect-common@0.0.9, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
+  dependencies:
+    rimraf: ^3.0.2
   languageName: unknown
   linkType: soft
 
@@ -6432,6 +6436,7 @@ __metadata:
     redux: ^4.2.0
     redux-logger: ^3.0.6
     redux-thunk: ^2.3.0
+    rimraf: ^3.0.2
     stringify-object: ^3.3.0
     styled-components: ^5.3.5
     ts-loader: ^9.3.1
@@ -6448,6 +6453,7 @@ __metadata:
     "@trezor/connect": 9.0.0-beta.7
     copy-webpack-plugin: ^11.0.0
     html-webpack-plugin: ^5.5.0
+    rimraf: ^3.0.2
     terser-webpack-plugin: ^5.3.3
     webpack: ^5.73.0
     webpack-cli: ^4.10.0
@@ -6460,6 +6466,7 @@ __metadata:
   resolution: "@trezor/connect-plugin-ethereum@workspace:packages/connect-plugin-ethereum"
   dependencies:
     "@metamask/eth-sig-util": ^4.0.1
+    rimraf: ^3.0.2
   peerDependencies:
     "@metamask/eth-sig-util": ^4.0.1
   languageName: unknown
@@ -6470,6 +6477,7 @@ __metadata:
   resolution: "@trezor/connect-plugin-stellar@workspace:packages/connect-plugin-stellar"
   dependencies:
     bignumber.js: ^9.1.0
+    rimraf: ^3.0.2
     stellar-sdk: ^10.1.0
   peerDependencies:
     "@trezor/connect": 9.x.x
@@ -6488,6 +6496,7 @@ __metadata:
     "@types/react": ^17.0.0
     "@types/styled-components": ^5.1.25
     react: 17.0.2
+    rimraf: ^3.0.2
     styled-components: ^5.3.5
   languageName: unknown
   linkType: soft
@@ -6514,6 +6523,7 @@ __metadata:
     "@types/chrome": 0.0.181
     "@types/w3c-web-usb": ^1.0.5
     events: ^3.3.0
+    rimraf: ^3.0.2
     tslib: ^2.3.1
     webpack: ^5.73.0
     webpack-cli: ^4.10.0
@@ -6538,6 +6548,7 @@ __metadata:
     events: ^3.3.0
     parse-uri: 1.0.7
     randombytes: 2.1.0
+    rimraf: ^3.0.2
     tslib: ^2.3.1
     tsx: ^3.8.2
     version-bump-prompt: ^6.1.0
@@ -6612,6 +6623,7 @@ __metadata:
   resolution: "@trezor/request-manager@workspace:packages/request-manager"
   dependencies:
     "@trezor/utils": "*"
+    rimraf: ^3.0.2
   languageName: unknown
   linkType: soft
 
@@ -6723,6 +6735,8 @@ __metadata:
 "@trezor/suite-desktop-api@*, @trezor/suite-desktop-api@workspace:packages/suite-desktop-api":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
+  dependencies:
+    rimraf: ^3.0.2
   languageName: unknown
   linkType: soft
 
@@ -6760,6 +6774,7 @@ __metadata:
     react-markdown: ^8.0.3
     react-redux: 7.2.2
     react-router-dom: ^5.2.0
+    rimraf: ^3.0.2
     styled-components: ^5.3.5
     systeminformation: ^5.11.22
   languageName: unknown
@@ -6851,6 +6866,7 @@ __metadata:
     react-redux: 7.2.2
     react-router: ^5.2.0
     react-router-dom: ^5.2.0
+    rimraf: ^3.0.2
     styled-components: ^5.3.5
     worker-loader: ^3.0.8
   languageName: unknown
@@ -7001,6 +7017,7 @@ __metadata:
     json-stable-stringify: ^1.0.1
     long: ^4.0.0
     protobufjs: ^6.11.3
+    rimraf: ^3.0.2
   languageName: unknown
   linkType: soft
 
@@ -7021,6 +7038,8 @@ __metadata:
 "@trezor/utils@*, @trezor/utils@^9.0.2, @trezor/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@trezor/utils@workspace:packages/utils"
+  dependencies:
+    rimraf: ^3.0.2
   languageName: unknown
   linkType: soft
 
@@ -7049,6 +7068,7 @@ __metadata:
     int64-buffer: ^1.0.1
     minimaldata: ^1.0.2
     pushdata-bitcoin: ^1.0.1
+    rimraf: ^3.0.2
     tiny-secp256k1: ^1.1.6
     typeforce: ^1.18.0
     varuint-bitcoin: ^1.1.2

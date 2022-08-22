@@ -61,6 +61,7 @@
     "devDependencies": {
         "@types/parse-uri": "^1.0.0",
         "@types/randombytes": "^2.0.0",
+        "rimraf": "^3.0.2",
         "tsx": "^3.8.2",
         "version-bump-prompt": "^6.1.0"
     }
