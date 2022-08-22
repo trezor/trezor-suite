@@ -24,7 +24,7 @@
         "@suite-common/wallet-constants": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-types": "*",
-        "@trezor/connect": "9.0.0-beta.7",
+        "@trezor/connect": "9.0.0-beta.8",
         "@trezor/urls": "*",
         "@trezor/utils": "*",
         "bignumber.js": "^9.1.0",

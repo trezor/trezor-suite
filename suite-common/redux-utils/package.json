@@ -15,7 +15,7 @@
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-config": "*",
         "@suite-common/notifications": "*",
-        "@trezor/connect": "9.0.0-beta.7",
+        "@trezor/connect": "9.0.0-beta.8",
         "redux": "^4.2.0"
     }
 }

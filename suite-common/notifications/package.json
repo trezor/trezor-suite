@@ -13,6 +13,6 @@
     "dependencies": {
         "@suite-common/wallet-config": "*",
         "@suite-common/suite-types": "*",
-        "@trezor/connect": "9.0.0-beta.7"
+        "@trezor/connect": "9.0.0-beta.8"
     }
 }

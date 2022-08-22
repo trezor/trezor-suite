@@ -26,7 +26,7 @@
         "@suite-native/module-settings": "*",
         "@suite-native/navigation": "*",
         "@suite-native/state": "*",
-        "@trezor/connect": "9.0.0-beta.7",
+        "@trezor/connect": "9.0.0-beta.8",
         "@trezor/styles": "*",
         "@trezor/theme": "*",
         "@trezor/transport-native": "*",

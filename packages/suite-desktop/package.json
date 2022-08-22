@@ -184,7 +184,7 @@
     "dependencies": {
         "@sentry/electron": "3.0.0",
         "@suite-common/suite-utils": "*",
-        "@trezor/connect": "9.0.0-beta.7",
+        "@trezor/connect": "9.0.0-beta.8",
         "@trezor/suite-analytics": "*",
         "@trezor/suite-desktop-api": "*",
         "@trezor/urls": "*",
