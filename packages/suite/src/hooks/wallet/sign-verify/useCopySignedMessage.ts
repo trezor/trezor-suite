@@ -1,5 +1,5 @@
+import { copyToClipboard } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
-import { copyToClipboard } from '@suite-utils/dom';
 import { addToast } from '@suite-actions/notificationActions';
 
 type SignedMessageData = {

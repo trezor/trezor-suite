@@ -12,6 +12,7 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../components" },
+        { "path": "../dom-utils" },
         { "path": "../connect" },
         { "path": "../react-utils" },
         { "path": "../suite-analytics" },

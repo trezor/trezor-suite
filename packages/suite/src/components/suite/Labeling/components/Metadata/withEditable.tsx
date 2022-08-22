@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, useTheme, KEYBOARD_CODE } from '@trezor/components';
 
-import { moveCaretToEndOfContentEditable } from '@suite-utils/dom';
+import { moveCaretToEndOfContentEditable } from '@trezor/dom-utils';
 
 const IconWrapper = styled.div<{ bgColor: string }>`
     display: flex;

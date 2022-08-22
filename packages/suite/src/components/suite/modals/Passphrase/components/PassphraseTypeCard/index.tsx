@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useKeyPress } from '@trezor/react-utils';
 import { ANIMATION } from '@suite-config';
-import { setCaretPosition } from '@suite-utils/dom';
+import { setCaretPosition } from '@trezor/dom-utils';
 import styled, { css } from 'styled-components';
 import { Button, useTheme, variables, Input, Tooltip, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
