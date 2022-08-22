@@ -7,8 +7,8 @@
         "type-check:watch": "yarn type-check -- --watch",
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && next",
-        "build:app": "next build && next export -o build",
+        "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn next",
+        "build:app": "next build && yarn next export -o build",
         "build": "yarn copy-files && yarn build:app"
     },
     "dependencies": {

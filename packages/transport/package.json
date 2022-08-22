@@ -26,7 +26,7 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
-        "build:lib": "rimraf -rf lib && tsc --build ./tsconfig.lib.json",
+        "build:lib": "rimraf -rf lib && yarn tsc --build ./tsconfig.lib.json",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "example:bridge": "jest --verbose -c jest.config.e2e.js --testPathPattern bridge.integration",
