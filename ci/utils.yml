@@ -27,7 +27,7 @@ outdated:
   needs: []
   retry: 2
   script:
-    - yarn install --cache-folder .yarn --prefer-offline
+    - yarn install --immutable
     - yarn workspace @trezor/urls test:integration
 
 urls health nightly:
@@ -45,7 +45,7 @@ urls health:
   stage: utils
   needs: []
   script:
-    - yarn install --cache-folder .yarn --prefer-offline
+    - yarn install --immutable
     - yarn workspace @trezor/suite translations:list-duplicates
 
 translations duplicates nightly:
@@ -63,7 +63,7 @@ translations duplicates:
   stage: utils
   needs: []
   script:
-    - yarn install --cache-folder .yarn --prefer-offline
+    - yarn install --immutable
     - yarn workspace @trezor/suite translations:list-unused
 
 translation unused nightly:
@@ -82,7 +82,7 @@ translation unused:
   needs: []
   parallel:
     matrix:
-      - EXT: ['.png', '.jpg', '.mp4', '.webm', '.svg']
+      - EXT: [".png", ".jpg", ".mp4", ".webm", ".svg"]
   script:
     - ./ci/scripts/find_duplicates.sh ./packages/suite-data/files ${EXT}
 
