@@ -1,8 +1,7 @@
 .packages_matrix: &packages_matrix
   parallel:
     matrix:
-      - PACKAGE:
-          [
+      - PACKAGE: [
             "blockchain-link",
             "components",
             "connect-common",
@@ -11,8 +10,9 @@
             "utxo-lib",
             "connect-plugin-stellar",
             "connect-plugin-ethereum",
-            "connect",
-            "connect-web",
+            # connect packages have temporarily own jobs
+            # "connect",
+            # "connect-web",
             "connect-common",
           ]
 
@@ -63,6 +63,19 @@ deploy npm:
   script:
     - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH latest"
     - nix-shell --run "yarn && cd ./packages/${PACKAGE} && npm publish"
+
+# temporary beta release for connect. connect is still in beta but use it for testing of release process
+# so I need to disable some checks
+beta deploy npm connect:
+  extends: .deploy npm base
+  only:
+    refs:
+      - /^npm-release\//
+  <<: *packages_matrix_connect
+  script:
+    # this is the difference, disabled check
+    # - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH beta"
+    - nix-shell --run "yarn && cd ./packages/$PACKAGE && npm publish --tag beta"
 
 deploy npm connect:
   extends: .deploy npm base
