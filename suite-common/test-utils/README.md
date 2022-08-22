@@ -23,3 +23,15 @@ testMocks.getWalletAccount({
 ```
 
 See the package `@suite-common/wallet-utils` and its tests for an example configuration.
+
+## configureMockStore
+
+Testing Redux async action creators and middleware. The mock store will create an array of dispatched actions which serve as an action log for tests. It supports partial injecting of extra dependencies:
+
+```typescript
+const mockStore = configureStore({
+    extra: { selectors: { getAccounts: [mocks.getWalletAccount()] } },
+});
+```
+
+All other APIs should be same as in [redux-mock-store](https://github.com/reduxjs/redux-mock-store).

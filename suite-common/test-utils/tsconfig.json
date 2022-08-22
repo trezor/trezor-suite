@@ -4,6 +4,8 @@
     "references": [
         { "path": "../suite-types" },
         { "path": "../wallet-types" },
-        { "path": "../../packages/connect" }
+        { "path": "../redux-utils" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/utils" }
     ]
 }
