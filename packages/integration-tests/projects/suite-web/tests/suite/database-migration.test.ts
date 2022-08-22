@@ -3,7 +3,7 @@
 
 let firstTxLabel = '';
 const from = '/release/22.7/web';
-const to = '/test/databaseMigration/web';
+const to = '/develop/web';
 
 const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
 const testData = {
