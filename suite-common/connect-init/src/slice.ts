@@ -1,9 +1,4 @@
-import {
-    ActionCreatorWithoutPayload,
-    ActionCreatorWithPayload,
-    AnyAction,
-    createAsyncThunk,
-} from '@reduxjs/toolkit';
+import { ActionCreatorWithoutPayload, ActionCreatorWithPayload, AnyAction } from '@reduxjs/toolkit';
 
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
@@ -13,6 +8,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
+import { createThunk } from '@suite-common/redux-utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 
@@ -37,13 +33,7 @@ export const prepareConnectInitThunk = ({
     };
     initSettings: { manifest: Manifest } & Partial<ConnectSettings>;
 }) =>
-    createAsyncThunk<
-        void,
-        void,
-        {
-            state: any;
-        }
-    >(CONNECT_INIT_ACTION_TYPE, async (_, { dispatch, getState }) => {
+    createThunk(CONNECT_INIT_ACTION_TYPE, async (_, { dispatch, getState }) => {
         const { selectEnabledNetworks, selectIsPendingTransportEvent } = selectors;
         const { lockDevice } = actions;
 

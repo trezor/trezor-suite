@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^1.8.3",
+        "@suite-common/redux-utils": "*",
         "@suite-native/state": "*",
         "@trezor/connect": "9.0.0-beta.6",
         "@trezor/utils": "*"
