@@ -20,7 +20,7 @@
         "@suite-native/atoms": "*",
         "@suite-native/navigation": "*",
         "@reduxjs/toolkit": "^1.8.3",
-        "@trezor/connect": "9.0.0-beta.6",
+        "@trezor/connect": "9.0.0-beta.7",
         "@trezor/icons": "*",
         "@trezor/styles": "*",
         "react": "^17.0.2",
