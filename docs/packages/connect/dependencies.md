@@ -1,3 +1,5 @@
+# Dependencies
+
 ## Webpack:
 
 Since `webpack@5` auto polyfills for `nodejs` are not provided.

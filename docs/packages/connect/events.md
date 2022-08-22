@@ -1,3 +1,5 @@
+# Events
+
 ## Handling events
 
 Once user grants permission for hosting page to communicate with API TrezorConnect will emits events

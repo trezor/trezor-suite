@@ -1,4 +1,4 @@
-## Common parameters
+# Common parameters
 
 Every call requires an [`Object`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) with a combination of common and method-specified fields.
 All common parameters are optional.

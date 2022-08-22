@@ -1,4 +1,4 @@
-## Methods
+# Methods
 
 API call return a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). Resolve is guaranteed to get called
 with a `result` object, even if user closes the window, network connection times
@@ -16,7 +16,7 @@ Every method require an [`Object`](https://developer.mozilla.org/en-US/docs/Web/
 -   [TrezorConnect.getCoinInfo](methods/getCoinInfo.md)
 -   [TrezorConnect.getDeviceState](methods/getDeviceState.md)
 
-### Bitcoin, Bitcoin Cash, Bitcoin Gold, Litecoin, Dash, ZCash, Testnet
+## Bitcoin, Bitcoin Cash, Bitcoin Gold, Litecoin, Dash, ZCash, Testnet
 
 -   [TrezorConnect.getAddress](methods/getAddress.md)
 -   [TrezorConnect.getAccountInfo](methods/getAccountInfo.md)
@@ -29,7 +29,7 @@ Every method require an [`Object`](https://developer.mozilla.org/en-US/docs/Web/
 -   [TrezorConnect.verifyMessage](methods/verifyMessage.md)
 -   [TrezorConnect.authorizeCoinJoin](methods/authorizeCoinJoin.md)
 
-### Ethereum
+## Ethereum
 
 -   [TrezorConnect.ethereumGetAddress](methods/ethereumGetAddress.md)
 -   [TrezorConnect.ethereumSignTransaction](methods/ethereumSignTransaction.md)
@@ -37,45 +37,45 @@ Every method require an [`Object`](https://developer.mozilla.org/en-US/docs/Web/
 -   [TrezorConnect.ethereumSignTypedData](methods/ethereumSignTypedData.md)
 -   [TrezorConnect.ethereumVerifyMessage](methods/ethereumVerifyMessage.md)
 
-### Eos
+## Eos
 
 -   [TrezorConnect.eosGetPublicKey](methods/eosGetPublicKey.md)
 -   [TrezorConnect.eosSignTransaction](methods/eosSignTransaction.md)
 
-### NEM
+## NEM
 
 -   [TrezorConnect.nemGetAddress](methods/nemGetAddress.md)
 -   [TrezorConnect.nemSignTransaction](methods/nemSignTransaction.md)
 
-### Stellar
+## Stellar
 
 -   [TrezorConnect.stellarGetAddress](methods/stellarGetAddress.md)
 -   [TrezorConnect.stellarSignTransaction](methods/stellarSignTransaction.md)
 
-### Cardano
+## Cardano
 
 -   [TrezorConnect.cardanoGetPublicKey](methods/cardanoGetPublicKey.md)
 -   [TrezorConnect.cardanoGetAddress](methods/cardanoGetAddress.md)
 -   [TrezorConnect.cardanoSignTransaction](methods/cardanoSignTransaction.md)
 
-### Ripple
+## Ripple
 
 -   [TrezorConnect.rippleGetAddress](methods/rippleGetAddress.md)
 -   [TrezorConnect.rippleSignTransaction](methods/rippleSignTransaction.md)
 
-### Tezos
+## Tezos
 
 -   [TrezorConnect.tezosGetAddress](methods/tezosGetAddress.md)
 -   [TrezorConnect.tezosGetPublicKey](methods/tezosGetPublicKey.md)
 -   [TrezorConnect.tezosSignTransaction](methods/tezosSignTransaction.md)
 
-### Binance
+## Binance
 
 -   [TrezorConnect.binanceGetAddress](methods/binanceGetAddress.md)
 -   [TrezorConnect.binanceGetPublicKey](methods/binanceGetPublicKey.md)
 -   [TrezorConnect.binanceSignTransaction](methods/binanceSignTransaction.md)
 
-### Management
+## Management
 
 > please note that these method are not available from popup mode
 
