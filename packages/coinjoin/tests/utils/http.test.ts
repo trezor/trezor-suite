@@ -1,5 +1,5 @@
-import { httpRequest } from '../http';
-import { createServer, Server } from './server';
+import { httpRequest } from '../../src/utils/http';
+import { createServer, Server } from '../mocks/server';
 
 let server: Server | undefined;
 let baseUrl = 'http://localhost:8081/';
@@ -114,13 +114,13 @@ describe('http', () => {
         });
     });
 
-    it('with identity', () => {
+    it('with identity', async () => {
         const requestListener = jest.fn(req => {
             expect(req.headers).toMatchObject({
                 'proxy-authorization': 'Basic abcd',
             });
         });
         server?.addListener('test-handle-request', requestListener);
-        httpRequest('status', {}, { baseUrl, identity: 'abcd' });
+        await httpRequest('status', {}, { baseUrl, identity: 'abcd' });
     });
 });

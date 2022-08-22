@@ -96,7 +96,7 @@ export const createServer = async () => {
     });
     server.listen(port);
 
-    // @ts-ignore
+    // @ts-expect-error
     server.requestOptions = {
         coordinatorName: 'CoinJoinCoordinatorIdentifier',
         coordinatorUrl: `http://localhost:${port}/`,
