@@ -34,6 +34,8 @@
         "web3-utils": "^1.7.3"
     },
     "devDependencies": {
-        "@types/pdfmake": "^0.1.21"
+        "@types/pdfmake": "^0.1.21",
+        "jest": "^26.6.3",
+        "typescript": "4.7.4"
     }
 }
