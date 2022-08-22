@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
-import { copyToClipboard } from '@suite-utils/dom';
+import { copyToClipboard } from '@trezor/dom-utils';
 import { Translation, Modal } from '@suite-components';
 import { Account } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';

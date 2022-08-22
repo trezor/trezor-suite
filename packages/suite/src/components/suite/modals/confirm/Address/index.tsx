@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import * as notificationActions from '@suite-actions/notificationActions';
 import { Button, variables, ConfirmOnDevice } from '@trezor/components';
-import { copyToClipboard } from '@suite-utils/dom';
+import { copyToClipboard } from '@trezor/dom-utils';
 import { TrezorDevice } from '@suite-types';
 import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';

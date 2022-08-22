@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Button } from '@trezor/components';
-import { copyToClipboard } from '@suite-utils/dom';
+import { copyToClipboard } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
 import { Translation } from '@suite-components';
 import * as notificationActions from '@suite-actions/notificationActions';

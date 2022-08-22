@@ -6,7 +6,7 @@ import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { copyToClipboard, download } from '@suite-utils/dom';
+import { copyToClipboard, download } from '@trezor/dom-utils';
 import { useActions } from '@suite-hooks';
 import Detail from './Detail';
 import Indicator from './Indicator';

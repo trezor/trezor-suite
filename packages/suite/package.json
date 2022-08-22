@@ -28,6 +28,7 @@
         "@sentry/integrations": "6.17.2",
         "@sentry/minimal": "6.17.2",
         "@trezor/components": "*",
+        "@trezor/dom-utils": "*",
         "@trezor/connect": "9.0.0-beta.7",
         "@trezor/react-utils": "*",
         "@trezor/suite-analytics": "*",
