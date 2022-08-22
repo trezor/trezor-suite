@@ -1,5 +1,14 @@
 import { EventEmitter } from 'events';
 
+import { networks } from '@trezor/utxo-lib';
+
+import { CoinjoinBackendClient } from './CoinjoinBackendClient';
+import { CoinjoinFilterController } from './CoinjoinFilterController';
+import { CoinjoinMempoolController } from './CoinjoinMempoolController';
+import { DISCOVERY_LOOKOUT } from '../constants';
+import { scanAccount } from './scanAccount';
+import { scanAddress } from './scanAddress';
+import { getAccountInfo } from './getAccountInfo';
 import type { CoinjoinBackendSettings } from '../types';
 import type {
     ScanAddressParams,
@@ -23,23 +32,57 @@ export declare interface CoinjoinBackend {
 export class CoinjoinBackend extends EventEmitter {
     readonly settings: CoinjoinBackendSettings;
 
+    private readonly network;
+    private readonly client;
+    private readonly mempool;
+
     private abortController: AbortController | undefined;
 
     constructor(settings: CoinjoinBackendSettings) {
         super();
         this.settings = Object.freeze(settings);
+        this.network = this.getNetwork(settings.network);
+        this.client = new CoinjoinBackendClient(settings);
+        this.mempool = new CoinjoinMempoolController(this.client);
     }
 
     scanAccount({ descriptor, checkpoint }: ScanAccountParams) {
         this.abortController = new AbortController();
-        console.warn(descriptor, checkpoint);
-        throw new Error('scanAccount not implemented');
+        const filters = new CoinjoinFilterController(this.client, this.settings);
+
+        return scanAccount(
+            { descriptor, checkpoint: checkpoint ?? this.getInitialCheckpoint() },
+            {
+                client: this.client,
+                network: this.network,
+                abortSignal: this.abortController.signal,
+                filters,
+                mempool: this.mempool,
+                onProgress: progress => this.emit('progress', progress),
+            },
+        );
     }
 
     scanAddress({ descriptor, checkpoint }: ScanAddressParams) {
         this.abortController = new AbortController();
-        console.warn(descriptor, checkpoint);
-        throw new Error('scanAddress not implemented');
+        const filters = new CoinjoinFilterController(this.client, this.settings);
+
+        return scanAddress(
+            { descriptor, checkpoint: checkpoint ?? this.getInitialCheckpoint() },
+            {
+                client: this.client,
+                network: this.network,
+                abortSignal: this.abortController.signal,
+                filters,
+                mempool: this.mempool,
+                onProgress: progress =>
+                    this.emit('progress', {
+                        ...progress,
+                        // TODO resolve this correctly
+                        checkpoint: { ...progress.checkpoint, receiveCount: -1, changeCount: -1 },
+                    }),
+            },
+        );
     }
 
     getAccountInfo(
@@ -47,11 +90,35 @@ export class CoinjoinBackend extends EventEmitter {
         transactions: Transaction[],
         checkpoint?: ScanAccountCheckpoint,
     ) {
-        console.warn(descriptor, transactions, checkpoint);
-        throw new Error('getAccountInfo not implemented');
+        return getAccountInfo({
+            descriptor,
+            transactions,
+            checkpoint,
+            network: this.network,
+        });
     }
 
     cancel() {
         this.abortController?.abort();
+    }
+
+    private getNetwork(network: CoinjoinBackendSettings['network']) {
+        switch (network) {
+            case 'regtest':
+                return networks.regtest;
+            default:
+                throw new Error(
+                    'Other coins than REGTEST are currently not supported for CoinJoin',
+                );
+        }
+    }
+
+    private getInitialCheckpoint(): ScanAccountCheckpoint {
+        return {
+            blockHash: this.settings.baseBlockHash,
+            blockHeight: this.settings.baseBlockHeight,
+            receiveCount: DISCOVERY_LOOKOUT,
+            changeCount: DISCOVERY_LOOKOUT,
+        };
     }
 }
