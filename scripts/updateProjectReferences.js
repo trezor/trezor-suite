@@ -60,7 +60,7 @@ const getWorkspaceList = () => {
 
     const workspaces = getWorkspaceList();
 
-    // NOTE: Workspace keys must be sorted due to file systems being a part of the equation.
+    // NOTE: Workspace keys must be sorted due to file systems being a part of the equation...
     Object.keys(workspaces)
         .sort()
         .forEach(workspaceName => {
