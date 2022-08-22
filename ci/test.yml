@@ -8,6 +8,7 @@
 # @trezor/suite-web
 .e2e web:
   stage: integration testing
+  allow_failure: true
   dependencies:
     - install
   variables:
