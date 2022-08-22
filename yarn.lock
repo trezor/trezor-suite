@@ -6498,6 +6498,9 @@ __metadata:
     react: 17.0.2
     rimraf: ^3.0.2
     styled-components: ^5.3.5
+    webpack: ^5.73.0
+    webpack-cli: ^4.10.0
+    webpack-dev-server: ^4.7.4
   languageName: unknown
   linkType: soft
 
