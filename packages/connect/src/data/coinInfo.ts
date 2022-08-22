@@ -13,19 +13,8 @@ const bitcoinNetworks: BitcoinNetworkInfo[] = [];
 const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
 
-// TODO: replace by structuredClone() after updating TS
-export function cloneCoinInfo<T>(info: T): T {
-    const jsonString = JSON.stringify(info);
-    if (jsonString === undefined) {
-        // jsonString === undefined IF and only IF obj === undefined
-        // therefore no need to clone
-        return info;
-    }
-    return JSON.parse(jsonString);
-}
-
 export const getBitcoinNetwork = (pathOrName: number[] | string) => {
-    const networks = cloneCoinInfo(bitcoinNetworks);
+    const networks: BitcoinNetworkInfo[] = window.structuredClone(bitcoinNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -40,7 +29,7 @@ export const getBitcoinNetwork = (pathOrName: number[] | string) => {
 };
 
 export const getEthereumNetwork = (pathOrName: number[] | string) => {
-    const networks = cloneCoinInfo(ethereumNetworks);
+    const networks: EthereumNetworkInfo[] = window.structuredClone(ethereumNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -52,7 +41,7 @@ export const getEthereumNetwork = (pathOrName: number[] | string) => {
 };
 
 export const getMiscNetwork = (pathOrName: number[] | string) => {
-    const networks = cloneCoinInfo(miscNetworks);
+    const networks: MiscNetworkInfo[] = window.structuredClone(miscNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -95,7 +84,7 @@ export const getBech32Network = (coin: BitcoinNetworkInfo) => {
 
 // fix coinInfo network values from path (segwit/legacy)
 export const fixCoinInfoNetwork = (ci: BitcoinNetworkInfo, path: number[]) => {
-    const coinInfo = cloneCoinInfo(ci);
+    const coinInfo: BitcoinNetworkInfo = window.structuredClone(ci);
     if (path[0] === toHardened(84)) {
         const bech32Network = getBech32Network(coinInfo);
         if (bech32Network) {
@@ -131,7 +120,7 @@ const detectBtcVersion = (data: { subversion?: string }) => {
 
 // TODO: https://github.com/trezor/trezor-suite/issues/4886
 export const getCoinInfoByHash = (hash: string, networkInfo: any) => {
-    const networks = cloneCoinInfo(bitcoinNetworks);
+    const networks: BitcoinNetworkInfo[] = window.structuredClone(bitcoinNetworks);
     const result = networks.find(
         info => hash.toLowerCase() === info.hashGenesisBlock.toLowerCase(),
     );
