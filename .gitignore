@@ -7,7 +7,6 @@ build-renderer
 
 # Dependency directory
 node_modules
-.yarn
 
 # OSX
 .DS_Store
@@ -132,7 +131,7 @@ buck-out/
 
 # Yarn 3
 .yarn/*
-!.yarn/cache
+.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
