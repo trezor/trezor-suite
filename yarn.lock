@@ -12342,13 +12342,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^9.4.0":
-  version: 9.4.0
-  resolution: "commander@npm:9.4.0"
-  checksum: a322de584a6ccd1ea83c24f6a660e52d16ffbe2613fcfbb8d2cc68bc9dec637492456d754fe8bb5b039ad843ed8e04fb0b107e581a75f62cde9e1a0ab1546e09
-  languageName: node
-  linkType: hard
-
 "commander@npm:~2.13.0":
   version: 2.13.0
   resolution: "commander@npm:2.13.0"
@@ -31429,7 +31422,6 @@ __metadata:
     tsconfig-paths: ^4.1.0
     tsx: ^3.8.2
     typescript: ^4.7.4
-    yarn-deduplicate: ^5.0.2
   languageName: unknown
   linkType: soft
 
@@ -34032,20 +34024,6 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^20.2.2
   checksum: b14afbb51e3251a204d81937c86a7e9d4bdbf9a2bcee38226c900d00f522969ab675703bee2a6f99f8e20103f608382936034e64d921b74df82b63c07c5e8f59
-  languageName: node
-  linkType: hard
-
-"yarn-deduplicate@npm:^5.0.2":
-  version: 5.0.2
-  resolution: "yarn-deduplicate@npm:5.0.2"
-  dependencies:
-    "@yarnpkg/lockfile": ^1.1.0
-    commander: ^9.4.0
-    semver: ^7.3.7
-    tslib: ^2.4.0
-  bin:
-    yarn-deduplicate: dist/cli.js
-  checksum: 68ee8b9ce8389a248f65111e188fe4e94fa582e771ef885a1ff599f5fbc5f0e39db4cb63da283c53cb256d7b0afd274de532c967c7f76b921276bea17ccacd3a
   languageName: node
   linkType: hard
 

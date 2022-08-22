@@ -17,8 +17,6 @@ jobs:
 
       - name: install yarn
         run: npm install -g yarn
-      - name: deduplicate deps
-        run: npx yarn-deduplicate --list --fail
       - name: install deps
         run: yarn
       - name: check code formatting
