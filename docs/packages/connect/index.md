@@ -1,3 +1,5 @@
+# Trezor Connect
+
 ## How to use
 
 Initialize in project
