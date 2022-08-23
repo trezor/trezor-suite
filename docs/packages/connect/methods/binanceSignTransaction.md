@@ -1,6 +1,6 @@
 ## Binance: sign transaction
 
-Asks device to sign given transaction using the private key derived by given [BIP44 path](path.md). User is asked to confirm all transaction
+Asks device to sign given transaction using the private key derived by given [BIP44 path](../path.md). User is asked to confirm all transaction
 details on Trezor.
 
 ```javascript
@@ -11,7 +11,7 @@ const result = await TrezorConnect.binanceSignTransaction(params);
 
 [\***\*Optional common params\*\***](commonParams.md)
 
--   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `transaction` - _required_ `Object` type of [Transaction](../../src/js/types/binance.js#L61-71)
 
 ### Transfer example

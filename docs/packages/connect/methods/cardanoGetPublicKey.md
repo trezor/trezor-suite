@@ -15,7 +15,7 @@ const result = await TrezorConnect.cardanoGetPublicKey(params);
 
 #### Exporting single public key
 
--   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `showOnTrezor` — _optional_ `boolean` determines if publick key will be displayed on device. Default is set to `true`
 -   `derivationType` — _optional_ `CardanoDerivationType` enum. determines used derivation type. Default is set to ICARUS_TREZOR=2
 

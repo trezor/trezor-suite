@@ -19,7 +19,7 @@ const result = await TrezorConnect.ethereumSignTypedData(params);
 
 > :warning: **Domain-only signing (`data.primaryType` = `"EIP712Domain"`) is supported only on Trezor T with Firmware 2.4.4 or higher!**
 
--   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `data` - _required_ `Object` type of [`EthereumSignTypedDataMessage`](../../src/js/types/networks/ethereum.js#L90)`. A JSON Schema definition can be found in the [EIP-712 spec](<[EIP-712](https://eips.ethereum.org/EIPS/eip-712)>).
 -   `metamask_v4_compat` - _required_ `boolean` set to `true` for compatibility with [MetaMask's signTypedData_v4](https://docs.metamask.io/guide/signing-data.html#sign-typed-data-v4).
 

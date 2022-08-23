@@ -1,6 +1,6 @@
 ## Eos: get public key
 
-Display requested public key derived by given [BIP44 path](path.md) on device and returns it to caller.
+Display requested public key derived by given [BIP44 path](../path.md) on device and returns it to caller.
 User is presented with a description of the requested public key and asked to confirm the export.
 
 ```javascript
@@ -13,7 +13,7 @@ const result = await TrezorConnect.eosGetPublicKey(params);
 
 #### Exporting single address
 
--   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `showOnTrezor` — _optional_ `boolean` determines if address will be displayed on device. Default is set to `true`
 
 #### Exporting bundle of addresses

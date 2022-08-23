@@ -12,7 +12,7 @@ const result = await TrezorConnect.ethereumGetAddress(params);
 
 #### Exporting single address
 
--   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `address` — _required_ `string` address for validation (read `Handle button request` section below)
 -   `showOnTrezor` — _optional_ `boolean` determines if address will be displayed on device. Default is set to `true`
 

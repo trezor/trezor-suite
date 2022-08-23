@@ -13,7 +13,7 @@ const result = await TrezorConnect.ethereumSignTransaction(params);
 
 ###### [flowtype](../../src/js/types/params.js#L69-L72)
 
--   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `transaction` - _required_ `Object` type of [`EthereumTransactionEIP1559`](../../src/js/types/networks/ethereum.js#L46)`|`[`EthereumSignTransaction`](../../src/js/types/networks/ethereum.js#L59) "0x" prefix for each field is optional
 
 ### Examples
