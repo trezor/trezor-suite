@@ -78,7 +78,7 @@ suite-web build stable codesign:
   script:
     - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
-    - nix-shell --option system x86_64-darwin --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
+    - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn build:libs"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-web build"
   artifacts:
@@ -140,7 +140,7 @@ suite-web-landing build stable:
   script: # override build script to use nix-shell instead
     - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
-    - nix-shell --option system x86_64-darwin --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
+    - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn build:libs"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data copy-static-files"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
