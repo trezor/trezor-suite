@@ -19,7 +19,7 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
 #### Exporting single id
 
 -   `path` — _required_ `string | Array<number>`
-    > prefix of the BIP-32 path leading to the account (m / purpose' / coin_type' / account')[read more](path.md)
+    > prefix of the BIP-32 path leading to the account (m / purpose' / coin_type' / account')[read more](../path.md)
 -   `coordinator` — _required_ `string`
     > coordinator identifier to approve as a prefix in commitment data (max. 36 ASCII characters)
 -   `maxRounds` — _required_ `number`

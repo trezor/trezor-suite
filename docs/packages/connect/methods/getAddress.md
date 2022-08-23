@@ -12,7 +12,7 @@ const result = await TrezorConnect.getAddress(params);
 
 #### Exporting single address
 
--   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `address` — _optional_ `string` address for validation (read `Handle button request` section below)
 -   `showOnTrezor` — _optional_ `boolean` determines if address will be displayed on device. Default is set to `true`
 -   `coin` - _optional_ `string` determines network definition specified in [coins.json](../../src/data/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.

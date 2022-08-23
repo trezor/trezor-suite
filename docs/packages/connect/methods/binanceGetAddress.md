@@ -1,6 +1,6 @@
 ## Binance: get address
 
-Display requested address derived by given [BIP44 path](path.md) on device and returns it to caller. User is presented with a description of the requested key and asked to confirm the export on Trezor.
+Display requested address derived by given [BIP44 path](../path.md) on device and returns it to caller. User is presented with a description of the requested key and asked to confirm the export on Trezor.
 
 ```javascript
 const result = await TrezorConnect.binanceGetAddress(params);
@@ -12,7 +12,7 @@ const result = await TrezorConnect.binanceGetAddress(params);
 
 #### Exporting single address
 
--   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `address` — _optional_ `string` address for validation (read `Handle button request` section below)
 -   `showOnTrezor` — _optional_ `boolean` determines if address will be displayed on device. Default is set to `true`
 

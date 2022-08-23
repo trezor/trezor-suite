@@ -13,7 +13,7 @@ const result = await TrezorConnect.rippleSignTransaction(params);
 
 ###### [flowtype](../../src/js/types/params.js#L149-L154)
 
--   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](path.md)
+-   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `transaction` - _required_ `Object` type of [RippleTransaction](../../src/js/types/ripple.js#L36-L42)
 
 ### Example
