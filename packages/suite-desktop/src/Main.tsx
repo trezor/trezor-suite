@@ -77,7 +77,14 @@ export const init = async (root: HTMLElement) => {
     // when it runs because of renderer (e.g. Ctrl+R) it will always be false.
     if (shouldRunTor) {
         await new Promise(resolve => {
-            render(<TorLoadingScreen callback={resolve} />, root);
+            render(
+                <ReduxProvider store={store}>
+                    <IntlProvider>
+                        <TorLoadingScreen callback={resolve} />
+                    </IntlProvider>
+                </ReduxProvider>,
+                root,
+            );
             desktopApi.toggleTor(true);
         });
     }

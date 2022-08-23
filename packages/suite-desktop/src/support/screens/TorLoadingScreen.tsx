@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { desktopApi, BootstrapTorEvent } from '@trezor/suite-desktop-api';
-import { P, Button, Progress, Image, variables } from '@trezor/components';
+import { Button, Progress, Image, variables, Modal } from '@trezor/components';
 import { ThemeProvider } from '@suite-support/ThemeProvider';
 import { TorStatus } from '@suite-types';
+import { Translation } from '@suite-components/Translation';
 
 const Wrapper = styled.div`
     height: 100%;
@@ -15,30 +16,18 @@ const Wrapper = styled.div`
     gap: 16px;
 `;
 
-const Text = styled(P)`
-    height: 0;
-    font-size: ${variables.FONT_SIZE.H2};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+const StyledModal = styled(Modal)`
+    max-width: 600px;
 `;
 
-const ModalWindow = styled.div`
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border-radius: 16px;
-    text-align: center;
-    transition: all 0.3s;
-    max-width: 95%;
-    min-width: 305px;
-    width: 720px;
-    padding: 42px;
+const StyledImage = styled(Image)`
+    margin-bottom: 28px;
+`;
 
-    ${({ theme }) =>
-        css`
-            background: ${theme.BG_WHITE};
-            box-shadow: 0 10px 80px 0 ${theme.BOX_SHADOW_MODAL};
-        `}
+const Text = styled.h2`
+    font-size: ${variables.FONT_SIZE.H2};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
 `;
 
 const InfoWrapper = styled.div`
@@ -51,47 +40,34 @@ const MessageWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-bottom: 50px;
-`;
-
-const Separator = styled.hr`
-    height: 1px;
-    width: 100%;
-    background: none;
-    border: 0;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    margin: 20px;
-`;
-
-const TryAgainWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    margin-bottom: 28px;
 `;
 
 const DisableButton = styled(Button)`
-    padding-right: 30px;
-    padding-left: 30px;
-    border: 1px solid #f4f4f4;
     margin-left: 10px;
+    border: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    background: ${({ theme }) => theme.BG_WHITE};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+
+    :hover {
+        background: ${({ theme }) => theme.BG_LIGHT_RED};
+    }
 `;
 
-const Percentage = styled.div`
+const Percentage = styled.span`
     display: flex;
+    align-items: center;
     font-variant-numeric: tabular-nums;
     height: 24px;
 `;
 
 const StyledProgress = styled(Progress)`
     display: flex;
-    margin-right: 20px;
-    margin-left: 20px;
+    margin: 0 20px;
     border-radius: 5px;
-    background: ${({ theme }) => theme.STROKE_GREY_ALT};
     flex: 1;
 
     ${Progress.Value} {
-        height: 3px;
         position: relative;
         border-radius: 5px;
     }
@@ -100,16 +76,19 @@ const StyledProgress = styled(Progress)`
 const ProgressWrapper = styled.div`
     display: flex;
     align-items: center;
-    background: ${({ theme }) => theme.STROKE_GREY_ALT};
     border-radius: 8px;
     width: 100%;
     min-height: 45px;
 `;
 
 const ProgressMessage = styled.div`
-    margin-left: 10px;
-    margin-right: 10px;
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    margin-right: 16px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const StyledButton = styled(Button)`
+    width: 150px;
 `;
 
 interface TorLoadingScreenProps {
@@ -125,9 +104,14 @@ export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
             if (bootstrapEvent.type === 'error') {
                 setTorStatus(TorStatus.Error);
             }
-            if (bootstrapEvent.type !== 'progress') return;
+
+            if (bootstrapEvent.type !== 'progress') {
+                return;
+            }
+
             if (bootstrapEvent.type === 'progress' && bootstrapEvent.progress.current) {
                 setProgress(bootstrapEvent.progress.current);
+
                 if (bootstrapEvent.progress.current === bootstrapEvent.progress.total) {
                     setTorStatus(TorStatus.Enabled);
                     callback();
@@ -136,20 +120,24 @@ export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
                 }
             }
         });
+
         return () => desktopApi.removeAllListeners('tor/bootstrap');
     }, [torStatus, callback]);
 
-    let message = 'Enabling Tor';
+    let message: 'TR_ENABLING_TOR' | 'TR_ENABLING_TOR_FAILED' | 'TR_DISABLING_TOR' =
+        'TR_ENABLING_TOR';
     if (torStatus === TorStatus.Error) {
-        message = 'Enabling Tor Failed';
+        message = 'TR_ENABLING_TOR_FAILED';
     } else if (torStatus === TorStatus.Disabling) {
-        message = 'Disabling Tor';
+        message = 'TR_DISABLING_TOR';
     }
 
     const tryAgain = async () => {
         setProgress(0);
         setTorStatus(TorStatus.Enabling);
+
         const torLoaded = await desktopApi.toggleTor(true);
+
         if (!torLoaded.success) {
             setTorStatus(TorStatus.Error);
         }
@@ -157,9 +145,12 @@ export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
 
     const disableTor = async () => {
         let fakeProgress = 0;
+
         setTorStatus(TorStatus.Disabling);
+
         desktopApi.removeAllListeners('tor/bootstrap');
         desktopApi.toggleTor(false);
+
         // This is a total fake progress, otherwise it would be to fast for user.
         await new Promise(resolve => {
             const interval = setInterval(() => {
@@ -167,20 +158,32 @@ export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
                     clearInterval(interval);
                     return resolve(null);
                 }
+
                 fakeProgress += 10;
                 setProgress(fakeProgress);
             }, 300);
         });
+
         callback();
     };
 
     return (
         <ThemeProvider>
             <Wrapper>
-                <ModalWindow>
+                <StyledModal
+                    bottomBar={
+                        torStatus === TorStatus.Error && (
+                            <StyledButton icon="REFRESH" onClick={tryAgain}>
+                                <Translation id="TR_TRY_AGAIN" />
+                            </StyledButton>
+                        )
+                    }
+                >
                     <MessageWrapper>
-                        <Image width={130} height={130} image="TOR_ENABLING" />
-                        <Text>{message}</Text>
+                        <StyledImage width={130} height={130} image="TOR_ENABLING" />
+                        <Text>
+                            <Translation id={message} />
+                        </Text>
                     </MessageWrapper>
 
                     <InfoWrapper>
@@ -189,42 +192,23 @@ export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
                                 isRed={torStatus === TorStatus.Error}
                                 value={torStatus === TorStatus.Error ? 100 : progress}
                             />
+
                             <ProgressMessage>
                                 {torStatus === TorStatus.Error ? (
-                                    <P>Failed</P>
+                                    <Translation id="TR_FAILED" />
                                 ) : (
                                     <Percentage>{progress} %</Percentage>
                                 )}
                             </ProgressMessage>
                         </ProgressWrapper>
+
                         {torStatus !== TorStatus.Disabling && (
-                            <DisableButton
-                                variant="secondary"
-                                isWhite
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    disableTor();
-                                }}
-                            >
-                                Disable Tor
+                            <DisableButton variant="secondary" onClick={disableTor}>
+                                <Translation id="TR_TOR_DISABLE" />
                             </DisableButton>
                         )}
                     </InfoWrapper>
-
-                    {torStatus === TorStatus.Error && (
-                        <TryAgainWrapper>
-                            <Separator />
-                            <Button
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    tryAgain();
-                                }}
-                            >
-                                Try Again
-                            </Button>
-                        </TryAgainWrapper>
-                    )}
-                </ModalWindow>
+                </StyledModal>
             </Wrapper>
         </ThemeProvider>
     );
