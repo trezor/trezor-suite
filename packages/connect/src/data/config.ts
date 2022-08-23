@@ -66,15 +66,7 @@ export const config = {
             url: './data/firmware/2/releases.json',
         },
     ],
-    messages: [
-        {
-            name: 'default',
-            range: {
-                min: ['1.0.0', '2.0.0'],
-            },
-            json: './data/messages/messages.json',
-        },
-    ],
+    messages: './data/messages/messages.json',
     supportedBrowsers: {
         chrome: {
             version: 59,

@@ -17,7 +17,7 @@ export class DataManager {
 
     static settings: ConnectSettings;
 
-    static messages: { [key: string]: JSON } = {};
+    private static messages: JSON;
 
     static async load(settings: ConnectSettings, withAssets = true) {
         const ts = settings.env === 'web' ? `?r=${settings.timestamp}` : '';
@@ -61,11 +61,7 @@ export class DataManager {
         });
         await Promise.all(assetPromises);
 
-        const protobufPromises = config.messages.map(async protobuf => {
-            const json = await httpRequest(`${protobuf.json}${ts}`, 'json');
-            this.messages[protobuf.name] = json;
-        });
-        await Promise.all(protobufPromises);
+        this.messages = await httpRequest(`${config.messages}${ts}`, 'json');
 
         // parse bridge JSON
         parseBridgeJSON(this.assets.bridge);
@@ -78,8 +74,8 @@ export class DataManager {
         parseFirmware(this.assets['firmware-t2'], 2);
     }
 
-    static getProtobufMessages(_version?: number[]) {
-        return this.messages.default;
+    static getProtobufMessages() {
+        return this.messages;
     }
 
     static isWhitelisted(origin: string) {

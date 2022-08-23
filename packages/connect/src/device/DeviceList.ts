@@ -71,11 +71,7 @@ export class DeviceList extends EventEmitter {
 
     creatingDevicesDescriptors: { [k: string]: DeviceDescriptor } = {};
 
-    defaultMessages: JSON | Record<string, any>;
-
-    currentMessages: JSON | Record<string, any>;
-
-    hasCustomMessages = false;
+    messages: JSON | Record<string, any>;
 
     transportStartPending = 0;
 
@@ -116,8 +112,7 @@ export class DeviceList extends EventEmitter {
         }
 
         this.transport = new Fallback(transports);
-        this.defaultMessages = DataManager.getProtobufMessages();
-        this.currentMessages = this.defaultMessages;
+        this.messages = DataManager.getProtobufMessages();
     }
 
     async init() {
@@ -126,7 +121,7 @@ export class DeviceList extends EventEmitter {
             _log.debug('Initializing transports');
             await transport.init(_log.enabled);
             _log.debug('Configuring transports');
-            await transport.configure(JSON.stringify(this.defaultMessages));
+            await transport.configure(JSON.stringify(this.messages));
             _log.debug('Configuring transports done');
 
             const { activeName } = transport;
@@ -145,25 +140,12 @@ export class DeviceList extends EventEmitter {
         }
     }
 
-    async reconfigure(messages: JSON | Record<string, any> | number[], custom?: boolean) {
-        if (Array.isArray(messages)) {
-            messages = DataManager.getProtobufMessages(messages);
-        }
-        if (this.currentMessages === messages || !messages) return;
+    async reconfigure(messages?: JSON | Record<string, any>) {
+        const newMessages = messages ?? DataManager.getProtobufMessages();
+        if (this.messages === newMessages) return;
         try {
-            await this.transport.configure(JSON.stringify(messages));
-            this.currentMessages = messages;
-            this.hasCustomMessages = typeof custom === 'boolean' ? custom : false;
-        } catch (error) {
-            throw ERRORS.TypedError('Transport_InvalidProtobuf', error.message);
-        }
-    }
-
-    async restoreMessages() {
-        if (!this.hasCustomMessages) return;
-        try {
-            await this.transport.configure(JSON.stringify(this.defaultMessages));
-            this.hasCustomMessages = false;
+            await this.transport.configure(JSON.stringify(newMessages));
+            this.messages = newMessages;
         } catch (error) {
             throw ERRORS.TypedError('Transport_InvalidProtobuf', error.message);
         }

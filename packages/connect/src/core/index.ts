@@ -426,11 +426,6 @@ export const onCall = async (message: CoreMessage) => {
         );
     });
 
-    // try to reconfigure messages before Initialize
-    if (_deviceList) {
-        await _deviceList.reconfigure(device.getVersion());
-    }
-
     try {
         let PIN_TRIES = 1;
         const MAX_PIN_TRIES = 3;
@@ -521,11 +516,6 @@ export const onCall = async (message: CoreMessage) => {
                 }
             }
 
-            if (_deviceList) {
-                // reconfigure protobuf messages
-                await _deviceList.reconfigure(device.getVersion());
-            }
-
             // Make sure that device will display pin/passphrase
             try {
                 const invalidDeviceState = method.useDeviceState
@@ -592,7 +582,7 @@ export const onCall = async (message: CoreMessage) => {
                 // for CustomMessage method reconfigure transport with custom messages definitions
                 const customMessages = method.getCustomMessages();
                 if (_deviceList && customMessages) {
-                    await _deviceList.reconfigure(customMessages, true);
+                    await _deviceList.reconfigure(customMessages);
                 }
                 const response = await method.run();
                 messageResponse = createResponseMessage(method.responseID, true, response);
@@ -656,7 +646,7 @@ export const onCall = async (message: CoreMessage) => {
                 if (response.success) {
                     _deviceList.removeAuthPenalty(device);
                 }
-                await _deviceList.restoreMessages();
+                await _deviceList.reconfigure();
             }
             postMessage(response);
         }
