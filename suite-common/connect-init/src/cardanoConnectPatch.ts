@@ -24,7 +24,6 @@ const blacklist: ConnectKey[] = [
     'blockchainSubscribeFiatRates',
     'blockchainUnsubscribe',
     'blockchainUnsubscribeFiatRates',
-    'customMessage',
     'requestLogin',
     'getCoinInfo',
     'dispose',

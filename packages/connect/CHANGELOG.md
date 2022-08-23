@@ -4,6 +4,7 @@
 
 -   Changed codebase to typescript.
 -   Removed `Lisk` methods from api.
+-   Removed `customMethod` api method.
 -   Exported constants:
     -   `CARDANO.ADDRESS_TYPE` => `PROTO.CardanoAddressType`
     -   `CARDANO.CERTIFICATE_TYPE` => `PROTO.CardanoCertificateType`

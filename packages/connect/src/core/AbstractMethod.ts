@@ -287,7 +287,5 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     abstract run(): Promise<MethodReturnType<Name>>;
 
-    getCustomMessages() {}
-
     dispose() {}
 }

@@ -173,7 +173,6 @@ const targetUiEvent = (message: CoreMessage) => {
         IFRAME.ERROR,
         POPUP.CANCEL_POPUP_REQUEST,
         UI.CLOSE_UI_WINDOW,
-        UI.CUSTOM_MESSAGE_REQUEST,
         UI.LOGIN_CHALLENGE_REQUEST,
         UI.BUNDLE_PROGRESS,
         UI.ADDRESS_VALIDATION,

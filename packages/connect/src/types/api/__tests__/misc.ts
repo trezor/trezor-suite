@@ -29,30 +29,6 @@ export const cipherKeyValue = async (api: TrezorConnect) => {
     }
 };
 
-export const customMessage = async (api: TrezorConnect) => {
-    const custom = await api.customMessage<{ message: string }>({
-        messages: {},
-        message: 'MyCustomSignTx',
-        params: {
-            inputs: { index: 1, hash: '0' },
-        },
-        callback: (request: any) => {
-            if (request.type === 'MyCustomTxReq') {
-                return Promise.resolve({
-                    message: 'MyCustomTxAck',
-                    params: {
-                        index: 1,
-                    },
-                });
-            }
-            return Promise.resolve({ message: 'MyCustomSigned' });
-        },
-    });
-    if (custom.success) {
-        custom.payload.message.toLowerCase();
-    }
-};
-
 // Method with mixed params
 export const requestLogin = async (api: TrezorConnect) => {
     // async call

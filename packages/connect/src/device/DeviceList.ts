@@ -140,17 +140,6 @@ export class DeviceList extends EventEmitter {
         }
     }
 
-    async reconfigure(messages?: JSON | Record<string, any>) {
-        const newMessages = messages ?? DataManager.getProtobufMessages();
-        if (this.messages === newMessages) return;
-        try {
-            await this.transport.configure(JSON.stringify(newMessages));
-            this.messages = newMessages;
-        } catch (error) {
-            throw ERRORS.TypedError('Transport_InvalidProtobuf', error.message);
-        }
-    }
-
     resolveTransportEvent() {
         this.transportStartPending--;
         if (this.transportStartPending === 0) {
