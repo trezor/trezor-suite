@@ -18,7 +18,6 @@ export const UI_RESPONSE = {
     RECEIVE_WORD: 'ui-receive_word',
     INVALID_PASSPHRASE_ACTION: 'ui-invalid_passphrase_action',
     CHANGE_SETTINGS: 'ui-change_settings',
-    CUSTOM_MESSAGE_RESPONSE: 'ui-custom_response',
     LOGIN_CHALLENGE_RESPONSE: 'ui-login_challenge_response',
 } as const;
 
@@ -93,15 +92,6 @@ export interface UiResponseFee {
           };
 }
 
-export interface UiResponseCustomMessage {
-    type: typeof UI_RESPONSE.CUSTOM_MESSAGE_RESPONSE;
-    payload: {
-        type: string;
-        message: any;
-        params?: any;
-    };
-}
-
 export interface UiResponseLoginChallenge {
     type: typeof UI_RESPONSE.LOGIN_CHALLENGE_RESPONSE;
     payload: {
@@ -121,8 +111,7 @@ export type UiResponseEvent =
     | UiResponsePassphraseAction
     | UiResponseAccount
     | UiResponseFee
-    | UiResponseLoginChallenge
-    | UiResponseCustomMessage;
+    | UiResponseLoginChallenge;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_EVENT };
 

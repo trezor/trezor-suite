@@ -176,50 +176,12 @@ const call: CallMethod = async params => {
     }
 };
 
-const customMessageResponse = (payload?: { message: string; params?: any }) => {
-    if (!_core) {
-        return Promise.resolve(createErrorMessage(ERRORS.TypedError('Init_NotInitialized')));
-    }
-    _core.handleMessage(
-        {
-            event: UI_EVENT,
-            type: UI.CUSTOM_MESSAGE_RESPONSE,
-            payload,
-        },
-        true,
-    );
-};
-
 const uiResponse = (response: UiResponseEvent) => {
     if (!_core) {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
     const { type, payload } = response;
     _core.handleMessage({ event: UI_EVENT, type, payload }, true);
-};
-
-const customMessage = async (params: any) => {
-    if (typeof params.callback !== 'function') {
-        return createErrorMessage(ERRORS.TypedError('Method_CustomMessage_Callback'));
-    }
-
-    // TODO: set message listener only if _core is loaded correctly
-    const { callback } = params;
-    const customMessageListener = async (event: PostMessageEvent) => {
-        const { data } = event;
-        if (data && data.type === UI.CUSTOM_MESSAGE_REQUEST) {
-            const payload = await callback(data.payload);
-            if (payload) {
-                customMessageResponse(payload);
-            } else {
-                customMessageResponse({ message: 'release' });
-            }
-        }
-    };
-    _core?.on(CORE_EVENT, customMessageListener);
-    const response = await call({ method: 'customMessage', ...params, callback: null });
-    _core?.removeListener(CORE_EVENT, customMessageListener);
-    return response;
 };
 
 const requestLogin = async (params: any) => {
@@ -289,7 +251,6 @@ const TrezorConnect = factory({
     manifest,
     init,
     call,
-    customMessage,
     requestLogin,
     uiResponse,
     renderWebUSBButton,

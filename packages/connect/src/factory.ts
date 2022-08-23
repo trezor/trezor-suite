@@ -8,7 +8,6 @@ interface Dependencies {
     eventEmitter: EventEmitter;
     manifest: TrezorConnect['manifest'];
     init: TrezorConnect['init'];
-    customMessage: TrezorConnect['customMessage'];
     requestLogin: TrezorConnect['requestLogin'];
     uiResponse: TrezorConnect['uiResponse'];
     renderWebUSBButton: TrezorConnect['renderWebUSBButton'];
@@ -22,7 +21,6 @@ export const factory = ({
     manifest,
     init,
     call,
-    customMessage,
     requestLogin,
     uiResponse,
     renderWebUSBButton,
@@ -83,8 +81,6 @@ export const factory = ({
 
         blockchainUnsubscribeFiatRates: params =>
             call({ ...params, method: 'blockchainUnsubscribeFiatRates' }),
-
-        customMessage: params => customMessage(params),
 
         requestLogin: params => requestLogin(params),
 

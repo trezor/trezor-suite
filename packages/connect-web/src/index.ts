@@ -234,17 +234,6 @@ const call: CallMethod = async params => {
     }
 };
 
-const customMessageResponse = (payload: any) => {
-    if (!iframe.instance) {
-        throw ERRORS.TypedError('Init_NotInitialized');
-    }
-    iframe.postMessage({
-        event: UI_EVENT,
-        type: UI.CUSTOM_MESSAGE_RESPONSE,
-        payload,
-    });
-};
-
 const uiResponse = (response: UiResponseEvent) => {
     if (!iframe.instance) {
         throw ERRORS.TypedError('Init_NotInitialized');
@@ -255,31 +244,6 @@ const uiResponse = (response: UiResponseEvent) => {
 
 const renderWebUSBButton = (className?: string) => {
     webUSBButton(className, _settings.webusbSrc);
-};
-
-const customMessage = async (params: any) => {
-    if (typeof params.callback !== 'function') {
-        return createErrorMessage(ERRORS.TypedError('Method_CustomMessage_Callback'));
-    }
-
-    // TODO: set message listener only if iframe is loaded correctly
-    const { callback } = params;
-    const customMessageListener = async (event: PostMessageEvent) => {
-        const { data } = event;
-        if (data && data.type === UI.CUSTOM_MESSAGE_REQUEST) {
-            const payload = await callback(data.payload);
-            if (payload) {
-                customMessageResponse(payload);
-            } else {
-                customMessageResponse({ message: 'release' });
-            }
-        }
-    };
-    window.addEventListener('message', customMessageListener, false);
-
-    const response = await call({ method: 'customMessage', ...params, callback: null });
-    window.removeEventListener('message', customMessageListener);
-    return response;
 };
 
 const requestLogin = async (params: any) => {
@@ -336,7 +300,6 @@ const TrezorConnect = factory({
     manifest,
     init,
     call,
-    customMessage,
     requestLogin,
     uiResponse,
     renderWebUSBButton,

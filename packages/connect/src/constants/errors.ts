@@ -21,7 +21,6 @@ export const ERROR_CODES = {
     Method_UnknownCoin: 'Coin not found', // coin definition not found
     Method_AddressNotMatch: 'Addresses do not match', // thrown by all getAddress methods with custom UI validation
     Method_FirmwareUpdate_DownloadFailed: 'Failed to download firmware binary', // thrown by FirmwareUpdate method
-    Method_CustomMessage_Callback: 'Parameter "callback" is not a function', // thrown by CustomMessage method
     Method_Discovery_BundleException: '', // thrown by getAccountInfo method
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen

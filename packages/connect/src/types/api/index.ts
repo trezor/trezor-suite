@@ -24,7 +24,6 @@ import { cardanoSignTransaction } from './cardanoSignTransaction';
 import { changePin } from './changePin';
 import { cipherKeyValue } from './cipherKeyValue';
 import { composeTransaction } from './composeTransaction';
-import { customMessage } from './customMessage';
 import { disableWebUSB } from './disableWebUSB';
 import { dispose } from './dispose';
 import { eosGetPublicKey } from './eosGetPublicKey';
@@ -151,9 +150,6 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/composeTransaction.md
     composeTransaction: typeof composeTransaction;
-
-    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/customMessage.md
-    customMessage: typeof customMessage;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/disableWebUSB.md
     disableWebUSB: typeof disableWebUSB;

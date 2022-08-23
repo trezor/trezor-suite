@@ -135,7 +135,6 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
         IFRAME.CALL,
         POPUP.CLOSED,
         // UI.CHANGE_SETTINGS,
-        UI.CUSTOM_MESSAGE_RESPONSE,
         UI.LOGIN_CHALLENGE_RESPONSE,
         TRANSPORT.DISABLE_WEBUSB,
     ];
@@ -169,7 +168,6 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
         case UI.INVALID_PASSPHRASE_ACTION:
         case UI.RECEIVE_ACCOUNT:
         case UI.RECEIVE_FEE:
-        case UI.CUSTOM_MESSAGE_RESPONSE:
         case UI.RECEIVE_WORD:
         case UI.LOGIN_CHALLENGE_RESPONSE: {
             const uiPromise = findUiPromise(message.type);
@@ -579,11 +577,6 @@ export const onCall = async (message: CoreMessage) => {
 
             // run method
             try {
-                // for CustomMessage method reconfigure transport with custom messages definitions
-                const customMessages = method.getCustomMessages();
-                if (_deviceList && customMessages) {
-                    await _deviceList.reconfigure(customMessages);
-                }
                 const response = await method.run();
                 messageResponse = createResponseMessage(method.responseID, true, response);
             } catch (error) {
@@ -646,7 +639,6 @@ export const onCall = async (message: CoreMessage) => {
                 if (response.success) {
                     _deviceList.removeAuthPenalty(device);
                 }
-                await _deviceList.reconfigure();
             }
             postMessage(response);
         }

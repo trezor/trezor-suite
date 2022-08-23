@@ -47,7 +47,6 @@ export const UI_REQUEST = {
     REQUEST_WORD: 'ui-request_word',
 
     LOGIN_CHALLENGE_REQUEST: 'ui-login_challenge_request',
-    CUSTOM_MESSAGE_REQUEST: 'ui-custom_request',
     BUNDLE_PROGRESS: 'ui-bundle_progress',
     ADDRESS_VALIDATION: 'ui-address_validation',
     IFRAME_FAILURE: 'ui-iframe_failure',
@@ -214,14 +213,6 @@ export interface FirmwareProgress {
     };
 }
 
-export interface UiRequestCustomMessage {
-    type: typeof UI_REQUEST.CUSTOM_MESSAGE_REQUEST;
-    payload: {
-        type: string;
-        message: object;
-    };
-}
-
 export type UiEvent =
     | UiRequestWithoutPayload
     | UiRequestDeviceAction
@@ -237,7 +228,6 @@ export type UiEvent =
     | FirmwareProgress
     | FirmwareException
     | UiRequestAddressValidation
-    | UiRequestCustomMessage
     | UiRequestSetOperation
     | TransportDisableWebUSB;
 

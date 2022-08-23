@@ -16,7 +16,6 @@ const TrezorConnect = factory({
     manifest: fallback,
     init: fallback,
     call: fallback,
-    customMessage: fallback,
     requestLogin: fallback,
     uiResponse: fallback,
     renderWebUSBButton: fallback,
