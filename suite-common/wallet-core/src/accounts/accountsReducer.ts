@@ -7,9 +7,9 @@ import { accountsActions } from './accountsActions';
 
 export type AccountsState = Account[];
 
-const initialState: AccountsState = [];
+export const accountsInitialState: AccountsState = [];
 
-type AccountsRootState = {
+export type AccountsRootState = {
     wallet: {
         accounts: AccountsState;
     };
@@ -48,34 +48,40 @@ const setMetadata = (state: AccountsState, account: Account) => {
     state[index].metadata = account.metadata;
 };
 
-export const prepareAccountsReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
-    builder
-        .addCase(accountsActions.removeAccount, (state, action) => {
-            remove(state, action.payload);
-        })
-        .addCase(accountsActions.createAccount, (state, action) => {
-            // TODO: check if account already exist, for example 2 device instances with same passphrase
-            // remove "transactions" field, they are stored in "transactionReducer"
-            const account = action.payload;
-            if (account.history) {
-                delete account.history.transactions;
-            }
-            state.push(account);
-        })
-        .addCase(accountsActions.updateAccount, (state, action) => {
-            update(state, action.payload);
-        })
-        .addCase(accountsActions.changeAccountVisibility, (state, action) => {
-            update(state, action.payload);
-        })
-        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
-        .addMatcher(
-            isAnyOf(extra.actions.setAccountLoadedMetadata, extra.actions.setAccountAddMetadata),
-            (state, action) => {
-                const { payload } = action;
-                setMetadata(state, payload);
-            },
-        );
-});
+export const prepareAccountsReducer = createReducerWithExtraDeps(
+    accountsInitialState,
+    (builder, extra) => {
+        builder
+            .addCase(accountsActions.removeAccount, (state, action) => {
+                remove(state, action.payload);
+            })
+            .addCase(accountsActions.createAccount, (state, action) => {
+                // TODO: check if account already exist, for example 2 device instances with same passphrase
+                // remove "transactions" field, they are stored in "transactionReducer"
+                const account = action.payload;
+                if (account.history) {
+                    delete account.history.transactions;
+                }
+                state.push(account);
+            })
+            .addCase(accountsActions.updateAccount, (state, action) => {
+                update(state, action.payload);
+            })
+            .addCase(accountsActions.changeAccountVisibility, (state, action) => {
+                update(state, action.payload);
+            })
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadAccounts)
+            .addMatcher(
+                isAnyOf(
+                    extra.actions.setAccountLoadedMetadata,
+                    extra.actions.setAccountAddMetadata,
+                ),
+                (state, action) => {
+                    const { payload } = action;
+                    setMetadata(state, payload);
+                },
+            );
+    },
+);
 
 export const selectAccounts = (state: AccountsRootState) => state.wallet.accounts;

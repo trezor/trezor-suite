@@ -54,3 +54,7 @@ export type ExtraDependencies = {
         storageLoadAccounts: StorageLoadReducer;
     };
 };
+
+export type ExtraDependenciesPartial = {
+    [K in keyof ExtraDependencies]?: Partial<ExtraDependencies[K]>;
+};
