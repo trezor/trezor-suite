@@ -52,7 +52,6 @@ interface WrapperProps {
     hasLabel: boolean;
     isDisabled: boolean;
     disabled: boolean;
-    isWhite: boolean;
     fullWidth: boolean;
     color: string | undefined;
 }
@@ -79,70 +78,63 @@ const Wrapper = styled.button<WrapperProps>`
         variant === 'primary' &&
         css`
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-            background: ${({ theme }) => theme.BG_GREEN};
+            background: ${theme.BG_GREEN};
 
             :hover,
             :focus,
             :active {
                 /* we use this color only for this case  */
-                background: ${({ theme }) => theme.BG_GREEN_HOVER};
+                background: ${theme.BG_GREEN_HOVER};
             }
         `}
 
     ${({ variant, theme }) =>
         variant === 'secondary' &&
         css`
-            background: ${({ theme }) => theme.BG_SECONDARY};
+            background: ${theme.BG_SECONDARY};
 
             :hover,
             :focus,
             :active {
                 /* we use this color only for this case  */
-                background: ${({ theme }) => theme.BG_SECONDARY_HOVER};
+                background: ${theme.BG_SECONDARY_HOVER};
             }
         `}
 
     ${({ variant, theme }) =>
         variant === 'tertiary' &&
         css`
-            background: ${({ theme }) => theme.BG_GREY_ALT};
+            background: ${theme.BG_GREY_ALT};
 
             :hover,
             :active,
             :focus {
-                background: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.BG_GREY_ALT)};
+                background: ${darken(theme.HOVER_DARKEN_FILTER, theme.BG_GREY_ALT)};
             }
-        `};
-
-    ${({ variant, isWhite, theme }) =>
-        variant === 'tertiary' &&
-        isWhite &&
-        css`
-            background: ${({ theme }) => theme.BG_WHITE};
         `};
 
     ${({ variant, theme }) =>
         variant === 'danger' &&
         css`
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-            background: ${({ theme }) => theme.BUTTON_RED};
+            background: ${theme.BUTTON_RED};
 
             :hover,
             :active,
             :focus {
-                background: ${({ theme }) => theme.BUTTON_RED_HOVER};
+                background: ${theme.BUTTON_RED_HOVER};
             }
         `}
 
     ${({ isDisabled, theme }) =>
         isDisabled &&
         css`
-            background: ${({ theme }) => theme.BG_GREY};
+            background: ${theme.BG_GREY};
 
             :hover,
             :active,
             :focus {
-                background: ${({ theme }) => theme.BG_GREY};
+                background: ${theme.BG_GREY};
             }
         `}
 
@@ -199,7 +191,6 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     size?: number;
     isDisabled?: boolean;
     isLoading?: boolean;
-    isWhite?: boolean;
     fullWidth?: boolean;
     alignIcon?: 'left' | 'right';
     'data-test'?: string;
@@ -214,7 +205,6 @@ export const Button = React.forwardRef(
             size,
             color,
             fullWidth = false,
-            isWhite = false,
             isDisabled = false,
             isLoading = false,
             alignIcon = 'left',
@@ -245,7 +235,6 @@ export const Button = React.forwardRef(
                 hasLabel={hasLabel}
                 onChange={onChange}
                 isDisabled={isDisabled}
-                isWhite={isWhite}
                 disabled={isDisabled || isLoading}
                 fullWidth={fullWidth}
                 color={color}
