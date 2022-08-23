@@ -13,6 +13,7 @@ type MergeResult<A, B> = { [K in Exclude<keyof A, keyof B>]: A[K] } & {
 const isMergable = (value: any): value is Mergable =>
     value && typeof value === 'object' && !Array.isArray(value);
 
+// @TODO - rename to mergeDeepObject
 export const mergeObject = <A extends Mergable, B extends Mergable>(
     a: A,
     b: B,

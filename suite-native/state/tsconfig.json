@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../packages/styles" },
-        { "path": "../../packages/connect" },
+        { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/redux-utils"
         },
