@@ -9,12 +9,12 @@ const result = await TrezorConnect.nemSignTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L114-L117)
+[NEMSignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/nem/index.ts)
 
 -   `path` - _required_ `string | Array<number>`
--   `transaction` - _required_ `Object` type of [NEMTransaction](../../src/js/types/nem.js#L41)
+-   `transaction` - _required_ `Object` type of [NEMTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/nem/index.ts)
 
 ### Example
 
@@ -80,7 +80,7 @@ TrezorConnect.nemSignTransaction(
 
 ### Result
 
-###### [flowtype](../../src/js/types/response.js#L271-L274)
+[NEMSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

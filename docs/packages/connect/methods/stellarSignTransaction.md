@@ -9,18 +9,18 @@ const result = await TrezorConnect.stellarSignTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L149-L154)
+[StellarSignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/stellar/index.ts)
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `networkPassphrase` - _required_ `string` network passphrase
--   `transaction` - _required_ `Object` type of [StellarTransaction](../../src/js/types/stellar.js#L129)
+-   `transaction` - _required_ `Object` type of [StellarTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/stellar/index.ts)
 
 ### Stellar SDK compatibility
 
 `stellar-sdk` is not a part of `trezor-connect` repository.
-To transform `StellarSDK.Transaction` object into `TrezorConnect.StellarTransaction` object copy [this plugin](../../src/js/plugins/stellar/plugin.js) into your project.
+To transform `StellarSDK.Transaction` object into `TrezorConnect.StellarTransaction`, install [@trezor/connect-plugin-stellar](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-plugin-stellar) into your project.
 
 ```javascript
 import StellarSDK from 'stellar-sdk';
@@ -65,7 +65,7 @@ TrezorConnect.stellarSignTransaction(
 
 ### Result
 
-###### [flowtype](../../src/js/types/response.js#L129-L132)
+[StellarSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/stellar/index.ts)
 
 ```javascript
 {

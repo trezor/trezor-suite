@@ -8,8 +8,8 @@ const result = await TrezorConnect.wipeDevice(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
-<br>
+[Optional common params](commonParams.md)
+
 Common parameter `useEmptyPassphrase` - is set to `true`
 Common parameter `allowSeedlessDevice` - is set to `true`
 
@@ -20,6 +20,8 @@ TrezorConnect.wipeDevice();
 ```
 
 ### Result
+
+[Success type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

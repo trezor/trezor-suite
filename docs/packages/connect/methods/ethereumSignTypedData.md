@@ -13,14 +13,14 @@ const result = await TrezorConnect.ethereumSignTypedData(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/networks/ethereum.js#104-116)
+[EthereumSignTypedData type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)
 
 > :warning: **Domain-only signing (`data.primaryType` = `"EIP712Domain"`) is supported only on Trezor T with Firmware 2.4.4 or higher!**
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
--   `data` - _required_ `Object` type of [`EthereumSignTypedDataMessage`](../../src/js/types/networks/ethereum.js#L90)`. A JSON Schema definition can be found in the [EIP-712 spec](<[EIP-712](https://eips.ethereum.org/EIPS/eip-712)>).
+-   `data` - _required_ `Object` type of [`EthereumSignTypedDataMessage`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)`. A JSON Schema definition can be found in the [EIP-712 spec](https://eips.ethereum.org/EIPS/eip-712).
 -   `metamask_v4_compat` - _required_ `boolean` set to `true` for compatibility with [MetaMask's signTypedData_v4](https://docs.metamask.io/guide/signing-data.html#sign-typed-data-v4).
 
 #### Blind signing (optional addition for Trezor Model 1 compatibility)
@@ -31,12 +31,11 @@ hashes.
 However, it supports signing pre-constructed hashes.
 
 EIP-712 hashes can be constructed with the plugin function at
-["trezor-connect/lib/plugins/ethereum/typedData.js"](../../src/js/plugins/ethereum/typedData.js)
-(included as a plugin due to a depedency on `@metamask/eth-sig-utils`).
+[@trezor/connetct-plugin-ethereum](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-plugin-ethereum).
 
 You may also wish to contruct your own hashes using a different library.
 
-###### [flowtype](../../src/js/types/networks/ethereum.js#L114-121)
+[EthereumSignTypedHash type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)
 
 > :warning: **Domain-only signing (empty `message_hash`) is supported only on Trezor Model 1 with Firmware 1.10.6 or higher!**
 
@@ -94,7 +93,7 @@ TrezorConnect.ethereumSignTypedData({
 
 ### Result
 
-###### [flowtype](../../src/js/types/api.js#L257)
+[EthereumMessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

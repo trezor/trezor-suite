@@ -9,12 +9,12 @@ const result = await TrezorConnect.ethereumSignTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L69-L72)
+[EthereumSignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
--   `transaction` - _required_ `Object` type of [`EthereumTransactionEIP1559`](../../src/js/types/networks/ethereum.js#L46)`|`[`EthereumSignTransaction`](../../src/js/types/networks/ethereum.js#L59) "0x" prefix for each field is optional
+-   `transaction` - _required_ `Object` type of [`EthereumTransactionEIP1559`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)`|`[`EthereumSignTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts) "0x" prefix for each field is optional
 
 ### Examples
 
@@ -61,7 +61,7 @@ TrezorConnect.ethereumSignTransaction({
 
 ### Result
 
-###### [flowtype](../../src/js/types/api.js#L252)
+[EthereumSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)
 
 ```javascript
 {

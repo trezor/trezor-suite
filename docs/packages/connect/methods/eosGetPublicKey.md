@@ -9,7 +9,7 @@ const result = await TrezorConnect.eosGetPublicKey(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 #### Exporting single address
 
@@ -44,6 +44,8 @@ TrezorConnect.eosGetPublicKey({
 
 ### Result
 
+[EosPublicKey type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/eos/index.ts)
+
 Result with only one public key
 
 ```javascript
@@ -52,6 +54,8 @@ Result with only one public key
     payload: {
         wifPublicKey: string,
         rawPublicKey: string,
+        path: number[],
+        serializedPath: string
     }
 }
 ```
@@ -62,9 +66,9 @@ Result with bundle of public keys sorted by FIFO
 {
     success: true,
     payload: [
-        { wifPublicKey: string, rawPublicKey: string }, // public key 1
-        { wifPublicKey: string, rawPublicKey: string }, // public key 2
-        { wifPublicKey: string, rawPublicKey: string }  // public key 3
+        { wifPublicKey: string, rawPublicKey: string, path: number[], serializedPath: string }, // public key 1
+        { wifPublicKey: string, rawPublicKey: string, path: number[], serializedPath: string }, // public key 2
+        { wifPublicKey: string, rawPublicKey: string, path: number[], serializedPath: string }  // public key 3
     ]
 }
 ```

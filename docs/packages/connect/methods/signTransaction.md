@@ -8,18 +8,20 @@ details on Trezor.
 const result = await TrezorConnect.signTransaction(params);
 ```
 
-### Params [types](../../src/types/api/signTransaction.ts#L54)
+### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
+
+[SignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
 
 -   `coin` - _required_ `string`
-    > Determines network definition specified in [coins.json](../../../connect-common/files/coins.json) file.
+    > Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.
     > Coin `shortcut`, `name` or `label` can be used.
     > See [supported coins](../supported-coins.md)
--   `inputs` - _required_ `Array` of [PROTO.TxInputType](../../../transport/src/types/messages.ts#L300),
--   `outputs` - _required_ `Array` of [PROTO.TxOutputType](../../../transport/src/types/messages.ts#L327),
--   `paymentRequests` - _optional_ `Array` of [PROTO.TxAckPaymentRequest](../../../transport/src/types/messages.ts#L415). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)
--   `refTxs` - _optional_ `Array` of [RefTransaction](../../src/types/api/signTransaction.ts#L12).
+-   `inputs` - _required_ `Array` of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts),
+-   `outputs` - _required_ `Array` of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts),
+-   `paymentRequests` - _optional_ `Array` of [PROTO.TxAckPaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)
+-   `refTxs` - _optional_ `Array` of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts).
     > If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.
     > Since Firmware 2.3.0/1.9.0 referenced transactions are required.
     > Zcash and Komodo refTxs should also contains `expiry`, `version_group_id` and `extra_data` fields.
@@ -183,7 +185,9 @@ TrezorConnect.signTransaction({
 });
 ```
 
-### Result [types](../../src/types/api/signTransaction.ts#L74)
+### Result
+
+[SignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
 
 ```javascript
 {

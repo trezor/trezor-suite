@@ -9,9 +9,9 @@ const result = await TrezorConnect.ethereumVerifyMessage(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L74-L78)
+[EthereumVerifyMessage type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)
 
 -   `address` - _required_ `string` signer address. "0x" prefix is optional
 -   `message` - _required_ `string` signed message in plain text
@@ -31,7 +31,7 @@ TrezorConnect.ethereumVerifyMessage({
 
 ### Result
 
-###### [flowtype](../../src/js/types/response.js#L133-L136)
+[Success type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

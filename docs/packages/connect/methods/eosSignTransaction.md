@@ -9,12 +9,12 @@ const result = await TrezorConnect.eosSignTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L69-L72)
+[EosSignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/eos/index.ts)
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
--   `transaction` - _required_ `Object` type of [Transaction](../../src/js/types/eos.js#L145-L149)
+-   `transaction` - _required_ `Object` type of [EosSDKTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/eos/index.ts)
 
 ### Transfer example
 
@@ -55,7 +55,7 @@ TrezorConnect.eosSignTransaction({
 
 ### Result
 
-###### [flowtype](../../src/js/types/eos.js#L160-L163)
+[EosSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

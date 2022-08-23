@@ -8,9 +8,9 @@ const result = await TrezorConnect.cardanoGetNativeScriptHash(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-#### [type](../../../../packages/connect/src/types/api/cardanoGetNativeScriptHash.ts#L14)
+[CardanoGetNativeScriptHash type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 -   `script` — _required_ `CardanoNativeScript` see description below.
 -   `displayFormat` — _required_ `CardanoNativeScriptHashDisplayFormat` enum.
@@ -18,7 +18,7 @@ const result = await TrezorConnect.cardanoGetNativeScriptHash(params);
 
 #### CardanoNativeScript
 
-##### [type](../../../../packages/connect/src/types/api/cardanoGetNativeScriptHash.ts#L4)
+[CardanoNativeScript type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 -   `type` - _required_ `CardanoNativeScriptType`/`number`.
 -   `scripts` — _optional_ `Array` of nested `CardanoNativeScript`s.
@@ -103,6 +103,8 @@ TrezorConnect.cardanoGetAddress({
 ```
 
 ### Result
+
+[CardanoNativeScriptHash type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 ```javascript
 {

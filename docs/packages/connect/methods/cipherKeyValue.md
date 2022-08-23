@@ -10,8 +10,8 @@ const result = await TrezorConnect.cipherKeyValue(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
-<br>
+[Optional common params](commonParams.md)
+
 Common parameter `useEmptyPassphrase` - is always set to `true` and it will be ignored by this method
 
 #### Encrypt single value
@@ -65,6 +65,8 @@ TrezorConnect.cipherKeyValue({
 ```
 
 ### Result
+
+[CipheredValue type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cipherKeyValue.ts)
 
 Result with only one value
 

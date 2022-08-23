@@ -28,6 +28,8 @@ const result = await TrezorConnect.blockchainGetCurrentFiatRates({
 
 ### Result
 
+[GetCurrentFiatRates type](https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/src/types/responses.ts)
+
 ```javascript
 {
     success: true,

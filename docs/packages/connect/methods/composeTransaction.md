@@ -17,10 +17,10 @@ Returned response is a signed transaction in hexadecimal format same as in [sign
 
 ## Params:
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 -   `outputs` — _required_ `Array` of output objects described [below](#accepted-output-objects)
--   `coin` — _required_ `string` determines network definition specified in [coins.json](../../src/data/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
+-   `coin` — _required_ `string` determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
 -   `push` — _optional_ `boolean` determines if composed transaction will be broadcasted into blockchain network. Default is set to false.
 -   `sequence` — _optional_ `number` transaction input field used in RBF or locktime transactions
 
@@ -28,7 +28,7 @@ Returned response is a signed transaction in hexadecimal format same as in [sign
 
 Skip first two steps of `payment request` (described above) by providing `account` and `feeLevels` params and perform **only** transaction calculation. [[2]](#additional-notes)
 
-The result, internally called [`PrecomposedTransaction`](../../src/js/types/account.js#L208) is a set of params that can be used in [signTransaction method](signTransaction.md#params) afterwards.
+The result, internally called [`PrecomposedTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/composeTransaction.ts) is a set of params that can be used in [signTransaction method](signTransaction.md#params) afterwards.
 
 This useful for the quick preparation of multiple variants for the same transaction using different fee levels or using incomplete data (like missing output addresses just to calculate fee)
 
@@ -37,7 +37,7 @@ _Device and backend connection is not required for this case since all data are 
 ## Params:
 
 -   `outputs` — _required_ `Array` of output objects described [below](#accepted-output-objects)
--   `coin` — _required_ `string` determines network definition specified in [coins.json](../../src/data/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
+-   `coin` — _required_ `string` determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
 -   `account` — _required_ `Object` containing essential data, partial result of [getAccountInfo method](getAccountInfo.md#result)
     -   `path` - _required_ `string`
     -   `utxo` - _required_ `Array`
@@ -83,6 +83,8 @@ TrezorConnect.composeTransaction({
 ```
 
 ### Payment result
+
+[SignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/composeTransaction.ts)
 
 ```javascript
 {

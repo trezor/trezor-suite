@@ -9,10 +9,10 @@ const result = await TrezorConnect.binanceSignTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 -   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
--   `transaction` - _required_ `Object` type of [Transaction](../../src/js/types/binance.js#L61-71)
+-   `transaction` - _required_ `Object` type of [BinanceSDKTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/binance/index.ts)
 
 ### Transfer example
 
@@ -89,6 +89,8 @@ TrezorConnect.binanceSignTransaction({
 ```
 
 ### Result
+
+[BinanceSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

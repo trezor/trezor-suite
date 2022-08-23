@@ -8,9 +8,9 @@ const result = await TrezorConnect.cardanoGetAddress(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-#### [type](../../../../packages/connect/src/types/api/cardanoGetAddress.ts#L20)
+[CardanoGetAddress type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 #### Exporting single address
 
@@ -27,13 +27,13 @@ const result = await TrezorConnect.cardanoGetAddress(params);
 
 #### Address Parameters
 
-##### [type](../../../../packages/connect/src/types/api/cardanoGetAddress.ts#L10)
+##### [CardanoAddressParameters type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 -   `addressType` - _required_ `CardanoAddressType`/`number` - you can use the flow `CARDANO.ADDRESS_TYPE` object or typescript `CardanoAddressType` enum. Supports all address types.
 -   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `stakingPath` — _optional_ `string | Array<number>` minimum length is `5`. [read more](../path.md) Used for base and reward address derivation
 -   `stakingKeyHash` - _optional_ `string` hex string of staking key hash. Used for base address derivation (as an alternative to `stakingPath`)
--   `certificatePointer` - _optional_ [CardanoCertificatePointer](../../../../packages/connect/src/types/api/cardanoGetAddress.ts#L4) object. Must contain `number`s `blockIndex`, `txIndex` and `certificateIndex`. Used for pointer address derivation. [read more about pointer address](https://hydra.iohk.io/build/2006688/download/1/delegation_design_spec.pdf#subsubsection.3.2.2)
+-   `certificatePointer` - _optional_ [CardanoCertificatePointer](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts) object. Must contain `number`s `blockIndex`, `txIndex` and `certificateIndex`. Used for pointer address derivation. [read more about pointer address](https://hydra.iohk.io/build/2006688/download/1/delegation_design_spec.pdf#subsubsection.3.2.2)
 -   `paymentScriptHash` - _optional_ `string` hex string of payment script hash.
 -   `stakingScriptHash` - _optional_ `string` hex string of staking script hash.
 
@@ -273,6 +273,8 @@ const result = await TrezorConnect.cardanoGetAddress({
 ```
 
 ### Result
+
+[CardanoAddress type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 Result with only one address
 

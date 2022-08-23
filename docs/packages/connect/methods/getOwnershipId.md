@@ -10,13 +10,13 @@ const result = await TrezorConnect.getOwnershipId(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 #### Exporting single id
 
 -   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `coin` - _optional_ `string`
-    > Determines network definition specified in [coins.json](../../../connect-common/files/coins.json) file.
+    > Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.
     > Coin `shortcut`, `name` or `label` can be used.
 -   `scriptType` — _optional_ `InputScriptType`
 -   `multisig` — _optional_ `MultisigRedeemScriptType`
@@ -49,6 +49,8 @@ TrezorConnect.getOwnershipId({
 
 ### Result
 
+[OwnershipId type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/getOwnershipId.ts)
+
 Result with single id:
 
 ```javascript
@@ -56,6 +58,8 @@ Result with single id:
     success: true,
     payload: {
         ownership_id: string,
+        path: number[],
+        serializedPath: string
     }
 }
 ```
@@ -66,9 +70,9 @@ Result with bundle of ids sorted by FIFO
 {
     success: true,
     payload: [
-        { ownership_id: string }, // taproot
-        { ownership_id: string }, // bech32
-        { ownership_id: string }  // segwit
+        { ownership_id: string, path: number[], serializedPath: string }, // taproot
+        { ownership_id: string, path: number[], serializedPath: string }, // bech32
+        { ownership_id: string, path: number[], serializedPath: string }  // segwit
     ]
 }
 ```

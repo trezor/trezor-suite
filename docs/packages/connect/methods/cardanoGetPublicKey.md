@@ -9,9 +9,9 @@ const result = await TrezorConnect.cardanoGetPublicKey(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-#### [type](../../../../packages/connect/src/types/api/cardanoGetPublicKey.ts#L4)
+[CardanoGetPublicKey type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 #### Exporting single public key
 
@@ -47,6 +47,8 @@ TrezorConnect.cardanoGetPublicKey({
 
 ### Result
 
+[CardanoPublicKey type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+
 Result with only one public key
 
 ```javascript
@@ -57,20 +59,19 @@ Result with only one public key
         serializedPath: string,
         publicKey: string,
         node: HDPubNode,
-        rootHDPassphrase: string,
     }
 }
 ```
 
-Result with bundle of publick keys
+Result with a bundle of public keys
 
 ```javascript
 {
     success: true,
     payload: [
-        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode, hdPassphrase: string }, // account 1
-        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode, rootHDPassphrase: string }, // account 2
-        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode, hdPassphrase: string }  // account 3
+        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode }, // account 1
+        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode}, // account 2
+        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode }  // account 3
     ]
 }
 ```
