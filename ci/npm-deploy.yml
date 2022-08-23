@@ -43,7 +43,7 @@
   tags:
     - deploy
   before_script:
-    - nix-shell --run "yarn install --pure-lockfile --cache-folder .yarn --prefer-offline"
+    - nix-shell --run "yarn install --immutable"
     - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
   after_script:
     - rm ~/.npmrc
