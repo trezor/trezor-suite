@@ -22,9 +22,13 @@ export const Tor = () => {
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Tor);
 
     useEffect(() => {
-        if (hasTorError) {
-            setTimeout(() => setHasTorError(false), 1000);
+        if (!hasTorError) {
+            return;
         }
+
+        const timeout = setTimeout(() => setHasTorError(false), 1000);
+
+        return () => clearTimeout(timeout);
     }, [hasTorError]);
 
     const isTorEnabled = getIsTorEnabled(torStatus);

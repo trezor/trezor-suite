@@ -18,7 +18,7 @@ const Value = styled.div.attrs<ValueProps>(({ $max, $value }) => ({
     },
 }))<ValueProps>`
     background: ${({ theme, isRed }) => (isRed ? theme.BG_RED : theme.BG_GREEN)};
-    height: 4px;
+    height: 5px;
     max-width: 100%;
     transition: width 0.5s;
 `;

@@ -6793,4 +6793,20 @@ export default defineMessages({
         id: 'TR_BTC_UNITS',
         defaultMessage: 'Bitcoin units',
     },
+    TR_FAILED: {
+        id: 'TR_FAILED',
+        defaultMessage: 'Failed',
+    },
+    TR_ENABLING_TOR: {
+        id: 'TR_ENABLING_TOR',
+        defaultMessage: 'Enabling Tor',
+    },
+    TR_ENABLING_TOR_FAILED: {
+        id: 'TR_ENABLING_TOR_FAILED',
+        defaultMessage: 'Enabling Tor Failed',
+    },
+    TR_DISABLING_TOR: {
+        id: 'TR_DISABLING_TOR',
+        defaultMessage: 'Disabling Tor',
+    },
 });
