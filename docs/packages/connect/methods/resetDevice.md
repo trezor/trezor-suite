@@ -8,8 +8,7 @@ const result = await TrezorConnect.resetDevice(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
-<br>
+[Optional common params](commonParams.md)
 
 -   `strength` — _optional_ `number` Accepted values are [128|192|256]. Default is set to `256`
 -   `label` — _optional_ `string`
@@ -28,6 +27,8 @@ TrezorConnect.resetDevice({
 ```
 
 ### Result
+
+[Success type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

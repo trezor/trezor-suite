@@ -10,7 +10,7 @@ const result = await TrezorConnect.getDeviceState(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 ## Example
 
@@ -36,6 +36,8 @@ await TrezorConnect.getPublicKey({
 ```
 
 ### Result
+
+[DeviceStateResponse type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/getDeviceState.ts)
 
 ```javascript
 {

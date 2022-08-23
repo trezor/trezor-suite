@@ -10,13 +10,13 @@ const result = await TrezorConnect.getOwnershipProof(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 #### Exporting single proof
 
 -   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `coin` - _optional_ `string`
-    > Determines network definition specified in [coins.json](../../../connect-common/files/coins.json) file.
+    > Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.
     > Coin `shortcut`, `name` or `label` can be used.
 -   `scriptType` — _optional_ `InputScriptType`
 -   `userConfirmation` — _optional_ `boolean`
@@ -53,6 +53,8 @@ TrezorConnect.getOwnershipProof({
 
 ### Result
 
+[OwnershipProof type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/getOwnershipProof.ts)
+
 Result with single proof:
 
 ```javascript
@@ -60,7 +62,9 @@ Result with single proof:
     success: true,
     payload: {
         ownership_proof: string,
-        signature: string
+        signature: string,
+        path: number[],
+        serializedPath: string
     }
 }
 ```
@@ -71,9 +75,9 @@ Result with bundle of proofs sorted by FIFO
 {
     success: true,
     payload: [
-        { ownership_proof: string, signature: string }, // taproot
-        { ownership_proof: string, signature: string }, // bech32
-        { ownership_proof: string, signature: string }  // segwit
+        { ownership_proof: string, signature: string, path: number[], serializedPath: string }, // taproot
+        { ownership_proof: string, signature: string, path: number[], serializedPath: string }, // bech32
+        { ownership_proof: string, signature: string, path: number[], serializedPath: string }  // segwit
     ]
 }
 ```

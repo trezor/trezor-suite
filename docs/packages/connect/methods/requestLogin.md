@@ -21,7 +21,7 @@ const result = await TrezorConnect.requestLogin(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 <br>
 Common parameter `useEmptyPassphrase` - is always set to `true` and it will be ignored by this method
 
@@ -60,6 +60,8 @@ TrezorConnect.requestLogin({
 ```
 
 ### Result
+
+[Login type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/requestLogin.ts)
 
 ```javascript
 {

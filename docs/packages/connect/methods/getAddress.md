@@ -8,17 +8,17 @@ const result = await TrezorConnect.getAddress(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 #### Exporting single address
 
 -   `path` — _required_ `string | Array<number>` minimum length is `5`. [read more](../path.md)
 -   `address` — _optional_ `string` address for validation (read `Handle button request` section below)
 -   `showOnTrezor` — _optional_ `boolean` determines if address will be displayed on device. Default is set to `true`
--   `coin` - _optional_ `string` determines network definition specified in [coins.json](../../src/data/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.
+-   `coin` - _optional_ `string` determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.
 -   `crossChain` — _optional_ `boolean` Advanced feature. Use it only if you are know what you are doing. Allows to generate address between chains. For example Bitcoin path on Litecoin network will display cross chain address in Litecoin format.
--   `multisig` - _optional_ [MultisigRedeemScriptType](../../src/js/types/trezor.js#L107), redeem script information (multisig addresses only)
--   `scriptType` - _optional_ [InputScriptType](../../src/js/types/trezor.js#L113), address script type
+-   `multisig` - _optional_ [MultisigRedeemScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), redeem script information (multisig addresses only)
+-   `scriptType` - _optional_ [InputScriptType](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts), address script type
 
 #### Exporting bundle of addresses
 
@@ -79,6 +79,8 @@ const result = await TrezorConnect.getAddress({
 ```
 
 ### Result
+
+[Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/params.ts)
 
 Result with only one address
 

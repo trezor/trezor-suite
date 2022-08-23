@@ -8,13 +8,13 @@ const result = await TrezorConnect.signMessage(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L131-L135)
+[SignMessage type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `message` - _required_ `string`
--   `coin` - _optional_ `string` Determines network definition specified in [coins.json](../../src/data/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.
+-   `coin` - _optional_ `string` Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.
 -   `hex` - _optional_ `boolean` convert message from hex
 
 ### Example
@@ -28,7 +28,7 @@ TrezorConnect.signMessage({
 
 ### Result
 
-###### [flowtype](../../src/js/types/response.js#L113-L116)
+[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

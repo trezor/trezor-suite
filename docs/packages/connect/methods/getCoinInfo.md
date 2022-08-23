@@ -1,6 +1,6 @@
 ## Get Coin Info
 
-Returns information about a specified coin from the [coins.json](../../src/data/coins.json) file.
+Returns information about a specified coin from the [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.
 
 ```javascript
 const result = await TrezorConnect.getCoinInfo(params);
@@ -8,7 +8,7 @@ const result = await TrezorConnect.getCoinInfo(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 #### Exporting single address
 
@@ -27,6 +27,8 @@ TrezorConnect.getCoinInfo({
 ### Result
 
 Result for Bitcoin
+
+[BitcoinNetworkInfo](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/coinInfo.ts)
 
 ```javascript
 {

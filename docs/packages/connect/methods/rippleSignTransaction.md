@@ -9,12 +9,12 @@ const result = await TrezorConnect.rippleSignTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L149-L154)
+[RippleSignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ripple/index.ts)
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
--   `transaction` - _required_ `Object` type of [RippleTransaction](../../src/js/types/ripple.js#L36-L42)
+-   `transaction` - _required_ `Object` type of [RippleTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ripple/index.ts)
 
 ### Example
 
@@ -35,7 +35,7 @@ TrezorConnect.rippleSignTransaction(
 
 ### Result
 
-###### [flowtype](../../src/js/types/ripple.js#L49-L52)
+[RippleSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ripple/index.ts)
 
 ```javascript
 {

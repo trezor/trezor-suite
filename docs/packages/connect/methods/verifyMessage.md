@@ -9,14 +9,14 @@ const result = await TrezorConnect.verifyMessage(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L156-L161)
+[VerifyMessage type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
 
 -   `address` - _required_ `string` signer address,
 -   `message` - _required_ `string` signed message,
 -   `signature` - _required_ `string` signature in base64 format,
--   `coin` - _required_ `string` Determines network definition specified in [coins.json](../../src/data/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
+-   `coin` - _required_ `string` Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
 -   `hex` - _optional_ `boolean` convert message from hex
 
 ### Example
@@ -33,7 +33,7 @@ TrezorConnect.verifyMessage({
 
 ### Result
 
-###### [flowtype](../../src/js/types/response.js#L133-L136)
+[Success type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

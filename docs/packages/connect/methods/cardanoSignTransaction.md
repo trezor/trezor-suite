@@ -9,28 +9,28 @@ const result = await TrezorConnect.cardanoSignTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-#### [type](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L119)
+[CardanoSignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 -   `signingMode` - _required_ [CardanoTxSigningMode](#CardanoTxSigningMode)
--   `inputs` - _required_ `Array` of [CardanoInput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L5)
--   `outputs` - _required_ `Array` of [CardanoOutput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L22)
+-   `inputs` - _required_ `Array` of [CardanoInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+-   `outputs` - _required_ `Array` of [CardanoOutput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 -   `fee` - _required_ `String`
 -   `protocolMagic` - _required_ `Integer` 764824073 for Mainnet, 1097911063 for Testnet
 -   `networkId` - _required_ `Integer` 1 for Mainnet, 0 for Testnet
 -   `ttl` - _optional_ `String`
 -   `validityIntervalStart` - _optional_ `String`
--   `certificates` - _optional_ `Array` of [CardanoCertificate](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L73)
--   `withdrawals` - _optional_ `Array` of [CardanoWithdrawal](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L82)
--   `auxiliaryData` - _optional_ [CardanoAuxiliaryData](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L114)
--   `mint` - _optional_ [CardanoMint](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L89)
+-   `certificates` - _optional_ `Array` of [CardanoCertificate](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+-   `withdrawals` - _optional_ `Array` of [CardanoWithdrawal](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+-   `auxiliaryData` - _optional_ [CardanoAuxiliaryData](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+-   `mint` - _optional_ [CardanoMint](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 -   `scriptDataHash` - _optional_ `String`
--   `collateralInputs` - _optional_ `Array` of [CardanoCollateralInput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L91)
--   `requiredSigners` - _optional_ `Array` of [CardanoRequiredSigner](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L97)
--   `collateralReturn` - _optional_ [CardanoOutput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L22)
+-   `collateralInputs` - _optional_ `Array` of [CardanoCollateralInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+-   `requiredSigners` - _optional_ `Array` of [CardanoRequiredSigner](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+-   `collateralReturn` - _optional_ [CardanoOutput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 -   `totalCollateral` - _optional_ `String`
--   `referenceInputs` - _optional_ `Array` of [CardanoReferenceInput](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L102)
+-   `referenceInputs` - _optional_ `Array` of [CardanoReferenceInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 -   `additionalWitnessRequests` - _optional_ `Array` of `string | Array<number>` (paths). Used for multi-sig and token minting witness requests as those can not be determined from the transaction parameters.
 -   `metadata` - _removed_ - use `auxiliaryData` instead
 -   `derivationType` — _optional_ `CardanoDerivationType` enum. Determines used derivation type. Default is set to ICARUS_TREZOR=2.
@@ -527,7 +527,7 @@ TrezorConnect.cardanoSignTransaction({
 
 Since transaction streaming has been introduced to the Cardano implementation on Trezor because of memory constraints, Trezor no longer returns the whole serialized transaction as a result of the `CardanoSignTransaction` call. Instead the transaction hash, transaction witnesses and auxiliary data supplement are returned and the serialized transaction needs to be assembled by the client.
 
-#### [type](../../../../packages/connect/src/types/api/cardanoSignTransaction.ts#L156)
+[CardanoSignedTxData type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
 
 ```javascript
 {

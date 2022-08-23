@@ -9,7 +9,7 @@ const result = await TrezorConnect.nemGetAddress(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 #### Exporting single address
 
@@ -76,6 +76,8 @@ const result = await TrezorConnect.nemGetAddress({
 ```
 
 ### Result
+
+[Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/params.ts)
 
 Result with only one address
 

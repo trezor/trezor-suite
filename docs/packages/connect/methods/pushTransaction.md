@@ -8,12 +8,12 @@ const result = await TrezorConnect.pushTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/params.js#L119-L22)
+[PushTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/pushTransaction.ts)
 
 -   `tx` - _required_ `string` serialized transaction,
--   `coin` - _required_ `string` Determines network definition specified in [coins.json](../../src/data/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
+-   `coin` - _required_ `string` Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
 
 ### Example
 
@@ -26,7 +26,7 @@ TrezorConnect.pushTransaction({
 
 ### Result
 
-###### [flowtype](../../src/js/types/response.js#L94-L96)
+[PushedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/pushTransaction.ts)
 
 ```javascript
 {

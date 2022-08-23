@@ -9,13 +9,13 @@ const result = await TrezorConnect.tezosSignTransaction(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
-###### [flowtype](../../src/js/types/tezos.js#L104-L108)
+[TezosSignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/tezos/index.ts)
 
 -   `path` - _required_ `string | Array<number>`
 -   `branch` - _required_ `string`
--   `operation` - _required_ `Object` type of [TezosOperation](../../src/js/types/tezos.js#L54)
+-   `operation` - _required_ `Object` type of [TezosOperation](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/tezos/index.ts)
 
 ### Example
 
@@ -208,7 +208,7 @@ TrezorConnect.tezosSignTransaction({
 
 ### Result
 
-###### [flowtype](../../src/js/types/tezos.js#L110-L114)
+[TezosSignedTx type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

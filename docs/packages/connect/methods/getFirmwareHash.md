@@ -4,7 +4,7 @@
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 -   `challenge` — _required_ `string` a random 32-byte challenge which is return form successful [TrezorConnect.firmwareUpdate](./firmwareUpdate) call
 
@@ -19,6 +19,8 @@ TrezorConnect.getFirmwareHash({
 ```
 
 ### Result
+
+[FirmwareHash type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

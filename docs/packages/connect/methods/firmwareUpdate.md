@@ -8,7 +8,7 @@ const result = await TrezorConnect.firmwareUpdate(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 #### You either provide binary
 
@@ -59,6 +59,8 @@ TrezorConnect.firmwareUpdate({
 ```
 
 ### Result
+
+[FirmwareUpdateResponse type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/firmwareUpdate.ts)
 
 ```javascript
 {

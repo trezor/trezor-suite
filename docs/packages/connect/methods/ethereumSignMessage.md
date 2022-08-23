@@ -8,9 +8,8 @@ const result = await TrezorConnect.ethereumSignMessage(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
-
-###### [flowtype](../../src/js/types/params.js#L64-L67)
+[Optional common params](commonParams.md)
+[EthereumSignMessage type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/ethereum/index.ts)
 
 -   `path` — _required_ `string | Array<number>` minimum length is `3`. [read more](../path.md)
 -   `message` - _required_ `string` message to sign in plain text
@@ -27,7 +26,7 @@ TrezorConnect.ethereumSignMessage({
 
 ### Result
 
-###### [flowtype](../../src/js/types/response.js#L47-L50)
+[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {

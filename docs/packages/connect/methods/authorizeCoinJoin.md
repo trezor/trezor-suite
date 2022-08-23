@@ -14,7 +14,7 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
 
 ### Params
 
-[\***\*Optional common params\*\***](commonParams.md)
+[Optional common params](commonParams.md)
 
 #### Exporting single id
 
@@ -29,7 +29,7 @@ const result = await TrezorConnect.authorizeCoinJoin(params);
 -   `maxFeePerKvbyte` — _required_ `number`
     > maximum mining fee rate in units of satoshis per 1000 vbytes
 -   `coin` - _optional_ `string`
-    > Determines network definition specified in [coins.json](../../../connect-common/files/coins.json) file.
+    > Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.
     > Coin `shortcut`, `name` or `label` can be used.
 -   `scriptType` — _optional_ `PROTO.InputScriptType`
     > used to distinguish between various address formats (non-segwit, segwit, etc.)
@@ -49,6 +49,8 @@ TrezorConnect.authorizeCoinJoin({
 ```
 
 ### Result
+
+[Success type](https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/types/messages.ts)
 
 ```javascript
 {
