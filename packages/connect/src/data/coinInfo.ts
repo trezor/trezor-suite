@@ -14,7 +14,7 @@ const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
 
 export const getBitcoinNetwork = (pathOrName: number[] | string) => {
-    const networks: BitcoinNetworkInfo[] = window.structuredClone(bitcoinNetworks);
+    const networks: BitcoinNetworkInfo[] = structuredClone(bitcoinNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -29,7 +29,7 @@ export const getBitcoinNetwork = (pathOrName: number[] | string) => {
 };
 
 export const getEthereumNetwork = (pathOrName: number[] | string) => {
-    const networks: EthereumNetworkInfo[] = window.structuredClone(ethereumNetworks);
+    const networks: EthereumNetworkInfo[] = structuredClone(ethereumNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -41,7 +41,7 @@ export const getEthereumNetwork = (pathOrName: number[] | string) => {
 };
 
 export const getMiscNetwork = (pathOrName: number[] | string) => {
-    const networks: MiscNetworkInfo[] = window.structuredClone(miscNetworks);
+    const networks: MiscNetworkInfo[] = structuredClone(miscNetworks);
     if (typeof pathOrName === 'string') {
         const name = pathOrName.toLowerCase();
         return networks.find(
@@ -84,7 +84,7 @@ export const getBech32Network = (coin: BitcoinNetworkInfo) => {
 
 // fix coinInfo network values from path (segwit/legacy)
 export const fixCoinInfoNetwork = (ci: BitcoinNetworkInfo, path: number[]) => {
-    const coinInfo: BitcoinNetworkInfo = window.structuredClone(ci);
+    const coinInfo: BitcoinNetworkInfo = structuredClone(ci);
     if (path[0] === toHardened(84)) {
         const bech32Network = getBech32Network(coinInfo);
         if (bech32Network) {
@@ -120,7 +120,7 @@ const detectBtcVersion = (data: { subversion?: string }) => {
 
 // TODO: https://github.com/trezor/trezor-suite/issues/4886
 export const getCoinInfoByHash = (hash: string, networkInfo: any) => {
-    const networks: BitcoinNetworkInfo[] = window.structuredClone(bitcoinNetworks);
+    const networks: BitcoinNetworkInfo[] = structuredClone(bitcoinNetworks);
     const result = networks.find(
         info => hash.toLowerCase() === info.hashGenesisBlock.toLowerCase(),
     );

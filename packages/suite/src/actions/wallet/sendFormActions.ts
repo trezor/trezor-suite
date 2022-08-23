@@ -133,7 +133,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
         const conversionToUse =
             areSatsSelected && areSatsSupported ? amountToSatoshi : formatAmount;
 
-        const updatedDraft: FormState = window.structuredClone(draft);
+        const updatedDraft: FormState = structuredClone(draft);
         const decimals = getAccountDecimals(relatedAccount.symbol)!;
 
         updatedDraft.outputs.forEach(output => {
