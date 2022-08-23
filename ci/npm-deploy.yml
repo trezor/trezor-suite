@@ -64,26 +64,20 @@ deploy npm:
     - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH latest"
     - nix-shell --run "yarn && cd ./packages/${PACKAGE} && npm publish"
 
-# temporary beta release for connect. connect is still in beta but use it for testing of release process
-# so I need to disable some checks
 beta deploy npm connect:
   extends: .deploy npm base
   only:
     refs:
-      - /^npm-release\//
+      - /^beta-release\//
   <<: *packages_matrix_connect
   script:
-    # this is the difference, disabled check
-    # - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH beta"
     - nix-shell --run "yarn && cd ./packages/$PACKAGE && npm publish --tag beta"
 
 deploy npm connect:
   extends: .deploy npm base
   only:
     refs:
-      - release/connect-v9
+      - /^npm-release\//
   <<: *packages_matrix_connect
   script:
-    # todo: consider this. might not be needed, it is run in github.
-    # - nix-shell --run "node ./ci/scripts/check-version $PACKAGE $CI_COMMIT_BRANCH latest"
     - nix-shell --run "cd ./packages/${PACKAGE} && npm publish"
