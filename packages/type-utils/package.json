@@ -8,5 +8,9 @@
     "scripts": {
         "lint": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3",
+        "typescript": "4.7.4"
     }
 }

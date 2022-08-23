@@ -11,5 +11,9 @@
     },
     "dependencies": {
         "csstype": "^3.0.11"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3",
+        "typescript": "4.7.4"
     }
 }

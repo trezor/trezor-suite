@@ -5,8 +5,8 @@
         "types": ["web"]
     },
     "references": [
-        { "path": "../connect" },
         { "path": "../components" },
+        { "path": "../connect" },
         { "path": "../connect-ui" },
         { "path": "../urls" }
     ],

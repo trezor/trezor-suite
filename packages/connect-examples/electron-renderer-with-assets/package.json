@@ -11,9 +11,9 @@
         "dev:renderer": "webpack --config ./webpack/config.dev.js",
         "build:connect": "cd ../../connect-iframe && yarn build",
         "build:renderer": "webpack --config ./webpack/config.prod.js",
-        "build:mac": "yarn build:connect && yarn build:renderer && electron-builder --mac",
-        "build:linux": "yarn build:connect && yarn build:renderer && electron-builder --linux",
-        "build:win": "yarn build:connect && yarn build:renderer && electron-builder --win"
+        "build:mac": "yarn build:connect && yarn build:renderer && yarn electron-builder --mac",
+        "build:linux": "yarn build:connect && yarn build:renderer && yarn electron-builder --linux",
+        "build:win": "yarn build:connect && yarn build:renderer && yarn electron-builder --win"
     },
     "build": {
         "appId": "${name}",

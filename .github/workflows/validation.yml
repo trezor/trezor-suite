@@ -14,13 +14,10 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: "yarn"
-
       - name: install yarn
         run: npm install -g yarn
-      - name: deduplicate deps
-        run: npx yarn-deduplicate --list --fail
       - name: install deps
-        run: yarn
+        run: yarn --immutable
       - name: check code formatting
         run: yarn format:verify
       - name: verify TS project references

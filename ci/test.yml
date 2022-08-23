@@ -29,7 +29,7 @@
   before_script:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn install --immutable
     - docker-compose pull
     - docker-compose up -d ${CONTAINERS}
     - docker-compose run test-run
@@ -122,7 +122,7 @@ suite web 2-master manual:
   before_script:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn install --immutable
     # 3 next steps could be removed if we passed packages/suite-desktop/dist and build folder as an artifact
     # but since this is run only in nightly builds it can be probably built inside the job for now..
     - yarn workspace @trezor/suite-data msg-system-sign-config
@@ -157,7 +157,7 @@ suite desktop manual:
   variables:
     COMPOSE_FILE: ./docker/docker-compose.transport-test.yml
   script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn install --immutable
     - yarn workspace @trezor/utils build:lib
     - yarn workspace @trezor/transport build:lib
     # run e2e tests
@@ -186,7 +186,7 @@ transport manual:
     COMPOSE_FILE: ./docker/docker-compose.connect-popup-ci.yml
     URL: ${DEV_SERVER_URL}/connect-explorer/${CI_BUILD_REF_NAME}/
   script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn install --immutable
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix
     - docker-compose run test-run
@@ -241,7 +241,7 @@ connect-popup manual:
     - docker network prune -f
   script:
     - git submodule update --init --recursive
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - yarn install --immutable
     # should not be needed, rather hand over artifacts?
     - if [ "$TESTS_ENVIRONMENT" == "web" ]; then yarn workspace @trezor/connect-iframe build; else echo "else"; fi
     # should not be needed, rather hand over artifacts?

@@ -7,7 +7,6 @@ build-renderer
 
 # Dependency directory
 node_modules
-.yarn
 
 # OSX
 .DS_Store
@@ -129,3 +128,12 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+
+# Yarn 3
+.yarn/*
+.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

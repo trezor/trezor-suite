@@ -11,26 +11,20 @@
     },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../components" },
-        { "path": "../dom-utils" },
-        { "path": "../connect" },
-        { "path": "../react-utils" },
-        { "path": "../suite-analytics" },
         {
             "path": "../../suite-common/connect-init"
         },
-        { "path": "../suite-data" },
-        { "path": "../suite-desktop-api" },
-        { "path": "../suite-storage" },
-        { "path": "../type-utils" },
-        { "path": "../urls" },
-        { "path": "../utils" },
-        { "path": "../validation" },
         {
             "path": "../../suite-common/intl-types"
         },
         {
             "path": "../../suite-common/metadata-types"
+        },
+        {
+            "path": "../../suite-common/notifications"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/suite-config"
@@ -42,25 +36,31 @@
             "path": "../../suite-common/suite-utils"
         },
         {
-            "path": "../../suite-common/notifications"
-        },
-        {
             "path": "../../suite-common/test-utils"
         },
         {
             "path": "../../suite-common/wallet-config"
         },
         {
-            "path": "../../suite-common/wallet-types"
+            "path": "../../suite-common/wallet-constants"
         },
         {
-            "path": "../../suite-common/wallet-constants"
+            "path": "../../suite-common/wallet-types"
         },
         {
             "path": "../../suite-common/wallet-utils"
         },
-        {
-            "path": "../../suite-common/redux-utils"
-        }
+        { "path": "../components" },
+        { "path": "../connect" },
+        { "path": "../dom-utils" },
+        { "path": "../react-utils" },
+        { "path": "../suite-analytics" },
+        { "path": "../suite-data" },
+        { "path": "../suite-desktop-api" },
+        { "path": "../suite-storage" },
+        { "path": "../type-utils" },
+        { "path": "../urls" },
+        { "path": "../utils" },
+        { "path": "../validation" }
     ]
 }
