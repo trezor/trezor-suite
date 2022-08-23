@@ -44,10 +44,11 @@ const AppComponent = () => {
         dispatch(connectInitThunk());
     }, [dispatch]);
 
-    if (!isOnboardingFinished) {
-        return <OnboardingStackNavigator />;
+    // NOTE: Skip onboarding for development right now to speed up app loading
+    if (isOnboardingFinished || process.env.NODE_ENV === 'development') {
+        return <RootTabNavigator />;
     }
-    return <RootTabNavigator />;
+    return <OnboardingStackNavigator />;
 };
 
 export const App = () => {
