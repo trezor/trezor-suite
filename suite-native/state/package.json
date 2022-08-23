@@ -17,7 +17,8 @@
         "@suite-native/module-onboarding": "*",
         "@suite-native/module-settings": "*",
         "@trezor/connect": "9.0.0-beta.7",
-        "@trezor/styles": "*"
+        "@trezor/styles": "*",
+        "@trezor/utils": "*"
     },
     "devDependencies": {
         "jest": "^26.6.3",

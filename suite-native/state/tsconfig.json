@@ -12,6 +12,7 @@
         { "path": "../module-onboarding" },
         { "path": "../module-settings" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/utils" }
     ]
 }
