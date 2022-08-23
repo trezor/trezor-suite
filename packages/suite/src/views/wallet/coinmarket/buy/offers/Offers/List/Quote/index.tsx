@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
-import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
+import { CoinmarketPaymentType, CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { formatCryptoAmount, getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
     className?: string;
@@ -24,24 +24,11 @@ const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
 `;
 
-const TagRow = styled.div`
-    display: flex;
-    min-height: 30px;
-`;
-
-const Tag = styled.div`
-    margin-top: 10px;
-    height: 35px;
-    margin-left: -20px;
-    border: 1px solid tan;
-    text-transform: uppercase;
-`;
-
 const Main = styled.div`
     display: flex;
     margin: 0 30px;
     justify-content: space-between;
-    padding-bottom: 20px;
+    padding: 20px 0;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -52,6 +39,7 @@ const Main = styled.div`
 
 const Left = styled(H2)`
     display: flex;
+    align-items: center;
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
@@ -210,14 +198,11 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
 const Quote = ({ className, quote, wantCrypto }: Props) => {
     const theme = useTheme();
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
-    // TODO - tags are not yet fully supported by the API server
-    // in the future will be taken from quote.tags, will need some algorithm to evaluate them and show only one
-    const hasTag = false;
+    const { tag, infoNote } = getTagAndInfoNote(quote);
     const { paymentMethod, exchange, error } = quote;
 
     return (
         <Wrapper className={className}>
-            <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
             <Main>
                 {error && <Left>N/A</Left>}
                 {!error && (
@@ -227,6 +212,7 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                             : `${formatCryptoAmount(Number(quote.receiveStringAmount))} ${
                                   quote.receiveCurrency
                               }`}
+                        <CoinmarketTag tag={tag} />
                     </Left>
                 )}
                 <Right>
@@ -271,7 +257,7 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                 </ErrorFooter>
             )}
 
-            {quote.infoNote && !error && <Footer>{quote.infoNote}</Footer>}
+            {infoNote && !error && <Footer>{infoNote}</Footer>}
         </Wrapper>
     );
 };

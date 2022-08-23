@@ -7,6 +7,7 @@ import {
     getCountryLabelParts,
     mapTestnetSymbol,
     getSendCryptoOptions,
+    getTagAndInfoNote,
 } from '../coinmarketUtils';
 import { accountBtc, accountEth } from '../__fixtures__/coinmarketUtils';
 
@@ -80,5 +81,16 @@ describe('coinmarket utils', () => {
                 value: 'USDC',
             },
         ]);
+    });
+
+    it('getTagAndInfoNote', () => {
+        expect(getTagAndInfoNote({})).toStrictEqual({ infoNote: undefined });
+        expect(getTagAndInfoNote({ infoNote: '' })).toStrictEqual({ infoNote: '' });
+        expect(getTagAndInfoNote({ infoNote: 'Foo' })).toStrictEqual({ infoNote: 'Foo' });
+        expect(getTagAndInfoNote({ infoNote: ' #Foo' })).toStrictEqual({ infoNote: ' #Foo' });
+        expect(getTagAndInfoNote({ infoNote: 'Foo#Bar' })).toStrictEqual({ infoNote: 'Foo#Bar' });
+        expect(getTagAndInfoNote({ infoNote: '#Foo' })).toStrictEqual({ tag: 'Foo' });
+        expect(getTagAndInfoNote({ infoNote: '# Foo' })).toStrictEqual({ tag: ' Foo' });
+        expect(getTagAndInfoNote({ infoNote: '##Bar' })).toStrictEqual({ tag: '#Bar' });
     });
 });

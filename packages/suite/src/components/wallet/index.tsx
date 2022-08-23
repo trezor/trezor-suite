@@ -26,6 +26,7 @@ import CoinmarketExchangeOfferInfo from './CoinmarketExchangeOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketProviderInfo from './CoinmarketProviderInfo';
 import CoinmarketRefreshTime from './CoinmarketRefreshTime';
+import { CoinmarketTag } from './CoinmarketTag';
 import { DiscoveryProgress } from './DiscoveryProgress';
 import KYCInProgress from './KYCInProgress';
 import KYCFailed from './KYCFailed';
@@ -54,6 +55,7 @@ export {
     CoinmarketProvidedByInvity,
     CoinmarketPaymentType,
     CoinmarketRefreshTime,
+    CoinmarketTag,
     DiscoveryProgress,
     withCoinmarket,
     withSelectedAccountLoaded,

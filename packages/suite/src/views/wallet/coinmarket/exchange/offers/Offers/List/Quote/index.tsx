@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
 import { FormattedFiatAmount, QuestionTooltip, Translation } from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { formatCryptoAmount, getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-import { CoinmarketProviderInfo } from '@wallet-components';
+import { CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
 import { useSelector, useTranslation } from '@suite-hooks';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
@@ -21,24 +21,11 @@ const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
 `;
 
-const TagRow = styled.div`
-    display: flex;
-    min-height: 30px;
-`;
-
-const Tag = styled.div`
-    margin-top: 10px;
-    height: 35px;
-    margin-left: -20px;
-    border: 1px solid tan;
-    text-transform: uppercase;
-`;
-
 const Main = styled.div`
     display: flex;
     margin: 0 30px;
     justify-content: space-between;
-    padding-bottom: 20px;
+    padding: 20px 0;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -49,6 +36,7 @@ const Main = styled.div`
 
 const Left = styled(H2)`
     display: flex;
+    align-items: center;
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
@@ -109,6 +97,20 @@ const Value = styled.div`
     align-items: center;
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const Footer = styled.div`
+    margin: 0 30px;
+    padding: 10px 0;
+    padding-top: 23px;
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.SMALL};
+
+    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin: 0 20px;
+    }
 `;
 
 const ErrorFooter = styled.div`
@@ -192,7 +194,7 @@ const Quote = ({ className, quote }: Props) => {
         localCurrency: state.wallet.settings.localCurrency,
     }));
 
-    const hasTag = false;
+    const { tag, infoNote } = getTagAndInfoNote(quote);
     const { exchange, receive, receiveStringAmount } = quote;
     let errorQuote = isQuoteError(quote);
 
@@ -230,11 +232,13 @@ const Quote = ({ className, quote }: Props) => {
 
     return (
         <Wrapper className={className}>
-            <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
             <Main>
                 {errorQuote && !noFundsForFeesError && <Left>N/A</Left>}
                 {(!errorQuote || noFundsForFeesError) && (
-                    <Left>{`${formatCryptoAmount(Number(receiveStringAmount))} ${receive}`}</Left>
+                    <Left>
+                        {`${formatCryptoAmount(Number(receiveStringAmount))} ${receive}`}
+                        <CoinmarketTag tag={tag} />
+                    </Left>
                 )}
                 <Right>
                     <StyledButton
@@ -304,6 +308,8 @@ const Quote = ({ className, quote }: Props) => {
                     <ErrorText>{noFundsForFeesError || getQuoteError(quote)}</ErrorText>
                 </ErrorFooter>
             )}
+
+            {infoNote && !errorQuote && <Footer>{infoNote}</Footer>}
         </Wrapper>
     );
 };

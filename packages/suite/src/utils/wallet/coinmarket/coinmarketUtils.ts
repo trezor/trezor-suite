@@ -165,3 +165,10 @@ export const mapTestnetSymbol = (symbol: Network['symbol']) => {
     if (symbol === 'tada') return 'ada';
     return symbol;
 };
+
+export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
+    if (quote.infoNote?.startsWith('#')) {
+        return { tag: quote.infoNote.substring(1) };
+    }
+    return { infoNote: quote.infoNote };
+};
