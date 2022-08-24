@@ -57,18 +57,19 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
     },
     actions: {
-        addTransaction: mockAction('addTransaction'),
-        removeTransaction: mockAction('removeTransaction'),
         setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
         lockDevice: mockAction('lockDevice'),
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
+        fiatRateUpdate: mockActionType('fiatRateUpdate'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
+        storageLoadTransactions: mockReducer('storageLoadTransactions'),
+        txFiatRateUpdate: mockReducer('txFiatRateUpdate'),
     },
     utils: {
         connectInitSettings: {

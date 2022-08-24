@@ -7,6 +7,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
+import { accountsActions } from '@suite-common/wallet-core';
 
 import { selectTransactions } from './transactionReducer';
 import { modulePrefix } from './transactionConstants';
@@ -141,10 +142,9 @@ export const fetchTransactionsThunk = createThunk(
             noLoading?: boolean;
             recursive?: boolean;
         },
-        { dispatch, getState, extra },
+        { dispatch, getState },
     ) => {
         if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
-        const { accountUpdateAction } = extra.actions;
         const transactions = selectTransactions(getState());
         const reducerTxs = getAccountTransactions(account.key, transactions);
 
@@ -187,8 +187,8 @@ export const fetchTransactionsThunk = createThunk(
         });
 
         if (result && result.success) {
-            // TODO Will need to pass this through generator / higher order function
-            const updateAction = accountUpdateAction({ account, accountInfo: result.payload });
+            // TODO why is this only accepting account now?
+            const updateAction = accountsActions.updateAccount(account, result.payload);
             const updatedAccount = updateAction.payload as Account;
             const transactions = result.payload.history.transactions || [];
             const totalPages = result.payload.page?.total || 0;

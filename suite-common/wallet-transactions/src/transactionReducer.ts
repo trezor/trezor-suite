@@ -2,6 +2,7 @@ import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { accountsActions } from '@suite-common/wallet-core';
 
 import { transactionActions } from './transactionActions';
 
@@ -119,6 +120,11 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     }
                 });
             })
+            .addCase(accountsActions.removeAccount, (state, { payload }) => {
+                payload.forEach(a => {
+                    delete state.transactions[a.key];
+                });
+            })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
                 extra.reducers.storageLoadTransactions,
@@ -126,10 +132,6 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             .addMatcher(
                 action => action.type === extra.actionTypes.fiatRateUpdate,
                 extra.reducers.txFiatRateUpdate,
-            )
-            .addMatcher(
-                action => action.type === extra.actionTypes.removeAccount,
-                extra.reducers.removeAccountsTransactions,
             );
     },
 );
