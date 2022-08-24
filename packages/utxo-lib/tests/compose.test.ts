@@ -1,3 +1,4 @@
+import { deepClone } from '@trezor/utils';
 import { composeTx } from '../src';
 import * as utils from '../src/compose/utils';
 import { Permutation } from '../src/compose/permutation';
@@ -26,7 +27,7 @@ describe('composeTx', () => {
                     delete input.REV_hash;
                 });
                 const o = result.transaction.PERM_outputs;
-                const sorted = JSON.parse(JSON.stringify(o.sorted));
+                const sorted = deepClone(o.sorted);
                 sorted.forEach((ss: any) => {
                     const s = ss;
                     if (s.opReturnData != null) {

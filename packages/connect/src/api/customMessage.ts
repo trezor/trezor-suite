@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/CustomMessage.js
 
+import { deepClone } from '@trezor/utils';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { ERRORS } from '../constants';
@@ -26,7 +27,7 @@ export default class CustomMessage extends AbstractMethod<'customMessage', Param
 
         if (payload.messages) {
             try {
-                JSON.parse(JSON.stringify(payload.messages));
+                deepClone(payload.messages);
             } catch (error) {
                 throw ERRORS.TypedError(
                     'Method_InvalidParameter',

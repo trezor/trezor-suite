@@ -1,6 +1,7 @@
 /* eslint-disable no-eval */
 
 import stringifyObject from 'stringify-object';
+import { deepClone } from '@trezor/utils';
 
 import {
     TAB_CHANGE,
@@ -182,7 +183,7 @@ const findField = (state: MethodState, field: any) => {
 
 const onFieldChange = (state: MethodState, _field: any, value: any) => {
     const newState = {
-        ...JSON.parse(JSON.stringify(state)),
+        ...deepClone(state),
         ...state,
     };
     const field = findField(newState, _field);
@@ -206,10 +207,7 @@ const getMethodState = (url: string) => {
     const method = config.find(m => m.url === url);
     if (!method) return initialState;
     // clone object
-    const state = {
-        ...JSON.parse(JSON.stringify(method)),
-        // ...method,
-    };
+    const state = deepClone(method) as MethodState;
 
     // set default values
     state.fields = state.fields.map(f => setAffectedValues(state, prepareBundle(f)));
@@ -219,9 +217,9 @@ const getMethodState = (url: string) => {
 };
 
 const onAddBatch = (state: MethodState, _field: Field<any>, item: any) => {
-    const newState = JSON.parse(JSON.stringify(state));
+    const newState = deepClone(state) as any;
     const field = newState.fields.find(f => f.name === _field.name);
-    field.items = [...field.items, item];
+    field.items = [...field?.items, item];
     prepareBundle(field);
 
     return updateParams(newState);
@@ -231,8 +229,8 @@ const onRemoveBatch = (state: MethodState, _field: any, _batch: any) => {
     const field = state.fields.find(f => f.name === _field.name);
     const items = field?.items?.filter(batch => batch !== _batch);
 
-    const newState = JSON.parse(JSON.stringify(state));
-    const newField = newState.fields.find(f => f.name === field?.name);
+    const newState = deepClone(state);
+    const newField = newState.fields.find(f => f.name === field?.name) as any;
     newField.items = items;
     prepareBundle(newField);
 

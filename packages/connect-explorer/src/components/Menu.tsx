@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import InfinityMenu from 'react-infinity-menu';
 import { createGlobalStyle } from 'styled-components';
+import { deepClone } from '@trezor/utils';
 
 import config from '../data/menu';
 
@@ -139,7 +140,7 @@ const findFiltered = (url: any, tree: any, node: any, key: any) => {
 
 const getTree = (url: string) => {
     // clone config
-    const tree = JSON.parse(JSON.stringify(config));
+    const tree = deepClone(config);
     const filteredTree = tree.reduce((prev, curr, key) => {
         if (key === undefined) return prev;
         return findFiltered(url, prev, curr, key);

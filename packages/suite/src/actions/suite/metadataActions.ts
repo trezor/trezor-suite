@@ -1,7 +1,7 @@
 import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { createDeferred } from '@trezor/utils';
+import { createDeferred, deepClone } from '@trezor/utils';
 import { METADATA } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -518,7 +518,7 @@ export const addAccountMetadata =
         const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
         if (!account) return false;
         // clone Account.metadata
-        const metadata = JSON.parse(JSON.stringify(account.metadata));
+        const metadata = deepClone(account.metadata);
 
         if (payload.type === 'outputLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {

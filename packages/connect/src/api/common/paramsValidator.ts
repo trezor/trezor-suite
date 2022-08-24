@@ -1,4 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
+import { deepClone } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
 import { fromHardened } from '../../utils/pathUtils';
@@ -102,7 +103,7 @@ export const getFirmwareRange = (
     coinInfo: CoinInfo | null | undefined,
     currentRange: FirmwareRange,
 ) => {
-    const current: FirmwareRange = JSON.parse(JSON.stringify(currentRange));
+    const current: FirmwareRange = deepClone(currentRange);
     // set minimum required firmware from coins.json (coinInfo)
     if (coinInfo) {
         if (!coinInfo.support || typeof coinInfo.support.trezor1 !== 'string') {

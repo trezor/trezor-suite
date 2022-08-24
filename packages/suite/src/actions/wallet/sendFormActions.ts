@@ -84,7 +84,7 @@ export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
     const draft = send.drafts[selectedAccount.account.key];
     if (draft) {
         // draft is a read-only redux object. make a copy to be able to modify values
-        return JSON.parse(JSON.stringify(draft));
+        return deepClone(draft);
     }
 };
 
