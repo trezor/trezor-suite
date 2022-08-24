@@ -3,12 +3,13 @@ import { fromWei } from 'web3-utils';
 import { format } from 'date-fns';
 
 import { trezorLogo } from '@suite-common/suite-constants';
-import { AccountTransaction, TransactionTarget } from '@trezor/connect';
+import { TransactionTarget } from '@trezor/connect';
 import { Network } from '@suite-common/wallet-config';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { formatNetworkAmount, formatAmount } from './accountUtils';
 
-type AccountTransactionForExports = Omit<AccountTransaction, 'targets'> & {
+type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];
 };
 
@@ -19,6 +20,7 @@ type Data = {
     accountName: string;
     type: FileType;
     transactions: AccountTransactionForExports[];
+    localCurrency: string;
 };
 
 type Field = { [key: string]: string };
@@ -35,20 +37,18 @@ const fields = {
     amount: 'Total',
 };
 
-const addressSeparator = {
-    csv: ' | ',
-    pdf: '\n',
-    json: '',
-};
-
 // Docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/format
-const dateTimeFormat = {
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
+const dateFormat = {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
+} as const;
+
+const timeFormat = {
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    timeZoneName: 'shortOffset',
 } as const;
 
 const formatIfDefined = (amount: string | undefined, symbol: Network['symbol']) =>
@@ -58,9 +58,9 @@ const formatAmounts =
     (symbol: Network['symbol']) =>
     (tx: AccountTransactionForExports): AccountTransactionForExports => ({
         ...tx,
-        tokens: tx.tokens.map(tok => ({
-            ...tok,
-            amount: formatAmount(tok.amount, tok.decimals),
+        tokens: tx.tokens.map(token => ({
+            ...token,
+            amount: formatAmount(token.amount, token.decimals),
         })),
         amount: formatNetworkAmount(tx.amount, symbol),
         fee: formatNetworkAmount(tx.fee, symbol),
@@ -119,37 +119,67 @@ const makePdf = (
     });
 
 const prepareContent = (data: Data) => {
-    const { type, transactions, coin } = data;
-    return transactions.map(formatAmounts(coin)).map(t => {
-        let addresses = [];
-        if (t.tokens.length > 0) {
-            addresses = t.tokens.map(token => {
-                if (token?.address && token?.amount) {
-                    return `${token.address} (${token.amount} ${token.symbol.toUpperCase()})`;
-                }
+    const { transactions, coin } = data;
+    return transactions
+        .map(formatAmounts(coin))
+        .flatMap(t => {
+            const sharedData = {
+                date: new Intl.DateTimeFormat('default', dateFormat).format(
+                    (t.blockTime || 0) * 1000,
+                ),
+                time: new Intl.DateTimeFormat('default', timeFormat).format(
+                    (t.blockTime || 0) * 1000,
+                ),
+                timestamp: t.blockTime?.toString(),
+                type: t.type.toUpperCase(),
+                txid: t.txid,
+            };
 
-                return null;
-            });
-        } else {
-            addresses = t.targets.map(target => {
-                if (target?.addresses?.length && target?.amount) {
-                    return `${target.addresses[0]} (${target.amount}) ${
-                        target.metadataLabel ? `- ${target.metadataLabel}` : ''
-                    }`;
+        if (t.tokens.length > 0) {
+            return t.tokens.map((token, index) => {
+                if (token?.address && token?.amount) {
+                    return {
+                        ...sharedData,
+                        fee: index === 0 ? t.fee : '', // fee only once per tx
+                        feeSymbol: index === 0 ? coin.toUpperCase() : '',
+                        address: token.to, // SENT - it is destination address, RECV - it is MY address
+                        label: '', // token transactions do not have labels
+                        amount: token.amount, // TODO: what to show if token.decimals missing so amount is not formatted correctly?
+                        symbol: token.symbol.toUpperCase() || token.address, // if symbol not available, use contract address
+                        fiat: '', // missing rates for tokens
+                        other: '',
+                    };
                 }
 
                 return null;
             });
         }
+        return t.targets.map((target, index) => {
+            if (target?.addresses?.length && target?.amount) {
+                return {
+                    ...sharedData,
+                    fee: index === 0 ? t.fee : '', // fee only once per tx
+                    feeSymbol: index === 0 ? coin.toUpperCase() : '',
+                    address: target.isAddress ? target.addresses[0] : '', // SENT - it is destination address, RECV - it is MY address
+                    label: target.isAddress && target.metadataLabel ? target.metadataLabel : '',
+                    amount: target.isAddress ? target.amount : '',
+                    symbol: target.isAddress ? coin.toUpperCase() : '',
+                    fiat:
+                        target.isAddress && target.amount && t.rates && t.rates[data.localCurrency]
+                            ? Intl.NumberFormat(undefined, {
+                                  style: 'decimal',
+                                  maximumFractionDigits: 2,
+                                  minimumFractionDigits: 2,
+                              })
+                                  .format(parseFloat(target.amount) * t.rates[data.localCurrency]!)
+                                  .toString()
+                            : '',
+                    other: !target.isAddress ? target.addresses[0] : '', // e.g. OP_RETURN
+                };
+            }
 
-        return {
-            ...t,
-            addresses: addresses.join(addressSeparator[type]),
-            type: t.type.toUpperCase(),
-            datetime: new Intl.DateTimeFormat('default', dateTimeFormat).format(
-                (t.blockTime || 0) * 1000,
-            ),
-        };
+            return null;
+        });
     });
 };
 
