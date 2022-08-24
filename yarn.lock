@@ -6630,7 +6630,6 @@ __metadata:
     tslib: ^2.3.1
     tsx: ^3.8.2
     typescript: 4.7.4
-    version-bump-prompt: ^6.1.0
   languageName: unknown
   linkType: soft
 
@@ -31471,6 +31470,7 @@ __metadata:
     tsconfig-paths: ^4.1.0
     tsx: ^3.8.2
     typescript: 4.7.4
+    version-bump-prompt: ^6.1.0
   languageName: unknown
   linkType: soft
 

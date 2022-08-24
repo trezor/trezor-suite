@@ -41,8 +41,7 @@ const res = child_process.spawnSync('yarn', [...cmd, ...connectPaths], {
     encoding: 'utf-8',
     cwd: REPO_ROOT,
 });
-
-if (res.stderr) {
+if (res.status !== 0) {
     console.log(res);
     process.exit(1);
 } else {
