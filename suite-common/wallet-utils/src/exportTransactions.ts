@@ -349,10 +349,14 @@ export const formatData = async (data: Data) => {
             return pdf;
         }
         case 'json': {
-            const json = JSON.stringify({
-                coin,
-                transactions: transactions.map(formatAmounts(coin)),
-            });
+            const json = JSON.stringify(
+                {
+                    coin,
+                    transactions: transactions.map(formatAmounts(coin)),
+                },
+                null,
+                2,
+            );
             return new Blob([json], { type: 'text/json;charset=utf-8' });
         }
         // no default
