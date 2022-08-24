@@ -3,8 +3,7 @@
 // unit test for discovery actions
 // data provided by TrezorConnect are mocked
 
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
@@ -187,7 +186,7 @@ export const getInitialState = (device = SUITE_DEVICE) => ({
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State = getInitialState()) => {
     const store = mockStore(state);

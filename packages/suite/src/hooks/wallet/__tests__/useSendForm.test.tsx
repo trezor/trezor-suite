@@ -1,6 +1,5 @@
 import React from 'react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore, filterThunkActionTypes } from '@suite/support/tests/configureStore';
 import { DeepPartial } from 'react-hook-form';
 import { PROTO } from '@trezor/connect';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
@@ -67,7 +66,7 @@ export const getInitialState = ({ send, fees, selectedAccount, bitcoinAmountUnit
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);
@@ -289,7 +288,7 @@ describe('useSendForm hook', () => {
             await waitForLoader();
 
             store.subscribe(() => {
-                const actions = store.getActions();
+                const actions = filterThunkActionTypes(store.getActions());
                 const lastAction = actions[actions.length - 1];
                 if (lastAction.payload?.decision) {
                     lastAction.payload.decision.resolve(true); // always resolve push tx request

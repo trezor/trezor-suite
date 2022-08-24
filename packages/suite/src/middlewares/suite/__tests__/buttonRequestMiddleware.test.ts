@@ -1,8 +1,8 @@
 /* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import { UI_EVENT, UI } from '@trezor/connect';
 
 import { SUITE } from '@suite-actions/constants';
@@ -81,11 +81,7 @@ export const getInitialState = () => ({
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, Action>([
-        thunk,
-        suiteMiddleware,
-        buttonRequestMiddleware,
-    ]);
+    const mockStore = configureStore<State, Action>([suiteMiddleware, buttonRequestMiddleware]);
     const store = mockStore(state);
     return store;
 };

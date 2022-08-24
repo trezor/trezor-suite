@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import pollingReducer, { initialState } from '@wallet-reducers/pollingReducer';
 import pollingMiddleware from '@wallet-middlewares/pollingMiddleware';
 import type { Action } from '@suite-types';
@@ -19,7 +19,7 @@ export const getInitialState = ({ pollings }: Args = {}) => ({
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, Action>([thunk, pollingMiddleware]);
+const mockStore = configureStore<State, Action>([pollingMiddleware]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);

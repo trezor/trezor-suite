@@ -1,7 +1,6 @@
 import { DEVICE } from '@trezor/connect';
-import configureStore from 'redux-mock-store';
+import { configureStore } from '@suite/support/tests/configureStore';
 import { Middleware } from 'redux';
-import thunk from 'redux-thunk';
 
 import * as routerActions from '@suite-actions/routerActions';
 import { SUITE } from '@suite-actions/constants';
@@ -47,7 +46,7 @@ const getInitialState = (
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares: Middleware<any, any>[] = [thunk, redirectMiddleware, suiteMiddleware];
+const middlewares: Middleware<any, any>[] = [redirectMiddleware, suiteMiddleware];
 
 const initStore = (state: State) => {
     const mockStore = configureStore<State, Action>(middlewares);

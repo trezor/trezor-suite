@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import coinmarketReducer, { initialState } from '@wallet-reducers/coinmarketReducer';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import coinmarketMiddleware from '@wallet-middlewares/coinmarketMiddleware';
@@ -60,7 +60,7 @@ export const getInitialState = ({ coinmarket, selectedAccount }: Args = {}) => (
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, Action>([thunk, coinmarketMiddleware]);
+const mockStore = configureStore<State, Action>([coinmarketMiddleware]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);

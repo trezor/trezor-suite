@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import receiveReducer from '@wallet-reducers/receiveReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
@@ -112,7 +112,7 @@ export const getInitialState = (state: Partial<InitialState> | undefined) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

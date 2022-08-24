@@ -1,5 +1,4 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import { NOTIFICATION, PROTOCOL } from '@suite-actions/constants';
 import protocolMiddleware from '../protocolMiddleware';
@@ -25,7 +24,7 @@ export const getInitialState = (
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, any>([thunk, ...middlewares]);
+    const mockStore = configureStore<State, any>([...middlewares]);
 
     const store = mockStore(state);
     store.subscribe(() => {

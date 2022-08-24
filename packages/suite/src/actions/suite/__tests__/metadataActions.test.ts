@@ -2,8 +2,8 @@
 /* eslint-disable global-require */
 import fs from 'fs';
 import path from 'path';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import metadataReducer from '@suite-reducers/metadataReducer';
 import suiteReducer, { SuiteState } from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
@@ -87,7 +87,7 @@ export const getInitialState = (state?: InitialState) => {
 };
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk, suiteMiddleware]);
+const mockStore = configureStore<State, any>([suiteMiddleware]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);

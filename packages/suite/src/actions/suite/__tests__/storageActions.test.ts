@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import { Middleware } from 'redux';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
@@ -133,7 +133,7 @@ export const getInitialState = (prevState?: Partial<PartialState>, action?: any)
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares: Middleware<any, any>[] = [thunk, storageMiddleware];
+const middlewares: Middleware<any, any>[] = [storageMiddleware];
 
 const mockStore = configureStore<State, any>(middlewares);
 

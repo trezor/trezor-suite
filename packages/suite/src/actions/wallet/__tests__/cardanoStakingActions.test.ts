@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import cardanoStakingReducer from '@wallet-reducers/cardanoStakingReducer';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import { CARDANO_STAKING } from '../constants';
@@ -36,7 +36,7 @@ const getInitialState = (cardanoStaking?: CardanoStakingState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

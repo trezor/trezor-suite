@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import { coinjoinReducer } from '@wallet-reducers/coinjoinReducer';
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
@@ -47,7 +47,7 @@ export const getInitialState = () => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

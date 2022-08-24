@@ -1,6 +1,5 @@
 import React from 'react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 import { renderWithProviders } from '@suite/support/tests/hooksHelper';
 
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
@@ -16,7 +15,7 @@ export const getInitialState = (action: any = { type: 'initial' }) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

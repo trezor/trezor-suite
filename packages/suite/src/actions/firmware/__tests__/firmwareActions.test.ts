@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import firmwareReducer from '@firmware-reducers/firmwareReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@trezor/type-utils';
@@ -82,7 +82,7 @@ export const getInitialState = (override?: InitialState): any => {
     };
 };
 
-const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
+const mockStore = configureStore<ReturnType<typeof getInitialState>, any>();
 
 const updateStore = (store: ReturnType<typeof mockStore>) => {
     // there is not much redux logic in this test

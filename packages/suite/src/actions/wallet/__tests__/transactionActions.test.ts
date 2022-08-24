@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import transactionReducer from '@wallet-reducers/transactionReducer';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 import * as transactionActions from '../transactionActions';
@@ -15,7 +15,7 @@ export const getInitialState = (transactions?: transactionsState) => ({
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

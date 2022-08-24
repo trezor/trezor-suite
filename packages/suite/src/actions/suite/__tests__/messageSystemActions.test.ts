@@ -1,5 +1,4 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import messageSystemReducer, {
     State as MessageSystemState,
@@ -16,7 +15,7 @@ export const getInitialState = (state?: MessageSystemState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

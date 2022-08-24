@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import { accountsReducer } from '@wallet-reducers';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
@@ -63,7 +62,7 @@ export const getInitialState = ({
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, Action>([thunk, walletMiddleware, blockchainMiddleware]);
+const mockStore = configureStore<State, Action>([walletMiddleware, blockchainMiddleware]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);

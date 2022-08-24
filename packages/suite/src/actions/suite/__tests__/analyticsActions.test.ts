@@ -1,5 +1,4 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import analyticsReducer from '@suite-reducers/analyticsReducer';
 import * as analyticsActions from '@suite-actions/analyticsActions';
@@ -31,7 +30,7 @@ export const getInitialState = (state: InitialState | undefined) => {
 };
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

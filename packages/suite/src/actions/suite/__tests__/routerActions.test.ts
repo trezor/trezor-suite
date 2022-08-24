@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import suiteReducer from '@suite-reducers/suiteReducer';
 import routerReducer from '@suite-reducers/routerReducer';
 import modalReducer from '@suite-reducers/modalReducer';
@@ -32,7 +32,7 @@ const getInitialState = (state: InitialState | undefined) => {
 };
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);
