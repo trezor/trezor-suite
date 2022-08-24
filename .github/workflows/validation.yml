@@ -9,6 +9,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: "true"
+          fetch-depth: 0
       - name: Install node and yarn
         uses: actions/setup-node@v3
         with:
@@ -22,16 +23,18 @@ jobs:
         run: yarn format:verify
       - name: verify TS project references
         run: yarn verify-project-references
-      - run: git status
-      - name: build libs
-        run: yarn build:libs
-      - run: git status
-      - name: type check
-        run: yarn type-check
-      - run: git status
-      - name: lint
-        run: yarn lint
       - name: msg-system config validation
         run: yarn workspace @trezor/suite-data msg-system-validate-config
+      - run: git status
+      - name: build libs
+        run: yarn nx:build:libs
+      - run: git status
+      - name: type check
+        run: yarn nx:type-check
+      - run: git status
+      - name: lint js
+        run: yarn nx:lint:js
+      - name: lint styles
+        run: yarn nx:lint:styles
       - name: unit tests
-        run: lerna run --stream test:unit
+        run: yarn nx:test-unit

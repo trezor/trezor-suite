@@ -9,7 +9,7 @@
         "ios": "react-native run-ios --no-packager",
         "start": "react-native start --reset-cache",
         "test": "jest",
-        "lint": "eslint .",
+        "lint:js": "eslint .",
         "type-check": "tsc -b",
         "build:android": "cd android && ./gradlew assembleDevDebug",
         "pods": "npx pod-install"

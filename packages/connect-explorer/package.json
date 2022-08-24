@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
-        "lint": "eslint '**/*{.ts,.tsx}'",
+        "lint:js": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --build tsconfig.json"
     },
     "dependencies": {

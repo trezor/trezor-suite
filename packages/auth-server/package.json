@@ -6,7 +6,7 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
         "dev": "tsx watch ./src/index.ts",
         "build": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",

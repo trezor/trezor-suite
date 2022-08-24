@@ -4,7 +4,7 @@
     "private": true,
     "sideEffects": false,
     "scripts": {
-        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build",
         "dev": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts"

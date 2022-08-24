@@ -6,7 +6,7 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
-        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build"
     },
     "devDependencies": {

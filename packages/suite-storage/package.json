@@ -10,7 +10,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "trezor suite storage",
     "scripts": {
-        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
