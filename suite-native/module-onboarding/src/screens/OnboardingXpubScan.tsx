@@ -12,10 +12,6 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
 import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
 
-const xpubContainerStyle = prepareNativeStyle(utils => ({
-    padding: utils.spacings.medium,
-}));
-
 const coinStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
 }));
@@ -77,7 +73,7 @@ export const OnboardingXpubScan = ({
 
     return (
         <Screen backgroundColor="black" hasStatusBar={false}>
-            <View style={applyStyle(xpubContainerStyle)}>
+            <Box>
                 <View style={applyStyle(coinStyle)}>
                     <Chip
                         icon={<CryptoIcon name="btc" />}
@@ -121,7 +117,7 @@ export const OnboardingXpubScan = ({
                         label="Enter x-pub..."
                     />
                 </InputWrapper>
-            </View>
+            </Box>
         </Screen>
     );
 };

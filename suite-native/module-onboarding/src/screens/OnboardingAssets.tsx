@@ -13,9 +13,8 @@ import { setOnboardingFinished } from '../slice';
 import { AssetsHeader } from '../components/AssetsHeader';
 import { AssetsOverview } from '../components/AssetsOverview';
 
-const assetsStyle = prepareNativeStyle(utils => ({
+const assetsStyle = prepareNativeStyle(_ => ({
     flex: 1,
-    padding: utils.spacings.medium,
     justifyContent: 'space-between',
 }));
 

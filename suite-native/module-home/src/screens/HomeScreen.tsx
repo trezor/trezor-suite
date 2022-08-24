@@ -10,7 +10,7 @@ import { DashboardHeader } from '../components/DashboardHeader';
 
 export const HomeScreen = () => (
     <Screen>
-        <VStack spacing={40} padding="medium">
+        <VStack spacing={40}>
             <DashboardHeader />
             <PortfolioGraph />
             <Assets />
