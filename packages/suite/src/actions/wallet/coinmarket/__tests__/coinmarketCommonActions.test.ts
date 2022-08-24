@@ -8,7 +8,7 @@ import {
     VERIFY_BUY_ADDRESS_FIXTURES,
     VERIFY_EXCHANGE_ADDRESS_FIXTURES,
 } from '../__fixtures__/coinmarketCommonActions/verifyAddress';
-import transactionReducer from '@wallet-reducers/transactionReducer';
+import { transactionsReducer } from '@wallet-reducers';
 
 export const getInitialState = (initial = {}) => ({
     ...DEFAULT_STORE,
@@ -26,7 +26,7 @@ const initStore = (state: State) => {
         store.getState().wallet = {
             coinmarket: coinmarketReducer(coinmarket, action),
             selectedAccount: selectedAccountReducer({ ...selectedAccount }, action),
-            transactions: transactionReducer(transactions, action),
+            transactions: transactionsReducer(transactions, action),
         };
         store.getActions().push(action);
     });

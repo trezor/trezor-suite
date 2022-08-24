@@ -2,7 +2,7 @@ import type { MiddlewareAPI } from 'redux';
 
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { TRANSACTION, BLOCKCHAIN } from '@wallet-actions/constants';
+import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -10,9 +10,9 @@ import { accountsActions } from '@suite-common/wallet-core';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import type { AppState, Action, Dispatch } from '@suite-types';
+import { transactionActions } from '@suite-common/wallet-transactions';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 const walletMiddleware =
@@ -32,12 +32,22 @@ const walletMiddleware =
         if (accountsActions.createAccount.match(action)) {
             // gather transactions from account.create action
             const account = action.payload;
-            api.dispatch(transactionActions.add(account.history.transactions || [], account, 1));
+            api.dispatch(
+                transactionActions.addTransaction({
+                    transactions: account.history.transactions || [],
+                    account,
+                    page: 1,
+                }),
+            );
         }
 
-        if (action.type === TRANSACTION.ADD) {
-            const { account, transactions } = action.payload;
-            api.dispatch(cardanoStakingActions.validatePendingStakeTxOnTx(account, transactions));
+        if (transactionActions.addTransaction.match(action)) {
+            api.dispatch(
+                cardanoStakingActions.validatePendingStakeTxOnTx(
+                    action.payload.account,
+                    action.payload.transactions,
+                ),
+            );
         }
 
         // propagate action to reducers

@@ -2,7 +2,6 @@ import * as BLOCKCHAIN from './blockchainConstants';
 import * as SIGN_VERIFY from './signVerifyConstants';
 import * as RECEIVE from './receiveConstants';
 import * as SEND from './sendFormConstants';
-import * as TRANSACTION from './transactionConstants';
 import * as DISCOVERY from './discoveryConstants';
 import * as WALLET from './walletConstants';
 import * as FIAT_RATES from './fiatRatesConstants';
@@ -21,7 +20,6 @@ export {
     BLOCKCHAIN,
     SIGN_VERIFY,
     RECEIVE,
-    TRANSACTION,
     DISCOVERY,
     WALLET,
     SEND,

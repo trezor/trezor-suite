@@ -5,10 +5,10 @@ import { useActions } from '@suite-hooks';
 import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { fetchTransactionsThunk } from '@suite-common/wallet-transactions';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
@@ -50,7 +50,7 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
     const { translationString } = useTranslation();
     const { addToast, fetchTransactions } = useActions({
         addToast: notificationActions.addToast,
-        fetchTransactions: transactionActions.fetchTransactions,
+        fetchTransactions: fetchTransactionsThunk,
     });
 
     const onFocus = useCallback(() => {
@@ -86,7 +86,13 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
                 setHasFetchedAll(true);
 
                 try {
-                    await fetchTransactions(account, 2, SETTINGS.TXS_PER_PAGE, true, true);
+                    await fetchTransactions({
+                        account,
+                        page: 2,
+                        perPage: SETTINGS.TXS_PER_PAGE,
+                        noLoading: true,
+                        recursive: true,
+                    });
                 } catch (err) {
                     addToast({
                         type: 'error',

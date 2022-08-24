@@ -1,14 +1,17 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, FeeInfo, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { AccountTransaction, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
+import { ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { NotificationEventPayload } from '@suite-common/notifications';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
+type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
+type FiatUpdateReducer = (state: any, action: { type: any; payload: any }) => void;
 
 type ConnectInitSettings = {
     manifest: Manifest;
@@ -32,18 +35,6 @@ export type ExtraDependencies = {
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
     // but that shouldn't be problem.
     actions: {
-        addTransaction: ActionCreatorWithPreparedPayload<
-            [transactions: AccountTransaction[], account: Account, page?: number],
-            {
-                transactions: AccountTransaction[];
-                account: Account;
-                page?: number;
-            }
-        >;
-        removeTransaction: ActionCreatorWithPreparedPayload<
-            [account: Account, txs: WalletAccountTransaction[]],
-            { account: Account; txs: WalletAccountTransaction[] }
-        >;
         setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
@@ -54,10 +45,13 @@ export type ExtraDependencies = {
     // in place where we have all types available to ensure type safety.
     actionTypes: {
         storageLoad: ActionType;
+        fiatRateUpdate: ActionType;
     };
     reducers: {
         storageLoadBlockchain: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
+        storageLoadTransactions: StorageLoadTransactionsReducer;
+        txFiatRateUpdate: FiatUpdateReducer;
     };
     utils: {
         connectInitSettings: ConnectInitSettings;

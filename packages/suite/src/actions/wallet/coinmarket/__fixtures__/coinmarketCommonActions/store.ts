@@ -1,7 +1,7 @@
 import { Account } from '@wallet-types';
 import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
-import transactionReducer from '@wallet-reducers/transactionReducer';
+import { transactionsReducer } from '@wallet-reducers';
 
 export const ACCOUNT: Account = {
     networkType: 'bitcoin',
@@ -50,7 +50,7 @@ export const DEFAULT_STORE = {
     wallet: {
         coinmarket: coinmarketReducer(undefined, { type: 'foo' } as any),
         selectedAccount: selectedAccountReducer(undefined, { type: 'foo' } as any),
-        transactions: transactionReducer(undefined, { type: 'foo' } as any),
+        transactions: transactionsReducer(undefined, { type: 'foo' } as any),
     },
     suite: {
         device: undefined,

@@ -4,10 +4,10 @@ import { CARDANO_STAKING } from '@wallet-actions/constants';
 import { PendingStakeTx, PoolsResponse } from '@wallet-types/cardanoStaking';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import { getUnixTime } from 'date-fns';
 import { isPending, getAccountTransactions, getNetwork } from '@suite-common/wallet-utils';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
+import { transactionActions } from '@suite-common/wallet-transactions';
 
 export type CardanoStakingAction =
     | { type: typeof CARDANO_STAKING.ADD_PENDING_STAKE_TX; pendingStakeTx: PendingStakeTx }
@@ -69,7 +69,7 @@ export const validatePendingTxOnBlock =
                 if (tx.blockTime && ts - tx.blockTime > CARDANO_DEFAULT_TTL_OFFSET) {
                     // all txs from suite have ttl set to 2h
                     // tx will be rejected by the network if is not included in the blockchain in <2h
-                    dispatch(transactionActions.remove(account, [tx]));
+                    dispatch(transactionActions.removeTransaction({ account, txs: [tx] }));
                 }
             });
 

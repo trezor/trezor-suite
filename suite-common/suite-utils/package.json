@@ -12,7 +12,8 @@
         "test-unit:watch": "jest -o --watch"
     },
     "dependencies": {
-        "@suite-common/suite-config": "*"
+        "@suite-common/suite-config": "*",
+        "@suite-common/wallet-config": "*"
     },
     "devDependencies": {
         "jest": "^26.6.3",

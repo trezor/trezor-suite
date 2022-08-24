@@ -6056,6 +6056,7 @@ __metadata:
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:
     "@suite-common/suite-config": "*"
+    "@suite-common/wallet-config": "*"
     jest: ^26.6.3
     typescript: 4.7.4
   languageName: unknown
@@ -6114,6 +6115,21 @@ __metadata:
     "@trezor/connect": 9.0.0
     jest: ^26.6.3
     typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/wallet-transactions@*, @suite-common/wallet-transactions@workspace:suite-common/wallet-transactions":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/wallet-transactions@workspace:suite-common/wallet-transactions"
+  dependencies:
+    "@reduxjs/toolkit": ^1.8.3
+    "@suite-common/redux-utils": "*"
+    "@suite-common/suite-config": "*"
+    "@suite-common/suite-utils": "*"
+    "@suite-common/wallet-types": "*"
+    "@suite-common/wallet-utils": "*"
+    "@trezor/connect": 9.0.0-beta.6
+    file-saver: ^2.0.5
   languageName: unknown
   linkType: soft
 
@@ -6542,6 +6558,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-common@npm:0.0.8":
+  version: 0.0.8
+  resolution: "@trezor/connect-common@npm:0.0.8"
+  checksum: c66bd361eafff8574da61b5e609df2d209bc84f19c4463ffbaac2a027a331095ca9a2791439f23015354f9c1fe8875ae0181fddb763e6d5f2597a790a1181905
+  languageName: node
+  linkType: hard
+
 "@trezor/connect-explorer@workspace:packages/connect-explorer":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
@@ -6705,6 +6728,27 @@ __metadata:
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
+
+"@trezor/connect@npm:9.0.0-beta.6":
+  version: 9.0.0-beta.6
+  resolution: "@trezor/connect@npm:9.0.0-beta.6"
+  dependencies:
+    "@trezor/blockchain-link": ^2.1.3
+    "@trezor/connect-common": 0.0.8
+    "@trezor/transport": ^1.1.4
+    "@trezor/utils": ^9.0.2
+    "@trezor/utxo-lib": ^1.0.0
+    bignumber.js: ^9.0.2
+    blakejs: ^1.2.1
+    bowser: ^2.11.0
+    cross-fetch: ^3.1.5
+    events: ^3.3.0
+    parse-uri: 1.0.7
+    randombytes: 2.1.0
+    tslib: ^2.3.1
+  checksum: ca2a88f1bf24d536cf3ed3916243b1c8ab63c569d9a2ed6ed51fabfc9d9bb426362201e7ad58ff52b98df82bb4753ac45ef6e6359f7609e16de6dc9e5ba73142
+  languageName: node
+  linkType: hard
 
 "@trezor/dom-utils@*, @trezor/dom-utils@workspace:packages/dom-utils":
   version: 0.0.0-use.local
@@ -7082,6 +7126,7 @@ __metadata:
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-constants": "*"
     "@suite-common/wallet-core": "*"
+    "@suite-common/wallet-transactions": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
     "@testing-library/react": 12.1.5
@@ -10817,7 +10862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.1.0":
+"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.2, bignumber.js@npm:^9.1.0":
   version: 9.1.0
   resolution: "bignumber.js@npm:9.1.0"
   checksum: 52ec2bb5a3874d7dc1a1018f28f8f7aff4683515ffd09d6c2d93191343c76567ae0ee32cc45149d53afb2b904bc62ed471a307b35764beea7e9db78e56bef6c6

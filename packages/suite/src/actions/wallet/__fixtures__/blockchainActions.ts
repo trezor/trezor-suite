@@ -1,6 +1,7 @@
 import { NOTIFICATION } from '@suite-actions/constants';
-import { TRANSACTION, BLOCKCHAIN } from '@wallet-actions/constants';
+import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { analyzeTransactionsFixtures as analyzeTransactions } from '@suite-common/wallet-utils';
+import { transactionActions } from '@suite-common/wallet-transactions';
 import { accountsActions } from '@suite-common/wallet-core';
 
 const DEFAULT_ACCOUNT = {
@@ -38,7 +39,11 @@ const analyzeTransactionsExtended = [
         result: [BLOCKCHAIN.SYNCED],
     },
     {
-        result: [TRANSACTION.ADD, accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+        result: [
+            transactionActions.addTransaction.type,
+            accountsActions.updateAccount.type,
+            BLOCKCHAIN.SYNCED,
+        ],
         resultTxs: {
             'xpub-btc-deviceState': [
                 { blockHeight: 5, blockHash: '5', txid: '5' },
@@ -50,7 +55,11 @@ const analyzeTransactionsExtended = [
         },
     },
     {
-        result: [TRANSACTION.ADD, accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+        result: [
+            transactionActions.addTransaction.type,
+            accountsActions.updateAccount.type,
+            BLOCKCHAIN.SYNCED,
+        ],
         resultTxs: {
             'xpub-btc-deviceState': [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
         },
@@ -62,27 +71,18 @@ const analyzeTransactionsExtended = [
         },
     },
     {
-        result: [TRANSACTION.REMOVE, accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
-        resultTxs: {
-            'xpub-btc-deviceState': [],
-        },
-    },
-    {
-        result: [TRANSACTION.REMOVE, accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
-        resultTxs: {
-            'xpub-btc-deviceState': [{ blockHeight: 1, blockHash: '1', txid: '1' }],
-        },
-    },
-    {
-        result: [TRANSACTION.REMOVE, accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+        result: [
+            transactionActions.removeTransaction.type,
+            accountsActions.updateAccount.type,
+            BLOCKCHAIN.SYNCED,
+        ],
         resultTxs: {
             'xpub-btc-deviceState': [],
         },
     },
     {
         result: [
-            TRANSACTION.REMOVE,
-            TRANSACTION.ADD,
+            transactionActions.removeTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -92,8 +92,29 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            TRANSACTION.REMOVE,
-            TRANSACTION.ADD,
+            transactionActions.removeTransaction.type,
+            accountsActions.updateAccount.type,
+            BLOCKCHAIN.SYNCED,
+        ],
+        resultTxs: {
+            'xpub-btc-deviceState': [],
+        },
+    },
+    {
+        result: [
+            transactionActions.removeTransaction.type,
+            transactionActions.addTransaction.type,
+            accountsActions.updateAccount.type,
+            BLOCKCHAIN.SYNCED,
+        ],
+        resultTxs: {
+            'xpub-btc-deviceState': [{ blockHeight: 1, blockHash: '1', txid: '1' }],
+        },
+    },
+    {
+        result: [
+            transactionActions.removeTransaction.type,
+            transactionActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -102,7 +123,11 @@ const analyzeTransactionsExtended = [
         },
     },
     {
-        result: [TRANSACTION.ADD, accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+        result: [
+            transactionActions.addTransaction.type,
+            accountsActions.updateAccount.type,
+            BLOCKCHAIN.SYNCED,
+        ],
         resultTxs: {
             'xpub-btc-deviceState': [
                 { blockHeight: undefined, blockHash: '4', txid: '4' },
@@ -113,7 +138,11 @@ const analyzeTransactionsExtended = [
         },
     },
     {
-        result: [TRANSACTION.ADD, accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+        result: [
+            transactionActions.addTransaction.type,
+            accountsActions.updateAccount.type,
+            BLOCKCHAIN.SYNCED,
+        ],
         resultTxs: {
             'xpub-btc-deviceState': [
                 { blockHeight: 2, blockHash: '2', txid: '2' },
@@ -123,7 +152,11 @@ const analyzeTransactionsExtended = [
         },
     },
     {
-        result: [TRANSACTION.ADD, accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+        result: [
+            transactionActions.addTransaction.type,
+            accountsActions.updateAccount.type,
+            BLOCKCHAIN.SYNCED,
+        ],
         resultTxs: {
             'xpub-btc-deviceState': [
                 { blockHeight: 4, blockHash: '4', txid: '4' },
@@ -138,8 +171,8 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            TRANSACTION.REMOVE,
-            TRANSACTION.ADD,
+            transactionActions.removeTransaction.type,
+            transactionActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -153,8 +186,8 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            TRANSACTION.REMOVE,
-            TRANSACTION.ADD,
+            transactionActions.removeTransaction.type,
+            transactionActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -171,8 +204,8 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            TRANSACTION.REMOVE,
-            TRANSACTION.ADD,
+            transactionActions.removeTransaction.type,
+            transactionActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],

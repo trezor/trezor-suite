@@ -2,9 +2,7 @@ import { combineReducers } from 'redux';
 import settingsReducer from './settingsReducer';
 import fiatRateReducer from './fiatRatesReducer';
 import graphReducer from './graphReducer';
-import transactionReducer from './transactionReducer';
 import discoveryReducer from './discoveryReducer';
-import { extraDependencies } from '../../support/extraDependencies';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
@@ -16,7 +14,11 @@ import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
 import pollingReducer from './pollingReducer';
+import { prepareTransactionsReducer } from '@suite-common/wallet-transactions';
 import { coinjoinReducer } from './coinjoinReducer';
+import { extraDependencies } from '@suite/support/extraDependencies';
+
+export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 
@@ -24,7 +26,7 @@ const WalletReducers = combineReducers({
     fiat: fiatRateReducer,
     graph: graphReducer,
     settings: settingsReducer,
-    transactions: transactionReducer,
+    transactions: transactionsReducer,
     discovery: discoveryReducer,
     accounts: accountsReducer,
     selectedAccount: selectedAccountReducer,

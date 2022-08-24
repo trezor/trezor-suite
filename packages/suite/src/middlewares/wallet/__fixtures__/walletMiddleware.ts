@@ -1,6 +1,6 @@
 import { PROTO } from '@trezor/connect';
 import { SEND } from '@wallet-actions/constants';
-import { Account } from 'suite-common/wallet-types/src';
+import { Account } from 'suite-common/wallet-types';
 import { FormState as SendFormState, Output } from '@wallet-types/sendForm';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { RouterState } from '@suite-reducers/routerReducer';

@@ -49,6 +49,8 @@ export type FiatRatesAction =
           };
       };
 
+export type FiatRatesUpdateAction = Extract<FiatRatesAction, { type: typeof TX_FIAT_RATE_UPDATE }>;
+
 // how often should suite check for outdated rates;
 const INTERVAL = 1000 * 60 * 2; // 2 mins
 const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 1; // 1 hour

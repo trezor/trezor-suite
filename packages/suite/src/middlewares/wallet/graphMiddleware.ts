@@ -1,8 +1,9 @@
 import { MiddlewareAPI } from 'redux';
-import { DISCOVERY, TRANSACTION } from '@wallet-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import * as graphActions from '@wallet-actions/graphActions';
 import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { AppState, Action, Dispatch } from '@suite-types';
+import { transactionActions } from '@suite-common/wallet-transactions';
 import { accountsActions } from '@suite-common/wallet-core';
 
 const graphMiddleware =
@@ -30,30 +31,32 @@ const graphMiddleware =
                 );
                 break;
 
-            case TRANSACTION.ADD: {
-                const { account, transactions, page } = action.payload;
-                if (page) {
-                    // don't run while fetching txs pages in transactions tab
-                    break;
-                }
+            case transactionActions.addTransaction.type:
+                if (transactionActions.addTransaction.match(action)) {
+                    const { account, transactions, page } = action.payload;
+                    if (page) {
+                        // don't run while fetching txs pages in transactions tab
+                        break;
+                    }
 
-                // don't run during discovery and on unconfirmed txs
-                const discovery = api.dispatch(getDiscoveryForDevice());
-                if (
-                    discovery?.status === DISCOVERY.STATUS.COMPLETED &&
-                    transactions.some(t => (t.blockHeight ?? 0) > 0)
-                ) {
-                    api.dispatch(
-                        graphActions.updateGraphData([account], { newAccountsOnly: false }),
-                    );
+                    // don't run during discovery and on unconfirmed txs
+                    const discovery = api.dispatch(getDiscoveryForDevice());
+                    if (
+                        discovery?.status === DISCOVERY.STATUS.COMPLETED &&
+                        transactions.some(t => (t.blockHeight ?? 0) > 0)
+                    ) {
+                        api.dispatch(
+                            graphActions.updateGraphData([account], {
+                                newAccountsOnly: false,
+                            }),
+                        );
+                    }
                 }
                 break;
-            }
 
             default:
                 break;
         }
-
         return action;
     };
 

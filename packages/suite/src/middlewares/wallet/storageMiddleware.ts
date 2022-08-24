@@ -4,7 +4,6 @@ import { db } from '@suite/storage';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import {
     DISCOVERY,
-    TRANSACTION,
     FIAT_RATES,
     GRAPH,
     SEND,
@@ -26,6 +25,7 @@ import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
 import { accountsActions } from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
+import { transactionActions } from '@suite-common/wallet-transactions';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -88,22 +88,30 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.forgetDevice(action.payload));
                     break;
 
-                case TRANSACTION.ADD:
-                case TRANSACTION.REMOVE: {
-                    const { account } = action.payload;
-                    const device = accountUtils.findAccountDevice(account, api.getState().devices);
-                    // update only transactions for remembered device
-                    if (isDeviceRemembered(device)) {
-                        storageActions.removeAccountTransactions(account);
-                        api.dispatch(storageActions.saveAccountTransactions(account));
+                case transactionActions.addTransaction.type:
+                case transactionActions.removeTransaction.type:
+                    if (
+                      transactionActions.addTransaction.match(action) ||
+                      transactionActions.removeTransaction.match(action)
+                    ) {
+                        const { account } = action.payload;
+                        const device = accountUtils.findAccountDevice(
+                          account,
+                          api.getState().devices,
+                        );
+                        // update only transactions for remembered device
+                        if (isDeviceRemembered(device)) {
+                            storageActions.removeAccountTransactions(account);
+                            api.dispatch(storageActions.saveAccountTransactions(account));
+                        }
                     }
                     break;
-                }
 
-                case TRANSACTION.RESET:
-                    storageActions.removeAccountTransactions(action.account);
+                case transactionActions.resetTransaction.type:
+                    if (transactionActions.resetTransaction.match(action)) {
+                        storageActions.removeAccountTransactions(action.payload.account);
+                    }
                     break;
-
                 case DISCOVERY.UPDATE:
                 case DISCOVERY.INTERRUPT:
                 case DISCOVERY.STOP:

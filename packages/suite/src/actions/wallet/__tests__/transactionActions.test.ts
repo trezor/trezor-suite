@@ -1,70 +1,61 @@
-import { configureStore } from '@suite/support/tests/configureStore';
-
-import transactionReducer from '@wallet-reducers/transactionReducer';
+import { transactionsReducer } from '@wallet-reducers';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
-import * as transactionActions from '../transactionActions';
+import {
+    transactionActions,
+    initialState,
+    TransactionState,
+} from '@suite-common/wallet-transactions';
+import { configureStore } from '@reduxjs/toolkit';
 
-type transactionsState = ReturnType<typeof transactionReducer>;
 const { getWalletTransaction } = global.JestMocks;
 
-export const getInitialState = (transactions?: transactionsState) => ({
-    wallet: {
-        transactions: transactions || transactionReducer(undefined, { type: 'foo' } as any),
-    },
-});
-
-type State = ReturnType<typeof getInitialState>;
-
-const mockStore = configureStore<State, any>();
-
-const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const { transactions } = store.getState().wallet;
-        store.getState().wallet = {
-            transactions: transactionReducer(transactions, action),
-        };
-        // add action back to stack
-        store.getActions().push(action);
+const initStore = (transactionsState?: TransactionState) =>
+    configureStore({
+        reducer: {
+            transactions: transactionsReducer,
+        },
+        preloadedState: {
+            transactions: transactionsState ?? initialState,
+        },
     });
-    return store;
-};
 
 // TODO: more tests (updating existing/pending txs, fetching the data from blockbook,...)
 describe('Transaction Actions', () => {
     it('Add transaction for first page (used on account create)', () => {
-        const store = initStore(getInitialState());
+        const store = initStore();
         const account = global.JestMocks.getWalletAccount();
-        store.dispatch(transactionActions.add([getWalletTransaction()], account, 1));
+        store.dispatch(
+            transactionActions.addTransaction({
+                transactions: [getWalletTransaction()],
+                account,
+                page: 1,
+            }),
+        );
         expect(
-            getAccountTransactions(account.key, store.getState().wallet.transactions.transactions)
-                .length,
+            getAccountTransactions(account.key, store.getState().transactions.transactions).length,
         ).toEqual(1);
     });
 
     it('Remove txs for a given account', () => {
         const account1 = global.JestMocks.getWalletAccount({ descriptor: 'xpub1' });
         const account2 = global.JestMocks.getWalletAccount({ descriptor: 'xpub2' });
-        const store = initStore(
-            getInitialState({
-                transactions: {
-                    [account1.key]: [getWalletTransaction()],
-                    [account2.key]: [getWalletTransaction()],
-                },
-                isLoading: false,
-                error: null,
-            }),
-        );
-        store.dispatch(transactionActions.reset(account1));
+        const store = initStore({
+            transactions: {
+                [account1.key]: [getWalletTransaction()],
+                [account2.key]: [getWalletTransaction()],
+            },
+            isLoading: false,
+            error: null,
+        });
+
+        store.dispatch(transactionActions.resetTransaction({ account: account1 }));
         // removed txs for acc1
         expect(
-            getAccountTransactions(account1.key, store.getState().wallet.transactions.transactions),
+            getAccountTransactions(account1.key, store.getState().transactions.transactions),
         ).toEqual([]);
         // txs for acc2 are still there
         expect(
-            getAccountTransactions(account2.key, store.getState().wallet.transactions.transactions)
-                .length,
+            getAccountTransactions(account2.key, store.getState().transactions.transactions).length,
         ).toEqual(1);
     });
 });

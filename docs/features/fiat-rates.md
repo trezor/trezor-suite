@@ -28,7 +28,7 @@ Weekly rates are downloaded on app launch and on enabling new network.
 
 ### Historical fiat rates (for transactions)
 
-Historical rates for transactions: On `TRANSACTION.ADD` action, which means after a new transaction is added, stored within the tx object,
+Historical rates for transactions: On `addTransaction` action, which means after a new transaction is added, stored within the tx object,
 
 ## Update intervals
 
