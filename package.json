@@ -85,7 +85,7 @@
         "@babel/preset-react": "^7.18.6",
         "@babel/preset-typescript": "^7.18.6",
         "@babel/runtime": "^7.18.9",
-        "@nrwl/nx-cloud": "latest",
+        "@nrwl/nx-cloud": "14.5.1",
         "@types/jest": "^26.0.20",
         "@types/node": "^16.11.49",
         "@types/prettier": "^2.7.0",

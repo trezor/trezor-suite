@@ -12,8 +12,7 @@
                     "lint:styles",
                     "build:lib"
                 ],
-                "runtimeCacheInputs": ["node -v"],
-                "accessToken": "NGE1OTQ2MjMtNTE4MC00MjJlLTk3MDMtYzdjNDdjODEzNDc5fHJlYWQtd3JpdGU=",
+                "accessToken": "MzdkNzIwNjUtMWUyZC00YTU2LThlY2YtYjQzYzU0ZThjNTg0fHJlYWQtd3JpdGU=",
                 "parallel": 5
             }
         }

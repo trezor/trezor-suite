@@ -1,0 +1,170 @@
+.next
+build
+build-electron
+build-renderer
+.build-storybook
+\*.cpuprofile
+
+# Dependency directory
+
+node_modules
+
+# OSX
+
+.DS_Store
+
+# Editors
+
+.idea
+_.sublime-project
+_.sublime-workspace
+.vscode/\*_/_
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+!.vscode/\*.code-snippets
+
+# Logs
+
+logs
+\*.log
+.yarnclean
+
+.attic
+.env\*
+!.env.dev
+
+# cache
+
+_.code-workspace
+**docker-snapshots**
+**pycache**/
+.cache/
+.eslintcache
+.stylelintcache
+_.tsbuildinfo
+
+# model 1 emulation file
+
+docker/trezor-user-env/controller/emulator.img
+
+# Vagrant
+
+.vagrant
+
+# build outputs
+
+lib
+libDev
+dist
+public
+coverage
+tmp
+
+## React Native section
+
+# Xcode
+
+build/
+_.pbxuser
+!default.pbxuser
+_.mode1v3
+!default.mode1v3
+_.mode2v3
+!default.mode2v3
+_.perspectivev3
+!default.perspectivev3
+xcuserdata
+_.xccheckout
+_.moved-aside
+DerivedData
+_.hmap
+_.ipa
+_.dSYM.zip
+_.xcuserstate
+
+# Android/IntelliJ
+
+build/
+.idea
+.gradle
+local.properties
+_.iml
+_.hprof
+
+# BUCK
+
+buck-out/
+\.buckd/
+\*.keystore
+!debug.keystore
+
+# fastlane
+
+#
+
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+
+# screenshots whenever they are needed.
+
+# For more information about the recommended setup visit:
+
+# https://docs.fastlane.tools/best-practices/source-control/
+
+**/android/fastlane/report.xml
+**/android/fastlane/Preview.html
+**/android/fastlane/screenshots
+**/ios/fastlane/report.xml
+**/ios/fastlane/Preview.html
+**/ios/fastlane/screenshots
+**/fastlane/report.xml
+**/fastlane/Preview.html
+\*\*/fastlane/screenshots
+
+_.cer
+_.certSigningRequest
+_.p12
+_.mobileprovision
+
+# scan temporary files
+
+\*\*/android/fastlane/test_output
+
+# ios
+
+**/ios/\*.xcarchive
+**/ios/builds/\*
+
+# Ruby / CocoaPods
+
+**/ios/Pods/
+**/vendor/bundle/
+
+# android
+
+\*_/android/builds/_
+
+# fastlane supply (google service account - upload key)
+
+\*\*/android/upload-key.json
+
+# Bundle artifact
+
+\*.jsbundle
+
+# Yarn 3
+
+.yarn/\*
+.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# @trezor/suite-data
+
+packages/suite-data/files/browser-detection
+packages/suite-data/files/message-system
+packages/suite-data/files/guide
+packages/suite-data/files/translations/master.json
