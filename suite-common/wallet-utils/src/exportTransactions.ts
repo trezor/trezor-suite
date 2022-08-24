@@ -1,8 +1,11 @@
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
+import { fromWei } from 'web3-utils';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { AccountTransaction, TransactionTarget } from '@trezor/connect';
 import { Network } from '@suite-common/wallet-config';
+
+import { formatNetworkAmount, formatAmount } from './accountUtils';
 
 type AccountTransactionForExports = Omit<AccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];
@@ -45,6 +48,52 @@ const dateTimeFormat = {
     day: 'numeric',
 } as const;
 
+const formatIfDefined = (amount: string | undefined, symbol: Network['symbol']) =>
+    amount ? formatNetworkAmount(amount, symbol) : undefined;
+
+const formatAmounts =
+    (symbol: Network['symbol']) =>
+    (tx: AccountTransactionForExports): AccountTransactionForExports => ({
+        ...tx,
+        tokens: tx.tokens.map(tok => ({
+            ...tok,
+            amount: formatAmount(tok.amount, tok.decimals),
+        })),
+        amount: formatNetworkAmount(tx.amount, symbol),
+        fee: formatNetworkAmount(tx.fee, symbol),
+        totalSpent: formatNetworkAmount(tx.totalSpent, symbol),
+        targets: tx.targets.map(tr => ({
+            ...tr,
+            amount: formatIfDefined(tr.amount, symbol),
+        })),
+        details: {
+            ...tx.details,
+            vin: tx.details.vin.map(v => ({
+                ...v,
+                value: formatIfDefined(v.value, symbol),
+            })),
+            vout: tx.details.vout.map(v => ({
+                ...v,
+                value: formatIfDefined(v.value, symbol),
+            })),
+            totalInput: formatNetworkAmount(tx.details.totalInput, symbol),
+            totalOutput: formatNetworkAmount(tx.details.totalOutput, symbol),
+        },
+        ethereumSpecific: tx.ethereumSpecific
+            ? {
+                  ...tx.ethereumSpecific,
+                  gasPrice: fromWei(tx.ethereumSpecific.gasPrice, 'gwei'),
+              }
+            : undefined,
+        cardanoSpecific: tx.cardanoSpecific
+            ? {
+                  ...tx.cardanoSpecific,
+                  withdrawal: formatIfDefined(tx.cardanoSpecific.withdrawal, symbol),
+                  deposit: formatIfDefined(tx.cardanoSpecific.deposit, symbol),
+              }
+            : undefined,
+    });
+
 const loadPdfMake = async () => {
     const pdfMake = (await import(/* webpackChunkName: "pdfMake" */ 'pdfmake/build/pdfmake'))
         .default;
@@ -67,8 +116,8 @@ const makePdf = (
     });
 
 const prepareContent = (data: Data) => {
-    const { type, transactions } = data;
-    return transactions.map(t => {
+    const { type, transactions, coin } = data;
+    return transactions.map(formatAmounts(coin)).map(t => {
         let addresses = [];
         if (t.tokens.length > 0) {
             addresses = t.tokens.map(token => {
@@ -205,7 +254,7 @@ export const formatData = async (data: Data) => {
         case 'json': {
             const json = JSON.stringify({
                 coin,
-                transactions,
+                transactions: transactions.map(formatAmounts(coin)),
             });
             return new Blob([json], { type: 'text/json;charset=utf-8' });
         }
