@@ -1,41 +1,59 @@
 import React, { ReactNode } from 'react';
 import { SafeAreaView, ScrollView, StatusBar } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Color, nativeSpacings } from '@trezor/theme';
 
 type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
     hasStatusBar?: boolean;
     backgroundColor?: Color;
+    customVerticalPadding?: number;
+    customHorizontalPadding?: number;
 };
 
-const screenContainerStyle = prepareNativeStyle<{ insetTop: number; backgroundColor: Color }>(
-    (utils, { insetTop, backgroundColor }) => ({
-        flex: 1,
-        backgroundColor,
-        paddingTop: Math.max(insetTop, utils.spacings.medium),
-    }),
-);
-
-const screenContentStyle = prepareNativeStyle(_ => ({
-    flexGrow: 1,
+const screenContainerStyle = prepareNativeStyle<{
+    backgroundColor: Color;
+}>((_, { backgroundColor }) => ({
+    flex: 1,
+    backgroundColor,
 }));
+
+const screenContentStyle = prepareNativeStyle<{
+    insets: EdgeInsets;
+    customHorizontalPadding: number;
+    customVerticalPadding: number;
+}>((_, { insets, customHorizontalPadding, customVerticalPadding }) => {
+    const { top, right, bottom, left } = insets;
+    return {
+        flexGrow: 1,
+        paddingTop: Math.max(top, customVerticalPadding),
+        paddingBottom: Math.max(bottom, customVerticalPadding),
+        paddingLeft: Math.max(left, customHorizontalPadding),
+        paddingRight: Math.max(right, customHorizontalPadding),
+    };
+});
 
 export const Screen = ({
     children,
     header,
     hasStatusBar = true,
     backgroundColor = 'gray100',
+    customVerticalPadding = nativeSpacings.medium,
+    customHorizontalPadding = nativeSpacings.medium,
 }: ScreenProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
     return (
         <SafeAreaView
-            style={[applyStyle(screenContainerStyle, { insetTop: insets.top, backgroundColor })]}
+            style={[
+                applyStyle(screenContainerStyle, {
+                    backgroundColor,
+                }),
+            ]}
         >
             <StatusBar
                 barStyle="dark-content"
@@ -46,7 +64,11 @@ export const Screen = ({
             {header && header}
             <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
-                contentContainerStyle={applyStyle(screenContentStyle)}
+                contentContainerStyle={applyStyle(screenContentStyle, {
+                    insets,
+                    customHorizontalPadding,
+                    customVerticalPadding,
+                })}
             >
                 {children}
             </ScrollView>

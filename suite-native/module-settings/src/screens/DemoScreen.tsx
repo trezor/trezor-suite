@@ -73,7 +73,7 @@ export const DemoScreen = () => {
 
     return (
         <Screen header={<ScreenHeader />}>
-            <Box padding="small">
+            <Box>
                 <Box>
                     <SearchInput
                         value={inputText}

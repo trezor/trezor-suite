@@ -7,7 +7,6 @@ const buttonsWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: utils.spacings.extraLarge,
-    padding: utils.spacings.small,
 }));
 
 const leftButtonStyle = prepareNativeStyle(() => ({

@@ -21,11 +21,10 @@ const iconStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-const headerStyle = prepareNativeStyle(utils => ({
+const headerStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: utils.spacings.medium,
     paddingBottom: 10,
     paddingTop: 15,
 }));
