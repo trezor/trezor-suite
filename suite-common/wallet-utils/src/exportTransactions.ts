@@ -25,19 +25,25 @@ type Data = {
     localCurrency: string;
 };
 
-type Field = { [key: string]: string };
+type Fields = {
+    [key: string]: string;
+    timestamp: string;
+    date: string;
+    time: string;
+    type: string;
+    txid: string;
+    fee: string;
+    feeSymbol: string;
+    address: string;
+    label: string;
+    amount: string;
+    symbol: string;
+    fiat: string;
+    other: string;
+};
 
 const CSV_NEWLINE = '\n';
 const CSV_SEPARATOR = ';';
-
-const fields = {
-    datetime: 'Date & Time',
-    type: 'Type',
-    txid: 'Transaction ID',
-    addresses: 'Addresses',
-    fee: 'Fee',
-    amount: 'Total',
-};
 
 // Docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/format
 const dateFormat = {
@@ -120,7 +126,7 @@ const makePdf = (
         });
     });
 
-const prepareContent = (data: Data) => {
+const prepareContent = (data: Data): Fields[] => {
     const { transactions, coin } = data;
     return transactions
         .map(formatAmounts(coin))
@@ -184,13 +190,37 @@ const prepareContent = (data: Data) => {
         })
         .filter(record => record !== null) as Fields[];
 };
+
+const sanitizeCsvValue = (value: string) => {
+    if (value.indexOf(CSV_SEPARATOR) !== -1) {
+        return `"${value.replace(/"/g, '""')}"`;
+    }
+    return value;
 };
 
-const prepareCsv = (fields: Field, content: any[]) => {
+const prepareCsv = (data: Data) => {
+    const csvFields: Fields = {
+        timestamp: 'Timestamp',
+        date: 'Date',
+        time: 'Time',
+        type: 'Type',
+        txid: 'Transaction ID',
+        fee: 'Fee',
+        feeSymbol: 'Fee unit',
+        address: 'Address',
+        label: 'Label',
+        amount: 'Amount',
+        symbol: 'Amount unit',
+        fiat: `Fiat (${data.localCurrency.toUpperCase()})`,
+        other: 'Other',
+    };
+
+    const content = prepareContent(data);
+
     const lines: string[] = [];
 
-    const fieldKeys = Object.keys(fields);
-    const fieldValues = Object.values(fields);
+    const fieldKeys = Object.keys(csvFields);
+    const fieldValues = Object.values(csvFields);
 
     // Prepare header
     let line: string[] = [];
@@ -201,11 +231,11 @@ const prepareCsv = (fields: Field, content: any[]) => {
     lines.push(line.join(CSV_SEPARATOR));
 
     // Prepare data
-    content.forEach(c => {
+    content.forEach(item => {
         line = [];
 
-        fieldKeys.forEach(k => {
-            line.push(c[k]);
+        fieldKeys.forEach(field => {
+            line.push(sanitizeCsvValue(item[field]));
         });
 
         lines.push(line.join(CSV_SEPARATOR));
@@ -275,10 +305,10 @@ const preparePdf = (
 };
 
 export const formatData = async (data: Data) => {
-    const { coin, accountName, type, transactions } = data;
+    const { coin, type, transactions } = data;
     switch (type) {
         case 'csv': {
-            const csv = prepareCsv(fields, prepareContent(data));
+            const csv = prepareCsv(data);
             return new Blob([csv], { type: 'text/csv;charset=utf-8' });
         }
         case 'pdf': {
