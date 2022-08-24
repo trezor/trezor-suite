@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { SafeAreaView, ScrollView, StatusBar } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
@@ -15,20 +15,26 @@ type ScreenProps = {
 };
 
 const screenContainerStyle = prepareNativeStyle<{
-    insetTop: number;
     backgroundColor: Color;
-    customHorizontalPadding: number;
-    customVerticalPadding: number;
-}>((_, { insetTop, backgroundColor, customHorizontalPadding, customVerticalPadding }) => ({
+}>((_, { backgroundColor }) => ({
     flex: 1,
     backgroundColor,
-    paddingVertical: Math.max(insetTop, customVerticalPadding),
-    paddingHorizontal: Math.max(insetTop, customHorizontalPadding),
 }));
 
-const screenContentStyle = prepareNativeStyle(_ => ({
-    flexGrow: 1,
-}));
+const screenContentStyle = prepareNativeStyle<{
+    insets: EdgeInsets;
+    customHorizontalPadding: number;
+    customVerticalPadding: number;
+}>((_, { insets, customHorizontalPadding, customVerticalPadding }) => {
+    const { top, right, bottom, left } = insets;
+    return {
+        flexGrow: 1,
+        paddingTop: Math.max(top, customVerticalPadding),
+        paddingBottom: Math.max(bottom, customVerticalPadding),
+        paddingLeft: Math.max(left, customHorizontalPadding),
+        paddingRight: Math.max(right, customHorizontalPadding),
+    };
+});
 
 export const Screen = ({
     children,
@@ -45,10 +51,7 @@ export const Screen = ({
         <SafeAreaView
             style={[
                 applyStyle(screenContainerStyle, {
-                    insetTop: insets.top,
                     backgroundColor,
-                    customHorizontalPadding,
-                    customVerticalPadding,
                 }),
             ]}
         >
@@ -61,7 +64,11 @@ export const Screen = ({
             {header && header}
             <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
-                contentContainerStyle={applyStyle(screenContentStyle)}
+                contentContainerStyle={applyStyle(screenContentStyle, {
+                    insets,
+                    customHorizontalPadding,
+                    customVerticalPadding,
+                })}
             >
                 {children}
             </ScrollView>
