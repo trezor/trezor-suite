@@ -1,7 +1,7 @@
 import { UseFormMethods } from 'react-hook-form';
 
 import { Network } from '@suite-common/wallet-config';
-import { AccountUtxo, FeeLevel } from '@trezor/connect';
+import { AccountUtxo, CardanoInput, FeeLevel, PROTO } from '@trezor/connect';
 
 import { TypedValidationRules } from './form';
 import { Account } from './account';
@@ -41,7 +41,8 @@ export type FormState = {
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
     rippleDestinationTag?: string;
     rbfParams?: RbfTransactionParams;
-    selectedUtxos?: AccountUtxo[];
+    isCoinControlEnabled: boolean;
+    selectedUtxos: AccountUtxo[];
 };
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {
@@ -83,8 +84,6 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         calculateFiat: (outputIndex: number, amount?: string) => void;
         setAmount: (outputIndex: number, amount: string) => void;
         changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
-        selectedUtxos: AccountUtxo[];
-        toggleUtxoSelection: (utxo: AccountUtxo) => void;
         resetDefaultValue: (field: string) => void;
         setMax: (index: number, active: boolean) => void;
         getDefaultValue: GetDefaultValue;
@@ -96,4 +95,14 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         removeOpReturn: (index: number) => void;
         // useSendFormCompose
         setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
+        // UTXO selection
+        allUtxosSelected: boolean;
+        composedInputs: PROTO.TxInputType[] | CardanoInput[];
+        dustUtxos: AccountUtxo[];
+        isCoinControlEnabled: boolean;
+        selectedUtxos: AccountUtxo[];
+        spendableUtxos: AccountUtxo[];
+        toggleCheckAllUtxos: () => void;
+        toggleCoinControl: () => void;
+        toggleUtxoSelection: (utxo: AccountUtxo) => void;
     };

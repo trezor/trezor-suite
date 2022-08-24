@@ -60,6 +60,7 @@ export const useCoinmarketRecomposeAndSign = () => {
                 rippleDestinationTag: destinationTag,
                 ethereumDataHex,
                 ethereumAdjustGasLimit,
+                selectedUtxos: [],
             };
 
             // prepare form state for composeAction

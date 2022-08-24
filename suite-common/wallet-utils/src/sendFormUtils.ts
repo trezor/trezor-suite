@@ -402,6 +402,7 @@ export const getDefaultValues = (
             ? ['bitcoinRBF', 'broadcast']
             : ['broadcast'],
     outputs: [{ ...DEFAULT_PAYMENT, currency }],
+    selectedUtxos: [],
 });
 
 export const buildCurrencyOptions = (selected: CurrencyOption) => {

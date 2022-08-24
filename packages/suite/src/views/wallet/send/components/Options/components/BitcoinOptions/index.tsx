@@ -60,15 +60,6 @@ export const BitcoinOptions = () => {
 
     return (
         <Wrapper>
-            {utxoSelectionEnabled && (
-                <CoinControl
-                    close={() => {
-                        resetDefaultValue('utxoSelection');
-                        toggleOption('utxoSelection');
-                        composeTransaction();
-                    }}
-                />
-            )}
             {locktimeEnabled && (
                 <Locktime
                     close={() => {
@@ -77,6 +68,15 @@ export const BitcoinOptions = () => {
                         if (!rbfEnabled) toggleOption('bitcoinRBF');
                         if (!broadcastEnabled) toggleOption('broadcast');
                         toggleOption('bitcoinLockTime');
+                        composeTransaction();
+                    }}
+                />
+            )}
+            {utxoSelectionEnabled && (
+                <CoinControl
+                    close={() => {
+                        resetDefaultValue('utxoSelection');
+                        toggleOption('utxoSelection');
                         composeTransaction();
                     }}
                 />

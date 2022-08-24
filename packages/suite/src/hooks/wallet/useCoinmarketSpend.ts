@@ -42,6 +42,7 @@ const useSpendState = (
             ...DEFAULT_VALUES,
             outputs: [],
             options: ['broadcast'],
+            selectedUtxos: [],
         } as FormState, // TODO: remove type casting (options string[])
     };
 };

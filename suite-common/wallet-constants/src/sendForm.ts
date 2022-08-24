@@ -39,6 +39,7 @@ export const DEFAULT_VALUES = {
     ethereumDataHex: '',
     rippleDestinationTag: '',
     outputs: [],
+    isCoinControlEnabled: false,
 } as const;
 
 // Time-to-live (TTL) in cardano represents a slot, or deadline by which a transaction must be submitted.
