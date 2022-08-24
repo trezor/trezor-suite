@@ -1,5 +1,7 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+import { deepClone } from '@trezor/utils';
+
 import * as accountActions from '@wallet-actions/accountActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
@@ -133,7 +135,7 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
         const conversionToUse =
             areSatsSelected && areSatsSupported ? amountToSatoshi : formatAmount;
 
-        const updatedDraft: FormState = structuredClone(draft);
+        const updatedDraft: FormState = deepClone(draft);
         const decimals = getAccountDecimals(relatedAccount.symbol)!;
 
         updatedDraft.outputs.forEach(output => {
