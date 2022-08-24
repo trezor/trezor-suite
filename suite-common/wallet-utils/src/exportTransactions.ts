@@ -244,20 +244,50 @@ const prepareCsv = (data: Data) => {
     return lines.join(CSV_NEWLINE);
 };
 
-const preparePdf = (
-    fields: Field,
-    content: any[],
-    coin: Network['symbol'],
-    accountName: string,
-): TDocumentDefinitions => {
-    const fieldKeys = Object.keys(fields);
-    const fieldValues = Object.values(fields);
+const preparePdf = (data: Data): TDocumentDefinitions => {
+    const pdfFields = {
+        dateTime: 'Date & Time',
+        type: 'Type',
+        txid: 'Transaction ID',
+        feeWithSymbol: `Fee`,
+        addressWithLabel: 'Address',
+        amountWithSymbol: 'Amount',
+    };
+
+    const fieldKeys = Object.keys(pdfFields);
+    const fieldValues = Object.values(pdfFields);
+
+    const content = prepareContent(data);
+
     const lines: any[] = [];
-    content.forEach(c => {
+    content.forEach(item => {
         const line: string[] = [];
 
-        fieldKeys.forEach(k => {
-            line.push(c[k]);
+        fieldKeys.forEach(field => {
+            const record = item[field];
+            if (record) {
+                line.push(record);
+            }
+
+            switch (field) {
+                case 'dateTime':
+                    line.push(`${item.date}, ${item.time}`);
+                    break;
+                case 'feeWithSymbol':
+                    line.push(`${item.fee} ${item.feeSymbol}`);
+                    break;
+                case 'addressWithLabel':
+                    line.push(
+                        `${item.address}${item.label ? ` - ${item.label}` : ''}${
+                            item.other ? ` ${item.other}` : ''
+                        }`,
+                    );
+                    break;
+                case 'amountWithSymbol':
+                    line.push(`${item.amount} ${item.symbol}`);
+                    break;
+                // no default
+            }
         });
 
         lines.push(line);
@@ -269,7 +299,7 @@ const preparePdf = (
             {
                 columns: [
                     {
-                        text: `${accountName} (${coin.toUpperCase()})`,
+                        text: `${data.accountName} (${data.coin.toUpperCase()})`,
                         fontSize: 18,
                         bold: true,
                         alignment: 'left',
@@ -306,13 +336,14 @@ const preparePdf = (
 
 export const formatData = async (data: Data) => {
     const { coin, type, transactions } = data;
+
     switch (type) {
         case 'csv': {
             const csv = prepareCsv(data);
             return new Blob([csv], { type: 'text/csv;charset=utf-8' });
         }
         case 'pdf': {
-            const pdfLayout = preparePdf(fields, prepareContent(data), coin, accountName);
+            const pdfLayout = preparePdf(data);
             const pdfMake = await loadPdfMake();
             const pdf = await makePdf(pdfLayout, pdfMake);
             return pdf;
