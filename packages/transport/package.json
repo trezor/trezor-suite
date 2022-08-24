@@ -24,7 +24,7 @@
         "messages.json"
     ],
     "scripts": {
-        "lint:js": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
         "build:lib": "rimraf -rf lib && yarn tsc --build ./tsconfig.lib.json",
         "publish:lib": "./scripts/publish-lib.sh",

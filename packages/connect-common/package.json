@@ -27,7 +27,7 @@
     "types": "lib/index.d.ts",
     "typings": "lib/index.d.ts",
     "scripts": {
-        "lint:js": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --coverage",
         "build:lib": "rimraf lib && yarn tsc --build ./tsconfig.lib.json",
         "type-check": "tsc --build tsconfig.json"

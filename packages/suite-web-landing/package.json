@@ -5,7 +5,7 @@
     "scripts": {
         "type-check": "tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "lint:js": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn next",
         "build:app": "next build && yarn next export -o build",

@@ -25,7 +25,7 @@
     ],
     "scripts": {
         "predev": "node webpack/generate_dev_cert.js",
-        "lint:js": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --passWithNoTests",
         "type-check": "tsc --build",
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",

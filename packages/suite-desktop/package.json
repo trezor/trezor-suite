@@ -24,7 +24,7 @@
         "publish:linux": "yarn build:linux && yarn build:app:electron --publish always --linux",
         "publish:mac": "yarn build:mac && yarn build:app:electron --publish always --mac",
         "publish:win": "yarn build:win && yarn build:app:electron --publish always --win",
-        "lint:js": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "tsc --build tsconfig.json",
         "test:unit": "jest"
     },
