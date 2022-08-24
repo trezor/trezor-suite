@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Icon, IconName } from '@trezor/icons';
 import { Text } from '@suite-native/atoms';
@@ -12,11 +12,18 @@ type TabBarItemProps = {
     title?: string;
 };
 
-const tabBarItemStyle = prepareNativeStyle(utils => ({
+const tabBarItemStyle = prepareNativeStyle(_ => ({
+    flex: 1,
+}));
+
+const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
     color: utils.colors.forest,
+    paddingTop: 11,
 }));
+
+const TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP = 15;
 
 export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -32,14 +39,20 @@ export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemPr
              */
                 onPress();
             }}
+            hitSlop={{
+                top: TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP,
+                bottom: TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP,
+            }}
             style={applyStyle(tabBarItemStyle)}
         >
-            <Icon name={iconName} size="large" color={isFocused ? 'forest' : 'gray500'} />
-            {title && (
-                <Text variant="label" color={isFocused ? 'forest' : 'gray500'}>
-                    {title}
-                </Text>
-            )}
+            <View style={applyStyle(tabBarItemContainerStyle)}>
+                <Icon name={iconName} size="large" color={isFocused ? 'forest' : 'gray500'} />
+                {title && (
+                    <Text variant="label" color={isFocused ? 'forest' : 'gray500'}>
+                        {title}
+                    </Text>
+                )}
+            </View>
         </TouchableOpacity>
     );
 };
