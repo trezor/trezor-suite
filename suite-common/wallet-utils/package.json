@@ -27,6 +27,7 @@
         "@trezor/urls": "*",
         "@trezor/utils": "*",
         "bignumber.js": "^9.1.0",
+        "date-fns": "^2.29.1",
         "ethereumjs-util": "^7.1.5",
         "pdfmake": "^0.2.5",
         "react-hook-form": "6.15.7",
