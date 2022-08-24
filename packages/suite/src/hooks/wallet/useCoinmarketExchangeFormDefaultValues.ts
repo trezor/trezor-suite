@@ -32,6 +32,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
                               currency: defaultCurrency,
                           },
                       ],
+                      selectedUtxos: [],
                       // TODO: remove type casting (options string[])
                   } as ExchangeFormState)
                 : undefined,

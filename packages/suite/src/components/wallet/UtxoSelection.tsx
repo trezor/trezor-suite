@@ -29,7 +29,6 @@ const Row = styled.div`
 `;
 
 const TopRow = styled(Row)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     justify-content: space-between;
     margin-bottom: 4px;
 `;
@@ -52,6 +51,10 @@ const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }
                 border: 2px solid ${theme.TYPE_LIGHTER_GREY};
             }
         `};
+`;
+
+const StyledCryptoAmount = styled(FormattedCryptoAmount)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const Dot = styled.div`
@@ -97,7 +100,7 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: Props) => {
             <Body>
                 <TopRow>
                     {utxo.address}
-                    <FormattedCryptoAmount
+                    <StyledCryptoAmount
                         value={formatNetworkAmount(utxo.amount, account.symbol)}
                         symbol={account.symbol}
                     />

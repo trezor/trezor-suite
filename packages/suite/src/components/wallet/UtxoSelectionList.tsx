@@ -2,21 +2,20 @@ import * as React from 'react';
 
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 import { useSelector } from '@suite-hooks';
-import type { AccountUtxo, CardanoInput, PROTO } from '@trezor/connect';
+import type { AccountUtxo } from '@trezor/connect';
 import { UtxoSelection } from '@wallet-components/UtxoSelection';
 import { useSendFormContext } from '@wallet-hooks';
 
 interface Props {
-    composedInputs: PROTO.TxInputType[] | CardanoInput[];
     utxos: AccountUtxo[];
 }
 
-export const UtxoSelectionList = ({ composedInputs, utxos }: Props) => {
+export const UtxoSelectionList = ({ utxos }: Props) => {
     const { transactions } = useSelector(state => ({
         transactions: state.wallet.transactions,
     }));
 
-    const { account, selectedUtxos } = useSendFormContext();
+    const { account, composedInputs, isCoinControlEnabled, selectedUtxos } = useSendFormContext();
 
     const accountTransactions = getAccountTransactions(account.key, transactions.transactions);
 

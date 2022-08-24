@@ -164,6 +164,7 @@ const DEFAULT_DRAFT = {
     ...DEFAULT_VALUES,
     outputs: [{ ...DEFAULT_PAYMENT }],
     options: [...DEFAULT_VALUES.options],
+    selectedUtxos: [],
 };
 
 const getDraft = (draft?: any) => ({
