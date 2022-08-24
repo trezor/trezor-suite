@@ -17,7 +17,7 @@ import TransactionsGroup from './components/TransactionsGroup';
 import SkeletonTransactionItem from './components/SkeletonTransactionItem';
 import NoSearchResults from './components/NoSearchResults';
 import { findAnchorTransactionPage } from '@suite-utils/anchor';
-import { fetchTransactionsThunk } from '@suite-common/wallet-transactions';
+import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 
 const StyledCard = styled(Card)<{ isPending: boolean }>`
     flex-direction: column;

@@ -9,7 +9,7 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
-import { fetchTransactionsThunk } from '@suite-common/wallet-transactions';
+import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 
 export interface Props {
     account: Account;

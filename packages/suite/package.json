@@ -38,7 +38,6 @@
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-constants": "*",
         "@suite-common/wallet-core": "*",
-        "@suite-common/wallet-transactions": "*",
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-utils": "*",
         "@trezor/components": "*",

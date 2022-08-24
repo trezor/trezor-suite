@@ -4,8 +4,7 @@ import { SUITE } from '@suite-actions/constants';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as deviceUtils from '@suite-utils/device';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { transactionActions } from '@suite-common/wallet-transactions';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionActions } from '@suite-common/wallet-core';
 
 /*
  * Middleware for event notifications.

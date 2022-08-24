@@ -8,7 +8,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { fetchTransactionsThunk } from '@suite-common/wallet-transactions';
+import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;

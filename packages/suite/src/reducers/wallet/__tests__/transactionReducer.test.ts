@@ -3,7 +3,7 @@ import {
     initialState,
     transactionActions,
     prepareTransactionsReducer,
-} from '@suite-common/wallet-transactions';
+} from '@suite-common/wallet-core';
 import { transactions, accounts } from '../__fixtures__/transactionConstants';
 
 const reducer = prepareTransactionsReducer(extraDependencies);
@@ -22,7 +22,6 @@ describe('transaction reducer', () => {
             reducer(
                 { ...initialState, transactions },
                 {
-                    // @ts-ignore
                     type: 'none',
                 },
             ),

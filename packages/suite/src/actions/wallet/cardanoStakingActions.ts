@@ -7,7 +7,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { getUnixTime } from 'date-fns';
 import { isPending, getAccountTransactions, getNetwork } from '@suite-common/wallet-utils';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
-import { transactionActions } from '@suite-common/wallet-transactions';
+import { transactionActions } from '@suite-common/wallet-core';
 
 export type CardanoStakingAction =
     | { type: typeof CARDANO_STAKING.ADD_PENDING_STAKE_TX; pendingStakeTx: PendingStakeTx }

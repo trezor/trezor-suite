@@ -6,13 +6,12 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionActions } from '@suite-common/wallet-core';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import type { AppState, Action, Dispatch } from '@suite-types';
-import { transactionActions } from '@suite-common/wallet-transactions';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 const walletMiddleware =

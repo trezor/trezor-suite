@@ -1,10 +1,6 @@
 import { transactionsReducer } from '@wallet-reducers';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
-import {
-    transactionActions,
-    initialState,
-    TransactionState,
-} from '@suite-common/wallet-transactions';
+import { transactionActions, initialState, TransactionState } from '@suite-common/wallet-core';
 import { configureStore } from '@reduxjs/toolkit';
 
 const { getWalletTransaction } = global.JestMocks;

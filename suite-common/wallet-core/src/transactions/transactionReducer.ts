@@ -1,8 +1,9 @@
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { findTransaction } from '@suite-common/wallet-utils';
-import { settingsCommonConfig } from '@suite-common/suite-config';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions } from 'suite-common/wallet-core/src/index';
+
+import { Account, WalletAccountTransaction } from '@suite-common/wallet-types/libDev/src';
+import { findTransaction } from '@suite-common/wallet-utils/libDev/src';
+import { settingsCommonConfig } from '@suite-common/suite-config/libDev/src';
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils/libDev/src';
 
 import { transactionActions } from './transactionActions';
 

@@ -20,7 +20,7 @@ import {
     getDerivationType,
 } from '@wallet-utils/cardanoUtils';
 import { AppState } from '@suite-types';
-import { addFakePendingTxThunk } from '@suite-common/wallet-transactions';
+import { addFakePendingTxThunk } from '@suite-common/wallet-core';
 
 const getDeviceAvailability = (
     device: AppState['suite']['device'],

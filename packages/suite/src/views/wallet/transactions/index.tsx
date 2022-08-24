@@ -9,7 +9,7 @@ import AccountEmpty from './components/AccountEmpty';
 import TransactionList from './components/TransactionList';
 import TransactionSummary from './components/TransactionSummary';
 import { CoinjoinSummary } from '@wallet-components/CoinjoinSummary';
-import { selectIsTransactionsLoading } from '@suite-common/wallet-transactions';
+import { selectIsTransactionsLoading } from '@suite-common/wallet-core';
 
 interface ContentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];

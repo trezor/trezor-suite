@@ -4,7 +4,7 @@ import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 
 // Note: This was not moved to suite-common due browser API that wouldn't work on mobile right now
-// (rest of the actions will be found in suite-common/wallet-transactions)
+// (rest of the actions will be found in suite-common/wallet-core/transactions)
 export const exportTransactions =
     (account: Account, accountName: string, type: 'csv' | 'pdf' | 'json') =>
     async (_: Dispatch, getState: GetState) => {

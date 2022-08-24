@@ -1,13 +1,18 @@
-import { Account, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
+import { accountsActions } from 'suite-common/wallet-core/src/index';
+
+import {
+    Account,
+    PrecomposedTransactionFinal,
+    TxFinalCardano,
+} from '@suite-common/wallet-types/libDev/src';
 import {
     findTransactions,
     formatNetworkAmount,
     getAccountTransactions,
     isTrezorConnectBackendType,
-} from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-utils/libDev/src';
 import TrezorConnect from '@trezor/connect';
-import { createThunk } from '@suite-common/redux-utils';
-import { accountsActions } from '@suite-common/wallet-core';
+import { createThunk } from '@suite-common/redux-utils/libDev/src';
 
 import { selectTransactions } from './transactionReducer';
 import { modulePrefix } from './transactionConstants';

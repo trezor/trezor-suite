@@ -7,8 +7,7 @@ import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
-import { accountsActions } from '@suite-common/wallet-core';
-import { transactionActions } from '@suite-common/wallet-transactions';
+import { accountsActions, transactionActions } from '@suite-common/wallet-core';
 
 const coinjoinAccountCreate = (account: Account) =>
     ({

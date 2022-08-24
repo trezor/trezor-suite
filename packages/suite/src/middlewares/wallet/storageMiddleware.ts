@@ -23,9 +23,8 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionActions } from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
-import { transactionActions } from '@suite-common/wallet-transactions';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -91,13 +90,13 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case transactionActions.addTransaction.type:
                 case transactionActions.removeTransaction.type:
                     if (
-                      transactionActions.addTransaction.match(action) ||
-                      transactionActions.removeTransaction.match(action)
+                        transactionActions.addTransaction.match(action) ||
+                        transactionActions.removeTransaction.match(action)
                     ) {
                         const { account } = action.payload;
                         const device = accountUtils.findAccountDevice(
-                          account,
-                          api.getState().devices,
+                            account,
+                            api.getState().devices,
                         );
                         // update only transactions for remembered device
                         if (isDeviceRemembered(device)) {

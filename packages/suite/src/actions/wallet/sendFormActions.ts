@@ -1,6 +1,10 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
-import { accountsActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    addFakePendingTxThunk,
+    replaceTransactionThunk,
+} from '@suite-common/wallet-core';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -30,7 +34,6 @@ import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
 import { MetadataAddPayload } from '@suite/types/suite/metadata';
 import * as sendFormCardanoActions from './send/sendFormCardanoActions';
-import { addFakePendingTxThunk, replaceTransactionThunk } from '@suite-common/wallet-transactions';
 
 export type SendFormAction =
     | {

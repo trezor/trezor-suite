@@ -14,8 +14,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createThunk } from '@suite-common/redux-utils';
-import { transactionActions } from '@suite-common/wallet-transactions';
 
+import { transactionActions } from '../transactions/transactionActions';
 import { accountsActions } from './accountsActions';
 import { selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
@@ -73,7 +73,6 @@ export const fetchAndUpdateAccountThunk = createThunk(
     `${actionPrefix}/fetchAndUpdateAccountThunk`,
     async (account: Account, { dispatch, extra, getState }) => {
         const {
-            actions: {},
             selectors: { selectDevices, selectBitcoinAmountUnit, selectAccountTransactions },
             thunks: { notificationsAddEvent },
         } = extra;

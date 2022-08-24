@@ -3,7 +3,7 @@ import settingsReducer from './settingsReducer';
 import fiatRateReducer from './fiatRatesReducer';
 import graphReducer from './graphReducer';
 import discoveryReducer from './discoveryReducer';
-import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { prepareAccountsReducer, prepareTransactionsReducer } from '@suite-common/wallet-core';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';
@@ -14,7 +14,6 @@ import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
 import pollingReducer from './pollingReducer';
-import { prepareTransactionsReducer } from '@suite-common/wallet-transactions';
 import { coinjoinReducer } from './coinjoinReducer';
 import { extraDependencies } from '@suite/support/extraDependencies';
 

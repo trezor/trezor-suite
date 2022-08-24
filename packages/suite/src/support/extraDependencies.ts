@@ -1,6 +1,6 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TransactionState, updateTransaction } from '@suite-common/wallet-transactions';
+import { TransactionState, updateTransaction } from '@suite-common/wallet-core';
 
 import { STORAGE } from '../actions/suite/constants';
 import { addEvent } from '@suite-actions/notificationActions';

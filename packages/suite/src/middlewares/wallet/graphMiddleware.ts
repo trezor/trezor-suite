@@ -3,8 +3,7 @@ import { DISCOVERY } from '@wallet-actions/constants';
 import * as graphActions from '@wallet-actions/graphActions';
 import { getDiscoveryForDevice } from '@wallet-actions/discoveryActions';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { transactionActions } from '@suite-common/wallet-transactions';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionActions } from '@suite-common/wallet-core';
 
 const graphMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
