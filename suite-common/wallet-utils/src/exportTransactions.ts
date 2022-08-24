@@ -1,6 +1,7 @@
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
 import { format } from 'date-fns';
+import BigNumber from 'bignumber.js';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TransactionTarget } from '@trezor/connect';
@@ -8,6 +9,7 @@ import { Network } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { formatNetworkAmount, formatAmount } from './accountUtils';
+import { localizeNumber } from './localizeNumber';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];
@@ -135,9 +137,11 @@ const prepareContent = (data: Data) => {
                 txid: t.txid,
             };
 
-        if (t.tokens.length > 0) {
-            return t.tokens.map((token, index) => {
-                if (token?.address && token?.amount) {
+            if (t.tokens.length > 0) {
+                return t.tokens.map((token, index) => {
+                    if (!token?.address || !token?.amount) {
+                        return null;
+                    }
                     return {
                         ...sharedData,
                         fee: index === 0 ? t.fee : '', // fee only once per tx
@@ -149,13 +153,12 @@ const prepareContent = (data: Data) => {
                         fiat: '', // missing rates for tokens
                         other: '',
                     };
+                });
+            }
+            return t.targets.map((target, index) => {
+                if (!target?.addresses?.length || !target?.amount) {
+                    return null;
                 }
-
-                return null;
-            });
-        }
-        return t.targets.map((target, index) => {
-            if (target?.addresses?.length && target?.amount) {
                 return {
                     ...sharedData,
                     fee: index === 0 ? t.fee : '', // fee only once per tx
@@ -166,21 +169,21 @@ const prepareContent = (data: Data) => {
                     symbol: target.isAddress ? coin.toUpperCase() : '',
                     fiat:
                         target.isAddress && target.amount && t.rates && t.rates[data.localCurrency]
-                            ? Intl.NumberFormat(undefined, {
-                                  style: 'decimal',
-                                  maximumFractionDigits: 2,
-                                  minimumFractionDigits: 2,
-                              })
-                                  .format(parseFloat(target.amount) * t.rates[data.localCurrency]!)
-                                  .toString()
+                            ? localizeNumber(
+                                  new BigNumber(target.amount)
+                                      .multipliedBy(t.rates[data.localCurrency]!)
+                                      .toNumber(),
+                                  undefined,
+                                  2,
+                                  2,
+                              ).toString()
                             : '',
                     other: !target.isAddress ? target.addresses[0] : '', // e.g. OP_RETURN
                 };
-            }
-
-            return null;
-        });
-    });
+            });
+        })
+        .filter(record => record !== null) as Fields[];
+};
 };
 
 const prepareCsv = (fields: Field, content: any[]) => {

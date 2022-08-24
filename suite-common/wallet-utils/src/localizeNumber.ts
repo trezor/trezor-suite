@@ -1,4 +1,9 @@
-export const localizeNumber = (amount: number, locale = 'en', decimals = 0): string => {
+export const localizeNumber = (
+    amount: number,
+    locale = 'en',
+    minDecimals = 0,
+    maxDecimals = 20,
+): string => {
     if (
         typeof amount !== 'number' ||
         Number.isNaN(amount) ||
@@ -9,9 +14,15 @@ export const localizeNumber = (amount: number, locale = 'en', decimals = 0): str
         return '';
     }
 
+    if (maxDecimals < minDecimals) {
+        throw Error(
+            `maxDecimals (${maxDecimals}) cannot be lower than minDecimals (${minDecimals})`,
+        );
+    }
+
     return Intl.NumberFormat(locale, {
         style: 'decimal',
-        maximumFractionDigits: 20,
-        minimumFractionDigits: decimals,
+        maximumFractionDigits: maxDecimals,
+        minimumFractionDigits: minDecimals,
     }).format(amount);
 };
