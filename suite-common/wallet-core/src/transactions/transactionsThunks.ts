@@ -8,6 +8,7 @@ import {
     findTransactions,
     formatData,
     getAccountTransactions,
+    getExportedFileName,
     isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
@@ -165,7 +166,9 @@ export const exportTransactionsThunk = createThunk(
         });
 
         // Save file
-        utils.saveAs(data, `export-${account.symbol}-${+new Date()}.${type}`);
+        const fileName = getExportedFileName(accountName, type);
+
+        utils.saveAs(data, fileName);
     },
 );
 

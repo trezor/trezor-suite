@@ -1,5 +1,6 @@
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
+import { format } from 'date-fns';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { AccountTransaction, TransactionTarget } from '@trezor/connect';
@@ -11,10 +12,12 @@ type AccountTransactionForExports = Omit<AccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];
 };
 
+type FileType = 'csv' | 'pdf' | 'json';
+
 type Data = {
     coin: Network['symbol'];
     accountName: string;
-    type: 'csv' | 'pdf' | 'json';
+    type: FileType;
     transactions: AccountTransactionForExports[];
 };
 
@@ -260,4 +263,18 @@ export const formatData = async (data: Data) => {
         }
         // no default
     }
+};
+
+export const getExportedFileName = (accountName: string, type: FileType) => {
+    const accountNameSanitized = accountName
+        .slice(0, 240) // limit the file name length
+        .replace(/[^a-z0-9]/gi, '_') // replace any special character by _ symbol
+        .concat('_') // add one _ at the end as separator from date
+        .replace(/_{2,}/g, '_'); // prevent multiple __ in a row
+
+    const currentDateTime = new Date();
+    const date = format(currentDateTime, 'yyyyMMdd');
+    const time = format(currentDateTime, 'HHmmss');
+
+    return `${accountNameSanitized}${date}T${time}.${type}`;
 };

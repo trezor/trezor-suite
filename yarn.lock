@@ -6173,6 +6173,7 @@ __metadata:
     "@trezor/utils": "*"
     "@types/pdfmake": ^0.1.21
     bignumber.js: ^9.1.0
+    date-fns: ^2.29.1
     ethereumjs-util: ^7.1.5
     jest: ^26.6.3
     pdfmake: ^0.2.5
