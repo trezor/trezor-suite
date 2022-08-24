@@ -3,13 +3,14 @@ import { Discovery, PartialDiscovery } from '@wallet-reducers/discoveryReducer';
 import TrezorConnect, { BundleProgress, AccountInfo, UI } from '@trezor/connect';
 import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
-import { create as createAccount } from '@wallet-actions/accountActions';
+import { accountsActions } from '@suite-common/wallet-core';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
+import { DiscoveryItem } from '@suite-common/wallet-types';
 import { getDerivationType } from '@wallet-utils/cardanoUtils';
 import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 
@@ -27,21 +28,6 @@ type UpdateActionType =
     | typeof DISCOVERY.INTERRUPT
     | typeof DISCOVERY.STOP
     | typeof DISCOVERY.COMPLETE;
-
-export interface DiscoveryItem {
-    // @trezor/connect
-    path: string;
-    coin: Account['symbol'];
-    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
-    pageSize?: number;
-    // wallet
-    index: number;
-    accountType: Account['accountType'];
-    networkType: Account['networkType'];
-    backendType?: Account['backendType'];
-    derivationType?: 0 | 1 | 2;
-    lastKnownState?: Account['lastKnownState'];
-}
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];
 
@@ -142,7 +128,7 @@ const handleProgress =
                 },
             ]);
         } else {
-            dispatch(createAccount(deviceState, item, response));
+            dispatch(accountsActions.createAccount(deviceState, item, response));
         }
         // calculate progress
         const progress = dispatch(

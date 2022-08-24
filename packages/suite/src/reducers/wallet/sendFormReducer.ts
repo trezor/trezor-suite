@@ -1,8 +1,9 @@
 import produce from 'immer';
 import { STORAGE } from '@suite-actions/constants';
-import { ACCOUNT, SEND } from '@wallet-actions/constants';
+import { SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export interface SendState {
     drafts: {
@@ -34,11 +35,14 @@ const sendFormReducer = (state: SendState = initialState, action: Action): SendS
             case SEND.REMOVE_DRAFT:
                 delete draft.drafts[action.key];
                 break;
-            case ACCOUNT.REMOVE:
-                action.payload.forEach(account => {
-                    delete draft.drafts[account.key];
-                });
+            case accountsActions.removeAccount.type: {
+                if (accountsActions.removeAccount.match(action)) {
+                    action.payload.forEach(account => {
+                        delete draft.drafts[account.key];
+                    });
+                }
                 break;
+            }
             case SEND.REQUEST_SIGN_TRANSACTION:
                 if (action.payload) {
                     draft.precomposedTx = action.payload.transactionInfo;

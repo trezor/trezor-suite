@@ -1,10 +1,11 @@
 import produce from 'immer';
-import { ACCOUNT, GRAPH } from '@wallet-actions/constants';
+import { GRAPH } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { WalletAction, Account } from '@wallet-types';
 import { GraphRange, GraphScale, AccountIdentifier, GraphData } from '@wallet-types/graph';
 import { Action as SuiteAction } from '@suite-types';
 import { SETTINGS } from '@suite-config';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export interface State {
     data: GraphData[];
@@ -104,9 +105,12 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
             case GRAPH.SET_SELECTED_VIEW:
                 draft.selectedView = action.payload;
                 break;
-            case ACCOUNT.REMOVE:
-                remove(draft, action.payload);
+            case accountsActions.removeAccount.type: {
+                if (accountsActions.removeAccount.match(action)) {
+                    remove(draft, action.payload);
+                }
                 break;
+            }
             // no default
         }
     });

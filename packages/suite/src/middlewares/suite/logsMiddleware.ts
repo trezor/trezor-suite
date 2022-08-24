@@ -11,10 +11,13 @@ import {
     ROUTER,
     SUITE,
 } from '@suite-actions/constants';
-import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
+import { DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
+import { Account } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
+import { accountsActions } from '@suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -25,6 +28,27 @@ const log =
         // avoid endless loops, see default in switch
         // also do not log any log related actions
         if (action.type.startsWith('@log')) return action;
+
+        if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
+            const { payload }: { payload: Account } = action;
+            api.dispatch(logActions.addAction(action, { ...payload }));
+        }
+
+        if (accountsActions.updateSelectedAccount.match(action)) {
+            if (action.payload.account) {
+                api.dispatch(
+                    logActions.addAction(action, {
+                        account: {
+                            ...getAccountIdentifier(action.payload.account),
+                            index: action.payload.account.index,
+                            path: action.payload.account.path,
+                        },
+                    }),
+                );
+            } else {
+                api.dispatch(logActions.addAction(action, { ...action, type: undefined }));
+            }
+        }
 
         switch (action.type) {
             case SUITE.SET_LANGUAGE:
@@ -52,8 +76,6 @@ const log =
             case SUITE.AUTH_DEVICE:
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
-            case ACCOUNT.CREATE:
-            case ACCOUNT.UPDATE:
             case DISCOVERY.COMPLETE:
             case SUITE.UPDATE_SELECTED_DEVICE:
             case SUITE.REMEMBER_DEVICE:
@@ -88,22 +110,6 @@ const log =
                 break;
             case BLOCKCHAIN.SET_BACKEND:
                 api.dispatch(logActions.addAction(action, { ...action.payload, urls: undefined }));
-                break;
-            case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
-                if (action.payload.account) {
-                    api.dispatch(
-                        logActions.addAction(action, {
-                            account: {
-                                ...getAccountIdentifier(action.payload.account),
-                                index: action.payload.account.index,
-                                path: action.payload.account.path,
-                            },
-                        }),
-                    );
-                } else {
-                    api.dispatch(logActions.addAction(action, { ...action, type: undefined }));
-                }
-
                 break;
             case ROUTER.LOCATION_CHANGE:
                 api.dispatch(

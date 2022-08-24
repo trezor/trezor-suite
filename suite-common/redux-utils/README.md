@@ -123,15 +123,18 @@ const initialState = {
 };
 const setGreetingsAction = createAction<string>('someAction');
 
-const prepareGreetingsReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
-    builder
-        .addCase(extra.actions.notificationsAddEvent, (state, action) => {
-            state.notificationGreetings = action.payload;
-        })
-        .addCase(setGreetingsAction, (state, action) => {
-            state.greetings = action.payload;
-        });
-});
+export const prepareGreetingsReducer = createReducerWithExtraDeps(
+    initialState,
+    (builder, extra) => {
+        builder
+            .addCase(extra.actions.notificationsAddEvent, (state, action) => {
+                state.notificationGreetings = action.payload;
+            })
+            .addCase(setGreetingsAction, (state, action) => {
+                state.greetings = action.payload;
+            });
+    },
+);
 ```
 
 Now if you want to use this reducer in app you need do it like this:
@@ -145,12 +148,12 @@ const rootReducer = combineReducers({
 });
 ```
 
-## createSliceWithExtraDependencies
+## createSliceWithExtraDeps
 
 This functions has exact same signature as `createSlice` but it will inject extra dependencies from `extra` into `extraReducers` and generate `prepareReducer` instead of `reducer`. You should only use this function if you want to use extra dependencies in your slice, otherwise you should use `createSlice` from redux-toolkit.
 
 ```typescript
-const someSlice = createSliceWithExtraDependencies({
+const someSlice = createSliceWithExtraDeps({
     name: 'someSlice',
     initialState: {
         someState: 'someState',
@@ -226,26 +229,4 @@ const middleware = [
     ...suiteMiddlewares,
     ...otherMiddlewares,
 ];
-```
-
-## matchesActionType
-
-This is simple matcher can be used in redux-toolkit reducers builder to simplify matching action types.
-
-```typescript
-const someSlice = createSlice({
-    extraReducers: (builder, extra) => {
-        builder
-            // this is how it looks without it
-            .addMatcher(
-                action => action.type === extra.actionTypes.storageLoad,
-                extra.reducers.storageLoadBlockchain,
-            )
-            // and this is how it looks with matchesActionType matcher
-            .addMatcher(
-                matchesActionType(extra.actionTypes.storageLoad),
-                extra.reducers.storageLoadBlockchain,
-            );
-    },
-});
 ```

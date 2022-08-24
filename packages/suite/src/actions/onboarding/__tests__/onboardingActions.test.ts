@@ -1,5 +1,4 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
@@ -72,7 +71,7 @@ export const getInitialState = (custom?: any) => {
 };
 
 const createStore = (initialState: ReturnType<typeof getInitialState>) => {
-    const store = configureStore<ReturnType<typeof getInitialState>, any>([thunk])(initialState);
+    const store = configureStore<ReturnType<typeof getInitialState>, any>()(initialState);
     return store;
 };
 

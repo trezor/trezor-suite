@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import suiteReducer from '@suite-reducers/suiteReducer';
 import notificationReducer from '@suite-reducers/notificationReducer';
 import * as notificationActions from '../notificationActions';
@@ -24,7 +24,7 @@ export const getInitialState = (state: InitialState | undefined) => {
 };
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

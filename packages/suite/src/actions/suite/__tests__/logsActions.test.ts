@@ -1,5 +1,4 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import * as logsActions from '../logsActions';
 import logsReducer, { State as LogsState } from '@suite-reducers/messageSystemReducer';
@@ -13,7 +12,7 @@ export const getInitialState = (state?: LogsState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

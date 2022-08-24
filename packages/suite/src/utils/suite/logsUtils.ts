@@ -1,5 +1,5 @@
 import { Account, Discovery } from '@wallet-types';
-import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import { DEVICE, Device } from '@trezor/connect';
 import { LogEntry } from '@suite-reducers/logsReducer';
@@ -19,6 +19,8 @@ import {
 } from '@suite-utils/env';
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { DeepPartial } from '@trezor/type-utils';
+import { accountsActions } from '@suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
@@ -88,19 +90,25 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
 
 export const redactAction = (action: LogEntry) => {
     let payload;
+
+    if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
+        payload = redactAccount(action.payload);
+    }
+
+    if (accountsActions.updateSelectedAccount.match(action)) {
+        payload = {
+            ...action.payload,
+            account: redactAccount(action.payload?.account),
+            network: undefined,
+            discovery: undefined,
+        };
+    }
+
     switch (action.type) {
         case SUITE.AUTH_DEVICE:
             payload = {
                 state: REDACTED_REPLACEMENT,
                 ...redactDevice(action.payload),
-            };
-            break;
-        case ACCOUNT.UPDATE_SELECTED_ACCOUNT:
-            payload = {
-                ...action.payload,
-                account: redactAccount(action.payload?.account),
-                network: undefined,
-                discovery: undefined,
             };
             break;
         case DEVICE.CONNECT:
@@ -109,18 +117,13 @@ export const redactAction = (action: LogEntry) => {
         case SUITE.REMEMBER_DEVICE:
             payload = redactDevice(action.payload);
             break;
-
-        case ACCOUNT.CREATE:
-        case ACCOUNT.UPDATE:
-            payload = redactAccount(action.payload);
-            break;
-
         case DISCOVERY.COMPLETE:
             payload = redactDiscovery(action.payload);
             break;
         default:
             return action;
     }
+
     return {
         ...action,
         payload,

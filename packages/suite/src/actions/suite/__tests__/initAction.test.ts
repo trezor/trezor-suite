@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import { SUITE, ROUTER, ANALYTICS, MESSAGE_SYSTEM } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
@@ -143,7 +142,7 @@ const fixtures: Fixture[] = [
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, any>([thunk, suiteMiddleware]);
+    const mockStore = configureStore<State, any>([suiteMiddleware]);
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().slice(-1)[0];

@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import formDraftReducer, { FormDraftState } from '@wallet-reducers/formDraftReducer';
 import * as formDraftActions from '../formDraftActions';
 
@@ -10,7 +10,7 @@ export const getInitialState = (state?: FormDraftState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

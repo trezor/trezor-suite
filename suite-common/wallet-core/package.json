@@ -1,0 +1,29 @@
+{
+    "name": "@suite-common/wallet-core",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c=../../jest.config.native.js",
+        "type-check": "tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "^1.8.3",
+        "@suite-common/redux-utils": "*",
+        "@suite-common/suite-config": "*",
+        "@suite-common/suite-types": "*",
+        "@suite-common/suite-utils": "*",
+        "@suite-common/test-utils": "*",
+        "@suite-common/wallet-config": "*",
+        "@suite-common/wallet-types": "*",
+        "@suite-common/wallet-utils": "*",
+        "@trezor/connect": "9.0.0-beta.6"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3",
+        "typescript": "4.7.4"
+    }
+}

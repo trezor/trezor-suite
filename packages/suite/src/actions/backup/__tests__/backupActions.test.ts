@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 import { mergeObject } from '@trezor/utils';
 import { connectInitThunk } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
@@ -64,7 +63,7 @@ export const getInitialState = (override: any) => {
     return defaults;
 };
 
-const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
+const mockStore = configureStore<ReturnType<typeof getInitialState>, any>();
 
 describe('Backup Actions', () => {
     beforeAll(() => {

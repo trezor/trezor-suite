@@ -1,3 +1,5 @@
+import { accountsActions } from '@suite-common/wallet-core';
+
 const ACCOUNT = {
     accountType: 'coinjoin',
     backendType: 'coinjoin',
@@ -85,7 +87,11 @@ export const createCoinjoinAccount = [
             accountType: 'coinjoin',
         },
         result: {
-            actions: ['@account/create', '@coinjoin/account-create', '@account/update'],
+            actions: [
+                accountsActions.createAccount.type,
+                '@coinjoin/account-create',
+                accountsActions.updateAccount.type,
+            ],
         },
     },
 ];

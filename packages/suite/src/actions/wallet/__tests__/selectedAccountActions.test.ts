@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 
 import { getStateForAction } from '../selectedAccountActions';
@@ -14,7 +14,7 @@ export const getInitialState = (_settings?: any) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { H2 } from '@trezor/components';
-import { AccountException } from '@wallet-reducers/selectedAccountReducer';
+import { SelectedAccountException } from '@suite-common/wallet-types';
 
 import AuthFailed from './AuthFailed';
 import DiscoveryFailed from './DiscoveryFailed';
@@ -25,7 +25,7 @@ const Title = styled(H2)`
 `;
 
 interface Props {
-    account: AccountException;
+    account: SelectedAccountException;
 }
 
 const getExceptionPage = ({ account }: Props) => {

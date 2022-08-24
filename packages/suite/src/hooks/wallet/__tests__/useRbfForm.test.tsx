@@ -1,7 +1,6 @@
 import TrezorConnect from '@trezor/connect';
 import React from 'react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 import * as fixtures from '../__fixtures__/useRbfForm';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
 import resizeReducer from '@suite-reducers/resizeReducer';
@@ -69,7 +68,7 @@ export const getInitialState = ({ send, fees, selectedAccount }: any = {}) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

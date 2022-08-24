@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore, filterThunkActionTypes } from '@suite/support/tests/configureStore';
 import { PROTO } from '@trezor/connect';
-import accountsReducer from '@wallet-reducers/accountsReducer';
+import { accountsReducer } from '@wallet-reducers';
 import transactionReducer from '@wallet-reducers/transactionReducer';
 import blockchainReducer from '@wallet-reducers/blockchainReducer';
 import feesReducer from '@wallet-reducers/feesReducer';
@@ -58,7 +57,7 @@ export const getInitialState = (
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);
@@ -88,7 +87,7 @@ describe('Blockchain Actions', () => {
         it(`init: ${f.description}`, async () => {
             const store = initStore(getInitialState(f.initialState as Args));
             await store.dispatch(blockchainActions.init());
-            expect(store.getActions()).toMatchObject(f.actions);
+            expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.blockchainUnsubscribeFiatRates).toBeCalledTimes(
                 f.blockchainUnsubscribeFiatRates,
             );
@@ -103,7 +102,7 @@ describe('Blockchain Actions', () => {
             TrezorConnect.setTestFixtures(f.connect);
             const store = initStore(getInitialState(f.initialState as Args));
             await store.dispatch(blockchainActions.onConnect(f.symbol));
-            expect(store.getActions()).toMatchObject(f.actions);
+            expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.blockchainEstimateFee).toBeCalledTimes(f.blockchainEstimateFee);
             expect(TrezorConnect.blockchainSubscribe).toBeCalledTimes(f.blockchainSubscribe);
         });
@@ -118,7 +117,7 @@ describe('Blockchain Actions', () => {
                     coin: { shortcut: f.symbol },
                 }),
             );
-            const actions = store.getActions();
+            const actions = filterThunkActionTypes(store.getActions());
             expect(actions).toMatchObject(f.actions);
             if (actions.length) {
                 // wait for reconnection timeout
@@ -135,7 +134,8 @@ describe('Blockchain Actions', () => {
             // TrezorConnect.setTestFixtures(f.connect);
             const store = initStore(getInitialState(f.initialState as Args));
             await store.dispatch(blockchainActions.onNotification(f.params as any));
-            expect(store.getActions()).toMatchObject(f.actions);
+            console.log(filterThunkActionTypes(store.getActions()));
+            expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.getAccountInfo).toBeCalledTimes(f.getAccountInfo);
         });
     });
@@ -154,10 +154,15 @@ describe('Blockchain Actions', () => {
             const store = initStore(getInitialState(f.state as any));
             await store.dispatch(blockchainActions.onBlockMined(f.block as any));
             const { result } = f;
+            console.log('before filter', store.getActions());
+            console.log('after filter', filterThunkActionTypes(store.getActions()));
+
             if (!result) {
-                expect(store.getActions().length).toEqual(0);
+                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const actions = store.getActions().filter(a => a.type !== '@notification/event');
+                const actions = filterThunkActionTypes(store.getActions()).filter(
+                    a => a.type !== '@notification/event',
+                );
                 expect(actions.length).toEqual(result.length);
                 actions.forEach((action, index) => {
                     expect(action.type).toEqual(result[index]);
@@ -207,6 +212,6 @@ describe('Blockchain Actions', () => {
         // preload fee info failed in connect
         TrezorConnect.setTestFixtures({ success: false });
         await store.dispatch(blockchainActions.preloadFeeInfo());
-        expect(store.getActions()).toMatchObject([{ payload: {} }]);
+        expect(filterThunkActionTypes(store.getActions())).toMatchObject([{ payload: {} }]);
     });
 });

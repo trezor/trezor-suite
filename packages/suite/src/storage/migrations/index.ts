@@ -4,9 +4,9 @@ import { isDesktop } from '@suite-utils/env';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import type { SuiteDBSchema } from '../definitions';
 import type { State } from '@wallet-reducers/settingsReducer';
+import type { BackendSettings } from '@suite-common/wallet-types';
 import type { CustomBackend, BlockbookUrl } from '@wallet-types/backend';
 import type { Network, Account, Discovery } from '@wallet-types';
-import type { BackendSettings } from '@suite-common/wallet-types';
 import type { DBWalletAccountTransaction } from '@trezor/suite/src/storage/definitions';
 import type { GraphData } from '@wallet-types/graph';
 import {
@@ -258,8 +258,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 25) {
         let cursor = await transaction.objectStore('walletSettings').openCursor();
         while (cursor) {
-            const settings: State & { blockbookUrls?: BlockbookUrl[] } & WalletWithBackends =
-                cursor.value;
+            const settings: State & {
+                blockbookUrls?: BlockbookUrl[];
+            } & WalletWithBackends = cursor.value;
             if (!settings.backends && settings.blockbookUrls) {
                 settings.backends = settings.blockbookUrls.reduce<{ [key: string]: any }>(
                     (backends, { coin, url, tor }) =>

@@ -1,6 +1,6 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
-import * as accountActions from '@wallet-actions/accountActions';
+import { accountsActions } from '@suite-common/wallet-core';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -255,7 +255,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         const pendingAccount = getPendingAccount(account, precomposedTx, txid);
         if (pendingAccount) {
             // update account
-            dispatch(accountActions.updateAccount(pendingAccount));
+            dispatch(accountsActions.updateAccount(pendingAccount));
             if (account.networkType === 'cardano') {
                 // manually add fake pending tx as we don't have the data about mempool txs
                 dispatch(transactionActions.addFakePendingTx(precomposedTx, txid, pendingAccount));

@@ -3,7 +3,6 @@ import { db } from '@suite/storage';
 
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import {
-    ACCOUNT,
     DISCOVERY,
     TRANSACTION,
     FIAT_RATES,
@@ -18,12 +17,15 @@ import * as accountUtils from '@suite-common/wallet-utils';
 import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
+import { accountsActions } from '@suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -32,6 +34,44 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
         (action: SuiteAction | WalletAction): SuiteAction | WalletAction => {
             // pass action
             next(action);
+
+            if (
+                isAnyOf(
+                    accountsActions.createAccount,
+                    accountsActions.changeAccountVisibility,
+                    accountsActions.updateAccount,
+                )(action)
+            ) {
+                const { payload } = action;
+                const device = accountUtils.findAccountDevice(payload, api.getState().devices);
+                // update only transactions for remembered device
+                if (isDeviceRemembered(device)) {
+                    storageActions.saveAccounts([payload]);
+                }
+            }
+
+            if (accountsActions.removeAccount.match(action)) {
+                action.payload.forEach(account => {
+                    FormDraftPrefixKeyValues.map(prefix =>
+                        storageActions.removeAccountFormDraft(prefix, account.key),
+                    );
+                    storageActions.removeAccountDraft(account);
+                    storageActions.removeAccountTransactions(account);
+                    storageActions.removeAccountGraph(account);
+                    storageActions.removeAccount(account);
+                });
+            }
+
+            if (isAnyOf(metadataActions.setAccountLoaded, metadataActions.setAccountAdd)(action)) {
+                const device = accountUtils.findAccountDevice(
+                    action.payload,
+                    api.getState().devices,
+                );
+                // if device is remembered, and there is a change in account.metadata (metadataActions.setAccountLoaded), update database
+                if (isDeviceRemembered(device)) {
+                    storageActions.saveAccounts([action.payload]);
+                }
+            }
 
             switch (action.type) {
                 case SUITE.REMEMBER_DEVICE:
@@ -48,43 +88,14 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.forgetDevice(action.payload));
                     break;
 
-                case ACCOUNT.CREATE:
-                case ACCOUNT.CHANGE_VISIBILITY:
-                case ACCOUNT.UPDATE: {
-                    const device = accountUtils.findAccountDevice(
-                        action.payload,
-                        api.getState().devices,
-                    );
-                    // update only transactions for remembered device
-                    if (isDeviceRemembered(device)) {
-                        storageActions.saveAccounts([action.payload]);
-                    }
-                    break;
-                }
-
-                case ACCOUNT.REMOVE: {
-                    action.payload.forEach(account => {
-                        FormDraftPrefixKeyValues.map(prefix =>
-                            storageActions.removeAccountFormDraft(prefix, account.key),
-                        );
-                        storageActions.removeAccountDraft(account);
-                        storageActions.removeAccountTransactions(account);
-                        storageActions.removeAccountGraph(account);
-                        storageActions.removeAccount(account);
-                    });
-                    break;
-                }
-
                 case TRANSACTION.ADD:
                 case TRANSACTION.REMOVE: {
-                    const device = accountUtils.findAccountDevice(
-                        action.account,
-                        api.getState().devices,
-                    );
+                    const { account } = action.payload;
+                    const device = accountUtils.findAccountDevice(account, api.getState().devices);
                     // update only transactions for remembered device
                     if (isDeviceRemembered(device)) {
-                        storageActions.removeAccountTransactions(action.account);
-                        api.dispatch(storageActions.saveAccountTransactions(action.account));
+                        storageActions.removeAccountTransactions(account);
+                        api.dispatch(storageActions.saveAccountTransactions(account));
                     }
                     break;
                 }
@@ -185,19 +196,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     storageActions.saveCoinmarketTrade(trade);
                     break;
                 }
-                case METADATA.ACCOUNT_ADD:
-                case METADATA.ACCOUNT_LOADED: {
-                    const device = accountUtils.findAccountDevice(
-                        action.payload,
-                        api.getState().devices,
-                    );
-                    // if device is remembered, and there is a change in account.metadata (METADATA.ACCOUNT_LOADED), update database
-                    if (isDeviceRemembered(device)) {
-                        storageActions.saveAccounts([action.payload]);
-                    }
-                    break;
-                }
-
                 case METADATA.ENABLE:
                 case METADATA.DISABLE:
                 case METADATA.SET_PROVIDER:

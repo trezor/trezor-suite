@@ -1,5 +1,5 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import resizeReducer, { State as ResizeState } from '@suite-reducers/resizeReducer';
 import * as resizeActions from '@suite-actions/resizeActions';
 
@@ -11,7 +11,7 @@ export const getInitialState = (state?: ResizeState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

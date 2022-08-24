@@ -2,8 +2,8 @@
 /* eslint-disable global-require */
 import fs from 'fs';
 import path from 'path';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
+
 import metadataReducer from '@suite-reducers/metadataReducer';
 import suiteReducer, { SuiteState } from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
@@ -12,7 +12,7 @@ import * as metadataActions from '../metadataActions';
 import * as fixtures from '../__fixtures__/metadataActions';
 import DropboxProvider from '@suite-services/metadata/DropboxProvider';
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
-import accountsReducer from '@wallet-reducers/accountsReducer';
+import { accountsReducer } from '@wallet-reducers';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
@@ -87,7 +87,7 @@ export const getInitialState = (state?: InitialState) => {
 };
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk, suiteMiddleware]);
+const mockStore = configureStore<State, any>([suiteMiddleware]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);

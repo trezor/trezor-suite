@@ -1,4 +1,5 @@
 import { METADATA, SUITE } from '@suite-actions/constants';
+import * as metadataActions from '@suite-actions/metadataActions';
 
 const setDeviceMetadataKey = [
     {
@@ -250,7 +251,7 @@ const addAccountMetadata = [
             value: 'Foo',
         },
         result: {
-            type: METADATA.ACCOUNT_ADD,
+            type: metadataActions.setAccountAdd.type,
             payload: {
                 metadata: {
                     outputLabels: {
@@ -289,7 +290,7 @@ const addAccountMetadata = [
             value: '', // empty string removes value
         },
         result: {
-            type: METADATA.ACCOUNT_ADD,
+            type: metadataActions.setAccountAdd.type,
             payload: {
                 metadata: {
                     outputLabels: {

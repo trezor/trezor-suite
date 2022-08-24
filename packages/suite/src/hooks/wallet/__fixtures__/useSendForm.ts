@@ -1,4 +1,5 @@
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import { accountsActions } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
 export const BTC_ACCOUNT = {
@@ -1261,7 +1262,7 @@ export const signAndPush = [
                     payload: { type: 'tx-sent', formattedAmount: '24.999999 BTC' },
                 },
                 {
-                    type: '@account/update',
+                    type: accountsActions.updateAccount.type,
                     payload: {
                         // reduced balance
                         availableBalance: '97800000000',

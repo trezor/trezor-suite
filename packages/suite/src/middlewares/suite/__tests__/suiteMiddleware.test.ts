@@ -1,5 +1,4 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
@@ -40,7 +39,7 @@ const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => (
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const mockStore = configureStore<State, Action>([thunk, suiteMiddleware]);
+    const mockStore = configureStore<State, Action>([suiteMiddleware]);
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();

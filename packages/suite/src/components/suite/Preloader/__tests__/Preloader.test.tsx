@@ -1,6 +1,5 @@
 import React from 'react';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 import { renderWithProviders, findByTestId } from '@suite/support/tests/hooksHelper';
 import * as env from '@suite-utils/env';
 import Preloader from '..';
@@ -80,7 +79,7 @@ export const getInitialState = ({ suite, router }: any = {}) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);

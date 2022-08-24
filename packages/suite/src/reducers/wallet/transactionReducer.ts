@@ -1,11 +1,12 @@
 import produce from 'immer';
-import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
+import { TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getAccountKey, findTransaction } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction } from '@wallet-types';
 import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { accountsActions } from '@suite-common/wallet-core';
 
 export interface State {
     transactions: { [key: string]: WalletAccountTransaction[] }; // object where a key is accountHash and a value is sparse array of fetched txs
@@ -113,17 +114,24 @@ const transactionReducer = (state: State = initialState, action: Action | Wallet
                 });
                 break;
             }
-            case ACCOUNT.REMOVE:
-                action.payload.forEach(a => {
-                    delete draft.transactions[a.key];
-                });
+            case accountsActions.removeAccount.type: {
+                if (accountsActions.removeAccount.match(action)) {
+                    action.payload.forEach(a => {
+                        delete draft.transactions[a.key];
+                    });
+                }
                 break;
-            case TRANSACTION.ADD:
-                add(draft, action.transactions, action.account, action.page);
+            }
+            case TRANSACTION.ADD: {
+                const { account, transactions, page } = action.payload;
+                add(draft, transactions, account, page);
                 break;
-            case TRANSACTION.REMOVE:
-                remove(draft, action.account, action.txs);
+            }
+            case TRANSACTION.REMOVE: {
+                const { account, txs } = action.payload;
+                remove(draft, account, txs);
                 break;
+            }
             case TRANSACTION.RESET:
                 delete draft.transactions[action.account.key];
                 break;

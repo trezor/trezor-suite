@@ -1,5 +1,3 @@
-import { ActionCreatorWithoutPayload, ActionCreatorWithPayload, AnyAction } from '@reduxjs/toolkit';
-
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     ConnectSettings,
@@ -8,14 +6,10 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
+import { Selector, SuiteCompatibleAction } from '@suite-common/suite-types';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
-
-type Selector<TReturnValue> = (state: any) => TReturnValue;
-type SuiteCompatibleAction<TPayload = void> = (
-    payload: TPayload,
-) => AnyAction | ActionCreatorWithPayload<TPayload> | ActionCreatorWithoutPayload;
 
 export const CONNECT_INIT_ACTION_TYPE = '@suite-common/connect-init/init';
 

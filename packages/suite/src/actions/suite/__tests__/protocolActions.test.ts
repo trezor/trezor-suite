@@ -1,5 +1,4 @@
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { configureStore } from '@suite/support/tests/configureStore';
 
 import protocolReducer, { State as ProtocolState } from '@suite-reducers/protocolReducer';
 import * as protocolActions from '../protocolActions';
@@ -17,7 +16,7 @@ export const getInitialState = (state?: ProtocolState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([thunk]);
+const mockStore = configureStore<State, any>();
 
 const initStore = (state: State) => {
     const store = mockStore(state);
