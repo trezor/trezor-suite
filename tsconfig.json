@@ -42,5 +42,7 @@
         "**/trezor-common",
         "**/jest.config.js"
     ],
-    "references": []
+    "references": [
+        { "path": "suite-common/wallet-types" }
+    ]
 }
