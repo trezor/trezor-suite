@@ -12,7 +12,7 @@ import {
     GraphScale,
 } from '@wallet-types/graph';
 import { resetTime } from '@suite-utils/date';
-import { getFiatRatesForTimestamps, getTickerConfig } from '@suite/services/fiat';
+import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/suite-services';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 

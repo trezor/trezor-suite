@@ -1,5 +1,6 @@
-import { LastWeekRates, TickerId } from '@wallet-types/fiatRates';
+import { LastWeekRates, TickerId } from '@suite-common/wallet-types';
 import { FIAT as FIAT_CONFIG } from '@suite-common/suite-config';
+
 import { RateLimiter } from './limiter';
 
 // a proxy for https://api.coingecko.com/api/v3
@@ -25,7 +26,7 @@ const fetchCoinGecko = async (url: string) => {
     }
 };
 
-export const getTickerConfig = (ticker: TickerId) =>
+const getTickerConfig = (ticker: TickerId) =>
     // for token find its main network
     FIAT_CONFIG.tickers.find(t =>
         ticker.tokenAddress ? t.symbol === ticker.mainNetworkSymbol : t.symbol === ticker.symbol,
@@ -55,7 +56,7 @@ const buildCoinUrl = (ticker: TickerId) => {
  * @param {TickerId} ticker
  * @returns
  */
-export const fetchCurrentTokenFiatRates = async (ticker: TickerId) => {
+const fetchCurrentTokenFiatRates = async (ticker: TickerId) => {
     if (!ticker.tokenAddress) return null;
 
     const networkTickerConfig = getTickerConfig(ticker);
@@ -84,7 +85,7 @@ export const fetchCurrentTokenFiatRates = async (ticker: TickerId) => {
  * @param {TickerId} ticker
  * @returns
  */
-export const fetchCurrentFiatRates = async (ticker: TickerId) => {
+const fetchCurrentFiatRates = async (ticker: TickerId) => {
     const coinUrl = buildCoinUrl(ticker);
     if (!coinUrl) return null;
     const urlParams =
@@ -109,7 +110,7 @@ export const fetchCurrentFiatRates = async (ticker: TickerId) => {
  * @param {number[]} timestamps
  * @returns
  */
-export const getFiatRatesForTimestamps = async (
+const getFiatRatesForTimestamps = async (
     ticker: TickerId,
     timestamps: number[],
 ): Promise<HistoricalResponse | null> => {
@@ -147,7 +148,7 @@ export const getFiatRatesForTimestamps = async (
  * @param {string} localCurrency
  * @returns {(Promise<HistoricalResponse | null>)}
  */
-export const fetchLastWeekRates = async (
+const fetchLastWeekRates = async (
     ticker: TickerId,
     localCurrency: string,
 ): Promise<HistoricalResponse | null> => {
@@ -170,4 +171,12 @@ export const fetchLastWeekRates = async (
         tickers,
         ts: new Date().getTime(),
     };
+};
+
+export const coingeckoService = {
+    getTickerConfig,
+    fetchCurrentTokenFiatRates,
+    fetchCurrentFiatRates,
+    getFiatRatesForTimestamps,
+    fetchLastWeekRates,
 };

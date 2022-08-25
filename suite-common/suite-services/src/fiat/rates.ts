@@ -1,6 +1,7 @@
-import * as cg from './coingecko';
-import * as bb from './blockbook';
-import type { TickerId, TimestampedRates, LastWeekRates } from '@wallet-types/fiatRates';
+import type { TickerId, TimestampedRates, LastWeekRates } from '@suite-common/wallet-types';
+
+import { coingeckoService as cg } from './coingecko';
+import { blockbookService as bb } from './blockbook';
 
 export const { getTickerConfig, fetchCurrentTokenFiatRates } = cg;
 

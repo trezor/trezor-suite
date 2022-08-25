@@ -1,5 +1,6 @@
+import type { LastWeekRates, TimestampedRates, TickerId } from '@suite-common/wallet-types';
+
 import { RateLimiter } from './limiter';
-import type { LastWeekRates, TimestampedRates, TickerId } from '@wallet-types/fiatRates';
 
 const ENDPOINTS = {
     btc: ['btc1', 'btc2', 'btc3', 'btc4', 'btc5'],
@@ -70,12 +71,19 @@ const getLastWeekTimestamps = () =>
         return Math.floor(date.getTime() / 1000);
     });
 
-export const isTickerSupported = (ticker: TickerId): ticker is TickerId & { symbol: Ticker } =>
+const isTickerSupported = (ticker: TickerId): ticker is TickerId & { symbol: Ticker } =>
     !!ENDPOINTS[ticker.symbol as Ticker];
 
-export const fetchCurrentFiatRates = getTickers;
+const fetchCurrentFiatRates = getTickers;
 
-export const getFiatRatesForTimestamps = getMultiTickers;
+const getFiatRatesForTimestamps = getMultiTickers;
 
-export const fetchLastWeekRates = (ticker: Ticker, currency: string) =>
+const fetchLastWeekRates = (ticker: Ticker, currency: string) =>
     getMultiTickers(ticker, getLastWeekTimestamps(), currency);
+
+export const blockbookService = {
+    isTickerSupported,
+    fetchCurrentFiatRates,
+    getFiatRatesForTimestamps,
+    fetchLastWeekRates,
+};

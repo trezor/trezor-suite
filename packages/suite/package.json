@@ -32,6 +32,7 @@
         "@suite-common/notifications": "*",
         "@suite-common/redux-utils": "*",
         "@suite-common/suite-config": "*",
+        "@suite-common/suite-services": "*",
         "@suite-common/suite-types": "*",
         "@suite-common/suite-utils": "*",
         "@suite-common/test-utils": "*",
