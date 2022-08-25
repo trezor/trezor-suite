@@ -1,7 +1,7 @@
 import { extraDependencies } from '@suite/support/extraDependencies';
 import {
-    initialState,
-    transactionActions,
+    transactionsInitialState,
+    transactionsActions,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { transactions, accounts } from '../__fixtures__/transactionConstants';
@@ -20,15 +20,15 @@ describe('transaction reducer', () => {
     it('test initial state', () => {
         expect(
             reducer(
-                { ...initialState, transactions },
+                { ...transactionsInitialState, transactions },
                 {
                     type: 'none',
                 },
             ),
-        ).toEqual({ ...initialState, transactions });
+        ).toEqual({ ...transactionsInitialState, transactions });
     });
 
-    it('TRANSACTION.RESET', () => {
+    it('reset transactions', () => {
         const { key } = testAccounts[0];
 
         const account = testAccounts[0];
@@ -36,18 +36,18 @@ describe('transaction reducer', () => {
 
         expect(
             reducer(
-                { ...initialState, transactions: testTransactions },
+                { ...transactionsInitialState, transactions: testTransactions },
                 {
-                    type: transactionActions.resetTransaction.type,
+                    type: transactionsActions.resetTransaction.type,
                     payload: {
                         account,
                     },
                 },
             ),
-        ).toEqual({ ...initialState, transactions: testTransactions });
+        ).toEqual({ ...transactionsInitialState, transactions: testTransactions });
     });
 
-    it('TRANSACTION.REMOVE', () => {
+    it('remove transactions', () => {
         const account = testAccounts[0];
         const { key } = account;
 
@@ -56,9 +56,9 @@ describe('transaction reducer', () => {
 
         expect(
             reducer(
-                { ...initialState, transactions: testTransactions },
+                { ...transactionsInitialState, transactions: testTransactions },
                 {
-                    type: transactionActions.removeTransaction.type,
+                    type: transactionsActions.removeTransaction.type,
                     payload: {
                         account,
                         txs: testTransactions[key],
@@ -66,55 +66,55 @@ describe('transaction reducer', () => {
                 },
             ),
         ).toEqual({
-            ...initialState,
+            ...transactionsInitialState,
             transactions: { [otherAccountKey]: otherAccountTransactions, [key]: [] },
         });
     });
 
-    it('TRANSACTION.ADD', () => {
+    it('add transactions', () => {
         const account = testAccounts[0];
         const { key } = account;
         expect(
             reducer(
-                { ...initialState, transactions },
+                { ...transactionsInitialState, transactions },
                 {
-                    type: transactionActions.addTransaction.type,
+                    type: transactionsActions.addTransaction.type,
                     payload: {
                         account,
                         transactions: testTransactions[key],
                     },
                 },
             ),
-        ).toEqual({ ...initialState, transactions: testTransactions });
+        ).toEqual({ ...transactionsInitialState, transactions: testTransactions });
     });
 
-    it('TRANSACTION.FETCH_INIT', () => {
+    it('fetch init', () => {
         expect(
             reducer(
-                { ...initialState },
+                { ...transactionsInitialState },
                 {
-                    type: transactionActions.fetchInit.type,
+                    type: transactionsActions.fetchInit.type,
                 },
             ),
-        ).toEqual({ ...initialState, isLoading: true });
+        ).toEqual({ ...transactionsInitialState, isLoading: true });
     });
 
-    it('TRANSACTION.FETCH_SUCCESS', () => {
+    it('fetch success', () => {
         expect(
             reducer(undefined, {
-                type: transactionActions.fetchSuccess.type,
+                type: transactionsActions.fetchSuccess.type,
             }),
-        ).toEqual({ ...initialState, isLoading: false });
+        ).toEqual({ ...transactionsInitialState, isLoading: false });
     });
 
-    it('TRANSACTION.FETCH_ERROR', () => {
+    it('fetch error', () => {
         expect(
             reducer(undefined, {
-                type: transactionActions.fetchError.type,
+                type: transactionsActions.fetchError.type,
                 payload: {
                     error: 'Some error',
                 },
             }),
-        ).toEqual({ ...initialState, isLoading: false, error: 'Some error' });
+        ).toEqual({ ...transactionsInitialState, isLoading: false, error: 'Some error' });
     });
 });

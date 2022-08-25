@@ -15,7 +15,7 @@ import {
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { transactionActions } from '../transactions/transactionActions';
+import { transactionsActions } from '../transactions/transactionsActions';
 import { accountsActions } from './accountsActions';
 import { selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
@@ -120,11 +120,11 @@ export const fetchAndUpdateAccountThunk = createThunk(
             }
 
             if (analyze.remove.length > 0) {
-                dispatch(transactionActions.removeTransaction({ account, txs: analyze.remove }));
+                dispatch(transactionsActions.removeTransaction({ account, txs: analyze.remove }));
             }
             if (analyze.add.length > 0) {
                 dispatch(
-                    transactionActions.addTransaction({
+                    transactionsActions.addTransaction({
                         transactions: analyze.add.reverse(),
                         account,
                     }),

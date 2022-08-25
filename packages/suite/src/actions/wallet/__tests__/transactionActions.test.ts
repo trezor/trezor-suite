@@ -1,17 +1,21 @@
 import { transactionsReducer } from '@wallet-reducers';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
-import { transactionActions, initialState, TransactionState } from '@suite-common/wallet-core';
+import {
+    transactionsActions,
+    transactionsInitialState,
+    TransactionsState,
+} from '@suite-common/wallet-core';
 import { configureStore } from '@reduxjs/toolkit';
 
 const { getWalletTransaction } = global.JestMocks;
 
-const initStore = (transactionsState?: TransactionState) =>
+const initStore = (transactionsState?: TransactionsState) =>
     configureStore({
         reducer: {
             transactions: transactionsReducer,
         },
         preloadedState: {
-            transactions: transactionsState ?? initialState,
+            transactions: transactionsState ?? transactionsInitialState,
         },
     });
 
@@ -21,7 +25,7 @@ describe('Transaction Actions', () => {
         const store = initStore();
         const account = global.JestMocks.getWalletAccount();
         store.dispatch(
-            transactionActions.addTransaction({
+            transactionsActions.addTransaction({
                 transactions: [getWalletTransaction()],
                 account,
                 page: 1,
@@ -44,7 +48,7 @@ describe('Transaction Actions', () => {
             error: null,
         });
 
-        store.dispatch(transactionActions.resetTransaction({ account: account1 }));
+        store.dispatch(transactionsActions.resetTransaction({ account: account1 }));
         // removed txs for acc1
         expect(
             getAccountTransactions(account1.key, store.getState().transactions.transactions),

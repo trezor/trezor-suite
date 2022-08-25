@@ -4,7 +4,7 @@ import { SUITE } from '@suite-actions/constants';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as deviceUtils from '@suite-utils/device';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { accountsActions, transactionActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 
 /*
  * Middleware for event notifications.
@@ -87,7 +87,7 @@ const eventsMiddleware =
             });
         }
 
-        if (transactionActions.removeTransaction.match(action)) {
+        if (transactionsActions.removeTransaction.match(action)) {
             const { txs } = action.payload;
             api.dispatch(notificationActions.removeTransactionEvents(txs));
         }

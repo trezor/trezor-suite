@@ -1,10 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types/libDev/src';
+import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { AccountTransaction } from '@trezor/connect';
-import { enhanceTransaction } from '@suite-common/wallet-utils/libDev/src';
+import { enhanceTransaction } from '@suite-common/wallet-utils';
 
-import { modulePrefix } from './transactionConstants';
+export const modulePrefix = '@common/wallet-core/transactions';
 
 const fetchError = createAction(
     `${modulePrefix}/fetchError`,
@@ -49,7 +49,7 @@ const addTransaction = createAction(
     }),
 );
 
-export const transactionActions = {
+export const transactionsActions = {
     addTransaction,
     fetchError,
     fetchInit,

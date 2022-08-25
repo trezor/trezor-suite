@@ -1,7 +1,7 @@
 import { NOTIFICATION } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { analyzeTransactionsFixtures as analyzeTransactions } from '@suite-common/wallet-utils';
-import { transactionActions, accountsActions } from '@suite-common/wallet-core';
+import { transactionsActions, accountsActions } from '@suite-common/wallet-core';
 
 const DEFAULT_ACCOUNT = {
     deviceState: 'deviceState',
@@ -39,7 +39,7 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.addTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -55,7 +55,7 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.addTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -71,7 +71,7 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.removeTransaction.type,
+            transactionsActions.removeTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -81,7 +81,7 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.removeTransaction.type,
+            transactionsActions.removeTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -91,7 +91,7 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.removeTransaction.type,
+            transactionsActions.removeTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -101,8 +101,8 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.removeTransaction.type,
-            transactionActions.addTransaction.type,
+            transactionsActions.removeTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -112,8 +112,8 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.removeTransaction.type,
-            transactionActions.addTransaction.type,
+            transactionsActions.removeTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -123,7 +123,7 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.addTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -138,7 +138,7 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.addTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -152,7 +152,7 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.addTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -170,8 +170,8 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.removeTransaction.type,
-            transactionActions.addTransaction.type,
+            transactionsActions.removeTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -185,8 +185,8 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.removeTransaction.type,
-            transactionActions.addTransaction.type,
+            transactionsActions.removeTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],
@@ -203,8 +203,8 @@ const analyzeTransactionsExtended = [
     },
     {
         result: [
-            transactionActions.removeTransaction.type,
-            transactionActions.addTransaction.type,
+            transactionsActions.removeTransaction.type,
+            transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
             BLOCKCHAIN.SYNCED,
         ],

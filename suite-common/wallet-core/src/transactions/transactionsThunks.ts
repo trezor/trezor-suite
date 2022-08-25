@@ -1,22 +1,17 @@
-import { accountsActions } from 'suite-common/wallet-core/src/index';
+import { accountsActions } from 'suite-common/wallet-core';
 
-import {
-    Account,
-    PrecomposedTransactionFinal,
-    TxFinalCardano,
-} from '@suite-common/wallet-types/libDev/src';
+import { Account, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
 import {
     findTransactions,
     formatNetworkAmount,
     getAccountTransactions,
     isTrezorConnectBackendType,
-} from '@suite-common/wallet-utils/libDev/src';
+} from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { createThunk } from '@suite-common/redux-utils/libDev/src';
+import { createThunk } from '@suite-common/redux-utils';
 
-import { selectTransactions } from './transactionReducer';
-import { modulePrefix } from './transactionConstants';
-import { transactionActions } from './transactionActions';
+import { selectTransactions } from './transactionsReducer';
+import { transactionsActions, modulePrefix } from './transactionsActions';
 
 /**
  * Replace existing transaction in the reducer.
@@ -49,7 +44,7 @@ export const replaceTransactionThunk = createThunk(
         // prepare replace actions for txs
         const actions = transactions.map(t => {
             const action = {
-                type: transactionActions.replaceTransaction.type,
+                type: transactionsActions.replaceTransaction.type,
                 payload: {
                     key: t.key,
                     txid: tx.prevTxid,
@@ -126,11 +121,10 @@ export const addFakePendingTxThunk = createThunk(
                 totalOutput: '0',
             },
         };
-        dispatch(transactionActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },
 );
 
-// TODO add this through extras and remove generator from transactionActions.ts
 export const fetchTransactionsThunk = createThunk(
     `${modulePrefix}/addFakePendingTransaction`,
     async (
@@ -178,7 +172,7 @@ export const fetchTransactionsThunk = createThunk(
         }
 
         if (!noLoading) {
-            dispatch(transactionActions.fetchInit);
+            dispatch(transactionsActions.fetchInit);
         }
 
         const { marker } = account;
@@ -198,9 +192,9 @@ export const fetchTransactionsThunk = createThunk(
             const transactions = result.payload.history.transactions || [];
             const totalPages = result.payload.page?.total || 0;
 
-            dispatch(transactionActions.fetchSuccess);
+            dispatch(transactionsActions.fetchSuccess);
             dispatch(
-                transactionActions.addTransaction({
+                transactionsActions.addTransaction({
                     transactions,
                     account: updatedAccount,
                     page,
@@ -223,7 +217,7 @@ export const fetchTransactionsThunk = createThunk(
             }
         } else {
             dispatch(
-                transactionActions.fetchError({
+                transactionsActions.fetchError({
                     error: result ? result.payload.error : 'unknown error',
                 }),
             );

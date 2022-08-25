@@ -1,6 +1,6 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TransactionState, updateTransaction } from '@suite-common/wallet-core';
+import { TransactionsState, updateTransaction } from '@suite-common/wallet-core';
 
 import { STORAGE } from '../actions/suite/constants';
 import { addEvent } from '@suite-actions/notificationActions';
@@ -61,7 +61,7 @@ export const extraDependencies: ExtraDependencies = {
                 state[backend.key].backends = backend.value;
             });
         },
-        storageLoadTransactions: (state: TransactionState, { payload }: StorageLoadAction) => {
+        storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
             const { txs } = payload;
             txs.forEach(item => {
                 const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
@@ -71,7 +71,7 @@ export const extraDependencies: ExtraDependencies = {
                 state.transactions[k][item.order] = item.tx;
             });
         },
-        txFiatRateUpdate: (state: TransactionState, { payload }: FiatRatesUpdateAction) => {
+        txFiatRateUpdate: (state: TransactionsState, { payload }: FiatRatesUpdateAction) => {
             payload.forEach(u => {
                 updateTransaction(state, u.account, u.txid, u.updateObject);
             });

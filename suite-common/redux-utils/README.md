@@ -22,12 +22,12 @@ export type ExtraDependencies = {
 Now you will use this type in desktop suite to construct object that will implement this type:
 
 ```typescript
-import * as transactionActions from '@wallet-actions/transactionActions';
+import * as transactionsActions from '@wallet-actions/transactionsActions';
 import { AppState } from '../types/suite';
 
 export const extraDependencies: ExtraDependencies = {
     actions: {
-        addTransaction: transactionActions.add,
+        addTransaction: transactionsActions.add,
     }
     selectors: {
         selectTransactions: (state: AppState) => state.wallet.transactions.transactions,

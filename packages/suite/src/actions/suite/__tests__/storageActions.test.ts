@@ -5,7 +5,7 @@ import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { disableAccountsThunk, transactionActions } from '@suite-common/wallet-core';
+import { disableAccountsThunk, transactionsActions } from '@suite-common/wallet-core';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 
 import { accountsReducer, transactionsReducer } from '@wallet-reducers';
@@ -235,8 +235,8 @@ describe('Storage actions', () => {
         store.dispatch(discoveryActions.create(dev2Instance1.state!, dev2Instance1));
 
         // add txs
-        store.dispatch(transactionActions.addTransaction({ transactions: [tx1], account: acc1 }));
-        store.dispatch(transactionActions.addTransaction({ transactions: [tx2], account: acc2 }));
+        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
+        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // remember devices
         await store.dispatch(storageActions.rememberDevice(dev1, true));
@@ -344,8 +344,8 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // add txs
-        store.dispatch(transactionActions.addTransaction({ transactions: [tx1], account: acc1 }));
-        store.dispatch(transactionActions.addTransaction({ transactions: [tx2], account: acc2 }));
+        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
+        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // store in db
         await store.dispatch(storageActions.rememberDevice(dev1, true));

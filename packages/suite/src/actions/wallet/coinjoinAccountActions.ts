@@ -7,7 +7,7 @@ import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
-import { accountsActions, transactionActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 
 const coinjoinAccountCreate = (account: Account) =>
     ({
@@ -100,7 +100,7 @@ export const fetchAndUpdateAccount =
                     // add account transactions
                     if (accountInfo.history.transactions) {
                         dispatch(
-                            transactionActions.addTransaction({
+                            transactionsActions.addTransaction({
                                 transactions: accountInfo.history.transactions,
                                 account,
                             }),

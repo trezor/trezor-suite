@@ -23,7 +23,7 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
-import { accountsActions, transactionActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
@@ -72,6 +72,25 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
+            if (transactionsActions.resetTransaction.match(action)) {
+                storageActions.removeAccountTransactions(action.payload.account);
+            }
+
+            if (
+                isAnyOf(
+                    transactionsActions.addTransaction,
+                    transactionsActions.removeTransaction,
+                )(action)
+            ) {
+                const { account } = action.payload;
+                const device = accountUtils.findAccountDevice(account, api.getState().devices);
+                // update only transactions for remembered device
+                if (isDeviceRemembered(device)) {
+                    storageActions.removeAccountTransactions(account);
+                    api.dispatch(storageActions.saveAccountTransactions(account));
+                }
+            }
+
             switch (action.type) {
                 case SUITE.REMEMBER_DEVICE:
                     api.dispatch(
@@ -87,30 +106,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.forgetDevice(action.payload));
                     break;
 
-                case transactionActions.addTransaction.type:
-                case transactionActions.removeTransaction.type:
-                    if (
-                        transactionActions.addTransaction.match(action) ||
-                        transactionActions.removeTransaction.match(action)
-                    ) {
-                        const { account } = action.payload;
-                        const device = accountUtils.findAccountDevice(
-                            account,
-                            api.getState().devices,
-                        );
-                        // update only transactions for remembered device
-                        if (isDeviceRemembered(device)) {
-                            storageActions.removeAccountTransactions(account);
-                            api.dispatch(storageActions.saveAccountTransactions(account));
-                        }
-                    }
-                    break;
-
-                case transactionActions.resetTransaction.type:
-                    if (transactionActions.resetTransaction.match(action)) {
-                        storageActions.removeAccountTransactions(action.payload.account);
-                    }
-                    break;
                 case DISCOVERY.UPDATE:
                 case DISCOVERY.INTERRUPT:
                 case DISCOVERY.STOP:

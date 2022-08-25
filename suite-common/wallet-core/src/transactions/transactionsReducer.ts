@@ -1,32 +1,33 @@
-import { accountsActions } from 'suite-common/wallet-core/src/index';
+import { accountsActions } from 'suite-common/wallet-core';
 
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types/libDev/src';
-import { findTransaction } from '@suite-common/wallet-utils/libDev/src';
-import { settingsCommonConfig } from '@suite-common/suite-config/libDev/src';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils/libDev/src';
+import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { findTransaction } from '@suite-common/wallet-utils';
+import { settingsCommonConfig } from '@suite-common/suite-config';
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { AccountHash } from '@suite-common/suite-types';
 
-import { transactionActions } from './transactionActions';
+import { transactionsActions } from './transactionsActions';
 
-export interface TransactionState {
+export interface TransactionsState {
     isLoading: boolean;
     error: string | null;
     // Key is accountHash and value is sparse array of fetched txs
-    transactions: { [key: string]: WalletAccountTransaction[] };
+    transactions: { [key: AccountHash]: WalletAccountTransaction[] };
 }
 
-export const initialState: TransactionState = {
+export const transactionsInitialState: TransactionsState = {
     isLoading: false,
     error: null,
     transactions: {},
 };
 
-interface TransactionRootState {
+interface TransactionsRootState {
     wallet: {
-        transactions: TransactionState;
+        transactions: TransactionsState;
     };
 }
 
-const initializeAccount = (state: TransactionState, accountHash: string) => {
+const initializeAccount = (state: TransactionsState, accountHash: AccountHash) => {
     // initialize an empty array at 'accountHash' index if not yet initialized
     if (!state.transactions[accountHash]) {
         state.transactions[accountHash] = [];
@@ -35,7 +36,7 @@ const initializeAccount = (state: TransactionState, accountHash: string) => {
 };
 
 export const updateTransaction = (
-    state: TransactionState,
+    state: TransactionsState,
     account: Account,
     txid: string,
     updateObject: Partial<WalletAccountTransaction>,
@@ -52,31 +53,31 @@ export const updateTransaction = (
 };
 
 export const prepareTransactionsReducer = createReducerWithExtraDeps(
-    initialState,
+    transactionsInitialState,
     (builder, extra) => {
         builder
-            .addCase(transactionActions.fetchError, (state, { payload }) => {
+            .addCase(transactionsActions.fetchError, (state, { payload }) => {
                 const { error } = payload;
                 state.error = error;
                 state.isLoading = false;
             })
-            .addCase(transactionActions.fetchInit, state => {
+            .addCase(transactionsActions.fetchInit, state => {
                 state.isLoading = true;
             })
-            .addCase(transactionActions.fetchSuccess, state => {
+            .addCase(transactionsActions.fetchSuccess, state => {
                 state.isLoading = false;
             })
-            .addCase(transactionActions.resetTransaction, (state, { payload }) => {
+            .addCase(transactionsActions.resetTransaction, (state, { payload }) => {
                 const { account } = payload;
                 delete state.transactions[account.key];
             })
-            .addCase(transactionActions.replaceTransaction, (state, { payload }) => {
+            .addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
                 const { key, txid, tx } = payload;
                 const accountTxs = initializeAccount(state, key);
                 const index = accountTxs.findIndex(t => t && t.txid === txid);
                 if (accountTxs[index]) accountTxs[index] = tx;
             })
-            .addCase(transactionActions.removeTransaction, (state, { payload }) => {
+            .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
                 const transactions = state.transactions[account.key] || [];
                 txs.forEach(tx => {
@@ -84,7 +85,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     transactions.splice(index, 1);
                 });
             })
-            .addCase(transactionActions.addTransaction, (state, { payload }) => {
+            .addCase(transactionsActions.addTransaction, (state, { payload }) => {
                 const { transactions, account, page } = payload;
                 if (transactions.length < 1) return;
                 initializeAccount(state, account.key);
@@ -137,9 +138,9 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
     },
 );
 
-export const selectIsTransactionsLoading = (state: TransactionRootState) =>
+export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.isLoading;
-export const selectTransactionsError = (state: TransactionRootState) =>
+export const selectTransactionsError = (state: TransactionsRootState) =>
     state.wallet.transactions.error;
-export const selectTransactions = (state: TransactionRootState) =>
+export const selectTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.transactions;

@@ -25,7 +25,7 @@ import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
 import type { EnvironmentType } from '@suite-common/suite-types';
 import type { Route } from '@suite-constants/routes';
-import { transactionActions } from '@suite-common/wallet-core';
+import { transactionsActions } from '@suite-common/wallet-core';
 
 // reexport
 export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
@@ -45,7 +45,7 @@ export type {
 type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEvent;
 
 export type TransactionAction = ReturnType<
-    typeof transactionActions[keyof typeof transactionActions]
+    typeof transactionsActions[keyof typeof transactionsActions]
 >;
 
 // all actions from all apps used to properly type Dispatch.

@@ -9,7 +9,7 @@ import AccountEmpty from './components/AccountEmpty';
 import TransactionList from './components/TransactionList';
 import TransactionSummary from './components/TransactionSummary';
 import { CoinjoinSummary } from '@wallet-components/CoinjoinSummary';
-import { selectIsTransactionsLoading } from '@suite-common/wallet-core';
+import { selectIsLoadingTransactions } from '@suite-common/wallet-core';
 
 interface ContentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -45,7 +45,7 @@ const Content = ({
 };
 
 const Transactions = () => {
-    const transactionsIsLoading = useSelector(selectIsTransactionsLoading);
+    const transactionsIsLoading = useSelector(selectIsLoadingTransactions);
     const { selectedAccount, transactions } = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         transactions: state.wallet.transactions,

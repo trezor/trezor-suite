@@ -6,7 +6,7 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { accountsActions, transactionActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -32,7 +32,7 @@ const walletMiddleware =
             // gather transactions from account.create action
             const account = action.payload;
             api.dispatch(
-                transactionActions.addTransaction({
+                transactionsActions.addTransaction({
                     transactions: account.history.transactions || [],
                     account,
                     page: 1,
@@ -40,7 +40,7 @@ const walletMiddleware =
             );
         }
 
-        if (transactionActions.addTransaction.match(action)) {
+        if (transactionsActions.addTransaction.match(action)) {
             api.dispatch(
                 cardanoStakingActions.validatePendingStakeTxOnTx(
                     action.payload.account,

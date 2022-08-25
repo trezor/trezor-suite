@@ -1,7 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { accountsActions, transactionActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
@@ -57,6 +57,15 @@ const fiatRatesMiddleware =
             });
         }
 
+        if (transactionsActions.addTransaction.match(action))
+            // fetch historical rates for each added transaction
+            api.dispatch(
+                fiatRatesActions.updateTxsRates(
+                    action.payload.account,
+                    action.payload.transactions,
+                ),
+            );
+
         switch (action.type) {
             case BLOCKCHAIN.CONNECTED:
                 api.dispatch(fiatRatesActions.initRates(action.payload));
@@ -64,17 +73,6 @@ const fiatRatesMiddleware =
             case BLOCKCHAIN.FIAT_RATES_UPDATE:
                 api.dispatch(fiatRatesActions.onUpdateRate(action.payload));
                 break;
-            case transactionActions.addTransaction.type:
-                if (transactionActions.addTransaction.match(action))
-                    // fetch historical rates for each added transaction
-                    api.dispatch(
-                        fiatRatesActions.updateTxsRates(
-                            action.payload.account,
-                            action.payload.transactions,
-                        ),
-                    );
-                break;
-
             case WALLET_SETTINGS.CHANGE_NETWORKS:
                 api.dispatch(fiatRatesActions.removeRatesForDisabledNetworks());
                 break;
