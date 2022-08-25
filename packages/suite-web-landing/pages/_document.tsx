@@ -3,10 +3,10 @@ import React from 'react';
 import { resolveStaticPath } from '@trezor/utils/lib/resolveStaticPath';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '../support/styles';
-import { isEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { TOR_URLS } from '@suite-constants/tor';
 
-const isOnionLocation = isEnabled('ONION_LOCATION_META');
+const isOnionLocation = isFeatureFlagEnabled('ONION_LOCATION_META');
 
 export default class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {

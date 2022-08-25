@@ -25,7 +25,7 @@ const getFlagsForEnv = (env?: string) => {
  * @param env {string} Optional parameter to specify different environment than `process.env.SUITE_TYPE`
  * @returns {boolean} True if enabled, false if not
  */
-export const isEnabled = (flag: FeatureFlags, env?: string) => {
+export const isFeatureFlagEnabled = (flag: FeatureFlags, env?: string) => {
     const flags = getFlagsForEnv(env ?? process.env.SUITE_TYPE);
     return flags[flag] ?? false;
 };

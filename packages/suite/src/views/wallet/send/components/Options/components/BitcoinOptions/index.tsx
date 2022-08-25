@@ -4,7 +4,7 @@ import { Translation } from '@suite-components';
 import { OnOffSwitcher } from '@wallet-components';
 import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
-import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { OpenGuideFromTooltip } from '@guide-components';
 import Locktime from './components/Locktime';
 
@@ -97,7 +97,7 @@ const BitcoinOptions = () => {
                             </StyledButton>
                         </Tooltip>
                     )}
-                    {isFeatureEnabled('RBF') &&
+                    {isFeatureFlagEnabled('RBF') &&
                         network.features?.includes('rbf') &&
                         !locktimeEnabled && (
                             <Tooltip
