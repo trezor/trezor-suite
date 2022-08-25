@@ -30,6 +30,7 @@ logs
 .attic
 .env*
 !.env.dev
+nx-cloud.env
 
 # cache
 *.code-workspace
