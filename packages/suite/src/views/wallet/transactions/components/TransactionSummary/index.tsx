@@ -4,7 +4,7 @@ import { getUnixTime } from 'date-fns';
 import { Account } from '@wallet-types';
 import { variables, Button, Card } from '@trezor/components';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
-import { calcTicks, calcTicksFromData } from '@suite-utils/date';
+import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { aggregateBalanceHistory, getMinMaxValueFromData } from '@wallet-utils/graphUtils';
 import { useSelector, useActions } from '@suite-hooks';
 import * as graphActions from '@wallet-actions/graphActions';

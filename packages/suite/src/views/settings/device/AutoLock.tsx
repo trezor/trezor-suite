@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useActions, useDevice, useLocales } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { formatDurationStrict } from '@suite-utils/date';
+import { formatDurationStrict } from '@suite-common/suite-utils';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
 
