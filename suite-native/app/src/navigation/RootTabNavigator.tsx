@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
@@ -20,7 +20,9 @@ export const RootTabNavigator = () => (
             headerShown: false,
             unmountOnBlur: false,
         }}
-        tabBar={props => <TabBar tabItemOptions={rootTabsOptions} {...props} />}
+        tabBar={(props: BottomTabBarProps) => (
+            <TabBar tabItemOptions={rootTabsOptions} {...props} />
+        )}
     >
         <Tab.Screen name={RouteTabs.HomeStack} component={HomeStackNavigator} />
         <Tab.Screen name={RouteTabs.Accounts} component={AccountsScreen} />

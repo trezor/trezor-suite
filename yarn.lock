@@ -6232,6 +6232,7 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@suite-native/atoms": "*"
     "@suite-native/home-graph": "*"
+    "@suite-native/module-onboarding": "*"
     "@suite-native/navigation": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"

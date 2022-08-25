@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { SafeAreaView, ScrollView, StatusBar } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, View } from 'react-native';
 import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -20,6 +20,19 @@ const screenContainerStyle = prepareNativeStyle<{
     flex: 1,
     backgroundColor: utils.colors[backgroundColor],
 }));
+
+const screenHeaderStyle = prepareNativeStyle<{
+    insets: EdgeInsets;
+    customHorizontalPadding: number;
+    customVerticalPadding: number;
+}>((_, { insets, customHorizontalPadding, customVerticalPadding }) => {
+    const { top, right, left } = insets;
+    return {
+        paddingTop: Math.max(top, customVerticalPadding),
+        paddingLeft: Math.max(left, customHorizontalPadding),
+        paddingRight: Math.max(right, customHorizontalPadding),
+    };
+});
 
 const screenContentStyle = prepareNativeStyle<{
     insets: EdgeInsets;
@@ -61,7 +74,19 @@ export const Screen = ({
                 translucent={!hasStatusBar}
                 backgroundColor="transparent"
             />
-            {header && header}
+            {header && (
+                <View
+                    style={[
+                        applyStyle(screenHeaderStyle, {
+                            insets,
+                            customHorizontalPadding,
+                            customVerticalPadding,
+                        }),
+                    ]}
+                >
+                    {header}
+                </View>
+            )}
             <ScrollView
                 contentInsetAdjustmentBehavior="automatic"
                 contentContainerStyle={applyStyle(screenContentStyle, {

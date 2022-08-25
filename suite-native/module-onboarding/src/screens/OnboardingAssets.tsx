@@ -18,6 +18,15 @@ const assetsStyle = prepareNativeStyle(_ => ({
     justifyContent: 'space-between',
 }));
 
+const importAnotherWrapperStyle = prepareNativeStyle(_ => ({
+    alignItems: 'center',
+}));
+
+const importAnotherButtonStyle = prepareNativeStyle(utils => ({
+    borderRadius: utils.borders.radii.round,
+    width: 165,
+}));
+
 export const OnboardingAssets = ({
     navigation,
     route,
@@ -42,7 +51,10 @@ export const OnboardingAssets = ({
 
         TrezorConnect.getAccountInfo({
             coin: currencySymbol,
-            descriptor: xpubAddress,
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            path: "m/84'/0'/0'",
+            details: 'txs',
         })
             .then(accountInfo => {
                 if (accountInfo?.success) {
@@ -86,6 +98,15 @@ export const OnboardingAssets = ({
                     <View>
                         <AssetsHeader />
                         <AssetsOverview accountInfo={accountInfo} />
+                    </View>
+                    <View style={applyStyle(importAnotherWrapperStyle)}>
+                        <Button
+                            style={applyStyle(importAnotherButtonStyle)}
+                            onPress={() => navigation.goBack()}
+                            colorScheme="gray"
+                        >
+                            Import another
+                        </Button>
                     </View>
                     <Button onPress={handleConfirmAssets} size="large">
                         Confirm
