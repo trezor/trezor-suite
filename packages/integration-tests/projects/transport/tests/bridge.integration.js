@@ -49,6 +49,10 @@ describe('bridge', () => {
                 BridgeV2.setFetch(fetch, true);
 
                 bridge = new BridgeV2(null, null);
+
+                // this is how @trezor/connect is using it at the moment
+                // bridge.setBridgeLatestVersion(bridgeVersion);
+
                 await bridge.init(false);
                 bridge.configure(messages);
 
