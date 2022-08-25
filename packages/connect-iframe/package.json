@@ -3,7 +3,7 @@
     "version": "9.0.0",
     "private": true,
     "scripts": {
-        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "build": "rimraf build && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
         "___NOTE__": "iframe build is one of the prerequisites of suite-web. build:lib script provides it together with other libraries",
         "build:lib": "yarn build",
@@ -20,5 +20,12 @@
         "webpack": "^5.73.0",
         "webpack-cli": "^4.10.0",
         "worker-loader": "^3.0.8"
+    },
+    "nx": {
+        "build": {
+            "outputs": [
+                "./build"
+            ]
+        }
     }
 }

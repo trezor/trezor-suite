@@ -7,7 +7,7 @@
     "sideEffects": false,
     "scripts": {
         "type-check": "tsc --build",
-        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ../../jest.config.base.js"
     },
     "dependencies": {

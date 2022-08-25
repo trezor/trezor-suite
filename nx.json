@@ -1,0 +1,43 @@
+{
+    "extends": "nx/presets/npm.json",
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "@nrwl/nx-cloud",
+            "options": {
+                "cacheableOperations": [
+                    "lint",
+                    "test:unit",
+                    "type-check",
+                    "lint:js",
+                    "lint:styles",
+                    "build:lib"
+                ],
+                "accessToken": "NmE2NmFlYTUtN2JhZi00ZmQ3LWEyYzMtYWRkNzc3MTg0YmUyfHJlYWQ=",
+                "parallel": 5
+            }
+        }
+    },
+    "targetDefaults": {
+        "build:lib": {
+            "dependsOn": ["^build:lib"],
+            "outputs": ["./lib"]
+        },
+        "type-check": {
+            "dependsOn": ["^build:lib"],
+            "outputs": []
+        },
+        "test:unit": {
+            "dependsOn": ["^build:lib"],
+            "outputs": []
+        },
+        "lint:js": {
+            "inputs": ["{projectRoot}/**/*.js", "{projectRoot}/**/*.ts", "{projectRoot}/**/*.tsx"]
+        },
+        "lint:styles": {
+            "inputs": ["{projectRoot}/**/*.tsx"]
+        }
+    },
+    "affected": {
+        "defaultBase": "origin/develop"
+    }
+}

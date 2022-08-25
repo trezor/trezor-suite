@@ -34,7 +34,7 @@
         "!**/*.map"
     ],
     "scripts": {
-        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest",
         "type-check": "tsc --build",
         "build:lib": "rimraf ./lib && yarn tsc --build tsconfig.lib.json",
