@@ -1,0 +1,379 @@
+import { differenceInMilliseconds, getUnixTime, subWeeks } from 'date-fns';
+
+import {
+    fetchCurrentFiatRates,
+    fetchCurrentTokenFiatRates,
+    fetchLastWeekRates,
+    getFiatRatesForTimestamps,
+} from '@suite-common/fiat-services';
+import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from '@trezor/connect';
+import { createThunk } from '@suite-common/redux-utils';
+import { Network, networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
+import { Account, CoinFiatRates, TickerId } from '@suite-common/wallet-types';
+import { FIAT } from '@suite-common/suite-config';
+import { getAccountTransactions, isTestnet } from '@suite-common/wallet-utils';
+import { getBlockbookSafeTime } from '@suite-common/suite-utils';
+
+import { actionPrefix } from '../accounts/constants';
+import { fiatRatesActions } from './fiatRatesActions';
+import { selectCoins } from './fiatRatesReducer';
+import { selectAccounts } from '../accounts/accountsReducer';
+import { INTERVAL, INTERVAL_LAST_WEEK, MAX_AGE, MAX_AGE_LAST_WEEK } from './constants';
+
+let staleRatesTimeout: ReturnType<typeof setInterval>;
+let lastWeekTimeout: ReturnType<typeof setInterval>;
+
+export const removeFiatRatesForDisabledNetworks = createThunk(
+    `${actionPrefix}/removeRatesForDisabledNetworks`,
+    (_, { dispatch, extra, getState }) => {
+        const {
+            selectors: { selectEnabledNetworks },
+        } = extra;
+        const enabledNetworks = selectEnabledNetworks(getState());
+        const fiat = selectCoins(getState());
+        fiat.forEach(f => {
+            const rateNetwork = (f.mainNetworkSymbol ?? f.symbol) as Network['symbol'];
+            if (!enabledNetworks.includes(rateNetwork)) {
+                dispatch(fiatRatesActions.removeFiatRate(f));
+            }
+        });
+    },
+);
+
+/**
+ *  Returns an array with coin tickers that need fullfil several conditions.
+ *  Array of coin tickers is combined from 2 sources - config file and fiat reducer itself
+ *  Conditions:
+ *  1. network for a given ticker needs to be enabled
+ *  2a. no rates available yet (first fetch)
+ *  OR
+ *  2b. duration since the last check is greater than passed `interval`
+ *  Timestamp is extracted via `timestampFunc`.
+ *
+ * @param {((ticker: CoinFiatRates) => number | undefined)} timestampFunc
+ * @param {number} interval
+ * @param {boolean} [includeTokens]
+ */
+export const getFiatStaleTickers = createThunk<
+    {
+        timestampFunc: (ticker: CoinFiatRates) => number | undefined | null;
+        interval: number;
+        includeTokens?: boolean;
+    },
+    TickerId[]
+>(
+    `${actionPrefix}/getStaleTickers`,
+    ({ timestampFunc, interval, includeTokens }, { extra, getState }) => {
+        const {
+            selectors: { selectEnabledNetworks, selectBlockchain },
+        } = extra;
+        const enabledNetworks = selectEnabledNetworks(getState());
+        const fiat = selectCoins(getState());
+        const blockchain = selectBlockchain(getState());
+
+        const watchedCoinTickers = FIAT.tickers
+            .filter(t => enabledNetworks.includes(t.symbol))
+            // use only connected backends
+            .filter(t => blockchain[t.symbol].connected);
+
+        const needUpdateFn = (t: TickerId) => {
+            // if no rates loaded yet, load them;
+            if (fiat.length === 0) return true;
+            const alreadyWatchedTicker = fiat.find(f => f.symbol === t.symbol);
+            // is not in fiat[], means is not watched, for example coin was added in settings, add it
+            if (!alreadyWatchedTicker) return true;
+
+            const timestamp = timestampFunc(alreadyWatchedTicker);
+            if (!timestamp) return true;
+            // otherwise load only older ones
+            return Date.now() - timestamp > interval;
+        };
+
+        const tickersToUpdate: TickerId[] = [];
+        watchedCoinTickers
+            .filter(needUpdateFn)
+            .forEach(t => tickersToUpdate.push({ symbol: t.symbol }));
+
+        if (includeTokens) {
+            // use only tokens which mainNetworkSymbol are assigned to watchedCoinTickers
+            const tokenTickers = fiat.filter(
+                t =>
+                    t.mainNetworkSymbol &&
+                    watchedCoinTickers.find(w => w.symbol === t.mainNetworkSymbol),
+            );
+            tokenTickers.filter(needUpdateFn).forEach(t => tickersToUpdate.push(t));
+        }
+
+        return tickersToUpdate;
+    },
+);
+
+/**
+ * Fetch and update current fiat rates for a given ticker
+ * Primary source of rates is TrezorConnect, coingecko serves as a fallback
+ *
+ * @param {TickerId} ticker
+ * @param {number} [maxAge=MAX_AGE]
+ */
+export const updateCurrentFiatRates = createThunk<{ ticker: TickerId; maxAge?: number }, void>(
+    `${actionPrefix}/updateCurrentRates`,
+    async ({ ticker, maxAge = MAX_AGE }, { dispatch, getState }) => {
+        const fiat = selectCoins(getState());
+        const network = NETWORKS.find(t =>
+            ticker.tokenAddress
+                ? t.symbol === ticker.mainNetworkSymbol
+                : t.symbol === ticker.symbol,
+        );
+        // skip testnets
+        if (!network || network.testnet) return;
+
+        if (maxAge > 0) {
+            const existingRates = fiat.find(
+                t =>
+                    t.symbol === ticker.symbol &&
+                    t.tokenAddress === ticker.tokenAddress &&
+                    t.mainNetworkSymbol === ticker.mainNetworkSymbol,
+            )?.current;
+
+            // don't fetch if rates is fresh enough
+            if (existingRates) {
+                if (differenceInMilliseconds(new Date(), new Date(existingRates.ts)) < maxAge) {
+                    return;
+                }
+            }
+        }
+
+        let results;
+        try {
+            if (!ticker.tokenAddress) {
+                // standalone coins
+                const response = await TrezorConnect.blockchainGetCurrentFiatRates({
+                    coin: ticker.symbol,
+                });
+                results = response.success ? response.payload : null;
+            }
+
+            if (!results) {
+                // Fallback for standalone coins and primary source for erc20 tokens and xrp as blockbook doesn't provide fiat rates for them
+                results = ticker.tokenAddress
+                    ? await fetchCurrentTokenFiatRates(ticker)
+                    : await fetchCurrentFiatRates(ticker);
+            }
+
+            if (results?.rates) {
+                // dispatch only if rates are not null/undefined
+                dispatch(
+                    fiatRatesActions.updateFiatRate({
+                        ticker,
+                        payload: {
+                            ts: results.ts * 1000,
+                            rates: results.rates,
+                            symbol: ticker.symbol,
+                        },
+                    }),
+                );
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    },
+);
+
+/**
+ * Updates current fiat rates for every stale ticker
+ */
+export const updateStaleFiatRates = createThunk(
+    `${actionPrefix}/updateStaleRates`,
+    async (_, { dispatch }) => {
+        try {
+            const staleTickers = await dispatch(
+                getFiatStaleTickers({
+                    timestampFunc: ticker =>
+                        ticker.current?.rates ? ticker.current.ts : undefined,
+                    interval: MAX_AGE,
+                    includeTokens: true,
+                }),
+            ).unwrap();
+            const promises = staleTickers.map(t =>
+                dispatch(
+                    updateCurrentFiatRates({
+                        ticker: t,
+                        maxAge: 0,
+                    }),
+                ),
+            );
+            await Promise.all(promises);
+        } catch (error) {
+            // todo: dispatch some error;
+            // dispatch({ type: '@rate/error', payload: error.message });
+            console.error(error);
+        }
+    },
+);
+
+export const onUpdateFiatRate = createThunk(
+    `${actionPrefix}/onUpdateRate`,
+    (res: BlockchainFiatRatesUpdate, { dispatch }) => {
+        if (!res?.rates) return;
+        const symbol = res.coin.shortcut.toLowerCase();
+        dispatch(
+            fiatRatesActions.updateFiatRate({
+                ticker: {
+                    symbol,
+                },
+                payload: {
+                    ts: getUnixTime(new Date()) * 1000,
+                    rates: res.rates,
+                    symbol,
+                },
+            }),
+        );
+    },
+);
+
+/**
+ * Updates the price data for the past 7 days in 1-hour interval (168 data points)
+ */
+export const updateLastWeekFiatRates = createThunk(
+    `${actionPrefix}/updateLastWeekRates`,
+    async (_, { dispatch, extra, getState }) => {
+        const {
+            selectors: { selectLocalCurrency },
+        } = extra;
+        const localCurrency = selectLocalCurrency(getState());
+
+        const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
+        const timestamps = [weekAgoTimestamp];
+
+        const lastWeekStaleFn = (coinRates: CoinFiatRates) => {
+            if (coinRates.lastWeek?.tickers[0]?.rates[localCurrency]) {
+                // if there is a rate for localCurrency then decide based on timestamp
+                return coinRates.lastWeek?.ts;
+            }
+            // no rates for localCurrency
+            return null;
+        };
+
+        const staleTickers = await dispatch(
+            getFiatStaleTickers({
+                timestampFunc: lastWeekStaleFn,
+                interval: MAX_AGE_LAST_WEEK,
+            }),
+        ).unwrap();
+
+        const promises = staleTickers.map(async ticker => {
+            const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
+                coin: ticker.symbol,
+                timestamps,
+            });
+            try {
+                const results = response.success
+                    ? response.payload
+                    : await fetchLastWeekRates(ticker, localCurrency);
+
+                if (results && 'tickers' in results) {
+                    dispatch(
+                        fiatRatesActions.updateLastWeekRates({
+                            symbol: ticker.symbol,
+                            tickers: results.tickers,
+                            ts: new Date().getTime(),
+                        }),
+                    );
+                }
+            } catch (error) {
+                // eslint-disable-next-line no-console
+                console.log(error);
+            }
+        });
+        await Promise.all(promises);
+    },
+);
+
+/**
+ *  Fetch and update fiat rates for given `txs`
+ *  Primary source of rates is TrezorConnect, coingecko serves as a fallback
+ *
+ * @param {Account} account
+ * @param {AccountTransaction[]} txs
+ */
+export const updateTxsFiatRates = createThunk<{ account: Account; txs: AccountTransaction[] }>(
+    `${actionPrefix}/updateTxsRates`,
+    async ({ account, txs }, { dispatch }) => {
+        if (txs?.length === 0 || isTestnet(account.symbol)) return;
+
+        const timestamps = txs.map(tx => getBlockbookSafeTime(tx.blockTime));
+        const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
+            coin: account.symbol,
+            timestamps,
+        });
+        try {
+            const results = response.success
+                ? response.payload
+                : await getFiatRatesForTimestamps({ symbol: account.symbol }, timestamps);
+
+            if (results && 'tickers' in results) {
+                dispatch(
+                    fiatRatesActions.updateTransactionFiatRate(
+                        txs.map((tx, i) => ({
+                            txid: tx.txid,
+                            updateObject: { rates: results.tickers[i]?.rates },
+                            account,
+                            ts: new Date().getTime(),
+                        })),
+                    ),
+                );
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    },
+);
+
+const updateMissingTxFiatRates = createThunk(
+    `${actionPrefix}/updateMissingTxRates`,
+    (symbol: Network['symbol'], { dispatch, extra, getState }) => {
+        const {
+            selectors: { selectAccountTransactions },
+        } = extra;
+        const transactions = selectAccountTransactions(getState());
+        const accounts = selectAccounts(getState());
+        accounts.forEach(account => {
+            if (symbol && account.symbol !== symbol) {
+                return;
+            }
+            const accountTxs = getAccountTransactions(account.key, transactions);
+            // fetch rates for all txs without 'rates' field
+            dispatch(
+                updateTxsFiatRates({
+                    account,
+                    txs: accountTxs.filter(tx => !tx.rates),
+                }),
+            );
+        });
+    },
+);
+
+/**
+ * Called from blockchainActions.onConnect
+ *
+ */
+export const initFiatRates = createThunk(
+    `${actionPrefix}/initRates`,
+    (symbol: Network['symbol'], { dispatch }) => {
+        dispatch(updateStaleFiatRates());
+        dispatch(updateLastWeekFiatRates());
+        dispatch(updateMissingTxFiatRates(symbol)); // just to be safe, refetch historical rates for transactions stored without these rates
+
+        if (staleRatesTimeout && lastWeekTimeout) {
+            clearInterval(staleRatesTimeout);
+            clearInterval(lastWeekTimeout);
+        }
+
+        staleRatesTimeout = setInterval(() => {
+            dispatch(updateStaleFiatRates());
+        }, INTERVAL);
+        lastWeekTimeout = setInterval(() => {
+            dispatch(updateLastWeekFiatRates());
+        }, INTERVAL_LAST_WEEK);
+    },
+);

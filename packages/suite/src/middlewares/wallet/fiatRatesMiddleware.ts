@@ -1,8 +1,12 @@
 import { MiddlewareAPI } from 'redux';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
-import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
+import { accountsActions, transactionsActions,     removeFiatRatesForDisabledNetworks,
+    updateCurrentFiatRates,
+    initFiatRates,
+    updateLastWeekFiatRates,
+    updateTxsFiatRates,
+    onUpdateFiatRate, } from '@suite-common/wallet-core';
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const fiatRatesMiddleware =
@@ -29,10 +33,12 @@ const fiatRatesMiddleware =
                 difference.forEach(token => {
                     if (token.symbol) {
                         api.dispatch(
-                            fiatRatesActions.updateCurrentRates({
-                                symbol: token.symbol,
-                                mainNetworkSymbol: account.symbol,
-                                tokenAddress: token.address,
+                            updateCurrentFiatRates({
+                                ticker: {
+                                    symbol: token.symbol,
+                                    mainNetworkSymbol: account.symbol,
+                                    tokenAddress: token.address,
+                                },
                             }),
                         );
                     }
@@ -48,10 +54,12 @@ const fiatRatesMiddleware =
                     return;
                 }
                 api.dispatch(
-                    fiatRatesActions.updateCurrentRates({
-                        symbol: token.symbol,
-                        mainNetworkSymbol: account.symbol,
-                        tokenAddress: token.address,
+                    updateCurrentFiatRates({
+                        ticker: {
+                            symbol: token.symbol,
+                            mainNetworkSymbol: account.symbol,
+                            tokenAddress: token.address,
+                        },
                     }),
                 );
             });
@@ -59,26 +67,27 @@ const fiatRatesMiddleware =
 
         if (transactionsActions.addTransaction.match(action))
             // fetch historical rates for each added transaction
+            const { account, transactions } = action.payload;
             api.dispatch(
-                fiatRatesActions.updateTxsRates(
-                    action.payload.account,
-                    action.payload.transactions,
-                ),
+                updateTxsFiatRates({
+                    account,
+                    txs: transactions,
+                }),
             );
 
         switch (action.type) {
             case BLOCKCHAIN.CONNECTED:
-                api.dispatch(fiatRatesActions.initRates(action.payload));
+                api.dispatch(initFiatRates(action.payload));
                 break;
             case BLOCKCHAIN.FIAT_RATES_UPDATE:
-                api.dispatch(fiatRatesActions.onUpdateRate(action.payload));
+                api.dispatch(onUpdateFiatRate(action.payload));
                 break;
             case WALLET_SETTINGS.CHANGE_NETWORKS:
-                api.dispatch(fiatRatesActions.removeRatesForDisabledNetworks());
+                api.dispatch(removeFiatRatesForDisabledNetworks());
                 break;
             case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
                 // for coins relying on coingecko we only fetch rates for one fiat currency
-                api.dispatch(fiatRatesActions.updateLastWeekRates());
+                api.dispatch(updateLastWeekFiatRates());
                 break;
             default:
                 break;

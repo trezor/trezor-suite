@@ -1,9 +1,8 @@
 import { combineReducers } from 'redux';
 import settingsReducer from './settingsReducer';
-import fiatRateReducer from './fiatRatesReducer';
 import graphReducer from './graphReducer';
 import discoveryReducer from './discoveryReducer';
-import { prepareAccountsReducer, prepareTransactionsReducer } from '@suite-common/wallet-core';
+import { prepareAccountsReducer, prepareFiatRatesReducer, prepareTransactionsReducer } from '@suite-common/wallet-core';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';
@@ -20,9 +19,10 @@ import { extraDependencies } from '@suite/support/extraDependencies';
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
+export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
-    fiat: fiatRateReducer,
+    fiat: fiatRatesReducer,
     graph: graphReducer,
     settings: settingsReducer,
     transactions: transactionsReducer,

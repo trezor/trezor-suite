@@ -2,6 +2,8 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { createThunk, ExtraDependencies } from '@suite-common/redux-utils';
 import { PROTO } from '@trezor/connect';
+import { networksCompatibility } from '@suite-common/wallet-config';
+import { BlockchainNetworks } from '@suite-common/wallet-types/libDev/src';
 
 import { testMocks } from './mocks';
 
@@ -51,9 +53,33 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', []),
+        selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),
         selectAccountTransactions: mockSelector('selectAccountTransactions', {
             mockedTransaction: [],
         }),
+        selectBlockchain: mockSelector(
+            'selectBlockchain',
+            networksCompatibility.reduce((result, network) => {
+                if (network.accountType) return result;
+                result[network.symbol] = {
+                    connected: false,
+                    explorer: network.explorer,
+                    blockHash: '0',
+                    blockHeight: 0,
+                    version: '0',
+                    backends:
+                        network.symbol === 'regtest'
+                            ? {
+                                  selected: 'blockbook',
+                                  urls: {
+                                      blockbook: ['http://localhost:19121'],
+                                  },
+                              }
+                            : {},
+                };
+                return result;
+            }, {} as BlockchainNetworks),
+        ),
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
     },
     actions: {
@@ -69,6 +95,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
+        storageLoadFiatRates: mockReducer('storageLoadAccounts'),
     },
     utils: {
         saveAs: (data, fileName) =>

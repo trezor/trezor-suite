@@ -8,14 +8,13 @@ import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { disableAccountsThunk, transactionsActions } from '@suite-common/wallet-core';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 
-import { accountsReducer, transactionsReducer } from '@wallet-reducers';
+import { accountsReducer, fiatRatesReducer, transactionsReducer } from '@wallet-reducers';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
 import graphReducer from '@wallet-reducers/graphReducer';
-import fiatRatesReducer from '@wallet-reducers/fiatRatesReducer';
 import storageMiddleware from '@wallet-middlewares/storageMiddleware';
 import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
 import { AppState } from '@suite-types';

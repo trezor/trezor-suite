@@ -5,6 +5,7 @@ import {
     FeeInfo,
     WalletAccountTransaction,
     TransactionFiatRateUpdatePayload,
+    BlockchainNetworks,
 } from '@suite-common/wallet-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -29,10 +30,12 @@ export type ExtraDependencies = {
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
         selectEnabledNetworks: SuiteCompatibleSelector<Network['symbol'][]>;
+        selectLocalCurrency: SuiteCompatibleSelector<string>;
         selectAccountTransactions: SuiteCompatibleSelector<
             Record<string, WalletAccountTransaction[]>
         >;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
+        selectBlockchain: SuiteCompatibleSelector<BlockchainNetworks>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
@@ -57,6 +60,7 @@ export type ExtraDependencies = {
         storageLoadBlockchain: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
+        storageLoadFiatRates: StorageLoadReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;
