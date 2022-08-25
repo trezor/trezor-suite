@@ -5,9 +5,6 @@ on:
 
 jobs:
   android_production:
-    defaults:
-      run:
-        working-directory: suite-native/app
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 45
@@ -27,13 +24,13 @@ jobs:
           ENCODED_STRING_KEYSTORE: ${{ secrets.PRODUCTION_KEYSTORE_FILE }}
           ENCODED_STRING_JSON_FILE: ${{secrets.PRODUCTION_GOOGLE_PLAY_JSON_KEY}}
         run: |
-          echo $ENCODED_STRING_KEYSTORE |  base64 -d > android/app/release.keystore
-          echo $ENCODED_STRING_JSON_FILE > android/app/firebase_key.json
+          echo $ENCODED_STRING_KEYSTORE |  base64 -d > suite-native/app/android/app/release.keystore
+          echo $ENCODED_STRING_JSON_FILE > suite-native/app/android/app/firebase_key.json
 
       - name: Install dependecies
         run: |
-          yarn install --cwd ../../
-          yarn build:libs --cwd ../../
+          yarn install
+          yarn build:libs
 
       - name: Ruby Setup for Fastlane
         uses: ruby/setup-ruby@v1
@@ -41,9 +38,11 @@ jobs:
           ruby-version: "3.0"
           bundler-cache: true
       - name: Install bundler
+        working-directory: suite-native/app/
         run: gem install bundler
 
       - name: Fastlane build and deploy
+        working-directory: suite-native/app/
         env:
           SIGNING_KEY_STORE_PASSWORD: ${{ secrets.SIGNING_KEY_STORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
