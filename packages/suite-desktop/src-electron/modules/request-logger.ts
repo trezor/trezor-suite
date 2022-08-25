@@ -7,14 +7,15 @@
 import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
 import { Module } from './index';
 
-const init: Module = () => {
+const init: Module = ({ store }) => {
     const { logger } = global;
 
-    // NodeJS interceptor of the main process network requests.
     createInterceptor((event: InterceptedEvent) => {
         if (event.method && event.details) {
             logger.debug('request-logger', `${event.method} - ${event.details}`);
         }
+        // We need to let the interceptor know that user wants to use Tor or not.
+        return store.getTorSettings().running;
     });
 };
 
