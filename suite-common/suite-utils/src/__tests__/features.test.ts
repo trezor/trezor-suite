@@ -31,26 +31,26 @@ jest.mock('@suite-common/suite-config', () => ({
 describe('Features utils', () => {
     test('mock flag should be disabled', () => {
         // @ts-expect-error Mocked flag
-        expect(features.isEnabled('FLAG')).toBe(false);
+        expect(features.isFeatureFlagEnabled('FLAG')).toBe(false);
     });
 
     test('mock flag should be enabled for web', () => {
         // @ts-expect-error Mocked flag
-        expect(features.isEnabled('FLAG', 'web')).toBe(true);
+        expect(features.isFeatureFlagEnabled('FLAG', 'web')).toBe(true);
     });
 
     test('mock flag should be disabled for desktop', () => {
         // @ts-expect-error Mocked flag
-        expect(features.isEnabled('FLAG', 'desktop')).toBe(false);
+        expect(features.isFeatureFlagEnabled('FLAG', 'desktop')).toBe(false);
     });
 
     test('mock flag should be enabled for landing', () => {
         // @ts-expect-error Mocked flag
-        expect(features.isEnabled('FLAG', 'landing')).toBe(true);
+        expect(features.isFeatureFlagEnabled('FLAG', 'landing')).toBe(true);
     });
 
     test('Unknown flag should always default to false', () => {
         // @ts-expect-error Mocked flag
-        expect(features.isEnabled('UNKNOWN')).toBe(false);
+        expect(features.isFeatureFlagEnabled('UNKNOWN')).toBe(false);
     });
 });

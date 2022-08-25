@@ -7,7 +7,7 @@ import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
-import { isEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 
 export interface Props {
@@ -58,7 +58,7 @@ const ExportAction = ({ account }: Props) => {
         ],
     );
 
-    if (!isEnabled('EXPORT_TRANSACTIONS')) {
+    if (!isFeatureFlagEnabled('EXPORT_TRANSACTIONS')) {
         return null;
     }
 

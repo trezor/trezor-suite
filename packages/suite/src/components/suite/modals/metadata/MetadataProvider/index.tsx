@@ -7,7 +7,7 @@ import { useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import type { Deferred } from '@trezor/utils';
 import { MetadataProviderType } from '@suite-types/metadata';
-import { isEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 
 const { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } = variables;
 
@@ -98,7 +98,7 @@ export const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) 
                         <Translation id="TR_DROPBOX" />
                     </StyledButton>
 
-                    {isEnabled('GOOGLE_DRIVE_SYNC') && (
+                    {isFeatureFlagEnabled('GOOGLE_DRIVE_SYNC') && (
                         <StyledButton
                             variant="tertiary"
                             onClick={() => connect('google')}
@@ -112,7 +112,7 @@ export const MetadataProvider = ({ onCancel, decision }: MetadataProviderProps) 
                     )}
 
                     {/* desktop only */}
-                    {isEnabled('FILE_SYSTEM_SYNC') && (
+                    {isFeatureFlagEnabled('FILE_SYSTEM_SYNC') && (
                         <StyledButton
                             variant="tertiary"
                             onClick={() => connect('fileSystem')}

@@ -8,7 +8,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
-import { isEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
@@ -131,7 +131,7 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
         };
     }, [account.symbol, account.index, account.accountType, setSearch, onSearchKeys]);
 
-    if (!isEnabled('SEARCH_TRANSACTIONS')) {
+    if (!isFeatureFlagEnabled('SEARCH_TRANSACTIONS')) {
         return null;
     }
 

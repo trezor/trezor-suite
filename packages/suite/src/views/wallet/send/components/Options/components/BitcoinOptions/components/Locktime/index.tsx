@@ -7,7 +7,7 @@ import { useSendFormContext } from '@wallet-hooks';
 import { Icon, Input, Switch, variables } from '@trezor/components';
 import { getInputState, isInteger } from '@suite-common/wallet-utils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import { isEnabled as isFeatureEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 
 const Wrapper = styled.div`
     margin-bottom: 25px;
@@ -124,7 +124,7 @@ const Locktime = ({ close }: Props) => {
                 bottomText={<InputError error={error} />}
                 data-test="locktime-input"
             />
-            {isFeatureEnabled('RBF') && network.features?.includes('rbf') && (
+            {isFeatureFlagEnabled('RBF') && network.features?.includes('rbf') && (
                 <RbfMessage>
                     <Left>
                         <Icon size={16} icon="RBF" />

@@ -11,7 +11,7 @@ import {
     ProgressInfo,
 } from 'electron-updater';
 import { bytesToHumanReadable } from '@trezor/utils';
-import { isEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { isDev } from '@suite-utils/build';
 import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';
@@ -27,12 +27,12 @@ const feedURL = app.commandLine.getSwitchValue('updater-url');
 
 const init: Module = ({ mainWindow, store }) => {
     const { logger } = global;
-    if (!isEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
+    if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info('auto-updater', 'Disabled via feature flag');
         return;
     }
 
-    if (isEnabled('DESKTOP_AUTO_UPDATER') && disableUpdater) {
+    if (isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && disableUpdater) {
         logger.info('auto-updater', 'Disabled via command line parameter');
         return;
     }

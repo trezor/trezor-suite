@@ -12,7 +12,7 @@ import { Translation, FormattedCryptoAmount } from '@suite-components';
 import { Account, Network } from '@wallet-types';
 import { formatDuration } from '@suite-utils/date';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
-import { isEnabled } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;
@@ -268,7 +268,7 @@ const Summary = ({
                         <Translation id={broadcast ? 'TR_ON' : 'TR_OFF'} />
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
-                {isEnabled('RBF') && network.features?.includes('rbf') && (
+                {isFeatureFlagEnabled('RBF') && network.features?.includes('rbf') && (
                     <LeftDetailsRow>
                         <ReviewRbfLeftDetailsLineLeft>
                             <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="RBF" />
