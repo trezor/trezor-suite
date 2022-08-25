@@ -37,6 +37,17 @@
             "inputs": ["{projectRoot}/**/*.tsx"]
         }
     },
+    "implicitDependencies": {
+        "tsconfig.json": "*",
+        "tsconfig.aliases.json": "*",
+        "tsconfig.lib.json": "*",
+        "jest.config.base.js": "*",
+        "jest.config.native.js": "*",
+        ".eslintrc.js": "*",
+        "package.json": "*",
+        "nx.json": "*",
+        "!yarn.lock": "*"
+    },
     "affected": {
         "defaultBase": "origin/develop"
     }
