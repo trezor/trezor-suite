@@ -16,7 +16,7 @@
         "@suite-native/home-graph": "*",
         "@suite-native/module-onboarding": "*",
         "@suite-native/module-settings": "*",
-        "@trezor/connect": "9.0.0-beta.7",
+        "@trezor/connect": "9.0.0",
         "@trezor/styles": "*",
         "@trezor/utils": "*"
     },
