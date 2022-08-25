@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { configureStore, filterThunkActionTypes } from '@suite/support/tests/configureStore';
 import { PROTO } from '@trezor/connect';
-import { accountsReducer } from '@wallet-reducers';
-import { transactionsReducer } from '@wallet-reducers';
+import { accountsReducer, transactionsReducer } from '@wallet-reducers';
 import blockchainReducer from '@wallet-reducers/blockchainReducer';
 import feesReducer from '@wallet-reducers/feesReducer';
 import notificationsReducer from '@suite-reducers/notificationReducer';

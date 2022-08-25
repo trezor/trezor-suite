@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
 import { Account, FeeInfo, WalletAccountTransaction } from '@suite-common/wallet-types';
