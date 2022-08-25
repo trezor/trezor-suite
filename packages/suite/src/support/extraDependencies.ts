@@ -1,6 +1,6 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TransactionsState, updateTransaction } from '@suite-common/wallet-core';
+import { TransactionsState } from '@suite-common/wallet-core';
 
 import { STORAGE } from '../actions/suite/constants';
 import { addEvent } from '@suite-actions/notificationActions';
@@ -8,8 +8,7 @@ import { StorageLoadAction } from '@suite-actions/storageActions';
 import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
 import { AppState } from '../types/suite';
 import { getAccountKey } from '@suite-common/wallet-utils';
-import { FIAT_RATES } from '@wallet-actions/constants';
-import { FiatRatesUpdateAction } from '@wallet-actions/fiatRatesActions';
+import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { selectIsPendingTransportEvent } from '../reducers/suite/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
@@ -48,11 +47,11 @@ export const extraDependencies: ExtraDependencies = {
     actions: {
         setAccountLoadedMetadata: metadataActions.setAccountLoaded,
         setAccountAddMetadata: metadataActions.setAccountAdd,
+        fiatRateUpdate: fiatRatesActions.updateFiatRates,
         lockDevice: suiteActions.lockDevice,
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
-        fiatRateUpdate: FIAT_RATES.TX_FIAT_RATE_UPDATE,
     },
     reducers: {
         // @TODO - use BlockchainState from @suite-common/wallet-blockchain after redux-utils will be merged
@@ -69,11 +68,6 @@ export const extraDependencies: ExtraDependencies = {
                     state.transactions[k] = [];
                 }
                 state.transactions[k][item.order] = item.tx;
-            });
-        },
-        txFiatRateUpdate: (state: TransactionsState, { payload }: FiatRatesUpdateAction) => {
-            payload.forEach(u => {
-                updateTransaction(state, u.account, u.txid, u.updateObject);
             });
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) => payload.accounts,

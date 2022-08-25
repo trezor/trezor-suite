@@ -1,6 +1,11 @@
 import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
-import { Account, FeeInfo, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    Account,
+    FeeInfo,
+    WalletAccountTransaction,
+    TransactionFiatRateUpdateObject,
+} from '@suite-common/wallet-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { ConnectSettings, Manifest, PROTO } from '@trezor/connect';
@@ -10,7 +15,6 @@ import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './typ
 
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
-type FiatUpdateReducer = (state: any, action: { type: any; payload: any }) => void;
 
 type ConnectInitSettings = {
     manifest: Manifest;
@@ -36,6 +40,10 @@ export type ExtraDependencies = {
     actions: {
         setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
+        fiatRateUpdate: ActionCreatorWithPreparedPayload<
+            [payload: TransactionFiatRateUpdateObject[]],
+            TransactionFiatRateUpdateObject[]
+        >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
     };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because
@@ -44,13 +52,11 @@ export type ExtraDependencies = {
     // in place where we have all types available to ensure type safety.
     actionTypes: {
         storageLoad: ActionType;
-        fiatRateUpdate: ActionType;
     };
     reducers: {
         storageLoadBlockchain: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
-        txFiatRateUpdate: FiatUpdateReducer;
     };
     utils: {
         connectInitSettings: ConnectInitSettings;

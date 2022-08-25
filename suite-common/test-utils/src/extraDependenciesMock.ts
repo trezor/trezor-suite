@@ -59,17 +59,16 @@ export const extraDependenciesMock: ExtraDependencies = {
     actions: {
         setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
+        fiatRateUpdate: mockAction('fiatRateUpdate'),
         lockDevice: mockAction('lockDevice'),
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
-        fiatRateUpdate: mockActionType('fiatRateUpdate'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
-        txFiatRateUpdate: mockReducer('txFiatRateUpdate'),
     },
     utils: {
         connectInitSettings: {

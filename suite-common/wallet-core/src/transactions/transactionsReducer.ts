@@ -1,4 +1,5 @@
 import { accountsActions } from 'suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
@@ -127,13 +128,15 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     delete state.transactions[a.key];
                 });
             })
+            .addMatcher(isAnyOf(extra.actions.fiatRateUpdate), (state, action) => {
+                const { payload } = action;
+                payload.forEach(u => {
+                    updateTransaction(state, u.account, u.txid, u.updateObject);
+                });
+            })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
                 extra.reducers.storageLoadTransactions,
-            )
-            .addMatcher(
-                action => action.type === extra.actionTypes.fiatRateUpdate,
-                extra.reducers.txFiatRateUpdate,
             );
     },
 );
