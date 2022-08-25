@@ -6118,21 +6118,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/wallet-transactions@*, @suite-common/wallet-transactions@workspace:suite-common/wallet-transactions":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/wallet-transactions@workspace:suite-common/wallet-transactions"
-  dependencies:
-    "@reduxjs/toolkit": ^1.8.3
-    "@suite-common/redux-utils": "*"
-    "@suite-common/suite-config": "*"
-    "@suite-common/suite-utils": "*"
-    "@suite-common/wallet-types": "*"
-    "@suite-common/wallet-utils": "*"
-    "@trezor/connect": 9.0.0-beta.6
-    file-saver: ^2.0.5
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/wallet-types@*, @suite-common/wallet-types@workspace:suite-common/wallet-types":
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
@@ -7126,7 +7111,6 @@ __metadata:
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-constants": "*"
     "@suite-common/wallet-core": "*"
-    "@suite-common/wallet-transactions": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
     "@testing-library/react": 12.1.5
