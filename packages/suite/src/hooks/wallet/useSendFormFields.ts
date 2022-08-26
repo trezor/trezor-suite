@@ -25,9 +25,7 @@ export const useSendFormFields = ({
     fiatRates,
     network,
 }: Props) => {
-    const { areSatsDisplayed, areUnitsSupportedByNetwork, areUnitsSupportedByDevice } =
-        useBitcoinAmountUnit(network.symbol);
-    const areSatsUsed = areSatsDisplayed && areUnitsSupportedByNetwork && areUnitsSupportedByDevice;
+    const { areSatsUsed } = useBitcoinAmountUnit(network.symbol);
 
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {

@@ -46,9 +46,9 @@ export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     return {
         bitcoinAmountUnit,
         areSatsDisplayed,
+        areSatsUsed: areSatsDisplayed && areUnitsSupportedByNetwork && areUnitsSupportedByDevice,
         toggleBitcoinAmountUnits,
         setBitcoinAmountUnits,
-        areUnitsSupportedByDevice,
         areUnitsSupportedByNetwork,
         UNIT_LABELS,
         UNIT_OPTIONS,

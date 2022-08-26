@@ -48,9 +48,7 @@ const Fiat = ({ output, outputId }: Props) => {
         composeTransaction,
     } = useSendFormContext();
 
-    const { areSatsDisplayed, areUnitsSupportedByNetwork, areUnitsSupportedByDevice } =
-        useBitcoinAmountUnit(account.symbol);
-    const areSatsUsed = areSatsDisplayed && areUnitsSupportedByNetwork && areUnitsSupportedByDevice;
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
 
     const inputName = `outputs[${outputId}].fiat`;
     const currencyInputName = `outputs[${outputId}].currency`;

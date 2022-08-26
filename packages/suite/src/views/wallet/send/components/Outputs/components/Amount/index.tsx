@@ -108,9 +108,7 @@ const Amount = ({ output, outputId }: Props) => {
     const { symbol, tokens, availableBalance, balance } = account;
 
     const theme = useTheme();
-    const { areSatsDisplayed, areUnitsSupportedByNetwork, areUnitsSupportedByDevice } =
-        useBitcoinAmountUnit(symbol);
-    const areSatsUsed = areSatsDisplayed && areUnitsSupportedByNetwork && areUnitsSupportedByDevice;
+    const { areSatsUsed } = useBitcoinAmountUnit(symbol);
 
     const inputName = `outputs[${outputId}].amount`;
     const tokenInputName = `outputs[${outputId}].token`;
