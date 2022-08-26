@@ -5212,6 +5212,16 @@ export default defineMessages({
         defaultMessage: '{amount} selected',
         description: 'Number of list items selected',
     },
+    TR_MISSING_TO_INPUT: {
+        id: 'TR_MISSING_TO_INPUT',
+        defaultMessage: '{amount} missing to your input (excluding fee)',
+        description: 'Info in Coin control section',
+    },
+    TR_MISSING_TO_FEE: {
+        id: 'TR_MISSING_TO_FEE',
+        defaultMessage: 'Not enough funds selected to cover the fee',
+        description: 'Info in Coin control section',
+    },
     TR_NO_SPENDABLE_UTXOS: {
         id: 'TR_NO_SPENDABLE_UTXOS',
         defaultMessage: 'There are no spendable UTXOs in your account.',

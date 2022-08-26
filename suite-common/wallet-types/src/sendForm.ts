@@ -1,7 +1,7 @@
 import { UseFormMethods } from 'react-hook-form';
 
 import { Network } from '@suite-common/wallet-config';
-import { AccountUtxo, CardanoInput, FeeLevel, PROTO } from '@trezor/connect';
+import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
 import { TypedValidationRules } from './form';
 import { Account } from './account';
@@ -97,7 +97,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         setDraftSaveRequest: React.Dispatch<React.SetStateAction<boolean>>;
         // UTXO selection
         allUtxosSelected: boolean;
-        composedInputs: PROTO.TxInputType[] | CardanoInput[];
+        composedInputs: PROTO.TxInputType[];
         dustUtxos: AccountUtxo[];
         isCoinControlEnabled: boolean;
         selectedUtxos: AccountUtxo[];
