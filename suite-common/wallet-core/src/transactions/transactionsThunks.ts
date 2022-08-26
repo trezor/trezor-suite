@@ -1,6 +1,11 @@
 import { accountsActions } from 'suite-common/wallet-core';
 
-import { Account, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
+import {
+    Account,
+    PrecomposedTransactionFinal,
+    TxFinalCardano,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     findTransactions,
     formatData,
@@ -44,40 +49,38 @@ export const replaceTransactionThunk = createThunk(
 
         // prepare replace actions for txs
         const actions = transactions.map(t => {
-            const action = {
-                type: transactionsActions.replaceTransaction.type,
-                payload: {
-                    key: t.key,
-                    txid: tx.prevTxid,
-                    tx: {
-                        ...t.tx,
-                        txid: newTxid,
-                        fee: newFee,
-                        rbf: !!tx.rbf,
-                        blockTime: Math.round(new Date().getTime() / 1000),
-                        // TODO: details: {}, is it worth it?
-                    },
+            // type: transactionsActions.replaceTransaction.type,
+            const payload: { key: string; txid: string; tx: WalletAccountTransaction } = {
+                key: t.key,
+                txid: tx.prevTxid,
+                tx: {
+                    ...t.tx,
+                    txid: newTxid,
+                    fee: newFee,
+                    rbf: !!tx.rbf,
+                    blockTime: Math.round(new Date().getTime() / 1000),
+                    // TODO: details: {}, is it worth it?
                 },
             };
             // finalized and recv tx shouldn't have rbfParams
             if (!tx.rbf || t.tx.type === 'recv') {
-                delete action.payload.tx.rbfParams;
-                return action;
+                delete payload.tx.rbfParams;
+                return transactionsActions.replaceTransaction(payload);
             }
 
-            if (action.payload.tx.type === 'self') {
-                action.payload.tx.amount = newFee;
+            if (payload.tx.type === 'self') {
+                payload.tx.amount = newFee;
             }
             // update tx rbfParams
-            if (action.payload.tx.rbfParams) {
-                action.payload.tx.rbfParams = {
-                    ...action.payload.tx.rbfParams,
+            if (payload.tx.rbfParams) {
+                payload.tx.rbfParams = {
+                    ...payload.tx.rbfParams,
                     txid: newTxid,
                     baseFee: newBaseFee,
                     feeRate: tx.feePerByte,
                 };
             }
-            return action;
+            return transactionsActions.replaceTransaction(payload);
         });
         // dispatch replace actions
         actions.forEach(a => dispatch(a));
