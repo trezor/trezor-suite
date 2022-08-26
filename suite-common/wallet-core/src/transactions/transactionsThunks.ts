@@ -129,7 +129,7 @@ export const addFakePendingTxThunk = createThunk(
 // Note: This was not moved to suite-common due browser API that wouldn't work on mobile right now
 // (rest of the actions will be found in suite-common/wallet-core/transactions)
 
-export const exportTransactions = createThunk(
+export const exportTransactionsThunk = createThunk(
     `${modulePrefix}/exportTransactions`,
     async (
         {

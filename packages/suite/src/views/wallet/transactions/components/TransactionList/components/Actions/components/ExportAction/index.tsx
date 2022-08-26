@@ -5,7 +5,7 @@ import { useActions } from '@suite-hooks';
 import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { transactionActions, fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { Account } from '@wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
@@ -19,7 +19,7 @@ const ExportAction = ({ account }: Props) => {
     const { addToast, fetchTransactions, exportTransactions } = useActions({
         addToast: notificationActions.addToast,
         fetchTransactions: fetchTransactionsThunk,
-        exportTransactions: transactionActions.exportTransactions,
+        exportTransactions: exportTransactionsThunk,
     });
 
     const [isExportRunning, setIsExportRunning] = useState(false);
@@ -43,7 +43,7 @@ const ExportAction = ({ account }: Props) => {
                     `${translationString(getTitleForNetwork(account.symbol))} #${
                         account.index + 1
                     }`;
-                await exportTransactions(account, accountName, type);
+                await exportTransactions({ account, accountName, type });
             } catch (error) {
                 console.error('Export transaction failed: ', error);
                 addToast({
