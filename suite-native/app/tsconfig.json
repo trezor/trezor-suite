@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/connect-init"
         },
+        {
+            "path": "../../suite-common/test-utils"
+        },
         { "path": "../atoms" },
         { "path": "../module-home" },
         { "path": "../module-onboarding" },

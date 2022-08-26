@@ -6060,7 +6060,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/test-utils@*, @suite-common/test-utils@workspace:suite-common/test-utils":
+"@suite-common/test-utils@*, @suite-common/test-utils@workspace:^, @suite-common/test-utils@workspace:suite-common/test-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/test-utils@workspace:suite-common/test-utils"
   dependencies:
@@ -6965,6 +6965,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     "@shopify/react-native-skia": 0.1.137
     "@suite-common/connect-init": "*"
+    "@suite-common/test-utils": "workspace:^"
     "@suite-native/atoms": "*"
     "@suite-native/module-home": "*"
     "@suite-native/module-onboarding": "*"
