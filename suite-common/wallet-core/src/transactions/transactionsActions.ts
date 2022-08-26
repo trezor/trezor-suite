@@ -25,7 +25,7 @@ const replaceTransaction = createAction(
 
 const removeTransaction = createAction(
     `${modulePrefix}/removeTransaction`,
-    (payload: { account: Account; txs: WalletAccountTransaction[] }) => ({ payload }),
+    (payload: { account: Account; txs: { txid: string }[] }) => ({ payload }),
 );
 
 const addTransaction = createAction(

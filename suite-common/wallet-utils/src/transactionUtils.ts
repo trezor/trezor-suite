@@ -12,7 +12,7 @@ import { AccountTransaction, AccountAddress } from '@trezor/connect';
 import { formatAmount, formatNetworkAmount } from './accountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 
-export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
+export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
     const blockA = (a.blockHeight || 0) > 0 ? a.blockHeight : 0;
     const blockB = (b.blockHeight || 0) > 0 ? b.blockHeight : 0;
@@ -231,7 +231,7 @@ export const getConfirmations = (
 interface Analyze {
     newTransactions: AccountTransaction[];
     add: AccountTransaction[];
-    remove: WalletAccountTransaction[];
+    remove: AccountTransaction[];
 }
 
 const filterAnalyzeResult = (result: Analyze) => {
@@ -250,10 +250,7 @@ const filterAnalyzeResult = (result: Analyze) => {
     };
 };
 
-export const analyzeTransactions = (
-    fresh: AccountTransaction[],
-    known: WalletAccountTransaction[],
-) => {
+export const analyzeTransactions = (fresh: AccountTransaction[], known: AccountTransaction[]) => {
     let addTxs: AccountTransaction[] = [];
     const newTxs: AccountTransaction[] = [];
     let firstKnownIndex = 0;
