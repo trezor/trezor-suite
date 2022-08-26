@@ -1,17 +1,10 @@
 import { CaptureConsole, Dedupe } from '@sentry/integrations';
 import { isDev } from '@suite-utils/build';
+import { redactUserPathFromString } from '@trezor/utils';
 
 import type { Options, Event } from '@sentry/types';
 
 export const allowReportTag = 'allowReport';
-
-/**
- * From paths like /Users/username/, C:\Users\username\, C:\\Users\\username\\,
- * this matches /Users/, \Users\ or \Users\\ as first group
- * and text (supposed to be a username) before the next slash (or special character not allowed in username)
- * as second group.
- */
-const startOfUserPathRegex = /([/\\][Uu]sers[/\\]{1,4})([^"^'^[^\]^/^\\]*)/g;
 
 /**
  * Full user path could be part of reported error in some cases and we want to actively filter username out.
@@ -25,7 +18,7 @@ const startOfUserPathRegex = /([/\\][Uu]sers[/\\]{1,4})([^"^'^[^\]^/^\\]*)/g;
 const redactUserPath = (event: Event) => {
     try {
         const eventAsString = JSON.stringify(event);
-        const redactedString = eventAsString.replace(startOfUserPathRegex, '$1[redacted]');
+        const redactedString = redactUserPathFromString(eventAsString);
         return JSON.parse(redactedString);
     } catch (error) {
         console.warn('Redacting user path failed', error);
