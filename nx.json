@@ -20,7 +20,7 @@
     "targetDefaults": {
         "build:lib": {
             "dependsOn": ["^build:lib"],
-            "outputs": ["./lib"]
+            "outputs": ["./lib", "./build"]
         },
         "type-check": {
             "dependsOn": ["^build:lib"],
@@ -55,8 +55,7 @@
     },
     "implicitDependencies": {
         "package.json": "*",
-        "nx.json": "*",
-        "!yarn.lock": "*"
+        "nx.json": "*"
     },
     "affected": {
         "defaultBase": "origin/develop"
