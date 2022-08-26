@@ -28,21 +28,23 @@ jobs:
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
           restore-keys: |
             yarn-cache-folder-
+      # mode=skip-build will make yarn install faster and we don't need builded executables for validation.
       - name: install deps
-        run: yarn --immutable
+        run: yarn --immutable --mode=skip-build
+      # Because we skipped build command, no scripts was run, but for validation we
+      # need only one, our postinstall in root package.json that will patch packages.
+      - name: Run only root package.json "postinstall" script to patch packages
+        run: yarn postinstall
       - name: check files for correct formatting
         run: yarn nx format:check
       - name: verify TS project references
         run: yarn verify-project-references
       - name: msg-system config validation
         run: yarn workspace @trezor/suite-data msg-system-validate-config
-      - run: git status
       - name: build libs
         run: yarn nx:build:libs
-      - run: git status
       - name: type check
         run: yarn nx:type-check
-      - run: git status
       - name: lint js
         run: yarn nx:lint:js
       - name: lint styles
