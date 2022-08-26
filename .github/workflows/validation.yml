@@ -2,6 +2,9 @@ name: Validation check
 
 on: [pull_request]
 
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
+
 jobs:
   type-check_and_lint:
     runs-on: ubuntu-latest
