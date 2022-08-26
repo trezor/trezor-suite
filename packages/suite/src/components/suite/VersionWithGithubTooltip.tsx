@@ -7,7 +7,8 @@ import { Translation } from '@suite-components';
 
 const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
 `;
 
 const VersionButton = styled(Button)<{ isDev?: boolean }>`
@@ -39,6 +40,7 @@ export const VersionWithGithubTooltip: React.FC<VersionWithGithubTooltipProps> =
     isDev,
 }) => (
     <VersionTooltip
+        cursor="pointer"
         content={
             <GithubWrapper>
                 <Link variant="nostyle" href={getReleaseUrl(appVersion)}>
