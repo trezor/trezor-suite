@@ -18,6 +18,7 @@ import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 import { accountsActions } from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
+import { redactUserPathFromString } from '@trezor/utils';
 
 const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -64,12 +65,22 @@ const log =
             case DESKTOP_UPDATE.CHECKING:
             case DESKTOP_UPDATE.AVAILABLE:
             case DESKTOP_UPDATE.NOT_AVAILABLE:
-            case DESKTOP_UPDATE.READY:
             case MODAL.CLOSE:
                 api.dispatch(
                     logActions.addAction(action, {
                         ...action,
                         type: undefined,
+                    }),
+                );
+                break;
+            case DESKTOP_UPDATE.READY:
+                api.dispatch(
+                    logActions.addAction(action, {
+                        version: action.payload.version,
+                        releaseDate: action.payload.releaseDate,
+                        downloadedFile: redactUserPathFromString(
+                            action.payload.downloadedFile || '',
+                        ),
                     }),
                 );
                 break;

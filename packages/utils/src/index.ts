@@ -21,3 +21,4 @@ export * from './throwError';
 export * from './isHex';
 export * from './resolveStaticPath';
 export * from './createTimeoutPromise';
+export * from './redactUserPath';
