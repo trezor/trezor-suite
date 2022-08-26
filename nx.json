@@ -20,33 +20,42 @@
     "targetDefaults": {
         "build:lib": {
             "dependsOn": ["^build:lib"],
-            "outputs": ["./lib"]
+            "outputs": ["./lib", "./build"]
         },
         "type-check": {
             "dependsOn": ["^build:lib"],
-            "outputs": []
+            "outputs": [],
+            "inputs": [
+                "default",
+                "{workspaceRoot}/tsconfig.json",
+                "{workspaceRoot}/tsconfig.aliases.json",
+                "{workspaceRoot}/tsconfig.lib.json"
+            ]
         },
         "test:unit": {
             "dependsOn": ["^build:lib"],
-            "outputs": []
+            "outputs": [],
+            "inputs": [
+                "default",
+                "{workspaceRoot}/jest.config.base.js",
+                "{workspaceRoot}/jest.config.native.js"
+            ]
         },
         "lint:js": {
-            "inputs": ["{projectRoot}/**/*.js", "{projectRoot}/**/*.ts", "{projectRoot}/**/*.tsx"]
+            "inputs": [
+                "{projectRoot}/**/*.js",
+                "{projectRoot}/**/*.ts",
+                "{projectRoot}/**/*.tsx",
+                "{workspaceRoot}/.eslintrc.js"
+            ]
         },
         "lint:styles": {
             "inputs": ["{projectRoot}/**/*.tsx"]
         }
     },
     "implicitDependencies": {
-        "tsconfig.json": "*",
-        "tsconfig.aliases.json": "*",
-        "tsconfig.lib.json": "*",
-        "jest.config.base.js": "*",
-        "jest.config.native.js": "*",
-        ".eslintrc.js": "*",
         "package.json": "*",
-        "nx.json": "*",
-        "!yarn.lock": "*"
+        "nx.json": "*"
     },
     "affected": {
         "defaultBase": "origin/develop"
