@@ -188,21 +188,23 @@ const rootReducer = combineReducers({
 Helper function that will unify and simplify creating of middleware. You don't need to care about calling `next(action)` etc. In case you need to handle `next` manually you can still use legacy way.
 
 ```typescript
-const someMiddleware = createMiddleware((action, { getState }) => {
+const someMiddleware = createMiddleware((action, { getState, next }) => {
     switch (action.type) {
         case 'someAction':
         // do something
     }
+
+    return next(action);
 });
 ```
 
-## createMiddlewareWithExtraDependencies
+## createMiddlewareWithExtraDeps
 
 This functions is very similar to `createMiddleware` but it will inject extra dependencies from extra dependencies as `extra` into middleware api.
 
 ```typescript
-export const prepareSomeMiddleware = createMiddlewareWithExtraDependencies(
-    (action, { getState, extra }) => {
+export const prepareSomeMiddleware = createMiddlewareWithExtraDeps(
+    (action, { getState, extra, next }) => {
         const {
             actions: { addTransaction },
             selectors: { selectTransactions },
@@ -212,6 +214,8 @@ export const prepareSomeMiddleware = createMiddlewareWithExtraDependencies(
             case addTransaction.type:
             // do something
         }
+
+        return next(action);
     },
 );
 ```

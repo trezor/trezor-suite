@@ -31,8 +31,10 @@ export function configureMockStore<S = any, A extends Action = AnyAction>({
 } = {}) {
     let actions: A[] = [];
 
-    const actionLoggerMiddleware = createMiddleware(action => {
+    const actionLoggerMiddleware = createMiddleware((action, { next }) => {
         actions.push(action as any);
+
+        return next(action);
     });
 
     const store = configureStore({
