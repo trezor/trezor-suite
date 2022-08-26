@@ -75,7 +75,7 @@ export const composeTransaction =
             account: {
                 path: account.path,
                 addresses: account.addresses,
-                utxo: selectedUtxos?.length ? selectedUtxos : account.utxo,
+                utxo: formValues.isCoinControlEnabled ? selectedUtxos : account.utxo,
             },
             feeLevels: predefinedLevels,
             baseFee,

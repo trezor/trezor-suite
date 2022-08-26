@@ -2,7 +2,7 @@ import { useEffect, useMemo, useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 
 import { UseSendFormState } from '@suite-common/wallet-types';
-import type { AccountUtxo } from '@trezor/connect';
+import type { AccountUtxo, PROTO } from '@trezor/connect';
 
 type Props = UseFormMethods &
     Pick<UseSendFormState, 'account' | 'composedLevels' | 'feeInfo'> & {

@@ -14,7 +14,7 @@ import { WalletAccountTransaction } from '@wallet-types';
 const Wrapper = styled.div`
     display: flex;
     align-items: flex-start;
-    padding: 8px 0px;
+    padding: 12px 0px;
 `;
 
 const Body = styled.div`
