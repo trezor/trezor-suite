@@ -1,6 +1,6 @@
 import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
-import { Account } from '@suite-common/wallet-types';
-import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
+import { Account, XpubAddress } from '@suite-common/wallet-types';
+import { networksCompatibility as NETWORKS, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     analyzeTransactions,
     findAccountDevice,
@@ -20,6 +20,8 @@ import { selectTransactions } from '../transactions/transactionsReducer';
 import { accountsActions } from './accountsActions';
 import { selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
+
+type FetchAccountInfoThunkPayload = { symbol: NetworkSymbol; descriptor: XpubAddress };
 
 export const disableAccountsThunk = createThunk(
     `${actionPrefix}/disableAccountsThunk`,

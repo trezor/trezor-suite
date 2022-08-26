@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { CryptoIcon } from '@trezor/icons';
 import {
@@ -14,61 +14,62 @@ import { AccountInfo } from '@trezor/connect';
 
 type AssetsOverviewProps = {
     accountInfo: AccountInfo | null;
+    selectedDevice: string;
+    assetName: string;
+    onSelectDevice: (value: string | number) => void;
+    onAssetNameChange: (value: string) => void;
 };
 
-export const AssetsOverview = ({ accountInfo }: AssetsOverviewProps) => {
-    const [selectedDevice, setSelectedDevice] = useState<string>('firstSelectable');
-    const [assetName, setAssetName] = useState<string>('');
-
-    const handleSelectDevice = (value: string | number) => {
-        setSelectedDevice(value.toString());
-    };
-
-    return (
-        <Card>
-            <Box marginTop="large" marginBottom="medium">
-                <Box alignItems="center" justifyContent="center" marginBottom="medium">
-                    <CryptoIcon name="btc" size="large" />
-                    <Box marginTop="large" marginBottom="small">
-                        <Text variant="titleSmall" color="gray1000">
-                            {accountInfo?.balance}
-                        </Text>
-                    </Box>
-                    <Text variant="label" color="gray1000">
-                        ≈ 0.0003333 BTC
+export const AssetsOverview = ({
+    accountInfo,
+    selectedDevice,
+    assetName,
+    onSelectDevice,
+    onAssetNameChange,
+}: AssetsOverviewProps) => (
+    <Card>
+        <Box marginTop="large" marginBottom="medium">
+            <Box alignItems="center" justifyContent="center" marginBottom="medium">
+                <CryptoIcon name="btc" size="large" />
+                <Box marginTop="large" marginBottom="small">
+                    <Text variant="titleSmall" color="gray1000">
+                        {accountInfo?.balance}
                     </Text>
                 </Box>
-                <Box marginBottom="large">
-                    <InputWrapper>
-                        <Input value={assetName} onChange={setAssetName} label="bitcoines #1" />
-                    </InputWrapper>
-                </Box>
-                <InputWrapper label="Device">
-                    <VStack spacing="small">
-                        <SelectableListItem
-                            iconName="trezorT"
-                            title="Model T"
-                            onPress={handleSelectDevice}
-                            value="firstSelectable"
-                            isChecked={selectedDevice === 'firstSelectable'}
-                        />
-                        <SelectableListItem
-                            iconName="trezorT"
-                            title="Model One"
-                            onPress={handleSelectDevice}
-                            value="secondSelectable"
-                            isChecked={selectedDevice === 'secondSelectable'}
-                        />
-                        <SelectableListItem
-                            iconName="placeholder"
-                            title="Other"
-                            onPress={handleSelectDevice}
-                            value="thirdSelectable"
-                            isChecked={selectedDevice === 'thirdSelectable'}
-                        />
-                    </VStack>
+                <Text variant="label" color="gray1000">
+                    ≈ 0.0003333 BTC
+                </Text>
+            </Box>
+            <Box marginBottom="large">
+                <InputWrapper>
+                    <Input value={assetName} onChange={onAssetNameChange} label="bitcoines #1" />
                 </InputWrapper>
             </Box>
-        </Card>
-    );
-};
+            <InputWrapper label="Device">
+                <VStack spacing="small">
+                    <SelectableListItem
+                        iconName="trezorT"
+                        title="Model T"
+                        onPress={onSelectDevice}
+                        value="firstSelectable"
+                        isChecked={selectedDevice === 'firstSelectable'}
+                    />
+                    <SelectableListItem
+                        iconName="trezorT"
+                        title="Model One"
+                        onPress={onSelectDevice}
+                        value="secondSelectable"
+                        isChecked={selectedDevice === 'secondSelectable'}
+                    />
+                    <SelectableListItem
+                        iconName="placeholder"
+                        title="Other"
+                        onPress={onSelectDevice}
+                        value="thirdSelectable"
+                        isChecked={selectedDevice === 'thirdSelectable'}
+                    />
+                </VStack>
+            </InputWrapper>
+        </Box>
+    </Card>
+);

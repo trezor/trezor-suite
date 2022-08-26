@@ -1,6 +1,6 @@
 import type { BottomTabScreenProps, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackScreenProps, StackNavigationProp } from '@react-navigation/stack';
-import type { RouteProp, ParamListBase, CompositeScreenProps } from '@react-navigation/native';
+import type { RouteProp, ParamListBase } from '@react-navigation/native';
 
 import { IconName } from '@trezor/icons';
 

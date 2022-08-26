@@ -72,7 +72,7 @@ export const OnboardingXpubScan = ({
     };
 
     return (
-        <Screen backgroundColor="gray1000" hasStatusBar={false}>
+        <Screen backgroundColor="gray1000">
             <Box>
                 <View style={applyStyle(coinStyle)}>
                     <Chip

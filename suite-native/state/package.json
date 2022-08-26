@@ -13,6 +13,7 @@
         "@reduxjs/toolkit": "^1.8.3",
         "@suite-common/redux-utils": "*",
         "@suite-common/test-utils": "*",
+        "@suite-common/wallet-core": "*",
         "@suite-native/home-graph": "*",
         "@suite-native/module-onboarding": "*",
         "@suite-native/module-settings": "*",

@@ -6,6 +6,7 @@ import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { Screen, StackProps } from '@suite-native/navigation';
 import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { accountsActions } from '@suite-common/wallet-core';
 
 import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
 import { AssetsLoader } from '../components/AssetsLoader';
@@ -34,6 +35,9 @@ export const OnboardingAssets = ({
     const dispatch = useDispatch();
     const [accountInfoLoaded, setAccountInfoLoaded] = useState<boolean>(false);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
+    const [selectedDevice, setSelectedDevice] = useState<string>('firstSelectable');
+    const [assetName, setAssetName] = useState<string>('');
+
     const { applyStyle } = useNativeStyles();
 
     const { xpubAddress, currencySymbol } = route.params;
@@ -53,11 +57,11 @@ export const OnboardingAssets = ({
             coin: currencySymbol,
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-            path: "m/84'/0'/0'",
             details: 'txs',
         })
             .then(accountInfo => {
                 if (accountInfo?.success) {
+                    console.log('accountInfo.payload_ : ', JSON.stringify(accountInfo.payload));
                     setAccountInfo(accountInfo.payload);
                     setAccountInfoLoaded(true);
                 } else {
@@ -86,7 +90,27 @@ export const OnboardingAssets = ({
     }, [getAccountInfo]);
 
     const handleConfirmAssets = () => {
-        dispatch(setOnboardingFinished(true));
+        if (accountInfo) {
+            const account = dispatch(
+                accountsActions.createAccount(
+                    'blabla',
+                    {
+                        index: 0,
+                        path: accountInfo?.path ?? '',
+                        accountType: 'imported',
+                        networkType: 'bitcoin',
+                        coin: 'btc',
+                    },
+                    accountInfo,
+                ),
+            );
+            console.log('ACCOUNT: ', account.payload);
+            dispatch(setOnboardingFinished(true));
+        }
+    };
+
+    const handleSelectDevice = (value: string | number) => {
+        setSelectedDevice(value.toString());
     };
 
     return (
@@ -97,7 +121,13 @@ export const OnboardingAssets = ({
                 <View style={[applyStyle(assetsStyle)]}>
                     <View>
                         <AssetsHeader />
-                        <AssetsOverview accountInfo={accountInfo} />
+                        <AssetsOverview
+                            accountInfo={accountInfo}
+                            selectedDevice={selectedDevice}
+                            assetName={assetName}
+                            onSelectDevice={handleSelectDevice}
+                            onAssetNameChange={setAssetName}
+                        />
                     </View>
                     <View style={applyStyle(importAnotherWrapperStyle)}>
                         <Button

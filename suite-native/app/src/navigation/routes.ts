@@ -2,41 +2,39 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 
 import { HomeStackParamList } from '@suite-native/module-home';
 import { SettingsStackParamList } from '@suite-native/module-settings';
-import { TabsOptions } from '@suite-native/navigation';
+import { OnboardingStackParamList } from '@suite-native/module-onboarding';
+import { TabsOptions, AppTabsRoutes, RootStackRoutes } from '@suite-native/navigation';
 
-export enum RouteTabs {
-    HomeStack = 'HomeStack',
-    Accounts = 'Accounts',
-    Action = 'Action',
-    Prices = 'Prices',
-    SettingsStack = 'SettingsStack',
-}
+export type AppTabsParamList = {
+    [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
+    [AppTabsRoutes.Accounts]: undefined;
+    [AppTabsRoutes.Action]: undefined;
+    [AppTabsRoutes.Prices]: undefined;
+    [AppTabsRoutes.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
+};
 
-export type RootTabsParamList = {
-    [RouteTabs.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
-    [RouteTabs.Accounts]: undefined;
-    [RouteTabs.Action]: undefined;
-    [RouteTabs.Prices]: undefined;
-    [RouteTabs.SettingsStack]: NavigatorScreenParams<SettingsStackParamList>;
+export type RootStackParamList = {
+    [RootStackRoutes.App]: NavigatorScreenParams<AppTabsParamList>;
+    [RootStackRoutes.Import]: NavigatorScreenParams<OnboardingStackParamList>;
 };
 
 export const rootTabsOptions: TabsOptions = {
-    [RouteTabs.HomeStack]: {
+    [AppTabsRoutes.HomeStack]: {
         iconName: 'home',
         label: 'Home',
     },
-    [RouteTabs.Accounts]: {
+    [AppTabsRoutes.Accounts]: {
         iconName: 'standardWallet',
         label: 'Accounts',
     },
-    [RouteTabs.Action]: {
+    [AppTabsRoutes.Action]: {
         iconName: 'action',
     },
-    [RouteTabs.Prices]: {
+    [AppTabsRoutes.Prices]: {
         iconName: 'discover',
         label: 'Discover',
     },
-    [RouteTabs.SettingsStack]: {
+    [AppTabsRoutes.SettingsStack]: {
         iconName: 'trezorT',
         label: 'Trezor',
     },

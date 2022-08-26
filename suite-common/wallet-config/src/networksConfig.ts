@@ -389,7 +389,7 @@ export type AccountType = Keys<NetworkValue['accountTypes']>;
 export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
-    accountType?: 'normal' | AccountType;
+    accountType?: 'normal' | 'imported' | AccountType;
     backendType?: BackendType;
     testnet?: boolean;
     isHidden?: boolean;

@@ -6,17 +6,16 @@ import { useNavigation } from '@react-navigation/native';
 import { AssetItem, Button, Card, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { OnboardingStackRoutes } from '@suite-native/module-onboarding';
-import { StackProps } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 
 import { DashboardSection } from './DashboardSection';
-import { HomeStackParamList, HomeStackRoutes } from '../navigation/routes';
 
 const importStyle = prepareNativeStyle(_ => ({
     marginTop: 12,
 }));
 
 export const Assets = () => {
-    const navigation = useNavigation<StackProps<HomeStackParamList, HomeStackRoutes.Home>>();
+    const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -46,7 +45,7 @@ export const Assets = () => {
                     colorScheme="gray"
                     iconName="plus"
                     onPress={() =>
-                        navigation.navigate(HomeStackRoutes.Import, {
+                        navigation.navigate(RootStackRoutes.Import, {
                             screen: OnboardingStackRoutes.OnboardingXpubScan,
                         })
                     }
