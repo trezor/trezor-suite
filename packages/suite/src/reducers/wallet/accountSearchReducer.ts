@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { SUITE } from '@suite-actions/constants';
 import { ACCOUNT_SEARCH } from '@wallet-actions/constants';
-import { WALLET_SETTINGS } from '@settings-actions/constants';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { Action } from '@suite-types';
 import { Account as AccountType } from '@wallet-types';
 
@@ -28,7 +28,13 @@ const accountSearchReducer = (state: State = initialState, action: Action): Stat
             // 1) disabling/enabling coins
             // 2) switching to another device/wallet
             // * 3) adding a new account is handled directly in add account modal, reacting on ACCOUNT.CREATE would cause resetting during initial accounts discovery
-            case WALLET_SETTINGS.CHANGE_NETWORKS:
+            case walletSettingsActions.changeNetworks.type: {
+                if (walletSettingsActions.changeNetworks.match(action)) {
+                    draft.coinFilter = undefined;
+                    draft.searchString = undefined;
+                }
+                break;
+            }
             case SUITE.SELECT_DEVICE:
                 draft.coinFilter = undefined;
                 draft.searchString = undefined;

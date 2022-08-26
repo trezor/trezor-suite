@@ -26,6 +26,7 @@ import { BLOCKCHAIN } from './constants';
 import type { Dispatch, GetState } from '@suite-types';
 import type { Account, Network, CustomBackend, BackendType } from '@wallet-types';
 import type { Timeout } from '@trezor/type-utils';
+import { createAction } from '@reduxjs/toolkit';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 
@@ -34,11 +35,15 @@ const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
+export const blockchainConnected = createAction(
+    BLOCKCHAIN.CONNECTED,
+    (payload: Network['symbol']) => ({
+        payload,
+    }),
+);
+
 export type BlockchainAction =
-    | {
-          type: typeof BLOCKCHAIN.CONNECTED;
-          payload: Network['symbol'];
-      }
+    | ReturnType<typeof blockchainConnected>
     | {
           type: typeof BLOCKCHAIN.RECONNECT_TIMEOUT_START;
           payload: {
@@ -345,7 +350,7 @@ export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState
     await dispatch(updateFeeInfo(network.symbol));
     // update accounts for connected network
     await dispatch(syncAccounts(network.symbol));
-    dispatch({ type: BLOCKCHAIN.CONNECTED, payload: symbol });
+    dispatch(blockchainConnected(network.symbol));
 };
 
 export const onBlockMined = (block: BlockchainBlock) => (dispatch: Dispatch) => {

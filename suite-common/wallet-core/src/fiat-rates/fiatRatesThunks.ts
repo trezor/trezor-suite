@@ -6,7 +6,7 @@ import {
     fetchLastWeekRates,
     getFiatRatesForTimestamps,
 } from '@suite-common/fiat-services';
-import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from '@trezor/connect';
+import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network, networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import { Account, CoinFiatRates, TickerId } from '@suite-common/wallet-types';
@@ -23,7 +23,7 @@ import { INTERVAL, INTERVAL_LAST_WEEK, MAX_AGE, MAX_AGE_LAST_WEEK } from './cons
 let staleRatesTimeout: ReturnType<typeof setInterval>;
 let lastWeekTimeout: ReturnType<typeof setInterval>;
 
-export const removeFiatRatesForDisabledNetworks = createThunk(
+export const removeFiatRatesForDisabledNetworksThunk = createThunk(
     `${actionPrefix}/removeRatesForDisabledNetworks`,
     (_, { dispatch, extra, getState }) => {
         const {
@@ -54,7 +54,7 @@ export const removeFiatRatesForDisabledNetworks = createThunk(
  * @param {number} interval
  * @param {boolean} [includeTokens]
  */
-export const getFiatStaleTickers = createThunk<
+export const getFiatStaleTickersThunk = createThunk<
     {
         timestampFunc: (ticker: CoinFiatRates) => number | undefined | null;
         interval: number;
@@ -115,7 +115,7 @@ export const getFiatStaleTickers = createThunk<
  * @param {TickerId} ticker
  * @param {number} [maxAge=MAX_AGE]
  */
-export const updateCurrentFiatRates = createThunk<{ ticker: TickerId; maxAge?: number }, void>(
+export const updateCurrentFiatRatesThunk = createThunk<{ ticker: TickerId; maxAge?: number }, void>(
     `${actionPrefix}/updateCurrentRates`,
     async ({ ticker, maxAge = MAX_AGE }, { dispatch, getState }) => {
         const fiat = selectCoins(getState());
@@ -182,12 +182,12 @@ export const updateCurrentFiatRates = createThunk<{ ticker: TickerId; maxAge?: n
 /**
  * Updates current fiat rates for every stale ticker
  */
-export const updateStaleFiatRates = createThunk(
+export const updateStaleFiatRatesThunk = createThunk(
     `${actionPrefix}/updateStaleRates`,
     async (_, { dispatch }) => {
         try {
             const staleTickers = await dispatch(
-                getFiatStaleTickers({
+                getFiatStaleTickersThunk({
                     timestampFunc: ticker =>
                         ticker.current?.rates ? ticker.current.ts : undefined,
                     interval: MAX_AGE,
@@ -196,7 +196,7 @@ export const updateStaleFiatRates = createThunk(
             ).unwrap();
             const promises = staleTickers.map(t =>
                 dispatch(
-                    updateCurrentFiatRates({
+                    updateCurrentFiatRatesThunk({
                         ticker: t,
                         maxAge: 0,
                     }),
@@ -211,30 +211,10 @@ export const updateStaleFiatRates = createThunk(
     },
 );
 
-export const onUpdateFiatRate = createThunk(
-    `${actionPrefix}/onUpdateRate`,
-    (res: BlockchainFiatRatesUpdate, { dispatch }) => {
-        if (!res?.rates) return;
-        const symbol = res.coin.shortcut.toLowerCase();
-        dispatch(
-            fiatRatesActions.updateFiatRate({
-                ticker: {
-                    symbol,
-                },
-                payload: {
-                    ts: getUnixTime(new Date()) * 1000,
-                    rates: res.rates,
-                    symbol,
-                },
-            }),
-        );
-    },
-);
-
 /**
  * Updates the price data for the past 7 days in 1-hour interval (168 data points)
  */
-export const updateLastWeekFiatRates = createThunk(
+export const updateLastWeekFiatRatesThunk = createThunk(
     `${actionPrefix}/updateLastWeekRates`,
     async (_, { dispatch, extra, getState }) => {
         const {
@@ -255,7 +235,7 @@ export const updateLastWeekFiatRates = createThunk(
         };
 
         const staleTickers = await dispatch(
-            getFiatStaleTickers({
+            getFiatStaleTickersThunk({
                 timestampFunc: lastWeekStaleFn,
                 interval: MAX_AGE_LAST_WEEK,
             }),
@@ -296,7 +276,7 @@ export const updateLastWeekFiatRates = createThunk(
  * @param {Account} account
  * @param {AccountTransaction[]} txs
  */
-export const updateTxsFiatRates = createThunk<{ account: Account; txs: AccountTransaction[] }>(
+export const updateTxsFiatRatesThunk = createThunk<{ account: Account; txs: AccountTransaction[] }>(
     `${actionPrefix}/updateTxsRates`,
     async ({ account, txs }, { dispatch }) => {
         if (txs?.length === 0 || isTestnet(account.symbol)) return;
@@ -329,7 +309,7 @@ export const updateTxsFiatRates = createThunk<{ account: Account; txs: AccountTr
     },
 );
 
-const updateMissingTxFiatRates = createThunk(
+const updateMissingTxFiatRatesThunk = createThunk(
     `${actionPrefix}/updateMissingTxRates`,
     (symbol: Network['symbol'], { dispatch, extra, getState }) => {
         const {
@@ -344,7 +324,7 @@ const updateMissingTxFiatRates = createThunk(
             const accountTxs = getAccountTransactions(account.key, transactions);
             // fetch rates for all txs without 'rates' field
             dispatch(
-                updateTxsFiatRates({
+                updateTxsFiatRatesThunk({
                     account,
                     txs: accountTxs.filter(tx => !tx.rates),
                 }),
@@ -357,12 +337,12 @@ const updateMissingTxFiatRates = createThunk(
  * Called from blockchainActions.onConnect
  *
  */
-export const initFiatRates = createThunk(
+export const initFiatRatesThunk = createThunk(
     `${actionPrefix}/initRates`,
     (symbol: Network['symbol'], { dispatch }) => {
-        dispatch(updateStaleFiatRates());
-        dispatch(updateLastWeekFiatRates());
-        dispatch(updateMissingTxFiatRates(symbol)); // just to be safe, refetch historical rates for transactions stored without these rates
+        dispatch(updateStaleFiatRatesThunk());
+        dispatch(updateLastWeekFiatRatesThunk());
+        dispatch(updateMissingTxFiatRatesThunk(symbol)); // just to be safe, refetch historical rates for transactions stored without these rates
 
         if (staleRatesTimeout && lastWeekTimeout) {
             clearInterval(staleRatesTimeout);
@@ -370,10 +350,10 @@ export const initFiatRates = createThunk(
         }
 
         staleRatesTimeout = setInterval(() => {
-            dispatch(updateStaleFiatRates());
+            dispatch(updateStaleFiatRatesThunk());
         }, INTERVAL);
         lastWeekTimeout = setInterval(() => {
-            dispatch(updateLastWeekFiatRates());
+            dispatch(updateLastWeekFiatRatesThunk());
         }, INTERVAL_LAST_WEEK);
     },
 );

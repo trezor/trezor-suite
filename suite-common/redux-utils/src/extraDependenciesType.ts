@@ -43,9 +43,19 @@ export type ExtraDependencies = {
     actions: {
         setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
-        fiatRateUpdate: ActionCreatorWithPreparedPayload<
-            [payload: TransactionFiatRateUpdatePayload[]],
-            TransactionFiatRateUpdatePayload[]
+        setWalletSettingsLocalCurrency: ActionCreatorWithPreparedPayload<
+            [localCurrency: string],
+            {
+                localCurrency: string;
+            }
+        >;
+        changeWalletSettingsNetworks: ActionCreatorWithPreparedPayload<
+            [payload: Network['symbol'][]],
+            Network['symbol'][]
+        >;
+        blockchainConnected: ActionCreatorWithPreparedPayload<
+            [payload: Network['symbol']],
+            Network['symbol']
         >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
     };

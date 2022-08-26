@@ -2,6 +2,7 @@ import { MiddlewareAPI } from 'redux';
 import { db } from '@suite/storage';
 
 import { WALLET_SETTINGS } from '@settings-actions/constants';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import {
     DISCOVERY,
     GRAPH,
@@ -84,6 +85,15 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 );
             }
 
+            if (walletSettingsActions.setLocalCurrency.match(action)) {
+                api.dispatch(storageActions.saveWalletSettings());
+            }
+
+            if (walletSettingsActions.changeNetworks.match(action)) {
+                api.dispatch(storageActions.saveWalletSettings());
+                api.dispatch(storageActions.saveFiatRates());
+            }
+
             if (transactionsActions.resetTransaction.match(action)) {
                 storageActions.removeAccountTransactions(action.payload.account);
             }
@@ -140,13 +150,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
 
-                case WALLET_SETTINGS.CHANGE_NETWORKS:
-                    api.dispatch(storageActions.saveWalletSettings());
-                    api.dispatch(storageActions.saveFiatRates());
-                    break;
-
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
-                case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
                     api.dispatch(storageActions.saveWalletSettings());

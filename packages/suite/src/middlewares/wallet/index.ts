@@ -1,6 +1,6 @@
 import blockchainMiddleware from './blockchainMiddleware';
 import discoveryMiddleware from './discoveryMiddleware';
-import fiatRatesMiddleware from './fiatRatesMiddleware';
+import { fiatRatesMiddleware } from '@suite-common/wallet-core';
 import storageMiddleware from './storageMiddleware';
 import walletMiddleware from './walletMiddleware';
 import graphMiddleware from './graphMiddleware';

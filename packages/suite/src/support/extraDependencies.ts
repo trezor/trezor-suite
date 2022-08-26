@@ -10,8 +10,9 @@ import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
 import type { FiatRatesState } from '@suite-common/wallet-core';
 import { AppState } from '../types/suite';
 import { getAccountKey } from '@suite-common/wallet-utils';
-import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import * as metadataActions from '@suite-actions/metadataActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { selectIsPendingTransportEvent } from '../reducers/suite/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { isWeb } from '@suite-utils/env';
@@ -51,7 +52,9 @@ export const extraDependencies: ExtraDependencies = {
     actions: {
         setAccountLoadedMetadata: metadataActions.setAccountLoaded,
         setAccountAddMetadata: metadataActions.setAccountAdd,
-        fiatRateUpdate: fiatRatesActions.updateFiatRates,
+        setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
+        changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
+        blockchainConnected: blockchainActions.blockchainConnected,
         lockDevice: suiteActions.lockDevice,
     },
     actionTypes: {
