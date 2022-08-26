@@ -17,6 +17,9 @@ import { RootTabNavigator } from './navigation/RootTabNavigator';
 import { StylesProvider } from './StylesProvider';
 import { useSplashScreen } from './hooks/useSplashScreen';
 
+// eslint-disable-next-line no-console
+console.log('Testing NX affected');
+
 const noOperation = createAction('noOperation');
 const connectInitThunk = prepareConnectInitThunk({
     actions: {
