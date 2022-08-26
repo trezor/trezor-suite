@@ -74,7 +74,6 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
     (builder, extra) => {
         builder
-            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFiatRates)
             .addCase(fiatRatesActions.removeFiatRate, (state, action) => {
                 remove(state.coins, action.payload);
             })
@@ -82,9 +81,10 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 const { ticker, payload } = action.payload;
                 updateCurrentRates(state.coins, ticker, payload);
             })
-            .addCase(fiatRatesActions.updateLastWeekRates, (state, action) => {
+            .addCase(fiatRatesActions.updateLastWeekFiatRates, (state, action) => {
                 updateLastWeekRates(state.coins, action.payload);
-            });
+            })
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFiatRates);
     },
 );
 

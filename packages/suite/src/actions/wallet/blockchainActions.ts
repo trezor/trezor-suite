@@ -24,7 +24,8 @@ import { State as FeeState } from '@wallet-reducers/feesReducer';
 import { NETWORKS } from '@wallet-config';
 import { BLOCKCHAIN } from './constants';
 import type { Dispatch, GetState } from '@suite-types';
-import type { Account, Network, CustomBackend, BackendType } from '@wallet-types';
+import type { Account, CustomBackend, BackendType } from '@wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Timeout } from '@trezor/type-utils';
 import { createAction } from '@reduxjs/toolkit';
 
@@ -35,19 +36,16 @@ const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
-export const blockchainConnected = createAction(
-    BLOCKCHAIN.CONNECTED,
-    (payload: Network['symbol']) => ({
-        payload,
-    }),
-);
+export const blockchainConnected = createAction(BLOCKCHAIN.CONNECTED, (payload: NetworkSymbol) => ({
+    payload,
+}));
 
 export type BlockchainAction =
     | ReturnType<typeof blockchainConnected>
     | {
           type: typeof BLOCKCHAIN.RECONNECT_TIMEOUT_START;
           payload: {
-              symbol: Network['symbol'];
+              symbol: NetworkSymbol;
               id: Timeout;
               time: number;
               count: number;
@@ -60,7 +58,7 @@ export type BlockchainAction =
     | {
           type: typeof BLOCKCHAIN.SYNCED;
           payload: {
-              symbol: Network['symbol'];
+              symbol: NetworkSymbol;
               timeout: Timeout;
           };
       }
@@ -69,7 +67,7 @@ export type BlockchainAction =
           payload:
               | CustomBackend
               | {
-                    coin: Network['symbol'];
+                    coin: NetworkSymbol;
                     type: 'default';
                 };
       };
@@ -177,7 +175,7 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
 };
 
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
-export const reconnect = (coin: Network['symbol']) => (_dispatch: Dispatch) =>
+export const reconnect = (coin: NetworkSymbol) => (_dispatch: Dispatch) =>
     TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
 
 const setBackendsToConnect = (backends: CustomBackend[]) =>
@@ -193,13 +191,13 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
         ),
     );
 
-export const setCustomBackend = (coin: Network['symbol']) => (_: Dispatch, getState: GetState) => {
+export const setCustomBackend = (coin: NetworkSymbol) => (_: Dispatch, getState: GetState) => {
     const { blockchain } = getState().wallet;
     const backends = [getBackendFromSettings(coin, blockchain[coin].backends)];
     return setBackendsToConnect(backends);
 };
 
-export const resetBackend = (coin: Network['symbol']): BlockchainAction => ({
+export const resetBackend = (coin: NetworkSymbol): BlockchainAction => ({
     type: BLOCKCHAIN.SET_BACKEND,
     payload: {
         coin,
@@ -208,7 +206,7 @@ export const resetBackend = (coin: Network['symbol']): BlockchainAction => ({
 });
 
 export const setBackend = (
-    coin: Network['symbol'],
+    coin: NetworkSymbol,
     type: BackendType,
     urls: string[],
 ): BlockchainAction => ({
@@ -234,7 +232,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         return;
     }
 
-    const coins: Network['symbol'][] = [];
+    const coins: NetworkSymbol[] = [];
     accounts.forEach(a => {
         if (!coins.includes(a.symbol)) {
             coins.push(a.symbol);
@@ -250,7 +248,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
 export const subscribe =
-    (symbol: Network['symbol'], fiatRates = false) =>
+    (symbol: NetworkSymbol, fiatRates = false) =>
     async (_: Dispatch, getState: GetState) => {
         const network = getNetwork(symbol);
         // fiat rates should be subscribed only once, after onConnect event
@@ -316,7 +314,7 @@ const tryClearTimeout = (timeout?: Timeout) => {
 };
 
 export const syncAccounts =
-    (symbol: Network['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
+    (symbol: NetworkSymbol) => async (dispatch: Dispatch, getState: GetState) => {
         const { accounts, blockchain } = getState().wallet;
         // First clear, to cancel last planned sync
         tryClearTimeout(blockchain[symbol].syncTimeout);

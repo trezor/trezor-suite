@@ -22,6 +22,7 @@ jest.mock('@trezor/connect', () => {
     let connectResponse: any;
 
     return {
+        ...jest.requireActual('@trezor/connect'),
         __esModule: true, // this property makes it work
         default: {
             blockchainSetCustomBackend: () => {},

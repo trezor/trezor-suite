@@ -3,7 +3,7 @@ import { differenceInMilliseconds, getUnixTime, subWeeks } from 'date-fns';
 import {
     fetchCurrentFiatRates,
     fetchCurrentTokenFiatRates,
-    fetchLastWeekRates,
+    fetchLastWeekFiatRates,
     getFiatRatesForTimestamps,
 } from '@suite-common/fiat-services';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
@@ -14,14 +14,28 @@ import { FIAT } from '@suite-common/suite-config';
 import { getAccountTransactions, isTestnet } from '@suite-common/wallet-utils';
 import { getBlockbookSafeTime } from '@suite-common/suite-utils';
 
-import { actionPrefix } from '../accounts/constants';
-import { fiatRatesActions } from './fiatRatesActions';
+import { fiatRatesActions, actionPrefix } from './fiatRatesActions';
 import { selectCoins } from './fiatRatesReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
-import { INTERVAL, INTERVAL_LAST_WEEK, MAX_AGE, MAX_AGE_LAST_WEEK } from './constants';
+import { selectTransactions } from '../transactions/transactionsReducer';
 
 let staleRatesTimeout: ReturnType<typeof setInterval>;
 let lastWeekTimeout: ReturnType<typeof setInterval>;
+
+// how often should suite check for outdated rates;
+const INTERVAL = 1000 * 60 * 2; // 2 mins
+const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 1; // 1 hour
+// which rates should be considered outdated and updated;
+const MAX_AGE = 1000 * 60 * 10; // 10 mins
+const MAX_AGE_LAST_WEEK = 1000 * 60 * 60 * 1; // 1 hour
+
+type GetFiatStaleTickersThunkPayload = {
+    timestampFunc: (ticker: CoinFiatRates) => number | undefined | null;
+    interval: number;
+    includeTokens?: boolean;
+};
+type UpdateCurrentFiatRatesThunkPayload = { ticker: TickerId; maxAge?: number };
+type UpdateTxsFiatRatesThunkPayload = { account: Account; txs: AccountTransaction[] };
 
 export const removeFiatRatesForDisabledNetworksThunk = createThunk(
     `${actionPrefix}/removeRatesForDisabledNetworks`,
@@ -50,20 +64,13 @@ export const removeFiatRatesForDisabledNetworksThunk = createThunk(
  *  2b. duration since the last check is greater than passed `interval`
  *  Timestamp is extracted via `timestampFunc`.
  *
- * @param {((ticker: CoinFiatRates) => number | undefined)} timestampFunc
- * @param {number} interval
- * @param {boolean} [includeTokens]
  */
-export const getFiatStaleTickersThunk = createThunk<
-    {
-        timestampFunc: (ticker: CoinFiatRates) => number | undefined | null;
-        interval: number;
-        includeTokens?: boolean;
-    },
-    TickerId[]
->(
+export const getFiatStaleTickersThunk = createThunk(
     `${actionPrefix}/getStaleTickers`,
-    ({ timestampFunc, interval, includeTokens }, { extra, getState }) => {
+    (
+        { timestampFunc, interval, includeTokens }: GetFiatStaleTickersThunkPayload,
+        { extra, getState },
+    ) => {
         const {
             selectors: { selectEnabledNetworks, selectBlockchain },
         } = extra;
@@ -112,12 +119,13 @@ export const getFiatStaleTickersThunk = createThunk<
  * Fetch and update current fiat rates for a given ticker
  * Primary source of rates is TrezorConnect, coingecko serves as a fallback
  *
- * @param {TickerId} ticker
- * @param {number} [maxAge=MAX_AGE]
  */
-export const updateCurrentFiatRatesThunk = createThunk<{ ticker: TickerId; maxAge?: number }, void>(
+export const updateCurrentFiatRatesThunk = createThunk(
     `${actionPrefix}/updateCurrentRates`,
-    async ({ ticker, maxAge = MAX_AGE }, { dispatch, getState }) => {
+    async (
+        { ticker, maxAge = MAX_AGE }: UpdateCurrentFiatRatesThunkPayload,
+        { dispatch, getState },
+    ) => {
         const fiat = selectCoins(getState());
         const network = NETWORKS.find(t =>
             ticker.tokenAddress
@@ -249,11 +257,11 @@ export const updateLastWeekFiatRatesThunk = createThunk(
             try {
                 const results = response.success
                     ? response.payload
-                    : await fetchLastWeekRates(ticker, localCurrency);
+                    : await fetchLastWeekFiatRates(ticker, localCurrency);
 
                 if (results && 'tickers' in results) {
                     dispatch(
-                        fiatRatesActions.updateLastWeekRates({
+                        fiatRatesActions.updateLastWeekFiatRates({
                             symbol: ticker.symbol,
                             tickers: results.tickers,
                             ts: new Date().getTime(),
@@ -273,12 +281,10 @@ export const updateLastWeekFiatRatesThunk = createThunk(
  *  Fetch and update fiat rates for given `txs`
  *  Primary source of rates is TrezorConnect, coingecko serves as a fallback
  *
- * @param {Account} account
- * @param {AccountTransaction[]} txs
  */
-export const updateTxsFiatRatesThunk = createThunk<{ account: Account; txs: AccountTransaction[] }>(
+export const updateTxsFiatRatesThunk = createThunk(
     `${actionPrefix}/updateTxsRates`,
-    async ({ account, txs }, { dispatch }) => {
+    async ({ account, txs }: UpdateTxsFiatRatesThunkPayload, { dispatch }) => {
         if (txs?.length === 0 || isTestnet(account.symbol)) return;
 
         const timestamps = txs.map(tx => getBlockbookSafeTime(tx.blockTime));
@@ -311,11 +317,8 @@ export const updateTxsFiatRatesThunk = createThunk<{ account: Account; txs: Acco
 
 const updateMissingTxFiatRatesThunk = createThunk(
     `${actionPrefix}/updateMissingTxRates`,
-    (symbol: Network['symbol'], { dispatch, extra, getState }) => {
-        const {
-            selectors: { selectAccountTransactions },
-        } = extra;
-        const transactions = selectAccountTransactions(getState());
+    (symbol: Network['symbol'], { dispatch, getState }) => {
+        const transactions = selectTransactions(getState());
         const accounts = selectAccounts(getState());
         accounts.forEach(account => {
             if (symbol && account.symbol !== symbol) {

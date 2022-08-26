@@ -1,6 +1,6 @@
-import { BLOCKCHAIN } from '@trezor/connect';
-import { createMiddlewareWithExtraDependencies } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 
+import { transactionsActions } from '../transactions/transactionsActions';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccounts } from '../accounts/accountsReducer';
 import {
@@ -11,13 +11,10 @@ import {
     updateTxsFiatRatesThunk,
 } from './fiatRatesThunks';
 
-export const { FIAT_RATES_UPDATE } = BLOCKCHAIN;
-
-export const fiatRatesMiddleware = createMiddlewareWithExtraDependencies(
-    (action, { dispatch, extra, getState }) => {
+export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
+    (action, { dispatch, extra, next, getState }) => {
         const {
             actions: {
-                addTransaction,
                 blockchainConnected,
                 setWalletSettingsLocalCurrency,
                 changeWalletSettingsNetworks,
@@ -73,7 +70,7 @@ export const fiatRatesMiddleware = createMiddlewareWithExtraDependencies(
             });
         }
 
-        if (addTransaction.match(action)) {
+        if (transactionsActions.addTransaction.match(action)) {
             // fetch historical rates for each added transaction
             const { account, transactions } = action.payload;
             dispatch(
@@ -96,5 +93,7 @@ export const fiatRatesMiddleware = createMiddlewareWithExtraDependencies(
         if (blockchainConnected.match(action)) {
             dispatch(initFiatRatesThunk(action.payload));
         }
+
+        return next(action);
     },
 );

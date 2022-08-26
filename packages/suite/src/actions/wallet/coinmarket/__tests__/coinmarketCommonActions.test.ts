@@ -38,8 +38,6 @@ jest.mock('@trezor/connect', () => {
     let buttonRequest: ((e?: any) => any) | undefined;
     let fixtureIndex = 0;
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
-
     const getAddress = (_params: any) => {
         if (fixture && fixture.getAddress) {
             if (fixture.getAddress.success && buttonRequest) {
@@ -69,6 +67,7 @@ jest.mock('@trezor/connect', () => {
     };
 
     return {
+        ...jest.requireActual('@trezor/connect'),
         __esModule: true, // this property makes it work
         default: {
             blockchainSetCustomBackend: () => {},
@@ -100,7 +99,6 @@ jest.mock('@trezor/connect', () => {
         UI: {
             REQUEST_BUTTON: 'ui-button',
         },
-        PROTO,
     };
 });
 

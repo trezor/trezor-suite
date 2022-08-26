@@ -21,7 +21,7 @@ import {
     changeNetworksFixtures,
     unavailableCapabilities,
 } from '../__fixtures__/discoveryActions';
-import { Network } from '@wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const { getSuiteDevice } = global.JestMocks;
 
@@ -211,7 +211,7 @@ describe('Discovery Actions', () => {
             const store = initStore(getInitialState(f.device));
             if (f.enabledNetworks) {
                 store.dispatch(
-                    walletSettingsActions.changeNetworks(f.enabledNetworks as Network['symbol'][]),
+                    walletSettingsActions.changeNetworks(f.enabledNetworks as NetworkSymbol[]),
                 );
             }
 
@@ -291,7 +291,7 @@ describe('Discovery Actions', () => {
                     if (trigger) {
                         store.dispatch(
                             walletSettingsActions.changeNetworks(
-                                trigger.networks as Network['symbol'][],
+                                trigger.networks as NetworkSymbol[],
                             ),
                         );
                         store.dispatch(discoveryActions.updateNetworkSettings());
@@ -324,7 +324,7 @@ describe('Discovery Actions', () => {
             }
             const store = initStore(state);
             store.dispatch(discoveryActions.create('device-state', f.device || SUITE_DEVICE));
-            store.dispatch(walletSettingsActions.changeNetworks(f.networks as Network['symbol'][]));
+            store.dispatch(walletSettingsActions.changeNetworks(f.networks as NetworkSymbol[]));
             store.dispatch(discoveryActions.updateNetworkSettings());
 
             const discovery = store.getState().wallet.discovery[0];

@@ -85,10 +85,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 );
             }
 
-            if (walletSettingsActions.setLocalCurrency.match(action)) {
-                api.dispatch(storageActions.saveWalletSettings());
-            }
-
             if (walletSettingsActions.changeNetworks.match(action)) {
                 api.dispatch(storageActions.saveWalletSettings());
                 api.dispatch(storageActions.saveFiatRates());
@@ -151,6 +147,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
 
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
+                case walletSettingsActions.setLocalCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
                     api.dispatch(storageActions.saveWalletSettings());

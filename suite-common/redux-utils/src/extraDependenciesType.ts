@@ -1,13 +1,7 @@
 import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
-import {
-    Account,
-    FeeInfo,
-    WalletAccountTransaction,
-    TransactionFiatRateUpdatePayload,
-    BlockchainNetworks,
-} from '@suite-common/wallet-types';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { Account, FeeInfo, BlockchainNetworks } from '@suite-common/wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { NotificationEventPayload } from '@suite-common/notifications';
@@ -29,11 +23,8 @@ export type ExtraDependencies = {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
-        selectEnabledNetworks: SuiteCompatibleSelector<Network['symbol'][]>;
+        selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
         selectLocalCurrency: SuiteCompatibleSelector<string>;
-        selectAccountTransactions: SuiteCompatibleSelector<
-            Record<string, WalletAccountTransaction[]>
-        >;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
         selectBlockchain: SuiteCompatibleSelector<BlockchainNetworks>;
     };
@@ -50,12 +41,12 @@ export type ExtraDependencies = {
             }
         >;
         changeWalletSettingsNetworks: ActionCreatorWithPreparedPayload<
-            [payload: Network['symbol'][]],
-            Network['symbol'][]
+            [payload: NetworkSymbol[]],
+            NetworkSymbol[]
         >;
         blockchainConnected: ActionCreatorWithPreparedPayload<
-            [payload: Network['symbol']],
-            Network['symbol']
+            [payload: NetworkSymbol],
+            NetworkSymbol
         >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
     };

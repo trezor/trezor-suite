@@ -26,7 +26,7 @@ const fetchCoinGecko = async (url: string) => {
     }
 };
 
-const getTickerConfig = (ticker: TickerId) =>
+export const getTickerConfig = (ticker: TickerId) =>
     // for token find its main network
     FIAT_CONFIG.tickers.find(t =>
         ticker.tokenAddress ? t.symbol === ticker.mainNetworkSymbol : t.symbol === ticker.symbol,
@@ -56,7 +56,7 @@ const buildCoinUrl = (ticker: TickerId) => {
  * @param {TickerId} ticker
  * @returns
  */
-const fetchCurrentTokenFiatRates = async (ticker: TickerId) => {
+export const fetchCurrentTokenFiatRates = async (ticker: TickerId) => {
     if (!ticker.tokenAddress) return null;
 
     const networkTickerConfig = getTickerConfig(ticker);
@@ -85,7 +85,7 @@ const fetchCurrentTokenFiatRates = async (ticker: TickerId) => {
  * @param {TickerId} ticker
  * @returns
  */
-const fetchCurrentFiatRates = async (ticker: TickerId) => {
+export const fetchCurrentFiatRates = async (ticker: TickerId) => {
     const coinUrl = buildCoinUrl(ticker);
     if (!coinUrl) return null;
     const urlParams =
@@ -110,7 +110,7 @@ const fetchCurrentFiatRates = async (ticker: TickerId) => {
  * @param {number[]} timestamps
  * @returns
  */
-const getFiatRatesForTimestamps = async (
+export const getFiatRatesForTimestamps = async (
     ticker: TickerId,
     timestamps: number[],
 ): Promise<HistoricalResponse | null> => {
@@ -148,7 +148,7 @@ const getFiatRatesForTimestamps = async (
  * @param {string} localCurrency
  * @returns {(Promise<HistoricalResponse | null>)}
  */
-const fetchLastWeekRates = async (
+export const fetchLastWeekRates = async (
     ticker: TickerId,
     localCurrency: string,
 ): Promise<HistoricalResponse | null> => {
@@ -171,12 +171,4 @@ const fetchLastWeekRates = async (
         tickers,
         ts: new Date().getTime(),
     };
-};
-
-export const coingeckoService = {
-    getTickerConfig,
-    fetchCurrentTokenFiatRates,
-    fetchCurrentFiatRates,
-    getFiatRatesForTimestamps,
-    fetchLastWeekRates,
 };

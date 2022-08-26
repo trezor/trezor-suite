@@ -71,19 +71,12 @@ const getLastWeekTimestamps = () =>
         return Math.floor(date.getTime() / 1000);
     });
 
-const isTickerSupported = (ticker: TickerId): ticker is TickerId & { symbol: Ticker } =>
+export const isTickerSupported = (ticker: TickerId): ticker is TickerId & { symbol: Ticker } =>
     !!ENDPOINTS[ticker.symbol as Ticker];
 
-const fetchCurrentFiatRates = getTickers;
+export const fetchCurrentFiatRates = getTickers;
 
-const getFiatRatesForTimestamps = getMultiTickers;
+export const getFiatRatesForTimestamps = getMultiTickers;
 
-const fetchLastWeekRates = (ticker: Ticker, currency: string) =>
+export const fetchLastWeekRates = (ticker: Ticker, currency: string) =>
     getMultiTickers(ticker, getLastWeekTimestamps(), currency);
-
-export const blockbookService = {
-    isTickerSupported,
-    fetchCurrentFiatRates,
-    getFiatRatesForTimestamps,
-    fetchLastWeekRates,
-};

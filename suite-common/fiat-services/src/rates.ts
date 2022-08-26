@@ -1,31 +1,33 @@
 import type { TickerId, TimestampedRates, LastWeekRates } from '@suite-common/wallet-types';
 
-import { coingeckoService as cg } from './coingecko';
-import { blockbookService as bb } from './blockbook';
+import * as coingeckoService from './coingecko';
+import * as blockbookService from './blockbook';
 
-export const { getTickerConfig, fetchCurrentTokenFiatRates } = cg;
+export const { getTickerConfig, fetchCurrentTokenFiatRates } = coingeckoService;
 
 export const fetchCurrentFiatRates = async (ticker: TickerId): Promise<TimestampedRates | null> => {
-    const res = bb.isTickerSupported(ticker) ? await bb.fetchCurrentFiatRates(ticker.symbol) : null;
-    return res ?? cg.fetchCurrentFiatRates(ticker);
+    const res = blockbookService.isTickerSupported(ticker)
+        ? await blockbookService.fetchCurrentFiatRates(ticker.symbol)
+        : null;
+    return res ?? coingeckoService.fetchCurrentFiatRates(ticker);
 };
 
-export const fetchLastWeekRates = async (
+export const fetchLastWeekFiatRates = async (
     ticker: TickerId,
     currency: string,
 ): Promise<LastWeekRates | null> => {
-    const res = bb.isTickerSupported(ticker)
-        ? await bb.fetchLastWeekRates(ticker.symbol, currency)
+    const res = blockbookService.isTickerSupported(ticker)
+        ? await blockbookService.fetchLastWeekRates(ticker.symbol, currency)
         : null;
-    return res ?? cg.fetchLastWeekRates(ticker, currency);
+    return res ?? coingeckoService.fetchLastWeekRates(ticker, currency);
 };
 
 export const getFiatRatesForTimestamps = async (
     ticker: TickerId,
     timestamps: number[],
 ): Promise<LastWeekRates | null> => {
-    const res = bb.isTickerSupported(ticker)
-        ? await bb.getFiatRatesForTimestamps(ticker.symbol, timestamps)
+    const res = blockbookService.isTickerSupported(ticker)
+        ? await blockbookService.getFiatRatesForTimestamps(ticker.symbol, timestamps)
         : null;
-    return res ?? cg.getFiatRatesForTimestamps(ticker, timestamps);
+    return res ?? coingeckoService.getFiatRatesForTimestamps(ticker, timestamps);
 };

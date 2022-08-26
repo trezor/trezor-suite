@@ -52,15 +52,6 @@ const log =
             }
         }
 
-        if (walletSettingsActions.setLocalCurrency.match(action)) {
-            api.dispatch(
-                logActions.addAction(action, {
-                    ...action,
-                    type: undefined,
-                }),
-            );
-        }
-
         if (walletSettingsActions.changeNetworks.match(action)) {
             api.dispatch(
                 logActions.addAction(action, {
@@ -73,6 +64,7 @@ const log =
             case SUITE.SET_LANGUAGE:
             case SUITE.SET_THEME:
             case SUITE.SET_AUTODETECT:
+            case walletSettingsActions.setLocalCurrency.type:
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
             case METADATA.ENABLE:
             case METADATA.DISABLE:

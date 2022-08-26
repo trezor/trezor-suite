@@ -6,9 +6,9 @@ import {
     TickerId,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { Network } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { actionPrefix } from './constants';
+export const actionPrefix = '@common/wallet-core/fiat-rates';
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 type UpdateFiatRatePayload = {
@@ -22,39 +22,32 @@ type UpdateTransactionFiatRatePayload = Array<{
     ts: number;
 }>;
 type LastWeekRatesPayload = {
-    symbol: Network['symbol'] | string;
+    symbol: NetworkSymbol | string;
     tickers: NonNullable<CoinFiatRates['lastWeek']>['tickers'];
     ts: number;
 };
 
-const removeFiatRate = createAction(
-    `${actionPrefix}/removeFiatRate`,
-    (payload: TickerId): { payload: TickerId } => ({
-        payload,
-    }),
-);
+const removeFiatRate = createAction(`${actionPrefix}/removeFiatRate`, (payload: TickerId) => ({
+    payload,
+}));
 
 const updateFiatRate = createAction(
     `${actionPrefix}/updateFiatRate`,
-    (
-        payload: UpdateFiatRatePayload,
-    ): {
-        payload: UpdateFiatRatePayload;
-    } => ({
+    (payload: UpdateFiatRatePayload) => ({
         payload,
     }),
 );
 
 const updateTransactionFiatRate = createAction(
     `${actionPrefix}/updateTransactionFiatRate`,
-    (payload: UpdateTransactionFiatRatePayload): { payload: UpdateTransactionFiatRatePayload } => ({
+    (payload: UpdateTransactionFiatRatePayload) => ({
         payload,
     }),
 );
 
-const updateLastWeekRates = createAction(
+const updateLastWeekFiatRates = createAction(
     `${actionPrefix}/updateLastWeekRates`,
-    (payload: LastWeekRatesPayload): { payload: LastWeekRatesPayload } => ({
+    (payload: LastWeekRatesPayload) => ({
         payload,
     }),
 );
@@ -62,6 +55,6 @@ const updateLastWeekRates = createAction(
 export const fiatRatesActions = {
     removeFiatRate,
     updateFiatRate,
-    updateLastWeekRates,
+    updateLastWeekFiatRates,
     updateTransactionFiatRate,
 } as const;

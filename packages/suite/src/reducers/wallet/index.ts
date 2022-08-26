@@ -2,7 +2,11 @@ import { combineReducers } from 'redux';
 import settingsReducer from './settingsReducer';
 import graphReducer from './graphReducer';
 import discoveryReducer from './discoveryReducer';
-import { prepareAccountsReducer, prepareFiatRatesReducer, prepareTransactionsReducer } from '@suite-common/wallet-core';
+import {
+    prepareAccountsReducer,
+    prepareFiatRatesReducer,
+    prepareTransactionsReducer,
+} from '@suite-common/wallet-core';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';

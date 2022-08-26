@@ -45,7 +45,6 @@ export const extraDependencies: ExtraDependencies = {
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
-        selectAccountTransactions: (state: AppState) => state.wallet.transactions.transactions,
         selectIsPendingTransportEvent,
         selectBlockchain: (state: AppState) => state.wallet.blockchain,
     },
