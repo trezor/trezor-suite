@@ -115,9 +115,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         name: 'outputs',
     });
 
-    const { areSatsDisplayed, areUnitsSupportedByNetwork, areUnitsSupportedByDevice } =
-        useBitcoinAmountUnit(props.selectedAccount.account.symbol);
-    const areSatsUsed = areSatsDisplayed && areUnitsSupportedByNetwork && areUnitsSupportedByDevice;
+    const { areSatsUsed } = useBitcoinAmountUnit(props.selectedAccount.account.symbol);
 
     // enhance DEFAULT_VALUES with last remembered FeeLevel and localCurrencyOption
     // used in "loadDraft" useEffect and "importTransaction" callback
