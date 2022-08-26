@@ -1,6 +1,7 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TransactionsState } from '@suite-common/wallet-core';
+import { saveAs } from 'file-saver';
 
 import { STORAGE } from '../actions/suite/constants';
 import { addEvent } from '@suite-actions/notificationActions';
@@ -73,6 +74,7 @@ export const extraDependencies: ExtraDependencies = {
         storageLoadAccounts: (_, { payload }: StorageLoadAction) => payload.accounts,
     },
     utils: {
+        saveAs: (data, fileName) => saveAs(data, fileName),
         connectInitSettings,
     },
 };

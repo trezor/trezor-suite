@@ -71,6 +71,10 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
     },
     utils: {
+        saveAs: (data, fileName) =>
+            console.warn(
+                `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
+            ),
         connectInitSettings: {
             debug: true,
             manifest: {

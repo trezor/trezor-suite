@@ -59,6 +59,7 @@ export type ExtraDependencies = {
         storageLoadTransactions: StorageLoadTransactionsReducer;
     };
     utils: {
+        saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
     };
 };

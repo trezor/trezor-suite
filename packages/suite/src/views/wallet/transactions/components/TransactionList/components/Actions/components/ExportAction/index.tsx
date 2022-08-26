@@ -5,11 +5,10 @@ import { useActions } from '@suite-hooks';
 import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
+import { transactionActions, fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { Account } from '@wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
-import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 
 export interface Props {
     account: Account;

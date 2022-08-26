@@ -3,6 +3,7 @@ import { accountsActions } from 'suite-common/wallet-core';
 import { Account, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
 import {
     findTransactions,
+    formatData,
     formatNetworkAmount,
     getAccountTransactions,
     isTrezorConnectBackendType,
@@ -122,6 +123,51 @@ export const addFakePendingTxThunk = createThunk(
             },
         };
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
+// Note: This was not moved to suite-common due browser API that wouldn't work on mobile right now
+// (rest of the actions will be found in suite-common/wallet-core/transactions)
+
+export const exportTransactions = createThunk(
+    `${modulePrefix}/exportTransactions`,
+    async (
+        {
+            account,
+            accountName,
+            type,
+        }: {
+            account: Account;
+            accountName: string;
+            type: 'csv' | 'pdf' | 'json';
+        },
+        { getState, extra },
+    ) => {
+        const { utils } = extra;
+        // Get state of transactions
+        const allTransactions = selectTransactions(getState());
+        const transactions = getAccountTransactions(
+            account.key,
+            allTransactions,
+            // add metadata directly to transactions
+        ).map(transaction => ({
+            ...transaction,
+            targets: transaction.targets.map(target => ({
+                ...target,
+                metadataLabel: account.metadata?.outputLabels?.[transaction.txid]?.[target.n],
+            })),
+        }));
+
+        // Prepare data in right format
+        const data = await formatData({
+            coin: account.symbol,
+            accountName,
+            type,
+            transactions,
+        });
+
+        // Save file
+        utils.saveAs(data, `export-${account.symbol}-${+new Date()}.${type}`);
     },
 );
 
