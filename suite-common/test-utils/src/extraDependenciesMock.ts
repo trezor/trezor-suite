@@ -9,12 +9,14 @@ export const mockAction = (type: string): any =>
     createAction<any>(`@mocked/extraDependency/action/notImplemented/${type}`, (payload: any) => {
         // eslint-disable-next-line no-console
         console.log(`Calling not implemented action ${type} with payload: `, payload);
+        return { payload };
     });
 
 export const mockThunk = (type: string) =>
     createThunk(`@mocked/extraDependency/notImplemented/${type}`, (thunkPayload: any) => {
         // eslint-disable-next-line no-console
         console.log(`Calling not implemented thunk: ${type} and payload: `, thunkPayload);
+        return thunkPayload;
     });
 
 export const mockSelector =
@@ -33,9 +35,10 @@ export const mockSelector =
 export const mockActionType = (type: string) =>
     `@mocked/extraDependency/actionType/notImplemented/${type}`;
 
-export const mockReducer = (name: string) => (_state: any, action: any) => {
+export const mockReducer = (name: string) => (state: any, action: any) => {
     // eslint-disable-next-line no-console
     console.log(`Calling not implemented reducer "${name}" with action: `, action);
+    return state;
 };
 
 export const extraDependenciesMock: ExtraDependencies = {
@@ -51,12 +54,14 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectAccountTransactions: mockSelector('selectAccountTransactions', {
             mockedTransaction: [],
         }),
+        selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
     },
     actions: {
         addTransaction: mockAction('addTransaction'),
         removeTransaction: mockAction('removeTransaction'),
         setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
+        lockDevice: mockAction('lockDevice'),
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
@@ -64,5 +69,14 @@ export const extraDependenciesMock: ExtraDependencies = {
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
+    },
+    utils: {
+        connectInitSettings: {
+            debug: true,
+            manifest: {
+                email: 'info@trezor.io',
+                appUrl: '@trezor/suite-native',
+            },
+        },
     },
 };

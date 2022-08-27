@@ -1,40 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { createAction } from '@reduxjs/toolkit';
+import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
-import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
-
-import { prepareConnectInitThunk } from '../slice';
-
-const initSettings = {
-    transportReconnect: true,
-    debug: false,
-    popup: false,
-    manifest: {
-        email: 'info@trezor.io',
-        appUrl: '@trezor/suite',
-    },
-};
-
-const MOCK_LOCK_DEVICE_ACTION = 'MOCK_LOCK_DEVICE_ACTION';
-
-const init = prepareConnectInitThunk({
-    actions: {
-        lockDevice: createAction<boolean>(MOCK_LOCK_DEVICE_ACTION),
-    },
-    selectors: {
-        selectEnabledNetworks: () => [],
-        selectIsPendingTransportEvent: () => true,
-    },
-    initSettings,
-});
+import { connectInitThunk } from '../connectInitThunks';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;
     const callbacks: { [key: string]: (e: any) => any } = {};
     return {
+        ...jest.requireActual('@trezor/connect'),
         __esModule: true, // this property makes it work
         default: {
             blockchainSetCustomBackend: () => {},
@@ -69,23 +44,21 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
-const mockStore = configureStore([thunk]);
-
 describe('TrezorConnect Actions', () => {
-    let store = mockStore({});
+    let store = configureMockStore();
 
     beforeEach(() => {
-        store = mockStore({});
+        store = configureMockStore();
     });
 
     it('Success', async () => {
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
         const expectedActions = [
             {
-                type: init.pending.type,
+                type: connectInitThunk.pending.type,
             },
             {
-                type: init.fulfilled.type,
+                type: connectInitThunk.fulfilled.type,
             },
         ];
         expect(
@@ -98,14 +71,14 @@ describe('TrezorConnect Actions', () => {
     it('Error', async () => {
         const errorFixture = new Error('Iframe error');
         require('@trezor/connect').setTestFixtures(() => errorFixture);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
         require('@trezor/connect').setTestFixtures(undefined);
         const expectedActions = [
             {
-                type: init.pending.type,
+                type: connectInitThunk.pending.type,
             },
             {
-                type: init.rejected.type,
+                type: connectInitThunk.rejected.type,
                 error: errorFixture.message,
             },
         ];
@@ -123,14 +96,14 @@ describe('TrezorConnect Actions', () => {
             code: 'SomeCode',
         };
         require('@trezor/connect').setTestFixtures(() => errorFixture);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
         require('@trezor/connect').setTestFixtures(undefined);
         const expectedActions = [
             {
-                type: init.pending.type,
+                type: connectInitThunk.pending.type,
             },
             {
-                type: init.rejected.type,
+                type: connectInitThunk.rejected.type,
                 error: `${errorFixture.code}: ${errorFixture.message}`,
             },
         ];
@@ -145,14 +118,14 @@ describe('TrezorConnect Actions', () => {
     it('Error as string', async () => {
         const errorFixture = 'Iframe error';
         require('@trezor/connect').setTestFixtures(() => errorFixture);
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
         require('@trezor/connect').setTestFixtures(undefined);
         const expectedActions = [
             {
-                type: init.pending.type,
+                type: connectInitThunk.pending.type,
             },
             {
-                type: init.rejected.type,
+                type: connectInitThunk.rejected.type,
                 error: errorFixture,
             },
         ];
@@ -167,12 +140,12 @@ describe('TrezorConnect Actions', () => {
     it('Events', () => {
         const defaultSuiteType = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
-        expect(() => store.dispatch(init())).not.toThrow();
+        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
 
         const actions = store.getActions();
         const { emit } = require('@trezor/connect');
 
-        expect(actions.pop()).toMatchObject({ type: init.pending.type });
+        expect(actions.pop()).toMatchObject({ type: connectInitThunk.pending.type });
         emit(DEVICE_EVENT, { type: DEVICE_EVENT });
         expect(actions.pop()).toEqual({ type: DEVICE_EVENT });
         emit(UI_EVENT, { type: UI_EVENT });
@@ -186,16 +159,16 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Wrapped method', async () => {
-        await store.dispatch(init());
+        await store.dispatch(connectInitThunk());
         await require('@trezor/connect').default.getFeatures();
         const actions = store.getActions();
         // check actions in reversed order
         expect(actions.pop()).toEqual({
-            type: MOCK_LOCK_DEVICE_ACTION,
+            type: extraDependenciesMock.actions.lockDevice.type,
             payload: false,
         });
         expect(actions.pop()).toEqual({
-            type: MOCK_LOCK_DEVICE_ACTION,
+            type: extraDependenciesMock.actions.lockDevice.type,
             payload: true,
         });
     });

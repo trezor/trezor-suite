@@ -22,6 +22,7 @@ import type {
 } from '@suite-types';
 import type { DebugModeOptions, AutodetectSettings } from '@suite-reducers/suiteReducer';
 import type { TranslationKey } from '@suite-components/Translation/components/BaseTranslation';
+import { createAction } from '@reduxjs/toolkit';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
@@ -57,7 +58,7 @@ export type SuiteAction =
     | { type: typeof SUITE.TOR_STATUS; payload: TorStatus }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
-    | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
+    | ReturnType<typeof lockDevice>
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
     | {
           type: typeof SUITE.SET_FLAG;
@@ -253,10 +254,7 @@ export const lockUI = (payload: boolean): SuiteAction => ({
  * Set `lock` field in suite reducer
  * @returns {SuiteAction}
  */
-export const lockDevice = (payload: boolean): SuiteAction => ({
-    type: SUITE.LOCK_DEVICE,
-    payload,
-});
+export const lockDevice = createAction(SUITE.LOCK_DEVICE, (payload: boolean) => ({ payload }));
 
 /**
  * Prevent route change and rendering

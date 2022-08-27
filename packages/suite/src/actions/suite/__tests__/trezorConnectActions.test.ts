@@ -6,7 +6,7 @@ import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trez
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import { SUITE } from '@suite-actions/constants';
-import { connectInitThunk } from '../trezorConnectActions';
+import { connectInitThunk } from '@suite-common/connect-init';
 
 jest.mock('@trezor/connect', () => {
     let fixture: any;

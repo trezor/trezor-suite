@@ -3,7 +3,7 @@
 
 import { configureStore } from '@suite/support/tests/configureStore';
 import { mergeObject } from '@trezor/utils';
-import { connectInitThunk } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-common/connect-init';
 import { SUITE } from '@suite-actions/constants';
 import { BACKUP } from '@backup-actions/constants';
 import * as backupActions from '@backup-actions/backupActions';

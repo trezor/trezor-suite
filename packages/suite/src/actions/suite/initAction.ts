@@ -5,7 +5,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import * as languageActions from '@settings-actions/languageActions';
-import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
+import * as trezorConnectActions from '@suite-common/connect-init';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 
 import type { Dispatch, GetState } from '@suite-types';

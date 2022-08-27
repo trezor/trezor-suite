@@ -10,7 +10,7 @@ import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { connectInitThunk } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-common/connect-init';
 
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 import buttonRequestMiddleware from '@suite-middlewares/buttonRequestMiddleware';

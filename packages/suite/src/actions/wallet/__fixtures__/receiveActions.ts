@@ -1,7 +1,7 @@
 import * as receiveActions from '@wallet-actions/receiveActions';
 import { RECEIVE } from '../constants';
 import { NOTIFICATION, MODAL, SUITE } from '@suite-actions/constants';
-import { connectInitThunk } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-common/connect-init';
 
 const { getSuiteDevice } = global.JestMocks;
 
