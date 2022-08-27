@@ -17,16 +17,21 @@
             }
         }
     },
+    "namedInputs": {
+        "default": ["{projectRoot}/**/*"],
+        "prod": ["!{projectRoot}/**/*.test.{ts,tsx}"]
+    },
     "targetDefaults": {
         "build:lib": {
             "dependsOn": ["^build:lib"],
+            "inputs": ["default", "^prod"],
             "outputs": ["./lib", "./build"]
         },
         "type-check": {
             "dependsOn": ["^build:lib"],
-            "outputs": [],
             "inputs": [
                 "default",
+                "^prod",
                 "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tsconfig.aliases.json",
                 "{workspaceRoot}/tsconfig.lib.json"
@@ -34,23 +39,18 @@
         },
         "test:unit": {
             "dependsOn": ["^build:lib"],
-            "outputs": [],
             "inputs": [
                 "default",
+                "^prod",
                 "{workspaceRoot}/jest.config.base.js",
                 "{workspaceRoot}/jest.config.native.js"
             ]
         },
         "lint:js": {
-            "inputs": [
-                "{projectRoot}/**/*.js",
-                "{projectRoot}/**/*.ts",
-                "{projectRoot}/**/*.tsx",
-                "{workspaceRoot}/.eslintrc.js"
-            ]
+            "inputs": ["default", "{workspaceRoot}/.eslintrc.js"]
         },
         "lint:styles": {
-            "inputs": ["{projectRoot}/**/*.tsx"]
+            "inputs": ["default"]
         }
     },
     "implicitDependencies": {
