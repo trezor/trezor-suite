@@ -1,4 +1,3 @@
-import { accountsActions } from 'suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
@@ -7,6 +6,7 @@ import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountHash } from '@suite-common/suite-types';
 
+import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
 
 export interface TransactionsState {

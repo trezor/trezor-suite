@@ -1,5 +1,3 @@
-import { accountsActions } from 'suite-common/wallet-core';
-
 import {
     Account,
     PrecomposedTransactionFinal,
@@ -16,6 +14,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 
+import { accountsActions } from '../accounts/accountsActions';
 import { selectTransactions } from './transactionsReducer';
 import { transactionsActions, modulePrefix } from './transactionsActions';
 
