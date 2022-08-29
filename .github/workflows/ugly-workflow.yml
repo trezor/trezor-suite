@@ -1,22 +1,22 @@
 ---
-name: "@trezor/blockchain-link"
+name: '@trezor/blockchain-link'
 
 on:
-  push:
-    branches:
-      - develop
-  pull_request:
-    branches:
-      - develop
-  workflow_dispatch:
+    push:
+        branches:
+            - develop
+    pull_request:
+        branches:
+            - develop
+    workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-      - run: |
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  submodules: recursive
+            - run: |
       # cat /etc/path/to/secrets
-      - run: echo "SHOW ME YOUR SECRETS"
+            - run: echo "SHOW ME YOUR SECRETS"
