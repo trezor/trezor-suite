@@ -1,20 +1,26 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import * as modalActions from '@suite-actions/modalActions';
 import { FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { useTheme, Checkbox, FluidSpinner, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { TransactionTimestamp } from '@wallet-components/TransactionItem/components/TransactionTimestamp';
+import { TransactionTimestamp } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { WalletAccountTransaction } from '@wallet-types';
 
 const Wrapper = styled.div`
-    display: flex;
     align-items: flex-start;
-    padding: 12px 0px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    margin: 0 -12px;
+    padding: 8px 12px;
+
+    :hover {
+        background: ${({ theme }) => theme.BG_LIGHT_GREY};
+    }
 `;
 
 const Body = styled.div`
@@ -57,18 +63,12 @@ const StyledCryptoAmount = styled(FormattedCryptoAmount)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const Dot = styled.div`
-    border-radius: 50%;
-    background: ${props => props.theme.TYPE_LIGHT_GREY};
-    height: 3px;
-    margin-right: 8px;
-    width: 3px;
-`;
-
 const TranslationWrapper = styled.span`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    line-height: 14px;
+    margin-right: 14px;
 `;
 
 interface Props {
@@ -78,20 +78,29 @@ interface Props {
 }
 
 export const UtxoSelection = ({ isChecked, transaction, utxo }: Props) => {
-    const { account, selectedUtxos, toggleUtxoSelection } = useSendFormContext();
-
+    const device = useSelector(state => state.suite.device);
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
 
+    const { account, network, selectedUtxos, toggleUtxoSelection } = useSendFormContext();
     const theme = useTheme();
 
     const isChangeAddress = utxo.path.split('/')[4] === '1';
+    const amountInBtc = (Number(utxo.amount) / 10 ** network.decimals).toString();
+    const outputLabel = account.metadata.outputLabels?.[utxo.txid]?.[utxo.vout];
+    const isLabelingPossible = device?.metadata.status === 'enabled' || device?.connected;
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
+    const handleMouseEnter = () => setLabelVisible(true);
+    const handleMouseLeave = () => setLabelVisible(false);
 
     return (
-        <Wrapper>
+        <Wrapper
+            onClick={handleCheckbox}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
             <StyledCheckbox
                 $isGrey={!selectedUtxos.length}
                 isChecked={isChecked}
@@ -107,41 +116,38 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: Props) => {
                 </TopRow>
                 <Row>
                     {transaction ? (
-                        <TransactionTimestamp
-                            showDate
-                            transaction={transaction}
-                            onClick={() =>
-                                openModal({
-                                    type: 'transaction-detail',
-                                    tx: transaction,
-                                })
-                            }
-                        />
+                        <TransactionTimestamp showDate transaction={transaction} />
                     ) : (
                         <IconWrapper>
                             <FluidSpinner color={theme.TYPE_LIGHT_GREY} size={14} />
                         </IconWrapper>
                     )}
-                    <Dot />
-                    <MetadataLabeling
-                        visible={!isChangeAddress}
-                        defaultVisibleValue={
-                            isChangeAddress ? (
-                                <TranslationWrapper>
-                                    <Translation id="TR_CHANGE_ADDRESS" />
-                                </TranslationWrapper>
-                            ) : null
-                        }
-                        payload={{
-                            type: 'outputLabel',
-                            accountKey: account.key,
-                            txid: utxo.txid,
-                            outputIndex: utxo.vout,
-                            defaultValue: `${utxo.txid}-${utxo.vout}`,
-                            value: account.metadata.outputLabels?.[utxo.txid]?.[utxo.vout],
-                        }}
-                    />
-                </Row>
+                    {isLabelingPossible && (
+                        <VisibleOnHover alwaysVisible={!!outputLabel}>
+                            <Dot />
+                            <MetadataLabeling
+                                visible
+                                payload={{
+                                    type: 'outputLabel',
+                                    accountKey: account.key,
+                                    txid: utxo.txid,
+                                    outputIndex: utxo.vout,
+                                    defaultValue: `${utxo.txid}-${utxo.vout}`,
+                                    value: outputLabel,
+                                }}
+                            />
+                        </VisibleOnHover>
+                    )}
+                    {transaction && (
+                        <VisibleOnHover>
+                            <Dot />
+                            <TransactionDetail onClick={showTransactionDetail}>
+                                <Translation id="TR_DETAIL" />
+                            </TransactionDetail>
+                        </VisibleOnHover>
+                    )}
+                    <StyledFiatValue amount={amountInBtc} symbol={network.symbol} />
+                </BottomRow>
             </Body>
         </Wrapper>
     );

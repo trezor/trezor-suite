@@ -64,7 +64,7 @@ const TargetAddress = styled(motion.div)`
 `;
 
 const TimelineDotWrapper = styled.div`
-    margin-right: 8px;
+    margin: 0 8px;
     min-width: 8px;
     display: flex;
     align-items: center;

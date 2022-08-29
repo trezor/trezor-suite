@@ -15,7 +15,6 @@ const IconWrapper = styled.div<{ bgColor: string }>`
 `;
 
 const IconsWrapper = styled.div`
-    margin-left: 12px;
     display: flex;
 `;
 

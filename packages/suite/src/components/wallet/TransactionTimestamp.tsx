@@ -10,7 +10,6 @@ const TimestampLink = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-right: 8px;
     white-space: nowrap;
     cursor: pointer;
 `;
