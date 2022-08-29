@@ -5212,6 +5212,11 @@ export default defineMessages({
         defaultMessage: '{amount} selected',
         description: 'Number of list items selected',
     },
+    TR_NOT_ENOUGH_SELECTED: {
+        id: 'TR_NOT_ENOUGH_SELECTED',
+        defaultMessage: 'Not enough funds selected',
+        description: 'Error message for amount field in send form when coin control is on',
+    },
     TR_MISSING_TO_INPUT: {
         id: 'TR_MISSING_TO_INPUT',
         defaultMessage: '{amount} missing to your input (excluding fee)',

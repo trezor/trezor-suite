@@ -6,11 +6,9 @@ import { useActions, useDiscovery, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { MetadataAddPayload } from '@suite-types/metadata';
 import { Translation } from '@suite-components';
-
 import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
 import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
-
 import type { Timeout } from '@trezor/type-utils';
 
 const LabelValue = styled.div`
@@ -30,7 +28,7 @@ const LabelDefaultValue = styled(LabelValue)`
     ::before {
         content: '|';
         font-size: 14px;
-        line-height: 12px;
+        line-height: 14px;
         margin: 0 6px;
         opacity: 0.25;
     }
@@ -45,30 +43,20 @@ const Label = styled.div`
 `;
 
 const LabelButton = styled(Button)`
+    margin-right: 12px;
     overflow: hidden;
 `;
 
 const ActionButton = styled(Button)<{ isVisible?: boolean }>`
+    margin-left: ${({ isVisible }) => !isVisible && '14px'};
     visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
     /* hack to keep button in place to prevent vertical jumping (if used display: none) */
-    width: ${props => (props.isVisible ? 'auto' : '0')};
-    ${({ isVisible }) =>
-        isVisible
-            ? css`
-                  background: none;
-
-                  :not(:hover) {
-                      opacity: 0.7;
-                  }
-              `
-            : css`
-                  margin-left: 14px;
-              `}
+    width: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
 `;
+
 const SuccessButton = styled(Button)`
     cursor: wait;
     width: auto;
-    margin-left: 14px;
     background-color: ${props => props.theme.BG_LIGHT_GREEN};
     color: ${props => props.theme.BG_GREEN};
     :hover {
@@ -77,7 +65,7 @@ const SuccessButton = styled(Button)`
     }
 `;
 
-const LabelContainer = styled.div`
+const LabelContainer = styled.div<{ hasSeparator?: boolean }>`
     display: flex;
     white-space: nowrap;
     align-items: center;
@@ -97,13 +85,28 @@ const LabelContainer = styled.div`
             transition-timing-function: ease-in;
         }
     }
+
+    ${({ hasSeparator }) =>
+        hasSeparator &&
+        css`
+            ::before {
+                content: '|';
+                font-size: 18px;
+                line-height: 14px;
+                margin: 0 8px;
+                opacity: 0.2;
+            }
+        `}
 `;
 
 const RelativeButton = styled(Button)`
+    margin-right: 12px;
+    padding-bottom: 4px;
+    padding-top: 4px;
     position: relative;
 `;
 
-const RelativeLabel = styled(Label)`
+const RelativeLabel = styled(Label)<{ isVisible?: boolean }>`
     position: relative;
 `;
 
@@ -228,7 +231,6 @@ export const MetadataLabeling = (props: Props) => {
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(props.payload.defaultValue);
     let timeout: Timeout | undefined;
-
     useEffect(() => {
         setPending(false);
         setShowSuccess(false);
@@ -309,19 +311,23 @@ export const MetadataLabeling = (props: Props) => {
 
     const labelContainerDatatest = `${dataTestBase}/hover-container`;
 
+    // should "add label"/"edit label" button be visible
+    const showActionButton = labelingPossible && !showSuccess && !editActive;
+    const isVisible = pending || props.visible;
+    const isSeparatorVisible =
+        props.hasSeparator &&
+        (props.visible || !!props.payload.value || !!props.defaultVisibleValue);
+
     // metadata is still initiating, on hover, show only disabled button with spinner
     if (metadata.initiating)
         return (
-            <LabelContainer data-test={labelContainerDatatest}>
+            <LabelContainer hasSeparator={isSeparatorVisible} data-test={labelContainerDatatest}>
                 {props.defaultVisibleValue}
                 <ActionButton variant="tertiary" isDisabled isLoading>
                     <Translation id="TR_LOADING" />
                 </ActionButton>
             </LabelContainer>
         );
-
-    // should "add label"/"edit label" button be visible
-    const showActionButton = labelingPossible && !showSuccess && !editActive;
 
     // should "add label"/"edit label" button for output label be visible
     // special case here. It should not be visible if metadata label already exists (props.payload.value) because
@@ -332,6 +338,7 @@ export const MetadataLabeling = (props: Props) => {
 
     return (
         <LabelContainer
+            hasSeparator={isSeparatorVisible}
             data-test={labelContainerDatatest}
             onClick={e => editActive && e.stopPropagation()}
         >
@@ -345,7 +352,6 @@ export const MetadataLabeling = (props: Props) => {
                         {...props}
                         dropdownOptions={dropdownItems}
                     />
-
                     {showOutputLabelActionButton && (
                         <ActionButton
                             data-test={`${dataTestBase}/add-label-button`}
@@ -353,7 +359,7 @@ export const MetadataLabeling = (props: Props) => {
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
-                            isVisible={pending || props.visible}
+                            isVisible={isVisible}
                             onClick={e => {
                                 e.stopPropagation();
                                 // by clicking on add label button, metadata.editing field is set
@@ -386,7 +392,7 @@ export const MetadataLabeling = (props: Props) => {
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
-                            isVisible={pending || props.visible}
+                            isVisible={isVisible}
                             onClick={e => {
                                 e.stopPropagation();
                                 activateEdit();

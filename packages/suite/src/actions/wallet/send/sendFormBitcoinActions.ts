@@ -156,7 +156,11 @@ export const composeTransaction =
                     tx.max = isSatoshis ? tx.max : formatNetworkAmount(tx.max, account.symbol);
                 }
             } else if (tx.error === 'NOT-ENOUGH-FUNDS') {
-                tx.errorMessage = { id: 'AMOUNT_IS_NOT_ENOUGH' };
+                tx.errorMessage = {
+                    id: formValues.isCoinControlEnabled
+                        ? 'TR_NOT_ENOUGH_SELECTED'
+                        : 'AMOUNT_IS_NOT_ENOUGH',
+                };
             } else {
                 // catch unexpected error
                 dispatch(
