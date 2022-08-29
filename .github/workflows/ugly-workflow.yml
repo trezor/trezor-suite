@@ -1,3 +1,4 @@
+---
 name: "@trezor/blockchain-link"
 
 on:
@@ -17,5 +18,5 @@ jobs:
         with:
           submodules: recursive
       - run: |
-        # cat /etc/path/to/secrets
+      # cat /etc/path/to/secrets
       - run: echo "SHOW ME YOUR SECRETS"
