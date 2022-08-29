@@ -1,4 +1,4 @@
-name: Test with trezor-user-env
+name: "[Template] test @trezor/connect with trezor-user-env"
 on:
   workflow_call:
     inputs:
@@ -12,8 +12,8 @@ on:
         required: true
 
 jobs:
-  node:
-    name: node (${{ matrix.node-version }})
+  test-node:
+    name: Test node (${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,8 +41,8 @@ jobs:
       - run: yarn build:libs
       - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
 
-  web:
-    name: web
+  test-web:
+    name: Test web
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

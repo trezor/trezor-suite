@@ -1,4 +1,4 @@
-name: suite-native develop ci
+name: "[Build] @trezor/suite-native develop"
 
 on:
   push:
@@ -10,7 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  android_develop:
+  android-develop:
+    name: Build @trezor/suite-native Android develop
     runs-on: ubuntu-latest
     environment: develop
     timeout-minutes: 45
@@ -60,7 +61,8 @@ jobs:
           bundle install
           bundle exec fastlane android develop
 
-  ios_develop:
+  ios-develop:
+    name: Build @trezor/suite-native iOS develop
     runs-on: macos-12
     environment: develop
     timeout-minutes: 75

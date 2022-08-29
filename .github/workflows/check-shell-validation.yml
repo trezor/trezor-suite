@@ -1,15 +1,15 @@
-name: Shell validation check
+name: "[Check] validate shell"
 
 on:
   pull_request:
     paths:
-      - '**.sh'
+      - "**.sh"
 jobs:
-  shellcheck:
+  validate-shell:
+    name: Validate shell
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
 
       - name: shellcheck
         run: ./scripts/shellcheck.sh
-

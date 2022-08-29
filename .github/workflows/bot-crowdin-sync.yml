@@ -1,9 +1,10 @@
-name: Crowdin translations update
+name: "[Bot] crowdin translations update"
 
 on: [workflow_dispatch]
 
 jobs:
   crowdin-sync:
+    name: Sync trezor-suite translations with crowdin
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

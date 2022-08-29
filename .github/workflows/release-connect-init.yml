@@ -1,0 +1,25 @@
+name: "[Release] @trezor/connect init"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release-connect-pr:
+    name: Release connect PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Run @trezor/connect release trezor.io
+        run: |
+          git config --global user.name "trezor-ci"
+          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+          gh config set prompt disabled
+          gh pr create --repo trezor/trezor-suite --title "release connect.trezor.io/9 ${{ github.event.inputs.semver }} [2/2]" --body-file "docs/releases/connect-trezor.io.md" --base release/connect-v9
+        env:
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}

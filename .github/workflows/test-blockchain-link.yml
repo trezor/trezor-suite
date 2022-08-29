@@ -1,4 +1,4 @@
-name: "@trezor/blockchain-link"
+name: "[Test] @trezor/blockchain-link"
 
 on:
   push:
@@ -18,7 +18,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  test-blockchain-link:
+    name: Test @trezor/blockchain-link
     runs-on: ubuntu-latest
     strategy:
       matrix:

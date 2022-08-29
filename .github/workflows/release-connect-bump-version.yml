@@ -4,12 +4,13 @@
 # - consider generation of changelog etc
 # - in release/connect-v9 branch PR, post info about changed files only for connect?
 
-name: release - connect v9 - init
+name: "[Release] @trezor/connect v9 bump version"
 
 on:
   workflow_dispatch:
     inputs:
       semver:
+        required: true
         type: choice
         description: semver
         options:
@@ -18,7 +19,8 @@ on:
           - minor
 
 jobs:
-  bump_version:
+  bump-version-pr:
+    name: Bump connect version & create PR to develop
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,24 +45,5 @@ jobs:
           git add . && git commit -m "release: @trezor/connect (${{ github.event.inputs.semver }})" && git push origin npm-release/connect -f
           gh config set prompt disabled
           gh pr create --repo trezor/trezor-suite --title "npm-release @trezor/connect ${{ github.event.inputs.semver }} [1/2]" --body-file "docs/releases/connect-npm.md" --base develop
-        env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
-
-  release_trezor-io:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Run @trezor/connect release trezor.io
-        run: |
-          git config --global user.name "trezor-ci"
-          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
-          gh config set prompt disabled
-          gh pr create --repo trezor/trezor-suite --title "release connect.trezor.io/9 ${{ github.event.inputs.semver }} [2/2]" --body-file "docs/releases/connect-trezor.io.md" --base release/connect-v9
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}

@@ -1,4 +1,4 @@
-name: Add to GitHub Project
+name: "[Bot] add to GitHub Project"
 
 on: [issues, pull_request]
 

@@ -1,4 +1,4 @@
-name: "@trezor/connect"
+name: "[Test] @trezor/connect"
 
 # run only if there are changes in connect or related libs paths
 on:
@@ -41,83 +41,83 @@ jobs:
 
   api:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: "init authorizeCoinJoin passphrase unlockPath setBusy"
 
   management:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "applySettings,applyFlags,getFeatures,getFirmwareHash,checkFirmwareAuthenticity"
 
   btc-sign:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "signTransaction"
 
   btc-others:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
 
   stellar:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "stellarGetAddress,stellarSignTransaction"
 
   cardano:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
 
   eos:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "eosGetPublicKey,eosSignTransaction"
 
   ethereum:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
 
   nem:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "nemGetAddress,nemSignTransaction"
 
   ripple:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "rippleGetAddress,rippleSignTransaction"
 
   tezos:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
 
   binance:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
