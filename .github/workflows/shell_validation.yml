@@ -12,4 +12,3 @@ jobs:
 
       - name: shellcheck
         run: ./scripts/shellcheck.sh
-
