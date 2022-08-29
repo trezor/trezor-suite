@@ -5,7 +5,7 @@ import { useActions } from '@suite-hooks';
 import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
+import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
 import { Account } from '@wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
@@ -18,8 +18,8 @@ const ExportAction = ({ account }: Props) => {
     const { translationString } = useTranslation();
     const { addToast, fetchTransactions, exportTransactions } = useActions({
         addToast: notificationActions.addToast,
-        fetchTransactions: transactionActions.fetchTransactions,
-        exportTransactions: transactionActions.exportTransactions,
+        fetchTransactions: fetchTransactionsThunk,
+        exportTransactions: exportTransactionsThunk,
     });
 
     const [isExportRunning, setIsExportRunning] = useState(false);
@@ -31,13 +31,19 @@ const ExportAction = ({ account }: Props) => {
 
             setIsExportRunning(true);
             try {
-                await fetchTransactions(account, 2, SETTINGS.TXS_PER_PAGE, true, true);
+                await fetchTransactions({
+                    account,
+                    page: 2,
+                    perPage: SETTINGS.TXS_PER_PAGE,
+                    noLoading: true,
+                    recursive: true,
+                });
                 const accountName =
                     account.metadata.accountLabel ||
                     `${translationString(getTitleForNetwork(account.symbol))} #${
                         account.index + 1
                     }`;
-                await exportTransactions(account, accountName, type);
+                await exportTransactions({ account, accountName, type });
             } catch (error) {
                 console.error('Export transaction failed: ', error);
                 addToast({

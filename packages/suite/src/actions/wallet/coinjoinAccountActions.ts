@@ -2,13 +2,12 @@ import TrezorConnect from '@trezor/connect';
 import * as COINJOIN from './constants/coinjoinConstants';
 import { goto } from '../suite/routerActions';
 import { addToast } from '../suite/notificationActions';
-import { add as addTransaction } from './transactionActions';
-import { accountsActions } from '@suite-common/wallet-core';
 import { initCoinjoinClient, getCoinjoinClient } from './coinjoinClientActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@suite-common/wallet-config';
 import { Account, CoinjoinSessionParameters } from '@suite-common/wallet-types';
+import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 
 const coinjoinAccountCreate = (account: Account) =>
     ({
@@ -100,7 +99,12 @@ export const fetchAndUpdateAccount =
                     );
                     // add account transactions
                     if (accountInfo.history.transactions) {
-                        dispatch(addTransaction(accountInfo.history.transactions, account));
+                        dispatch(
+                            transactionsActions.addTransaction({
+                                transactions: accountInfo.history.transactions,
+                                account,
+                            }),
+                        );
                     }
                 }
             } else {

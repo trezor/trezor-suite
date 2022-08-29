@@ -1,12 +1,15 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TransactionsState } from '@suite-common/wallet-core';
+import { saveAs } from 'file-saver';
 
 import { STORAGE } from '../actions/suite/constants';
-import { addEvent } from '../actions/suite/notificationActions';
-import { StorageLoadAction } from '../actions/suite/storageActions';
-import type { BlockchainState } from '../reducers/wallet/blockchainReducer';
+import { addEvent } from '@suite-actions/notificationActions';
+import { StorageLoadAction } from '@suite-actions/storageActions';
+import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
 import { AppState } from '../types/suite';
-import * as transactionActions from '@wallet-actions/transactionActions';
+import { getAccountKey } from '@suite-common/wallet-utils';
+import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { selectIsPendingTransportEvent } from '../reducers/suite/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
@@ -30,7 +33,9 @@ const connectInitSettings = {
 };
 
 export const extraDependencies: ExtraDependencies = {
-    thunks: { notificationsAddEvent: addEvent },
+    thunks: {
+        notificationsAddEvent: addEvent,
+    },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
@@ -41,10 +46,9 @@ export const extraDependencies: ExtraDependencies = {
         selectIsPendingTransportEvent,
     },
     actions: {
-        addTransaction: transactionActions.add,
-        removeTransaction: transactionActions.remove,
         setAccountLoadedMetadata: metadataActions.setAccountLoaded,
         setAccountAddMetadata: metadataActions.setAccountAdd,
+        fiatRateUpdate: fiatRatesActions.updateFiatRates,
         lockDevice: suiteActions.lockDevice,
     },
     actionTypes: {
@@ -57,9 +61,20 @@ export const extraDependencies: ExtraDependencies = {
                 state[backend.key].backends = backend.value;
             });
         },
+        storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
+            const { txs } = payload;
+            txs.forEach(item => {
+                const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
+                if (!state.transactions[k]) {
+                    state.transactions[k] = [];
+                }
+                state.transactions[k][item.order] = item.tx;
+            });
+        },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) => payload.accounts,
     },
     utils: {
+        saveAs: (data, fileName) => saveAs(data, fileName),
         connectInitSettings,
     },
 };

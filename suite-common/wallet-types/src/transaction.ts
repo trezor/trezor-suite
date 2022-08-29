@@ -220,3 +220,10 @@ export interface ReviewTransactionData {
         destinationTag?: string;
     };
 }
+
+export type TransactionFiatRateUpdatePayload = {
+    txid: string;
+    account: Account;
+    updateObject: Partial<WalletAccountTransaction>;
+    ts: number;
+};

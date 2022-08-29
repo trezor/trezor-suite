@@ -4,19 +4,17 @@ import { Middleware } from 'redux';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { disableAccountsThunk } from '@suite-common/wallet-core';
+import { disableAccountsThunk, transactionsActions } from '@suite-common/wallet-core';
 import * as SUITE from '@suite-actions/constants/suiteConstants';
 
-import { accountsReducer } from '@wallet-reducers';
+import { accountsReducer, transactionsReducer } from '@wallet-reducers';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import discoveryReducer from '@wallet-reducers/discoveryReducer';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
 import graphReducer from '@wallet-reducers/graphReducer';
-import transactionsReducer from '@wallet-reducers/transactionReducer';
 import fiatRatesReducer from '@wallet-reducers/fiatRatesReducer';
 import storageMiddleware from '@wallet-middlewares/storageMiddleware';
 import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
@@ -237,8 +235,8 @@ describe('Storage actions', () => {
         store.dispatch(discoveryActions.create(dev2Instance1.state!, dev2Instance1));
 
         // add txs
-        store.dispatch(transactionActions.add([tx1], acc1));
-        store.dispatch(transactionActions.add([tx2], acc2));
+        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
+        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // remember devices
         await store.dispatch(storageActions.rememberDevice(dev1, true));
@@ -346,8 +344,8 @@ describe('Storage actions', () => {
         updateStore(store);
 
         // add txs
-        store.dispatch(transactionActions.add([tx1], acc1));
-        store.dispatch(transactionActions.add([tx2], acc2));
+        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
+        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
 
         // store in db
         await store.dispatch(storageActions.rememberDevice(dev1, true));

@@ -57,10 +57,9 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
     },
     actions: {
-        addTransaction: mockAction('addTransaction'),
-        removeTransaction: mockAction('removeTransaction'),
         setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
+        fiatRateUpdate: mockAction('fiatRateUpdate'),
         lockDevice: mockAction('lockDevice'),
     },
     actionTypes: {
@@ -69,8 +68,13 @@ export const extraDependenciesMock: ExtraDependencies = {
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
+        storageLoadTransactions: mockReducer('storageLoadTransactions'),
     },
     utils: {
+        saveAs: (data, fileName) =>
+            console.warn(
+                `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
+            ),
         connectInitSettings: {
             debug: true,
             manifest: {

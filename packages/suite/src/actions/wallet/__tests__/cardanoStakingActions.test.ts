@@ -5,7 +5,7 @@ import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import { CARDANO_STAKING } from '../constants';
 import { WalletAccountTransaction } from '@wallet-types';
 import { BlockchainBlock } from '@trezor/connect';
-import transactionReducer from '@wallet-reducers/transactionReducer';
+import { transactionsReducer } from '@wallet-reducers';
 import { getUnixTime } from 'date-fns';
 
 const { getSuiteDevice } = global.JestMocks;
@@ -29,7 +29,7 @@ const getInitialState = (cardanoStaking?: CardanoStakingState) => ({
             },
         },
 
-        transactions: transactionReducer(undefined, { type: 'foo' } as any),
+        transactions: transactionsReducer(undefined, { type: 'foo' } as any),
 
         cardanoStaking: cardanoStaking ?? cardanoStakingReducer(undefined, { type: 'foo' } as any),
     },
@@ -82,7 +82,7 @@ describe('cardanoStakingActions', () => {
         expect(stillPending?.txid).toEqual('txid123');
 
         // receive transaction
-        // validatePendingStakeTxOnTx will be triggered from walletMiddleware on TRANSACTION.ADD
+        // validatePendingStakeTxOnTx will be triggered from walletMiddleware on addTransaction action
         store.dispatch(
             cardanoStakingActions.validatePendingStakeTxOnTx(cardanoAccount, [
                 { txid: 'txid123', blockHeight: 10, blockTime: 3 } as WalletAccountTransaction,

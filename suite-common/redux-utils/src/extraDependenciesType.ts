@@ -1,14 +1,20 @@
 import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
+import {
+    Account,
+    FeeInfo,
+    WalletAccountTransaction,
+    TransactionFiatRateUpdatePayload,
+} from '@suite-common/wallet-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, FeeInfo, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { AccountTransaction, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
+import { ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { NotificationEventPayload } from '@suite-common/notifications';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
+type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
 
 type ConnectInitSettings = {
     manifest: Manifest;
@@ -32,20 +38,12 @@ export type ExtraDependencies = {
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
     // but that shouldn't be problem.
     actions: {
-        addTransaction: ActionCreatorWithPreparedPayload<
-            [transactions: AccountTransaction[], account: Account, page?: number],
-            {
-                transactions: AccountTransaction[];
-                account: Account;
-                page?: number;
-            }
-        >;
-        removeTransaction: ActionCreatorWithPreparedPayload<
-            [account: Account, txs: WalletAccountTransaction[]],
-            { account: Account; txs: WalletAccountTransaction[] }
-        >;
         setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
+        fiatRateUpdate: ActionCreatorWithPreparedPayload<
+            [payload: TransactionFiatRateUpdatePayload[]],
+            TransactionFiatRateUpdatePayload[]
+        >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
     };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because
@@ -58,8 +56,10 @@ export type ExtraDependencies = {
     reducers: {
         storageLoadBlockchain: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
+        storageLoadTransactions: StorageLoadTransactionsReducer;
     };
     utils: {
+        saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
     };
 };

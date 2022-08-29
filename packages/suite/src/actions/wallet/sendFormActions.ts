@@ -1,8 +1,11 @@
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
-import { accountsActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    addFakePendingTxThunk,
+    replaceTransactionThunk,
+} from '@suite-common/wallet-core';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -246,7 +249,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
             // notification from the backend may be delayed.
             // modify affected transaction(s) in the reducer until the real account update occurs.
             // this will update transaction details (like time, fee etc.)
-            dispatch(transactionActions.replaceTransaction(account, precomposedTx, txid));
+            dispatch(replaceTransactionThunk({ account, tx: precomposedTx, newTxid: txid }));
         }
 
         // notification from the backend may be delayed.
@@ -258,7 +261,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
             dispatch(accountsActions.updateAccount(pendingAccount));
             if (account.networkType === 'cardano') {
                 // manually add fake pending tx as we don't have the data about mempool txs
-                dispatch(transactionActions.addFakePendingTx(precomposedTx, txid, pendingAccount));
+                dispatch(addFakePendingTxThunk({ precomposedTx, txid, account: pendingAccount }));
             }
         }
 

@@ -15,6 +15,7 @@ import {
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createThunk } from '@suite-common/redux-utils';
 
+import { transactionsActions } from '../transactions/transactionsActions';
 import { accountsActions } from './accountsActions';
 import { selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
@@ -72,7 +73,6 @@ export const fetchAndUpdateAccountThunk = createThunk(
     `${actionPrefix}/fetchAndUpdateAccountThunk`,
     async (account: Account, { dispatch, extra, getState }) => {
         const {
-            actions: { addTransaction, removeTransaction },
             selectors: { selectDevices, selectBitcoinAmountUnit, selectAccountTransactions },
             thunks: { notificationsAddEvent },
         } = extra;
@@ -120,10 +120,15 @@ export const fetchAndUpdateAccountThunk = createThunk(
             }
 
             if (analyze.remove.length > 0) {
-                dispatch(removeTransaction(account, analyze.remove));
+                dispatch(transactionsActions.removeTransaction({ account, txs: analyze.remove }));
             }
             if (analyze.add.length > 0) {
-                dispatch(addTransaction(analyze.add.reverse(), account));
+                dispatch(
+                    transactionsActions.addTransaction({
+                        transactions: analyze.add.reverse(),
+                        account,
+                    }),
+                );
             }
 
             const devices = selectDevices(getState());

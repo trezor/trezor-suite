@@ -17,7 +17,10 @@ import {
     TX_FIAT_RATE_UPDATE,
     RATE_REMOVE,
 } from './constants/fiatRatesConstants';
-import { Network, Account, CoinFiatRates, WalletAccountTransaction, TickerId } from '@wallet-types';
+
+import { TransactionFiatRateUpdatePayload } from '@suite-common/wallet-types';
+import { Network, Account, CoinFiatRates, TickerId } from '@wallet-types';
+import { createAction } from '@reduxjs/toolkit';
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 
@@ -31,15 +34,7 @@ export type FiatRatesAction =
           type: typeof RATE_REMOVE;
           payload: TickerId;
       }
-    | {
-          type: typeof TX_FIAT_RATE_UPDATE;
-          payload: {
-              txid: string;
-              account: Account;
-              updateObject: Partial<WalletAccountTransaction>;
-              ts: number;
-          }[];
-      }
+    | ReturnType<typeof updateFiatRates>
     | {
           type: typeof LAST_WEEK_RATES_UPDATE;
           payload: {
@@ -48,6 +43,8 @@ export type FiatRatesAction =
               ts: number;
           };
       };
+
+// export type FiatRatesUpdateAction = Extract<FiatRatesAction, { type: typeof TX_FIAT_RATE_UPDATE }>;
 
 // how often should suite check for outdated rates;
 const INTERVAL = 1000 * 60 * 2; // 2 mins
@@ -60,6 +57,13 @@ export const remove = (ticker: TickerId): FiatRatesAction => ({
     type: RATE_REMOVE,
     payload: ticker,
 });
+
+export const updateFiatRates = createAction(
+    TX_FIAT_RATE_UPDATE,
+    (payload: TransactionFiatRateUpdatePayload[]) => ({
+        payload,
+    }),
+);
 
 export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getState: GetState) => {
     const { enabledNetworks } = getState().wallet.settings;

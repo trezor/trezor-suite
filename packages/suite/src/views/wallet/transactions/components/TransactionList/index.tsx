@@ -7,7 +7,6 @@ import { Card } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useSelector, useActions } from '@suite-hooks';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import { groupTransactionsByDate, advancedSearchTransactions } from '@suite-common/wallet-utils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
@@ -18,6 +17,7 @@ import TransactionsGroup from './components/TransactionsGroup';
 import SkeletonTransactionItem from './components/SkeletonTransactionItem';
 import NoSearchResults from './components/NoSearchResults';
 import { findAnchorTransactionPage } from '@suite-utils/anchor';
+import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 
 const StyledCard = styled(Card)<{ isPending: boolean }>`
     flex-direction: column;
@@ -44,7 +44,7 @@ interface TransactionListProps {
 const TransactionList = ({ transactions, isLoading, account, ...props }: TransactionListProps) => {
     const ref = React.createRef<HTMLDivElement>();
     const { fetchTransactions } = useActions({
-        fetchTransactions: transactionActions.fetchTransactions,
+        fetchTransactions: fetchTransactionsThunk,
     });
     const { anchor, localCurrency } = useSelector(state => ({
         localCurrency: state.wallet.settings.localCurrency,
@@ -68,7 +68,13 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
     useEffect(() => {
         if (anchor && !hasFetchedAll) {
-            fetchTransactions(account, 2, SETTINGS.TXS_PER_PAGE, true, true);
+            fetchTransactions({
+                account,
+                page: 2,
+                perPage: SETTINGS.TXS_PER_PAGE,
+                noLoading: true,
+                recursive: true,
+            });
             setHasFetchedAll(true);
         }
     }, [anchor, fetchTransactions, account, hasFetchedAll]);
@@ -91,7 +97,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Transac
         setSelectedPage(page);
 
         if (!isSearching) {
-            fetchTransactions(account, page, perPage);
+            fetchTransactions({ account, page, perPage });
         }
 
         if (ref.current) {

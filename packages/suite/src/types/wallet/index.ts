@@ -12,7 +12,6 @@ import { GraphAction } from '@wallet-actions/graphActions';
 import { BlockchainAction } from '@wallet-actions/blockchainActions';
 import { SendFormAction } from '@wallet-actions/sendFormActions';
 import { AccountSearchAction } from '@wallet-actions/accountSearchActions';
-import { TransactionAction } from '@wallet-actions/transactionActions';
 import { FormDraftAction } from '@wallet-actions/formDraftActions';
 import { CardanoStakingAction } from '@wallet-actions/cardanoStakingActions';
 import { PollingAction } from '@wallet-actions/pollingActions';
@@ -61,7 +60,6 @@ export type WalletAction =
     | BlockchainAction
     | ReceiveAction
     | SignVerifyAction
-    | TransactionAction
     | FiatRatesAction
     | GraphAction
     | DiscoveryAction

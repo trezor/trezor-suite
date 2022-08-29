@@ -5,7 +5,6 @@ import trezorConnect, { PROTO } from '@trezor/connect';
 import { useActions, useSelector } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
-import * as transactionActions from '@wallet-actions/transactionActions';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
     getStakingPath,
@@ -21,6 +20,7 @@ import {
     getDerivationType,
 } from '@wallet-utils/cardanoUtils';
 import { AppState } from '@suite-types';
+import { addFakePendingTxThunk } from '@suite-common/wallet-core';
 
 const getDeviceAvailability = (
     device: AppState['suite']['device'],
@@ -74,7 +74,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     const { addToast, setPendingStakeTx, addFakePendingTx } = useActions({
         addToast: notificationActions.addToast,
         setPendingStakeTx: cardanoStakingActions.setPendingStakeTx,
-        addFakePendingTx: transactionActions.addFakePendingTx,
+        addFakePendingTx: addFakePendingTxThunk,
     });
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
     const [fee, setFee] = useState<undefined | string>(undefined);
@@ -244,7 +244,7 @@ export const useCardanoStaking = (): CardanoStaking => {
                         type: 'raw-tx-sent',
                         txid,
                     });
-                    addFakePendingTx(txPlan, txid, account);
+                    addFakePendingTx({ precomposedTx: txPlan, txid, account });
                     setPendingStakeTx(account, txid);
                 } else {
                     addToast({

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { configureStore, filterThunkActionTypes } from '@suite/support/tests/configureStore';
 import { PROTO } from '@trezor/connect';
-import { accountsReducer } from '@wallet-reducers';
-import transactionReducer from '@wallet-reducers/transactionReducer';
+import { accountsReducer, transactionsReducer } from '@wallet-reducers';
 import blockchainReducer from '@wallet-reducers/blockchainReducer';
 import feesReducer from '@wallet-reducers/feesReducer';
 import notificationsReducer from '@suite-reducers/notificationReducer';
@@ -13,7 +12,7 @@ jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
 const TrezorConnect = require('@trezor/connect').default;
 
 type AccountsState = ReturnType<typeof accountsReducer>;
-type TransactionsState = ReturnType<typeof transactionReducer>;
+type TransactionsState = ReturnType<typeof transactionsReducer>;
 type FeesState = ReturnType<typeof feesReducer>;
 type BlockchainState = ReturnType<typeof blockchainReducer>;
 interface Args {
@@ -29,7 +28,7 @@ export const getInitialState = (
 ) => ({
     wallet: {
         accounts: accountsReducer(accounts, action),
-        transactions: transactionReducer(
+        transactions: transactionsReducer(
             {
                 transactions: transactions || {},
                 isLoading: false,
@@ -69,7 +68,7 @@ const initStore = (state: State) => {
         store.getState().wallet = {
             ...wallet,
             accounts: accountsReducer(wallet.accounts, action),
-            transactions: transactionReducer(wallet.transactions, action),
+            transactions: transactionsReducer(wallet.transactions, action),
             blockchain: blockchainReducer(wallet.blockchain, action),
             fees: feesReducer(wallet.fees, action),
         };

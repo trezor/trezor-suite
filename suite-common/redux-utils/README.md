@@ -22,13 +22,13 @@ export type ExtraDependencies = {
 Now you will use this type in desktop suite to construct object that will implement this type:
 
 ```typescript
-import * as transactionActions from '@wallet-actions/transactionActions';
+import * as transactionsActions from '@wallet-actions/transactionsActions';
 import { AppState } from '../types/suite';
 
 export const extraDependencies: ExtraDependencies = {
     actions: {
-        addTransaction: transactionActions.add,
-    }
+        addTransaction: transactionsActions.add,
+    },
     selectors: {
         selectTransactions: (state: AppState) => state.wallet.transactions.transactions,
     },
@@ -56,7 +56,7 @@ This extra dependencies is not only useful during migration process from `packag
 
 ```typescript
 export type ExtraDependencies = {
-    ...
+    ...,
     utils: {
         saveFile: (fileContent: string, fileName: string) => Promise<void>;
     };
@@ -69,7 +69,7 @@ File saving functionality is platform specific we need to use different librarie
 import { saveAs } from 'file-saver';
 
 export const extraDependencies: ExtraDependencies = {
-    ...
+    ...,
     utils: {
         saveFile: (fileContent, fileName) => saveAs(fileContent, fileName),
     },
@@ -82,7 +82,7 @@ And same thing but using different native API for mobile app:
 import RNFS from 'react-native-fs';
 
 export const extraDependencies: ExtraDependencies = {
-    ...
+    ...,
     utils: {
         saveFile: (fileContent, fileName) => RNFS.writeFile(fileName, fileContent, 'utf8'),
     },
