@@ -1,35 +1,26 @@
+import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
-    ConnectSettings,
     DEVICE_EVENT,
-    Manifest,
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
-import { Selector, SuiteCompatibleAction } from '@suite-common/suite-types';
-import { createThunk } from '@suite-common/redux-utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 
-export const CONNECT_INIT_ACTION_TYPE = '@suite-common/connect-init/init';
+const actionsPrefix = '@common/connect-init';
 
-export const prepareConnectInitThunk = ({
-    actions,
-    selectors,
-    initSettings,
-}: {
-    actions: {
-        lockDevice: SuiteCompatibleAction<boolean>;
-    };
-    selectors: {
-        selectEnabledNetworks: Selector<string[]>;
-        selectIsPendingTransportEvent: Selector<boolean>;
-    };
-    initSettings: { manifest: Manifest } & Partial<ConnectSettings>;
-}) =>
-    createThunk(CONNECT_INIT_ACTION_TYPE, async (_, { dispatch, getState }) => {
-        const { selectEnabledNetworks, selectIsPendingTransportEvent } = selectors;
-        const { lockDevice } = actions;
+// If you are looking where connectInitSettings is defined, it is defined in packages/suite/src/support/extraDependencies.ts
+// or in suite-native/state/src/extraDependencies.ts depends on which platform this connectInitThunk runs.
+
+export const connectInitThunk = createThunk(
+    `${actionsPrefix}/initThunk`,
+    async (_, { dispatch, getState, extra }) => {
+        const {
+            selectors: { selectEnabledNetworks, selectIsPendingTransportEvent },
+            actions: { lockDevice },
+            utils: { connectInitSettings },
+        } = extra;
 
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
 
@@ -88,7 +79,7 @@ export const prepareConnectInitThunk = ({
 
         try {
             await TrezorConnect.init({
-                ...initSettings,
+                ...connectInitSettings,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
             });
         } catch (error) {
@@ -100,4 +91,5 @@ export const prepareConnectInitThunk = ({
             }
             throw new Error(formattedError);
         }
-    });
+    },
+);

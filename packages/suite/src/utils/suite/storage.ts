@@ -1,6 +1,6 @@
 import { AcquiredDevice } from '@suite-types';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
-import { connectInitThunk } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-common/connect-init';
 
 /**
  * Strip unserializable fields from Discovery (eg. promises)

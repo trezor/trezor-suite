@@ -13,7 +13,7 @@ import modalReducer from '@suite-reducers/modalReducer';
 import firmwareReducer from '@firmware-reducers/firmwareReducer';
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
-import { connectInitThunk } from '../trezorConnectActions';
+import { connectInitThunk } from '@suite-common/connect-init';
 import fixtures from '../__fixtures__/suiteActions';
 import { discardMockedConnectInitActions } from '@suite-utils/storage';
 

@@ -139,9 +139,8 @@ jest.mock('@trezor/connect', () => {
         return scopedParamsError('Fixture response not defined');
     };
 
-    const { PROTO } = jest.requireActual('@trezor/connect');
-
     return {
+        ...jest.requireActual('@trezor/connect'),
         __esModule: true, // this property makes it work
         default: {
             blockchainSetCustomBackend: () => {},
@@ -163,7 +162,6 @@ jest.mock('@trezor/connect', () => {
         setTestFixtures: (f: Fixture) => {
             fixture = f;
         },
-        PROTO,
     };
 });
 

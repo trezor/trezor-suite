@@ -3,7 +3,6 @@ import {
     Action,
     AnyAction,
     CombinedState,
-    combineReducers,
     Middleware,
     PreloadedState,
     Reducer,
@@ -21,7 +20,7 @@ import { extraDependenciesMock } from './extraDependenciesMock';
 export function configureMockStore<S = any, A extends Action = AnyAction>({
     middleware = [],
     extra = {},
-    reducer = combineReducers<any>({}),
+    reducer = (state: any) => state,
     preloadedState,
 }: {
     middleware?: Middleware[];

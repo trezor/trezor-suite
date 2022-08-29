@@ -13,7 +13,7 @@ import messageSystemReducer from '@suite-reducers/messageSystemReducer';
 import walletReducers from '@wallet-reducers';
 
 import { init } from '@suite-actions/initAction';
-import { connectInitThunk } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-common/connect-init';
 
 import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 

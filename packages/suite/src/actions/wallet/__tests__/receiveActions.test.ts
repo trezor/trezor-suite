@@ -5,7 +5,7 @@ import { configureStore } from '@suite/support/tests/configureStore';
 import receiveReducer from '@wallet-reducers/receiveReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
-import { connectInitThunk } from '@suite-actions/trezorConnectActions';
+import { connectInitThunk } from '@suite-common/connect-init';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import fixtures from '../__fixtures__/receiveActions';
 
