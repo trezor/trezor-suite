@@ -30,13 +30,18 @@ export default class CheckFirmwareAuthenticity extends AbstractMethod<'checkFirm
         }
 
         const baseUrl = `https://data.trezor.io/firmware/${device.features.major_version}`;
+        const fwUrl = `${baseUrl}/trezor-${deviceVersion}${
+            device.firmwareType === 'bitcoin-only' ? '-bitcoinonly.bin' : '.bin'
+        }`;
 
-        const fw = await httpRequest(
-            `${baseUrl}/trezor-${deviceVersion}${
-                device.firmwareType === 'bitcoin-only' ? '-bitcoinonly.bin' : '.bin'
-            }`,
-            'binary',
-        );
+        const fw = await httpRequest(fwUrl, 'binary');
+
+        if (!fw) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'checkFirmwareAuthenticity: firmware binary not found',
+            );
+        }
 
         const { hash: expectedFirmwareHash, challenge } = calculateFirmwareHash(
             device.features.major_version,

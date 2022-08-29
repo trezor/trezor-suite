@@ -61,6 +61,7 @@ import tezosSignTransaction from './tezosSignTransaction';
 import verifyMessage from './verifyMessage';
 import verifyMessageSegwit from './verifyMessageSegwit';
 import verifyMessageSegwitNative from './verifyMessageSegwitNative';
+import checkFirmwareAuthenticity from './checkFirmwareAuthenticty';
 
 // TODO: add fixtures for missing dependencies https://github.com/trezor/trezor-suite/issues/5353
 // backupDevice
@@ -153,6 +154,7 @@ let fixtures = [
     verifyMessage,
     verifyMessageSegwit,
     verifyMessageSegwitNative,
+    checkFirmwareAuthenticity,
 ];
 
 const includedMethods = process.env.TESTS_INCLUDED_METHODS;
