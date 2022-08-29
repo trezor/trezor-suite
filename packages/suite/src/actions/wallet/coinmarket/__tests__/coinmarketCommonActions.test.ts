@@ -38,6 +38,8 @@ jest.mock('@trezor/connect', () => {
     let buttonRequest: ((e?: any) => any) | undefined;
     let fixtureIndex = 0;
 
+    const { PROTO } = jest.requireActual('@trezor/connect');
+
     const getAddress = (_params: any) => {
         if (fixture && fixture.getAddress) {
             if (fixture.getAddress.success && buttonRequest) {
@@ -65,6 +67,7 @@ jest.mock('@trezor/connect', () => {
         if (!f) return { success: false, payload: { error: 'error' } };
         return f.response;
     };
+
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -97,6 +100,7 @@ jest.mock('@trezor/connect', () => {
         UI: {
             REQUEST_BUTTON: 'ui-button',
         },
+        PROTO,
     };
 });
 
