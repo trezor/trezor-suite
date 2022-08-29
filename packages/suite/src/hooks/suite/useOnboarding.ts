@@ -29,7 +29,7 @@ export const useOnboarding = () => {
     const goToSuite = (initialRedirection = false) => {
         dispatch(suiteActions.initialRunCompleted());
         dispatch(onboardingActions.resetOnboarding());
-        dispatch(routerActions.closeModalApp());
+        dispatch(routerActions.closeModalApp(true));
 
         // fixes a bug that user ends up in settings after initialization of a new device because he navigated to settings before
         if (initialRedirection) {
