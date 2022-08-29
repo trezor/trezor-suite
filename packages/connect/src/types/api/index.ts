@@ -71,6 +71,7 @@ import { tezosSignTransaction } from './tezosSignTransaction';
 import { uiResponse } from './uiResponse';
 import { verifyMessage } from './verifyMessage';
 import { wipeDevice } from './wipeDevice';
+import { checkFirmwareAuthenticity } from './checkFirmwareAuthenticity';
 
 export interface TrezorConnect {
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/applyFlags.md
@@ -291,4 +292,7 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/wipeDevice.md
     wipeDevice: typeof wipeDevice;
+
+    // todo: link docs
+    checkFirmwareAuthenticity: typeof checkFirmwareAuthenticity;
 }

@@ -71,3 +71,4 @@ export { default as tezosSignTransaction } from './tezosSignTransaction';
 // export { default as uiResponse } from './uiResponse';
 export { default as verifyMessage } from './verifyMessage';
 export { default as wipeDevice } from './wipeDevice';
+export { default as checkFirmwareAuthenticity } from './checkFirmwareAuthenticity';
