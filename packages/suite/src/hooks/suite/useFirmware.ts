@@ -20,6 +20,7 @@ export const useFirmware = () => {
         firmwareUpdate: firmwareActions.firmwareUpdate,
         firmwareCustom: firmwareActions.firmwareCustom,
         resetReducer: firmwareActions.resetReducer,
+        checkFirmwareAuthenticity: firmwareActions.checkFirmwareAuthenticity,
     });
 
     return {

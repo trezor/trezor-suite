@@ -10,6 +10,7 @@ import { WipeData } from './WipeData';
 import { ThrowTestingError } from './ThrowTestingError';
 import { InvityApi } from './InvityApi';
 import { OAuthApi } from './OAuthApi';
+import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -27,6 +28,9 @@ export const SettingsDebug = () => (
         </SettingsSection>
         <SettingsSection title="OAuth">
             <OAuthApi />
+        </SettingsSection>
+        <SettingsSection title="Firmware">
+            <CheckFirmwareAuthenticity />
         </SettingsSection>
         <SettingsSection title="Testing">
             <ThrowTestingError />

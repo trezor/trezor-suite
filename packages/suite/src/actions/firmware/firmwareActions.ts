@@ -2,7 +2,7 @@ import TrezorConnect, { Device, Unsuccessful } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import { getBootloaderVersion, getFwVersion, isDeviceBitcoinOnly } from '@suite-utils/device';
+import { getBootloaderVersion, getFwVersion } from '@suite-utils/device';
 import { isDesktop } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
 import { addToast } from '@suite-actions/notificationActions';
@@ -278,6 +278,32 @@ export const validateFirmwareHash =
             dispatch(setStatus('partially-done'));
         }
     };
+
+export const checkFirmwareAuthenticity = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+    if (!device) {
+        throw new Error('device is not connected');
+    }
+    const result = await TrezorConnect.checkFirmwareAuthenticity({
+        device: {
+            path: device.path,
+        },
+    });
+    if (result.success) {
+        if (result.payload.valid) {
+            dispatch(addToast({ type: 'firmware-check-authenticity-success' }));
+        } else {
+            dispatch(addToast({ type: 'error', error: 'Firmware is not authentic!!!' }));
+        }
+    } else {
+        dispatch(
+            addToast({
+                type: 'error',
+                error: `Unable to validate firmware: ${result.payload.error}`,
+            }),
+        );
+    }
+};
 
 export const firmwareCustom = (fwBinary: ArrayBuffer) => firmwareInstall(fwBinary);
 
