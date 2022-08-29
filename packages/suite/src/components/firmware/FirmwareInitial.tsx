@@ -36,10 +36,6 @@ const TextButton = styled.button`
     text-decoration: underline;
 `;
 
-const StyledButton = styled(Button)`
-    min-width: 180px;
-`;
-
 interface FirmwareInitialProps {
     cachedDevice?: TrezorDevice;
     setCachedDevice: React.Dispatch<React.SetStateAction<TrezorDevice | undefined>>;
@@ -161,15 +157,16 @@ export const FirmwareInitial = ({
             ) : undefined,
             innerActions: (
                 <ButtonRow>
-                    <StyledButton
+                    <InstallButton
                         variant="secondary"
                         onClick={() => installFirmware(FirmwareType.Universal)}
                     >
                         <Translation id="TR_INSTALL_UNIVERSAL" />
-                    </StyledButton>
-                    <StyledButton onClick={() => installFirmware(FirmwareType.BitcoinOnly)}>
+                    </InstallButton>
+
+                    <InstallButton onClick={() => installFirmware(FirmwareType.BitcoinOnly)}>
                         <Translation id="TR_INSTALL_BITCOIN_ONLY" />
-                    </StyledButton>
+                    </InstallButton>
                 </ButtonRow>
             ),
         };
@@ -237,15 +234,13 @@ export const FirmwareInitial = ({
             ),
             body: <FirmwareOffer device={device} targetFirmwareType={targetFirmwareType} />,
             innerActions: (
-                <Button
+                <InstallButton
                     onClick={() => {
                         setStatus(standaloneFwUpdate ? 'check-seed' : 'waiting-for-bootloader');
                         updateAnalytics({ firmware: 'update' });
                     }}
                     data-test="@firmware/get-ready-button"
-                >
-                    <Translation id="TR_INSTALL" />
-                </Button>
+                />
             ),
             outerActions:
                 device.firmware === 'outdated' && !standaloneFwUpdate ? (
