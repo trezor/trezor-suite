@@ -30,7 +30,7 @@ const GlobalStyle = createGlobalStyle`
     #root, .app-container {
         height: 100%;
     }
-    
+
     a {
         text-decoration: none;
         cursor: pointer;

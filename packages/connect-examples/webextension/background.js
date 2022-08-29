@@ -1,7 +1,7 @@
 /**
 When the button's clicked:
 - call for TrezorConnect action
-- show a notification with response 
+- show a notification with response
 */
 
 TrezorConnect.manifest({

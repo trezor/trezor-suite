@@ -38,7 +38,7 @@ export const CustomBar = (props: CustomBarProps) => {
     // Tutorial about SVG coordinate system: https://medium.com/@dennismphil/one-side-rounded-rectangle-using-svg-fb31cf318d90
 
     const path = `
-    M${x},${yStartDrawingPoint}  
+    M${x},${yStartDrawingPoint}
     v-${minHeight - BAR_BORDER_RADIUS}
     q0, ${-BAR_BORDER_RADIUS} ${BAR_BORDER_RADIUS}, ${-BAR_BORDER_RADIUS}
     h${width - 2 * BAR_BORDER_RADIUS}

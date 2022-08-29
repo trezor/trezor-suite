@@ -78,12 +78,12 @@ const TX_HASH =
     });
     return;
     await sendAndWait({ id: ++id, type: 'm_get_info' });
-    
+
     console.time('tx');
     await sendAndWait({ id: ++id, type: 'm_get_account_utxo', payload: ADDR_SEGWIT_MID });
     console.timeEnd('tx');
     return;
-    
+
     await sendAndWait({
         id: ++id,
         type: 'm_subscribe',
@@ -91,10 +91,10 @@ const TX_HASH =
     });
     return;
     await sendAndWait({ id: ++id, type: 'm_get_block_hash', payload: 666666 });
-    
+
     await sendAndWait({ id: ++id, type: 'm_get_transaction', payload: TX });
     return;
-    
+
     await sendAndWait({
         id: ++id,
         // @ts-ignore

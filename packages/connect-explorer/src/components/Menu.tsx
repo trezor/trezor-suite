@@ -48,7 +48,7 @@ const Style = createGlobalStyle`
     padding: 4px 0px;
     color: rgb(73, 73, 73);
     cursor: pointer;
-    
+
     &.selected {
         .leaf-arrow {
             transform: rotateZ(90deg);
