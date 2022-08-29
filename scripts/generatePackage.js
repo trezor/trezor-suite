@@ -1,11 +1,12 @@
 import fsExtra from 'fs-extra';
 import fs from 'fs';
-import { execSync } from 'child_process';
 import sortPackageJson from 'sort-package-json';
 import prettier from 'prettier';
 import chalk from 'chalk';
 
 import templatePackageJson from './package-template/package.json';
+import { getPrettierConfig } from './utils/getPrettierConfig';
+import { getWorkspacesList } from './utils/getWorkspacesList';
 
 const templatePath = './scripts/package-template';
 const packagesFolder = './packages';
@@ -24,9 +25,7 @@ const packagesFolder = './packages';
     const packageName = `@trezor/${packageFolderName}`;
     const packagePath = `${packagesFolder}/${packageFolderName}`;
 
-    const workspaces = Object.keys(
-        JSON.parse(JSON.parse(execSync('yarn workspaces --json info').toString()).data),
-    );
+    const workspacesNames = Object.keys(getWorkspacesList());
 
     if (fs.existsSync(packagePath)) {
         console.error(
@@ -35,7 +34,7 @@ const packagesFolder = './packages';
         process.exit(1);
     }
 
-    if (workspaces.includes(packageName)) {
+    if (workspacesNames.includes(packageName)) {
         console.error(
             chalk.bold.red(`Package ${packageName} already exists! Please choose different name.`),
         );
@@ -47,11 +46,7 @@ const packagesFolder = './packages';
         name: packageName,
     });
 
-    const prettierConfigPath = await prettier.resolveConfigFile();
-    const prettierConfig = {
-        ...(await prettier.resolveConfig(prettierConfigPath)),
-        parser: 'json',
-    };
+    const prettierConfig = await getPrettierConfig();
 
     const serializeConfig = config =>
         prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);

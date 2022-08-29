@@ -1,32 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 import prettier from 'prettier';
 import minimatch from 'minimatch';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import chalk from 'chalk';
-import tsBelt from '@mobily/ts-belt';
 
-const { A, D, pipe } = tsBelt;
-
-const getWorkspaceList = () => {
-    const rawList = execSync('yarn workspaces list --json --verbose')
-        .toString()
-        .replaceAll('}', '},');
-    const indexOfLastComma = rawList.lastIndexOf(',');
-    const validJsonString = `[ ${
-        rawList.slice(0, indexOfLastComma) + rawList.slice(indexOfLastComma + 1)
-    } ]`;
-    const workspaces = pipe(
-        JSON.parse(validJsonString),
-        A.sortBy((current, next) => (current?.name > next?.name ? 1 : -1)),
-        A.map(workspace => [workspace.name, workspace]),
-        D.fromPairs,
-    );
-
-    return workspaces;
-};
+import { getWorkspacesList } from './utils/getWorkspacesList';
+import { getPrettierConfig } from './utils/getPrettierConfig';
 
 (async () => {
     const { argv } = yargs(hideBin(process.argv))
@@ -42,12 +23,7 @@ const getWorkspaceList = () => {
 
     const nextRootReferences = [];
 
-    const prettierConfigPath = await prettier.resolveConfigFile();
-    const prettierConfig = {
-        ...(await prettier.resolveConfig(prettierConfigPath)),
-        parser: 'json',
-        printWidth: 50,
-    };
+    const prettierConfig = await getPrettierConfig();
 
     const serializeConfig = config => {
         try {
@@ -58,7 +34,7 @@ const getWorkspaceList = () => {
         }
     };
 
-    const workspaces = getWorkspaceList();
+    const workspaces = getWorkspacesList();
 
     // NOTE: Workspace keys must be sorted due to file systems being a part of the equation...
     Object.keys(workspaces)
