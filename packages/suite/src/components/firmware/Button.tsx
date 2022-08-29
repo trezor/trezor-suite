@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, ButtonProps } from '@trezor/components';
+import { Button, ButtonProps, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { useTranslation } from '@suite-hooks';
 
 const StyledButton = styled(Button)`
     min-width: 180px;
@@ -19,11 +20,35 @@ export const ContinueButton = (props: ButtonProps) => (
     </StyledButton>
 );
 
-export const InstallButton = (props: ButtonProps) => (
+const InstallButtonCommon = (props: ButtonProps) => (
     <StyledButton {...props} data-test="@firmware/install-button">
         {props.children || <Translation id="TR_INSTALL" />}
     </StyledButton>
 );
+
+interface InstallButtonProps extends ButtonProps {
+    multipleDevicesConnected?: boolean;
+}
+
+export const InstallButton = (props: InstallButtonProps) => {
+    const { translationString } = useTranslation();
+    if (props.multipleDevicesConnected) {
+        return (
+            <Tooltip
+                cursor="default"
+                maxWidth={200}
+                placement="bottom"
+                interactive={false}
+                hideOnClick={false}
+                content={<div>{translationString('TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES')}</div>}
+            >
+                <InstallButtonCommon {...props} isDisabled />
+            </Tooltip>
+        );
+    }
+
+    return <InstallButtonCommon {...props} />;
+};
 
 export const CloseButton = (props: ButtonProps) => (
     <Button {...props}>

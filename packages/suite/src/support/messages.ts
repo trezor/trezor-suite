@@ -2117,6 +2117,10 @@ export default defineMessages({
         description: 'Heading in onboarding when user is about to install Bitcoin-only firmware',
         id: 'TR_INSTALL_BITCOIN_FW',
     },
+    TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES: {
+        defaultMessage: 'Installing firmware with multiple devices connected is not allowed.',
+        id: 'TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES',
+    },
     TR_FIRMWARE_SUBHEADING_NONE: {
         defaultMessage:
             'Your Trezor is shipped without any firmware. Your device is ready to receive the latest full-featured firmware in order to be used safely. If you are a super BTC fan, feel free to install <button>Bitcoin-only firmware</button>.',
