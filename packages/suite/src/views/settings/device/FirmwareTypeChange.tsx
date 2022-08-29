@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
-import { getFwType, getFwVersion, isDeviceBitcoinOnly } from '@suite-utils/device';
+import { getFwType, getFwVersion } from '@suite-utils/device';
 import { Button } from '@trezor/components';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { SettingsAnchor } from '@suite-constants/anchors';
@@ -38,9 +38,8 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
 
     const currentFwVersion = getFwVersion(device);
     const currentFwType = getFwType(device);
-    const actionButtonId = isDeviceBitcoinOnly(device)
-        ? 'TR_SWITCH_TO_UNIVERSAL'
-        : 'TR_SWITCH_TO_BITCOIN';
+    const actionButtonId =
+        device.firmwareType === 'bitcoin-only' ? 'TR_SWITCH_TO_UNIVERSAL' : 'TR_SWITCH_TO_BITCOIN';
 
     const handleAction = () => {
         goto('firmware-type', {

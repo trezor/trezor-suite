@@ -170,6 +170,10 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
         state: undefined,
         features,
         unavailableCapabilities: {},
+        firmwareType:
+            feat && feat.capabilities && !feat?.capabilities.includes('Capability_Bitcoin_like')
+                ? 'bitcoin-only'
+                : 'regular',
         ...dev,
         type: 'acquired',
     } as Device;
