@@ -46,8 +46,8 @@ const ChangelogWrapper = styled.div`
         line-height: 1.57;
     }
 
-    /* 
-    Styling similar to  Link component. 
+    /*
+    Styling similar to  Link component.
     It seems overriding via linkReference renderer doesn't work for some reason
     */
     a {

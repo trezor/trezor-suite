@@ -1,5 +1,5 @@
 # For suite-dev, the idea behind docker is that we install, build and run dev server for user without any
-# dependencies on host (yarn, node). But all source files remain on host. We must ensure that permissions 
+# dependencies on host (yarn, node). But all source files remain on host. We must ensure that permissions
 # of newly created files in docker (entire monorepo is mounted volume) match users default.
 # Otherwise user would run into permission denied problem when trying to rebuild project outside docker.
 ## Use a proxy or fallback to no proxy at all (direct access to Docker Hub).

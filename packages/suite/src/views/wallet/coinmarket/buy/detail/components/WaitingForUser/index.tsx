@@ -95,7 +95,7 @@ const WaitingForUser = ({ trade, account, providerName }: Props) => {
             <PaymentButton onClick={goToPayment} isLoading={isWorking} isDisabled={isWorking}>
                 <Translation id={translations.buttonTextTranslationId} />
             </PaymentButton>
-            {/* TODO add a possibility in the future to cancel the transaction by the user                
+            {/* TODO add a possibility in the future to cancel the transaction by the user
             <CancelButton isWhite variant="tertiary" onClick={cancelTrade}>
                 <Translation id="TR_BUY_DETAIL_SUBMITTED_CANCEL" />
             </CancelButton> */}

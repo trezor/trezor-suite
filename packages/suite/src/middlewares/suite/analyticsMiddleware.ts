@@ -20,7 +20,7 @@ import type { AppState, Action, Dispatch } from '@suite-types';
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
     - trezor model
-    - firmware version 
+    - firmware version
     - transport (webusb/bridge) and its version
     - backup type (shamir/bip39)
 */
