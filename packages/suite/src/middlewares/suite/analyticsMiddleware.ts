@@ -1,11 +1,9 @@
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
-
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import {
-    isDeviceBitcoinOnly,
     getPhysicalDeviceCount,
     getFwVersion,
     isDeviceInBootloader,
@@ -75,7 +73,7 @@ const analyticsMiddleware =
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
                             totalInstances: state.devices.length,
-                            isBitcoinOnly: isDeviceBitcoinOnly(action.payload),
+                            isBitcoinOnly: action.payload.firmwareType === 'bitcoin-only',
                             totalDevices: getPhysicalDeviceCount(state.devices),
                             language: features.language,
                             model: features.model,

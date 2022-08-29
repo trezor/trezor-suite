@@ -105,7 +105,9 @@ const firmwareInstall =
             // unless the user wants to switch firmware type
             let toBitcoinOnlyFirmware = firmwareType === FirmwareType.BitcoinOnly;
             if (!firmwareType) {
-                toBitcoinOnlyFirmware = !prevDevice ? false : isDeviceBitcoinOnly(prevDevice);
+                toBitcoinOnlyFirmware = !prevDevice
+                    ? false
+                    : prevDevice.firmwareType === 'bitcoin-only';
             }
 
             const intermediary = model === 1 && !toRelease.isLatest;

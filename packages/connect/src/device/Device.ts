@@ -116,6 +116,8 @@ export class Device extends EventEmitter {
 
     networkTypeState: NETWORK.NetworkType[] = [];
 
+    firmwareType: 'regular' | 'bitcoin-only' = 'regular';
+
     constructor(transport: Transport, descriptor: DeviceDescriptor) {
         super();
 
@@ -478,6 +480,13 @@ export class Device extends EventEmitter {
 
         this.features = feat;
         this.featuresNeedsReload = false;
+
+        this.firmwareType =
+            feat.capabilities &&
+            feat.capabilities.length > 0 &&
+            !feat.capabilities.includes('Capability_Bitcoin_like')
+                ? 'bitcoin-only'
+                : 'regular';
     }
 
     isUnacquired() {
@@ -704,6 +713,7 @@ export class Device extends EventEmitter {
             mode: this.getMode(),
             firmware: this.firmwareStatus,
             firmwareRelease: this.firmwareRelease,
+            firmwareType: this.firmwareType,
             features: this.features,
             unavailableCapabilities: this.unavailableCapabilities,
         };

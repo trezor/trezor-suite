@@ -13,6 +13,8 @@ export type UnavailableCapability =
     | 'update-required'
     | 'trezor-connect-outdated';
 
+export type FirmwareType = 'bitcoin-only' | 'regular';
+
 // NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
 // in ideal/expected setup this object should be empty but given setup might have exceptions.
 // key = coin shortcut lowercase (ex: btc, eth, xrp) OR field declared in coins.json "supportedFirmware.capability"
@@ -26,6 +28,7 @@ export type KnownDevice = {
     error?: typeof undefined;
     firmware: DeviceFirmwareStatus;
     firmwareRelease?: ReleaseInfo | null;
+    firmwareType?: FirmwareType;
     status: DeviceStatus;
     mode: DeviceMode;
     state?: string;
@@ -42,6 +45,7 @@ export type UnknownDevice = {
     features?: typeof undefined;
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
+    firmwareType?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;
     state?: typeof undefined;
@@ -57,6 +61,7 @@ export type UnreadableDevice = {
     features?: typeof undefined;
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
+    firmwareType?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;
     state?: typeof undefined;

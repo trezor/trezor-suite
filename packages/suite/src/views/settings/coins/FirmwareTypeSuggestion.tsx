@@ -7,7 +7,6 @@ import { Translation } from '@suite-components';
 import { TextColumn } from '@suite-components/Settings';
 import { SettingsAnchor } from '@suite-constants/anchors';
 import { useActions, useDevice } from '@suite-hooks';
-import { isDeviceBitcoinOnly } from '@suite-utils/device';
 import { Button, Card } from '@trezor/components';
 
 const StyledCard = styled(Card)`
@@ -29,7 +28,7 @@ export const FirmwareTypeSuggestion = () => {
     });
     const { device } = useDevice();
 
-    const bitcoinOnlyFirmware = device && isDeviceBitcoinOnly(device);
+    const bitcoinOnlyFirmware = device?.firmwareType === 'bitcoin-only';
     const translationId = bitcoinOnlyFirmware
         ? 'TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION'
         : 'TR_SETTINGS_COINS_BITCOIN_FIRMWARE_SUGGESTION';

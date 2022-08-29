@@ -11,12 +11,7 @@ import { Translation } from '@suite-components';
 import { useDevice, useFirmware, useOnboarding, useSelector } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import { FirmwareType, TrezorDevice } from '@suite-types';
-import {
-    getFwVersion,
-    getFwUpdateVersion,
-    isDeviceBitcoinOnly,
-    getPhysicalDeviceCount,
-} from '@suite-utils/device';
+import { getFwVersion, getFwUpdateVersion, getPhysicalDeviceCount } from '@suite-utils/device';
 
 const InfoRow = styled.div`
     align-items: center;
@@ -130,7 +125,7 @@ export const FirmwareInitial = ({
         currentFwVersion &&
         availableFwVersion === currentFwVersion
     );
-    const isCurrentlyBitcoinOnly = isDeviceBitcoinOnly(device);
+    const isCurrentlyBitcoinOnly = device.firmwareType === 'bitcoin-only';
     const targetFirmwareType =
         // switching to Universal
         (isCurrentlyBitcoinOnly && shouldSwitchFirmwareType) ||
