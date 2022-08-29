@@ -221,7 +221,7 @@ export interface ReviewTransactionData {
     };
 }
 
-export type TransactionFiatRateUpdateObject = {
+export type TransactionFiatRateUpdatePayload = {
     txid: string;
     account: Account;
     updateObject: Partial<WalletAccountTransaction>;

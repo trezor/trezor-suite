@@ -18,7 +18,7 @@ import {
     RATE_REMOVE,
 } from './constants/fiatRatesConstants';
 
-import { TransactionFiatRateUpdateObject } from '@suite-common/wallet-types';
+import { TransactionFiatRateUpdatePayload } from '@suite-common/wallet-types';
 import { Network, Account, CoinFiatRates, TickerId } from '@wallet-types';
 import { createAction } from '@reduxjs/toolkit';
 
@@ -60,7 +60,7 @@ export const remove = (ticker: TickerId): FiatRatesAction => ({
 
 export const updateFiatRates = createAction(
     TX_FIAT_RATE_UPDATE,
-    (payload: TransactionFiatRateUpdateObject[]) => ({
+    (payload: TransactionFiatRateUpdatePayload[]) => ({
         payload,
     }),
 );

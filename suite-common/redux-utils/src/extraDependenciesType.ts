@@ -4,7 +4,7 @@ import {
     Account,
     FeeInfo,
     WalletAccountTransaction,
-    TransactionFiatRateUpdateObject,
+    TransactionFiatRateUpdatePayload,
 } from '@suite-common/wallet-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -41,8 +41,8 @@ export type ExtraDependencies = {
         setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         fiatRateUpdate: ActionCreatorWithPreparedPayload<
-            [payload: TransactionFiatRateUpdateObject[]],
-            TransactionFiatRateUpdateObject[]
+            [payload: TransactionFiatRateUpdatePayload[]],
+            TransactionFiatRateUpdatePayload[]
         >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
     };
