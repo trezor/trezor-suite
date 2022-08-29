@@ -6813,4 +6813,8 @@ export default defineMessages({
         id: 'TR_DISABLING_TOR',
         defaultMessage: 'Disabling Tor',
     },
+    TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS: {
+        id: 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS',
+        defaultMessage: 'Firmware authenthic',
+    },
 });

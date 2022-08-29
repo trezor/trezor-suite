@@ -98,6 +98,8 @@ const NotificationRenderer = ({ notification, render }: NotificationRendererProp
             return error(render, notification, 'TOAST_GENERIC_ERROR');
         case 'clear-storage':
             return success(render, notification, 'TR_STORAGE_CLEARED');
+        case 'firmware-check-authenticity-success':
+            return success(render, notification, 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS');
         case 'bridge-dev-restart':
             return info(
                 render,
