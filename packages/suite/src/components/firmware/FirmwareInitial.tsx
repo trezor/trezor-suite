@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { useTheme, Button, Icon } from '@trezor/components';
+import { useTheme, Icon } from '@trezor/components';
 import {
     ConnectDevicePromptManager,
     OnboardingStepBox,
     OnboardingButtonSkip,
 } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { useDevice, useFirmware, useOnboarding } from '@suite-hooks';
+import { useDevice, useFirmware, useOnboarding, useSelector } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import { FirmwareType, TrezorDevice } from '@suite-types';
-import { getFwVersion, getFwUpdateVersion, isDeviceBitcoinOnly } from '@suite-utils/device';
+import {
+    getFwVersion,
+    getFwUpdateVersion,
+    isDeviceBitcoinOnly,
+    getPhysicalDeviceCount,
+} from '@suite-utils/device';
 
 const InfoRow = styled.div`
     align-items: center;
@@ -89,6 +94,8 @@ export const FirmwareInitial = ({
     const { setStatus, status } = useFirmware();
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const theme = useTheme();
+    const devices = useSelector(state => state.devices);
+    const physicalDeviceCount = getPhysicalDeviceCount(devices);
 
     useEffect(() => {
         // When the user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
@@ -160,11 +167,15 @@ export const FirmwareInitial = ({
                     <InstallButton
                         variant="secondary"
                         onClick={() => installFirmware(FirmwareType.Universal)}
+                        multipleDevicesConnected={physicalDeviceCount > 1}
                     >
                         <Translation id="TR_INSTALL_UNIVERSAL" />
                     </InstallButton>
 
-                    <InstallButton onClick={() => installFirmware(FirmwareType.BitcoinOnly)}>
+                    <InstallButton
+                        onClick={() => installFirmware(FirmwareType.BitcoinOnly)}
+                        multipleDevicesConnected={physicalDeviceCount > 1}
+                    >
                         <Translation id="TR_INSTALL_BITCOIN_ONLY" />
                     </InstallButton>
                 </ButtonRow>
@@ -195,7 +206,12 @@ export const FirmwareInitial = ({
             body: cachedDevice?.firmwareRelease ? (
                 <FirmwareOffer device={cachedDevice} />
             ) : undefined,
-            innerActions: <InstallButton onClick={() => installFirmware(FirmwareType.Universal)} />,
+            innerActions: (
+                <InstallButton
+                    onClick={() => installFirmware(FirmwareType.Universal)}
+                    multipleDevicesConnected={physicalDeviceCount > 1}
+                />
+            ),
         };
     } else if (device.mode === 'bootloader' && !standaloneFwUpdate) {
         // We can check if device.mode is bootloader only after checking that firmware !== none (condition above)
@@ -240,6 +256,7 @@ export const FirmwareInitial = ({
                         updateAnalytics({ firmware: 'update' });
                     }}
                     data-test="@firmware/get-ready-button"
+                    multipleDevicesConnected={physicalDeviceCount > 1}
                 />
             ),
             outerActions:
