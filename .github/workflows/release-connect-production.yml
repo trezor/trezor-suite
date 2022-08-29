@@ -1,0 +1,52 @@
+name: "[Release] @trezor/connect production"
+
+on:
+  push:
+    branches:
+      - "release/connect-v9"
+
+jobs:
+  release-connect-web-staging:
+    environment: staging
+    name: Release @trezor/connect web production
+    runs-on: ubuntu-latest
+    env:
+      BUCKET_NAME: "connect.trezor.io"
+      AWS_REGION: "eu-central-1"
+    steps:
+      - name: Configure aws credentials
+
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: #TODO!: ARN_ROLE_FRO_DEPLOY_TO STAGING CONNET
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Upload suite-web and suite-web-landing
+        run: |
+          aws s3 sync s3://staging-connect.trezor.io/ s3://connect.trezor.io/ #TODO! make sure buckets are synced before use
+          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+
+  release-connect-web-production:
+    environment: production
+    name: Release @trezor/connect web production
+    runs-on: ubuntu-latest
+    env:
+      BUCKET_NAME: "connect.trezor.io"
+      AWS_REGION: "eu-central-1"
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: #TODO!: ARN_ROLE_FRO_DEPLOY_TO CONNET
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Upload suite-web and suite-web-landing
+        run: |
+          aws s3 sync s3://staging-connect.trezor.io/ s3://connect.trezor.io/ #TODO! make sure buckets are synced before use
+          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+
+  release-connect-npm-production:
+    name: Release @trezor/connect npm production
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+    #TODO! npmr release from build step gitlab

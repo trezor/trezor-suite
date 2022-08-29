@@ -1,0 +1,8 @@
+name: "[Build] @trezor/suite-desktop develop"
+
+on:
+  push:
+    branches:
+      - "develop"
+
+      #TODO!

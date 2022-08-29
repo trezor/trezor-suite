@@ -1,0 +1,68 @@
+name: "[Build] @trezor/suite-web"
+
+on:
+  workflow_call:
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    env:
+      ASSET_PREFIX: "/suite-web/${{github.head_ref}}/web"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: "Build suite-web"
+        run: |
+          echo $ASSET_PREFIX
+          yarn install --immutable
+          yarn workspace @trezor/suite-web build
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: suite-web-build
+          path: packages/suite-web/build
+
+  build-landing:
+    runs-on: ubuntu-latest
+    env:
+      ASSET_PREFIX: "/suite-web/${{github.head_ref}}/"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: "Build suite-web landing"
+        run: |
+          echo $ASSET_PREFIX
+          yarn install --immutable
+          yarn workspace @trezor/suite-web-landing build
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: suite-web-landing-build
+          path: packages/suite-web-landing/build
+
+  deploy-builds:
+    needs: [build-web, build-landing]
+    runs-on: ubuntu-latest
+    env:
+      BUCKET_NAME: "suite-dev.trezor.io"
+      AWS_REGION: "eu-central-1"
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/github-actions-trezor-suite #TODO! add role arn to secret for develop
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Archive code coverage results
+        uses: actions/download-artifact@v3
+      - name: Upload suite-web and suite-web-landing
+        run: |
+          aws s3 cp -r packages/suite-web-landing/build s3://${{ env.BUCKET_NAME }}/${{github.head_ref}}
+          aws s3 cp -r packages/suite-web/build s3://${{ env.BUCKET_NAME }}/${{github.head_ref}}/web
