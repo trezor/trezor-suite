@@ -5,9 +5,12 @@ import { session } from 'electron';
 // of them
 export const createInterceptor = (): RequestInterceptor => {
     let beforeRequestListeners: BeforeRequestListener[] = [];
-
     const filter = { urls: ['*://*/*'] };
-    session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
+
+    const handleRequest = (
+        details: Electron.OnBeforeRequestListenerDetails,
+        callback: (response: Electron.Response) => void,
+    ) => {
         for (let i = 0; i < beforeRequestListeners.length; ++i) {
             const res = beforeRequestListeners[i](details);
             if (res) {
@@ -16,7 +19,14 @@ export const createInterceptor = (): RequestInterceptor => {
             }
         }
         callback({ cancel: false });
-    });
+    };
+
+    // Adds listener for electron-updater session.
+    const updaterSession = session.fromPartition('electron-updater');
+    updaterSession.webRequest.onBeforeRequest(filter, handleRequest);
+
+    // Adds listener for electron default session.
+    session.defaultSession.webRequest.onBeforeRequest(filter, handleRequest);
 
     const onBeforeRequest = (listener: BeforeRequestListener) => {
         beforeRequestListeners.push(listener);
