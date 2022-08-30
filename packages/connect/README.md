@@ -34,18 +34,18 @@ import TrezorConnect from '@trezor/connect';
 
 For more instructions [refer to this document](../../docs/packages/connect/index.md)
 
-## Version 9+ (experimental)
+## Version 9 (stable)
 
 Since version 9 we are adopting a new versioning strategy. With every release, we are going to update two urls
 
--   A] The latest release will always be available on https://connect.trezor.io/9/trezor-connect.js.
--   B] For those who like to have more control over their dependencies, there will be also a new url created in form of https://connect.trezor.io/9.1../trezor-connect.js. Please note that these endpoints will not receive any further updates including security updates.
+-   A) The latest release will always be available on https://connect.trezor.io/9/trezor-connect.js.
+-   B) For those who like to have more control over their dependencies, there will be also a new url created in form of https://connect.trezor.io/9.1../trezor-connect.js. Please note that these endpoints will not receive any further updates including security updates.
 
-Version 9+ will be available as `@trezor/connect` and `@trezor/connect-web` npm packages.
+Version 9 is available as `@trezor/connect` and `@trezor/connect-web` npm packages.
 
-## Version 8 (stable)
+## Version 8 (legacy)
 
-Currently, we are at version 8, which has an url https://connect.trezor.io/8/trezor-connect.js.
+Legacy version 8 is accessible from url https://connect.trezor.io/8/trezor-connect.js.
 
 Version 8 is available as `trezor-connect` npm package.
 
