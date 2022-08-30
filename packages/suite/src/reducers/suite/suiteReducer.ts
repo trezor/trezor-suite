@@ -17,6 +17,7 @@ export interface DebugModeOptions {
     invityServerEnvironment?: InvityServerEnvironment;
     oauthServerEnvironment?: OAuthServerEnvironment;
     showDebugMenu: boolean;
+    checkFirmwareAuthenticity: boolean;
 }
 
 export interface AutodetectSettings {
@@ -98,6 +99,7 @@ const initialState: SuiteState = {
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
+            checkFirmwareAuthenticity: false,
         },
         autodetect: {
             language: true,

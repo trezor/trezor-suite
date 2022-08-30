@@ -61,6 +61,7 @@ export const connectInitThunk = createThunk(
             'cardanoSignTransaction',
             'backupDevice',
             'recoveryDevice',
+            'checkFirmwareAuthenticity',
         ] as const;
 
         wrappedMethods.forEach(key => {
