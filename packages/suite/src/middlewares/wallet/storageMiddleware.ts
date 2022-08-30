@@ -3,13 +3,7 @@ import { db } from '@suite/storage';
 
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import {
-    DISCOVERY,
-    GRAPH,
-    SEND,
-    COINMARKET_COMMON,
-    FORM_DRAFT,
-} from '@wallet-actions/constants';
+import { DISCOVERY, GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from '@wallet-actions/constants';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@suite-common/wallet-utils';
 import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
@@ -22,7 +16,12 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
-import { accountsActions, blockchainActions, transactionsActions, fiatRatesActions} from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    blockchainActions,
+    transactionsActions,
+    fiatRatesActions,
+} from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {

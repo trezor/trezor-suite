@@ -6,7 +6,7 @@ import {
     prepareAccountsReducer,
     prepareFiatRatesReducer,
     prepareTransactionsReducer,
-    prepareBlockchainReducer
+    prepareBlockchainReducer,
 } from '@suite-common/wallet-core';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
