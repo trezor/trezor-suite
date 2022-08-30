@@ -9,6 +9,7 @@ import { getCustomBackends } from '@suite-common/wallet-utils';
 import { sortByTimestamp } from '@suite-utils/device';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
+import * as firmwareActions from '@firmware-actions/firmwareActions';
 import { TorStatus } from '@suite-types';
 import { SUITE, METADATA } from './constants';
 import type { Locale } from '@suite-config/languages';
@@ -523,7 +524,7 @@ const updatePassphraseMode = (device: TrezorDevice, hidden: boolean): SuiteActio
 export const authorizeDevice =
     () =>
     async (dispatch: Dispatch, getState: GetState): Promise<boolean> => {
-        const { device } = getState().suite;
+        const { device, settings } = getState().suite;
         if (!device) return false;
         const isDeviceReady =
             device.connected &&
@@ -532,6 +533,10 @@ export const authorizeDevice =
             device.mode === 'normal' &&
             device.firmware !== 'required';
         if (!isDeviceReady) return false;
+
+        if (settings.debug.checkFirmwareAuthenticity) {
+            await dispatch(firmwareActions.checkFirmwareAuthenticity());
+        }
 
         const response = await TrezorConnect.getDeviceState({
             device: {
