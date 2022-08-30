@@ -48,14 +48,12 @@ export const extraDependencies: ExtraDependencies = {
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
-        selectBlockchain: (state: AppState) => state.wallet.blockchain,
     },
     actions: {
         setAccountLoadedMetadata: metadataActions.setAccountLoaded,
         setAccountAddMetadata: metadataActions.setAccountAdd,
         setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
         changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
-        blockchainConnected: blockchainActions.blockchainConnected,
         lockDevice: suiteActions.lockDevice,
     },
     actionTypes: {

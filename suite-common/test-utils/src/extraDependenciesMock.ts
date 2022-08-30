@@ -54,7 +54,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', []),
         selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),
-        selectBlockchain: mockSelector('selectBlockchain', testMocks.mockedBlockchainNetworks),
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
     },
     actions: {
@@ -62,7 +61,6 @@ export const extraDependenciesMock: ExtraDependencies = {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
         setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
         changeWalletSettingsNetworks: mockAction('changeWalletSettingsNetworks'),
-        blockchainConnected: mockAction('blockchainConnected'),
         lockDevice: mockAction('lockDevice'),
     },
     actionTypes: {

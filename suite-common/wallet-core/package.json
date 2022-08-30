@@ -21,8 +21,8 @@
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-types": "*",
         "@suite-common/wallet-utils": "*",
-        "@trezor/utils": "*",
         "@trezor/connect": "9.0.0",
+        "@trezor/utils": "*",
         "date-fns": "^2.29.1"
     },
     "devDependencies": {

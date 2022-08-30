@@ -18,6 +18,7 @@ import { fiatRatesActions, actionPrefix } from './fiatRatesActions';
 import { selectCoins } from './fiatRatesReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { selectTransactions } from '../transactions/transactionsReducer';
+import { selectBlockchainState } from '../blockchain/blockchainReducer';
 
 let staleRatesTimeout: ReturnType<typeof setInterval>;
 let lastWeekTimeout: ReturnType<typeof setInterval>;
@@ -72,11 +73,11 @@ export const getFiatStaleTickersThunk = createThunk(
         { extra, getState },
     ) => {
         const {
-            selectors: { selectEnabledNetworks, selectBlockchain },
+            selectors: { selectEnabledNetworks },
         } = extra;
         const enabledNetworks = selectEnabledNetworks(getState());
         const fiat = selectCoins(getState());
-        const blockchain = selectBlockchain(getState());
+        const blockchain = selectBlockchainState(getState());
 
         const watchedCoinTickers = FIAT.tickers
             .filter(t => enabledNetworks.includes(t.symbol))
