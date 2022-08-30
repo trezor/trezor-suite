@@ -249,7 +249,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
             // notification from the backend may be delayed.
             // modify affected transaction(s) in the reducer until the real account update occurs.
             // this will update transaction details (like time, fee etc.)
-            dispatch(replaceTransactionThunk({ account, tx: precomposedTx, newTxid: txid }));
+            dispatch(replaceTransactionThunk({ tx: precomposedTx, newTxid: txid }));
         }
 
         // notification from the backend may be delayed.

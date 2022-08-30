@@ -7,7 +7,6 @@ import {
 import {
     findTransactions,
     formatData,
-    formatNetworkAmount,
     getAccountTransactions,
     isTrezorConnectBackendType,
 } from '@suite-common/wallet-utils';
@@ -27,11 +26,9 @@ export const replaceTransactionThunk = createThunk(
     `${modulePrefix}/replaceTransactionThunk`,
     (
         {
-            account,
             tx,
             newTxid,
         }: {
-            account: Account;
             tx: PrecomposedTransactionFinal;
             newTxid: string;
         },
@@ -43,7 +40,6 @@ export const replaceTransactionThunk = createThunk(
 
         // find all transactions to replace, they may be related to another account
         const transactions = findTransactions(tx.prevTxid, walletTransactions);
-        const newFee = formatNetworkAmount(tx.fee, account.symbol);
         const newBaseFee = parseInt(tx.fee, 10);
 
         // prepare replace actions for txs
@@ -55,7 +51,7 @@ export const replaceTransactionThunk = createThunk(
                 tx: {
                     ...t.tx,
                     txid: newTxid,
-                    fee: newFee,
+                    fee: tx.fee,
                     rbf: !!tx.rbf,
                     blockTime: Math.round(new Date().getTime() / 1000),
                     // TODO: details: {}, is it worth it?
@@ -68,7 +64,7 @@ export const replaceTransactionThunk = createThunk(
             }
 
             if (payload.tx.type === 'self') {
-                payload.tx.amount = newFee;
+                payload.tx.amount = tx.fee;
             }
             // update tx rbfParams
             if (payload.tx.rbfParams) {
