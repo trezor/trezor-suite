@@ -113,7 +113,7 @@ describe('cardanoStakingActions', () => {
                     },
                     blockHeight: 8,
                 } as BlockchainBlock,
-                ts: getUnixTime(new Date()) + 1000,
+                timestamp: getUnixTime(new Date()) + 1000,
             }),
         );
         const stillPending = await store.dispatch(
@@ -129,7 +129,7 @@ describe('cardanoStakingActions', () => {
                     coin: { shortcut: 'ada' },
                     blockHeight: 15,
                 } as BlockchainBlock,
-                ts: getUnixTime(new Date()) + 7300,
+                timestamp: getUnixTime(new Date()) + 7300,
             }),
         );
 

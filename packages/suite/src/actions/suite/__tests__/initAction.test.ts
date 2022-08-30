@@ -2,7 +2,6 @@
 import { configureStore } from '@suite/support/tests/configureStore';
 
 import { SUITE, ROUTER, ANALYTICS, MESSAGE_SYSTEM } from '@suite-actions/constants';
-import { BLOCKCHAIN } from '@wallet-actions/constants';
 
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
@@ -20,6 +19,7 @@ import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 import { validJws, DEV_JWS_PUBLIC_KEY } from '@suite-actions/__fixtures__/messageSystemActions';
 
 import type { AppState } from '@suite-types';
+import { blockchainActions } from '@suite-common/wallet-core';
 
 process.env.PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
 jest.mock('@trezor/connect', () => global.JestMocks.getTrezorConnect({}));
@@ -75,7 +75,7 @@ const fixtures: Fixture[] = [
             SUITE.LOCK_ROUTER,
             connectInitThunk.pending.type,
             connectInitThunk.fulfilled.type,
-            BLOCKCHAIN.UPDATE_FEE,
+            blockchainActions.updateFee.type,
             SUITE.READY,
         ],
     },
@@ -93,7 +93,7 @@ const fixtures: Fixture[] = [
             MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
             connectInitThunk.pending.type,
             connectInitThunk.fulfilled.type,
-            BLOCKCHAIN.UPDATE_FEE,
+            blockchainActions.updateFee.type,
             SUITE.APP_CHANGED,
             ROUTER.LOCATION_CHANGE,
             SUITE.READY,
@@ -112,7 +112,7 @@ const fixtures: Fixture[] = [
             MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE,
             connectInitThunk.pending.type,
             connectInitThunk.fulfilled.type,
-            BLOCKCHAIN.UPDATE_FEE,
+            blockchainActions.updateFee.type,
             ROUTER.LOCATION_CHANGE,
             SUITE.READY,
         ],

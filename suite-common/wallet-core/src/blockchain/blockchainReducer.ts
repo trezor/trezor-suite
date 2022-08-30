@@ -111,7 +111,6 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
     blockchainInitialState,
     (builder, extra) => {
         builder
-            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain)
             .addCase(
                 TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT as string,
                 (state, { payload }: PayloadAction<BlockchainInfo>) => {
@@ -160,7 +159,8 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
             })
             .addCase(blockchainActions.resetBackend, (state, action) => {
                 delete state[action.payload.coin].backends.selected;
-            });
+            })
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain);
     },
 );
 

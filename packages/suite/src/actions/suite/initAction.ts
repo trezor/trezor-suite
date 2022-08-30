@@ -51,7 +51,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     // 6. init backends
-    await dispatch(initBlockchainThunk()).catch(err => console.error(err));
+    await dispatch(initBlockchainThunk())
+        .unwrap()
+        .catch(err => console.error(err));
 
     // 7. dispatch initial location change
     dispatch(routerActions.init());

@@ -10,7 +10,7 @@ import {
     onBlockchainConnectThunk,
     onBlockchainDisconnectThunk,
     onBlockMinedThunk,
-    onNotificationThunk,
+    onBlockchainNotificationThunk,
     preloadFeeInfoThunk,
     setCustomBackendThunk,
     updateFeeInfoThunk,
@@ -140,7 +140,7 @@ describe('Blockchain Actions', () => {
         it(`onNotification: ${f.description}`, async () => {
             // TrezorConnect.setTestFixtures(f.connect);
             const store = initStore(getInitialState(f.initialState as Args));
-            await store.dispatch(onNotificationThunk(f.params as any));
+            await store.dispatch(onBlockchainNotificationThunk(f.params as any));
             console.log(filterThunkActionTypes(store.getActions()));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.getAccountInfo).toBeCalledTimes(f.getAccountInfo);

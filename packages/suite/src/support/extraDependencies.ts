@@ -12,7 +12,7 @@ import { getAccountKey } from '@suite-common/wallet-utils';
 import * as metadataActions from '@suite-actions/metadataActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { selectIsPendingTransportEvent } from '../reducers/suite/deviceReducer';
+import { selectIsPendingTransportEvent } from '@suite-reducers/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { isWeb } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
@@ -37,8 +37,8 @@ const connectInitSettings = {
 export const extraDependencies: ExtraDependencies = {
     thunks: {
         notificationsAddEvent: addEvent,
-        validatePendingTxOnBlock,
-        fetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
+        cardanoValidatePendingTxOnBlock: validatePendingTxOnBlock,
+        cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>

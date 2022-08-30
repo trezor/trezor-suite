@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import type { Timeout } from '@trezor/type-utils';
 
@@ -11,7 +11,7 @@ const connected = createAction(`${actionsPrefix}/CONNECTED`, (payload: NetworkSy
 }));
 
 type ReconnectTimeoutStartPayload = {
-    symbol: Network['symbol'];
+    symbol: NetworkSymbol;
     id: Timeout;
     time: number;
     count: number;
@@ -29,7 +29,7 @@ const updateFee = createAction(`${actionsPrefix}/updateFee`, (payload: Partial<N
 
 const synced = createAction(
     `${actionsPrefix}/synced`,
-    (payload: { symbol: Network['symbol']; timeout: Timeout }) => ({
+    (payload: { symbol: NetworkSymbol; timeout: Timeout }) => ({
         payload,
     }),
 );

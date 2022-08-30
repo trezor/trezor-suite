@@ -276,7 +276,7 @@ const tryClearTimeout = (timeout?: Timeout) => {
     if (timeout) clearTimeout(timeout);
 };
 
-export const syncAccountsThunk = createThunk(
+export const syncAccountsWithBlockchainThunk = createThunk(
     `${actionsPrefix}/syncAccountsThunk`,
     async (symbol: NetworkSymbol, { getState, dispatch }) => {
         const accounts = selectAccounts(getState());
@@ -294,7 +294,7 @@ export const syncAccountsThunk = createThunk(
         // Second clear, just to be sure that no other sync was planned while executing this one
         tryClearTimeout(blockchainInfo.syncTimeout);
         const timeout = setTimeout(
-            () => dispatch(syncAccountsThunk(symbol)),
+            () => dispatch(syncAccountsWithBlockchainThunk(symbol)),
             ACCOUNTS_SYNC_INTERVAL,
         );
 
@@ -313,7 +313,7 @@ export const onBlockchainConnectThunk = createThunk(
         await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true }));
         await dispatch(updateFeeInfoThunk(network.symbol));
         // update accounts for connected network
-        await dispatch(syncAccountsThunk(network.symbol));
+        await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
         dispatch(blockchainActions.connected(network.symbol));
     },
 );
@@ -323,12 +323,12 @@ export const onBlockMinedThunk = createThunk(
     (block: BlockchainBlock, { dispatch }) => {
         const symbol = block.coin.shortcut.toLowerCase();
         if (isNetworkSymbol(symbol)) {
-            return dispatch(syncAccountsThunk(symbol));
+            return dispatch(syncAccountsWithBlockchainThunk(symbol));
         }
     },
 );
 
-export const onNotificationThunk = createThunk(
+export const onBlockchainNotificationThunk = createThunk(
     `${blockchainActions}/onNotificationThunk`,
     (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const {
@@ -377,7 +377,7 @@ export const onNotificationThunk = createThunk(
         // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
         // ripple-lib doesn't send "pending" txs in history
         if (account.networkType !== 'ripple') {
-            dispatch(syncAccountsThunk(symbol));
+            dispatch(syncAccountsWithBlockchainThunk(symbol));
         }
     },
 );

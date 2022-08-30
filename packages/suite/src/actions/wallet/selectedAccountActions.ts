@@ -1,12 +1,12 @@
 import { ROUTER, SUITE } from '@suite-actions/constants';
-import { DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
 
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import { getSelectedAccount } from '@wallet-utils/accountUtils';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { SelectedAccountStatus, SelectedAccountWatchOnlyMode } from '@suite-common/wallet-types';
 
 import { Action, Dispatch, GetState } from '@suite-types';
@@ -209,7 +209,12 @@ const actions = [
     accountsActions.removeAccount.type,
     accountsActions.updateAccount.type,
     accountsActions.changeAccountVisibility.type,
-    ...Object.values(BLOCKCHAIN).filter(v => typeof v === 'string'),
+    blockchainActions.setBackend.type,
+    blockchainActions.synced.type,
+    blockchainActions.connected.type,
+    blockchainActions.reconnectTimeoutStart.type,
+    blockchainActions.resetBackend.type,
+    blockchainActions.updateFee.type,
     ...Object.values(DISCOVERY).filter(v => typeof v === 'string'),
 ];
 

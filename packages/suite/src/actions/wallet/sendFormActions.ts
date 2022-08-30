@@ -4,7 +4,7 @@ import {
     accountsActions,
     addFakePendingTxThunk,
     replaceTransactionThunk,
-    syncAccountsThunk,
+    syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -268,7 +268,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         if (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
-            dispatch(syncAccountsThunk(account.symbol));
+            dispatch(syncAccountsWithBlockchainThunk(account.symbol));
         }
 
         // handle metadata (labeling) from send form
@@ -450,7 +450,7 @@ export const pushRawTransaction =
                     txid: sentTx.payload.txid,
                 }),
             );
-            dispatch(syncAccountsThunk(coin));
+            dispatch(syncAccountsWithBlockchainThunk(coin));
         } else {
             console.warn(sentTx.payload.error);
             dispatch(

@@ -181,7 +181,7 @@ export interface RbfTransactionParams {
 export interface WalletAccountTransaction extends AccountTransaction {
     deviceState: string;
     descriptor: string;
-    symbol: Network['symbol'];
+    symbol: NetworkSymbol;
     rates?: TimestampedRates['rates'];
     rbfParams?: RbfTransactionParams;
 }

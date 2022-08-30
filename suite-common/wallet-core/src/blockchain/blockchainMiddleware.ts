@@ -6,7 +6,7 @@ import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS, BlockchainEvent } from
 import {
     onBlockchainConnectThunk,
     onBlockMinedThunk,
-    onNotificationThunk,
+    onBlockchainNotificationThunk,
     updateFeeInfoThunk,
 } from './blockchainThunks';
 
@@ -15,7 +15,7 @@ export const blockchainMiddleware = createMiddlewareWithExtraDeps(
         // propagate action to reducers
         next(action);
 
-        const { validatePendingTxOnBlock, fetchTrezorPools } = extra.thunks;
+        const { cardanoValidatePendingTxOnBlock, cardanoFetchTrezorPools } = extra.thunks;
 
         switch (action.type) {
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
@@ -24,7 +24,9 @@ export const blockchainMiddleware = createMiddlewareWithExtraDeps(
                 // once suite connects to blockchain, fetch additional data required
                 // for cardano staking if applicable
                 if (['ADA', 'tADA'].includes(action.payload.coin.shortcut)) {
-                    dispatch(fetchTrezorPools(action.payload.coin.shortcut as 'ADA' | 'tADA'));
+                    dispatch(
+                        cardanoFetchTrezorPools(action.payload.coin.shortcut as 'ADA' | 'tADA'),
+                    );
                 }
                 break;
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK:
@@ -32,14 +34,14 @@ export const blockchainMiddleware = createMiddlewareWithExtraDeps(
                 dispatch(onBlockMinedThunk(action.payload));
                 // cardano stuff
                 dispatch(
-                    validatePendingTxOnBlock({
+                    cardanoValidatePendingTxOnBlock({
                         block: action.payload,
-                        ts: getUnixTime(new Date()),
+                        timestamp: getUnixTime(new Date()),
                     }),
                 );
                 break;
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:
-                dispatch(onNotificationThunk(action.payload));
+                dispatch(onBlockchainNotificationThunk(action.payload));
                 break;
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR:
                 // TODO BEFORE MERGE: figure out if this should be here, it throws TS error and from implementation

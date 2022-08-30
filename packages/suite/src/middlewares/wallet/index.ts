@@ -1,6 +1,5 @@
-import { blockchainMiddleware } from '@suite-common/wallet-core';
 import discoveryMiddleware from './discoveryMiddleware';
-import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
+import { prepareFiatRatesMiddleware, blockchainMiddleware } from '@suite-common/wallet-core';
 import storageMiddleware from './storageMiddleware';
 import walletMiddleware from './walletMiddleware';
 import graphMiddleware from './graphMiddleware';

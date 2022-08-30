@@ -1,5 +1,4 @@
 import { NOTIFICATION } from '@suite-actions/constants';
-import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { analyzeTransactionsFixtures as analyzeTransactions } from '@suite-common/wallet-utils';
 import { blockchainActions, transactionsActions, accountsActions } from '@suite-common/wallet-core';
 
@@ -35,13 +34,13 @@ const parseTx = (data: any) => ({
 
 const analyzeTransactionsExtended = [
     {
-        result: [BLOCKCHAIN.SYNCED],
+        result: [blockchainActions.synced.type],
     },
     {
         result: [
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [
@@ -57,14 +56,14 @@ const analyzeTransactionsExtended = [
         result: [
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
         },
     },
     {
-        result: [BLOCKCHAIN.SYNCED],
+        result: [blockchainActions.synced.type],
         resultTxs: {
             'xpub-btc-deviceState': [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
         },
@@ -73,7 +72,7 @@ const analyzeTransactionsExtended = [
         result: [
             transactionsActions.removeTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [],
@@ -83,7 +82,7 @@ const analyzeTransactionsExtended = [
         result: [
             transactionsActions.removeTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [{ blockHeight: 1, blockHash: '1', txid: '1' }],
@@ -93,7 +92,7 @@ const analyzeTransactionsExtended = [
         result: [
             transactionsActions.removeTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [],
@@ -104,7 +103,7 @@ const analyzeTransactionsExtended = [
             transactionsActions.removeTransaction.type,
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [{ blockHeight: 1, blockHash: '1', txid: '1' }],
@@ -115,7 +114,7 @@ const analyzeTransactionsExtended = [
             transactionsActions.removeTransaction.type,
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [{ blockHeight: 1, blockHash: '1a', txid: '1a' }],
@@ -125,7 +124,7 @@ const analyzeTransactionsExtended = [
         result: [
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [
@@ -140,7 +139,7 @@ const analyzeTransactionsExtended = [
         result: [
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [
@@ -154,7 +153,7 @@ const analyzeTransactionsExtended = [
         result: [
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [
@@ -173,7 +172,7 @@ const analyzeTransactionsExtended = [
             transactionsActions.removeTransaction.type,
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [
@@ -188,7 +187,7 @@ const analyzeTransactionsExtended = [
             transactionsActions.removeTransaction.type,
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [
@@ -206,7 +205,7 @@ const analyzeTransactionsExtended = [
             transactionsActions.removeTransaction.type,
             transactionsActions.addTransaction.type,
             accountsActions.updateAccount.type,
-            BLOCKCHAIN.SYNCED,
+            blockchainActions.synced.type,
         ],
         resultTxs: {
             'xpub-btc-deviceState': [
@@ -258,7 +257,7 @@ export const onBlock = analyzeTransactions
             state: {
                 accounts: [{ ...DEFAULT_ACCOUNT, history: { total: 0, unconfirmed: 0 } }],
             },
-            result: [accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+            result: [accountsActions.updateAccount.type, blockchainActions.synced.type],
         },
         {
             description: 'Account specific fields changed, blockbook: total',
@@ -272,7 +271,7 @@ export const onBlock = analyzeTransactions
             state: {
                 accounts: [{ ...DEFAULT_ACCOUNT, history: { total: 0, unconfirmed: 0 } }],
             },
-            result: [accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+            result: [accountsActions.updateAccount.type, blockchainActions.synced.type],
         },
         {
             description: 'Account specific fields changed, ripple: sequence',
@@ -286,7 +285,7 @@ export const onBlock = analyzeTransactions
             state: {
                 accounts: [{ ...DEFAULT_ACCOUNT, networkType: 'ripple', misc: { sequence: 0 } }],
             },
-            result: [accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+            result: [accountsActions.updateAccount.type, blockchainActions.synced.type],
         },
         {
             description: 'Account specific fields changed, ripple: balance',
@@ -308,7 +307,7 @@ export const onBlock = analyzeTransactions
                     },
                 ],
             },
-            result: [accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+            result: [accountsActions.updateAccount.type, blockchainActions.synced.type],
         },
         {
             description: 'Account specific fields changed, ethereum: nonce',
@@ -322,7 +321,7 @@ export const onBlock = analyzeTransactions
             state: {
                 accounts: [{ ...DEFAULT_ACCOUNT, networkType: 'ethereum', misc: { nonce: 0 } }],
             },
-            result: [accountsActions.updateAccount.type, BLOCKCHAIN.SYNCED],
+            result: [accountsActions.updateAccount.type, blockchainActions.synced.type],
         },
         {
             description: 'Account does not exists',
@@ -333,7 +332,7 @@ export const onBlock = analyzeTransactions
             state: {
                 accounts: [],
             },
-            result: [BLOCKCHAIN.SYNCED],
+            result: [blockchainActions.synced.type],
         },
     ] as any);
 
@@ -354,7 +353,7 @@ export const init = [
         initialState: {
             blockchain: seedBackends([]),
         },
-        actions: [{ type: BLOCKCHAIN.UPDATE_FEE }],
+        actions: [{ type: blockchainActions.updateFee.type }],
         blockchainUnsubscribeFiatRates: 0,
         blockchainSetCustomBackend: 0,
     },
@@ -364,7 +363,7 @@ export const init = [
             accounts: [{ symbol: 'btc' }],
             blockchain: seedBackends(['btc']),
         },
-        actions: [{ type: BLOCKCHAIN.UPDATE_FEE }],
+        actions: [{ type: blockchainActions.updateFee.type }],
         blockchainUnsubscribeFiatRates: 1,
         blockchainSetCustomBackend: 1,
     },
@@ -380,7 +379,7 @@ export const init = [
             ],
             blockchain: seedBackends(['btc', 'ltc', 'eth']),
         },
-        actions: [{ type: BLOCKCHAIN.UPDATE_FEE }],
+        actions: [{ type: blockchainActions.updateFee.type }],
         blockchainUnsubscribeFiatRates: 3,
         blockchainSetCustomBackend: 3,
     },
@@ -399,8 +398,8 @@ export const onConnect = [
         description: 'successful, no accounts, no subscriptions',
         symbol: 'btc',
         actions: [
-            { type: BLOCKCHAIN.UPDATE_FEE },
-            { type: BLOCKCHAIN.SYNCED },
+            { type: blockchainActions.updateFee.type },
+            { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
@@ -414,8 +413,8 @@ export const onConnect = [
         },
         symbol: 'btc',
         actions: [
-            { type: BLOCKCHAIN.UPDATE_FEE },
-            { type: BLOCKCHAIN.SYNCED },
+            { type: blockchainActions.updateFee.type },
+            { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
@@ -434,8 +433,8 @@ export const onConnect = [
         },
         symbol: 'btc',
         actions: [
-            { type: BLOCKCHAIN.UPDATE_FEE },
-            { type: BLOCKCHAIN.SYNCED },
+            { type: blockchainActions.updateFee.type },
+            { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
@@ -454,8 +453,8 @@ export const onConnect = [
         ],
         symbol: 'btc',
         actions: [
-            { type: BLOCKCHAIN.UPDATE_FEE },
-            { type: BLOCKCHAIN.SYNCED },
+            { type: blockchainActions.updateFee.type },
+            { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
@@ -470,7 +469,10 @@ export const onConnect = [
         // order: subscribeFiatRates > subscribe > estimateFee
         connect: [undefined, undefined, { success: false }],
         symbol: 'eth',
-        actions: [{ type: BLOCKCHAIN.SYNCED }, { type: blockchainActions.connected.type }],
+        actions: [
+            { type: blockchainActions.synced.type },
+            { type: blockchainActions.connected.type },
+        ],
         blockchainEstimateFee: 1,
         blockchainSubscribeFiatRates: 1,
         blockchainSubscribe: 1,
@@ -494,7 +496,7 @@ export const onDisconnect = [
             accounts: [{ symbol: 'btc' }],
         },
         symbol: 'btc',
-        actions: [{ type: BLOCKCHAIN.RECONNECT_TIMEOUT_START }],
+        actions: [{ type: blockchainActions.reconnectTimeoutStart.type }],
     },
     {
         description: 'with accounts, with reconnection, reconnection restarted',
@@ -510,7 +512,7 @@ export const onDisconnect = [
             },
         },
         symbol: 'btc',
-        actions: [{ type: BLOCKCHAIN.RECONNECT_TIMEOUT_START }],
+        actions: [{ type: blockchainActions.reconnectTimeoutStart.type }],
     },
 ];
 

@@ -18,8 +18,11 @@ type ConnectInitSettings = {
 export type ExtraDependencies = {
     thunks: {
         notificationsAddEvent: SuiteCompatibleThunk<NotificationEventPayload>;
-        validatePendingTxOnBlock: SuiteCompatibleThunk<{ block: BlockchainBlock; ts: number }>;
-        fetchTrezorPools: SuiteCompatibleThunk<'ADA' | 'tADA'>;
+        cardanoValidatePendingTxOnBlock: SuiteCompatibleThunk<{
+            block: BlockchainBlock;
+            timestamp: number;
+        }>;
+        cardanoFetchTrezorPools: SuiteCompatibleThunk<'ADA' | 'tADA'>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;

@@ -44,8 +44,8 @@ export const mockReducer = (name: string) => (state: any, action: any) => {
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         notificationsAddEvent: mockThunk('notificationsAddEvent'),
-        validatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
-        fetchTrezorPools: mockThunk('fetchTrezorPools'),
+        cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
+        cardanoFetchTrezorPools: mockThunk('fetchTrezorPools'),
     },
     selectors: {
         selectFeeInfo: (networkSymbol: any) =>
