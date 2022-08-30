@@ -34,6 +34,9 @@ const load = async ({ mainWindow, store, interceptor }: Dependencies) => {
 
     const setProxy = (rule: string) => {
         logger.info('tor', `Setting proxy rules to "${rule}"`);
+        // Including network session of electron auto-updater in the Tor proxy.
+        const updaterSession = session.fromPartition('electron-updater');
+        updaterSession.setProxy({ proxyRules: rule });
         session.defaultSession.setProxy({
             proxyRules: rule,
         });
