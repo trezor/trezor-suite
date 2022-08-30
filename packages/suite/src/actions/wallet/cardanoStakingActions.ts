@@ -44,7 +44,8 @@ export const setPendingStakeTx =
     };
 
 export const validatePendingTxOnBlock =
-    (block: BlockchainBlock, ts: number) => (dispatch: Dispatch, getState: GetState) => {
+    ({ block, ts }: { block: BlockchainBlock; ts: number }) =>
+    (dispatch: Dispatch, getState: GetState) => {
         // Used in cardano staking
         // After sending staking tx (delegation or withdrawal) user needs to wait few blocks til the tx appears on the blockchain.
         // To prevent the user from sending multiple staking tx we need to track that we are waiting for confirmation for the tx that was already sent.

@@ -1,16 +1,11 @@
-import reducer, { initialState } from '@wallet-reducers/blockchainReducer';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
-import type { BlockchainAction } from '@wallet-actions/blockchainActions';
 import { BackendSettings } from '@suite-common/wallet-types';
+import { SetBackendPayload, blockchainInitialState } from '@suite-common/wallet-core';
+import { blockchainReducer } from '@wallet-reducers';
 
 const urls = ['http://a, http://b, http://c'];
 
-const fixtures: [
-    string,
-    BackendSettings,
-    Extract<BlockchainAction, { type: typeof BLOCKCHAIN.SET_BACKEND }>['payload'],
-    BackendSettings,
-][] = [
+const fixtures: [string, BackendSettings, SetBackendPayload, BackendSettings][] = [
     ['try to set empty', {}, { coin: 'btc', type: 'electrum', urls: [] }, {}],
     [
         'set custom',
@@ -43,10 +38,10 @@ describe('blockchain reducer', () => {
         fixtures.forEach(([description, backends, payload, next]) => {
             it(description, () => {
                 expect(
-                    reducer(
+                    blockchainReducer(
                         {
-                            ...initialState,
-                            [payload.coin]: { ...initialState[payload.coin], backends },
+                            ...blockchainInitialState,
+                            [payload.coin]: { ...blockchainInitialState[payload.coin], backends },
                         },
                         { type: BLOCKCHAIN.SET_BACKEND, payload },
                     )[payload.coin].backends,

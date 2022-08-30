@@ -8,7 +8,7 @@ import { useActions, useSelector } from '@suite-hooks';
 import { goto as gotoAction } from '@suite-actions/routerActions';
 import { openModal as openModalAction } from '@suite-actions/modalActions';
 
-import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
+import { BlockchainState } from '@suite-common/wallet-core';
 import type { CustomBackend } from '@wallet-types';
 
 const Wrapper = styled.div`

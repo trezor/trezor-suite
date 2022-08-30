@@ -3,7 +3,7 @@ import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 import { Account, FeeInfo, BlockchainNetworks } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { ConnectSettings, Manifest, PROTO } from '@trezor/connect';
+import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { NotificationEventPayload } from '@suite-common/notifications';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
@@ -18,6 +18,8 @@ type ConnectInitSettings = {
 export type ExtraDependencies = {
     thunks: {
         notificationsAddEvent: SuiteCompatibleThunk<NotificationEventPayload>;
+        validatePendingTxOnBlock: SuiteCompatibleThunk<{ block: BlockchainBlock; ts: number }>;
+        fetchTrezorPools: SuiteCompatibleThunk<'ADA' | 'tADA'>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;

@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { configureStore } from '@suite/support/tests/configureStore';
 
-import { accountsReducer } from '@wallet-reducers';
+import { accountsReducer, blockchainReducer } from '@wallet-reducers';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
-import blockchainReducer from '@wallet-reducers/blockchainReducer';
 import walletMiddleware from '@wallet-middlewares/walletMiddleware';
-import blockchainMiddleware from '@wallet-middlewares/blockchainMiddleware';
+import { blockchainMiddleware } from '@suite-common/wallet-core';
 import * as fixtures from '../__fixtures__/walletMiddleware';
 import selectedAccountReducer, {
     State as SelectedAccountState,
@@ -14,6 +13,7 @@ import sendFormReducer, { SendState } from '@wallet-reducers/sendFormReducer';
 
 import { RouterState } from '@suite-reducers/routerReducer';
 import { Action } from '@suite-types';
+import { extraDependencies } from '@suite/support/extraDependencies';
 
 const { getWalletAccount } = global.JestMocks;
 
@@ -62,7 +62,10 @@ export const getInitialState = ({
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, Action>([walletMiddleware, blockchainMiddleware]);
+const mockStore = configureStore<State, Action>([
+    walletMiddleware,
+    blockchainMiddleware(extraDependencies),
+]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);

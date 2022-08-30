@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { NotificationCard, Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
-import * as blockchainActions from '@wallet-actions/blockchainActions';
+import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
 
 const Disconnected = () => {
     const { reconnect } = useActions({
-        reconnect: blockchainActions.reconnect,
+        reconnect: reconnectBlockchainThunk,
     });
     const { blockchain, selectedAccount } = useSelector(state => ({
         blockchain: state.wallet.blockchain,

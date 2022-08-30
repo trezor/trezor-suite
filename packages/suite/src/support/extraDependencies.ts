@@ -1,22 +1,22 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TransactionsState } from '@suite-common/wallet-core';
+import { TransactionsState, BlockchainState } from '@suite-common/wallet-core';
 import { saveAs } from 'file-saver';
 
 import { STORAGE } from '../actions/suite/constants';
 import { addEvent } from '@suite-actions/notificationActions';
 import { StorageLoadAction } from '@suite-actions/storageActions';
-import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
 import type { FiatRatesState } from '@suite-common/wallet-core';
 import { AppState } from '../types/suite';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import * as metadataActions from '@suite-actions/metadataActions';
+import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { selectIsPendingTransportEvent } from '../reducers/suite/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { isWeb } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
+import { validatePendingTxOnBlock } from '@wallet-actions/cardanoStakingActions';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -37,6 +37,8 @@ const connectInitSettings = {
 export const extraDependencies: ExtraDependencies = {
     thunks: {
         notificationsAddEvent: addEvent,
+        validatePendingTxOnBlock,
+        fetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
@@ -60,7 +62,6 @@ export const extraDependencies: ExtraDependencies = {
         storageLoad: STORAGE.LOAD,
     },
     reducers: {
-        // @TODO - use BlockchainState from @suite-common/wallet-blockchain after redux-utils will be merged
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
             payload.backendSettings.forEach(backend => {
                 state[backend.key].backends = backend.value;

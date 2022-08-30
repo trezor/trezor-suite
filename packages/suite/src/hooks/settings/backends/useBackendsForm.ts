@@ -5,7 +5,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { useActions, useSelector, useTranslation } from '@suite-hooks';
 import { isUrl } from '@trezor/utils';
 import { isOnionUrl } from '@suite-utils/tor';
-import { setBackend, resetBackend } from '@wallet-actions/blockchainActions';
+import { blockchainActions } from '@suite-common/wallet-core';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
 import type { Network, BackendType } from '@wallet-types';
 import { BackendSettings } from '@suite-common/wallet-types';
@@ -96,8 +96,8 @@ export const useBackendsForm = (coin: Network['symbol']) => {
     const initial = getStoredState(coin, backends.selected, backends.urls);
     const [currentValues, setCurrentValues] = useState(initial);
     const actions = useActions({
-        setBackend,
-        resetBackend,
+        setBackend: blockchainActions.setBackend,
+        resetBackend: blockchainActions.resetBackend,
     });
 
     const changeType = (type: BackendOption) => {
@@ -136,7 +136,7 @@ export const useBackendsForm = (coin: Network['symbol']) => {
         if (type === 'default') {
             actions.resetBackend(coin);
         } else {
-            actions.setBackend(coin, type, urls);
+            actions.setBackend({ coin, type, urls });
         }
         const totalOnion = urls.filter(isOnionUrl).length;
 

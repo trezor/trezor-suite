@@ -1,4 +1,4 @@
-import blockchainMiddleware from './blockchainMiddleware';
+import { blockchainMiddleware } from '@suite-common/wallet-core';
 import discoveryMiddleware from './discoveryMiddleware';
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import storageMiddleware from './storageMiddleware';
@@ -11,7 +11,7 @@ import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { extraDependencies } from '../../support/extraDependencies';
 
 export default [
-    blockchainMiddleware,
+    blockchainMiddleware(extraDependencies),
     walletMiddleware,
     discoveryMiddleware,
     prepareFiatRatesMiddleware(extraDependencies),

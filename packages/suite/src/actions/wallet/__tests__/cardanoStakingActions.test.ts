@@ -106,13 +106,15 @@ describe('cardanoStakingActions', () => {
 
         // less than TTL elapsed, tx should still be there
         store.dispatch(
-            cardanoStakingActions.validatePendingTxOnBlock(
-                {
-                    coin: { shortcut: 'ada' },
+            cardanoStakingActions.validatePendingTxOnBlock({
+                block: {
+                    coin: {
+                        shortcut: 'ada',
+                    },
                     blockHeight: 8,
                 } as BlockchainBlock,
-                getUnixTime(new Date()) + 1000,
-            ),
+                ts: getUnixTime(new Date()) + 1000,
+            }),
         );
         const stillPending = await store.dispatch(
             cardanoStakingActions.getPendingStakeTx(cardanoAccount),
@@ -122,13 +124,13 @@ describe('cardanoStakingActions', () => {
         // more than 7200 secs since pushing the transaction to a blockchain
         // validatePendingStakeTxOnBlock will be triggered from blockchainMiddleware on BLOCKCHAIN.BLOCK
         store.dispatch(
-            cardanoStakingActions.validatePendingTxOnBlock(
-                {
+            cardanoStakingActions.validatePendingTxOnBlock({
+                block: {
                     coin: { shortcut: 'ada' },
                     blockHeight: 15,
                 } as BlockchainBlock,
-                getUnixTime(new Date()) + 7300,
-            ),
+                ts: getUnixTime(new Date()) + 7300,
+            }),
         );
 
         const noSoPendingTx = await store.dispatch(
