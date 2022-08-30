@@ -1,12 +1,7 @@
 import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
-import {
-    Account,
-    FeeInfo,
-    WalletAccountTransaction,
-    TransactionFiatRateUpdatePayload,
-} from '@suite-common/wallet-types';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { Account, FeeInfo, BlockchainNetworks } from '@suite-common/wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { NotificationEventPayload } from '@suite-common/notifications';
@@ -28,11 +23,10 @@ export type ExtraDependencies = {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
-        selectEnabledNetworks: SuiteCompatibleSelector<Network['symbol'][]>;
-        selectAccountTransactions: SuiteCompatibleSelector<
-            Record<string, WalletAccountTransaction[]>
-        >;
+        selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
+        selectLocalCurrency: SuiteCompatibleSelector<string>;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
+        selectBlockchain: SuiteCompatibleSelector<BlockchainNetworks>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
@@ -40,9 +34,19 @@ export type ExtraDependencies = {
     actions: {
         setAccountLoadedMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
         setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
-        fiatRateUpdate: ActionCreatorWithPreparedPayload<
-            [payload: TransactionFiatRateUpdatePayload[]],
-            TransactionFiatRateUpdatePayload[]
+        setWalletSettingsLocalCurrency: ActionCreatorWithPreparedPayload<
+            [localCurrency: string],
+            {
+                localCurrency: string;
+            }
+        >;
+        changeWalletSettingsNetworks: ActionCreatorWithPreparedPayload<
+            [payload: NetworkSymbol[]],
+            NetworkSymbol[]
+        >;
+        blockchainConnected: ActionCreatorWithPreparedPayload<
+            [payload: NetworkSymbol],
+            NetworkSymbol
         >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
     };
@@ -57,6 +61,7 @@ export type ExtraDependencies = {
         storageLoadBlockchain: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
+        storageLoadFiatRates: StorageLoadReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;

@@ -13,6 +13,7 @@ jest.mock('@trezor/connect', () => {
     let deviceChangeEvent = () => {};
 
     return {
+        ...jest.requireActual('@trezor/connect'),
         __esModule: true, // this property makes it work
         default: {
             blockchainSetCustomBackend: () => {},

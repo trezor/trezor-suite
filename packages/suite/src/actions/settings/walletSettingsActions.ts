@@ -7,10 +7,27 @@ import { WALLET_SETTINGS } from './constants';
 import { UNIT_ABBREVIATIONS } from '@wallet-hooks/useBitcoinAmountUnit';
 
 import type { Network } from '@wallet-types';
+import { createAction } from '@reduxjs/toolkit';
+
+export const setLocalCurrency = createAction(
+    WALLET_SETTINGS.SET_LOCAL_CURRENCY,
+    (localCurrency: string) => ({
+        payload: {
+            localCurrency: localCurrency.toLowerCase(),
+        },
+    }),
+);
+
+export const changeNetworks = createAction(
+    WALLET_SETTINGS.CHANGE_NETWORKS,
+    (payload: Network['symbol'][]) => ({
+        payload,
+    }),
+);
 
 export type WalletSettingsAction =
-    | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
-    | { type: typeof WALLET_SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }
+    | ReturnType<typeof changeNetworks>
+    | ReturnType<typeof setLocalCurrency>
     | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
     | {
           type: typeof WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL;
@@ -21,11 +38,6 @@ export type WalletSettingsAction =
           type: typeof WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS;
           payload: PROTO.AmountUnit;
       };
-
-export const setLocalCurrency = (localCurrency: string): WalletSettingsAction => ({
-    type: WALLET_SETTINGS.SET_LOCAL_CURRENCY,
-    localCurrency: localCurrency.toLowerCase(),
-});
 
 export const setDiscreetMode = (toggled: boolean) => (dispatch: Dispatch, getState: GetState) => {
     dispatch({
@@ -54,10 +66,7 @@ export const changeCoinVisibility =
         } else if (!isAlreadyHidden) {
             enabledNetworks = [...enabledNetworks, symbol];
         }
-        dispatch({
-            type: WALLET_SETTINGS.CHANGE_NETWORKS,
-            payload: enabledNetworks,
-        });
+        dispatch(changeNetworks(enabledNetworks));
 
         analytics.report({
             type: EventType.SettingsCoins,
@@ -67,11 +76,6 @@ export const changeCoinVisibility =
             },
         });
     };
-
-export const changeNetworks = (payload: Network['symbol'][]): WalletSettingsAction => ({
-    type: WALLET_SETTINGS.CHANGE_NETWORKS,
-    payload,
-});
 
 export const setLastUsedFeeLevel =
     (feeLevel?: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {

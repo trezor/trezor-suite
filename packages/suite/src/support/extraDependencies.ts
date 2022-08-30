@@ -7,10 +7,12 @@ import { STORAGE } from '../actions/suite/constants';
 import { addEvent } from '@suite-actions/notificationActions';
 import { StorageLoadAction } from '@suite-actions/storageActions';
 import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
+import type { FiatRatesState } from '@suite-common/wallet-core';
 import { AppState } from '../types/suite';
 import { getAccountKey } from '@suite-common/wallet-utils';
-import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import * as metadataActions from '@suite-actions/metadataActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { selectIsPendingTransportEvent } from '../reducers/suite/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { isWeb } from '@suite-utils/env';
@@ -42,13 +44,16 @@ export const extraDependencies: ExtraDependencies = {
         selectDevices: (state: AppState) => state.devices,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
-        selectAccountTransactions: (state: AppState) => state.wallet.transactions.transactions,
+        selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
+        selectBlockchain: (state: AppState) => state.wallet.blockchain,
     },
     actions: {
         setAccountLoadedMetadata: metadataActions.setAccountLoaded,
         setAccountAddMetadata: metadataActions.setAccountAdd,
-        fiatRateUpdate: fiatRatesActions.updateFiatRates,
+        setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
+        changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
+        blockchainConnected: blockchainActions.blockchainConnected,
         lockDevice: suiteActions.lockDevice,
     },
     actionTypes: {
@@ -72,6 +77,9 @@ export const extraDependencies: ExtraDependencies = {
             });
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) => payload.accounts,
+        storageLoadFiatRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
+            state.coins = payload.fiatRates;
+        },
     },
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),

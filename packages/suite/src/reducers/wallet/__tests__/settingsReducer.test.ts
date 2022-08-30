@@ -1,6 +1,7 @@
 import reducer, { initialState } from '@wallet-reducers/settingsReducer';
 import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -26,8 +27,8 @@ describe('settings reducer', () => {
     it('SET_LOCAL_CURRENCY', () => {
         expect(
             reducer(undefined, {
-                type: WALLET_SETTINGS.SET_LOCAL_CURRENCY,
-                localCurrency: 'czk',
+                type: walletSettingsActions.setLocalCurrency.type,
+                payload: { localCurrency: 'czk' },
             }),
         ).toEqual({
             ...initialState,
@@ -50,7 +51,7 @@ describe('settings reducer', () => {
     it('CHANGE_NETWORKS', () => {
         expect(
             reducer(undefined, {
-                type: WALLET_SETTINGS.CHANGE_NETWORKS,
+                type: walletSettingsActions.changeNetworks.type,
                 payload: ['eth'],
             }),
         ).toEqual({

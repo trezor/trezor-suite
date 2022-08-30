@@ -51,15 +51,16 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', []),
-        selectAccountTransactions: mockSelector('selectAccountTransactions', {
-            mockedTransaction: [],
-        }),
+        selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),
+        selectBlockchain: mockSelector('selectBlockchain', testMocks.mockedBlockchainNetworks),
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
     },
     actions: {
         setAccountLoadedMetadata: mockAction('setAccountLoadedMetadata'),
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
-        fiatRateUpdate: mockAction('fiatRateUpdate'),
+        setWalletSettingsLocalCurrency: mockAction('setWalletSettingsLocalCurrency'),
+        changeWalletSettingsNetworks: mockAction('changeWalletSettingsNetworks'),
+        blockchainConnected: mockAction('blockchainConnected'),
         lockDevice: mockAction('lockDevice'),
     },
     actionTypes: {
@@ -69,6 +70,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
+        storageLoadFiatRates: mockReducer('storageLoadAccounts'),
     },
     utils: {
         saveAs: (data, fileName) =>

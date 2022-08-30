@@ -3,7 +3,7 @@ import { AggregatedDashboardHistory } from '@wallet-types/graph';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
-import { calcTicks, calcTicksFromData } from '@suite-utils/date';
+import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { variables, Button } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 import GraphWorker from '@suite-workers/graph';

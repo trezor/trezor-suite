@@ -1,5 +1,6 @@
-import { LastWeekRates, TickerId } from '@wallet-types/fiatRates';
+import { LastWeekRates, TickerId } from '@suite-common/wallet-types';
 import { FIAT as FIAT_CONFIG } from '@suite-common/suite-config';
+
 import { RateLimiter } from './limiter';
 
 // a proxy for https://api.coingecko.com/api/v3

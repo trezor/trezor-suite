@@ -16,6 +16,7 @@ import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { transactionsActions } from '../transactions/transactionsActions';
+import { selectTransactions } from '../transactions/transactionsReducer';
 import { accountsActions } from './accountsActions';
 import { selectAccounts } from './accountsReducer';
 import { actionPrefix } from './constants';
@@ -73,7 +74,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
     `${actionPrefix}/fetchAndUpdateAccountThunk`,
     async (account: Account, { dispatch, extra, getState }) => {
         const {
-            selectors: { selectDevices, selectBitcoinAmountUnit, selectAccountTransactions },
+            selectors: { selectDevices, selectBitcoinAmountUnit },
             thunks: { notificationsAddEvent },
         } = extra;
 
@@ -88,7 +89,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
         if (!basic.success) return;
 
         const accountOutdated = isAccountOutdated(account, basic.payload);
-        const accountTransactions = selectAccountTransactions(getState());
+        const accountTransactions = selectTransactions(getState());
         const accountTxs = getAccountTransactions(account.key, accountTransactions);
         // stop here if account is not outdated and there are no pending transactions
         if (!accountOutdated && !accountTxs.find(isPending)) return;

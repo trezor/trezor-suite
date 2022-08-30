@@ -1,11 +1,10 @@
-import { isAnyOf } from '@reduxjs/toolkit';
-
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 import { settingsCommonConfig } from '@suite-common/suite-config';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountHash } from '@suite-common/suite-types';
 
+import { fiatRatesActions } from '../fiat-rates/fiatRatesActions';
 import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
 
@@ -128,8 +127,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     delete state.transactions[a.key];
                 });
             })
-            .addMatcher(isAnyOf(extra.actions.fiatRateUpdate), (state, action) => {
-                const { payload } = action;
+            .addCase(fiatRatesActions.updateTransactionFiatRate, (state, { payload }) => {
                 payload.forEach(u => {
                     updateTransaction(state, u.account, u.txid, u.updateObject);
                 });

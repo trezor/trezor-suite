@@ -4,7 +4,6 @@ import * as RECEIVE from './receiveConstants';
 import * as SEND from './sendFormConstants';
 import * as DISCOVERY from './discoveryConstants';
 import * as WALLET from './walletConstants';
-import * as FIAT_RATES from './fiatRatesConstants';
 import * as GRAPH from './graphConstants';
 import * as COINMARKET_BUY from './coinmarketBuyConstants';
 import * as COINMARKET_EXCHANGE from './coinmarketExchangeConstants';
@@ -23,7 +22,6 @@ export {
     DISCOVERY,
     WALLET,
     SEND,
-    FIAT_RATES,
     GRAPH,
     COINMARKET_BUY,
     COINMARKET_EXCHANGE,

@@ -1,5 +1,6 @@
+import type { LastWeekRates, TimestampedRates, TickerId } from '@suite-common/wallet-types';
+
 import { RateLimiter } from './limiter';
-import type { LastWeekRates, TimestampedRates, TickerId } from '@wallet-types/fiatRates';
 
 const ENDPOINTS = {
     btc: ['btc1', 'btc2', 'btc3', 'btc4', 'btc5'],

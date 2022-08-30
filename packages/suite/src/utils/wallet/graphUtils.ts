@@ -11,8 +11,8 @@ import {
     CommonAggregatedHistory,
     GraphScale,
 } from '@wallet-types/graph';
-import { resetTime } from '@suite-utils/date';
-import { getFiatRatesForTimestamps, getTickerConfig } from '@suite/services/fiat';
+import { resetTime } from '@suite-common/suite-utils';
+import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
 
 type FiatRates = NonNullable<CoinFiatRates['current']>['rates'];
 

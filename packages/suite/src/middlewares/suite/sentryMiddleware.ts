@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 
 import {
     SUITE,
@@ -27,7 +28,7 @@ const breadcrumbActions = [
     SUITE.SET_LANGUAGE,
     SUITE.SET_THEME,
     SUITE.SET_AUTODETECT,
-    WALLET_SETTINGS.SET_LOCAL_CURRENCY,
+    walletSettingsActions.setLocalCurrency.type,
     WALLET_SETTINGS.SET_HIDE_BALANCE,
     METADATA.ENABLE,
     METADATA.DISABLE,
@@ -48,7 +49,7 @@ const breadcrumbActions = [
     SUITE.UPDATE_SELECTED_DEVICE,
     SUITE.REMEMBER_DEVICE,
     METADATA.SET_PROVIDER,
-    WALLET_SETTINGS.CHANGE_NETWORKS,
+    walletSettingsActions.changeNetworks.type,
     TRANSPORT.START,
     TRANSPORT.ERROR,
     BLOCKCHAIN.SET_BACKEND,

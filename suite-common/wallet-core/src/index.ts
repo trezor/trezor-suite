@@ -4,3 +4,7 @@ export * from './accounts/accountsThunks';
 export * from './transactions/transactionsActions';
 export * from './transactions/transactionsReducer';
 export * from './transactions/transactionsThunks';
+export * from './fiat-rates/fiatRatesActions';
+export * from './fiat-rates/fiatRatesReducer';
+export * from './fiat-rates/fiatRatesThunks';
+export * from './fiat-rates/fiatRatesMiddleware';

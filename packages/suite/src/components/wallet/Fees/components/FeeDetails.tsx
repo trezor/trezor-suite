@@ -4,7 +4,7 @@ import { FeeLevel } from '@trezor/connect';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { getFeeUnits } from '@suite-common/wallet-utils';
-import { formatDuration } from '@suite-utils/date';
+import { formatDuration } from '@suite-common/suite-utils';
 import { Network } from '@wallet-types';
 import {
     FeeInfo,

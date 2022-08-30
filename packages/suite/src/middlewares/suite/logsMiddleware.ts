@@ -15,6 +15,7 @@ import { DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
 import { accountsActions } from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
@@ -51,11 +52,19 @@ const log =
             }
         }
 
+        if (walletSettingsActions.changeNetworks.match(action)) {
+            api.dispatch(
+                logActions.addAction(action, {
+                    enabledNetworks: action.payload.join(','),
+                }),
+            );
+        }
+
         switch (action.type) {
             case SUITE.SET_LANGUAGE:
             case SUITE.SET_THEME:
             case SUITE.SET_AUTODETECT:
-            case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
+            case walletSettingsActions.setLocalCurrency.type:
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
             case METADATA.ENABLE:
             case METADATA.DISABLE:
@@ -98,13 +107,6 @@ const log =
                         ...action.payload,
                         tokens: undefined,
                         user: undefined,
-                    }),
-                );
-                break;
-            case WALLET_SETTINGS.CHANGE_NETWORKS:
-                api.dispatch(
-                    logActions.addAction(action, {
-                        enabledNetworks: action.payload.join(','),
                     }),
                 );
                 break;

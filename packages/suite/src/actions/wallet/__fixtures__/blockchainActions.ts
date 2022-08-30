@@ -1,5 +1,6 @@
 import { NOTIFICATION } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
+import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { analyzeTransactionsFixtures as analyzeTransactions } from '@suite-common/wallet-utils';
 import { transactionsActions, accountsActions } from '@suite-common/wallet-core';
 
@@ -401,7 +402,7 @@ export const onConnect = [
         actions: [
             { type: BLOCKCHAIN.UPDATE_FEE },
             { type: BLOCKCHAIN.SYNCED },
-            { type: BLOCKCHAIN.CONNECTED },
+            { type: blockchainActions.blockchainConnected.type },
         ],
         blockchainEstimateFee: 1,
         blockchainSubscribeFiatRates: 1,
@@ -416,7 +417,7 @@ export const onConnect = [
         actions: [
             { type: BLOCKCHAIN.UPDATE_FEE },
             { type: BLOCKCHAIN.SYNCED },
-            { type: BLOCKCHAIN.CONNECTED },
+            { type: blockchainActions.blockchainConnected.type },
         ],
         blockchainEstimateFee: 1,
         blockchainSubscribeFiatRates: 1,
@@ -436,7 +437,7 @@ export const onConnect = [
         actions: [
             { type: BLOCKCHAIN.UPDATE_FEE },
             { type: BLOCKCHAIN.SYNCED },
-            { type: BLOCKCHAIN.CONNECTED },
+            { type: blockchainActions.blockchainConnected.type },
         ],
         blockchainEstimateFee: 1,
         blockchainSubscribeFiatRates: 1,
@@ -456,7 +457,7 @@ export const onConnect = [
         actions: [
             { type: BLOCKCHAIN.UPDATE_FEE },
             { type: BLOCKCHAIN.SYNCED },
-            { type: BLOCKCHAIN.CONNECTED },
+            { type: blockchainActions.blockchainConnected.type },
         ],
         blockchainEstimateFee: 1,
         blockchainSubscribeFiatRates: 1,
@@ -470,7 +471,10 @@ export const onConnect = [
         // order: subscribeFiatRates > subscribe > estimateFee
         connect: [undefined, undefined, { success: false }],
         symbol: 'eth',
-        actions: [{ type: BLOCKCHAIN.SYNCED }, { type: BLOCKCHAIN.CONNECTED }],
+        actions: [
+            { type: BLOCKCHAIN.SYNCED },
+            { type: blockchainActions.blockchainConnected.type },
+        ],
         blockchainEstimateFee: 1,
         blockchainSubscribeFiatRates: 1,
         blockchainSubscribe: 1,

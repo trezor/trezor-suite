@@ -1,19 +1,25 @@
-import produce from 'immer';
-import { Action } from '@suite-types';
 import {
-    RATE_UPDATE,
-    LAST_WEEK_RATES_UPDATE,
-    RATE_REMOVE,
-} from '@wallet-actions/constants/fiatRatesConstants';
-import { STORAGE } from '@suite-actions/constants';
-import { CoinFiatRates, CurrentFiatRates, LastWeekRates, TickerId } from '@wallet-types/fiatRates';
+    CoinFiatRates,
+    CurrentFiatRates,
+    LastWeekRates,
+    TickerId,
+} from '@suite-common/wallet-types';
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-export interface State {
+import { fiatRatesActions } from './fiatRatesActions';
+
+export interface FiatRatesState {
     coins: CoinFiatRates[];
 }
 
-export const initialState: State = {
+export const fiatRatesInitialState: FiatRatesState = {
     coins: [],
+};
+
+export type FiatRatesRootState = {
+    wallet: {
+        fiat: FiatRatesState;
+    };
 };
 
 const remove = (state: CoinFiatRates[], payload: TickerId) => {
@@ -64,23 +70,22 @@ const updateLastWeekRates = (state: CoinFiatRates[], payload: LastWeekRates) => 
     }
 };
 
-const fiatRatesReducer = (state: State = initialState, action: Action): State =>
-    produce(state, draft => {
-        switch (action.type) {
-            case STORAGE.LOAD:
-                draft.coins = action.payload.fiatRates;
-                break;
-            case RATE_REMOVE:
-                remove(draft.coins, action.payload);
-                break;
-            case RATE_UPDATE:
-                updateCurrentRates(draft.coins, action.ticker, action.payload);
-                break;
-            case LAST_WEEK_RATES_UPDATE:
-                updateLastWeekRates(draft.coins, action.payload);
-                break;
-            // no default
-        }
-    });
+export const prepareFiatRatesReducer = createReducerWithExtraDeps(
+    fiatRatesInitialState,
+    (builder, extra) => {
+        builder
+            .addCase(fiatRatesActions.removeFiatRate, (state, action) => {
+                remove(state.coins, action.payload);
+            })
+            .addCase(fiatRatesActions.updateFiatRate, (state, action) => {
+                const { ticker, payload } = action.payload;
+                updateCurrentRates(state.coins, ticker, payload);
+            })
+            .addCase(fiatRatesActions.updateLastWeekFiatRates, (state, action) => {
+                updateLastWeekRates(state.coins, action.payload);
+            })
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFiatRates);
+    },
+);
 
-export default fiatRatesReducer;
+export const selectCoins = (state: FiatRatesRootState) => state.wallet.fiat.coins;

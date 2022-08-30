@@ -10,7 +10,13 @@ import {
     MessageSystem,
     Action,
 } from '@suite-common/suite-types';
-import { Account, FeeInfo, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    Account,
+    FeeInfo,
+    WalletAccountTransaction,
+    BlockchainNetworks,
+} from '@suite-common/wallet-types';
+import { networksCompatibility } from '@suite-common/wallet-config';
 
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
@@ -629,6 +635,27 @@ const intlMock = {
     formatMessage: (s: any) => s.defaultMessage,
 };
 
+const mockedBlockchainNetworks = networksCompatibility.reduce((result, network) => {
+    if (network.accountType) return result;
+    result[network.symbol] = {
+        connected: false,
+        explorer: network.explorer,
+        blockHash: '0',
+        blockHeight: 0,
+        version: '0',
+        backends:
+            network.symbol === 'regtest'
+                ? {
+                      selected: 'blockbook',
+                      urls: {
+                          blockbook: ['http://localhost:19121'],
+                      },
+                  }
+                : {},
+    };
+    return result;
+}, {} as BlockchainNetworks);
+
 export const testMocks = {
     getWalletAccount,
     getFirmwareRelease,
@@ -641,4 +668,5 @@ export const testMocks = {
     getGuideNode,
     fee,
     intlMock,
+    mockedBlockchainNetworks,
 };

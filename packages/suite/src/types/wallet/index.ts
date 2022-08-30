@@ -7,7 +7,6 @@ import { CoinMarketSpendAction } from '@wallet-actions/coinmarketSpendActions';
 import { CoinmarketSavingsAction } from '@wallet-actions/coinmarketSavingsActions';
 import { CoinmarketCommonAction } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { DiscoveryAction } from '@wallet-actions/discoveryActions';
-import { FiatRatesAction } from '@wallet-actions/fiatRatesActions';
 import { GraphAction } from '@wallet-actions/graphActions';
 import { BlockchainAction } from '@wallet-actions/blockchainActions';
 import { SendFormAction } from '@wallet-actions/sendFormActions';
@@ -19,7 +18,7 @@ import { CoinjoinAccountAction } from '@wallet-actions/coinjoinAccountActions';
 import { CoinjoinClientAction } from '@wallet-actions/coinjoinClientActions';
 import { NETWORKS } from '@wallet-config';
 import { ArrayElement } from '@trezor/type-utils';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, fiatRatesActions } from '@suite-common/wallet-core';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type NetworkSymbol = Network['symbol'];
@@ -55,6 +54,7 @@ this action union types are bad, we need it only for legacy reason.
 (old redux and redux/toolkit action type compatibility e.g. in middlewares)
  */
 type AccountsAction = ReturnType<typeof accountsActions[keyof typeof accountsActions]>;
+type FiatRatesAction = ReturnType<typeof fiatRatesActions[keyof typeof fiatRatesActions]>;
 
 export type WalletAction =
     | BlockchainAction

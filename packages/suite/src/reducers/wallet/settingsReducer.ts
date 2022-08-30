@@ -3,6 +3,7 @@ import { PROTO } from '@trezor/connect';
 import { STORAGE } from '@suite-actions/constants';
 import { WalletSettings } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { Action, AppState } from '@suite-types';
 
 export type State = WalletSettings;
@@ -20,18 +21,23 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
         switch (action.type) {
             case STORAGE.LOAD:
                 return action.payload.walletSettings || state;
-
-            case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
-                draft.localCurrency = action.localCurrency;
+            case walletSettingsActions.setLocalCurrency.type: {
+                if (walletSettingsActions.setLocalCurrency.match(action)) {
+                    const { localCurrency } = action.payload;
+                    draft.localCurrency = localCurrency;
+                }
                 break;
-
+            }
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
                 draft.discreetMode = action.toggled;
                 break;
 
-            case WALLET_SETTINGS.CHANGE_NETWORKS:
-                draft.enabledNetworks = action.payload;
+            case walletSettingsActions.changeNetworks.type: {
+                if (walletSettingsActions.changeNetworks.match(action)) {
+                    draft.enabledNetworks = action.payload;
+                }
                 break;
+            }
 
             case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
                 if (action.feeLevel) {

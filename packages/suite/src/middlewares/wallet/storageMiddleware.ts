@@ -2,9 +2,9 @@ import { MiddlewareAPI } from 'redux';
 import { db } from '@suite/storage';
 
 import { WALLET_SETTINGS } from '@settings-actions/constants';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import {
     DISCOVERY,
-    FIAT_RATES,
     GRAPH,
     SEND,
     COINMARKET_COMMON,
@@ -23,7 +23,7 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
-import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
+import { accountsActions, fiatRatesActions, transactionsActions } from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
@@ -70,6 +70,24 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 if (isDeviceRemembered(device)) {
                     storageActions.saveAccounts([action.payload]);
                 }
+            }
+
+            if (fiatRatesActions.updateFiatRate.match(action)) {
+                api.dispatch(storageActions.saveFiatRates());
+            }
+
+            if (fiatRatesActions.removeFiatRate.match(action)) {
+                api.dispatch(
+                    storageActions.removeFiatRate(
+                        action.payload.symbol,
+                        action.payload.tokenAddress,
+                    ),
+                );
+            }
+
+            if (walletSettingsActions.changeNetworks.match(action)) {
+                api.dispatch(storageActions.saveWalletSettings());
+                api.dispatch(storageActions.saveFiatRates());
             }
 
             if (transactionsActions.resetTransaction.match(action)) {
@@ -128,13 +146,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
 
-                case WALLET_SETTINGS.CHANGE_NETWORKS:
-                    api.dispatch(storageActions.saveWalletSettings());
-                    api.dispatch(storageActions.saveFiatRates());
-                    break;
-
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
-                case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
+                case walletSettingsActions.setLocalCurrency.type:
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
                     api.dispatch(storageActions.saveWalletSettings());
@@ -151,19 +164,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_THEME:
                 case SUITE.SET_AUTODETECT:
                     api.dispatch(storageActions.saveSuiteSettings());
-                    break;
-
-                case FIAT_RATES.RATE_UPDATE:
-                    api.dispatch(storageActions.saveFiatRates());
-                    break;
-
-                case FIAT_RATES.RATE_REMOVE:
-                    api.dispatch(
-                        storageActions.removeFiatRate(
-                            action.payload.symbol,
-                            action.payload.tokenAddress,
-                        ),
-                    );
                     break;
 
                 case ANALYTICS.INIT:
