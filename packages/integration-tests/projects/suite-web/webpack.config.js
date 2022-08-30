@@ -1,24 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const { compilerOptions } = require('../../../../tsconfig.aliases.json');
-
-const { paths } = compilerOptions;
-const pathKeys = Object.keys(paths).filter(p => !p.includes('*'));
-
-const getPath = key => {
-    let p = paths[key][0];
-    if (p.endsWith('index')) {
-        p = p.slice(0, -5);
-    }
-
-    return path.join('..', '..', p);
-};
-
-// Alias
-const alias = {};
-pathKeys.forEach(key => {
-    alias[key] = path.resolve(getPath(key));
-});
 
 module.exports = {
     target: 'web',
@@ -26,7 +7,6 @@ module.exports = {
     // webpack will transpile TS and JS files
     resolve: {
         extensions: ['.ts', '.js'],
-        alias,
         fallback: {
             crypto: require.resolve('crypto-browserify'),
             stream: require.resolve('stream-browserify'),
