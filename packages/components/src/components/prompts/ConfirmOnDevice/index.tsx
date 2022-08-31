@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ animation?: AnimationDirection }>`
     display: flex;
     width: 300px;
     height: 62px;
-    padding: 0 10px 0 30px;
+    padding: 0 14px 0 30px;
     border-radius: 100px;
     background: ${({ theme }) => theme.BG_WHITE};
     box-shadow: 0 2px 5px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
@@ -80,6 +80,11 @@ const Close = styled.div`
     align-items: center;
     justify-content: center;
     padding-bottom: 1px;
+    transition: opacity 0.1s;
+
+    :hover {
+        opacity: 0.7;
+    }
 `;
 
 const Success = styled.div`

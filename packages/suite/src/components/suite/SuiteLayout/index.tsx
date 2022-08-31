@@ -140,7 +140,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                     </MenuSecondary>
                                 )}
 
-                                <AppWrapper data-test="@app" ref={appWrapperRef}>
+                                <AppWrapper data-test="@app" ref={appWrapperRef} id="layout-scroll">
                                     {isMenuInline && SideMenu && <SideMenu isMenuInline />}
                                     {TopMenu && <TopMenu />}
                                     <DefaultPaddings>{children}</DefaultPaddings>

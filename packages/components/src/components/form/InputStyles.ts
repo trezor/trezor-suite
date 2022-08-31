@@ -72,7 +72,7 @@ export const baseInputStyle = css<BaseInputProps>`
         color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     }
 
-    :read-only {
+    :read-only:not(:disabled) {
         background: ${({ theme }) => theme.BG_GREY};
         color: ${({ theme }) => theme.TYPE_DARK_GREY};
     }
@@ -98,7 +98,7 @@ export const baseInputStyle = css<BaseInputProps>`
         css`
             background: ${({ theme }) => theme.BG_GREY};
             box-shadow: none;
-            color: ${({ theme }) => theme.TYPE_DARK_GREY};
+            color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
             pointer-events: none;
             cursor: default;
         `}
@@ -118,8 +118,13 @@ export const LabelLeft = styled.label`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
+export const LabelAddon = styled.div<{ isVisible?: boolean }>`
+    visibility: ${({ isVisible }) => !isVisible && 'hidden'};
+`;
+
 export const LabelRight = styled.div`
     display: flex;
+    align-items: center;
     margin-bottom: 6px;
 `;
 

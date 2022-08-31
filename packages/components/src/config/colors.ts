@@ -66,7 +66,7 @@ export const THEME = {
 
         BG_GREEN: '#00854D',
         BG_GREEN_HOVER: '#007837', // improvisation
-        BG_LIGHT_GREEN: '#1a2516',
+        BG_LIGHT_GREEN: '#1E332C',
         BG_SECONDARY: '#3A3B3C', // special color for secondary button bg, in dark mode it is same as tertiary
         BG_SECONDARY_HOVER: '#2E2F30', // special color for secondary button bg, in dark mode it is same as tertiary
         BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
@@ -126,7 +126,7 @@ export const THEME = {
 
         BG_GREEN: '#e3ede0',
         BG_GREEN_HOVER: '#007837', // improvisation
-        BG_LIGHT_GREEN: '#1a2516',
+        BG_LIGHT_GREEN: '#1E332C',
         BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
         BG_SECONDARY: '#3A3B3C', // TODO
         BG_SECONDARY_HOVER: '#2E2F30', // TODO

@@ -41,11 +41,12 @@ const IconWrapper = styled.div<Pick<CheckboxProps, 'isChecked' | 'isDisabled'>>`
 
 const Label = styled.div`
     display: flex;
-    padding-left: 12px;
     justify-content: center;
+    margin-left: 18px;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${FONT_SIZE.SMALL};
     line-height: 24px;
+    text-align: left;
 `;
 
 const handleKeyboard = (

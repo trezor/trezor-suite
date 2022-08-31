@@ -32,6 +32,7 @@ export const SCREEN_QUERY = {
 export const MEDIA_QUERY = {
     TOUCH: '@media (hover: none)',
     HOVER: '@media (hover: hover)',
+    DARK_THEME: '@media (prefers-color-scheme: dark)',
 } as const;
 
 export const LAYOUT_SIZE = {

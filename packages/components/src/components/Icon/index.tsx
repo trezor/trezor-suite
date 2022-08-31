@@ -67,6 +67,7 @@ const SvgWrapper = styled.div<{
 
     path {
         fill: ${({ $color }) => $color};
+        transition: fill 0.1s;
     }
 
     :hover {

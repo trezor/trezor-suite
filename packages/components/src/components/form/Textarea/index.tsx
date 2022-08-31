@@ -10,6 +10,7 @@ import {
     RightLabel,
     baseInputStyle,
     getInputStateTextColor,
+    LabelAddon,
 } from '../InputStyles';
 import { darken } from 'polished';
 
@@ -36,8 +37,6 @@ const BottomText = styled.span<Pick<TextareaProps, 'inputState'>>`
     font-size: ${FONT_SIZE.TINY};
     color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
 `;
-
-const LabelAddon = styled.div``;
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
     isDisabled?: boolean;
@@ -87,7 +86,7 @@ export const Textarea = ({
                 <Label>
                     <LabelLeft>{label}</LabelLeft>
                     <LabelRight>
-                        {isHovered && <LabelAddon>{labelAddon}</LabelAddon>}
+                        <LabelAddon isVisible={isHovered}>{labelAddon}</LabelAddon>
                         {labelRight && <RightLabel>{labelRight}</RightLabel>}
                     </LabelRight>
                 </Label>

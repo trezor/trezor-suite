@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { FONT_WEIGHT, Z_INDEX, FONT_SIZE } from '../../config/variables';
+import { animations } from '../../config';
 import { useTheme } from '../../utils/hooks';
 import { Icon, IconProps } from '../Icon';
 
@@ -70,6 +71,7 @@ const Menu = styled.ul<MenuProps>`
         ${props => props.bottomPadding}px;
     border-radius: 10px;
     z-index: ${Z_INDEX.TOOLTIP};
+    animation: ${animations.DROPDOWN_MENU} 0.15s ease-in-out;
 
     ${props =>
         props.coords &&
@@ -191,6 +193,15 @@ const IconRight = styled.div`
     margin-left: auto;
     & > * {
         margin-left: 16px;
+    }
+`;
+
+const MoreIcon = styled(Icon)`
+    transition: background 0.1s;
+    border-radius: 6px;
+
+    :hover {
+        background: ${({ theme }) => theme.STROKE_GREY};
     }
 `;
 
@@ -371,7 +382,7 @@ const Dropdown = forwardRef(
                     : undefined,
             })
         ) : (
-            <Icon
+            <MoreIcon
                 ref={toggleRef}
                 size={24}
                 icon="MORE"

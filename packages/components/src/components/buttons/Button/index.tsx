@@ -12,7 +12,7 @@ const getPadding = (variant: ButtonVariant, hasLabel: boolean) => {
         return '4px 6px';
     }
 
-    return hasLabel ? '9px 12px' : '8px';
+    return hasLabel ? '9px 22px' : '8px';
 };
 
 const getColor = (variant: ButtonVariant, isDisabled: boolean, theme: SuiteThemeColors) => {
