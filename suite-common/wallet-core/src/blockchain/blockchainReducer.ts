@@ -111,24 +111,7 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
     blockchainInitialState,
     (builder, extra) => {
         builder
-            .addCase(
-                TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT as string,
-                (state, { payload }: PayloadAction<BlockchainInfo>) => {
-                    connect(state, payload);
-                },
-            )
-            .addCase(
-                TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR as string,
-                (state, { payload }: PayloadAction<BlockchainError>) => {
-                    error(state, payload.coin.shortcut, payload.error);
-                },
-            )
-            .addCase(
-                TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK as string,
-                (state, { payload }: PayloadAction<BlockchainBlock>) => {
-                    update(state, payload);
-                },
-            )
+
             .addCase(blockchainActions.reconnectTimeoutStart, (state, action) => {
                 state[action.payload.symbol] = {
                     ...state[action.payload.symbol],
@@ -160,7 +143,25 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
             .addCase(blockchainActions.resetBackend, (state, action) => {
                 delete state[action.payload.coin].backends.selected;
             })
-            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain);
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain)
+            .addMatcher(
+                action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT,
+                (state, { payload }: PayloadAction<BlockchainInfo>) => {
+                    connect(state, payload);
+                },
+            )
+            .addMatcher(
+                action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR,
+                (state, { payload }: PayloadAction<BlockchainError>) => {
+                    error(state, payload.coin.shortcut, payload.error);
+                },
+            )
+            .addMatcher(
+                action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK,
+                (state, { payload }: PayloadAction<BlockchainBlock>) => {
+                    update(state, payload);
+                },
+            );
     },
 );
 
