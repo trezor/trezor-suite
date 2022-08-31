@@ -8,6 +8,7 @@ import {
     onBlockMinedThunk,
     onBlockchainNotificationThunk,
     updateFeeInfoThunk,
+    onBlockchainDisconnectThunk,
 } from './blockchainThunks';
 
 export const blockchainMiddleware = createMiddlewareWithExtraDeps(
@@ -44,9 +45,7 @@ export const blockchainMiddleware = createMiddlewareWithExtraDeps(
                 dispatch(onBlockchainNotificationThunk(action.payload));
                 break;
             case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR:
-                // TODO BEFORE MERGE: figure out if this should be here, it throws TS error and from implementation
-                // it seems in case of error it will do nothing anyway
-                // dispatch(onNotificationThunk(action.payload));
+                dispatch(onBlockchainDisconnectThunk(action.payload));
                 break;
             default:
                 break;
