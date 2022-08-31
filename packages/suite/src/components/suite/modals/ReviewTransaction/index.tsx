@@ -239,7 +239,6 @@ export const ReviewTransaction = ({ decision }: ReviewTransactionProps) => {
                 outputs={outputs}
                 buttonRequests={buttonRequests}
                 isRbfAction={isRbfAction}
-                toggleDetails={() => setDetailsOpen(!detailsOpen)}
             />
         </StyledModal>
     );

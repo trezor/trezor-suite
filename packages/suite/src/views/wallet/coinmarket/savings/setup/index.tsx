@@ -25,7 +25,9 @@ const CountryLocationDescription = styled.div`
 `;
 
 const CountryMismatchDescription = styled.div`
-    margin-bottom: 16px;
+    margin-bottom: 32px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const Label = styled.div`
@@ -68,11 +70,20 @@ const LinkButton = styled(Button)`
     border: none;
     padding: 0 !important;
     cursor: pointer;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-weight: 500;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     display: inline;
     align-items: center;
     text-decoration: underline;
+
+    :hover {
+        opacity: 0.8;
+    }
+`;
+
+const ConfirmButton = styled(Button)`
+    margin: 42px auto 0;
 `;
 
 const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
@@ -177,6 +188,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     <Label>
                         <Translation id="TR_SAVINGS_SETUP_PAYMENT_FREQUENCY_LABEL" />
                     </Label>
+
                     <Controller
                         control={control}
                         name="paymentFrequency"
@@ -189,6 +201,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                             />
                         )}
                     />
+
                     <FiatAmount
                         control={control}
                         customFiatAmountError={errors.customFiatAmount}
@@ -200,15 +213,17 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                         fiatAmount={fiatAmount}
                         fiatCurrency={fiatCurrency}
                     />
+
                     <Summary
                         accountSymbol={account.symbol}
                         annualSavingsCryptoAmount={annualSavingsCryptoAmount}
                         annualSavingsFiatAmount={annualSavingsFiatAmount}
                         fiatCurrency={fiatCurrency}
                     />
-                    <Button isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
+
+                    <ConfirmButton isDisabled={!canConfirmSetup} isLoading={isSubmitting}>
                         <Translation id="TR_SAVINGS_SETUP_CONFIRM_BUTTON" />
-                    </Button>
+                    </ConfirmButton>
                 </>
             )}
         </form>

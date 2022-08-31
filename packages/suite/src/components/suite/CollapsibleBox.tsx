@@ -70,6 +70,8 @@ const IconLabel = styled.div`
 `;
 
 const Heading = styled.span<Pick<CollapsibleBoxProps, 'variant'>>`
+    display: flex;
+    align-items: center;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 

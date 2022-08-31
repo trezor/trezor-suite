@@ -1,6 +1,6 @@
 import { variables, Icon, Button, Link } from '@trezor/components';
 import React, { useState, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { CoinmarketProvidedByInvity } from '@wallet-components';
@@ -10,11 +10,10 @@ import { resolveStaticPath } from '@trezor/utils';
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    flex: 1;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     padding-top: 20px;
-    margin-top: 60px;
+    margin-top: auto;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
@@ -66,7 +65,7 @@ const Image = styled.img`
     width: 70px;
 `;
 
-const StyledLink = styled(Link)`
+const InvityLink = styled(Link)`
     display: flex;
     flex: 1;
     padding-top: 1px;
@@ -85,19 +84,34 @@ const Text = styled.div`
     margin-bottom: 15px;
 `;
 
-const Toggle = styled.div`
+const linkStyle = css`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     cursor: pointer;
+
+    :hover {
+        color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+        text-decoration: underline;
+    }
+`;
+
+const StyledLink = styled(Link)`
+    ${linkStyle}
+`;
+
+const LearnMoreToggle = styled.div`
+    ${linkStyle}
 `;
 
 const VerticalDivider = styled.div`
-    border-left: 1px solid ${props => props.theme.TYPE_LIGHT_GREY};
+    height: 12px;
+    border-left: 1px solid ${props => props.theme.TYPE_LIGHTER_GREY};
     margin: 0 8px;
 `;
 
 const CoinmarketFooter = () => {
     const [toggled, setToggled] = useState(false);
-    const menuRef = useRef<any>(null);
-    const toggleRef = useRef<any>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const toggleRef = useRef<HTMLDivElement>(null);
 
     useOnClickOutside([menuRef, toggleRef], () => {
         if (toggled) {
@@ -115,9 +129,9 @@ const CoinmarketFooter = () => {
                     <FooterBox ref={menuRef}>
                         <Header>
                             <BoxLeft>
-                                <StyledLink href={INVITY_URL}>
+                                <InvityLink href={INVITY_URL}>
                                     <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
-                                </StyledLink>
+                                </InvityLink>
                             </BoxLeft>
                             <BoxRight>
                                 <Link href={INVITY_URL}>
@@ -136,13 +150,14 @@ const CoinmarketFooter = () => {
                         </Text>
                     </FooterBox>
                 )}
-                <Link href={DATA_TOS_INVITY_URL} variant="nostyle">
+
+                <StyledLink href={DATA_TOS_INVITY_URL} variant="nostyle">
                     <Translation id="TR_TERMS_OF_USE_INVITY" />
-                </Link>
+                </StyledLink>
                 <VerticalDivider />
-                <Toggle ref={toggleRef} onClick={() => setToggled(true)}>
+                <LearnMoreToggle ref={toggleRef} onClick={() => setToggled(true)}>
                     <Translation id="TR_BUY_LEARN_MORE" />
-                </Toggle>
+                </LearnMoreToggle>
             </Right>
         </Wrapper>
     );

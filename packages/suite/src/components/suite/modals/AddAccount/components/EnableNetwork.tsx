@@ -1,50 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Icon, P, useTheme, motionAnimation } from '@trezor/components';
+import { motion } from 'framer-motion';
+import { P, motionAnimation } from '@trezor/components';
 
-import { CoinsList, Translation } from '@suite-components';
+import { CoinsList, Translation, CollapsibleBox, TooltipSymbol } from '@suite-components';
 import { Network } from '@wallet-types';
 
 import { MoreCoins } from './MoreCoins';
 
-const TestnetCoinsTrigger = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    padding-top: 14px;
-    padding-bottom: 14px;
-    margin-bottom: -14px;
-    cursor: pointer;
-`;
-
-const Label = styled(
-    ({ isTestnetVisible, ...rest }: { isTestnetVisible: boolean; children: React.ReactNode }) => (
-        <P size="tiny" weight="bold" {...rest} />
-    ),
-)`
-    color: ${({ isTestnetVisible, theme }) =>
-        isTestnetVisible ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY};
+const StyledCollapsibleBox = styled(CollapsibleBox)`
+    margin-bottom: 0;
 `;
 
 const TestnetCoinsWrapper = styled(motion.div).attrs(() => ({ ...motionAnimation.expand }))`
     display: flex;
     flex-direction: column;
-`;
-
-const TestnetCoinsDescription = styled(P).attrs(() => ({ size: 'small' }))`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding-top: 7px;
-    padding-bottom: 14px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-`;
-
-const StyledIcon = styled(Icon)`
-    padding-right: 4px;
 `;
 
 type EnableNetworkProps = {
@@ -60,8 +30,6 @@ export const EnableNetwork = ({
     selectedNetworks,
     handleNetworkSelection,
 }: EnableNetworkProps) => {
-    const theme = useTheme();
-    const [isTestnetVisible, setTestnetVisible] = useState(false);
     const hasTestnetNetworks = !!testnetNetworks?.length;
 
     return (
@@ -71,44 +39,29 @@ export const EnableNetwork = ({
                 networks={networks}
                 selectedNetworks={selectedNetworks}
             />
+
             {hasTestnetNetworks && (
-                <>
-                    <TestnetCoinsTrigger
-                        onClick={() => {
-                            setTestnetVisible(!isTestnetVisible);
-                        }}
-                    >
-                        <Label isTestnetVisible={isTestnetVisible}>
-                            <Translation id="TR_TESTNET_COINS" />
-                        </Label>
-                        <Icon
-                            canAnimate
-                            isActive={isTestnetVisible}
-                            size={16}
-                            color={theme.TYPE_LIGHT_GREY}
-                            icon="ARROW_DOWN"
+                <StyledCollapsibleBox
+                    variant="small"
+                    heading={
+                        <>
+                            <P size="tiny" weight="bold">
+                                <Translation id="TR_TESTNET_COINS" />
+                            </P>
+                            <TooltipSymbol
+                                content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
+                            />
+                        </>
+                    }
+                >
+                    <TestnetCoinsWrapper>
+                        <CoinsList
+                            onToggle={handleNetworkSelection}
+                            networks={testnetNetworks}
+                            selectedNetworks={selectedNetworks}
                         />
-                    </TestnetCoinsTrigger>
-                    <AnimatePresence>
-                        {isTestnetVisible && (
-                            <TestnetCoinsWrapper>
-                                <TestnetCoinsDescription>
-                                    <StyledIcon
-                                        size={12}
-                                        color={theme.TYPE_LIGHT_GREY}
-                                        icon="INFO"
-                                    />
-                                    <Translation id="TR_TESTNET_COINS_DESCRIPTION" />
-                                </TestnetCoinsDescription>
-                                <CoinsList
-                                    onToggle={handleNetworkSelection}
-                                    networks={testnetNetworks}
-                                    selectedNetworks={selectedNetworks}
-                                />
-                            </TestnetCoinsWrapper>
-                        )}
-                    </AnimatePresence>
-                </>
+                    </TestnetCoinsWrapper>
+                </StyledCollapsibleBox>
             )}
         </MoreCoins>
     );

@@ -15,7 +15,13 @@ const HeaderWrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
 `;
 
-const Header = styled.header<{ onClick?: () => void }>`
+const ChevronIcon = styled(Icon)`
+    padding: 12px;
+    border-radius: 50%;
+    transition: background 0.2s;
+`;
+
+const Header = styled.header<{ isOpened: boolean; onClick?: () => void }>`
     display: flex;
     padding: 16px;
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
@@ -28,6 +34,12 @@ const Header = styled.header<{ onClick?: () => void }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
+
+    :hover {
+        ${ChevronIcon} {
+            background: ${({ theme }) => theme.BG_GREY};
+        }
+    }
 `;
 
 interface Props {
@@ -72,12 +84,14 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
             {hasHeader && (
                 <HeaderWrapper>
                     <Header
+                        isOpened={isOpened}
                         onClick={!props.keepOpened ? onClick : undefined}
                         data-test={`@account-menu/${props.type}`}
                     >
                         <Translation id={getGroupLabel(props.type)} />
+
                         {!props.keepOpened && (
-                            <Icon
+                            <ChevronIcon
                                 data-test="@account-menu/arrow"
                                 canAnimate={animatedIcon}
                                 isActive={isOpened}

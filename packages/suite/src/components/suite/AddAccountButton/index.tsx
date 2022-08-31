@@ -68,7 +68,7 @@ const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...res
 
     if (tooltipMessage) {
         return (
-            <Tooltip maxWidth={200} offset={50} content={tooltipMessage} placement="bottom">
+            <Tooltip maxWidth={200} content={tooltipMessage} placement="bottom">
                 {ButtonComponent}
             </Tooltip>
         );

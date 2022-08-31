@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { variables } from '@trezor/components';
 import { FormattedCryptoAmount, FormattedFiatAmount, Translation } from '@suite-components';
 import { NetworkSymbol } from '@wallet-types';
 
@@ -8,8 +9,9 @@ const SummaryWrapper = styled.div`
     justify-content: space-between;
     border-top: 1px solid ${props => props.theme.BG_GREY};
     border-bottom: 1px solid ${props => props.theme.BG_GREY};
-    margin: 15px 0;
-    padding: 15px 0;
+    margin: 34px 0;
+    padding: 14px 0;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const Left = styled.div`

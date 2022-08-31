@@ -44,7 +44,11 @@ const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
 const StyledInput = styled(Input)`
     && {
         background-color: ${props => props.theme.BG_GREY_ALT};
-        border: none;
+        border-color: ${props => props.theme.BG_GREY_ALT};
+
+        :focus {
+            border-color: ${({ theme }) => theme.STROKE_GREY};
+        }
     }
 `;
 
