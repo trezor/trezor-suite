@@ -1,15 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice } from '@trezor/components';
-import { Modal } from '@suite-components';
+import { H1, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { useActions } from '@suite-hooks';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { DeviceConfirmImage } from '@suite-components/images/DeviceConfirmImage';
 import type { TrezorDevice } from '@suite-types';
+import { DevicePromptModal } from '@suite-components/Modal/DevicePromptModal';
 
-const StyledModal = styled(Modal)`
+const StyledDevicePromptModal = styled(DevicePromptModal)`
     width: 360px;
+`;
+
+const StyledDeviceConfirmImage = styled(DeviceConfirmImage)`
+    margin-top: -30px;
+`;
+
+const StyledH1 = styled(H1)`
+    margin-top: 12px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const Tip = styled.span`
+    margin-top: 12px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 interface PassphraseOnDeviceProps {
@@ -28,8 +43,10 @@ export const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
     const authConfirmation = getDiscoveryAuthConfirmationStatus() || device.authConfirm;
 
     return (
-        <StyledModal
-            heading={
+        <StyledDevicePromptModal isAbortable={false} data-test="@modal/enter-passphrase-on-device">
+            <StyledDeviceConfirmImage device={device} />
+
+            <StyledH1>
                 <Translation
                     id={
                         authConfirmation
@@ -38,8 +55,9 @@ export const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
                     }
                     values={{ deviceLabel: device.label }}
                 />
-            }
-            description={
+            </StyledH1>
+
+            <Tip>
                 <Translation
                     id={
                         authConfirmation
@@ -47,18 +65,7 @@ export const PassphraseOnDevice = ({ device }: PassphraseOnDeviceProps) => {
                             : 'TR_PASSPHRASE_CASE_SENSITIVE'
                     }
                 />
-            }
-            modalPrompt={
-                !authConfirmation ? (
-                    <ConfirmOnDevice
-                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        trezorModel={device.features?.major_version === 1 ? 1 : 2}
-                    />
-                ) : null
-            }
-            data-test="@modal/enter-passphrase-on-device"
-        >
-            <DeviceConfirmImage device={device} />
-        </StyledModal>
+            </Tip>
+        </StyledDevicePromptModal>
     );
 };

@@ -15,6 +15,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)`
 const TestnetCoinsWrapper = styled(motion.div).attrs(() => ({ ...motionAnimation.expand }))`
     display: flex;
     flex-direction: column;
+    margin-bottom: -18px;
 `;
 
 type EnableNetworkProps = {

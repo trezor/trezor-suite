@@ -18,7 +18,7 @@ import { AddAccountButton } from './components/AddAccountButton';
 import { useDispatch } from 'react-redux';
 
 const StyledModal = styled(Modal)`
-    min-height: 550px;
+    width: 560px;
     text-align: left;
 `;
 

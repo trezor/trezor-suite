@@ -49,7 +49,7 @@ const RateWrapper = styled.div`
 `;
 
 const Rate = styled.div`
-    margin: 3px 20px 5px 0;
+    margin: 1px 20px 0 0;
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
@@ -90,11 +90,13 @@ const FinalizeWarning = styled(Card)`
 `;
 
 const InfoIcon = styled(Icon)`
-    margin-right: 18px;
+    margin-right: 8px;
 `;
 
 const Red = styled.span`
+    margin-left: 2px;
     color: ${props => props.theme.TYPE_RED};
+    font-weight: ${variables.FONT_WEIGHT.BOLD};
 `;
 
 /* children are only for test purposes, this prop is not available in regular build */

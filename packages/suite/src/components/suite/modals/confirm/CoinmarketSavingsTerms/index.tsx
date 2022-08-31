@@ -26,7 +26,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const CheckText = styled.div`
-    font-size: ${variables.FONT_SIZE.BIG};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const Footer = styled.div`
@@ -40,7 +40,6 @@ const FooterContent = styled.div`
     display: flex;
     justify-content: space-between;
     flex: 1;
-    padding: 0 35px;
 `;
 
 export type Props = {

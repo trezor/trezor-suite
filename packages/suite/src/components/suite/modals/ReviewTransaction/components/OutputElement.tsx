@@ -9,7 +9,7 @@ import { amountToSatoshi } from '@suite-common/wallet-utils';
 const OutputWrapper = styled.div`
     display: flex;
     padding: 0 20px 0 0;
-    margin-top: 37px;
+    margin-top: 32px;
     &:first-child {
         margin-top: 0;
     }
@@ -34,7 +34,7 @@ const OutputValue = styled.div`
 
 const OutputLeft = styled.div`
     display: flex;
-    width: 50px;
+    width: 40px;
     justify-content: center;
     flex-direction: column;
 `;

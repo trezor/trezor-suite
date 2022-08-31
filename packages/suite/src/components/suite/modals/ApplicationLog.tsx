@@ -17,6 +17,17 @@ const LogWrapper = styled.pre`
     font-size: ${variables.FONT_SIZE.TINY};
     text-align: left;
     word-break: break-all;
+    margin-bottom: 12px;
+    box-shadow: inset 0 0 6px -2px ${({ theme }) => theme.BG_GREY};
+    border-radius: 6px;
+`;
+
+const BalanceInfoSection = styled(SectionItem)`
+    :not(:first-child) {
+        > div {
+            border-top: 0;
+        }
+    }
 `;
 
 type ApplicationLogProps = { onCancel: () => void };
@@ -64,7 +75,8 @@ export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
             <LogWrapper ref={htmlElement} data-test="@log/content">
                 {log}
             </LogWrapper>
-            <SectionItem>
+
+            <BalanceInfoSection>
                 <TextColumn
                     title={<Translation id="LOG_INCLUDE_BALANCE_TITLE" />}
                     description={<Translation id="LOG_INCLUDE_BALANCE_DESCRIPTION" />}
@@ -75,7 +87,7 @@ export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
                         onChange={() => setHideSensitiveInfo(!hideSensitiveInfo)}
                     />
                 </ActionColumn>
-            </SectionItem>
+            </BalanceInfoSection>
         </Modal>
     );
 };

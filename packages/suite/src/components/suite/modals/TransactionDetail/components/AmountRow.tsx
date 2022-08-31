@@ -21,7 +21,7 @@ const Column = styled.div<RowContentProps>`
     display: flex;
     align-items: center;
     align-self: start;
-    min-height: 36px;
+    min-height: 32px;
     color: ${({ color, theme }) =>
         color === 'light' ? `${theme.TYPE_LIGHT_GREY}` : `${theme.TYPE_DARK_GREY}`};
 

@@ -30,6 +30,10 @@ const StyledModal = styled(Modal)`
     }
 `;
 
+const WarningImage = styled(Image)`
+    margin: 24px 0;
+`;
+
 type WipeDeviceProps = {
     onCancel: () => void;
 };
@@ -58,7 +62,8 @@ export const WipeDevice = ({ onCancel }: WipeDeviceProps) => {
                 </Button>
             }
         >
-            <Image image="UNI_ERROR" />
+            <WarningImage image="UNI_ERROR" />
+
             <CheckItems>
                 <Col>
                     <CheckItem

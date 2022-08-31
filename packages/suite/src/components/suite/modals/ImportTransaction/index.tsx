@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
 import type { ExtendedMessageDescriptor } from '@suite-types';
 import { DropZone } from '@suite-components/DropZone';
@@ -6,6 +7,10 @@ import { UserContextPayload } from '@suite-actions/modalActions';
 import { DelimiterForm } from './components/DelimiterForm';
 import { ExampleCSV } from './components/ExampleCSV';
 import { parseCSV } from '@suite-common/wallet-utils';
+
+const StyledModal = styled(Modal)`
+    width: 600px;
+`;
 
 type Props = {
     onCancel: () => any;
@@ -39,7 +44,7 @@ export const ImportTransaction = ({ onCancel, decision }: Props) => {
     };
 
     return (
-        <Modal
+        <StyledModal
             isCancelable
             onCancel={onCancel}
             heading={<Translation id="TR_IMPORT_CSV_MODAL_TITLE" />}
@@ -47,6 +52,6 @@ export const ImportTransaction = ({ onCancel, decision }: Props) => {
             <ExampleCSV />
             <DropZone accept=".csv,.txt,text/csv" icon="CSV" onSelect={onCsvSelect} />
             <DelimiterForm value={delimiter} onChange={setDelimiter} />
-        </Modal>
+        </StyledModal>
     );
 };
