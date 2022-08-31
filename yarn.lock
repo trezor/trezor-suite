@@ -7025,6 +7025,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-storage@workspace:packages/suite-storage"
   dependencies:
+    "@trezor/env-utils": "*"
     broadcast-channel: ^4.14.0
     idb: ^7.0.2
     jest: ^26.6.3

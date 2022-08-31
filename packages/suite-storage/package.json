@@ -18,6 +18,7 @@
     "react-native": "./src/native/index.ts",
     "browser": "./src/web/index.ts",
     "dependencies": {
+        "@trezor/env-utils": "*",
         "broadcast-channel": "^4.14.0",
         "idb": "^7.0.2"
     },
