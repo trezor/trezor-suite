@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
+import { FiatValue, FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useActions, useSelector } from '@suite-hooks';
 import { useTheme, Checkbox, FluidSpinner, variables } from '@trezor/components';
@@ -41,6 +41,13 @@ const TopRow = styled(Row)`
 
 const IconWrapper = styled.div`
     margin-right: 8px;
+`;
+
+const StyledFiatValue = styled(FiatValue)`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: auto;
 `;
 
 const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }>`
