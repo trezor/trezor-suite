@@ -45,6 +45,7 @@ const DeviceHeaderButton = (props: Props) => {
                     size={24}
                     icon="SETTINGS"
                     color={theme.TYPE_LIGHT_GREY}
+                    hoverColor={theme.TYPE_LIGHTER_GREY}
                     onClick={props.onDeviceSettingsClick}
                 />
             )}

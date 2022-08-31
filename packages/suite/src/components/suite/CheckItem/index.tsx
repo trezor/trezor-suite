@@ -7,9 +7,11 @@ const { FONT_SIZE } = variables;
 
 const StyledCheckbox = styled(Checkbox)`
     padding-left: 0px;
-    margin: 12px 0px;
     align-items: flex-start;
-    max-width: 80%;
+
+    & + & {
+        margin-top: 12px;
+    }
 `;
 
 const CheckboxRight = styled.div`

@@ -42,9 +42,14 @@ const PreviewContent = styled.div`
 const StyledInput = styled(Input)`
     && {
         background-color: ${({ theme }) => theme.BG_GREY_ALT};
-        border: none;
         border-radius: 8px;
         height: 40px;
+        border-color: ${props => props.theme.BG_GREY_ALT};
+        transition: border-color 0.2s;
+
+        :focus {
+            border-color: ${({ theme }) => theme.STROKE_GREY_ALT};
+        }
     }
 `;
 

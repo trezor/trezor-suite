@@ -45,9 +45,10 @@ const StyledInput = styled(Input)`
     && {
         background-color: ${props => props.theme.BG_GREY_ALT};
         border-color: ${props => props.theme.BG_GREY_ALT};
+        transition: border-color 0.2s;
 
         :focus {
-            border-color: ${({ theme }) => theme.STROKE_GREY};
+            border-color: ${({ theme }) => theme.STROKE_GREY_ALT};
         }
     }
 `;

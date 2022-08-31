@@ -74,6 +74,12 @@ const CoinNameWrapper = styled(Col)`
         margin-left: 20px;
         border-bottom: none;
     }
+
+    :hover {
+        ${Coin} {
+            text-decoration: underline;
+        }
+    }
 `;
 
 const FailedCol = styled(Col)`

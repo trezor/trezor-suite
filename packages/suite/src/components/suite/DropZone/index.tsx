@@ -147,7 +147,7 @@ const Wrapper = styled.div`
     border: 2px dashed ${props => props.theme.STROKE_GREY};
     border-radius: 8px;
     cursor: pointer;
-    min-height: 300px;
+    min-height: 250px;
     transition: background-color 0.3s;
     &:hover,
     &.dragging {
@@ -163,7 +163,7 @@ const StyledInput = styled.input`
 `;
 
 const StyledIcon = styled(Icon)`
-    margin-right: 8px;
+    margin-right: 10px;
 `;
 
 const Label = styled.div`

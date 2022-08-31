@@ -23,14 +23,13 @@ const EmptyWrapper = styled.div`
 `;
 
 const EmptyHeadline = styled.div`
-    font-size: ${variables.FONT_SIZE.BIG};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 10px 0 6px 0;
-    opacity: 0.9;
 `;
 
 const EmptyDescriptionP = styled(P)`
-    opacity: 0.7;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 interface Props {
     notifications: AppState['notifications'];
