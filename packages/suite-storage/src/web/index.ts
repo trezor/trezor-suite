@@ -71,6 +71,8 @@ class CommonDB<TDBStructure> {
         // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
         // this solution calls callback function from within onerror/onsuccess event handlers.
         // For other browsers checking the window.indexedDB should be enough.
+
+        // todo: move this to @trezor/env-utils
         const isFirefox =
             typeof navigator !== 'undefined' &&
             navigator.userAgent.toLowerCase().indexOf('firefox') > -1;

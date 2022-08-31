@@ -10,7 +10,7 @@ import {
     PopupInit,
     PopupHandshake,
 } from '@trezor/connect';
-import { Transport } from '@trezor/connect-ui';
+import { Transport, ErrorView } from '@trezor/connect-ui';
 
 import * as view from './view';
 import {
@@ -25,6 +25,8 @@ import {
     showBridgeUpdateNotification,
     showBackupNotification,
 } from './view/notification';
+
+let handshakeTimeout: ReturnType<typeof setTimeout>;
 
 // browser built-in functionality to quickly and safely escape the string
 const escapeHtml = (payload: any) => {
@@ -42,6 +44,8 @@ const escapeHtml = (payload: any) => {
 const handleMessage = (event: MessageEvent<PopupEvent | UiEvent>) => {
     const { data } = event;
     if (!data) return;
+
+    console.log('data', data);
 
     // This is message from the window.opener
     if (data.type === POPUP.INIT) {
@@ -185,6 +189,9 @@ const handshake = (payload: PopupHandshake['payload']) => {
     if (payload.transport && payload.transport.outdated) {
         showBridgeUpdateNotification();
     }
+
+    // todo: uncomment. now disabled for testing
+    // clearTimeout(handshakeTimeout);
 };
 
 const onLoad = () => {
@@ -196,6 +203,11 @@ const onLoad = () => {
     }
 
     postMessageToParent(createPopupMessage(POPUP.LOADED));
+
+    handshakeTimeout = setTimeout(() => {
+        showView(<ErrorView error="handshake-timeout" />);
+        // todo: increase timeout, now set low for testing
+    }, 3 * 1000);
 };
 
 window.addEventListener('load', onLoad, false);

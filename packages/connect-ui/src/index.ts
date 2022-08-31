@@ -1,4 +1,5 @@
 export * from './views/Transport';
+export * from './views/Error';
 
 // this export will be removed in the future but it is required now
 // future => connect-ui will have its own entrypoint
