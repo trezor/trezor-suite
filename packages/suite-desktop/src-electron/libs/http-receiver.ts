@@ -5,6 +5,7 @@ import { URL } from 'url';
 
 import { EventEmitter } from 'events';
 import { HTTP_ORIGINS_DEFAULT } from './constants';
+import { xssFilters } from '@trezor/utils';
 
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
@@ -349,22 +350,32 @@ export class HttpReceiver extends EventEmitter {
     };
 
     private buyPostSubmitHandler = (request: Request, response: http.ServerResponse) => {
-        const { query } = url.parse(request.url, true);
-        const action = query.a;
-        const content = `
-            Forwarding to ${action}...
-            <form id="buy-form" method="POST" action="${action}">
-            ${Object.keys(query)
-                .map(q =>
-                    q !== 'a' ? `<input type="hidden" name="${q}" value="${query[q]}">` : '',
+        try {
+            const { searchParams } = new URL(request.url, 'http://127.0.0.1:21335'); // hostname is not important here, just to be able to validate relative URL
+            const action = new URL(searchParams.get('a') || '').href; // action has to be a valid URL, otherwise throw an error
+            const content = `
+            Forwarding to ${xssFilters.inHTML(action)}...
+            <form id="buy-form" method="POST" action="${xssFilters.inDoubleQuotes(action)}">
+            ${Array.from(searchParams)
+                .filter(([key]) => key !== 'a')
+                .map(
+                    ([key, value]) =>
+                        `<input type="hidden" name="${key}" value="${xssFilters.inDoubleQuotes(
+                            value,
+                        )}">`,
                 )
                 .join('')}
             </form>
             <script type="text/javascript">document.getElementById("buy-form").submit();</script>
         `;
 
-        const template = this.applyTemplate(content);
-        response.end(template);
+            const template = this.applyTemplate(content);
+            response.end(template);
+        } catch (error) {
+            const template = this.applyTemplate('Error');
+            response.end(template);
+            throw new Error(`Could not handle buy post request: ${error}`);
+        }
     };
 
     /**
