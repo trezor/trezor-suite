@@ -1,4 +1,5 @@
-import { combineReducers, configureStore, Store } from '@reduxjs/toolkit';
+import { combineReducers, configureStore, Store, Middleware } from '@reduxjs/toolkit';
+import createDebugger from 'redux-flipper';
 
 import { appSettingsReducer } from '@suite-native/module-settings';
 import { appGraphReducer } from '@suite-native/home-graph';
@@ -10,6 +11,13 @@ import {
 } from '@suite-common/wallet-core';
 
 import { extraDependencies } from './extraDependencies';
+
+const middlewares: Middleware[] = [];
+
+if (__DEV__) {
+    const reduxFlipperDebugger = createDebugger();
+    middlewares.push(reduxFlipperDebugger);
+}
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
@@ -33,7 +41,7 @@ export const store: Store = configureStore({
             thunk: {
                 extraArgument: extraDependencies,
             },
-        }),
+        }).concat(middlewares),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
