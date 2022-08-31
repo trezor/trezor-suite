@@ -15,6 +15,7 @@ import type { Timeout } from '@trezor/type-utils';
 
 const ArrowDown = styled(Icon)`
     margin-left: 4px;
+    transition: transform 0.1s ease-in-out;
 `;
 
 const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
@@ -33,6 +34,8 @@ const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
             transparentize(theme.HOVER_TRANSPARENTIZE_FILTER, theme.HOVER_PRIMER_COLOR)};
 
         ${ArrowDown} {
+            transform: translateY(2px);
+
             path {
                 fill: ${({ theme }) => theme.TYPE_DARK_GREY};
             }

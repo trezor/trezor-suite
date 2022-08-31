@@ -231,6 +231,7 @@ const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Props) => 
                                 size={24}
                                 icon="ARROW_UP"
                                 color={theme.TYPE_LIGHT_GREY}
+                                hoverColor={theme.TYPE_LIGHTER_GREY}
                                 canAnimate={animateArrow}
                                 isActive={!isExpanded}
                                 onClick={() => {

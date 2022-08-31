@@ -37,7 +37,7 @@ const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
 const ActionButton = styled.button`
     border: 0;
     left: auto;
-    padding: 8px;
+    padding: 6px;
     border-radius: 8px;
     background: ${props => props.theme.BG_WHITE};
     transition: ${props =>
@@ -131,7 +131,7 @@ export const Header = ({ back, label, useBreadcrumb }: HeaderProps) => {
                 }}
                 data-test="@guide/button-close"
             >
-                <StyledIcon icon="CROSS" size={24} color={theme.TYPE_LIGHT_GREY} />
+                <StyledIcon icon="CROSS" size={20} color={theme.TYPE_LIGHT_GREY} />
             </ActionButton>
         </HeaderWrapper>
     );

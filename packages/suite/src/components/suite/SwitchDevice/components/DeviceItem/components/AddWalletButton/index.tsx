@@ -20,10 +20,10 @@ const StyledButton = styled(Button)`
     border-radius: 8px;
     background: transparent;
 
-    &:hover,
-    &:active,
-    &:focus {
-        background: transparent;
+    :hover,
+    :active,
+    :focus {
+        background: ${({ theme }) => theme.BG_GREY_ALT};
     }
 `;
 

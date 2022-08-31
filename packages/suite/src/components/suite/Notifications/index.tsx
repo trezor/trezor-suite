@@ -12,6 +12,7 @@ const Wrapper = styled.div`
 
 const Header = styled.div`
     display: flex;
+    margin-top: -8px;
     padding: 0 22px;
     align-items: center;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY_ALT};
@@ -34,12 +35,17 @@ const TabButton = styled.button<{ selected: boolean }>`
     color: ${props => (props.selected ? props.theme.TYPE_DARK_GREY : props.theme.TYPE_LIGHT_GREY)};
     border-bottom: 2px solid;
     border-color: ${props => (props.selected ? props.theme.TYPE_DARK_GREY : 'transparent')};
+    transition: border-color 0.1s;
+
+    :hover {
+        border-color: ${({ theme, selected }) => !selected && theme.STROKE_GREY};
+    }
 `;
 
 const CloseButtonWrapper = styled.div``;
 
 const Content = styled.div`
-    padding: 4px 22px 12px 22px;
+    padding: 12px 22px;
     max-height: 340px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -91,6 +97,7 @@ const Notifications = (props: Props) => {
                             icon="CROSS"
                             size={20}
                             color={theme.TYPE_LIGHT_GREY}
+                            hoverColor={theme.TYPE_LIGHTER_GREY}
                             useCursorPointer
                             onClick={onCancel}
                         />

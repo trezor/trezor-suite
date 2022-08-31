@@ -70,6 +70,7 @@ const AppWrapper = styled.div`
 const DefaultPaddings = styled.div`
     display: flex;
     justify-content: center;
+    flex: 1;
     width: 100%;
     max-width: ${MAX_WIDTH};
     padding: 24px 32px 90px 32px;

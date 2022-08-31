@@ -163,11 +163,14 @@ const StyledDropdown = styled(Dropdown)`
     width: 38px;
     height: 38px;
     border-radius: 8px;
-    & > :first-child {
+    transition: background 0.1s;
+
+    > :first-child {
         width: 100%;
         height: 100%;
     }
-    &:hover {
+
+    :hover {
         background: ${props => props.theme.BG_SECONDARY_HOVER};
     }
 `;
