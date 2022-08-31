@@ -21,20 +21,11 @@ const TransactionDetailsWrapper = styled.div`
 const DetailsHeader = styled.div`
     padding: 14px 16px 10px;
     text-align: left;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: 600;
     font-size: 14px;
     display: flex;
     justify-content: space-between;
-`;
-
-const CloseButton = styled.button`
-    background: 0;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    cursor: pointer;
 `;
 
 const DetailsBody = styled.div`
@@ -90,6 +81,10 @@ const SectionName = styled.div`
 
 const SectionDivider = styled.div`
     margin: 15px 0;
+
+    > div {
+        margin: 0 auto;
+    }
 `;
 
 const StyledBox = styled(Box)`
@@ -111,12 +106,11 @@ const Pre = styled.pre`
 export interface Props {
     tx: PrecomposedTransactionFinal | TxFinalCardano;
     txHash?: string;
-    onClose: () => void;
 }
 
 const prettify = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
-const TransactionDetails = ({ tx, txHash, onClose }: Props) => {
+const TransactionDetails = ({ tx, txHash }: Props) => {
     const theme = useTheme();
     if (tx.transaction.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
 
@@ -124,9 +118,6 @@ const TransactionDetails = ({ tx, txHash, onClose }: Props) => {
         <TransactionDetailsWrapper>
             <DetailsHeader>
                 <Translation id="TR_DETAIL" />
-                <CloseButton onClick={() => onClose()}>
-                    <Icon icon="CROSS" size={16} color={theme.TYPE_LIGHT_GREY} />
-                </CloseButton>
             </DetailsHeader>
             <DetailsBody>
                 <DetailsBodyInner>

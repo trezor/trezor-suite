@@ -16,6 +16,11 @@ const NavLink = styled.div<{ active?: boolean }>`
     padding: 14px 6px 12px 6px;
     white-space: nowrap;
     border-bottom: 2px solid ${props => (props.active ? props.theme.BG_GREEN : 'transparent')};
+    transition: border-color 0.1s;
+
+    :hover {
+        border-bottom: 2px solid ${({ theme, active }) => !active && theme.STROKE_GREY};
+    }
 
     & + & {
         margin-left: 42px;

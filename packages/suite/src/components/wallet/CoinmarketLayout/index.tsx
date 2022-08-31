@@ -15,7 +15,11 @@ const Content = styled.div`
     }
 `;
 
-const BottomContent = styled.div``;
+const BottomContent = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+`;
 
 interface Props {
     children: ReactNode;
@@ -32,10 +36,12 @@ const CoinmarketLayout = ({ children, selectedAccount, onClearFormButtonClick }:
                 </Button>
             )}
         </WalletLayoutHeader>
+
         <Card noPadding>
             <Navigation />
             <Content>{children}</Content>
         </Card>
+
         <BottomContent>
             <AccountTransactions />
             <CoinmarketFooter />

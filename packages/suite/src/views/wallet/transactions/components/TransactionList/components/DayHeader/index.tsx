@@ -43,9 +43,11 @@ const ColPending = styled(Col)`
     font-variant-numeric: tabular-nums;
 `;
 
-const ColAmount = styled(Col)`
+const ColAmount = styled(Col)<{ isVisible?: boolean }>`
     padding-left: 16px;
     text-align: right;
+    opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+    transition: opacity 0.1s;
 `;
 
 const ColFiat = styled(Col)`
@@ -91,12 +93,10 @@ const DayHeader = ({
                             year="numeric"
                         />
                     </ColDate>
-                    {isHovered && (
-                        <ColAmount>
-                            {totalAmount.gte(0) && <span>+</span>}
-                            <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
-                        </ColAmount>
-                    )}
+                    <ColAmount isVisible={isHovered}>
+                        {totalAmount.gte(0) && <span>+</span>}
+                        <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
+                    </ColAmount>
                     {showFiatValue && (
                         <ColFiat>
                             <HiddenPlaceholder>

@@ -15,24 +15,26 @@ const Wrapper = styled.div`
 `;
 
 const Message = styled.div`
-    margin-top: 16px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const GoToInvityButton = styled(Button)`
-    margin-top: 16px;
+const StyledLoader = styled(Loader)`
+    margin: 32px 0;
 `;
 
 const CoinmarketSavingsSetupWaiting = (props: WithSelectedAccountLoadedProps) => {
     const { handleGoToInvity } = useCoinmarketSavingsSetupWaiting(props);
     return (
         <Wrapper>
-            <Loader />
             <Message>
                 <Translation id="TR_SAVINGS_SETUP_WAITING_MESSAGE" />
             </Message>
-            <GoToInvityButton onClick={handleGoToInvity}>
+
+            <StyledLoader size={50} />
+
+            <Button onClick={handleGoToInvity}>
                 <Translation id="TR_SAVINGS_SETUP_WAITING_BUTTON_LABEL" />
-            </GoToInvityButton>
+            </Button>
         </Wrapper>
     );
 };

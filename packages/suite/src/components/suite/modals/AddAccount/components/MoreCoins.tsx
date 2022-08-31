@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Icon, P, useTheme } from '@trezor/components';
 import { Translation } from '@suite-components';
 
@@ -50,7 +50,12 @@ const BackgroundWrapper = styled.div<{ isExpanded: boolean }>`
     transition: all ${animationDuration}s ease-in-out;
     padding: ${({ isExpanded }) => (isExpanded ? '16px' : '10px 16px')};
     margin-right: auto;
+    margin-top: 8px;
     min-width: ${({ isExpanded }) => (isExpanded ? '100%' : 0)};
+
+    :hover {
+        opacity: ${({ isExpanded }) => !isExpanded && 0.7};
+    }
 `;
 
 const ContentWrapper = styled.div`
@@ -69,13 +74,7 @@ const CloseIconWrapper = styled(motion.div)`
 const OpenIconWrapper = styled.div<{ isExpanded: boolean }>`
     display: flex;
     flex-direction: row;
-    cursor: pointer;
-    ${({ isExpanded }) =>
-        isExpanded
-            ? css`
-                  border-bottom: 1.5px dashed rgba(0, 0, 0, 0.15);
-              `
-            : ''}
+    cursor: ${({ isExpanded }) => !isExpanded && 'pointer'};
 `;
 
 const HeaderWrapper = styled.div`
@@ -92,7 +91,7 @@ const StyledIcon = styled(Icon)`
 const Label = styled(
     ({ isExpanded, ...rest }: { isExpanded: boolean; children: React.ReactNode }) => (
         <P
-            size={isExpanded ? 'tiny' : 'normal'}
+            size={isExpanded ? 'small' : 'normal'}
             weight={isExpanded ? 'bold' : 'normal'}
             {...rest}
         />

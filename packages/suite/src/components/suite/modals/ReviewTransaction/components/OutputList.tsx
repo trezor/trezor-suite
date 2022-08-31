@@ -53,16 +53,21 @@ const RightBottom = styled.div`
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     display: flex;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${variables.SCREEN_QUERY.MOBILE} {
+        display: block;
         margin-left: 0px;
     }
 `;
 
 const StyledButton = styled(Button)`
-    display: flex;
-    flex: 1;
-    & + & {
-        margin-top: 20px;
+    margin: 0 10px 0 0;
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        width: 100%;
+
+        & + & {
+            margin: 10px 0 0 0;
+        }
     }
 `;
 
@@ -76,7 +81,6 @@ interface Props {
     outputs: OutputProps[];
     buttonRequests: ButtonRequest[];
     isRbfAction: boolean;
-    toggleDetails: () => void;
 }
 
 const getState = (index: number, buttonRequests: number) => {
@@ -95,7 +99,6 @@ const OutputList = ({
     outputs,
     buttonRequests,
     isRbfAction,
-    toggleDetails,
 }: Props) => {
     const { symbol } = account;
     const { options, selectedFee } = precomposedForm;
@@ -130,9 +133,7 @@ const OutputList = ({
     return (
         <Content>
             <Right>
-                {detailsOpen && (
-                    <Detail tx={precomposedTx} txHash={signedTx?.tx} onClose={toggleDetails} />
-                )}
+                {detailsOpen && <Detail tx={precomposedTx} txHash={signedTx?.tx} />}
                 <RightTop>
                     <RightTopInner>
                         {outputs.map((output, index) => {

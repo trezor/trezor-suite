@@ -11,6 +11,7 @@ import SpendTransaction from './components/SpendTransaction';
 import SavingsTransaction from './components/SavingsTransaction';
 
 const Wrapper = styled.div`
+    margin-bottom: 48px;
     padding: 64px 0 0 0;
 `;
 

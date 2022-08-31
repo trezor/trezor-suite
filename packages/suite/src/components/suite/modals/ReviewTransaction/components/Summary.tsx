@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
+import { transparentize, darken } from 'polished';
 import {
     getFeeUnits,
     getTitleForNetwork,
@@ -12,14 +13,13 @@ import { Translation, FormattedCryptoAmount } from '@suite-components';
 import { Account, Network } from '@wallet-types';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
-import { transparentize } from 'polished';
 import { useSelector } from '@suite-hooks/useSelector';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;
     display: flex;
     flex-direction: column;
-    border-radius: 7px;
+    border-radius: 8px;
     background: ${props => props.theme.BG_GREY};
     min-width: 190px;
     width: 225px;
@@ -122,16 +122,26 @@ const RateInfo = styled.div`
     }
 `;
 
-const TxDetailsButton = styled.button`
-    width: 100%;
-    padding: 0;
+const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
+    border-radius: 4px;
+    padding: 2px 4px 2px 8px;
+    margin: 0 -4px;
+    width: calc(100% + 8px);
     border: 0;
-    background: 0;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     font-size: 10px;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
+    transition: background 0.1s;
+    background: ${({ theme, detailsOpen }) =>
+        detailsOpen && darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_LIGHT_GREY)};
     cursor: pointer;
+
+    :hover {
+        background: ${({ theme }) => theme.STROKE_GREY};
+    }
+
     & > * {
         display: block;
     }
@@ -326,7 +336,10 @@ const Summary = ({
                     <LeftDetailsBottom>
                         <Separator />
                         <LeftDetailsRow>
-                            <TxDetailsButton onClick={() => onDetailsClick()}>
+                            <TxDetailsButton
+                                detailsOpen={detailsOpen}
+                                onClick={() => onDetailsClick()}
+                            >
                                 <Translation id="TR_TRANSACTION_DETAILS" />
                                 <Icon
                                     size={16}

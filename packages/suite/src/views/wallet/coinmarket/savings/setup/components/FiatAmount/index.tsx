@@ -8,37 +8,16 @@ import { Translation } from '@suite-components';
 import { getFiatAmountOptions, StyledSelectBar } from '@wallet-views/coinmarket';
 import type { TypedValidationRules } from '@wallet-types/form';
 
-const FiatAmountWrapper = styled.div`
-    display: flex;
-`;
-
-const FiatAmountLeftColumn = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-`;
-
-const FiatAmountRightColumn = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: row;
-`;
-
 const StyledInput = styled(Input)`
     display: flex;
-    max-width: 70px;
-    width: 70px;
+    margin-top: 12px;
     height: 40px;
 `;
 
 const CustomAmountInputErrorWrapper = styled.div`
-    display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => props.theme.TYPE_RED};
-    align-items: end;
-    padding: 10px 10px 0 10px;
-    min-height: 27px;
-    justify-content: end;
+    margin-top: 6px;
 `;
 
 const Label = styled.div`
@@ -79,72 +58,70 @@ const FiatAmount = ({
         <Label>
             <Translation id="TR_SAVINGS_SETUP_FIAT_AMOUNT_LABEL" />
         </Label>
-        <FiatAmountWrapper>
-            <FiatAmountLeftColumn>
-                <Controller
-                    control={control}
-                    name="fiatAmount"
-                    defaultValue={defaultFiatAmount}
-                    render={({ onChange, value }) => (
-                        <StyledSelectBar
-                            onChange={onChange}
-                            selectedOption={value}
-                            options={getFiatAmountOptions(paymentAmounts, fiatCurrency)}
-                        />
-                    )}
-                />
-            </FiatAmountLeftColumn>
-            {fiatAmount === CustomPaymentAmountKey && (
-                <FiatAmountRightColumn>
-                    <StyledInput
-                        name="customFiatAmount"
-                        width={70}
-                        noTopLabel
-                        variant="small"
-                        noError
-                        autoFocus
-                        inputState={customFiatAmountError ? 'error' : 'success'}
-                        innerRef={register({
-                            validate: (value: string) => {
-                                if (!value) {
-                                    return 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED';
-                                }
-                                if (Number.isNaN(Number(value))) {
-                                    return 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT';
-                                }
-                                const numberValue = Number(value);
-                                if (
-                                    minimumPaymentAmountLimit &&
-                                    numberValue < minimumPaymentAmountLimit
-                                ) {
-                                    return (
-                                        <Translation
-                                            id="TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM"
-                                            values={{
-                                                amount: minimumPaymentAmountLimit,
-                                            }}
-                                        />
-                                    );
-                                }
-                                if (
-                                    maximumPaymentAmountLimit &&
-                                    numberValue > maximumPaymentAmountLimit
-                                ) {
-                                    return (
-                                        <Translation
-                                            id="TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM"
-                                            values={{
-                                                amount: maximumPaymentAmountLimit,
-                                            }}
-                                        />
-                                    );
-                                }
-                            },
-                        })}
+
+        <div>
+            <Controller
+                control={control}
+                name="fiatAmount"
+                defaultValue={defaultFiatAmount}
+                render={({ onChange, value }) => (
+                    <StyledSelectBar
+                        onChange={onChange}
+                        selectedOption={value}
+                        options={getFiatAmountOptions(paymentAmounts, fiatCurrency)}
                     />
-                </FiatAmountRightColumn>
+                )}
+            />
+
+            {fiatAmount === CustomPaymentAmountKey && (
+                <StyledInput
+                    name="customFiatAmount"
+                    noTopLabel
+                    variant="small"
+                    noError
+                    autoFocus
+                    inputState={customFiatAmountError ? 'error' : 'success'}
+                    innerRef={register({
+                        validate: (value: string) => {
+                            if (!value) {
+                                return 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_REQUIRED';
+                            }
+                            if (Number.isNaN(Number(value))) {
+                                return 'TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_INVALID_FORMAT';
+                            }
+                            const numberValue = Number(value);
+                            if (
+                                minimumPaymentAmountLimit &&
+                                numberValue < minimumPaymentAmountLimit
+                            ) {
+                                return (
+                                    <Translation
+                                        id="TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MINIMUM"
+                                        values={{
+                                            amount: minimumPaymentAmountLimit,
+                                        }}
+                                    />
+                                );
+                            }
+                            if (
+                                maximumPaymentAmountLimit &&
+                                numberValue > maximumPaymentAmountLimit
+                            ) {
+                                return (
+                                    <Translation
+                                        id="TR_SAVINGS_SETUP_CUSTOM_FIAT_AMOUNT_MAXIMUM"
+                                        values={{
+                                            amount: maximumPaymentAmountLimit,
+                                        }}
+                                    />
+                                );
+                            }
+                        },
+                    })}
+                />
             )}
-        </FiatAmountWrapper>
+        </div>
+
         <CustomAmountInputErrorWrapper>
             <InputError error={customFiatAmountError} />
         </CustomAmountInputErrorWrapper>

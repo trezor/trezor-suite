@@ -23,6 +23,12 @@ const Wrapper = styled.div.attrs((props: WrapperProps) => ({
 }))<WrapperProps>`
     display: flex;
     flex-direction: column;
+    transition: background 0.15s;
+
+    & + & {
+        margin-top: 3px;
+    }
+
     &:first-of-type {
         padding-top: 0;
     }
@@ -88,7 +94,7 @@ const FiatValueWrapper = styled.div`
 
 const AccountHeader = styled.div`
     display: flex;
-    padding: 12px 16px;
+    padding: 10px 16px;
     border-radius: 4px;
     cursor: pointer;
 `;

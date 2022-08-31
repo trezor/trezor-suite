@@ -203,7 +203,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             }
             label={
                 <Text>
-                    {outputsCount > 1 && `${recipientId}. `}
+                    {outputsCount > 1 && `${recipientId}.`} &nbsp;
                     <Translation id="RECIPIENT_ADDRESS" />
                     {inputState === 'success' && (
                         <Tooltip content={<Translation id="TR_ADDRESS_FORMAT" />}>

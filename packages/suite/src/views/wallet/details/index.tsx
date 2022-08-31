@@ -18,12 +18,15 @@ import { NETWORKS } from '@wallet-config';
 
 const AccountTypeLabel = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     line-height: 20px;
+    text-align: center;
+    min-width: 170px;
 
     div:first-child {
-        padding-right: 8px;
+        margin-bottom: 8px;
     }
 `;
 
@@ -86,14 +89,14 @@ const Details = () => {
                     />
                     <AccountTypeLabel>
                         {accountTypeName && (
-                            <P size="small">
+                            <P size="small" weight="medium">
                                 <NoWrap>
                                     <Translation id={accountTypeName} />
                                 </NoWrap>
                             </P>
                         )}
                         <P size="tiny">
-                            <Translation id={accountTypeTech} />
+                            (<Translation id={accountTypeTech} />)
                         </P>
                     </AccountTypeLabel>
                 </StyledRow>

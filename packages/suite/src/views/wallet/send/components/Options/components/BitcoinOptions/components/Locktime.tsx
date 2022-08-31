@@ -19,7 +19,9 @@ const Label = styled.div`
 `;
 
 const Text = styled.div`
+    height: 18px;
     margin-left: 8px;
+    font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
 const RbfMessage = styled.div`
@@ -120,7 +122,7 @@ export const Locktime = ({ close }: Props) => {
                         </Text>
                     </Label>
                 }
-                labelRight={<Icon size={20} icon="CROSS" onClick={close} />}
+                labelRight={<Icon size={18} icon="CROSS" onClick={close} />}
                 bottomText={<InputError error={error} />}
                 data-test="locktime-input"
             />
