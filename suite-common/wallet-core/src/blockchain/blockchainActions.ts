@@ -6,7 +6,7 @@ import type { Timeout } from '@trezor/type-utils';
 
 export const actionsPrefix = '@common/blockchain';
 
-const connected = createAction(`${actionsPrefix}/CONNECTED`, (payload: NetworkSymbol) => ({
+const connected = createAction(`${actionsPrefix}/connected`, (payload: NetworkSymbol) => ({
     payload,
 }));
 
@@ -17,7 +17,7 @@ type ReconnectTimeoutStartPayload = {
     count: number;
 };
 const reconnectTimeoutStart = createAction(
-    `${actionsPrefix}/RECONNECT_TIMEOUT_START`,
+    `${actionsPrefix}/reconnectTimeoutStart`,
     (payload: ReconnectTimeoutStartPayload) => ({
         payload,
     }),
