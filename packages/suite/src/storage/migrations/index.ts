@@ -21,6 +21,11 @@ type WalletWithBackends = {
     }>;
 };
 
+type DBWalletAccountTransactionCompatible = {
+    order: DBWalletAccountTransaction['order'];
+    tx: DBWalletAccountTransaction['tx'] & { totalSpent: string };
+};
+
 export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     db,
     oldVersion,
@@ -184,7 +189,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         let cursor = await transaction.objectStore('txs').openCursor();
         const symbolsToExclude = ['eth', 'etc', 'xrp', 'trop', 'txrp'];
         while (cursor) {
-            const tx = cursor.value;
+            const tx = cursor.value as DBWalletAccountTransactionCompatible;
             if (!tx.tx.totalSpent) {
                 if (!symbolsToExclude.includes(tx.tx.symbol)) {
                     // btc-like txs
@@ -537,7 +542,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 31) {
         let cursor = await transaction.objectStore('txs').openCursor();
         while (cursor) {
-            const { order, tx: origTx } = cursor.value;
+            const { order, tx: origTx } = cursor.value as DBWalletAccountTransactionCompatible;
 
             const unformat = (amount: string) => networkAmountToSatoshi(amount, origTx.symbol);
             const unformatIfDefined = (amount: string | undefined) =>

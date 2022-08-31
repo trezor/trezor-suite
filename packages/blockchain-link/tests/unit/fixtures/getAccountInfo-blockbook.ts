@@ -207,7 +207,6 @@ export default [
                     {
                         type: 'recv',
                         amount: '1',
-                        totalSpent: '1',
                         rbf: true,
                         targets: [
                             {
@@ -330,7 +329,6 @@ export default [
                     {
                         type: 'sent',
                         amount: '50',
-                        totalSpent: '60',
                         fee: '10',
                         rbf: true,
                         targets: [

@@ -433,7 +433,6 @@ export default {
                                 'eb1b2e79036d9fe2fccf0348df6109ab55ce2dba66c28aab84ec56cea0b5ba8d',
                             amount: '171265',
                             fee: '171265',
-                            totalSpent: '171265',
                             targets: [],
                             tokens: [],
                             cardanoSpecific: {
@@ -765,7 +764,6 @@ export default {
                 blockHash: '0eed37582508f89e98bc148a3be79856a6e03a98a8e9d206634797d49655da05',
                 amount: '1518517',
                 fee: '178745',
-                totalSpent: '1518517',
                 targets: [
                     {
                         n: 0,
@@ -945,7 +943,6 @@ export default {
                 blockHash: 'cc6f013f903e771ce846c2e7be44b99fdfa2e3f063265283d6110d30cf09f780',
                 amount: '174257',
                 fee: '174257',
-                totalSpent: '174257',
                 targets: [],
                 tokens: [],
                 details: {
@@ -1123,7 +1120,6 @@ export default {
                 blockHash: 'f1085bc718c5514e8f08354af8822b528c6eee5855d0f87ba5f4ede0f73a6067',
                 amount: '5000000',
                 fee: '168273',
-                totalSpent: '5168273',
                 targets: [
                     {
                         n: 0,
@@ -1301,7 +1297,6 @@ export default {
                 blockHash: '4701eb448ccd0c976b01221235c35271d9c41cb0c6fb021d0c5e77ec81e34901',
                 amount: '174301',
                 fee: '174301',
-                totalSpent: '174301',
                 targets: [],
                 tokens: [],
                 cardanoSpecific: {
@@ -1474,7 +1469,6 @@ export default {
                 blockHash: '8e5015a14576e1ef2ce85440b2b39396626262223a4f1a3c0de0a575b0c6af5c',
                 amount: '172805',
                 fee: '172805',
-                totalSpent: '172805',
                 targets: [],
                 tokens: [],
                 cardanoSpecific: {

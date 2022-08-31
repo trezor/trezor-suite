@@ -24,11 +24,13 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
         while (j < txs.length && txs[j].blockTime < time + groupBy) {
             const {
                 type,
-                totalSpent,
+                amount,
+                fee,
                 details: { totalInput, totalOutput },
             } = txs[j];
-            if (type === 'recv') received += Number.parseInt(totalSpent, 10);
-            else if (type === 'sent') sent += Number.parseInt(totalSpent, 10);
+            if (type === 'recv') received += Number.parseInt(amount, 10);
+            else if (type === 'sent')
+                sent += Number.parseInt(amount, 10) + Number.parseInt(fee, 10);
             else if (type === 'self') {
                 sentToSelf += Number.parseInt(totalOutput, 10);
                 sent += Number.parseInt(totalInput, 10);

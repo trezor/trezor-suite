@@ -171,7 +171,6 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                 lockTime: 714487,
                 amount: '0.00000456',
                 fee: '0.0000011',
-                totalSpent: '0.00000566',
                 targets: [
                     {
                         n: 0,
@@ -283,7 +282,6 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                 blockHash: '00000000000000000000d761e44feb99d03e42ead4a82eeb870cce1077ca4a2a',
                 amount: '0.00045716',
                 fee: '0.00019938',
-                totalSpent: '0.00045716',
                 targets: [
                     {
                         n: 62,
@@ -405,7 +403,6 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                 blockHash: '00000000000000000001ce2f5db977cf422071a1f1744051759b848dc301c14f',
                 amount: '0.00003695',
                 fee: '0.0000037',
-                totalSpent: '0.00004065',
                 targets: [
                     {
                         n: 0,
@@ -539,7 +536,6 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                 blockHash: '00000000000000000001ce2f5db977cf422071a1f1744051759b848dc301c14f',
                 amount: '0.00004065',
                 fee: '0.00000204',
-                totalSpent: '0.00004065',
                 targets: [
                     {
                         n: 0,
