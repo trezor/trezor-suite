@@ -9,7 +9,7 @@ import { IODetails } from './IODetails';
 import { ChainedTxs } from './ChainedTxs';
 
 const Wrapper = styled.div`
-    padding: 0px 24px;
+    padding: 0px 24px 10px;
 `;
 
 const TabSelector = styled.div`
@@ -32,6 +32,10 @@ const TabButton = styled.button<{ selected: boolean }>`
     color: ${({ selected, theme }) =>
         selected ? `${theme.TYPE_GREEN}` : `${theme.TYPE_LIGHT_GREY}`};
     border-bottom: ${({ selected, theme }) => (selected ? `2px solid ${theme.BG_GREEN}` : 'none')};
+
+    :hover {
+        border-bottom: 2px solid ${({ theme, selected }) => !selected && theme.STROKE_GREY};
+    }
 `;
 
 export type TabID = 'amount' | 'io' | 'chained';

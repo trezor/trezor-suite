@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { Icon, P, useTheme } from '@trezor/components';
+import { Icon, P, useTheme, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 const animationDuration = 0.24;
@@ -97,6 +97,7 @@ const Label = styled(
         />
     ),
 )`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     transition: all ${animationDuration}s ease-in-out;
 `;
@@ -120,7 +121,7 @@ const Header = ({
                 <AnimatePresence initial={false}>
                     {!isExpanded && (
                         <PlusIconWrapper>
-                            <StyledIcon icon="PLUS" size={24} color={theme.TYPE_DARK_GREY} />
+                            <StyledIcon icon="PLUS" size={20} color={theme.TYPE_DARK_GREY} />
                         </PlusIconWrapper>
                     )}
                 </AnimatePresence>

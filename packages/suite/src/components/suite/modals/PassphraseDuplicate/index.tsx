@@ -12,11 +12,11 @@ type Props = {
 };
 
 const StyledImage = styled(Image)`
-    margin: 24px 0px;
+    margin: 14px 0px;
 `;
 
 const StyledModal = styled(Modal)`
-    width: 360px;
+    width: 380px;
     ${Modal.Content} {
         justify-content: center;
         align-items: center;

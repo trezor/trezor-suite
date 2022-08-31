@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { Switch, Input, P } from '@trezor/components';
+import { Switch, Input, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -10,8 +10,11 @@ const Wrapper = styled.div`
     margin-top: 16px;
 `;
 
-const Label = styled(P)`
-    padding: 0px 8px;
+const Label = styled.span`
+    padding: 0px 14px;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface Props {
@@ -33,6 +36,7 @@ export const DelimiterForm = ({ value, onChange }: Props) => {
     return (
         <Wrapper>
             <Switch
+                isSmall
                 onChange={() => {
                     if (custom) {
                         // reset delimiter value in parent component

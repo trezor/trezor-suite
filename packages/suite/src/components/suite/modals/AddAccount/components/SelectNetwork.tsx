@@ -10,7 +10,9 @@ const Header = styled.div<{ disabled: boolean }>`
     justify-content: flex-start;
     align-self: flex-start;
     align-items: center;
+    margin-bottom: 18px;
     text-align: left;
+
     ${({ disabled }) =>
         disabled
             ? ''
@@ -21,7 +23,6 @@ const Header = styled.div<{ disabled: boolean }>`
 
 const Title = styled(P)`
     margin-right: 9px;
-    padding: 14px 0%;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

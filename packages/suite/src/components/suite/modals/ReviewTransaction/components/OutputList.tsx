@@ -48,7 +48,7 @@ const RightTopInner = styled.div`
 `;
 
 const RightBottom = styled.div`
-    margin-left: 50px;
+    margin-left: 40px;
     padding: 20px 0 0 0;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     display: flex;

@@ -14,7 +14,7 @@ const TransactionDetailsWrapper = styled.div`
     position: absolute;
     top: -15px;
     left: -20px;
-    border-radius: 4px;
+    border-radius: 8px;
     font-weight: 500;
 `;
 
