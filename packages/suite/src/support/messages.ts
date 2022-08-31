@@ -1756,7 +1756,7 @@ export default defineMessages({
     },
     TR_DETAIL: {
         defaultMessage: 'Detail',
-        description: 'Button in modal',
+        description: 'Button in modal, button in UTXO selection',
         id: 'TR_DETAIL',
     },
     TR_DEVICE: {

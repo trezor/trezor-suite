@@ -11,7 +11,6 @@ const TimestampLink = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
-    cursor: pointer;
 `;
 
 interface TransactionTimestampProps {

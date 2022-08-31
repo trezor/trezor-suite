@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { Button, Icon, useTheme } from '@trezor/components';
 import { useActions, useDiscovery, useSelector } from '@suite-hooks';
@@ -43,7 +43,6 @@ const Label = styled.div`
 `;
 
 const LabelButton = styled(Button)`
-    margin-right: 12px;
     overflow: hidden;
 `;
 
@@ -56,6 +55,7 @@ const ActionButton = styled(Button)<{ isVisible?: boolean }>`
 
 const SuccessButton = styled(Button)`
     cursor: wait;
+    margin-left: 12px;
     width: auto;
     background-color: ${props => props.theme.BG_LIGHT_GREEN};
     color: ${props => props.theme.BG_GREEN};
@@ -65,7 +65,7 @@ const SuccessButton = styled(Button)`
     }
 `;
 
-const LabelContainer = styled.div<{ hasSeparator?: boolean }>`
+const LabelContainer = styled.div`
     display: flex;
     white-space: nowrap;
     align-items: center;
@@ -85,22 +85,9 @@ const LabelContainer = styled.div<{ hasSeparator?: boolean }>`
             transition-timing-function: ease-in;
         }
     }
-
-    ${({ hasSeparator }) =>
-        hasSeparator &&
-        css`
-            ::before {
-                content: '|';
-                font-size: 18px;
-                line-height: 14px;
-                margin: 0 8px;
-                opacity: 0.2;
-            }
-        `}
 `;
 
 const RelativeButton = styled(Button)`
-    margin-right: 12px;
     padding-bottom: 4px;
     padding-top: 4px;
     position: relative;
@@ -314,14 +301,11 @@ export const MetadataLabeling = (props: Props) => {
     // should "add label"/"edit label" button be visible
     const showActionButton = labelingPossible && !showSuccess && !editActive;
     const isVisible = pending || props.visible;
-    const isSeparatorVisible =
-        props.hasSeparator &&
-        (props.visible || !!props.payload.value || !!props.defaultVisibleValue);
 
     // metadata is still initiating, on hover, show only disabled button with spinner
     if (metadata.initiating)
         return (
-            <LabelContainer hasSeparator={isSeparatorVisible} data-test={labelContainerDatatest}>
+            <LabelContainer data-test={labelContainerDatatest}>
                 {props.defaultVisibleValue}
                 <ActionButton variant="tertiary" isDisabled isLoading>
                     <Translation id="TR_LOADING" />
@@ -338,7 +322,6 @@ export const MetadataLabeling = (props: Props) => {
 
     return (
         <LabelContainer
-            hasSeparator={isSeparatorVisible}
             data-test={labelContainerDatatest}
             onClick={e => editActive && e.stopPropagation()}
         >

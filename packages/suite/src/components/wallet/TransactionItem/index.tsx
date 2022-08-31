@@ -98,6 +98,7 @@ const TxTypeIconWrapper = styled.div`
 `;
 
 const TimestampWrapper = styled.div`
+    cursor: pointer;
     display: flex;
     height: ${MIN_ROW_HEIGHT};
     align-items: center;

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
+import * as modalActions from '@suite-actions/modalActions';
 import { FiatValue, FormattedCryptoAmount, MetadataLabeling, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useActions, useSelector } from '@suite-hooks';
@@ -9,49 +10,14 @@ import type { AccountUtxo } from '@trezor/connect';
 import { TransactionTimestamp } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { WalletAccountTransaction } from '@wallet-types';
+import { darken } from 'polished';
 
-const Wrapper = styled.div`
-    align-items: flex-start;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    margin: 0 -12px;
-    padding: 8px 12px;
-
-    :hover {
-        background: ${({ theme }) => theme.BG_LIGHT_GREY};
-    }
-`;
-
-const Body = styled.div`
-    flex-grow: 1;
-    /* prevent overflow if contents (e.g. label) are too long */
-    min-width: 0;
-`;
-
-const Row = styled.div`
-    align-items: center;
-    display: flex;
-`;
-
-const TopRow = styled(Row)`
-    justify-content: space-between;
-    margin-bottom: 4px;
-`;
-
-const IconWrapper = styled.div`
-    margin-right: 8px;
-`;
-
-const StyledFiatValue = styled(FiatValue)`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: 14px;
-    font-weight: 500;
-    margin-left: auto;
+const VisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
+    display: ${({ alwaysVisible }) => (alwaysVisible ? 'contents' : 'none')};
 `;
 
 const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }>`
-    margin-top: 4px;
+    margin-top: 2px;
     ${({ isChecked, $isGrey, theme }) =>
         isChecked &&
         $isGrey &&
@@ -66,25 +32,103 @@ const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }
         `};
 `;
 
-const StyledCryptoAmount = styled(FormattedCryptoAmount)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+const Wrapper = styled.div`
+    align-items: flex-start;
+    border-radius: 8px;
+    display: flex;
+    margin: 1px -12px;
+    padding: 12px 12px 8px;
+    transition: background 0.25s ease-out;
+    cursor: pointer;
+
+    &:hover {
+        background: ${({ theme }) => theme.BG_GREY};
+        ${StyledCheckbox} > :first-child {
+            border-color: ${({ theme }) => darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY)};
+        }
+        ${VisibleOnHover} {
+            display: contents;
+        }
+    }
 `;
 
-const TranslationWrapper = styled.span`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+const Body = styled.div`
+    flex-grow: 1;
+    /* prevent overflow if contents (e.g. label) are too long */
+    min-width: 0;
+`;
+
+const Row = styled.div`
+    align-items: center;
+    display: flex;
+    gap: 8px;
+`;
+
+const BottomRow = styled(Row)`
+    margin-top: 6px;
+    min-height: 24px;
+`;
+
+const Dot = styled.div`
+    border-radius: 50%;
+    background: ${props => props.theme.TYPE_LIGHT_GREY};
+    height: 3px;
+    width: 3px;
+`;
+
+const Address = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const ChangeAddress = styled.span`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 14px;
-    margin-right: 14px;
+    white-space: nowrap;
 `;
 
-interface Props {
+const StyledCryptoAmount = styled(FormattedCryptoAmount)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    margin-left: auto;
+    padding-left: 4px;
+    white-space: nowrap;
+`;
+
+const TransactionDetail = styled.button`
+    background: none;
+    border: none;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    cursor: pointer;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: 0;
+    text-decoration: underline;
+
+    &:hover {
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    }
+`;
+
+const IconWrapper = styled.div`
+    margin-right: 8px;
+`;
+
+const StyledFiatValue = styled(FiatValue)`
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    margin-left: auto;
+    padding-left: 4px;
+`;
+
+interface UtxoSelectionProps {
     isChecked: boolean;
     transaction?: WalletAccountTransaction;
     utxo: AccountUtxo;
 }
 
-export const UtxoSelection = ({ isChecked, transaction, utxo }: Props) => {
+export const UtxoSelection = ({ isChecked, transaction, utxo }: UtxoSelectionProps) => {
     const device = useSelector(state => state.suite.device);
     const { openModal } = useActions({
         openModal: modalActions.openModal,
@@ -99,29 +143,37 @@ export const UtxoSelection = ({ isChecked, transaction, utxo }: Props) => {
     const isLabelingPossible = device?.metadata.status === 'enabled' || device?.connected;
 
     const handleCheckbox = () => toggleUtxoSelection(utxo);
-    const handleMouseEnter = () => setLabelVisible(true);
-    const handleMouseLeave = () => setLabelVisible(false);
+    const showTransactionDetail: React.MouseEventHandler = e => {
+        e.stopPropagation(); // do not trigger the checkbox
+        if (transaction) {
+            openModal({ type: 'transaction-detail', tx: transaction });
+        }
+    };
 
     return (
-        <Wrapper
-            onClick={handleCheckbox}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
+        <Wrapper onClick={handleCheckbox}>
             <StyledCheckbox
                 $isGrey={!selectedUtxos.length}
                 isChecked={isChecked}
                 onClick={handleCheckbox}
             />
             <Body>
-                <TopRow>
-                    {utxo.address}
+                <Row>
+                    <Address>{utxo.address}</Address>
+                    {isChangeAddress && (
+                        <>
+                            <Dot />
+                            <ChangeAddress>
+                                <Translation id="TR_CHANGE_ADDRESS" />
+                            </ChangeAddress>
+                        </>
+                    )}
                     <StyledCryptoAmount
                         value={formatNetworkAmount(utxo.amount, account.symbol)}
                         symbol={account.symbol}
                     />
-                </TopRow>
-                <Row>
+                </Row>
+                <BottomRow>
                     {transaction ? (
                         <TransactionTimestamp showDate transaction={transaction} />
                     ) : (
