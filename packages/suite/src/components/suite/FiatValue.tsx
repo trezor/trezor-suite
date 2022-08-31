@@ -41,7 +41,7 @@ interface CustomSourceProps extends CommonOwnProps {
     useCustomSource: boolean;
 }
 
-type FiatValueProps = DefaultSourceProps | CustomSourceProps;
+type FiatValueProps = (DefaultSourceProps | CustomSourceProps) & { className?: string };
 
 /**
  * If used without children prop it returns a value of an crypto assets in fiat currency.
@@ -58,6 +58,7 @@ type FiatValueProps = DefaultSourceProps | CustomSourceProps;
 export const FiatValue = ({
     children,
     amount,
+    className,
     symbol,
     tokenAddress,
     fiatCurrency,
@@ -83,7 +84,7 @@ export const FiatValue = ({
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
     if (fiatAmount) {
         const fiatValueComponent = (
-            <WrapperComponent>
+            <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈ </>}
                 <FormattedFiatAmount currency={targetCurrency} value={fiatAmount} />
             </WrapperComponent>
