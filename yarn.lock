@@ -6322,6 +6322,7 @@ __metadata:
     "@trezor/styles": "*"
     "@trezor/utils": "*"
     jest: ^26.6.3
+    redux-flipper: 2.0.2
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -6999,6 +7000,7 @@ __metadata:
     node-libs-browser: ^2.2.1
     react: 17.0.2
     react-native: 0.68.2
+    react-native-flipper: 0.162.0
     react-native-gesture-handler: ^2.5.0
     react-native-reanimated: ^2.8.0
     react-native-safe-area-context: ^4.3.1
@@ -13510,6 +13512,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cycle@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "cycle@npm:1.0.3"
+  checksum: b9f131094fb832a8c4ba18c6d2dc9c87fc80d3242847a45f0a5f70911b2acab68abc1c25eb23e5155fcf2135a27d8fcc3635556745b03b488c4f360cfbc352df
+  languageName: node
+  linkType: hard
+
 "cyclist@npm:^1.0.1":
   version: 1.0.1
   resolution: "cyclist@npm:1.0.1"
@@ -13758,6 +13767,13 @@ __metadata:
   version: 1.10.7
   resolution: "dayjs@npm:1.10.7"
   checksum: a0a4ca95abaa03d0702161dc2c35d16121188e342f5052b9c61cdf784dab68af766f477c04f87f71c6af666fd4d13db9b9853b87265850d6093b7b04e1bb1cd7
+  languageName: node
+  linkType: hard
+
+"dayjs@npm:^1.8.29":
+  version: 1.11.5
+  resolution: "dayjs@npm:1.11.5"
+  checksum: e3bbaa7b4883b31be4bf75a181f1447fbb19800c29b332852125aab96baeff3ac232dcba8b88c4ea17d3b636c99dac5fb9d1af4bb6ae26615698bbc4a852dffb
   languageName: node
   linkType: hard
 
@@ -27401,6 +27417,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-flipper@npm:0.162.0":
+  version: 0.162.0
+  resolution: "react-native-flipper@npm:0.162.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-native: ">0.62.0"
+  checksum: d7a9206a165489c93aa0855c74d3a40ba43dcf3f219cb88b522c83beb69c2d02052bd6a4f2d9b5c6586d6dfb3bb3c44937ba9dc514acab5dc4e0dc6b74b1db6c
+  languageName: node
+  linkType: hard
+
 "react-native-gesture-handler@npm:^2.4.1, react-native-gesture-handler@npm:^2.5.0":
   version: 2.5.0
   resolution: "react-native-gesture-handler@npm:2.5.0"
@@ -28175,6 +28201,20 @@ __metadata:
   peerDependencies:
     redux: ^3.1.0 || ^4.0.0
   checksum: 603d48fd6acf3922ef373b251ab3fdbb990035e90284191047b29d25b06ea18122bc4ef01e0704ccae495acb27ab5e47b560937e98213605dd88299470025db9
+  languageName: node
+  linkType: hard
+
+"redux-flipper@npm:2.0.2":
+  version: 2.0.2
+  resolution: "redux-flipper@npm:2.0.2"
+  dependencies:
+    cycle: ^1.0.3
+    dayjs: ^1.8.29
+  peerDependencies:
+    react-native: ">=0.63.0"
+    react-native-flipper: ">=0.100.0"
+    redux: ^4
+  checksum: 6638e73f565d443bd8df3e65b0f6559b24aab9ccda747857238659c82e0978f0aa6f0fd9a554047f4824f0cf42c8d834f1efefbcf4295df466d7b9d7cda68a1c
   languageName: node
   linkType: hard
 
