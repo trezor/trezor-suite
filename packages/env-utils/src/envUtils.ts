@@ -17,15 +17,17 @@ export const isAndroid = () => /Android/.test(getUserAgent());
 
 export const isChromeOs = () => /CrOS/.test(getUserAgent());
 
-export const getBrowserVersion = (): string => getUserAgentParser().getBrowser().version || '';
+export const getBrowserVersion = () => getUserAgentParser().getBrowser().version || '';
 
 /* Not correct for Linux as there is many different distributions in different versions */
 export const getOsVersion = () => getUserAgentParser().getOS().version || '';
 
-export const getBrowserName = (): string => {
+export const getBrowserName = () => {
     const browserName = getUserAgentParser().getBrowser().name;
     return browserName?.toLowerCase() || '';
 };
+
+export const isFirefox = () => getBrowserName() === 'firefox';
 
 // List of platforms https://docker.apachezone.com/blog/74
 export const getPlatform = () => window.navigator.platform;
