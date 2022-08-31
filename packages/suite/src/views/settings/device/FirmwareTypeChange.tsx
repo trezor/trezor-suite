@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { Translation } from '@suite-components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
@@ -30,6 +30,8 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
+
+    const theme = useTheme();
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareType);
 
     if (!device?.features) {
@@ -66,6 +68,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                             variant="tertiary"
                                             // icon={revision ? 'EXTERNAL_LINK' : undefined}
                                             // alignIcon="right"
+                                            color={theme.TYPE_DARK_GREY} // TODO: remove when an article is added
                                             disabled // TODO: this should link to an article in knowledge base or guide in the future
                                         >
                                             {currentFwType}

@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Button, P, Tooltip, Image } from '@trezor/components';
-import { CheckItem, Translation, Modal } from '@suite-components';
+import { Button, P, Tooltip, Image, Checkbox } from '@trezor/components';
+import { Translation, Modal } from '@suite-components';
 import { ImageWrapper, Description, Divider, Title } from './styles';
 
 const DescriptionWrapper = styled.div`
@@ -18,11 +18,6 @@ const DescriptionTextWrapper = styled.div`
     justify-content: space-around;
     margin-left: 20px;
     text-align: left;
-`;
-
-// Checkbox has 80% max-width by default but it's nicer full width here.
-const Checkbox = styled(CheckItem)`
-    max-width: 100%;
 `;
 
 const StyledModal = styled(Modal)`
@@ -109,15 +104,11 @@ const EarlyAccessEnable = ({ hideWindow }: Props) => {
             <Divider />
             <Checkbox
                 data-test="@settings/early-access-confirm-check"
-                title={
-                    <P weight="bold">
-                        <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />
-                    </P>
-                }
-                description=""
                 isChecked={understood}
                 onClick={() => setUnderstood(!understood)}
-            />
+            >
+                <Translation id="TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK" />
+            </Checkbox>
         </Modal>
     );
 };

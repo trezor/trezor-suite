@@ -58,7 +58,7 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                         setLabel(event.currentTarget.value)
                     }
                     data-test="@settings/device/label-input"
-                    readOnly={isDeviceLocked}
+                    isDisabled={isDeviceLocked}
                 />
                 <ActionButton
                     onClick={() => {

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { SettingsLayout } from '@settings-components';
-import { CoinsGroup, Translation } from '@suite-components';
+import { CoinsGroup, TooltipSymbol, Translation } from '@suite-components';
 import { DeviceBanner, SettingsSection, SectionItem } from '@suite-components/Settings';
 import { useEnabledNetworks } from '@settings-hooks/useEnabledNetworks';
 import { useAnchor } from '@suite-hooks/useAnchor';
@@ -59,7 +59,17 @@ export const SettingsCoins = () => {
                 </SectionItem>
             </SettingsSection>
 
-            <SettingsSection title={<Translation id="TR_TESTNET_COINS" />} icon="COIN">
+            <SettingsSection
+                title={
+                    <>
+                        <Translation id="TR_TESTNET_COINS" />{' '}
+                        <TooltipSymbol
+                            content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
+                        />
+                    </>
+                }
+                icon="COIN"
+            >
                 <SectionItem
                     ref={anchorRefTestnetCrypto}
                     shouldHighlight={shouldHighlightTestnetCrypto}

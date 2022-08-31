@@ -10,60 +10,24 @@ import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 import type { ForegroundAppProps } from '@suite-types';
 import type { WordCount } from '@recovery-types';
+import { InstructionStep } from '@suite-components/InstructionStep';
 
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    height: 100%;
+const StyledModal = styled(Modal)`
+    min-height: 420px;
 `;
 
 const StyledButton = styled(Button)`
     width: 224px;
 `;
 
-const InfoBox = styled.div`
-    display: flex;
-    max-width: 400px;
-    margin-top: 28px;
-`;
-
-const InfoBoxText = styled.div`
-    display: flex;
-    width: 360px;
-    flex-direction: column;
-    text-align: left;
-    margin-left: 12px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 300px;
-    }
-`;
-
-const InfoBoxTitle = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    margin-bottom: 8px;
-`;
-
-const InfoBoxDescription = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-`;
-
-const Number = styled.div`
-    width: 16px;
-    height: 16px;
-    background-color: ${props => props.theme.TYPE_LIGHT_GREY};
-    border-radius: 50%;
-    color: ${props => props.theme.TYPE_WHITE};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+const StepsContainer = styled.div`
+    margin: 40px 0;
 `;
 
 const StyledP = styled(P)`
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
+    text-align: left;
 `;
 
 const StatusImage = styled(Image)`
@@ -79,12 +43,12 @@ const VerticalCenter = styled.div`
     margin-bottom: auto;
 `;
 
-const StyledModal = styled(Modal)`
-    min-height: 620px;
-`;
-
 const TinyModal = styled(Modal)`
     width: 360px;
+`;
+
+const InstructionModal = styled(RawRenderer)`
+    margin: 54px auto 0;
 `;
 
 type CloseButtonProps = { onClick: () => void; variant: 'TR_CLOSE' | 'TR_CANCEL' };
@@ -179,34 +143,29 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         <StyledP>
                             {model && <Translation id={`TR_CHECK_RECOVERY_SEED_DESC_T${model}`} />}
                         </StyledP>
-                        <InfoBox>
-                            <Number>1</Number>
-                            <InfoBoxText>
-                                <InfoBoxTitle>
-                                    <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
-                                </InfoBoxTitle>
-                                <InfoBoxDescription>
-                                    {model && <Translation id={`TR_YOU_EITHER_HAVE_T${model}`} />}
-                                </InfoBoxDescription>
-                            </InfoBoxText>
-                        </InfoBox>
-                        <InfoBox>
-                            <Number>2</Number>
-                            <InfoBoxText>
-                                <InfoBoxTitle>
-                                    <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
-                                </InfoBoxTitle>
-                                <InfoBoxDescription>
-                                    <Translation
-                                        id={
-                                            model === 1
-                                                ? 'TR_ON_YOUR_COMPUTER_ENTER'
-                                                : 'TR_USING_TOUCHSCREEN'
-                                        }
-                                    />
-                                </InfoBoxDescription>
-                            </InfoBoxText>
-                        </InfoBox>
+
+                        <StepsContainer>
+                            <InstructionStep
+                                number="1"
+                                title={<Translation id="TR_SELECT_NUMBER_OF_WORDS" />}
+                            >
+                                {model && <Translation id={`TR_YOU_EITHER_HAVE_T${model}`} />}
+                            </InstructionStep>
+
+                            <InstructionStep
+                                number="2"
+                                title={<Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />}
+                            >
+                                <Translation
+                                    id={
+                                        model === 1
+                                            ? 'TR_ON_YOUR_COMPUTER_ENTER'
+                                            : 'TR_USING_TOUCHSCREEN'
+                                    }
+                                />
+                            </InstructionStep>
+                        </StepsContainer>
+
                         <CheckItem
                             data-test="@recovery/user-understands-checkbox"
                             title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
@@ -252,7 +211,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                                 <Translation id="TR_ALL_THE_WORDS" />
                             </StyledP>
                         )}
-                        <ReduxModal {...modal} renderer={RawRenderer} />
+                        <ReduxModal {...modal} renderer={InstructionModal} />
                     </>
                 ) : (
                     <Loading />
@@ -293,7 +252,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             currentProgressBarStep={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
             bottomBar={actionButtons}
         >
-            <Wrapper>{getStep()}</Wrapper>
+            {getStep()}
         </StyledModal>
     );
 };
