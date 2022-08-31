@@ -111,7 +111,6 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 amount: '0',
-                totalSpent: '0',
                 type: 'sent',
                 targets: [{ addresses: ['B'], n: 0, amount: '0', isAddress: true }],
                 cardanoSpecific: {
@@ -166,7 +165,6 @@ const notifyAddresses = [
                 ...tx,
                 type: 'recv',
                 amount: '50',
-                totalSpent: '50',
                 targets: [
                     {
                         addresses: ['A'],
@@ -261,7 +259,6 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 amount: '60',
-                totalSpent: '60',
                 type: 'sent',
                 targets: [{ addresses: ['A'], amount: '40', n: 0, isAddress: true }],
                 cardanoSpecific: {
@@ -308,7 +305,6 @@ const notifyAddresses = [
                 ...tx,
                 type: 'recv',
                 amount: '50',
-                totalSpent: '50',
                 targets: [
                     {
                         addresses: ['B'],
@@ -355,7 +351,6 @@ const notifyAddresses = [
                 ...tx,
                 type: 'sent',
                 amount: '0',
-                totalSpent: '0',
                 cardanoSpecific: {
                     subtype: null,
                 },
@@ -472,7 +467,6 @@ const notifyAddresses = [
                 ...tx,
                 type: 'unknown',
                 amount: '0',
-                totalSpent: '0',
                 cardanoSpecific: {
                     subtype: null,
                 },

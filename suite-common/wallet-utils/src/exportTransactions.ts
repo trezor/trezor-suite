@@ -72,7 +72,6 @@ const formatAmounts =
         })),
         amount: formatNetworkAmount(tx.amount, symbol),
         fee: formatNetworkAmount(tx.fee, symbol),
-        totalSpent: formatNetworkAmount(tx.totalSpent, symbol),
         targets: tx.targets.map(tr => ({
             ...tr,
             amount: formatIfDefined(tr.amount, symbol),

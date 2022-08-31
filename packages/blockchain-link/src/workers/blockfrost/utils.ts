@@ -185,7 +185,6 @@ export const transformTransaction = (
     let amount =
         blockfrostTxData.txData.output_amount.find(b => b.unit === 'lovelace')?.quantity || '0';
     const fee = blockfrostTxData.txData.fees;
-    let totalSpent = amount;
 
     // total withdrawal amount for withdrawal transaction (sent to self tx)
     let withdrawal: string | undefined;
@@ -216,7 +215,6 @@ export const transformTransaction = (
         targets = outputs.filter(o => internal.indexOf(o) < 0);
         // recalculate amount, amount spent is just a fee
         amount = blockfrostTxData.txData.fees;
-        totalSpent = amount;
 
         if (blockfrostTxData.txData.withdrawal_count > 0) {
             // output including fee is larger than the sum of all inputs,
@@ -239,7 +237,6 @@ export const transformTransaction = (
             targets = incoming;
             // recalculate amount, sum all incoming vout
             amount = sumVinVout(incoming, amount);
-            totalSpent = amount;
         }
     } else {
         type = 'sent';
@@ -250,7 +247,7 @@ export const transformTransaction = (
             // sum all my inputs
             const myInputsSum = sumVinVout(outgoing, '0');
             // reduce sum by my outputs values
-            totalSpent = sumVinVout(incoming, myInputsSum, 'reduce');
+            const totalSpent = sumVinVout(incoming, myInputsSum, 'reduce');
             amount = new BigNumber(totalSpent).minus(fee ?? '0').toString();
         }
     }
@@ -267,7 +264,6 @@ export const transformTransaction = (
         blockHash: blockfrostTxData.txData.block,
         amount,
         fee,
-        totalSpent,
         targets: targets.map(t => transformTarget(t, incoming)),
         tokens,
         cardanoSpecific: {

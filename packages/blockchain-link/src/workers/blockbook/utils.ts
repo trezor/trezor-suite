@@ -100,7 +100,6 @@ export const transformTransaction = (
     let type: Transaction['type'];
     let targets: VinVout[] = [];
     let amount = tx.value;
-    let totalSpent = tx.value;
     const totalInput = sumVinVout(vinLength ? tx.vin : []);
     const totalOutput = sumVinVout(voutLength ? tx.vout : []);
 
@@ -123,7 +122,6 @@ export const transformTransaction = (
         }
         // recalculate amount, amount spent is just a fee
         amount = tx.fees;
-        totalSpent = amount;
     } else if (outgoing.length === 0 && (incoming.length > 0 || tokens.length > 0)) {
         // none of the input is mine but and output or token transfer is mine
         type = 'recv';
@@ -132,7 +130,6 @@ export const transformTransaction = (
             targets = incoming;
             // recalculate amount, sum all incoming vout
             amount = sumVinVout(incoming, amount);
-            totalSpent = amount;
         }
     } else {
         type = 'sent';
@@ -144,13 +141,12 @@ export const transformTransaction = (
         // ethereum specific transaction
         if (tx.ethereumSpecific) {
             amount = tx.value;
-            totalSpent = new BigNumber(amount).plus(tx.fees ?? '0').toString();
         } else if (voutLength) {
             // bitcoin-like transaction
             // sum all my inputs
             const myInputsSum = sumVinVout(outgoing, '0');
             // reduce sum by my outputs values
-            totalSpent = sumVinVout(incoming, myInputsSum, 'reduce');
+            const totalSpent = sumVinVout(incoming, myInputsSum, 'reduce');
             amount = new BigNumber(totalSpent).minus(tx.fees ?? '0').toString();
         }
     }
@@ -182,7 +178,6 @@ export const transformTransaction = (
 
         amount,
         fee,
-        totalSpent,
 
         targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t, incoming)),
         tokens,

@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import { RippleError } from 'ripple-lib/dist/npm/common/errors';
 import { CustomError } from '../../constants/errors';
 import type { Transaction } from '../../types/common';
@@ -43,7 +42,6 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
             txid: tx.hash,
             amount: '0',
             fee: '0',
-            totalSpent: '0',
             blockTime: tx.date,
             blockHeight: tx.ledger_index,
             blockHash: tx.hash,
@@ -62,9 +60,6 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
     const addresses = [tx.Destination];
     const amount = tx.Amount;
     const fee = tx.Fee;
-    const amountBn = new BigNumber(amount);
-    // TODO: proper types for tx would prevent this mess
-    const totalSpent = amountBn.isNaN() ? '0' : amountBn.plus(tx.Fee ?? 0).toString();
 
     return {
         type,
@@ -76,7 +71,6 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
 
         amount,
         fee,
-        totalSpent,
         targets: [
             {
                 addresses,

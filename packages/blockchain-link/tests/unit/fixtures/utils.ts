@@ -614,7 +614,6 @@ export const transformTransaction = [
         parsed: {
             type: 'sent',
             amount: '40',
-            totalSpent: '50', // B.value + fee
             targets: [
                 {
                     addresses: ['B'],
@@ -656,7 +655,6 @@ export const transformTransaction = [
         parsed: {
             type: 'sent',
             amount: '20',
-            totalSpent: '30', // B.value + fee
             targets: [
                 {
                     addresses: ['A2'],

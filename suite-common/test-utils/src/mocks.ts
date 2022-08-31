@@ -216,7 +216,6 @@ const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAcco
     blockHeight: 590093,
     blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
     amount: '1000',
-    totalSpent: '1144',
     fee: '144',
     targets: [
         {

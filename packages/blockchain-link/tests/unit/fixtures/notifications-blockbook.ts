@@ -144,7 +144,6 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 amount: '0',
-                totalSpent: '0',
                 type: 'sent',
                 targets: [{ addresses: ['B'], n: 0 }],
                 details: {
@@ -179,7 +178,6 @@ const notifyAddresses = [
                 ...tx,
                 type: 'recv',
                 amount: '50',
-                totalSpent: '50',
                 targets: [{ addresses: ['A'], amount: '50', isAccountTarget: true, n: 1 }],
                 details: {
                     vin: [{ addresses: ['B'], value: '100' }],
@@ -256,7 +254,6 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 amount: '60',
-                totalSpent: '60',
                 type: 'sent',
                 targets: [{ addresses: ['A'], amount: '40', n: 0 }],
                 details: {
@@ -299,7 +296,6 @@ const notifyAddresses = [
                 ...tx,
                 type: 'recv',
                 amount: '50',
-                totalSpent: '50',
                 targets: [{ addresses: ['B'], amount: '50', isAccountTarget: true, n: 0 }],
                 details: {
                     vin: [{ addresses: ['A'], value: '100' }],
@@ -333,7 +329,6 @@ const notifyAddresses = [
                 ...tx,
                 type: 'sent',
                 amount: '0',
-                totalSpent: '0',
                 targets: [{ addresses: ['0x1'], n: 0 }],
                 details: {
                     vin: [{ addresses: ['0x0'] }],
