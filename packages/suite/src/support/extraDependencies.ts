@@ -16,7 +16,6 @@ import { selectIsPendingTransportEvent } from '@suite-reducers/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { isWeb } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
-import { validatePendingTxOnBlock } from '@wallet-actions/cardanoStakingActions';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -37,7 +36,7 @@ const connectInitSettings = {
 export const extraDependencies: ExtraDependencies = {
     thunks: {
         notificationsAddEvent: addEvent,
-        cardanoValidatePendingTxOnBlock: validatePendingTxOnBlock,
+        cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
         cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
     },
     selectors: {
