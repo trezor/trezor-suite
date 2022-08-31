@@ -5371,10 +5371,6 @@ export default defineMessages({
         id: 'TR_USE_DEFAULT_BACKENDS',
         defaultMessage: 'Use default backends',
     },
-    TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD: {
-        id: 'TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD',
-        defaultMessage: 'github.com',
-    },
     TR_CUSTOM_FIRMWARE_BUTTON_INSTALL: {
         id: 'TR_CUSTOM_FIRMWARE_BUTTON_INSTALL',
         defaultMessage: 'Install firmware',
@@ -6871,6 +6867,10 @@ export default defineMessages({
     TR_DISABLING_TOR: {
         id: 'TR_DISABLING_TOR',
         defaultMessage: 'Disabling Tor',
+    },
+    TR_CUSTOM_FIRMWARE_GITHUB: {
+        id: 'TR_BTC_UNITS',
+        defaultMessage: 'You can find all official releases on',
     },
     TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS: {
         id: 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS',

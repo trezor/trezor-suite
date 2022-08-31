@@ -140,7 +140,7 @@ const ModalWindow = styled.div`
     position: relative;
     border-radius: 16px;
     text-align: center;
-    transition: all 0.3s;
+    transition: background 0.3s, box-shadow 0.3s;
     max-width: 95%;
     min-width: 305px;
     max-height: 90vh;

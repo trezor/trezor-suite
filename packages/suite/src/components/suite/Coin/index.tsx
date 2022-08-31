@@ -17,7 +17,7 @@ const SettingsWrapper = styled.div<{
     margin-right: -30px;
     padding: 0 10px;
     overflow: hidden;
-    transition: 0.3s ease;
+    transition: 0.2s ease-in-out;
     position: relative;
     opacity: 0;
     ${props =>
@@ -48,7 +48,7 @@ const ImageWrapper = styled.div`
     margin-right: 12px;
     margin-left: 12px;
     position: relative;
-    transition: 0.3s ease;
+    transition: 0.2s ease-in-out;
     opacity: 1;
 `;
 
@@ -80,13 +80,19 @@ export const CoinWrapper = styled.button<{
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${props => props.theme.TYPE_DARK_GREY};
     cursor: pointer;
-    transition: 0.3s ease;
+    transition: 0.2s ease-in-out;
     overflow: hidden;
 
     &:disabled {
         cursor: not-allowed;
         opacity: 0.5;
         background: ${props => props.theme.BG_GREY};
+    }
+
+    :hover {
+        background: ${({ theme }) => theme.BG_GREY_ALT};
+        border-color: ${({ theme, toggled }) =>
+            toggled ? theme.BG_GREEN_HOVER : theme.TYPE_LIGHTER_GREY};
     }
 
     ${props =>
@@ -143,7 +149,7 @@ const Check = styled.div<{ visible: boolean }>`
     top: -2px;
     right: -2px;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease-in-out;
     ${props => props.visible && `opacity: 1;`}
 `;
 

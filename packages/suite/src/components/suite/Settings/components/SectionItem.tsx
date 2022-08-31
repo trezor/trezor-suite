@@ -12,7 +12,7 @@ const Wrapper = styled.div<{ shouldHighlight?: boolean }>`
     flex-direction: column;
 
     &:not(:first-child) {
-        > * {
+        > div {
             border-top: 1px solid ${props => props.theme.STROKE_GREY};
         }
     }

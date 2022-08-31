@@ -19,15 +19,16 @@ import {
 } from '@firmware-components';
 import * as suiteActions from '@suite-actions/suiteActions';
 
-const StyledModal = styled(Modal)`
-    width: 620px;
+const StyledModal = styled(Modal)<{ isNarrow: boolean }>`
+    width: ${({ isNarrow }) => (isNarrow ? '450px' : '620px')};
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ isNarrow: boolean }>`
     text-align: left;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: ${({ isNarrow }) => (isNarrow ? '380px' : '550px')};
 `;
 
 export const FirmwareCustom = () => {
@@ -166,6 +167,7 @@ export const FirmwareCustom = () => {
 
     return (
         <StyledModal
+            isNarrow={status === 'initial'}
             isCancelable={isCancelable}
             onCancel={onClose}
             heading={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
@@ -179,7 +181,7 @@ export const FirmwareCustom = () => {
             }
             data-test="@firmware-custom"
         >
-            <ModalContent>
+            <ModalContent isNarrow={status === 'initial'}>
                 <Step />
             </ModalContent>
         </StyledModal>
