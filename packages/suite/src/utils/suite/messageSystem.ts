@@ -1,12 +1,7 @@
 import * as semver from 'semver';
 
-import {
-    getBrowserName,
-    getBrowserVersion,
-    getEnvironment,
-    getOsName,
-    getOsVersion,
-} from '@suite-utils/env';
+import { getEnvironment, getOsName } from '@suite-utils/env';
+import { getBrowserName, getBrowserVersion, getOsVersion } from '@trezor/env-utils';
 import {
     getBootloaderVersion,
     getDeviceModel,

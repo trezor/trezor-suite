@@ -5,7 +5,7 @@ import { CollapsibleBox } from '@suite-components/CollapsibleBox'; // build fail
 import { variables, Button } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
-import { isAndroid } from '@suite-utils/env';
+import { isAndroid } from '@trezor/env-utils';
 
 const WhiteCollapsibleBox = styled(CollapsibleBox)`
     background: ${({ theme }) => theme.BG_WHITE};

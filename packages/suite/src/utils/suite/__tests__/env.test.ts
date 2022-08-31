@@ -1,4 +1,5 @@
-import * as env from '@suite-utils/env';
+import { isAndroid, isChromeOs } from '@trezor/env-utils';
+import { isWindows, isMacOs, isLinux, getOsName, isIOs } from '@suite-utils/env';
 import * as fixtures from '../__fixtures__/env';
 
 // TODO: this tests should be reworked due to mocking problem because of compilation.
@@ -26,7 +27,7 @@ describe.skip('isMacOs', () => {
 
             navigatorPlatformGetter.mockReturnValue(f.navigatorPlatform);
 
-            expect(env.isMacOs()).toEqual(f.result);
+            expect(isMacOs()).toEqual(f.result);
         });
     });
 });
@@ -49,7 +50,7 @@ describe.skip('isWindows', () => {
 
             navigatorPlatformGetter.mockReturnValue(f.navigatorPlatform);
 
-            expect(env.isWindows()).toEqual(f.result);
+            expect(isWindows()).toEqual(f.result);
         });
     });
 });
@@ -75,7 +76,7 @@ describe.skip('isLinux', () => {
             userAgentGetter.mockReturnValue(f.userAgent);
             navigatorPlatformGetter.mockReturnValue(f.navigatorPlatform);
 
-            expect(env.isLinux()).toEqual(f.result);
+            expect(isLinux()).toEqual(f.result);
         });
     });
 });
@@ -95,7 +96,7 @@ describe.skip('isIOs', () => {
         it(f.description, () => {
             navigatorPlatformGetter.mockReturnValue(f.navigatorPlatform);
 
-            expect(env.isIOs()).toEqual(f.result);
+            expect(isIOs()).toEqual(f.result);
         });
     });
 });
@@ -115,7 +116,7 @@ describe.skip('isAndroid', () => {
         it(f.description, () => {
             userAgentGetter.mockReturnValue(f.userAgent);
 
-            expect(env.isAndroid()).toEqual(f.result);
+            expect(isAndroid()).toEqual(f.result);
         });
     });
 });
@@ -135,7 +136,7 @@ describe.skip('isChromeOS', () => {
         it(f.description, () => {
             userAgentGetter.mockReturnValue(f.userAgent);
 
-            expect(env.isChromeOs()).toEqual(f.result);
+            expect(isChromeOs()).toEqual(f.result);
         });
     });
 });
@@ -161,7 +162,7 @@ describe.skip('getOsName', () => {
             userAgentGetter.mockReturnValue(f.userAgent);
             navigatorPlatformGetter.mockReturnValue(f.navigatorPlatform);
 
-            expect(env.getOsName()).toEqual(f.result);
+            expect(getOsName()).toEqual(f.result);
         });
     });
 });

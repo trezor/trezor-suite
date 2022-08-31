@@ -5,18 +5,17 @@ import { DEVICE, Device } from '@trezor/connect';
 import { LogEntry } from '@suite-reducers/logsReducer';
 import { AppState } from '@suite-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
+import { getEnvironment, getOsName } from '@suite-utils/env';
 import {
     getBrowserName,
     getBrowserVersion,
-    getEnvironment,
-    getOsName,
     getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,
     getWindowHeight,
     getWindowWidth,
-} from '@suite-utils/env';
+} from '@trezor/env-utils';
 import { getIsTorEnabled } from '@suite-utils/tor';
 import { DeepPartial } from '@trezor/type-utils';
 import { accountsActions } from '@suite-common/wallet-core';
