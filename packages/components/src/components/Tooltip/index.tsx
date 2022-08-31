@@ -147,8 +147,8 @@ const Tooltip = ({
 
     const animationVariants = useMemo<Variants>(
         () => ({
-            shown: { opacity: 1, transform: 'scale(1) translate(0px, 0px)' },
-            hidden: { opacity: 0, transform: `scale(0.9) ${getTranslateStyle(placement)}` },
+            shown: { opacity: 1, transform: 'translate(0px, 0px)' },
+            hidden: { opacity: 0, transform: `${getTranslateStyle(placement)}` },
         }),
         [placement],
     );
@@ -177,6 +177,7 @@ const Tooltip = ({
                             tabIndex={-1}
                             variants={animationVariants}
                             animate={isShown ? 'shown' : 'hidden'}
+                            transition={{ duration: 0.2, ease: 'easeInOut' }}
                             onAnimationComplete={
                                 // @ts-expect-error
                                 isShown ? () => {} : tooltipRef.current?._tippy?.unmount //  eslint-disable-line no-underscore-dangle
@@ -192,6 +193,7 @@ const Tooltip = ({
                             tabIndex={-1}
                             variants={animationVariants}
                             animate={isShown ? 'shown' : 'hidden'}
+                            transition={{ duration: 0.2, ease: 'easeInOut' }}
                             onAnimationComplete={
                                 // @ts-expect-error
                                 isShown ? () => {} : tooltipRef.current?._tippy?.unmount //  eslint-disable-line no-underscore-dangle

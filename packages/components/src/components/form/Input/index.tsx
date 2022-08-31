@@ -14,6 +14,7 @@ import {
     baseInputStyle,
     INPUT_HEIGHTS,
     getInputStateTextColor,
+    LabelAddon,
 } from '../InputStyles';
 
 const Wrapper = styled.div<Pick<InputProps, 'width'>>`
@@ -70,8 +71,8 @@ const BottomText = styled.div<Pick<InputProps, 'errorPosition' | 'inputState'>>`
     ${({ errorPosition }) =>
         errorPosition === 'bottom' &&
         css`
-            padding: 10px 10px 0 10px;
-            min-height: 27px;
+            padding: 6px 10px 0 10px;
+            min-height: 22px;
         `}
 `;
 
@@ -186,7 +187,9 @@ export const Input = ({
                 <Label>
                     <LabelLeft>{label}</LabelLeft>
                     <LabelRight>
-                        {(labelAddonIsVisible || isHovered) && labelAddon}
+                        <LabelAddon isVisible={labelAddonIsVisible || isHovered}>
+                            {labelAddon}
+                        </LabelAddon>
                         {labelRight && <RightLabel>{labelRight}</RightLabel>}
                     </LabelRight>
                 </Label>

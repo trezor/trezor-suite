@@ -134,7 +134,7 @@ export const OnboardingLayout: React.FC = ({ children }) => {
             <Body data-test="@onboarding-layout/body">
                 <ScrollingWrapper>
                     <ModalContextProvider>
-                        <ContentWrapper>
+                        <ContentWrapper id="layout-scroll">
                             <Header>
                                 <LogoHeaderRow>
                                     <TrezorLogo type="suite" width="128px" />

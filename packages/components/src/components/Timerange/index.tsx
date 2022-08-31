@@ -23,14 +23,19 @@ const StyledTimerange = styled.div`
     display: flex;
     flex-direction: column;
     background: ${props => props.theme.BG_WHITE};
-    border-radius: 4px;
+    border-radius: 12px;
+
+    ${variables.MEDIA_QUERY.DARK_THEME} {
+        border: 1px solid ${({ theme }) => theme.STROKE_LIGHT_GREY};
+    }
 `;
 
 const Buttons = styled.div`
     display: flex;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     justify-content: space-between;
+
     & > * + * {
         margin-left: 10px;
     }
@@ -38,7 +43,7 @@ const Buttons = styled.div`
 
 const Calendar = styled.div`
     width: 345px;
-    padding: 10px 10px 0;
+    padding: 12px 12px 0;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     ${datepickerStyle}
@@ -58,11 +63,14 @@ const Calendar = styled.div`
         color: ${props => props.theme.TYPE_LIGHT_GREY};
     }
 
+    .rdrDateDisplay {
+        margin: 0;
+    }
+
     .rdrDateDisplayItem {
-        border-radius: 2px;
-        background-color: ${props => props.theme.BG_WHITE};
-        box-shadow: 0 0 0 2px ${props => props.theme.STROKE_GREY};
-        border: 1px solid transparent;
+        border-radius: 8px;
+        background-color: transparent;
+        border: 1px solid ${({ theme }) => theme.STROKE_GREY};
     }
 
     .rdrDateDisplayItem input {
@@ -87,15 +95,24 @@ const Calendar = styled.div`
         background-color: ${props => props.theme.BG_GREY_ALT};
     }
 
+    .rdrNextPrevButton {
+        width: 26px;
+        height: 26px;
+        background: ${({ theme }) => theme.BG_LIGHT_GREEN};
+        border-radius: 50%;
+    }
+
     .rdrNextPrevButton:hover {
-        background-color: ${props => props.theme.BG_GREY_ALT};
+        background: ${({ theme }) => theme.BG_SECONDARY_HOVER};
     }
 
     .rdrPprevButton i {
+        margin: 0 0 0 8px;
         border-color: transparent ${props => props.theme.TYPE_LIGHT_GREY} transparent transparent;
     }
 
     .rdrNextButton i {
+        margin: auto;
         border-color: transparent transparent transparent ${props => props.theme.TYPE_LIGHT_GREY};
     }
 
@@ -141,17 +158,19 @@ const Calendar = styled.div`
         background: ${props => props.theme.BG_LIGHT_GREEN};
     }
 
-    /*.rdrCalendarWrapper:not(.rdrDateRangeWrapper) .rdrDayHovered .rdrDayNumber:after {
-        border-color: ${props => props.theme.TYPE_DARK_GREY};
-    }*/
-
     .rdrMonthName {
         color: ${props => props.theme.TYPE_DARK_GREY};
     }
 
     .rdrDateDisplayWrapper {
+        padding-bottom: 13px;
         background: ${props => props.theme.BG_WHITE};
         border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    }
+
+    .rdrMonthAndYearWrapper {
+        height: 50px;
+        padding-top: 0;
     }
 
     .rdrStartEdge,
@@ -172,7 +191,8 @@ const Calendar = styled.div`
     .rdrDayStartPreview,
     .rdrDayInPreview,
     .rdrDayEndPreview {
-        border-color: ${props => props.theme.BG_GREEN};
+        border: none;
+        background: ${({ theme }) => theme.BG_LIGHT_GREEN};
     }
 `;
 
@@ -190,8 +210,8 @@ const Timerange = (props: TimerangeProps) => {
     const today = new Date();
 
     const [state, setState] = useState({
-        startDate: props.startDate || undefined,
-        endDate: props.endDate || undefined,
+        startDate: props.startDate || null,
+        endDate: props.endDate || new Date(''), // fix for incorrect class names https://github.com/hypeserver/react-date-range/issues/330#issuecomment-802601417
         key: 'selection',
     });
 

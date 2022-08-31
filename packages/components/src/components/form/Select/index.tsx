@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactSelect, {
     components as ReactSelectComponents,
     Props as ReactSelectProps,
@@ -12,7 +12,9 @@ import ReactSelect, {
     GroupHeadingProps,
 } from 'react-select';
 import styled, { css } from 'styled-components';
+import { darken } from 'polished';
 import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE, Z_INDEX } from '../../../config/variables';
+import { animations } from '../../../config';
 import { useTheme } from '../../../utils';
 import { InputVariant, InputState, SuiteThemeColors } from '../../../support/types';
 import {
@@ -23,7 +25,6 @@ import {
     INPUT_BORDER_WIDTH,
     getInputStateTextColor,
 } from '../InputStyles';
-import { darken } from 'polished';
 
 const selectStyle = (
     isSearchable: boolean,
@@ -114,7 +115,7 @@ const selectStyle = (
         path: '',
         padding: isClean ? 0 : '10px 16px',
         transform: isFocused ? 'rotate(180deg)' : 'none',
-        transition: `transform 0.15s cubic-bezier(0.68, -0.02, 0.21, 1.1)`,
+        transition: `transform 0.2s cubic-bezier(0.68, -0.02, 0.21, 1.1)`,
     }),
     menu: base => ({
         ...base,
@@ -124,6 +125,10 @@ const selectStyle = (
         margin: '5px 0',
         boxShadow: `box-shadow: 0 4px 10px 0 ${theme.BOX_SHADOW_BLACK_20}`,
         zIndex: Z_INDEX.BASE,
+    }),
+    menuPortal: base => ({
+        ...base,
+        zIndex: Z_INDEX.GUIDE_BUTTON,
     }),
     menuList: base => ({
         ...base,
@@ -165,6 +170,8 @@ const selectStyle = (
     }),
     input: (base, props) => ({
         ...base,
+        width: hideTextCursor ? 2 : 'auto',
+        margin: hideTextCursor ? 0 : 2,
         paddingLeft: (props as any).value && 16,
         fontSize: NEUE_FONT_SIZE.NORMAL,
         color: hideTextCursor ? 'transparent' : theme.TYPE_DARK_GREY,
@@ -185,6 +192,10 @@ const selectStyle = (
 
 const Wrapper = styled.div<Pick<SelectProps, 'isClean'>>`
     width: 100%;
+
+    .react-select__menu {
+        animation: ${animations.DROPDOWN_MENU} 0.15s ease-in-out;
+    }
 
     ${({ isClean }) =>
         !isClean &&
@@ -251,12 +262,31 @@ export const Select = ({
     'data-test': dataTest,
     ...props
 }: SelectProps) => {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const selectRef = useRef<SelectInstance<Option>>(null);
 
     const theme = useTheme();
 
     const lastKeyPressTimestamp = useRef(0);
     const searchedTerm = useRef('');
+
+    useEffect(() => {
+        if (!document.getElementById('layout-scroll')) {
+            return;
+        }
+
+        const select = selectRef.current;
+
+        const handleBlur = () => select?.blur();
+
+        if (isMenuOpen) {
+            document.getElementById('layout-scroll')?.addEventListener('scroll', handleBlur);
+        }
+
+        return () =>
+            document.getElementById('layout-scroll')?.removeEventListener('scroll', handleBlur);
+    }, [isMenuOpen, selectRef]);
 
     const findOption = useCallback((options: Options<Option>, query: string) => {
         let foundOption;
@@ -411,8 +441,11 @@ export const Select = ({
             <ReactSelect
                 ref={selectRef}
                 onKeyDown={onKeyDown}
+                onMenuOpen={() => setIsMenuOpen(true)}
+                onMenuClose={() => setIsMenuOpen(false)}
                 classNamePrefix="react-select"
                 openMenuOnFocus
+                menuPortalTarget={document.body}
                 styles={selectStyle(
                     isSearchable,
                     withDropdownIndicator,

@@ -100,18 +100,22 @@ const Body = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 32px;
+    margin-bottom: 32px;
+    padding: 32px 32px 0;
+    overflow: scroll;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 16px;
+        padding: 16px 16px 0;
+        margin-bottom: 16px;
     }
 `;
 
 const Description = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
-    margin: 0 auto 10px auto;
+    margin: 0 auto 18px auto;
     max-width: fit-content; /* makes sure the description does not widen the modal beyond content width when the modal's width is "unset" */
+    text-align: left;
 `;
 
 const Content = styled.div`
@@ -139,13 +143,19 @@ const ModalWindow = styled.div`
     transition: all 0.3s;
     max-width: 95%;
     min-width: 305px;
-    width: 720px;
+    max-height: 90vh;
+    width: 680px;
 
     ${({ theme }) =>
         css`
             background: ${theme.BG_WHITE};
             box-shadow: 0 10px 80px 0 ${theme.BOX_SHADOW_MODAL};
         `}
+`;
+
+const CloseIcon = styled(Icon)`
+    width: 26px;
+    height: 26px;
 `;
 
 interface ModalProps {
@@ -182,7 +192,7 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
     subheading,
     modalPrompt,
     headerIcon,
-    isHeadingCentered = true,
+    isHeadingCentered,
     description,
     bottomBar,
     isCancelable,
@@ -274,10 +284,10 @@ const Modal: React.FC<ModalProps> & ModalSubcomponents = ({
                                 {headerComponents}
 
                                 {isCancelable && (
-                                    <Icon
+                                    <CloseIcon
                                         size={20}
-                                        color={theme.TYPE_DARK_GREY}
-                                        hoverColor={theme.TYPE_LIGHT_GREY}
+                                        color={theme.TYPE_LIGHT_GREY}
+                                        hoverColor={theme.TYPE_LIGHTER_GREY}
                                         icon="CROSS"
                                         data-test="@modal/close-button"
                                         onClick={onCancel}
