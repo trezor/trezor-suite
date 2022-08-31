@@ -7,6 +7,7 @@ import {
     variables,
     HoverAnimation,
     FluidSpinner,
+    Tooltip,
 } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
@@ -194,17 +195,27 @@ export const ActionItem = React.forwardRef(
         }
 
         return (
-            <HoverAnimation isHoverable={!isOpen}>
-                <Wrapper
-                    ref={ref}
-                    data-test={dataTest}
-                    onClick={onClick}
-                    $isOpen={isOpen}
-                    $marginLeft={marginLeft}
-                >
-                    {Content}
-                </Wrapper>
-            </HoverAnimation>
+            <Tooltip
+                cursor="default"
+                maxWidth={200}
+                delay={[600, 0]}
+                placement="bottom"
+                interactive={false}
+                hideOnClick={false}
+                content={label}
+            >
+                <HoverAnimation isHoverable={!isOpen}>
+                    <Wrapper
+                        ref={ref}
+                        data-test={dataTest}
+                        onClick={onClick}
+                        $isOpen={isOpen}
+                        $marginLeft={marginLeft}
+                    >
+                        {Content}
+                    </Wrapper>
+                </HoverAnimation>
+            </Tooltip>
         );
     },
 );

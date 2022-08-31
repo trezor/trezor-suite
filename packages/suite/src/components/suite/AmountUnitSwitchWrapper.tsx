@@ -40,7 +40,7 @@ export const AmountUnitSwitchWrapper = ({ symbol, children }: AmountUnitSwitchWr
         <Tooltip
             cursor="default"
             maxWidth={200}
-            delay={[1200, 0]}
+            delay={[600, 0]}
             placement="bottom"
             interactive={false}
             hideOnClick={false}
