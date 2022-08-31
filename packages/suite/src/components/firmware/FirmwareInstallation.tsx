@@ -15,6 +15,7 @@ interface FirmwareInstallationProps {
     // If true, information about new version is not shown, because we don't know anything about it
     customFirmware?: boolean;
     onSuccess: () => void;
+    onClose?: () => void;
 }
 
 export const FirmwareInstallation = ({
@@ -22,6 +23,7 @@ export const FirmwareInstallation = ({
     standaloneFwUpdate,
     customFirmware,
     onSuccess,
+    onClose,
 }: FirmwareInstallationProps) => {
     const { device } = useDevice();
     const { status, installingProgress, resetReducer, isWebUSB, subsequentInstalling } =
@@ -76,7 +78,11 @@ export const FirmwareInstallation = ({
         <>
             {(status === 'unplug' || status === 'reconnect-in-normal') && (
                 // Modal to instruct user to disconnect the device and reconnect in normal mode
-                <ReconnectDevicePrompt expectedDevice={cachedDevice} requestedMode="normal" />
+                <ReconnectDevicePrompt
+                    expectedDevice={cachedDevice}
+                    requestedMode="normal"
+                    onClose={onClose}
+                />
             )}
             <OnboardingStepBox
                 image="FIRMWARE"

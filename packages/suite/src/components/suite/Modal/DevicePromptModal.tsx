@@ -1,4 +1,4 @@
-import React, { ComponentType, useMemo } from 'react';
+import React, { ComponentType } from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import TrezorConnect from '@trezor/connect';
@@ -29,7 +29,7 @@ const StyledTrezorModal = styled(TrezorModal)`
 `;
 
 const collapsedStyle = css`
-    width: 36px;
+    width: 32px;
 
     span {
         opacity: 0;
@@ -37,7 +37,7 @@ const collapsedStyle = css`
 `;
 
 const expandedStyle = css`
-    width: 100px;
+    width: 90px;
 
     span {
         opacity: 1;
@@ -46,18 +46,20 @@ const expandedStyle = css`
 
 const AbortContainer = styled.div`
     position: relative;
-    height: 36px;
+    height: 32px;
     border-radius: 20px;
     background: ${({ theme }) => theme.STROKE_GREY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     overflow: hidden;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     transition: width 0.15s ease-in-out;
     cursor: pointer;
 
     span {
         position: absolute;
         right: 12px;
-        top: 9px;
+        top: 8px;
         width: max-content;
         text-transform: uppercase;
         transition: opacity 0.25s ease-out;
@@ -82,16 +84,50 @@ const CloseIcon = styled(Icon)`
     position: absolute;
     left: 0;
     top: 0;
-    padding: 17.5px;
+    padding: 15.5px;
     border-radius: 20px;
     background: ${({ theme }) => theme.STROKE_GREY};
 `;
+
+interface AbortButtonProps {
+    onAbort: () => void;
+    className?: string;
+}
+
+export const AbortButton = ({ onAbort, className }: AbortButtonProps) => {
+    const transport = useSelector(state => state.suite.transport);
+
+    const theme = useTheme();
+
+    // checks compatability for use in other places
+    const isActionAbortable =
+        transport?.type === 'bridge'
+            ? versionUtils.isNewerOrEqual(transport?.version as string, '2.0.31')
+            : true; // Works via WebUSB
+
+    if (!isActionAbortable) {
+        return null;
+    }
+
+    return (
+        <AbortContainer
+            key="@modal/close-button" // passed in array
+            data-test="@modal/close-button"
+            onClick={onAbort}
+            className={className}
+        >
+            <Translation id="TR_ABORT" />
+            <CloseIcon size={18} color={theme.TYPE_LIGHT_GREY} icon="CROSS" />
+        </AbortContainer>
+    );
+};
 
 export interface DevicePromptModalProps {
     isPillShown?: boolean;
     isConfirmed?: boolean;
     pillTitle?: string;
     renderer?: ComponentType<TrezorModalProps>;
+    isAbortable?: boolean;
     onAbort?: () => void;
     className?: string;
     children?: React.ReactNode;
@@ -102,32 +138,19 @@ const DevicePromptModalRenderer = ({
     isPillShown = true,
     isConfirmed,
     pillTitle,
+    isAbortable = true,
     onAbort = () => TrezorConnect.cancel(),
     ...rest
 }: DevicePromptModalProps) => {
-    const deviceVerions = useSelector(state => state.suite.device?.features?.major_version);
+    const deviceVerion = useSelector(state => state.suite.device?.features?.major_version);
     const transport = useSelector(state => state.suite.transport);
     const modalTarget = useModalTarget();
-    const theme = useTheme();
 
-    const isAbortable =
+    // duplicated because headerComponents should receive undefined if isAbortable === false
+    const isActionAbortable =
         transport?.type === 'bridge'
-            ? versionUtils.isNewerOrEqual(transport?.version as string, '2.0.31')
-            : true; // Works via WebUSB
-
-    const AbortButton = useMemo(
-        () => (
-            <AbortContainer
-                key="@modal/close-button" // passed in array
-                data-test="@modal/close-button"
-                onClick={onAbort}
-            >
-                <Translation id="TR_ABORT" />
-                <CloseIcon size={20} color={theme.TYPE_LIGHT_GREY} icon="CROSS" />
-            </AbortContainer>
-        ),
-        [onAbort, theme],
-    );
+            ? isAbortable && versionUtils.isNewerOrEqual(transport?.version as string, '2.0.31')
+            : isAbortable; // Works via WebUSB
 
     if (!modalTarget) return null;
 
@@ -138,12 +161,14 @@ const DevicePromptModalRenderer = ({
                     isPillShown && (
                         <ConfirmOnDevice
                             title={pillTitle || <Translation id="TR_CONFIRM_ON_TREZOR" />}
-                            trezorModel={deviceVerions === 1 ? 1 : 2}
+                            trezorModel={deviceVerion === 1 ? 1 : 2}
                             isConfirmed={isConfirmed}
                         />
                     )
                 }
-                headerComponents={isAbortable ? [AbortButton] : undefined}
+                headerComponents={
+                    isActionAbortable ? [<AbortButton onAbort={onAbort} />] : undefined
+                }
                 {...rest}
             />
         </ModalEnvironment>

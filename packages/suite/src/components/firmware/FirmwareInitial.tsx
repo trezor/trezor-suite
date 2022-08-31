@@ -44,6 +44,7 @@ interface FirmwareInitialProps {
     standaloneFwUpdate?: boolean;
     onInstall: (firmwareType?: FirmwareType) => void;
     shouldSwitchFirmwareType?: boolean;
+    onClose?: () => void;
 }
 
 const getDescription = ({
@@ -83,6 +84,7 @@ export const FirmwareInitial = ({
     onInstall,
     standaloneFwUpdate = false,
     shouldSwitchFirmwareType,
+    onClose,
 }: FirmwareInitialProps) => {
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const { device: liveDevice } = useDevice();
@@ -284,6 +286,7 @@ export const FirmwareInitial = ({
                         expectedDevice={device}
                         requestedMode="bootloader"
                         onSuccess={() => onInstall(targetFirmwareType)}
+                        onClose={onClose}
                     />
                 )}
 

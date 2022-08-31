@@ -16,12 +16,13 @@ import {
 } from '@firmware-hooks/useRebootRequest';
 
 import type { TrezorDevice } from '@suite/types/suite';
+import { AbortButton } from '@suite-components/Modal/DevicePromptModal';
 
 const StyledModal = styled(Modal)`
-    width: 560px;
+    width: 580px;
 
     ${Modal.Body} {
-        padding: 22px;
+        padding: 38px 22px 6px;
     }
 `;
 
@@ -89,9 +90,9 @@ const CenteredPointText = styled(BulletPointText)`
 `;
 
 const StyledDeviceAnimation = styled(DeviceAnimation)`
-    flex: 0 0 200px;
-    width: 200px;
-    height: 200px;
+    flex: 0 0 220px;
+    width: 220px;
+    height: 220px;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         align-self: center;
@@ -111,6 +112,12 @@ const Heading = styled(H1)`
 
 const StyledWebUsbButton = styled(WebUsbButton)`
     margin-top: 24px;
+`;
+
+const StyledAbortButton = styled(AbortButton)`
+    position: absolute;
+    top: 12px;
+    right: 12px;
 `;
 
 const HeadingText = ({
@@ -199,19 +206,21 @@ const RebootDeviceGraphics = ({
 
     const type = requestedMode === 'bootloader' ? 'BOOTLOADER' : 'NORMAL';
 
-    return <StyledDeviceAnimation type={type} size={200} shape="ROUNDED" device={device} loop />;
+    return <StyledDeviceAnimation type={type} size={220} shape="ROUNDED" device={device} loop />;
 };
 
 interface ReconnectDevicePromptProps {
     expectedDevice?: TrezorDevice;
     requestedMode: RebootRequestedMode;
     onSuccess?: () => void;
+    onClose?: () => void;
 }
 
 export const ReconnectDevicePrompt = ({
     expectedDevice,
     requestedMode,
     onSuccess,
+    onClose,
 }: ReconnectDevicePromptProps) => {
     const { device } = useDevice();
     const { isWebUSB } = useFirmware();
@@ -231,6 +240,8 @@ export const ReconnectDevicePrompt = ({
                 )
             }
         >
+            {onClose && rebootPhase === 'initial' && <StyledAbortButton onAbort={onClose} />}
+
             <Wrapper data-test={`@firmware/reconnect-device/${requestedMode}`}>
                 <RebootDeviceGraphics
                     device={expectedDevice}
