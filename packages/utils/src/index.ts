@@ -22,3 +22,4 @@ export * from './isHex';
 export * from './resolveStaticPath';
 export * from './createTimeoutPromise';
 export * from './redactUserPath';
+export * as xssFilters from './xssFilters';
