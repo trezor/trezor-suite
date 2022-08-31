@@ -26,7 +26,7 @@ export const SUITE_UDEV_URL = 'https://suite.trezor.io/web/udev/';
 
 export const WIKI_URL = 'https://wiki.trezor.io/';
 export const WIKI_PIN_URL = 'https://wiki.trezor.io/User_manual:Entering_PIN';
-export const WIKI_DRY_RUN_URL = 'https://wiki.trezor.io/User_manual:Dry-run_recovery';
+export const WIKI_DRY_RUN_URL = 'https://wiki.trezor.io/Check_your_seed_(Dry-run_recovery)';
 export const WIKI_PASSPHRASE_URL = 'https://wiki.trezor.io/Passphrase';
 export const WIKI_USER_MANUAL_URL = 'https://wiki.trezor.io/User_manual';
 export const WIKI_RECOVERY_SEED_URL = 'https://wiki.trezor.io/Recovery_seed';
@@ -44,7 +44,8 @@ export const WIKI_TOR_URL = 'https://wiki.trezor.io/Glossary:Tor';
 export const WIKI_HOW_TO_RUN_URL = 'https://wiki.trezor.io/Apps:Trezor_Suite#How_to_run';
 export const WIKI_FW_DOWNGRADE_URL = 'https://wiki.trezor.io/Firmware_downgrade';
 export const WIKI_FAILED_BACKUP_URL = 'https://wiki.trezor.io/Recovery_seed_backup_fail';
-export const WIKI_ADVANCED_RECOVERY_URL = 'https://wiki.trezor.io/User_manual:Advanced_recovery';
+export const WIKI_ADVANCED_RECOVERY_URL =
+    'https://wiki.trezor.io/Advanced_Recovery_(Trezor_Model_One_only)';
 export const WIKI_XPUB_URL =
     'https://wiki.trezor.io/Suite_manual:Displaying_account_public_key_(XPUB)';
 
