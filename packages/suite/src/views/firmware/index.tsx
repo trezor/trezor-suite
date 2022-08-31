@@ -33,7 +33,7 @@ const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
 
 const StyledModal = styled(Modal)`
     width: 620px;
-    min-height: 500px;
+    min-height: 540px;
 
     > ${Modal.Body} {
         padding: 0;
@@ -125,6 +125,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                         standaloneFwUpdate
                         shouldSwitchFirmwareType={shouldSwitchFirmwareType}
                         onInstall={firmwareUpdate}
+                        onClose={onClose}
                     />
                 );
             case 'check-seed': // triggered from FirmwareInitial
@@ -143,6 +144,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                         cachedDevice={cachedDevice}
                         standaloneFwUpdate
                         onSuccess={onClose}
+                        onClose={onClose}
                     />
                 );
             default:
@@ -159,14 +161,9 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
 
     if (ApplicationStateModal) return <ApplicationStateModal />;
 
-    const isCancelable = [
-        'initial',
-        'check-seed',
-        'done',
-        'partially-done',
-        'waiting-for-bootloader',
-        'error',
-    ].includes(status);
+    const isCancelable = ['initial', 'check-seed', 'done', 'partially-done', 'error'].includes(
+        status,
+    );
 
     return (
         <StyledModal

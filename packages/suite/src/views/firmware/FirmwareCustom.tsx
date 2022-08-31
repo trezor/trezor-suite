@@ -122,6 +122,7 @@ export const FirmwareCustom = () => {
                             expectedDevice={cachedDevice}
                             requestedMode="bootloader"
                             onSuccess={onInstall}
+                            onClose={onClose}
                         />
                     );
                 case 'waiting-for-confirmation': // waiting for confirming installation on a device
@@ -139,6 +140,7 @@ export const FirmwareCustom = () => {
                             standaloneFwUpdate
                             customFirmware
                             onSuccess={onClose}
+                            onClose={onClose}
                         />
                     );
                 default:
