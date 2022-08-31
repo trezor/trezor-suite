@@ -44,6 +44,7 @@
         "@trezor/components": "*",
         "@trezor/connect": "9.0.0",
         "@trezor/dom-utils": "*",
+        "@trezor/env-utils": "*",
         "@trezor/react-utils": "*",
         "@trezor/suite-analytics": "*",
         "@trezor/suite-data": "*",
@@ -86,7 +87,6 @@
         "semver": "^7.3.7",
         "styled-components": "^5.3.5",
         "trezor-address-validator": "^0.4.3",
-        "ua-parser-js": "^1.0.2",
         "uuid": "^8.3.2",
         "web3-utils": "^1.7.5",
         "zxcvbn": "^4.4.2"

@@ -1,17 +1,17 @@
 import { AppUpdateEvent } from '@trezor/suite-analytics';
 
 import { AppState } from '@suite-types';
+import { getOsName } from '@suite-utils/env';
 import {
     getScreenWidth,
     getScreenHeight,
     getBrowserName,
     getBrowserVersion,
-    getOsName,
     getOsVersion,
     getWindowWidth,
     getWindowHeight,
     getPlatformLanguages,
-} from '@suite-utils/env';
+} from '@trezor/env-utils';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 import { getIsTorEnabled } from './tor';

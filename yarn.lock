@@ -6732,6 +6732,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/env-utils@*, @trezor/env-utils@workspace:packages/env-utils":
+  version: 0.0.0-use.local
+  resolution: "@trezor/env-utils@workspace:packages/env-utils"
+  dependencies:
+    ua-parser-js: ^1.0.2
+  languageName: unknown
+  linkType: soft
+
 "@trezor/icons@*, @trezor/icons@workspace:packages/icons":
   version: 0.0.0-use.local
   resolution: "@trezor/icons@workspace:packages/icons"
@@ -7107,6 +7115,7 @@ __metadata:
     "@trezor/components": "*"
     "@trezor/connect": 9.0.0
     "@trezor/dom-utils": "*"
+    "@trezor/env-utils": "*"
     "@trezor/react-utils": "*"
     "@trezor/suite-analytics": "*"
     "@trezor/suite-data": "*"
@@ -7181,7 +7190,6 @@ __metadata:
     tsx: ^3.8.2
     typescript: 4.7.4
     typescript-styled-plugin: ^0.18.2
-    ua-parser-js: ^1.0.2
     uuid: ^8.3.2
     web3-utils: ^1.7.5
     zxcvbn: ^4.4.2

@@ -8,13 +8,9 @@ import { useActions, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
 import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
-import {
-    getUserAgent,
-    getEnvironment,
-    getOsName,
-    getWindowHeight,
-    getWindowWidth,
-} from '@suite-utils/env';
+import { getEnvironment, getOsName } from '@suite-utils/env';
+import { getUserAgent, getWindowHeight, getWindowWidth } from '@trezor/env-utils';
+
 import { getFwType, getFwVersion } from '@suite-utils/device';
 
 const Headline = styled.div`

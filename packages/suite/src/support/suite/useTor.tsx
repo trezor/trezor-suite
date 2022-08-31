@@ -3,7 +3,8 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { useActions, useSelector } from '@suite-hooks';
 import { baseFetch, getIsTorEnabled, getIsTorDomain, torFetch } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { isWeb, isDesktop, getLocationHostname } from '@suite-utils/env';
+import { isWeb, isDesktop } from '@suite-utils/env';
+import { getLocationHostname } from '@trezor/env-utils';
 import { TorStatus } from '@suite-types';
 
 export const useTor = () => {

@@ -1,5 +1,6 @@
 import { getFwType, getFwVersion, getDeviceModel } from '@suite-utils/device';
-import { isDesktop, getUserAgent, getScreenWidth, getScreenHeight } from '@suite-utils/env';
+import { isDesktop } from '@suite-utils/env';
+import { getUserAgent, getScreenWidth, getScreenHeight } from '@trezor/env-utils';
 import type { ReleaseInfo } from '@suite-types/github';
 import type { TrezorDevice } from '@suite-types';
 import type { TransportInfo } from '@trezor/connect';

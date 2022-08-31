@@ -11,7 +11,7 @@ import { countBytesInString } from '@trezor/utils';
 import { OpenGuideFromTooltip } from '@guide-components';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 import { useTranslation } from '@suite-hooks';
-import { isAndroid } from '@suite-utils/env';
+import { isAndroid } from '@trezor/env-utils';
 
 const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
     display: flex;

@@ -1,7 +1,8 @@
 import React from 'react';
 import TrezorLink from '@suite-components/TrezorLink';
 import { Translation } from '@suite-components/Translation';
-import { isWeb, isLinux, isAndroid } from '@suite-utils/env';
+import { isWeb, isLinux } from '@suite-utils/env';
+import { isAndroid } from '@trezor/env-utils';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 

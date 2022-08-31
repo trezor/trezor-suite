@@ -59,6 +59,7 @@
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../dom-utils" },
+        { "path": "../env-utils" },
         { "path": "../react-utils" },
         { "path": "../suite-analytics" },
         { "path": "../suite-data" },
