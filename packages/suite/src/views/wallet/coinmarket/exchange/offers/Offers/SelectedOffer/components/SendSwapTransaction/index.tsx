@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Translation, AccountLabeling } from '@suite-components';
+import { Translation, AccountLabeling, FormattedCryptoAmount } from '@suite-components';
 import {
     Button,
     Icon,
@@ -17,7 +17,6 @@ import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketE
 import { InputError } from '@wallet-components';
 import useDebounce from 'react-use/lib/useDebounce';
 import BigNumber from 'bignumber.js';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -316,7 +315,7 @@ const SendSwapTransactionComponent = () => {
                     <Columns>
                         <Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED" />
                         <RightColumn>
-                            {formatCryptoAmount(Number(receiveStringAmount))} {receive}
+                            <FormattedCryptoAmount value={receiveStringAmount} symbol={receive} />
                         </RightColumn>
                     </Columns>
                 </PaddedValue>

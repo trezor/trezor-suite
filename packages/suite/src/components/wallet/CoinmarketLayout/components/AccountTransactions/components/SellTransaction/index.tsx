@@ -8,11 +8,15 @@ import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import { useTheme, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
+import {
+    Translation,
+    HiddenPlaceholder,
+    FormattedDate,
+    FormattedCryptoAmount,
+} from '@suite-components';
 import { TradeSell } from '@wallet-types/coinmarketCommonTypes';
 import Status from '../Status';
 import { useActions, useSelector } from '@suite-hooks';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
     trade: TradeSell;
@@ -189,9 +193,7 @@ const SellTransaction = ({ trade, providers, account }: Props) => {
         <Wrapper>
             <Column>
                 <Row>
-                    <HiddenPlaceholder>
-                        {formatCryptoAmount(Number(cryptoStringAmount))} {cryptoCurrency}
-                    </HiddenPlaceholder>
+                    <FormattedCryptoAmount value={cryptoStringAmount} symbol={cryptoCurrency} />
                     <Arrow>
                         <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>

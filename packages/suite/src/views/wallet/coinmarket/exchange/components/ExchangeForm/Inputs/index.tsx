@@ -11,6 +11,8 @@ import FractionButtons from '@wallet-components/CoinMarketFractionButtons';
 import { CRYPTO_INPUT, ExchangeFormState, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
 import { useLayoutSize } from '@suite/hooks/suite';
 import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
+import { amountToSatoshi } from '@suite-common/wallet-utils';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
 const StyledLeft = styled(Left)`
     flex-basis: 50%;
@@ -62,6 +64,7 @@ const Inputs = () => {
         updateFiatValue,
         clearErrors,
     } = useCoinmarketExchangeFormContext();
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
 
     const { outputs } = getValues();
     const tokenAddress = outputs?.[0]?.token;
@@ -88,13 +91,17 @@ const Inputs = () => {
                       .dividedBy(divisor)
                       .decimalPlaces(network.decimals)
                       .toString();
-            setValue(CRYPTO_INPUT, amount, { shouldDirty: true });
-            updateFiatValue(amount);
+            const cryptoInputValue = areSatsUsed
+                ? amountToSatoshi(amount, network.decimals)
+                : amount;
+            setValue(CRYPTO_INPUT, cryptoInputValue, { shouldDirty: true });
+            updateFiatValue(cryptoInputValue);
             clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
             composeRequest();
         },
         [
             account.formattedBalance,
+            areSatsUsed,
             clearErrors,
             composeRequest,
             network.decimals,

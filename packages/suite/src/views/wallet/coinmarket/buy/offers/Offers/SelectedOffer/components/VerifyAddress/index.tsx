@@ -6,8 +6,8 @@ import {
     FiatValue,
     QuestionTooltip,
     Translation,
-    HiddenPlaceholder,
     AccountLabeling,
+    FormattedCryptoAmount,
 } from '@suite-components';
 import { Input, Button, variables, CoinLogo, DeviceImage } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
@@ -48,9 +48,8 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 3px;
 `;
 
-const UpperCase = styled.div`
-    text-transform: uppercase;
-    padding: 0 3px;
+const CryptoWrapper = styled.div`
+    padding-right: 3px;
 `;
 
 const FiatWrapper = styled.div`
@@ -158,8 +157,10 @@ const VerifyAddressComponent = () => {
                             <AccountLabeling account={account} />
                         </AccountName>
                         <Amount>
-                            <HiddenPlaceholder>{formattedBalance}</HiddenPlaceholder>{' '}
-                            <UpperCase>{symbol}</UpperCase> •
+                            <CryptoWrapper>
+                                <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
+                            </CryptoWrapper>
+                            •
                             <FiatWrapper>
                                 <FiatValue amount={formattedBalance} symbol={symbol} />
                             </FiatWrapper>

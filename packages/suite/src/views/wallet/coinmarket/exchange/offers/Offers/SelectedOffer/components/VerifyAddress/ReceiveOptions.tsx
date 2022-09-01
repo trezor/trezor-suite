@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import { variables, CoinLogo, Select, Icon, useTheme } from '@trezor/components';
-import { FiatValue, Translation, HiddenPlaceholder, AccountLabeling } from '@suite-components';
+import { FiatValue, Translation, AccountLabeling, FormattedCryptoAmount } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
@@ -22,9 +22,8 @@ const AccountWrapper = styled.div`
     flex-direction: column;
 `;
 
-const UpperCase = styled.div`
-    text-transform: uppercase;
-    padding: 0 3px;
+const CryptoWrapper = styled.div`
+    padding-right: 3px;
 `;
 
 const FiatWrapper = styled.div`
@@ -152,8 +151,13 @@ export const ReceiveOptions = (props: Props) => {
                                         </AccountType>
                                     </AccountName>
                                     <Amount>
-                                        <HiddenPlaceholder>{formattedBalance}</HiddenPlaceholder>{' '}
-                                        <UpperCase>{symbol}</UpperCase> •
+                                        <CryptoWrapper>
+                                            <FormattedCryptoAmount
+                                                value={formattedBalance}
+                                                symbol={symbol}
+                                            />
+                                        </CryptoWrapper>
+                                        •
                                         <FiatWrapper>
                                             <FiatValue amount={formattedBalance} symbol={symbol} />
                                         </FiatWrapper>

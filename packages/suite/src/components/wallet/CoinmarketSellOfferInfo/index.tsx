@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SellFiatTrade, SellProviderInfo } from 'invity-api';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { variables, CoinLogo } from '@trezor/components';
 import {
     CoinmarketPaymentType,
@@ -9,7 +8,7 @@ import {
     CoinmarketTransactionId,
 } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { Translation, AccountLabeling } from '@suite-components';
+import { Translation, AccountLabeling, FormattedCryptoAmount } from '@suite-components';
 
 interface Props {
     selectedQuote: SellFiatTrade;
@@ -124,9 +123,12 @@ const CoinmarketSellOfferInfo = ({ selectedQuote, transactionId, providers, acco
                         <Translation id="TR_SELL_SPEND" />
                     </LeftColumn>
                     <RightColumn>
-                        <Dark>{`${formatCryptoAmount(
-                            Number(cryptoStringAmount),
-                        )} ${cryptoCurrency}`}</Dark>
+                        <Dark>
+                            <FormattedCryptoAmount
+                                value={cryptoStringAmount}
+                                symbol={cryptoCurrency}
+                            />
+                        </Dark>
                     </RightColumn>
                 </Row>
                 <RowWithBorder>

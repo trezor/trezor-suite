@@ -228,7 +228,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_DEX_OFFER_FEE_INFO: {
         defaultMessage:
-            'The fees to perform this swap are estimated at {symbol} {approvalFee} ({approvalFeeFiat}) for approval (if required) and {symbol} {swapFee} ({swapFeeFiat}) for the swap.',
+            'The fees to perform this swap are estimated at {approvalFee} ({approvalFeeFiat}) for approval (if required) and {swapFee} ({swapFeeFiat}) for the swap.',
         id: 'TR_EXCHANGE_DEX_OFFER_FEE_INFO',
     },
     TR_EXCHANGE_FEES_INFO: {
@@ -255,11 +255,11 @@ export default defineMessages({
             "What you see is close to what you'll get—the amount shown is the best estimate of the final amount you'll receive, all exchange fees included. For float-rate offers, there may be slight changes between accepting the offer and completing the transaction.",
     },
     TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO: {
-        defaultMessage: 'Minimum is {minimum} {currency}',
+        defaultMessage: 'Minimum is {minimum}',
         id: 'TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO',
     },
     TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
-        defaultMessage: 'Maximum is {maximum} {currency}',
+        defaultMessage: 'Maximum is {maximum}',
         id: 'TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO',
     },
     TR_EXCHANGE_SHOW_OFFERS: {
@@ -681,11 +681,11 @@ export default defineMessages({
         id: 'TR_REQUIRED_FIELD',
     },
     TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO: {
-        defaultMessage: 'Minimum is {minimum} {currency}',
+        defaultMessage: 'Minimum is {minimum}',
         id: 'TR_SELL_VALIDATION_ERROR_MINIMUM_CRYPTO',
     },
     TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
-        defaultMessage: 'Maximum is {maximum} {currency}',
+        defaultMessage: 'Maximum is {maximum}',
         id: 'TR_SELL_VALIDATION_ERROR_MAXIMUM_CRYPTO',
     },
     TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT: {
@@ -1197,11 +1197,11 @@ export default defineMessages({
         id: 'TR_BUY_VALIDATION_ERROR_EMPTY',
     },
     TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO: {
-        defaultMessage: 'Minimum is {minimum} {currency}',
+        defaultMessage: 'Minimum is {minimum}',
         id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
     },
     TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
-        defaultMessage: 'Maximum is {maximum} {currency}',
+        defaultMessage: 'Maximum is {maximum}',
         id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO',
     },
     TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT: {
@@ -1250,12 +1250,12 @@ export default defineMessages({
     },
     TR_OFFER_ERROR_MINIMUM_CRYPTO: {
         defaultMessage:
-            'The chosen amount of {currency} {amount} is lower than the accepted minimum of {currency} {min}.',
+            'The chosen amount of {amount} is lower than the accepted minimum of {min}.',
         id: 'TR_OFFER_ERROR_MINIMUM_CRYPTO',
     },
     TR_OFFER_ERROR_MAXIMUM_CRYPTO: {
         defaultMessage:
-            'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
+            'The chosen amount of {amount} is higher than the accepted maximum of {max}.',
         id: 'TR_OFFER_ERROR_MAXIMUM_CRYPTO',
     },
     TR_OFFER_ERROR_MINIMUM_FIAT: {

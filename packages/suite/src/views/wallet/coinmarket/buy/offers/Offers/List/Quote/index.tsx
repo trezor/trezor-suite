@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTheme, Button, variables, Icon, H2 } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
-import { QuestionTooltip, Translation } from '@suite-components';
+import { FormattedCryptoAmount, QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
-import { formatCryptoAmount, getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
     className?: string;
@@ -140,26 +140,26 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
 export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
     if (quote.error) {
         if (wantCrypto) {
-            if (quote.minCrypto && Number(quote.receiveStringAmount) < quote.minCrypto) {
+            const cryptoAmount = Number(quote.receiveStringAmount);
+            const symbol = quote.receiveCurrency;
+            if (quote.minCrypto && cryptoAmount < quote.minCrypto) {
                 return (
                     <Translation
                         id="TR_OFFER_ERROR_MINIMUM_CRYPTO"
                         values={{
-                            amount: formatCryptoAmount(Number(quote.receiveStringAmount)),
-                            min: formatCryptoAmount(quote.minCrypto),
-                            currency: quote.receiveCurrency,
+                            amount: <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />,
+                            min: <FormattedCryptoAmount value={quote.minCrypto} symbol={symbol} />,
                         }}
                     />
                 );
             }
-            if (quote.maxCrypto && Number(quote.receiveStringAmount) > quote.maxCrypto) {
+            if (quote.maxCrypto && cryptoAmount > quote.maxCrypto) {
                 return (
                     <Translation
                         id="TR_OFFER_ERROR_MAXIMUM_CRYPTO"
                         values={{
-                            amount: formatCryptoAmount(Number(quote.receiveStringAmount)),
-                            max: formatCryptoAmount(quote.maxCrypto),
-                            currency: quote.receiveCurrency,
+                            amount: <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />,
+                            max: <FormattedCryptoAmount value={quote.maxCrypto} symbol={symbol} />,
                         }}
                     />
                 );
@@ -207,11 +207,14 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                 {error && <Left>N/A</Left>}
                 {!error && (
                     <Left>
-                        {wantCrypto
-                            ? `${quote.fiatStringAmount} ${quote.fiatCurrency}`
-                            : `${formatCryptoAmount(Number(quote.receiveStringAmount))} ${
-                                  quote.receiveCurrency
-                              }`}
+                        {wantCrypto ? (
+                            `${quote.fiatStringAmount} ${quote.fiatCurrency}`
+                        ) : (
+                            <FormattedCryptoAmount
+                                value={quote.receiveStringAmount}
+                                symbol={quote.receiveCurrency}
+                            />
+                        )}
                         <CoinmarketTag tag={tag} />
                     </Left>
                 )}

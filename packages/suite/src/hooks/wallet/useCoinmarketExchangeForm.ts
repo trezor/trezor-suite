@@ -4,7 +4,13 @@ import type { ExchangeTradeQuoteRequest } from 'invity-api';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
-import { toFiatCurrency, fromFiatCurrency, getFeeLevels } from '@suite-common/wallet-utils';
+import {
+    amountToSatoshi,
+    toFiatCurrency,
+    formatAmount,
+    fromFiatCurrency,
+    getFeeLevels,
+} from '@suite-common/wallet-utils';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import {
@@ -25,6 +31,8 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import type { AppState } from '@suite-types';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { useDidUpdate } from '@trezor/react-utils';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -99,6 +107,7 @@ export const useCoinmarketExchangeForm = ({
     const { account, network } = selectedAccount;
     const { navigateToExchangeOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
+    const { areSatsUsed } = useBitcoinAmountUnit(symbol);
 
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
@@ -197,16 +206,20 @@ export const useCoinmarketExchangeForm = ({
         (amount: string) => {
             const currency: { value: string; label: string } | undefined = getValues(FIAT_CURRENCY);
             if (!fiatRates || !fiatRates.current || !currency) return;
-            const fiatValue = toFiatCurrency(amount, currency.value, fiatRates.current.rates);
+            const cryptoAmount =
+                amount && areSatsUsed ? formatAmount(amount, network.decimals) : amount;
+            const fiatValue = toFiatCurrency(cryptoAmount, currency.value, fiatRates.current.rates);
             setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
         },
-        [fiatRates, getValues, setValue],
+        [areSatsUsed, fiatRates, getValues, network.decimals, setValue],
     );
 
     const updateFiatCurrency = (currency: { label: string; value: string }) => {
-        const amount = getValues(CRYPTO_INPUT) as string;
         if (!fiatRates || !fiatRates.current || !currency) return;
-        const fiatValue = toFiatCurrency(amount, currency.value, fiatRates.current.rates);
+        const amount = getValues(CRYPTO_INPUT) as string;
+        const cryptoAmount =
+            amount && areSatsUsed ? formatAmount(amount, network.decimals) : amount;
+        const fiatValue = toFiatCurrency(cryptoAmount, currency.value, fiatRates.current.rates);
         if (fiatValue) {
             setValue(FIAT_INPUT, fiatValue, { shouldValidate: true });
         }
@@ -221,8 +234,12 @@ export const useCoinmarketExchangeForm = ({
             fiatRates.current.rates,
             decimals,
         );
+        const formattedCryptoValue =
+            cryptoValue && areSatsUsed
+                ? amountToSatoshi(cryptoValue, network.decimals)
+                : cryptoValue || '';
 
-        setValue(CRYPTO_INPUT, cryptoValue || '', { shouldValidate: true });
+        setValue(CRYPTO_INPUT, formattedCryptoValue, { shouldValidate: true });
     };
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
@@ -280,9 +297,27 @@ export const useCoinmarketExchangeForm = ({
         selectedFee,
     ]);
 
+    useDidUpdate(() => {
+        const cryptoInputValue = getValues(CRYPTO_INPUT) as string;
+        if (!cryptoInputValue) {
+            return;
+        }
+        const conversion = areSatsUsed ? amountToSatoshi : formatAmount;
+        const cryptoAmount = conversion(cryptoInputValue, network.decimals);
+        setValue(CRYPTO_INPUT, cryptoAmount, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
+        updateFiatValue(cryptoAmount);
+    }, [areSatsUsed]);
+
     const onSubmit = async () => {
         const formValues = getValues();
-        const sendStringAmount = formValues.outputs[0].amount || '';
+        const unformattedOutputAmount = formValues.outputs[0].amount || '';
+        const sendStringAmount =
+            unformattedOutputAmount && areSatsUsed
+                ? formatAmount(unformattedOutputAmount, network.decimals)
+                : unformattedOutputAmount;
         const send = formValues.sendCryptoSelect.value.toUpperCase();
         if (formValues.receiveCryptoSelect) {
             const receive = formValues.receiveCryptoSelect.value;

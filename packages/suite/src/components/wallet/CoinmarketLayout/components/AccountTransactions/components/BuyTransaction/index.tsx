@@ -7,12 +7,16 @@ import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useTheme, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
+import {
+    Translation,
+    HiddenPlaceholder,
+    FormattedDate,
+    FormattedCryptoAmount,
+} from '@suite-components';
 import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { TradeBuy } from '@wallet-types/coinmarketCommonTypes';
 import Status from '../Status';
 import { useSelector, useActions } from '@suite-hooks';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 
 interface Props {
@@ -188,9 +192,7 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                     <Arrow>
                         <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
-                    <HiddenPlaceholder>
-                        {formatCryptoAmount(Number(receiveStringAmount))} {receiveCurrency}
-                    </HiddenPlaceholder>
+                    <FormattedCryptoAmount value={receiveStringAmount} symbol={receiveCurrency} />
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>

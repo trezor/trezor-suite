@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import type { AccountAddress } from '@trezor/connect';
-import { Translation, HiddenPlaceholder, FiatValue } from '@suite-components';
+import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 import { variables, Select } from '@trezor/components';
 import { UseFormMethods, Control, Controller } from 'react-hook-form';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -39,9 +39,8 @@ const Option = styled.div`
     align-items: center;
 `;
 
-const UpperCase = styled.div`
-    text-transform: uppercase;
-    padding: 0 3px;
+const CryptoWrapper = styled.div`
+    padding-right: 3px;
 `;
 
 const buildOptions = (addresses: Account['addresses']) => {
@@ -122,11 +121,13 @@ export const AddressOptions = ({
                                 <AddressWrapper>
                                     <Address>{accountAddress.address}</Address>
                                     <Amount>
-                                        <HiddenPlaceholder>
-                                            {formattedCryptoAmount}
-                                        </HiddenPlaceholder>{' '}
-                                        <UpperCase>{receiveSymbol}</UpperCase> •
-                                        <PathWrapper>{accountAddress.path}</PathWrapper> •
+                                        <CryptoWrapper>
+                                            <FormattedCryptoAmount
+                                                value={formattedCryptoAmount}
+                                                symbol={receiveSymbol}
+                                            />
+                                        </CryptoWrapper>
+                                        • <PathWrapper>{accountAddress.path}</PathWrapper> •
                                         <FiatWrapper>
                                             <FiatValue
                                                 amount={formattedCryptoAmount}

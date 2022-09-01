@@ -4,9 +4,8 @@ import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { SellFiatTrade } from 'invity-api';
 import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
 import Quote from './Quote';
-import { Translation } from '@suite-components';
+import { FormattedCryptoAmount, Translation } from '@suite-components';
 import { CoinmarketRefreshTime } from '@wallet-components';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 
 interface Props {
@@ -56,26 +55,28 @@ const OrigAmount = styled.div`
 
 const StyledIcon = styled(Icon)`
     padding: 0 10px;
+    margin: 0 20px;
 `;
 
 const Text = styled(H2)`
     display: flex;
     padding-top: 3px;
     align-items: center;
-    text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const Crypto = styled(Text)`
     padding-left: 10px;
+    text-transform: uppercase;
 `;
 
 const Receive = styled(Text)`
     padding-right: 10px;
+    text-transform: uppercase;
 `;
 
 const Send = styled(Text)`
-    padding-right: 10px;
+    padding-left: 10px;
 `;
 
 const StyledCoinLogo = styled(CoinLogo)``;
@@ -100,14 +101,18 @@ const List = ({ isAlternative, quotes }: Props) => {
                 <Left>
                     <>
                         <SummaryRow>
-                            {amountInCrypto && (
-                                <Send>
-                                    {formatCryptoAmount(Number(quotes[0].cryptoStringAmount))}
-                                </Send>
-                            )}
                             <StyledCoinLogo size={21} symbol={account.symbol} />
-                            <Crypto>{quotes[0].cryptoCurrency}</Crypto>
-                            <StyledIcon icon="ARROW_RIGHT" />
+                            {amountInCrypto ? (
+                                <Send>
+                                    <FormattedCryptoAmount
+                                        value={quotes[0].cryptoStringAmount}
+                                        symbol={account.symbol}
+                                    />
+                                </Send>
+                            ) : (
+                                <Crypto>{quotes[0].cryptoCurrency}</Crypto>
+                            )}
+                            <StyledIcon icon="ARROW_RIGHT_LONG" />
                             {!amountInCrypto && <Receive>{quotes[0].fiatStringAmount}</Receive>}
                             <Text>{quotes[0].fiatCurrency}</Text>
                         </SummaryRow>

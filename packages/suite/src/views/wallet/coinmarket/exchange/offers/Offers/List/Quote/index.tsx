@@ -1,9 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
-import { FormattedFiatAmount, QuestionTooltip, Translation } from '@suite-components';
+import {
+    FormattedCryptoAmount,
+    FormattedFiatAmount,
+    QuestionTooltip,
+    Translation,
+} from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
-import { formatCryptoAmount, getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { getTagAndInfoNote } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { isQuoteError } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { CoinmarketProviderInfo, CoinmarketTag } from '@wallet-components';
@@ -155,26 +160,26 @@ interface Props {
 }
 
 function getQuoteError(quote: ExchangeTrade) {
-    if (quote.min && Number(quote.sendStringAmount) < quote.min) {
+    const cryptoAmount = Number(quote.sendStringAmount);
+    const symbol = quote.send;
+    if (quote.min && cryptoAmount < quote.min) {
         return (
             <Translation
                 id="TR_OFFER_ERROR_MINIMUM_CRYPTO"
                 values={{
-                    amount: formatCryptoAmount(Number(quote.sendStringAmount)),
-                    min: formatCryptoAmount(quote.min),
-                    currency: quote.send,
+                    amount: <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />,
+                    min: <FormattedCryptoAmount value={quote.min} symbol={symbol} />,
                 }}
             />
         );
     }
-    if (quote.max && quote.max !== 'NONE' && Number(quote.sendStringAmount) > quote.max) {
+    if (quote.max && quote.max !== 'NONE' && cryptoAmount > quote.max) {
         return (
             <Translation
                 id="TR_OFFER_ERROR_MAXIMUM_CRYPTO"
                 values={{
-                    amount: formatCryptoAmount(Number(quote.sendStringAmount)),
-                    max: formatCryptoAmount(quote.max),
-                    currency: quote.send,
+                    amount: <FormattedCryptoAmount value={cryptoAmount} symbol={symbol} />,
+                    max: <FormattedCryptoAmount value={quote.max} symbol={symbol} />,
                 }}
             />
         );
@@ -236,7 +241,7 @@ const Quote = ({ className, quote }: Props) => {
                 {errorQuote && !noFundsForFeesError && <Left>N/A</Left>}
                 {(!errorQuote || noFundsForFeesError) && (
                     <Left>
-                        {`${formatCryptoAmount(Number(receiveStringAmount))} ${receive}`}
+                        <FormattedCryptoAmount value={receiveStringAmount} symbol={receive} />
                         <CoinmarketTag tag={tag} />
                     </Left>
                 )}
@@ -276,8 +281,12 @@ const Quote = ({ className, quote }: Props) => {
                         <Translation
                             id="TR_EXCHANGE_DEX_OFFER_FEE_INFO"
                             values={{
-                                symbol: account.symbol.toUpperCase(),
-                                approvalFee: formatCryptoAmount(approvalFee),
+                                approvalFee: (
+                                    <FormattedCryptoAmount
+                                        value={approvalFee}
+                                        symbol={account.symbol}
+                                    />
+                                ),
                                 approvalFeeFiat: approvalFeeFiat ? (
                                     <FormattedFiatAmount
                                         value={approvalFeeFiat}
@@ -286,7 +295,12 @@ const Quote = ({ className, quote }: Props) => {
                                 ) : (
                                     ''
                                 ),
-                                swapFee: formatCryptoAmount(swapFee),
+                                swapFee: (
+                                    <FormattedCryptoAmount
+                                        value={swapFee}
+                                        symbol={account.symbol}
+                                    />
+                                ),
                                 swapFeeFiat: swapFeeFiat ? (
                                     <FormattedFiatAmount
                                         value={swapFeeFiat}

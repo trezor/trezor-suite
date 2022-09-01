@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
+import { Translation, FormattedDate, FormattedCryptoAmount } from '@suite-components';
 import { variables } from '@trezor/components';
 import Status from '../Status';
 import { CoinmarketProviderInfo } from '@wallet-components';
@@ -89,9 +89,7 @@ const SpendTransaction = ({ trade, providers }: Props) => {
             <Column>
                 <Row>
                     <Amount>
-                        <HiddenPlaceholder>
-                            {cryptoAmount} {cryptoCurrency}
-                        </HiddenPlaceholder>
+                        <FormattedCryptoAmount value={cryptoAmount} symbol={cryptoCurrency} />
                     </Amount>
                 </Row>
                 <SmallRowStatus>

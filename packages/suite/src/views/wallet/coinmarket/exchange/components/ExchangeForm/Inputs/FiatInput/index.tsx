@@ -33,6 +33,31 @@ const FiatInput = () => {
 
     const { outputs } = getValues();
     const fiat = outputs?.[0]?.fiat;
+
+    const fiatInputRef = register({
+        validate: (value: any) => {
+            if (value) {
+                const amountBig = new BigNumber(value);
+                if (amountBig.isNaN()) {
+                    return 'AMOUNT_IS_NOT_NUMBER';
+                }
+
+                if (!isDecimalsValid(value, 2)) {
+                    return (
+                        <Translation
+                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                            values={{ decimals: 2 }}
+                        />
+                    );
+                }
+
+                if (amountBig.lte(0)) {
+                    return 'AMOUNT_IS_TOO_LOW';
+                }
+            }
+        },
+    });
+
     return (
         <StyledInput
             onFocus={() => {
@@ -51,29 +76,7 @@ const FiatInput = () => {
             name={FIAT_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
-            innerRef={register({
-                validate: (value: any) => {
-                    if (value) {
-                        const amountBig = new BigNumber(value);
-                        if (amountBig.isNaN()) {
-                            return 'AMOUNT_IS_NOT_NUMBER';
-                        }
-
-                        if (!isDecimalsValid(value, 2)) {
-                            return (
-                                <Translation
-                                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
-                                    values={{ decimals: 2 }}
-                                />
-                            );
-                        }
-
-                        if (amountBig.lte(0)) {
-                            return 'AMOUNT_IS_TOO_LOW';
-                        }
-                    }
-                },
-            })}
+            innerRef={fiatInputRef}
             bottomText={<InputError error={fiatError} />}
             innerAddon={<FiatSelect />}
         />

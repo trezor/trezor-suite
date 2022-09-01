@@ -1,10 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTheme, variables, Icon } from '@trezor/components';
-import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
+import {
+    Translation,
+    HiddenPlaceholder,
+    FormattedDate,
+    FormattedCryptoAmount,
+} from '@suite-components';
 import type { TradeSavings } from '@wallet-types/coinmarketCommonTypes';
 import Status from '../Status';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import type { SavingsProviderInfo } from '@suite-services/invityAPI';
 import { CoinmarketProviderInfo, CoinmarketPaymentType } from '@wallet-components';
 import { useWatchSavingsTrade } from '@wallet-hooks/useCoinmarket';
@@ -125,9 +129,7 @@ const SavingsTransaction = ({ trade, providers, account }: Props) => {
                     <Arrow>
                         <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
-                    <HiddenPlaceholder>
-                        {formatCryptoAmount(Number(receiveStringAmount))} {receiveCurrency}
-                    </HiddenPlaceholder>
+                    <FormattedCryptoAmount value={receiveStringAmount} symbol={receiveCurrency} />
                 </Row>
                 <SmallRowStatus>
                     {trade.tradeType.toUpperCase()} • <FormattedDate value={date} date time /> •{' '}

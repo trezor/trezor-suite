@@ -17,6 +17,10 @@ import type {
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
+import { amountToSatoshi, formatAmount } from '@suite-common/wallet-utils';
+import { useDidUpdate } from '@trezor/react-utils';
+import { CRYPTO_INPUT } from '@wallet-types/coinmarketSellForm';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
@@ -54,6 +58,8 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         buyInfo: state.wallet.coinmarket.buy.buyInfo,
         exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
     }));
+
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
     const { defaultValues, defaultCountry, defaultCurrency } = useCoinmarketBuyFormDefaultValues(
         account.symbol,
         buyInfo,
@@ -63,7 +69,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const { register, control, formState, errors, reset } = methods;
+    const { register, control, formState, errors, reset, setValue, getValues } = methods;
     const values = useWatch<FormState>({ control });
 
     useEffect(() => {
@@ -72,6 +78,18 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
             reset(defaultValues);
         }
     }, [reset, defaultValues, isDraft]);
+
+    useDidUpdate(() => {
+        const cryptoInputValue = getValues(CRYPTO_INPUT);
+        if (!cryptoInputValue) {
+            return;
+        }
+        const conversion = areSatsUsed ? amountToSatoshi : formatAmount;
+        setValue(CRYPTO_INPUT, conversion(cryptoInputValue, network.decimals), {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
+    }, [areSatsUsed]);
 
     const resetForm = useCallback(() => {
         reset({});
@@ -85,7 +103,7 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
             }
         },
         200,
-        [errors, saveDraft, account.key, values, formState],
+        [errors, saveDraft, account.key, values, areSatsUsed],
     );
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -96,7 +114,10 @@ export const useCoinmarketBuyForm = (props: UseCoinmarketBuyFormProps): BuyFormC
     const onSubmit = async () => {
         const formValues = methods.getValues();
         const fiatStringAmount = formValues.fiatInput;
-        const cryptoStringAmount = formValues.cryptoInput;
+        const cryptoStringAmount =
+            formValues.cryptoInput && areSatsUsed
+                ? formatAmount(formValues.cryptoInput, network.decimals)
+                : formValues.cryptoInput;
         const wantCrypto = !fiatStringAmount;
         const request: BuyTradeQuoteRequest = {
             wantCrypto,
