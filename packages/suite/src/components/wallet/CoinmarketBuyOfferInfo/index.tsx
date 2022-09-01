@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade, BuyProviderInfo } from 'invity-api';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { variables, CoinLogo } from '@trezor/components';
 import {
     CoinmarketPaymentType,
@@ -9,7 +8,7 @@ import {
     CoinmarketTransactionId,
 } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { Translation, AccountLabeling } from '@suite-components';
+import { Translation, AccountLabeling, FormattedCryptoAmount } from '@suite-components';
 
 interface Props {
     selectedQuote: BuyTrade;
@@ -134,9 +133,12 @@ const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers, accou
                         <Translation id="TR_BUY_BUY" />
                     </LeftColumn>
                     <RightColumn>
-                        <Dark>{`${formatCryptoAmount(
-                            Number(receiveStringAmount),
-                        )} ${receiveCurrency}`}</Dark>
+                        <Dark>
+                            <FormattedCryptoAmount
+                                value={receiveStringAmount}
+                                symbol={receiveCurrency}
+                            />
+                        </Dark>
                     </RightColumn>
                 </RowWithBorder>
                 <Row>

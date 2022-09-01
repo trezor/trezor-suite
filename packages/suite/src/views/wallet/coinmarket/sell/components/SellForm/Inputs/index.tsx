@@ -7,7 +7,9 @@ import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '@suite/types/wallet/coi
 import CryptoInput from './CryptoInput';
 import { useLayoutSize } from '@suite/hooks/suite';
 import FractionButtons from '@suite/components/wallet/CoinMarketFractionButtons';
+import { amountToSatoshi } from '@suite-common/wallet-utils';
 import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
 const EmptyDiv = styled.div`
     width: 100%;
@@ -28,6 +30,7 @@ const Inputs = () => {
         setActiveInput,
         getValues,
     } = useCoinmarketSellFormContext();
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
 
     // if FIAT_INPUT has a valid value, set it as the activeInput
     if (watch(FIAT_INPUT) && !errors[FIAT_INPUT] && activeInput === CRYPTO_INPUT) {
@@ -56,13 +59,17 @@ const Inputs = () => {
                       .dividedBy(divisor)
                       .decimalPlaces(network.decimals)
                       .toString();
-            setValue(CRYPTO_INPUT, amount, { shouldDirty: true });
+            const cryptoInputValue = areSatsUsed
+                ? amountToSatoshi(amount, network.decimals)
+                : amount;
+            setValue(CRYPTO_INPUT, cryptoInputValue, { shouldDirty: true });
             clearErrors([CRYPTO_INPUT]);
             setActiveInput(CRYPTO_INPUT);
-            onCryptoAmountChange(amount);
+            onCryptoAmountChange(cryptoInputValue);
         },
         [
             account.formattedBalance,
+            areSatsUsed,
             clearErrors,
             network.decimals,
             onCryptoAmountChange,

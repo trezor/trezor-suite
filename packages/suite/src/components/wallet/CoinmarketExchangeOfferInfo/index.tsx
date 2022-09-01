@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ExchangeTrade } from 'invity-api';
-import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { variables, CoinLogo } from '@trezor/components';
 import { CoinmarketProviderInfo, CoinmarketTransactionId } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { AccountLabeling, Translation } from '@suite-components';
+import { AccountLabeling, FormattedCryptoAmount, Translation } from '@suite-components';
 // hitting issue https://github.com/styled-components/styled-components/issues/213 in unit test when importing directly from @suite-components
 import QuestionTooltip from '@suite-components/QuestionTooltip';
 import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
@@ -149,7 +148,7 @@ const CoinmarketExchangeOfferInfo = ({
                         <Dark>
                             <CoinLogo symbol={account.symbol} size={16} />
                             <Amount>
-                                {formatCryptoAmount(Number(sendStringAmount))} {send}
+                                <FormattedCryptoAmount value={sendStringAmount} symbol={send} />
                             </Amount>
                         </Dark>
                     </RightColumn>
@@ -175,7 +174,10 @@ const CoinmarketExchangeOfferInfo = ({
                             />
                             <Amount>
                                 {(!provider.isFixedRate || selectedQuote.isDex) && '≈ '}
-                                {`${formatCryptoAmount(Number(receiveStringAmount))} ${receive}`}
+                                <FormattedCryptoAmount
+                                    value={receiveStringAmount}
+                                    symbol={receive}
+                                />
                             </Amount>
                         </Dark>
                     </RightColumn>

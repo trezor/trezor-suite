@@ -1,4 +1,4 @@
-import TrezorConnect, { UI, DeviceButtonRequest } from '@trezor/connect';
+import TrezorConnect, { UI, DeviceButtonRequest, PROTO } from '@trezor/connect';
 import { GetState, Dispatch } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -21,6 +21,15 @@ import {
 } from '@wallet-utils/cardanoUtils';
 
 import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
+import * as formDraftActions from '@wallet-actions/formDraftActions';
+import {
+    amountToSatoshi,
+    formatAmount,
+    getAccountDecimals,
+    hasNetworkFeatures,
+    parseFormDraftKey,
+} from '@suite-common/wallet-utils';
+import { Output } from '@suite-common/wallet-types/src';
 
 export type CoinmarketCommonAction =
     | {
@@ -35,6 +44,11 @@ export type CoinmarketCommonAction =
     | {
           type: typeof COINMARKET_COMMON.LOAD_DATA;
       };
+
+type FormState = {
+    cryptoInput?: string;
+    outputs?: Output[];
+};
 
 export const verifyAddress =
     (
@@ -186,3 +200,40 @@ export const setLoading = (
 export const loadInvityData = (): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.LOAD_DATA,
 });
+
+export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
+    const { accounts, formDrafts, settings } = getState().wallet;
+    const formDraftKeys = Object.keys(formDrafts);
+
+    formDraftKeys.forEach(formDraftKey => {
+        const [prefix, accountKey] = parseFormDraftKey(formDraftKey);
+        const relatedAccount = accounts.find(({ key }) => key === accountKey);
+
+        if (!relatedAccount || !hasNetworkFeatures(relatedAccount, 'amount-unit')) {
+            return;
+        }
+
+        const getDraft = formDraftActions.getDraft<FormState>(prefix);
+        const saveDraft = formDraftActions.saveDraft<FormState>(prefix);
+        const draft = dispatch(getDraft(accountKey));
+
+        if (draft) {
+            const areSatsSelected = settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI;
+            const conversion = areSatsSelected ? amountToSatoshi : formatAmount;
+            const decimals = getAccountDecimals(relatedAccount.symbol)!;
+
+            if (draft.cryptoInput) {
+                draft.cryptoInput = conversion(draft.cryptoInput, decimals);
+            }
+            if (draft.outputs) {
+                draft.outputs.forEach(output => {
+                    if (output.amount) {
+                        output.amount = conversion(output.amount, decimals);
+                    }
+                });
+            }
+
+            dispatch(saveDraft(accountKey, draft));
+        }
+    });
+};

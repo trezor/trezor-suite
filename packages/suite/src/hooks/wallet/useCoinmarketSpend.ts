@@ -11,12 +11,13 @@ import * as coinmarketSpendActions from '@wallet-actions/coinmarketSpendActions'
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import type { FormState } from '@wallet-types/sendForm';
-import { getFeeLevels } from '@suite-common/wallet-utils';
+import { amountToSatoshi, getFeeLevels } from '@suite-common/wallet-utils';
 import { isDesktop } from '@suite-utils/env';
 import { useCompose } from './form/useCompose';
 import { useForm } from 'react-hook-form';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import type { AppState } from '@suite-types';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);
 SpendContext.displayName = 'CoinmarketSpendContext';
@@ -64,7 +65,8 @@ export const useCoinmarketSpend = ({
 
     const { translationString } = useTranslation();
 
-    const { account } = selectedAccount;
+    const { account, network } = selectedAccount;
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
     const { sellInfo, language, fees } = useSelector(state => ({
         sellInfo: state.wallet.coinmarket.sell.sellInfo,
         language: state.suite.settings.language,
@@ -218,7 +220,13 @@ export const useCoinmarketSpend = ({
                                             {
                                                 ...DEFAULT_PAYMENT,
                                                 address: trade.destinationAddress || '',
-                                                amount: trade.cryptoAmount?.toString() || '',
+                                                amount:
+                                                    trade.cryptoAmount && areSatsUsed
+                                                        ? amountToSatoshi(
+                                                              trade.cryptoAmount.toString(),
+                                                              network.decimals,
+                                                          )
+                                                        : trade.cryptoAmount?.toString() || '',
                                             },
                                         ],
                                     },
@@ -245,7 +253,16 @@ export const useCoinmarketSpend = ({
                 window.removeEventListener('message', handleMessage);
             };
         }
-    }, [account.symbol, isLoading, noProviders, provider, addNotification, composeRequest]);
+    }, [
+        account.symbol,
+        isLoading,
+        noProviders,
+        provider,
+        addNotification,
+        composeRequest,
+        areSatsUsed,
+        network.decimals,
+    ]);
 
     const openWindow = async (voucherSiteUrl?: string) => {
         const endpointIframe = await desktopApi.getHttpReceiverAddress('/spend-iframe');

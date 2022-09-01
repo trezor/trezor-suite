@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import invityAPI from '@suite-services/invityAPI';
-import { Translation } from '@suite-components';
+import { FormattedCryptoAmount, Translation } from '@suite-components';
 import {
     CoinmarketExchangeTopPanel,
     CoinmarketFooter,
@@ -83,10 +83,6 @@ const InvityCoinLogo = styled.img`
     padding: 0 10px 0 0;
 `;
 
-const TextAmount = styled(Text)`
-    padding-right: 10px;
-`;
-
 const Offers = () => {
     const {
         fixedQuotes,
@@ -125,8 +121,12 @@ const Offers = () => {
                                 <SummaryRow>
                                     <Left>
                                         <StyledCoinLogo size={21} symbol={account.symbol} />
-                                        <TextAmount>{quotesRequest.sendStringAmount}</TextAmount>
-                                        <Text>{quotesRequest.send}</Text>
+                                        <Text>
+                                            <FormattedCryptoAmount
+                                                value={quotesRequest.sendStringAmount}
+                                                symbol={quotesRequest.send}
+                                            />
+                                        </Text>
                                         <StyledIcon icon="ARROW_RIGHT_LONG" />
                                         <InvityCoinLogo
                                             src={`${invityAPI.getApiServerUrl()}/images/coins/suite/${

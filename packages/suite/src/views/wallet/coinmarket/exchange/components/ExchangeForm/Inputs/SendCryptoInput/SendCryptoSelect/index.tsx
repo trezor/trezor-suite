@@ -9,6 +9,7 @@ import {
     getSendCryptoOptions,
     invityApiSymbolToSymbol,
 } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
 
 const Option = styled.div`
     display: flex;
@@ -28,6 +29,7 @@ const TokenLogo = styled.img`
 const SendCryptoSelect = () => {
     const { control, setAmountLimits, account, setValue, exchangeInfo, composeRequest } =
         useCoinmarketExchangeFormContext();
+    const { areSatsUsed } = useBitcoinAmountUnit(account.symbol);
 
     const { tokens } = account;
     const sendCryptoOptions = getSendCryptoOptions(account, exchangeInfo?.sellSymbols || new Set());
@@ -71,7 +73,7 @@ const SendCryptoSelect = () => {
                                     }.svg`}
                                 />
                             )}
-                            <Label>{option.label}</Label>
+                            <Label>{areSatsUsed ? 'sat' : option.label}</Label>
                         </Option>
                     )}
                     value={value}

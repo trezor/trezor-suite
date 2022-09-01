@@ -10,6 +10,7 @@ import selectedAccountReducer, {
     State as SelectedAccountState,
 } from '@wallet-reducers/selectedAccountReducer';
 import sendFormReducer, { SendState } from '@wallet-reducers/sendFormReducer';
+import formDraftReducer from '@wallet-reducers/formDraftReducer';
 
 import { RouterState } from '@suite-reducers/routerReducer';
 import { Action } from '@suite-types';
@@ -57,6 +58,7 @@ export const getInitialState = ({
             status: 'loaded',
         },
         send: { ...sendFormReducer(undefined, { type: 'foo' } as any), ...send },
+        formDrafts: {},
     },
 });
 
@@ -71,13 +73,15 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { accounts, blockchain, settings, selectedAccount, send } = store.getState().wallet;
+        const { accounts, blockchain, settings, selectedAccount, send, formDrafts } =
+            store.getState().wallet;
         store.getState().wallet = {
             accounts: accountsReducer(accounts, action),
             blockchain: blockchainReducer(blockchain, action),
             settings: walletSettingsReducer(settings, action),
             selectedAccount: selectedAccountReducer(selectedAccount as any, action),
             send: sendFormReducer(send, action),
+            formDrafts: formDraftReducer(formDrafts, { type: 'foo' } as any),
         };
         // add action back to stack
         store.getActions().push(action);

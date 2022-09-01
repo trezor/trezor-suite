@@ -51,17 +51,6 @@ export const getSendCryptoOptions = (account: Account, supportedCoins: Set<strin
     return options;
 };
 
-export function formatCryptoAmount(amount: number, decimals = 8): string {
-    let digits = 4;
-    if (amount < 1) {
-        digits = 6;
-    }
-    if (amount < 0.01) {
-        digits = decimals;
-    }
-    return amount.toFixed(digits);
-}
-
 export const getUnusedAddressFromAccount = (account: Account) => {
     switch (account.networkType) {
         case 'cardano':

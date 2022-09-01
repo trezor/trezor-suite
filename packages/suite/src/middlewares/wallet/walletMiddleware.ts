@@ -1,6 +1,6 @@
 import type { MiddlewareAPI } from 'redux';
 
-import { SUITE, ROUTER } from '@suite-actions/constants';
+import { ROUTER, SUITE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
@@ -15,6 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { isAnyOf } from '@reduxjs/toolkit';
@@ -109,6 +110,7 @@ const walletMiddleware =
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
             api.dispatch(sendFormActions.convertDrafts());
+            api.dispatch(coinmarketCommonActions.convertDrafts());
         }
 
         api.dispatch(selectedAccountActions.getStateForAction(action));

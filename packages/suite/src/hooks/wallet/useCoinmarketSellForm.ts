@@ -3,7 +3,12 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { SellFiatTradeQuoteRequest } from 'invity-api';
 import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
-import { fromFiatCurrency, getFeeLevels } from '@suite-common/wallet-utils';
+import {
+    fromFiatCurrency,
+    getFeeLevels,
+    amountToSatoshi,
+    formatAmount,
+} from '@suite-common/wallet-utils';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
@@ -29,6 +34,8 @@ import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
 import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import type { AppState } from '@suite-types';
+import { useBitcoinAmountUnit } from '@wallet-hooks/useBitcoinAmountUnit';
+import { useDidUpdate } from '@trezor/react-utils';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -101,6 +108,7 @@ export const useCoinmarketSellForm = ({
     const { account, network } = selectedAccount;
     const { navigateToSellOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
+    const { areSatsUsed } = useBitcoinAmountUnit(symbol);
 
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
@@ -246,10 +254,22 @@ export const useCoinmarketSellForm = ({
                 fiatRates.current.rates,
                 network.decimals,
             );
-            setValue(OUTPUT_AMOUNT, cryptoValue || '', { shouldDirty: true });
+            const cryptoInputValue =
+                cryptoValue && areSatsUsed
+                    ? amountToSatoshi(cryptoValue, network.decimals)
+                    : cryptoValue;
+            setValue(OUTPUT_AMOUNT, cryptoInputValue || '', { shouldDirty: true });
             composeRequest(FIAT_INPUT);
         },
-        [setValue, clearErrors, getValues, fiatRates, network.decimals, composeRequest],
+        [
+            setValue,
+            clearErrors,
+            getValues,
+            fiatRates,
+            areSatsUsed,
+            network.decimals,
+            composeRequest,
+        ],
     );
 
     useEffect(() => {
@@ -286,10 +306,25 @@ export const useCoinmarketSellForm = ({
         activeInput,
     ]);
 
+    useDidUpdate(() => {
+        const cryptoInputValue = getValues(CRYPTO_INPUT);
+        if (!cryptoInputValue) {
+            return;
+        }
+        const conversion = areSatsUsed ? amountToSatoshi : formatAmount;
+        setValue(CRYPTO_INPUT, conversion(cryptoInputValue, network.decimals), {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
+    }, [areSatsUsed]);
+
     const onSubmit = async () => {
         const formValues = getValues();
         const fiatStringAmount = formValues.fiatInput;
-        const cryptoStringAmount = formValues.cryptoInput;
+        const cryptoStringAmount =
+            formValues.cryptoInput && areSatsUsed
+                ? formatAmount(formValues.cryptoInput, network.decimals)
+                : formValues.cryptoInput;
         const amountInCrypto = !fiatStringAmount;
         const request: SellFiatTradeQuoteRequest = {
             amountInCrypto,

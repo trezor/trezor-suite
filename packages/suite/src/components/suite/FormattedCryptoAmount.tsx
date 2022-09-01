@@ -56,8 +56,9 @@ export const FormattedCryptoAmount = ({
         return null;
     }
 
+    const lowerCaseSymbol = symbol?.toLowerCase();
     const { features: networkFeatures, testnet: isTestnet } =
-        NETWORKS.find(network => network.symbol === symbol) ?? {};
+        NETWORKS.find(network => network.symbol === lowerCaseSymbol) ?? {};
 
     const areSatsSupported = !!networkFeatures?.includes('amount-unit');
 
@@ -66,9 +67,9 @@ export const FormattedCryptoAmount = ({
 
     const isSatoshis = areSatsSupported && areSatsDisplayed;
 
-    // convert to satohsis if needed
+    // convert to satoshis if needed
     if (isSatoshis) {
-        formattedValue = networkAmountToSatoshi(String(value), symbol as NetworkSymbol);
+        formattedValue = networkAmountToSatoshi(String(value), lowerCaseSymbol as NetworkSymbol);
 
         formattedSymbol = isTestnet ? `sat ${symbol?.toUpperCase()}` : 'sat';
     }
