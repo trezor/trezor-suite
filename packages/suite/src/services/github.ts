@@ -29,22 +29,8 @@ export const getReleaseNotes = async (version?: string) => {
     return release as ReleaseInfo;
 };
 
-export const getSignatureFileURL = async (filename: string, version?: string) => {
-    // Get release info from Github
-    const info = await getReleaseNotes(version);
-
-    if (!info) {
-        throw new Error('Version does not exist.');
-    }
-
-    const releaseSignature = info.assets.find(asset => asset.name === `${filename}.asc`);
-
-    if (!releaseSignature) {
-        throw new Error('Signature not found.');
-    }
-
-    return releaseSignature.browser_download_url;
-};
+export const getSignatureFileURL = (filename: string, version?: string) =>
+    `${RELEASE_URL}/releases/download/v${version}/${filename}.asc`;
 
 const getDeviceInfo = (device?: TrezorDevice) => {
     if (!device?.features) {
