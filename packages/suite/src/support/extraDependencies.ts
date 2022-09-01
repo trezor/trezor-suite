@@ -1,19 +1,18 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TransactionsState } from '@suite-common/wallet-core';
+import { TransactionsState, BlockchainState } from '@suite-common/wallet-core';
 import { saveAs } from 'file-saver';
 
 import { STORAGE } from '../actions/suite/constants';
 import { addEvent } from '@suite-actions/notificationActions';
 import { StorageLoadAction } from '@suite-actions/storageActions';
-import type { BlockchainState } from '@wallet-reducers/blockchainReducer';
 import type { FiatRatesState } from '@suite-common/wallet-core';
 import { AppState } from '../types/suite';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import * as metadataActions from '@suite-actions/metadataActions';
+import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import * as blockchainActions from '@wallet-actions/blockchainActions';
-import { selectIsPendingTransportEvent } from '../reducers/suite/deviceReducer';
+import { selectIsPendingTransportEvent } from '@suite-reducers/deviceReducer';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { isWeb } from '@suite-utils/env';
 import { resolveStaticPath } from '@trezor/utils';
@@ -37,6 +36,8 @@ const connectInitSettings = {
 export const extraDependencies: ExtraDependencies = {
     thunks: {
         notificationsAddEvent: addEvent,
+        cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
+        cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
@@ -46,21 +47,18 @@ export const extraDependencies: ExtraDependencies = {
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
-        selectBlockchain: (state: AppState) => state.wallet.blockchain,
     },
     actions: {
         setAccountLoadedMetadata: metadataActions.setAccountLoaded,
         setAccountAddMetadata: metadataActions.setAccountAdd,
         setWalletSettingsLocalCurrency: walletSettingsActions.setLocalCurrency,
         changeWalletSettingsNetworks: walletSettingsActions.changeNetworks,
-        blockchainConnected: blockchainActions.blockchainConnected,
         lockDevice: suiteActions.lockDevice,
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
     },
     reducers: {
-        // @TODO - use BlockchainState from @suite-common/wallet-blockchain after redux-utils will be merged
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
             payload.backendSettings.forEach(backend => {
                 state[backend.key].backends = backend.value;

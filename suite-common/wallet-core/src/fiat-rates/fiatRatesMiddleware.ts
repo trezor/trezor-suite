@@ -10,15 +10,12 @@ import {
     updateLastWeekFiatRatesThunk,
     updateTxsFiatRatesThunk,
 } from './fiatRatesThunks';
+import { blockchainActions } from '../blockchain/blockchainActions';
 
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, extra, next, getState }) => {
         const {
-            actions: {
-                blockchainConnected,
-                setWalletSettingsLocalCurrency,
-                changeWalletSettingsNetworks,
-            },
+            actions: { setWalletSettingsLocalCurrency, changeWalletSettingsNetworks },
         } = extra;
         const prevStateAccounts = selectAccounts(getState());
 
@@ -90,7 +87,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             dispatch(removeFiatRatesForDisabledNetworksThunk());
         }
 
-        if (blockchainConnected.match(action)) {
+        if (blockchainActions.connected.match(action)) {
             dispatch(initFiatRatesThunk(action.payload));
         }
 

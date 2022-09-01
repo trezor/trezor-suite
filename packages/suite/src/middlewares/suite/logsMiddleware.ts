@@ -11,13 +11,13 @@ import {
     ROUTER,
     SUITE,
 } from '@suite-actions/constants';
-import { DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import { getAccountIdentifier } from '@suite-common/wallet-utils';
 import { Account } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { redactTransactionIdFromAnchor } from '@suite-utils/analytics';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
 import { redactUserPathFromString } from '@trezor/utils';
 
@@ -50,6 +50,10 @@ const log =
             } else {
                 api.dispatch(logActions.addAction(action, { ...action, type: undefined }));
             }
+        }
+
+        if (blockchainActions.setBackend.match(action)) {
+            api.dispatch(logActions.addAction(action, { ...action.payload, urls: undefined }));
         }
 
         if (walletSettingsActions.changeNetworks.match(action)) {
@@ -120,9 +124,6 @@ const log =
                 break;
             case TRANSPORT.ERROR:
                 api.dispatch(logActions.addAction(action, { error: action.payload.error }));
-                break;
-            case BLOCKCHAIN.SET_BACKEND:
-                api.dispatch(logActions.addAction(action, { ...action.payload, urls: undefined }));
                 break;
             case ROUTER.LOCATION_CHANGE:
                 api.dispatch(

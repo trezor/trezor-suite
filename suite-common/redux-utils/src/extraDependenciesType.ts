@@ -1,9 +1,9 @@
 import { ActionCreatorWithPreparedPayload } from '@reduxjs/toolkit';
 
-import { Account, FeeInfo, BlockchainNetworks } from '@suite-common/wallet-types';
+import { Account, FeeInfo } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { ConnectSettings, Manifest, PROTO } from '@trezor/connect';
+import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { NotificationEventPayload } from '@suite-common/notifications';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
@@ -18,6 +18,11 @@ type ConnectInitSettings = {
 export type ExtraDependencies = {
     thunks: {
         notificationsAddEvent: SuiteCompatibleThunk<NotificationEventPayload>;
+        cardanoValidatePendingTxOnBlock: SuiteCompatibleThunk<{
+            block: BlockchainBlock;
+            timestamp: number;
+        }>;
+        cardanoFetchTrezorPools: SuiteCompatibleThunk<'ADA' | 'tADA'>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
@@ -26,7 +31,6 @@ export type ExtraDependencies = {
         selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
         selectLocalCurrency: SuiteCompatibleSelector<string>;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
-        selectBlockchain: SuiteCompatibleSelector<BlockchainNetworks>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
@@ -43,10 +47,6 @@ export type ExtraDependencies = {
         changeWalletSettingsNetworks: ActionCreatorWithPreparedPayload<
             [payload: NetworkSymbol[]],
             NetworkSymbol[]
-        >;
-        blockchainConnected: ActionCreatorWithPreparedPayload<
-            [payload: NetworkSymbol],
-            NetworkSymbol
         >;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
     };

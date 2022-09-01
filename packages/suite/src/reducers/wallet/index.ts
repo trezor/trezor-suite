@@ -6,11 +6,11 @@ import {
     prepareAccountsReducer,
     prepareFiatRatesReducer,
     prepareTransactionsReducer,
+    prepareBlockchainReducer,
 } from '@suite-common/wallet-core';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';
-import blockchainReducer from './blockchainReducer';
 import coinmarketReducer from './coinmarketReducer';
 import sendFormReducer from './sendFormReducer';
 import accountSearchReducer from './accountSearchReducer';
@@ -21,8 +21,8 @@ import { coinjoinReducer } from './coinjoinReducer';
 import { extraDependencies } from '@suite/support/extraDependencies';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
-
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
+export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 
 const WalletReducers = combineReducers({

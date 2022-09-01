@@ -6,9 +6,9 @@ import * as analyticsActions from '@suite-actions/analyticsActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import * as languageActions from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-common/connect-init';
-import * as blockchainActions from '@wallet-actions/blockchainActions';
 
 import type { Dispatch, GetState } from '@suite-types';
+import { initBlockchainThunk } from '@suite-common/wallet-core';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
@@ -51,7 +51,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     // 6. init backends
-    await dispatch(blockchainActions.init()).catch(err => console.error(err));
+    await dispatch(initBlockchainThunk())
+        .unwrap()
+        .catch(err => console.error(err));
 
     // 7. dispatch initial location change
     dispatch(routerActions.init());

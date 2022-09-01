@@ -17,10 +17,10 @@ import { getSuiteReadyPayload } from '@suite-utils/analytics';
 import { addSentryBreadcrumb, setSentryContext, setSentryTag } from '@suite-utils/sentry';
 
 import { AppState, Action, Dispatch } from '@suite-types';
-import { BLOCKCHAIN, DISCOVERY } from '@wallet-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 
 import { Severity } from '@sentry/types';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, blockchainActions } from '@suite-common/wallet-core';
 
 const deviceContextName = 'trezor-device';
 
@@ -52,7 +52,7 @@ const breadcrumbActions = [
     walletSettingsActions.changeNetworks.type,
     TRANSPORT.START,
     TRANSPORT.ERROR,
-    BLOCKCHAIN.SET_BACKEND,
+    blockchainActions.setBackend.type,
     accountsActions.updateSelectedAccount.type,
     ROUTER.LOCATION_CHANGE,
     DESKTOP_UPDATE.ALLOW_PRERELEASE,

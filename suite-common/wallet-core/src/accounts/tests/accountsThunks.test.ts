@@ -5,7 +5,7 @@ import { Account } from '@suite-common/wallet-types';
 import { ExtraDependenciesPartial } from '@suite-common/redux-utils';
 
 import { disableAccountsThunk } from '../accountsThunks';
-import { prepareAccountsReducer, AccountsRootState } from '../accountsReducer';
+import { AccountsRootState, prepareAccountsReducer } from '../accountsReducer';
 
 const accountsReducer = prepareAccountsReducer(extraDependenciesMock);
 
@@ -14,15 +14,12 @@ interface InitStoreArgs {
     preloadedState?: AccountsRootState;
 }
 
-const initStore = ({ extra = {}, preloadedState }: InitStoreArgs = {}) => {
-    const store = configureMockStore({
+const initStore = ({ extra = {}, preloadedState }: InitStoreArgs = {}) =>
+    configureMockStore({
         extra,
         reducer: { wallet: combineReducers({ accounts: accountsReducer }) },
         preloadedState,
     });
-
-    return store;
-};
 
 const getAccount = (a?: Partial<Account>) => ({
     descriptor: 'xpubDeFauLT1',

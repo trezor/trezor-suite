@@ -1,8 +1,8 @@
 import produce from 'immer';
 import { FeeInfo } from '@wallet-types/sendForm';
-import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
 import { Network, WalletAction } from '@wallet-types';
+import { blockchainActions } from '@suite-common/wallet-core';
 
 // type Symbol = Network['symbol'] | 'erc20';
 export type State = {
@@ -34,13 +34,11 @@ export const initialState = NETWORKS.reduce((state, network) => {
 
 const feesReducer = (state: State = initialState, action: WalletAction) =>
     produce(state, draft => {
-        switch (action.type) {
-            case BLOCKCHAIN.UPDATE_FEE:
-                return {
-                    ...draft,
-                    ...action.payload,
-                };
-            // no default
+        if (blockchainActions.updateFee.match(action)) {
+            return {
+                ...draft,
+                ...action.payload,
+            };
         }
     });
 

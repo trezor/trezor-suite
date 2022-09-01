@@ -19,12 +19,6 @@ import { Action } from '@suite-types';
 
 const { getSuiteDevice } = global.JestMocks;
 
-jest.mock('@wallet-actions/blockchainActions', () => ({
-    __esModule: true, // this property makes it work
-    loadFeeInfo: () => ({ type: 'mocked' }),
-    init: () => ({ type: 'mocked' }),
-}));
-
 jest.mock('@trezor/connect', () => {
     const callbacks: { [key: string]: (e: string) => any } = {};
 
@@ -33,7 +27,6 @@ jest.mock('@trezor/connect', () => {
     return {
         __esModule: true, // this property makes it work
         default: {
-            blockchainSetCustomBackend: () => {},
             init: () => {},
             on: (event: string, cb: (e: string) => any) => {
                 callbacks[event] = cb;
@@ -89,7 +82,6 @@ const initStore = (state: State) => {
 describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         require('@trezor/connect');
-        require('@wallet-actions/blockchainActions');
         const store = initStore(getInitialState());
         // @ts-expect-error
         await store.dispatch(connectInitThunk());

@@ -2,15 +2,20 @@ import type { MiddlewareAPI } from 'redux';
 
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    blockchainActions,
+    setCustomBackendThunk,
+    subscribeBlockchainThunk,
+    transactionsActions,
+    unsubscribeBlockchainThunk,
+} from '@suite-common/wallet-core';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as cardanoStakingActions from '@wallet-actions/cardanoStakingActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as blockchainActions from '@wallet-actions/blockchainActions';
 import type { AppState, Action, Dispatch } from '@suite-types';
 import { isAnyOf } from '@reduxjs/toolkit';
 
@@ -53,16 +58,16 @@ const walletMiddleware =
         next(action);
 
         if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
-            api.dispatch(blockchainActions.subscribe(action.payload.symbol));
+            api.dispatch(subscribeBlockchainThunk({ symbol: action.payload.symbol }));
         }
 
         if (accountsActions.removeAccount.match(action)) {
-            api.dispatch(blockchainActions.unsubscribe(action.payload));
+            api.dispatch(unsubscribeBlockchainThunk(action.payload));
         }
 
         // Update custom backends
-        if (action.type === BLOCKCHAIN.SET_BACKEND) {
-            api.dispatch(blockchainActions.setCustomBackend(action.payload.coin));
+        if (blockchainActions.setBackend.match(action)) {
+            api.dispatch(setCustomBackendThunk(action.payload.coin));
         }
 
         const prevRouter = prevState.router;

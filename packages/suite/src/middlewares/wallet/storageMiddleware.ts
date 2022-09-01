@@ -3,14 +3,7 @@ import { db } from '@suite/storage';
 
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import {
-    DISCOVERY,
-    GRAPH,
-    SEND,
-    COINMARKET_COMMON,
-    FORM_DRAFT,
-    BLOCKCHAIN,
-} from '@wallet-actions/constants';
+import { DISCOVERY, GRAPH, SEND, COINMARKET_COMMON, FORM_DRAFT } from '@wallet-actions/constants';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@suite-common/wallet-utils';
 import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
@@ -23,7 +16,12 @@ import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
-import { accountsActions, fiatRatesActions, transactionsActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    blockchainActions,
+    transactionsActions,
+    fiatRatesActions,
+} from '@suite-common/wallet-core';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
@@ -109,6 +107,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
+            if (blockchainActions.setBackend.match(action)) {
+                api.dispatch(storageActions.saveBackend(action.payload.coin));
+            }
+
             switch (action.type) {
                 case SUITE.REMEMBER_DEVICE:
                     api.dispatch(
@@ -151,10 +153,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
                     api.dispatch(storageActions.saveWalletSettings());
-                    break;
-
-                case BLOCKCHAIN.SET_BACKEND:
-                    api.dispatch(storageActions.saveBackend(action.payload.coin));
                     break;
 
                 case SUITE.SET_LANGUAGE:

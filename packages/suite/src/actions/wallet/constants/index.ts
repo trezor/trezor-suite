@@ -1,4 +1,3 @@
-import * as BLOCKCHAIN from './blockchainConstants';
 import * as SIGN_VERIFY from './signVerifyConstants';
 import * as RECEIVE from './receiveConstants';
 import * as SEND from './sendFormConstants';
@@ -16,7 +15,6 @@ import * as CARDANO_STAKING from './cardanoStakingConstants';
 import * as POLLING from './pollingConstants';
 
 export {
-    BLOCKCHAIN,
     SIGN_VERIFY,
     RECEIVE,
     DISCOVERY,

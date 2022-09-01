@@ -1,9 +1,10 @@
 import type { MiddlewareAPI } from 'redux';
 import { ROUTER } from '@suite-actions/constants';
-import { BLOCKCHAIN, DISCOVERY } from '@wallet-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 import * as coinjoinAccountActions from '@wallet-actions/coinjoinAccountActions';
 import { CoinjoinBackendService } from '@suite/services/coinjoin/coinjoinBackend';
 import type { AppState, Action, Dispatch } from '@suite-types';
+import { blockchainActions } from '@suite-common/wallet-core';
 
 export const coinjoinMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -29,7 +30,7 @@ export const coinjoinMiddleware =
             }
         }
 
-        if (action.type === BLOCKCHAIN.SYNCED) {
+        if (blockchainActions.synced.match(action)) {
             // find all coinjoin accounts for network
             const coinjoinAccounts = api
                 .getState()
