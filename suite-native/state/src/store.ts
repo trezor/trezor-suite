@@ -3,7 +3,7 @@ import createDebugger from 'redux-flipper';
 
 import { appSettingsReducer } from '@suite-native/module-settings';
 import { appGraphReducer } from '@suite-native/home-graph';
-import { onboardingReducer } from '@suite-native/module-onboarding';
+import { onboardingReducer, prepareDevicesReducer } from '@suite-native/module-onboarding';
 import {
     prepareAccountsReducer,
     prepareFiatRatesReducer,
@@ -22,6 +22,7 @@ if (__DEV__) {
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
+export const devicesReducer = prepareDevicesReducer(extraDependencies);
 
 const walletReducers = combineReducers({
     accounts: accountsReducer,
@@ -34,6 +35,7 @@ export const store: Store = configureStore({
         onboarding: onboardingReducer,
         appSettings: appSettingsReducer,
         appGraph: appGraphReducer,
+        devices: devicesReducer,
         wallet: walletReducers,
     },
     middleware: getDefaultMiddleware =>

@@ -7,7 +7,9 @@ import { Screen, StackProps } from '@suite-native/navigation';
 import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { accountsActions } from '@suite-common/wallet-core';
+import { testMocks } from '@suite-common/test-utils';
 
+import { devicesActions } from '../state/devices/devicesActions';
 import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
 import { AssetsLoader } from '../components/AssetsLoader';
 import { setOnboardingFinished } from '../slice';
@@ -91,6 +93,15 @@ export const OnboardingAssets = ({
 
     const handleConfirmAssets = () => {
         if (accountInfo) {
+            const mockedSuiteDevice = testMocks.getSuiteDevice({
+                connected: true,
+                useEmptyPassphrase: true,
+                instance: 1,
+                state: 'state@device-id:1',
+            });
+            console.log('MOCKED SUITE DEVICEDEVICEEEEEE: ', JSON.stringify(mockedSuiteDevice));
+            const device = dispatch(devicesActions.createDeviceInstance(mockedSuiteDevice));
+            console.log('DEVICEEEEEE: ', JSON.stringify(device));
             const account = dispatch(
                 accountsActions.createAccount(
                     'blabla',
