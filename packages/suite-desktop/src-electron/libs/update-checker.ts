@@ -20,7 +20,7 @@ const getSignatureFile = async ({ version, filename, feedURL }: GetSignatureFile
      */
     const signatureFileURL = feedURL
         ? `${feedURL.replace(/\/+$/, '')}/${filename}.asc`
-        : await getSignatureFileURL(filename, version);
+        : getSignatureFileURL(filename, version);
 
     const signatureFile = await fetch(signatureFileURL);
 
