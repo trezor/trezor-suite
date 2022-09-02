@@ -118,6 +118,15 @@ const Output = (props: Props) => {
         ];
         outputSymbol = symbol;
         fiatVisible = !isTestnet(symbol);
+    } else if (props.type === 'txid') {
+        outputLines = [
+            {
+                id: 'txid',
+                label: <Translation id="TR_TXID" />,
+                value: outputValue,
+                plainValue: true,
+            },
+        ];
     } else {
         outputLines = [
             {
