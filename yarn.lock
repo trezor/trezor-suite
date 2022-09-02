@@ -7119,6 +7119,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/ipc-proxy@workspace:packages/ipc-proxy":
+  version: 0.0.0-use.local
+  resolution: "@trezor/ipc-proxy@workspace:packages/ipc-proxy"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/message-system@*, @trezor/message-system@workspace:packages/message-system":
   version: 0.0.0-use.local
   resolution: "@trezor/message-system@workspace:packages/message-system"
