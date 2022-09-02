@@ -31,6 +31,7 @@ const MODULES = [
     'trezor-connect-ipc',
     'dev-tools',
     'request-logger',
+    'coinjoin',
     // Modules used only in dev/prod mode
     ...(isDev ? [] : ['csp', 'file-protocol']),
 ];
