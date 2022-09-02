@@ -1,0 +1,23 @@
+{
+    "name": "@trezor/ipc-proxy",
+    "version": "1.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/ipc-proxy",
+    "description": "Electron ipc proxy",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "browser": "src/proxy",
+    "scripts": {
+        "lint": "eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "jest -c ../../jest.config.base.js",
+        "type-check": "tsc --build"
+    }
+}
