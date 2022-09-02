@@ -1,0 +1,152 @@
+/* eslint no-await-in-loop: 0 */
+
+const { test, expect } = require('@playwright/test');
+const { Controller } = require('../../../websocket-client');
+const { createDeferred } = require('@trezor/utils');
+
+const connectUrl = process.env.URL
+    ? process.env.URL.replace('connect-explorer', 'connect')
+    : 'https://connect.trezor.io/9/';
+
+const url = `https://unchained-capital.github.io/caravan?trezor-connect-src=${connectUrl}#/test`;
+const controller = new Controller();
+
+test.beforeAll(async () => {
+    await controller.connect();
+});
+
+/**
+ * Returns a connect popup page
+ * @param {Page} page - an instance of playwright's page object
+ * @returns {Object}
+ */
+const getConnectPopup = async page => {
+    [popup] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.locator('button', { hasText: 'Start Test' }).click(),
+    ]);
+    await popup.waitForLoadState('load');
+    return popup;
+};
+
+/**
+ * Clicks on "Don't ask again" input and confirms it
+ * @param {Page} popup - an instance of playwright's page object
+ */
+const handleDontAskAgain = async popup => {
+    const confirmBtn = 'button.confirm';
+    await popup.waitForSelector(confirmBtn, { state: 'visible', timeout: 40000 });
+    await popup.locator('text="Don\'t ask me again"').first().click();
+    await popup.click(confirmBtn);
+};
+
+/**
+ * Waits and verifies that the test finished correctly
+ * @param {Page} popup - an instance of playwright's page object
+ */
+const assertSuccess = async page => {
+    const testResult = await page.waitForSelector('h5[class*="TestRun-success"]', {
+        state: 'visible',
+        timeout: 30000,
+    });
+    expect(testResult).toBeTruthy();
+};
+
+/**
+ * Handles the export public type unchained test
+ * @param {Page} page - an instance of playwright's page object
+ * @param {number} iteration
+ */
+const exportPublicKey = async (page, iteration) => {
+    const confirmBtn = 'button.confirm';
+    // withe the exception of the first iteration, continue to the next test
+    if (iteration !== 0) await page.locator('button:has-text("Next")').click();
+    const popup = await getConnectPopup(page);
+    // click on "Don't ask again" in the first iteration
+    if (iteration === 0) await handleDontAskAgain(popup);
+    await popup.waitForSelector(confirmBtn, { state: 'visible' });
+    await popup.click(confirmBtn);
+    await assertSuccess(page);
+};
+
+/**
+ * Handles the sign type unchained test
+ * @param {Page} page - an instance of playwright's page object
+ * @param {number} iteration
+ */
+const signTransaction = async (page, iteration) => {
+    const confirmBtn = 'button.confirm';
+    await page.locator('button:has-text("Next")').click();
+    const popup = await getConnectPopup(page);
+    // click on "Don't ask again" in the first iteration
+    if (iteration === 0) await handleDontAskAgain(popup);
+    await popup.waitForSelector('//p[contains(., "Check recipient")]', {
+        state: 'visible',
+        timeout: 40000,
+    });
+    await controller.send({ type: 'emulator-press-yes' });
+    await controller.send({ type: 'emulator-press-yes' });
+    await controller.send({ type: 'emulator-press-yes' });
+    await assertSuccess(page);
+};
+
+test.beforeEach(async ({ page }) => {
+    await controller.send({
+        type: 'bridge-stop',
+    });
+    await controller.send({
+        type: 'emulator-stop',
+    });
+    await controller.send({
+        type: 'emulator-start',
+        wipe: true,
+    });
+    await controller.send({
+        type: 'emulator-setup',
+        mnemonic:
+            'merge alley lucky axis penalty manage latin gasp virus captain wheel deal chase fragile chapter boss zero dirt stadium tooth physical valve kid plunge',
+        pin: '',
+        passphrase_protection: false,
+        label: 'My Trevor',
+        needs_backup: false,
+    });
+    await controller.send({
+        type: 'bridge-start',
+    });
+});
+
+/**
+ * Test case:
+ * 1. navigate to the unchained test url
+ * 2. select Trezor
+ * 3. detect its model version
+ * 4. execute all 20 tests
+ */
+test('Verify unchained test suite', async ({ page }) => {
+    test.slow();
+    const keystoreInput = '#keystore-select';
+    const nextBtn = 'button:has-text("Next")';
+    await page.goto(url);
+    await page.locator(keystoreInput).click();
+    // select trezor
+    await page.locator('[data-value="trezor"]').click();
+    // detect the model version
+    await page.locator('button', { hasText: 'Detect' }).click();
+    await expect(page.locator('input[name="version"]')).not.toHaveText('Version');
+    // start the suite
+    await page.locator('button', { hasText: 'Begin Test Suite' }).click();
+
+    // tests without a Trezor interaction
+    for (let i = 0; i < 14; i++) {
+        await exportPublicKey(page, i);
+    }
+    // tests with interactions
+    for (let i = 0; i < 6; i++) {
+        await signTransaction(page, i);
+    }
+    //
+    // Assert
+    //
+    const successfullTests = await page.locator('span.TestSuiteRunSummary-success');
+    expect(successfullTests).toHaveText('20 SUCCESS');
+});
