@@ -16,7 +16,7 @@ jobs:
           - os: ubuntu-latest
             platform: linux
             artifact: ${DESKTOP_APP_NAME}*
-          - os: ubuntu-latest
+          - os: windows-latest
             platform: win
             artifact: ${DESKTOP_APP_NAME}*
     runs-on: ${{ matrix.os }}
