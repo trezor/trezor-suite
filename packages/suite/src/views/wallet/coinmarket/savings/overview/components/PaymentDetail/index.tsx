@@ -48,8 +48,8 @@ const PaymentItemDate = styled.div`
     width: 25%;
 `;
 
-const PaymentItemStatus = styled.div<{ isNextUp: boolean }>`
-    margin: 13px 38px;
+const PaymentItemStatus = styled.div<{ isNextUp: boolean; isPaymentInfoAvailable: boolean }>`
+    margin: ${props => (props.isPaymentInfoAvailable ? '13px 38px' : '0 auto')};
     color: ${props => (props.isNextUp ? props.theme.TYPE_ORANGE : props.theme.TYPE_LIGHT_GREY)};
     display: flex;
     flex-direction: row;
@@ -141,7 +141,10 @@ export const PaymentDetail = ({
                     <PaymentItemDate>
                         {format(parseISO(savingsTradePayment.plannedPaymentAt), 'dd MMM yyyy')}
                     </PaymentItemDate>
-                    <PaymentItemStatus isNextUp={isNextUp}>
+                    <PaymentItemStatus
+                        isNextUp={isNextUp}
+                        isPaymentInfoAvailable={!!savingsTradePayment.paymentInfo}
+                    >
                         {isNextUp ? (
                             <>
                                 <PaymentItemStatusIcon>
@@ -164,15 +167,17 @@ export const PaymentDetail = ({
                             </>
                         )}
                     </PaymentItemStatus>
-                    <PaymentItemButton type="button" onClick={() => setShowDetail(!showDetail)}>
-                        <Translation
-                            id={
-                                showDetail
-                                    ? 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_HIDE_PAYMENT_DETAILS_BUTTON_LABEL'
-                                    : 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_VIEW_PAYMENT_DETAILS_BUTTON_LABEL'
-                            }
-                        />
-                    </PaymentItemButton>
+                    {savingsTradePayment.paymentInfo && (
+                        <PaymentItemButton type="button" onClick={() => setShowDetail(!showDetail)}>
+                            <Translation
+                                id={
+                                    showDetail
+                                        ? 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_HIDE_PAYMENT_DETAILS_BUTTON_LABEL'
+                                        : 'TR_SAVINGS_OVERVIEW_PAYMENT_DETAIL_VIEW_PAYMENT_DETAILS_BUTTON_LABEL'
+                                }
+                            />
+                        </PaymentItemButton>
+                    )}
                 </Row>
                 {showDetail && (
                     <DetailRow>

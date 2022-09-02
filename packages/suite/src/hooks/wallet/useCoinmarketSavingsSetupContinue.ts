@@ -46,7 +46,8 @@ export const useSavingsSetupContinue = ({
         saveSavingsTradeResponse: coinmarketSavingsActions.saveSavingsTradeResponse,
     });
 
-    const { navigateToSavingsPaymentInfo } = useCoinmarketNavigation(account);
+    const { navigateToSavingsPaymentInfo, navigateToSavingsOverview } =
+        useCoinmarketNavigation(account);
 
     const { removeDraft } = useFormDraft('coinmarket-savings-setup-request');
 
@@ -143,13 +144,26 @@ export const useSavingsSetupContinue = ({
 
                 if (response) {
                     saveSavingsTradeResponse(response);
-                    if (response.trade?.status === 'ConfirmPaymentInfo') {
-                        navigateToSavingsPaymentInfo();
+                    switch (response.trade?.status) {
+                        case 'ConfirmPaymentInfo':
+                            navigateToSavingsPaymentInfo();
+                            break;
+                        case 'Active':
+                            navigateToSavingsOverview();
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
         },
-        [address, navigateToSavingsPaymentInfo, saveSavingsTradeResponse, savingsTrade],
+        [
+            address,
+            navigateToSavingsOverview,
+            navigateToSavingsPaymentInfo,
+            saveSavingsTradeResponse,
+            savingsTrade,
+        ],
     );
 
     // TODO: extract
