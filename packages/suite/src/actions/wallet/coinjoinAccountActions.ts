@@ -78,6 +78,8 @@ export const fetchAndUpdateAccount =
 
         try {
             const api = CoinjoinBackendService.getInstance(account.symbol);
+            if (!api) throw new Error('CoinjoinBackendService api not found');
+
             const { checkpoint, ...accountInfo } = await api.getAccountInfo({
                 descriptor: account.descriptor,
                 knownState,
@@ -137,6 +139,11 @@ export const createCoinjoinAccount =
     (network: Network) => async (dispatch: Dispatch, getState: GetState) => {
         if (network.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
+        }
+
+        // initialize @trezor/coinjoin backend
+        if (!CoinjoinBackendService.getInstance(network.symbol)) {
+            await CoinjoinBackendService.createInstance(network.symbol);
         }
 
         // initialize @trezor/coinjoin client

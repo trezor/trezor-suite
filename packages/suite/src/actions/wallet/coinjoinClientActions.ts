@@ -35,7 +35,7 @@ export const initCoinjoinClient = (symbol: Account['symbol']) => async (dispatch
     // or start new instance
     dispatch(clientEnable(symbol));
 
-    const client = CoinjoinClientService.createInstance(symbol);
+    const client = await CoinjoinClientService.createInstance(symbol);
     try {
         const status = await client.enable();
         dispatch(clientEnableSuccess(symbol, status));
