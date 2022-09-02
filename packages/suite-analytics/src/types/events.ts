@@ -124,6 +124,13 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.AccountsTransactionsExport;
+          payload: {
+              symbol: string;
+              format: 'pdf' | 'csv' | 'json';
+          };
+      }
+    | {
           type: EventType.TransactionCreated;
           payload: {
               action: 'sent' | 'copied' | 'downloaded' | 'replaced';

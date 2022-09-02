@@ -34,6 +34,7 @@ export enum EventType {
     AddToken = 'add-token',
     AccountsEmptyAccountBuy = 'accounts/empty-account/buy',
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
+    AccountsTransactionsExport = 'accounts/transactions-export',
     TransactionCreated = 'transaction-created',
     SendRawTransaction = 'send-raw-transaction',
 
