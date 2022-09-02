@@ -1,5 +1,4 @@
 export { CoinjoinBackend } from './backend/CoinjoinBackend';
-
-export const CoinjoinClient = {};
+export { CoinjoinClient } from './client/CoinjoinClient';
 
 export * as constants from './constants';

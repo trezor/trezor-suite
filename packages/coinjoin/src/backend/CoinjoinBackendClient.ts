@@ -131,6 +131,7 @@ export class CoinjoinBackendClient extends EventEmitter {
     }
 
     protected blockbook(options?: CoinjoinRequestOptions) {
+        console.warn('Fetching blockbook', this.settings.blockbookUrl, options);
         return this.request(this.settings.blockbookUrl, options);
     }
 

@@ -14,10 +14,10 @@
     },
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "main": "src/index",
+    "main": "lib/index",
     "browser": {
-        "./src/backend/CoinjoinFilterController": "./src/backend/CoinjoinFilterController.browser",
-        "./src/backend/CoinjoinStorage": false,
+        "./lib/backend/CoinjoinFilterController": "./src/backend/CoinjoinFilterController.browser",
+        "./lib/backend/CoinjoinStorage": false,
         "better-sqlite3": false
     },
     "scripts": {

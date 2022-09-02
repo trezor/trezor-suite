@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import type { Network } from '@trezor/utxo-lib';
+import { networks } from '@trezor/utxo-lib';
 
 import { CoinjoinBackendClient } from './CoinjoinBackendClient';
 import { CoinjoinFilterController } from './CoinjoinFilterController';
@@ -10,7 +10,8 @@ import type { GetAccountInfoParams, DiscoveryProgress, KnownState } from './type
 import { CoinjoinMempoolController } from './CoinjoinMempoolController';
 
 export type CoinjoinBackendSettings = {
-    network: Network;
+    // network: Network;
+    network: 'regtest';
     wabisabiUrl: string;
     blockbookUrl: string;
     baseBlockHeight: number;
@@ -46,7 +47,7 @@ export class CoinjoinBackend extends EventEmitter {
             { descriptor, knownState: knownState ?? this.getClearState() },
             {
                 client: this.client,
-                network: this.settings.network,
+                network: networks[this.settings.network],
                 abortSignal: this.abortController.signal,
                 controller,
                 mempool: this.mempool,
@@ -63,7 +64,7 @@ export class CoinjoinBackend extends EventEmitter {
             { descriptor, knownState: knownState ?? this.getClearState() },
             {
                 client: this.client,
-                network: this.settings.network,
+                network: networks[this.settings.network],
                 abortSignal: this.abortController.signal,
                 controller,
                 mempool: this.mempool,
