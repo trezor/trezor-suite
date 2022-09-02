@@ -5,4 +5,44 @@ on:
     branches:
       - "develop"
 
-      #TODO!
+jobs:
+  build-suite-desktop:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            platform: mac
+            artifact: ${DESKTOP_APP_NAME}*
+          - os: ubuntu-latest
+            platform: linux
+            artifact: ${DESKTOP_APP_NAME}*
+          - os: ubuntu-latest
+            platform: win
+            artifact: ${DESKTOP_APP_NAME}*
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: Build suite-desktop develop
+        run: |
+          yarn install --immutable
+          yarn build:libs
+          yarn workspace @trezor/suite-data copy-static-files
+          yarn workspace @trezor/suite-desktop build:${platform}
+          bash packages/suite-desktop/scripts/gnupg-sign.sh
+          ls -la packages/suite-desktop/build-electron
+          mv packages/suite-desktop/build-electron/* .
+          more latest*.yml | cat
+      - name: Upload suite-desktop ${platform}
+        uses: actions/upload-artifact@v3
+        with:
+          name: suite-desktop ${platform}
+          path: |
+            ${artifact}
+            latest*.yml
