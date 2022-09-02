@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Loader, Dropdown } from '@trezor/components';
+import { analytics, EventType } from '@trezor/suite-analytics';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { SETTINGS } from '@suite-config';
@@ -10,11 +11,11 @@ import { Account } from '@wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 
-export interface Props {
+export interface ExportActionProps {
     account: Account;
 }
 
-const ExportAction = ({ account }: Props) => {
+const ExportAction = ({ account }: ExportActionProps) => {
     const { translationString } = useTranslation();
     const { addToast, fetchTransactions, exportTransactions } = useActions({
         addToast: notificationActions.addToast,
@@ -28,6 +29,14 @@ const ExportAction = ({ account }: Props) => {
             if (isExportRunning) {
                 return;
             }
+
+            analytics.report({
+                type: EventType.AccountsTransactionsExport,
+                payload: {
+                    format: type,
+                    symbol: account.symbol,
+                },
+            });
 
             setIsExportRunning(true);
             try {

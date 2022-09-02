@@ -7,7 +7,10 @@ This changelog lists changes in suite events.
 Added:
 
 -   app-update
-    -   status: available | download | install-and-restart | downloaded | closed | error
+    -   status: available | download | install-and-restart | install-on-quit | downloaded | closed | error
+-   accounts/transactions-export
+    -   symbol: string
+    -   format: 'pdf' | 'csv' | 'json'
 
 ### 1.22
 
