@@ -42,7 +42,7 @@ jobs:
           echo $ASSET_PREFIX
           yarn install --immutable
           yarn workspace @trezor/suite-web-landing build
-      - name: Archive code coverage results
+      - name: Archive suite-web build results
         uses: actions/upload-artifact@v3
         with:
           name: suite-web-landing-build
