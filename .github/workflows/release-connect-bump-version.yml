@@ -12,7 +12,7 @@ on:
       semver:
         required: true
         type: choice
-        description: semver
+        description: Version type
         options:
           - beta
           - patch
