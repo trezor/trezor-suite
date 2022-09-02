@@ -44,6 +44,7 @@ const AccountLoadingProgress = ({ account: { account } }: Pick<WalletLayoutProps
 
     useEffect(() => {
         if (!network || backendType !== 'coinjoin') return;
+        // should we use reducer?
         const backend = CoinjoinBackendService.getInstance(network);
         backend.on('progress', setProgress);
         return () => {

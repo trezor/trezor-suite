@@ -25,6 +25,11 @@ const config: webpack.Configuration = {
             /@trezor\/connect$/,
             path.join(baseDir, 'src/support/trezor-connect-ipc-wrapper'),
         ),
+        // wrap @trezor/coinjoin index
+        // new webpack.NormalModuleReplacementPlugin(
+        //     /@trezor\/coinjoin$/,
+        //     '@trezor/coinjoin/lib/electron/renderer',
+        // ),
 
         new CopyPlugin({
             patterns: ['bin', 'fonts', 'images', 'message-system', 'videos', 'guide/assets']
