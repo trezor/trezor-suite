@@ -11,19 +11,26 @@ jobs:
     name: Release @trezor/connect web production
     runs-on: ubuntu-latest
     env:
-      BUCKET_NAME: "connect.trezor.io"
+      BUCKET_NAME: "staging-connect.trezor.io"
       AWS_REGION: "eu-central-1"
     steps:
       - name: Configure aws credentials
-
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: #TODO!: ARN_ROLE_FRO_DEPLOY_TO STAGING CONNET
           aws-region: ${{ env.AWS_REGION }}
-      - name: Upload suite-web and suite-web-landing
+      - name: Build connect-web
         run: |
-          aws s3 sync s3://staging-connect.trezor.io/ s3://connect.trezor.io/ #TODO! make sure buckets are synced before use
-          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+          yarn install --immutable
+          yarn workspace @trezor/connect-web build
+          yarn workspace @trezor/connect-iframe build
+          yarn workspace @trezor/connect-popup build
+      - name: Build connect-explorer
+          yarn install --immutable
+          __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${{github.head_ref}}/ yarn workspace @trezor/connect-explorer build
+      - name: Upload connect-web and connect-explorer to staging
+        run: |
+          ./ci/scripts/connect-release.sh 9
 
   release-connect-web-production:
     environment: production
