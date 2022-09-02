@@ -19,7 +19,6 @@ export const RootStackNavigator = () => {
     // NOTE: Skip onboarding for development right now to speed up app loading
     let skipOnboarding = isOnboardingFinished || process.env.NODE_ENV === 'development';
     skipOnboarding = false;
-    console.log('NOOO: ', skipOnboarding);
 
     return (
         <Stack.Navigator

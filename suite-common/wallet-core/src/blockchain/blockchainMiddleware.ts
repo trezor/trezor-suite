@@ -11,7 +11,7 @@ import {
     onBlockchainDisconnectThunk,
 } from './blockchainThunks';
 
-export const blockchainMiddleware = createMiddlewareWithExtraDeps(
+export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps(
     (action: BlockchainEvent, { dispatch, next, extra }) => {
         // propagate action to reducers
         next(action);

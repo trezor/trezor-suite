@@ -6321,6 +6321,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": ^1.8.3
     "@suite-common/redux-utils": "*"
+    "@suite-common/test-utils": "*"
     "@suite-common/wallet-core": "*"
     "@suite-native/home-graph": "*"
     "@suite-native/module-onboarding": "*"
@@ -7000,6 +7001,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     "@shopify/react-native-skia": 0.1.137
     "@suite-common/connect-init": "*"
+    "@suite-common/wallet-core": "*"
     "@suite-native/atoms": "*"
     "@suite-native/module-home": "*"
     "@suite-native/module-onboarding": "*"

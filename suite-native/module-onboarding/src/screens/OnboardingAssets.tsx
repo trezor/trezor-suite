@@ -99,9 +99,9 @@ export const OnboardingAssets = ({
                 instance: 1,
                 state: 'state@device-id:1',
             });
-            console.log('MOCKED SUITE DEVICEDEVICEEEEEE: ', JSON.stringify(mockedSuiteDevice));
+            console.log('MOCKED SUITE DEVICE: ', JSON.stringify(mockedSuiteDevice));
             const device = dispatch(devicesActions.createDeviceInstance(mockedSuiteDevice));
-            console.log('DEVICEEEEEE: ', JSON.stringify(device));
+            console.log('DEVICE: ', JSON.stringify(device));
             const account = dispatch(
                 accountsActions.createAccount(
                     'blabla',

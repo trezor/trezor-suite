@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/connect-init"
         },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../atoms" },
         { "path": "../module-home" },
         { "path": "../module-onboarding" },

@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { connectInitThunk } from '@suite-common/connect-init';
 import { store } from '@suite-native/state';
+import { initBlockchainThunk } from '@suite-common/wallet-core';
 
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { StylesProvider } from './StylesProvider';
@@ -18,6 +19,7 @@ const AppComponent = () => {
     useEffect(() => {
         // TODO handle possible error
         dispatch(connectInitThunk());
+        dispatch(initBlockchainThunk());
     }, [dispatch]);
 
     return <RootStackNavigator />;

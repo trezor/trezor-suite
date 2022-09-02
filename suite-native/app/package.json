@@ -21,6 +21,7 @@
         "@reduxjs/toolkit": "^1.8.3",
         "@shopify/react-native-skia": "0.1.137",
         "@suite-common/connect-init": "*",
+        "@suite-common/wallet-core": "*",
         "@suite-native/atoms": "*",
         "@suite-native/module-home": "*",
         "@suite-native/module-onboarding": "*",

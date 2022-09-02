@@ -8,11 +8,17 @@ import {
     prepareAccountsReducer,
     prepareFiatRatesReducer,
     prepareTransactionsReducer,
+    prepareBlockchainReducer,
+    prepareFiatRatesMiddleware,
+    prepareBlockchainMiddleware,
 } from '@suite-common/wallet-core';
 
 import { extraDependencies } from './extraDependencies';
 
-const middlewares: Middleware[] = [];
+const middlewares: Middleware[] = [
+    prepareBlockchainMiddleware(extraDependencies),
+    prepareFiatRatesMiddleware(extraDependencies),
+];
 
 if (__DEV__) {
     const reduxFlipperDebugger = createDebugger();
@@ -22,10 +28,12 @@ if (__DEV__) {
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
+export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 export const devicesReducer = prepareDevicesReducer(extraDependencies);
 
 const walletReducers = combineReducers({
     accounts: accountsReducer,
+    blockchain: blockchainReducer,
     fiat: fiatRatesReducer,
     transactions: transactionsReducer,
 });

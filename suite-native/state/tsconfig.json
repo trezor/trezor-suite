@@ -6,6 +6,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/test-utils"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../home-graph" },

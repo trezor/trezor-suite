@@ -4,7 +4,7 @@ import { configureStore } from '@suite/support/tests/configureStore';
 import { accountsReducer, blockchainReducer } from '@wallet-reducers';
 import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import walletMiddleware from '@wallet-middlewares/walletMiddleware';
-import { blockchainMiddleware } from '@suite-common/wallet-core';
+import { prepareBlockchainMiddleware } from '@suite-common/wallet-core';
 import * as fixtures from '../__fixtures__/walletMiddleware';
 import selectedAccountReducer, {
     State as SelectedAccountState,
@@ -64,7 +64,7 @@ type State = ReturnType<typeof getInitialState>;
 
 const mockStore = configureStore<State, Action>([
     walletMiddleware,
-    blockchainMiddleware(extraDependencies),
+    prepareBlockchainMiddleware(extraDependencies),
 ]);
 
 const initStore = (state: State) => {
