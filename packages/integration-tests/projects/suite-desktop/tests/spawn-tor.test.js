@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires, no-await-in-loop, no-async-promise-executor */
 const { _electron: electron } = require('playwright');
 const path = require('path');
 const { promisify } = require('util');
@@ -8,6 +7,7 @@ const { test, expect } = require('@playwright/test');
 
 const { Controller } = require('../../../websocket-client');
 const { patchBinaries, launchSuite } = require('../support/common');
+const { NetworkAnalyzer } = require('../support/networkAnalyzer');
 
 const controller = new Controller();
 
@@ -47,7 +47,7 @@ test.describe('Tor loading screen', () => {
         await patchBinaries();
     });
 
-    test('Tor loading screen: happy path', async ({ request }) => {
+    test('Tor loading screen: happy path', async () => {
         let suite = await launchSuite();
 
         await turnOnTorInSettings(suite.window);
@@ -61,6 +61,34 @@ test.describe('Tor loading screen', () => {
         });
 
         await suite.window.waitForSelector('[data-test="@welcome/title"]', { timeout: 15000 });
+
+        suite.electronApp.close();
+    });
+
+    test('Tor loading screen: making sure that all the request go throw Tor', async () => {
+        const networkAnalyzer = new NetworkAnalyzer();
+
+        let suite = await launchSuite();
+
+        await turnOnTorInSettings(suite.window);
+
+        suite.electronApp.close();
+
+        suite = await launchSuite();
+        // Start network analyzer after making sure tor is going to be running.
+        networkAnalyzer.start();
+
+        await suite.window.waitForSelector('[data-test="@tor-loading-screen"]', {
+            state: 'visible',
+        });
+
+        await suite.window.waitForSelector('[data-test="@welcome/title"]', { timeout: 15000 });
+        networkAnalyzer.stop();
+        const requests = networkAnalyzer.getRequests();
+        requests.forEach(request => {
+            expect(request).toContain('localhost:');
+        });
+
         suite.electronApp.close();
     });
 
