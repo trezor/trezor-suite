@@ -1,0 +1,62 @@
+name: "[Release] package to npm"
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Package name"
+        required: true
+        type: choice
+        options:
+          - blockchain-link
+          - components
+          - connect-common
+          - transport
+          - utils
+          - utxo-lib
+          - connect-plugin-stellar
+          - connect-plugin-ethereum
+          - connect-common
+      environment:
+        description: "Release environment"
+        type: environment
+        required: true
+
+jobs:
+  release-package-npm:
+    environment: ${{ github.event.inputs.environment }}
+    name: Release package to npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Package version check
+        run: |
+          yarn install --no-immutable
+          node ./ci/scripts/check-version ${{ github.event.inputs.package }} ${{github.head_ref}} latest
+
+      - name: Release npm package
+        run: |
+          if [ '${{ github.event.inputs.environment }}' == 'production' ]
+           then
+               git checkout -B npm-release/${{ github.event.inputs.package }}
+           else
+               git checkout -B beta-npm-release
+           fi
+          yarn install --no-immutable
+          yarn build:libs
+          cd ./packages/${{ github.event.inputs.package }}
+          if [ '${{ github.event.inputs.environment }}' == 'production' ]
+           then
+               npm publish --dry-run
+           else
+               npm publish --tag beta --dry-run
+           fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_REGISTRY_TOKEN }}
