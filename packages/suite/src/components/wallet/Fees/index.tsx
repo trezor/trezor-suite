@@ -2,15 +2,19 @@ import React from 'react';
 import styled from 'styled-components';
 import { FeeLevel } from '@trezor/connect';
 import { UseFormMethods } from 'react-hook-form';
-import { AnimatePresence, motion } from 'framer-motion';
-import { SelectBar, variables, motionAnimation } from '@trezor/components';
+import { SelectBar, variables } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useLayoutSize } from '@suite-hooks';
 import { InputError } from '@wallet-components';
 import { Account } from '@wallet-types';
 import { ExtendedMessageDescriptor } from '@suite-types';
-import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@wallet-types/sendForm';
+import {
+    FeeInfo,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+    PrecomposedTransactionFinal,
+} from '@wallet-types/sendForm';
 import { TypedValidationRules } from '@wallet-types/form';
 import { CustomFee } from './components/CustomFee';
 import FeeDetails from './components/FeeDetails';
@@ -49,10 +53,10 @@ const FiatAmount = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const Row = styled.div`
+const FeeInfoRow = styled.div`
     display: flex;
     width: 100%;
-    min-height: 56px; /* reserve space for fiat/crypto amounts */
+    min-height: 50px; /* reserve space for fiat/crypto amounts */
 `;
 
 const FeeAmount = styled.div`
@@ -168,7 +172,7 @@ export const Fees = ({
             {isDesktopLayout && labelComponent}
 
             <FeeSetupWrapper>
-                <Row>
+                <FeeInfoRow>
                     {isDesktopLayout ? selectBarComponent : labelComponent}
 
                     {transactionInfo !== undefined && transactionInfo.type !== 'error' && (
@@ -196,33 +200,32 @@ export const Fees = ({
                             <InputError error={error} />
                         </FeeError>
                     )}
-                </Row>
+                </FeeInfoRow>
 
                 {!isDesktopLayout && selectBarComponent}
 
                 <FeeInfoWrapper>
-                    <AnimatePresence initial={false}>
-                        {isCustomLevel ? (
-                            <motion.div style={{ width: '100%' }} {...motionAnimation.expand}>
-                                <CustomFee
-                                    networkType={networkType}
-                                    feeInfo={feeInfo}
-                                    errors={errors}
-                                    register={register}
-                                    getValues={getValues}
-                                    setValue={setValue}
-                                    changeFeeLimit={changeFeeLimit}
-                                />
-                            </motion.div>
-                        ) : (
-                            <FeeDetails
-                                networkType={networkType}
-                                feeInfo={feeInfo}
-                                selectedLevel={selectedLevel}
-                                transactionInfo={transactionInfo}
-                            />
-                        )}
-                    </AnimatePresence>
+                    {isCustomLevel ? (
+                        <CustomFee
+                            networkType={networkType}
+                            feeInfo={feeInfo}
+                            errors={errors}
+                            register={register}
+                            getValues={getValues}
+                            setValue={setValue}
+                            changeFeeLimit={changeFeeLimit}
+                            composedFeePerByte={
+                                (transactionInfo as PrecomposedTransactionFinal)?.feePerByte
+                            }
+                        />
+                    ) : (
+                        <FeeDetails
+                            networkType={networkType}
+                            feeInfo={feeInfo}
+                            selectedLevel={selectedLevel}
+                            transactionInfo={transactionInfo}
+                        />
+                    )}
                 </FeeInfoWrapper>
             </FeeSetupWrapper>
         </FeesWrapper>

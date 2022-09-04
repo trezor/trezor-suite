@@ -272,7 +272,7 @@ export const composeAndSign = [
             custom: {
                 type: 'final',
                 fee: '600',
-                feePerByte: '3',
+                feePerByte: '3.13',
                 transaction: {
                     outputs: [
                         // change-output is gone
@@ -416,7 +416,7 @@ export const composeAndSign = [
             custom: {
                 type: 'final',
                 fee: '1000',
-                feePerByte: '2',
+                feePerByte: '2.94',
                 transaction: {
                     inputs: [{ prev_hash: 'dcba' }, { prev_hash: 'abcddcba' }],
                     outputs: [
@@ -490,7 +490,7 @@ export const composeAndSign = [
             custom: {
                 type: 'final',
                 fee: '1800', // new utxo + old change-output + old fee (100)
-                feePerByte: '5',
+                feePerByte: '5.29',
                 transaction: {
                     inputs: [{ prev_hash: 'dcba' }, { prev_hash: 'abcddcba' }], // new utxo added
                     outputs: [
