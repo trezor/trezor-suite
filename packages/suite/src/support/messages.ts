@@ -6817,4 +6817,12 @@ export default defineMessages({
         id: 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS',
         defaultMessage: 'Firmware authenthic',
     },
+    TR_FEE_ROUNDING_WARNING: {
+        id: 'TR_FEE_ROUNDING_WARNING',
+        defaultMessage: 'Your Trezor may display a different rate caused by fee rounding.',
+    },
+    TR_FEE_RATE_CHANGED: {
+        id: 'TR_FEE_RATE_CHANGED',
+        defaultMessage: 'Fee rate has changed to complete transaction.',
+    },
 });

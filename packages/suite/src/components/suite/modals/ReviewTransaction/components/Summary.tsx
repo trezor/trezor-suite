@@ -12,6 +12,8 @@ import { Translation, FormattedCryptoAmount } from '@suite-components';
 import { Account, Network } from '@wallet-types';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { PrecomposedTransactionFinal, TxFinalCardano } from '@wallet-types/sendForm';
+import { transparentize } from 'polished';
+import { useSelector } from '@suite-hooks/useSelector';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;
@@ -98,6 +100,26 @@ const LeftDetails = styled.div`
     flex: 1;
     display: flex;
     font-weight: 500;
+    text-align: start;
+`;
+
+const RateInfo = styled.div`
+    position: relative;
+    padding: 6px 12px;
+    text-align: start;
+    background: ${({ theme }) => transparentize(0.9, theme.TYPE_BLUE)};
+    border-radius: 6px;
+    color: ${({ theme }) => theme.TYPE_BLUE};
+
+    ::before {
+        content: '';
+        position: absolute;
+        top: -6px;
+        left: 20px;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 6px solid ${({ theme }) => transparentize(0.9, theme.TYPE_BLUE)};
+    }
 `;
 
 const TxDetailsButton = styled.button`
@@ -176,14 +198,22 @@ const Summary = ({
     isRbfAction,
     onDetailsClick,
 }: Props) => {
+    const drafts = useSelector(state => state.wallet.send.drafts);
+    const currentAccountKey = useSelector(
+        state => state.wallet.selectedAccount.account?.key,
+    ) as string;
+
     const theme = useTheme();
     const { symbol } = account;
 
-    const feePerByte = new BigNumber(tx.feePerByte).decimalPlaces(3).toString();
+    const { feePerByte } = tx;
     const spentWithoutFee = !tx.token ? new BigNumber(tx.totalSpent).minus(tx.fee).toString() : '';
     const amount = !tx.token
         ? formatNetworkAmount(spentWithoutFee, symbol)
         : formatAmount(tx.totalSpent, tx.token.decimals);
+
+    const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
+    const isComposedFeeRateDifferent = formFeeRate !== feePerByte;
 
     const accountLabel = account.metadata.accountLabel ? (
         <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
@@ -251,10 +281,20 @@ const Summary = ({
                         {network.networkType === 'ethereum' && <Translation id="TR_GAS_PRICE" />}
                         {network.networkType === 'ripple' && <Translation id="TR_TX_FEE" />}
                     </ReviewRbfLeftDetailsLineLeft>
+
                     <ReviewRbfLeftDetailsLineRight color={theme.TYPE_DARK_GREY}>
                         {feePerByte} {getFeeUnits(network.networkType)}
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
+
+                {isComposedFeeRateDifferent && (
+                    <LeftDetailsRow>
+                        <RateInfo>
+                            <Translation id="TR_FEE_RATE_CHANGED" />
+                        </RateInfo>
+                    </LeftDetailsRow>
+                )}
+
                 <LeftDetailsRow>
                     <ReviewRbfLeftDetailsLineLeft>
                         <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="BROADCAST" />

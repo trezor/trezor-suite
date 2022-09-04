@@ -1,8 +1,8 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import { UseFormMethods } from 'react-hook-form';
-import { Input, Button, variables } from '@trezor/components';
+import { Input, Button, variables, Icon } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
@@ -15,9 +15,6 @@ import { TypedValidationRules } from '@wallet-types/form';
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    margin-top: 20px;
-    padding-top: 20px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         flex-direction: column;
@@ -31,7 +28,7 @@ const Col = styled.div<{ singleCol?: boolean }>`
     ${({ singleCol }) =>
         singleCol &&
         css`
-            max-width: 314px;
+            max-width: 270px;
 
             ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
                 max-width: 100%;
@@ -41,7 +38,7 @@ const Col = styled.div<{ singleCol?: boolean }>`
 
 const Spacer = styled.div`
     display: flex;
-    width: 56px;
+    width: 24px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         display: none;
@@ -51,7 +48,7 @@ const Spacer = styled.div`
 const StyledInput = styled(Input)`
     display: flex;
     flex: 1;
-    min-width: 260px;
+    min-width: 270px;
 `;
 
 const Units = styled.div`
@@ -68,6 +65,18 @@ const StyledButton = styled(Button)`
     margin-left: 8px;
     padding: 0;
     background: none;
+`;
+
+const FeeRateWarning = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+
+    > :first-child {
+        margin-right: 8px;
+    }
 `;
 
 // feeLimit error notification button
@@ -105,6 +114,7 @@ interface CustomFeeProps {
     getValues: FormMethods['getValues'];
     setValue: FormMethods['setValue'];
     changeFeeLimit?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    composedFeePerByte: string;
 }
 
 export const CustomFee = ({
@@ -115,18 +125,25 @@ export const CustomFee = ({
     getValues,
     setValue,
     changeFeeLimit,
+    composedFeePerByte,
 }: CustomFeeProps) => {
     const { maxFee, minFee } = feeInfo;
+
+    const theme = useTheme();
 
     const feePerUnitValue = getValues(FEE_PER_UNIT);
     const feeLimitValue = getValues(FEE_LIMIT);
     const estimatedFeeLimit = getValues('estimatedFeeLimit') || ETH_DEFAULT_GAS_LIMIT;
+    const enteredFeeRate = getValues('feePerUnit');
 
     const feePerUnitError = errors.feePerUnit;
     const feeLimitError = errors.feeLimit;
 
     const useFeeLimit = networkType === 'ethereum';
     const feeLimitDisabled = false;
+
+    const isComposedFeeRateDifferent =
+        !feePerUnitError && composedFeePerByte && enteredFeeRate !== composedFeePerByte;
 
     const validateFeeLimit = (value: string) => {
         const feeBig = new BigNumber(value);
@@ -198,47 +215,58 @@ export const CustomFee = ({
     };
 
     return (
-        <Wrapper>
-            {useFeeLimit ? (
-                <>
-                    <Col>
-                        <StyledInput
-                            label={<Translation id="TR_GAS_LIMIT" />}
-                            disabled={feeLimitDisabled}
-                            isMonospace
-                            inputState={getInputState(feeLimitError, feeLimitValue)}
-                            name={FEE_LIMIT}
-                            data-test={FEE_LIMIT}
-                            onChange={changeFeeLimit}
-                            innerRef={register({
-                                required: 'CUSTOM_FEE_IS_NOT_SET',
-                                validate: validateFeeLimit,
-                            })}
-                            bottomText={<InputError error={feeLimitError} />}
-                        />
-                    </Col>
+        <div>
+            <Wrapper>
+                {useFeeLimit ? (
+                    <>
+                        <Col>
+                            <StyledInput
+                                label={<Translation id="TR_GAS_LIMIT" />}
+                                disabled={feeLimitDisabled}
+                                isMonospace
+                                variant="small"
+                                inputState={getInputState(feeLimitError, feeLimitValue)}
+                                name={FEE_LIMIT}
+                                data-test={FEE_LIMIT}
+                                onChange={changeFeeLimit}
+                                innerRef={register({
+                                    required: 'CUSTOM_FEE_IS_NOT_SET',
+                                    validate: validateFeeLimit,
+                                })}
+                                bottomText={<InputError error={feeLimitError} />}
+                            />
+                        </Col>
 
-                    <Spacer />
-                </>
-            ) : (
-                <input type="hidden" name={FEE_LIMIT} ref={register()} />
+                        <Spacer />
+                    </>
+                ) : (
+                    <input type="hidden" name={FEE_LIMIT} ref={register()} />
+                )}
+                <Col singleCol={!useFeeLimit}>
+                    <StyledInput
+                        noTopLabel={!useFeeLimit}
+                        label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
+                        isMonospace
+                        variant="small"
+                        inputState={getInputState(feePerUnitError, feePerUnitValue)}
+                        innerAddon={<Units>{getFeeUnits(networkType)}</Units>}
+                        name={FEE_PER_UNIT}
+                        data-test={FEE_PER_UNIT}
+                        innerRef={register({
+                            required: 'CUSTOM_FEE_IS_NOT_SET',
+                            validate: validateFee,
+                        })}
+                        bottomText={<InputError error={feePerUnitError} />}
+                    />
+                </Col>
+            </Wrapper>
+
+            {isComposedFeeRateDifferent && (
+                <FeeRateWarning>
+                    <Icon icon="INFO" size={12} color={theme.TYPE_LIGHTER_GREY} />
+                    <Translation id="TR_FEE_ROUNDING_WARNING" />
+                </FeeRateWarning>
             )}
-            <Col singleCol={!useFeeLimit}>
-                <StyledInput
-                    noTopLabel={!useFeeLimit}
-                    label={useFeeLimit ? <Translation id="TR_GAS_PRICE" /> : undefined}
-                    isMonospace
-                    inputState={getInputState(feePerUnitError, feePerUnitValue)}
-                    innerAddon={<Units>{getFeeUnits(networkType)}</Units>}
-                    name={FEE_PER_UNIT}
-                    data-test={FEE_PER_UNIT}
-                    innerRef={register({
-                        required: 'CUSTOM_FEE_IS_NOT_SET',
-                        validate: validateFee,
-                    })}
-                    bottomText={<InputError error={feePerUnitError} />}
-                />
-            </Col>
-        </Wrapper>
+        </div>
     );
 };
