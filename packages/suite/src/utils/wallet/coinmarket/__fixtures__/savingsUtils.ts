@@ -18,6 +18,9 @@ export const SELECTED_PROVIDER: SavingsProviderInfo = {
         afterLogin: {
             isEnabled: false,
         },
+        afterSuccessfulPhoneVerification: {
+            isEnabled: false,
+        },
         aml: {
             isEnabled: false,
         },

@@ -24,6 +24,10 @@ describe('coinmarket/savings utils', () => {
         expect(getFiatAmountEffective(CustomPaymentAmountKey, 'FAKE')).toBe('0');
     });
     it('calculateAnnualSavings', () => {
+        expect(calculateAnnualSavings('Daily', '100', undefined, 'usd', FIAT_RATES)).toStrictEqual({
+            annualSavingsFiatAmount: 36500,
+            annualSavingsCryptoAmount: '0.67193167',
+        });
         expect(calculateAnnualSavings('Weekly', '100', undefined, 'usd', FIAT_RATES)).toStrictEqual(
             {
                 annualSavingsFiatAmount: 5200,
@@ -67,9 +71,10 @@ describe('coinmarket/savings utils', () => {
         expect(
             getPaymentFrequencyOptions({
                 ...SELECTED_PROVIDER,
-                setupPaymentFrequencies: ['Weekly', 'Biweekly', 'Monthly', 'Quarterly'],
+                setupPaymentFrequencies: ['Daily', 'Weekly', 'Biweekly', 'Monthly', 'Quarterly'],
             }),
         ).toStrictEqual([
+            { label: 'Daily', value: 'Daily' },
             { label: 'Weekly', value: 'Weekly' },
             { label: 'Biweekly', value: 'Biweekly' },
             { label: 'Monthly', value: 'Monthly' },

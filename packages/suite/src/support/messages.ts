@@ -1014,6 +1014,11 @@ export default defineMessages({
         defaultMessage: 'Select your country',
         id: 'TR_SAVINGS_UNSUPPORTED_COUNTRY_SELECT_LABEL',
     },
+    TR_SAVINGS_OVERVIEW_PERIOD_DAILY: {
+        defaultMessage: 'daily',
+        id: 'TR_SAVINGS_OVERVIEW_PERIOD_DAILY',
+        dynamic: true,
+    },
     TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY: {
         defaultMessage: 'weekly',
         id: 'TR_SAVINGS_OVERVIEW_PERIOD_WEEKLY',
