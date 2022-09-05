@@ -7,7 +7,8 @@ export const useCoinmarketSavingsPaymentInfoCopy = (paymentInfo?: SavingsPayment
     const { addNotification } = useActions({ addNotification: notificationActions.addToast });
     const copyPaymentInfo = (paymentInfoKey: keyof SavingsPaymentInfo) => {
         if (paymentInfo) {
-            const result = copyToClipboard(paymentInfo[paymentInfoKey], null);
+            const paymentInfoValue = paymentInfo[paymentInfoKey];
+            const result = paymentInfoValue && copyToClipboard(paymentInfoValue, null);
             if (typeof result !== 'string') {
                 addNotification({ type: 'copy-to-clipboard' });
             }

@@ -100,6 +100,8 @@ type SavingsStepPhoneVerification = SavingsStepEnabled & {
     phoneVerificationType: 'ClientApp' | 'External';
 };
 
+type SavingsStepAfterSuccessfulPhoneVerification = SavingsStepEnabled;
+
 type SavingsStepKYC = SavingsStepEnabled & {
     /** Determines way KYC document upload.
      * - ClientApp - we handover the KYC documents to partner right from the user
@@ -125,6 +127,7 @@ export interface SavingsProviderFlow {
     afterLogin: SavingsStepAfterLogin;
     credentials: SavingsStepCredentials;
     phoneVerification: SavingsStepPhoneVerification;
+    afterSuccessfulPhoneVerification: SavingsStepAfterSuccessfulPhoneVerification;
     kyc: SavingsStepKYC;
     aml: SavingsStepAML;
     bankAccount: SavingsStepBankAccount;
@@ -229,7 +232,7 @@ export type SavingsAMLStatus =
     /** AML process passed successfully. */
     | 'Verified';
 
-export type PaymentFrequency = 'Weekly' | 'Biweekly' | 'Monthly' | 'Quarterly';
+export type PaymentFrequency = 'Daily' | 'Weekly' | 'Biweekly' | 'Monthly' | 'Quarterly';
 
 export interface SavingsTradePlannedPayment {
     /** Our id. */
@@ -290,6 +293,7 @@ export interface SavingsTradeAMLQuestion {
 
 export interface SavingsTrade {
     id?: string;
+    externalId?: string;
     country?: string;
     status?: SavingsStatus;
     kycStatus?: SavingsKYCStatus;
@@ -335,10 +339,10 @@ export interface SavingsTrade {
 }
 
 export interface SavingsPaymentInfo {
-    name: string;
-    iban: string;
-    description: string;
-    bic: string;
+    name?: string;
+    iban?: string;
+    description?: string;
+    bic?: string;
 }
 
 export interface SavingsTradeRequest {
@@ -440,18 +444,19 @@ export interface WatchSavingTradeItemResponse extends WatchSavingTradeItemErrorR
     savingsTradeItem?: SavingsTradeItem;
 }
 
-export interface AfterLoginErrorResponse extends SavingsErrorResponse {
-    code?: 'ReturnUrlRequired' | 'ExchangeNotFound' | 'AfterLoginFailed';
+export interface PartnerInitErrorResponse extends SavingsErrorResponse {
+    code?: 'ReturnUrlRequired' | 'ExchangeNotFound' | 'PartnerInitFailed' | 'MissingRequestBody';
 }
-export interface AfterLoginSuccessResponse {
+export interface PartnerInitSuccessResponse {
     form?: {
         formMethod: 'GET';
         formAction: string;
         fields: Record<string, string>;
     };
+    savingsTrade?: SavingsTrade;
 }
 
-export type AfterLoginResponse = AfterLoginSuccessResponse & AfterLoginErrorResponse;
+export type PartnerInitResponse = PartnerInitSuccessResponse & PartnerInitErrorResponse;
 
 export interface SubmitPhoneNumberResponse extends SavingsErrorResponse {
     code?: 'ExchangeNotFound' | 'InternalError' | 'SavingsTransactionNotFound';
