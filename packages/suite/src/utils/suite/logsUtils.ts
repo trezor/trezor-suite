@@ -32,6 +32,8 @@ import {
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 
+export const startTime = new Date().toUTCString();
+
 export const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
 export const redactAccount = (account: DeepPartial<Account> | undefined) => {
@@ -166,6 +168,7 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     environment: getEnvironment(),
     suiteVersion: process.env.VERSION || '',
     commitHash: process.env.COMMITHASH || '',
+    startTime,
     isDev: !process.env.CODESIGN_BUILD,
     debugMenu: state.suite.settings.debug.showDebugMenu,
     online: state.suite.online,
