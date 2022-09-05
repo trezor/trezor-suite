@@ -8,6 +8,7 @@ export const ICONS = {
     ARROW_LEFT_LONG: require('../../images/icons/arrow_left_long.svg'),
     ARROW_RIGHT: require('../../images/icons/arrow_right.svg'),
     ARROW_RIGHT_LONG: require('../../images/icons/arrow_right_long.svg'),
+    ARROWS_CIRCLE: require('../../images/icons/arrows_circle.svg'),
     ARTICLE: require('../../images/icons/article.svg'),
     ASTERISK: require('../../images/icons/asterisk.svg'),
     BACK: require('../../images/icons/back.svg'),

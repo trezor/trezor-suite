@@ -3021,6 +3021,14 @@ export default defineMessages({
         defaultMessage: 'Failed transaction',
         id: 'TR_FAILED_TRANSACTION',
     },
+    TR_JOINT_TRANSACTION: {
+        defaultMessage: 'Joint {symbol} transaction',
+        id: 'TR_JOINT_TRANSACTION',
+    },
+    TR_JOINT_TRANSACTION_TARGET: {
+        defaultMessage: '{inMy} out of {in} inputs, {outMy} out of {out} outputs',
+        id: 'TR_JOINT_TRANSACTION_TARGET',
+    },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
         id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',

@@ -10,6 +10,7 @@ import {
     formatAmount,
     formatCardanoWithdrawal,
     formatCardanoDeposit,
+    formatNetworkAmount,
 } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -250,5 +251,44 @@ export const DepositRow = ({
         amount={formatCardanoDeposit(transaction) ?? '0'}
         transaction={transaction}
         useFiatValues={useFiatValues}
+    />
+);
+
+export const CoinjoinRow = ({
+    transaction,
+    useFiatValues,
+}: {
+    transaction: WalletAccountTransaction;
+    useFiatValues?: boolean;
+}) => (
+    <BaseTargetLayout
+        fiatAmount={
+            useFiatValues ? (
+                <FiatValue
+                    amount={formatNetworkAmount(
+                        transaction.amount.startsWith('-')
+                            ? transaction.amount.slice(1)
+                            : transaction.amount,
+                        transaction.symbol,
+                    )}
+                    symbol={transaction.symbol}
+                    source={transaction.rates}
+                    useCustomSource
+                />
+            ) : undefined
+        }
+        addressLabel={
+            <Translation
+                id="TR_JOINT_TRANSACTION_TARGET"
+                values={{
+                    in: transaction.details.vin.length,
+                    inMy: transaction.details.vin.filter(v => v.isAccountOwned).length,
+                    out: transaction.details.vout.length,
+                    outMy: transaction.details.vout.filter(v => v.isAccountOwned).length,
+                }}
+            />
+        }
+        isFirst
+        isLast
     />
 );

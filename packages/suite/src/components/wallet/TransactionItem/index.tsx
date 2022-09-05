@@ -12,7 +12,14 @@ import { WalletAccountTransaction } from '@wallet-types';
 import { TransactionTypeIcon } from './components/TransactionTypeIcon';
 import { TransactionHeading } from './components/TransactionHeading';
 import { MIN_ROW_HEIGHT } from './components/BaseTargetLayout';
-import { Target, TokenTransfer, FeeRow, WithdrawalRow, DepositRow } from './components/Target';
+import {
+    Target,
+    TokenTransfer,
+    FeeRow,
+    WithdrawalRow,
+    DepositRow,
+    CoinjoinRow,
+} from './components/Target';
 import { useAnchor } from '@suite-hooks/useAnchor';
 import { AccountTransactionBaseAnchor } from '@suite-constants/anchors';
 import { SECONDARY_PANEL_HEIGHT } from '@suite-components/AppNavigation';
@@ -184,7 +191,7 @@ const TransactionItem = React.memo(
             transaction.cardanoSpecific?.subtype !== 'stake_registration';
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
-        const showFeeRow = !isUnknown && type !== 'recv' && fee !== '0';
+        const showFeeRow = !isUnknown && type !== 'recv' && type !== 'joint' && fee !== '0';
 
         const [txItemIsHovered, setTxItemIsHovered] = useState(false);
         const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
@@ -347,6 +354,13 @@ const TransactionItem = React.memo(
                                         </AnimatePresence>
                                     </>
                                 ) : null}
+
+                                {type === 'joint' && (
+                                    <CoinjoinRow
+                                        transaction={transaction}
+                                        useFiatValues={useFiatValues}
+                                    />
+                                )}
 
                                 {transaction.cardanoSpecific?.withdrawal && (
                                     <WithdrawalRow
