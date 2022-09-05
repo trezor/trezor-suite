@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/module-onboarding",
+    "name": "@suite-native/module-assets",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -22,6 +22,7 @@
         "@suite-common/wallet-config": "*",
         "@suite-common/wallet-core": "*",
         "@suite-common/wallet-types": "*",
+        "@suite-common/wallet-utils": "*",
         "@suite-native/atoms": "*",
         "@suite-native/navigation": "*",
         "@trezor/connect": "9.0.0",

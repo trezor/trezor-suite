@@ -2,31 +2,26 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { createStackNavigator } from '@react-navigation/stack';
+import { RootStackParamList } from 'suite-native/module-home';
 
-import {
-    OnboardingStackNavigator,
-    selectIsOnboardingFinished,
-} from '@suite-native/module-onboarding';
-import { stackNavigationOptionsConfig, RootStackRoutes } from '@suite-native/navigation';
+import { AssetsStackNavigator, selectIsOnboardingFinished } from '@suite-native/module-assets';
+import { stackNavigationOptionsConfig } from '@suite-native/navigation';
 
-import { RootStackParamList } from './routes';
-import { RootTabNavigator } from './RootTabNavigator';
+import { AppTabNavigator } from './AppTabNavigator';
+import { RootStackRoutes } from './routes';
 
-const Stack = createStackNavigator<RootStackParamList>();
+const RootStack = createStackNavigator<RootStackParamList>();
 
 export const RootStackNavigator = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
-    // NOTE: Skip onboarding for development right now to speed up app loading
-    let skipOnboarding = isOnboardingFinished || process.env.NODE_ENV === 'development';
-    skipOnboarding = false;
 
     return (
-        <Stack.Navigator
-            initialRouteName={skipOnboarding ? RootStackRoutes.App : RootStackRoutes.Import}
+        <RootStack.Navigator
+            initialRouteName={isOnboardingFinished ? RootStackRoutes.App : RootStackRoutes.Assets}
             screenOptions={stackNavigationOptionsConfig}
         >
-            <Stack.Screen name={RootStackRoutes.App} component={RootTabNavigator} />
-            <Stack.Screen name={RootStackRoutes.Import} component={OnboardingStackNavigator} />
-        </Stack.Navigator>
+            <RootStack.Screen name={RootStackRoutes.App} component={AppTabNavigator} />
+            <RootStack.Screen name={RootStackRoutes.Assets} component={AssetsStackNavigator} />
+        </RootStack.Navigator>
     );
 };

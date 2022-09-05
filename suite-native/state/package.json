@@ -15,7 +15,7 @@
         "@suite-common/test-utils": "*",
         "@suite-common/wallet-core": "*",
         "@suite-native/home-graph": "*",
-        "@suite-native/module-onboarding": "*",
+        "@suite-native/module-assets": "*",
         "@suite-native/module-settings": "*",
         "@trezor/connect": "9.0.0",
         "@trezor/styles": "*",

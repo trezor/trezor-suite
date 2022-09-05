@@ -4,7 +4,8 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../home-graph" },
-        { "path": "../module-onboarding" },
+        { "path": "../module-assets" },
+        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/styles" },

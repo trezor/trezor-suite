@@ -5,7 +5,7 @@ import { Screen, StackProps } from '@suite-native/navigation';
 import { Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
+import { AssetsStackParamList, AssetsStackRoutes } from '../navigation/routes';
 
 const introStyle = prepareNativeStyle(_ => ({
     flex: 1,
@@ -43,7 +43,7 @@ const introButtonStyle = prepareNativeStyle(_ => ({
 
 export const OnboardingIntro = ({
     navigation,
-}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.Onboarding>) => {
+}: StackProps<AssetsStackParamList, AssetsStackRoutes.Onboarding>) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -68,7 +68,7 @@ export const OnboardingIntro = ({
                 <View style={applyStyle(introButtonStyle)}>
                     <Button
                         onPress={() => {
-                            navigation.navigate(OnboardingStackRoutes.OnboardingXpubScan);
+                            navigation.navigate(AssetsStackRoutes.XpubScan);
                         }}
                         size="large"
                     >

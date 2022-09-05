@@ -4,13 +4,13 @@ import { Pressable, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Screen, StackProps } from '@suite-native/navigation';
-import { Box, Chip, Input, InputWrapper, Text } from '@suite-native/atoms';
+import { Box, Button, Chip, Input, InputWrapper, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
-import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
+import { AssetsStackParamList, AssetsStackRoutes } from '../navigation/routes';
 
 const coinStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
@@ -34,12 +34,17 @@ const chipStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.small,
 }));
 
+const devXpubButtonStyle = prepareNativeStyle(utils => ({
+    marginTop: utils.spacings.small,
+    borderRadius: utils.borders.radii.round,
+}));
+
 const DEFAULT_XPUB_INPUT_TEXT = '';
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
 
-export const OnboardingXpubScan = ({
+export const XpubScan = ({
     navigation,
-}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.OnboardingXpubScan>) => {
+}: StackProps<AssetsStackParamList, AssetsStackRoutes.XpubScan>) => {
     const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
         useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
     const [inputText, setInputText] = useState<string>(DEFAULT_XPUB_INPUT_TEXT);
@@ -64,7 +69,7 @@ export const OnboardingXpubScan = ({
 
     const handleXpubResult = (value?: string) => {
         if (value) {
-            navigation.navigate(OnboardingStackRoutes.OnboardingAssets, {
+            navigation.navigate(AssetsStackRoutes.AssetsImport, {
                 xpubAddress: value,
                 currencySymbol: selectedCurrencySymbol,
             });
@@ -116,6 +121,19 @@ export const OnboardingXpubScan = ({
                         onSubmitEditing={handleXpubResult}
                         label="Enter x-pub..."
                     />
+                    {__DEV__ && (
+                        <Button
+                            style={applyStyle(devXpubButtonStyle)}
+                            onPress={() =>
+                                handleXpubResult(
+                                    'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                                )
+                            }
+                            colorScheme="gray"
+                        >
+                            DEV: Request dev xPub
+                        </Button>
+                    )}
                 </InputWrapper>
             </Box>
         </Screen>

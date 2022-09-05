@@ -4,8 +4,7 @@ import { View } from 'react-native';
 import { Text } from '@suite-native/atoms';
 import { TabProps, AppTabsRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { AppTabsParamList } from '../routes';
+import { AppTabsParamList } from '@suite-native/module-home';
 
 const pricesScreenStyle = prepareNativeStyle(() => ({
     flex: 1,

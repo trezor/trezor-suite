@@ -2,18 +2,18 @@ import React from 'react';
 
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { HomeStackNavigator } from '@suite-native/module-home';
+import { AppTabsParamList, HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { TabBar, AppTabsRoutes } from '@suite-native/navigation';
 
 import { AccountsScreen } from './dummyScreens/AccountsScreen';
 import { ActionScreen } from './dummyScreens/ActionScreen';
 import { PricesScreen } from './dummyScreens/PricesScreen';
-import { AppTabsParamList, rootTabsOptions } from './routes';
+import { rootTabsOptions } from './routes';
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
-export const RootTabNavigator = () => (
+export const AppTabNavigator = () => (
     <Tab.Navigator
         initialRouteName={AppTabsRoutes.HomeStack}
         screenOptions={{

@@ -1,9 +1,9 @@
 import { combineReducers, configureStore, Store, Middleware } from '@reduxjs/toolkit';
 import createDebugger from 'redux-flipper';
 
+import { onboardingReducer, prepareDevicesReducer } from '@suite-native/module-assets';
 import { appSettingsReducer } from '@suite-native/module-settings';
 import { appGraphReducer } from '@suite-native/home-graph';
-import { onboardingReducer, prepareDevicesReducer } from '@suite-native/module-onboarding';
 import {
     prepareAccountsReducer,
     prepareFiatRatesReducer,

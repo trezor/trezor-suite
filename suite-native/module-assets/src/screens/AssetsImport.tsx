@@ -3,18 +3,16 @@ import { Alert, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { Screen, StackProps } from '@suite-native/navigation';
+import { CompositeStackToTabScreenProps, Screen } from '@suite-native/navigation';
 import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { accountsActions } from '@suite-common/wallet-core';
-import { testMocks } from '@suite-common/test-utils';
 
-import { devicesActions } from '../state/devices/devicesActions';
-import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
+import { AssetsStackParamList, AssetsStackRoutes } from '../navigation/routes';
 import { AssetsLoader } from '../components/AssetsLoader';
 import { setOnboardingFinished } from '../slice';
 import { AssetsHeader } from '../components/AssetsHeader';
-import { AssetsOverview } from '../components/AssetsOverview';
+import { AssetsOverview, dummyDevices } from '../components/AssetsOverview';
+import { importAssetThunk } from '../state/devices/devicesThunks';
 
 const assetsStyle = prepareNativeStyle(_ => ({
     flex: 1,
@@ -30,15 +28,18 @@ const importAnotherButtonStyle = prepareNativeStyle(utils => ({
     width: 165,
 }));
 
-export const OnboardingAssets = ({
+export const AssetsImport = ({
     navigation,
     route,
-}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.OnboardingAssets>) => {
+}: CompositeStackToTabScreenProps<
+    AssetsStackParamList,
+    AssetsStackRoutes.AssetsImport,
+    RootStackParamList
+>) => {
     const dispatch = useDispatch();
-    const [accountInfoLoaded, setAccountInfoLoaded] = useState<boolean>(false);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const [selectedDevice, setSelectedDevice] = useState<string>('firstSelectable');
-    const [assetName, setAssetName] = useState<string>('');
+    const [selectedDevice, setSelectedDevice] = useState<string>('');
+    const [assetName, setAssetName] = useState<string>('bitcoines #1');
 
     const { applyStyle } = useNativeStyles();
 
@@ -47,25 +48,18 @@ export const OnboardingAssets = ({
     const getAccountInfo = useCallback(() => {
         const showAccountInfoAlert = ({ title, message }: { title: string; message: string }) => {
             Alert.alert(title, message, [
-                {
-                    text: "Doesn't matter, show me assets",
-                    onPress: () => setAccountInfoLoaded(true),
-                },
-                { text: 'OK, will fix it', onPress: () => navigation.goBack() },
+                { text: 'OK, I will fix it', onPress: () => navigation.goBack() },
             ]);
         };
 
         TrezorConnect.getAccountInfo({
             coin: currencySymbol,
-            descriptor:
-                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            descriptor: xpubAddress,
             details: 'txs',
         })
             .then(accountInfo => {
                 if (accountInfo?.success) {
-                    console.log('accountInfo.payload_ : ', JSON.stringify(accountInfo.payload));
                     setAccountInfo(accountInfo.payload);
-                    setAccountInfoLoaded(true);
                 } else {
                     showAccountInfoAlert({
                         title: 'Account info failed',
@@ -92,31 +86,26 @@ export const OnboardingAssets = ({
     }, [getAccountInfo]);
 
     const handleConfirmAssets = () => {
-        if (accountInfo) {
-            const mockedSuiteDevice = testMocks.getSuiteDevice({
-                connected: true,
-                useEmptyPassphrase: true,
-                instance: 1,
-                state: 'state@device-id:1',
-            });
-            console.log('MOCKED SUITE DEVICE: ', JSON.stringify(mockedSuiteDevice));
-            const device = dispatch(devicesActions.createDeviceInstance(mockedSuiteDevice));
-            console.log('DEVICE: ', JSON.stringify(device));
-            const account = dispatch(
-                accountsActions.createAccount(
-                    'blabla',
-                    {
-                        index: 0,
-                        path: accountInfo?.path ?? '',
-                        accountType: 'imported',
-                        networkType: 'bitcoin',
-                        coin: 'btc',
+        if (accountInfo && selectedDevice) {
+            const dummyDevice = dummyDevices.find(device => device.value === selectedDevice);
+            if (dummyDevice) {
+                const { title } = dummyDevice;
+                dispatch(
+                    importAssetThunk({
+                        deviceId: selectedDevice,
+                        deviceTitle: title,
+                        accountInfo,
+                        coin: currencySymbol,
+                    }),
+                );
+                dispatch(setOnboardingFinished(true));
+                navigation.navigate(RootStackRoutes.App, {
+                    screen: AppTabsRoutes.HomeStack,
+                    params: {
+                        screen: HomeStackRoutes.Home,
                     },
-                    accountInfo,
-                ),
-            );
-            console.log('ACCOUNT: ', account.payload);
-            dispatch(setOnboardingFinished(true));
+                });
+            }
         }
     };
 
@@ -126,7 +115,7 @@ export const OnboardingAssets = ({
 
     return (
         <Screen>
-            {!accountInfoLoaded ? (
+            {!accountInfo ? (
                 <AssetsLoader />
             ) : (
                 <View style={[applyStyle(assetsStyle)]}>

@@ -1,6 +1,7 @@
 import type { BottomTabScreenProps, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { StackScreenProps, StackNavigationProp } from '@react-navigation/stack';
-import type { RouteProp, ParamListBase } from '@react-navigation/native';
+import type { RouteProp, ParamListBase, CompositeScreenProps } from '@react-navigation/native';
+import { CompositeNavigationProp } from '@react-navigation/native';
 
 import { IconName } from '@trezor/icons';
 
@@ -16,15 +17,19 @@ export type StackNavigationProps<
     K extends keyof ParamListBase,
 > = StackNavigationProp<T, K>;
 
-export type RouteProps<T extends ParamListBase, K extends keyof T> = RouteProp<T, K>;
-
-// StackProps<OnboardingStackParamList, OnboardingStackRoutes.OnboardingXpubScan>
-/*
-export type CompositeTabProps<
+export type CompositeTabToStackNavigationProp<
     T extends ParamListBase,
-    K extends keyof ParamListBase,
-> = CompositeScreenProps<BottomTabScreenProps<ParamListBase, K>, StackProps<keyof T>>;
- */
+    K extends string,
+    L extends ParamListBase,
+> = CompositeNavigationProp<BottomTabNavigationProp<T, K>, StackNavigationProp<L>>;
+
+export type CompositeStackToTabScreenProps<
+    T extends ParamListBase,
+    K extends string,
+    L extends ParamListBase,
+> = CompositeScreenProps<StackProps<T, K>, BottomTabScreenProps<L>>;
+
+export type RouteProps<T extends ParamListBase, K extends keyof T> = RouteProp<T, K>;
 
 export interface TabsOptions {
     [tabName: string]: { iconName: IconName; label?: string; isActionTabItem?: boolean };

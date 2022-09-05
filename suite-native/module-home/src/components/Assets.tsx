@@ -3,10 +3,10 @@ import { View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { AssetsStackRoutes } from '@suite-native/module-assets';
 import { AssetItem, Button, Card, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { OnboardingStackRoutes } from '@suite-native/module-onboarding';
-import { RootStackRoutes } from '@suite-native/navigation';
+import { CompositeTabToStackNavigationProp } from '@suite-native/navigation';
 
 import { DashboardSection } from './DashboardSection';
 
@@ -14,8 +14,14 @@ const importStyle = prepareNativeStyle(_ => ({
     marginTop: 12,
 }));
 
+type HomeAssetsNavigationProp = CompositeTabToStackNavigationProp<
+    AppTabsParamList,
+    AppTabsRoutes.HomeStack,
+    RootStackParamList
+>;
+
 export const Assets = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<HomeAssetsNavigationProp>();
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -45,8 +51,8 @@ export const Assets = () => {
                     colorScheme="gray"
                     iconName="plus"
                     onPress={() =>
-                        navigation.navigate(RootStackRoutes.Import, {
-                            screen: OnboardingStackRoutes.OnboardingXpubScan,
+                        navigation.navigate(RootStackRoutes.Assets, {
+                            screen: AssetsStackRoutes.XpubScan,
                         })
                     }
                 >

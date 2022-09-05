@@ -36,10 +36,10 @@ export const DashboardHeaderDeviceChip = () => {
             <BottomSheet
                 isVisible={isDeviceModalVisible}
                 onVisibilityChange={setIsDeviceModalVisible}
-                title="Typography Demo"
+                title=""
                 onBackArrowClick={() => setIsDeviceModalVisible(!isDeviceModalVisible)}
             >
-                <Text variant="body">neco</Text>
+                <Text variant="body">TODO: list of all my watch only wallets</Text>
             </BottomSheet>
         </>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CryptoIcon } from '@trezor/icons';
+import { CryptoIcon, IconName } from '@trezor/icons';
 import {
     Box,
     Card,
@@ -11,14 +11,28 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { AccountInfo } from '@trezor/connect';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
 type AssetsOverviewProps = {
-    accountInfo: AccountInfo | null;
+    accountInfo: AccountInfo;
     selectedDevice: string;
     assetName: string;
     onSelectDevice: (value: string | number) => void;
     onAssetNameChange: (value: string) => void;
 };
+
+export const dummyDevices: Array<{ icon: IconName; title: string; value: string }> = [
+    {
+        icon: 'trezorT',
+        title: 'Model T',
+        value: 'modelT',
+    },
+    {
+        icon: 'trezorT',
+        title: 'Model One',
+        value: 'modelOne',
+    },
+];
 
 export const AssetsOverview = ({
     accountInfo,
@@ -33,41 +47,31 @@ export const AssetsOverview = ({
                 <CryptoIcon name="btc" size="large" />
                 <Box marginTop="large" marginBottom="small">
                     <Text variant="titleSmall" color="gray1000">
-                        {accountInfo?.balance}
+                        {/* FIXME load currency from settings and convert with fiat rates */}
+                        {accountInfo.balance} Kč
                     </Text>
                 </Box>
                 <Text variant="label" color="gray1000">
-                    ≈ 0.0003333 BTC
+                    ≈ {formatNetworkAmount(accountInfo.availableBalance, 'btc', true)}
                 </Text>
             </Box>
             <Box marginBottom="large">
                 <InputWrapper>
-                    <Input value={assetName} onChange={onAssetNameChange} label="bitcoines #1" />
+                    <Input value={assetName} onChange={onAssetNameChange} label="" />
                 </InputWrapper>
             </Box>
             <InputWrapper label="Device">
                 <VStack spacing="small">
-                    <SelectableListItem
-                        iconName="trezorT"
-                        title="Model T"
-                        onPress={onSelectDevice}
-                        value="firstSelectable"
-                        isChecked={selectedDevice === 'firstSelectable'}
-                    />
-                    <SelectableListItem
-                        iconName="trezorT"
-                        title="Model One"
-                        onPress={onSelectDevice}
-                        value="secondSelectable"
-                        isChecked={selectedDevice === 'secondSelectable'}
-                    />
-                    <SelectableListItem
-                        iconName="placeholder"
-                        title="Other"
-                        onPress={onSelectDevice}
-                        value="thirdSelectable"
-                        isChecked={selectedDevice === 'thirdSelectable'}
-                    />
+                    {dummyDevices.map(device => (
+                        <SelectableListItem
+                            key={device.value}
+                            iconName={device.icon}
+                            title={device.title}
+                            onPress={onSelectDevice}
+                            value={device.value}
+                            isChecked={selectedDevice === device.value}
+                        />
+                    ))}
                 </VStack>
             </InputWrapper>
         </Box>

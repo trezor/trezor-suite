@@ -1,9 +1,22 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
-import { HomeStackParamList } from '@suite-native/module-home';
-import { SettingsStackParamList } from '@suite-native/module-settings';
-import { OnboardingStackParamList } from '@suite-native/module-onboarding';
-import { TabsOptions, AppTabsRoutes, RootStackRoutes } from '@suite-native/navigation';
+import { TabsOptions } from '@suite-native/navigation';
+import type { SettingsStackParamList } from '@suite-native/module-settings';
+import type { AssetsStackParamList } from '@suite-native/module-assets';
+import type { HomeStackParamList } from '@suite-native/module-home';
+
+export enum RootStackRoutes {
+    App = 'App',
+    Assets = 'Assets',
+}
+
+export enum AppTabsRoutes {
+    HomeStack = 'HomeStack',
+    Accounts = 'Accounts',
+    Action = 'Action',
+    Prices = 'Prices',
+    SettingsStack = 'SettingsStack',
+}
 
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
@@ -15,7 +28,7 @@ export type AppTabsParamList = {
 
 export type RootStackParamList = {
     [RootStackRoutes.App]: NavigatorScreenParams<AppTabsParamList>;
-    [RootStackRoutes.Import]: NavigatorScreenParams<OnboardingStackParamList>;
+    [RootStackRoutes.Assets]: NavigatorScreenParams<AssetsStackParamList>;
 };
 
 export const rootTabsOptions: TabsOptions = {
