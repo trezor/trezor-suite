@@ -153,7 +153,7 @@ export const getApplicationLog = (log: LogEntry[], redactSensitiveData = false) 
         };
     });
 
-export const getApplicationInfo = (state: AppState) => ({
+export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) => ({
     environment: getEnvironment(),
     suiteVersion: process.env.VERSION || '',
     commitHash: process.env.COMMITHASH || '',
@@ -180,6 +180,8 @@ export const getApplicationInfo = (state: AppState) => ({
     torOnionLinks: state.suite.settings.torOnionLinks,
     labeling: state.metadata.enabled ? state.metadata.provider?.type || 'missing-provider' : '',
     analytics: state.analytics.enabled,
+    instanceId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.instanceId,
+    sessionId: hideSensitiveInfo ? REDACTED_REPLACEMENT : state.analytics.sessionId,
     transport: state.suite.transport?.type,
     transportVersion: state.suite.transport?.version,
     wallets: state.devices.length,
