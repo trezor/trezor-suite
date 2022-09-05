@@ -353,6 +353,8 @@ export const getTxIcon = (txType: WalletAccountTransaction['type']) => {
             return 'SEND';
         case 'failed':
             return 'CROSS';
+        case 'joint':
+            return 'ARROWS_CIRCLE';
         default:
             return 'QUESTION';
     }
@@ -397,6 +399,7 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     const isTokenTransaction = transaction.tokens.length > 0;
     return (
         (!isTokenTransaction &&
+            transaction.type !== 'joint' && // coinjoin txs don't have any target
             !transaction.cardanoSpecific && // cardano staking txs (de/registration of staking key, stake delegation) don't need to have any target
             !transaction.targets.find(t => t.addresses)) ||
         transaction.type === 'unknown'

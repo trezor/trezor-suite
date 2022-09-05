@@ -91,6 +91,19 @@ export const TransactionHeading = ({
         );
     }
 
+    if (transaction.type === 'joint') {
+        const abs = transaction.amount.startsWith('-')
+            ? transaction.amount.slice(1)
+            : transaction.amount;
+        amount = (
+            <StyledCryptoAmount
+                value={formatNetworkAmount(abs, transaction.symbol)}
+                symbol={transaction.symbol}
+                signValue={transaction.amount}
+            />
+        );
+    }
+
     if (transaction.type === 'failed') {
         amount = (
             <StyledCryptoAmount
