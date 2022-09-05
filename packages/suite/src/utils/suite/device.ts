@@ -389,10 +389,11 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) =>
         }, [] as TrezorDevice[])
         .sort(sortByPriority);
 
-export const getPhysicalDeviceCount = (devices: Device[]) => {
-    const uniqueIds = new Set(devices.map(d => d.id));
-    return uniqueIds.size;
-};
+export const getPhysicalDeviceUniqueIds = (devices: Device[]) =>
+    [...new Set(devices.map(d => d.id))].filter(id => id) as string[];
+
+export const getPhysicalDeviceCount = (devices: Device[]) =>
+    getPhysicalDeviceUniqueIds(devices).length;
 
 export const parseFirmwareChangelog = (
     features: TrezorDevice['features'],
