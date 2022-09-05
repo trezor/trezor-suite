@@ -17,6 +17,7 @@
         "@suite-common/sentry": "*",
         "@trezor/components": "*",
         "@trezor/connect": "9.0.3",
+        "@trezor/ipc-proxy": "*",
         "@trezor/suite": "*",
         "@trezor/suite-analytics": "*",
         "@trezor/suite-desktop-api": "*",

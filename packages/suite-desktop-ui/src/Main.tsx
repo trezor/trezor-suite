@@ -28,6 +28,8 @@ import { desktopHandshake } from '@suite-actions/suiteActions';
 import { SENTRY_CONFIG } from '@suite-common/sentry';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { FormatterProvider } from '@suite-common/formatters';
+import { createIpcProxy } from '@trezor/ipc-proxy';
+import TrezorConnect from '@trezor/connect';
 
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
@@ -103,6 +105,14 @@ export const init = async (root: HTMLElement) => {
     }
 
     store.dispatch(desktopHandshake(loadModules.payload));
+
+    // create ipc-proxy for @trezor/connect
+    const proxy = await createIpcProxy<typeof TrezorConnect>('TrezorConnect');
+    // override each method of @trezor/connect using ipc-proxy
+    Object.keys(TrezorConnect).forEach(method => {
+        // @ts-expect-error key vs union of values endless problem
+        TrezorConnect[method] = proxy[method];
+    });
 
     // finally render whole app
     render(

@@ -22,12 +22,6 @@ const config: webpack.Configuration = {
         path: path.join(baseDir, 'build'),
     },
     plugins: [
-        // wrap @trezor/connect index
-        new webpack.NormalModuleReplacementPlugin(
-            /@trezor\/connect$/,
-            path.join(baseDirUI, 'src/support/trezor-connect-ipc-wrapper'),
-        ),
-
         new CopyPlugin({
             patterns: ['bin', 'fonts', 'images', 'videos', 'guide/assets']
                 .map(dir => ({
