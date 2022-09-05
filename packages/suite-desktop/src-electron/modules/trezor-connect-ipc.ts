@@ -1,21 +1,13 @@
 import { app, ipcMain } from 'electron';
-import TrezorConnect, {
-    DEVICE_EVENT,
-    UI_EVENT,
-    TRANSPORT_EVENT,
-    BLOCKCHAIN_EVENT,
-} from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
+import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
 import type { Module } from './index';
-
-type Call = [keyof typeof TrezorConnect, string, ...any[]];
 
 const SERVICE_NAME = 'trezor-connect-ipc';
 
-const init: Module = ({ mainWindow, store }) => {
+const init: Module = ({ store }) => {
     const { logger } = global;
     logger.info(SERVICE_NAME, `Starting service`);
-
-    app.on('before-quit', TrezorConnect.dispose);
 
     const setProxy = (ifRunning = false) => {
         const tor = store.getTorSettings();
@@ -30,20 +22,32 @@ const init: Module = ({ mainWindow, store }) => {
         return TrezorConnect.setProxy(payload);
     };
 
-    ipcMain.on(
-        'trezor-connect-call',
-        async ({ reply }: Electron.IpcMainEvent, [method, responseEvent, ...params]: Call) => {
-            logger.debug(SERVICE_NAME, `TrezorConnect.${method}`);
-
+    const ipcProxyOptions: IpcProxyHandlerOptions<typeof TrezorConnect> = {
+        onCreateInstance: () => Promise.resolve(),
+        onRequest: async (method, ...params) => {
             // @ts-expect-error method name union
-            const response = await TrezorConnect[method](...params);
-
+            const response = await TrezorConnect[method].call(null, ...params);
             if (method === 'init') {
                 await setProxy(true);
             }
-            reply(responseEvent, response);
+            return response;
         },
-    );
+        onAddListener: (eventName, listener) => {
+            logger.debug(SERVICE_NAME, `Add event listener ${eventName}`);
+            TrezorConnect.on(eventName, listener);
+        },
+        onRemoveListener: event => {
+            TrezorConnect.removeAllListeners(event);
+        },
+        debug: console,
+    };
+
+    const unregister = createIpcProxyHandler(ipcMain, 'TrezorConnect', ipcProxyOptions);
+
+    app.on('before-quit', () => {
+        unregister();
+        TrezorConnect.dispose();
+    });
 
     // It would be much easier to use ipcRenderer.invoke and return a promise directly from TrezorConnect[method]
     // BUT unfortunately ipcRenderer.invoke and ipcRenderer.on event listener works asynchronously and results with race conditions (possible electron bug)
@@ -57,32 +61,6 @@ const init: Module = ({ mainWindow, store }) => {
     return () => {
         // reset previous instance, possible left over after renderer refresh (F5)
         TrezorConnect.dispose();
-
-        // DesktopApi is now too strict :)
-        // this channel is not declared in DesktopApi, it will be moved in to @trezor/connect-electron
-        const channel: any = 'trezor-connect-event';
-
-        // propagate all events using trezor-connect-event channel
-        // listeners references are managed by desktopApi (see ./src-electron/modules/trezor-connect-preload)
-        TrezorConnect.on(DEVICE_EVENT, event => {
-            logger.debug(SERVICE_NAME, `DEVICE_EVENT ${event.type}`);
-            mainWindow.webContents.send(channel, event);
-        });
-
-        TrezorConnect.on(UI_EVENT, event => {
-            logger.debug(SERVICE_NAME, `UI_EVENT ${event.type}`);
-            mainWindow.webContents.send(channel, event);
-        });
-
-        TrezorConnect.on(TRANSPORT_EVENT, event => {
-            logger.debug(SERVICE_NAME, `TRANSPORT_EVENT ${event.type}`);
-            mainWindow.webContents.send(channel, event);
-        });
-
-        TrezorConnect.on(BLOCKCHAIN_EVENT, event => {
-            logger.debug(SERVICE_NAME, `BLOCKCHAIN_EVENT ${event.type}`);
-            mainWindow.webContents.send(channel, event);
-        });
     };
 };
 
