@@ -25,10 +25,13 @@ export const ApplicationLog = ({ onCancel }: ApplicationLogProps) => {
     const htmlElement = createRef<HTMLPreElement>();
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
 
-    const { state, logs } = useSelector(state => ({ state, logs: state.logs }));
+    const { state, logs } = useSelector(state => ({
+        state,
+        logs: state.logs,
+    }));
 
     const actionLog = getApplicationLog(logs, hideSensitiveInfo);
-    const applicationInfo = getApplicationInfo(state);
+    const applicationInfo = getApplicationInfo(state, hideSensitiveInfo);
 
     const log = prettifyLog([applicationInfo, ...actionLog]);
 
