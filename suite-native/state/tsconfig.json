@@ -12,7 +12,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../home-graph" },
-        { "path": "../module-assets" },
+        { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },

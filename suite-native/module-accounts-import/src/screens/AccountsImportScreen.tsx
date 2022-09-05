@@ -1,18 +1,26 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { CompositeStackToTabScreenProps, Screen } from '@suite-native/navigation';
+import {
+    StackToTabCompositeScreenProps,
+    Screen,
+    RootStackRoutes,
+    AppTabsRoutes,
+    AccountsImportStackRoutes,
+    HomeStackRoutes,
+    RootStackParamList,
+    AccountsImportStackParamList,
+} from '@suite-native/navigation';
 import { Button } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { setOnboardingFinished } from '@suite-native/module-settings';
 
-import { AssetsStackParamList, AssetsStackRoutes } from '../navigation/routes';
-import { AssetsLoader } from '../components/AssetsLoader';
-import { setOnboardingFinished } from '../slice';
-import { AssetsHeader } from '../components/AssetsHeader';
-import { AssetsOverview, dummyDevices } from '../components/AssetsOverview';
-import { importAssetThunk } from '../state/devices/devicesThunks';
+import { AccountImportLoader } from '../components/AccountImportLoader';
+import { AccountImportHeader } from '../components/AccountImportHeader';
+import { AccountImportOverview, DummyDevice } from '../components/AccountImportOverview';
+import { importAccountThunk } from '../accountsThunks';
 
 const assetsStyle = prepareNativeStyle(_ => ({
     flex: 1,
@@ -28,36 +36,39 @@ const importAnotherButtonStyle = prepareNativeStyle(utils => ({
     width: 165,
 }));
 
-export const AssetsImport = ({
+export const AccountsImportScreen = ({
     navigation,
     route,
-}: CompositeStackToTabScreenProps<
-    AssetsStackParamList,
-    AssetsStackRoutes.AssetsImport,
+}: StackToTabCompositeScreenProps<
+    AccountsImportStackParamList,
+    AccountsImportStackRoutes.AccountImport,
     RootStackParamList
 >) => {
     const dispatch = useDispatch();
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const [selectedDevice, setSelectedDevice] = useState<string>('');
+    const [selectedDevice, setSelectedDevice] = useState<DummyDevice>();
     const [assetName, setAssetName] = useState<string>('bitcoines #1');
 
     const { applyStyle } = useNativeStyles();
 
     const { xpubAddress, currencySymbol } = route.params;
 
-    const getAccountInfo = useCallback(() => {
+    useEffect(() => {
+        let ignore = false;
+
         const showAccountInfoAlert = ({ title, message }: { title: string; message: string }) => {
             Alert.alert(title, message, [
                 { text: 'OK, I will fix it', onPress: () => navigation.goBack() },
             ]);
         };
 
-        TrezorConnect.getAccountInfo({
-            coin: currencySymbol,
-            descriptor: xpubAddress,
-            details: 'txs',
-        })
-            .then(accountInfo => {
+        async function getAccountInfo() {
+            const accountInfo = await TrezorConnect.getAccountInfo({
+                coin: currencySymbol,
+                descriptor: xpubAddress,
+                details: 'txs',
+            });
+            if (!ignore) {
                 if (accountInfo?.success) {
                     setAccountInfo(accountInfo.payload);
                 } else {
@@ -66,62 +77,56 @@ export const AssetsImport = ({
                         message: accountInfo.payload?.error ?? '',
                     });
                 }
-            })
-            .catch(error => {
-                showAccountInfoAlert({
-                    title: 'Account info failed',
-                    message: error?.message ?? '',
-                });
-            });
-    }, [xpubAddress, currencySymbol, navigation]);
-
-    useEffect(() => {
-        // FIXME: setTimeout is present only to allow for loading screen to be visible for 800ms.
-        // It will be handled by extra builders from redux toolkit when it's implemented in thunks (pending, fulfilled..)
-        const fetchingTimerId = setTimeout(() => {
+            }
+        }
+        try {
             getAccountInfo();
-        }, 800);
+        } catch (error) {
+            showAccountInfoAlert({
+                title: 'Account info failed',
+                message: error?.message ?? '',
+            });
+        }
 
-        return () => clearTimeout(fetchingTimerId);
-    }, [getAccountInfo]);
+        return () => {
+            ignore = true;
+        };
+    }, [xpubAddress, currencySymbol, navigation]);
 
     const handleConfirmAssets = () => {
         if (accountInfo && selectedDevice) {
-            const dummyDevice = dummyDevices.find(device => device.value === selectedDevice);
-            if (dummyDevice) {
-                const { title } = dummyDevice;
-                dispatch(
-                    importAssetThunk({
-                        deviceId: selectedDevice,
-                        deviceTitle: title,
-                        accountInfo,
-                        coin: currencySymbol,
-                    }),
-                );
-                dispatch(setOnboardingFinished(true));
-                navigation.navigate(RootStackRoutes.App, {
-                    screen: AppTabsRoutes.HomeStack,
-                    params: {
-                        screen: HomeStackRoutes.Home,
-                    },
-                });
-            }
+            const { title, value } = selectedDevice;
+            dispatch(
+                importAccountThunk({
+                    deviceId: value,
+                    deviceTitle: title,
+                    accountInfo,
+                    coin: currencySymbol,
+                }),
+            );
+            dispatch(setOnboardingFinished(true));
+            navigation.navigate(RootStackRoutes.App, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
         }
     };
 
-    const handleSelectDevice = (value: string | number) => {
-        setSelectedDevice(value.toString());
+    const handleSelectDevice = (device: DummyDevice) => {
+        setSelectedDevice(device);
     };
 
     return (
         <Screen>
             {!accountInfo ? (
-                <AssetsLoader />
+                <AccountImportLoader />
             ) : (
                 <View style={[applyStyle(assetsStyle)]}>
                     <View>
-                        <AssetsHeader />
-                        <AssetsOverview
+                        <AccountImportHeader />
+                        <AccountImportOverview
                             accountInfo={accountInfo}
                             selectedDevice={selectedDevice}
                             assetName={assetName}

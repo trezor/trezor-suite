@@ -15,7 +15,7 @@ const textStyle = prepareNativeStyle<{ opacity?: number }>((_, { opacity = 1.0 }
     opacity,
 }));
 
-export const AssetsLoader = () => {
+export const AccountImportLoader = () => {
     const { applyStyle } = useNativeStyles();
 
     return (

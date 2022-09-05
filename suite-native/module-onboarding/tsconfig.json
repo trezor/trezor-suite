@@ -3,10 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../atoms" },
-        { "path": "../home-graph" },
         { "path": "../navigation" },
-        { "path": "../../packages/icons" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/styles" }
     ]
 }

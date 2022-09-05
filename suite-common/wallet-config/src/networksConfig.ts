@@ -385,11 +385,11 @@ export type BackendType =
 type Networks = typeof networks;
 export type NetworkSymbol = keyof Networks;
 type NetworkValue = Networks[NetworkSymbol];
-export type AccountType = Keys<NetworkValue['accountTypes']>;
+export type AccountType = Keys<NetworkValue['accountTypes']> | 'imported';
 export type NetworkFeature = 'rbf' | 'sign-verify' | 'amount-unit' | 'tokens';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
-    accountType?: 'normal' | 'imported' | AccountType;
+    accountType?: 'normal' | AccountType;
     backendType?: BackendType;
     testnet?: boolean;
     isHidden?: boolean;

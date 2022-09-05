@@ -17,13 +17,13 @@ export type StackNavigationProps<
     K extends keyof ParamListBase,
 > = StackNavigationProp<T, K>;
 
-export type CompositeTabToStackNavigationProp<
+export type TabToStackCompositeNavigationProp<
     T extends ParamListBase,
     K extends string,
     L extends ParamListBase,
 > = CompositeNavigationProp<BottomTabNavigationProp<T, K>, StackNavigationProp<L>>;
 
-export type CompositeStackToTabScreenProps<
+export type StackToTabCompositeScreenProps<
     T extends ParamListBase,
     K extends string,
     L extends ParamListBase,

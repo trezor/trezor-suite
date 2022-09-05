@@ -2,9 +2,9 @@ import React from 'react';
 
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { AppTabsParamList, HomeStackNavigator } from '@suite-native/module-home';
+import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
-import { TabBar, AppTabsRoutes } from '@suite-native/navigation';
+import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 
 import { AccountsScreen } from './dummyScreens/AccountsScreen';
 import { ActionScreen } from './dummyScreens/ActionScreen';

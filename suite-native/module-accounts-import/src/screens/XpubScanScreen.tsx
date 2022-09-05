@@ -3,14 +3,18 @@ import { Pressable, View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Screen, StackProps } from '@suite-native/navigation';
+import {
+    AccountsImportStackParamList,
+    AccountsImportStackRoutes,
+    Screen,
+    StackProps,
+} from '@suite-native/navigation';
 import { Box, Button, Chip, Input, InputWrapper, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
-import { AssetsStackParamList, AssetsStackRoutes } from '../navigation/routes';
 
 const coinStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
@@ -41,10 +45,13 @@ const devXpubButtonStyle = prepareNativeStyle(utils => ({
 
 const DEFAULT_XPUB_INPUT_TEXT = '';
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
+// Slip 0014 - https://github.com/satoshilabs/slips/blob/master/slip-0014.md#bitcoin-segwit--p2wpkh--bip84
+const BTC_HARD_CODED_XPUB =
+    'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT';
 
-export const XpubScan = ({
+export const XpubScanScreen = ({
     navigation,
-}: StackProps<AssetsStackParamList, AssetsStackRoutes.XpubScan>) => {
+}: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
     const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
         useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
     const [inputText, setInputText] = useState<string>(DEFAULT_XPUB_INPUT_TEXT);
@@ -69,7 +76,7 @@ export const XpubScan = ({
 
     const handleXpubResult = (value?: string) => {
         if (value) {
-            navigation.navigate(AssetsStackRoutes.AssetsImport, {
+            navigation.navigate(AccountsImportStackRoutes.AccountImport, {
                 xpubAddress: value,
                 currencySymbol: selectedCurrencySymbol,
             });
@@ -124,14 +131,10 @@ export const XpubScan = ({
                     {__DEV__ && (
                         <Button
                             style={applyStyle(devXpubButtonStyle)}
-                            onPress={() =>
-                                handleXpubResult(
-                                    'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-                                )
-                            }
+                            onPress={() => handleXpubResult(BTC_HARD_CODED_XPUB)}
                             colorScheme="gray"
                         >
-                            DEV: Request dev xPub
+                            Use dev xPub
                         </Button>
                     )}
                 </InputWrapper>

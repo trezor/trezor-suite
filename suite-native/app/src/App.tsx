@@ -17,9 +17,11 @@ const AppComponent = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // TODO handle possible error
-        dispatch(connectInitThunk());
-        dispatch(initBlockchainThunk());
+        const initActions = async () => {
+            await dispatch(connectInitThunk()).unwrap();
+            await dispatch(initBlockchainThunk()).unwrap();
+        };
+        initActions().catch(console.error);
     }, [dispatch]);
 
     return <RootStackNavigator />;

@@ -6224,9 +6224,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-assets@*, @suite-native/module-assets@workspace:suite-native/module-assets":
+"@suite-native/module-accounts-import@*, @suite-native/module-accounts-import@workspace:suite-native/module-accounts-import":
   version: 0.0.0-use.local
-  resolution: "@suite-native/module-assets@workspace:suite-native/module-assets"
+  resolution: "@suite-native/module-accounts-import@workspace:suite-native/module-accounts-import"
   dependencies:
     "@react-navigation/core": ^6.2.2
     "@react-navigation/native": ^6.0.11
@@ -6234,12 +6234,13 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     "@suite-common/redux-utils": "*"
     "@suite-common/suite-types": "*"
-    "@suite-common/test-utils": "*"
     "@suite-common/wallet-config": "*"
     "@suite-common/wallet-core": "*"
     "@suite-common/wallet-types": "*"
     "@suite-common/wallet-utils": "*"
     "@suite-native/atoms": "*"
+    "@suite-native/module-devices": "*"
+    "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@trezor/connect": 9.0.0
     "@trezor/icons": "*"
@@ -6255,6 +6256,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/module-devices@*, @suite-native/module-devices@workspace:suite-native/module-devices":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-devices@workspace:suite-native/module-devices"
+  dependencies:
+    "@reduxjs/toolkit": ^1.8.3
+    jest: ^26.6.3
+    react: ^17.0.2
+    react-native: 0.68.2
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-home@*, @suite-native/module-home@workspace:suite-native/module-home":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-home@workspace:suite-native/module-home"
@@ -6263,8 +6276,6 @@ __metadata:
     "@react-navigation/stack": ^6.2.2
     "@suite-native/atoms": "*"
     "@suite-native/home-graph": "*"
-    "@suite-native/module-assets": "*"
-    "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
@@ -6273,6 +6284,23 @@ __metadata:
     react: ^17.0.2
     react-native: 0.68.2
     react-redux: 7.2.2
+    typescript: 4.7.4
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-onboarding@*, @suite-native/module-onboarding@workspace:suite-native/module-onboarding":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-onboarding@workspace:suite-native/module-onboarding"
+  dependencies:
+    "@react-navigation/core": ^6.2.2
+    "@react-navigation/native": ^6.0.11
+    "@react-navigation/stack": ^6.2.2
+    "@suite-native/atoms": "*"
+    "@suite-native/navigation": "*"
+    "@trezor/styles": "*"
+    jest: ^26.6.3
+    react: ^17.0.2
+    react-native: 0.68.2
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -6305,6 +6333,8 @@ __metadata:
     "@react-navigation/bottom-tabs": ^6.3.1
     "@react-navigation/native": ^6.0.11
     "@react-navigation/stack": ^6.2.2
+    "@suite-common/wallet-config": "*"
+    "@suite-common/wallet-types": "*"
     "@suite-native/atoms": "*"
     "@trezor/icons": "*"
     "@trezor/styles": "*"
@@ -6326,7 +6356,7 @@ __metadata:
     "@suite-common/test-utils": "*"
     "@suite-common/wallet-core": "*"
     "@suite-native/home-graph": "*"
-    "@suite-native/module-assets": "*"
+    "@suite-native/module-devices": "*"
     "@suite-native/module-settings": "*"
     "@trezor/connect": 9.0.0
     "@trezor/styles": "*"
@@ -7005,8 +7035,9 @@ __metadata:
     "@suite-common/connect-init": "*"
     "@suite-common/wallet-core": "*"
     "@suite-native/atoms": "*"
-    "@suite-native/module-assets": "*"
+    "@suite-native/module-accounts-import": "*"
     "@suite-native/module-home": "*"
+    "@suite-native/module-onboarding": "*"
     "@suite-native/module-settings": "*"
     "@suite-native/navigation": "*"
     "@suite-native/state": "*"

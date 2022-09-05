@@ -1,41 +1,36 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { testMocks } from '@suite-common/test-utils';
 import { accountsActions, selectAccounts } from '@suite-common/wallet-core';
 import { AccountInfo } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { createDevice, selectDeviceById } from '@suite-native/module-devices';
 
-import { actionPrefix, devicesActions } from './devicesActions';
-import { selectDeviceById } from './devicesReducer';
+const actionPrefix = '@accountImport';
 
-type importAssetThunkPayload = {
+type ImportAssetThunkPayload = {
     deviceId: string;
     deviceTitle: string;
     accountInfo: AccountInfo;
     coin: NetworkSymbol;
 };
 
-const getDeviceState = (deviceId: string) => `state@${deviceId}:1`;
+const getMockedDeviceState = (deviceId: string) => `state@${deviceId}:1`;
 
-export const importAssetThunk = createThunk(
-    `${actionPrefix}/createAssetThunk`,
+export const importAccountThunk = createThunk(
+    `${actionPrefix}/importAccountThunk`,
     (
-        { deviceId, deviceTitle, accountInfo, coin }: importAssetThunkPayload,
+        { deviceId, deviceTitle, accountInfo, coin }: ImportAssetThunkPayload,
         { dispatch, getState },
     ) => {
         const device = selectDeviceById(deviceId)(getState());
-        const deviceState = getDeviceState(deviceId);
+        const deviceState = getMockedDeviceState(deviceId);
 
         if (!device) {
-            const mockedSuiteDevice = testMocks.getSuiteDevice({
-                type: 'acquired',
-                connected: true,
-                useEmptyPassphrase: true,
-                instance: 1,
-            });
             dispatch(
-                devicesActions.createDevice({
-                    ...mockedSuiteDevice,
+                createDevice({
+                    type: 'imported',
                     id: deviceId,
+                    status: 'available',
+                    mode: 'normal',
                     state: deviceState,
                     label: deviceTitle,
                 }),
@@ -58,7 +53,7 @@ export const importAssetThunk = createThunk(
                 accountsActions.createAccount(
                     deviceState,
                     {
-                        index: deviceNetworkAccounts.length + 1,
+                        index: deviceNetworkAccounts.length, // indexed from 0
                         path: accountInfo?.path ?? '',
                         accountType: 'imported',
                         networkType: 'bitcoin',

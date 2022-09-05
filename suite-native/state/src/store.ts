@@ -1,7 +1,7 @@
 import { combineReducers, configureStore, Store, Middleware } from '@reduxjs/toolkit';
 import createDebugger from 'redux-flipper';
 
-import { onboardingReducer, prepareDevicesReducer } from '@suite-native/module-assets';
+import { devicesReducer } from '@suite-native/module-devices';
 import { appSettingsReducer } from '@suite-native/module-settings';
 import { appGraphReducer } from '@suite-native/home-graph';
 import {
@@ -29,7 +29,6 @@ export const transactionsReducer = prepareTransactionsReducer(extraDependencies)
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
-export const devicesReducer = prepareDevicesReducer(extraDependencies);
 
 const walletReducers = combineReducers({
     accounts: accountsReducer,
@@ -40,7 +39,6 @@ const walletReducers = combineReducers({
 
 export const store: Store = configureStore({
     reducer: {
-        onboarding: onboardingReducer,
         appSettings: appSettingsReducer,
         appGraph: appGraphReducer,
         devices: devicesReducer,

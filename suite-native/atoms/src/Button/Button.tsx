@@ -88,7 +88,7 @@ export const Button = ({
                 <View style={applyStyle(iconStyle)}>
                     <Icon
                         name={iconName}
-                        color={colorScheme === 'primary' ? 'white' : 'gray700'}
+                        color={colorScheme === 'primary' ? 'gray0' : 'gray700'}
                         size={size}
                     />
                 </View>

@@ -13,15 +13,17 @@ import {
 import { AccountInfo } from '@trezor/connect';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 
+export type DummyDevice = { icon: IconName; title: string; value: string };
+
 type AssetsOverviewProps = {
     accountInfo: AccountInfo;
-    selectedDevice: string;
+    selectedDevice: DummyDevice | undefined;
     assetName: string;
-    onSelectDevice: (value: string | number) => void;
+    onSelectDevice: (device: DummyDevice) => void;
     onAssetNameChange: (value: string) => void;
 };
 
-export const dummyDevices: Array<{ icon: IconName; title: string; value: string }> = [
+export const dummyDevices: Array<DummyDevice> = [
     {
         icon: 'trezorT',
         title: 'Model T',
@@ -34,7 +36,7 @@ export const dummyDevices: Array<{ icon: IconName; title: string; value: string 
     },
 ];
 
-export const AssetsOverview = ({
+export const AccountImportOverview = ({
     accountInfo,
     selectedDevice,
     assetName,
@@ -67,9 +69,9 @@ export const AssetsOverview = ({
                             key={device.value}
                             iconName={device.icon}
                             title={device.title}
-                            onPress={onSelectDevice}
+                            onPress={() => onSelectDevice(device)}
                             value={device.value}
-                            isChecked={selectedDevice === device.value}
+                            isChecked={selectedDevice?.value === device.value}
                         />
                     ))}
                 </VStack>

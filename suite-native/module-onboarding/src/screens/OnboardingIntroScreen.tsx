@@ -1,11 +1,15 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import { Screen, StackProps } from '@suite-native/navigation';
+import {
+    AccountsImportStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    StackProps,
+} from '@suite-native/navigation';
 import { Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { AssetsStackParamList, AssetsStackRoutes } from '../navigation/routes';
 
 const introStyle = prepareNativeStyle(_ => ({
     flex: 1,
@@ -41,9 +45,9 @@ const introButtonStyle = prepareNativeStyle(_ => ({
     paddingBottom: 39,
 }));
 
-export const OnboardingIntro = ({
+export const OnboardingIntroScreen = ({
     navigation,
-}: StackProps<AssetsStackParamList, AssetsStackRoutes.Onboarding>) => {
+}: StackProps<RootStackParamList, RootStackRoutes.Onboarding>) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -68,7 +72,9 @@ export const OnboardingIntro = ({
                 <View style={applyStyle(introButtonStyle)}>
                     <Button
                         onPress={() => {
-                            navigation.navigate(AssetsStackRoutes.XpubScan);
+                            navigation.navigate(RootStackRoutes.AccountsImport, {
+                                screen: AccountsImportStackRoutes.XpubScan,
+                            });
                         }}
                         size="large"
                     >
