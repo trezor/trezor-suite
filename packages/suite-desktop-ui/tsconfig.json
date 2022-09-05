@@ -9,6 +9,7 @@
         { "path": "../../suite-common/sentry" },
         { "path": "../components" },
         { "path": "../connect" },
+        { "path": "../ipc-proxy" },
         { "path": "../suite" },
         { "path": "../suite-analytics" },
         { "path": "../suite-desktop-api" },

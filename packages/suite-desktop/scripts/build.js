@@ -58,7 +58,7 @@ console.log(`[Electron Build] Using mocks: ${useMocks}`);
 // All local packages that doesn't have "build:libs" and used in packages/suite-desktop/src
 // must be built and not included in electron node_modules, because they are in TS.
 // Normal src/ folder is fine, because it's builded by webpack.
-const builtTrezorDependencies = ['@trezor/urls', '@trezor/utils'];
+const builtTrezorDependencies = ['@trezor/ipc-proxy', '@trezor/urls', '@trezor/utils'];
 
 const dependencies = Object.keys(pkg.dependencies).filter(
     name => !(name.startsWith('@suite-common/') || builtTrezorDependencies.includes(name)),

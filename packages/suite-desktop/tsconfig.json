@@ -15,6 +15,7 @@
         },
         { "path": "../connect" },
         { "path": "../connect-common" },
+        { "path": "../ipc-proxy" },
         { "path": "../request-manager" },
         { "path": "../suite-desktop-api" },
         { "path": "../urls" },

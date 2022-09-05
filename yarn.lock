@@ -7119,7 +7119,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/ipc-proxy@workspace:packages/ipc-proxy":
+"@trezor/ipc-proxy@*, @trezor/ipc-proxy@workspace:packages/ipc-proxy":
   version: 0.0.0-use.local
   resolution: "@trezor/ipc-proxy@workspace:packages/ipc-proxy"
   languageName: unknown
@@ -7298,6 +7298,7 @@ __metadata:
     "@suite-common/sentry": "*"
     "@trezor/components": "*"
     "@trezor/connect": 9.0.3
+    "@trezor/ipc-proxy": "*"
     "@trezor/suite": "*"
     "@trezor/suite-analytics": "*"
     "@trezor/suite-desktop-api": "*"
@@ -7329,6 +7330,7 @@ __metadata:
     "@suite-common/suite-utils": "*"
     "@trezor/connect": 9.0.3
     "@trezor/connect-common": "*"
+    "@trezor/ipc-proxy": "*"
     "@trezor/request-manager": "*"
     "@trezor/suite-desktop-api": "*"
     "@trezor/trezor-user-env-link": "*"

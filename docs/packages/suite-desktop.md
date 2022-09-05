@@ -14,13 +14,11 @@
 
 -   suite-desktop
 
-    `@trezor/connect` is installed as regular node_module in electron main process and works in nodejs environment.
+    `@trezor/connect` is installed as regular node_module and works in nodejs context (electron main process).
 
-    `@trezor/connect` files are **not** hosted on the electron renderer side, there is no iframe or /build/static/connect dir.
+    `@trezor/connect` files are **not** hosted on the electron renderer context, there is no iframe or /build/static/connect dir.
 
-    On the renderer side `@trezor/connect`, imports from `@trezor/suite` are replaced to custom module `packages/suite-desktop/src/support/trezor-connect-ipc-wrapper` (future @trezor/connect-electron package) see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-build/configs/desktop.webpack.config.ts)
-
-    `Electron.IpcRenderer.send/Electron.IpcRenderer.on` interface is used as communication channel between suite (electron renderer) and connect API (electron main). see @trezor/suite-desktop/src/trezor-connect-preload.ts
+    On the renderer context all `@trezor/connect` methods from are replaced by `@trezor/ipc-proxy` methods. see [index](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-desktop/src/Main.tsx)
 
 ### Firmware binaries
 

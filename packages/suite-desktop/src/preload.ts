@@ -1,11 +1,10 @@
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
+import { exposeIpcProxy } from '@trezor/ipc-proxy';
 import { getDesktopApi } from '@trezor/suite-desktop-api';
-import { ipcRenderer } from './typed-electron';
-import { initTrezorConnectIpcChannel } from './modules/trezor-connect-preload';
 
 import '@sentry/electron/preload';
 
-initTrezorConnectIpcChannel();
+contextBridge.exposeInMainWorld(...exposeIpcProxy(ipcRenderer, ['TrezorConnect']));
 
 const desktopApi = getDesktopApi(ipcRenderer);
 contextBridge.exposeInMainWorld('desktopApi', desktopApi);

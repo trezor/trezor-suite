@@ -28,7 +28,7 @@ const MODULES = [
     'store',
     'udev-install',
     'user-data',
-    'trezor-connect-ipc',
+    'trezor-connect',
     'dev-tools',
     'request-interceptor',
     // Modules used only in dev/prod mode
