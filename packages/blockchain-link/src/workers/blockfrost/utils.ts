@@ -115,7 +115,7 @@ export const transformInputOutput = (
 export const filterTokenTransfers = (
     accountAddress: AccountAddresses,
     tx: BlockfrostTransaction,
-    type: Transaction['type'],
+    type: Exclude<Transaction['type'], 'joint'>,
 ): TokenTransfer[] => {
     const transfers: TokenTransfer[] = [];
     const myNonChangeAddresses = accountAddress.used.concat(accountAddress.unused);
@@ -142,9 +142,9 @@ export const filterTokenTransfers = (
                 if (type === 'sent') {
                     amount = isChange ? '0' : asset.quantity;
                 } else if (type === 'recv') {
-                    amount = sumVinVout(incomingForOutput, '0');
+                    amount = incomingForOutput.reduce(sumVinVout, 0).toString();
                 } else if (type === 'self' && !isChange) {
-                    amount = sumVinVout(incomingForOutput, '0');
+                    amount = incomingForOutput.reduce(sumVinVout, 0).toString();
                 }
 
                 // fingerprint is always defined on tokens
@@ -182,7 +182,7 @@ export const transformTransaction = (
 
     let type: Transaction['type'];
     let targets: VinVout[] = [];
-    let amount =
+    let amount: BigNumber.Value =
         blockfrostTxData.txData.output_amount.find(b => b.unit === 'lovelace')?.quantity || '0';
     const fee = blockfrostTxData.txData.fees;
 
@@ -199,8 +199,8 @@ export const transformTransaction = (
     const outgoing = filterTargets(myAddresses, inputs);
     const incoming = filterTargets(myAddresses, outputs);
     const internal = accountAddress ? filterTargets(accountAddress.change, outputs) : [];
-    const totalInput = sumVinVout(vinLength ? inputs : []);
-    const totalOutput = sumVinVout(voutLength ? outputs : []);
+    const totalInput = inputs.reduce(sumVinVout, 0);
+    const totalOutput = outputs.reduce(sumVinVout, 0);
 
     if (outgoing.length === 0 && incoming.length === 0) {
         type = 'unknown';
@@ -236,7 +236,7 @@ export const transformTransaction = (
         if (incoming.length > 0) {
             targets = incoming;
             // recalculate amount, sum all incoming vout
-            amount = sumVinVout(incoming, amount);
+            amount = incoming.reduce(sumVinVout, 0);
         }
     } else {
         type = 'sent';
@@ -245,10 +245,10 @@ export const transformTransaction = (
         if (voutLength) {
             // bitcoin-like transaction
             // sum all my inputs
-            const myInputsSum = sumVinVout(outgoing, '0');
+            const myInputsSum = outgoing.reduce(sumVinVout, 0);
             // reduce sum by my outputs values
-            const totalSpent = sumVinVout(incoming, myInputsSum, 'reduce');
-            amount = new BigNumber(totalSpent).minus(fee ?? '0').toString();
+            const totalSpent = incoming.reduce(sumVinVout, 0);
+            amount = new BigNumber(myInputsSum).minus(totalSpent).minus(fee ?? '0');
         }
     }
 
@@ -262,7 +262,7 @@ export const transformTransaction = (
         blockTime: blockfrostTxData.txData.block_time,
         blockHeight: blockfrostTxData.txData.block_height || undefined,
         blockHash: blockfrostTxData.txData.block,
-        amount,
+        amount: amount?.toString(),
         fee,
         targets: targets.map(t => transformTarget(t, incoming)),
         tokens,
@@ -275,8 +275,8 @@ export const transformTransaction = (
             vin: inputs,
             vout: outputs,
             size: blockfrostTxData.txData.size,
-            totalInput: totalInput ? totalInput.toString() : '0',
-            totalOutput: totalOutput ? totalOutput.toString() : '0',
+            totalInput: totalInput.toString(),
+            totalOutput: totalOutput.toString(),
         },
     };
 };

@@ -41,6 +41,7 @@ workers.forEach(instance => {
             beforeAll(setup);
             afterAll(teardown);
 
+            // NOTE: do not skip any test because id's sequence must be continuous!
             fixtures[instance.name].notifyAddresses.forEach((f, id) => {
                 it(f.description, async () => {
                     const callback = jest.fn();
