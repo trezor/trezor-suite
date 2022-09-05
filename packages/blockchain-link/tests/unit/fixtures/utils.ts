@@ -677,11 +677,13 @@ export const transformTransaction = [
             vin: [
                 {
                     addresses: ['utxo'],
+                    value: '100',
                 },
             ],
             vout: [
                 {
                     addresses: ['change'],
+                    value: '90',
                 },
             ],
             ...FEES,

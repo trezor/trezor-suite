@@ -91,81 +91,84 @@ export const transformTransaction = (
         ? addresses.change.concat(addresses.used, addresses.unused)
         : [descriptor];
 
-    const vinLength = Array.isArray(tx.vin) ? tx.vin.length : 0;
-    const voutLength = Array.isArray(tx.vout) ? tx.vout.length : 0;
-    const outgoing = filterTargets(myAddresses, tx.vin);
-    const incoming = filterTargets(myAddresses, tx.vout);
-    const internal = addresses ? filterTargets(addresses.change, tx.vout) : [];
-    const tokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
+    const inputs = Array.isArray(tx.vin) ? tx.vin : [];
+    const totalInput = inputs.reduce(sumVinVout, 0);
+    const myInputs = filterTargets(myAddresses, tx.vin);
+    const myTotalInput = myInputs.reduce(sumVinVout, 0);
+
+    const outputs = Array.isArray(tx.vout) ? tx.vout : [];
+    const totalOutput = outputs.reduce(sumVinVout, 0);
+    const myOutputs = filterTargets(myAddresses, tx.vout);
+    const myTotalOutput = myOutputs.reduce(sumVinVout, 0);
+
+    const myTokens = filterTokenTransfers(myAddresses, tx.tokenTransfers);
+
+    const isNonChangeOutput = (o: VinVout) =>
+        addresses ? filterTargets(addresses.change, tx.vout).indexOf(o) < 0 : true;
+
+    const isNonZero = (o: VinVout) => o.value && o.value !== '0';
+
     let type: Transaction['type'];
-    let targets: VinVout[] = [];
-    let amount = tx.value;
-    const totalInput = sumVinVout(vinLength ? tx.vin : []);
-    const totalOutput = sumVinVout(voutLength ? tx.vout : []);
+    let amount: string;
+    let targets: VinVout[];
 
-    // && !hasJoinsplits (from hd-wallet)
-    if (outgoing.length === 0 && incoming.length === 0 && tokens.length === 0) {
-        type = 'unknown';
-    } else if (
-        vinLength > 0 &&
-        voutLength > 0 &&
-        outgoing.length === vinLength &&
-        incoming.length === voutLength
-    ) {
-        // all inputs and outputs are mine
-        type = 'self';
-        // filter non-change outputs
-        targets = tx.vout.filter(o => internal.indexOf(o) < 0);
-        if (targets.length < 1) {
-            // tx was sent to change address(es)
-            targets = tx.vout;
+    if (myInputs.length) {
+        // Some input is mine -> sent, self or joint
+
+        if (myInputs.length < inputs.length) {
+            // Some input is external -> joint
+            // later we could use Wasabi heuristics:
+            // https://github.com/zkSNACKs/WalletWasabi/blob/1edaaabd901fe7d129e30eb84e3ff317897971a9/WalletWasabi/Blockchain/Transactions/SmartTransaction.cs#L46-L49
+
+            type = 'joint';
+            targets = [];
+            amount = new BigNumber(myTotalOutput).minus(myTotalInput).toString();
+        } else if (myOutputs.length < outputs.length || !outputs.length) {
+            // Some output is external or no output at all -> sent
+
+            type = 'sent';
+            targets = myTokens.length
+                ? outputs.filter(isNonZero)
+                : outputs.filter(isNonChangeOutput);
+            amount =
+                !outputs.length || tx.ethereumSpecific
+                    ? tx.value
+                    : new BigNumber(myTotalInput)
+                          .minus(myTotalOutput)
+                          .minus(tx.fees ?? '0')
+                          .toString();
+        } else {
+            // All inputs & outputs are mine -> self
+
+            type = 'self';
+            amount = tx.fees;
+            const intentionalOutputs = outputs.filter(isNonChangeOutput);
+            targets = intentionalOutputs.length ? intentionalOutputs : outputs;
         }
-        // recalculate amount, amount spent is just a fee
-        amount = tx.fees;
-    } else if (outgoing.length === 0 && (incoming.length > 0 || tokens.length > 0)) {
-        // none of the input is mine but and output or token transfer is mine
+    } else if (myOutputs.length || myTokens.length) {
+        // Some output (or token) is mine -> receive
+
         type = 'recv';
-        amount = '0';
-        if (incoming.length > 0) {
-            targets = incoming;
-            // recalculate amount, sum all incoming vout
-            amount = sumVinVout(incoming, amount);
-        }
+        amount = myTotalOutput.toString();
+        targets = myOutputs;
     } else {
-        type = 'sent';
-        // regular targets
-        if (voutLength && (!tokens.length || totalOutput !== '0' || totalInput !== '0')) {
-            // filter account change addresses from output
-            targets = tx.vout.filter(o => internal.indexOf(o) < 0);
-        }
-        // ethereum specific transaction
-        if (tx.ethereumSpecific) {
-            amount = tx.value;
-        } else if (voutLength) {
-            // bitcoin-like transaction
-            // sum all my inputs
-            const myInputsSum = sumVinVout(outgoing, '0');
-            // reduce sum by my outputs values
-            const totalSpent = sumVinVout(incoming, myInputsSum, 'reduce');
-            amount = new BigNumber(totalSpent).minus(tx.fees ?? '0').toString();
-        }
+        // No input or output is mine -> unknown
+
+        type = 'unknown';
+        amount = tx.value;
+        targets = [];
     }
 
-    let rbf: boolean | undefined;
-    if (vinLength) {
-        tx.vin.forEach(vin => {
-            if (typeof vin.sequence === 'number' && vin.sequence < 0xffffffff - 1) {
-                rbf = true;
-            }
-        });
-    }
+    const rbf = inputs.find(i => typeof i.sequence === 'number' && i.sequence < 0xffffffff - 1)
+        ? true
+        : undefined;
 
-    let fee = tx.fees;
-    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed) {
-        fee = new BigNumber(tx.ethereumSpecific.gasPrice)
-            .times(tx.ethereumSpecific.gasLimit)
-            .toString();
-    }
+    const fee =
+        tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed
+            ? new BigNumber(tx.ethereumSpecific.gasPrice)
+                  .times(tx.ethereumSpecific.gasLimit)
+                  .toString()
+            : tx.fees;
 
     return {
         type,
@@ -179,16 +182,16 @@ export const transformTransaction = (
         amount,
         fee,
 
-        targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t, incoming)),
-        tokens,
+        targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t, myOutputs)),
+        tokens: myTokens,
         rbf,
         ethereumSpecific: tx.ethereumSpecific,
         details: {
             vin: tx.vin,
             vout: tx.vout,
             size: typeof tx.hex === 'string' ? tx.hex.length / 2 : 0,
-            totalInput: totalInput ? totalInput.toString() : '0',
-            totalOutput: totalOutput ? totalOutput.toString() : '0',
+            totalInput: totalInput.toString(),
+            totalOutput: totalOutput.toString(),
         },
     };
 };

@@ -26,17 +26,8 @@ export const filterTargets = (addresses: Addresses, targets: VinVout[]): VinVout
     });
 };
 
-export const sumVinVout = (
-    vinVout: VinVout[],
-    initialValue = '0',
-    operation: 'sum' | 'reduce' = 'sum',
-) => {
-    const sum = vinVout.reduce((bn, v) => {
-        if (typeof v.value !== 'string') return bn;
-        return operation === 'sum' ? bn.plus(v.value) : bn.minus(v.value);
-    }, new BigNumber(initialValue));
-    return sum.toString();
-};
+export const sumVinVout = (sum: BigNumber.Value, { value }: VinVout): BigNumber.Value =>
+    typeof value === 'string' ? new BigNumber(value || '0').plus(sum) : sum;
 
 export const transformTarget = (target: VinVout, incoming: VinVout[]) => ({
     n: target.n || 0,
