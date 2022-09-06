@@ -1,6 +1,8 @@
 // @group:suite
 // @retry=2
 
+import { onSuiteGuide } from '../../support/pageObjects/suiteGuideObject';
+
 describe('Stories of bug report forms', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -15,40 +17,33 @@ describe('Stories of bug report forms', () => {
         cy.task('stopEmu');
     });
 
-    /* Test case:
-    1. Go to Bug section in Suite Guide
-    2. Select Dashboard
-    3. Write into feedback field
-    4. Submit bug report (reporttext)
-    */
-    it(`Open Report form, fill bug report, submit report`, () => {
+    /**
+     * Test case:
+     * 1. Go to Bug section in Suite Guide
+     * 2. Select Dashboard
+     * 3. Write into feedback field
+     * 4. Submit bug report (reporttext)
+     */
+    it(`Send a bug report`, () => {
         //
         // Test preparation
         //
-        const reporttext = 'Henlo this is testy test writing hangry test user report';
+        const testData = {
+            desiredLocation: 'Account',
+            reportText: 'Henlo this is testy test writing hangry test user report',
+        };
 
         //
         // Test execution
         //
-        // goes to feedback
-        cy.getTestElement('@guide/button-open', { timeout: 20000 }).click();
-        cy.getTestElement('@guide/panel').should('exist');
-        cy.getTestElement('@guide/button-feedback').click();
-        cy.getTestElement('@guide/feedback/bug').click();
 
-        // gets Dashboard input in dropdown
-        cy.getTestElement('@guide/feedback/suggestion-dropdown').click();
-        cy.getTestElement('@guide/feedback/suggestion-dropdown/select/option/dashboard').click();
-
-        // writes into  field
-        cy.getTestElement('@guide/feedback/suggestion-form').type(reporttext);
-
-        // submits angry Franta User report
-        cy.getTestElement('@guide/feedback/submit-button').click();
+        onSuiteGuide.openSidePanel();
+        onSuiteGuide.openFeedback();
+        onSuiteGuide.sendBugreport(testData);
 
         //
         // Assert
         //
-        cy.getTestElement('@guide/feedback/submit-button').should('not.exist');
+        cy.getTestElement('@toast/user-feedback-send-success').should('be.visible');
     });
 });
