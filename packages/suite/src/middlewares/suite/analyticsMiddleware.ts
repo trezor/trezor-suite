@@ -1,4 +1,5 @@
 import { MiddlewareAPI } from 'redux';
+import BigNumber from 'bignumber.js';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
@@ -95,8 +96,16 @@ const analyticsMiddleware =
                 analytics.report({ type: EventType.DeviceDisconnect });
                 break;
             case DISCOVERY.COMPLETE: {
-                const accountsStatus = state.wallet.accounts
+                const accountsWithTransactions = state.wallet.accounts
                     .filter(account => account.history.total + (account.history.unconfirmed || 0))
+                    .reduce((acc: { [key: string]: number }, obj) => {
+                        const id = `${obj.symbol}_${obj.accountType}`;
+                        acc[id] = (acc[id] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                const accountsWithNonZeroBalance = state.wallet.accounts
+                    .filter(account => new BigNumber(account.balance).gt(0))
                     .reduce((acc: { [key: string]: number }, obj) => {
                         const id = `${obj.symbol}_${obj.accountType}`;
                         acc[id] = (acc[id] || 0) + 1;
@@ -105,7 +114,12 @@ const analyticsMiddleware =
 
                 analytics.report({
                     type: EventType.AccountsStatus,
-                    payload: { ...accountsStatus },
+                    payload: { ...accountsWithTransactions },
+                });
+
+                analytics.report({
+                    type: EventType.AccountsNonZeroBalance,
+                    payload: { ...accountsWithNonZeroBalance },
                 });
                 break;
             }

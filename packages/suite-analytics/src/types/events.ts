@@ -96,6 +96,12 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.AccountsNonZeroBalance;
+          payload: {
+              [key: string]: number;
+          };
+      }
+    | {
           type: EventType.AccountsNewAccount;
           payload: {
               type: string;
