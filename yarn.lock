@@ -7206,6 +7206,7 @@ __metadata:
     pako: ^1.0.11
     pdfmake: ^0.2.5
     polished: ^4.2.2
+    prettier: ^2.7.1
     qrcode.react: ^3.1.0
     react: 17.0.2
     react-dom: 17.0.2
