@@ -169,11 +169,15 @@ export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
 
     return (
         <ThemeProvider>
-            <Wrapper>
+            <Wrapper data-test="@tor-loading-screen">
                 <StyledModal
                     bottomBar={
                         torStatus === TorStatus.Error && (
-                            <StyledButton icon="REFRESH" onClick={tryAgain}>
+                            <StyledButton
+                                data-test="@tor-loading-screen/try-again-button"
+                                icon="REFRESH"
+                                onClick={tryAgain}
+                            >
                                 <Translation id="TR_TRY_AGAIN" />
                             </StyledButton>
                         )
@@ -203,7 +207,11 @@ export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
                         </ProgressWrapper>
 
                         {torStatus !== TorStatus.Disabling && (
-                            <DisableButton variant="secondary" onClick={disableTor}>
+                            <DisableButton
+                                data-test="@tor-loading-screen/disable-button"
+                                variant="secondary"
+                                onClick={disableTor}
+                            >
                                 <Translation id="TR_TOR_DISABLE" />
                             </DisableButton>
                         )}
