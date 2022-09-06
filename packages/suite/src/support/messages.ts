@@ -617,7 +617,7 @@ export default defineMessages({
         id: 'TR_EXCHANGE_CREATE_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
-        defaultMessage: "Use a {symbol} account that isn't in Suite",
+        defaultMessage: "Use an account ({symbol}) that isn't in Suite",
         id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_CONFIRMED_ON_TREZOR: {
@@ -2140,7 +2140,7 @@ export default defineMessages({
         id: 'TR_FIRMWARE_SUBHEADING_UNKNOWN',
     },
     TR_FIRMWARE_SUBHEADING_BITCOIN: {
-        defaultMessage: 'Light-weight firmware supporting only Bitcoin operations.',
+        defaultMessage: 'Lightweight firmware supporting only Bitcoin operations.',
         description: 'Explanation of Bitcoin-only firmware in onboarding',
         id: 'TR_FIRMWARE_SUBHEADING_BITCOIN',
     },
@@ -2816,12 +2816,12 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_MODEL_2',
     },
     TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION: {
-        defaultMessage: 'For more coins, <button>install Universal firmware</button>',
+        defaultMessage: 'For more coins, install <button>Universal</button> firmware.',
         id: 'TR_SETTINGS_COINS_UNIVERSAL_FIRMWARE_SUGGESTION',
     },
     TR_SETTINGS_COINS_BITCOIN_FIRMWARE_SUGGESTION: {
         defaultMessage:
-            'If you only need Bitcoin wallet operations, you can <button>install Bitcoin-only firmware</button>',
+            'If you only need Bitcoin wallet operations, you can install <button>Bitcoin-only</button> firmware.',
         id: 'TR_SETTINGS_COINS_BITCOIN_FIRMWARE_SUGGESTION',
     },
     TR_SHOW_ADDRESS_ANYWAY: {
@@ -3113,7 +3113,7 @@ export default defineMessages({
     },
     TR_WIPING_YOUR_DEVICE: {
         defaultMessage:
-            'Factory Reset wipes the device memory, erasing all information including the Recovery Seed and PIN. Only perform a Factory Reset if you have your Recovery Seed to hand, or there are no funds stored on the device.',
+            'Factory Reset wipes the device memory, erasing all information including the Recovery Seed and PIN. Only perform a Factory Reset if you have a safe offline backup of your Recovery Seed, which allows you to restore your funds.',
         id: 'TR_WIPING_YOUR_DEVICE',
     },
     TR_WORDS: {
@@ -3598,7 +3598,7 @@ export default defineMessages({
     TR_WIPE_DEVICE_TEXT: {
         id: 'TR_WIPE_DEVICE_TEXT',
         defaultMessage:
-            'Resetting the device removes all its data. Reset your device only if you have your recovery seed or there are no funds stored on the device.',
+            'Resetting the device removes all its data. Reset your device only if you have a safe offline backup of your recovery seed, which allows you to restore your funds.',
     },
     TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
@@ -4509,7 +4509,7 @@ export default defineMessages({
     TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION: {
         id: 'TR_SWITCH_FIRMWARE_TYPE_DESCRIPTION',
         defaultMessage:
-            'Bitcoin-only firmware is a light-weight option for users only interested in Bitcoin. Universal firmware enables all supported coins and features. Do you wish to switch firmware type?',
+            'Bitcoin-only firmware is a lightweight option for users only interested in Bitcoin. Universal firmware enables all supported coins and features. Do you wish to switch firmware type?',
     },
     TR_BITCOIN_ONLY_UNAVAILABLE: {
         id: 'TR_BITCOIN_ONLY_UNAVAILABLE',
@@ -5363,7 +5363,7 @@ export default defineMessages({
     },
     TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD',
-        defaultMessage: 'Download on github.com',
+        defaultMessage: 'github.com',
     },
     TR_CUSTOM_FIRMWARE_BUTTON_INSTALL: {
         id: 'TR_CUSTOM_FIRMWARE_BUTTON_INSTALL',

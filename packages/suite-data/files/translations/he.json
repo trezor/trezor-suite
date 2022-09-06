@@ -92,7 +92,7 @@
   "RECEIVE_ADDRESS_REVEAL": "להצגת הכתובת המלאה",
   "TR_ADVANCED": "האיזור המסוכן",
   "TR_COINS": "קריפטו",
-  "TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD": "להורדה ב- Trezor.io",
+  "TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD": "github.com",
   "TR_CUSTOM_FIRMWARE_BUTTON_INSTALL": "להתקנת קושחה",
   "TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD": "בחרי קושחה מתאימה",
   "TR_CUSTOM_FIRMWARE_TITLE_INSTALL": "התקן קושחה",
@@ -114,7 +114,6 @@
   "TR_FIRMWARE_PARTIALLY_UPDATED": "קושחה עודכנה חלקית",
   "TR_FIRMWARE_REINSTALL_FW_DESCRIPTION": "המכשיר שלך כבר מעודכן לקושחה העדכנית ביותר. ניתן להתקין אותה מחדש במידת הצורך.",
   "TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED": "הושלמה",
-  "TR_FIRMWARE_SUBHEADING": "ה-Trezor שלך מגיע מהמפעל ללא קושחה. תוכלי להתקין את הגרסה העדכנית ביותר על ידי לחיצה על הכפתור למטה. כשהמכשיר שלך יופעל, הוא יאשר שהקושחה מקורית או יציג אזהרה במקרה שהיא לא.",
   "TR_FIRMWARE_UPDATE": "עדכון קושחה",
   "TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED": "על המכשיר שלך מותקנת קושחה שכבר אינה נתמכת. תצטרכי לעדכן אותה.",
   "TR_FIRMWARE_VALIDATION_TOO_OLD": "הקושחה ישנה מדי בשביל המכשיר שלך",
@@ -134,6 +133,5 @@
   "TR_ONBOARDING_STEP_FIRMWARE": "קושחה",
   "TR_SETTINGS": "הגדרות",
   "TR_UP_TO_DATE": "עדכנית",
-  "TR_WALLET": "חשבונות",
-  "TR_YOUR_CURRENT_FIRMWARE": "גרסת הקושחה הנוכחית שלך היא {version}"
+  "TR_WALLET": "חשבונות"
 }
