@@ -35,9 +35,21 @@ const requestDelay = async (options: RequestOptions) => {
     }
 };
 
+const identities: string[] = [];
+
 const createHeaders = (options: RequestOptions) => {
+    let identity = Date.now().toString();
+    if (identities.length > 5) {
+        // eslint-disable-next-line prefer-destructuring
+        identity = identities[2];
+    } else {
+        identities.push(identity);
+    }
+
+    console.warn('---> Request with identity', identity, identities);
     const headers: HeadersInit = {
         'Content-Type': 'application/json-patch+json',
+        'User-Agent': `Trezor Suite, identity:${identity}`,
     };
     if (options.identity) {
         // TODO: probably will be extended:

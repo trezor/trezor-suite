@@ -26,6 +26,11 @@ const getAgent = (options: any) => {
     const identityName = getIdentityName(userAgent);
     const shouldIntercept = url.hostname !== '127.0.0.1';
 
+    if (identityName) {
+        // TODO: modify options user-agent and remove identity from it
+        console.warn('----> TOR identity', identityName);
+    }
+
     return shouldIntercept ? TorIdentities.getIdentity(identityName || 'default') : undefined;
 };
 
