@@ -2,8 +2,6 @@ import type * as CSS from 'csstype';
 
 const defaultColorVariant = {
     green: '#00854D',
-    green20: 'rgba(0, 133, 77, 0.2)',
-    green10: 'rgba(0, 133, 77, 0.1)',
     forest: '#0F6148',
 
     yellow: '#F7BF2F',
