@@ -11,7 +11,7 @@ export class TorController extends EventEmitter {
     options: TorConnectionOptions;
     controlPort: TorControlPort;
     waitingTime = 1000;
-    maxTriesWaiting = 60;
+    maxTriesWaiting = 200;
     isCircuitEstablished = false;
     torIsDisabledWhileStarting: boolean;
 
