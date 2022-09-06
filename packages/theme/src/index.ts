@@ -8,3 +8,4 @@ export * from './sizes';
 export * from './spacings';
 export * from './zIndices';
 export * from './prepareTheme';
+export * from './types';

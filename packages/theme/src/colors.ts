@@ -1,4 +1,4 @@
-import type * as CSS from 'csstype';
+import { CSSColor } from './types';
 
 const defaultColorVariant = {
     green: '#00854D',
@@ -24,7 +24,7 @@ const defaultColorVariant = {
 
 export type Color = keyof typeof defaultColorVariant;
 
-export type Colors = Record<Color, CSS.Property.Color>;
+export type Colors = Record<Color, CSSColor>;
 
 export const colorVariants = {
     standard: {
