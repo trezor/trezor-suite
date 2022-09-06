@@ -30,6 +30,7 @@ export enum EventType {
     CreateBackup = 'create-backup',
 
     AccountsStatus = 'accounts/status',
+    AccountsNonZeroBalance = 'accounts/non-zero-balance',
     AccountsNewAccount = 'accounts/new-account',
     AddToken = 'add-token',
     AccountsEmptyAccountBuy = 'accounts/empty-account/buy',

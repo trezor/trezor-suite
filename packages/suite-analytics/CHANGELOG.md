@@ -11,6 +11,8 @@ Added:
 -   accounts/transactions-export
     -   symbol: string
     -   format: 'pdf' | 'csv' | 'json'
+-   accounts/non-zero-balance
+    -   ['symbol'_'account_type']: number e.g. 'btc_segwit': 2
 
 ### 1.22
 
