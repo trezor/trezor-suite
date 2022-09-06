@@ -89,7 +89,7 @@ export const Camera = ({ onResult }: CameraProps) => {
                     isActive
                 />
             ) : (
-                <Text variant="body" color="white">
+                <Text variant="body" color="gray0">
                     Camera access is denied
                 </Text>
             )}

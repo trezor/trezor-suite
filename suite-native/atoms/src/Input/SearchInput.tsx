@@ -86,7 +86,7 @@ export const SearchInput = ({ value, onChange, placeholder, isDisabled = false }
                 />
                 {isClearButtonVisible && (
                     <TouchableOpacity onPress={handleClear} style={applyStyle(clearIconStyle)}>
-                        <Icon name="close" size="small" color="white" />
+                        <Icon name="close" size="small" color="gray0" />
                     </TouchableOpacity>
                 )}
             </Box>

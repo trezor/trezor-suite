@@ -173,7 +173,7 @@ export const DemoScreen = () => {
                     </BottomSheet>
                     <Box marginVertical="medium">
                         <Text>Icon:</Text>
-                        <Icon name="warningCircle" size="large" color="black" />
+                        <Icon name="warningCircle" size="large" color="gray1000" />
                     </Box>
                     <Box marginVertical="medium">
                         <Text>Hints:</Text>

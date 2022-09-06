@@ -29,7 +29,7 @@ export const useBottomSheetAnimation = ({
 }) => {
     const { utils } = useNativeStyles();
     const transparency = isVisible ? 1 : 0;
-    const colorOverlay = utils.transparentize(0.3, utils.colors.black);
+    const colorOverlay = utils.transparentize(0.3, utils.colors.gray1000);
     const translatePanY = useSharedValue(SCREEN_HEIGHT);
     const animatedTransparency = useSharedValue(transparency);
 

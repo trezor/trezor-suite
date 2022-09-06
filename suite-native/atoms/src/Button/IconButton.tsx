@@ -25,7 +25,7 @@ const iconButtonStyle = prepareNativeStyle<StyleProps>(
         const colorSchemeStyles = {
             primary: {
                 backgroundColor: utils.colors.green,
-                color: utils.colors.white,
+                color: utils.colors.gray0,
             },
             gray: {
                 backgroundColor: utils.colors.gray300,
@@ -75,7 +75,7 @@ export const IconButton = ({
         >
             <Icon
                 name={iconName}
-                color={colorScheme === 'primary' ? 'white' : 'gray700'}
+                color={colorScheme === 'primary' ? 'gray0' : 'gray700'}
                 size={size}
             />
         </TouchableOpacity>

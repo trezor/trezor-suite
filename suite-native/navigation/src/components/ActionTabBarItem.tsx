@@ -20,7 +20,7 @@ export const ActionTabItem = () => {
 
     return (
         <TouchableOpacity style={applyStyle(actionTabItemStyle)} onPress={() => {}}>
-            <Icon name="actionHorizontal" color="white" />
+            <Icon name="actionHorizontal" color="gray0" />
         </TouchableOpacity>
     );
 };

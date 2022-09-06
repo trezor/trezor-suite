@@ -72,7 +72,7 @@ export const OnboardingXpubScan = ({
     };
 
     return (
-        <Screen backgroundColor="black" hasStatusBar={false}>
+        <Screen backgroundColor="gray1000" hasStatusBar={false}>
             <Box>
                 <View style={applyStyle(coinStyle)}>
                     <Chip
@@ -98,7 +98,7 @@ export const OnboardingXpubScan = ({
                             onPress={handleRequestCamera}
                             style={applyStyle(cameraPlaceholderStyle)}
                         >
-                            <Text variant="body" color="white">
+                            <Text variant="body" color="gray0">
                                 Scan QR
                             </Text>
                         </Pressable>

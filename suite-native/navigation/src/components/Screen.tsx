@@ -16,9 +16,9 @@ type ScreenProps = {
 
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
-}>((_, { backgroundColor }) => ({
+}>((utils, { backgroundColor }) => ({
     flex: 1,
-    backgroundColor,
+    backgroundColor: utils.colors[backgroundColor],
 }));
 
 const screenContentStyle = prepareNativeStyle<{

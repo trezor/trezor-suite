@@ -24,7 +24,7 @@ const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>(
         borderRadius: 4,
         borderWidth: utils.borders.widths.medium,
         borderColor: utils.colors.gray400,
-        backgroundColor: isDisabled ? utils.colors.gray400 : utils.colors.white,
+        backgroundColor: isDisabled ? utils.colors.gray400 : utils.colors.gray0,
         extend: [
             {
                 condition: isChecked && !isDisabled,
@@ -48,7 +48,7 @@ export const CheckBox = ({ isChecked, isDisabled = false, onChange, style }: Che
             accessibilityState={{ checked: isChecked, disabled: isDisabled }}
             style={[applyStyle(checkBoxStyle, { isChecked, isDisabled }), style]}
         >
-            {isChecked && <Icon name="check" color="white" size="small" />}
+            {isChecked && <Icon name="check" color="gray0" size="small" />}
         </TouchableOpacity>
     );
 };

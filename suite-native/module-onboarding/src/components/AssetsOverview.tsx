@@ -30,11 +30,11 @@ export const AssetsOverview = ({ accountInfo }: AssetsOverviewProps) => {
                 <Box alignItems="center" justifyContent="center" marginBottom="medium">
                     <CryptoIcon name="btc" size="large" />
                     <Box marginTop="large" marginBottom="small">
-                        <Text variant="titleSmall" color="black">
+                        <Text variant="titleSmall" color="gray1000">
                             {accountInfo?.balance}
                         </Text>
                     </Box>
-                    <Text variant="label" color="black">
+                    <Text variant="label" color="gray1000">
                         ≈ 0.0003333 BTC
                     </Text>
                 </Box>
