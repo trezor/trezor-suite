@@ -325,6 +325,7 @@ const preparePdf = (data: Data): TDocumentDefinitions => {
         content: [
             {
                 table: {
+                    widths: [45, 30, 290, 65, 203, 65],
                     headerRows: 1,
                     body: [fieldValues, ...lines],
                 },
