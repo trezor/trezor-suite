@@ -3,23 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 const { test, expect } = require('@playwright/test');
-const { Controller } = require('../../../websocket-client');
-
-test.beforeAll(() => {
-    // todo: some problems with path in dev and production and tests. tldr tests are expecting
-    // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
-    // better solution later
-    if (!fs.existsSync('/trezor-suite/node_modules/electron/dist/resources/bin/')) {
-        fs.mkdirSync('/trezor-suite/node_modules/electron/dist/resources/bin/');
-    }
-    if (!fs.existsSync('/trezor-suite/node_modules/electron/dist/resources/bin/bridge/')) {
-        fs.mkdirSync('/trezor-suite/node_modules/electron/dist/resources/bin/bridge/');
-    }
-    fs.copyFileSync(
-        path.join(__dirname, '../../../..', 'suite-data/files/bin/bridge/linux-x64/trezord'),
-        path.join('/trezor-suite/node_modules/electron/dist/resources/bin/bridge/trezord'),
-    );
-});
+const { patchBinaries, launchSuite } = require('../support/common');
 
 const getTestElement = async (window, dataTest) => {
     const selector = `[data-test="${dataTest}"]`;
@@ -32,39 +16,34 @@ const getTestElement = async (window, dataTest) => {
     return el;
 };
 
-test('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
-    // Launch Electron app.
-    const electronApp = await electron.launch({
-        cwd: '../suite-desktop',
-        args: ['./dist/app.js', '--log-level=DEBUG', '--bridge-test'],
-    });
-    const window = await electronApp.firstWindow();
-    const title = await window.title();
-    expect(title).toBe('Trezor Suite');
-
-    const controller = new Controller();
-    await controller.connect();
-    await controller.send({
-        type: 'emulator-start',
+test.describe.serial('Bridge', () => {
+    test.beforeAll(async () => {
+        // todo: some problems with path in dev and production and tests. tldr tests are expecting
+        // binaries somewhere where they are not, so I copy them to that place. Maybe I find a
+        // better solution later
+        await patchBinaries();
     });
 
-    await getTestElement(window, '@welcome/title');
-    await window.screenshot({ path: './projects/suite-desktop/screenshots/intro.png' });
+    test('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
+        const suite = await launchSuite();
+        await suite.electronApp.firstWindow();
+        const title = await suite.window.title();
+        expect(title).toBe('Trezor Suite');
 
-    // bridge is running
-    const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
-    await expect(bridgeRes1).toBeOK();
+        const titleEl = await getTestElement(suite.window, '@welcome/title');
 
-    await getTestElement(window, '@onboarding/continue-button');
-    await window.screenshot({ path: './projects/suite-desktop/screenshots/analytics.png' });
+        // bridge is running
+        const bridgeRes1 = await request.get('http://127.0.0.1:21325/status/');
+        await expect(bridgeRes1).toBeOK();
 
-    await electronApp.close();
+        await suite.electronApp.close();
 
-    // bridge is not running
-    try {
-        await request.get('http://127.0.0.1:21325/status/');
-        throw new Error('should have thrown!');
-    } catch (err) {
-        // ok
-    }
+        // bridge is not running
+        try {
+            await request.get('http://127.0.0.1:21325/status/');
+            throw new Error('should have thrown!');
+        } catch (err) {
+            // ok
+        }
+    });
 });
