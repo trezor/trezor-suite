@@ -20,19 +20,19 @@ export const AssetsLoader = () => {
 
     return (
         <View style={[applyStyle(fetchingStyle)]}>
-            <Text variant="titleMedium" color="black" style={applyStyle(textStyle)}>
+            <Text variant="titleMedium" color="gray1000" style={applyStyle(textStyle)}>
                 Checking Balances...
             </Text>
             <Text
                 variant="titleMedium"
-                color="black"
+                color="gray1000"
                 style={applyStyle(textStyle, { opacity: 0.3 })}
             >
                 Fetching tx history...
             </Text>
             <Text
                 variant="titleMedium"
-                color="black"
+                color="gray1000"
                 style={applyStyle(textStyle, { opacity: 0.1 })}
             >
                 something...

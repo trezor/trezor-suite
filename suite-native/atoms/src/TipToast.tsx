@@ -40,12 +40,12 @@ export const TipToast = ({ title, description, onClose }: TipToastProps) => {
                 <Text color="gray400" variant="hint">
                     {title}
                 </Text>
-                <Text color="white" variant="hint">
+                <Text color="gray0" variant="hint">
                     {description}
                 </Text>
             </Box>
             <TouchableOpacity onPress={onClose} style={applyStyle(closeButtonStyle)}>
-                <Icon name="close" color="white" />
+                <Icon name="close" color="gray0" />
             </TouchableOpacity>
         </Box>
     );

@@ -30,7 +30,7 @@ const iconSizes = {
 
 export type IconSize = keyof typeof iconSizes;
 
-export const Icon = ({ name, size = 'large', color = 'black' }: IconProps) => {
+export const Icon = ({ name, size = 'large', color = 'gray1000' }: IconProps) => {
     const svg = useSVG(icons[name]);
     const {
         utils: { colors },

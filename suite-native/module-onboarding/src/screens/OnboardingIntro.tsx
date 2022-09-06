@@ -47,9 +47,9 @@ export const OnboardingIntro = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Screen backgroundColor="black" hasStatusBar={false}>
+        <Screen backgroundColor="gray1000" hasStatusBar={false}>
             <View style={applyStyle(introStyle)}>
-                <Text variant="titleMedium" color="white" style={applyStyle(introHeadlineStyle)}>
+                <Text variant="titleMedium" color="gray0" style={applyStyle(introHeadlineStyle)}>
                     Import only shits
                 </Text>
                 <View style={applyStyle(introDescriptionStyle)}>
@@ -61,7 +61,7 @@ export const OnboardingIntro = ({
                     </Text>
                 </View>
                 <View style={applyStyle(introImagePreviewStyle)}>
-                    <Text variant="body" color="black">
+                    <Text variant="body" color="gray1000">
                         TODO screenshot from Suite
                     </Text>
                 </View>
