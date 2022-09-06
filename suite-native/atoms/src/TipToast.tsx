@@ -16,8 +16,8 @@ type TipToastProps = {
 const tipToastStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: utils.colors.black,
-    color: utils.colors.white,
+    backgroundColor: utils.colors.gray1000,
+    color: utils.colors.gray0,
     borderRadius: utils.borders.radii.small,
     padding: utils.spacings.small,
 }));

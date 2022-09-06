@@ -91,7 +91,7 @@ export const ColorSchemePickerItem = ({ colorScheme }: ColorSchemePickerItemProp
                 />
                 <Box
                     style={applyStyle(pickerItemDotStyle, {
-                        backgroundColor: colorVariants[colorVariant].black,
+                        backgroundColor: colorVariants[colorVariant].gray1000,
                         isFirstItem: false,
                     })}
                 />

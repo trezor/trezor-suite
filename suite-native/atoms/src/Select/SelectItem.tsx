@@ -46,7 +46,7 @@ const underlineSectionStyle = prepareNativeStyle<SelectItemStyleProps>(
             {
                 condition: isSelected,
                 style: {
-                    color: utils.colors.black,
+                    color: utils.colors.gray1000,
                 },
             },
         ],

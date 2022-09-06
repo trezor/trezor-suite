@@ -60,7 +60,7 @@ const buttonStyle = prepareNativeStyle<ButtonStyleProps>((utils, { size, colorSc
 });
 
 const buttonColorSchemeFontColor: Record<ButtonColorScheme, Color> = {
-    primary: 'white',
+    primary: 'gray0',
     gray: 'gray800',
 };
 

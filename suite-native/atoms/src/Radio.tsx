@@ -20,7 +20,7 @@ type RadioStyleProps = {
 const radioStyle = prepareNativeStyle<RadioStyleProps>((utils, { isChecked, isDisabled }) => ({
     height: 24,
     width: 24,
-    backgroundColor: isDisabled ? utils.colors.gray400 : utils.colors.white,
+    backgroundColor: isDisabled ? utils.colors.gray400 : utils.colors.gray0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

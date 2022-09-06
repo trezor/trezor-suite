@@ -34,7 +34,7 @@ const switchContainerStyle = prepareNativeStyle(utils => ({
 const switchCircleStyle = prepareNativeStyle(utils => ({
     width: SWITCH_CIRCLE_SIZE,
     height: SWITCH_CIRCLE_SIZE,
-    backgroundColor: utils.colors.white,
+    backgroundColor: utils.colors.gray0,
     borderRadius: utils.borders.radii.round,
     margin: SWITCH_CIRCLE_MARGIN,
     alignSelf: 'center',

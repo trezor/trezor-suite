@@ -24,7 +24,7 @@ const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>(
         borderRadius: 4,
         borderWidth: utils.borders.widths.medium,
         borderColor: utils.colors.gray400,
-        backgroundColor: isDisabled ? utils.colors.gray400 : utils.colors.white,
+        backgroundColor: isDisabled ? utils.colors.gray400 : utils.colors.gray0,
         extend: [
             {
                 condition: isChecked && !isDisabled,

@@ -28,7 +28,7 @@ const introDescriptionStyle = prepareNativeStyle(_ => ({
 const introImagePreviewStyle = prepareNativeStyle(utils => ({
     width: 387,
     height: 297,
-    backgroundColor: utils.colors.white,
+    backgroundColor: utils.colors.gray0,
     alignItems: 'center',
     justifyContent: 'center',
 }));
