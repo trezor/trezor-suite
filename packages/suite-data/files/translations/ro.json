@@ -428,7 +428,7 @@
   "TR_CURRENT_FEE": "Actual",
   "TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED": "Backend-ul este deja adăugat",
   "TR_CUSTOM_BACKEND_INVALID_URL": "URL nevalid",
-  "TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD": "Descărcaţi pe Trezor.io",
+  "TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD": "github.com",
   "TR_CUSTOM_FIRMWARE_BUTTON_INSTALL": "Instalați firmware",
   "TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD": "Selectați un firmware compatibil",
   "TR_CUSTOM_FIRMWARE_TITLE_INSTALL": "Instalați firmware",
@@ -678,7 +678,6 @@
   "TR_FIRMWARE_PARTIALLY_UPDATED": "Firmware actualizat parțial",
   "TR_FIRMWARE_REINSTALL_FW_DESCRIPTION": "Dispozitivul dvs. este deja actualizat la cel mai recent firmware. Puteți reinstala firmware-ul dacă este necesar.",
   "TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED": "Completat",
-  "TR_FIRMWARE_SUBHEADING": "Trezor este livrat fără firmware instalat pentru a vă asigura că puteți începe imediat să utilizați cele mai recente caracteristici. Autenticitatea firmware-ului instalat este întotdeauna verificată în timpul pornirii dispozitivului. Dacă firmware-ul nu este semnat corect de SatoshiLabs, Trezor-ul dvs. va afișa un avertisment.",
   "TR_FIRMWARE_UPDATE": "Actualizare firmware",
   "TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED": "Dispozitivul dvs. are un firmware care nu mai este acceptat. Va trebui să îl actualizați.",
   "TR_FIRMWARE_VALIDATION_ONE_V2": "Trebuie să faceți mai întâi upgrade la bootloader 1.8.0",
@@ -1168,7 +1167,6 @@
   "TR_WALLET_DUPLICATE_TITLE": "Fraza de trecere duplicată",
   "TR_WHAT_IS_PASSPHRASE": "Aflați mai multe despre diferență",
   "TR_WIPING_YOUR_DEVICE": "Aceasta șterge toată memoria acestui Trezor, inclusiv seed-ul său. Ștergeți dispozitivul numai dacă aveți la îndemână seed-ul de recuperare sau dacă nu există fonduri stocate pe acest dispozitiv.",
-  "TR_YOUR_CURRENT_FIRMWARE": "Versiunea curentă a firmware-ului dvs. este {version}.",
   "TR_YOUR_CURRENT_VERSION": "Acum utilizați versiunea {version}",
   "TR_YOU_EITHER_HAVE_T1": "Seed-ul dvs. poate conține 12, 18 sau 24 de cuvinte."
 }
