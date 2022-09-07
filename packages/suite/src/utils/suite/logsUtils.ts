@@ -200,7 +200,9 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
     rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase).length,
     rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
     enabledNetworks: state.wallet.settings.enabledNetworks,
-    customBackends: getCustomBackends(state.wallet.blockchain).map(({ coin }) => coin),
+    customBackends: getCustomBackends(state.wallet.blockchain)
+        .map(({ coin }) => coin)
+        .filter(coin => state.wallet.settings.enabledNetworks.includes(coin)),
     devices: getPhysicalDeviceUniqueIds(state.devices)
         .map(id => state.devices.find(device => device.id === id) as TrezorDevice) // filter unique devices
         .map(device => ({
