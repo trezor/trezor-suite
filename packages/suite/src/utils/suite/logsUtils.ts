@@ -205,9 +205,11 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
         .filter(coin => state.wallet.settings.enabledNetworks.includes(coin)),
     devices: getPhysicalDeviceUniqueIds(state.devices)
         .map(id => state.devices.find(device => device.id === id) as TrezorDevice) // filter unique devices
+        .concat(state.devices.filter(device => device.id === null)) // add devices in bootloader mode
         .map(device => ({
             id: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.id,
             label: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.label,
+            mode: device.mode,
             model: getDeviceModel(device),
             firmware: device.features ? getFwVersion(device) : '',
             firmwareRevision: device.features ? getFwRevision(device) : '',
