@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Icon } from '@trezor/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { Box, Text } from '@suite-native/atoms';
+import { BottomSheet, Box, Text } from '@suite-native/atoms';
 
 const chipStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
@@ -17,16 +17,30 @@ const chipStyle = prepareNativeStyle(utils => ({
 }));
 
 export const DashboardHeaderDeviceChip = () => {
+    const [isDeviceModalVisible, setIsDeviceModalVisible] = useState<boolean>(false);
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity style={applyStyle(chipStyle)}>
-            <Icon name="trezorT" />
-            <Text>Trezor T</Text>
-            <Box>
-                <Icon name="chevronUp" size="small" />
-                <Icon name="chevronDown" size="small" />
-            </Box>
-        </TouchableOpacity>
+        <>
+            <TouchableOpacity
+                style={applyStyle(chipStyle)}
+                onPress={() => setIsDeviceModalVisible(true)}
+            >
+                <Icon name="trezorT" />
+                <Text>Trezor T</Text>
+                <Box>
+                    <Icon name="chevronUp" size="small" />
+                    <Icon name="chevronDown" size="small" />
+                </Box>
+            </TouchableOpacity>
+            <BottomSheet
+                isVisible={isDeviceModalVisible}
+                onVisibilityChange={setIsDeviceModalVisible}
+                title=""
+                onBackArrowClick={() => setIsDeviceModalVisible(!isDeviceModalVisible)}
+            >
+                <Text variant="body">TODO: list of all my watch only wallets</Text>
+            </BottomSheet>
+        </>
     );
 };

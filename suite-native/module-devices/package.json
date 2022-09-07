@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/module-onboarding",
+    "name": "@suite-native/module-devices",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,12 +12,7 @@
         "type-check": "tsc --build"
     },
     "dependencies": {
-        "@react-navigation/core": "^6.2.2",
-        "@react-navigation/native": "^6.0.11",
-        "@react-navigation/stack": "^6.2.2",
-        "@suite-native/atoms": "*",
-        "@suite-native/navigation": "*",
-        "@trezor/styles": "*",
+        "@reduxjs/toolkit": "^1.8.3",
         "react": "^17.0.2",
         "react-native": "0.68.2"
     },

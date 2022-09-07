@@ -2,10 +2,13 @@ import React from 'react';
 
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { stackNavigationOptionsConfig } from '@suite-native/navigation';
+import {
+    HomeStackParamList,
+    HomeStackRoutes,
+    stackNavigationOptionsConfig,
+} from '@suite-native/navigation';
 
 import { HomeScreen } from '../screens/HomeScreen';
-import { HomeStackParamList, HomeStackRoutes } from './routes';
 
 const HomeStack = createStackNavigator<HomeStackParamList>();
 

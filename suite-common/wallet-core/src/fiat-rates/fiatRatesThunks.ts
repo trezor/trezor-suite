@@ -8,7 +8,7 @@ import {
 } from '@suite-common/fiat-services';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
-import { Network, networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
+import { NetworkSymbol, networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import { Account, CoinFiatRates, TickerId } from '@suite-common/wallet-types';
 import { FIAT } from '@suite-common/suite-config';
 import { getAccountTransactions, isTestnet } from '@suite-common/wallet-utils';
@@ -47,7 +47,7 @@ export const removeFiatRatesForDisabledNetworksThunk = createThunk(
         const enabledNetworks = selectEnabledNetworks(getState());
         const fiat = selectCoins(getState());
         fiat.forEach(f => {
-            const rateNetwork = (f.mainNetworkSymbol ?? f.symbol) as Network['symbol'];
+            const rateNetwork = (f.mainNetworkSymbol ?? f.symbol) as NetworkSymbol;
             if (!enabledNetworks.includes(rateNetwork)) {
                 dispatch(fiatRatesActions.removeFiatRate(f));
             }
@@ -318,7 +318,7 @@ export const updateTxsFiatRatesThunk = createThunk(
 
 const updateMissingTxFiatRatesThunk = createThunk(
     `${actionPrefix}/updateMissingTxRates`,
-    (symbol: Network['symbol'], { dispatch, getState }) => {
+    (symbol: NetworkSymbol, { dispatch, getState }) => {
         const transactions = selectTransactions(getState());
         const accounts = selectAccounts(getState());
         accounts.forEach(account => {
@@ -343,7 +343,7 @@ const updateMissingTxFiatRatesThunk = createThunk(
  */
 export const initFiatRatesThunk = createThunk(
     `${actionPrefix}/initRates`,
-    (symbol: Network['symbol'], { dispatch }) => {
+    (symbol: NetworkSymbol, { dispatch }) => {
         dispatch(updateStaleFiatRatesThunk());
         dispatch(updateLastWeekFiatRatesThunk());
         dispatch(updateMissingTxFiatRatesThunk(symbol)); // just to be safe, refetch historical rates for transactions stored without these rates

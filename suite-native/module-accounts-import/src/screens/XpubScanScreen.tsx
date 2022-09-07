@@ -3,14 +3,18 @@ import { Pressable, View } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Screen, StackProps } from '@suite-native/navigation';
-import { Box, Chip, Input, InputWrapper, Text } from '@suite-native/atoms';
+import {
+    AccountsImportStackParamList,
+    AccountsImportStackRoutes,
+    Screen,
+    StackProps,
+} from '@suite-native/navigation';
+import { Box, Button, Chip, Input, InputWrapper, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoIcon } from '@trezor/icons';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Camera, CAMERA_HEIGHT } from '../components/Camera';
-import { OnboardingStackParamList, OnboardingStackRoutes } from '../navigation/routes';
 
 const coinStyle = prepareNativeStyle(_ => ({
     flexDirection: 'row',
@@ -34,12 +38,20 @@ const chipStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.small,
 }));
 
+const devXpubButtonStyle = prepareNativeStyle(utils => ({
+    marginTop: utils.spacings.small,
+    borderRadius: utils.borders.radii.round,
+}));
+
 const DEFAULT_XPUB_INPUT_TEXT = '';
 const DEFAULT_CURRENCY_SYMBOL = 'btc';
+// Slip 0014 - https://github.com/satoshilabs/slips/blob/master/slip-0014.md#bitcoin-segwit--p2wpkh--bip84
+const BTC_HARD_CODED_XPUB =
+    'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT';
 
-export const OnboardingXpubScan = ({
+export const XpubScanScreen = ({
     navigation,
-}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.OnboardingXpubScan>) => {
+}: StackProps<AccountsImportStackParamList, AccountsImportStackRoutes.XpubScan>) => {
     const [selectedCurrencySymbol, setSelectedCurrencySymbol] =
         useState<NetworkSymbol>(DEFAULT_CURRENCY_SYMBOL);
     const [inputText, setInputText] = useState<string>(DEFAULT_XPUB_INPUT_TEXT);
@@ -64,7 +76,7 @@ export const OnboardingXpubScan = ({
 
     const handleXpubResult = (value?: string) => {
         if (value) {
-            navigation.navigate(OnboardingStackRoutes.OnboardingAssets, {
+            navigation.navigate(AccountsImportStackRoutes.AccountImport, {
                 xpubAddress: value,
                 currencySymbol: selectedCurrencySymbol,
             });
@@ -72,7 +84,7 @@ export const OnboardingXpubScan = ({
     };
 
     return (
-        <Screen backgroundColor="gray1000" hasStatusBar={false}>
+        <Screen backgroundColor="gray1000">
             <Box>
                 <View style={applyStyle(coinStyle)}>
                     <Chip
@@ -116,6 +128,15 @@ export const OnboardingXpubScan = ({
                         onSubmitEditing={handleXpubResult}
                         label="Enter x-pub..."
                     />
+                    {__DEV__ && (
+                        <Button
+                            style={applyStyle(devXpubButtonStyle)}
+                            onPress={() => handleXpubResult(BTC_HARD_CODED_XPUB)}
+                            colorScheme="gray"
+                        >
+                            Use dev xPub
+                        </Button>
+                    )}
                 </InputWrapper>
             </Box>
         </Screen>

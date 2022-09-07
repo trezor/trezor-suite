@@ -8,8 +8,11 @@
         {
             "path": "../../suite-common/test-utils"
         },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../home-graph" },
-        { "path": "../module-onboarding" },
+        { "path": "../module-devices" },
         { "path": "../module-settings" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },

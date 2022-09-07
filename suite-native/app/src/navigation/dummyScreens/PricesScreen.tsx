@@ -2,10 +2,8 @@ import React from 'react';
 import { View } from 'react-native';
 
 import { Text } from '@suite-native/atoms';
-import { TabProps } from '@suite-native/navigation';
+import { TabProps, AppTabsRoutes, AppTabsParamList } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { RootTabsParamList, RouteTabs } from '../routes';
 
 const pricesScreenStyle = prepareNativeStyle(() => ({
     flex: 1,
@@ -13,7 +11,7 @@ const pricesScreenStyle = prepareNativeStyle(() => ({
     alignItems: 'center',
 }));
 
-export const PricesScreen: React.FC<TabProps<RootTabsParamList, RouteTabs.Prices>> = () => {
+export const PricesScreen: React.FC<TabProps<AppTabsParamList, AppTabsRoutes.Prices>> = () => {
     const { applyStyle } = useNativeStyles();
 
     return (

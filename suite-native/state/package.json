@@ -13,12 +13,14 @@
         "@reduxjs/toolkit": "^1.8.3",
         "@suite-common/redux-utils": "*",
         "@suite-common/test-utils": "*",
+        "@suite-common/wallet-core": "*",
         "@suite-native/home-graph": "*",
-        "@suite-native/module-onboarding": "*",
+        "@suite-native/module-devices": "*",
         "@suite-native/module-settings": "*",
         "@trezor/connect": "9.0.0",
         "@trezor/styles": "*",
-        "@trezor/utils": "*"
+        "@trezor/utils": "*",
+        "redux-flipper": "2.0.2"
     },
     "devDependencies": {
         "jest": "^26.6.3",

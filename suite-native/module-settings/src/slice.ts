@@ -6,6 +6,7 @@ export type AppColorScheme = ThemeColorVariant | 'system';
 
 export interface AppSettingsState {
     colorScheme: AppColorScheme;
+    isOnboardingFinished: boolean;
 }
 
 type SliceState = {
@@ -14,6 +15,7 @@ type SliceState = {
 
 const initialState: AppSettingsState = {
     colorScheme: 'system',
+    isOnboardingFinished: false,
 };
 
 export const appSettingsSlice = createSlice({
@@ -23,12 +25,17 @@ export const appSettingsSlice = createSlice({
         setColorScheme: (state, action: PayloadAction<AppColorScheme>) => {
             state.colorScheme = action.payload;
         },
+        setOnboardingFinished: (state, action: PayloadAction<boolean>) => {
+            state.isOnboardingFinished = action.payload;
+        },
     },
 });
 
 export const selectColorScheme = (state: SliceState) => state.appSettings.colorScheme;
 export const selectIsColorSchemeActive = (colorScheme: AppColorScheme) => (state: SliceState) =>
     state.appSettings.colorScheme === colorScheme;
+export const selectIsOnboardingFinished = (state: SliceState) =>
+    state.appSettings.isOnboardingFinished;
 
-export const { setColorScheme } = appSettingsSlice.actions;
+export const { setColorScheme, setOnboardingFinished } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;
