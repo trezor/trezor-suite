@@ -131,6 +131,11 @@ export abstract class BaseWorker<API> {
     // other messages are handled by each WorkerModule separately
     async messageHandler(event: { data: Message }) {
         if (!event.data) return true;
+
+        // @ts-expect-error!
+        if (event.data.channel !== '@trezor/blockchain') {
+            return;
+        }
         const { data } = event;
         const { id } = data;
 

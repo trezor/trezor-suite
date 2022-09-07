@@ -131,6 +131,8 @@ const removeUiPromise = (promise: Deferred<any>) => {
 export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => {
     _log.debug('handleMessage', isTrustedOrigin, message);
 
+    console.log('core, handleMessage', message);
+
     const safeMessages: CoreMessage['type'][] = [
         IFRAME.CALL,
         POPUP.CLOSED,
@@ -140,6 +142,7 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
     ];
 
     if (!isTrustedOrigin && safeMessages.indexOf(message.type) === -1) {
+        console.log('meow stop');
         return;
     }
 
@@ -181,6 +184,7 @@ export const handleMessage = (message: CoreMessage, isTrustedOrigin = false) => 
         // message from index
         case IFRAME.CALL:
             onCall(message).catch(error => {
+                console.log('log error iframce call on call', error);
                 _log.error('onCall', error);
             });
             break;
@@ -270,7 +274,10 @@ const initDevice = async (method: AbstractMethod) => {
  * @memberof Core
  */
 export const onCall = async (message: CoreMessage) => {
+    console.log('onCall message', message);
+
     if (!message.id || !message.payload || message.type !== IFRAME.CALL) {
+        console.log('core throw!!! ');
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
             'onCall: message.id or message.payload is missing',
