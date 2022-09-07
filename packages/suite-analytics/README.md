@@ -63,12 +63,11 @@ analytics.report({
 
 ### Versioning
 
-Package version should be bumped if changes are made to `suite-analytics` (applies only if it has not yet been bumped in the current release). Package version is logged along with other analytics and might be necessary when processing the data.
-For analytics we use `<breaking-change>.<analytics-extended>`. Because `package.json` allows only semver versioning `<major>.<minor>.<patch>`, we keep `major` version equal to `0` and we omit it when sending to analytics (`0.<breaking-change>.<analytics-extended>`). Breaking change should bump minor version. Any other change bumps patch version.
+From Suite version 22.10.1, analytics uses Suite versioning. That means, that analytics version will change even if there are no changes in analytics changelog. However, there can be changes in Suite functionality, which can also change behavior of analytics.
 
 ## Changelog
 
-Add a record of change to [CHANGELOG.md](./CHANGELOG.md). Please use a format of previous records.
+Add a record of change to [Notion](https://www.notion.so/satoshilabs/Changelog-Suite-1551ab666b1943f080ff56ffc6896d12d). Please use a format of previous records.
 
 ## Company table
 
