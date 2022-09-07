@@ -183,7 +183,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                 )}
 
                 {/* AMOUNT */}
-                {tx.targets.length > 0 && (
+                {(tx.targets.length || tx.type === 'joint') && (
                     <AmountRow
                         firstColumn={<Translation id="AMOUNT" />}
                         secondColumn={<FormattedCryptoAmount value={txAmount} symbol={tx.symbol} />}

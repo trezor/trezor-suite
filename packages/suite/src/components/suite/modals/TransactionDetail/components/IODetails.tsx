@@ -12,6 +12,7 @@ const Wrapper = styled.div`
 
 const IOWrapper = styled.div`
     overflow: auto;
+    padding: 0 1px;
 `;
 
 const IconWrapper = styled.div`
@@ -28,10 +29,11 @@ const IORowTitle = styled.div`
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
 `;
 
-const IORow = styled.div`
+const IORow = styled.div<{ isAccountOwned?: boolean }>`
     display: flex;
     line-height: 1.9;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme, isAccountOwned }) =>
+        isAccountOwned ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
 `;
@@ -65,7 +67,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                         </IORowTitle>
 
                         {tx.details.vin.map(input => (
-                            <IORow key={input.n}>
+                            <IORow key={input.n} isAccountOwned={input.isAccountOwned}>
                                 {network?.networkType !== 'ethereum' && (
                                     // don't show input amount in ethereum
                                     // consider faking it by showing the same value os the output
@@ -94,7 +96,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                             <Translation id="TR_OUTPUTS" />
                         </IORowTitle>
                         {tx.details.vout.map(output => (
-                            <IORow key={output.n}>
+                            <IORow key={output.n} isAccountOwned={output.isAccountOwned}>
                                 <CryptoAmountWrapper>
                                     <FormattedCryptoAmount
                                         value={
